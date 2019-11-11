@@ -16,9 +16,11 @@ The source code for the infrastructure is hosted on repositories of this github 
 
 
 ## Challenge templates
+You can submit your own challenges to be included by emailing **`challenges ]at[ echoctf.red`** by using any of the templates
+below. 
+
 * [simple-challenge.yml](https://github.com/echoCTF/echoCTF.RED/blob/master/challenge/simple-challenge.yml)
 * [advanced-challenge.yml](https://github.com/echoCTF/echoCTF.RED/blob/master/challenge/advanced-challenge.yml)
-
 
 # Where to register in order to play?
 More information at https://echoctf.red/
