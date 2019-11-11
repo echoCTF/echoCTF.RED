@@ -8,16 +8,16 @@ This project is serving as a placeholder for issues, bugs and incidents involvin
 
 ## Source codez or it never happened
 The source code for the infrastructure is hosted on repositories of this github org
-* [participants UI @echoCTF/echoCTF-pUI](github.com/echoCTF/echoCTF-pUI)
-* [management UI @echoCTF/echoCTF-mUI2](github.com/echoCTF/echoCTF-mUI2)
-* [echoCTF OpenBSD Gateway @echoCTF/echoCTF-gw](github.com/echoCTF/echoCTF-gw)
-* [echoCTF targets @echoCTF/echoCTF-targets](github.com/echoCTF/echoCTF-targets)
-* [echoCTF OpenBSD findingsd @echoCTF/echoCTF-gw](github.com/echoCTF/findingsd)
+* [participants UI @echoCTF/echoCTF-pUI](/echoCTF/echoCTF-pUI)
+* [management UI @echoCTF/echoCTF-mUI2](/echoCTF/echoCTF-mUI2)
+* [echoCTF OpenBSD Gateway @echoCTF/echoCTF-gw](/echoCTF/echoCTF-gw)
+* [echoCTF targets @echoCTF/echoCTF-targets](/echoCTF/echoCTF-targets)
+* [echoCTF OpenBSD findingsd @echoCTF/echoCTF-gw](/echoCTF/findingsd)
 
 
 ## Challenge templates
-* [simple-challenge.yml](github.com/echoCTF/echoCTF.RED/blob/master/challenge/simple-challenge.yml)
-* [advanced-challenge.yml](github.com/echoCTF/echoCTF.RED/blob/master/challenge/advanced-challenge.yml)
+* [simple-challenge.yml](/echoCTF/echoCTF.RED/blob/master/challenge/simple-challenge.yml)
+* [advanced-challenge.yml](/echoCTF/echoCTF.RED/blob/master/challenge/advanced-challenge.yml)
 
 
 # Where to register in order to play?
