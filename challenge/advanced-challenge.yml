@@ -1,0 +1,26 @@
+---
+author: [profile id] # Your profile id number eg 31337
+name: "Challenge name"
+category: Tutorial
+difficulty: easy
+player_type: offense
+description: |
+  <p>multiline 
+  description, 
+  must
+  keep the same 
+  indentation 
+  of lines</p>
+
+# empty line ends the description
+questions:
+  - "{{lookup('file','question1.yml') | from_yaml}}"
+  - "{{lookup('file','question2.yml') | from_yaml}}"
+  - {
+       name: "3nd question name",
+       description: "3nd question description",
+       points: 100,
+       code: "answer3",
+       weight: 1,
+    }
+  
