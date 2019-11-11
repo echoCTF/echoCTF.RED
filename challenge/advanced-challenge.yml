@@ -14,9 +14,9 @@ description: |
 
 # empty line ends the description
 questions:
-  - "{{lookup('file','question1.yml') | from_yaml}}"
-  - "{{lookup('file','question2.yml') | from_yaml}}"
-  - {
+  - "{{lookup('file','question1.yml') | from_yaml}}" # Include the 1st question from another yml
+  - "{{lookup('file','question2.json') | from_json}}" # include the 2nd question from a json file
+  - { # We can also have mixed files and questions
        name: "3nd question name",
        description: "3nd question description",
        points: 100,
