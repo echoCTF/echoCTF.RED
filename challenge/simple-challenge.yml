@@ -1,0 +1,24 @@
+---
+author: [PROFILE ID] # Your profile id eg 31337
+name: "This is the challenge name"
+category: Tutorial # Free form
+difficulty: easy # Free form
+player_type: offense # offense or defense
+# Optional filename that comes with the challenge
+# filename: challenge.zip
+description: "<p>Description of the challenge allows limited html</p>"
+questions:
+  - {
+       name: "1st question name",
+       description: "1st question description",
+       points: 100,
+       code: "answer1",
+       weight: 0,
+    }
+  - {
+       name: "2nd question name",
+       description: "2nd question description",
+       points: 100,
+       code: "answer2",
+       weight: 1,
+    }
