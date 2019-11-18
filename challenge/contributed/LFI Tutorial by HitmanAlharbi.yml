@@ -1,0 +1,61 @@
+---
+author: 31337
+name: "Local File Inclusion Tutorial"
+category: Tutorial
+difficulty: easy
+player_type: offense
+description: "<p>This is a tutorial based on a challenge to learn you how to exploit Local File Inlcusion (LFI) vulnerability.
+<br> LFI is very dangerous and can help the attackers to read senstive files and sometimes it lead to remote execution.</p>"
+questions:
+  - {
+       name: "Discovering the HTML source code",
+       description: "So let's start by access the web application by browsing <code>http://{IP}/index.php</code>
+<br>Discover the web application and find your first flag hidden in the HTML source code
+<br> To view the source code add<code>view-source:</code> before the URL to be like this <code>view-source:http://{IP}/index.php</code>
+<br> Enter the flag (<code>ETSCTF_FLAG_IN_SOURCE</code>) to complete this step.",
+       points: 10,
+       code: "ETSCTF_FLAG_IN_SOURCE",
+       weight: 0,
+    }
+  - {
+       name: "Find the vulnerability",
+       description: "By accessing the another pages like <b>Articles</b> and <b>About</b> you will find a new parameter in the URL
+<br>The parameter is <code>page</code> and used to pass a value to the web application code
+<br>Actually this web application takes the value that passed by parameter <code>page</code> then put it in a function called <code>include</code>
+<br>Include function used to include the content of the files, that's mean any value you will write it in this parameter then it will be included to the web application
+<br>This vulnerability called Local File Inclusion, the attacker can exploit it by pass senstive files like /etc/passwd and semi files
+<br>Enter the parameter name <code>page</code> to complete this step.",
+       points: 10,
+       code: "page",
+       weight: 1,
+    }
+  - {
+         name: "Exploit the vulnerability",
+         description: "Now it's the time to exploit the vulnerability and test it by reading /etc/passwd
+<br>Please change the value of the parameter <code>page</code> to <code>/etc/passwd</code>
+<br>Then press enter, and you will see the full content of the file printed in the page
+<br>Enter the flag of the /etc/passwd to complete this step (<b>Find the flag by yourself</b>).",
+         points: 30,
+         code: "ETSCTF_ETCPASSWD_FLAG_HIDDEN_HOLA",
+         weight: 2,
+    }
+  - {
+         name: "Encode the PHP source code",
+         description: "In the previous step we exploited the LFI vulnerability and read the <code>/etc/passwd</code> file
+<br>Now this time we want to include the php files and print it in the page like the previous step
+<br>You can't view the PHP codes with <code>include</code> function because it executed the code
+<br>Because of that we want to encode the content of the files by add <code>php://filter/convert.base64-encode/resource=</code> before the value
+<br>Then it will be encoded by <code>Base64</code> you can decode the content execute this command in the terminal <code>echo 'encoded' | base64 -d</code>
+<br>Enter the flag included in the <code>index.php</code> to complete this step (<b>Find the flag by yourself</b>).",
+         points: 60,
+         code: "ETSCTF_FLAG_IN_PHP_AFTER_LFI",
+         weight: 3,
+      }
+  - {
+         name: "Always include senstive files",
+         description: "Always include senstive files like <code>config.php</code> and semi files
+  <br>Enter the flag hidden in the <code>config.php</code> to complete this step  (<b>Find the flag by yourself</b>).",
+         points: 30,
+         code: "ETSCTF_FLAG_IN_CONF18_FILE",
+         weight: 4,
+      }
