@@ -1,0 +1,122 @@
+.Leaderboard{
+  padding-top: 30px;
+/*  max-width: 1400px;*/
+}
+
+.LeaderHeader{
+    padding: 30px 400px;
+    margin: auto;
+    /*max-width: 1400px;*/
+    font-weight: 200;
+}
+.leader-wrap {
+    display: flex;
+    margin-top: 10px;
+    margin-left: 30px;
+    margin-right: 50px;
+}
+
+.leader{
+    padding: 0px 0px;
+    margin-bottom: 0px;
+    animation-name: revealLeaders;
+    animation-duration: 2s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-in-out;
+    width: 100%;
+}
+
+.leader-name {
+    margin-left: 10px;
+    /* line-height: 1;*/
+    /*font-size: 1.1em;*/
+}
+
+.leader-place {
+  /* font-size: 1.1em; */
+}
+
+.leader-ava {
+    padding: 8px;
+    margin-right: 16px;
+    position: relative;
+}
+
+.leader-score {
+    display: flex;
+    align-items: center;
+    opacity: 1;
+}
+
+.leader-score svg{
+    display: block;
+    margin-right: 4px;
+}
+
+.leader-score_title{
+    text-align: right;
+    width:100%;
+/*    line-height: 1;*/
+}
+
+.leader-ava::after{
+    content: "";
+    left: 0;
+    bottom: 0;
+    display: block;
+    height: 6px;
+    position: absolute;
+    border: 0px transparent solid;
+    border-left-width: 20px;
+    border-right-width: 20px;
+    border-bottom-width: 6px;
+    border-bottom-color: #fff;
+    transition: border-bottom-color .2s ease-in-out;
+}
+
+.leader-bar {
+    margin-top: 8px;
+    margin-left: 30px;
+    animation-name: barLoad;
+    animation-duration: .4s;
+    animation-fill-mode: both;
+    animation-timing-function: cubic-bezier(0.6, 0.2, 0.1, 1);
+    transform-origin: left;
+}
+
+.bar {
+    height: 4px;
+    border-radius: 2px;
+    width: 100%;
+    background-color: #94c11f;
+}
+
+.border {
+    height: 1px;
+    width: 100%;
+    background-color: #aaaaaa;
+    padding: 0px 0px;
+    margin-bottom: 0px;
+    margin-left: 0px;
+}
+
+
+@keyframes revealLeaders{
+    from{
+/*        transform: scale(1.5,1.5) translateX(-200px);*/
+        opacity: 0.8;
+    }
+    to{
+        /*  transform: none;*/
+        opacity: 1;
+    }
+}
+
+@keyframes barLoad{
+    from{
+        transform: scaleX(0);
+    }
+    to{
+        transform: scaleX(1)
+    }
+}
