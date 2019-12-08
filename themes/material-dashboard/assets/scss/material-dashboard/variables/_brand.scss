@@ -1,0 +1,20 @@
+// Bootstrap brand color customization
+
+
+/*     brand Colors              */
+$echoctf-black: #222222;
+$echoctf-green: #94c11f;
+//$echoctf-green-light: #dedc00;
+$echoctf-green-dark: #688816;
+$body-bg: $grey-300 !default;
+$body-color: $grey-700 !default;
+
+$brand-primary:              $echoctf-green !default;
+$brand-primary-dark:        $echoctf-green-dark !default;
+$brand-info:                 $cyan-500 !default;
+$brand-success:              $green-500 !default;
+$brand-warning:              $orange-500 !default;
+$brand-danger:               $red-500 !default;
+$brand-rose:                 $pink-500 !default;
+$brand-inverse:              $black-color !default;
+
