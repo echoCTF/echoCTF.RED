@@ -42,7 +42,7 @@ use Yii;
  */
 class Target extends \yii\db\ActiveRecord
 {
-    public $total_treasures,$total_findings,$player_findings,$player_treasures;
+    public $total_treasures,$total_findings,$player_findings,$player_treasures,$player_treasure_points,$player_finding_points;
 
     /**
      * {@inheritdoc}
@@ -200,9 +200,16 @@ class Target extends \yii\db\ActiveRecord
     {
       $sum_points=0;
       foreach($this->treasures as $tr)
+      {
+//        echo "t ",$tr->id," ",$tr->points,"\n";
         $sum_points+=$tr->points;
+      }
       foreach($this->findings as $tr)
+      {
+//        echo "f ",$tr->id," ",$tr->points,"\n";
         $sum_points+=$tr->points;
+      }
+//        die(var_dump($sum_points));
       return $sum_points;
     }
 

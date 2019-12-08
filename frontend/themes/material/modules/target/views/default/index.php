@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\widgets\ListView;
 use rce\material\widgets\Card;
-
+//die(var_dump($userTarget));
 $this->title = Yii::$app->sys->event_name .' - Target: '.$target->name;
 #$this->pageDescription=CHtml::encode($target->purpose);
 #$this->pageImage=Yii::app()->getBaseUrl(true)."/images/targets/".$target->name.".png";
@@ -13,6 +13,7 @@ $this->registerCssFile("@web/css/scores.css", [
     'depends' => [\yii\bootstrap\BootstrapAsset::className()],
     'media' => 'screen',
 ], 'scores-theme');
+$percentage=(($userTarget->player_findings+$userTarget->player_treasures)*100)/($userTarget->total_treasures+$userTarget->total_findings);
 ?>
 
 <div class="target-index">
@@ -33,8 +34,11 @@ $this->registerCssFile("@web/css/scores.css", [
             Card::end(); ?>
           </div>
           <div class="col-lg-4 col-md-6 col-sm-6">
-            <div  style="line-height: 1; font-size: 13vw; vertical-align: bottom;text-align: center;">
-              vs
+            <div  style="line-height: 1; font-size: 12vw; vertical-align: bottom;text-align: center;">
+              <?=$percentage==100 ? '<i class="material-icons" style="font-size: 10vw">done_all</i>':'&#8800;'?>
+            </div>
+            <div class="progress">
+                <div class="progress-bar <?=$percentage==100 ? 'bg-success':'bg-danger'?>" style="width: <?=$percentage?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><?=$percentage==100 ? '#Headshot': number_format($percentage).'%'?></div>
             </div>
           </div>
           <div class="col-lg-4 col-md-6 col-sm-6">
@@ -47,9 +51,8 @@ $this->registerCssFile("@web/css/scores.css", [
                 'title'=>Html::encode(Yii::$app->user->identity->username)." / ".long2ip(Yii::$app->user->identity->profile->last->vpn_local_address),
                 'footer'=>sprintf('<div class="stats">%s</div>',Html::encode(Yii::$app->user->identity->profile->bio)),
             ]);
-            echo "<p class='text-primary '><i class='material-icons'>flag</i> ", count($target->treasures)," / ";
-            echo "<i class='material-icons'>whatshot</i> ", count($target->findings),"<br/>",number_format($target->points)," pts<br/>";
-            echo '<i style="font-size: 0.898em;" class="fa fa-hashtag" aria-hidden="true"></i>Headshot</p>';
+            echo "<p class='text-primary '><i class='material-icons'>flag</i> ", $userTarget->player_treasures," / ";
+            echo "<i class='material-icons'>whatshot</i> ", $userTarget->player_findings,"<br/>",number_format($playerPoints)," pts<br/>";
             Card::end(); ?>
           </div>
 

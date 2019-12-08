@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use app\modules\target\models\Finding;
 
 /**
  * This is the model class for table "player_finding".

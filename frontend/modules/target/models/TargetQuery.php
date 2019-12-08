@@ -5,7 +5,11 @@ use Yii;
 
 class TargetQuery extends \yii\db\ActiveQuery
 {
-
+      public function init()
+      {
+//          $this->andOnCondition([$this->modelClass::tableName() . '.branch_id' => Yii::$app->user->identity->branch_id ]);
+          parent::init();
+      }
      public function payed()
      {
         return $this->andWhere(['status' => 1]);

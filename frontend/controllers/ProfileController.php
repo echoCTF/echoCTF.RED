@@ -13,8 +13,7 @@ class ProfileController extends \yii\web\Controller
 {
     public function actionMe()
     {
-      $profile=$this->findModel(Yii::$app->user->id);
-
+      $profile=Yii::$app->user->identity->profile;
 
       $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
       $playerSpin=$command->bindValue(':player_id',$profile->player_id)->query()->read();
