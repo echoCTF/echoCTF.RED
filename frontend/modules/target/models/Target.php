@@ -3,6 +3,8 @@
 namespace app\modules\target\models;
 
 use Yii;
+use app\models\PlayerTreasure;
+use app\models\PlayerFinding;
 
 /**
  * This is the model class for table "target".
@@ -42,7 +44,14 @@ use Yii;
  */
 class Target extends \yii\db\ActiveRecord
 {
-    public $total_treasures,$total_findings,$player_findings,$player_treasures,$player_treasure_points,$player_finding_points;
+    public  $total_treasures,
+            $total_findings,
+            $player_findings,
+            $player_treasures,
+            $player_treasure_points,
+            $player_finding_points,
+            $ipoctet,
+            $progress;
 
     /**
      * {@inheritdoc}
@@ -151,6 +160,16 @@ class Target extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getTreasures()
+    {
+        return $this->hasMany(Treasure::className(), ['target_id' => 'id']);
+    }
+
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getSpinHistories()
     {
         return $this->hasMany(SpinHistory::className(), ['target_id' => 'id']);
@@ -165,14 +184,6 @@ class Target extends \yii\db\ActiveRecord
       return (int)$command->bindValue(':target_id',$this->id)->queryScalar();
 
         //return $this->hasOne(SpinQueue::className(), ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTreasures()
-    {
-        return $this->hasMany(Treasure::className(), ['target_id' => 'id']);
     }
 
     public function getSchedule()
@@ -264,8 +275,8 @@ class Target extends \yii\db\ActiveRecord
         if(intval(Yii::$app->user->identity->spins)>=intval(Yii::$app->sys->spins_per_day))
           return false; // user is not allowed spins for the day.
 /* XXX FIXME XXX ADD MISSING DETAILS FOR SPINABLE */
-/*        if(intval($this->player_findings)==0 && intval($this->player_treasures)==0 && Yii::$app->user->identity->profile->last->vpn_local_address===NULL)
-          return false;*/
+        if(intval($this->player_findings)==0 && intval($this->player_treasures)==0 && Yii::$app->user->identity->profile->last->vpn_local_address===NULL)
+          return false;
         return true;
     }
     public static function find()

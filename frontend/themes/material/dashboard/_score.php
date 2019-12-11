@@ -1,7 +1,7 @@
-<div class="leader" >
+<div class="leader <?=intval(Yii::$app->user->id)===intval($model->player_id) ? "bg-dark text-primary": ""?>" >
     <div class="border"></div>
     <div class="leader-wrap">
-      <div class="leader-place"><?=intval($model->rank->id);?>.</div>
+      <div class="leader-place"><?=$model->rank->ordinalPlace;?>.</div>
       <div class="leader-name"><?=$model->player->profile->link?></div>
       <div class="leader-score_title"><?=number_format($model->points);?></div>
     </div>

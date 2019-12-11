@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Url;
+use yii\widgets\Pjax;
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -21,32 +22,41 @@ use yii\helpers\Url;
           </button>
           <div class="collapse navbar-collapse justify-content-end">
             <?php if(!Yii::$app->user->isGuest):?>
-            <form class="navbar-form">
-              <div class="input-group no-border">
-                <input type="text" value="" class="form-control" placeholder="ETSCTF_FLAG">
-                <button type="submit" class="btn btn-white btn-round btn-just-icon">
-                  <i class="material-icons">flag</i>
-                  <div class="ripple-container"></div>
-                </button>
-              </div>
-            </form>
-          <?php endif; /*END OF FLAG FORM*/?>
+              <?php Pjax::begin(['id'=>'form-claim','formSelector'=>'#claim','enablePushState' => false]);?>
+              <?=$this->render('@app/modules/target/views/default/claim');?>
+              <?php Pjax::end();?>
+
+            <?php endif; /*END OF FLAG FORM*/?>
             <ul class="navbar-nav">
               <?php if(Yii::$app->user->isGuest):?>
                 <li class="nav-item">
                   <?=Html::a('Login',['/site/login'],['class'=>'nav-link'])?>
                 </li>
               <?php else: ?>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">
-                      <i class="material-icons">notifications</i>
-                      <?php if(count(Yii::$app->user->identity->pendingNotifications)>0):?><span class="notification"><?=count(Yii::$app->user->identity->pendingNotifications)?></span><?php endif;?>
-                      <p class="d-lg-none d-md-block">Pending Notifications</p>
-                    </a>
-                  </li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false">
+                    <?php if(count(Yii::$app->user->identity->pendingHints)>0):?><i class="fas fa-lightbulb text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingHints)?></span><?php else:?><i class="fas fa-lightbulb" style="font-size: 2em;"></i><?php endif;?>
+                    <p class="d-lg-none d-md-block">
+                      Some Actions
+                    </p>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHintsDropDown" id="hintsMenu">
+                  </div>
+                </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link" href="/profile/notifications" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false">
+                    <?php if(count(Yii::$app->user->identity->pendingNotifications)>0):?><i class="fas fa-bell text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingNotifications)?></span><?php else:?><i class="fas fa-bell" style="font-size: 2em;"></i><?php endif;?>
+                    <p class="d-lg-none d-md-block">
+                      Some Actions
+                    </p>
+                  </a>
+                  <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" id="notificationsMenu">
+                  </div>
+                </li>
               <li class="nav-item dropdown">
                 <a class="nav-link" href="#" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="material-icons">person</i>
+                  <i class="fas fa-user" style="font-size: 2em;"></i>
                   <p class="d-lg-none d-md-block">
                     Account
                   </p>
@@ -59,10 +69,10 @@ use yii\helpers\Url;
                     <?php
                     if(!Yii::$app->user->isGuest)
                     {
-                      echo Html::beginForm(['/site/logout'], 'post');
+                      echo Html::beginForm(['/site/logout'], 'post',['id'=>'logout','pjax-data'=>"0"]);
                       echo Html::submitButton(
                           'Logout (' . Yii::$app->user->identity->username . ')',
-                          ['class' => 'btn btn-link logout']
+                          ['class' => 'btn btn-link logout','pjax-data'=>"0",'id'=>'logoutButton']
                       );
                       echo Html::endForm();
                     }

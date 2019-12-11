@@ -57,14 +57,14 @@ $this->registerCssFile("@web/css/scores.css", [
             </ul>
             <br/>
             <hr/>
-            <ul class="nav nav-list">
-                <li class="nav-header"><h4>Activity</h4></li>
-                <li><span><strong><i class="glyphicon glyphicon-signal"></i> Current Rank</strong></span> <span class="pull-right"><?=number_format($profile->rank->id)?></span></li>
-                <li><span><strong><i class="glyphicon glyphicon-user"></i> Level <?=intval($profile->experience->id)?></strong></span> <span class="pull-right"><?=$profile->experience->name?></span></li>
-                <li><span><strong><i class="glyphicon glyphicon-list"></i> Points</strong></span> <span class="pull-right"><?=number_format($profile->score->points)?></span></li>
-                <li><span><strong><i class="glyphicon glyphicon-screenshot"></i> Headshosts</strong></span> <span class="pull-right"><?=$profile->headshotsCount?></span></li>
-                <li><span><strong><i class="glyphicon glyphicon-flag"></i> Flags</strong></span> <span class="pull-right"><?php echo count($profile->owner->playerTreasures);?></span></li>
-                <li><span><strong><i class="glyphicon glyphicon-fire"></i> Findings</strong></span> <span class="pull-right"><?php echo count($profile->owner->playerFindings);?></span></li>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item"><h4>Activity</h4></li>
+                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-signal"></i> Current Rank</strong> <?=$profile->rank->ordinalPlace?> place</li>
+                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-user"></i> Level <?=intval($profile->experience->id)?></strong> <span class="pull-right"><?=$profile->experience->name?></span></li>
+                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-list"></i> Points</strong> <span class="pull-right"><?=number_format($profile->score->points)?></span></li>
+                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-skull"></i> Headshosts</strong> <span class="pull-right"><?=$profile->headshotsCount?></span></li>
+                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-flag"></i> Flags</strong> <span class="pull-right"><?php echo count($profile->owner->playerTreasures);?></span></li>
+                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo count($profile->owner->playerFindings);?></span></li>
             </ul>
         </div>
         <!--/col-3-->
@@ -73,11 +73,6 @@ $this->registerCssFile("@web/css/scores.css", [
             <ul class="nav nav-tabs" id="myTab">
                 <li class="active"><a href="#activity" data-toggle="tab">Activity</a></li>
                 <li><a href="#progress" data-toggle="tab">Progress</a></li>
-                <li><a href="#badges" data-toggle="tab">Badges</a></li>
-<?php if(Yii::$app->sys->player_profile!==false && Yii::$app->user->id==$profile->player_id):?>
-                <li><a href="#account-settings" data-toggle="tab">Account settings</a></li>
-                <li><a href="#profile-settings" data-toggle="tab">Profile settings</a></li>
-<?php endif;?>
             </ul>
 
             <div class="tab-content">
@@ -86,7 +81,7 @@ $this->registerCssFile("@web/css/scores.css", [
                       <?php
                       Pjax::begin();
                       echo ListView::widget([
-                          'id'=>'target-activity',
+                          'id'=>'player-activity',
                           'dataProvider' => $streamProvider,
                           //'tableOptions'=>['class'=>'table table-striped'],
                           'summary'=>'<br/>',
@@ -143,95 +138,13 @@ $this->registerCssFile("@web/css/scores.css", [
                                   sprintf('<abbr title="Headshot"><i class="glyphicon glyphicon-screenshot"></i></abbr>') : "";
                                 }
                       ],
+
                     ],
                   ]);
                   ?>
-<?php
-/*$this->widget('bootstrap.widgets.TbGridView', array(
-	'id' => 'targets-grid',
-	'htmlOptions'=>array('class'=>'span8 col-sm'),
-	'type'=> 'hover',
-	'dataProvider' => new CActiveDataProvider( $profile->owner->progress, array('pagination'=>false) ),
-	'filter' => null,
-	'summaryText'=>'',
-  'enableSorting' => false,
-	'columns' => array(
-		[
-			'type'=>'raw',
-			'header'=>false,
-      'value'=>function($data){return sprintf("<b>%s <small>%s</small></b>",$data->name,$data->ipoctet);}
-		],
-    [
-					'header'=>false,
-					'type'=>'raw',
-					'value'=>function($data){
-                      return sprintf('<abbr title="Flags"><i class="glyphicon glyphicon-large icon-flag"></i></abbr> %d of %d',$data->player_treasures,$data->total_treasures);
-                      }
-		],
-
-    [
-					'header'=>false,
-					'type'=>'raw',
-          'value'=>function($data){
-                      return sprintf('<abbr title="Services"><i class="glyphicon glyphicon-fire"></i></abbr> %d of %d',$data->player_findings,$data->total_findings);
-                      }
-		],
-    [
-					'header'=>false,
-					'type'=>'raw',
-          'value'=>function($data){
-                      return ($data->total_treasures==$data->player_treasures && $data->total_findings==$data->player_findings) ?
-                        sprintf('<abbr title="Headshot"><i class="glyphicon glyphicon-screenshot"></i></abbr>') : "";
-                      }
-		],
-    array(
-			'class' => 'bootstrap.widgets.TbButtonColumn',
-			'template' => '{restart} {view} {tweet}',
-			'htmlOptions'=>array('style'=>'text-align: right;'),
-			'buttons' => array(
-				'view' => array(
-					'label'=>'View',
-          'url'=>'Yii::$app->createUrl("target/view", array("id"=>$data->id))',
-				),
-				'restart' => array(
-					'label'=>'Restart',
-					'icon'=>"glyphicon glyphicon-repeat",
-					'click'=>"function(){return confirm('Do you really want to restart  '+$(this).parent().parent().children(':nth-child(1)').text()+'/'+$(this).parent().parent().children(':nth-child(2)').text()+'?');}",
-          'url'=>'Yii::$app->createUrl("target/spin", array("id"=>$data->id))',
-					'visible'=>'$data->spinable',
-				),
-        'tweet' => array(
-					'label'=>"Tweet progress",
-          'imageUrl'=>"/images/twitterBWcircle.png",
-          'options'=>['class'=>'TweetThisImg'],
-          'url'=>function($data){ $tweet=$this->widget('ext.ets.TweetPortlet',['model'=>$data,'type'=>'TargetProgress','profile'=>$this->curProfile,'returnContent'=>true]); return $tweet->_link; },
-				),
-			),
-		) ,
-	),
-));*/?>
-
-
                 </div>
 
-                <div class="tab-pane" id="badges">
-
-                    <h2>Coming soon</h2>
-
-                </div>
                 <!--/tab-pane-->
-<?php if(Yii::$app->user->id==$profile->player_id):?>
-                <div class="tab-pane" id="account-settings">
-                  <?php echo $this->render('_account_settings',['model'=>$accountForm]); ?>
-                </div>
-                <div class="tab-pane" id="profile-settings">
-                  <?php echo $this->render('_profile_settings',['model'=>$profileForm]); ?>
-                </div>
-                <script>
-                $('#Profile_avatar').change(function() { $('#preview_avatar').attr('src','/images/avatars/'+$(this).val()); });
-                </script>
-<?php endif;?>
-
             </div>
             <!--/tab-pane-->
         </div>

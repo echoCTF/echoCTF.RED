@@ -110,16 +110,20 @@ $config = [
                 'target/<id:\d+>' => 'target/default/index',
                 'profile/<id:\d+>' => 'profile/default/index',
                 'dashboard' => 'dashboard/index',
-                'profile/<id:\d+>'=>'profile/index',
-                'profile/me'=>'profile/me',
-                'profile/ovpn'=>'profile/ovpn',
                 'help/faq' => 'help/faq/index',
                 'faq' => 'help/faq/index',
                 'help/rules' => 'help/rule/index',
                 'rules' => 'help/rule/index',
                 'help/instructions' => 'help/instruction/index',
                 'instructions' => 'help/instruction/index',
-//                ['class' => 'yii\rest\UrlRule', 'controller' => 'player'],
+                'claim'=>'target/default/claim',
+                'profile/<id:\d+>'=>'profile/index',
+                'profile/me'=>'profile/me',
+                'profile/ovpn'=>'profile/ovpn',
+                'profile/settings'=>'profile/settings',
+                'profile/notifications'=>'profile/notifications',
+                'profile/hints'=>'profile/hints',
+                //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],
         ],
@@ -132,10 +136,10 @@ if (YII_ENV_DEV) {
 //    $config['bootstrap'][] = 'debug';
 //    $config['modules']['debug'] = [
 //        'class' => 'yii\debug\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
+//    // uncomment the following to add your IP if you are not connecting from localhost.
 //        'allowedIPs' => ['127.0.0.1', '::1'],
 //    ];
-
+//
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',

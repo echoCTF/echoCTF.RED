@@ -27,7 +27,7 @@ class MaterialAsset extends AssetBundle
   // public $baseUrl = '@web/themes/material';
     public $css = [
         '/css/material-dashboard.css',
-        '/css/site.css',
+        '/css/material.css',
     ];
     public $js = [
         'js/core/popper.min.js',
@@ -69,6 +69,7 @@ class MaterialAsset extends AssetBundle
         /*  Google Maps Plugin   */
         // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
         /******/
+        '/js/libechoctf.js',
         // 'js/material.min.js',
         // 'js/superfish.js'
     ];
@@ -77,7 +78,7 @@ class MaterialAsset extends AssetBundle
         'yii\web\JqueryAsset',
         // 'yii\bootstrap\BootstrapAsset',
         // 'yii\bootstrap\BootstrapPluginAsset',
-        'yidas\yii\fontawesome\FontawesomeAsset',
+        //'yidas\yii\fontawesome\FontawesomeAsset',
         'yii\materialicons\AssetBundle'
     ];
 

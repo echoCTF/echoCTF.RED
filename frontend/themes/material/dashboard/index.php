@@ -4,6 +4,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\ListView;
 use rce\material\widgets\Card;
+use app\components\JustGage;
 use yii\widgets\Pjax;
 $this->_fluid="-fluid";
 $this->title = Yii::$app->sys->event_name .' - Dashboard';
@@ -20,13 +21,12 @@ $this->registerCssFile("@web/css/scores.css", [
             <?php Card::begin([
                 'header'=>'header-icon',
                 'type'=>'card-stats',
-                'icon'=>'<i class="material-icons">flag</i>',
-                'color'=>'danger',
-                'title'=>'49/50 <small></small>',
+                'icon'=>'<i class="fa fa-flag"></i>',
+                'color'=>'primary',
+                'title'=>sprintf('%d/%d',$treasureStats->claimed,$treasureStats->total),
                 'subtitle'=>'Claimed/Total Flags',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons text-danger">flag</i>
-                        <a href="#">You have 14 claimed</a>
+                        <i class="material-icons text-danger">flag</i>'.number_format($treasureStats->claims).' total claims
                       </div>',
             ]); Card::end(); ?>
         </div>
@@ -34,12 +34,12 @@ $this->registerCssFile("@web/css/scores.css", [
             <?php Card::begin([
                 'header'=>'header-icon',
                 'type'=>'card-stats',
-                'icon'=>'<i class="material-icons">memory</i>',
-                'color'=>'success',
-                'title'=>'127',
+                'icon'=>'<i class="fa fa-skull"></i>',
+                'color'=>'danger',
+                'title'=>sprintf('%d',$totalHeadshots),
                 'subtitle'=>'Headshots',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons">memory</i> You have 13 headshots
+                        <i class="material-icons">memory</i> You have '.count($userHeadshots).' headshots
                       </div>',
             ]); Card::end(); ?>
         </div>
@@ -47,12 +47,12 @@ $this->registerCssFile("@web/css/scores.css", [
             <?php Card::begin([
                 'header'=>'header-icon',
                 'type'=>'card-stats',
-                'icon'=>'<i class="material-icons">widgets</i>',
-                'color'=>'danger',
-                'title'=>'123,123',
-                'subtitle'=>'Points',
+                'icon'=>'<i class="fas fa-server"></i>',
+                'color'=>'warning',
+                'title'=>\app\modules\target\models\Target::find()->active()->count(),
+                'subtitle'=>'Targets',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons">memory</i> You have 12300 points
+                        <i class="material-icons">memory</i> '.number_format($totalPoints).' Total points
                       </div>',
             ]); Card::end(); ?>
         </div>
@@ -60,12 +60,12 @@ $this->registerCssFile("@web/css/scores.css", [
             <?php Card::begin([
                 'type'=>'card-stats',
                 'header'=>'header-icon',
-                'icon'=>'<i class="fa fa-twitter"></i>',
+                'icon'=>'<i class="fas fa-user-secret"></i>',
                 'color'=>'info',
-                'title'=>'+245',
-                'subtitle'=>'Followers',
+                'title'=>\app\models\Player::find()->active()->count(),
+                'subtitle'=>'Users',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons">update</i> Just Updated
+                        <i class="material-icons">update</i> '.\app\models\Player::find()->active()->with_score()->count().' with score
                       </div>',
             ]); Card::end(); ?>
         </div>
@@ -73,61 +73,130 @@ $this->registerCssFile("@web/css/scores.css", [
 
 
     <div class="row">
+      <div class="col-sm-8">
+      <?php Pjax::begin(['id'=>'target-listing','enablePushState'=>false]);?>
       <?php
        echo GridView::widget([
       		'id'=>'target-list',
           'pager'=>[
-            'options'=>['class'=>'pagination'],
-            'pageCssClass'=>'page-item',
-            'linkOptions'=>['class'=>'page-link'],
+            'class'=>'yii\bootstrap4\LinkPager',
+            'options'=>['id'=>'target-pager','class'=>'align-middle'],
+            'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+            'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+            'maxButtonCount'=>3,
+            'disableCurrentPageButton'=>true,
+            'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+            'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
           ],
-          'options'=>['class'=>'card col-sm-8'],
-      		'tableOptions'=>['class'=>'table'],
-          'layout'=>'{summary}<div class="card-body table-responsive">{items}<nav aria-label="Target Navigation">{pager}</nav></div>',
+          'options'=>['class'=>'card'],
+      		'tableOptions'=>['class'=>'table table-xl'],
+          'layout'=>'{summary}<div class="card-body table-responsive">{items}{pager}</div>',
           'dataProvider' => $targetProvider,
       		'summary'=>'<div class="card-header card-header-primary"><h4 class="card-title">Target list</h4><p class="card-category">List of currently available targets</p></div>',
           'columns' => [
             [
-      				'attribute'=>'name',
       				'label'=>'',
+              'contentOptions' => ['class' => 'text-center'],
+              'headerOptions' => ['class' => 'text-center',"style"=>'width: 1.5em'],
               'format'=>'raw',
-              'value'=>function($model){return sprintf('<img src="/images/targets/_%s.png" alt="%s" height="32px" style="max-width: 32px;">',$model->name, $model->fqdn);}
+              'value'=>function($model){return sprintf('<img src="/images/targets/_%s.png" alt="%s" class="img-fluid" style="max-width: 20px;max-heigh:30px">',$model->name, $model->fqdn);}
       			],
       			[
       				'attribute'=>'name',
-      				'header'=>'Target',
+              'label'=>'Target',
       			],
       			[
       				'attribute'=>'ip',
-      				'header'=>'IP',
+      				'label'=>'IP',
+              'headerOptions' => ["style"=>'width: 6vw;'],
       				'value'=>function($model){return long2ip($model->ip);}
       			],
       			[
-      				'attribute'=>'difficultyText',
-      				'header'=>'<abbr title="Difficulty rating">Difficulty</abbr>'
-      			],
-      			[
-      				'header'=>'<center><abbr title="Flags"><i class="fa fa-flag" aria-hidden="true"></i></abbr> / <abbr title="Services"><i class="fa fa-fire" aria-hidden="true"></i></abbr> / <abbr title="Number of users who owned all flags and services: Headshots"><i style="vertical-align: middle;font-size: 1.2em;" class="material-icons">memory</i></abbr></center>',
-      				'format'=>'raw',
-      				//'attribute'=>'formattedExtras'
+      				'attribute'=>'difficulty',
+              'format'=>'raw',
+              'encodeLabel'=>false,
+      				'label'=>'<abbr title="Difficulty rating">Difficulty</abbr>',
+              'contentOptions' => ['class' => 'd-none d-xl-table-cell'],
+              'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell'],
               'value'=>function($model){
-                $scheduled=$ret="";
-                if(intval($model->active)===1 && $model->status==='powerdown')
-                  $scheduled=sprintf('<abbr title="Scheduled to powedown at %s"><i class="glyphicon glyphicon-hand-down"></i></abbr>',$model->scheduled_at);
-                elseif(intval($model->active)===0  && $model->status==='powerup' )
-                  $scheduled=sprintf('<abbr title="Scheduled to powerup %s"><i class="glyphicon glyphicon-hand-up"></i></abbr>',$model->scheduled_at);
-
-                if($model->rootable==1)
-                  $ret=sprintf('<abbr title="Target is rootable"><i style="font-size: 0.898em;" class="fa fa-hashtag" aria-hidden="true"></i></abbr> /');
-                return sprintf("<center>%s <abbr title='Flags'><i class='material-icons'>flag</i>%d</abbr> / <abbr title='Service'><i class='material-icons'>whatshot</i>%d</abbr> / <abbr title='Headshots'><i class='material-icons'>memory</i>%d</abbr> %s</center>",$ret,count($model->treasures),count($model->findings),count($model->getHeadshots()),$scheduled);
-
-              }
+                $progress=($model->difficulty*20);
+                $color="";
+                switch($model->difficulty)
+                {
+                  case 0:
+                    $progress=($model->difficulty*20)+1;
+                    $bgcolor="";
+                    break;
+                  case 1:
+                    $bgcolor='bg-info';
+                    break;
+                  case 2:
+                    $bgcolor="bg-primary";
+                    break;
+                  case 3:
+                    $bgcolor="bg-warning";
+                    break;
+                  case 4:
+                    $bgcolor="bg-danger";
+                    break;
+                  case 5:
+                  default:
+                }
+                return '<center>'.JustGage::widget(['id'=>$model->name.'-'.$model->ip,"htmlOptions"=>['style'=>"width:50px; height:40px"],'options'=>['relativeGaugeSize'=>true,'textRenderer'=>'function (val) {return "";}','min'=>0,'max'=>5,'value'=>$model->difficulty,/*'title'=>$model->difficultyText*/]]).'</center>';
+              },
       			],
+            [
+      				'attribute'=>'rootable',
+              'format'=>'raw',
+              'headerOptions' => ['class' => 'text-center',"style"=>'width: 4rem'],
+              'contentOptions' => ['class' => 'text-center'],
+              'encodeLabel'=>false,
+              'label'=>'<abbr title="Target rootable or not?"><i class="fa fa-hashtag" aria-hidden="true"></i></abbr>',
+              'value'=>function($model){return intval($model->rootable)==0 ? '':'<abbr title="Rootable"><i class="fa fa-hashtag"></i></abbr>';},
+      			],
+            [
+              'format'=>'raw',
+              'encodeLabel'=>false,
+              'headerOptions' => ["style"=>'width: 4rem','class' => 'text-center'],
+              'contentOptions' => ['class' => 'text-center'],
+      				'label'=>'<abbr title="Services"><i class="fa fa-fire" aria-hidden="true"></i></abbr>',
+              'attribute'=>'total_findings',
+              'value'=>function($model) { return '<i class="fas fa-fire"></i> '.count($model->findings); },
+      			],
+            [
+              'format'=>'raw',
+              'encodeLabel'=>false,
+              'headerOptions' => ["style"=>'width: 4rem','class' => 'text-center'],
+              'contentOptions' => ['class' => 'text-center'],
+      				'label'=>'<abbr title="Flags"><i class="fa fa-flag" aria-hidden="true"></i></abbr>',
+              'attribute'=>'total_treasures',
+              'value'=>function($model) { return '<i class="fas fa-flag"></i> '.count($model->treasures); },
+      			],
+            [
+              'format'=>'raw',
+              'encodeLabel'=>false,
+              'headerOptions' => ["style"=>'width: 4rem','class' => 'text-center'],
+              'contentOptions' => ['class' => 'text-center'],
+              'attribute'=>'headshots',
+      				'label'=>'<abbr title="Number of users who owned all flags and services: Headshots"><i class="fas fa-skull"></i></abbr>',
+              'value'=>function($model) { return '<i class="fas fa-skull"></i> '.count($model->headshots); },
+      			],
+            [
+              'format'=>'raw',
+              'encodeLabel'=>false,
+              'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell'],
+              'contentOptions' => ['class'=>'d-none d-xl-table-cell','width'=>'180'],
+              'attribute'=>'progress',
+              'label'=>'Progress',
+              'value'=>function($model) {
+                return sprintf ('<div class="progress"><div class="progress-bar bg-gradual-progress" style="width: %d%%" role="progressbar" aria-valuenow="%d" aria-valuemin="0" aria-valuemax="100"></div></div>',$model->progress, $model->progress,$model->progress==100 ? '#Headshot': number_format($model->progress).'%');
+                return '<div class="progress"></div>';
+              },
+            ],
       			[
-              //<a  href="/dashboard/delete?id=11" title="Delete" aria-label="Delete" data-confirm="Are you sure you want to delete this item?" data-method="post" data-pjax="0"><i class="material-icons">delete</i></a>
-            //  'class' => 'yii\grid\ActionColumn',
               'class'=> 'rce\material\grid\ActionColumn',
-      				'template'=>'{view} {spin}',
+              'headerOptions' => ["style"=>'width: 4rem'],
+      				'template'=>'{spin} {view}',
       				'buttons' => [
       					'spin' => function ($url,$model) {
       							return Html::a(
@@ -165,15 +234,26 @@ $this->registerCssFile("@web/css/scores.css", [
       		]
           ],
       ]);
-      ?>
+
+      Pjax::end();?>
+      </div>
       <div class="col-sm-4">
         <?php Pjax::begin();
         echo ListView::widget([
             'id'=>'Leaderboard',
+            'pager'=>[
+              'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+              'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+              'maxButtonCount'=>3,
+              'disableCurrentPageButton'=>true,
+              'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+              'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+              'class'=>'yii\bootstrap4\LinkPager',
+            ],
             'options'=>['class'=>'card'],
             'dataProvider' => $scoreProvider,
             'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-            'summary'=>'<div class="card-header card-header-primary"><h4 class="card-title">Top 10</h4><p class="card-category">List of top 10 players by points</p></div>',
+            'summary'=>'<div class="card-header card-header-primary"><h4 class="card-title">Scoreboard</h4><p class="card-category">List of players by points</p></div>',
             'itemOptions' => [
               'tag' => false
             ],
@@ -187,13 +267,18 @@ $this->registerCssFile("@web/css/scores.css", [
     </div><!-- //row -->
     <?php Pjax::begin();
     echo ListView::widget([
-        'id'=>'target-activity',
+        'id'=>'stream',
         'options'=>['class'=>'card'],
         'dataProvider' => $streamProvider,
         'pager'=>[
-          'options'=>['class'=>'pagination'],
-          'pageCssClass'=>'page-item',
-          'linkOptions'=>['class'=>'page-link'],
+          'class'=>'yii\bootstrap4\LinkPager',
+          'options'=>['class'=>'d-flex align-items-end justify-content-between','id'=>'stream-pager'],
+          'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+          'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+          'maxButtonCount'=>3,
+          'disableCurrentPageButton'=>true,
+          'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+          'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
         ],
         'layout'=>'{summary}<div class="card-body">{items}</div><div class="card-footer">{pager}</div>',
         'summary'=>'<div class="card-header card-header-primary"><h4 class="card-title">Activity Stream</h4><p class="card-category">Latest activity on the platform</p></div>',

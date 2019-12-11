@@ -10,12 +10,11 @@ use yii\bootstrap\ActiveForm;
 /* @var $model app\models\Challenge */
 $this->title = Yii::$app->sys->event_name .' Challenges / '.Html::encode($model->name).' (ID#'.$model->id.')';
 $this->title = $model->name;
-\yii\web\YiiAsset::register($this);
 ?>
 <div class="challenge-view">
   <div class="body-content">
     <div class="well">
-      <h1><b><?= Html::encode ( $model->name ) . ' (ID#'.$model->id.')'?></b></h1>
+      <h2><b><?= Html::encode ( $model->name ) . ' (ID#'.$model->id.')'?></b></h2>
       <h4><b>Category:</b> <?=Html::encode($model->category);?></h4>
       <h4><b>Difficulty:</b> <?=Html::encode($model->difficulty)?></h4>
       <p><?=$model->description;?></p>

@@ -320,10 +320,12 @@ class Player extends ActiveRecord implements IdentityInterface
   		return $targets;
     }
 
-    public static function createQuery()
+/* XXXREMOVEXXX
+   public static function createQuery()
     {
       return new TargetQuery(['modelClass' => get_called_class()]);
     }
+*/
     public function getNotifications()
     {
         return $this->hasMany(Notification::className(), ['player_id' => 'id']);
@@ -333,5 +335,18 @@ class Player extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Notification::className(), ['player_id' => 'id'])->pending();
     }
 
+    public function getPlayerHints()
+    {
+        return $this->hasMany(PlayerHint::className(), ['player_id' => 'id']);
+    }
+    public function getPendingHints()
+    {
+        return $this->hasMany(PlayerHint::className(), ['player_id' => 'id'])->pending();
+    }
+
+    public static function find()
+    {
+        return new PlayerQuery(get_called_class());
+    }
 
 }

@@ -5,10 +5,8 @@ $this->title = Yii::$app->sys->event_name.' - FAQ';
 ?>
 <div class="faq-index">
   <div class="body-content">
-    <h2>
-      <b><?= Html::encode($this->title)?></b>
-      <span style="display: block;"><small clas="text-muted">Frequently Asked questions about the platform</small></span>
-    </h2>
+    <h2><?= Html::encode($this->title)?></h2>
+      Frequently Asked questions about the platform
     <hr />
     <?php echo ListView::widget([
         'dataProvider' => $dataProvider,

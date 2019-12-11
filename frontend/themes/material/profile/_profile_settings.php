@@ -26,7 +26,6 @@ use yii\widgets\ActiveForm;
 ?>
 
 <div class="profile-form">
-
     <?php $form = ActiveForm::begin(['id'=>'profile-form']); ?>
     <?= $form->field($model, 'visibility')->dropDownList($model->visibilities,['prompt'=>'Select your profile visibility'])->Label('Visibility')->hint('Select the desired visibility setting for your profile')?>
 		<?= $form->field($model, 'country')->dropDownList($model->visibilities,['prompt'=>'Select your profile visibility'])->Label('Visibility')->hint('Select the desired visibility setting for your profile')?>
@@ -45,9 +44,10 @@ use yii\widgets\ActiveForm;
 
 
     <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton(Yii::t('app', 'Update Profile'), ['class' => 'btn btn-primary pull-right']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
 
+    <div class="clearfix"></div>
 </div>

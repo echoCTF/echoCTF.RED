@@ -118,4 +118,13 @@ class Hint extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Player::className(), ['id' => 'player_id'])->viaTable('player_hint', ['hint_id' => 'id']);
     }
+
+    /**
+     * {@inheritdoc}
+     * @return HintQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new HintQuery(get_called_class());
+    }
 }

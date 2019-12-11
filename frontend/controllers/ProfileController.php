@@ -11,6 +11,13 @@ use yii\data\SqlDataProvider;
 
 class ProfileController extends \yii\web\Controller
 {
+    public function actions()
+    {
+      $actions = parent::actions();
+      $actions['notifications']['class'] = 'app\actions\profile\NotificationsRestAction';
+      $actions['hints']['class'] = 'app\actions\profile\HintsRestAction';
+      return $actions;
+    }
     public function actionMe()
     {
       $profile=Yii::$app->user->identity->profile;
@@ -29,44 +36,30 @@ class ProfileController extends \yii\web\Controller
           ]
         ]);
 
-        $profileForm=$profile;
-        $profileForm->scenario='me';
-        $accountForm=$profile->owner;
-        $accountForm->scenario='profile';
-        $accountForm->password=null;
         $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM (SELECT t.*,inet_ntoa(t.ip) as ipoctet,count(distinct t2.id) as total_treasures,count(distinct t4.treasure_id) as player_treasures, count(distinct t3.id) as total_findings, count(distinct t5.finding_id) as player_findings FROM target AS t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING player_treasures>0 or player_findings>0 ORDER BY t.ip,t.fqdn,t.name) as tt'
         , [':player_id' => $profile->player_id])->queryScalar();
 
-
-        $targetProgressProvider = new SqlDataProvider([
-            'sql' => 'SELECT t.*,inet_ntoa(t.ip) as ipoctet,count(distinct t2.id) as total_treasures,count(distinct t4.treasure_id) as player_treasures, count(distinct t3.id) as total_findings, count(distinct t5.finding_id) as player_findings FROM target AS t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING player_treasures>0 or player_findings>0 ORDER BY t.ip,t.fqdn,t.name',
-            'params' => [':player_id' => $profile->player_id],
-            'totalCount' => $count,
+        $userTargets=Target::findBySql('SELECT t.*,inet_ntoa(t.ip) as ipoctet,count(distinct t2.id) as total_treasures,count(distinct t4.treasure_id) as player_treasures, count(distinct t3.id) as total_findings, count(distinct t5.finding_id) as player_findings FROM target AS t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING player_treasures>0 or player_findings>0 ORDER BY t.ip,t.fqdn,t.name')
+        ->params([':player_id'=>\Yii::$app->user->id]);
+        $targetProgressProvider = new ActiveDataProvider([
+            'query' => $userTargets,
             'pagination' => [
-                'pageSize' => 20,
-            ],
-            'sort' => [
-                'attributes' => [
-                    'name',
-                    'fqdn',
-                    'ip',
-                ],
-            ],
-        ]);
-        //$targetProgressProvider = Target::find()->player_progress(Yii::$app->user->id);
+                'pageSizeParam'=>'target-perpage',
+                'pageParam'=>'target-page',
+                'pageSize' => 10,
+            ]
+          ]);
 
         return $this->render('index',[
           'profile'=>$profile,
           'playerSpin'=>$playerSpin,
           'streamProvider'=>$streamProvider,
-          'accountForm'=>$accountForm,
-          'profileForm'=>$profileForm,
           'targetProgressProvider'=>$targetProgressProvider
         ]);
     }
     public function actionIndex($id)
     {
-      if($id==Yii::$app->user->id)
+      if(intval($id)==intval(Yii::$app->user->id))
         return $this->redirect(['/profile/me']);
 
       $profile=$this->findModel($id);
@@ -162,7 +155,20 @@ class ProfileController extends \yii\web\Controller
       return Yii::$app->response->send();
 
   	}
-
+    public function actionSettings()
+    {
+      $profile=Yii::$app->user->identity->profile;
+      $profileForm=$profile;
+      $profileForm->scenario='me';
+      $accountForm=$profile->owner;
+      $accountForm->scenario='profile';
+      $accountForm->password=null;
+      return $this->render('settings',[
+        'profile'=>$profile,
+        'accountForm'=>$accountForm,
+        'profileForm'=>$profileForm
+      ]);
+    }
     /**
      * Finds the Profile model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

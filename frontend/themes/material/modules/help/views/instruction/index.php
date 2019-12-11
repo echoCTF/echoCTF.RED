@@ -5,10 +5,8 @@ $this->title = Yii::$app->sys->event_name.' - Instructions';
 ?>
 <div class="instruction-index">
   <div class="body-content">
-  <h2>
-    <b><?= Html::encode($this->title)?></b>
-    <span style="display: block;"><small clas="text-muted">Instructions on connecting and asking for help</small></span>
-  </h2>
+  <h2><?= Html::encode($this->title)?></h2>
+    Instructions on connecting and getting help
   <hr />
   <?php echo ListView::widget([
       'dataProvider' => $dataProvider,

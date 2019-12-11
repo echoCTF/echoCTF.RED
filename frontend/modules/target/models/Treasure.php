@@ -134,4 +134,9 @@ class Treasure extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TreasureAction::className(), ['treasure_id' => 'id']);
     }
+
+    public static function find()
+    {
+        return new TreasureQuery(get_called_class());
+    }
 }

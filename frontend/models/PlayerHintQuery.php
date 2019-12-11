@@ -3,15 +3,15 @@
 namespace app\models;
 
 /**
- * This is the ActiveQuery class for [[Notification]].
+ * This is the ActiveQuery class for [[PlayerHint]].
  *
- * @see Notification
+ * @see PlayerHint
  */
-class NotificationQuery extends \yii\db\ActiveQuery
+class PlayerHintQuery extends \yii\db\ActiveQuery
 {
     public function pending()
     {
-        return $this->andWhere('[[archived]]=0');
+        return $this->andWhere('[[status]]=1');
     }
     public function forPlayer($player_id)
     {
@@ -19,12 +19,13 @@ class NotificationQuery extends \yii\db\ActiveQuery
     }
     public function forAjax()
     {
-        return $this->select(['id','title','created_at','archived']);
+        return $this->select(['player_hint.*','hint.title']);
+
     }
 
     /**
      * {@inheritdoc}
-     * @return Notification[]|array
+     * @return PlayerHint[]|array
      */
     public function all($db = null)
     {
@@ -33,7 +34,7 @@ class NotificationQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return Notification|array|null
+     * @return PlayerHint|array|null
      */
     public function one($db = null)
     {
