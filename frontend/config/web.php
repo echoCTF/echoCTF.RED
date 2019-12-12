@@ -124,6 +124,8 @@ $config = [
                 'profile/notifications'=>'profile/notifications',
                 'profile/hints'=>'profile/hints',
                 'register'=>'site/register',
+                'site/request-password-reset'=>'site/request-password-reset',
+                'site/resend-verification-email'=>'site/resend-verification-email',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],

@@ -55,7 +55,17 @@ class SignupForm extends Model
         $player->setPassword($this->password);
         $player->generateAuthKey();
         $player->generateEmailVerificationToken();
-        return $player->save() && $this->sendEmail($player);
+        if($player->save())
+        {
+          $playerSsl=new PlayerSsl();
+          $playerSsl->player_id=$player->id;
+          $playerSsl->save();
+          $playerSsl->refresh();
+          $playerSsl->generate();
+          if($playerSsl->save())
+            $playerSsl->refresh();
+        }
+        return $this->sendEmail($player);
 
     }
 

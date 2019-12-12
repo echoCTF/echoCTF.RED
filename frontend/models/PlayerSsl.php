@@ -67,6 +67,49 @@ class PlayerSsl extends \yii\db\ActiveRecord
     }
 
     /**
+     * Generate SSL keys for this model
+     */
+     public function generate() {
+         $player=$this->Player;
+         Yii::$app->params['dn']['commonName'] = $player->username;
+         Yii::$app->params['dn']['emailAddress']=$player->email;
+         // Generate a new private (and public) key pair
+         $privkey = openssl_pkey_new(Yii::$app->params['pkey_config']);
+
+         // Generate a certificate signing request
+         $csr = openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'config'=>__DIR__ . '/../../../config/CA.cnf','encrypt_key'=>false));
+
+         // Generate a self-signed cert, valid for 365 days
+         $tmpCAcert=tempnam("/tmp", "echoCTF-OVPN-CA.crt");
+         $tmpCAprivkey=tempnam("/tmp", "echoCTF-OVPN-CA.key");
+         $CAcert = "file://".$tmpCAcert;
+         $CAprivkey = array("file:///tmp".$tmpCAprivkey,null);
+         file_put_contents($tmpCAprivkey,Sysconfig::findOne('CA.key')->val);
+         file_put_contents($tmpCAcert,Sysconfig::findOne('CA.crt')->val);
+         $x509 = openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256','config'=>__DIR__ . '/../../../config/CA.cnf','x509_extensions'=>'usr_cert'), time() );
+         openssl_csr_export($csr, $csrout);
+         openssl_x509_export($x509, $certout,false);
+         openssl_x509_export($x509, $crtout);
+         openssl_pkey_export($privkey, $pkeyout);
+         unlink($tmpCAcert);
+         unlink($tmpCAprivkey);
+
+         $this->subject=serialize(Yii::$app->params['dn']);
+         $this->csr=$csrout;
+         $this->crt=$crtout;
+         $this->txtcrt=$certout;
+         $this->privkey=$pkeyout;
+     }
+
+     public function getSubjectString()
+     {
+       $subj=unserialize($this->subject);
+       foreach($subj as $key => $val)
+        $subject_arr[]="$key=$val";
+      return implode(", ",$subject_arr);
+     }
+
+    /**
      * {@inheritdoc}
      * @return PlayerSslQuery the active query used by this AR class.
      */
