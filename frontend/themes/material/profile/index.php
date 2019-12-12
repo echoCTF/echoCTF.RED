@@ -144,45 +144,6 @@ $this->_fluid="-flud";
                       return '<div class="progress"></div>';
                     },
                   ],
-            			[
-                    'class'=> 'rce\material\grid\ActionColumn',
-                    'headerOptions' => ["style"=>'width: 5rem'],
-            				'template'=>'{spin} {view}',
-            				'buttons' => [
-            					'spin' => function ($url,$model) {
-            							return Html::a(
-            									'<i class="material-icons large">power_settings_new</i>',
-            									Url::to(['/target/default/spin','id'=>$model->id]),
-            									[
-                                //'class'=>"btn btn-primary btn-round btn-simple btn-xs",
-                                'style'=>"font-size: 1.5em;",
-          											'title' => 'Restart container',
-          											'data-pjax' => '0',
-          											'data-method' => 'POST',
-            									]
-            							);
-            					},
-                      'view' => function ($url,$model) {
-            							return Html::a(
-                            '<i class="material-icons">remove_red_eye</i>',
-            									Url::to(['/target/default/index','id'=>$model->id]),
-            									[
-                                'style'=>"font-size: 1.5em;",
-                                'rel'=>"tooltip",
-      //                          'class'=>"btn btn-primary btn-round btn-simple btn-xs",
-                                'title' => 'View target',
-            										'data-pjax' => '0',
-            									]
-            							);
-            					}
-            			],
-            			'visibleButtons' => [
-                		'spin' => function ($model) {
-            						return $model->spinable;
-            					},
-            			]
-
-            		]
                 ],
             ]);?>
 
