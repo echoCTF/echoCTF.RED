@@ -10,11 +10,10 @@ $this->title = Yii::$app->sys->event_name .' - Profile of '.Html::encode($profil
 //$this->pageDescription=Html::encode(str_replace("\n","",strip_tags($profile->bio)));
 //$this->pageImage=Yii::$app->getBaseUrl(true)."/images/avatars/".$profile->avatar;
 //$this->pageURL=$this->createAbsoluteUrl('/profile/index',array('id'=>$profile->id));
-/*$this->registerCssFile("@web/css/scores.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+$this->registerCssFile("@web/css/scores.css", [
     'media' => 'screen',
 ], 'scores-theme');
-*/
+
 $this->_fluid="-flud";
 
 ?>
@@ -32,7 +31,7 @@ $this->_fluid="-flud";
           <div class="card-body">
             <?php echo GridView::widget([
             		'id'=>'target-list',
-                'summary'=>'<p>Showing targets {begin} through {end} out of {totalCount}</p>',
+                'summary'=>sprintf('<p>Showing targets {begin} through {end} out of {totalCount}. Headshots %d</p>',$profile->headshotsCount),
                 'pager'=>[
                   'class'=>'yii\bootstrap4\LinkPager',
                   'options'=>['id'=>'target-pager','class'=>'align-middle'],
@@ -192,8 +191,29 @@ $this->_fluid="-flud";
       </div>
 
       <div class="col-md-4">
-        <?=$this->render('_card',['profile'=>$profile]);?>
+        <?=$this->render('_card',['profile'=>$profile,'playerSpin'=>$playerSpin]);?>
       </div><!-- // end profile card col-md-4 -->
     </div><!--/row-->
+    <?php echo ListView::widget([
+        'id'=>'stream',
+        'options'=>['class'=>'card'],
+        'dataProvider' => $streamProvider,
+        'pager'=>[
+          'class'=>'yii\bootstrap4\LinkPager',
+          'options'=>['class'=>'d-flex align-items-end justify-content-between','id'=>'stream-pager'],
+          'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+          'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+          'maxButtonCount'=>3,
+          'disableCurrentPageButton'=>true,
+          'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+          'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+        ],
+        'layout'=>'{summary}<div class="card-body">{items}</div><div class="card-footer">{pager}</div>',
+        'summary'=>'<div class="card-header card-header-primary"><h4 class="card-title">Activity Stream</h4><p class="card-category">Latest activity on the platform</p></div>',
+        'itemOptions' => [
+          'tag' => false
+        ],
+        'itemView' => '_stream',
+    ]);?>
   </div><!--//body-content-->
 </div><!--//profile-index-->

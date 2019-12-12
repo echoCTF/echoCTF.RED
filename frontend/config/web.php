@@ -123,6 +123,7 @@ $config = [
                 'profile/settings'=>'profile/settings',
                 'profile/notifications'=>'profile/notifications',
                 'profile/hints'=>'profile/hints',
+                'register'=>'site/register',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],

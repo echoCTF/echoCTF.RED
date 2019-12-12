@@ -1,14 +1,15 @@
 <?php
 
-namespace app\models;
+namespace app\models\forms;
 
 use Yii;
 use yii\base\Model;
+use app\models\Player;
 
 /**
  * LoginForm is the model behind the login form.
  *
- * @property Player|null $user This property is read-only.
+ * @property Player|null $player This property is read-only.
  *
  */
 class LoginForm extends Model
@@ -17,7 +18,7 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
-    private $_user = false;
+    private $_player = false;
 
 
     /**
@@ -44,18 +45,17 @@ class LoginForm extends Model
      */
     public function validatePassword($attribute, $params)
     {
-
         if (!$this->hasErrors()) {
-            $user = $this->getPlayer();
-            if (!$user || !$user->validatePassword($this->password)) {
+            $player = $this->getPlayer();
+            if (!$player || !$player->validatePassword($this->password)) {
                 $this->addError($attribute, 'Incorrect username or password.');
             }
         }
     }
 
     /**
-     * Logs in a user using the provided username and password.
-     * @return bool whether the user is logged in successfully
+     * Logs in a player using the provided username and password.
+     * @return bool whether the player is logged in successfully
      */
     public function login()
     {
@@ -66,16 +66,16 @@ class LoginForm extends Model
     }
 
     /**
-     * Finds user by [[username]]
+     * Finds player by [[username]]
      *
      * @return Player|null
      */
     public function getPlayer()
     {
-        if ($this->_user === false) {
-            $this->_user = Player::findByUsername($this->username);
+        if ($this->_player === false) {
+            $this->_player = Player::findByUsername($this->username);
         }
 
-        return $this->_user;
+        return $this->_player;
     }
 }

@@ -25,9 +25,8 @@ use yii\helpers\Url;
             <?php endif; /*END OF FLAG FORM*/?>
             <ul class="navbar-nav">
               <?php if(Yii::$app->user->isGuest):?>
-                <li class="nav-item">
-                  <?=Html::a('Login',['/site/login'],['class'=>'nav-link'])?>
-                </li>
+                <li class="nav-item"><?=Html::a('Login',['/site/login'],['class'=>'nav-link'])?></li>
+                <li class="nav-item"><?=Html::a('Signup',['/site/register'],['class'=>'nav-link'])?></li>
               <?php else: ?>
                 <li class="nav-item dropdown">
                   <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false">

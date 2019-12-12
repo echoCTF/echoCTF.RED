@@ -68,8 +68,8 @@ class Player extends ActiveRecord implements IdentityInterface
             [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             /* password field rules */
 
-            [['password','confirm_password'], 'string', 'max'=>255],
-            [['password'], 'compare', 'compareAttribute'=>'confirm_password'],
+            [['password','confirm_password'], 'string', 'max'=>255,'on'=>['password_change']],
+            [['password'], 'compare', 'compareAttribute'=>'confirm_password','on'=>['password_change']],
 
 /*            array('activkey','required','on'=>'reset'),
       			array('active','required','on'=>'quick_activation'),
@@ -95,7 +95,7 @@ class Player extends ActiveRecord implements IdentityInterface
           				'message' => 'Another user has already registered with this email address.',
                   'skipOnError'=>true
           		),
-      			array('username, fullname, email, password,confirm_password', 'length', 'max'=>255),
+      			array('username, fullname, email, playerrd,confirm_playerrd', 'length', 'max'=>255),
           	array('created','default','value'=>new CDbExpression('NOW()')),
       			array('academic','boolean'),
           	array('ts','default','value'=>new CDbExpression('NOW()')),
@@ -131,19 +131,19 @@ class Player extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds player by password reset token
+     * Finds player by playerrd reset token
      *
-     * @param string $token password reset token
+     * @param string $token playerrd reset token
      * @return static|null
      */
-    public static function findByPasswordResetToken($token)
+    public static function findByplayerrdResetToken($token)
     {
-        if (!static::isPasswordResetTokenValid($token)) {
+        if (!static::isplayerrdResetTokenValid($token)) {
             return null;
         }
 
         return static::findOne([
-            'password_reset_token' => $token,
+            'playerrd_reset_token' => $token,
             'status' => self::STATUS_ACTIVE,
         ]);
     }
@@ -162,19 +162,19 @@ class Player extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds out if password reset token is valid
+     * Finds out if playerrd reset token is valid
      *
-     * @param string $token password reset token
+     * @param string $token playerrd reset token
      * @return bool
      */
-    public static function isPasswordResetTokenValid($token)
+    public static function isplayerrdResetTokenValid($token)
     {
         if (empty($token)) {
             return false;
         }
 
         $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+        $expire = Yii::$app->params['user.playerrdResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
 
@@ -221,6 +221,7 @@ class Player extends ActiveRecord implements IdentityInterface
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
+        $this->password = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**

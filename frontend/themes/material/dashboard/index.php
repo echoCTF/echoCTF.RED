@@ -9,7 +9,6 @@ use yii\widgets\Pjax;
 $this->_fluid="-fluid";
 $this->title = Yii::$app->sys->event_name .' - Dashboard';
 $this->registerCssFile("@web/css/scores.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
     'media' => 'screen',
 ], 'scores-theme');
 ?>
@@ -187,7 +186,7 @@ $this->registerCssFile("@web/css/scores.css", [
               'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell'],
               'contentOptions' => ['class'=>'d-none d-xl-table-cell','width'=>'180'],
               'attribute'=>'progress',
-              'label'=>'Progress',
+              'label'=>'Your Progress',
               'value'=>function($model) {
                 return sprintf ('<div class="progress"><div class="progress-bar bg-gradual-progress" style="width: %d%%" role="progressbar" aria-valuenow="%d" aria-valuemin="0" aria-valuemax="100"></div></div>',$model->progress, $model->progress,$model->progress==100 ? '#Headshot': number_format($model->progress).'%');
                 return '<div class="progress"></div>';

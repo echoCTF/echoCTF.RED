@@ -259,7 +259,6 @@ class ProfileController extends \yii\web\Controller
       $profileForm=$profile;
       $profileForm->scenario='me';
       $accountForm=$profile->owner;
-//      $accountForm->scenario='profile';
       if(Yii::$app->request->isPost)
       {
         if(Yii::$app->request->post('Profile'))
@@ -276,12 +275,19 @@ class ProfileController extends \yii\web\Controller
 
         if(Yii::$app->request->post('Player'))
         {
-          if ($accountForm->load(Yii::$app->request->post(),'Player')===true && $accountForm->update()!==false)
+          if(trim(Yii::$app->request->post('Player')['password'])!=="")
           {
-            $success[]="Player updated";
+            $accountForm->scenario='password_change';
           }
-          else
-            $errors[]='Failed to update account';
+          if ($accountForm->load(Yii::$app->request->post(),'Player')===true)
+          {
+            $accountForm->setPassword($accountForm->password);
+            $accountForm->confirm_password=$accountForm->password;
+            if($accountForm->update()!==false)
+              $success[]="Player updated";
+            else
+              $errors[]='Failed to update account';
+          }
         }
       }
 
