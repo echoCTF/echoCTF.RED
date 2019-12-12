@@ -1,5 +1,8 @@
 jQuery( document ).ready(function() {
-  $('#Profile_avatar').change(function() { $('#preview_avatar').attr('src','/images/avatars/'+$(this).val()); });
+  $('#profile-avatar').change(function() {
+    if($(this).val()!="")
+      $('#preview_avatar').attr('src','/images/avatars/'+$(this).val());
+  });
 
   /* Fetch Notifications on click without prevent default */
   $('#navbarDropdownMenuLink').on('click',function(){
