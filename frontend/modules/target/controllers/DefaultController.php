@@ -122,8 +122,7 @@ class DefaultController extends Controller
             $PT->save();
             if($treasure->appears!==-1)
             {
-              $treasure->appears--;
-              $treasure->save();
+              $treasure->updateAttributes(['appears' => intval($treasure->appears)-1]);
             }
           }
           $transaction->commit();
