@@ -4,17 +4,18 @@ use yii\helpers\Url;
 use yii\widgets\ListView;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use app\components\JustGage;
 
 $this->title = Yii::$app->sys->event_name .' - Profile of '.Html::encode($profile->owner->username);
 //$this->pageDescription=Html::encode(str_replace("\n","",strip_tags($profile->bio)));
 //$this->pageImage=Yii::$app->getBaseUrl(true)."/images/avatars/".$profile->avatar;
 //$this->pageURL=$this->createAbsoluteUrl('/profile/index',array('id'=>$profile->id));
-$this->registerCssFile("@web/css/scores.css", [
+/*$this->registerCssFile("@web/css/scores.css", [
     'depends' => [\yii\bootstrap\BootstrapAsset::className()],
     'media' => 'screen',
 ], 'scores-theme');
-
-
+*/
+$this->_fluid="-flud";
 
 ?>
 <!-- <center><img src="/images/logo.png" width="60%"/></center>
@@ -22,136 +23,177 @@ $this->registerCssFile("@web/css/scores.css", [
 <div class="profile-index">
   <div class="body-content">
     <div class="row">
-        <div class="col-sm-8">
-            <h1>Profile of <?=Html::encode($profile->owner->username)?> <?=Html::img("/images/flags/shiny/24/".$profile->country.".png",['title'=>$profile->country])?></h1>
-            <p class="lead"><?=Html::encode($profile->bio)?></p>
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header card-header-primary">
+            <h4 class="card-title">Progress</h4>
+            <p class="card-category">Progress of <?=Html::encode($profile->owner->username)?> on targets</p>
+          </div>
+          <div class="card-body">
+            <?php echo GridView::widget([
+            		'id'=>'target-list',
+                'summary'=>'<p>Showing targets {begin} through {end} out of {totalCount}</p>',
+                'pager'=>[
+                  'class'=>'yii\bootstrap4\LinkPager',
+                  'options'=>['id'=>'target-pager','class'=>'align-middle'],
+                  'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                  'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                  'maxButtonCount'=>3,
+                  'disableCurrentPageButton'=>true,
+                  'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                  'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                ],
+            		'tableOptions'=>['class'=>'table table-xl'],
+                'dataProvider' => $targetProgressProvider,
+                'columns' => [
+                  [
+            				'label'=>'',
+                    'contentOptions' => ['class' => 'text-center'],
+                    'headerOptions' => ['class' => 'text-center',"style"=>'width: 1.5em'],
+                    'format'=>'raw',
+                    'value'=>function($model){return sprintf('<img src="/images/targets/_%s.png" alt="%s" class="img-fluid" style="max-width: 20px;max-heigh:30px">',$model->name, $model->fqdn);}
+            			],
+            			[
+            				'attribute'=>'name',
+                    'label'=>'Target',
+            			],
+            			[
+            				'attribute'=>'ip',
+            				'label'=>'IP',
+                    'headerOptions' => ["style"=>'width: 6vw;'],
+            				'value'=>function($model){return long2ip($model->ip);}
+            			],
+            			[
+            				'attribute'=>'difficulty',
+                    'format'=>'raw',
+                    'encodeLabel'=>false,
+            				'label'=>'<abbr title="Difficulty rating">Difficulty</abbr>',
+                    'contentOptions' => ['class' => 'd-none d-xl-table-cell'],
+                    'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell'],
+                    'value'=>function($model){
+                      $progress=($model->difficulty*20);
+                      $color="";
+                      switch($model->difficulty)
+                      {
+                        case 0:
+                          $progress=($model->difficulty*20)+1;
+                          $bgcolor="";
+                          break;
+                        case 1:
+                          $bgcolor='bg-info';
+                          break;
+                        case 2:
+                          $bgcolor="bg-primary";
+                          break;
+                        case 3:
+                          $bgcolor="bg-warning";
+                          break;
+                        case 4:
+                          $bgcolor="bg-danger";
+                          break;
+                        case 5:
+                        default:
+                      }
+                      return '<center>'.JustGage::widget(['id'=>$model->name.'-'.$model->ip,"htmlOptions"=>['style'=>"width:50px; height:40px"],'options'=>['relativeGaugeSize'=>true,'textRenderer'=>'function (val) {return "";}','min'=>0,'max'=>5,'value'=>$model->difficulty,/*'title'=>$model->difficultyText*/]]).'</center>';
+                    },
+            			],
+                  [
+            				'attribute'=>'rootable',
+                    'format'=>'raw',
+                    'headerOptions' => ['class' => 'text-center',"style"=>'width: 4rem'],
+                    'contentOptions' => ['class' => 'text-center'],
+                    'encodeLabel'=>false,
+                    'label'=>'<abbr title="Target rootable or not?"><i class="fa fa-hashtag" aria-hidden="true"></i></abbr>',
+                    'value'=>function($model){return intval($model->rootable)==0 ? '':'<abbr title="Rootable"><i class="fa fa-hashtag"></i></abbr>';},
+            			],
+                  [
+                    'format'=>'raw',
+                    'encodeLabel'=>false,
+                    'headerOptions' => ["style"=>'width: 4rem','class' => 'text-center'],
+                    'contentOptions' => ['class' => 'text-center'],
+            				'label'=>'<abbr title="Services"><i class="fa fa-fire" aria-hidden="true"></i></abbr>',
+                    'attribute'=>'total_findings',
+                    'value'=>function($model) { return sprintf('<i class="fas fa-fire"></i> <small>%d/%d</small>',$model->total_findings,$model->player_findings); },
+            			],
+                  [
+                    'format'=>'raw',
+                    'encodeLabel'=>false,
+                    'headerOptions' => ["style"=>'width: 4rem','class' => 'text-center'],
+                    'contentOptions' => ['class' => 'text-center'],
+            				'label'=>'<abbr title="Flags"><i class="fa fa-flag" aria-hidden="true"></i></abbr>',
+                    'attribute'=>'total_treasures',
+                    'value'=>function($model) { return sprintf('<i class="fas fa-flag"></i> <small>%d/%d</small>',$model->total_treasures,$model->player_treasures); },
+            			],
+                  [
+                    'format'=>'raw',
+                    'encodeLabel'=>false,
+                    'headerOptions' => ["style"=>'width: 4rem','class' => 'text-center'],
+                    'contentOptions' => ['class' => 'text-center'],
+                    'attribute'=>'headshots',
+            				'label'=>'',
+                    'value'=>function($model) { if($model->total_treasures==$model->player_treasures && $model->player_findings==$model->total_findings) return '<i class="fas fa-skull"></i>'; return ""; },
+            			],
+                  [
+                    'format'=>'raw',
+                    'encodeLabel'=>false,
+                    'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell'],
+                    'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
+                    'attribute'=>'progress',
+                    'label'=>'Progress',
+                    'value'=>function($model) {
+                      return sprintf ('<div class="progress"><div class="progress-bar bg-gradual-progress" style="width: %d%%" role="progressbar" aria-valuenow="%d" aria-valuemin="0" aria-valuemax="100"></div></div>',$model->progress, $model->progress,$model->progress==100 ? '#Headshot': number_format($model->progress).'%');
+                      return '<div class="progress"></div>';
+                    },
+                  ],
+            			[
+                    'class'=> 'rce\material\grid\ActionColumn',
+                    'headerOptions' => ["style"=>'width: 5rem'],
+            				'template'=>'{spin} {view}',
+            				'buttons' => [
+            					'spin' => function ($url,$model) {
+            							return Html::a(
+            									'<i class="material-icons large">power_settings_new</i>',
+            									Url::to(['/target/default/spin','id'=>$model->id]),
+            									[
+                                //'class'=>"btn btn-primary btn-round btn-simple btn-xs",
+                                'style'=>"font-size: 1.5em;",
+          											'title' => 'Restart container',
+          											'data-pjax' => '0',
+          											'data-method' => 'POST',
+            									]
+            							);
+            					},
+                      'view' => function ($url,$model) {
+            							return Html::a(
+                            '<i class="material-icons">remove_red_eye</i>',
+            									Url::to(['/target/default/index','id'=>$model->id]),
+            									[
+                                'style'=>"font-size: 1.5em;",
+                                'rel'=>"tooltip",
+      //                          'class'=>"btn btn-primary btn-round btn-simple btn-xs",
+                                'title' => 'View target',
+            										'data-pjax' => '0',
+            									]
+            							);
+            					}
+            			],
+            			'visibleButtons' => [
+                		'spin' => function ($model) {
+            						return $model->spinable;
+            					},
+            			]
+
+            		]
+                ],
+            ]);?>
+
+          </div>
         </div>
-        <div class="col-sm-4">
-            <?php if (!Yii::$app->user->isGuest && Yii::$app->user->id==$profile->player_id && Yii::$app->user->identity->sSL !== NULL):?>
-                <a href="<?=Url::to('profile/me')?>" class="pull-right"><img title="<?=Html::encode($profile->owner->username)?> Avatar" class="img-circle img-responsive" src="/images/avatars/<?=$profile->avatar?>" width="220px"></a>
-                <span class="pull-right"><?php echo Html::a('<b>Download OpenVPN configuration</b>',  array('profile/ovpn'),array('class'=>'btn btn-success btn-small')); ?></span>
-            <?php else:?>
-                <a href="<?=Url::to('profile/index',['id'=>$profile->id])?>" class="pull-right"><img title="<?=Html::encode($profile->owner->username)?> Avatar" class="img-circle img-responsive" src="/images/avatars/<?=$profile->avatar?>" width="220px"></a>
-        		<?php endif;?>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-3">
-            <!--left col-->
+      </div>
 
-            <ul class="nav nav-list">
-                <li class="nav-header"><h4>Profile</h4></li>
-<?php if(Yii::$app->user->id==$profile->player_id):?>
-                <li><strong>Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
-                <li><strong>Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($playerSpin['counter'])?></abbr> / <abbr title="Total Spins"><?=$playerSpin['total']?></abbr></span></li>
-<?php endif;?>
-                <li><strong>Real name</strong> <span class="pull-right"><?=Html::encode($profile->owner->fullname)?></span></li>
-                <li><strong>Country</strong> <span class="pull-right"><?=$profile->country?></span></li>
-                <li><strong>Joined</strong> <span class="pull-right"><?=date("d.m.Y",strtotime($profile->owner->created))?></span></li>
-                <li><strong>Last seen</strong> <span class="pull-right"><?=date("d.m.Y",strtotime($profile->last->on_pui))?></span></li>
-                <?php if (trim($profile->twitter)):?><li><strong>Twitter</strong> <span class="pull-right"><?=Html::a('@'.Html::encode($profile->twitter),"https://twitter.com/".Html::encode($profile->twitter),['target'=>'_blank'])?></span></li><?php endif;?>
-                <?php if (trim($profile->github)):?><li><strong>Github</strong> <span class="pull-right"><?=Html::a(Html::encode($profile->github),"https://github.com/".Html::encode($profile->github),['target'=>'_blank'])?></span></li><?php endif;?>
-                <?php if (trim($profile->discord)):?><li><strong>Discord</strong> <span class="pull-right"><?=Html::encode($profile->discord)?></span></li><?php endif;?>
-                <?php if (trim($profile->htb)):?><li><strong>HTB</strong> <span class="pull-right"><small><?=Html::a("https://hackthebox.eu/profile/".Html::encode($profile->htb),"https://hackthebox.eu/profile/".Html::encode($profile->htb),['target'=>'_blank'])?></small></span></li><?php endif;?>
-
-            </ul>
-            <br/>
-            <hr/>
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item"><h4>Activity</h4></li>
-                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-signal"></i> Current Rank</strong> <?=$profile->rank->ordinalPlace?> place</li>
-                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-user"></i> Level <?=intval($profile->experience->id)?></strong> <span class="pull-right"><?=$profile->experience->name?></span></li>
-                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-list"></i> Points</strong> <span class="pull-right"><?=number_format($profile->score->points)?></span></li>
-                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-skull"></i> Headshosts</strong> <span class="pull-right"><?=$profile->headshotsCount?></span></li>
-                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-flag"></i> Flags</strong> <span class="pull-right"><?php echo count($profile->owner->playerTreasures);?></span></li>
-                <li class="list-group-item d-flex justify-content-between align-items-center"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo count($profile->owner->playerFindings);?></span></li>
-            </ul>
-        </div>
-        <!--/col-3-->
-        <div class="col-sm-9">
-
-            <ul class="nav nav-tabs" id="myTab">
-                <li class="active"><a href="#activity" data-toggle="tab">Activity</a></li>
-                <li><a href="#progress" data-toggle="tab">Progress</a></li>
-            </ul>
-
-            <div class="tab-content">
-                <div class="tab-pane active" id="activity">
-                    <div class="table-responsive">
-                      <?php
-                      Pjax::begin();
-                      echo ListView::widget([
-                          'id'=>'player-activity',
-                          'dataProvider' => $streamProvider,
-                          //'tableOptions'=>['class'=>'table table-striped'],
-                          'summary'=>'<br/>',
-                          'itemOptions' => [
-                            'tag' => false
-                          ],
-                          'itemView' => '_stream',
-                          'pager' => [
-
-                          ],
-                      ]);
-                      Pjax::end();
-                      ?>
-                        <!--<table class="table table-hover">
-                        </table>-->
-                    </div><!--/table-resp-->
-
-                </div>
-                <!--/tab-pane-->
-
-                <div class="tab-pane" id="progress">
-
-                  <?= GridView::widget([
-                    'id'=>'targets-grid',
-                    'tableOptions'=>['class'=>'table table-striped'],
-                    'summary'=>'<br/>',
-                    // 'dataProvider' => new ArrayDataProvider( $profile->owner->progress, array('pagination'=>false) ),
-                    'dataProvider' => $targetProgressProvider,
-                    'columns' => [
-                      [
-                        'format'=>'raw',
-                        'header'=>false,
-                      'value'=>function($data){return sprintf("<b>%s <small>%s</small></b>",$data['name'],$data['ipoctet']);}
-                      ],
-                      [
-                        'header'=>false,
-                        'format'=>'raw',
-                        'value'=>function($data){
-                                  return sprintf('<abbr title="Flags"><i class="glyphicon glyphicon-flag"></i></abbr> %d of %d',$data['player_treasures'],$data['total_treasures']);
-                                }
-                      ],
-                      [
-                        'header'=>false,
-                        'format'=>'raw',
-                        'value'=>function($data){
-                                  return sprintf('<abbr title="Services"><i class="glyphicon glyphicon-fire"></i></abbr> %d of %d',$data['player_findings'],$data['total_findings']);
-                                }
-                      ],
-                      [
-                        'header'=>false,
-                        'format'=>'raw',
-                        'value'=>function($data){
-                                  return ($data['total_treasures']==$data['player_treasures'] && $data['total_findings']==$data['player_findings']) ?
-                                  sprintf('<abbr title="Headshot"><i class="glyphicon glyphicon-screenshot"></i></abbr>') : "";
-                                }
-                      ],
-
-                    ],
-                  ]);
-                  ?>
-                </div>
-
-                <!--/tab-pane-->
-            </div>
-            <!--/tab-pane-->
-        </div>
-        <!--/tab-content-->
-
-    </div>
-    <!--/col-9-->
-  </div>
-</div>
-<!--/row-->
+      <div class="col-md-4">
+        <?=$this->render('_card',['profile'=>$profile]);?>
+      </div><!-- // end profile card col-md-4 -->
+    </div><!--/row-->
+  </div><!--//body-content-->
+</div><!--//profile-index-->

@@ -78,17 +78,22 @@ class Profile extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'player_id' => 'Player ID',
-            'bio' => 'Bio',
-            'avatar' => 'Avatar',
-            'visibility' => 'Visibility',
-            'twitter' => 'Twitter',
-            'github' => 'Github',
-            'countr'=>'Country',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-            'owner.username' => 'Username',
+          'id' => 'ID',
+  				'player_id' => 'Player ID',
+  				'visibility' => 'Profile Visibility',
+  				'bio' => 'Bio',
+  				'country' => 'Country',
+  				'avatar' => 'Avatar',
+  				'discord' => 'Discord',
+  				'twitter' => 'Twitter',
+  				'github' => 'Github',
+  				'htb'=>'HTB',
+  				'terms_and_conditions'=>'I accept the echoCTF RED <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',
+  				'mail_optin'=>'<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from echoCTF RED</abbr>',
+  				'gdpr'=>'I accept the echoCTF RED <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>.',
+  				'created_at' => 'Created At',
+  				'updated_at' => 'Updated At',
+  				'owner.username' => 'Username',
         ];
     }
 

@@ -49,7 +49,65 @@ class ProfileController extends \yii\web\Controller
                 'pageSize' => 10,
             ]
           ]);
+          $targetProgressProvider = new ActiveDataProvider([
+              'query' => Target::find()->player_progress(Yii::$app->user->id)->having('player_treasures>0 or player_findings>0'),
+              'pagination' => [
+                  'pageSizeParam'=>'target-perpage',
+                  'pageParam'=>'target-page',
+                  'pageSize' => 7,
+              ]
 
+          ]);
+          $targetProgressProvider->setSort([
+              'sortParam'=>'target-sort',
+              'attributes' => [
+                  'name' => [
+                      'asc' => ['name' => SORT_ASC],
+                      'desc' => ['name' => SORT_DESC],
+                  ],
+                  'ip' => [
+                      'asc' => ['ip' => SORT_ASC],
+                      'desc' => ['ip' => SORT_DESC],
+                      'default' => SORT_ASC
+                  ],
+                  'rootable' => [
+                      'asc' => ['rootable' => SORT_ASC],
+                      'desc' => ['rootable' => SORT_DESC],
+                      'default' => SORT_ASC
+                  ],
+                  'difficulty' => [
+                      'asc' => ['difficulty' => SORT_ASC],
+                      'desc' => ['difficulty' => SORT_DESC],
+                      'default' => SORT_ASC
+                  ],
+                  'total_findings' => [
+                      'asc' => ['total_findings' => SORT_ASC],
+                      'desc' => ['total_findings' => SORT_DESC],
+                      'default' => SORT_ASC
+                  ],
+                  'total_treasures' => [
+                      'asc' => ['total_treasures' => SORT_ASC],
+                      'desc' => ['total_treasures' => SORT_DESC],
+                      'default' => SORT_ASC
+                  ],
+                  'progress' => [
+                      'asc' =>  [
+                        'progress'=>SORT_ASC,
+                        'difficulty'=>SORT_ASC,
+                        'ip'=>SORT_ASC,
+                      ],
+                      'desc' => [
+                        'progress'=>SORT_DESC,
+                        'difficulty'=>SORT_ASC,
+                        'ip'=>SORT_ASC,
+                      ],
+                      'default' => SORT_ASC
+                  ],
+              ],
+              'defaultOrder' => [
+                  'progress' => SORT_DESC,
+              ]
+          ]);
         return $this->render('index',[
           'profile'=>$profile,
           'playerSpin'=>$playerSpin,
@@ -83,24 +141,62 @@ class ProfileController extends \yii\web\Controller
           ]
         ]);
 
-        $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM (SELECT t.*,inet_ntoa(t.ip) as ipoctet,count(distinct t2.id) as total_treasures,count(distinct t4.treasure_id) as player_treasures, count(distinct t3.id) as total_findings, count(distinct t5.finding_id) as player_findings FROM target AS t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING player_treasures>0 or player_findings>0 ORDER BY t.ip,t.fqdn,t.name) as tt'
-        , [':player_id' => $profile->player_id])->queryScalar();
-
-
-        $targetProgressProvider = new SqlDataProvider([
-            'sql' => 'SELECT t.*,inet_ntoa(t.ip) as ipoctet,count(distinct t2.id) as total_treasures,count(distinct t4.treasure_id) as player_treasures, count(distinct t3.id) as total_findings, count(distinct t5.finding_id) as player_findings FROM target AS t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING player_treasures>0 or player_findings>0 ORDER BY t.ip,t.fqdn,t.name',
-            'params' => [':player_id' => $profile->player_id],
-            'totalCount' => $count,
+        $targetProgressProvider = new ActiveDataProvider([
+            'query' => Target::find()->player_progress($profile->player_id)->having('player_treasures>0 or player_findings>0'),
             'pagination' => [
+                'pageSizeParam'=>'target-perpage',
+                'pageParam'=>'target-page',
                 'pageSize' => 20,
-            ],
-            'sort' => [
-                'attributes' => [
-                    'name',
-                    'fqdn',
-                    'ip',
+            ]
+
+        ]);
+        $targetProgressProvider->setSort([
+            'sortParam'=>'target-sort',
+            'attributes' => [
+                'name' => [
+                    'asc' => ['name' => SORT_ASC],
+                    'desc' => ['name' => SORT_DESC],
+                ],
+                'ip' => [
+                    'asc' => ['ip' => SORT_ASC],
+                    'desc' => ['ip' => SORT_DESC],
+                    'default' => SORT_ASC
+                ],
+                'rootable' => [
+                    'asc' => ['rootable' => SORT_ASC],
+                    'desc' => ['rootable' => SORT_DESC],
+                    'default' => SORT_ASC
+                ],
+                'difficulty' => [
+                    'asc' => ['difficulty' => SORT_ASC],
+                    'desc' => ['difficulty' => SORT_DESC],
+                    'default' => SORT_ASC
+                ],
+                'total_findings' => [
+                    'asc' => ['total_findings' => SORT_ASC],
+                    'desc' => ['total_findings' => SORT_DESC],
+                    'default' => SORT_ASC
+                ],
+                'total_treasures' => [
+                    'asc' => ['total_treasures' => SORT_ASC],
+                    'desc' => ['total_treasures' => SORT_DESC],
+                    'default' => SORT_ASC
+                ],
+                'progress' => [
+                    'asc' =>  [
+                      'progress'=>SORT_ASC,
+                      'ip'=>SORT_ASC
+                    ],
+                    'desc' => [
+                      'progress'=>SORT_DESC,
+                      'ip'=>SORT_ASC,
+                    ],
+                    'default' => SORT_ASC
                 ],
             ],
+            'defaultOrder' => [
+                'progress' => SORT_DESC
+            ]
         ]);
 
         return $this->render('index',[
@@ -157,12 +253,45 @@ class ProfileController extends \yii\web\Controller
   	}
     public function actionSettings()
     {
+      $errors=$success=null;
+
       $profile=Yii::$app->user->identity->profile;
       $profileForm=$profile;
       $profileForm->scenario='me';
       $accountForm=$profile->owner;
-      $accountForm->scenario='profile';
-      $accountForm->password=null;
+//      $accountForm->scenario='profile';
+      if(Yii::$app->request->isPost)
+      {
+        if(Yii::$app->request->post('Profile'))
+        {
+          if ($profileForm->load(Yii::$app->request->post(),'Profile') && $profileForm->update()!==false)
+          {
+            $success[]="Profile updated";
+          }
+          else
+          {
+            $errors[]='Failed to update profile';
+          }
+        }
+
+        if(Yii::$app->request->post('Player'))
+        {
+          if ($accountForm->load(Yii::$app->request->post(),'Player')===true && $accountForm->update()!==false)
+          {
+            $success[]="Player updated";
+          }
+          else
+            $errors[]='Failed to update account';
+        }
+      }
+
+      if($errors!==null)
+        Yii::$app->session->setFlash('error',$errors);
+      if($success!==null)
+        Yii::$app->session->setFlash('success',$success);
+
+      $accountForm->confirm_password=$accountForm->password=null;
+      //die(var_dump(Yii::$app->session->getAllFlashes()));
       return $this->render('settings',[
         'profile'=>$profile,
         'accountForm'=>$accountForm,

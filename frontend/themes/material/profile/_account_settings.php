@@ -1,48 +1,30 @@
 <?php
-
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
 /* @var $this yii\web\View */
 /* @var $model app\modules\settings\models\Faq */
 /* @var $form yii\widgets\ActiveForm */
 
-/*$form=$this->beginWidget('bootstrap.widgets.TbActiveForm',array(
-		'id'=>'player-form',
-		'type'=>'horizontal',
-		'action'=>array('/profile/update'),
-		'enableAjaxValidation'=>true,
-		'enableClientValidation'=>true,
-		'clientOptions'=>array(
-			'validateOnSubmit'=>true,
-		),
-	));
- $this->widget('bootstrap.widgets.TbButton', array(
-		'buttonType'=>'submit',
-		'url'=>array('/profile/update'),
-		'type'=>'primary',
-		'label'=>'Update profile',
-	));
-*/
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 ?>
-
 <div class="account-form">
-
     <?php $form = ActiveForm::begin([
       'id'=>'player-form',
-      'options'=>['autocomplete'=>"off"]
     ]); ?>
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'autocomplete'=>"off"]) ?>
 		<?= $form->field($model, 'fullname')->textInput(['maxlength' => true,'autocomplete'=>"off"]) ?>
 		<?= $form->field($model, 'email')->textInput(['maxlength' => true,'autocomplete'=>"off"]) ?>
-		<?= $form->field($model, 'password')->passwordInput(['autocomplete'=>"new-password"]) ?>
-		<?= $form->field($model, 'confirm_password')->passwordInput(['autocomplete'=>"new-password"]) ?>
-    <?=$model->password?>
-    <div class="form-group">
-        <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+    <div class="row">
+      <div class="col-lg-6">
+		      <?= $form->field($model, 'password')->passwordInput(['autocomplete'=>"new-password"]) ?>
+      </div>
+      <div class="col-lg-6">
+		      <?= $form->field($model, 'confirm_password')->passwordInput(['autocomplete'=>"new-password"]) ?>
+      </div>
+    </div>
+    <div class="form-group pull-right">
+        <?= Html::submitButton(Yii::t('app', 'Update account'), ['class' => 'btn btn-warning pull']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
-
+  <?php ActiveForm::end(); ?>
 </div>

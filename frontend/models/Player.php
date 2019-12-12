@@ -40,29 +40,41 @@ class Player extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-            TimestampBehavior::className(),
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
-            ['status', 'default', 'value' => self::STATUS_INACTIVE],
-            ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
-            ['confirm_password', 'compare', 'compareAttribute'=>'password'],
+            /* fullname rules */
+            [['fullname'], 'trim'],
+            [['fullname'], 'string', 'max'=>32],
+
+            /* email field rules */
+            [['email'], 'trim'],
+            [['email'], 'string','max'=>255],
+            [['email'], 'email'],
+
+            /* username field rules */
+            [['username'], 'trim'],
+            [['username'], 'string', 'max'=>32],
+            [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin','administrator','echoctf','root','support']],
+            [['username'], 'required', 'message' => 'Please choose a username.'],
+
+            /* active field rules */
+            [['active'], 'filter', 'filter' => 'boolval'],
+            [['active'], 'default', 'value' => false],
+
+            /* status field rules */
+            [['status'], 'filter', 'filter' => 'intval'],
+            [['status'], 'default', 'value' => self::STATUS_INACTIVE],
+            [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            /* password field rules */
+
+            [['password','confirm_password'], 'string', 'max'=>255],
+            [['password'], 'compare', 'compareAttribute'=>'confirm_password'],
 
 /*            array('activkey','required','on'=>'reset'),
       			array('active','required','on'=>'quick_activation'),
       			array('username, fullname, email', 'required'),
       			array('email','email','skipOnError'=>false,'on'=>'update'),
-            array('username', 'length', 'encoding' => 'UTF-8', 'max'=>32, 'skipOnError'=>false, 'on'=>'update' ),
-      			array('username', 'reserved_username', 'skipOnError'=>false ,'reserved'=>array('admin','administrator','echoctf','root','support'),'on'=>'update'),
       			array('username, fullname, email', 'filter','filter'=>'trim'),
       			array('username',
           				'match', 'not' => true, 'pattern' => '/[^a-zA-Z0-9]/',
