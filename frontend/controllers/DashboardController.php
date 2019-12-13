@@ -100,11 +100,11 @@ class DashboardController extends \yii\web\Controller
           'pagination' => [
               'pageSizeParam'=>'score-perpage',
               'pageParam'=>'score-page',
-              'pageSize' => 10,
+              'pageSize' => 11,
           ]
       ]);
       if(Yii::$app->request->get('score-page')===null)
-        $scoreProvider->pagination->page = intval(Yii::$app->user->identity->profile->rank->id/10);
+        $scoreProvider->pagination->page = intval(Yii::$app->user->identity->profile->rank->id/11);
 
       $stream=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
       ->orderBy(['ts'=>SORT_DESC]);
