@@ -85,6 +85,21 @@ $config = [
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
             'useFileTransport' => true,
+//            'viewPath' => '@app/mail/layouts',
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp-relay.gmail.com',
+//                'username' => 'username',
+//                'password' => 'password',
+//                'port' => '25',
+//                'encryption' => 'none',
+//                'streamOptions' => [
+//                  'ssl' => [
+//                      'verify_peer' => false,
+//                      'verify_peer_name' => false,
+//                  ],
+//                ],
+            ],
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -125,7 +140,9 @@ $config = [
                 'profile/hints'=>'profile/hints',
                 'register'=>'site/register',
                 'site/request-password-reset'=>'site/request-password-reset',
+                'site/reset-password' => 'site/reset-password',
                 'site/resend-verification-email'=>'site/resend-verification-email',
+                'site/verify-email'=>'site/verify-email',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],
