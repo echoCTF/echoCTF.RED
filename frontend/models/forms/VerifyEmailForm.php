@@ -47,6 +47,7 @@ class VerifyEmailForm extends Model
     {
         $player = $this->_player;
         $player->status = Player::STATUS_ACTIVE;
+        $player->active=1;
         return $player->save(false) ? $player : null;
     }
 }

@@ -4,6 +4,7 @@ namespace app\models\forms;
 use Yii;
 use yii\base\Model;
 use app\models\Player;
+use app\models\PlayerSsl;
 
 /**
  * Signup form
@@ -52,6 +53,7 @@ class SignupForm extends Model
         $player = new Player();
         $player->username = $this->username;
         $player->email = $this->email;
+        $player->status=Player::STATUS_INACTIVE;
         $player->setPassword($this->password);
         $player->generateAuthKey();
         $player->generateEmailVerificationToken();
@@ -59,10 +61,8 @@ class SignupForm extends Model
         {
           $playerSsl=new PlayerSsl();
           $playerSsl->player_id=$player->id;
-          $playerSsl->save();
-          $playerSsl->refresh();
           $playerSsl->generate();
-          if($playerSsl->save())
+          if($playerSsl->save()!==false)
             $playerSsl->refresh();
         }
         return $this->sendEmail($player);
@@ -76,16 +76,15 @@ class SignupForm extends Model
      */
     protected function sendEmail($player)
     {
-        return true;
         return Yii::$app
             ->mailer
             ->compose(
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
-                ['player' => $player]
+                ['user' => $player]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
-            ->setTo($this->email)
-            ->setSubject('Account registration at ' . Yii::$app->name)
+            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName . ' robot'])
+            ->setTo([$player->email => $player->fullname])
+            ->setSubject('Account registration at ' . trim(Yii::$app->sys->event_name))
             ->send();
     }
 }

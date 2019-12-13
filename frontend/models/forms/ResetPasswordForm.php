@@ -31,6 +31,7 @@ class ResetPasswordForm extends Model
             throw new InvalidArgumentException('Password reset token cannot be blank.');
         }
         $this->_player = Player::findByPasswordResetToken($token);
+
         if (!$this->_player) {
             throw new InvalidArgumentException('Wrong password reset token.');
         }

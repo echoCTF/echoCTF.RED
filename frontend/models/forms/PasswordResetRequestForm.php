@@ -42,7 +42,6 @@ class PasswordResetRequestForm extends Model
             'status' => Player::STATUS_ACTIVE,
             'email' => $this->email,
         ]);
-
         if (!$player) {
             return false;
         }
@@ -53,16 +52,15 @@ class PasswordResetRequestForm extends Model
                 return false;
             }
         }
-        return true;
         return Yii::$app
             ->mailer
             ->compose(
                 ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
                 ['user' => $player]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
-            ->setTo($this->email)
-            ->setSubject('Password reset for ' . Yii::$app->name)
+            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName . ' robot'])
+            ->setTo([$player->email => $player->fullname])
+            ->setSubject('Password reset request for ' . trim(Yii::$app->sys->event_name))
             ->send();
     }
 }
