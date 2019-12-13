@@ -205,3 +205,7 @@ details pre {
 a.TweetThisImg>img {
     width: 18px;
 }
+
+.headshots code {
+  font-size: 0.9em;
+}

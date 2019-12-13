@@ -69,7 +69,7 @@ $this->title = Yii::$app->sys->event_name .' - Dashboard';
     <div class="row">
       <div class="col-sm-8">
       <?php Pjax::begin(['id'=>'target-listing','enablePushState'=>false,'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-      <?php echo TargetWidget::widget(['dataProvider' => $targetProvider]);?>
+      <?php echo TargetWidget::widget(['dataProvider' => null,'player_id'=>Yii::$app->user->id]);?>
       <?php Pjax::end();?>
       </div>
       <div class="col-sm-4">

@@ -3,7 +3,7 @@ use yii\helpers\Html;
 ?>
 <div class="card card-profile">
   <div class="card-avatar bg-primary">
-    <a href="#pablo">
+    <a href="#">
       <img class="img" src="/images/avatars/<?=$profile->avatar?>" />
     </a>
   </div>
@@ -16,6 +16,7 @@ use yii\helpers\Html;
     </p>
     <ul class="nav flex-column">
   <?php if(intval(Yii::$app->user->id)===intval($profile->player_id)):?>
+          <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> Download OpenVPN configuration",['profile/ovpn'],['class'=>'btn btn-primary'])?></li>
           <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($playerSpin['counter'])?></abbr> / <abbr title="Total Spins"><?=$playerSpin['total']?></abbr></span></li>
   <?php endif;?>

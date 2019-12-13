@@ -3,10 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ListView;
 use app\widgets\stream\StreamWidget as Stream;
 $this->title = Yii::$app->sys->event_name .' - Target: '.$target->name.' #'.$target->id;
-//$this->registerCssFile("@web/css/scores.css", [
-//  //  'depends' => [\yii\bootstrap\BootstrapAsset::className()],
-//    'media' => 'screen',
-//], 'scores-theme');
+$this->_fluid='-fluid';
 ?>
 
 <div class="target-index">

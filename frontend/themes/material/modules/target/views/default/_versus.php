@@ -19,10 +19,10 @@ use yii\helpers\Html;
       </div>
       <div class="col-lg-4 col-md-6 col-sm-6">
         <div  style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress==100? 'text-primary':'text-danger'?>">
-          <i class="fa <?=$target->progress==100 ? 'fa-skull-crossbones':'fa-not-equal'?>"><!----></i>
+          <i class="fa <?=$target->progress==100 ? 'fa-skull-crossbones':'fa-not-equal'?>"></i>
         </div>
         <div class="progress">
-            <div class="progress-bar <?=$target->progress==100 ? 'bg-gradual-progress':'bg-danger'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><?=$target->progress==100 ? '#Headshot': number_format($target->progress).'%'?></div>
+            <div class="progress-bar <?=$target->progress==100 ? 'bg-gradual-progress':'bg-danger text-dark'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><?=$target->progress==100 ? '#Headshot': number_format($target->progress).'%'?></div>
         </div>
       </div>
       <div class="col-lg-4 col-md-6 col-sm-6">
@@ -49,7 +49,7 @@ use yii\helpers\Html;
       </div>
     </div>
     <div class="col-lg-4 col-md-6 col-sm-6">
-      <div class="card bg-dark">
+      <div class="card bg-dark headshots">
         <h4><i class="fas fa-skull"></i> Headshots by</h4>
         <div class="card-body table-responsive">
           <?php
@@ -58,7 +58,8 @@ use yii\helpers\Html;
             if((int)$player->active===1)
               $headshots[]=$player->profile->link;
             if ($headshots!==NULL)
-              echo "<code>",implode(", ",$headshots), "</code>";?>
+              echo "<code>",implode(", ",$headshots), "</code>";
+            else echo '<code>none yet...</code>';?>
         </div>
       </div>
     </div>

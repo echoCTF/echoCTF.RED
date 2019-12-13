@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\helpers\Url;
-use yii\widgets\Pjax;
+
 
 /* @var $this \yii\web\View */
 /* @var $content string */
@@ -22,9 +22,9 @@ use yii\widgets\Pjax;
           </button>
           <div class="collapse navbar-collapse justify-content-end">
             <?php if(!Yii::$app->user->isGuest):?>
-              <?php Pjax::begin(['id'=>'claim-flag','formSelector'=>'#claim','linkSelector'=>false,'enablePushState'=>false]);?>
+              <?php \yii\widgets\Pjax::begin(['id'=>'claim-flag','formSelector'=>'#claim','linkSelector'=>false,'enablePushState'=>false]);?>
               <?=$this->render('@app/modules/target/views/default/claim');?>
-              <?php Pjax::end();?>
+              <?php \yii\widgets\Pjax::end();?>
             <?php endif; /*END OF FLAG FORM*/?>
             <ul class="navbar-nav">
               <?php if(Yii::$app->user->isGuest):?>
