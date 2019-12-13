@@ -2,14 +2,10 @@
 use yii\helpers\Html;
 use yii\widgets\ListView;
 $this->title = Yii::$app->sys->event_name .' - Target: '.$target->name.' #'.$target->id;
-#$this->pageDescription=CHtml::encode($target->purpose);
-#$this->pageImage=Yii::app()->getBaseUrl(true)."/images/targets/".$target->name.".png";
-#$this->pageURL=$this->createAbsoluteUrl('target/view',array('id'=>$target->id));
-#Yii::$app->clientScript->registerCssFile(Yii::app()->baseUrl . '/css/scores.css');
-$this->registerCssFile("@web/css/scores.css", [
-  //  'depends' => [\yii\bootstrap\BootstrapAsset::className()],
-    'media' => 'screen',
-], 'scores-theme');
+//$this->registerCssFile("@web/css/scores.css", [
+//  //  'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+//    'media' => 'screen',
+//], 'scores-theme');
 ?>
 
 <div class="target-index">
@@ -30,7 +26,7 @@ $this->registerCssFile("@web/css/scores.css", [
          <h4 class="card-title">Activity on target</h4>
        </div>
        <div class="card-body table-responsive">
-        <?php \yii\widgets\Pjax::begin(); ?>
+        <?php \yii\widgets\Pjax::begin(['id'=>'stream-listing','enablePushState'=>false,'linkSelector'=>'#stream-pager a', 'formSelector'=>false]); ?>
         <?php echo ListView::widget([
               'id'=>'target-activity',
               'dataProvider' => $streamProvider,
@@ -40,6 +36,7 @@ $this->registerCssFile("@web/css/scores.css", [
               ],
               'itemView' => '_stream',
               'pager'=>[
+                'options'=>['id'=>'stream-pager'],
                 'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
                 'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
                 'maxButtonCount'=>3,

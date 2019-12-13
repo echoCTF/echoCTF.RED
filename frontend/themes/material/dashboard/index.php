@@ -73,7 +73,7 @@ $this->registerCssFile("@web/css/scores.css", [
 
     <div class="row">
       <div class="col-sm-8">
-      <?php Pjax::begin(['id'=>'target-listing','enablePushState'=>false]);?>
+      <?php Pjax::begin(['id'=>'target-listing','enablePushState'=>false,'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
       <?php
        echo GridView::widget([
       		'id'=>'target-list',
@@ -237,10 +237,11 @@ $this->registerCssFile("@web/css/scores.css", [
       Pjax::end();?>
       </div>
       <div class="col-sm-4">
-        <?php Pjax::begin();
+        <?php Pjax::begin(['id'=>'leaderboard-listing','enablePushState'=>false,'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
         echo ListView::widget([
             'id'=>'Leaderboard',
             'pager'=>[
+              'options'=>['id'=>'leaderboard-pager'],
               'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
               'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
               'maxButtonCount'=>3,
@@ -264,7 +265,7 @@ $this->registerCssFile("@web/css/scores.css", [
 ?>
       </div>
     </div><!-- //row -->
-    <?php Pjax::begin();
+    <?php Pjax::begin(['id'=>'stream-listing','enablePushState'=>false,'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
     echo ListView::widget([
         'id'=>'stream',
         'options'=>['class'=>'card'],
