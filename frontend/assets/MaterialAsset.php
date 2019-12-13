@@ -28,6 +28,7 @@ class MaterialAsset extends AssetBundle
     public $css = [
         '/css/material-dashboard.css',
         '/css/material.css',
+        '/css/scores.css',
     ];
     public $js = [
         'js/core/popper.min.js',
