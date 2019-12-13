@@ -298,8 +298,12 @@ class ProfileController extends \yii\web\Controller
 
       $accountForm->confirm_password=$accountForm->password=null;
       //die(var_dump(Yii::$app->session->getAllFlashes()));
+      $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
+      $playerSpin=$command->bindValue(':player_id',Yii::$app->user->id)->query()->read();
+
       return $this->render('settings',[
         'profile'=>$profile,
+        'playerSpin'=>$playerSpin,
         'accountForm'=>$accountForm,
         'profileForm'=>$profileForm
       ]);
