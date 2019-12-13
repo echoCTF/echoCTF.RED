@@ -25,7 +25,12 @@ $this->_fluid="-fluid";
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-10">
+      <div class="col-lg-3">
+        <?= $form->field($model, 'gravatar')->checkbox(['label'=>'Use Gravatar'])->hint('')->label(false) ?>
+        <?= $form->field($model, 'twitter_avatar')->checkbox(['label'=>'Use Twitter avatar'])->hint('')->label(false) ?>
+        <?= $form->field($model, 'github_avatar')->checkbox(['label'=>'Use github avatar'])->hint('')->label(false) ?>
+      </div>
+      <div class="col-lg-7">
 		      <?= $form->field($model, 'avatar')->dropDownList(ArrayHelper::map(Avatar::find()->all(), 'id', 'id'),['prompt'=>'Select your avatar'])->hint('Select an avatar from the list')?>
       </div>
       <div class="col-lg-2">

@@ -18,7 +18,7 @@ use yii\helpers\Html;
         </div>
       </div>
       <div class="col-lg-4">
-        <?=$this->render('_card',['profile'=>$profile]);?>
+        <?=$this->render('_card',['profile'=>$profile,'playerSpin'=>$playerSpin]);?>
       </div><!-- // end profile card col-md-4 -->
 
     </div>
