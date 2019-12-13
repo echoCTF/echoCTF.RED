@@ -10,9 +10,9 @@ $this->title = Yii::$app->sys->event_name .' - Profile of '.Html::encode($profil
 //$this->pageDescription=Html::encode(str_replace("\n","",strip_tags($profile->bio)));
 //$this->pageImage=Yii::$app->getBaseUrl(true)."/images/avatars/".$profile->avatar;
 //$this->pageURL=$this->createAbsoluteUrl('/profile/index',array('id'=>$profile->id));
-$this->registerCssFile("@web/css/scores.css", [
-    'media' => 'screen',
-], 'scores-theme');
+//$this->registerCssFile("@web/css/scores.css", [
+//    'media' => 'screen',
+//], 'scores-theme');
 
 $this->_fluid="-flud";
 

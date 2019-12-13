@@ -26,6 +26,7 @@ class MaterialAsset extends AssetBundle
   // public $basePath = '@app/themes/material';
   // public $baseUrl = '@web/themes/material';
     public $css = [
+        '/css/material-icons.min.css',
         '/css/material-dashboard.css',
         '/css/material.css',
         '/css/scores.css',
@@ -61,7 +62,7 @@ class MaterialAsset extends AssetBundle
         /* Library for adding dinamically elements */
         'js/plugins/arrive.min.js',
         /* Chartist JS */
-        'js/plugins/chartist.min.js',
+        //'js/plugins/chartist.min.js',
         /*  Notifications Plugin    */
         'js/plugins/bootstrap-notify.js',
         /* Control Center for Material Dashboard: parallax effects, scripts for the example pages etc */
@@ -80,7 +81,7 @@ class MaterialAsset extends AssetBundle
         // 'yii\bootstrap\BootstrapAsset',
         // 'yii\bootstrap\BootstrapPluginAsset',
         //'yidas\yii\fontawesome\FontawesomeAsset',
-        'yii\materialicons\AssetBundle'
+//        'yii\materialicons\AssetBundle'
     ];
 
 

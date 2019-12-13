@@ -8,9 +8,9 @@ use app\components\JustGage;
 use yii\widgets\Pjax;
 $this->_fluid="-fluid";
 $this->title = Yii::$app->sys->event_name .' - Dashboard';
-$this->registerCssFile("@web/css/scores.css", [
-    'media' => 'screen',
-], 'scores-theme');
+//$this->registerCssFile("@web/css/scores.css", [
+//    'media' => 'screen',
+//], 'scores-theme');
 ?>
 <div class="dashboard-index">
   <div class="body-content">
