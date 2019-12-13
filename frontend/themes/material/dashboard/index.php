@@ -183,12 +183,12 @@ $this->registerCssFile("@web/css/scores.css", [
             [
               'format'=>'raw',
               'encodeLabel'=>false,
-              'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell'],
-              'contentOptions' => ['class'=>'d-none d-xl-table-cell','width'=>'180'],
+              'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell','style'=>'width:8rem;'],
+              'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
               'attribute'=>'progress',
               'label'=>'Your Progress',
               'value'=>function($model) {
-                return sprintf ('<div class="progress"><div class="progress-bar bg-gradual-progress" style="width: %d%%" role="progressbar" aria-valuenow="%d" aria-valuemin="0" aria-valuemax="100"></div></div>',$model->progress, $model->progress,$model->progress==100 ? '#Headshot': number_format($model->progress).'%');
+                return sprintf ('<div class="progress" style="height: 14px;"><div class="progress-bar bg-gradual-progress" style="width: %d%%;" role="progressbar" aria-valuenow="%d" aria-valuemin="0" aria-valuemax="100"></div></div>',$model->progress, $model->progress,$model->progress==100 ? '#Headshot': number_format($model->progress).'%');
                 return '<div class="progress"></div>';
               },
             ],
