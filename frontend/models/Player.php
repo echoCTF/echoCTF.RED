@@ -95,7 +95,7 @@ class Player extends ActiveRecord implements IdentityInterface
           				'message' => 'Another user has already registered with this email address.',
                   'skipOnError'=>true
           		),
-      			array('username, fullname, email, playerrd,confirm_playerrd', 'length', 'max'=>255),
+      			array('username, fullname, email, password,confirm_password', 'length', 'max'=>255),
           	array('created','default','value'=>new CDbExpression('NOW()')),
       			array('academic','boolean'),
           	array('ts','default','value'=>new CDbExpression('NOW()')),
@@ -131,24 +131,6 @@ class Player extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * Finds player by playerrd reset token
-     *
-     * @param string $token playerrd reset token
-     * @return static|null
-     */
-    public static function findByplayerrdResetToken($token)
-    {
-        if (!static::isplayerrdResetTokenValid($token)) {
-            return null;
-        }
-
-        return static::findOne([
-            'playerrd_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
-        ]);
-    }
-
-    /**
      * Finds player by verification email token
      *
      * @param string $token verify email token
@@ -159,23 +141,6 @@ class Player extends ActiveRecord implements IdentityInterface
             'verification_token' => $token,
             'status' => self::STATUS_INACTIVE
         ]);
-    }
-
-    /**
-     * Finds out if playerrd reset token is valid
-     *
-     * @param string $token playerrd reset token
-     * @return bool
-     */
-    public static function isplayerrdResetTokenValid($token)
-    {
-        if (empty($token)) {
-            return false;
-        }
-
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-        $expire = Yii::$app->params['user.playerrdResetTokenExpire'];
-        return $timestamp + $expire >= time();
     }
 
     /**
@@ -360,6 +325,40 @@ class Player extends ActiveRecord implements IdentityInterface
     public static function find()
     {
         return new PlayerQuery(get_called_class());
+    }
+
+    /**
+     * Finds out if password reset token is valid
+     *
+     * @param string $token password reset token
+     * @return bool
+     */
+    public static function isPasswordResetTokenValid($token)
+    {
+        if (empty($token)) {
+            return false;
+        }
+
+        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $expire = 3600;
+        return $timestamp + $expire >= time();
+    }
+    /**
+     * Finds user by password reset token
+     *
+     * @param string $token password reset token
+     * @return static|null
+     */
+    public static function findByPasswordResetToken($token)
+    {
+        if (!static::isPasswordResetTokenValid($token)) {
+            return null;
+        }
+
+        return static::findOne([
+            'password_reset_token' => $token,
+            'status' => self::STATUS_ACTIVE,
+        ]);
     }
 
 }
