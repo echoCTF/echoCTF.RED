@@ -18,13 +18,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <h4 class="card-title">Login</h4>
                 <div class="social-line">
                     <a href="#" class="btn btn-just-icon btn-link btn-white">
-                        <i class="fa fa-facebook-square"></i>
+                        <i class="fab fa-facebook-square"></i>
                     </a>
                     <a href="#" class="btn btn-just-icon btn-link btn-white">
-                        <i class="fa fa-twitter"></i>
+                        <i class="fab fa-twitter"></i>
                     </a>
                     <a href="#" class="btn btn-just-icon btn-link btn-white">
-                        <i class="fa fa-google-plus"></i>
+                        <i class="fab fa-google-plus"></i>
                     </a>
                 </div>
             </div>
