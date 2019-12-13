@@ -1,7 +1,20 @@
 <?php
-
+Yii::setAlias('@appconfig', realpath(dirname(__FILE__)));
 return [
-    'adminEmail' => 'admin@example.com',
-    'senderEmail' => 'noreply@example.com',
-    'senderName' => 'Example.com mailer',
+  'adminEmail' => 'info@echothrust.com',
+  'senderEmail' => 'noreply@echothrust.com',
+  'senderName' => 'Echothrust mailer',
+  'dn' => [
+    'countryName' => 'GR',
+    'stateOrProvinceName' => 'Greece',
+    'localityName'=> 'Athens',
+    'organizationName' => 'echoCTF',
+    'organizationalUnitName' => 'echoctf.red',
+    "commonName" => "ROOT CA",
+  ],
+  'pkey_config' => [
+      "private_key_bits" => 2048,
+      "private_key_type" => OPENSSL_KEYTYPE_RSA,
+      "encrypt_key" => false
+  ],
 ];
