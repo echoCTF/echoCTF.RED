@@ -102,10 +102,23 @@ class SiteController extends Controller
     public function actionRegister()
     {
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+          if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+              $transaction->commit();
+              Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for the verification email.');
+              return $this->goHome();
+          }
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            Yii::$app->session->setFlash('error', 'Registration failed.');
+            throw $e;
+        } catch (\Throwable $e) {
+            $transaction->rollBack();
+            Yii::$app->session->setFlash('error', 'Registration failed.');
+            throw $e;
         }
+
 
         return $this->render('signup', [
             'model' => $model,
