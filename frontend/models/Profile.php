@@ -29,7 +29,9 @@ class Profile extends \yii\db\ActiveRecord
 {
   const SCENARIO_ME = 'me';
   const SCENARIO_REGISTER = 'register';
-
+  public $gravatar,
+         $twitter_avatar,
+         $github_avatar;
   public $visibilities=[
       'private'=>'Private',
       'public'=>'Public',
