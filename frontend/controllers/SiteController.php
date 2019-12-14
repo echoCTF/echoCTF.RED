@@ -231,4 +231,11 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
+    public function actionChangelog()
+    {
+      $content=file_get_contents('../Changelog.md');
+      return $this->render('changelog',[
+        'content'=>$content
+      ]);
+    }
 }

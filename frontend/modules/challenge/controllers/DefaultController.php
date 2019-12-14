@@ -11,26 +11,32 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
 use app\modules\challenge\models\AnswerForm;
+use yii\filters\AccessControl;
 
 /**
  * ChallengeController implements the CRUD actions for Challenge model.
  */
 class DefaultController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'answer' => ['POST'],
-                ],
-            ],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function behaviors()
+  {
+      return [
+          'access' => [
+              'class' => AccessControl::className(),
+              'only' => ['index','view'],
+              'rules' => [
+                  [
+                      'actions' => ['index','view'],
+                      'allow' => true,
+                      'roles' => ['@'],
+                  ],
+              ],
+          ],
+      ];
+  }
 
     /**
      * Lists all Challenge models.

@@ -9,8 +9,36 @@ use app\modules\target\models\Treasure;
 use app\models\PlayerTreasure;
 use app\models\PlayerScore;
 use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
+
 class DashboardController extends \yii\web\Controller
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index'],
+                'rules' => [
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                ],
+            ],
+        ];
+    }
+
     public function actionIndex()
     {
 
@@ -41,6 +69,7 @@ class DashboardController extends \yii\web\Controller
               'pageParam'=>'score-page',
               'pageSize' => 11,
           ]
+
       ]);
       if(Yii::$app->request->get('score-page')===null)
         $scoreProvider->pagination->page = intval(Yii::$app->user->identity->profile->rank->id/11);
@@ -55,8 +84,8 @@ class DashboardController extends \yii\web\Controller
               'pageSize' => 10,
           ]
         ]);
+
       return $this->render('index', [
-          //'targetProvider' => $targetProvider,
           'scoreProvider'=>$scoreProvider,
           'totalPoints'=>$totalPoints,
           'streamProvider'=>$streamProvider,

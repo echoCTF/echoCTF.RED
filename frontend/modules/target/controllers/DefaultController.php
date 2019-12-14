@@ -38,6 +38,10 @@ class DefaultController extends Controller
                       ],
                   ],
               ],
+              [
+                'class' => 'yii\filters\AjaxFilter',
+                'only' => ['notifications','hints']
+              ],
           ];
       }
     /**

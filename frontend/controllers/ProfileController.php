@@ -7,10 +7,45 @@ use yii\data\ActiveDataProvider;
 use \app\modules\target\models\Target;
 use \app\modules\target\models\TargetQuery;
 use yii\helpers\ArrayHelper;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 
 
 class ProfileController extends \yii\web\Controller
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['me','index','notifications','hints','update','ovpn','settings'],
+                'rules' => [
+                    [
+                        'actions' => ['me','notifications','hints','update','ovpn','settings'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['index'],
+                        'allow' => true,
+                    ],
+                ],
+            ],
+            [
+              'class' => 'yii\filters\AjaxFilter',
+              'only' => ['notifications','hints']
+            ],
+          'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                ],
+            ],
+        ];
+    }
+
     public function actions()
     {
       $actions = parent::actions();
@@ -22,13 +57,12 @@ class ProfileController extends \yii\web\Controller
     public function actionMe()
     {
       $profile=Yii::$app->user->identity->profile;
-      $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
-      $playerSpin=$command->bindValue(':player_id',$profile->player_id)->query()->read();
       $model=\app\models\Stream::find()
         ->select('stream.*,TS_AGO(ts) as ts_ago')
         ->where(['player_id'=>$profile->player_id])
         ->orderBy(['ts'=>SORT_DESC]);
-        $streamProvider = new ActiveDataProvider([
+
+      $streamProvider = new ActiveDataProvider([
             'query' => $model,
             'pagination' => [
                 'pageSizeParam'=>'stream-perpage',
@@ -37,12 +71,12 @@ class ProfileController extends \yii\web\Controller
             ]
         ]);
 
-        return $this->render('index',[
+      return $this->render('index',[
           'profile'=>$profile,
-          'playerSpin'=>$playerSpin,
           'streamProvider'=>$streamProvider,
-        ]);
+      ]);
     }
+
     public function actionIndex($id)
     {
       if(intval($id)==intval(Yii::$app->user->id))
@@ -55,8 +89,6 @@ class ProfileController extends \yii\web\Controller
       if($profile->visibility!='public' && $profile->visibility!='ingame')
         			return $this->redirect(['/']);
 
-      $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
-      $playerSpin=$command->bindValue(':player_id',$profile->player_id)->query()->read();
       $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
       ->where(['player_id'=>$profile->player_id])
       ->orderBy(['ts'=>SORT_DESC]);
@@ -70,7 +102,6 @@ class ProfileController extends \yii\web\Controller
         ]);
         return $this->render('index',[
           'profile'=>$profile,
-          'playerSpin'=>$playerSpin,
           'streamProvider'=>$streamProvider,
           'accountForm'=>null,
           'profileForm'=>null,
