@@ -4,7 +4,7 @@ namespace app\components;
 class echoCTFView extends \yii\web\View
 {
   public $_title,
-         $_description,
+         $_description="An online platform to train your offensive and defensive IT security skills.",
          $_url,
          $_image,
          $_image_width="1200",
@@ -17,7 +17,7 @@ class echoCTFView extends \yii\web\View
         $this->_url=\yii\helpers\Url::to([null],'https');
       if($this->_image===null)
         $this->_image=\yii\helpers\Url::to('/images/logotw.png','https');
-
+      $this->title=sprintf("%s - %s: %s",\Yii::$app->sys->event_name,ucfirst(\Yii::$app->controller->id), \Yii::$app->controller->action->id);
       parent::init();
   }
   public function getOg_title()
@@ -39,7 +39,7 @@ class echoCTFView extends \yii\web\View
   public function getOg_image()
   {
     //<meta property="og:image" content="https://www.yiiframework.com/image/facebook_cover.png" />
-    return ['property'=>'og:image', 'content'=>$this->_image];
+    return ['property'=>'og:image', 'content'=>sprintf("%s?%s",$this->_image,\Yii::$app->security->generateRandomString(5))];
   }
   public function getOg_url()
   {
@@ -56,7 +56,7 @@ class echoCTFView extends \yii\web\View
   public function getTwitter_site()
   {
 //    <meta name="twitter:site" content="yiiframework" />
-    return ['name'=>'twitter:site', 'content'=>trim(\Yii::$app->sys->event_name) ];
+    return ['name'=>'twitter:site', 'content'=>"@echoCTF" ];
 
   }
   public function getTwitter_title()
@@ -74,7 +74,7 @@ class echoCTFView extends \yii\web\View
   public function getTwitter_image()
   {
 //    <meta name="twitter:image" content="https://www.yiiframework.com/image/twitter_cover.png" />
-    return ['name'=>'twitter:image', 'content'=>$this->_image ];
+    return ['name'=>'twitter:image', 'content'=>sprintf("%s?%s",$this->_image,\Yii::$app->security->generateRandomString(5)) ];
 
   }
   public function getTwitter_image_width()
