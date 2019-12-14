@@ -209,3 +209,17 @@ a.TweetThisImg>img {
 .headshots code {
   font-size: 0.9em;
 }
+
+.changelog-index .body-content
+.changelog-index .body-content h1,
+.changelog-index .body-content h2,
+.changelog-index .body-content h3,
+.changelog-index .body-content h4,
+.changelog-index .body-content ul
+{
+  font-family: 'Roboto Mono';
+}
+
+.grid-view th {
+    white-space: nowrap;
+}
