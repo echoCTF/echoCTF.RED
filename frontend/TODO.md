@@ -5,7 +5,6 @@
 * [ ] Add twitter links on profile page
 * [ ] Remove unnecessary fields from models (`public function fields()`)
 * [ ] Add `accessRules` on all `Controllers` including their `verbs`
-* [ ] Change the icons for new hints and new notifications
 * [ ] Propagate `$model->updateAttributes()` to all single attribute operations
 * [ ] Propagate `$model->updateCounters(['appears' => -11]);` for increment/decrement of counters on models (eg claim)
 * [ ] Update `web.php` url lists based on current `pUI` rules
