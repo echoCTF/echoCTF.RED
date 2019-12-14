@@ -18,7 +18,7 @@ use yii\web\AssetBundle;
 class MaterialAsset extends AssetBundle
 {
     public $siteTitle = 'echoCTF.RED';
-    public $logoMini = '/images/logo-white-small.png';
+    public $logoMini = '/images/logo-red-small.png';
     public $sidebarColor = '';
     public $sidebarBackgroundColor = 'black';
     public $sidebarBackgroundImage = '';
@@ -26,7 +26,7 @@ class MaterialAsset extends AssetBundle
   // public $basePath = '@app/themes/material';
   // public $baseUrl = '@web/themes/material';
     public $css = [
-        '/css/material-icons.min.css',
+        #'/css/material-icons.min.css',
         '/css/material-dashboard.css',
         '/css/material.css',
         '/css/scores.css',
@@ -81,7 +81,7 @@ class MaterialAsset extends AssetBundle
         // 'yii\bootstrap\BootstrapAsset',
         // 'yii\bootstrap\BootstrapPluginAsset',
         //'yidas\yii\fontawesome\FontawesomeAsset',
-//        'yii\materialicons\AssetBundle'
+        'yii\materialicons\AssetBundle'
     ];
 
 
