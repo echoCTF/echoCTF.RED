@@ -28,8 +28,8 @@ use yii\helpers\Url;
             <?php endif; /*END OF FLAG FORM*/?>
             <ul class="navbar-nav">
               <?php if(Yii::$app->user->isGuest):?>
-                <li class="nav-item"><?=Html::a('Login',['/site/login'],['class'=>'nav-link'])?></li>
                 <li class="nav-item"><?=Html::a('Signup',['/site/register'],['class'=>'nav-link'])?></li>
+                <li class="nav-item"><?=Html::a('Login',['/site/login'],['class'=>'nav-link'])?></li>
               <?php else: ?>
                 <li class="nav-item dropdown">
                   <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false">
@@ -54,7 +54,7 @@ use yii\helpers\Url;
                 </li>
               <li class="nav-item dropdown">
                 <a class="nav-link" href="#" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-user" style="font-size: 2em;"></i>
+                  <img class="rounded" height="25px;" src="/images/avatars/<?=Yii::$app->user->identity->profile->avatar?>" style="position:relative;top:-2px" > <small>(<?=number_format(Yii::$app->user->identity->profile->score->points)?> pts)</small>
                   <p class="d-lg-none d-md-block">
                     Account
                   </p>
@@ -69,7 +69,7 @@ use yii\helpers\Url;
                     {
                       echo Html::beginForm(['/site/logout'], 'post',['id'=>'logout','pjax-data'=>"0"]);
                       echo Html::submitButton(
-                          'Logout (' . Yii::$app->user->identity->username . ')',
+                          'Logout (' . Html::encode(Yii::$app->user->identity->username) . ')',
                           ['class' => 'btn btn-link logout','pjax-data'=>"0",'id'=>'logoutButton']
                       );
                       echo Html::endForm();

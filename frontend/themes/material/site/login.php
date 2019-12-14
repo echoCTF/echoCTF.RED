@@ -1,5 +1,4 @@
 <?php
-
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $model \common\models\LoginForm */
@@ -7,11 +6,9 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Login';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = Yii::$app->sys->event_name. '- Login';
 ?>
 <div class="site-login">
-    <!-- <h1><?//= Html::encode($this->title) ?></h1> -->
     <div class="col-md-4 col-sm-6 ml-auto mr-auto"><!-- col-lg-4  -->
         <div class="card card-login card-hidden">
             <div class="card-header card-header-primary text-center"  data-background-color="orange">
@@ -35,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 ]); ?>
             <div class="card-body ">
                 <span class="bmd-form-group">
-                        <?= $form->field($model, 'username',['template'=>'
+                        <?=$form->field($model, 'username',['template'=>'
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -49,7 +46,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         ])->textInput()->label(false) ?>
                 </span>
                 <span class="bmd-form-group">
-                        <?= $form->field($model, 'password',['template'=>'
+                        <?=$form->field($model, 'password',['template'=>'
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">
@@ -65,18 +62,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 </span>
                 <span class="bmd-form-group">
                     <div class="input-group">
-                        <?= $form->field($model, 'rememberMe')->checkbox() ?>
+                        <?=$form->field($model, 'rememberMe')->checkbox() ?>
                     </div>
                 </span>
             </div>
            <div class="card-footer justify-content-center">
-                <?= Html::submitButton('Login', ['class' => 'btn btn-green btn-block btn-border', 'name' => 'login-button']) ?>
+                <?=Html::submitButton('Login', ['class' => 'btn btn-green btn-block btn-border', 'name' => 'login-button']) ?>
            </div>
            <div class="card-footer">
              <div style="color:#999;margin:1em 0">
-                 If you forgot your password you can <?= Html::a('reset it', ['site/request-password-reset']) ?>.
+                 If you forgot your password you can <?=Html::a('reset it', ['site/request-password-reset']) ?>.
                  <br>
-                 Need new verification email? <?= Html::a('Resend', ['site/resend-verification-email']) ?>
+                 Need new verification email? <?=Html::a('Resend', ['site/resend-verification-email']) ?>
              </div>
            </div>
            <?php ActiveForm::end(); ?>

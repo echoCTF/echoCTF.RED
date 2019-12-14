@@ -9,7 +9,7 @@ use yii\widgets\DetailView;
     <p class="card-category"><?=$target->purpose?></p>
   </div>
   <div class="card-body table-responsive">
-<?= DetailView::widget([
+<?=DetailView::widget([
   'id'=>'target-fulldetails',
   'model' => $target,
   'options'=>['class'=>'table table-striped table-condenced detail-view'],
