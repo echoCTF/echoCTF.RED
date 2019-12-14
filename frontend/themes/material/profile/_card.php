@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 ?>
 <div class="card card-profile">
   <div class="card-avatar bg-primary">
@@ -14,11 +15,12 @@ use yii\helpers\Html;
     <p class="card-description">
       <?=Html::encode($profile->bio)?>
     </p>
+    <?=Html::a(Url::to(['profile/index', 'id'=>$profile->id],'https'),['profile/index', 'id'=>$profile->id]);?>
     <ul class="nav flex-column">
   <?php if(intval(Yii::$app->user->id)===intval($profile->player_id)):?>
           <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> Download OpenVPN configuration",['profile/ovpn'],['class'=>'btn btn-primary'])?></li>
           <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
-          <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($playerSpin['counter'])?></abbr> / <abbr title="Total Spins"><?=$playerSpin['total']?></abbr></span></li>
+          <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($profile->spins->counter)?></abbr> / <abbr title="Total Spins"><?=intval($profile->spins->total)?></abbr></span></li>
   <?php endif;?>
           <li class="nav-item text-left"><strong><i class="fas fa-file-signature"></i> Real name</strong> <span class="pull-right"><?=Html::encode($profile->owner->fullname)?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-globe"></i> Country</strong> <span class="pull-right"><?=$profile->rCountry->name?></span></li>

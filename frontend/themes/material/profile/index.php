@@ -23,7 +23,7 @@ $this->title = Yii::$app->sys->event_name .' - Profile of '.Html::encode($profil
         <?php \yii\widgets\Pjax::end()?>
       </div>
       <div class="col-md-4">
-        <?=$this->render('_card',['profile'=>$profile,'playerSpin'=>$playerSpin]);?>
+        <?=$this->render('_card',['profile'=>$profile]);?>
       </div><!-- // end profile card col-md-4 -->
     </div><!--/row-->
     <?php

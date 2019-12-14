@@ -34,9 +34,9 @@ $config = [
               'yii\bootstrap\BootstrapAsset' => [
                   'css' => [],
               ],
-              'rce\material\Assets' => [
-                  'siteTitle' => 'echoCTF.RED',
-                  'logoMini' => '/images/logo-white-small.png',
+              'app\assets\MaterialAsset' => [
+                  'siteTitle' => '',
+                  'logoMini' => '/images/logo-red-small.png',
                   'sidebarColor' => 'echoctf',
                   'sidebarBackgroundColor' => 'black',
                   //'sidebarBackgroundImage' => ''
@@ -143,6 +143,7 @@ $config = [
                 'site/reset-password' => 'site/reset-password',
                 'site/resend-verification-email'=>'site/resend-verification-email',
                 'site/verify-email'=>'site/verify-email',
+                'changelog' => 'site/changelog'
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],

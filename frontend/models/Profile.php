@@ -110,6 +110,10 @@ class Profile extends \yii\db\ActiveRecord
     {
         return $this->hasOne(PlayerLast::className(), ['id' => 'player_id']);
     }
+    public function getSpins()
+    {
+        return $this->hasOne(PlayerSpin::className(), ['player_id' => 'player_id']);
+    }
     public function getRank()
     {
         return $this->hasOne(PlayerRank::className(), ['player_id' => 'player_id']);
