@@ -4,7 +4,8 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
-
+use app\modules\target\models\Treasure;
+use app\modules\target\models\Finding;
 /**
  * This is the model class for table "hint".
  *

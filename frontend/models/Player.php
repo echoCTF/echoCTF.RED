@@ -305,6 +305,10 @@ class Player extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(PlayerHint::className(), ['player_id' => 'id']);
     }
+    public function getPlayerHintsForTarget(int $target_id)
+    {
+        return $this->hasMany(PlayerHint::className(), ['player_id' => 'id'])->forTarget($target_id);
+    }
     public function getPendingHints()
     {
         return $this->hasMany(PlayerHint::className(), ['player_id' => 'id'])->pending();

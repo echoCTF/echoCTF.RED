@@ -13,7 +13,15 @@ class PlayerHintQuery extends \yii\db\ActiveQuery
     {
         return $this->andWhere('[[status]]=1');
     }
-    public function forPlayer($player_id)
+    public function forTarget(int $target_id)
+    {
+      $this->select('player_hint.*');
+      $this->join('LEFT JOIN', 'hint', 'hint.id=player_hint.hint_id');
+      $this->andWhere("( hint.finding_id IN (SELECT id FROM finding WHERE target_id=$target_id)  OR hint.treasure_id IN (SELECT id FROM treasure WHERE target_id=$target_id))");
+      return $this;
+    }
+
+    public function forPlayer(int $player_id)
     {
         return $this->andWhere(['player_id'=>$player_id]);
     }

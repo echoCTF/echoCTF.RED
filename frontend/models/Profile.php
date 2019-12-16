@@ -135,6 +135,7 @@ class Profile extends \yii\db\ActiveRecord
     {
         return $this->hasOne(PlayerSpin::className(), ['player_id' => 'player_id'])->todays();
     }
+
     public function getRank()
     {
         return $this->hasOne(PlayerRank::className(), ['player_id' => 'player_id']);

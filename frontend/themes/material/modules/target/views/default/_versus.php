@@ -1,6 +1,7 @@
 <?php
 use app\widgets\Card;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use app\widgets\Twitter;
 ?>
@@ -51,6 +52,9 @@ use app\widgets\Twitter;
       <div class="card bg-dark">
         <div class="card-body table-responsive">
           <?=$target->description?>
+
+          <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count()>0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ',ArrayHelper::getColumn(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->all(),'hint.title')),"</code>";?>
+
         </div>
       </div>
     </div>
