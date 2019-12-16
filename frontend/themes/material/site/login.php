@@ -7,9 +7,9 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Login '. Yii::$app->sys->even_name ;
+$this->title = Yii::$app->sys->event_name .' Login';
 ?>
-<div class="site-login">
+<div class="site-login" style="color: red-100;">
   <div class="body-content">
     <h1><?= Html::encode($this->title) ?></h1>
 

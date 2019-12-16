@@ -4,6 +4,14 @@ use app\components\JustGage;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
+?>
+<div id="target-list" class="card">
+  <div class="card-header card-header-primary">
+    <h4 class="card-title"><?=$TITLE?></h4>
+    <p class="card-category"><?=$CATEGORY?></p>
+  </div>
+  <div class="card-body table-responsive">
+<?php
 echo GridView::widget([
    'id'=>$divID,
    'pager'=>[
@@ -16,7 +24,6 @@ echo GridView::widget([
      'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
      'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
    ],
-   'options'=>['class'=>'card'],
    'tableOptions'=>['class'=>'table table-xl'],
    'layout'=>$layout,
    'dataProvider' => $dataProvider,
@@ -170,3 +177,6 @@ echo GridView::widget([
    ]
    ],
 ]);
+?>
+  </div>
+</div>

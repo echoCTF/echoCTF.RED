@@ -244,3 +244,31 @@ td.td-actions,
 .control-label { color: #94c11f; }
 
 .help-block-error  { color: #a94442; }
+
+
+input:-webkit-autofill:focus, input:-webkit-autofill:active {
+  height: 36px;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, 0);
+  border-color: #c9e976;
+  outline: 0;
+  line-height: 1.1;
+  -webkit-text-fill-color: lightgray;
+  -webkit-box-shadow: 0 0 0px 1000px #22222 inset;
+  transition: background-color 5000s ease-in-out 0s;
+  border-bottom: 1px solid #c9e976;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover {
+  font-family: 'Roboto Mono';
+  height: 36px;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, 0);
+  border-color: #c9e976;
+  outline: 0;
+  line-height: 1.1;
+  -webkit-text-fill-color: lightgray;
+  -webkit-box-shadow: 0 0 0px 1000px #22222 inset;
+  transition: background-color 5000s ease-in-out 0s;
+  border-bottom: 1px solid white;
+}

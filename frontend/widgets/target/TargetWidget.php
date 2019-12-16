@@ -27,9 +27,9 @@ class TargetWidget extends Widget
     public $dataProvider;
     public $totalPoints;
     public $pagerID='stream-pager';
-    public $summary='<div class="card-header card-header-primary"><h4 class="card-title">{TITLE}</h4><p class="card-category">{CATEGORY}</p></div>';
+    public $summary='';
     public $pagerOptions=['class'=>'d-flex align-items-end justify-content-between','id'=>'stream-pager'];
-    public $layout='{summary}<div class="card-body table-responsive">{items}{pager}</div>';
+    public $layout='{summary}{items}{pager}';
     public $personal=false;
     public function init()
     {
@@ -60,7 +60,9 @@ class TargetWidget extends Widget
           'personal'=>$this->personal,
           'layout'=>$this->layout,
           'pagerOptions'=>$this->pagerOptions,
-          'options'=>$this->divOptions
+          'options'=>$this->divOptions,
+          'TITLE'=>$this->title,
+          'CATEGORY'=>$this->category,
         ]);
     }
 
