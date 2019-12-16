@@ -1,4 +1,4 @@
-<div class="leader <?=intval(Yii::$app->user->id)===intval($model->player_id) ? "bg-dark text-primary": ""?>" >
+<div class="leader <?=intval($player_id)===intval($model->player_id) ? "bg-dark text-primary": ""?>" >
     <div class="border"></div>
     <div class="leader-wrap">
       <div class="leader-place"><?=$model->rank->ordinalPlace;?>.</div>

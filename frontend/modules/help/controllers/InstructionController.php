@@ -8,6 +8,7 @@ use app\modules\help\models\InstructionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
 
 /**
  * InstructionController implements the CRUD actions for Instruction model.
@@ -35,11 +36,11 @@ class InstructionController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new InstructionSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = new ActiveDataProvider([
+            'query' => Instruction::find(),
+        ]);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

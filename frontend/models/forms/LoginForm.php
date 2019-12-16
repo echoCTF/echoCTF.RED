@@ -5,6 +5,7 @@ namespace app\models\forms;
 use Yii;
 use yii\base\Model;
 use app\models\Player;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * LoginForm is the model behind the login form.

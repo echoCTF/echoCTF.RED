@@ -45,7 +45,7 @@ class DefaultController extends Controller
     public function actionIndex()
     {
       $dataProvider = new ActiveDataProvider([
-          'query' => Challenge::find(),
+          'query' => Challenge::find()->player_progress(Yii::$app->user->id),
       ]);
         return $this->render('index', [
             'dataProvider' => $dataProvider,
@@ -58,9 +58,10 @@ class DefaultController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView(int $id)
     {
         $model=$this->findModel($id);
+        $model=Challenge::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
         $query=Question::find();
 
         $dataProvider = new ActiveDataProvider([

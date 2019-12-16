@@ -5,6 +5,8 @@ namespace app\models;
 use Yii;
 use yii\db\Expression;
 use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "profile".
@@ -45,7 +47,24 @@ class Profile extends \yii\db\ActiveRecord
         return 'profile';
     }
 
-
+    public function behaviors()
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::className(),
+                'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'gdpr' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                    'terms_and_conditions' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                    'mail_optin' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+          ],
+        ];
+    }
     public function scenarios()
     {
         return [
@@ -59,11 +78,13 @@ class Profile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['player_id'], 'required'],
+            ['country', 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country' => 'id']],
+            ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
+            [['player_id','country','avatar','Visibility'], 'required'],
             [['terms_and_conditions','mail_optin','gdpr'],'boolean', 'trueValue' => true, 'falseValue' => false],
             [['visibility'],'in', 'range' => ['public', 'private', 'ingame']],
             [['visibility'],'default', 'value' =>  'ingame'],
-            [['id'],'default', 'value' =>  new Expression('round(rand()*10000000)')],
+            [['id'],'default', 'value' =>  new Expression('round(rand()*10000000)'),'on'=>['register']],
             [['id', 'player_id'], 'integer'],
             [['bio'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
@@ -112,7 +133,7 @@ class Profile extends \yii\db\ActiveRecord
     }
     public function getSpins()
     {
-        return $this->hasOne(PlayerSpin::className(), ['player_id' => 'player_id']);
+        return $this->hasOne(PlayerSpin::className(), ['player_id' => 'player_id'])->todays();
     }
     public function getRank()
     {
@@ -144,6 +165,15 @@ class Profile extends \yii\db\ActiveRecord
   		else if($this->visible===true) return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
   		return Html::encode($this->owner->username);
   	}
+
+    public function getLinkto()
+  	{
+
+  		if(intval(Yii::$app->user->id)===intval($this->player_id)) return Url::to(['/profile/me']);
+  		else if($this->visible===true) return Url::to(['/profile/index','id'=>$this->id]);
+  		return null;
+  	}
+
     public function getExperience()
 		{
       //return $this->hasOne(Experience::className(), ['id' => 'player_id']);

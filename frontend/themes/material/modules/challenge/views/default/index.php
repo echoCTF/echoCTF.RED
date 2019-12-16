@@ -2,6 +2,7 @@
 use yii\helpers\Html;
 use yii\widgets\ListView;
 $this->title = Html::encode(Yii::$app->sys->event_name. ' Challenges');
+$this->_description = $this->title
 ?>
 <div class="challenge-index">
   <div class="body-content">

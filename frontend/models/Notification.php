@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "notification".
@@ -25,6 +26,21 @@ class Notification extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'notification';
+    }
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::className(),
+            'attributeTypes' => [
+                'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'archived' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
+            'typecastAfterFind' => true,
+        ],
+      ];
     }
 
     /**

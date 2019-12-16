@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "player_rank".
@@ -18,6 +19,21 @@ class PlayerRank extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'player_rank';
+    }
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::className(),
+            'attributeTypes' => [
+                'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
+            'typecastAfterFind' => true,
+        ],
+      ];
     }
 
     /**

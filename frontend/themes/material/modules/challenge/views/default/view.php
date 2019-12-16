@@ -5,15 +5,18 @@ use yii\widgets\DetailView;
 use yii\widgets\ListView;
 use yii\data\ActiveDataProvider;
 use yii\bootstrap\ActiveForm;
+use app\widgets\Twitter;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Challenge */
 $this->title = Html::encode(Yii::$app->sys->event_name. ' Challenges / (ID#'.$model->id.') '. $model->name);
+$this->_description = \yii\helpers\StringHelper::truncateWords(strip_tags($model->description),15);
+
 ?>
 <div class="challenge-view">
   <div class="body-content">
     <div class="well">
-      <h2><b><?=Html::encode ( $model->name ) . ' (ID#'.$model->id.')'?></b></h2>
+      <h2><b><?=Html::encode ( $model->name ) . ' (ID#'.$model->id.')'?> <?php if($model->completed):?><i class="fas fa-check-double"></i> <?=Twitter::widget(['message'=>'Hey check this out, I completed the challenge '.$model->name]);?><?php else:?><?=Twitter::widget(['message'=>'I currently grinding the challenge '.$model->name]);?><?php endif;?></b></h2>
       <h4><b>Category:</b> <?=Html::encode($model->category);?></h4>
       <h4><b>Difficulty:</b> <?=Html::encode($model->difficulty)?></h4>
       <p><?=$model->description;?></p>
@@ -39,8 +42,10 @@ $this->title = Html::encode(Yii::$app->sys->event_name. ' Challenges / (ID#'.$mo
         'labelOptions' => ['class' => 'col-lg-1 control-label'],
     ],
     ]); ?>
+<?php if(!$model->completed):?>
     <?=$form->field($answer, 'answer')->textInput(['autofocus' => true,'autocomplete'=>'randomstrings']) ?>
-    <?=Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'answer-button']) ?>
+    <?=Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'answer-button'])?>
+<?php endif;?>
     <?php ActiveForm::end(); ?>
   </div>
 </div>

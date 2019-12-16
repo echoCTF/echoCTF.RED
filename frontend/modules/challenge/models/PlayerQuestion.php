@@ -4,6 +4,8 @@ namespace app\modules\challenge\models;
 
 use Yii;
 use app\models\Player;
+use yii\behaviors\AttributeTypecastBehavior;
+
 /**
  * This is the model class for table "player_question".
  *

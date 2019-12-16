@@ -5,6 +5,7 @@ namespace app\modules\target\models;
 use Yii;
 use app\models\PlayerTreasure;
 use app\models\PlayerFinding;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "target".
@@ -59,6 +60,27 @@ class Target extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'target';
+    }
+    public function behaviors()
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::className(),
+                'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'player_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'player_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'total_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
+                    'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+          ],
+        ];
     }
 
     /**
@@ -180,10 +202,8 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getSpinQueue()
     {
-      $command = Yii::$app->db->createCommand('select count(*) from spin_queue WHERE target_id=:target_id');
-      return (int)$command->bindValue(':target_id',$this->id)->queryScalar();
-
-        //return $this->hasOne(SpinQueue::className(), ['target_id' => 'id']);
+        //return die(var_dump(SpinQueue::findOne(['target_id'=>$this->id])));
+        return $this->hasOne(SpinQueue::className(), ['target_id' => 'id']);
     }
 
     public function getSchedule()
@@ -266,15 +286,18 @@ class Target extends \yii\db\ActiveRecord
   		return sprintf("<center><abbr title='Flags'><i class='material-icons'>flag</i>%d</abbr> / <abbr title='Service'><i class='material-icons'>whatshot</i>%d</abbr> / <abbr title='Headshots'><i class='material-icons'>memory</i>%d</abbr> %s</center>",count($this->treasures),count($this->findings),count($this->getHeadshots()),$scheduled);
   	}
 
-    public function getSpinable()
+    public function getSpinable()/*: bool*/
     {
         if(Yii::$app->user->isGuest)
           return false;
-        if($this->spinQueue!==0 || intval($this->active)!=1 )
+        if($this->spinQueue!==null || intval($this->active)!=1 )
+        {
           return false; // Not active or already queued
-        if(intval(Yii::$app->user->identity->spins)>=intval(Yii::$app->sys->spins_per_day))
+        }
+        if(intval(Yii::$app->user->identity->profile->spins->counter)>=intval(Yii::$app->sys->spins_per_day))
+        {
           return false; // user is not allowed spins for the day.
-/* XXX FIXME XXX ADD MISSING DETAILS FOR SPINABLE */
+        }
         if(intval($this->player_findings)==0 && intval($this->player_treasures)==0 && Yii::$app->user->identity->profile->last->vpn_local_address===NULL)
           return false;
         return true;

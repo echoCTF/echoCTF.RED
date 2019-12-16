@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "stream".
@@ -35,12 +36,22 @@ class Stream extends \yii\db\ActiveRecord
     public function behaviors()
     {
       return [
-          [
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::className(),
+            'attributeTypes' => [
+                'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'points' => AttributeTypecastBehavior::TYPE_FLOAT,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
+            'typecastAfterFind' => true,
+        ],
+        [
               'class' => TimestampBehavior::className(),
               'createdAtAttribute' => 'ts',
               'updatedAtAttribute' => 'ts',
               'value' => new Expression('NOW()'),
-          ],
+        ],
       ];
     }
 
@@ -87,22 +98,22 @@ class Stream extends \yii\db\ActiveRecord
         return $this->hasOne(Player::className(), ['id' => 'player_id']);
     }
 
-    public function getFormatted($pub=true)
+    public function getFormatted(bool $pub=true)
     {
       $icon=array(
-        'treasure'=>'<i class="fas fa-flag-checkered fa-2x"></i>',
+        'treasure'=>'<i class="fas fa-flag-checkered" style="font-size: 1.5em;"></i>',
         //\yii\helpers\Html::img('/images/treasure.png',['alt'=>'Treasure','width'=>'28px']),
-        'finding'=>'<i class="fas fa-fingerprint fa-2x"></i>',
+        'finding'=>'<i class="fas fa-fingerprint" style="font-size: 1.5em;"></i>',
 //        'finding'=>\yii\helpers\Html::img('/images/finding.png',['alt'=>'Finding','width'=>'28px']),
-        'question'=>'<i class="fas fa-puzzle-piece fa-2x"></i>',
+        'question'=>'<i class="fas fa-puzzle-piece" style="font-size: 1.5em;"></i>',
         //\yii\helpers\Html::img('/images/question.png',['alt'=>'Question','width'=>'28px']),
-        'team_player'=>'<i class="fas fa-users fa-2x"></i>',
+        'team_player'=>'<i class="fas fa-users" style="font-size: 1.5em;"></i>',
         //\yii\helpers\Html::img('/images/team_player.png',['alt'=>'Team Player','width'=>'28px']),
-        'user'=>'<i class="fas fa-user-ninja fa-2x"></i>',
+        'user'=>'<i class="fas fa-user-ninja" style="font-size: 1.5em;"></i>',
         //\yii\helpers\Html::img('/images/user.png',['alt'=>'User','width'=>'28px']),
-        'report'=>'<i class="fas fa-clipboard-list fa-2x"></i>',
+        'report'=>'<i class="fas fa-clipboard-list" style="font-size: 1.5em;"></i>',
         //\yii\helpers\Html::img('/images/report.png',['alt'=>'Report','width'=>'28px']),
-        'badge'=>'<i class="fas fa-id-badge fa-2x"></i>',
+        'badge'=>'<i class="fas fa-trophy" style="font-size: 1.5em;"></i>',
         //\yii\helpers\Html::img('/images/badge.png',['alt'=>'Badge','width'=>'28px']),
       );
       switch($this->model) {

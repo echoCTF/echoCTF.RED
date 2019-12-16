@@ -4,6 +4,7 @@ namespace app\models\forms;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
 use app\models\Player;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * Password reset form

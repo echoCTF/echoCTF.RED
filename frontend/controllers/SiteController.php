@@ -26,12 +26,25 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout'],
+                'only' => ['logout','register'],
                 'rules' => [
                     [
                         'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['register'],
+                        'allow' => false,
+                        'roles' => ['@'],
+                        'denyCallback' => function($rule, $action) {
+                          return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
+                        }
+                    ],
+                    [
+                        'actions' => ['register'],
+                        'allow' => true,
+                        'roles' => ['?'],
                     ],
                 ],
             ],

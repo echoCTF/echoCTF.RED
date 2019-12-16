@@ -3,6 +3,7 @@
 namespace app\modules\challenge\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "question".
@@ -31,6 +32,23 @@ class Question extends \yii\db\ActiveRecord
         return 'question';
     }
 
+    public function behaviors()
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::className(),
+                'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'challenge_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'points' =>  AttributeTypecastBehavior::TYPE_INTEGER,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+          ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -44,8 +62,6 @@ class Question extends \yii\db\ActiveRecord
             [['ts'], 'safe'],
             [['name'], 'string', 'max' => 255],
             [['code'], 'string', 'max' => 128],
-            [['challenge_id', 'name'], 'unique', 'targetAttribute' => ['challenge_id', 'name']],
-            [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::className(), 'targetAttribute' => ['challenge_id' => 'id']],
         ];
     }
 

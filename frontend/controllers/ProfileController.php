@@ -77,7 +77,7 @@ class ProfileController extends \yii\web\Controller
       ]);
     }
 
-    public function actionIndex($id)
+    public function actionIndex(int $id)
     {
       if(intval($id)==intval(Yii::$app->user->id))
         return $this->redirect(['/profile/me']);
@@ -108,15 +108,14 @@ class ProfileController extends \yii\web\Controller
         ]);
     }
 
-    public function actionUpdate()
+/*    public function actionUpdate()
     {
         $profile=$this->findModel(Yii::$app->user->id);
 
         $errors=$success=null;
         $profileForm=$profile;
         $profileForm->scenario='me';
-        die(var_dump(Yii::$app->request->post()));
-        if ($profileForm->load(Yii::$app->request->post()) && $profileForm->save())
+        if ($profileForm->load(Yii::$app->request->post()) && $profileForm->validate() && $profileForm->save())
           $success[]="Profile updated";
         else
           $errors[]='Failed to update profile';
@@ -141,7 +140,7 @@ class ProfileController extends \yii\web\Controller
           'profileForm'=>$profileForm,
         ]);
     }
-
+*/
     public function actionOvpn()
   	{
   		$model = Yii::$app->user->identity->sSL;
@@ -164,7 +163,7 @@ class ProfileController extends \yii\web\Controller
       {
         if(Yii::$app->request->post('Profile'))
         {
-          if ($profileForm->load(Yii::$app->request->post(),'Profile') && $profileForm->update()!==false)
+          if ($profileForm->load(Yii::$app->request->post(),'Profile') && $profileForm->validate() && $profileForm->update()!==false)
           {
             $success[]="Profile updated";
           }
@@ -197,11 +196,12 @@ class ProfileController extends \yii\web\Controller
       if($success!==null)
         Yii::$app->session->setFlash('success',$success);
 
+      $profile->refresh();
+      $accountForm->refresh();
       $accountForm->confirm_password=$accountForm->password=null;
       //die(var_dump(Yii::$app->session->getAllFlashes()));
       $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
       $playerSpin=$command->bindValue(':player_id',Yii::$app->user->id)->query()->read();
-
       return $this->render('settings',[
         'profile'=>$profile,
         'playerSpin'=>$playerSpin,

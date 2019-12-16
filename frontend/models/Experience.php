@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "experience".
@@ -23,6 +24,21 @@ class Experience extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'experience';
+    }
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::className(),
+            'attributeTypes' => [
+                'min_points' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'max_points' => AttributeTypecastBehavior::TYPE_INTEGER,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
+            'typecastAfterFind' => true,
+        ],
+      ];
     }
 
     /**

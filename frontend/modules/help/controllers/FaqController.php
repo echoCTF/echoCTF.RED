@@ -8,6 +8,7 @@ use app\modules\help\models\FaqSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
 
 /**
  * FaqController implements the CRUD actions for Faq model.
@@ -20,11 +21,11 @@ class FaqController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new FaqSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = new ActiveDataProvider([
+            'query' => Faq::find(),
+        ]);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

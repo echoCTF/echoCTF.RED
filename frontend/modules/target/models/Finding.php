@@ -3,6 +3,7 @@
 namespace app\modules\target\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "finding".
@@ -34,6 +35,23 @@ class Finding extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'finding';
+    }
+    public function behaviors()
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::className(),
+                'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'stock' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'port' => AttributeTypecastBehavior::TYPE_INTEGER,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+          ],
+        ];
     }
 
     /**

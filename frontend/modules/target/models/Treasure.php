@@ -3,6 +3,7 @@
 namespace app\modules\target\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "treasure".
@@ -37,6 +38,23 @@ class Treasure extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'treasure';
+    }
+    public function behaviors()
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::className(),
+                'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'points' => AttributeTypecastBehavior::TYPE_FLOAT,
+                    'appears' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+          ],
+        ];
     }
 
     /**

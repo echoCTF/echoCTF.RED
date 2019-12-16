@@ -7,8 +7,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = 'Reset password';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = Yii::$app->sys->event_name. ' Reset password';
 ?>
 <div class="site-reset-password">
     <h1><?=Html::encode($this->title) ?></h1>

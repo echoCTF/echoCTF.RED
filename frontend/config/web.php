@@ -7,12 +7,16 @@ $config = [
     'id' => 'pui2',
     'name'=>'echoCTF.RED Mycenae',
     'basePath' => dirname(__DIR__),
+    'charset' => 'UTF-8',
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
     'modules' => [
+      'game' => [
+          'class' => 'app\modules\game\Module',
+      ],
       'challenge' => [
           'class' => 'app\modules\challenge\Module',
       ],
@@ -75,9 +79,17 @@ $config = [
                 ],
             ],
         ],
+//        'request' => [
+//            'csrfParam' => '_csrf-red',
+//        ],
+//        'session' => [
+//            // this is the name of the session cookie used for login on the backend
+//            'name' => 'echoctf_red',
+//        ],
         'user' => [
             'identityClass' => 'app\models\Player',
             'enableAutoLogin' => true,
+//            'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -143,7 +155,11 @@ $config = [
                 'site/reset-password' => 'site/reset-password',
                 'site/resend-verification-email'=>'site/resend-verification-email',
                 'site/verify-email'=>'site/verify-email',
-                'changelog' => 'site/changelog'
+                'changelog' => 'site/changelog',
+                'target/default/spin' => 'target/default/spin',
+                'target/<id:\d+>/spin'=>'target/default/spin',
+                'legal/terms-and-conditions'=>'legal/terms-and-conditions',
+                'legal/privacy-policy'=>'legal/privacy-policy',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],

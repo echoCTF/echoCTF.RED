@@ -23,5 +23,6 @@ echo ListView::widget([
     'itemView' => '_score',
     'viewParams'=>[
       'totalPoints'=>$totalPoints,
+      'player_id'=>$player_id,
     ]
 ]);

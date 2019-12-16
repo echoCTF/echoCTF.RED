@@ -62,7 +62,7 @@ class DashboardController extends \yii\web\Controller
       //die(var_dump($tmod->player_progress(Yii::$app->user->id)->one()));
 
       $scoreProvider = new ActiveDataProvider([
-          'query' => PlayerScore::find()->orderBy(['points'=>SORT_DESC,'player_id'=>SORT_ASC])->limit(100),
+          'query' => PlayerScore::find()->active()->orderBy(['points'=>SORT_DESC,'player_id'=>SORT_ASC])->limit(100),
           //'totalCount' => 100,
           'pagination' => [
               'pageSizeParam'=>'score-perpage',

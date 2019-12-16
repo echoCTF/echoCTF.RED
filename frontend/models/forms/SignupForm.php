@@ -5,6 +5,7 @@ use Yii;
 use yii\base\Model;
 use app\models\Player;
 use app\models\PlayerSsl;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * Signup form

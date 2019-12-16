@@ -1,7 +1,8 @@
 <?php
-use rce\material\widgets\Card;
+use app\widgets\Card;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+
 ?>
 <div class="card">
   <div class="card-header card-header-primary">

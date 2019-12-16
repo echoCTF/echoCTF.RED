@@ -3,6 +3,9 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "player_spin".
@@ -25,6 +28,28 @@ class PlayerSpin extends \yii\db\ActiveRecord
         return 'player_spin';
     }
 
+    public function behaviors()
+    {
+        return [
+          'typecast' => [
+              'class' => AttributeTypecastBehavior::className(),
+              'attributeTypes' => [
+                  'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                  'counter' => AttributeTypecastBehavior::TYPE_INTEGER,
+                  'total' => AttributeTypecastBehavior::TYPE_INTEGER,
+              ],
+              'typecastAfterValidate' => true,
+              'typecastBeforeSave' => false,
+              'typecastAfterFind' => false,
+          ],
+          [
+              'class' => TimestampBehavior::className(),
+              'createdAtAttribute' => 'updated_at',
+              'updatedAtAttribute' => 'updated_at',
+              'value' => new Expression('NOW()'),
+          ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */

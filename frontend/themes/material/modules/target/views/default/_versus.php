@@ -1,6 +1,8 @@
 <?php
-use rce\material\widgets\Card;
+use app\widgets\Card;
 use yii\helpers\Html;
+use yii\helpers\Url;
+use app\widgets\Twitter;
 ?>
 <div class="row">
       <div class="col-lg-4 col-md-6 col-sm-6">
@@ -31,9 +33,13 @@ use yii\helpers\Html;
             'type'=>'card-stats',
             'icon'=>sprintf('<img src="/images/avatars/%s" height="60"/>',Yii::$app->user->identity->profile->avatar),
             'color'=>'primary',
-            'subtitle'=>Html::encode('Level '.Yii::$app->user->identity->profile->experience->id.' / '.Yii::$app->user->identity->profile->experience->name),
-            'title'=>Html::encode(Yii::$app->user->identity->username)." / ".Yii::$app->user->identity->profile->rank->ordinalPlace." Place",
-            'footer'=>sprintf('<div class="stats">%s</div>',Html::encode(Yii::$app->user->identity->profile->bio)),
+            'subtitle'=>'Level '.Yii::$app->user->identity->profile->experience->id.' / '.Yii::$app->user->identity->profile->experience->name,
+            'title'=>Yii::$app->user->identity->username." / ".Yii::$app->user->identity->profile->rank->ordinalPlace." Place",
+            'footer'=>sprintf('<div class="stats">%s %s</div>',Twitter::widget([
+                           'message'=>sprintf('Hey check this out, I have found %d out of %d services and %d out of %d flags on [%s]',$target->player_findings,$target->total_findings,$target->player_treasures,$target->total_treasures,$target->name),
+                           'url'=>Url::to(['/target/default/index','id'=>$target->id],'https'),
+                           'linkOptions'=>['class'=>'target-view-tweet','target'=>'_blank','style'=>'font-size: 1.4em;'],
+                        ]),Html::encode(Yii::$app->user->identity->profile->bio)),
         ]);
         echo "<p class='text-primary '><i class='material-icons'>flag</i> ", $target->player_treasures," / ";
         echo "<i class='material-icons'>whatshot</i> ", $target->player_findings,"<br/>",number_format($playerPoints)," pts<br/>";

@@ -3,6 +3,7 @@
 namespace app\modules\challenge\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "challenge".
@@ -20,6 +21,8 @@ use Yii;
  */
 class Challenge extends \yii\db\ActiveRecord
 {
+    public $total_questions,
+          $player_answers;
     /**
      * {@inheritdoc}
      */
@@ -27,6 +30,24 @@ class Challenge extends \yii\db\ActiveRecord
     {
         return 'challenge';
     }
+
+    public function behaviors()
+    {
+        return [
+          'typecast' => [
+              'class' => AttributeTypecastBehavior::className(),
+              'attributeTypes' => [
+                  'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                  'total_questions' => AttributeTypecastBehavior::TYPE_INTEGER,
+                  'player_answers' => AttributeTypecastBehavior::TYPE_INTEGER,
+              ],
+              'typecastAfterValidate' => true,
+              'typecastBeforeSave' => true,
+              'typecastAfterFind' => true,
+          ],
+        ];
+    }
+
 
     /**
      * {@inheritdoc}
@@ -64,5 +85,18 @@ class Challenge extends \yii\db\ActiveRecord
     public function getQuestions()
     {
         return $this->hasMany(Question::className(), ['challenge_id' => 'id']);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return ChallengeQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new ChallengeQuery(get_called_class());
+    }
+    public function getCompleted(): bool
+    {
+      return $this->total_questions===$this->player_answers;
     }
 }

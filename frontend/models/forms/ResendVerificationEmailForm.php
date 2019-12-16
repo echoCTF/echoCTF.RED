@@ -6,6 +6,7 @@ namespace app\models\forms;
 use Yii;
 use app\models\Player;
 use yii\base\Model;
+use yii\behaviors\AttributeTypecastBehavior;
 
 class ResendVerificationEmailForm extends Model
 {

@@ -9,10 +9,11 @@ namespace app\models;
  */
 class PlayerSpinQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    public function todays()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+      //        'select'=>["t.player_id","t.total","if(DATE(t.updated_at) < DATE(NOW()),0,t.counter) as counter"],
+        return $this->select(['player_id','total',"if(DATE(updated_at) < DATE(NOW()),0,counter) as counter",'updated_at']);
+    }
 
     /**
      * {@inheritdoc}

@@ -6,6 +6,7 @@ use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * Player model
@@ -36,6 +37,22 @@ class Player extends ActiveRecord implements IdentityInterface
     {
         return 'player';
     }
+    public function behaviors()
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::className(),
+                'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'status' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'active' =>  AttributeTypecastBehavior::TYPE_BOOLEAN,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+          ],
+        ];
+    }
 
     /**
      * {@inheritdoc}
@@ -55,6 +72,7 @@ class Player extends ActiveRecord implements IdentityInterface
             /* username field rules */
             [['username'], 'trim'],
             [['username'], 'string', 'max'=>32],
+            [['username'], 'match','not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>'Invalid characters in username.'],
             [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin','administrator','echoctf','root','support']],
             [['username'], 'required', 'message' => 'Please choose a username.'],
 
@@ -70,36 +88,6 @@ class Player extends ActiveRecord implements IdentityInterface
 
             [['password','confirm_password'], 'string', 'max'=>255,'on'=>['password_change']],
             [['password'], 'compare', 'compareAttribute'=>'confirm_password','on'=>['password_change']],
-
-/*            array('activkey','required','on'=>'reset'),
-      			array('active','required','on'=>'quick_activation'),
-      			array('username, fullname, email', 'required'),
-      			array('email','email','skipOnError'=>false,'on'=>'update'),
-      			array('username, fullname, email', 'filter','filter'=>'trim'),
-      			array('username',
-          				'match', 'not' => true, 'pattern' => '/[^a-zA-Z0-9]/',
-          				'message' => 'Invalid characters in username.',
-          	),
-      			array('username', 'unique',
-          				'allowEmpty' => false,
-          				'className' => 'Player',
-          				'attributeName'=>'username',
-          				'caseSensitive' => false,
-          				'message' => 'Another player already exists with this name.',
-        		),
-      			array('email', 'unique',
-          				'allowEmpty' => true,
-          				'className' => 'Player',
-          				'attributeName'=>'email',
-          				'caseSensitive' => false,
-          				'message' => 'Another user has already registered with this email address.',
-                  'skipOnError'=>true
-          		),
-      			array('username, fullname, email, password,confirm_password', 'length', 'max'=>255),
-          	array('created','default','value'=>new CDbExpression('NOW()')),
-      			array('academic','boolean'),
-          	array('ts','default','value'=>new CDbExpression('NOW()')),
-      			array('type', 'length', 'max'=>7), */
         ];
     }
 

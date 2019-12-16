@@ -8,6 +8,7 @@ use app\modules\help\models\RuleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\data\ActiveDataProvider;
 
 /**
  * RuleController implements the CRUD actions for Rule model.
@@ -35,11 +36,11 @@ class RuleController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new RuleSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = new ActiveDataProvider([
+            'query' => Rule::find(),
+        ]);
 
         return $this->render('index', [
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }

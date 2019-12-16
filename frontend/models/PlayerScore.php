@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "player_score".
@@ -19,6 +20,21 @@ class PlayerScore extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'player_score';
+    }
+    public function behaviors()
+    {
+        return [
+          'typecast' => [
+              'class' => AttributeTypecastBehavior::className(),
+              'attributeTypes' => [
+                  'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                  'points' => AttributeTypecastBehavior::TYPE_INTEGER,
+              ],
+              'typecastAfterValidate' => true,
+              'typecastBeforeSave' => false,
+              'typecastAfterFind' => true,
+          ],
+        ];
     }
 
     /**
@@ -54,6 +70,6 @@ class PlayerScore extends \yii\db\ActiveRecord
       return $this->hasOne(PlayerRank::className(), ['player_id' => 'player_id']);
     }
 
-
+    public static function find(){    return new PlayerScoreQuery(get_called_class()); }
 
 }

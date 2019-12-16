@@ -5,6 +5,7 @@ namespace app\modules\help\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "rule".

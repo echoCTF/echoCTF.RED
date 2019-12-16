@@ -1,12 +1,12 @@
 <?php
 use yii\widgets\Pjax;
-use rce\material\widgets\Card;
+use app\widgets\Card;
 use app\widgets\target\TargetWidget;
 use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
 $this->_fluid="-fluid";
-$this->title = Yii::$app->sys->event_name .' - Dashboard';
-\Yii::$app->view->_description="The echoCTF dashboard page";
+$this->title = Yii::$app->sys->event_name .' Dashboard';
+$this->_description ="The echoCTF dashboard page";
 
 ?>
 

@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\modules\target\models\Finding;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "player_finding".
@@ -23,6 +24,21 @@ class PlayerFinding extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'player_finding';
+    }
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::className(),
+            'attributeTypes' => [
+                'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'finding_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
+            'typecastAfterFind' => true,
+        ],
+      ];
     }
 
     /**

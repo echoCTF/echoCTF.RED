@@ -17,7 +17,7 @@ class TreasureQuery extends \yii\db\ActiveQuery
      {
         return $this->andWhere(new yii\db\Expression('appears!=0'));
      }
-     public function notBy($player_id)
+     public function notBy(int $player_id)
      {
        return $this->andWhere(new yii\db\Expression('treasure.id NOT IN (SELECT treasure_id FROM player_treasure WHERE player_id='.$player_id.')'));
      }

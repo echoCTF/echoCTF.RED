@@ -5,6 +5,7 @@ namespace app\models\forms;
 use app\models\Player;
 use yii\base\InvalidArgumentException;
 use yii\base\Model;
+use yii\behaviors\AttributeTypecastBehavior;
 
 class VerifyEmailForm extends Model
 {

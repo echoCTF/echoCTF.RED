@@ -1,21 +1,25 @@
 <?php
 use yii\helpers\Html;
 use yii\helpers\Url;
+use app\widgets\Twitter;
 ?>
 <div class="card card-profile">
   <div class="card-avatar bg-primary">
-    <a href="#">
+    <a href="<?=$profile->linkTo?>">
       <img class="img" src="/images/avatars/<?=$profile->avatar?>" />
     </a>
   </div>
   <div class="card-body">
-    <h6 class="badge badge-secondary"><?=$profile->experience->name?> Level <?=$profile->experience->id?></h6>
+    <h6 class="badge badge-secondary">Level <?=$profile->experience->id?> / <?=$profile->experience->name?></h6>
 <!--    <h6 class="card-category text-gray"><?=$profile->rank->ordinalPlace?> Place / Level <?=$profile->experience->id?> (<?=$profile->experience->name?>) <img src="/images/flags/shiny/24/<?=$profile->country?>.png"/></h6>-->
     <h4 class="card-title"><?=Html::encode($profile->owner->username)?></h4>
     <p class="card-description">
       <?=Html::encode($profile->bio)?>
     </p>
-    <?=Html::a(Url::to(['profile/index', 'id'=>$profile->id],'https'),['profile/index', 'id'=>$profile->id]);?>
+    <?=Html::a(Url::to(['profile/index', 'id'=>$profile->id],'https'),['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
+         'message'=>'Checkout my profile at echoCTF.RED',
+         'linkOptions'=>['class'=>'profile-tweet','target'=>'_blank','style'=>'font-size: 1.3em;'],
+      ]);?>
     <ul class="nav flex-column">
   <?php if(intval(Yii::$app->user->id)===intval($profile->player_id)):?>
           <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> Download OpenVPN configuration",['profile/ovpn'],['class'=>'btn btn-primary'])?></li>

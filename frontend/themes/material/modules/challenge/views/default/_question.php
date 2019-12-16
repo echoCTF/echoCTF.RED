@@ -1,6 +1,6 @@
 <?php
 use yii\helpers\Html;
-use yii\widgets\DetailView;
+use app\widgets\Twitter;
 ?>
 <div class="question-view">
   <details>

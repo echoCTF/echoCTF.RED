@@ -2,7 +2,7 @@
 /**
  * Twitter widget
  *
- * use app\components\widgets\twitter\TwitterWidget as Twitter;
+ * use app\widgets\Twitter;
  * Twitter::widget([
  *    'message'=>'Message to tweet',
  *    'url'=>'url to include to tweet',
@@ -30,7 +30,7 @@ class Twitter extends Widget{
     public $url;
     /* default related twitter account */
     public $related='echoCTF';
-    public $linkOptions=['class'=>'TweetThis'];
+    public $linkOptions=['class'=>'TweetThis','target'=>'_blank'];
     public $icon='<i class="fab fa-twitter"></i>';
     public $hashtags='#echoCTF #CTF #Hacking';
     public $via="echoCTF";
@@ -56,6 +56,6 @@ class Twitter extends Widget{
         $tweet_query=http_build_query($linkParams);
         $linkTo=sprintf("%s?%s",$this->twUrl,$tweet_query);
 
-        return Html::a($this->icon,$linkTo , ['class'=>'TweetThis','target'=>'_blank'] );
+        return Html::a($this->icon,$linkTo , $this->linkOptions);
     }
 }

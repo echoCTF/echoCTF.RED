@@ -2,7 +2,8 @@
 use yii\helpers\Html;
 use yii\widgets\ListView;
 use app\widgets\stream\StreamWidget as Stream;
-$this->title = Yii::$app->sys->event_name .' - Target: '.$target->name.' #'.$target->id;
+$this->title = Yii::$app->sys->event_name .' Target: '.$target->name.' #'.$target->id;
+$this->_description =$target->purpose;
 $this->_fluid='-fluid';
 ?>
 

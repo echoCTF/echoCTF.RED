@@ -3,7 +3,7 @@ use yii\grid\GridView;
 use app\components\JustGage;
 use yii\helpers\Html;
 use yii\helpers\Url;
-
+use app\widgets\Twitter;
 echo GridView::widget([
    'id'=>$divID,
    'pager'=>[
@@ -123,13 +123,13 @@ echo GridView::widget([
      ],
      [
        'class'=> 'rce\material\grid\ActionColumn',
-       'visible'=>!$personal,
+//       'visible'=>!$personal,
        'headerOptions' => ["style"=>'width: 4rem'],
-       'template'=>'{spin} {view}',
+       'template'=>'{spin} {view} {tweet}',
        'buttons' => [
          'spin' => function ($url,$model) {
              return Html::a(
-                 '<i class="material-icons large">power_settings_new</i>',
+               '<i class="fas fa-power-off"></i>',
                  Url::to(['/target/default/spin','id'=>$model->id]),
                  [
                    'style'=>"font-size: 1.5em;",
@@ -139,9 +139,18 @@ echo GridView::widget([
                  ]
              );
          },
+         'tweet' => function ($url,$model) {
+              $url=Url::to(['target/default/index','id'=>$model->id],'https');
+              if($model->total_treasures===$model->player_treasures && $model->total_findings===$model->player_findings)
+                return Twitter::widget(['message'=>'Hey check this out, I headshoted '.strip_tags($model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+              elseif($model->player_treasures!==0 || $model->player_findings!==0)
+                return Twitter::widget(['message'=>sprintf('Hey check this out, i have found %d out of %d flags and %d out of %d services on %s',$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+
+             return Twitter::widget(['message'=>sprintf('Hey check this target [%s], %s',$model->name,$model->purpose),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+         },
          'view' => function ($url,$model) {
              return Html::a(
-               '<i class="material-icons">remove_red_eye</i>',
+               '<i class="fas fa-eye"></i>',
                  Url::to(['/target/default/index','id'=>$model->id]),
                  [
                    'style'=>"font-size: 1.5em;",

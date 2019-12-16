@@ -19,12 +19,20 @@ use yii\helpers\Html;
  */
 class DefaultController extends Controller
 {
+
+      public function actions()
+      {
+        $actions = parent::actions();
+        $actions['spin']['class'] = 'app\modules\target\actions\SpinRestAction';
+        return $actions;
+      }
+
       public function behaviors()
       {
           return [
               'access' => [
                   'class' => AccessControl::className(),
-                  'only' => ['index', 'claim'],
+                  'only' => ['index', 'claim','spin'],
                   'rules' => [
                       [
                           'allow' => true,
@@ -32,7 +40,7 @@ class DefaultController extends Controller
                       ],
                       [
                           'allow' => true,
-                          'actions' => ['claim'],
+                          'actions' => ['claim','spin'],
                           'roles' => ['@'],
                           'verbs'=>['post'],
                       ],
@@ -40,12 +48,13 @@ class DefaultController extends Controller
               ],
               [
                 'class' => 'yii\filters\AjaxFilter',
-                'only' => ['notifications','hints']
+                'only' => ['claim']
               ],
           ];
       }
+
     /**
-     * Renders the index view for the module
+     * Renders a Target model details view
      * @return string
      */
     public function actionIndex($id)
@@ -98,6 +107,11 @@ class DefaultController extends Controller
             'headshotsProvider'=>$headshotsProvider
         ]);
     }
+
+    /**
+     * Claims a treasure flag for a target
+     * @return string
+     */
     public function actionClaim()
     {
         $string = Yii::$app->request->post('hash');
@@ -111,7 +125,7 @@ class DefaultController extends Controller
         }
         elseif($treasure===null)
         {
-          Yii::$app->session->setFlash('error',sprintf('Flag [<strong>%s</strong>] do not exist!',Html::encode($string)));
+          Yii::$app->session->setFlash('error',sprintf('Flag [<strong>%s</strong>] does not exist!',Html::encode($string)));
           return $this->renderAjax('claim');
         }
 

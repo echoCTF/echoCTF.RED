@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use app\modules\target\models\Treasure;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "player_treasure".
