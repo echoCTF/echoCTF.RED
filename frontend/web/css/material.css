@@ -273,14 +273,18 @@ input:-webkit-autofill:hover {
   border-bottom: 1px solid white;
 }
 
-#target-list td {
+#target-list td,
+#stream-listing .leader-name
+{
   font-family: 'Roboto Mono';
-  line-height: 1;
-  font-size: 0.93em;
+  font-size: 1em;
   letter-spacing: 0em;
-  white-space: nowrap;
-
 }
+#target-list td
+{
+  white-space: nowrap;
+}
+
 .pull-right {
     float: right;
 }
@@ -303,12 +307,16 @@ input:-webkit-autofill:hover {
 }
 
 .leader{
+    font-family: 'Roboto Mono';
+    font-size: 1em;
+    letter-spacing: 0em;
+    white-space: nowrap;
     padding: 0px 0px;
     margin-bottom: 0px;
-    animation-name: revealLeaders;
-    animation-duration: 2s;
+/*    animation-name: revealLeaders;
+    animation-duration: 0.4s;
     animation-fill-mode: both;
-    animation-timing-function: ease-in-out;
+    animation-timing-function: ease-in-out; */
     width: 100%;
 }
 
@@ -389,11 +397,11 @@ input:-webkit-autofill:hover {
 
 @keyframes revealLeaders{
     from{
-/*        transform: scale(1.5,1.5) translateX(-200px);*/
+        transform: scale(1.5,1.0) translateX(-100px);
         opacity: 0.8;
     }
     to{
-        /*  transform: none;*/
+        transform: none;
         opacity: 1;
     }
 }
