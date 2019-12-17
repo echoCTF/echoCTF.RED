@@ -71,7 +71,7 @@ class DefaultController extends Controller
 
         $answer = new AnswerForm();
         if ($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id)) {
-              Yii::$app->session->setFlash('success','Accepted answer for '.$answer->points);
+              Yii::$app->session->setFlash('success',sprintf('Accepted answer for question [%s] for %d pts.',$answer->title, intval($answer->points)));
               return $this->redirect(Yii::$app->request->referrer);
         }
 

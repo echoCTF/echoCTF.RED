@@ -158,6 +158,7 @@ $config = [
             'rules' => [
                 // app/controllers/SiteController.php
                 '' => 'site/index',
+                '/' => 'site/index',
                 'login' => 'site/login',
                 'logout' => 'site/logout',
                 'register'=>'site/register',
