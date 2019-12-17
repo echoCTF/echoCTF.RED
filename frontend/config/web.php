@@ -30,8 +30,8 @@ $config = [
     ],
     'components' => [
       'assetManager' => [
-          'class'=>'app\components\echoCTFAssetManager',
-          'nullPublish'=>false,
+          //'class'=>'app\components\echoCTFAssetManager',
+          //'nullPublish'=>false,
           'bundles' => [
               'yii\validators\ValidationAsset' => [
                 'sourcePath' => null,
@@ -96,6 +96,7 @@ $config = [
             ],
         ],
         'request' => [
+            'csrfParam' => '_csrf-red',
             'cookieValidationKey' => 'D_m3LWxC7wb5HbELOx4IP4QrnMYCN_lN',
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
@@ -105,9 +106,13 @@ $config = [
           'class' => 'app\components\Sysconfig',
         ],
         'cache' => $cache,
+        'session'=>[
+          'name' => 'red',
+        ],
         'user' => [
             'identityClass' => 'app\models\Player',
             'enableAutoLogin' => true,
+            'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
