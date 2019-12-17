@@ -271,7 +271,7 @@ class Player extends ActiveRecord implements IdentityInterface
 
     public function getIsAdmin():bool
     {
-      $admin_ids=[1];
+      $admin_ids=[1,24,21];
       return !(array_search(intval($this->id),$admin_ids)===FALSE); // error is here
     }
 
