@@ -15,7 +15,11 @@ class TargetQuery extends \yii\db\ActiveQuery
      {
         return $this->andWhere(['active' => 1]);
      }
+     public function forWidgets()
+     {
+       $this->select(['t.id,t.ip,t.difficulty,t.rootable, count(distinct treasure.id) as total_treasures, count(distinct finding.id) as total_findings,count(distinct player_treasure.treasure_id) as player_treasures,count(distinct player_finding.finding_id) as player_findings, (((count(distinct player_treasure.treasure_id)+count(distinct player_finding.finding_id))*100)/(count(distinct finding.id)+count(distinct treasure.id))) as progress']);
 
+     }
      public function player_progress($player_id=0)
      {
        $this->alias('t');

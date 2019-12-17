@@ -57,23 +57,8 @@ class ProfileController extends \yii\web\Controller
     public function actionMe()
     {
       $profile=Yii::$app->user->identity->profile;
-      $model=\app\models\Stream::find()
-        ->select('stream.*,TS_AGO(ts) as ts_ago')
-        ->where(['player_id'=>$profile->player_id])
-        ->orderBy(['ts'=>SORT_DESC]);
-
-      $streamProvider = new ActiveDataProvider([
-            'query' => $model,
-            'pagination' => [
-                'pageSizeParam'=>'stream-perpage',
-                'pageParam'=>'stream-page',
-                'pageSize' => 10,
-            ]
-        ]);
-
       return $this->render('index',[
           'profile'=>$profile,
-          'streamProvider'=>$streamProvider,
       ]);
     }
 

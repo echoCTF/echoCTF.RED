@@ -195,10 +195,9 @@ class Profile extends \yii\db\ActiveRecord
       return $headshots;
     }
     public function getHeadshotsCount(){
-      $command = Yii::$app->db->createCommand('select count(*) FROM target as t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id)');
+      $command = Yii::$app->db->createCommand('select count(t.id) FROM target as t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id)');
       $command->bindValue(':player_id',$this->player_id);
-      $headshots = $command->queryScalar();
-      return (int)$headshots;
+      return (int) $command->query()->count();
     }
 
 }

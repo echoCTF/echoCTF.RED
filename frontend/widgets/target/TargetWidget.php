@@ -31,6 +31,7 @@ class TargetWidget extends Widget
     public $pagerOptions=['class'=>'d-flex align-items-end justify-content-between','id'=>'stream-pager'];
     public $layout='{summary}{items}{pager}';
     public $personal=false;
+    public $profile=null;
     public function init()
     {
       if ($this->dataProvider===NULL && $this->player_id===NULL)

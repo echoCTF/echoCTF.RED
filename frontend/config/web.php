@@ -43,7 +43,6 @@ $config = [
                   'logoMini' => '/images/logo-red-small.png',
                   'sidebarColor' => 'echoctf',
                   'sidebarBackgroundColor' => 'black',
-                  //'sidebarBackgroundImage' => ''
               ],
           ],
         ],
@@ -54,7 +53,7 @@ $config = [
                 'baseUrl' => '@web/themes/material',
                 'pathMap' => [
                     '@app/views' => '@app/themes/material',
-                    '@app/modules' => '@app/themes/material/modules', // <-- !!!
+                    '@app/modules' => '@app/themes/material/modules',
                 ],
             ],
         ],
@@ -79,17 +78,9 @@ $config = [
                 ],
             ],
         ],
-//        'request' => [
-//            'csrfParam' => '_csrf-red',
-//        ],
-//        'session' => [
-//            // this is the name of the session cookie used for login on the backend
-//            'name' => 'echoctf_red',
-//        ],
         'user' => [
             'identityClass' => 'app\models\Player',
             'enableAutoLogin' => true,
-//            'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true],
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -128,36 +119,40 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                // app/controllers/SiteController.php
                 '' => 'site/index',
-                'about' => 'site/about',
                 'login' => 'site/login',
                 'logout' => 'site/logout',
+                'register'=>'site/register',
+                'request-password-reset'=>'site/request-password-reset',
+                'reset-password' => 'site/reset-password',
+                'resend-verification-email'=>'site/resend-verification-email',
+                'verify-email'=>'site/verify-email',
+                'changelog' => 'site/changelog',
+                // app/modules/challenge/controllers/ChallengeController.php
                 'challenges' => 'challenge/default/index',
                 'challenge/<id:\d+>' => 'challenge/default/view',
+                // app/modules/target/controllers/TargetController.php
                 'target/<id:\d+>' => 'target/default/index',
-                'profile/<id:\d+>' => 'profile/default/index',
+                'target/<id:\d+>/spin'=>'target/default/spin',
+                'claim'=>'target/default/claim',
+                // app/controllers/ProfileController
+                'profile/<id:\d+>' => 'profile/index',
+                'profile/me'=>'profile/me',
+                'profile/ovpn'=>'profile/ovpn',
+                'profile/settings'=>'profile/settings',
+                'profile/notifications'=>'profile/notifications',
+                'profile/hints'=>'profile/hints',
+                // app/controllers/DashboardController.php
                 'dashboard' => 'dashboard/index',
+                // HELP MODULE
                 'help/faq' => 'help/faq/index',
                 'faq' => 'help/faq/index',
                 'help/rules' => 'help/rule/index',
                 'rules' => 'help/rule/index',
                 'help/instructions' => 'help/instruction/index',
                 'instructions' => 'help/instruction/index',
-                'claim'=>'target/default/claim',
-                'profile/<id:\d+>'=>'profile/index',
-                'profile/me'=>'profile/me',
-                'profile/ovpn'=>'profile/ovpn',
-                'profile/settings'=>'profile/settings',
-                'profile/notifications'=>'profile/notifications',
-                'profile/hints'=>'profile/hints',
-                'register'=>'site/register',
-                'site/request-password-reset'=>'site/request-password-reset',
-                'site/reset-password' => 'site/reset-password',
-                'site/resend-verification-email'=>'site/resend-verification-email',
-                'site/verify-email'=>'site/verify-email',
-                'changelog' => 'site/changelog',
-                'target/default/spin' => 'target/default/spin',
-                'target/<id:\d+>/spin'=>'target/default/spin',
+                // app/controllers/LegalController.php
                 'legal/terms-and-conditions'=>'legal/terms-and-conditions',
                 'legal/privacy-policy'=>'legal/privacy-policy',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
@@ -176,7 +171,7 @@ if (YII_ENV_DEV) {
 //    // uncomment the following to add your IP if you are not connecting from localhost.
 //        'allowedIPs' => ['127.0.0.1', '::1'],
 //    ];
-//
+
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',

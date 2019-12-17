@@ -23,7 +23,7 @@ $this->_description = Html::encode($profile->bio);
     <div class="row">
       <div class="col-md-8">
         <?php \yii\widgets\Pjax::begin(['id'=>'target-listing','enablePushState'=>false,'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-        <?php echo TargetWidget::widget(['dataProvider' => null,'player_id'=>$profile->player_id,'title'=>'Progress','category'=>'Progress of '.Html::encode($profile->owner->username).' on platform targets','personal'=>true]);?>
+        <?php echo TargetWidget::widget(['dataProvider' => null,'player_id'=>$profile->player_id,'profile'=>$profile,'title'=>'Progress','category'=>'Progress of '.Html::encode($profile->owner->username).' on platform targets','personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
       </div>
       <div class="col-md-4">
@@ -40,7 +40,7 @@ $this->_description = Html::encode($profile->bio);
     <div class="row">
     <div class="col-sm-8"><?php
     \yii\widgets\Pjax::begin(['id'=>'stream-listing','enablePushState'=>false,'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
-    echo Stream::widget(['divID'=>'stream','dataProvider' => $streamProvider,'pagerID'=>'stream-pager']);
+    echo Stream::widget(['divID'=>'stream','dataProvider' => null,'player_id'=>$profile->player_id,'pagerID'=>'stream-pager']);
     \yii\widgets\Pjax::end();
     ?></div>
     <div class="col-sm-4">

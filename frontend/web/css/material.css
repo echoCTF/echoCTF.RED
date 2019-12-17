@@ -272,3 +272,12 @@ input:-webkit-autofill:hover {
   transition: background-color 5000s ease-in-out 0s;
   border-bottom: 1px solid white;
 }
+
+#target-list td {
+  font-family: 'Roboto Mono';
+  line-height: 1;
+  font-size: 0.93em;
+  letter-spacing: 0em;
+  white-space: nowrap;
+
+}

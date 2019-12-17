@@ -40,7 +40,7 @@ echo GridView::widget([
        'contentOptions' => ['class' => 'text-center'],
        'headerOptions' => ['class' => 'text-center',"style"=>'width: 1.5em'],
        'format'=>'raw',
-       'value'=>function($model){return sprintf('<img src="/images/targets/_%s.png" alt="%s" class="img-fluid" style="max-width: 20px;max-heigh:30px">',$model->name, $model->fqdn);}
+       'value'=>function($model){return sprintf('<img src="/images/targets/_%s.png" alt="%s" class="rounded-circle" style="height: 20px; max-height: 20px; max-width: 20px">',$model->name, $model->fqdn);}
      ],
      [
        'attribute'=>'name',
@@ -154,11 +154,23 @@ echo GridView::widget([
          },
          'tweet' => function ($url,$model) {
               $url=Url::to(['target/default/index','id'=>$model->id],'https');
-              if($model->total_treasures===$model->player_treasures && $model->total_findings===$model->player_findings)
-                return Twitter::widget(['message'=>'Hey check this out, I headshoted '.strip_tags($model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
-              elseif($model->player_treasures!==0 || $model->player_findings!==0)
-                return Twitter::widget(['message'=>sprintf('Hey check this out, i have found %d out of %d flags and %d out of %d services on %s',$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
 
+              if(!Yii::$app->user->isGuest && Yii::$app->user->id===$this->context->player_id)
+              {
+                if($model->total_treasures===$model->player_treasures && $model->total_findings===$model->player_findings)
+                  return Twitter::widget(['message'=>'Hey check this out, I headshoted '.strip_tags($model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+                elseif($model->player_treasures!==0 || $model->player_findings!==0)
+                  return Twitter::widget(['message'=>sprintf('Hey check this out, i have found %d out of %d flags and %d out of %d services on %s',$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+
+              }
+              if($this->context->profile!==null)
+              {
+                $url=Url::to($this->context->profile->linkTo,'https');
+                if($model->total_treasures===$model->player_treasures && $model->total_findings===$model->player_findings)
+                  return Twitter::widget(['message'=>sprintf('Hey check this out, @%s headshoted %s',$this->context->profile->twitter,$model->name),'url'=>$this->context->profile->linkTo,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+
+                return Twitter::widget(['message'=>sprintf('Hey check this out, @%s found %d out of %d flags and %d out of %d services on %s',$this->context->profile->twitter,$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$this->context->profile->linkTo,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+              }
              return Twitter::widget(['message'=>sprintf('Hey check this target [%s], %s',$model->name,$model->purpose),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
          },
          'view' => function ($url,$model) {

@@ -77,14 +77,14 @@ $this->_description ="The echoCTF dashboard page";
       <div class="col-sm-4">
 <?php
 Pjax::begin(['id'=>'leaderboard-listing','enablePushState'=>false,'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-echo Leaderboard::widget(['dataProvider'=>null,'player_id'=>Yii::$app->user->id /*$scoreProvider*/,'totalPoints'=>$totalPoints,'divID'=>"Leaderboard"]);
+echo Leaderboard::widget(['dataProvider'=>null,'player_id'=>Yii::$app->user->id /*$scoreProvider,'totalPoints'=>$totalPoints*/,'divID'=>"Leaderboard"]);
 Pjax::end();
 ?>
       </div>
     </div><!-- //row -->
 <?php
 Pjax::begin(['id'=>'stream-listing','enablePushState'=>false,'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
-echo Stream::widget(['divID'=>'stream','dataProvider' => $streamProvider,'pagerID'=>'stream-pager']);
+echo Stream::widget(['divID'=>'stream','dataProvider' => null,'pagerID'=>'stream-pager']);
 Pjax::end();
 ?>
   </div><!-- //body-content -->
