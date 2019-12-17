@@ -124,7 +124,7 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            'useFileTransport' => true,
+//            'useFileTransport' => true,
 //            'viewPath' => '@app/mail/layouts',
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
