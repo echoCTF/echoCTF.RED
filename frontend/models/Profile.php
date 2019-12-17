@@ -148,7 +148,7 @@ class Profile extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Country::className(), ['id' => 'country']);
     }
-    public function getVisible()
+    public function getVisible(): bool
   	{
   		if(Yii::$app->sys->player_profile===false) return false;
   		elseif(Yii::$app->user->isGuest && $this->visibility=='public') return true;
@@ -163,7 +163,7 @@ class Profile extends \yii\db\ActiveRecord
   	{
 
   		if(intval(Yii::$app->user->id)===intval($this->player_id)) return Html::a(Html::encode($this->owner->username),['/profile/me']);
-  		else if($this->visible===true) return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
+  		else if(Yii::$app->user->identity->isAdmin || $this->visible===true) return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
   		return Html::encode($this->owner->username);
   	}
 

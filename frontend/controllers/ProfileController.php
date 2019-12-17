@@ -71,7 +71,7 @@ class ProfileController extends \yii\web\Controller
       if(Yii::$app->user->isGuest && $profile->visibility!='public')
         			return $this->redirect(['/']);
 
-      if($profile->visibility!='public' && $profile->visibility!='ingame')
+      if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
         			return $this->redirect(['/']);
 
       $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')

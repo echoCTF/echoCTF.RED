@@ -206,10 +206,6 @@ class Player extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-    public function getIsAdmin()
-    {
-      return $this->admin;
-    }
    /**
     * Get status Label
     */
@@ -273,10 +269,16 @@ class Player extends ActiveRecord implements IdentityInterface
         return $this->hasMany(Finding::className(), ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
     }
 
-    public function isAdmin()
+    public function getIsAdmin():bool
     {
       $admin_ids=[1];
-      return array_search(intval($this->id),$admin_ids)!==FALSE; // error is here
+      return !(array_search(intval($this->id),$admin_ids)===FALSE); // error is here
+    }
+
+    public function isAdmin():bool
+    {
+      $admin_ids=[1];
+      return !(array_search(intval($this->id),$admin_ids)===FALSE); // error is here
     }
 
     public function getProgress()
