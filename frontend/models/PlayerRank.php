@@ -70,4 +70,12 @@ class PlayerRank extends \yii\db\ActiveRecord
     }
     return $this->id.'th';
   }
+  public function getScore()
+  {
+    return $this->hasOne(PlayerScore::className(), ['player_id' => 'player_id']);
+  }
+  public function getPlayer()
+  {
+    return $this->hasOne(Player::className(), ['id' => 'player_id']);
+  }
 }
