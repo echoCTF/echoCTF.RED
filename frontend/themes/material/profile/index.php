@@ -11,7 +11,7 @@ use app\widgets\leaderboard\Leaderboard;
 
 $game=Yii::$app->getModule('game');
 $this->_fluid="-fluid";
-$this->title = Yii::$app->sys->event_name .' - Profile of '.Html::encode($profile->owner->username);
+$this->title = Yii::$app->sys->event_name .' Profile of: '.Html::encode($profile->owner->username);
 $this->_description = Html::encode($profile->bio);
 
 

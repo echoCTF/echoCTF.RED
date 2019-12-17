@@ -19,7 +19,7 @@ class SpinRestAction extends \yii\rest\ViewAction
       if ($target===NULL)
         throw new NotFoundHttpException('The requested page does not exist.');
       if ($target->spinable!==true)
-        throw new NotFoundHttpException('Not allowed to spin target.');
+        throw new NotFoundHttpException('Not allowed to spin target. Target not spinable.');
       $playerSpin=Yii::$app->user->identity->profile->spins;
       $SQ=new \app\modules\target\models\SpinQueue;
       $SQ->player_id=\Yii::$app->user->id;
@@ -37,7 +37,12 @@ class SpinRestAction extends \yii\rest\ViewAction
       Yii::$app->session->setFlash('error',$e->getMessage());
     }
 
-   return \yii\web\Controller::goBack();
+    if(Yii::$app->request->referrer){
+      return Yii::$app->getResponse()->redirect(Yii::$app->request->referrer);
+    }else{
+      return Yii::$app->getResponse()->redirect(['/dashboard/index']);
+    }
+
   }
 
 }

@@ -117,6 +117,7 @@ $config = [
             'identityClass' => 'app\models\Player',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true],
+//            'autoUpdateFlash' => false,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
