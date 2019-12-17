@@ -63,6 +63,7 @@ class TargetWidget extends Widget
           'options'=>$this->divOptions,
           'TITLE'=>$this->title,
           'CATEGORY'=>$this->category,
+          'player_id'=>$this->player_id,
         ]);
     }
 

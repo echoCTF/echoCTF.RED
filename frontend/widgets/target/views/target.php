@@ -130,7 +130,7 @@ echo GridView::widget([
      ],
      [
        'class'=> 'rce\material\grid\ActionColumn',
-//       'visible'=>!$personal,
+       //'visible'=>!$personal,
        'headerOptions' => ["style"=>'width: 4rem'],
        'template'=>'{spin} {view} {tweet}',
        'buttons' => [
@@ -170,6 +170,8 @@ echo GridView::widget([
      ],
      'visibleButtons' => [
        'spin' => function ($model) {
+            if(Yii::$app->user->isGuest || $this->context->personal===true)
+              return false;
            return $model->spinable;
          },
      ]
