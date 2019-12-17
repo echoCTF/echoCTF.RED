@@ -18,6 +18,11 @@ class echoCTFView extends \yii\web\View
       if($this->_image===null)
         $this->_image=\yii\helpers\Url::to('/images/logotw.png','https');
       $this->title=sprintf("%s - %s: %s",\Yii::$app->sys->event_name,ucfirst(\Yii::$app->controller->id), \Yii::$app->controller->action->id);
+      if(!\Yii::$app->user->isGuest)
+      {
+      	\Yii::$app->cache->set("last_seen:".\Yii::$app->user->id,time());
+      	\Yii::$app->cache->set("online:".\Yii::$app->user->id,time(),\Yii::$app->sys->online_timeout);
+      }
       parent::init();
   }
   public function getOg_title()
