@@ -7,7 +7,7 @@ return [
             'port' => 11211,
             'weight' => 60,
             'persistent'=>true,
-            //'useMemcached'=>true,
         ],
     ],
+    'useMemcached'=>true,
 ];
