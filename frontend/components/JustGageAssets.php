@@ -19,8 +19,8 @@ use yii\web\AssetBundle;
 class JustGageAssets extends AssetBundle
 {
 
-	public $sourcePath = '@vendor/simonmesmith/yii2-justgage/assets';
+	//public $sourcePath = '@vendor/simonmesmith/yii2-justgage/assets';
 	public $depends = ['yii\web\JqueryAsset'];
-    public $js = ['raphael-2.1.4.min.js', 'justgage.js'];
+  public $js = ['js/raphael-2.1.4.min.js', 'js/justgage.js'];
 
 }

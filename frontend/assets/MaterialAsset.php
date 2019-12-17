@@ -22,25 +22,27 @@ class MaterialAsset extends AssetBundle
     public $sidebarColor = '';
     public $sidebarBackgroundColor = 'black';
     public $sidebarBackgroundImage = '';
-    public $sourcePath = '@vendor/ricar2ce/yii2-material-theme/assets';
+    public $basePath = '@webroot';
+    public $baseUrl = '@web';
+    //public $sourcePath = '@vendor/ricar2ce/yii2-material-theme/assets';
   // public $basePath = '@app/themes/material';
-  // public $baseUrl = '@web/themes/material';
+  //  public $baseUrl = '/';
     public $css = [
-        #'/css/material-icons.min.css',
-        '/css/material-dashboard.css',
-        '/css/material.css',
-        '/css/scores.css',
+//        'css/material-icons.min.css',
+        'css/material-dashboard.css',
+        'css/material.css',
+//        'css/scores.css',
     ];
     public $js = [
-        'js/core/popper.min.js',
-        'js/core/bootstrap-material-design.min.js',
-        'js/plugins/perfect-scrollbar.jquery.min.js',
+        '/js/core/popper.min.js',
+        '/js/core/bootstrap-material-design.min.js',
+        '/js/plugins/perfect-scrollbar.jquery.min.js',
         /* Plugin for the momentJs  */
-        'js/plugins/moment.min.js',
+        '/js/plugins/moment.min.js',
         /*  Plugin for Sweet Alert */
-        'js/plugins/sweetalert2.js',
+        '/js/plugins/sweetalert2.js',
         /* Forms Validations Plugin */
-        'js/plugins/jquery.validate.min.js',
+        '/js/plugins/jquery.validate.min.js',
         /* Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard */
         //'js/plugins/jquery.bootstrap-wizard.js',
         /*  Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select */
@@ -60,7 +62,7 @@ class MaterialAsset extends AssetBundle
         /*  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ */
         //'js/plugins/nouislider.min.js',
         /* Library for adding dinamically elements */
-        'js/plugins/arrive.min.js',
+        '/js/plugins/arrive.min.js',
         /* Chartist JS */
         //'js/plugins/chartist.min.js',
         /*  Notifications Plugin    */
@@ -81,7 +83,7 @@ class MaterialAsset extends AssetBundle
         // 'yii\bootstrap\BootstrapAsset',
         // 'yii\bootstrap\BootstrapPluginAsset',
         //'yidas\yii\fontawesome\FontawesomeAsset',
-        'yii\materialicons\AssetBundle'
+        //'yii\materialicons\AssetBundle'
     ];
 
 

@@ -2,6 +2,7 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
+$cache = require __DIR__ . '/memcached.php';
 
 $config = [
     'id' => 'pui2',
@@ -32,6 +33,43 @@ $config = [
           'class'=>'app\components\echoCTFAssetManager',
           'nullPublish'=>false,
           'bundles' => [
+              'yii\validators\ValidationAsset' => [
+                'sourcePath' => null,
+                'js' => [
+                    'js/yii.validation.js',
+                ],
+
+              ],
+              'yii\widgets\ActiveFormAsset'=>[
+                'sourcePath' => null,
+                'js' => [
+                    'js/yii.activeForm.js',
+                ],
+              ],
+              'yii\grid\GridViewAsset'=>[
+                'sourcePath' => null,
+                'js' => [
+                    'js/yii.gridView.js',
+                ],
+              ],
+              'yii\web\YiiAsset' => [
+                'sourcePath' => null,
+                'js' => [
+                    'js/yii.js',
+                ],
+              ],
+              'yii\widgets\PjaxAsset'=>[
+                'sourcePath' => null,
+                'js' => [
+                    'js/jquery.pjax.js',
+                ],
+              ],
+              'yii\web\JqueryAsset' => [
+                  'sourcePath' => null,
+                  'js' => [
+                      'js/jquery.js',
+                  ],
+              ],
               'yii\bootstrap\BootstrapPluginAsset' => [
                   'js'=>[]
               ],
@@ -66,18 +104,7 @@ $config = [
         'sys'=> [
           'class' => 'app\components\Sysconfig',
         ],
-        'cache' => [
-            'class' => 'yii\caching\MemCache',
-            'servers' => [
-                [
-                    'host' => '127.0.0.1',
-                    'port' => 11211,
-                    'weight' => 60,
-                    'persistent'=>true,
-                    //'useMemcached'=>true,
-                ],
-            ],
-        ],
+        'cache' => $cache,
         'user' => [
             'identityClass' => 'app\models\Player',
             'enableAutoLogin' => true,
