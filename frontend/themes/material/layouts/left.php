@@ -15,7 +15,7 @@ use yii\helpers\Url;
           <a href="#" class="simple-text logo-normal"><?=$config::siteTitle()?></a>
         <?php else:?>
           <a href="<?=Url::to(['profile/me'])?>" class="simple-text logo-normal" style="text-transform:none">
-            <img src="/images/avatars/<?=Yii::$app->user->identity->profile->avatar;?>" class="img-fluid rounded-corners" width="80px"><br/>
+            <img src="/images/avatars/<?=Yii::$app->user->identity->profile->avatar;?>" class="img-fluid rounded-corners" style="max-width: 40px; max-height: 50px"><br/>
             <?=Html::encode(Yii::$app->user->identity->username)?> <small>(<?=number_format(Yii::$app->user->identity->profile->score->points)?> pts)</small>
           </a>
         <?php endif;?>
