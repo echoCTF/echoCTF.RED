@@ -46,7 +46,7 @@ $this->_description = Html::encode($profile->bio);
     <div class="col-sm-4">
       <?php
       Pjax::begin(['id'=>'leaderboard-listing','enablePushState'=>false,'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-      echo Leaderboard::widget(['divID'=>"Leaderboard",'player_id'=>$profile->player_id]);
+      echo Leaderboard::widget(['divID'=>"Leaderboard",'player_id'=>$profile->player_id, 'pageSize'=>8,'title'=>'Leaderboard','category'=>'Listing current player page']);
       Pjax::end();
       ?>
     </div>

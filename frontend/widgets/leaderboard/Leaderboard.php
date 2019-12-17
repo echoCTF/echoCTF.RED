@@ -16,6 +16,7 @@ use yii\widgets\ListView;
 use yii\helpers\Html;
 use yii\data\ActiveDataProvider;
 use app\models\PlayerScore;
+use app\models\PlayerRank;
 use app\models\Profile;
 
 class Leaderboard extends Widget
@@ -25,27 +26,32 @@ class Leaderboard extends Widget
     public $player_id;
     public $totalPoints;
     public $pagerID='leaderboard-pager';
+    public $pageSize=11;
+    public $summary='<div class="card-header card-header-primary"><h4 class="card-title">{TITLE}</h4><p class="card-category">{CATEGORY}</p></div>';
+    public $title="Scoreboard";
+    public $category="List of players by points";
 
     public function init()
     {
       if($this->player_id!==NULL)
       {
+
         $this->dataProvider = new ActiveDataProvider([
           'query' => PlayerScore::find()->active()->orderBy(['points'=>SORT_DESC,'player_id'=>SORT_ASC]),
+//          'query' => PlayerRank::find()->active()->orderBy(['points'=>SORT_DESC,'player_id'=>SORT_ASC]),
           'pagination' => [
               'pageSizeParam'=>'score-perpage',
               'pageParam'=>'score-page',
-              'pageSize' => 11,
+              'pageSize' => $this->pageSize,
           ]
-
         ]);
-        if(Yii::$app->request->get('score-page')===null)
-          $this->dataProvider->pagination->page = intval(Profile::find()->where(['player_id'=>$this->player_id])->one()->rank->id/11);
-
       }
       else {
         $this->player_id=Yii::$app->user->id;
       }
+
+      if(Yii::$app->request->get('score-page')===null)
+        $this->dataProvider->pagination->page = intval((Profile::find()->where(['player_id'=>$this->player_id])->one()->rank->id-1)/$this->dataProvider->pagination->pageSize);
 
       if($this->totalPoints===null)
       {
@@ -53,12 +59,14 @@ class Leaderboard extends Widget
         $command->bindValue(':player_type','offense');
         $this->totalPoints = $command->queryScalar();
       }
+      $this->summary=\Yii::t('app', $this->summary, ['TITLE' => $this->title, 'CATEGORY'=>$this->category]);
+
         parent::init();
     }
 
     public function run()
     {
         LeaderboardAsset::register($this->getView());
-        return $this->render('leaderboard',['dataProvider'=>$this->dataProvider,'totalPoints'=>$this->totalPoints,'divID'=>$this->divID,'pagerID'=>$this->pagerID,'player_id'=>$this->player_id]);
+        return $this->render('leaderboard',['dataProvider'=>$this->dataProvider,'totalPoints'=>$this->totalPoints,'divID'=>$this->divID,'pagerID'=>$this->pagerID,'player_id'=>$this->player_id,'summary'=>$this->summary]);
     }
 }

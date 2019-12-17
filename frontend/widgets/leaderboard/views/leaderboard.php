@@ -16,7 +16,7 @@ echo ListView::widget([
     ],
     'options'=>['class'=>'card'],
     'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-    'summary'=>'<div class="card-header card-header-primary"><h4 class="card-title">Scoreboard</h4><p class="card-category">List of players by points</p></div>',
+    'summary'=>$summary,
     'itemOptions' => [
       'tag' => false
     ],
