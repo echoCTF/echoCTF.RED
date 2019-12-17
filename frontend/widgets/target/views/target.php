@@ -130,8 +130,7 @@ echo GridView::widget([
        'attribute'=>'progress',
        'label'=>'Your Progress',
        'value'=>function($model) {
-         return sprintf ('<div class="progress" style="height: 14px;"><div class="progress-bar bg-gradual-progress" style="width: %d%%;" role="progressbar" aria-valuenow="%d" aria-valuemin="0" aria-valuemax="100"></div></div>',$model->progress, $model->progress,$model->progress==100 ? '#Headshot': number_format($model->progress).'%');
-         return '<div class="progress"></div>';
+         return yii\bootstrap4\Progress::widget(['percent' => intval(floor($model->progress)), 'label' => false,'barOptions' => ['class' => 'bg-gradual-progress']]);
        },
      ],
      [
