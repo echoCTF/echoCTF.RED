@@ -25,10 +25,10 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
     <meta charset="<?=Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
-    <?php $this->head()?>
-
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css">
+    <?php $this->head()?>
+
     <?=Html::csrfMetaTags() ?>
     <title><?=Html::encode($this->title) ?></title>
 </head>
