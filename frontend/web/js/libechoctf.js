@@ -1,3 +1,18 @@
+window.cookieconsent.initialise({
+  "palette": {
+    "popup": {
+      "background": "#000",
+      "text": "#94c11f"
+    },
+    "button": {
+      "background": "#94c11f"
+    }
+  },
+  "theme": "classic",
+	"content": {
+    "message": "echoCTF RED needs cookies to operate."
+  }
+});
 jQuery( document ).ready(function() {
   $('#profile-avatar').change(function() {
     if($(this).val()!="")

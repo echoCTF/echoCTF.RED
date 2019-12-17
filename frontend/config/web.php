@@ -33,6 +33,10 @@ $config = [
           //'class'=>'app\components\echoCTFAssetManager',
           //'nullPublish'=>false,
           'bundles' => [
+              'yii\bootstrap4\BootstrapAsset' => [
+                'sourcePath' => null,
+                'css' => [    ],
+              ],
               'yii\validators\ValidationAsset' => [
                 'sourcePath' => null,
                 'js' => [

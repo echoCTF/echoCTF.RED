@@ -18,8 +18,7 @@
         "yiisoft/yii2-bootstrap4": "^2.0",
         "ricar2ce/yii2-material-theme": "*",
         "miloschuman/yii2-highcharts-widget": "^7.1",
-        "simonmesmith/yii2-justgage": "^1.0",
-        "sam-it/yii2-static-assets": "^1.0"
+        "simonmesmith/yii2-justgage": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

@@ -73,6 +73,7 @@ class MaterialAsset extends AssetBundle
         /*  Google Maps Plugin   */
         // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
         /******/
+        '/js/cookieconsent.min.js',
         '/js/libechoctf.js',
         // 'js/material.min.js',
         // 'js/superfish.js'
