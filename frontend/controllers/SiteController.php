@@ -9,6 +9,7 @@ use yii\web\BadRequestHttpException;
 use yii\base\InvalidArgumentException;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 use app\models\forms\LoginForm;
 use app\models\forms\SignupForm;
 use app\models\forms\ResendVerificationEmailForm;
@@ -200,6 +201,13 @@ class SiteController extends Controller
             $model = new VerifyEmailForm($token);
         } catch (InvalidArgumentException $e) {
             throw new BadRequestHttpException($e->getMessage());
+        }
+        $post=Yii::$app->request->post('VerifyEmailForm');
+        $value = ArrayHelper::getValue($post, 'token');
+
+        if($value!==$token)
+        {
+            return $this->render('verify-email',['model'=>$model,'token'=>$token]);
         }
         if ($user = $model->verifyEmail()) {
             if (Yii::$app->user->login($user)) {
