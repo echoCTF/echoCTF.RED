@@ -37,7 +37,7 @@ $this->_fluid="-fluid";
 		      <img class="thumbnail img-fluid pull-right" id="preview_avatar" src="/images/avatars/<?=$model->avatar?>" alt="<?=$model->avatar?>"/>
       </div>
     </div>
-		<?=$form->field($model, 'bio')->textarea() ?>
+		<?=$form->field($model, 'bio')->textarea(['rows'=>'4']) ?>
     <div class="row">
       <div class="col-lg-3">
         <?=$form->field($model, 'discord')->textInput(['maxlength' => true])->Label('<i class="fab fa-discord"></i> Discord') ?>
