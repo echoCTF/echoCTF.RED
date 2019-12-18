@@ -10,7 +10,8 @@ use yii\bootstrap\ActiveForm;
 $this->title = Yii::$app->sys->event_name.' Request password reset';
 ?>
 <div class="site-request-password-reset">
-    <h1><?=Html::encode($this->title) ?></h1>
+  <div class="body-content">
+    <h2><?=Html::encode($this->title) ?></h2>
 
     <p>Please fill out your email. A link to reset password will be sent there.</p>
 
@@ -27,4 +28,5 @@ $this->title = Yii::$app->sys->event_name.' Request password reset';
             <?php ActiveForm::end(); ?>
         </div>
     </div>
+  </div>
 </div>

@@ -9,7 +9,8 @@ use yii\bootstrap\ActiveForm;
 $this->title = Yii::$app->sys->event_name.' Resend verification email';
 ?>
 <div class="site-resend-verification-email">
-    <h1><?=Html::encode($this->title) ?></h1>
+  <div class="body-content">
+    <h2><?=Html::encode($this->title) ?></h2>
 
     <p>Please fill out your email. A verification email will be sent there.</p>
 
@@ -26,4 +27,5 @@ $this->title = Yii::$app->sys->event_name.' Resend verification email';
             <?php ActiveForm::end(); ?>
         </div>
     </div>
+  </div>
 </div>
