@@ -191,7 +191,9 @@ $config = [
                 'help/instructions' => 'help/instruction/index',
                 'instructions' => 'help/instruction/index',
                 // app/controllers/LegalController.php
+                'terms_and_conditions'=>'legal/terms-and-conditions',
                 'legal/terms-and-conditions'=>'legal/terms-and-conditions',
+                'privacy_policy'=>'legal/privacy-policy',
                 'legal/privacy-policy'=>'legal/privacy-policy',
                 'site/captcha'=>'site/captcha',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
