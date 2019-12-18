@@ -166,8 +166,11 @@ class ProfileController extends \yii\web\Controller
           }
           if ($accountForm->load(Yii::$app->request->post(),'Player')===true)
           {
-            $accountForm->setPassword($accountForm->password);
-            $accountForm->confirm_password=$accountForm->password;
+            if($accountForm->scenario=='password_change')
+            {
+              $accountForm->setPassword($accountForm->password);
+              $accountForm->confirm_password=$accountForm->password;
+            }
             if($accountForm->update()!==false)
               $success[]="Player updated";
             else
