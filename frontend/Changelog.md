@@ -6,7 +6,7 @@
 * [x] Replacing stream images with fontawesome icons
 * [x] Make profile more accessible, add link to profile on sidebar
 * [x] Implement player spins logic from existing codebase
-* [x] `typcasting` on (almost all) models
+* [x] `typecasting` on (almost all) models
 * [x] Ensure consistent and appropriate order criteria across all views
 * [x] Add twitter links on profile, target, stream page
 * [x] Simplified and improved Signup process
