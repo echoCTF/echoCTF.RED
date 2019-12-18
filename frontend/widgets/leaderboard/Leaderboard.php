@@ -29,7 +29,7 @@ class Leaderboard extends Widget
     public $pageSize=11;
     public $summary='<div class="card-header card-header-primary"><h4 class="card-title">{TITLE}</h4><p class="card-category">{CATEGORY}</p></div>';
     public $title="Scoreboard";
-    public $category="List of players by points";
+    public $category="List of players by points. <small>Updated every 10 minutes</small>";
 
     public function init()
     {

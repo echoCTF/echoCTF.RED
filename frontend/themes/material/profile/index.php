@@ -23,7 +23,7 @@ $this->_description = Html::encode($profile->bio);
     <div class="row">
       <div class="col-md-8">
         <?php \yii\widgets\Pjax::begin(['id'=>'target-listing','enablePushState'=>false,'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-        <?php echo TargetWidget::widget(['dataProvider' => null,'player_id'=>$profile->player_id,'profile'=>$profile,'title'=>'Progress','category'=>'Progress of '.Html::encode($profile->owner->username).' on platform targets','personal'=>true]);?>
+        <?php echo TargetWidget::widget(['dataProvider' => null,'player_id'=>$profile->player_id,'profile'=>$profile,'title'=>'Progress','category'=>'Progress of '.Html::encode($profile->owner->username).' on platform targets.','personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
       </div>
       <div class="col-md-4">
@@ -46,7 +46,7 @@ $this->_description = Html::encode($profile->bio);
     <div class="col-sm-4">
       <?php
       Pjax::begin(['id'=>'leaderboard-listing','enablePushState'=>false,'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-      echo Leaderboard::widget(['divID'=>"Leaderboard",'player_id'=>$profile->player_id, 'pageSize'=>8,'title'=>'Leaderboard','category'=>'Listing current player page']);
+      echo Leaderboard::widget(['divID'=>"Leaderboard",'player_id'=>$profile->player_id, 'pageSize'=>8,'title'=>'Leaderboard','category'=>'Listing current player page. <small>Updated every 10 minutes</small>']);
       Pjax::end();
       ?>
     </div>
