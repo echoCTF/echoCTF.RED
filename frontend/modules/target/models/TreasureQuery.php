@@ -11,7 +11,14 @@ class TreasureQuery extends \yii\db\ActiveQuery
      }
      public function byCode($code)
      {
-        return $this->andWhere(['code' => $code]);
+        return $this->andWhere(['or',
+          ['code' => $code],
+          ['CONCAT("ETSCTF_",code)' => $code],
+          ['CONCAT("ETSCTF:",code)' => $code],
+          ['CONCAT("ETSCTF ",code)' => $code],
+          ['CONCAT("ETSCTF.",code)' => $code],
+          ['CONCAT("ETSCTF-",code)' => $code],
+        ]);
      }
      public function claimable()
      {
