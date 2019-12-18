@@ -310,7 +310,7 @@ input:-webkit-autofill:hover {
     font-family: 'Roboto Mono';
     font-size: 1em;
     letter-spacing: 0em;
-    white-space: nowrap;
+/*    white-space: nowrap; */
     padding: 0px 0px;
     margin-bottom: 0px;
 /*    animation-name: revealLeaders;
