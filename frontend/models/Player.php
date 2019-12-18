@@ -75,6 +75,9 @@ class Player extends ActiveRecord implements IdentityInterface
             [['username'], 'match','not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>'Invalid characters in username.'],
             [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin','administrator','echoctf','root','support']],
             [['username'], 'required', 'message' => 'Please choose a username.'],
+            ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This username has already been taken.','when' => function ($model, $attribute) {
+                return $model->{$attribute} !== $model->getOldAttribute($attribute);
+            }],
 
             /* active field rules */
             [['active'], 'filter', 'filter' => 'boolval'],
@@ -86,8 +89,8 @@ class Player extends ActiveRecord implements IdentityInterface
             [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             /* password field rules */
 
-            [['password','confirm_password'], 'string', 'max'=>255,'on'=>['password_change']],
-            [['password'], 'compare', 'compareAttribute'=>'confirm_password','on'=>['password_change']],
+            [['password','confirm_password'], 'string', 'max'=>255],
+            [['password'], 'compare', 'compareAttribute'=>'confirm_password'],
         ];
     }
 
@@ -174,7 +177,8 @@ class Player extends ActiveRecord implements IdentityInterface
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
-        $this->password = Yii::$app->security->generatePasswordHash($password);
+        $this->confirm_password=$this->password = Yii::$app->security->generatePasswordHash($password);
+
     }
 
     /**

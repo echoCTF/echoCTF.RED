@@ -80,7 +80,7 @@ class Profile extends \yii\db\ActiveRecord
         return [
             ['country', 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country' => 'id']],
             ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
-            [['player_id','country','avatar','Visibility'], 'required'],
+            [['player_id','country','avatar','visibility'], 'required'],
             [['terms_and_conditions','mail_optin','gdpr'],'boolean', 'trueValue' => true, 'falseValue' => false],
             [['visibility'],'in', 'range' => ['public', 'private', 'ingame']],
             [['visibility'],'default', 'value' =>  'ingame'],

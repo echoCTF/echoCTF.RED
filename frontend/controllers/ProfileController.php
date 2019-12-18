@@ -10,7 +10,6 @@ use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
-
 class ProfileController extends \yii\web\Controller
 {
     /**
@@ -93,39 +92,6 @@ class ProfileController extends \yii\web\Controller
         ]);
     }
 
-/*    public function actionUpdate()
-    {
-        $profile=$this->findModel(Yii::$app->user->id);
-
-        $errors=$success=null;
-        $profileForm=$profile;
-        $profileForm->scenario='me';
-        if ($profileForm->load(Yii::$app->request->post()) && $profileForm->validate() && $profileForm->save())
-          $success[]="Profile updated";
-        else
-          $errors[]='Failed to update profile';
-
-        $accountForm=$profile->owner;
-        $accountForm->scenario='profile';
-        if ($accountForm->load(Yii::$app->request->post()) && $accountForm->save())
-          $success[]="Player updated";
-        else
-          $errors[]='Failed to update player';
-
-        if($errors!==null)
-          Yii::$app->session->setFlash('error',$errors);
-        if($success!==null)
-          Yii::$app->session->setFlash('success',$errors);
-
-        return $this->render('index',[
-          'profile'=>$profile,
-          'playerSpin'=>$playerSpin,
-          'streamProvider'=>$streamProvider,
-          'accountForm'=>$accountForm,
-          'profileForm'=>$profileForm,
-        ]);
-    }
-*/
     public function actionOvpn()
   	{
   		$model = Yii::$app->user->identity->sSL;
@@ -144,39 +110,19 @@ class ProfileController extends \yii\web\Controller
       $profileForm=$profile;
       $profileForm->scenario='me';
       $accountForm=$profile->owner;
-      if(Yii::$app->request->isPost)
-      {
-        if(Yii::$app->request->post('Profile'))
-        {
-          if ($profileForm->load(Yii::$app->request->post(),'Profile') && $profileForm->validate() && $profileForm->update()!==false)
-          {
-            $success[]="Profile updated";
-          }
-          else
-          {
-            $errors[]='Failed to update profile';
-          }
-        }
+      if ($profileForm->load(Yii::$app->request->post()) && $profileForm->validate()) {
+        $profileForm->save();
+        $success[]="Profile updated";
+      }
 
-        if(Yii::$app->request->post('Player'))
+
+      if ($accountForm->load(Yii::$app->request->post()) && $accountForm->validate()) {
+        if($accountForm->password!="")
         {
-          if(trim(Yii::$app->request->post('Player')['password'])!=="")
-          {
-            $accountForm->scenario='password_change';
-          }
-          if ($accountForm->load(Yii::$app->request->post(),'Player')===true)
-          {
-            if($accountForm->scenario=='password_change')
-            {
-              $accountForm->setPassword($accountForm->password);
-              $accountForm->confirm_password=$accountForm->password;
-            }
-            if($accountForm->update()!==false)
-              $success[]="Player updated";
-            else
-              $errors[]='Failed to update account';
-          }
+          $accountForm->setPassword($accountForm->password);
         }
+        $accountForm->save();
+        $success[]="Account updated";
       }
 
       if($errors!==null)
@@ -184,12 +130,10 @@ class ProfileController extends \yii\web\Controller
       if($success!==null)
         Yii::$app->session->setFlash('success',$success);
 
-      $profile->refresh();
-      $accountForm->refresh();
-      $accountForm->confirm_password=$accountForm->password=null;
       //die(var_dump(Yii::$app->session->getAllFlashes()));
       $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
       $playerSpin=$command->bindValue(':player_id',Yii::$app->user->id)->query()->read();
+      $accountForm->password=$accountForm->confirm_password=null;
       return $this->render('settings',[
         'profile'=>$profile,
         'playerSpin'=>$playerSpin,
