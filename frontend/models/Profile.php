@@ -151,8 +151,9 @@ class Profile extends \yii\db\ActiveRecord
     public function getVisible(): bool
   	{
   		if(Yii::$app->sys->player_profile===false) return false;
-  		elseif(Yii::$app->user->isGuest && $this->visibility=='public') return true;
+  		elseif($this->visibility=='public') return true;
   		elseif(intval(Yii::$app->user->id)===intval($this->player_id)) return true;
+      elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin) return true;
   		else return array_search($this->visibility,['public','ingame'],true) === FALSE ? false : true;
   	}
 
@@ -164,9 +165,7 @@ class Profile extends \yii\db\ActiveRecord
 
   		if(intval(Yii::$app->user->id)===intval($this->player_id))
         return Html::a(Html::encode($this->owner->username),['/profile/me']);
-      else if(Yii::$app->user->isGuest && $this->visible===true)
-        return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
-  		else if(Yii::$app->user->identity && Yii::$app->user->identity->isAdmin)
+      else if($this->visible===true)
         return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
   		return Html::encode($this->owner->username);
   	}

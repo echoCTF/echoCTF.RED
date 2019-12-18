@@ -21,7 +21,7 @@ use app\widgets\Twitter;
          'linkOptions'=>['class'=>'profile-tweet','target'=>'_blank','style'=>'font-size: 1.3em;'],
       ]);?>
     <ul class="nav flex-column">
-  <?php if(intval(Yii::$app->user->id)===intval($profile->player_id)):?>
+  <?php if(intval(Yii::$app->user->id)===intval($profile->player_id) || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
           <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> Download OpenVPN configuration",['profile/ovpn'],['class'=>'btn btn-primary'])?></li>
           <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($profile->spins->counter)?></abbr> / <abbr title="Total Spins"><?=intval($profile->spins->total)?></abbr></span></li>
