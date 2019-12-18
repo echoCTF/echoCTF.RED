@@ -162,8 +162,12 @@ class Profile extends \yii\db\ActiveRecord
     public function getLink()
   	{
 
-  		if(intval(Yii::$app->user->id)===intval($this->player_id)) return Html::a(Html::encode($this->owner->username),['/profile/me']);
-  		else if(Yii::$app->user->identity->isAdmin || $this->visible===true) return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
+  		if(intval(Yii::$app->user->id)===intval($this->player_id))
+        return Html::a(Html::encode($this->owner->username),['/profile/me']);
+      else if(Yii::$app->user->isGuest && $this->visible===true)
+        return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
+  		else if(Yii::$app->user->identity && Yii::$app->user->identity->isAdmin)
+        return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
   		return Html::encode($this->owner->username);
   	}
 

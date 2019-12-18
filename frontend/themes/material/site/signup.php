@@ -23,7 +23,7 @@ $this->title = Yii::$app->sys->event_name. ' Signup';
 
                 <?=$form->field($model, 'password')->passwordInput() ?>
 
-                <?php echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname(), [    ]) ?>
+                <?php echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname(), ['options'=>['placeholder'=>'enter captcha code']])->label(false) ?>
 
                 <div class="form-group">
                     <?=Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>

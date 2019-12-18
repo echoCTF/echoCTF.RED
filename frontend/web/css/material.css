@@ -247,6 +247,7 @@ td.td-actions,
 
 
 input:-webkit-autofill:focus, input:-webkit-autofill:active {
+  font-family: 'Roboto Mono';
   height: 36px;
   font-size: 14px;
   background-color: rgba(0, 0, 0, 0);
@@ -417,6 +418,8 @@ input:-webkit-autofill:hover {
 
 input.form-control:focus,
 input.form-control {
+  font-family: 'Roboto Mono';
+  font-size: 1em;
   color: lightgray;
 }
 .cc-window{opacity:1;-webkit-transition:opacity 1s ease;transition:opacity 1s ease}.cc-window.cc-invisible{opacity:0}.cc-animate.cc-revoke{-webkit-transition:transform 1s ease;-webkit-transition:-webkit-transform 1s ease;transition:-webkit-transform 1s ease;transition:transform 1s ease;transition:transform 1s ease,-webkit-transform 1s ease}.cc-animate.cc-revoke.cc-top{-webkit-transform:translateY(-2em);transform:translateY(-2em)}.cc-animate.cc-revoke.cc-bottom{-webkit-transform:translateY(2em);transform:translateY(2em)}.cc-animate.cc-revoke.cc-active.cc-top{-webkit-transform:translateY(0);transform:translateY(0)}.cc-animate.cc-revoke.cc-active.cc-bottom{-webkit-transform:translateY(0);transform:translateY(0)}.cc-revoke:hover{-webkit-transform:translateY(0);transform:translateY(0)}.cc-grower{max-height:0;overflow:hidden;-webkit-transition:max-height 1s;transition:max-height 1s}
