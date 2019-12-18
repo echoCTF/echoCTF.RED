@@ -4,7 +4,6 @@ proto udp
 dev tun
 comp-lzo
 verb 3
-explicit-exit-notify
 cipher AES-256-CBC
 auth SHA256
 
