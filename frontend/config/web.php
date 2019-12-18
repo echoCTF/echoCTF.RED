@@ -33,6 +33,10 @@ $config = [
           //'class'=>'app\components\echoCTFAssetManager',
           //'nullPublish'=>false,
           'bundles' => [
+              'yii\captcha\CaptchaAsset' => [
+                'sourcePath' => null,
+                'js' => ['js/yii.captcha.js',],
+              ],
               'yii\bootstrap4\BootstrapAsset' => [
                 'sourcePath' => null,
                 'css' => [    ],
