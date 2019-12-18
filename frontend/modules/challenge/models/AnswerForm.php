@@ -67,4 +67,8 @@ class AnswerForm extends Model
         return false;
       }
     }
+    public function getQuestion()
+    {
+      return $this->_question;
+    }
 }
