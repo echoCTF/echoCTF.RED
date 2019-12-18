@@ -50,7 +50,7 @@ class Leaderboard extends Widget
         $this->player_id=Yii::$app->user->id;
       }
 
-      if(Yii::$app->request->get('score-page')===null)
+      if(Yii::$app->request->get('score-page')===null && Profile::find()->where(['player_id'=>$this->player_id])->one()->rank!==null)
         $this->dataProvider->pagination->page = intval((Profile::find()->where(['player_id'=>$this->player_id])->one()->rank->id-1)/$this->dataProvider->pagination->pageSize);
 
       if($this->totalPoints===null)
