@@ -327,14 +327,13 @@ class Player extends ActiveRecord implements IdentityInterface
      * @param string $token password reset token
      * @return bool
      */
-    public static function isPasswordResetTokenValid($token)
+    public static function isPasswordResetTokenValid($token,$expire=86400): bool
     {
         if (empty($token)) {
             return false;
         }
 
         $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-        $expire = 3600;
         return $timestamp + $expire >= time();
     }
     /**
