@@ -6,7 +6,7 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-
+use yii\captcha\Captcha;
 $this->title = Yii::$app->sys->event_name. ' Signup';
 ?>
 <div class="site-signup">
@@ -22,6 +22,8 @@ $this->title = Yii::$app->sys->event_name. ' Signup';
                 <?=$form->field($model, 'email') ?>
 
                 <?=$form->field($model, 'password')->passwordInput() ?>
+
+                <?php echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname(), [    ]) ?>
 
                 <div class="form-group">
                     <?=Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>

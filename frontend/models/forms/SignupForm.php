@@ -15,7 +15,7 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
-
+    public $captcha;
 
     /**
      * {@inheritdoc}
@@ -34,6 +34,8 @@ class SignupForm extends Model
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
             ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email address has already been taken.'],
+
+            ['captcha','captcha'],
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],

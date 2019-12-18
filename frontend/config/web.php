@@ -193,6 +193,7 @@ $config = [
                 // app/controllers/LegalController.php
                 'legal/terms-and-conditions'=>'legal/terms-and-conditions',
                 'legal/privacy-policy'=>'legal/privacy-policy',
+                'site/captcha'=>'site/captcha',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],
