@@ -14,6 +14,9 @@
 * [x] Ensure current URLs are similar to existing ones to avoid broken links
 * [x] Remove unnecessary fields from model operations
 * [x] Make all assets static and replace the ones we dont need
+* [x] Add captcha on signup form to avoid bot registrations
+* [x] Add button on verify-email page to avoid activations by accident
+* [x] Make sure activation link valid for 24hours
 
 ## 0.9
 * [ ] Create target vs profile_id view
