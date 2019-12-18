@@ -14,6 +14,8 @@ window.cookieconsent.initialise({
   }
 });
 jQuery( document ).ready(function() {
+  $.fn.selectpicker.Constructor.BootstrapVersion = '4';
+
   $('#profile-avatar').change(function() {
     if($(this).val()!="")
       $('#preview_avatar').attr('src','/images/avatars/'+$(this).val());

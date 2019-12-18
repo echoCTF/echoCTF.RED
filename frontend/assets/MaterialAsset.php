@@ -24,15 +24,15 @@ class MaterialAsset extends AssetBundle
     public $sidebarBackgroundImage = '';
     public $basePath = '@webroot';
     public $baseUrl = '@web';
-    //public $sourcePath = '@vendor/ricar2ce/yii2-material-theme/assets';
-  // public $basePath = '@app/themes/material';
-  //  public $baseUrl = '/';
+
     public $css = [
-//        'css/material-icons.min.css',
+        '//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono',
+        '//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css',
         'css/material-dashboard.css',
+        '//cdn.jsdelivr.net/npm/bootstrap-select@1.13.9/dist/css/bootstrap-select.min.css',
         'css/material.css',
-//        'css/scores.css',
     ];
+
     public $js = [
         '/js/core/popper.min.js',
         '/js/core/bootstrap-material-design.min.js',
@@ -46,7 +46,7 @@ class MaterialAsset extends AssetBundle
         /* Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard */
         //'js/plugins/jquery.bootstrap-wizard.js',
         /*  Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select */
-        //'js/plugins/bootstrap-selectpicker.js',
+        'js/plugins/bootstrap-selectpicker.js',
         /*  Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ */
         //'js/plugins/bootstrap-datetimepicker.min.js',
         /*  DataTables.net Plugin, full documentation here: https://datatables.net/  */
@@ -69,7 +69,7 @@ class MaterialAsset extends AssetBundle
         'js/plugins/bootstrap-notify.js',
         /* Control Center for Material Dashboard: parallax effects, scripts for the example pages etc */
         /* Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert */
-        // 'https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js',
+        '//cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js',
         /*  Google Maps Plugin   */
         // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
         /******/
