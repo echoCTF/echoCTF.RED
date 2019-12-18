@@ -77,7 +77,7 @@ $this->_description ="The echoCTF dashboard page";
       <div class="col-sm-4">
 <?php
 Pjax::begin(['id'=>'leaderboard-listing','enablePushState'=>false,'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-echo Leaderboard::widget(['dataProvider'=>null,'player_id'=>Yii::$app->user->id /*$scoreProvider,'totalPoints'=>$totalPoints*/,'divID'=>"Leaderboard"]);
+echo Leaderboard::widget(['dataProvider'=>null,'player_id'=>Yii::$app->user->id,'divID'=>"Leaderboard",'title'=>'Leaderboard']);
 Pjax::end();
 ?>
       </div>
