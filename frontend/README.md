@@ -17,6 +17,12 @@ cp config/db-local.php config/db.php
 cp config/memcached-local.php config/memcached.php
 ```
 
+## Testing ajax forms
+```js
+var url="http://localhost:8082/profile/settings";
+$.post( url, { "Player[username]": "John" });
+
+```
 ## General Information
 
 echoCTF.RED/frontend is based on Yii 2 Basic Project Template.
@@ -64,7 +70,7 @@ Set cookie validation key in `config/web.php` file to some random secret string:
 You can then access the application through the following URL:
 
 ~~~
-http://localhost/basic/web/
+http://localhost/
 ~~~
 
 ### CONFIGURATION
@@ -76,7 +82,7 @@ Edit the file `config/db.php` with real data, for example:
 ```php
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
+    'dsn' => 'mysql:host=localhost;dbname=echoCTF',
     'username' => 'root',
     'password' => '1234',
     'charset' => 'utf8',

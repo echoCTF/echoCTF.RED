@@ -22,6 +22,9 @@ $this->title = Yii::$app->sys->event_name. ' Signup';
                 <?=$form->field($model, 'email') ?>
 
                 <?=$form->field($model, 'password')->passwordInput() ?>
+                <?=$form->field($model, 'terms_and_conditions')->checkbox([])->hint('')->label($model->attributeLabels()['terms_and_conditions']) ?>
+                <?=$form->field($model, 'gdpr')->checkbox(['label'=>$model->attributeLabels()['gdpr']])->hint('') ?>
+
 
                 <?php echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname(), ['options'=>['placeholder'=>'enter captcha code']])->label(false) ?>
 

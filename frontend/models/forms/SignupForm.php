@@ -15,6 +15,8 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
+    public $terms_and_conditions;
+    public $gdpr;
     public $captcha;
 
     /**
@@ -23,6 +25,11 @@ class SignupForm extends Model
     public function rules()
     {
         return [
+            [['terms_and_conditions','gdpr'],'required'],
+            [['terms_and_conditions','gdpr'],'boolean'],
+            [['terms_and_conditions','gdpr'],'default','value'=>false],
+            [['gdpr'], 'in', 'range' => [true],'message'=>'You need to accept our Privacy Policy'],
+            [['terms_and_conditions'], 'in', 'range' => [true],'message'=>'You need to accept our Terms and Conditions'],
             ['username', 'trim'],
             ['username', 'required'],
             ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This username has already been taken.'],
@@ -67,10 +74,31 @@ class SignupForm extends Model
           $playerSsl->generate();
           if($playerSsl->save()!==false)
             $playerSsl->refresh();
+          $profile=$player->profile;
+          $profile->scenario='signup';
+          $profile->gdpr=true;
+          $profile->terms_and_conditions=true;
+          $profile->save();
+          /* XXXFIXMEXXX: add user to rank as last possition */
+          if($profile->rank===null)
+          {
+            $PR=new \app\models\PlayerRank();
+            $PR->player_id=$player->id;
+            $PR->save();
+          }
         }
         return $this->sendEmail($player);
 
     }
+    public function attributeLabels()
+    {
+        return [
+          'terms_and_conditions'=>'I accept the echoCTF RED <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',
+          'mail_optin'=>'<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from echoCTF RED</abbr>',
+          'gdpr'=>'I accept the echoCTF RED <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>',
+        ];
+    }
+
 
     /**
      * Sends confirmation email to player

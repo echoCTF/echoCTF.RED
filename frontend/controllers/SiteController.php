@@ -209,11 +209,17 @@ class SiteController extends Controller
         {
             return $this->render('verify-email',['model'=>$model,'token'=>$token]);
         }
-        if ($user = $model->verifyEmail()) {
-            if (Yii::$app->user->login($user)) {
-                Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
-                return $this->goHome();
-            }
+        $transaction=Yii::$app->db->beginTransaction();
+        try {
+          if ($user = $model->verifyEmail()) {
+              if (Yii::$app->user->login($user)) {
+                  $transaction->commit();
+                  Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
+                  return $this->goHome();
+              }
+          }
+        } catch(\Exception $e) {
+          $transaction->rollBack;
         }
 
         Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
@@ -254,9 +260,11 @@ class SiteController extends Controller
 
     public function actionChangelog()
     {
-      $content=file_get_contents('../Changelog.md');
+      $changelog=file_get_contents('../Changelog.md');
+      $todo=file_get_contents('../TODO.md');
       return $this->render('changelog',[
-        'content'=>$content
+        'changelog'=>$changelog,
+        'todo'=>$todo
       ]);
     }
 }

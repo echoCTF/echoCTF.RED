@@ -31,6 +31,7 @@ class Profile extends \yii\db\ActiveRecord
 {
   const SCENARIO_ME = 'me';
   const SCENARIO_REGISTER = 'register';
+  const SCENARIO_SIGNUP = 'signup';
   public $gravatar,
          $twitter_avatar,
          $github_avatar;
@@ -70,6 +71,7 @@ class Profile extends \yii\db\ActiveRecord
         return [
             self::SCENARIO_ME => ['visibility','country','avatar','bio','discord','twitter','github','htb','terms_and_conditions','mail_optin','gdpr'],
             self::SCENARIO_REGISTER => ['username', 'email', 'password'],
+            self::SCENARIO_SIGNUP => ['gdpr','terms_and_conditions'],
         ];
     }
     /**
