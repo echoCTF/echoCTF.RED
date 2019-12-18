@@ -53,7 +53,7 @@ use yii\helpers\Url;
                   </div>
                 </li>
               <li class="nav-item dropdown">
-                <a class="nav-link" href="#" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link" href="/profile" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <img class="rounded" height="25px;" src="/images/avatars/<?=Yii::$app->user->identity->profile->avatar?>" style="position:relative;top:-2px" > <small>(<?=number_format(Yii::$app->user->identity->profile->score->points)?> pts)</small>
                   <p class="d-lg-none d-md-block">
                     Account
@@ -63,7 +63,7 @@ use yii\helpers\Url;
                   <a class="dropdown-item" href="/profile/me">Profile</a>
                   <a class="dropdown-item" href="/profile/settings">Settings</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#" style="padding: 0;">
+                  <a class="dropdown-item" href="/site/logout" style="padding: 0;">
                     <?php
                     if(!Yii::$app->user->isGuest)
                     {
