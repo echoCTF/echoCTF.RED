@@ -37,8 +37,8 @@ class Leaderboard extends Widget
       {
 
         $this->dataProvider = new ActiveDataProvider([
-          'query' => PlayerScore::find()->active()->orderBy(['points'=>SORT_DESC,'player_id'=>SORT_ASC]),
-//          'query' => PlayerRank::find()->active()->orderBy(['points'=>SORT_DESC,'player_id'=>SORT_ASC]),
+//          'query' => PlayerScore::find()->active()->orderBy(['points'=>SORT_DESC,'player_id'=>SORT_ASC]),
+          'query' => PlayerRank::find()->orderBy(['id'=>SORT_ASC,'player_id'=>SORT_ASC]),
           'pagination' => [
               'pageSizeParam'=>'score-perpage',
               'pageParam'=>'score-page',
@@ -50,8 +50,9 @@ class Leaderboard extends Widget
         $this->player_id=Yii::$app->user->id;
       }
 
-      if(Yii::$app->request->get('score-page')===null && Profile::find()->where(['player_id'=>$this->player_id])->one()->rank!==null)
-        $this->dataProvider->pagination->page = intval((Profile::find()->where(['player_id'=>$this->player_id])->one()->rank->id-1)/$this->dataProvider->pagination->pageSize);
+      $rank=Profile::find()->where(['player_id'=>$this->player_id])->one()->rank;
+      if(Yii::$app->request->get('score-page')===null)
+        $this->dataProvider->pagination->page = ($rank->id-1)/$this->dataProvider->pagination->pageSize;
 
       if($this->totalPoints===null)
       {
