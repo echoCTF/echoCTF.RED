@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
 		<?=$form->field($model, 'email')->textInput(['maxlength' => true,'autocomplete'=>"off"]) ?>
     <div class="row">
       <div class="col-lg-6">
-		      <?=$form->field($model, 'password')->passwordInput(['autocomplete'=>"new-password"]) ?>
+		      <?=$form->field($model, 'new_password')->passwordInput(['autocomplete'=>"new-password"]) ?>
       </div>
       <div class="col-lg-6">
 		      <?=$form->field($model, 'confirm_password')->passwordInput(['autocomplete'=>"new-password"]) ?>

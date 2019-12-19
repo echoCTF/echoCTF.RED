@@ -34,9 +34,7 @@ use yii\helpers\Url;
                 <li class="nav-item dropdown">
                   <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false">
                     <?php if(count(Yii::$app->user->identity->pendingHints)>0):?><i class="fas fa-lightbulb text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingHints)?></span><?php else:?><i class="fas fa-lightbulb" style="font-size: 2em;"></i><?php endif;?>
-                    <p class="d-lg-none d-md-block">
-                      Some Actions
-                    </p>
+                    <p class="d-lg-none d-md-block">Hints to help you progress further.</p>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHintsDropDown" id="hintsMenu">
                   </div>
@@ -45,9 +43,7 @@ use yii\helpers\Url;
                 <li class="nav-item dropdown">
                   <a class="nav-link" href="/profile/notifications" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false">
                     <?php if(count(Yii::$app->user->identity->pendingNotifications)>0):?><i class="fas fa-bell text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingNotifications)?></span><?php else:?><i class="fas fa-bell" style="font-size: 2em;"></i><?php endif;?>
-                    <p class="d-lg-none d-md-block">
-                      Some Actions
-                    </p>
+                    <p class="d-lg-none d-md-block">Your Notifications.</p>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" id="notificationsMenu">
                   </div>

@@ -28,7 +28,7 @@ class Player extends ActiveRecord implements IdentityInterface
     const STATUS_DELETED = 0;
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
-
+    public $new_password;
     public $confirm_password;
     /**
      * {@inheritdoc}
@@ -92,8 +92,10 @@ class Player extends ActiveRecord implements IdentityInterface
             [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             /* password field rules */
 
-            [['password','confirm_password'], 'string', 'max'=>255,'except'=>['password_reset_token']],
-            [['password'], 'compare', 'compareAttribute'=>'confirm_password','except'=>['password_reset_token']],
+//            [['password',], 'default','value'=>null],
+            [['new_password',], 'string', 'max'=>255],
+            [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
+            [['confirm_password'], 'string', 'max'=>255],
         ];
     }
 
