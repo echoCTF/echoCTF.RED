@@ -79,13 +79,6 @@ class SignupForm extends Model
           $profile->gdpr=true;
           $profile->terms_and_conditions=true;
           $profile->save();
-          /* XXXFIXMEXXX: add user to rank as last possition */
-          if($profile->rank===null)
-          {
-            $PR=new \app\models\PlayerRank();
-            $PR->player_id=$player->id;
-            $PR->save();
-          }
         }
         return $this->sendEmail($player);
 
