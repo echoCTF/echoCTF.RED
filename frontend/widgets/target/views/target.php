@@ -166,9 +166,9 @@ echo GridView::widget([
               {
                 $url=Url::to($this->context->profile->linkTo,'https');
                 if($model->total_treasures===$model->player_treasures && $model->total_findings===$model->player_findings)
-                  return Twitter::widget(['message'=>sprintf('Hey check this out, @%s headshoted %s',$this->context->profile->twitter,$model->name),'url'=>$this->context->profile->linkTo,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+                  return Twitter::widget(['message'=>sprintf('Hey check this out, %s headshoted %s',$this->context->profile->twitterHandle,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
 
-                return Twitter::widget(['message'=>sprintf('Hey check this out, @%s found %d out of %d flags and %d out of %d services on %s',$this->context->profile->twitter,$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$this->context->profile->linkTo,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+                return Twitter::widget(['message'=>sprintf('Hey check this out, %s found %d out of %d flags and %d out of %d services on %s',$this->context->profile->twitterHandle,$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
               }
              return Twitter::widget(['message'=>sprintf('Hey check this target [%s], %s',$model->name,$model->purpose),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
          },

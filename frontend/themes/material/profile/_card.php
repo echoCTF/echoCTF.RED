@@ -16,10 +16,17 @@ use app\widgets\Twitter;
     <p class="card-description">
       <?=Html::encode($profile->bio)?>
     </p>
-    <?=Html::a(Url::to(['profile/index', 'id'=>$profile->id],'https'),['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
-         'message'=>'Checkout my profile at echoCTF.RED',
-         'linkOptions'=>['class'=>'profile-tweet','target'=>'_blank','style'=>'font-size: 1.3em;'],
-      ]);?>
+    <?php if($profile->isMine):?>
+      <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id],'https'),['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
+           'message'=>'Checkout my profile at echoCTF.RED',
+           'linkOptions'=>['class'=>'profile-tweet','target'=>'_blank','style'=>'font-size: 1.3em;'],
+        ]);?>
+    <?php else: ?>
+      <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id],'https'),['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
+           'message'=>sprintf('Checkout the profile of %s at echoCTF.RED',$profile->twitterHandle),
+           'linkOptions'=>['class'=>'profile-tweet','target'=>'_blank','style'=>'font-size: 1.3em;'],
+        ]);?>
+    <?php endif;?>
     <ul class="nav flex-column">
   <?php if(intval(Yii::$app->user->id)===intval($profile->player_id) || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
           <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> Download OpenVPN configuration",['profile/ovpn'],['class'=>'btn btn-primary'])?></li>

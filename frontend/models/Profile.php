@@ -205,4 +205,19 @@ class Profile extends \yii\db\ActiveRecord
       return (int) $command->query()->count();
     }
 
+    public function getIsMine():bool
+    {
+      if(Yii::$app->user->isGuest)
+        return false;
+      if(Yii::$app->user->id===$this->player_id)
+        return true;
+      return false;
+    }
+    public function getTwitterHandle()
+    {
+      if($this->twitter!="")
+        return '@'.$this->twitter;
+      return $this->owner->username;
+    }
+
 }
