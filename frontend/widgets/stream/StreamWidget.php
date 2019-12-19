@@ -36,20 +36,19 @@ class StreamWidget extends Widget
       }
       if($this->dataProvider===NULL && $this->player_id===NULL)
       {
-        $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')->orderBy(['ts'=>SORT_DESC]);
+        $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago');
 
       }
       else if ($this->player_id!==NULL)
       {
         $model=\app\models\Stream::find()
           ->select('stream.*,TS_AGO(ts) as ts_ago')
-          ->where(['player_id'=>$this->player_id])
-          ->orderBy(['ts'=>SORT_DESC]);
+          ->where(['player_id'=>$this->player_id]);
 
       }
       if(isset($model) && $this->dataProvider===NULL)
         $this->dataProvider = new ActiveDataProvider([
-            'query' => $model,
+            'query' => $model->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]),
             'pagination' => [
                 'pageSizeParam'=>'stream-perpage',
                 'pageParam'=>'stream-page',
