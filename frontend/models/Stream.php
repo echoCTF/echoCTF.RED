@@ -5,8 +5,9 @@ namespace app\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\helpers\Html;
 use yii\behaviors\AttributeTypecastBehavior;
-
+use app\modules\target\models\Target;
 /**
  * This is the model class for table "stream".
  *
@@ -101,7 +102,8 @@ class Stream extends \yii\db\ActiveRecord
     public function getFormatted(bool $pub=true)
     {
       $icon=array(
-        'treasure'=>'<i class="fas fa-flag-checkered" style="font-size: 1.5em;"></i>',
+        'headshot'=>'<i class="fas fa-skull" style="font-size: 1.5em;"></i>',
+        'treasure'=>'<i class="fas fa-flag" style="font-size: 1.5em;"></i>',
         //\yii\helpers\Html::img('/images/treasure.png',['alt'=>'Treasure','width'=>'28px']),
         'finding'=>'<i class="fas fa-fingerprint" style="font-size: 1.5em;"></i>',
 //        'finding'=>\yii\helpers\Html::img('/images/finding.png',['alt'=>'Finding','width'=>'28px']),
@@ -117,6 +119,10 @@ class Stream extends \yii\db\ActiveRecord
         //\yii\helpers\Html::img('/images/badge.png',['alt'=>'Badge','width'=>'28px']),
       );
       switch($this->model) {
+        case 'headshot':
+          $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>]", $icon[$this->model],$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
+          break;
+
       	case 'user':
       		$message=sprintf("%s <b>%s</b> %s", $icon[$this->model],$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
       		break;

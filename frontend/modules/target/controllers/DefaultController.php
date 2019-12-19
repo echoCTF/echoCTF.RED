@@ -80,7 +80,9 @@ class DefaultController extends Controller
         $findings[]=$finding->id;
       $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
       ->where(['model_id'=>$findings, 'model'=>'finding'])
-      ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])->orderBy(['ts'=>SORT_DESC]);
+      ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
+      ->orWhere(['model_id'=>$id, 'model'=>'headshot'])
+      ->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]);
       $dataProvider = new ActiveDataProvider([
             'query' => $model,
             'pagination' => [
