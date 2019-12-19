@@ -1,4 +1,4 @@
-fa-fingerprint<?php
+<?php
 use yii\grid\GridView;
 use app\components\JustGage;
 use yii\helpers\Html;
