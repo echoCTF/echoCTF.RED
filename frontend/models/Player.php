@@ -94,8 +94,8 @@ class Player extends ActiveRecord implements IdentityInterface
 
 //            [['password',], 'default','value'=>null],
             [['new_password',], 'string', 'max'=>255],
-            [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
             [['confirm_password'], 'string', 'max'=>255],
+            [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
         ];
     }
 
@@ -182,8 +182,7 @@ class Player extends ActiveRecord implements IdentityInterface
     public function setPassword($password)
     {
         $this->password_hash = Yii::$app->security->generatePasswordHash($password);
-        $this->confirm_password=$this->password = Yii::$app->security->generatePasswordHash($password);
-
+        $this->password = Yii::$app->security->generatePasswordHash($password);
     }
 
     /**

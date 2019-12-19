@@ -109,8 +109,11 @@ class ProfileController extends \yii\web\Controller
         {
           $accountForm->setPassword($accountForm->new_password);
         }
-        $accountForm->save();
-        $success[]="Account updated";
+        if($accountForm->save())
+          $success[]="Account updated";
+        else {
+          $errors[]="Failed to save updated account details.";
+        }
       }
 
       if($errors!==null)
@@ -118,7 +121,6 @@ class ProfileController extends \yii\web\Controller
       if($success!==null)
         Yii::$app->session->setFlash('success',$success);
 
-      //die(var_dump(Yii::$app->session->getAllFlashes()));
       $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
       $playerSpin=$command->bindValue(':player_id',Yii::$app->user->id)->query()->read();
       $accountForm->new_password=$accountForm->confirm_password=null;
