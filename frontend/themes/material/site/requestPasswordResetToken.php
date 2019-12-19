@@ -13,7 +13,7 @@ $this->title = Yii::$app->sys->event_name.' Request password reset';
   <div class="body-content">
     <h2><?=Html::encode($this->title) ?></h2>
 
-    <p>Please fill out your email. A link to reset password will be sent there.</p>
+    <p>Please fill out your email. A link to reset your password will be sent.</p>
 
     <div class="row">
         <div class="col-lg-5">
