@@ -33,7 +33,7 @@ use yii\widgets\DetailView;
     [
       'label'=>'Flags / Services',
       'format'=>'raw',
-      'value'=>'<i class="fas fa-flag"></i> '.count($target->treasures).' / <i class="fas fa-fire"></i> '.count($target->findings) ,
+      'value'=>'<i class="fas fa-flag"></i> '.count($target->treasures).' / <i class="fas fa-fingerprint"></i> '.count($target->findings) ,
     ],
 
     [

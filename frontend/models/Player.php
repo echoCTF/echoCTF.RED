@@ -89,8 +89,8 @@ class Player extends ActiveRecord implements IdentityInterface
             [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             /* password field rules */
 
-            [['password','confirm_password'], 'string', 'max'=>255],
-            [['password'], 'compare', 'compareAttribute'=>'confirm_password'],
+            [['password','confirm_password'], 'string', 'max'=>255,'except'=>['password_reset_token']],
+            [['password'], 'compare', 'compareAttribute'=>'confirm_password','except'=>['password_reset_token']],
         ];
     }
 

@@ -21,7 +21,8 @@ $this->title = Yii::$app->sys->event_name .' Login';
           <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
           <?= $form->field($model, 'password')->passwordInput() ?>
           <?= $form->field($model, 'rememberMe')->checkbox() ?>
-          <p class="small">Request a <?=Html::a('password reset',['/site/request-password-reset'])?> or <?=Html::a('verification email',['/site/resend-verification-email'])?></p>
+
+          <p class="small">If you cant login, you can always request a <?=Html::a('password reset',['/site/request-password-reset'])?> or a resend of the <?=Html::a('verification email',['/site/resend-verification-email'])?></p>
           <div class="form-group">
             <?=Html::submitButton('Login', ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
           </div>

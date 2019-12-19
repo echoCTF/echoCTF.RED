@@ -1,4 +1,4 @@
-<?php
+fa-fingerprint<?php
 use yii\grid\GridView;
 use app\components\JustGage;
 use yii\helpers\Html;
@@ -100,9 +100,9 @@ echo GridView::widget([
        'encodeLabel'=>false,
        'headerOptions' => ["style"=>'width: 4rem','class' => 'text-center'],
        'contentOptions' => ['class' => 'text-center'],
-       'label'=>'<abbr title="Services"><i class="fa fa-fire" aria-hidden="true"></i></abbr>',
+       'label'=>'<abbr title="Services"><i class="fa fa-fingerprint" aria-hidden="true"></i></abbr>',
        'attribute'=>'total_findings',
-       'value'=>function($model) { return sprintf('<i class="fas fa-fire"></i> %d<small>/%d</small>',$model->total_findings,$model->player_findings); },
+       'value'=>function($model) { return sprintf('<i class="fas fa-fingerprint"></i> %d<small>/%d</small>',$model->total_findings,$model->player_findings); },
      ],
      [
        'format'=>'raw',
