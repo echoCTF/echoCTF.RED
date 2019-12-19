@@ -15,3 +15,4 @@
 * [x] Add captcha on signup form to avoid bot registrations
 * [x] Add button on verify-email page to avoid activations by accident
 * [x] Limit activation link validity to 24hours, after that request resent
+* [x] Add signup form checkboxes for `Terms and Conditions` and `Privacy Policy`
