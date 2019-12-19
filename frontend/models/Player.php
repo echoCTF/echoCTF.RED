@@ -68,6 +68,9 @@ class Player extends ActiveRecord implements IdentityInterface
             [['email'], 'trim'],
             [['email'], 'string','max'=>255],
             [['email'], 'email'],
+            ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email has already been taken.','when' => function ($model, $attribute) {
+                return $model->{$attribute} !== $model->getOldAttribute($attribute);
+            }],
 
             /* username field rules */
             [['username'], 'trim'],
