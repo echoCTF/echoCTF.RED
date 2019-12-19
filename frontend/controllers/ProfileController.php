@@ -73,20 +73,8 @@ class ProfileController extends \yii\web\Controller
       if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
         			return $this->redirect(['/']);
 
-      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
-      ->where(['player_id'=>$profile->player_id])
-      ->orderBy(['ts'=>SORT_DESC]);
-      $streamProvider = new ActiveDataProvider([
-          'query' => $model,
-          'pagination' => [
-              'pageSizeParam'=>'stream-perpage',
-              'pageParam'=>'stream-page',
-              'pageSize' => 10,
-          ]
-        ]);
         return $this->render('index',[
           'profile'=>$profile,
-          'streamProvider'=>$streamProvider,
           'accountForm'=>null,
           'profileForm'=>null,
         ]);
