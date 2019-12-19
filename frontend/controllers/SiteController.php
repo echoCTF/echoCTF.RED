@@ -215,7 +215,7 @@ class SiteController extends Controller
               if (Yii::$app->user->login($user)) {
                   $transaction->commit();
                   Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
-                  return $this->goHome();
+                  return $this->redirect(['/profile/me']);
               }
           }
         } catch(\Exception $e) {
