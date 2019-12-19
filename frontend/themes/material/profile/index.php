@@ -32,7 +32,7 @@ $this->_description = Html::encode($profile->bio);
     </div><!--/row-->
     <div class="row game-badges">
 <?php foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
-      <div class="col-sm-1" style="font-size: 550%">
+      <div class="col-sm-1" style="font-size: 450%">
         <?php printf('<abbr title="%s">%s</abbr>', $badge->name, $badge->pubname);?>
       </div>
 <?php endforeach;?>
