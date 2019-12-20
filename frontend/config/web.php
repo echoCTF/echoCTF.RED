@@ -35,7 +35,7 @@ $config = [
           'bundles' => [
               'yii\captcha\CaptchaAsset' => [
                 'sourcePath' => null,
-                'js' => ['js/yii.captcha.js',],
+                'js' => ['js/yii.captcha.min.js',],
               ],
               'yii\bootstrap4\BootstrapAsset' => [
                 'sourcePath' => null,
@@ -44,38 +44,38 @@ $config = [
               'yii\validators\ValidationAsset' => [
                 'sourcePath' => null,
                 'js' => [
-                    'js/yii.validation.js',
+                    'js/yii.validation.min.js',
                 ],
 
               ],
               'yii\widgets\ActiveFormAsset'=>[
                 'sourcePath' => null,
                 'js' => [
-                    'js/yii.activeForm.js',
+                    'js/yii.activeForm.min.js',
                 ],
               ],
               'yii\grid\GridViewAsset'=>[
                 'sourcePath' => null,
                 'js' => [
-                    'js/yii.gridView.js',
+                    'js/yii.gridView.min.js',
                 ],
               ],
               'yii\web\YiiAsset' => [
                 'sourcePath' => null,
                 'js' => [
-                    'js/yii.js',
+                    'js/yii.min.js',
                 ],
               ],
               'yii\widgets\PjaxAsset'=>[
                 'sourcePath' => null,
                 'js' => [
-                    'js/jquery.pjax.js',
+                    'js/jquery.pjax.min.js',
                 ],
               ],
               'yii\web\JqueryAsset' => [
                   'sourcePath' => null,
                   'js' => [
-                      'js/jquery.js',
+                      'js/jquery.min.js',
                   ],
               ],
               'yii\bootstrap\BootstrapPluginAsset' => [

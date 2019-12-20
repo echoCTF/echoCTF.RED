@@ -38,15 +38,15 @@ class MaterialAsset extends AssetBundle
         '/js/core/bootstrap-material-design.min.js',
         '/js/plugins/perfect-scrollbar.jquery.min.js',
         /* Plugin for the momentJs  */
-        '/js/plugins/moment.min.js',
+        //'/js/plugins/moment.min.js',
         /*  Plugin for Sweet Alert */
-        '/js/plugins/sweetalert2.js',
+        //'/js/plugins/sweetalert2.js',
         /* Forms Validations Plugin */
         '/js/plugins/jquery.validate.min.js',
         /* Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard */
         //'js/plugins/jquery.bootstrap-wizard.js',
         /*  Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select */
-        'js/plugins/bootstrap-selectpicker.js',
+        'js/plugins/bootstrap-selectpicker.min.js',
         /*  Plugin for the DateTimePicker, full documentation here: https://eonasdan.github.io/bootstrap-datetimepicker/ */
         //'js/plugins/bootstrap-datetimepicker.min.js',
         /*  DataTables.net Plugin, full documentation here: https://datatables.net/  */
@@ -66,16 +66,16 @@ class MaterialAsset extends AssetBundle
         /* Chartist JS */
         //'js/plugins/chartist.min.js',
         /*  Notifications Plugin    */
-        'js/plugins/bootstrap-notify.js',
+        'js/plugins/bootstrap-notify.min.js',
         /* Control Center for Material Dashboard: parallax effects, scripts for the example pages etc */
         /* Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert */
-        '//cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.js',
+        '//cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.min.js',
         /*  Google Maps Plugin   */
         // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
         /******/
         '/js/cookieconsent.min.js',
-        '/js/libechoctf.js',
-        // 'js/material.min.js',
+        '/js/libechoctf.min.js',
+        //'/js/material.min.js',
         // 'js/superfish.js'
     ];
     public $depends = [

@@ -34,7 +34,7 @@ $this->_description ="The echoCTF dashboard page";
                 'title'=>sprintf('%d',$totalHeadshots),
                 'subtitle'=>'Headshots',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons">memory</i> You have '.Yii::$app->user->identity->headshotsCount.' headshots
+                        <i class="material-icons">memory</i> You have '.count(Yii::$app->user->identity->headshots).' headshots
                       </div>',
             ]); Card::end(); ?>
         </div>
