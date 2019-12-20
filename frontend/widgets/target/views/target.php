@@ -57,7 +57,7 @@ echo GridView::widget([
        'format'=>'raw',
        'encodeLabel'=>false,
        'label'=>'<abbr title="Difficulty rating">Difficulty</abbr>',
-       'contentOptions' => ['class' => 'd-none d-xl-table-cell'],
+       'contentOptions' => ['class' => 'd-none d-xl-table-cell text-center'],
        'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell'],
        'value'=>function($model){
          $progress=($model->difficulty*20);
@@ -65,25 +65,27 @@ echo GridView::widget([
          switch($model->difficulty)
          {
            case 0:
-             $progress=($model->difficulty*20)+1;
-             $bgcolor="";
+             $icon='fa-battery-empty';
+             $bgcolor="text-gray";
              break;
            case 1:
-             $bgcolor='bg-info';
+             $icon='fa-battery-quarter';
+             $bgcolor='red-success';
              break;
            case 2:
-             $bgcolor="bg-primary";
+              $icon='fa-battery-half';
+              $bgcolor="text-secondary";
              break;
            case 3:
-             $bgcolor="bg-warning";
+             $icon='fa-battery-three-quarters';
+             $bgcolor="text-warning";
              break;
            case 4:
-             $bgcolor="bg-danger";
-             break;
-           case 5:
+             $bgcolor="text-danger";
            default:
+            $icon='fa-battery-full';
          }
-         return '<center>'.JustGage::widget(['id'=>$model->name.'-'.$model->ip,"htmlOptions"=>['style'=>"width:50px; height:40px"],'options'=>['relativeGaugeSize'=>true,'textRenderer'=>'function (val) {return "";}','min'=>0,'max'=>5,'value'=>$model->difficulty,/*'title'=>$model->difficultyText*/]]).'</center>';
+         return sprintf('<i class="fas %s %s" style="font-size: 2.0em;"></i>',$icon,$bgcolor);
        },
      ],
      [
