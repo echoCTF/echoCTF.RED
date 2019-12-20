@@ -5,6 +5,7 @@ var autoprefixer = require('gulp-autoprefixer');
 var sourcemaps = require('gulp-sourcemaps');
 var open = require('gulp-open');
 const minify = require("gulp-minify");
+const imagemin = require('gulp-imagemin');
 let cleanCSS = require('gulp-clean-css');
 //var uglify = require('gulp-uglify');
 
@@ -15,6 +16,22 @@ var Paths = {
   SCSS_TOOLKIT_SOURCES: './assets/scss/material-dashboard.scss',
   SCSS: './assets/scss/**/**'
 };
+gulp.task('minifyIMG', function() {
+  return gulp.src(['../../frontend/web/images/**/*'])
+        .pipe(imagemin([
+          imagemin.gifsicle({interlaced: true}),
+          imagemin.jpegtran({progressive: true}),
+          imagemin.optipng({optimizationLevel: 7}),
+          imagemin.svgo({
+              plugins: [
+                  {removeViewBox: true},
+                  {cleanupIDs: false}
+              ]
+          })
+      ],{ verbose: true }))
+      .pipe(gulp.dest('../../frontend/web/images'));
+});
+
 gulp.task('minifyJS', function() {
   return gulp.src('../../frontend/web/js/**/*.js')
     .pipe(minify({ext:{ min:'.min.js' },ignoreFiles: ['*min.js']}))
@@ -32,12 +49,13 @@ gulp.task('compile', function() {
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer())
+    .pipe(cleanCSS())
     .pipe(sourcemaps.write(Paths.HERE))
     .pipe(gulp.dest(Paths.CSS));
 });
 
 gulp.task('watch', function() {
-    gulp.start('compile').watch(Paths.SCSS, ['compile']);
+    gulp.start('compile').start('minifyJS').start('minifyIMG').watch(Paths.SCSS, ['compile']);
 });
 
 gulp.task('open', function() {
