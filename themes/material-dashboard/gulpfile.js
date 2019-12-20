@@ -8,6 +8,8 @@ const minify = require("gulp-minify");
 const imagemin = require('gulp-imagemin');
 let cleanCSS = require('gulp-clean-css');
 //var uglify = require('gulp-uglify');
+var imageResize = require('gulp-image-resize');
+var rename = require("gulp-rename");
 
 var Paths = {
   HERE: './',
@@ -16,6 +18,13 @@ var Paths = {
   SCSS_TOOLKIT_SOURCES: './assets/scss/material-dashboard.scss',
   SCSS: './assets/scss/**/**'
 };
+gulp.task('createMiniIMG', function() {
+  return gulp.src(['../../frontend/web/images/targets/*'])
+        .pipe(imageResize({percentage : 80 }))
+        .pipe(rename(function (path) { path.basename += "-thumbnail"; }))
+      .pipe(gulp.dest('../../frontend/web/images/targets'));
+});
+
 gulp.task('minifyIMG', function() {
   return gulp.src(['../../frontend/web/images/**/*'])
         .pipe(imagemin([
