@@ -19,10 +19,10 @@ var Paths = {
   SCSS: './assets/scss/**/**'
 };
 gulp.task('createMiniIMG', function() {
-  return gulp.src(['../../frontend/web/images/targets/*'])
-        .pipe(imageResize({percentage : 80 }))
+  return gulp.src(['../images/targets/*'])
+        .pipe(imageResize({percentage : 50 }))
         .pipe(rename(function (path) { path.basename += "-thumbnail"; }))
-      .pipe(gulp.dest('../../frontend/web/images/targets'));
+      .pipe(gulp.dest('../images/targets'));
 });
 
 gulp.task('minifyIMG', function() {
@@ -61,6 +61,12 @@ gulp.task('compile', function() {
     .pipe(cleanCSS())
     .pipe(sourcemaps.write(Paths.HERE))
     .pipe(gulp.dest(Paths.CSS));
+});
+gulp.task('all', function() {
+    gulp.start('compile');
+    gulp.start('minifyJS');
+    gulp.start('createMiniIMG');
+    gulp.start('minifyIMG');
 });
 
 gulp.task('watch', function() {

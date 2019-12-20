@@ -28,8 +28,8 @@ class MaterialAsset extends AssetBundle
     public $css = [
         '//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono',
         '//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css',
-        'css/material-dashboard.css',
         'css/bootstrap-select.min.css',
+        'css/material-dashboard.css',
         'css/material.css',
     ];
 

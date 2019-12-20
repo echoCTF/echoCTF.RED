@@ -40,7 +40,7 @@ echo GridView::widget([
        'contentOptions' => ['class' => 'text-center'],
        'headerOptions' => ['class' => 'text-center',"style"=>'width: 1.5em'],
        'format'=>'raw',
-       'value'=>function($model){return sprintf('<img src="/images/targets/_%s.png" alt="%s" class="rounded-circle" style="height: 20px; max-height: 20px; max-width: 20px">',$model->name, $model->fqdn);}
+       'value'=>function($model){return sprintf('<img src="/images/targets/_%s-thumbnail.png" alt="%s" class="rounded-circle" style="height: 20px; max-height: 20px; max-width: 20px">',$model->name, $model->fqdn);}
      ],
      [
        'attribute'=>'name',
