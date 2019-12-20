@@ -26,4 +26,9 @@ class Module extends \yii\base\Module
     {
       return models\Badge::find();
     }
+    public function getHeadshots()
+    {
+      return models\Headshot::find();
+    }
+
 }

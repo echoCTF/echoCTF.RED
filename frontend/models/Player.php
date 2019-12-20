@@ -7,7 +7,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use yii\behaviors\AttributeTypecastBehavior;
-
+use app\modules\game\models\Headshot;
 /**
  * Player model
  *
@@ -253,6 +253,14 @@ class Player extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(PlayerTreasure::className(), ['player_id' => 'id']);
     }
+    public function getHeadshots()
+    {
+        return $this->hasMany(Headshot::className(), ['player_id' => 'id']);
+    }
+    public function getHeadshotsCount()
+    {
+        return $this->hasMany(Headshot::className(), ['player_id' => 'id'])->count();
+    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -361,5 +369,6 @@ class Player extends ActiveRecord implements IdentityInterface
             'status' => self::STATUS_ACTIVE,
         ]);
     }
+
 
 }

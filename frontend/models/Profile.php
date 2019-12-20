@@ -7,6 +7,8 @@ use yii\db\Expression;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\behaviors\AttributeTypecastBehavior;
+use app\modules\game\models\Headshot;
+use app\modules\target\models\Target;
 
 /**
  * This is the model class for table "profile".
@@ -80,6 +82,7 @@ class Profile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['discord','twitter','github','htb','avatar','bio'],'trim'],
             ['country', 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country' => 'id']],
             ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
             [['player_id','country','avatar','visibility'], 'required'],
@@ -193,16 +196,16 @@ class Profile extends \yii\db\ActiveRecord
     {
       return Yii::$app->db->createCommand('SELECT count(*) FROM player_finding WHERE player_id=:player_id')->bindValue(':player_id',$this->player_id)->queryScalar();
     }
-    public function getHeadshots(){
-      $command = Yii::$app->db->createCommand('select t.* FROM target as t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id)');
-      $command->bindValue(':player_id',$this->player_id);
-      $headshots = $command->query()->readAll();
-      return $headshots;
+    public function getHeadshotRelation()
+    {
+      return $this->hasMany(Headshot::className(), ['player_id' => 'player_id']);
     }
-    public function getHeadshotsCount(){
-      $command = Yii::$app->db->createCommand('select count(t.id) FROM target as t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id)');
-      $command->bindValue(':player_id',$this->player_id);
-      return (int) $command->query()->count();
+    public function getHeadshots(){
+      return $this->hasMany(Target::className(),['id' => 'target_id'])->via('headshotRelation');
+    }
+
+    public function getHeadshotsCount():int {
+      return (int)$this->hasMany(Headshot::className(), ['player_id' => 'player_id'])->count();
     }
 
     public function getIsMine():bool

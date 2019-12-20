@@ -6,6 +6,7 @@ use Yii;
 use yii\data\ActiveDataProvider;
 use app\modules\target\models\Target;
 use app\modules\target\models\Treasure;
+use app\modules\game\models\Headshot;
 use app\models\PlayerTreasure;
 use app\models\PlayerScore;
 use yii\helpers\ArrayHelper;
@@ -49,21 +50,12 @@ class DashboardController extends \yii\web\Controller
       $treasureStats->total=(int)Treasure::find()->count();
       $treasureStats->claims=(int)PlayerTreasure::find()->count();
       $treasureStats->claimed=(int)PlayerTreasure::find()->where(['player_id'=>Yii::$app->user->id])->count();
-      $totalHeadshots=0;
-      $tmod=Target::find()->active();
-      foreach($tmod->all() as $model)
-      {
-        $totalHeadshots+=count($model->getHeadshots());
-      }
-
-      $userHeadshots=Target::findBySql('SELECT t.*,inet_ntoa(t.ip) as ipoctet,count(distinct t2.id) as total_treasures,count(distinct t4.treasure_id) as player_treasures, count(distinct t3.id) as total_findings, count(distinct t5.finding_id) as player_findings FROM target AS t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING player_treasures=total_treasures and player_findings=total_findings ORDER BY t.ip,t.fqdn,t.name')
-        ->params([':player_id'=>\Yii::$app->user->id])->all();
+      $totalHeadshots=Headshot::find()->count();
 
       return $this->render('index', [
           'totalPoints'=>$totalPoints,
           'treasureStats'=>$treasureStats,
           'totalHeadshots'=>$totalHeadshots,
-          'userHeadshots'=>$userHeadshots,
       ]);
     }
 

@@ -7,7 +7,6 @@ use app\widgets\stream\StreamWidget as Stream;
 $this->_fluid="-fluid";
 $this->title = Yii::$app->sys->event_name .' Dashboard';
 $this->_description ="The echoCTF dashboard page";
-
 ?>
 
 <div class="dashboard-index">
@@ -35,7 +34,7 @@ $this->_description ="The echoCTF dashboard page";
                 'title'=>sprintf('%d',$totalHeadshots),
                 'subtitle'=>'Headshots',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons">memory</i> You have '.count($userHeadshots).' headshots
+                        <i class="material-icons">memory</i> You have '.Yii::$app->user->identity->headshotsCount.' headshots
                       </div>',
             ]); Card::end(); ?>
         </div>
