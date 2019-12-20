@@ -69,7 +69,7 @@ class MaterialAsset extends AssetBundle
         'js/plugins/bootstrap-notify.min.js',
         /* Control Center for Material Dashboard: parallax effects, scripts for the example pages etc */
         /* Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert */
-        '//cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.min.js',
+        //'//cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.min.js',
         /*  Google Maps Plugin   */
         // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
         /******/
