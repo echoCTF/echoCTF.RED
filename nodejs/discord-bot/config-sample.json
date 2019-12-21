@@ -1,0 +1,10 @@
+{
+	"prefix": "~",
+	"allowedRole": "BUGHUNTER",
+	"autoRole": "offense",
+	"token": "<BOT TOKEN>",
+  "dbhost": "localhost",
+  "dbuser": "root",
+  "dbpass": "",
+  "dbname": "echoCTF"
+}
