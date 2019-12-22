@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const { prefix, allowedRole, autoRole, token, dbhost, dbuser, dbpass, dbname } = require('./config.json');
+const { prefix, allowedRole, autoRole, token, dbhost, dbuser, dbpass, dbname, defaultGuildID, confLastId } = require('./config.json');
 
 var mysql = require('mysql'),
     connection = mysql.createConnection({
@@ -14,6 +14,37 @@ var mysql = require('mysql'),
   pollingTimer,
   lastID=0,
   headersOpt = { "content-type": "application/json" };
+
+var pollingLoop = function() {
+
+  // Doing the database query
+  var query = connection.query('SELECT t1.*,t2.username,trim(t4.discord) as discord,t3.name as hostname,inet_ntoa(t3.ip) as ipaddr,TS_AGO(t1.ts) as ts_ago FROM stream as t1 LEFT JOIN player as t2 on t1.player_id=t2.id LEFT JOIN target as t3 on t3.id=t1.model_id left join profile as t4 on t4.player_id=t2.id WHERE t1.id > '+lastID+' and model="headshot" order by t1.ts, t1.id'),
+  activity_stream = [];
+  var content="";
+
+  // setting the query listeners
+  query
+    .on('error', function(err) {
+      console.log(err);
+    })
+    .on('result', function(entry) {
+      if(entry.discord!=""){
+        var guild = client.guilds.get(defaultGuildID);
+        member = guild.members.find(member => member.user.tag.toLowerCase() === entry.discord.toLowerCase());
+
+        content='<'+entry.discord+'> got a headshot :skull: on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!! [`ID: '+entry.id+'`]';
+        console.log(entry.discord.toLowerCase(), member);
+      }
+//      else {
+//        content='`'+entry.username+'` got a headshot on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!! [`ID: '+entry.id+'`]';
+//      }
+      lastID=entry.id;
+    })
+    .on('end', function() {
+        pollingTimer = setTimeout(pollingLoop, POLLING_INTERVAL);
+    });
+
+};
 
 /* Send help message */
 function help(message)
@@ -41,7 +72,16 @@ function target_lookup(message,target)
 }
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}!`);
+  console.log(`Logged in as ${client.user.tag}! ${defaultGuildID}`);
+  client.user.setActivity("echoCTF.RED");
+
+//  for(Count in client.users.array()){
+//     var User = client.users.array()[Count];
+//     console.log(User.tag);
+//  }
+  connection.connect(function(err) {
+      pollingLoop();
+    });
 });
 
 // Create an event listener for messages
@@ -66,7 +106,6 @@ client.on('message', message => {
     case 'purge':
       if (!message.member.hasPermission("ADMINISTRATOR"))
           return message.reply('only admins are allowed to perform this command!')
-
       const deleteCount = parseInt(args[0], 10);
       if(!deleteCount || deleteCount < 2 || deleteCount > 100)
         return message.reply("Please provide a number between 2 and 100 for the number of messages to delete");
@@ -123,5 +162,7 @@ client.on("presenceUpdate", (oldMember, newMember) => {
         console.log(`${newMember.user.username} is now ${newMember.presence.status}`);
     }
 });
+
+
 
 client.login(token);

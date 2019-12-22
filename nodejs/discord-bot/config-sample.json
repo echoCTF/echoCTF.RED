@@ -6,5 +6,7 @@
   "dbhost": "localhost",
   "dbuser": "root",
   "dbpass": "",
-  "dbname": "echoCTF"
+  "dbname": "echoCTF",
+	"defaultGuildID": "", 
+	"lastID": 0
 }
