@@ -120,7 +120,7 @@ client.on('message', message => {
       return message.channel.bulkDelete(deleteCount).catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
 
     case 'say':
-    if (!message.member.hasPermission("ADMINISTRATOR") && !member.roles.has(member.guild.roles.find(r => r.name.toLowerCase() === config.allowedRole.toLowerCase()))
+    if (!message.member.hasPermission("ADMINISTRATOR") && !member.roles.has(member.guild.roles.find(r => r.name.toLowerCase() === config.allowedRole.toLowerCase())))
         return message.reply('only admins are allowed to perform this command!')
       const sayMessage = args.join(" ");
       message.delete().catch(O_o=>{});
