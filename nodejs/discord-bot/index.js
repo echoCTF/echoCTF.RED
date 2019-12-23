@@ -10,35 +10,36 @@ var mysql = require('mysql'),
       database: config.dbname,
 //      port: 3306
     }),
-  POLLING_INTERVAL = 5000,
+  POLLING_INTERVAL = 20000,
   pollingTimer,
-  lastID=config.lastID,
+  lastTS=config.lastID,
   headersOpt = { "content-type": "application/json" };
 
 var pollingLoop = function() {
 
   // Doing the database query
-  var query = connection.query('SELECT t1.*,t2.username,trim(t4.discord) as discord,t3.name as hostname,inet_ntoa(t3.ip) as ipaddr,TS_AGO(t1.ts) as ts_ago FROM stream as t1 LEFT JOIN player as t2 on t1.player_id=t2.id LEFT JOIN target as t3 on t3.id=t1.model_id left join profile as t4 on t4.player_id=t2.id WHERE t1.id > '+lastID+' and model="headshot" order by t1.ts, t1.id'),
-  activity_stream = [];
+  var query = connection.query('select TS_AGO(t1.created_at) as ts_ago, unix_timestamp(t1.created_at) as unixTS,t2.name as hostname,inet_ntoa(t2.ip) as ipaddr, t3.discord,t4.username from headshot as t1 left join target as t2 on t2.id=t1.target_id left join profile as t3 on t3.player_id=t1.player_id left join player as t4 on t4.id=t1.player_id having unixTS>'+lastTS+' order by t1.created_at,t1.player_id,t1.target_id');
   var content="";
 
   // setting the query listeners
-  query
+   query
     .on('error', function(err) {
       console.log(err);
     })
     .on('result', function(entry) {
-      content='`'+entry.username+'` got a headshot on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!! [`ID: '+entry.id+'`]';
+      content='`'+entry.username+'` got a headshot on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!!';
+      var guild =  client.guilds.get(config.defaultGuildID);
+      let channel=guild.channels.find(channel => channel.name === "activity-stream");
       if(entry.discord!=""){
-        var guild = client.guilds.get(config.defaultGuildID);
         member = client.guilds.get(config.defaultGuildID).members.find(member => member.user && ( member.user.tag.toLowerCase()===entry.discord.toLowerCase() || member.user.username.toLowerCase()===entry.discord.toLowerCase()));
         if(member && member.user)
         {
-          content=`${member.user}`+' got a headshot :skull: on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!! [`ID: '+entry.id+'`]';
+          content=`${member.user}`+' got a headshot :skull: on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!!';
         }
       }
-      console.log(content);
-      lastID=entry.id;
+      channel.send(content);
+      console.log(content,entry.unixTS);
+      lastTS=entry.unixTS
     })
     .on('end', function() {
         pollingTimer = setTimeout(pollingLoop, POLLING_INTERVAL);
