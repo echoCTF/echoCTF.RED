@@ -70,9 +70,9 @@ function user_lookup(message,username)
      .setThumbnail('https://echoctf.red/images/avatars/'+entry.avatar) // Their icon
      .addField('Rank',entry.rank,true)
      .addField('Points',entry.points,true)
+     .addField('Headshots',entry.headshots,true);
      .addField('Last on pUI',entry.on_pui,true)
      .addField('Last on VPN',entry.on_vpn,true)
-     .addField('Headshots',entry.headshots,true);
 
     return message.channel.send(memberembed);
   });
