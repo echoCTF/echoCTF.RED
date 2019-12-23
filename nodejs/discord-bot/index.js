@@ -126,7 +126,7 @@ client.on('message', message => {
 
     case 'leave':
       if (!message.member.hasPermission("ADMINISTRATOR"))
-          return message.reply('only admins are allowed to perform this command!')
+          return message.reply('only admins are allowed to perform this command!');
       return client.guilds.get(message.guild.id).leave();
 
     case 'help':
