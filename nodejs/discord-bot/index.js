@@ -1,18 +1,18 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const { prefix, allowedRole, autoRole, token, dbhost, dbuser, dbpass, dbname, defaultGuildID, confLastId } = require('./config.json');
+const config = require('./config.json');
 
 var mysql = require('mysql'),
     connection = mysql.createConnection({
-      host: dbhost,
-      user: dbuser,
-      password: dbpass,
-      database: dbname,
+      host: config.dbhost,
+      user: config.dbuser,
+      password: config.dbpass,
+      database: config.dbname,
 //      port: 3306
     }),
   POLLING_INTERVAL = 5000,
   pollingTimer,
-  lastID=0,
+  lastID=config.lastID,
   headersOpt = { "content-type": "application/json" };
 
 var pollingLoop = function() {
@@ -29,7 +29,7 @@ var pollingLoop = function() {
     })
     .on('result', function(entry) {
       if(entry.discord!=""){
-        var guild = client.guilds.get(defaultGuildID);
+        var guild = client.guilds.get(config.defaultGuildID);
         member = guild.members.find(member => member.user.tag.toLowerCase() === entry.discord.toLowerCase());
 
         content='<'+entry.discord+'> got a headshot :skull: on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!! [`ID: '+entry.id+'`]';
@@ -72,13 +72,9 @@ function target_lookup(message,target)
 }
 
 client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}! ${defaultGuildID}`);
+  console.log(`Logged in as ${client.user.tag}! ${config.defaultGuildID}`);
   client.user.setActivity("echoCTF.RED");
 
-//  for(Count in client.users.array()){
-//     var User = client.users.array()[Count];
-//     console.log(User.tag);
-//  }
   connection.connect(function(err) {
       pollingLoop();
     });
@@ -91,16 +87,16 @@ client.on('message', message => {
     return;
   }
   // if user not administrator and not allowedRole reject
-  if (!message.member.hasPermission("ADMINISTRATOR") && !member.roles.has(member.guild.roles.find(r => r.name === allowedRole)))
-      return message.reply(`only admins and ${allowedRole} are allowed to perform commands!`)
+  if (!message.member.hasPermission("ADMINISTRATOR") && !member.roles.has(member.guild.roles.find(r => r.name === config.allowedRole)))
+      return message.reply(`only admins and ${config.allowedRole} are allowed to perform commands!`)
 
   console.log(`#${message.channel.name} ${message.author.username}#${message.author.tag}> ${message.content}`);
 
   // if not start with our prefix then ignore
-  if (!message.content.startsWith(prefix)) return;
+  if (!message.content.startsWith(config.prefix)) return;
   console.log(`processing command ${message.author.tag}`)
 
-  const args = message.content.slice(prefix.length).split(/ +/);
+  const args = message.content.slice(config.prefix.length).split(/ +/);
   const command = args.shift().toLowerCase();
   switch (command) {
     case 'purge':
@@ -148,10 +144,10 @@ client.on('guildMemberRemove', member => {
 
 client.on('guildMemberAdd', member => {
     console.log(`${member.user.username} with id ${member} has joined`);
-    if (!member.roles.has(member.guild.roles.find(r => r.name === autoRole)))
+    if (!member.roles.has(member.guild.roles.find(r => r.name === config.autoRole)))
     {
-      member.addRole(member.guild.roles.find(r => r.name === autoRole));
-      console.log(`added new member ${member} on ${autoRole}`);
+      member.addRole(member.guild.roles.find(r => r.name === config.autoRole));
+      console.log(`added new member ${member} on ${config.autoRole}`);
     }
     const channel = member.guild.channels.find(ch => ch.name === 'general');
     channel.send(`Welcome to the server, ${member}!`).then((newMessage) => {newMessage.react(":wave:");});
@@ -165,4 +161,4 @@ client.on("presenceUpdate", (oldMember, newMember) => {
 
 
 
-client.login(token);
+client.login(config.token);
