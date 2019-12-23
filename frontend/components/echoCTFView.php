@@ -55,7 +55,8 @@ class echoCTFView extends \yii\web\View
   public function getTwitter_card()
   {
     //<meta name="twitter:card" content="summary" />
-    return ['name'=>'twitter:card', 'content'=>"summary" ];
+    return ['name'=>'twitter:card', 'content'=>"summary_large_image" ];
+//    return ['name'=>'twitter:card', 'content'=>"summary" ];
 
   }
   public function getTwitter_site()

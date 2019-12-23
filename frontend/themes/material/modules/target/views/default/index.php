@@ -4,6 +4,8 @@ use yii\widgets\ListView;
 use app\widgets\stream\StreamWidget as Stream;
 $this->title = Yii::$app->sys->event_name .' Target: '.$target->name.' #'.$target->id;
 $this->_description =$target->purpose;
+$this->_image=\yii\helpers\Url::to('/images/targets/'.$target->name.'.png','https');
+$this->_url=\yii\helpers\Url::to(['index','id'=>$target->id],'https');
 $this->_fluid='-fluid';
 ?>
 
