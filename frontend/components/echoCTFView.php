@@ -14,8 +14,8 @@ class echoCTFView extends \yii\web\View
   public $_fluid;
   public function init()
   {
-      if($this->_url===null)
-        $this->_url=\yii\helpers\Url::to([null],'https');
+//      if($this->_url===null)
+//        $this->_url=\yii\helpers\Url::to([null],'https');
       if($this->_image===null)
         $this->_image=\yii\helpers\Url::to('/images/logotw.png','https');
       $this->title=sprintf("%s - %s: %s",\Yii::$app->sys->event_name,ucfirst(\Yii::$app->controller->id), \Yii::$app->controller->action->id);
