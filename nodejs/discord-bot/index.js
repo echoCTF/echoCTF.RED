@@ -50,14 +50,36 @@ var pollingLoop = function() {
 /* Send help message */
 function help(message)
 {
-  var msg="```\n~help This command\n~myid Sends your discord id to be added at your profile\n~ping Check if the bot is alive\n~target [shortname] displays target details```";
+  var msg="```\n~help This command\n~myid Sends your discord id to be added at your profile\n~ping Check if the bot is alive\n~target [shortname] displays target details\n~user [username|profile_id] display user details```";
   return message.channel.send(msg);
 }
 
+/* LOOKUP user DETAILS FROM THE DATABASE (temporary) similar to target */
+function user_lookup(message,username)
+{
+  var sql    = 'SELECT t2.id as profile_id,t1.username,t2.bio,t2.visibility,t2.avatar,t3.on_vpn, t3.on_pui,count(t4.target_id) as headshots FROM player AS t1 LEFT JOIN profile AS t2 on t2.player_id=t1.id LEFT JOIN player_last as t3 on t3.id=t1.id left join headshot as t4 on t4.player_id=t1.id where t1.active=1 and t2.visibility!="private" and t1.username='+connection.escape(username)+' OR t2.id='+connection.escape(username)+' GROUP BY t1.id';
+  connection.query(sql, function (error, results, fields) {
+    if (error) throw error;
+    if(!results.length) return message.reply(`No user found with profile id or username ${username}`)
+    let entry=results[0];
+    let memberembed = new Discord.RichEmbed()
+     .setColor('#94c11f')
+     .setTitle(entry.username)
+     .setDescription(entry.bio)
+     .setURL(`https://echoctf.red/profile/${entry.profile_id}`) // Their name, I use a different way, this should work
+     .setThumbnail('https://echoctf.red/images/avatars/'+entry.avatar) // Their icon
+     .addField('Last on pUI',entry.on_pui,true)
+     .addField('Last on VPN',entry.on_vpn,true)
+     .addField('Headshots',entry.headshots,true);
+
+    return message.channel.send(memberembed);
+  });
+
+}
 /* LOOKUP TARGET DETAILS FROM THE DATABASE (temporary) */
 function target_lookup(message,target)
 {
-  var sql    = 'SELECT t1.id,t1.name,t1.purpose, t1.description, t1.fqdn,inet_ntoa(t1.ip) as ip, count(distinct t2.id) as treasures, count(distinct t3.id) as findings,count(distinct t4.player_id) as headshots FROM target as t1 left join treasure as t2 on t2.target_id=t1.id LEFT JOIN finding as t3 on t3.target_id=t1.id LEFT JOIN headshot as t4 on t4.target_id=t1.id WHERE t1.name = ' + connection.escape(target)+' GROUP BY t1.id';
+  var sql    = 'SELECT t1.id,t1.name,t1.purpose, t1.description, t1.fqdn,inet_ntoa(t1.ip) as ip, count(distinct t2.id) as treasures, count(distinct t3.id) as findings,count(distinct t4.player_id) as headshots FROM target as t1 left join treasure as t2 on t2.target_id=t1.id LEFT JOIN finding as t3 on t3.target_id=t1.id LEFT JOIN headshot as t4 on t4.target_id=t1.id WHERE t1.active=1 and t1.name = ' + connection.escape(target)+' GROUP BY t1.id';
   connection.query(sql, function (error, results, fields) {
     if (error) throw error;
     if(!results.length) return message.reply(`target ${target} not found.`)
@@ -69,16 +91,7 @@ function target_lookup(message,target)
      .setThumbnail('https://echoctf.red/images/targets/_'+results[0].name+'.png') // Their icon
      .addField('Flags/Services',results[0].treasures+' / '+results[0].findings,true)
      .addField('Headshots',results[0].headshots,true);
-
-    msg="https://echoctf.red/target/"+results[0].id;
-    msg+="\n```"+'ID: '+ results[0].id + "\n";
-    msg+='FQDN: '+ results[0].fqdn + "\n";
-    msg+='IP: '+ results[0].ip + "\n";
-    msg+='Flags/Services: '+ results[0].treasures + "/"+results[0].findings+"\n";
-    msg+='Headshots: '+ results[0].headshots + "\n";
-    msg+="```";
     return message.channel.send(memberembed);
-    return message.channel.send(msg);
   });
 }
 
@@ -128,6 +141,14 @@ client.on('message', message => {
 
     case 'myid':
         return message.reply(`Your userid is: ${message.author.id}`);
+
+    case 'user':
+      if (!args.length) {
+  		    return message.reply(`You didn't provide any arguments, ${message.author}!`);
+  	   }
+       else {
+         return user_lookup(message,args[0])
+       }
 
     case 'target':
       if (!args.length) {
