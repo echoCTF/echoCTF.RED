@@ -12,7 +12,7 @@ use app\widgets\Twitter;
             'type'=>'card-stats',
             'icon'=>sprintf('<img src="/images/targets/_%s.png" class="img-fluid" style="max-width: 10rem; max-height: 4rem;"/>',$target->name),
             'color'=>'warning',
-            'subtitle'=>sprintf("%s, %s", $target->difficultyText,boolval($target->rootable) ? "rootable" : "non rootable"),
+            'subtitle'=>sprintf("%s, %s", ucfirst($target->difficultyText),boolval($target->rootable) ? "Rootable" : "Non rootable"),
             'title'=>sprintf('%s / %s',$target->name,long2ip($target->ip)),
             'footer'=>sprintf('<div class="stats">%s</div>',$target->purpose),
         ]);

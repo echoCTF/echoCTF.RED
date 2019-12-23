@@ -11,7 +11,7 @@ $this->title = Yii::$app->sys->event_name .' Login';
 ?>
 <div class="site-login" style="color: red-100;">
   <div class="body-content">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h2><?= Html::encode($this->title) ?></h2>
 
     <p>Please fill out the following fields to login:</p>
 
