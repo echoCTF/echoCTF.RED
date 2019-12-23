@@ -86,7 +86,7 @@ function target_lookup(message,target)
 // Create an event listener for messages
 client.on('message', message => {
   // if bot or not on #general then ignore
-  if (message.author.bot || message.channel.name!=="general") {
+  if (message.author.bot) {
     return;
   }
   // if user not administrator and not allowedRole reject
