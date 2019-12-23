@@ -14,11 +14,7 @@ $this->_fluid="-fluid";
 $this->title = Yii::$app->sys->event_name .' Profile of: '.Html::encode($profile->owner->username);
 $this->_description = Html::encode($profile->bio);
 $this->_url=\yii\helpers\Url::to(['index','id'=>$profile->id],'https');
-
-
 ?>
-<!-- <center><img src="/images/logo.png" width="60%"/></center>
-<hr>-->
 <div class="profile-index">
   <div class="body-content">
     <div class="row">
