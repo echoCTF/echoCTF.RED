@@ -28,16 +28,16 @@ var pollingLoop = function() {
       console.log(err);
     })
     .on('result', function(entry) {
+      content='`'+entry.username+'` got a headshot on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!! [`ID: '+entry.id+'`]';
       if(entry.discord!=""){
         var guild = client.guilds.get(config.defaultGuildID);
-        member = guild.members.find(member => member.user.tag.toLowerCase() === entry.discord.toLowerCase());
-
-        content='<'+entry.discord+'> got a headshot :skull: on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!! [`ID: '+entry.id+'`]';
-        console.log(entry.discord.toLowerCase(), member);
+        member = client.guilds.get(config.defaultGuildID).members.find(member => member.user && ( member.user.tag.toLowerCase()===entry.discord.toLowerCase() || member.user.username.toLowerCase()===entry.discord.toLowerCase()));
+        if(member && member.user)
+        {
+          content=`${member.user}`+' got a headshot :skull: on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!! [`ID: '+entry.id+'`]';
+        }
       }
-//      else {
-//        content='`'+entry.username+'` got a headshot on `'+entry.hostname+'/'+entry.ipaddr+'`, '+entry.ts_ago+'. Well done!!! [`ID: '+entry.id+'`]';
-//      }
+      console.log(content);
       lastID=entry.id;
     })
     .on('end', function() {
@@ -60,6 +60,15 @@ function target_lookup(message,target)
   connection.query(sql, function (error, results, fields) {
     if (error) throw error;
     if(!results.length) return message.reply(`target ${target} not found.`)
+    let memberembed = new Discord.RichEmbed()
+     .setColor('#94c11f')
+     .setTitle(results[0].fqdn+" "+results[0].ip+" ID#"+results[0].id)
+     .setDescription(results[0].purpose)
+     .setURL(`https://echoctf.red/target/${results[0].id}`) // Their name, I use a different way, this should work
+     .setThumbnail('https://echoctf.red/images/targets/_'+results[0].name+'.png') // Their icon
+     .addField('Flags/Services',results[0].treasures+' / '+results[0].findings,true)
+     .addField('Headshots',results[0].headshots,true);
+
     msg="https://echoctf.red/target/"+results[0].id;
     msg+="\n```"+'ID: '+ results[0].id + "\n";
     msg+='FQDN: '+ results[0].fqdn + "\n";
@@ -67,18 +76,11 @@ function target_lookup(message,target)
     msg+='Flags/Services: '+ results[0].treasures + "/"+results[0].findings+"\n";
     msg+='Headshots: '+ results[0].headshots + "\n";
     msg+="```";
+    return message.channel.send(memberembed);
     return message.channel.send(msg);
   });
 }
 
-client.on('ready', () => {
-  console.log(`Logged in as ${client.user.tag}! ${config.defaultGuildID}`);
-  client.user.setActivity("echoCTF.RED");
-
-  connection.connect(function(err) {
-      pollingLoop();
-    });
-});
 
 // Create an event listener for messages
 client.on('message', message => {
@@ -160,5 +162,12 @@ client.on("presenceUpdate", (oldMember, newMember) => {
 });
 
 
+client.on('ready', () => {
+  console.log(`Logged in as ${client.user.tag}! ${config.defaultGuildID}`);
+  client.user.setActivity("echoCTF.RED");
+  connection.connect(function(err) {
+      pollingLoop();
+    });
+});
 
 client.login(config.token);
