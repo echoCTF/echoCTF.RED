@@ -102,10 +102,6 @@ client.on('message', message => {
   if (message.author.bot) {
     return;
   }
-  // if user not administrator and not allowedRole reject
-  if (!message.member.hasPermission("ADMINISTRATOR") && !member.roles.has(member.guild.roles.find(r => r.name === config.allowedRole)))
-      return message.reply(`only admins and ${config.allowedRole} are allowed to perform commands!`)
-
   console.log(`#${message.channel.name} ${message.author.username}#${message.author.tag}> ${message.content}`);
 
   // if not start with our prefix then ignore
