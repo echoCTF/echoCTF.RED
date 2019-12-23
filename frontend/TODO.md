@@ -1,11 +1,9 @@
-## v0.8 ToDo
+## v0.9
 * [ ] On new users submit a hint and a notification
 * [ ] Prepare a notification email and delete all inactive accounts
 * [ ] Make notifications body visible
 * [ ] Rename Levels
 * [ ] Resend a verification email whenever a user changes their email
-
-## v0.9
 * [ ] On profile tweet icon add `headshots` and other __bragging__ related data
 * [ ] Make hint items links to target
 * [ ] Create target vs profile_id view
