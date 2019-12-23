@@ -57,7 +57,7 @@ function help(message)
 /* LOOKUP user DETAILS FROM THE DATABASE (temporary) similar to target */
 function user_lookup(message,username)
 {
-  var sql    = 'SELECT t2.id as profile_id,t1.username,t2.bio,t2.visibility,t2.avatar,t3.on_vpn, t3.on_pui,count(t4.target_id) as headshots FROM player AS t1 LEFT JOIN profile AS t2 on t2.player_id=t1.id LEFT JOIN player_last as t3 on t3.id=t1.id left join headshot as t4 on t4.player_id=t1.id where t1.active=1 and t2.visibility!="private" and t1.username='+connection.escape(username)+' OR t2.id='+connection.escape(username)+' GROUP BY t1.id';
+  var sql    = 'SELECT t2.id as profile_id,t1.username,t2.bio,t2.visibility,t2.avatar,t3.on_vpn, t3.on_pui,count(t4.target_id) as headshots FROM player AS t1 LEFT JOIN profile AS t2 on t2.player_id=t1.id LEFT JOIN player_last as t3 on t3.id=t1.id left join headshot as t4 on t4.player_id=t1.id LEFT JOIN player_rank as t5 on t5.player_id=t1.id LEFT JOIN player_score AS t6 on t6.player_id=t1.id where t1.active=1 and t2.visibility!="private" and t1.username='+connection.escape(username)+' OR t2.id='+connection.escape(username)+' GROUP BY t1.id';
   connection.query(sql, function (error, results, fields) {
     if (error) throw error;
     if(!results.length) return message.reply(`No user found with profile id or username ${username}`)
@@ -68,6 +68,8 @@ function user_lookup(message,username)
      .setDescription(entry.bio)
      .setURL(`https://echoctf.red/profile/${entry.profile_id}`) // Their name, I use a different way, this should work
      .setThumbnail('https://echoctf.red/images/avatars/'+entry.avatar) // Their icon
+     .addField('Rank',entry.rank,true)
+     .addField('Points',entry.points,true)
      .addField('Last on pUI',entry.on_pui,true)
      .addField('Last on VPN',entry.on_vpn,true)
      .addField('Headshots',entry.headshots,true);
