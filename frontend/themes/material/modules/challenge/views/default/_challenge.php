@@ -12,3 +12,4 @@ use app\widgets\Twitter;
 
     <p><?=$model->description;?></p>
 </div>
+<br/>
