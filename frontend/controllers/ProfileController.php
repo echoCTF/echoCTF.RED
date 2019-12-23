@@ -9,6 +9,7 @@ use \app\modules\target\models\TargetQuery;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 class ProfileController extends \yii\web\Controller
 {

@@ -8,7 +8,8 @@ class echoCTFView extends \yii\web\View
          $_url,
          $_image,
          $_image_width="1200",
-         $_image_height="628";
+         $_image_height="628",
+         $_card='summary_large_image';
 
   public $_fluid;
   public function init()
@@ -55,7 +56,7 @@ class echoCTFView extends \yii\web\View
   public function getTwitter_card()
   {
     //<meta name="twitter:card" content="summary" />
-    return ['name'=>'twitter:card', 'content'=>"summary_large_image" ];
+    return ['name'=>'twitter:card', 'content'=>$this->_card ];
 //    return ['name'=>'twitter:card', 'content'=>"summary" ];
 
   }
