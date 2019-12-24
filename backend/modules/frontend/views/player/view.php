@@ -1,0 +1,139 @@
+<?php
+use yii\helpers\Html;
+use yii\widgets\DetailView;
+use yii\grid\GridView;
+
+/* @var $this yii\web\View */
+/* @var $model app\modules\frontend\models\Player */
+
+$this->title = sprintf("View player [ID:%d] %s details", $model->id,$model->username);
+$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][] = ['label' => 'Players', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+\yii\web\YiiAsset::register($this);
+?>
+<div class="player-view">
+
+    <h1><?= Html::encode($this->title) ?></h1>
+
+    <p>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
+    </p>
+
+<div class="row">
+  <div class="col-lg-6">
+    <h3>Player</h3>
+    <?= DetailView::widget([
+        'options' => ['class' => 'table table-striped table-bordered detail-view'],
+        'model' => $model,
+        'attributes' => [
+            'id',
+            'username',
+            'fullname',
+            'email:email',
+            'academic:boolean',
+            'active:boolean',
+            'status',
+            'type',
+            'activkey',
+            'created',
+            'ts',
+        ],
+    ]) ?>
+  </div>
+<!--
+-->
+  <div class="col-lg-6">
+    <h3>Profile</h3>
+    <?= DetailView::widget([
+        'model' => $model->profile,
+        'attributes' => [
+            'id',
+            'bio:ntext',
+            'country',
+            'avatar',
+            'visibility',
+            'twitter',
+            'github',
+            'discord',
+            'terms_and_conditions:boolean',
+            'mail_optin:boolean',
+            'gdpr:boolean',
+            'created_at',
+            'updated_at',
+        ],
+    ]) ?>
+  </div>
+</div>
+    <details>
+    <summary>Extras (spins/vpn etc)</summary>
+    <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+          'online:boolean',
+          [
+            'label'=>'Headshots',
+            'value'=>function($model){return count($model->headshots);}
+          ],
+          [
+            'attribute'=>'on_pui',
+            'label'=>'Last seen on pUI',
+            'value'=>function($model){if($model->last) return $model->last->on_pui==0 ? null : $model->last->on_pui; else return null;}
+          ],
+          [
+            'attribute'=>'on_vpn',
+            'label'=>'Last seen on VPN',
+            'value'=>function($model){if($model->last) return $model->last->on_vpn==0 ? null : $model->last->on_vpn; else return null;}
+          ],
+          [
+            'attribute'=>'vpn_local_address',
+            'label'=> 'VPN Local IP',
+            'value'=>function($model){ return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
+          ],
+          'playerSpin.counter',
+          'playerSpin.total',
+          'playerSpin.total',
+        ],
+    ]) ?>
+
+    </details>
+    <details>
+    <summary>Sessions</summary>
+    <?= GridView::widget([
+        //'caption'=>'some',
+        'emptyText'=>'No sessions for the user',
+        'summary'=>'<h2>Player Sessions: <small>{totalCount}</small></h2>',
+        'layout' => "{summary}\n{items}\n{pager}",
+        'dataProvider' => new yii\data\ArrayDataProvider(
+                              [
+                                'allModels' =>  $model->sessions,
+                                'sort' => [
+                                  'attributes' => ['id', 'ipoctet', 'expire','ts'],
+                                ],
+                                'pagination' => [
+                                  'pageSize' => 10,
+                                ],
+                              ]),
+        'columns' => [
+            ['class' => 'yii\grid\SerialColumn'],
+            'id',
+            'ipoctet',
+            'expire:dateTime',
+            'ts:dateTime',
+
+            [
+              'class' => 'yii\grid\ActionColumn',
+              'template' => '{delete}',
+            ],
+        ],
+    ]); ?>
+  </details>
+
+</div>
