@@ -9,7 +9,7 @@ use yii\helpers\Url;
 <div class="sidebar" data-color="<?=$config::sidebarColor()  ?>" data-background-color="<?=$config::sidebarBackgroundColor()  ?>">
     <div class="logo">
         <a href="/" class="simple-text logo-mini">
-            <img src="<?=$config::logoMini();?>" class="img-fluid">
+            <img src="<?=$config::logoMini();?>" class="img-fluid" alt="echoCTF.RED Logo mini">
         </a>
         <?php if(!Yii::$app->user->isGuest):?>
           <a href="<?=Url::to(['/profile/me'])?>" class="simple-text logo-normal" style="text-transform:none">

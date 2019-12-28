@@ -4,6 +4,7 @@ use rce\material\widgets\Noti;
 use app\assets\MaterialAsset;
 $bundle=MaterialAsset::register($this);
 //$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/ricar2ce/yii2-material-theme/assets');
+$this->registerMetaTag(['name'=>'description', 'content'=>$this->_description],'description');
 $this->registerMetaTag($this->og_title, 'og_title');
 $this->registerMetaTag($this->og_site_name, 'og_site_name');
 $this->registerMetaTag($this->og_description, 'og_description');
@@ -24,7 +25,7 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
 <head>
     <meta charset="<?=Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
     <?php $this->head()?>
 
     <?=Html::csrfMetaTags() ?>
