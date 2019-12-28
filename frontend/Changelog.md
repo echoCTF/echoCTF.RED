@@ -1,3 +1,6 @@
+## v0.9
+* [x] Fix the wording of the 3rd question on LFi Tutorial `Exploit the vulnerability` to be clear that the `/etc/passwd` flag is an answer
+
 ## v0.8 - 0x/01/2020 New UI edition :)
 * [x] New layout integrated
 * [x] `mrburns / 10.0.100.133` now has headshots, removed root flag
