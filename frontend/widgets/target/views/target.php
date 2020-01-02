@@ -176,6 +176,17 @@ echo GridView::widget([
              return Twitter::widget(['message'=>sprintf('Hey check this target [%s], %s',$model->name,$model->purpose),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
          },
          'view' => function ($url,$model) {
+            if($this->context->profile!==NULL)
+              return Html::a(
+                '<i class="fas fa-eye"></i>',
+                  Url::to(['/target/default/versus','id'=>$model->id,'profile_id'=>$this->context->profile->id]),
+                  [
+                    'style'=>"font-size: 1.5em;",
+                    'rel'=>"tooltip",
+                    'title' => 'View target vs player card',
+                    'data-pjax' => '0',
+                  ]
+              );
              return Html::a(
                '<i class="fas fa-eye"></i>',
                  Url::to(['/target/default/index','id'=>$model->id]),
