@@ -1,5 +1,11 @@
 <?php
 use yii\helpers\Html;
+$this->registerJsFile('@web/js/plugins/bootstrap-selectpicker.min.js',['depends'=>['app\assets\MaterialAsset']]);
+$this->registerCssFile("@web/css/bootstrap-select.min.css", [
+    'depends' => ['app\assets\MaterialAsset'],
+], 'css-print-theme');
+$this->registerJs('$.fn.selectpicker.Constructor.BootstrapVersion = "4";');
+
 ?>
 <div class="dashboard-index">
   <div class="body-content">

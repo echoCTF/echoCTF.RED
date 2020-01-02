@@ -1,22 +1,5 @@
-window.cookieconsent.initialise({
-  "palette": {
-    "popup": {
-      "background": "#000",
-      "text": "#94c11f"
-    },
-    "button": {
-      "background": "#94c11f"
-    }
-  },
-  "position": "bottom",
-  "theme": "classic",
-  "content": {
-    "message": "echoCTF RED needs cookies to operate."
-  }
-});
 
 jQuery( document ).ready(function() {
-  $.fn.selectpicker.Constructor.BootstrapVersion = '4';
   $('#profile-avatar').change(function() {
     if($(this).val()!="")
       $('#preview_avatar').attr('src','/images/avatars/'+$(this).val());
