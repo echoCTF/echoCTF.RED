@@ -173,12 +173,17 @@ client.on('guildMemberAdd', member => {
       console.log(`added new member ${member} on ${config.autoRole}`);
     }
     const channel = member.guild.channels.find(ch => ch.name === 'general');
-    channel.send(`Welcome to the server, ${member}!`).then((newMessage) => {newMessage.react(":wave:");});
+    channel.send(`Welcome to the server, ${member}!`);
 });
 
 client.on("presenceUpdate", (oldMember, newMember) => {
     if(oldMember.presence.status !== newMember.presence.status){
         console.log(`${newMember.user.username} is now ${newMember.presence.status}`);
+        if (!newMember.roles.has(oldMember.guild.roles.find(r => r.name === config.autoRole)))
+        {
+          console.log(`added new member ${member} on ${config.autoRole}`);
+          newMember.addRole(oldMember.guild.roles.find(r => r.name === config.autoRole));
+        }
     }
 });
 
