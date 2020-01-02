@@ -30,6 +30,12 @@ class Player extends ActiveRecord implements IdentityInterface
     const STATUS_ACTIVE = 10;
     public $new_password;
     public $confirm_password;
+
+    public function init()
+    {
+        parent::init();
+        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'updateStream']);
+    }
     /**
      * {@inheritdoc}
      */
@@ -45,7 +51,7 @@ class Player extends ActiveRecord implements IdentityInterface
                 'attributeTypes' => [
                     'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'status' => AttributeTypecastBehavior::TYPE_INTEGER,
-                    'active' =>  AttributeTypecastBehavior::TYPE_BOOLEAN,
+                    'active' =>  AttributeTypecastBehavior::TYPE_INTEGER,
                 ],
                 'typecastAfterValidate' => true,
                 'typecastBeforeSave' => true,
@@ -370,5 +376,21 @@ class Player extends ActiveRecord implements IdentityInterface
         ]);
     }
 
-
+    public static function updateStream($event)
+    {
+      if($event->changedAttributes!==[] && (array_key_exists('active',$event->changedAttributes)===true || array_key_exists('status',$event->changedAttributes)===true))
+      {
+        if($event->sender->status===10 || $event->senter->active===1)
+        {
+          Yii::$app->db->createCommand("INSERT INTO player_rank (id,player_id) SELECT max(id)+1,:player_id FROM player_rank")->bindValue(':player_id',$event->sender->id)->execute();
+          $s=new Stream;
+          $s->player_id=$event->sender->id;
+          $s->points=0;
+          $s->message=$s->pubmessage=$s->pubtitle=$s->title='Joined the platform';
+          $s->model='user';
+          $s->model_id=$event->sender->id;
+          $s->save();
+        }
+      }
+    }
 }
