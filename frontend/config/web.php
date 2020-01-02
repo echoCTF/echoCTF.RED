@@ -3,6 +3,7 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 $cache = require __DIR__ . '/memcached.php';
+$cookieValidationKey = require __DIR__ . '/validationKey.php';
 
 $config = [
     'id' => 'pui2',
@@ -35,13 +36,16 @@ $config = [
           'bundles' => [
               'yii\captcha\CaptchaAsset' => [
                 'sourcePath' => null,
+//                'jsOptions' => ['async' => 'async'],
                 'js' => ['js/yii.captcha.min.js',],
               ],
               'yii\bootstrap4\BootstrapAsset' => [
+//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'css' => [    ],
               ],
               'yii\validators\ValidationAsset' => [
+//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/yii.validation.min.js',
@@ -49,30 +53,35 @@ $config = [
 
               ],
               'yii\widgets\ActiveFormAsset'=>[
+//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/yii.activeForm.min.js',
                 ],
               ],
               'yii\grid\GridViewAsset'=>[
+//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/yii.gridView.min.js',
                 ],
               ],
               'yii\web\YiiAsset' => [
+//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/yii.min.js',
                 ],
               ],
               'yii\widgets\PjaxAsset'=>[
+//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/jquery.pjax.min.js',
                 ],
               ],
               'yii\web\JqueryAsset' => [
+//                'jsOptions' => ['async' => 'async'],
                   'sourcePath' => null,
                   'js' => [
                       'js/jquery.min.js',
@@ -105,7 +114,10 @@ $config = [
         ],
         'request' => [
             'csrfParam' => '_csrf-red',
-            'cookieValidationKey' => 'D_m3LWxC7wb5HbELOx4IP4QrnMYCN_lN',
+            'enableCsrfValidation' => true,
+            'enableCsrfCookie'=>true,
+            'csrfCookie'=>['sameSite'=>'Lax','httpOnly'=>true],
+            'cookieValidationKey' => $cookieValidationKey,
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ]
@@ -116,11 +128,15 @@ $config = [
         'cache' => $cache,
         'session'=>[
           'name' => 'red',
+          'cookieParams'=>[
+            'sameSite'=> 'Lax',
+            'httpOnly'=>true
+          ],
         ],
         'user' => [
             'identityClass' => 'app\models\Player',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true],
+            'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true, 'sameSite'=>'Lax'],
 //            'autoUpdateFlash' => false,
         ],
         'errorHandler' => [
@@ -200,6 +216,7 @@ $config = [
                 'privacy_policy'=>'legal/privacy-policy',
                 'legal/privacy-policy'=>'legal/privacy-policy',
                 'site/captcha'=>'site/captcha',
+                'target/<id:\d+>/versus/<profile_id:\d+>'=>'target/default/versus',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],

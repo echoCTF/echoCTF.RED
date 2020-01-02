@@ -36,3 +36,4 @@ tests/_support/_generated
 # database config
 config/db.php
 config/memcached.php
+config/validationKey.php
