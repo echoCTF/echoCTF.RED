@@ -219,7 +219,7 @@ class SiteController extends Controller
               }
           }
         } catch(\Exception $e) {
-          $transaction->rollBack;
+          $transaction->rollBack();
         }
 
         Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');

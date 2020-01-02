@@ -22,6 +22,7 @@ class m200102_123304_update_tai_player_trigger extends Migration
       INSERT INTO profile (player_id) VALUES (NEW.id);
       INSERT INTO player_last (id,on_pui) VALUES (NEW.id,now());
       INSERT INTO player_spin (player_id,counter,total,updated_at) values (NEW.id,0,0,NOW());
+      INSERT INTO player_score (player_id) VALUES (NEW.id);
     END";
 
     // Use up()/down() to run migration code without a transaction.
