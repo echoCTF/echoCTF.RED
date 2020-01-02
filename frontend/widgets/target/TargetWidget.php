@@ -109,6 +109,10 @@ class TargetWidget extends Widget
       $targetProgressProvider->setSort([
           'sortParam'=>'target-sort',
           'attributes' => [
+              'id' => [
+                  'asc' => ['id' => SORT_ASC],
+                  'desc' => ['id' => SORT_DESC],
+              ],
               'name' => [
                   'asc' => ['name' => SORT_ASC],
                   'desc' => ['name' => SORT_DESC],

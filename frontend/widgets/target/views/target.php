@@ -35,6 +35,7 @@ echo GridView::widget([
    'layout'=>$layout,
    'summary'=>$summary,
    'columns' => [
+     'id',
      [
        'label'=>'',
        'contentOptions' => ['class' => 'text-center'],
