@@ -22,7 +22,7 @@ class FaqController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Faq::find(),
+            'query' => Faq::find()->orderBy(['weight'=>SORT_ASC,'id'=>SORT_ASC]),
         ]);
 
         return $this->render('index', [

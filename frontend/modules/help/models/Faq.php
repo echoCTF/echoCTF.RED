@@ -3,7 +3,6 @@
 namespace app\modules\help\models;
 
 use Yii;
-use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "faq".
@@ -41,10 +40,19 @@ class Faq extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'title' => 'Title',
-            'body' => 'Body',
-            'weight' => 'Weight',
+            'id' => Yii::t('app', 'ID'),
+            'title' => Yii::t('app', 'Title'),
+            'body' => Yii::t('app', 'Body'),
+            'weight' => Yii::t('app', 'Weight'),
         ];
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return FaqQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new FaqQuery(get_called_class());
     }
 }
