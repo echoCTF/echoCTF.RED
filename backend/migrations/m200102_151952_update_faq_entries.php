@@ -10,11 +10,11 @@ class m200102_151952_update_faq_entries extends Migration
   public $rec=[
       'id'=>5,
       'title'=>'How does leaderboard resolves ties in scores?',
-      'body'=>'The leaderboard resolves ties (players with same score) in the following way:
+      'body'=>'<p>The leaderboard resolves ties (players with same score) in the following way:
       <ul>
       <li>user with higher points (<code>points DESC</code>)
       <li>older timestamp of user points last update (<code>updated_at ASC</code>)
-      <li>older user (<code>user_id ASC</code>)</ul>',
+      <li>older user (<code>user_id ASC</code>)</ul></p>',
       'weight'=>10
     ];
     /**
