@@ -1,11 +1,12 @@
 <?php
 
 use yii\db\Migration;
+use yii\db\Expression;
 
 /**
  * Class m191228_114005_version_bump_v0_9
  */
-class m191228_114005_version_bump_v0_9 extends Migration
+class m191227_114005_version_bump_v0_9 extends Migration
 {
     /**
      * {@inheritdoc}
