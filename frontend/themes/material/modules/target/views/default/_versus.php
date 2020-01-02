@@ -60,13 +60,13 @@ use app\widgets\Twitter;
     </div>
     <div class="col-lg-4 col-md-6 col-sm-6">
       <div class="card bg-dark headshots">
-        <h4><i class="fas fa-skull"></i> Headshots by</h4>
+        <h4><i class="fas fa-skull"></i> Headshots (older first)</h4>
         <div class="card-body table-responsive">
           <?php
           $headshots=null;
-          foreach($target->headshots as $player)
-            if((int)$player->active===1)
-              $headshots[]=$player->profile->link;
+          foreach($target->headshots as $hs)
+            if((int)$hs->player->active===1)
+              $headshots[]=$hs->player->profile->link;
             if ($headshots!==NULL)
               echo "<code>",implode(", ",$headshots), "</code>";
             else echo '<code>none yet...</code>';?>

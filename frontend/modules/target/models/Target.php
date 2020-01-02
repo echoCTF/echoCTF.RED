@@ -5,6 +5,7 @@ namespace app\modules\target\models;
 use Yii;
 use app\models\PlayerTreasure;
 use app\models\PlayerFinding;
+use app\modules\game\models\Headshot;
 use yii\behaviors\AttributeTypecastBehavior;
 
 /**
@@ -246,6 +247,11 @@ class Target extends \yii\db\ActiveRecord
 
     public function getHeadshots()
     {
+        return $this->hasMany(Headshot::className(), ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
+    }
+
+/*    public function getHeadshots()
+    {
       $command = Yii::$app->db->createCommand('select player_id as id from player_finding  as t1 WHERE finding_id IN (SELECT id FROM finding WHERE target_id=:target_id) GROUP BY player_id HAVING count(t1.finding_id)=(SELECT count(*) FROM finding WHERE target_id=:target_id)');
       $command->bindValue(':target_id',$this->id);
       $findings = $command->query();
@@ -258,7 +264,7 @@ class Target extends \yii\db\ActiveRecord
       foreach($findings->readAll() as $rec)
         $fplayers[]=$rec['id'];
       return \app\models\Player::find()->where(['in','id',array_intersect($tplayers,$fplayers)])->all();
-    }
+    }*/
 
     public function getCountHeadshots()
     {
