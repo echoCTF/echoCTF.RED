@@ -32,15 +32,15 @@ use app\widgets\Twitter;
         <?php Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
-            'icon'=>sprintf('<img src="/images/avatars/%s" height="60"/>',Yii::$app->user->identity->profile->avatar),
+            'icon'=>sprintf('<img src="/images/avatars/%s" height="60"/>',$identity->avatar),
             'color'=>'primary',
-            'subtitle'=>'Level '.Yii::$app->user->identity->profile->experience->id.' / '.Yii::$app->user->identity->profile->experience->name,
-            'title'=>Yii::$app->user->identity->username." / ".Yii::$app->user->identity->profile->rank->ordinalPlace." Place",
+            'subtitle'=>'Level '.$identity->experience->id.' / '.$identity->experience->name,
+            'title'=>$identity->owner->username." / ".$identity->rank->ordinalPlace." Place",
             'footer'=>sprintf('<div class="stats">%s %s</div>',Twitter::widget([
                            'message'=>sprintf('Hey check this out, I have found %d out of %d services and %d out of %d flags on [%s]',$target->player_findings,$target->total_findings,$target->player_treasures,$target->total_treasures,$target->name),
                            'url'=>Url::to(['/target/default/index','id'=>$target->id],'https'),
                            'linkOptions'=>['class'=>'target-view-tweet','target'=>'_blank','style'=>'font-size: 1.4em;'],
-                        ]),Html::encode(Yii::$app->user->identity->profile->bio)),
+                        ]),Html::encode($identity->bio)),
         ]);
         echo "<p class='text-primary '><i class='material-icons'>flag</i> ", $target->player_treasures," / ";
         echo "<i class='material-icons'>whatshot</i> ", $target->player_findings,"<br/>",number_format($playerPoints)," pts<br/>";
@@ -52,9 +52,9 @@ use app\widgets\Twitter;
       <div class="card bg-dark">
         <div class="card-body table-responsive">
           <?=$target->description?>
-
-          <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count()>0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ',ArrayHelper::getColumn(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->all(),'hint.title')),"</code>";?>
-
+          <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id===$identity->player_id):?>
+          <?php if($identity->owner->getPlayerHintsForTarget($target->id)->count()>0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ',ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(),'hint.title')),"</code>";?>
+          <?php endif;?>
         </div>
       </div>
     </div>

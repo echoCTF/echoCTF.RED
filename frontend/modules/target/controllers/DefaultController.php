@@ -4,6 +4,9 @@ namespace app\modules\target\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\BadRequestHttpException;
+use yii\base\InvalidArgumentException;
+use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
 use yii\data\SqlDataProvider;
 use yii\data\ArrayDataProvider;
@@ -15,6 +18,7 @@ use app\models\PlayerTreasure;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
 /**
+
  * Default controller for the `target` module
  */
 class DefaultController extends Controller
@@ -52,6 +56,60 @@ class DefaultController extends Controller
               ],
           ];
       }
+    /**
+     * Renders a target versus a profile
+     *
+     */
+     public function actionVersus(int $id,int $profile_id)
+     {
+       $sum=0;
+       $userTarget=null;
+       $profile=$this->findProfile($profile_id);
+
+       $target=Target::find()->where(['t.id'=>$id])->player_progress($profile->player_id)->one();
+       $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>$profile->player_id,'finding.target_id'=>$id])->all();
+       $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>$profile->player_id,'treasure.target_id'=>$id])->all();
+       foreach($PF as $pf)
+         $sum+=$pf->finding->points;
+       foreach($PT as $pt)
+         $sum+=$pt->treasure->points;
+       $treasures=$findings=[];
+       foreach($target->treasures as $treasure)
+         $treasures[]=$treasure->id;
+       foreach($target->findings as $finding)
+         $findings[]=$finding->id;
+       $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
+       ->where(['model_id'=>$findings, 'model'=>'finding'])
+       ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
+       ->orWhere(['model_id'=>$id, 'model'=>'headshot'])
+       ->andWhere(['player_id'=>$profile->player_id])
+       ;
+       $dataProvider = new ActiveDataProvider([
+             'query' => $model->orderBy(['ts'=>SORT_DESC]),
+             'pagination' => [
+                 'pageSizeParam'=>'stream-perpage',
+                 'pageParam'=>'stream-page',
+                 'pageSize' => 10,
+             ]
+       ]);
+
+       $headshotsProvider = new ArrayDataProvider([
+             'allModels' => $target->headshots,
+             'pagination' => [
+                 'pageSizeParam'=>'headshot-perpage',
+                 'pageParam'=>'headshot-page',
+                 'pageSize' => 10,
+             ]]);
+
+       return $this->render('versus', [
+             'profile'=>$profile,
+             'target' => $target,
+             'streamProvider'=>$dataProvider,
+             'playerPoints'=>$sum,
+             'headshotsProvider'=>$headshotsProvider
+         ]);
+
+     }
 
     /**
      * Renders a Target model details view
@@ -175,7 +233,15 @@ class DefaultController extends Controller
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException('The requested target does not exist.');
+    }
+    protected function findProfile($id)
+    {
+        if (($model = \app\models\Profile::findOne($id)) !== null) {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested profile does not exist.');
     }
 
 }
