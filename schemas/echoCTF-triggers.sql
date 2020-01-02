@@ -1,0 +1,269 @@
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+DELIMITER ;;
+
+--
+-- When a new finding is added, update memcached with the finding details
+--
+CREATE TRIGGER `tai_finding` AFTER INSERT ON `finding` FOR EACH ROW
+BEGIN
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  SELECT memc_set(CONCAT('finding:',NEW.protocol,':',ifnull(NEW.port,0), ':', NEW.target_id ),NEW.id) INTO @devnull;
+END ;;
+
+--
+-- When a finding is updated also update the relevant memcached values
+--
+CREATE TRIGGER `tau_finding` AFTER UPDATE ON `finding` FOR EACH ROW
+BEGIN
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+
+  IF NEW.protocol != OLD.protocol OR NEW.port!=OLD.port OR NEW.target_id!=OLD.target_id THEN
+    SELECT memc_delete(CONCAT('finding:',OLD.protocol,':',ifnull(OLD.port,0), ':', OLD.target_id )) INTO @devnull;
+  END IF;
+  SELECT memc_set(CONCAT('finding:',NEW.protocol,':',ifnull(NEW.port,0), ':', NEW.target_id ),NEW.id) INTO @devnull;
+END ;;
+
+--
+--  Ensure we remove the finding details from memcached when a
+--  finding is removed
+--
+CREATE TRIGGER `tad_finding` AFTER DELETE ON `finding` FOR EACH ROW
+BEGIN
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  SELECT memc_delete(CONCAT('finding:',OLD.protocol,':',ifnull(OLD.port,0), ':', OLD.target_id )) INTO @devnull;
+END ;;
+
+
+
+CREATE TRIGGER `tai_player` AFTER INSERT ON `player` FOR EACH ROW
+BEGIN
+  DECLARE ltitle VARCHAR(20) DEFAULT 'Joined the platform';
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  SELECT memc_set(CONCAT('player_type:',NEW.id), NEW.type) INTO @devnull;
+  SELECT memc_set(CONCAT('player:',NEW.id), NEW.id) INTO @devnull;
+  IF NEW.active=1 THEN
+    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.id,'user',NEW.id,0,ltitle,ltitle,ltitle,ltitle,now());
+  END IF;
+  INSERT INTO profile (player_id) VALUES (NEW.id);
+  INSERT INTO player_last (id,on_pui) VALUES (NEW.id,now());
+  INSERT INTO player_spin (player_id,counter,total,updated_at) values (NEW.id,0,0,NOW());
+END ;;
+
+
+CREATE TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
+BEGIN
+DECLATE ltitle VARCHAR(30) DEFAULT "Joined the platform";
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  IF NEW.type!=OLD.type THEN
+    SELECT memc_set(CONCAT('player_type:',NEW.id), NEW.type) INTO @devnull;
+  END IF;
+  IF (NEW.active!=OLD.active AND NEW.active=1) THEN
+    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.id,'user',NEW.id,0,ltitle,ltitle,ltitle,ltitle,now());
+  END IF;
+END ;;
+
+
+CREATE TRIGGER `tbd_player` BEFORE DELETE ON `player` FOR EACH ROW
+BEGIN
+  DELETE FROM player_ssl WHERE player_id=OLD.id;
+  DELETE FROM player_rank WHERE player_id=OLD.id;
+END ;;
+
+
+CREATE TRIGGER `tad_player` AFTER DELETE ON `player` FOR EACH ROW
+BEGIN
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  SELECT memc_delete(CONCAT('player_type:',OLD.id)) INTO @devnull;
+  SELECT memc_delete(CONCAT('player:',OLD.id)) INTO @devnull;
+  SELECT memc_delete(CONCAT('team_player:',OLD.id)) INTO @devnull;
+  DELETE FROM player_score WHERE player_id=OLD.id;
+  DELETE FROM profile WHERE player_id=OLD.id;
+  DELETE FROM player_last WHERE id=OLD.id;
+END ;;
+
+
+CREATE TRIGGER `tai_player_badge` AFTER INSERT ON `player_badge` FOR EACH ROW
+BEGIN
+  CALL add_badge_stream(NEW.player_id,'badge',NEW.badge_id);
+END ;;
+
+CREATE TRIGGER {{%tai_player_finding}} AFTER INSERT ON {{%player_finding}} FOR EACH ROW
+BEGIN
+  DECLARE local_target_id INT;
+  DECLARE headshoted INT default null;
+
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  SELECT memc_set(CONCAT('player_finding:',NEW.player_id, ':', NEW.finding_id),NEW.player_id) INTO @devnull;
+  CALL add_finding_stream(NEW.player_id,'finding',NEW.finding_id);
+  CALL add_player_finding_hint(NEW.player_id,NEW.finding_id);
+  SET local_target_id=(SELECT target_id FROM finding WHERE id=NEW.finding_id);
+  SET headshoted=(select true as headshoted FROM target as t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=NEW.player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=NEW.player_id WHERE t.id=local_target_id   GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id));
+  IF headshoted IS NOT NULL THEN
+    INSERT INTO headshot (player_id,target_id,created_at) VALUES (NEW.player_id,local_target_id,now());
+    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'headshot',local_target_id,0,'','','','',now());
+  END IF;
+END ;;
+
+
+--
+-- Keep track of changes on player_last. This is needed in order to be able
+-- to troubleshoot and investigate problems
+--
+CREATE TRIGGER `tau_player_last` AFTER UPDATE ON `player_last` FOR EACH ROW
+BEGIN
+  IF (OLD.vpn_local_address IS NULL AND NEW.vpn_local_address IS NOT NULL) OR (OLD.vpn_local_address IS NOT NULL AND NEW.vpn_local_address IS NOT NULL AND NEW.vpn_local_address!=OLD.vpn_local_address) THEN
+    INSERT INTO `player_vpn_history` (`player_id`,`vpn_local_address`,`vpn_remote_address`) VALUES (NEW.id,NEW.vpn_local_address,NEW.vpn_remote_address);
+  END IF;
+END ;;
+
+
+--
+-- Add a stream notification for the answered question
+--
+CREATE TRIGGER `tai_player_question` AFTER INSERT ON `player_question` FOR EACH ROW
+BEGIN
+  CALL add_stream(NEW.player_id,'question',NEW.question_id);
+END ;;
+
+--
+-- On any change of the SSL record of the user, update the CRL list with the
+-- past values so that we can revoke the old keys
+--
+CREATE TRIGGER `tau_player_ssl` AFTER UPDATE ON `player_ssl` FOR EACH ROW
+BEGIN
+  IF OLD.subject!=NEW.subject OR OLD.csr!=NEW.csr OR OLD.crt!=NEW.crt OR OLD.privkey!=NEW.privkey THEN
+    INSERT INTO `crl` values (NULL,OLD.player_id,OLD.subject,OLD.csr,OLD.crt,OLD.txtcrt,OLD.privkey,NOW());
+  END IF;
+END ;;
+
+CREATE TRIGGER `tad_player_ssl` AFTER DELETE ON `player_ssl` FOR EACH ROW
+BEGIN
+  INSERT INTO `crl` values (NULL,OLD.player_id,OLD.subject,OLD.csr,OLD.crt,OLD.txtcrt,OLD.privkey,NOW());
+END ;;
+
+CREATE TRIGGER `tai_player_treasure` AFTER INSERT ON `player_treasure` FOR EACH ROW
+BEGIN
+  DECLARE local_target_id INT;
+  DECLARE headshoted INT default null;
+
+  CALL add_treasure_stream(NEW.player_id,'treasure',NEW.treasure_id);
+  CALL add_player_treasure_hint(NEW.player_id,NEW.treasure_id);
+
+  SET local_target_id=(SELECT target_id FROM treasure WHERE id=NEW.treasure_id);
+  SET headshoted=(select true as headshoted FROM target as t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=NEW.player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=NEW.player_id WHERE t.id=local_target_id   GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id));
+
+  IF headshoted IS NOT NULL THEN
+      INSERT INTO headshot (player_id,target_id,created_at) VALUES (NEW.player_id,local_target_id,now());
+      INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'headshot',local_target_id,0,'','','','',now());
+  END IF;
+END ;;
+
+CREATE TRIGGER `tbi_profile` BEFORE INSERT ON `profile` FOR EACH ROW
+BEGIN
+  IF NEW.id is NULL or NEW.id<10000000 THEN
+    REPEAT
+        SET NEW.id=round(rand()*10000000);
+    UNTIL (SELECT id FROM profile WHERE id=NEW.id) IS NULL
+    END REPEAT;
+  END IF;
+  IF NEW.created_at IS NULL or NEW.updated_at IS NULL THEN
+    SET NEW.created_at=NOW();
+    SET NEW.updated_at=NOW();
+  END IF;
+  IF NEW.bio IS NULL THEN
+    SET NEW.bio='No bio...';
+  END IF;
+END ;;
+
+CREATE TRIGGER tau_report AFTER UPDATE ON report FOR EACH ROW
+BEGIN
+  IF OLD.status='pending' and NEW.status='approved' THEN
+    CALL add_stream(NEW.player_id,'report',NEW.id);
+  END IF;
+END ;;
+
+CREATE TRIGGER `tad_spin_queue` AFTER DELETE ON `spin_queue` FOR EACH ROW
+BEGIN
+  INSERT INTO `spin_history` (target_id,player_id,created_at,updated_at) VALUES (OLD.target_id,OLD.player_id,OLD.created_at,NOW());
+END ;;
+
+-- XXXFIXMEXXX This needs to be optimised with an UPDATE instead of INSERT and
+-- only when points>0
+CREATE TRIGGER tai_stream AFTER INSERT ON stream FOR EACH ROW
+BEGIN
+  INSERT INTO player_score (player_id,points) VALUES (NEW.player_id,NEW.points) ON DUPLICATE KEY UPDATE points=points+values(points);
+  IF (SELECT count(team_id) FROM team_player WHERE player_id=NEW.player_id)>0 THEN
+    INSERT INTO team_score (team_id,points) VALUES ((SELECT team_id FROM team_player WHERE player_id=NEW.player_id),NEW.points) ON DUPLICATE KEY UPDATE points=points+values(points);
+  END IF;
+END ;;
+
+CREATE TRIGGER `tai_sysconfig` AFTER INSERT ON `sysconfig` FOR EACH ROW
+BEGIN
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  SELECT memc_set(CONCAT('sysconfig:',NEW.id),NEW.val) INTO @devnull;
+END ;;
+
+CREATE TRIGGER `tau_sysconfig` AFTER UPDATE ON `sysconfig` FOR EACH ROW
+BEGIN
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  IF NEW.id != OLD.id THEN
+    SELECT memc_delete(CONCAT('sysconfig:',OLD.id)) INTO @devnull;
+  END IF;
+  SELECT memc_set(CONCAT('sysconfig:',NEW.id),NEW.val) INTO @devnull;
+END ;;
+
+
+CREATE TRIGGER `tad_sysconfig` AFTER DELETE ON `sysconfig` FOR EACH ROW
+BEGIN
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  SELECT memc_delete(CONCAT('sysconfig:',OLD.id)) INTO @devnull;
+END ;;
+
+-- XXXFIXMEXXX ONLY UPDATE ACTIVE TARGETS
+CREATE TRIGGER `tai_target` AFTER INSERT ON `target` FOR EACH ROW
+BEGIN
+IF (select memc_server_count()<1) THEN
+  select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+END IF;
+  SELECT memc_set(CONCAT('target:',NEW.id),NEW.ip) INTO @devnull;
+  SELECT memc_set(CONCAT('target:',NEW.ip),NEW.id) INTO @devnull;
+END ;;
+
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2020-01-02 11:27:53
