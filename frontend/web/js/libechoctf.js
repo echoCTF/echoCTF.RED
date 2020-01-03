@@ -34,7 +34,7 @@ jQuery( document ).ready(function() {
     {
       var thelink = $('<a />',{
           class: "dropdown-item",
-          text: data[i].title,
+          text: data[i].message,
           title: data[i].title,
           href: '#'
         });
@@ -43,6 +43,7 @@ jQuery( document ).ready(function() {
           thelink.addClass("text-success");
           thelink.prepend('<i class="material-icons">whatshot</i> ');
         }
+        //thelink.append('<span>'+data[i].message+'</span>');
         thelink.appendTo('#hintsMenu');
     }
     total_pages=parseInt( jqXHR.getResponseHeader('X-Pagination-Page-Count'), 0 );

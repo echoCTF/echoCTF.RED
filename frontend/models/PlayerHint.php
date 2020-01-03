@@ -19,6 +19,7 @@ use yii\behaviors\AttributeTypecastBehavior;
 class PlayerHint extends \yii\db\ActiveRecord
 {
     public $title;
+    public $message;
     /**
      * {@inheritdoc}
      */
@@ -51,7 +52,7 @@ class PlayerHint extends \yii\db\ActiveRecord
         return [
             [['player_id', 'hint_id'], 'required'],
             [['player_id', 'hint_id', 'status'], 'integer'],
-            [['ts','title'], 'safe'],
+            [['ts','title','message'], 'safe'],
             [['player_id', 'hint_id'], 'unique', 'targetAttribute' => ['player_id', 'hint_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
             [['hint_id'], 'exist', 'skipOnError' => true, 'targetClass' => Hint::className(), 'targetAttribute' => ['hint_id' => 'id']],
@@ -97,6 +98,6 @@ class PlayerHint extends \yii\db\ActiveRecord
         return new PlayerHintQuery(get_called_class());
     }
     public function fields(){
-      return ['hint_id','player_id','ts','status','title'];
+      return ['hint_id','player_id','ts','status','title','message'];
     }
 }

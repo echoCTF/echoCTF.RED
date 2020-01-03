@@ -329,6 +329,14 @@ class Player extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(PlayerHint::className(), ['player_id' => 'id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHints()
+    {
+        return $this->hasMany(Hint::className(), ['id' => 'player_id'])->viaTable('player_hint', ['hint_id' => 'id']);
+    }
+
     public function getPlayerHintsForTarget(int $target_id)
     {
         return $this->hasMany(PlayerHint::className(), ['player_id' => 'id'])->forTarget($target_id);

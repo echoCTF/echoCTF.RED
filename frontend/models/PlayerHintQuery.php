@@ -27,7 +27,7 @@ class PlayerHintQuery extends \yii\db\ActiveQuery
     }
     public function forAjax()
     {
-        return $this->select(['player_hint.*','hint.title']);
+        return $this->select('player_hint.*,hint.title,hint.message')->joinWith(['hint']);
 
     }
 
