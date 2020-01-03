@@ -2,7 +2,7 @@
 namespace app\models;
 
 use Yii;
-use rce\material\widgets\Menu as RCEmenu;
+use app\widgets\Menu as RCEmenu;
 
 class Menu
 {

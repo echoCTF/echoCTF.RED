@@ -33,7 +33,7 @@ class MaterialAsset extends AssetBundle
 
     public $css = [
         ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono&display=swap','async'=>'async'],
-        ['//cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css','async'=>'async'],
+        ['css/all.min.css','defer'=>'defer'],
         'css/material-dashboard.css',
         'css/material.css',
     ];
@@ -41,11 +41,11 @@ class MaterialAsset extends AssetBundle
     public $js = [
         '/js/core/popper.min.js',
         '/js/core/bootstrap-material-design.min.js',
-        //'/js/plugins/perfect-scrollbar.jquery.min.js',
+        '/js/plugins/perfect-scrollbar.jquery.min.js',
         /* Plugin for the momentJs  */
-        //'/js/plugins/moment.min.js',
+//        '/js/plugins/moment.min.js',
         /*  Plugin for Sweet Alert */
-        //'/js/plugins/sweetalert2.js',
+//        '/js/plugins/sweetalert2.js',
         /* Forms Validations Plugin */
 //        '/js/plugins/jquery.validate.min.js', // XXX FIXME MOVE TO REGISTER TO appropriate forms
         /* Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard */
@@ -79,8 +79,8 @@ class MaterialAsset extends AssetBundle
         // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
         /******/
         //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
+        '/js/material-dashboard.js',
         '/js/libechoctf.js',
-        //'/js/material.min.js',
         // 'js/superfish.js'
     ];
     public $depends = [
