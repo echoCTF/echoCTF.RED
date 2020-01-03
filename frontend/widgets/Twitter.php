@@ -30,7 +30,7 @@ class Twitter extends Widget{
     public $url;
     /* default related twitter account */
     public $related='echoCTF';
-    public $linkOptions=['class'=>'TweetThis','target'=>'_blank'];
+    public $linkOptions=['class'=>'TweetThis','target'=>'_blank','rel'=>"noreferrer" ];
     public $icon='<i class="fab fa-twitter"></i>';
     public $hashtags='#echoCTF #CTF #Hacking';
     public $via="echoCTF";
@@ -55,7 +55,7 @@ class Twitter extends Widget{
 
         $tweet_query=http_build_query($linkParams);
         $linkTo=sprintf("%s?%s",$this->twUrl,$tweet_query);
-
+        $this->linkOptions['aria-label']="Tweet this!";
         return Html::a($this->icon,$linkTo , $this->linkOptions);
     }
 }

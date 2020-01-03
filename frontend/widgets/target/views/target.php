@@ -5,7 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
 ?>
-<div id="target-list" class="card">
+<div class="card">
   <div class="card-header card-header-primary">
     <h4 class="card-title"><?=$TITLE?></h4>
     <p class="card-category"><?=$CATEGORY?></p>
@@ -23,6 +23,7 @@ echo GridView::widget([
     },
    'pager'=>[
      'class'=>'yii\bootstrap4\LinkPager',
+     'linkOptions'=>['class' => ['page-link'],'aria-label'=>'Pager link'],
      'options'=>['id'=>'target-pager','class'=>'align-middle'],
      'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
      'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
@@ -151,6 +152,7 @@ echo GridView::widget([
                    'title' => 'Restart container',
                    'data-pjax' => '0',
                    'data-method' => 'POST',
+                   'aria-label'=>'Restart container',
                  ]
              );
          },
@@ -160,20 +162,20 @@ echo GridView::widget([
               if(!Yii::$app->user->isGuest && Yii::$app->user->id===$this->context->player_id)
               {
                 if($model->total_treasures===$model->player_treasures && $model->total_findings===$model->player_findings)
-                  return Twitter::widget(['message'=>'Hey check this out, I headshoted '.strip_tags($model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+                  return Twitter::widget(['message'=>'Hey check this out, I headshoted '.strip_tags($model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em','rel'=>"noreferrer"]]);
                 elseif($model->player_treasures!==0 || $model->player_findings!==0)
-                  return Twitter::widget(['message'=>sprintf('Hey check this out, i have found %d out of %d flags and %d out of %d services on %s',$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+                  return Twitter::widget(['message'=>sprintf('Hey check this out, i have found %d out of %d flags and %d out of %d services on %s',$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em','rel'=>"noreferrer"]]);
 
               }
               if($this->context->profile!==null)
               {
                 $url=Url::to($this->context->profile->linkTo,'https');
                 if($model->total_treasures===$model->player_treasures && $model->total_findings===$model->player_findings)
-                  return Twitter::widget(['message'=>sprintf('Hey check this out, %s headshoted %s',$this->context->profile->twitterHandle,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+                  return Twitter::widget(['message'=>sprintf('Hey check this out, %s headshoted %s',$this->context->profile->twitterHandle,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em','rel'=>"noreferrer"]]);
 
-                return Twitter::widget(['message'=>sprintf('Hey check this out, %s found %d out of %d flags and %d out of %d services on %s',$this->context->profile->twitterHandle,$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+                return Twitter::widget(['message'=>sprintf('Hey check this out, %s found %d out of %d flags and %d out of %d services on %s',$this->context->profile->twitterHandle,$model->player_treasures, $model->total_treasures, $model->player_findings,$model->total_findings,$model->name),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em','rel'=>"noreferrer"]]);
               }
-             return Twitter::widget(['message'=>sprintf('Hey check this target [%s], %s',$model->name,$model->purpose),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em']]);
+             return Twitter::widget(['message'=>sprintf('Hey check this target [%s], %s',$model->name,$model->purpose),'url'=>$url,'linkOptions'=>['class'=>'twitterthis','target'=>'_blank','style'=>'font-size: 1.5em','rel'=>"noreferrer"]]);
          },
          'view' => function ($url,$model) {
             if($this->context->profile!==NULL)
@@ -184,6 +186,7 @@ echo GridView::widget([
                     'style'=>"font-size: 1.5em;",
                     'rel'=>"tooltip",
                     'title' => 'View target vs player card',
+                    'aria-label'=>'View target vs player card',
                     'data-pjax' => '0',
                   ]
               );
@@ -194,6 +197,7 @@ echo GridView::widget([
                    'style'=>"font-size: 1.5em;",
                    'rel'=>"tooltip",
                    'title' => 'View target',
+                   'aria-label'=>'View target',
                    'data-pjax' => '0',
                  ]
              );
