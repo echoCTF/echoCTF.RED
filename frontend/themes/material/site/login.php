@@ -9,11 +9,11 @@ use yii\bootstrap\ActiveForm;
 
 $this->title = Yii::$app->sys->event_name .' Login';
 ?>
-<div class="site-login" style="color: red-100;">
+<div class="site-login">
   <div class="body-content">
     <h2><?= Html::encode($this->title) ?></h2>
 
-    <p>Please fill out the following fields to login:</p>
+    <p class="text-primary">Please fill out the following fields to login:</p>
 
     <div class="row">
         <div class="col-lg-5">

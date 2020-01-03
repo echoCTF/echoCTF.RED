@@ -32,7 +32,7 @@ use yii\helpers\Url;
                 <li class="nav-item"><?=Html::a('Login',['/site/login'],['class'=>'nav-link'])?></li>
               <?php else: ?>
                 <li class="nav-item dropdown">
-                  <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false">
+                  <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false" aria-label="Hints to help you progress further">
                     <?php if(count(Yii::$app->user->identity->pendingHints)>0):?><i class="fas fa-lightbulb text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingHints)?></span><?php else:?><i class="fas fa-lightbulb" style="font-size: 2em;"></i><?php endif;?>
                     <p class="d-lg-none d-md-block">Hints to help you progress further.</p>
                   </a>
@@ -41,7 +41,7 @@ use yii\helpers\Url;
                 </li>
 
                 <li class="nav-item dropdown">
-                  <a class="nav-link" href="/profile/notifications" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false">
+                  <a class="nav-link" href="/profile/notifications" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false"  aria-label="Your notifications">
                     <?php if(count(Yii::$app->user->identity->pendingNotifications)>0):?><i class="fas fa-bell text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingNotifications)?></span><?php else:?><i class="fas fa-bell" style="font-size: 2em;"></i><?php endif;?>
                     <p class="d-lg-none d-md-block">Your Notifications.</p>
                   </a>
@@ -50,7 +50,7 @@ use yii\helpers\Url;
                 </li>
               <li class="nav-item dropdown">
                 <a class="nav-link" href="/profile" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <img class="rounded" height="25px;" src="/images/avatars/<?=Yii::$app->user->identity->profile->avatar?>" style="position:relative;top:-2px" > <small>(<?=number_format(Yii::$app->user->identity->profile->score->points)?> pts)</small>
+                  <img class="rounded" height="25px;" src="/images/avatars/<?=Yii::$app->user->identity->profile->avatar?>" style="position:relative;top:-2px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"> <small>(<?=number_format(Yii::$app->user->identity->profile->score->points)?> pts)</small>
                   <p class="d-lg-none d-md-block">
                     Account
                   </p>

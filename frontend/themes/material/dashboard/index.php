@@ -21,7 +21,7 @@ $this->_description ="The echoCTF dashboard page";
                 'title'=>sprintf('%d/%d',$treasureStats->claimed,$treasureStats->total),
                 'subtitle'=>'Claimed/Total Flags',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons text-danger">flag</i>'.number_format($treasureStats->claims).' total claims
+                        <i class="material-icons flag-claim">flag</i>'.number_format($treasureStats->claims).' total claims
                       </div>',
             ]); Card::end(); ?>
         </div>
