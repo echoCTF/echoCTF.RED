@@ -1,4 +1,17 @@
-
+function luminanace(r, g, b) {
+    var a = [r, g, b].map(function (v) {
+        v /= 255;
+        return v <= 0.03928
+            ? v / 12.92
+            : Math.pow( (v + 0.055) / 1.055, 2.4 );
+    });
+    return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+}
+function contrast(rgb1, rgb2) {
+    return (luminanace(rgb1[0], rgb1[1], rgb1[2]) + 0.05)
+         / (luminanace(rgb2[0], rgb2[1], rgb2[2]) + 0.05);
+}
+//contrast([255, 255, 255], [255, 255, 0]); // 1.074 for yellow
 jQuery( document ).ready(function() {
   $('#profile-avatar').change(function() {
     if($(this).val()!="")
@@ -34,7 +47,7 @@ jQuery( document ).ready(function() {
     {
       var thelink = $('<a />',{
           class: "dropdown-item",
-          text: data[i].message,
+          text: data[i].title,
           title: data[i].title,
           href: '#'
         });
@@ -62,7 +75,7 @@ jQuery( document ).ready(function() {
         $.get($(this).attr('href'),processHints);
         return false;
       })
-      .appendTo('#gintsMenu');
+      .appendTo('#hintsMenu');
     }
   }
   /* Generic Notifications Handler */
@@ -75,6 +88,7 @@ jQuery( document ).ready(function() {
     }
     for(i=0;i<data.length;i++)
     {
+
       var thelink = $('<a>',{
           class: "dropdown-item",
           text: data[i].title,
@@ -85,6 +99,7 @@ jQuery( document ).ready(function() {
       {
         thelink.addClass("text-success");
         thelink.prepend('<i class="material-icons">whatshot</i> ');
+        thelink.html(data[i].body);
       }
       thelink.appendTo('#notificationsMenu');
     }
