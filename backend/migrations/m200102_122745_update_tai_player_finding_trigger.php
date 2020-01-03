@@ -9,9 +9,13 @@ class m200102_122745_update_tai_player_finding_trigger extends Migration
 {
   public $DROP_SQL="DROP TRIGGER IF EXISTS {{%tai_player_finding}}";
   public $CREATE_SQL="CREATE TRIGGER {{%tai_player_finding}} AFTER INSERT ON {{%player_finding}} FOR EACH ROW
-  BEGIN
+  thisBegin:BEGIN
     DECLARE local_target_id INT;
     DECLARE headshoted INT default null;
+
+    IF (@TRIGGER_CHECKS = FALSE) THEN
+      LEAVE thisBegin;
+    END IF;
 
     IF (select memc_server_count()<1) THEN
       select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;

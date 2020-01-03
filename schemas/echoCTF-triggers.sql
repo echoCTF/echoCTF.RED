@@ -14,7 +14,11 @@ DELIMITER ;;
 -- When a new finding is added, update memcached with the finding details
 --
 CREATE TRIGGER `tai_finding` AFTER INSERT ON `finding` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
@@ -25,7 +29,11 @@ END ;;
 -- When a finding is updated also update the relevant memcached values
 --
 CREATE TRIGGER `tau_finding` AFTER UPDATE ON `finding` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
@@ -41,7 +49,11 @@ END ;;
 --  finding is removed
 --
 CREATE TRIGGER `tad_finding` AFTER DELETE ON `finding` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
@@ -51,8 +63,12 @@ END ;;
 
 
 CREATE TRIGGER `tai_player` AFTER INSERT ON `player` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
   DECLARE ltitle VARCHAR(20) DEFAULT 'Joined the platform';
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
@@ -68,11 +84,16 @@ END ;;
 
 
 CREATE TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
-BEGIN
-DECLATE ltitle VARCHAR(30) DEFAULT "Joined the platform";
+thisBegin:BEGIN
+  DECLATE ltitle VARCHAR(30) DEFAULT "Joined the platform";
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
+
   IF NEW.type!=OLD.type THEN
     SELECT memc_set(CONCAT('player_type:',NEW.id), NEW.type) INTO @devnull;
   END IF;
@@ -83,14 +104,22 @@ END ;;
 
 
 CREATE TRIGGER `tbd_player` BEFORE DELETE ON `player` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   DELETE FROM player_ssl WHERE player_id=OLD.id;
   DELETE FROM player_rank WHERE player_id=OLD.id;
 END ;;
 
 
 CREATE TRIGGER `tad_player` AFTER DELETE ON `player` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
@@ -104,14 +133,21 @@ END ;;
 
 
 CREATE TRIGGER `tai_player_badge` AFTER INSERT ON `player_badge` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   CALL add_badge_stream(NEW.player_id,'badge',NEW.badge_id);
 END ;;
 
 CREATE TRIGGER {{%tai_player_finding}} AFTER INSERT ON {{%player_finding}} FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
   DECLARE local_target_id INT;
   DECLARE headshoted INT default null;
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
 
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
@@ -133,7 +169,11 @@ END ;;
 -- to troubleshoot and investigate problems
 --
 CREATE TRIGGER `tau_player_last` AFTER UPDATE ON `player_last` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (OLD.vpn_local_address IS NULL AND NEW.vpn_local_address IS NOT NULL) OR (OLD.vpn_local_address IS NOT NULL AND NEW.vpn_local_address IS NOT NULL AND NEW.vpn_local_address!=OLD.vpn_local_address) THEN
     INSERT INTO `player_vpn_history` (`player_id`,`vpn_local_address`,`vpn_remote_address`) VALUES (NEW.id,NEW.vpn_local_address,NEW.vpn_remote_address);
   END IF;
@@ -144,7 +184,11 @@ END ;;
 -- Add a stream notification for the answered question
 --
 CREATE TRIGGER `tai_player_question` AFTER INSERT ON `player_question` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   CALL add_stream(NEW.player_id,'question',NEW.question_id);
 END ;;
 
@@ -153,21 +197,33 @@ END ;;
 -- past values so that we can revoke the old keys
 --
 CREATE TRIGGER `tau_player_ssl` AFTER UPDATE ON `player_ssl` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF OLD.subject!=NEW.subject OR OLD.csr!=NEW.csr OR OLD.crt!=NEW.crt OR OLD.privkey!=NEW.privkey THEN
     INSERT INTO `crl` values (NULL,OLD.player_id,OLD.subject,OLD.csr,OLD.crt,OLD.txtcrt,OLD.privkey,NOW());
   END IF;
 END ;;
 
 CREATE TRIGGER `tad_player_ssl` AFTER DELETE ON `player_ssl` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   INSERT INTO `crl` values (NULL,OLD.player_id,OLD.subject,OLD.csr,OLD.crt,OLD.txtcrt,OLD.privkey,NOW());
 END ;;
 
 CREATE TRIGGER `tai_player_treasure` AFTER INSERT ON `player_treasure` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
   DECLARE local_target_id INT;
   DECLARE headshoted INT default null;
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
 
   CALL add_treasure_stream(NEW.player_id,'treasure',NEW.treasure_id);
   CALL add_player_treasure_hint(NEW.player_id,NEW.treasure_id);
@@ -182,7 +238,11 @@ BEGIN
 END ;;
 
 CREATE TRIGGER `tbi_profile` BEFORE INSERT ON `profile` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF NEW.id is NULL or NEW.id<10000000 THEN
     REPEAT
         SET NEW.id=round(rand()*10000000);
@@ -199,21 +259,33 @@ BEGIN
 END ;;
 
 CREATE TRIGGER tau_report AFTER UPDATE ON report FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF OLD.status='pending' and NEW.status='approved' THEN
     CALL add_stream(NEW.player_id,'report',NEW.id);
   END IF;
 END ;;
 
 CREATE TRIGGER `tad_spin_queue` AFTER DELETE ON `spin_queue` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   INSERT INTO `spin_history` (target_id,player_id,created_at,updated_at) VALUES (OLD.target_id,OLD.player_id,OLD.created_at,NOW());
 END ;;
 
 -- XXXFIXMEXXX This needs to be optimised with an UPDATE instead of INSERT and
 -- only when points>0
 CREATE TRIGGER tai_stream AFTER INSERT ON stream FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   INSERT INTO player_score (player_id,points) VALUES (NEW.player_id,NEW.points) ON DUPLICATE KEY UPDATE points=points+values(points);
   IF (SELECT count(team_id) FROM team_player WHERE player_id=NEW.player_id)>0 THEN
     INSERT INTO team_score (team_id,points) VALUES ((SELECT team_id FROM team_player WHERE player_id=NEW.player_id),NEW.points) ON DUPLICATE KEY UPDATE points=points+values(points);
@@ -221,7 +293,11 @@ BEGIN
 END ;;
 
 CREATE TRIGGER `tai_sysconfig` AFTER INSERT ON `sysconfig` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
@@ -229,7 +305,11 @@ BEGIN
 END ;;
 
 CREATE TRIGGER `tau_sysconfig` AFTER UPDATE ON `sysconfig` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
@@ -241,7 +321,11 @@ END ;;
 
 
 CREATE TRIGGER `tad_sysconfig` AFTER DELETE ON `sysconfig` FOR EACH ROW
-BEGIN
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
@@ -250,10 +334,14 @@ END ;;
 
 -- XXXFIXMEXXX ONLY UPDATE ACTIVE TARGETS
 CREATE TRIGGER `tai_target` AFTER INSERT ON `target` FOR EACH ROW
-BEGIN
-IF (select memc_server_count()<1) THEN
-  select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
-END IF;
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
   SELECT memc_set(CONCAT('target:',NEW.id),NEW.ip) INTO @devnull;
   SELECT memc_set(CONCAT('target:',NEW.ip),NEW.id) INTO @devnull;
 END ;;
