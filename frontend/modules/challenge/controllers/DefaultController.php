@@ -26,10 +26,10 @@ class DefaultController extends Controller
       return [
           'access' => [
               'class' => AccessControl::className(),
-              'only' => ['index','view'],
+              'only' => ['index','view','download'],
               'rules' => [
                   [
-                      'actions' => ['index','view'],
+                      'actions' => ['index','view','download'],
                       'allow' => true,
                       'roles' => ['@'],
                   ],
@@ -60,27 +60,43 @@ class DefaultController extends Controller
      */
     public function actionView(int $id)
     {
+      $model=$this->findModel($id);
+      $model=Challenge::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
+      $query=Question::find();
+
+      $dataProvider = new ActiveDataProvider([
+          'query' => $query,
+      ]);
+      $query->andFilterWhere(['challenge_id'=>$model->id]);
+
+      $answer = new AnswerForm();
+      if ($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id)) {
+            Yii::$app->session->setFlash('success',sprintf('Accepted answer for question [%s] for %d pts.',$answer->question->name, intval($answer->points)));
+            return $this->redirect(Yii::$app->request->referrer);
+      }
+
+
+      return $this->render('view', [
+          'answer'=>$answer,
+          'model' => $model,
+          'dataProvider' => $dataProvider,
+      ]);
+    }
+
+    /**
+     * Force download of Challenge file.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDownload(int $id)
+    {
         $model=$this->findModel($id);
-        $model=Challenge::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
-        $query=Question::find();
+        if($model->filename===null)
+            throw new NotFoundHttpException('The requested challenge does not have a file to download.');
+        $storagePath = Yii::getAlias(Yii::$app->sys->challenge_home);
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
-        $query->andFilterWhere(['challenge_id'=>$model->id]);
-
-        $answer = new AnswerForm();
-        if ($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id)) {
-              Yii::$app->session->setFlash('success',sprintf('Accepted answer for question [%s] for %d pts.',$answer->question->name, intval($answer->points)));
-              return $this->redirect(Yii::$app->request->referrer);
-        }
-
-
-        return $this->render('view', [
-            'answer'=>$answer,
-            'model' => $model,
-            'dataProvider' => $dataProvider,
-        ]);
+        return Yii::$app->response->sendFile("{$storagePath}/{$model->filename}", $model->filename);
     }
 
     /**
