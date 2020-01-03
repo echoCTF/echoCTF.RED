@@ -16,7 +16,7 @@ class m200102_165040_update_lfi_challenge_questions extends Migration
       '<p>Always include sensitive files in your tests, such as
       <b><code>config.php, db.php, /admin/, <small>/admin/ETSCTF.html</small></code></b>.</p>
       <p>Enter the flag hidden in the <b><code>config.php</code></b> to complete this step  (you need to find this flag by yourself).</p>
-      <p><small>There is a flag under <code>/admin/ETSCTF.html</code>, but it is not accessible by a web request. See if you can read it to get your target headshot.</small></p>'],['id'=>11]);
+      <p><small>There are two more flags, one of them should be easy to find (if you followed the echoCTF.RED Tutorial 101), the other is under <code>/admin/ETSCTF.html</code>, but this flag is not accessible by a web request. See if you can read it, based on what you learned so far, to get your headshot for the target.</small></p>'],['id'=>11]);
 
     }
 
