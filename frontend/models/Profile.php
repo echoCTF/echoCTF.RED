@@ -222,5 +222,13 @@ class Profile extends \yii\db\ActiveRecord
         return '@'.$this->twitter;
       return $this->owner->username;
     }
-
+    public function getBraggingRights()
+    {
+      $msg=sprintf("I am at the %s place with %d pts",$this->rank->ordinalPlace,$this->score->points);
+      if($this->headshotsCount>0)
+      {
+        $msg.=sprintf(', and %d headshots',$this->headshotsCount);
+      }
+      return $msg;
+    }
 }
