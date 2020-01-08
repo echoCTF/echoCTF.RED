@@ -36,7 +36,6 @@ echo GridView::widget([
    'layout'=>$layout,
    'summary'=>$summary,
    'columns' => [
-     'id',
      [
        'label'=>'',
        'contentOptions' => ['class' => 'text-center'],
@@ -44,6 +43,7 @@ echo GridView::widget([
        'format'=>'raw',
        'value'=>function($model){return sprintf('<img src="/images/targets/_%s-thumbnail.png" alt="%s" class="rounded-circle" style="height: 20px; max-height: 20px; max-width: 20px">',$model->name, $model->fqdn);}
      ],
+     'id',
      [
        'attribute'=>'name',
        'label'=>'Target',
