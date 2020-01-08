@@ -4,6 +4,7 @@ echo ListView::widget([
     'id'=>$divID,
     'options'=>$options,
     'dataProvider' => $dataProvider,
+    'emptyText'=>'<b>No activity to report yet...</b>',
     'pager'=>[
       'class'=>'yii\bootstrap4\LinkPager',
       'options'=>$pagerOptions,
