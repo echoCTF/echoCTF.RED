@@ -53,7 +53,7 @@ use app\widgets\Twitter;
             <li class="nav-item text-left"><strong><i class="fas fa-flag"></i> Flags</strong> <span class="pull-right"><?php echo $profile->totalTreasures;?></span></li>
             <li class="nav-item text-left"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo $profile->totalFindings;?></span></li>
         </ul>
-    <hr/>
+<!--    <hr/>
     <?php if($profile->twitter):?>
     <a target="_blank" href="https://twitter.com/<?=Html::encode($profile->twitter)?>" class="btn btn-primary btn-round fab fa-twitter" style="font-size:1.5rem;"></a>
     <?php endif;?>
@@ -68,6 +68,6 @@ use app\widgets\Twitter;
 
     <?php if($profile->htb):?>
     <a target="_blank" href="https://hackthebox.eu/profile/<?=Html::encode($profile->htb)?>" class="btn btn-primary btn-round fab fa-hackerrank" style="font-size:1.5rem;"></a>
-    <?php endif;?>
+  <?php endif;?> -->
   </div>
 </div><!-- // end user profile card -->
