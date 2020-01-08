@@ -1,5 +1,13 @@
 ## v0.9
 * [x] Fix the wording of the 3rd question on LFi Tutorial `Exploit the vulnerability` to be clear that the `/etc/passwd` flag is an answer
+* [x] Create target vs profile_id view
+* [x] Order headshots by time of arrival on target view page
+* [x] Explain ranking orders on FAQ
+* [x] Add id on order list the target widget
+* [x] Fix the wording of the lfi tutorial last question and update target to make sense
+* [x] Rename Level names
+* [x] Add challenge file download action
+* [x] On new users submit a hint and a notification
 
 ## v0.8 - 0x/01/2020 New UI edition :)
 * [x] New layout integrated
