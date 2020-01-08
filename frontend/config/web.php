@@ -197,6 +197,7 @@ $config = [
                 'claim'=>'target/default/claim',
                 // app/controllers/ProfileController
                 'profile/<id:\d+>' => 'profile/index',
+                'p/<id:\d+>' => 'profile/index',
                 'profile/me'=>'profile/me',
                 'profile/ovpn'=>'profile/ovpn',
                 'profile/settings'=>'profile/settings',
@@ -217,6 +218,7 @@ $config = [
                 'privacy_policy'=>'legal/privacy-policy',
                 'legal/privacy-policy'=>'legal/privacy-policy',
                 'site/captcha'=>'site/captcha',
+                'target/<id:\d+>/vs/<profile_id:\d+>'=>'target/default/versus',
                 'target/<id:\d+>/versus/<profile_id:\d+>'=>'target/default/versus',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
