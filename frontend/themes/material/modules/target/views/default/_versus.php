@@ -36,9 +36,9 @@ use app\widgets\Twitter;
             'color'=>'primary',
             'subtitle'=>'Level '.$identity->experience->id.' / '.$identity->experience->name,
             'title'=>$identity->owner->username." / ".$identity->rank->ordinalPlace." Place",
-            'footer'=>sprintf('<div class="stats">%s %s</div>',Twitter::widget([
-                           'message'=>sprintf('Hey check this out, I have found %d out of %d services and %d out of %d flags on [%s]',$target->player_findings,$target->total_findings,$target->player_treasures,$target->total_treasures,$target->name),
-                           'url'=>Url::to(['/target/default/index','id'=>$target->id],'https'),
+            'footer'=>sprintf('<div class="stats">%s %s</div>', Twitter::widget([
+                           'message'=>sprintf('Hey check this out, %s have found %d out of %d services and %d out of %d flags on [%s]', $identity->isMine ? "I" : $identity->twitterHandle,$target->player_findings,$target->total_findings,$target->player_treasures,$target->total_treasures,$target->name),
+                           /*'url'=>Url::to(['/target/default/index'*,'id'=>$target->id],'https'),*/
                            'linkOptions'=>['class'=>'target-view-tweet','target'=>'_blank','style'=>'font-size: 1.4em;'],
                         ]),Html::encode($identity->bio)),
         ]);
