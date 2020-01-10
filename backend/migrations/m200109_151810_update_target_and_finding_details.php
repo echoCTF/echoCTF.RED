@@ -62,7 +62,8 @@ int main(int argc, char **argv) {
         </p>
       </details> <details> <summary>References</summary> <ul> <li><a target="_blank" href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-1010174">CVE-2019-1010174</a> <li><a target="_blank" href="https://framagit.org/dtschump/CImg/commit/5ce7a426b77f814973e56182a0e76a2b04904146">Fix commit</a> </ul></details>
 ENDHTML;
-    $this->update('target',['image'=>'registry.echoctf.com:5000/red/lfi-tutorial:v0.8'],['id'=>26]);
+    $this->update('target',['image'=>'registry.echoctf.com:5000/red/lfi-tutorial:v0.9'],['id'=>26]);
+    $this->update('target',['image'=>'registry.echoctf.com:5000/red/cve-2019-1010174:v0.9'],['id'=>23]);
     $this->update('target',['description'=>$DESCRIPTION],['id'=>23]);
     $this->db->createCommand("insert into player_score (player_id,points) select player_id,sum(points) from stream group by player_id ON DUPLICATE KEY UPDATE points=values(points)")->execute();
     $this->db->createCommand("CALL calculate_ranks()")->execute();
