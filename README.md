@@ -1,23 +1,21 @@
 ![echoCTF RED logo](https://echoctf.red/images/logo.png)
 # What is echoCTF.RED
-echoCTF RED v0.7 codename Mycenae is the first iteration of our online service, based on our unique framework, for setting up and executing cyber security training, exercises and Capture the Flag competitions.
+echoCTF.RED codename Mycenae is the first iteration of our online service, based on our unique framework, for setting up and executing cyber security training, exercises and Capture the Flag events.
 
 It is a free online service that offers a controlled environment, based on real-life systems and services, to train and sharpen your offensive and defensive security skills. Scan, brute-force and do whatever it takes to attack the systems and solve the real-life security scenarios to gain points. More information about our offline competitions visit echoCTF.com
 
-This project is serving as a placeholder for issues, bugs and incidents involving the service only. 
+This project is currently under HEAVY restructure and development.
 
 ## Source codez or it never happened
 The source code for the infrastructure is hosted on repositories of this github org
-* [participants UI @echoCTF/echoCTF-pUI](https://github.com/echoCTF/echoCTF-pUI)
-* [management UI @echoCTF/echoCTF-mUI2](https://github.com/echoCTF/echoCTF-mUI2)
-* [echoCTF OpenBSD Gateway @echoCTF/echoCTF-gw](https://github.com/echoCTF/echoCTF-gw)
+* [echoCTF Gateway @echoCTF/echoCTF-gw](https://github.com/echoCTF/echoCTF-gw)
 * [echoCTF targets @echoCTF/echoCTF-targets](https://github.com/echoCTF/echoCTF-targets)
-* [echoCTF OpenBSD findingsd @echoCTF/echoCTF-gw](https://github.com/echoCTF/findingsd)
+* [echoCTF findingsd @echoCTF/findingsd](https://github.com/echoCTF/findingsd)
 
 
 ## Challenge templates
 You can submit your own challenges to be included by emailing **`challenges ]at[ echoctf.red`** by using any of the templates
-below. 
+below.
 
 * [simple-challenge.yml](https://github.com/echoCTF/echoCTF.RED/blob/master/challenge/simple-challenge.yml)
 * [advanced-challenge.yml](https://github.com/echoCTF/echoCTF.RED/blob/master/challenge/advanced-challenge.yml)
