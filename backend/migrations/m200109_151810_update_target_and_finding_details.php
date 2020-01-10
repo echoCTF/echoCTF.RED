@@ -64,6 +64,8 @@ int main(int argc, char **argv) {
 ENDHTML;
     $this->update('target',['image'=>'registry.echoctf.com:5000/red/lfi-tutorial:v0.8'],['id'=>26]);
     $this->update('target',['description'=>$DESCRIPTION],['id'=>23]);
+    $this->db->createCommand("insert into player_score (player_id,points) select player_id,sum(points) from stream group by player_id ON DUPLICATE KEY UPDATE points=values(points)")->execute();
+    $this->db->createCommand("CALL calculate_ranks()")->execute();
 
     }
 
