@@ -1,0 +1,171 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="playerscores.css">
+<title>echoCTF Leaderboard [PLAYERS]</title>
+</head>
+<body>
+<div id="app"></div>
+</body>
+<script src="/ws-playerscores/socket.io/socket.io.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.2/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.0.2/react-dom.js"></script>
+<script src="https://unpkg.com/babel-standalone@6.26.0/babel.min.js"></script>
+<script type="text/babel">
+let maxScore=10000;
+let intervalCounter = 0;
+let boardChanged = false;
+let colors = [
+	'#FFB900',
+	'#69797E',
+	'#847545',
+	'#E74856',
+	'#0078D7',
+	'#0099BC',
+	'#7A7574',
+	'#767676',
+	'#FF8C00',
+	'#E81123',
+	'#0063B1',
+	'#2D7D9A',
+	'#5D5A58',
+	'#4C4A48',
+	'#F7630C',
+	'#EA005E',
+	'#8E8CD8',
+	'#00B7C3',
+	'#68768A',
+	'#CA5010',
+	'#C30052',
+	'#6B69D6',
+	'#038387',
+	'#515C6B',
+	'#4A5459',
+	'#DA3B01',
+	'#E3008C',
+	'#8764B8',
+	'#00B294',
+	'#567C73',
+	'#647C64',
+	'#EF6950',
+	'#BF0077',
+	'#744DA9',
+	'#018574',
+	'#486860',
+	'#525E54',
+	'#D13438',
+	'#C239B3',
+	'#B146C2',
+	'#00CC6A',
+	'#498205',
+	'#FF4343',
+	'#9A0089',
+	'#881798',
+	'#10893E',
+	'#107C10',
+	'#7E735F'
+];
+
+var socket = io.connect('/',{path:'/ws-playerscores/socket.io'});
+var teams= [];
+var oldlead=[];
+class Leaderboard extends React.Component {
+	constructor() {
+		super();
+		this.state = {
+			leaders: [],
+			maxScore: maxScore
+		};
+		this.getData = this.getData.bind(this);
+	}
+	getData() {
+        /* Here you can implement data fetching */
+		let data = {
+			success: true,
+			leaders: teams,
+			maxScore: maxScore,
+		};
+
+//		console.log(data.leaders.length);
+//		console.log(data.leaders[0].changed);
+//		console.log(data.leaders[0].scale);
+		for (let j = 0; j < data.leaders.length; j++) {
+			if (data.leaders[j].changed == 1) {
+				data.leaders[j].scale = "1.2,1.2";
+			}
+		}
+
+		intervalCounter += 1;
+		this.setState({
+            leaders: data.leaders,
+            maxScore: data.maxScore
+        })
+	}
+	componentDidMount() {
+		socket.on('notification', function(data) {
+			teams=data.teams;
+			for(let j=0; j < teams.length; j++)
+			{
+				teams[j].id=teams[j].player_id;
+				teams[j].place=j+1;
+				teams[j].scale='1,1';
+				teams[j].changed=0;
+			}
+//			console.log(teams[0]);
+	   });
+
+		//this.getData();
+    /*data is refreshing every 2 seconds*/
+		setInterval(this.getData, 2000);
+	}
+	render() {
+		return (
+			<div className="Leaderboard">
+				<div className="LeaderHeader">
+					<h1>echoCTF Scoreboard</h1>
+				</div>
+				<div className="leaders">
+					{this.state.leaders ? (
+						this.state.leaders.map((el, i) => (
+							<div
+								key={el.id}
+								style={{
+									backgroundColor: el.place % 2 > 0 ? "#eeeeee" : "#ffffff",
+									position: 'absolute',
+									zIndex: el.changed == 1 ? 999 : 1,
+									/*animationDelay: (i + 10) * 0.1 + 's',*/
+									transform: `scale(${el.scale}) translateY(${(el.place - 1) * 46}px)`,
+									transition: '1s ease-in-out transform'
+								}}
+								className="leader"
+							>
+								<div className="border"></div>
+								<div className="leader-wrap">
+									<div className="leader-place">{el.place + '.'}</div>
+									<div className="leader-name">{' ' + el.player_name}</div>
+									<div className="leader-score_title">{el.points}</div>
+								</div>
+								<div style={{ animationDelay: 0.4 + i * 0.2 + 's' }} className="leader-bar">
+									<div
+										style={{
+											width: el.points / this.state.maxScore * 100 + '%'
+										}}
+										className="bar"
+									/>
+								</div>
+								<div className="border"></div>
+							</div>
+						))
+					) : (
+						<div className="empty">No scores available yet</div>
+					)}
+				</div>
+			</div>
+	)
+ }
+}
+
+ReactDOM.render(<Leaderboard />, document.getElementById('app'));
+
+</script>
+
+</html>
