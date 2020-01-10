@@ -28,7 +28,7 @@ use yii\widgets\DetailView;
     [
       'label'=>'Total points',
       'type'=>'number',
-      'value'=>$target->points,
+      'value'=>number_format($target->points),
     ],
     [
       'label'=>'Flags / Services',
