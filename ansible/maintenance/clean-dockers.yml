@@ -1,6 +1,6 @@
 ---
 - name: Cleanup docker servers from containers and pulled images
-  hosts: docker-masters:!docker-builder.echoctf.net
+  hosts: docker-masters
   gather_facts: true
   user: sysadmin
   become: true
