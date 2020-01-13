@@ -1,0 +1,29 @@
+---
+- name: "Include challenge file ({{challenge_yml}})"
+  include_vars:
+    file: "{{challenge_yml}}"
+    name: challenge
+
+- name: Submit challenge
+  delegate_to: 127.0.0.1
+  register: creation
+  uri:
+    url: "{{mui.URL}}/index.php?r=restapi/challenge/create-bundle"
+    method: POST
+    validate_certs: false
+    body_format: json
+    body: "{{challenge}}"
+    status_code: 201
+
+- name: Upload challenge file
+  when: creation.json is defined and creation.json.challenge_id is defined and challenge.filename is defined and challenge.filename != ""
+  delegate_to: 127.0.0.1
+  uri:
+    url: "{{mui.URL}}/index.php?r=restapi/challenge/upload&challenge_id={{creation.json.challenge_id}}"
+    method: PUT
+    src: "../challenges/{{challenge.filename}}"
+    validate_certs: false
+    body_format: json
+    status_code: 201
+  tags:
+    - upload
