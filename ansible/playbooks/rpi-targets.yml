@@ -1,0 +1,234 @@
+---
+- name: Create RPI based targets
+  hosts: rpi-targets
+  gather_facts: false
+  #serial: 1
+  remote_user: pi
+  become: true
+  become_method: sudo
+  become_user: root
+  tasks:
+  - name: set timezone to UTC
+    timezone:
+      name: UTC
+
+  - name: Set hostname based on host_var
+    hostname:
+      name: "{{fqdn}}"
+
+  - name: Set static IP
+    template:
+      src: ../files/rpi_etc_network_interfaces.j2
+      dest: /etc/network/interfaces
+
+  - name: update package cache
+    apt:
+      update_cache: yes
+
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist
+    register: upgrade_result
+
+  - name: install preInst packages
+    apt: name="{{item.name}}" state="{{item.state}}"
+    when: item.stage is defined
+    with_items:
+      - "{{apt}}"
+      - "{{localapt|default(omit)}}"
+
+   - name: Add apt keys
+     when: aptKeys is defined
+     apt_key:
+       url: "{{item.key}}"
+       state: "{{item.state}}"
+     with_items: "{{aptKeys}}"
+
+   - name: Add apt repositories
+     when: aptRepos is defined
+     apt_repository:
+       repo: "{{item.repo}}"
+       state: "{{item.state}}"
+     with_items: "{{aptRepos}}"
+
+  # Need to reboot the system as in case of a kernel update some other tasks will fail
+  - name: Reboot if there was a change on the upgrade task
+    shell: "sleep 5 && reboot"
+    async: 1
+    poll: 0
+    when: upgrade_result is changed
+
+  - name: Wait for the reboot to complete if there was a change.
+    wait_for_connection:
+      connect_timeout: 30
+      sleep: 5
+      delay: 5
+      timeout: 300
+    when: upgrade_result is changed
+  # END Rebooting
+
+  - name: install remaining packages
+    apt: name="{{item.name}}" state="{{item.state}}"
+    when: item.stage is not defined
+    with_items: "{{apt}}"
+
+  - name: execute raspi-config
+    command: raspi-config nonint {{item.cmd}} {{item.val}}
+    with_items:
+      - "{{raspiconfig}}"
+      - "{{localraspiconfig|default(omit)}}"
+    when: raspiconfig is defined
+
+  - name: install pip
+    easy_install: name=pip state=present
+
+  - name: pip3 install
+    pip: name="{{item.name}}" version="{{item.version|default(omit)}}" state="{{item.state}}" executable="pip3"
+    with_items: "{{pip3}}"
+
+  - name: pip install
+    pip: name="{{item.name}}" version="{{item.version|default(omit)}}" state="{{item.state}}" executable="pip"
+    with_items: "{{pip}}"
+
+  - name: Create {{paths.files}} directory
+    file:
+      path: "{{paths.files}}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0750
+
+  - name: Create {{paths.node}}/lib/flows recursively
+    file:
+      path: "{{paths.node}}/lib/flows"
+      state: directory
+      owner: root
+      group: root
+      mode: 0750
+      recurse: yes
+
+  - name: Create /root/.npm/registry.npmjs.org recursively (due to npm bug)
+    file:
+      path: "/root/.npm/registry.npmjs.org"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+      recurse: yes
+
+  - name: Create {{paths.node}}/node_modules
+    file:
+      path: "{{paths.node}}/node_modules"
+      state: directory
+      owner: root
+      group: root
+      mode: 0750
+
+  - name: Copy electronics control scripts
+    synchronize:
+      src: "../../ELECTRONICS/Scripts"
+      dest: "{{paths.files}}"
+      owner: false
+      group: false
+    tags:
+      - SYNC
+
+  - name: Copy our custom node packages
+    synchronize:
+      src: "../../ELECTRONICS/packages"
+      dest: "{{paths.files}}"
+      owner: false
+      group: false
+    tags:
+      - SYNC
+
+  - name: npm install
+    npm: name="{{item.name}}" version="{{item.version}}" state="{{item.state}}" path="{{item.path}}" executable="/usr/bin/npm --unsafe-perm=true --allow-root"
+    with_items: "{{npm}}"
+
+  - name: npm install global, unsafe, allow root
+    command: npm install -g {{item.name}} --unsafe-perm={{item.unsafe}} --allow-root
+    with_items: "{{npmglobalunsaferoot}}"
+
+  - name: npm install our modified tgz packages
+    command: npm install {{item.name}} --unsafe-perm=true
+    args:
+      chdir: "{{paths.node}}"
+    with_items: "{{npmtgz}}"
+
+  - name: Changing nodered systemd script (User pi -> root)
+    lineinfile:
+      path: /lib/systemd/system/nodered.service
+      regexp: '^User=pi'
+      line: 'User=root'
+
+  - name: Changing nodered systemd script (Group pi -> root)
+    lineinfile:
+      path: /lib/systemd/system/nodered.service
+      regexp: '^Group=pi'
+      line: 'Group=root'
+
+  - name: Changing nodered systemd script (WorkDir /home/pi -> /root)
+    lineinfile:
+        path: /lib/systemd/system/nodered.service
+        regexp: '^WorkingDirectory=/home/pi'
+        line: 'WorkingDirectory=/root'
+
+  - name: Insert our hack into Pi7SegPy (on all hosts)
+    lineinfile:
+      dest: /usr/local/lib/python2.7/dist-packages/Pi7SegPy.py
+      state: present
+      line: '        shift.write((available_chars[values[0]] * 65536) + (available_chars[values[1]] * 256) + available_chars[values[2]])'
+      insertafter: EOF
+
+  - name: Insert our hack into Pi7SegPy (comment old write)
+    lineinfile:
+      path: /usr/local/lib/python2.7/dist-packages/Pi7SegPy.py
+      regexp: '^                shift.write'
+      line: '                #shift.write(char << 8 | 1 << i)'
+
+  - name: Insert our hack into Pi7SegPy (on nuclear)
+    lineinfile:
+      path: /usr/local/lib/python2.7/dist-packages/Pi7SegPy.py
+      regexp: '^        shift.write'
+      line: '        shift.write((available_chars[values[0]] * 256) + available_chars[values[1]])'
+    when: ansible_hostname == 'nuclear' or ansible_hostname == 'mall'
+
+  - name: Enable node-red on system startup
+    systemd:
+      name: "{{item.name}}.service"
+      enabled: yes
+    with_items: "{{sysdservices}}"
+
+# Copy our node-red configs and the flow
+  - name: Copy node-red settings.js file
+    synchronize:
+      src: "../../ELECTRONICS/NodeRed/conf/settings.js"
+      dest: "{{paths.node}}"
+      owner: false
+      group: false
+    tags:
+      - SYNC
+
+  - name: Copy node-red package.json file
+    synchronize:
+      src: "../../ELECTRONICS/NodeRed/conf/package.json"
+      dest: "{{paths.node}}"
+      owner: false
+      group: false
+    tags:
+      - SYNC
+
+  - name: Copy node-red flows
+    synchronize:
+      src: "../../ELECTRONICS/NodeRed/flows/{{hostname}}.json"
+      dest: "{{paths.node}}/flows_{{fqdn}}.json"
+      owner: false
+      group: false
+    tags:
+      - SYNC
+# END Copy our  node-red configs and the flow
+
+  - name: Last reboot in order to bring up all services
+    shell: "sleep 5 && reboot"
+    poll: 0

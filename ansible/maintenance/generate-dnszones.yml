@@ -1,0 +1,24 @@
+---
+- name: Gather details from docker targets and generate DNS zone files
+  hosts: docker-targets
+  gather_facts: false
+  connection: local
+#  serial: 1
+  tasks:
+  - name: Generate forward zone
+    delegate_to: 127.0.0.1
+    lineinfile:
+      path: ../files/dns-zones.sql
+      regexp: "#####XXXXXXXXXXXX###########"
+      line: "INSERT INTO records (domain_id, name, content, type,ttl,prio) VALUES (1,'{{fqdn}}','{{ansible_host}}','A',120,NULL),(1,'{{fqdn}}','mail.echocity-f.com','MX',120,25);"
+      create: yes
+
+  - name: Generate reverse zone
+    delegate_to: 127.0.0.1
+    lineinfile:
+      path: ../files/dns-zones.sql
+      regexp: "#####XXXXXXXXXXXX###########"
+      line: "INSERT INTO records(domain_id, name, type, content, ttl, change_date) VALUES (2,'{{ ansible_host | ipaddr('revdns')|regex_replace('.$', '') }}','PTR', '{{fqdn}}',3600,1);"
+      create: yes
+    tags:
+      - REV

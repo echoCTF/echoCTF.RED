@@ -1,0 +1,169 @@
+---
+- name: Configure docker servers for echoCTF
+  hosts: docker-masters
+  gather_facts: true
+  user: sysadmin
+  become: true
+  become_method: sudo
+  tasks:
+  - name: set timezone to UTC
+    timezone:
+      name: UTC
+
+  - name: Set hostname based on host_var
+    hostname:
+      name: "{{fqdn}}"
+
+  - name: update package cache
+    apt:
+      update_cache: yes
+
+  - name: install preInst packages
+    apt: name="{{item.name}}" state="{{item.state}}"
+    when: item.stage is defined
+    with_items: "{{apt}}"
+
+  - name: Add apt keys
+    apt_key:
+      url: "{{item.key}}"
+      state: "{{item.state}}"
+    with_items: "{{aptKeys}}"
+
+  - name: Add apt repositories
+    apt_repository:
+      repo: "{{item.repo}}"
+      state: "{{item.state}}"
+    with_items: "{{aptRepos}}"
+
+  - name: update package cache
+    apt:
+      update_cache: yes
+
+  - name: Update all packages to the latest version
+    apt:
+      upgrade: dist
+
+  - name: Add sysadmin on sudoers
+    lineinfile:
+      path: /etc/sudoers.d/90_sysadmin
+      line: 'sysadmin ALL=(ALL) NOPASSWD:ALL'
+      create: yes
+
+  - name: install remaining packages
+    apt: name="{{item.name}}" state="{{item.state}}"
+    when: item.stage is not defined
+    with_items: "{{apt}}"
+
+  - name: install pip
+    easy_install: name=pip state=present
+
+  - name: pip install
+    pip: name="{{item.name}}" version="{{item.version}}" state="{{item.state}}"
+    with_items: "{{pip}}"
+
+  - name: Copy docker data folder structure
+    synchronize:
+      src: "{{item.src}}"
+      dest: "{{item.dst}}"
+      delete: "yes"
+    with_items: "{{sync}}"
+    when: sync is defined
+    tags:
+      - SYNC
+
+  - name: Copy Dockerfiles data folder structure
+    when: SYNC_DOCKERFILES is defined and SYNC_DOCKERFILES
+    synchronize:
+      src: "../Dockerfiles"
+      dest: /opt
+    tags:
+      - SYNC
+
+  - name: Set authorized keys
+    when: ETSCTF_authorized_keys is defined and item.key is defined
+    authorized_key:
+      user: "{{item.user}}"
+      state: present
+      key: "{{ lookup('file', '{{item.key}}') }}"
+    with_items: "{{ETSCTF_authorized_keys}}"
+
+  - name: Adding existing user sysadmin to group docker
+    user: name=sysadmin
+          groups=docker
+          append=yes
+
+  - name: Configure grub to allow memory and swap accounting (cgroups)
+    lineinfile:
+      path: /etc/default/grub
+      regexp: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet"'
+      line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1 net.ifnames=0 biosdevname=0"'
+
+  - name: Push grub updates
+    command: update-grub
+
+  - name: "Allow plaintext registry"
+    lineinfile:
+      create: yes
+      dest: "/etc/docker/daemon.json"
+      line: ' { "insecure-registries":["{{DOCKER_REGISTRY}}"] }'
+
+  - name: "Configure dockerd to listen to tcp port"
+    copy:
+      src: "../files/dockerd-service-override.conf"
+      dest: /etc/systemd/system/docker.service.d/
+
+
+  - name: Check if docker network exists
+    command: docker network ls -qf name={{network.name}}
+    register: netresult
+    changed_when: false
+    when: network is defined
+
+  - name: "Create docker network"
+    docker_network:
+      name: "{{network.name}}"
+      state: present
+      driver: "{{network.driver}}"
+      driver_options: "{{network.driver_options}}"
+      ipam_options: "{{network.ipam_options}}"
+    when: network is defined and netresult is defined and netresult.stdout == ""
+
+  - name: "force removal containers"
+    when: containers is defined
+    docker_container:
+      name: "{{item.key}}"
+      force_kill: true
+      restart: true
+      keep_volumes: false
+      image: "{{item.value.image}}"
+      state: "absent"
+    with_dict: "{{ containers }}"
+
+  - name: build image if needed
+    when: containers is defined and item.value.build is defined
+    docker_image:
+      path: "/opt/build/{{item.value.build}}"
+      name: "{{item.value.image}}"
+      nocache: yes
+    with_dict: "{{ containers }}"
+
+  - name: "install containers"
+    when: containers is defined
+    docker_container:
+      name: "{{item.key}}"
+      image: "{{item.value.image}}"
+      state: "started"
+      volumes: "{{ item.value.volumes | default(omit) }}"
+      ports: "{{ item.value.ports | default(omit) }}"
+      hostname: "{{item.value.hostname| default(omit)}}"
+      mac_address: "{{item.value.mac_address| default(omit)}}"
+      purge_networks: "{{ item.value.purge_networks | default('no')}}"
+      domainname: "{{ item.value.domainname | default(omit) }}"
+      memory_limit: "{{ item.value.memory_limit|default(omit) }}"
+      dns: "{{ item.value.dns | default(omit) }}"
+      networks: "{{ item.value.networks | default(omit) }}"
+      links: "{{item.value.links|default(omit)}}"
+      env: "{{ item.value.env | default(omit) }}"
+      cleanup: yes
+      restart_policy: "unless-stopped"
+    with_dict: "{{ containers }}"

@@ -1,0 +1,12 @@
+---
+- name: Count treasures per target based on targets host_vars
+  hosts: docker-targets:vm-targets
+  gather_facts: false
+#  serial: 1
+  tasks:
+  - name: Count treasures per target based on targets host_vars
+    delegate_to: 127.0.0.1
+    ignore_errors: true
+    debug: msg="{{ fqdn }}:{{ ETSCTF_TREASURES | length }}"
+    tags:
+      - UI

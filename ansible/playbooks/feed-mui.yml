@@ -1,0 +1,112 @@
+---
+- name: Update mUI data based on targets host_vars
+  hosts: docker-targets:vm-targets
+  connection: local
+  gather_facts: false
+  serial: 1
+  become: root
+  vars:
+    volumes: []
+  tasks:
+  - name: Retrieve host target_id from mysql
+    command: >
+      mysql --user="{{DBUSER}}" --password="{{DBPASS}}" -h "{{DBSERVER}}" -NB "{{DBNAME}}"
+      --execute="SELECT id FROM target WHERE ip=inet_aton('{{ansible_host}}')"
+    register: target
+    delegate_to: 127.0.0.1
+    changed_when: False
+    tags:
+      - UI
+
+  - set_fact:
+      target_id: "{{target.stdout}}"
+    when: container is defined and target.stdout != ""
+    delegate_to: 127.0.0.1
+
+# Create target if not exists
+  - name: create mui system target
+    delegate_to: 127.0.0.1
+    register: newtarget
+#    ignore_errors: true
+    when: target.stdout == "" and ansible_host is defined and mac is defined and hostname is defined and fqdn is defined and container is defined
+    tags:
+      - UI
+    uri:
+      url: https://{{mui.URL}}/index.php?r=restapi/target/create
+      method: POST
+      validate_certs: false
+      body_format: json
+      body:
+        name: '{{hostname}}'
+        fqdn: '{{fqdn}}'
+        purpose: '{{purpose}}'
+        description: '{{description}}'
+        ipoctet: '{{ansible_host}}'
+        mac: '{{mac}}'
+        net: '{{container.networks[0].name}}'
+        server: 'tcp://{{DOCKER}}:2376'
+        image: '{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{hostname}}:{{container.tag|default("latest")}}'
+      status_code: 201
+
+  - set_fact:
+      target_id: "{{newtarget.json.id}}"
+    when: container is defined and newtarget is defined and newtarget.json is defined and newtarget.json.id is defined
+    delegate_to: 127.0.0.1
+
+
+  - name: create variables for target
+    delegate_to: 127.0.0.1
+#    ignore_errors: true
+    with_dict: "{{container.env}}"
+    tags:
+      - UI
+    when: target_id is defined and container.env is defined #and item.hint is defined
+    uri:
+      url: https://{{mui.URL}}/index.php?r=restapi/targetvariable/create
+      validate_certs: false
+      method: POST
+      body_format: json
+      body:
+        target_id: "{{target_id}}"
+        key: "{{item.key}}"
+        val: "{{item.value}}"
+      status_code: 201
+
+
+  - name: create finding for target
+    delegate_to: 127.0.0.1
+#    ignore_errors: true
+    register: finding
+    with_items: "{{ETSCTF_FINDINGS}}"
+    tags:
+      - UI
+    when: target_id is defined and ETSCTF_FINDINGS is defined #and item.hint is defined
+    uri:
+      url: https://{{mui.URL}}/index.php?r=restapi/finding/create
+      validate_certs: false
+      method: POST
+      body_format: json
+      body: "{{item|combine({'target_id': target_id})}}"
+      status_code: 201
+#      return_content: no
+#      HEADER_Cookie: "{{login.set_cookie}}"
+### CREATE VOLUMES
+### CREATE VARIABLES
+### CREATE HINTS
+#  - debug:
+#      var: finding
+#    delegate_to: 127.0.0.1
+
+  - name: create mui system treasures with hints
+    delegate_to: 127.0.0.1
+    tags:
+      - UI
+    with_items: "{{ETSCTF_TREASURES}}"
+    when: target_id is defined and ETSCTF_TREASURES is defined
+    uri:
+      url: https://{{mui.URL}}/index.php?r=restapi/treasure/create-with-actions
+      validate_certs: false
+      method: POST
+      body_format: json
+      body: "{{item|combine({'target_id': target_id , 'appears': item.stock })}}"
+      status_code: 201,302,500

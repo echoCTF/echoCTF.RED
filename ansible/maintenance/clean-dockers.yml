@@ -1,0 +1,23 @@
+---
+- name: Cleanup docker servers from containers and pulled images
+  hosts: docker-masters:!docker-builder.echoctf.net
+  gather_facts: true
+  user: sysadmin
+  become: true
+  become_method: sudo
+  tasks:
+  - name: Checking running containers
+    command: docker ps -aq
+    register: docker_ps_aq
+
+  - name: Checking images
+    command: docker images -aq
+    register: docker_images_aq
+
+  - name: Removing running containers
+    raw: docker ps -aq|xargs docker rm -f
+    when: docker_ps_aq.stdout
+
+  - name: Removing images
+    raw: docker images -aq|xargs docker rmi -f
+    when: docker_images_aq.stdout
