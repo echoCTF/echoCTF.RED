@@ -1,0 +1,17 @@
+---
+- name: Update Vultr DNS Records
+  hosts: docker-targets
+  connection: local
+  gather_facts: false
+  vars:
+    APIKEY: 'YOURVULTR API KEY'
+    DOMAIN: 'echocity-f.com'
+  tasks:
+  - name: Ensure an A record exists
+    local_action:
+      module: vultr_dns_record
+      api_key: "{{APIKEY}}"
+      domain: "{{DOMAIN}}"
+      name: "{{hostname|lower}}"
+      data: "{{ansible_host}}"
+      ttl: 300
