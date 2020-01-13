@@ -1,41 +1,21 @@
-- name: Build Docker container images and push them to our registry
+- name: Build, tag and push docker-target images
   hosts: docker-targets
   gather_facts: false
   serial: 1
   connection: local
   tasks:
-  - name: build image if needed
-    when: container is defined and container.build is defined
-    delegate_to: "{{BUILDER}}"
-    docker_image:
-      name: "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.name}}"
+  - docker_image:
+      name: "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.name|lower}}"
       tag: "{{container.tag|default('latest')}}"
       state: present
       source: build
-      push: yes
+      push: "{{force_push|default('yes')}}"
       build:
         path: "../Dockerfiles/{{container.build}}"
         args: "{{container.buildargs|default(omit)}}"
-        nocache: yes
-#        http_timeout: 1240
+        #nocache: yes
         pull: no
       force: "{{force_build|default('no')}}"
       rm: yes
-#      timeout: 1240
-
-#  - name: tag n push image to local registry
-#    when: container is defined and DOCKER_REGISTRY is defined
-#    delegate_to: 127.0.0.1
-#    docker_image:
-#      name: "{{container.image}}:{{container.tag|default('latest')}}"
-#      repository: "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.name}}:{{container.tag|default('latest')}}"
-##      timeout: 1240
-#      state: present
-#      push: yes
-#      source: local
-#      build:
-##        http_timeout: 1240
-#        nocache: yes
-#        pull: no
-#    tags:
-#      - push
+    when: container is defined and container.build is defined
+    delegate_to: "{{BUILDER}}"
