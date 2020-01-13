@@ -1,6 +1,7 @@
 ---
 - name: Update mUI data based on targets host_vars
-  hosts: docker-targets:vm-targets
+  hosts: all
+  order: inventory
   connection: local
   gather_facts: false
   serial: 1
@@ -8,19 +9,28 @@
   vars:
     volumes: []
   tasks:
-  - name: Retrieve host target_id from mysql
-    command: >
-      mysql --user="{{DBUSER}}" --password="{{DBPASS}}" -h "{{DBSERVER}}" -NB "{{DBNAME}}"
-      --execute="SELECT id FROM target WHERE ip=inet_aton('{{ansible_host}}')"
-    register: target
+  - name: Retrieve host target_id if exists
     delegate_to: 127.0.0.1
-    changed_when: False
+    register: target
+    uri:
+      url: "{{mui.URL}}/index.php?r=restapi/target/get-by-ip&ip={{ansible_host}}"
+      validate_certs: false
+      method: get
     tags:
       - UI
 
+  - debug:
+      var: target
+      verbosity: 0
+    delegate_to: 127.0.0.1
+    when: DEBUG is defined
+
+  - setup:
+    delegate_to: 127.0.0.1
+
   - set_fact:
-      target_id: "{{target.stdout}}"
-    when: container is defined and target.stdout != ""
+      target_id: "{{target.json.id}}"
+    when: target.status == 200 and target.json is defined and target.json.id is defined
     delegate_to: 127.0.0.1
 
 # Create target if not exists
@@ -28,11 +38,11 @@
     delegate_to: 127.0.0.1
     register: newtarget
 #    ignore_errors: true
-    when: target.stdout == "" and ansible_host is defined and mac is defined and hostname is defined and fqdn is defined and container is defined
+    when: target_id is undefined and ansible_host is defined and mac is defined and hostname is defined and fqdn is defined and container is defined
     tags:
       - UI
     uri:
-      url: https://{{mui.URL}}/index.php?r=restapi/target/create
+      url: "{{mui.URL}}/index.php?r=restapi/target/create"
       method: POST
       validate_certs: false
       body_format: json
@@ -40,12 +50,19 @@
         name: '{{hostname}}'
         fqdn: '{{fqdn}}'
         purpose: '{{purpose}}'
+        rootable: "{{rootable|default('0')}}"
         description: '{{description}}'
         ipoctet: '{{ansible_host}}'
+        difficulty: "{{difficulty|default('0')}}"
         mac: '{{mac}}'
         net: '{{container.networks[0].name}}'
         server: 'tcp://{{DOCKER}}:2376'
-        image: '{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{hostname}}:{{container.tag|default("latest")}}'
+        active: '{{active|default("0")}}'
+        status: 'powerup'
+        dns: "{{container.dns_servers[0]|default('8.8.8.8')}}"
+        scheduled_at: "{{scheduled_at| default('%Y-%m-%d 00:00:00' | strftime( ( ansible_date_time.epoch | int ) ) ) }}"
+#        scheduled_at: "{{ '%Y-%m-%d 00:00:00' | strftime( ( ansible_date_time.epoch | int ) + ( 86400 * 7 )  ) }}"
+        image: '{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{hostname | lower}}:{{container.tag|default("latest")}}'
       status_code: 201
 
   - set_fact:
@@ -62,7 +79,7 @@
       - UI
     when: target_id is defined and container.env is defined #and item.hint is defined
     uri:
-      url: https://{{mui.URL}}/index.php?r=restapi/targetvariable/create
+      url: "{{mui.URL}}/index.php?r=restapi/targetvariable/create"
       validate_certs: false
       method: POST
       body_format: json
@@ -82,7 +99,7 @@
       - UI
     when: target_id is defined and ETSCTF_FINDINGS is defined #and item.hint is defined
     uri:
-      url: https://{{mui.URL}}/index.php?r=restapi/finding/create
+      url: "{{mui.URL}}/index.php?r=restapi/finding/create"
       validate_certs: false
       method: POST
       body_format: json
@@ -104,7 +121,7 @@
     with_items: "{{ETSCTF_TREASURES}}"
     when: target_id is defined and ETSCTF_TREASURES is defined
     uri:
-      url: https://{{mui.URL}}/index.php?r=restapi/treasure/create-with-actions
+      url: "{{mui.URL}}/index.php?r=restapi/treasure/create-with-actions"
       validate_certs: false
       method: POST
       body_format: json
