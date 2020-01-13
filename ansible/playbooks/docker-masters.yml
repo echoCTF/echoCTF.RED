@@ -2,7 +2,7 @@
 - name: Configure docker servers for echoCTF
   hosts: docker-masters
   gather_facts: true
-  user: sysadmin
+  user: root
   become: true
   become_method: sudo
   tasks:
