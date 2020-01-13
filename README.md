@@ -6,19 +6,14 @@ It is a free online service that offers a controlled environment, based on real-
 
 This project is currently under HEAVY restructure and development.
 
-## Source codez or it never happened
-The source code for the infrastructure is hosted on repositories of this github org
-* [echoCTF Gateway @echoCTF/echoCTF-gw](https://github.com/echoCTF/echoCTF-gw)
-* [echoCTF targets @echoCTF/echoCTF-targets](https://github.com/echoCTF/echoCTF-targets)
-* [echoCTF findingsd @echoCTF/findingsd](https://github.com/echoCTF/findingsd)
+## Project Structure
+ * `ansible` => Ansible playbooks for setting up and updating the infrastructure
+ * `backend` => Admin interface and commands
+ * `contrib` => Various contributed materials (currently only challenges)
+ * `frontend` => User interface (what you see at https://echoctf.red/)
+ * `nodejs` => Various nodejs scripts for bots and live feeds
+ * `schemas` => database schema
+ * `themes` => Various theme and layout sources
 
-
-## Challenge templates
-You can submit your own challenges to be included by emailing **`challenges ]at[ echoctf.red`** by using any of the templates
-below.
-
-* [simple-challenge.yml](https://github.com/echoCTF/echoCTF.RED/blob/master/challenge/simple-challenge.yml)
-* [advanced-challenge.yml](https://github.com/echoCTF/echoCTF.RED/blob/master/challenge/advanced-challenge.yml)
-
-# Where to register in order to play?
-More information at https://echoctf.red/
+# Live demo?
+Register at our online platform at https://echoctf.red/ :)
