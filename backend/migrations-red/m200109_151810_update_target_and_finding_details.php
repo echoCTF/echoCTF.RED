@@ -73,7 +73,10 @@ town, and quite sympathetic to the children that speak to him. His advice is
 always to the point, with focus on solving the <code>root</code> cause of the
 problem. See if you can manage to speak to him, in the right way and gain
 entrance to his system.</p>
-<p><small>This is Chef\'s own workstation, he likes nodejs and webmin. Chef is not a noob, he knows better than to run webmin on a public port and he always uses random passwords (so forget about bruteforcing your way)...</small></p>'],['id'=>19]); // chef
+<p><small>This is Chef\'s own workstation, he likes nodejs and webmin. Chef is
+not a noob, he knows better than to run webmin on a public port and he always
+uses random passwords (so forget about brute-forcing your way)...</small></p>'],['id'=>19]); // chef
+
 //    $this->update('target',['description'=>''],['id'=>22]); // harrison
     $this->update('target',['description'=>'<p>Tweek has setup his own blog to share his thoughts on school and the latest adventures of <i>Wonder Tweek</i>.</p>
 <p><small>His blog is closely associated with Craig\'s, since both systems are installed by Wendy. And those who know Wendy, know that she likes her drupal crontabs executed every minute on the spot, by the infamous <code>DrupalConsole</code>...</small><p>'],['id'=>24]); // tweek
