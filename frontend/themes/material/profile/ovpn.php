@@ -6,6 +6,7 @@ comp-lzo
 verb 3
 cipher AES-256-CBC
 auth SHA256
+auth-nocache
 
 remote-cert-tls server
 
