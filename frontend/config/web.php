@@ -2,7 +2,7 @@
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
-$cache = require __DIR__ . '/memcached.php';
+$cache = require __DIR__ . '/cache.php';
 $cookieValidationKey = require __DIR__ . '/validationKey.php';
 
 $config = [
