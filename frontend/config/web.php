@@ -116,7 +116,7 @@ $config = [
             'csrfParam' => '_csrf-red',
             'enableCsrfValidation' => true,
             'enableCsrfCookie'=>true,
-            'csrfCookie'=>['sameSite'=>'Lax','httpOnly'=>true],
+            'csrfCookie'=>['httpOnly'=>true],
             'cookieValidationKey' => $cookieValidationKey,
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
@@ -129,14 +129,14 @@ $config = [
         'session'=>[
           'name' => 'red',
           'cookieParams'=>[
-            'sameSite'=> 'Lax',
+            //'sameSite'=> 'Lax',
             'httpOnly'=>true
           ],
         ],
         'user' => [
             'identityClass' => 'app\models\Player',
             'enableAutoLogin' => true,
-            'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true, 'sameSite'=>'Lax'],
+            'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true, /*'sameSite'=>'Lax'*/],
 //            'autoUpdateFlash' => false,
         ],
         'errorHandler' => [
