@@ -149,10 +149,11 @@ echo GridView::widget([
                  Url::to(['/target/default/spin','id'=>$model->id]),
                  [
                    'style'=>"font-size: 1.5em;",
-                   'title' => 'Restart container',
+                   'title' => 'Request target Restart',
+                   'rel'=>"tooltip",
                    'data-pjax' => '0',
                    'data-method' => 'POST',
-                   'aria-label'=>'Restart container',
+                   'aria-label'=>'Request target Restart',
                  ]
              );
          },
@@ -196,8 +197,8 @@ echo GridView::widget([
                  [
                    'style'=>"font-size: 1.5em;",
                    'rel'=>"tooltip",
-                   'title' => 'View target',
-                   'aria-label'=>'View target',
+                   'title' => 'View target details',
+                   'aria-label'=>'View target details',
                    'data-pjax' => '0',
                  ]
              );

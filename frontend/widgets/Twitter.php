@@ -56,6 +56,7 @@ class Twitter extends Widget{
         $tweet_query=http_build_query($linkParams);
         $linkTo=sprintf("%s?%s",$this->twUrl,$tweet_query);
         $this->linkOptions['aria-label']="Tweet this!";
+        $this->linkOptions['title']="Tweet this!";
         return Html::a($this->icon,$linkTo , $this->linkOptions);
     }
 }
