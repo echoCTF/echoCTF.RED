@@ -32,7 +32,7 @@ class MaterialAsset extends AssetBundle
     ];
 
     public $css = [
-        ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono&display=swap','async'=>'async'],
+        ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono&display=swap','async'=>'async', 'crossorigin'=>"anonymous" ],
         ['css/all.min.css','defer'=>'defer'],
         'css/material-dashboard.css',
         'css/material.css',
