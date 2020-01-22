@@ -219,7 +219,9 @@ class Profile extends \yii\db\ActiveRecord
     public function getTwitterHandle()
     {
       if($this->twitter!="")
-        return '@'.$this->twitter;
+      {
+        return $this->twitter{0}=== '@' ? $this->twitter : '@'.$this->twitter;
+      }
       return $this->owner->username;
     }
     public function getBraggingRights()
