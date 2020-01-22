@@ -21,8 +21,8 @@ class echoCTFView extends \yii\web\View
       $this->title=sprintf("%s - %s: %s",\Yii::$app->sys->event_name,ucfirst(\Yii::$app->controller->id), \Yii::$app->controller->action->id);
       if(!\Yii::$app->user->isGuest)
       {
-      	\Yii::$app->cache->set("last_seen:".\Yii::$app->user->id,time());
-      	\Yii::$app->cache->set("online:".\Yii::$app->user->id,time(),\Yii::$app->sys->online_timeout);
+      	\Yii::$app->cache->memcache->set("last_seen:".\Yii::$app->user->id,time());
+      	\Yii::$app->cache->memcache->set("online:".\Yii::$app->user->id,time(),0,\Yii::$app->sys->online_timeout);
       }
       parent::init();
   }
