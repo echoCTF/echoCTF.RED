@@ -26,6 +26,7 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
     <meta charset="<?=Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png"/>
     <?php $this->head()?>
 
     <?=Html::csrfMetaTags() ?>
