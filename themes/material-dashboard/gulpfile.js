@@ -26,7 +26,7 @@ gulp.task('createMiniIMG', function() {
 });
 
 gulp.task('minifyIMG', function() {
-  return gulp.src(['../../frontend/web/images/**/*'])
+  return gulp.src(['../images/**/*'])
         .pipe(imagemin([
           imagemin.gifsicle({interlaced: true}),
           imagemin.jpegtran({progressive: true}),
@@ -38,7 +38,7 @@ gulp.task('minifyIMG', function() {
               ]
           })
       ],{ verbose: true }))
-      .pipe(gulp.dest('../../frontend/web/images'));
+      .pipe(gulp.dest('../images'));
 });
 
 gulp.task('minifyJS', function() {
