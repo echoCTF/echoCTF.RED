@@ -13,7 +13,7 @@ This project is currently under HEAVY restructure and development.
  * `frontend` => User interface (what you see at https://echoctf.red/)
  * `nodejs` => Various nodejs scripts for bots and live feeds
  * `schemas` => database schema
- * `themes` => Various theme and layout sources
+ * `themes` => Various theme, images and layout sources
 
 # Live demo?
 Register at our online platform at https://echoctf.red/ :)
