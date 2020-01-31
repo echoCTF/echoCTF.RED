@@ -1,0 +1,22 @@
+---
+ansible_host: 10.0.0.10
+ansible_user: root
+hostname: dockerd
+fqdn: dockerd.echoctf.red
+mac: xx:xx:xx:xx:xx:xx
+OS: debian
+PACKAGES: []
+network:
+  name: AAnet
+  driver: macvlan
+  driver_options:
+    parent: enp0s3
+  ipam_options:
+    subnet: '10.0.0.0/16'
+    gateway: 10.0.0.254
+    iprange: '10.0.100.0/24'
+ETSCTF_authorized_keys:
+ - { user: 'root', key: '../ssh_keys/ctf_rsa.pub' }
+ETSCTF_TREASURES: []
+ETSCTF_FINDINGS: []
+ETSCTF_users: []
