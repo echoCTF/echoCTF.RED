@@ -1,0 +1,209 @@
+---
+ansible_host: 172.17.0.2
+DOCKER: localhost
+mac: "de:ad:be:ef:c0:ff:ee"
+hostname: example
+fqdn: example.echocity-f.com
+rootable: 0 # 1 for yes
+difficulty: 3
+scheduled_at: "YYYY-mm-dd HH:MM:SS"
+container:
+  name: "{{hostname}}"
+  hostname: "{{fqdn}}"
+  build: "example" # The current folder name
+  image: "example" # The current folder name
+  state: "started"
+  mac_address: "{{mac}}"
+  purge_networks: "yes"
+  env:
+    ETSCTF_FLAG: "ETSCTF_{{ETSCTF_ENV_FLAG}}"
+  dns_servers:
+    - "10.0.0.254"
+  networks:
+    - { name: AAnet, ipv4_address: "{{ansible_host}}" }
+  volumes: []
+
+ETSCTF_ROOT_FLAG: ""
+ETSCTF_ENV_FLAG: ""
+ETSCTF_SHADOW_FLAG: ""
+ETSCTF_PASSWD_FLAG: ""
+envstr:  "ETSCTF_FLAG=ETSCTF_{{ETSCTF_ENV_FLAG}}\n"
+envhash:  "{{envstr|hash('sha256')}}"
+
+
+ETSCTF_FINDINGS:
+  - {
+      name: "Discovered target host {{fqdn}}/{{ansible_host}}",
+      pubname: "Discovered a target host",
+      points: 100,
+      stock: -1,
+      protocol: "icmp",
+      port: 0
+    }
+  - {
+      name: "Discovered a web service on target {{fqdn}}/{{ansible_host}}",
+      pubname: "Discovered a target host",
+      points: 100,
+      stock: -1,
+      protocol: "tcp",
+      port: 8080
+    }
+
+ETSCTF_TREASURES:
+  - { #0
+      name: "Got the ETSCTF flag under the /root folder of {{fqdn}}",
+      pubname: "Got the ETSCTF flag under the /root folder of {{fqdn}}",
+      points: 1500,
+      player_type: offense,
+      stock: -1,
+      code: "{{ETSCTF_ROOT_FLAG}}",
+      path: "/root/ETSCTF_"
+    }
+  - { #1
+      name: "Discovered the environment variable ETSCTF flag of {{fqdn}}",
+      pubname: "Gained access to data stored in environmental variables of a server",
+      points: 900,
+      player_type: offense,
+      stock: -1,
+      code: "{{ETSCTF_ENV_FLAG}}",
+    }
+  - { #2
+      comment: "flag on /etc/shadow",
+      name: "Discovered the ETSCTF username flag under the /etc/shadow file of {{fqdn}}",
+      pubname: "Discovered the ETSCTF username flag under an authentication database file of a server",
+      points: 1300,
+      player_type: offense,
+      stock: -1,
+      code: "{{ETSCTF_SHADOW_FLAG}}",
+    }
+  - { #3
+      comment: "flag on /etc/passwd",
+      name: "Discovered the ETSCTF username gecos flag under the /etc/passwd file of {{fqdn}}",
+      pubname: "Discovered the ETSCTF flag on gecos details of a target",
+      points: 1300,
+      player_type: offense,
+      stock: -1,
+      code: "{{ETSCTF_PASSWD_FLAG}}",
+    }
+#  - { #4
+#      comment: "html flag under /var/www/html/ETSCTF.html",
+#      name: "Discovered the ETSCTF file under the webroot of {{fqdn}}",
+#      pubname: "Discovered the hidden resource of a web server",
+#      points: 100,
+#      player_type: offense,
+#      stock: -1,
+#      code: "",
+#      fullpath: "/var/www/html/ETSCTF.html",
+#      content: "<html><title>ETSCTF_</title><body></body>"
+#    }
+#  - { #5
+#      comment: "html flag under /var/www/html/index.html",
+#      name: "Discovered the ETSCTF username flag of {{fqdn}}/{{ansible_host}}",
+#      pubname: "Discovered an authentication flag on a web server",
+#      points: 100,
+#      player_type: offense,
+#      stock: -1,
+#      code: "",
+#      replace: "ETSCTF_PLACEHOLDER_SOURCE",
+#      file: "/var/www/html/index.html",
+#    }
+#  - { #6
+#      comment: "username and password flag for admin",
+#      name: "Discovered the admin username and password of {{fqdn}}/{{ansible_host}}",
+#      pubname: "Discovered an admin username and password on a target",
+#      points: 2000,
+#      player_type: offense,
+#      stock: -1,
+#      code: "{{fqdn}}#admin:admin",
+#    }
+#  - { #7
+#      comment: "flag under /var/www/html/ETSCTF.cgi",
+#      name: "Discovered the ETSCTF.cgi of {{fqdn}}/{{ansible_host}}",
+#      pubname: "Discovered a secret CGI on a web server",
+#      points: 100,
+#      player_type: offense,
+#      stock: -1,
+#      code: "",
+#      replace: "ETSCTF_PLACEHOLDER",
+#      file: "/var/www/html/ETSCTF.cgi",
+#    }
+#  - { #8
+#      comment: "database flag under mysql /tmp/ETSCTF.sql",
+#      name: "Discovered the ETSCTF database flag of {{fqdn}}/{{ansible_host}}",
+#      pubname: "Discovered a database flag on a server",
+#      points: 100,
+#      player_type: offense,
+#      stock: -1,
+#      code: "",
+#      replace: "ETSCTF_DATABASE_FLAG",
+#      file: "/tmp/ETSCTF.sql",
+#    }
+#  - { #9
+#      comment: "flag under mysql /tmp/ETSCTF.sql",
+#      name: "Discovered the ETSCTF database column comment flag of {{fqdn}}/{{ansible_host}}",
+#      pubname: "Discovered a database column flag on a server",
+#      points: 100,
+#      player_type: offense,
+#      stock: -1,
+#      code: "",
+#      replace: "ETSCTF_COLUMN_COMMENT_FLAG",
+#      file: "/tmp/ETSCTF.sql",
+#    }
+#  - { #10
+#      comment: "flag under mysql /tmp/ETSCTF.sql",
+#      name: "Discovered the ETSCTF EVENT flag of {{fqdn}}/{{ansible_host}}",
+#      pubname: "Discovered a database EVENT flag on a server",
+#      points: 100,
+#      player_type: offense,
+#      stock: -1,
+#      code: "",
+#      replace: "ETSCTF_EVENT_NAME_FLAG",
+#      file: "/tmp/ETSCTF.sql",
+#    }
+#  - { #11
+#      comment: "flag under mysql /tmp/ETSCTF.sql",
+#      name: "Discovered the ETSCTF TRIGGER flag of {{fqdn}}/{{ansible_host}}",
+#      pubname: "Discovered a database TRIGGER flag on a server",
+#      points: 100,
+#      player_type: offense,
+#      stock: -1,
+#      code: "",
+#      replace: "ETSCTF_TRIGGER_NAME_FLAG",
+#      file: "/tmp/ETSCTF.sql",
+#    }
+#  - {
+#      comment: "flag under /etc/nginx/sites-available/default",
+#      name: "Discovered the ETSCTF flag of http://{{fqdn}}/ETSCTF",
+#      pubname: "Discovered an authentication flag on a web server",
+#      points: 100,
+#      player_type: offense,
+#      stock: -1,
+#      code: "",
+#      replace: "ETSCTF_PLACEHOLDER",
+#      file: "/etc/nginx/sites-available/default",
+#    }
+
+## UNCOMMENT TO CREATE DECOY FLAGS FOR THOSE WHO GREP THE SYSTEM
+# ETSCTF_DECOY:
+#   expr: "{{ lookup('password', '/dev/null length=45 chars=ascii_letters') }}"
+#   type: {{ 2 | random }}
+#   number: 1024
+BUILD_COMMANDS:
+#  exec:
+#  - { cmd: "mysql < /tmp/ETSCTF.sql" }
+  replace:
+  - { #1
+      pattern: "ENVFLAG_HASH",
+      file: "/usr/local/sbin/healthcheck.sh",
+      value: "{{envhash}}",
+    }
+
+DETAILS:
+  - { username: "ETSCTF", password: "ETSCTF_{{ETSCTF_SHADOW_FLAG}}", gecos: "ETSCTF_{{ETSCTF_PASSWD_FLAG}}", group: "nogroup", module: 'user' }
+
+
+purpose: >
+  A short text describing the purpose of the target
+
+description: >
+  description for the target
