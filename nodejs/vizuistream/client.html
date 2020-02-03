@@ -1,0 +1,594 @@
+<html>
+<head>
+    <style type="text/css">
+        #canvas_container {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(47, 47, 47, 0.39);
+            position: relative;
+        }
+
+        .abs_position {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+
+        body {
+            background-color: #111111;
+            background: url('img/bg.jpg');
+            background-position: center center;
+            background-repeat: repeat;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="canvas_container">
+
+        <div id="mycanvas" class="abs_position">
+        </div>
+        <div id="hacker" class="abs_position">
+        </div>
+
+    </div>
+
+    <script src="socket.io/socket.io.js"></script>
+    <script src="scripts/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="scripts/raphael.min.js"></script>
+
+    <script>
+		// create a new websocket
+		var socket = io.connect('/');
+		// on message received we print all the data inside the #container div
+		socket.on('notification', function(data) {
+		    $.each(data.events, function (index, eventitem)
+		    {
+		        HandleNotifications(eventitem);
+			});
+		});
+    </script>
+
+
+    <!-- NOTIFICATION AND RAPAHEL JS-->
+
+    <script type="text/javascript">
+
+        var notificationsqueue = []; //store from->to pairs requests in order to calculate delays
+
+           //html5 canvas objects
+            var hacker;
+            var mycanvas;
+            var logger;
+
+            var maincanvas_bg = 'img/road.png';
+
+            // name , path_obj, circle_obj
+            var drawing_paths = [];
+
+            //attack messages
+            var log_messages = [];
+            var log_max = 3;
+            var log_position_x = 520;
+            var log_position_y = 20;
+            var log_fontsize = 22;
+            var pathtext_color = "#f9c64e"; //for message in path drawing
+
+            //attack messages top holder/rectangle
+            var logger_x = 500;
+            var logger_y = 2;
+            var logger_width = 980;
+            var logger_height = 95;
+
+            //attack path and circle sizes
+            var attack_circle_size = 20;
+            var attack_path_size = 8;
+
+            //autoremove the attack??
+            var autoremoval_time = 3800;
+
+            var draw_path_duration = 800;
+
+            var color_green = "#64ca67";
+            var color_red = "#ff3434";
+            var color_grey = "#afafaf";
+            var color_blue = "#52b8e0";
+
+            var border_size_on = 40;
+            var border_size_off = 20;
+            var border_size_exploited = 30;
+
+            //infrastructure ids
+            var infras =
+                [
+                    { id: '0', status: '0', title: 'hacker', icon: 'img/icon-hacker.png', x: 1000, y: 600, size: 200, status_circle_obj: null, img_obj: null, raf_obj: null },
+                    { id: '1', status: '0', title: 'law', icon: 'img/icon-law.png', x: 1450, y: 110, size: 250, status_circle_obj: null, img_obj: null, raf_obj: null },
+                    { id: '2', status: '0', title: 'financial', icon: 'img/icon-financial.png', x: 300, y: 700, size: 250, status_circle_obj: null, img_obj: null, raf_obj: null },
+                    { id: '3', status: '0', title: 'telecoms', icon: 'img/icon-telecoms.png', x: 650, y: 200, size: 200, status_circle_obj: null, img_obj: null, raf_obj: null },
+                    { id: '4', status: '0', title: 'transportation', icon: 'img/icon-transportation.png', x: 80, y: 100, size: 270, status_circle_obj: null, img_obj: null, raf_obj: null },
+                    { id: '5', status: '0', title: 'energy', icon: 'img/icon-energy.png', x: 1600, y: 700, size: 250, status_circle_obj: null, img_obj: null, raf_obj: null }
+                ];
+
+
+            function HandleNotifications(notif) {
+                // RowDataPacket { id: 7, model_id: 285, model: 'treasure' },
+                // id: 18
+                // infrastructure_id: 1
+                // message: "Vulnerable application launched"
+                // pod_id: 18
+                // type: ATTACK POWERON/POWEROFF EXPLOIT
+                //vulnerability_id: 18
+                //affected_ids:
+
+                var type = notif.type;
+                var objectid = notif.infrastructure_id;
+                var message = notif.message;
+                var notificationid = notif.id;
+
+
+
+                //--------- ATTACK MODES ------------
+                if (type == "ATTACK" || type == "EXPLOIT")
+                {
+
+                    //check if same type animation is playing and delay it
+                    var oldpathname = "from:0-to:" + objectid;
+
+                    //find the array of same path from->to requests
+                    var previousDRAW_exists = $.grep(notificationsqueue, function (e) { return e == oldpathname; });
+                    var smalldelay = autoremoval_time * previousDRAW_exists.length;
+
+                    notificationsqueue.push(oldpathname);
+                   // console.log("delayL:" + smalldelay);
+
+                    setTimeout( function () {
+                 //starts delay function****************************************
+                  if (type == "ATTACK") {
+                    //start by loggin messages on top
+                    CreateLogInfos(message);
+                    var vm_result = $.grep(infras, function (e) { return e.id == objectid; });
+
+                    if (vm_result.length == 1) {
+                        //1. if closed turn on
+                        if (vm_result[0].status == '0') {
+                            SetVMBorder(objectid, color_green, border_size_on, 0, 1);
+                        }
+                        //2. draw path
+                        CreateVMPath('0', objectid, 0, 0, draw_path_duration, 1, message);
+                    }
+                    else { console.log("VM NOT FOUND!"); }
+                }
+                  else if (type == "EXPLOIT") {
+                    //start by loggin messages on top
+                    CreateLogInfos(message);
+                    var vm_result = $.grep(infras, function (e) { return e.id == objectid; });
+                    if (vm_result.length == 1) {
+
+                        if (vm_result[0].status == '0')
+                        {
+                            SetVMBorder(objectid, color_green, border_size_on, 0, 1);
+                        }
+
+                        //1. draw path
+                        CreateVMPath('0', objectid, 0, 1, draw_path_duration,1,message);
+
+                        //2. set to OFF?
+                        SetVMBorder(objectid, color_red, border_size_exploited, draw_path_duration, 2);
+
+                        //also check if cascading affects????
+                        var affected_ids = notif.affected_ids;
+                        if (affected_ids!==undefined && affected_ids != "") {
+                            var array_affectedIDS = affected_ids.split(',');
+                            //loop each id and create paths
+                            if (array_affectedIDS.length > 0) {
+                                //run with delay to get nice effect
+                                setTimeout(function () {
+                                    for (var i = 0; i < array_affectedIDS.length; ++i) {
+                                        //create cascading effects
+                                        if (array_affectedIDS[i] != objectid) {
+                                            var vm_result_casc = $.grep(infras, function (e) { return e.id == array_affectedIDS[i]; });
+                                            if (vm_result_casc.length == 1 && vm_result_casc[0].status != "0") {
+                                                CreateVMPath(objectid, array_affectedIDS[i], 1, 1, draw_path_duration);
+                                            }
+                                            else {
+                                                console.log("VM " + array_affectedIDS[i] + " cannot be affected by the cascading effects. its off");
+                                            }
+                                        }
+                                    }
+                                }, draw_path_duration);
+
+                            }
+
+
+                        }
+                    }
+
+                    else {
+                        console.log("VM NOT FOUND!");
+                    }
+                  }
+                        //ends delay function*************************************
+                    }, smalldelay);
+                }
+
+                //----- POWER ON OFF STATES ----------
+                else if (type == "POWERON")
+                {
+                    //start by loggin messages on top
+                    CreateLogInfos(message);
+                    //set border
+                    SetVMBorder(objectid, color_green, border_size_on, 0, 1);
+                }
+                else if (type == "POWEROFF")
+                {
+                    //start by loggin messages on top
+                    CreateLogInfos(message);
+                    //set border
+                    SetVMBorder(objectid, color_grey, border_size_off, 0, 0);
+                    //remove paths drawn
+                    RemovePathsFromVM(objectid);
+                }
+
+            }
+
+            $(document).ready(function () {
+
+                var w = 1980;
+                var h = 1020;
+
+                //main canvas
+                mycanvas = Raphael("mycanvas");
+                mycanvas.setViewBox(0, 0, w, h, true);
+                mycanvas.setSize('100%', '100%');
+
+                //road background
+                var roadimage = mycanvas.image(maincanvas_bg, 0, 0, w, h);
+
+                //top log infos
+                logger = mycanvas.rect(logger_x, logger_y, logger_width, logger_height);
+                logger.attr({ fill: "#383838", "stroke": "#5cbb8b", "stroke-width": 3, opacity: 0.9 });
+
+                //create canvas for animations and paths
+                for (var k = 0; k < infras.length; k++) {
+                    //also create circles-border images
+                    var fcircle = mycanvas.circle(infras[k].x + (infras[k].size / 2), infras[k].y + (infras[k].size / 2), infras[k].size / 2);
+                    fcircle.attr({ fill: color_grey, stroke: color_grey, 'stroke-width': border_size_off });
+
+                    infras[k].status_circle_obj = fcircle;
+
+                    //create inside images??
+                    var fimage = mycanvas.image(infras[k].icon, infras[k].x, infras[k].y, infras[k].size, infras[k].size);
+
+                    infras[k].img_obj = fimage;
+                }
+
+               // console.log(infras);
+
+            });
+
+
+            //************* SET BORDERS AROUND VM INFRASTRUCTURES
+            function SetVMBorder(myid, newcolor, newsize, draw_delay, status) {
+                var result = $.grep(infras, function (e) { return e.id == myid; });
+
+                if (result.length == 1) {
+                    var oldstatus = result[0].status;
+                    //set active and inactive status 0 or 1
+                    //if 2 ==exploit just create the border circle effect
+                    if (status != '2') {
+                        result[0].status = status;
+                    }
+                    var current_circle = result[0].status_circle_obj;
+                    var myanimation = Raphael.animation({ fill: newcolor, stroke: newcolor, "stroke-width": newsize }, 200);
+                    current_circle.animate(myanimation.delay(draw_delay));
+                    //sos, if status 2 return to previous state...should be always normal-green
+                   /* if (status == '2') {
+                        var return_myanimation = Raphael.animation({ fill: color_green, stroke: color_green, "stroke-width": border_size_on }, 200);
+                        current_circle.animate(return_myanimation.delay(autoremoval_time));
+                    }*/
+                }
+            }
+
+            //***************** TEXTS ON TOP LOGGER ******************
+            function CreateLogInfos(msg) {
+
+                //0 animate the logger
+                var log_animate1 = Raphael.animation({ "stroke-width": 5, opacity: 1 }, 100);
+                var log_animate2 = Raphael.animation({ "stroke-width": 3, opacity: 0.9 }, 400);
+                logger.animate(log_animate1);
+                logger.animate(log_animate2.delay(100));
+
+                //1. new messages will always go ontop
+                var newlogmessage = mycanvas.text(log_position_x, log_position_y, msg);
+                newlogmessage.attr({ "font-size": log_fontsize, fill: "#ffffff", opacity: 0, 'text-anchor': 'start' });
+                var animate_newtext = Raphael.animation({ opacity: 1 }, 300, 'bounce');
+                newlogmessage.animate(animate_newtext.delay(100));
+
+                //2. remove the oldest record if exists
+                if (log_messages.length > 0 && log_messages.length >= log_max) {
+                    //remove text object
+                    log_messages[0].remove();
+                    //remove last from array
+                    log_messages.splice(0, 1);
+                }
+
+                //3. animate all avaiable to bottom for 1 line per item
+                if (log_messages.length > 0) {
+                    for (var i = 0; i < log_messages.length; i++) {
+                        var new_y = log_messages[i].attr("y") + 27;
+                        var text_anim = Raphael.animation({ y: new_y }, 100);
+                        log_messages[i].animate(text_anim);
+                    }
+                }
+
+                //4. finally add it to log array
+                log_messages.push(newlogmessage);
+
+               console.log(log_messages);
+            }
+
+
+            //************* PATHS in attack modes from id ->  to id
+            function CreateVMPath(myid1, myid2, iscascading, is_success, draw_duration, draw_text, text_message) {
+
+                draw_text = draw_text || '0';
+                text_message = text_message || '';
+
+                //find the two points
+                var result1 = $.grep(infras, function (e) { return e.id == myid1; });
+                var result2 = $.grep(infras, function (e) { return e.id == myid2; });
+
+                if (result1.length == 1 && result2.length == 1) {
+
+                    //use these only if drawing text on path is set
+                    var txt_message_pos_x = 0;
+                    var txt_message_pos_y = 0;
+
+                    //find center of elements to create paths
+                    var start1_x = result1[0].x + (result1[0].size / 2);
+                    var start1_y = result1[0].y + (result1[0].size / 2);
+                   // console.log("y1:" + start1_y);
+
+                    var start2_x = result2[0].x + (result2[0].size / 2);
+                    var start2_y = result2[0].y + (result2[0].size / 2);
+                  //  console.log("y2:" + start2_y);
+
+                    var path_start = "M" + start1_x + "," + start1_y;
+                    var path_end = start2_x + "," + start2_y;
+
+                    //method to calculate curve y position
+                    var path_curve_y = Math.abs((start1_y - start2_y)) / 2;
+                  //  console.log("curve y:" + path_curve_y);
+
+                    if (path_curve_y == 0) { path_curve_y = start1_y / 2; txt_message_pos_y = start1_y; }
+                        //add it to the lower y
+                    else {
+                        console.log(start1_y + "-" + start2_y);
+                        console.log(path_curve_y);
+
+                        if (start1_y < start2_y)
+                        {
+                            txt_message_pos_y = start1_y - path_curve_y;
+                            path_curve_y = start1_y - path_curve_y;
+
+                        }
+
+                        else
+                        {
+                            txt_message_pos_y = start2_y + path_curve_y;
+                            path_curve_y = start2_y - path_curve_y;
+
+                        }
+                    }
+
+                    //for message x
+                    txt_message_pos_x = ((start1_x + start2_x) / 2);
+
+
+                   // console.log("curve final y:" + path_curve_y);
+                    var path_curve = "Q" + ((start1_x + start2_x) / 2) + "," + path_curve_y;
+
+                    var sequence_path = [path_start, path_curve, path_end];
+
+                    //always set some default values
+                    var attr_path = { stroke: color_green, 'stroke-width': attack_path_size, 'stroke-opacity': 1, fill: 'none', 'fill-opacity': 0 };
+
+                    var pathname = "from:" + myid1 + "-to:" + myid2;
+
+                    drawpath(myid1, myid2, iscascading, is_success, mycanvas, pathname, start2_x, start2_y, sequence_path, draw_duration, attr_path, function () {
+                       //completed
+                    });
+
+                    //on complete draw text message
+                    if (draw_text == '1' && text_message != '') {
+                        var newpathmessage = mycanvas.text(txt_message_pos_x, txt_message_pos_y, text_message);
+                        newpathmessage.attr({ "font-size": log_fontsize, fill: pathtext_color, opacity: 1 });
+                        var fadeoutAnimation = Raphael.animation({ "opacity": 0 }, 200, 'linear', function () { newpathmessage.remove(); });
+                        var timetoremove = autoremoval_time;
+                        newpathmessage.animate(fadeoutAnimation.delay(timetoremove));
+                    }
+
+                }
+
+            }
+
+            //remove paths after an attack is made to the same node????
+            function RemovePathsFromVM(myid) {
+                var cascading_exists = $.grep(drawing_paths, function (e) { return e.from == myid || e.to == myid; });
+                if (cascading_exists.length > 0) {
+                    for (var k = 0; k < cascading_exists.length; k++) {
+                        //remove path and circle object
+                        cascading_exists[k].pathobj.remove();
+                        cascading_exists[k].circleobj.remove();
+                        cascading_exists[k].circleobj2.remove();
+                        //remove from array
+                        drawing_paths.splice($.inArray(cascading_exists[k], drawing_paths), 1);
+                    }
+                }
+            }
+
+            //function to draw path and 2 subsequent circels...is success =1 if type=EXPLOIT
+            function drawpath(id1, id2, iscascading, is_success, canvas, pathname, pointcircle_x, pointcircle_y, pathstr, duration, attr, callback) {
+
+                //before drawing check if path already exists in order to remove it
+
+                //********* PATH
+                var previous_exists = $.grep(drawing_paths, function (e) { return e.name == pathname; });
+                if (previous_exists.length == 1 && true) {
+                    //remove path and circle object
+                    previous_exists[0].pathobj.remove();
+                    previous_exists[0].circleobj.remove();
+                    previous_exists[0].circleobj2.remove();
+
+                    //also set image border to default
+                    var vm_Infra_result = $.grep(infras, function (e) { return e.id == id2; });
+                    if (vm_Infra_result.length == 1) {
+                        vm_Infra_result[0].status_circle_obj.stop();
+                        var return_Status_myanimation = Raphael.animation({ fill: color_green, stroke: color_green, "stroke-width": border_size_on }, 100);
+                        vm_Infra_result[0].status_circle_obj.animate(return_Status_myanimation);
+                    }
+
+                    removeFromQueue(pathname);
+                   // console.log("foundprevious and removed");
+                    //remove from array
+                    drawing_paths.splice($.inArray(previous_exists[0], drawing_paths), 1);
+
+                    //also remove cascading effects paths????... paths that originated from the second id, except the hacker
+                    if (iscascading == 1) {
+                        var cascading_exists = $.grep(drawing_paths, function (e) { return e.from == id2; });
+                        if (cascading_exists.length > 0) {
+                            for (var k = 0; k < cascading_exists.length; k++) {
+                                //remove path and circle object
+                                cascading_exists[0].pathobj.remove();
+                                cascading_exists[0].circleobj.remove();
+                                cascading_exists[0].circleobj2.remove();
+
+                                //remove from array
+                                drawing_paths.splice($.inArray(cascading_exists[0], drawing_paths), 1);
+
+                            }
+                        }
+                    }
+                }
+
+                //set attack color
+                var attack_color = is_success == 1 ? color_red : color_green;
+                attr.stroke = attack_color;
+
+                var guide_path = canvas.path(pathstr).attr({ stroke: "none", fill: "none" });
+                var path = canvas.path(guide_path.getSubpath(0, 1)).attr(attr);
+                var total_length = guide_path.getTotalLength(guide_path);
+                var last_point = guide_path.getPointAtLength(0);
+                var start_time = new Date().getTime();
+                var interval_length = 50;
+                var result = path;
+
+                //set the VM to front
+                var vm_start = $.grep(infras, function (e) { return e.id == id1; });
+                var vm_end = $.grep(infras, function (e) { return e.id == id2; });
+                if (vm_start.length == 1 && vm_end.length == 1)
+                {
+                    vm_start[0].status_circle_obj.toFront();
+                    vm_end[0].status_circle_obj.toFront();
+
+                    vm_start[0].img_obj.toFront();
+                    vm_end[0].img_obj.toFront();
+                }
+
+                var interval_id = setInterval(function () {
+                    var elapsed_time = new Date().getTime() - start_time;
+                    var this_length = elapsed_time / duration * total_length;
+                    var subpathstr = guide_path.getSubpath(0, this_length);
+                    attr.path = subpathstr;
+
+                    path.animate(attr, interval_length);
+                    if (elapsed_time >= duration) {
+                        clearInterval(interval_id);
+                        if (callback != undefined) callback();
+                        guide_path.remove();
+                    }
+                }, interval_length);
+
+                //create circle with animation...
+                var circle = canvas.circle(pointcircle_x, pointcircle_y, 0);
+                circle.attr({ fill: attack_color, stroke: attack_color, 'stroke-width': 1 });
+                var myAnimation = Raphael.animation({ "stroke-width": attack_circle_size / 2, "r": (attack_circle_size / 2) }, 200);
+                circle.animate(myAnimation.delay(duration));
+                circle.toFront();
+
+                var circle2 = canvas.circle(pointcircle_x, pointcircle_y, 0);
+                circle2.attr({ fill: "transparent", stroke: attack_color, 'stroke-width': 1 });
+                var myAnimation = Raphael.animation({ "stroke-width": attack_circle_size / 2, "r": (attack_circle_size * 2) }, 300);
+                circle2.animate(myAnimation.delay(duration));
+                circle2.toFront();
+
+                //add path ******** and circle
+                var newguid = createGuid();
+                drawing_paths.push({ name: pathname, from: id1, to: id2, iscascade: iscascading, pathobj: path, circleobj: circle, circleobj2: circle2, guid: newguid });
+                //console.log("finished drawing -> " + newguid);
+
+                var fadeoutAnimation = Raphael.animation({ "opacity": 0 }, 300, 'linear', function () { RemovePathCircleFromArray(newguid); });
+
+                var timetoremove = autoremoval_time;
+                if (iscascading == 1) {
+                    timetoremove = autoremoval_time - duration;
+                }
+                path.animate(fadeoutAnimation.delay(timetoremove));
+                circle.animate(fadeoutAnimation.delay(timetoremove));
+                circle2.animate(fadeoutAnimation.delay(timetoremove));
+                //console.log("finished fading out -> "+newguid);
+
+                return result;
+            }
+
+            //function to auto remove paths????
+            function RemovePathCircleFromArray(myguid) {
+                //********* PATH
+                var previous_exists = $.grep(drawing_paths, function (e) { return e.guid == myguid; });
+                if (previous_exists.length == 1) {
+                    //remove path and circle object
+                    previous_exists[0].pathobj.remove();
+                    previous_exists[0].circleobj.remove();
+                    previous_exists[0].circleobj2.remove();
+
+                    //remove counter
+                    removeFromQueue(previous_exists[0].name);
+
+                    //remove from array
+                    drawing_paths.splice($.inArray(previous_exists[0], drawing_paths), 1);
+                    // console.log("paths removed from array - > " + myguid);
+                }
+
+            }
+
+          //function to remove waiting/queued notifications
+            function removeFromQueue(p_name)
+            {
+                $.each(notificationsqueue, function (idx, item) {
+                    if (item == p_name) {
+                        notificationsqueue.splice(idx, 1); // Remove current item
+                        return false; // End the loop
+                    }
+                });
+               // console.log("removed item. new length=" + notificationsqueue.length);
+            }
+
+
+            function createGuid() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+    </script>
+
+
+</body>
+</html>
