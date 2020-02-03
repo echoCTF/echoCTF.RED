@@ -13,6 +13,10 @@ class HeadshotQuery extends \yii\db\ActiveQuery
     {
         return $this->andWhere(['player_id'=>\Yii::$app->user->id]);
     }
+    public function last()
+    {
+        return $this->orderBy(['created_at'=>SORT_DESC])->limit(1);
+    }
 
     /**
      * {@inheritdoc}
