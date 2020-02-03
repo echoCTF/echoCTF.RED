@@ -4,6 +4,18 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use app\widgets\Twitter;
+
+if(date('md')==="0214")
+{
+  $headshot_icon='fa-heart';
+  $noheadshot_icon='fa-heartbeat';
+
+}
+else
+{
+  $headshot_icon='fa-skull-crossbones';
+  $noheadshot_icon='fa-not-equal';
+}
 ?>
 <div class="row">
       <div class="col-lg-4 col-md-6 col-sm-6">
@@ -22,7 +34,7 @@ use app\widgets\Twitter;
       </div>
       <div class="col-lg-4 col-md-6 col-sm-6">
         <div  style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress==100? 'text-primary':'text-danger'?>">
-          <i class="fa <?=$target->progress==100 ? 'fa-skull-crossbones':'fa-not-equal'?>"></i>
+          <i class="fa <?=$target->progress==100 ? $headshot_icon:$noheadshot_icon?>"></i>
         </div>
         <div class="progress">
             <div class="progress-bar <?=$target->progress==100 ? 'bg-gradual-progress':'bg-danger text-dark'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><?=$target->progress==100 ? '#Headshot': number_format($target->progress).'%'?></div>
