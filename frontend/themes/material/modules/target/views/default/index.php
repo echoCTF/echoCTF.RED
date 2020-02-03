@@ -11,10 +11,12 @@ $this->_fluid='-fluid';
 
 <div class="target-index">
   <div class="body-content">
+    <?php if ($target->status!=='online'):?>
+    <div><p class="text-warning">Target scheduled for <b><?=$target->status?></b> at <code class="text-warning"><?=$target->scheduled_at?> UTC</code></p></div>
+    <?php endif;?>
     <div class="watermarked img-fluid">
     <?=sprintf('<img src="/images/targets/_%s.png" width="100px"/>',$target->name)?>
     </div>
-
     <?php
     if(Yii::$app->user->isGuest)
       echo $this->render('_guest',['target'=>$target,'playerPoints'=>$playerPoints]);
