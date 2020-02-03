@@ -15,7 +15,7 @@ use app\modules\gameplay\models\Badge;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(),'id', function($model) { return '['.$model->username.']: '.$model->email;}),['prompt'=>'Select the player'])->Label('Player')->hint('The id of the player that this badge will be given') ?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->orderBy(['username'=>'asc'])->all(),'id', function($model) { return Html::encode($model->username).': '.$model->id;}, function($model) {return mb_strtolower(mb_substr($model->username,0,1));}),['prompt'=>'Select the player'])->Label('Player')->hint('The id of the player that this badge will be given') ?>
 
     <?= $form->field($model, 'badge_id')->dropDownList(ArrayHelper::map(Badge::find()->all(),'id', function($model) { return '['.$model->name.']: '.$model->points;}),['prompt'=>'Select the badge'])->Label('Badge')->hint('The badge that will be given to the player') ?>
 
