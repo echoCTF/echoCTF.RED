@@ -99,4 +99,14 @@ class Challenge extends \yii\db\ActiveRecord
     {
       return $this->total_questions===$this->player_answers;
     }
+    public function getPoints()
+    {
+      $sum_points=0;
+      foreach($this->questions as $tr)
+      {
+        $sum_points+=$tr->points;
+      }
+      return $sum_points;
+    }
+
 }
