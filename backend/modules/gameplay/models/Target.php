@@ -326,7 +326,7 @@ class Target extends \yii\db\ActiveRecord
       if($this->parameters!==NULL)
       {
         $decoded=\yii\helpers\Json::decode($this->parameters,false);
-        if(property_exists($decoded,'hostConfig') && property_exists($decoded->hostConfig,'Memory'))
+        if($decoded!==null && property_exists($decoded,'hostConfig') && property_exists($decoded->hostConfig,'Memory'))
           return intval($decoded->hostConfig->Memory)*1024*1024;
         //die(var_dump($decoded->hostConfig->Memory));
       }
