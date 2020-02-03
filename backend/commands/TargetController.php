@@ -221,39 +221,41 @@ class TargetController extends Controller {
       $unhealthy[$t->target->name]=$t->target;
     }
     if($unhealthy)
-    foreach($unhealthy as $target)
     {
-      printf("Processing [%s] on docker [%s]",$target->name,$target->server);
-      if($target->spinQueue)
+      foreach($unhealthy as $target)
       {
-        printf(" by [%s] on %s",$target->spinQueue->player->username,$target->spinQueue->created_at);
-      }
-      echo "\n";
-      if($spin!==false)
-      {
-        $target->spin();
-        if(!$target->spinQueue)
+        printf("Processing [%s] on docker [%s]",$target->name,$target->server);
+        if($target->spinQueue)
         {
-          $sh=new SpinHistory;
-          $sh->target_id=$target->id;
-          $sh->created_at=new \yii\db\Expression('NOW()');
-          $sh->updated_at=new \yii\db\Expression('NOW()');
-          /* XXXFIXMEXXX Hardcoded uid this needs fixing */
-          $sh->player_id=1;
-          $sh->save();
+          printf(" by [%s] on %s",$target->spinQueue->player->username,$target->spinQueue->created_at);
         }
-        else
+        echo "\n";
+        if($spin!==false)
         {
-          $notif=new Notification;
-          $notif->player_id=$target->spinQueue->player_id;
-          $notif->title=sprintf("Target [%s] restart request completed",$target->name);
-          $notif->body=sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>",$target->name);
-          $notif->archived=0;
-          $notif->created_at=new \yii\db\Expression('NOW()');
-          $notif->updated_at=new \yii\db\Expression('NOW()');
-          $notif->save();
+          $target->spin();
+          if(!$target->spinQueue)
+          {
+            $sh=new SpinHistory;
+            $sh->target_id=$target->id;
+            $sh->created_at=new \yii\db\Expression('NOW()');
+            $sh->updated_at=new \yii\db\Expression('NOW()');
+            /* XXXFIXMEXXX Hardcoded uid this needs fixing */
+            $sh->player_id=1;
+            $sh->save();
+          }
+          else
+          {
+            $notif=new Notification;
+            $notif->player_id=$target->spinQueue->player_id;
+            $notif->title=sprintf("Target [%s] restart request completed",$target->name);
+            $notif->body=sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>",$target->name);
+            $notif->archived=0;
+            $notif->created_at=new \yii\db\Expression('NOW()');
+            $notif->updated_at=new \yii\db\Expression('NOW()');
+            $notif->save();
+          }
+          SpinQueue::deleteAll(['target_id'=>$target->id]);
         }
-        SpinQueue::deleteAll(['target_id'=>$target->id]);
       }
     }
   }
@@ -338,6 +340,37 @@ class TargetController extends Controller {
       }
     }
     return $unhealthy;
+  }
+  /**
+   * Restart targets who are up for more than 24 hours
+   */
+  public function actionRestart()
+  {
+    foreach(Target::find()->select('server')->distinct()->all() as $master)
+    {
+      if($master->server==null) continue;
+      $client = DockerClientFactory::create([
+        'remote_socket' => $master->server,
+        'ssl' => false,
+      ]);
+      $docker = Docker::create($client);
+      $containers = $docker->containerList();
+      foreach ($containers as $container)
+      {
+        $name=str_replace('/','',$container->getNames()[0]);
+        $d=Target::findOne(['name'=>$name]);
+        $cstatus=$container->getStatus();
+        if(preg_match('/Up ([0-9]+) hours/', $cstatus,$matches)!==false)
+        {
+          $hours=intval(@$matches[1]);
+          if($hours>=24)
+          {
+            printf("Restarting %s/%s [%s]\n",$master->server,$d->name,$cstatus);
+            return $d->spin();
+          }
+        }
+      }
+    } // end docker servers
   }
 
 }
