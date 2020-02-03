@@ -126,8 +126,9 @@ class BadgeController extends Controller
     {
         $model = $this->findModel($id);
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $findings=Yii::$app->request->post()['findings'];
-            $treasures=Yii::$app->request->post()['treasures'];
+
+            $findings=Yii::$app->request->post()['Badge']['findings'];
+            $treasures=Yii::$app->request->post()['Badge']['treasures'];
             if(is_array($findings))
             {
               // process badge_findings
