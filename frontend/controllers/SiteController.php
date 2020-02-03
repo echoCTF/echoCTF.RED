@@ -120,7 +120,7 @@ class SiteController extends Controller
         try {
           if ($model->load(Yii::$app->request->post()) && $model->signup()) {
               $transaction->commit();
-              Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for the verification email.');
+              Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>');
               return $this->goHome();
           }
         } catch (\Exception $e) {
