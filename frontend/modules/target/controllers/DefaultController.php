@@ -225,6 +225,8 @@ class DefaultController extends Controller
     */
     public function actionBadge(int $id)
     {
+      ob_get_clean();
+      header('Content-Type: image/png');
       $target=$this->findModel($id);
       $fname=Yii::getAlias(sprintf('@app/web/images/targets/%s.png',$target->name));
       $src = imagecreatefrompng($fname);
@@ -235,10 +237,10 @@ class DefaultController extends Controller
 
       imagettftext($src, 11.5, 0, 0, 14, $textcolor, Yii::getAlias('@app/web/webfonts/fa-solid-900.ttf'), $text);
       imagestring($src, 6, 15, 0, sprintf('Headshots: %d',count($target->headshots)),$textcolor);
-
-      header('Content-Type: image/png');
       imagepng($src);
       imagedestroy($src);
+      exit();
+
     }
 
     /**
