@@ -46,7 +46,24 @@ echo GridView::widget([
      'id',
      [
        'attribute'=>'name',
+       'format'=>'raw',
        'label'=>'Target',
+       'value'=>function($model) { return Html::a(Html::encode($model->name), ['/target/default/index', 'id'=>$model->id]); }
+     ],
+     [
+       'attribute'=>'status',
+       'label'=>'Status',
+       'contentOptions' => ['class' => 'text-center'],
+       'headerOptions' => ['class' => 'text-center'],
+       'format'=>'raw',
+       'value'=>function($model){
+          if($model->status==='powerup')
+            return sprintf('<abbr title="Scheduled for powerup at %s"><i class="fas fa-arrow-alt-circle-up" style="font-size: 1.2em"></i></abbr>',$model->scheduled_at);
+          if($model->status==='powerdown')
+          return sprintf('<abbr title="Scheduled for powerdown at %s"><i class="fas fa-arrow-alt-circle-down" style="font-size: 1.2em"></i></abbr>',$model->scheduled_at);
+
+          return sprintf('<abbr title="Target online"><i class="fas fa-plug" style="font-size: 1.2em"></i></abbr>',$model->status);
+        }
      ],
      [
        'attribute'=>'ip',
@@ -129,7 +146,7 @@ echo GridView::widget([
      [
        'format'=>'raw',
        'encodeLabel'=>false,
-       'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell','style'=>'width:9rem;'],
+       'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell',],
        'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
        'attribute'=>'progress',
        'label'=>'Your Progress',
