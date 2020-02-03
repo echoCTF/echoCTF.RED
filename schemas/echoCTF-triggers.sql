@@ -141,7 +141,7 @@ thisBegin:BEGIN
   CALL add_badge_stream(NEW.player_id,'badge',NEW.badge_id);
 END ;;
 
-CREATE TRIGGER {{%tai_player_finding}} AFTER INSERT ON {{%player_finding}} FOR EACH ROW
+CREATE TRIGGER `tai_player_finding` AFTER INSERT ON `player_finding` FOR EACH ROW
 thisBegin:BEGIN
   DECLARE local_target_id INT;
   DECLARE headshoted INT default null;
@@ -223,7 +223,6 @@ thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
   END IF;
-
 
   CALL add_treasure_stream(NEW.player_id,'treasure',NEW.treasure_id);
   CALL add_player_treasure_hint(NEW.player_id,NEW.treasure_id);
@@ -346,6 +345,14 @@ thisBegin:BEGIN
   SELECT memc_set(CONCAT('target:',NEW.ip),NEW.id) INTO @devnull;
 END ;;
 
+-- Schedule spin of target when it gets headshoted
+CREATE TRIGGER `tai_headshot` AFTER INSERT ON `headshot` FOR EACH ROW
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+  INSERT IGNORE INTO spin_queue (target_id, player_id,created_at) VALUES (NEW.target_id,NEW.player_id,NOW());
+END ;;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
