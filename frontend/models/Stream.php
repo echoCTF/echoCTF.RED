@@ -102,6 +102,8 @@ class Stream extends \yii\db\ActiveRecord
 
     public function getFormatted(bool $pub=true)
     {
+      if(!Yii::$app->user->isGuest && Yii::$app->user->id==$this->player_id) $pub=false;
+      
       $icon=array(
         'headshot'=>'<i class="fas fa-skull" style="font-size: 1.5em;"></i>',
         'treasure'=>'<i class="fas fa-flag" style="font-size: 1.5em;"></i>',
