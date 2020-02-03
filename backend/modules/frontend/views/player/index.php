@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
            ],
 
             'username',
-          //  'email:email',
+            'email:email',
 /*            [
               'attribute'=>'type',
               'filter'=>['offense'=>'Offense', 'defense'=>'Defense','both'=>'Both'],
