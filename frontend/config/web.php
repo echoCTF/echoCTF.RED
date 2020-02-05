@@ -193,6 +193,7 @@ $config = [
                 'challenge/<id:\d+>/download' => 'challenge/default/download',
                 // app/modules/target/controllers/TargetController.php
                 'target/<id:\d+>' => 'target/default/index',
+                //'target/<id:\d+>/badge' => 'target/default/badge',
                 'target/<id:\d+>/spin'=>'target/default/spin',
                 'claim'=>'target/default/claim',
                 // app/controllers/ProfileController
