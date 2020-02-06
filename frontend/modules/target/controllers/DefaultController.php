@@ -65,6 +65,12 @@ class DefaultController extends Controller
        $sum=0;
        $userTarget=null;
        $profile=$this->findProfile($profile_id);
+       if(Yii::$app->user->isGuest && $profile->visibility!='public')
+         			return $this->redirect(['/']);
+
+       if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
+         			return $this->redirect(['/']);
+
 
        $target=Target::find()->where(['t.id'=>$id])->player_progress($profile->player_id)->one();
        $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>$profile->player_id,'finding.target_id'=>$id])->all();
