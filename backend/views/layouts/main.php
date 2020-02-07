@@ -76,7 +76,6 @@ AppAsset::register($this);
                 ['label' => 'Player Last', 'url' => ['/activity/player-last'], 'visible' => !Yii::$app->user->isGuest ,],
                 ['label' => 'Player SSL', 'url' => ['/frontend/player-ssl'], 'visible' => !Yii::$app->user->isGuest ,],
                 ['label' => 'Player Spins', 'url' => ['/frontend/player-spin'], 'visible' => !Yii::$app->user->isGuest ,],
-                ['label' => 'Player IPs', 'url' => ['/frontend/player-ip'], 'visible' => !Yii::$app->user->isGuest ,],
                 ['label' => 'Player MACs', 'url' => ['/frontend/playermac'], 'visible' => !Yii::$app->user->isGuest ,],
                 ['label' => 'Teams', 'url' => ['/frontend/team'], 'visible' => !Yii::$app->user->isGuest ,],
                 ['label' => 'Team Players', 'url' => ['/frontend/teamplayer'], 'visible' => !Yii::$app->user->isGuest ,],
