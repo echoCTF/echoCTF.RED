@@ -59,11 +59,11 @@ END ;;
 DROP PROCEDURE IF EXISTS `add_badge_stream` ;;
 CREATE PROCEDURE `add_badge_stream`(IN usid BIGINT, IN tbl VARCHAR(255), IN recid INT)
 BEGIN
-	DECLARE ltitle,lpubtitle VARCHAR(255);
-	DECLARE lmessage,lpubmessage TEXT;
-	DECLARE pts BIGINT;
-	SELECT name,pubname,description,pubdescription,points INTO ltitle,lpubtitle,lmessage,lpubmessage,pts FROM badge WHERE id=recid;
-	INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (usid,'badge',recid,pts,ltitle,lmessage,lpubtitle,lpubmessage,now());
+  DECLARE ltitle,lpubtitle VARCHAR(255);
+  DECLARE lmessage,lpubmessage TEXT;
+  DECLARE pts BIGINT;
+  SELECT name,pubname,description,pubdescription,points INTO ltitle,lpubtitle,lmessage,lpubmessage,pts FROM badge WHERE id=recid;
+  INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (usid,'badge',recid,pts,ltitle,lmessage,lpubtitle,lpubmessage,now());
 END ;;
 
 DROP PROCEDURE IF EXISTS `add_finding_stream` ;;
@@ -73,7 +73,7 @@ BEGIN
   DECLARE lmessage,lpubmessage TEXT;
   DECLARE pts BIGINT;
   SELECT name,pubname,description,pubdescription,points INTO ltitle,lpubtitle,lmessage,lpubmessage,pts FROM finding WHERE id=recid;
-	INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (usid,'finding',recid,pts,ltitle,lmessage,lpubtitle,lpubmessage,now());
+  INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (usid,'finding',recid,pts,ltitle,lmessage,lpubtitle,lpubmessage,now());
 END ;;
 
 
@@ -139,17 +139,18 @@ END ;;
 DROP PROCEDURE IF EXISTS `add_treasure_stream` ;;
 CREATE PROCEDURE `add_treasure_stream`(IN usid BIGINT, IN tbl VARCHAR(255), IN recid INT)
 BEGIN
-	DECLARE ltitle,lpubtitle VARCHAR(255);
-	DECLARE lmessage,lpubmessage TEXT;
-	DECLARE pts BIGINT;
-	SELECT name,pubname,description,pubdescription,points INTO ltitle,lpubtitle,lmessage,lpubmessage,pts FROM treasure WHERE id=recid;
-	INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (usid,'treasure',recid,pts,ltitle,lmessage,lpubtitle,lpubmessage,now());
+  DECLARE ltitle,lpubtitle VARCHAR(255);
+  DECLARE lmessage,lpubmessage TEXT;
+  DECLARE divider INTEGER DEFAULT 1;
+  DECLARE pts BIGINT;
+  SELECT name,pubname,description,pubdescription,points INTO ltitle,lpubtitle,lmessage,lpubmessage,pts FROM treasure WHERE id=recid;
+  INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (usid,'treasure',recid,pts,ltitle,lmessage,lpubtitle,lpubmessage,now());
 END ;;
 
 DROP PROCEDURE IF EXISTS `calculate_ranks` ;;
 CREATE PROCEDURE `calculate_ranks`()
 BEGIN
-CREATE TEMPORARY TABLE ranking (id int primary key AUTO_INCREMENT,player_id int) ENGINE=MEMORY;
+CREATE TEMPORARY TABLE `ranking` (id int primary key AUTO_INCREMENT,player_id int) ENGINE=MEMORY;
 START TRANSACTION;
   delete from player_rank;
   insert into ranking select NULL,t.player_id from player_score as t left join player as t2 on t.player_id=t2.id where t2.active=1 order by points desc,t.ts asc, t.player_id asc;

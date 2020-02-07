@@ -63,7 +63,7 @@ CREATE TABLE `badge` (
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Badges are given to the users based on gathering certain other achievements, treasures and findings';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Badges are given to the users based on gathering certain other achievements, treasures and findings';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,9 +116,8 @@ CREATE TABLE `banned_player` (
   `banned_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=45 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
 
 --
 -- Table structure for table `challenge`
@@ -138,7 +137,7 @@ CREATE TABLE `challenge` (
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -199,7 +198,7 @@ CREATE TABLE `crl` (
   `privkey` text COLLATE utf8_unicode_ci,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=185 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -248,7 +247,7 @@ CREATE TABLE `experience` (
   KEY `idx-experience-points` (`min_points`,`max_points`),
   KEY `idx-experience-points-category` (`min_points`,`max_points`,`category`),
   KEY `idx-experience-category` (`category`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -264,7 +263,7 @@ CREATE TABLE `faq` (
   `body` text COLLATE utf8_unicode_ci,
   `weight` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -290,9 +289,8 @@ CREATE TABLE `finding` (
   UNIQUE KEY `protocol` (`protocol`,`target_id`,`port`),
   KEY `target_id` (`target_id`),
   CONSTRAINT `finding_ibfk_1` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Automatic findings based on network findings';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Automatic findings based on network findings';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
 
 --
 -- Table structure for table `headshot`
@@ -342,7 +340,7 @@ CREATE TABLE `hint` (
   CONSTRAINT `hint_ibfk_1` FOREIGN KEY (`badge_id`) REFERENCES `badge` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `hint_ibfk_2` FOREIGN KEY (`finding_id`) REFERENCES `finding` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `hint_ibfk_3` FOREIGN KEY (`treasure_id`) REFERENCES `treasure` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='The hints for the game based on user type';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='The hints for the game based on user type';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -395,7 +393,7 @@ CREATE TABLE `instruction` (
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='The instructions for the game for each player type';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='The instructions for the game for each player type';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -424,6 +422,20 @@ DROP TABLE IF EXISTS `migration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `migration` (
+  `version` varchar(180) COLLATE utf8_unicode_ci NOT NULL,
+  `apply_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `migration_red`
+--
+
+DROP TABLE IF EXISTS `migration_red`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `migration_red` (
   `version` varchar(180) COLLATE utf8_unicode_ci NOT NULL,
   `apply_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`version`)
@@ -460,7 +472,7 @@ CREATE TABLE `network` (
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -521,7 +533,7 @@ CREATE TABLE `notification` (
   PRIMARY KEY (`id`),
   KEY `idx-notification-player_id` (`player_id`),
   CONSTRAINT `fk-notification-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=900 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -571,7 +583,7 @@ CREATE TABLE `player` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   KEY `idx-player-status` (`status`)
-) ENGINE=InnoDB AUTO_INCREMENT=387 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -649,28 +661,8 @@ CREATE TABLE `player_last` (
   KEY `idx-player_last-vpn_remote_address` (`vpn_remote_address`),
   KEY `idx-player_last-vpn_local_address` (`vpn_local_address`),
   KEY `idx-player_last-combined` (`vpn_local_address`,`vpn_remote_address`,`on_vpn`,`on_pui`)
-) ENGINE=InnoDB AUTO_INCREMENT=387 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `player_mac`
---
-
-DROP TABLE IF EXISTS `player_mac`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `player_mac` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `player_id` int(11) unsigned NOT NULL,
-  `mac` varchar(18) COLLATE utf8_unicode_ci NOT NULL,
-  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `mac` (`mac`),
-  KEY `player_id` (`player_id`),
-  CONSTRAINT `player_mac_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
 
 --
 -- Table structure for table `player_question`
@@ -690,7 +682,7 @@ CREATE TABLE `player_question` (
   KEY `player_id` (`player_id`),
   CONSTRAINT `player_question_ibfk_1` FOREIGN KEY (`question_id`) REFERENCES `question` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `player_question_ibfk_2` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=347 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -783,6 +775,27 @@ CREATE TABLE `player_treasure` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `player_tutorial_task`
+--
+
+DROP TABLE IF EXISTS `player_tutorial_task`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `player_tutorial_task` (
+  `player_id` int(11) unsigned NOT NULL,
+  `tutorial_task_dependency_id` int(11) NOT NULL DEFAULT '0',
+  `points` int(11) NOT NULL DEFAULT '0',
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`player_id`,`tutorial_task_dependency_id`),
+  KEY `idx-player_tutorial_task-player_id` (`player_id`),
+  KEY `idx-player_tutorial_task-tutorial_task_dependency_id` (`tutorial_task_dependency_id`),
+  CONSTRAINT `fk-player_tutorial_task-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk-player_tutorial_task-tutorial_task_dependency_id` FOREIGN KEY (`tutorial_task_dependency_id`) REFERENCES `tutorial_task_dependency` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `player_vpn_history`
 --
 
@@ -796,7 +809,7 @@ CREATE TABLE `player_vpn_history` (
   `vpn_local_address` int(11) DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1156 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -858,7 +871,7 @@ CREATE TABLE `question` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `challenge_id` (`challenge_id`,`name`),
   CONSTRAINT `question_ibfk_1` FOREIGN KEY (`challenge_id`) REFERENCES `challenge` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -900,7 +913,7 @@ CREATE TABLE `rule` (
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `title` (`title`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='The rules for the game based on player type';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='The rules for the game based on player type';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -943,7 +956,7 @@ CREATE TABLE `spin_history` (
   KEY `idx-spin_history-player_id` (`player_id`),
   CONSTRAINT `fk-spin_history-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk-spin_history-target_id` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=358 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -964,7 +977,6 @@ CREATE TABLE `spin_queue` (
   CONSTRAINT `fk-spin_queue-target_id` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
 
 --
 -- Table structure for table `stream`
@@ -987,7 +999,7 @@ CREATE TABLE `stream` (
   PRIMARY KEY (`id`),
   KEY `player_id` (`player_id`),
   CONSTRAINT `stream_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3540 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Information stream for participants and public alike';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Information stream for participants and public alike';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1039,7 +1051,7 @@ CREATE TABLE `target` (
   UNIQUE KEY `mac` (`mac`),
   KEY `idx-target-suggested_xp` (`suggested_xp`),
   KEY `idx-target-required_xp` (`required_xp`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Keeps track of the CTF target IP and MAC addresses along with simple asset management';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Keeps track of the CTF target IP and MAC addresses along with simple asset management';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1075,7 +1087,6 @@ CREATE TABLE `target_volume` (
   CONSTRAINT `target_volume_ibfk_1` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Docker volumes and binds';
 /*!40101 SET character_set_client = @saved_cs_client */;
-
 
 --
 -- Table structure for table `team`
@@ -1162,7 +1173,7 @@ CREATE TABLE `treasure` (
   UNIQUE KEY `code` (`code`),
   KEY `target_id` (`target_id`),
   CONSTRAINT `treasure_ibfk_1` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=208 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Claimable points by the user, through hidden codes and files';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='Claimable points by the user, through hidden codes and files';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1182,7 +1193,82 @@ CREATE TABLE `treasure_action` (
   PRIMARY KEY (`id`),
   KEY `treasure_id` (`treasure_id`),
   CONSTRAINT `treasure_action_ibfk_1` FOREIGN KEY (`treasure_id`) REFERENCES `treasure` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tutorial`
+--
+
+DROP TABLE IF EXISTS `tutorial`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tutorial` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tutorial_target`
+--
+
+DROP TABLE IF EXISTS `tutorial_target`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tutorial_target` (
+  `tutorial_id` int(11) NOT NULL DEFAULT '0',
+  `target_id` int(11) NOT NULL DEFAULT '0',
+  `weight` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`tutorial_id`,`target_id`),
+  KEY `idx-tutorial_target-tutorial_id` (`tutorial_id`),
+  KEY `idx-tutorial_target-target_id` (`target_id`),
+  CONSTRAINT `fk-tutorial_target-target_id` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk-tutorial_target-tutorial_id` FOREIGN KEY (`tutorial_id`) REFERENCES `tutorial` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tutorial_task`
+--
+
+DROP TABLE IF EXISTS `tutorial_task`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tutorial_task` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tutorial_id` int(11) DEFAULT NULL,
+  `title` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `points` int(11) DEFAULT '0',
+  `answer` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `weight` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx-tutorial_task-tutorial_id` (`tutorial_id`),
+  CONSTRAINT `fk-tutorial_task-tutorial_id` FOREIGN KEY (`tutorial_id`) REFERENCES `tutorial` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `tutorial_task_dependency`
+--
+
+DROP TABLE IF EXISTS `tutorial_task_dependency`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tutorial_task_dependency` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tutorial_task_id` int(11) DEFAULT NULL,
+  `item_id` int(11) NOT NULL,
+  `item` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx-tutorial_task_dependency-tutorial_task_id` (`tutorial_task_id`),
+  CONSTRAINT `fk-tutorial_task_dependency-tutorial_task_id` FOREIGN KEY (`tutorial_task_id`) REFERENCES `tutorial_task` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1208,8 +1294,7 @@ CREATE TABLE `user` (
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `password_reset_token` (`password_reset_token`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1221,5 +1306,3 @@ CREATE TABLE `user` (
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2020-01-01  3:25:27

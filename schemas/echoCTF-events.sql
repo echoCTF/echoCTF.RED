@@ -8,5 +8,5 @@ END //
 DROP EVENT IF EXISTS `update_player_last_seen` //
 CREATE EVENT `update_player_last_seen` ON SCHEDULE EVERY 1 HOUR ON COMPLETION PRESERVE ENABLE DO
 BEGIN
- UPDATE `player_last` SET `on_pui`=memc_get(CONCAT('last_seen:',id)) WHERE memc_get(CONCAT('last_seen:',id)) IS NOT NULL;
+ UPDATE `player_last` SET `on_pui`=FROM_UNIXTIME(memc_get(CONCAT('last_seen:',id))) WHERE memc_get(CONCAT('last_seen:',id)) IS NOT NULL;
 END //
