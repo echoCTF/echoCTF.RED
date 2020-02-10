@@ -188,8 +188,32 @@ class Target extends \yii\db\ActiveRecord
         return $this->hasMany(Treasure::className(), ['target_id' => 'id']);
     }
 
+    public function getTreasureCategories()
+    {
+        $categories=[];
+        foreach($this->treasures as $t)
+        {
+          if(isset($categories[$t->category]))
+            $categories[$t->category]++;
+          else
+            $categories[$t->category]=1;
+        }
+        return $categories;
+    }
 
+    public function getTreasureCategoriesFormatted()
+    {
+      $categories=[];
+      foreach($this->treasureCategories as $category => $cnt)
+      {
+        if($cnt>1)
+          $categories[]=sprintf("%d:%s",$cnt,$category);
+        else
+          $categories[]=sprintf("%s",$category);
+      }
+      return implode(', ',$categories);
 
+    }
     /**
      * @return \yii\db\ActiveQuery
      */
