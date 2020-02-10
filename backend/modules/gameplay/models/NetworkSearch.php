@@ -18,7 +18,8 @@ class NetworkSearch extends Network
     {
         return [
             [['id'], 'integer'],
-            [['name', 'description', 'ts'], 'safe'],
+            [['public','active'], 'boolean'],
+            [['name', 'description','codename','icon', 'ts'], 'safe'],
         ];
     }
 

@@ -13,7 +13,10 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-
+    <?= $form->field($model, 'codename')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'icon')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'public')->checkbox() ?>
+    <?= $form->field($model, 'active')->checkbox() ?>
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'ts')->textInput() ?>
