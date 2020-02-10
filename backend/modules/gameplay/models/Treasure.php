@@ -48,7 +48,7 @@ class Treasure extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'points', 'target', 'code'], 'required'],
-            [['description', 'pubdescription', 'player_type', 'effects'], 'string'],
+            [['description', 'category','pubdescription', 'player_type', 'effects'], 'string'],
             [['points'], 'number'],
             [['appears', 'target_id'], 'integer'],
             [['name', 'pubname', 'hint'], 'string', 'max' => 255],
@@ -75,6 +75,7 @@ class Treasure extends \yii\db\ActiveRecord
             'appears' => 'Appears',
             'effects' => 'Effects',
             'target_id' => 'Target ID',
+            'category' => 'category',
             'code' => 'Code',
         ];
     }

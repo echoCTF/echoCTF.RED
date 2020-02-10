@@ -35,6 +35,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'name',
             'pubname',
+            [
+              'attribute'=>'category',
+              'filter'=>['other'=>'other', 'env'=>'env','root'=>'root','system'=>'system','app'=>'app'],
+            ],
 //            'description:ntext',
 //            'pubdescription:ntext',
             'points',
@@ -53,6 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'attribute'=>'code',
               'value'=>function($model) {return substr($model->code,0,15);},
             ],
+
             [
               'attribute'=>'discovered',
               'value'=>function($model) {return count($model->playerTreasures);},

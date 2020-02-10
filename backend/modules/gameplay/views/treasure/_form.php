@@ -21,6 +21,8 @@ use app\modules\gameplay\models\Target;
 
     <?= $form->field($model, 'pubname')->textInput(['maxlength' => true])->hint('A public name for the treasure (will be shown on steams and other public places)') ?>
 
+    <?= $form->field($model, 'category')->textInput(['maxlength' => true])->hint('Add a category for this flag') ?>
+
     <?= $form->field($model, 'description')->textarea(['rows' => 6])->hint('A short description of the treasure') ?>
 
     <?= $form->field($model, 'pubdescription')->textarea(['rows' => 6])->hint('A short description of the treasure which will be shown on public places') ?>
