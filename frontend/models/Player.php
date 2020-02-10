@@ -5,6 +5,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\web\IdentityInterface;
 use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\game\models\Headshot;
@@ -56,6 +57,12 @@ class Player extends ActiveRecord implements IdentityInterface
                 'typecastAfterValidate' => true,
                 'typecastBeforeSave' => true,
                 'typecastAfterFind' => true,
+          ],
+          [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'created',
+                'updatedAtAttribute' => 'ts',
+                'value' => new Expression('NOW()'),
           ],
         ];
     }
