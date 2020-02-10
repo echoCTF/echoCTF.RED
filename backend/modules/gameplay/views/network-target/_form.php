@@ -19,6 +19,8 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(app\modules\gameplay\models\Target::find()->all(),'id','name'),
                     ['prompt'=>'Select Target'])->Label('Target')->hint('The Target to assign to the network') ?>
 
+    <?= $form->field($model, 'weight')->textInput() ?>
+
     <?= $form->field($model, 'created_at')->textInput() ?>
 
     <?= $form->field($model, 'updated_at')->textInput() ?>

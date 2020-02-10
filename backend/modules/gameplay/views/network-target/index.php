@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'network.name',
             'target_id',
             'target.name',
+            'weight',
             'created_at',
             'updated_at',
 

@@ -33,7 +33,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'target_id',
             'created_at',
             'updated_at',
-        ],
+            'weight',
+      ],
     ]) ?>
 
 </div>

@@ -32,7 +32,8 @@ class NetworkTarget extends \yii\db\ActiveRecord
     {
         return [
             [['network_id', 'target_id'], 'required'],
-            [['network_id', 'target_id'], 'integer'],
+            [['network_id', 'target_id','weight'], 'integer'],
+            [['weight'],'default', 'value'=>0 ],
             [['created_at', 'updated_at'], 'safe'],
             [['network_id', 'target_id'], 'unique', 'targetAttribute' => ['network_id', 'target_id']],
             [['network_id'], 'exist', 'skipOnError' => true, 'targetClass' => Network::className(), 'targetAttribute' => ['network_id' => 'id']],
