@@ -14,6 +14,7 @@ RETURN REPLACE(SUBSTRING(SUBSTRING_INDEX(x, delim, pos),
        LENGTH(SUBSTRING_INDEX(x, delim, pos -1)) + 1),
        delim, '') ;;
 
+
 DROP FUNCTION IF EXISTS `TS_AGO` ;;
 CREATE FUNCTION `TS_AGO`( x TIMESTAMP) RETURNS varchar(255) CHARSET utf8 COLLATE utf8_unicode_ci
     DETERMINISTIC
@@ -160,6 +161,17 @@ DROP TABLE `ranking`;
 END ;;
 
 
+
+DROP PROCEDURE IF EXISTS `time_headshot` ;;
+CREATE PROCEDURE `time_headshot` (IN pid INT, IN tid INT)
+BEGIN
+  DECLARE min_finding,min_treasure,max_finding,max_treasure, max_val, min_val DATETIME;
+  SELECT min(ts),max(ts) INTO min_finding,max_finding FROM `player_finding` WHERE `player_id`=pid AND `finding_id` IN (SELECT `id` FROM `finding` WHERE `target_id`=tid);
+  SELECT min(ts),max(ts) INTO min_treasure,max_treasure FROM `player_treasure` WHERE `player_id`=pid AND `treasure_id` IN (SELECT `id` FROM `treasure` WHERE `target_id`=tid);
+  SELECT GREATEST(max_finding, max_treasure), LEAST(min_finding, min_treasure) INTO max_val,min_val;
+  UPDATE `headshot` SET `timer`=UNIX_TIMESTAMP(max_val)-UNIX_TIMESTAMP(min_val) WHERE `player_id`=pid AND `target_id`=tid;
+END ;;
+
 DROP PROCEDURE IF EXISTS `reset_gamedata` ;;
 CREATE PROCEDURE `reset_gamedata`()
 BEGIN
@@ -180,7 +192,6 @@ BEGIN
 	DELETE FROM `target`;
 	ALTER TABLE `target` AUTO_INCREMENT=1;
 
-	TRUNCATE finding_packet;
 END ;;
 
 
@@ -193,19 +204,10 @@ BEGIN
 	DELETE FROM `team`;
 	ALTER TABLE `team` AUTO_INCREMENT=1;
 
-	TRUNCATE player_mem;
-	TRUNCATE player_mac;
-	TRUNCATE player_mac_mem;
 	TRUNCATE report;
-	TRUNCATE arpdat;
-	TRUNCATE tcpdump;
-	TRUNCATE vtcpdump;
-	TRUNCATE bridge_ruleset;
 	TRUNCATE team_score;
 	TRUNCATE player_score;
 	TRUNCATE sessions;
-	TRUNCATE sshkey;
-	TRUNCATE finding_packet;
 END ;;
 
 DROP PROCEDURE IF EXISTS `reset_player_progress` ;;
@@ -221,7 +223,6 @@ BEGIN
 	TRUNCATE player_badge;
 	TRUNCATE sessions;
 	TRUNCATE stream;
-	TRUNCATE finding_packet;
 	insert into team_score (team_id,points) select id,0 from team;
 	insert into player_score (player_id,points) select id,0 from player;
 END ;;
