@@ -28,6 +28,9 @@ $config = [
       'target' => [
             'class' => 'app\modules\target\Module',
       ],
+      'network' => [
+            'class' => 'app\modules\network\Module',
+      ],
     ],
     'components' => [
       'assetManager' => [
