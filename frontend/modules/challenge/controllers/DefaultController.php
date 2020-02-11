@@ -62,7 +62,7 @@ class DefaultController extends Controller
     {
       $model=$this->findModel($id);
       $model=Challenge::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
-      $query=Question::find();
+      $query=Question::find()->orderBy(['weight'=>SORT_ASC,'id'=>SORT_ASC]);
 
       $dataProvider = new ActiveDataProvider([
           'query' => $query,
