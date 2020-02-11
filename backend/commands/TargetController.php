@@ -71,13 +71,13 @@ class TargetController extends Controller {
     if($target!==false && mb_strtolower($target)!=='all')
     {
       $query->andFilterWhere([
-          'id' => $target,
+          'id' => intval($target),
       ]);
 
-      $query->andFilterWhere(['like', 'name', $target])
-          ->andFilterWhere(['like', 'INET_NTOA(ip)', $target])
-          ->andFilterWhere(['like', 'fqdn', $target])
-          ->andFilterWhere(['like', 'server', $target]);
+    //  $query->andFilterWhere(['like', 'name', $target])
+    //      ->andFilterWhere(['like', 'INET_NTOA(ip)', $target])
+    //      ->andFilterWhere(['like', 'fqdn', $target])
+    //      ->andFilterWhere(['like', 'server', $target]);
     }
     foreach($query->all() as $t)
     {
@@ -91,28 +91,26 @@ class TargetController extends Controller {
       {
           printf(" NOT OK (%s)\n",$ce->getMessage());
       }
-
     }
 
   }
 
   /*
     Pull target/targets images
+
   */
-  public function actionPull($target=false)
+  public function actionPull($target=false,$filter=null)
   {
     $query = Target::find();
 
-    if($target!==false && mb_strtolower($target)!=='all')
-    {
+    if($target!==false && mb_strtolower($target)!=='all' && intval($target)!==0)
       $query->andFilterWhere([
           'id' => $target,
       ]);
-
-      $query->andFilterWhere(['like', 'name', $target])
-          ->andFilterWhere(['like', 'INET_NTOA(ip)', $target])
-          ->andFilterWhere(['like', 'fqdn', $target])
-          ->andFilterWhere(['like', 'server', $target]);
+    if($filter!=null)
+      $query->andFilterWhere(['like', 'INET_NTOA(ip)', $target])
+          ->orFilterWhere(['like', 'fqdn', $filter])
+          ->orFilterWhere(['like', 'server', $filter]);
     }
     foreach($query->all() as $t)
     {
