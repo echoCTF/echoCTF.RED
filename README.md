@@ -15,5 +15,14 @@ This project is currently under HEAVY restructure and development.
  * `schemas` => database schema
  * `themes` => Various theme, images and layout sources
 
+## Pre-requisites
+* Install MySQL/MariaDB
+* Install memcached
+* Install https://github.com/echoCTF/memcached_functions_mysql
+* Install composer
+* Install PHP>=7.0
+  - `php-memcache` or `php-memcached`
+* Install NGiNX (other web servers may also work)
+
 # Live demo?
 Register at our online platform at https://echoctf.red/ :)
