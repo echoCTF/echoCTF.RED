@@ -256,42 +256,27 @@ class Target extends \yii\db\ActiveRecord
     {
       $sum_points=0;
       foreach($this->treasures as $tr)
-      {
-//        echo "t ",$tr->id," ",$tr->points,"\n";
         $sum_points+=$tr->points;
-      }
+
       foreach($this->findings as $tr)
-      {
-//        echo "f ",$tr->id," ",$tr->points,"\n";
         $sum_points+=$tr->points;
-      }
-//        die(var_dump($sum_points));
       return $sum_points;
     }
 
     public function getHeadshots()
     {
-        return $this->hasMany(Headshot::className(), ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
+      return $this->hasMany(Headshot::className(), ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
     }
 
-/*    public function getHeadshots()
+    public function headshot($player_id)
     {
-      $command = Yii::$app->db->createCommand('select player_id as id from player_finding  as t1 WHERE finding_id IN (SELECT id FROM finding WHERE target_id=:target_id) GROUP BY player_id HAVING count(t1.finding_id)=(SELECT count(*) FROM finding WHERE target_id=:target_id)');
-      $command->bindValue(':target_id',$this->id);
-      $findings = $command->query();
-      $command = Yii::$app->db->createCommand('select player_id as id from player_treasure  as t1 WHERE treasure_id IN (SELECT id FROM treasure WHERE target_id=:target_id) GROUP BY player_id HAVING count(t1.treasure_id)=(SELECT count(*) FROM treasure WHERE target_id=:target_id)');
-      $command->bindValue(':target_id',$this->id);
-      $treasures = $command->query();
-      $tplayers=$fplayers=[];
-      foreach($treasures->readAll() as $rec)
-        $tplayers[]=$rec['id'];
-      foreach($findings->readAll() as $rec)
-        $fplayers[]=$rec['id'];
-      return \app\models\Player::find()->where(['in','id',array_intersect($tplayers,$fplayers)])->all();
-    }*/
+      return Headshot::find()->where(['target_id' => $this->id,'player_id'=>$player_id])->one();
+    }
 
     public function getCountHeadshots()
     {
+      return $this->headshots()->count();
+      /* XXXFIXMEXX THIS IS TEMPORARY WE NEED TO REMOVE IT EVENTUALY */
       $command = Yii::$app->db->createCommand('select player_id as id from player_finding  as t1 WHERE finding_id IN (SELECT id FROM finding WHERE target_id=:target_id) GROUP BY player_id HAVING count(t1.finding_id)=(SELECT count(*) FROM finding WHERE target_id=:target_id)');
       $command->bindValue(':target_id',$this->id);
       $findings = $command->query();

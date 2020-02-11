@@ -10,9 +10,11 @@
 
 DELIMITER ;;
 
+DROP TRIGGER IF EXISTS `tau_report` ;;
 --
 -- When a new finding is added, update memcached with the finding details
 --
+DROP TRIGGER IF EXISTS `tai_finding` ;;
 CREATE TRIGGER `tai_finding` AFTER INSERT ON `finding` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -28,6 +30,7 @@ END ;;
 --
 -- When a finding is updated also update the relevant memcached values
 --
+DROP TRIGGER IF EXISTS `tau_finding` ;;
 CREATE TRIGGER `tau_finding` AFTER UPDATE ON `finding` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -48,6 +51,7 @@ END ;;
 --  Ensure we remove the finding details from memcached when a
 --  finding is removed
 --
+DROP TRIGGER IF EXISTS `tad_finding` ;;
 CREATE TRIGGER `tad_finding` AFTER DELETE ON `finding` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -61,7 +65,7 @@ thisBegin:BEGIN
 END ;;
 
 
-
+DROP TRIGGER IF EXISTS `tai_player` ;;
 CREATE TRIGGER `tai_player` AFTER INSERT ON `player` FOR EACH ROW
 thisBegin:BEGIN
   DECLARE ltitle VARCHAR(20) DEFAULT 'Joined the platform';
@@ -84,10 +88,10 @@ thisBegin:BEGIN
   END IF;
 END ;;
 
-
+DROP TRIGGER IF EXISTS `tau_player` ;;
 CREATE TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
 thisBegin:BEGIN
-  DECLATE ltitle VARCHAR(30) DEFAULT "Joined the platform";
+  DECLARE ltitle VARCHAR(30) DEFAULT "Joined the platform";
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
   END IF;
@@ -105,6 +109,7 @@ thisBegin:BEGIN
 END ;;
 
 
+DROP TRIGGER IF EXISTS `tbd_player` ;;
 CREATE TRIGGER `tbd_player` BEFORE DELETE ON `player` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -116,6 +121,7 @@ thisBegin:BEGIN
 END ;;
 
 
+DROP TRIGGER IF EXISTS `tad_player` ;;
 CREATE TRIGGER `tad_player` AFTER DELETE ON `player` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -134,6 +140,7 @@ thisBegin:BEGIN
 END ;;
 
 
+DROP TRIGGER IF EXISTS `tai_player_badge` ;;
 CREATE TRIGGER `tai_player_badge` AFTER INSERT ON `player_badge` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -143,10 +150,12 @@ thisBegin:BEGIN
   CALL add_badge_stream(NEW.player_id,'badge',NEW.badge_id);
 END ;;
 
+DROP TRIGGER IF EXISTS `tai_player_finding` ;;
 CREATE TRIGGER `tai_player_finding` AFTER INSERT ON `player_finding` FOR EACH ROW
 thisBegin:BEGIN
   DECLARE local_target_id INT;
   DECLARE headshoted INT default null;
+  DECLARE min_finding,min_treasure,max_finding,max_treasure, max_val, min_val DATETIME;
 
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -161,7 +170,10 @@ thisBegin:BEGIN
   SET local_target_id=(SELECT target_id FROM finding WHERE id=NEW.finding_id);
   SET headshoted=(select true as headshoted FROM target as t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=NEW.player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=NEW.player_id WHERE t.id=local_target_id   GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id));
   IF headshoted IS NOT NULL THEN
-    INSERT INTO headshot (player_id,target_id,created_at) VALUES (NEW.player_id,local_target_id,now());
+    SELECT min(ts),max(ts) INTO min_finding,max_finding FROM player_finding WHERE player_id=NEW.player_id AND finding_id IN (SELECT id FROM finding WHERE target_id=local_target_id);
+    SELECT min(ts),max(ts) INTO min_treasure,max_treasure FROM player_treasure WHERE player_id=NEW.player_id AND treasure_id IN (SELECT id FROM treasure WHERE target_id=local_target_id);
+    SELECT GREATEST(max_finding, max_treasure), LEAST(min_finding, min_treasure) INTO max_val,min_val;
+    INSERT INTO headshot (player_id,target_id,created_at,timer) VALUES (NEW.player_id,local_target_id,now(),UNIX_TIMESTAMP(max_val)-UNIX_TIMESTAMP(min_val));
     INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'headshot',local_target_id,0,'','','','',now());
   END IF;
 END ;;
@@ -171,6 +183,7 @@ END ;;
 -- Keep track of changes on player_last. This is needed in order to be able
 -- to troubleshoot and investigate problems
 --
+DROP TRIGGER IF EXISTS `tau_player_last` ;;
 CREATE TRIGGER `tau_player_last` AFTER UPDATE ON `player_last` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -186,12 +199,12 @@ END ;;
 --
 -- Add a stream notification for the answered question
 --
+DROP TRIGGER IF EXISTS `tai_player_question` ;;
 CREATE TRIGGER `tai_player_question` AFTER INSERT ON `player_question` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
   END IF;
-
   CALL add_stream(NEW.player_id,'question',NEW.question_id);
 END ;;
 
@@ -199,6 +212,7 @@ END ;;
 -- On any change of the SSL record of the user, update the CRL list with the
 -- past values so that we can revoke the old keys
 --
+DROP TRIGGER IF EXISTS `tau_player_ssl` ;;
 CREATE TRIGGER `tau_player_ssl` AFTER UPDATE ON `player_ssl` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -210,19 +224,24 @@ thisBegin:BEGIN
   END IF;
 END ;;
 
+
+DROP TRIGGER IF EXISTS `tad_player_ssl` ;;
 CREATE TRIGGER `tad_player_ssl` AFTER DELETE ON `player_ssl` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
   END IF;
-
   INSERT INTO `crl` values (NULL,OLD.player_id,OLD.subject,OLD.csr,OLD.crt,OLD.txtcrt,OLD.privkey,NOW());
 END ;;
 
+
+DROP TRIGGER IF EXISTS `tai_player_treasure` ;;
 CREATE TRIGGER `tai_player_treasure` AFTER INSERT ON `player_treasure` FOR EACH ROW
 thisBegin:BEGIN
   DECLARE local_target_id INT;
   DECLARE headshoted INT default null;
+  DECLARE min_finding,min_treasure,max_finding,max_treasure, max_val, min_val DATETIME;
+
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
   END IF;
@@ -234,11 +253,16 @@ thisBegin:BEGIN
   SET headshoted=(select true as headshoted FROM target as t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=NEW.player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=NEW.player_id WHERE t.id=local_target_id   GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id));
 
   IF headshoted IS NOT NULL THEN
-      INSERT INTO headshot (player_id,target_id,created_at) VALUES (NEW.player_id,local_target_id,now());
+      SELECT min(ts),max(ts) INTO min_finding,max_finding FROM player_finding WHERE player_id=NEW.player_id AND finding_id IN (SELECT id FROM finding WHERE target_id=local_target_id);
+      SELECT min(ts),max(ts) INTO min_treasure,max_treasure FROM player_treasure WHERE player_id=NEW.player_id AND treasure_id IN (SELECT id FROM treasure WHERE target_id=local_target_id);
+      SELECT GREATEST(max_finding, max_treasure), LEAST(min_finding, min_treasure) INTO max_val,min_val;
+      INSERT INTO headshot (player_id,target_id,created_at,timer) VALUES (NEW.player_id,local_target_id,now(),UNIX_TIMESTAMP(max_val)-UNIX_TIMESTAMP(min_val));
       INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'headshot',local_target_id,0,'','','','',now());
   END IF;
 END ;;
 
+
+DROP TRIGGER IF EXISTS `tbi_profile` ;;
 CREATE TRIGGER `tbi_profile` BEFORE INSERT ON `profile` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -260,29 +284,21 @@ thisBegin:BEGIN
   END IF;
 END ;;
 
-CREATE TRIGGER tau_report AFTER UPDATE ON report FOR EACH ROW
-thisBegin:BEGIN
-  IF (@TRIGGER_CHECKS = FALSE) THEN
-    LEAVE thisBegin;
-  END IF;
 
-  IF OLD.status='pending' and NEW.status='approved' THEN
-    CALL add_stream(NEW.player_id,'report',NEW.id);
-  END IF;
-END ;;
 
+DROP TRIGGER IF EXISTS `tad_spin_queue` ;;
 CREATE TRIGGER `tad_spin_queue` AFTER DELETE ON `spin_queue` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
   END IF;
-
   INSERT INTO `spin_history` (target_id,player_id,created_at,updated_at) VALUES (OLD.target_id,OLD.player_id,OLD.created_at,NOW());
 END ;;
 
 -- XXXFIXMEXXX This needs to be optimised with an UPDATE instead of INSERT and
 -- only when points>0
-CREATE TRIGGER tai_stream AFTER INSERT ON stream FOR EACH ROW
+DROP TRIGGER IF EXISTS `tai_stream` ;;
+CREATE TRIGGER `tai_stream` AFTER INSERT ON stream FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -294,6 +310,7 @@ thisBegin:BEGIN
   END IF;
 END ;;
 
+DROP TRIGGER IF EXISTS `tai_sysconfig` ;;
 CREATE TRIGGER `tai_sysconfig` AFTER INSERT ON `sysconfig` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -306,6 +323,7 @@ thisBegin:BEGIN
   SELECT memc_set(CONCAT('sysconfig:',NEW.id),NEW.val) INTO @devnull;
 END ;;
 
+DROP TRIGGER IF EXISTS `tau_sysconfig` ;;
 CREATE TRIGGER `tau_sysconfig` AFTER UPDATE ON `sysconfig` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -322,6 +340,7 @@ thisBegin:BEGIN
 END ;;
 
 
+DROP TRIGGER IF EXISTS `tad_sysconfig` ;;
 CREATE TRIGGER `tad_sysconfig` AFTER DELETE ON `sysconfig` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -335,6 +354,7 @@ thisBegin:BEGIN
 END ;;
 
 -- XXXFIXMEXXX ONLY UPDATE ACTIVE TARGETS
+DROP TRIGGER IF EXISTS `tai_target` ;;
 CREATE TRIGGER `tai_target` AFTER INSERT ON `target` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -349,6 +369,7 @@ thisBegin:BEGIN
 END ;;
 
 -- Schedule spin of target when it gets headshoted
+DROP TRIGGER IF EXISTS `tai_headshot` ;;
 CREATE TRIGGER `tai_headshot` AFTER INSERT ON `headshot` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -363,5 +384,3 @@ END ;;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2020-01-02 11:27:53

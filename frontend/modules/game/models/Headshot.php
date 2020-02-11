@@ -32,8 +32,8 @@ class Headshot extends \yii\db\ActiveRecord
     {
         return [
             [['player_id', 'target_id'], 'required'],
-            [['player_id', 'target_id'], 'integer'],
-            [['created_at'], 'safe'],
+            [['player_id', 'target_id','timer'], 'integer'],
+            [['created_at','timer'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
@@ -49,6 +49,7 @@ class Headshot extends \yii\db\ActiveRecord
             'player_id' => Yii::t('app', 'Player ID'),
             'target_id' => Yii::t('app', 'Target ID'),
             'created_at' => Yii::t('app', 'Created At'),
+            'timer' => Yii::t('app', 'Timer'),
         ];
     }
 

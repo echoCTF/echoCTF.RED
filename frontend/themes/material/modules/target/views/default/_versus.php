@@ -9,7 +9,6 @@ if(date('md')==="0214")
 {
   $headshot_icon='fa-heart';
   $noheadshot_icon='fa-heartbeat';
-
 }
 else
 {
@@ -28,7 +27,10 @@ else
             'title'=>sprintf('%s / %s',$target->name,long2ip($target->ip)),
             'footer'=>sprintf('<div class="stats">%s</div>',$target->purpose),
         ]);
-        echo "<p class='text-danger'><i class='material-icons'>flag</i> ", $target->total_treasures," / ";
+        echo "<p class='text-danger'><i class='material-icons'>flag</i> Flags<br/>";
+        echo  "<small><code class='text-danger'>";
+        echo $target->treasureCategoriesFormatted;
+        echo "</code></small><br/>";
         echo "<i class='material-icons'>whatshot</i> ", $target->total_findings,"<br/>",number_format($target->points), " pts</p>";
         Card::end(); ?>
       </div>
@@ -37,7 +39,9 @@ else
           <i class="fa <?=$target->progress==100 ? $headshot_icon:$noheadshot_icon?>"></i>
         </div>
         <div class="progress">
-            <div class="progress-bar <?=$target->progress==100 ? 'bg-gradual-progress':'bg-danger text-dark'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><?=$target->progress==100 ? '#Headshot': number_format($target->progress).'%'?></div>
+            <div class="progress-bar <?=$target->progress==100 ? 'bg-gradual-progress':'bg-danger text-dark'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <?=$target->progress==100 ? '#headshot in '.number_format($target->headshot($identity->player_id)->timer).' seconds': number_format($target->progress).'%'?>
+            </div>
         </div>
       </div>
       <div class="col-lg-4 col-md-6 col-sm-6">
