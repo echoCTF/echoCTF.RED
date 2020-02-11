@@ -4,6 +4,9 @@ namespace app\modules\gameplay\models;
 
 use Yii;
 use app\modules\frontend\models\Player;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+
 /**
  * This is the model class for table "network_player".
  *
