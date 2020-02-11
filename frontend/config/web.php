@@ -224,6 +224,8 @@ $config = [
                 'site/captcha'=>'site/captcha',
                 'target/<id:\d+>/vs/<profile_id:\d+>'=>'target/default/versus',
                 'target/<id:\d+>/versus/<profile_id:\d+>'=>'target/default/versus',
+                // Network Module
+                //'networks' => 'network/default/index',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],
