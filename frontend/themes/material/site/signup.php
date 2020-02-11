@@ -23,12 +23,12 @@ $this->title = Yii::$app->sys->event_name. ' Signup';
                 <?=$form->field($model, 'email') ?>
 
                 <?=$form->field($model, 'password')->passwordInput() ?>
-                <?=$form->field($model, 'terms_and_conditions')->checkbox([])->hint('')->label($model->attributeLabels()['terms_and_conditions']) ?>
-                <?=$form->field($model, 'gdpr')->checkbox(['label'=>$model->attributeLabels()['gdpr']])->hint('') ?>
-
 
                 <?php echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::classname(), ['options'=>['placeholder'=>'enter captcha code']])->label(false) ?>
 
+                <p><small>By signing up you accept the echoCTF.RED <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>
+                  and <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>.</small>
+                </p>
                 <div class="form-group">
                     <?=Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
                 </div>

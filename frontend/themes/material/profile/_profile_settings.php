@@ -54,13 +54,7 @@ $this->_fluid="-fluid";
     </div>
     <div class="row">
       <div class="col-lg-4">
-		      <?=$form->field($model, 'terms_and_conditions')->checkbox(['label'=>$model->attributeLabels()['terms_and_conditions']])->hint('')->label(false) ?>
-      </div>
-      <div class="col-lg-4">
         <?=$form->field($model, 'mail_optin')->checkbox(['label'=>$model->attributeLabels()['mail_optin']])->hint('')->label(false) ?>
-      </div>
-      <div class="col-lg-4">
-        <?=$form->field($model, 'gdpr')->checkbox(['label'=>$model->attributeLabels()['gdpr']])->hint('')->label(false) ?>
       </div>
     </div>
     <div class="form-group">

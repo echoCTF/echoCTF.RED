@@ -25,9 +25,9 @@ class SignupForm extends Model
     public function rules()
     {
         return [
-            [['terms_and_conditions','gdpr'],'required'],
+            //[['terms_and_conditions','gdpr'],'required'],
             [['terms_and_conditions','gdpr'],'boolean'],
-            [['terms_and_conditions','gdpr'],'default','value'=>false],
+            [['terms_and_conditions','gdpr'],'default','value'=>true],
             [['gdpr'], 'in', 'range' => [true],'message'=>'You need to accept our Privacy Policy'],
             [['terms_and_conditions'], 'in', 'range' => [true],'message'=>'You need to accept our Terms and Conditions'],
             ['username', 'trim'],
