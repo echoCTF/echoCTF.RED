@@ -176,7 +176,7 @@ $config = [
         'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => true, // only rule urls are valid
             'showScriptName' => false,
             'rules' => [
                 // app/controllers/SiteController.php
@@ -212,8 +212,8 @@ $config = [
                 // HELP MODULE
                 'help/faq' => 'help/faq/index',
                 'faq' => 'help/faq/index',
-                'help/rules' => 'help/rule/index',
-                'rules' => 'help/rule/index',
+                //'help/rules' => 'help/rule/index',
+                //'rules' => 'help/rule/index',
                 'help/instructions' => 'help/instruction/index',
                 'instructions' => 'help/instruction/index',
                 // app/controllers/LegalController.php

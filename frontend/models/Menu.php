@@ -19,9 +19,9 @@ class Menu
                     //['label' => 'Networks', 'icon'=>'bug_report','url' => ['/network/default/index'],'visible'=>!Yii::$app->user->isGuest,'active'=>\Yii::$app->controller->module->id=="network"],
                     ['label' => 'Challenges', 'icon'=>'extension','url' => ['/challenge/default/index'],'visible'=>!Yii::$app->user->isGuest,'active'=>\Yii::$app->controller->module->id=="challenge"],
                     //['label' => 'Tutorials', 'icon'=>'developer_board','url' => ['/tutorial/default/index'],'visible'=>!Yii::$app->user->isGuest,'active'=>\Yii::$app->controller->module->id=="tutorial"],
-                    ['label' => 'FAQ', 'icon'=>'help', 'url' => ['/help/faq/index']],
-                    ['label' => 'Rules','icon'=>'list_alt', 'url' => ['/help/rule/index']],
+                    //['label' => 'Rules','icon'=>'list_alt', 'url' => ['/help/rule/index']],
                     ['label' => 'Instructions', 'icon'=>'info','url' => ['/help/instruction/index']],
+                    ['label' => 'FAQ', 'icon'=>'help', 'url' => ['/help/faq/index']],
                     ['label' => 'Changelog', 'icon'=>'assignment','url' => ['/site/changelog']],
                 ]
             ]
