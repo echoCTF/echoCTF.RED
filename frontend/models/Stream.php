@@ -103,7 +103,7 @@ class Stream extends \yii\db\ActiveRecord
     public function getFormatted(bool $pub=true)
     {
       if(!Yii::$app->user->isGuest && Yii::$app->user->id==$this->player_id) $pub=false;
-      
+
       $icon=array(
         'headshot'=>'<i class="fas fa-skull" style="font-size: 1.5em;"></i>',
         'treasure'=>'<i class="fas fa-flag" style="font-size: 1.5em;"></i>',
@@ -126,7 +126,11 @@ class Stream extends \yii\db\ActiveRecord
           $message=sprintf("%s <b>%s</b> got the badge [<code>%s</code>]", $icon[$this->model],$this->player->profile->link,Badge::findOne(['id'=>$this->model_id])->name);
           break;
         case 'headshot':
-          $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>]", $icon[$this->model],$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
+          $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$this->model_id,'player_id'=>$this->player_id]);
+          if($headshot->timer>0)
+            $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes", $icon[$this->model],$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]),number_format($headshot->timer/60));
+          else
+            $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>]", $icon[$this->model],$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
           break;
       	case 'user':
       		$message=sprintf("%s <b>%s</b> %s", $icon[$this->model],$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
