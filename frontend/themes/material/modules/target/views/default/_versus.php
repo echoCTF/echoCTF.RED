@@ -15,6 +15,11 @@ else
   $headshot_icon='fa-skull-crossbones';
   $noheadshot_icon='fa-not-equal';
 }
+$player_timer='';
+if($target->progress==100) {
+  if($target->headshot($identity->player_id)!=null && $target->headshot($identity->player_id)->timer>0)
+    $player_timer='<i class="fas fa-stopwatch"></i> '.number_format($target->headshot($identity->player_id)->timer/60).' minutes';
+}
 ?>
 <div class="row">
       <div class="col-lg-4 col-md-6 col-sm-6">
@@ -27,11 +32,11 @@ else
             'title'=>sprintf('%s / %s',$target->name,long2ip($target->ip)),
             'footer'=>sprintf('<div class="stats">%s</div>',$target->purpose),
         ]);
-        echo "<p class='text-danger'><i class='material-icons'>flag</i> Flags<br/>";
-        echo  "<small><code class='text-danger'>";
+        echo "<p class='text-danger'><i class='fas fa-flag'></i> ",$target->total_treasures,": Flags<br/>";
+        echo  "<small>(<code class='text-danger'>";
         echo $target->treasureCategoriesFormatted;
-        echo "</code></small><br/>";
-        echo "<i class='material-icons'>whatshot</i> ", $target->total_findings,"<br/>",number_format($target->points), " pts</p>";
+        echo "</code>)</small><br/>";
+        echo "<i class='fas fa-fire'></i> ", $target->total_findings,": Services<br/><i class='fas fa-calculator'></i> ",number_format($target->points), " pts</p>";
         Card::end(); ?>
       </div>
       <div class="col-lg-4 col-md-6 col-sm-6">
@@ -40,7 +45,7 @@ else
         </div>
         <div class="progress">
             <div class="progress-bar <?=$target->progress==100 ? 'bg-gradual-progress':'bg-danger text-dark'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                <?=$target->progress==100 ? '#headshot in '.number_format($target->headshot($identity->player_id)->timer).' seconds': number_format($target->progress).'%'?>
+                <?=$target->progress==100 ? '#headshot': number_format($target->progress).'%'?>
             </div>
         </div>
       </div>
@@ -58,8 +63,10 @@ else
                            'linkOptions'=>['class'=>'target-view-tweet','target'=>'_blank','style'=>'font-size: 1.4em;'],
                         ]),Html::encode($identity->bio)),
         ]);
-        echo "<p class='text-primary '><i class='material-icons'>flag</i> ", $target->player_treasures," / ";
-        echo "<i class='material-icons'>whatshot</i> ", $target->player_findings,"<br/>",number_format($playerPoints)," pts<br/>";
+        echo "<p class='text-primary '><i class='fas fa-flag-checkered'></i> ", $target->player_treasures,": Flags found<br/>";
+        echo '<i class="fas fa-fire-alt"></i> ', $target->player_findings,": Services discovered<br/>";
+        echo '<i class="fas fa-calculator"></i> ',number_format($playerPoints)," pts<br/>";
+        echo $player_timer;
         Card::end(); ?>
       </div>
 </div>
