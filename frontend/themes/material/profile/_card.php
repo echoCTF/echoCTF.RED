@@ -2,6 +2,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
+use app\modules\game\models\Headshot;
+
 ?>
 <div class="card card-profile">
   <div class="card-avatar bg-primary">
@@ -50,6 +52,11 @@ use app\widgets\Twitter;
             <li class="nav-item text-left"><strong><i class="fas fa-user"></i> Level <?=intval($profile->experience->id)?></strong> <span class="pull-right"><?=$profile->experience->name?></span></li>
             <li class="nav-item text-left"><strong><i class="fa fa-list"></i> Points</strong> <span class="pull-right"><?=number_format($profile->owner->playerScore->points)?></span></li>
             <li class="nav-item text-left"><strong><i class="fas fa-skull-crossbones"></i> Headshosts</strong> <span class="pull-right"><?=$profile->headshotsCount?></span></li>
+            <li class="nav-item text-left"><strong><i class="fas fa-stopwatch"></i> Avg. time for headshot</strong> <span class="pull-right"><?php
+              $hs=Headshot::find()->player_avg_time($profile->player_id)->one();
+              if($hs && $hs->average>0)
+                echo number_format($hs->average/60)," minutes";
+            ?></span></li>
             <li class="nav-item text-left"><strong><i class="fas fa-flag"></i> Flags</strong> <span class="pull-right"><?php echo $profile->totalTreasures;?></span></li>
             <li class="nav-item text-left"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo $profile->totalFindings;?></span></li>
         </ul>

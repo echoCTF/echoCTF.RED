@@ -39,7 +39,7 @@ if($target->progress==100) {
         echo "<i class='fas fa-fire'></i> ", $target->total_findings,": Services<br/><i class='fas fa-calculator'></i> ",number_format($target->points), " pts";
         $hs=Headshot::find()->target_avg_time($target->id)->one();
         if($hs && $hs->average>0)
-          echo '<br/><i class="fas fa-stopwatch"></i> Avg. headshot: '.number_format($hs->timer/60).' minutes';
+          echo '<br/><i class="fas fa-stopwatch"></i> Avg. headshot: '.number_format($hs->average/60).' minutes';
         echo "</p>";
         Card::end(); ?>
       </div>
