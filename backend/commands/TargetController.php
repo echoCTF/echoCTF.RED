@@ -107,11 +107,12 @@ class TargetController extends Controller {
       $query->andFilterWhere([
           'id' => $target,
       ]);
+
     if($filter!=null)
       $query->andFilterWhere(['like', 'INET_NTOA(ip)', $target])
           ->orFilterWhere(['like', 'fqdn', $filter])
           ->orFilterWhere(['like', 'server', $filter]);
-    }
+
     foreach($query->all() as $t)
     {
       echo "Pulling: ",$t->fqdn," / ",$t->ipoctet;
