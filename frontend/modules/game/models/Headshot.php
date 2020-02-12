@@ -3,8 +3,13 @@
 namespace app\modules\game\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use yii\db\Expression;
 use app\models\Player;
 use app\modules\target\models\Target;
+use yii\behaviors\AttributeTypecastBehavior;
+
 /**
  * This is the model class for table "headshot".
  *
@@ -17,6 +22,28 @@ use app\modules\target\models\Target;
  */
 class Headshot extends \yii\db\ActiveRecord
 {
+  public function behaviors()
+  {
+      return [
+          'typecast' => [
+              'class' => AttributeTypecastBehavior::className(),
+              'attributeTypes' => [
+                  'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                  'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                  'timer' =>  AttributeTypecastBehavior::TYPE_INTEGER,
+              ],
+              'typecastAfterValidate' => true,
+              'typecastBeforeSave' => true,
+              'typecastAfterFind' => true,
+        ],
+        [
+              'class' => TimestampBehavior::className(),
+              'createdAtAttribute' => 'created_at',
+              'value' => new Expression('NOW()'),
+        ],
+      ];
+  }
+
     /**
      * {@inheritdoc}
      */
