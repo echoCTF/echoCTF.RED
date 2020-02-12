@@ -9,10 +9,21 @@ namespace app\modules\game\models;
  */
 class HeadshotQuery extends \yii\db\ActiveQuery
 {
+
+    public function target_avg_time($target_id)
+    {
+        return $this->addSelect(['*','avg(timer) as average'])->andWhere(['target_id'=>$target_id]);
+    }
+    public function player_avg_time($player_id)
+    {
+        return $this->addSelect(['*','avg(timer) as average'])->andWhere(['player_id'=>$player_id]);
+    }
+
     public function mine()
     {
         return $this->andWhere(['player_id'=>\Yii::$app->user->id]);
     }
+
     public function last()
     {
         return $this->orderBy(['created_at'=>SORT_DESC])->limit(1);

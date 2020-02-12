@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use app\widgets\Twitter;
-
+use app\modules\game\models\Headshot;
 if(date('md')==="0214")
 {
   $headshot_icon='fa-heart';
@@ -36,7 +36,11 @@ if($target->progress==100) {
         echo  "<small>(<code class='text-danger'>";
         echo $target->treasureCategoriesFormatted;
         echo "</code>)</small><br/>";
-        echo "<i class='fas fa-fire'></i> ", $target->total_findings,": Services<br/><i class='fas fa-calculator'></i> ",number_format($target->points), " pts</p>";
+        echo "<i class='fas fa-fire'></i> ", $target->total_findings,": Services<br/><i class='fas fa-calculator'></i> ",number_format($target->points), " pts";
+        $hs=Headshot::find()->target_avg_time($target->id)->one();
+        if($hs && $hs->average>0)
+          echo '<br/><i class="fas fa-stopwatch"></i> Avg. headshot: '.number_format($hs->timer/60).' minutes';
+        echo "</p>";
         Card::end(); ?>
       </div>
       <div class="col-lg-4 col-md-6 col-sm-6">
