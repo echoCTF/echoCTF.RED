@@ -1,4 +1,13 @@
-## v0.9 - 0x/02/2020 Ironing out rough edges
+## v0.10 -
+* [x] Add headshot timer support (time difference in seconds between first contact and completion)
+  - Display average time for per target (target/xxx)
+  - Display average time for headshot per player (profile/xx)
+* [x] Add root and env flags separately on the target view page
+(suggestion by [@mpz https://echoctf.red/profile/4240779](https://echoctf.red/profile/4240779)
+* [x] On profile tweet icon add `headshots` and other __bragging__ related data
+* [x] Merge Rules into Instructions and FAQ, we had more pages that wikipedia
+
+## v0.9 - 06/02/2020 Ironing out rough edges
 * [x] Update `tweek` and make it straightforward to exploit, should have been exploited by now
 * [x] Update `craig` hints and descriptions to ensure exploitation is straightforward
 * [x] Update `CVE-2019-1010174` and give more points as well as explaining the services a little bit more
