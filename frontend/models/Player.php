@@ -109,6 +109,7 @@ class Player extends ActiveRecord implements IdentityInterface
             [['new_password',], 'string', 'max'=>255],
             [['confirm_password'], 'string', 'max'=>255],
             [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
+            [['created','ts'],'safe'],
         ];
     }
 
