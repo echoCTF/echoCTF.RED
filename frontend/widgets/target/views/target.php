@@ -43,14 +43,27 @@ echo GridView::widget([
        'format'=>'raw',
        'value'=>function($model){return sprintf('<img src="/images/targets/_%s-thumbnail.png" alt="%s" class="rounded-circle" style="height: 20px; max-height: 20px; max-width: 20px">',$model->name, $model->fqdn);}
      ],
-     'id',
+     [
+       'headerOptions' => ['class'=>'d-none d-xl-table-cell',],
+       'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
+       'attribute'=>'id',
+
+     ],
      [
        'attribute'=>'name',
        'format'=>'raw',
        'label'=>'Target',
-       'value'=>function($model) { return Html::a(Html::encode($model->name), ['/target/default/index', 'id'=>$model->id]); }
+       'value'=>function($model) {
+         $append="";
+         if($model->status==='powerup')
+           $append=sprintf(' <abbr title="Scheduled for powerup at %s"><i class="fas fa-arrow-alt-circle-up"></i></abbr>',$model->scheduled_at);
+         if($model->status==='powerdown')
+           $append=sprintf(' <abbr title="Scheduled for powerdown at %s"><i class="fas fa-arrow-alt-circle-down"></i></abbr>',$model->scheduled_at);
+
+         return Html::a(Html::encode($model->name), ['/target/default/index', 'id'=>$model->id]).$append;
+       }
      ],
-     [
+/*     [
        'attribute'=>'status',
        'label'=>'Status',
        'contentOptions' => ['class' => 'text-center'],
@@ -64,7 +77,7 @@ echo GridView::widget([
 
           return sprintf('<abbr title="Target online"><i class="fas fa-plug" style="font-size: 1.2em"></i></abbr>',$model->status);
         }
-     ],
+     ],*/
      [
        'attribute'=>'ip',
        'label'=>'IP',
@@ -81,6 +94,7 @@ echo GridView::widget([
        'value'=>function($model){
          $progress=($model->difficulty*20);
          $color="";
+         $abbr=ucfirst($model->difficultyText);
          switch($model->difficulty)
          {
            case 0:
@@ -102,9 +116,9 @@ echo GridView::widget([
            case 4:
              $bgcolor="text-danger";
            default:
-            $icon='fa-battery-full';
+             $icon='fa-battery-full';
          }
-         return sprintf('<i class="fas %s %s" style="font-size: 2.0em;"></i>',$icon,$bgcolor);
+         return sprintf('<abbr title="%s"><i class="fas %s %s" style="font-size: 1.3vw;"></i></abbr>',$abbr,$icon,$bgcolor);
        },
      ],
      [
@@ -141,7 +155,13 @@ echo GridView::widget([
        'contentOptions' => ['class' => 'text-center'],
        'attribute'=>'headshots',
        'label'=>'<abbr title="Number of users who owned all flags and services: Headshots"><i class="fas fa-skull"></i></abbr>',
-       'value'=>function($model) { if($model->total_treasures==$model->player_treasures && $model->player_findings==$model->total_findings) return '<i class="fas fa-skull text-primary"></i> '.count($model->headshots); return '<i class="fas fa-skull"></i> '.count($model->headshots); },
+       'value'=>function($model) {
+          $msg=sprintf("%d user%s have managed to headshot this target",count($model->headshots),count($model->headshots)>1 ? 's': '');
+          if($model->total_treasures==$model->player_treasures && $model->player_findings==$model->total_findings)
+          {
+            return '<abbr title="'.$msg.'"><i class="fas fa-skull text-primary"></i> '.count($model->headshots).'</abbr>';
+          }
+          return '<abbr title="'.$msg.'"><i class="fas fa-skull"></i></abbr>'; },
      ],
      [
        'format'=>'raw',
