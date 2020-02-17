@@ -219,7 +219,7 @@ thisBegin:BEGIN
     LEAVE thisBegin;
   END IF;
 
-  IF OLD.subject!=NEW.subject OR OLD.csr!=NEW.csr OR OLD.crt!=NEW.crt OR OLD.privkey!=NEW.privkey THEN
+  IF OLD.subject!=NEW.subject OR OLD.csr!=NEW.csr OR OLD.crt!=NEW.crt OR OLD.privkey!=NEW.privkey and OLD.subject is not null and OLD.subject!='' THEN
     INSERT INTO `crl` values (NULL,OLD.player_id,OLD.subject,OLD.csr,OLD.crt,OLD.txtcrt,OLD.privkey,NOW());
   END IF;
 END ;;
