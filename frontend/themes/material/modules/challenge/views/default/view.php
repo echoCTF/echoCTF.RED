@@ -21,7 +21,7 @@ $this->_url=\yii\helpers\Url::to(['view','id'=>$model->id],'https');
       <h4><b>Category:</b> <?=Html::encode($model->category);?></h4>
       <h4><b>Difficulty:</b> <?=Html::encode($model->difficulty)?></h4>
       <h4><b>Points:</b> <?=Html::encode(number_format($model->points));?></h4>
-      <?=trim($model->filename) !== '' ? '<h4><b>Challenge file:</b> '.Html::a($model->filename,['/challenge/default/download','id'=>$model->id]).'</h4>' : ''?>
+      <?=trim($model->filename) !== '' ? '<h4><b>Challenge file:</b> '.Html::a($model->filename,['/challenge/default/download','id'=>$model->id],['data-pjax'=>"0"]).'</h4>' : ''?>
       <p><?=$model->description;?></p>
     </div>
 <?php
