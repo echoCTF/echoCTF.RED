@@ -193,7 +193,7 @@ $config = [
                 // app/modules/challenge/controllers/ChallengeController.php
                 'challenges' => 'challenge/default/index',
                 'challenge/<id:\d+>' => 'challenge/default/view',
-                'challenge/<id:\d+>/download' => 'challenge/default/download',
+                //'challenge/<id:\d+>/download' => 'challenge/default/download',
                 // app/modules/target/controllers/TargetController.php
                 'target/<id:\d+>' => 'target/default/index',
                 //'target/<id:\d+>/badge' => 'target/default/badge',
