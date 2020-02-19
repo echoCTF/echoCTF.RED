@@ -32,6 +32,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'target_id',
             'target.fqdn',
             'target.ip',
+            'timer',
+            'rating',
             'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],
