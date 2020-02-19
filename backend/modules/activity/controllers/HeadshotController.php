@@ -76,6 +76,35 @@ class HeadshotController extends Controller
         ]);
     }
 
+
+    /**
+     * Gives a Headshot for a target on a Player model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function actionGive()
+    {
+      $model = new Headshot();
+
+      if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+          Yii::$app->db->createCommand('insert ignore into player_finding (player_id,finding_id) select :player_id,id from finding where target_id=:target_id')
+           ->bindValue(':player_id', $model->player_id)
+           ->bindValue(':target_id', $model->target_id)
+           ->query();
+          Yii::$app->db->createCommand('insert ignore into player_treasure (player_id,treasure_id) select :player_id,id from treasure where target_id=:target_id')
+           ->bindValue(':player_id', $model->player_id)
+           ->bindValue(':target_id', $model->target_id)
+           ->query();
+
+          return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
+      }
+
+      return $this->render('create', [
+          'model' => $model,
+      ]);
+    }
+
+
     /**
      * Updates an existing Headshot model.
      * If update is successful, the browser will be redirected to the 'view' page.

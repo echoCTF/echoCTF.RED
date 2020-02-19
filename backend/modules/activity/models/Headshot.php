@@ -33,7 +33,7 @@ class Headshot extends \yii\db\ActiveRecord
         return [
             [['player_id', 'target_id'], 'required'],
             [['player_id', 'target_id','timer','rating'], 'integer'],
-            [['created_at'], 'safe'],
+            [['created_at', 'rating','timer'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],

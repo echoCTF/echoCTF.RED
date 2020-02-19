@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'player_id',
             'target_id',
             'timer',
-            'rating,'
+            'rating',
             'created_at',
         ],
     ]) ?>
