@@ -12,8 +12,9 @@ var mysql = require('mysql'),
     }),
   POLLING_INTERVAL = 20000,
   pollingTimer,
-  lastTS=config.lastID,
   headersOpt = { "content-type": "application/json" };
+
+const lastTS = process.env.discord_lastTS || Math.floor(new Date() / 1000);
 
 var pollingLoop = function() {
 
