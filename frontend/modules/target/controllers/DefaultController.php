@@ -121,13 +121,12 @@ class DefaultController extends Controller
      * Renders a Target model details view
      * @return string
      */
-    public function actionIndex($id)
+    public function actionIndex(int $id)
     {
       $sum=0;
       $userTarget=null;
-      if(Yii::$app->user->isGuest)
-        $target=$this->findModel($id);
-      else
+      $target=$this->findModel($id);
+      if(!Yii::$app->user->isGuest)
       {
         $target=Target::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
         $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>Yii::$app->user->id,'finding.target_id'=>$id])->all();
@@ -174,6 +173,18 @@ class DefaultController extends Controller
         ]);
     }
 
+    /**
+     * Rate the difficulty of the given target
+     */
+/*    public function actionRate(int $id)
+    {
+         $model = Headshot::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$id]);
+         return $this->renderAjax('_rate_target', [
+                  'model' => $model,
+          ]);
+
+    }
+*/
     /**
      * Claims a treasure flag for a target
      * @return string
