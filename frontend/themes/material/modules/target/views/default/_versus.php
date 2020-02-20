@@ -23,7 +23,22 @@ if($target->progress==100) {
 ?>
 <div class="row">
       <div class="col-lg-4 col-md-6 col-sm-6">
-        <?php Card::begin([
+<?php /* if($target->headshot($identity->player_id)!==null && $identity->player_id===Yii::$app->user->id)
+{
+  if($target->headshot($identity->player_id)->rating===-1)
+  {
+    echo "<p>Hey, don't forget to <b>",
+          Html::a('rate me <i class="fas fa-star"></i>',
+                  ['/target/default/rate','id' => $target->id],
+                  [
+                    'title' => 'Rate this target',
+                    'data-toggle'=>'modal',
+                    'data-target'=>'#modalrate',
+                  ]),
+                  "</b>.</p>";
+ }
+}*/
+         Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
             'icon'=>sprintf('<img src="/images/targets/_%s.png" class="img-fluid" style="max-width: 10rem; max-height: 4rem;"/>',$target->name),
@@ -32,11 +47,11 @@ if($target->progress==100) {
             'title'=>sprintf('%s / %s',$target->name,long2ip($target->ip)),
             'footer'=>sprintf('<div class="stats">%s</div>',$target->purpose),
         ]);
-        echo "<p class='text-danger'><i class='fas fa-flag'></i> ",$target->total_treasures,": Flags<br/>";
+        echo "<p class='text-danger'><i class='fas fa-flag'></i> ",$target->total_treasures,": Flag".($target->total_treasures>1?'s':'')."<br/>";
         echo  "<small>(<code class='text-danger'>";
         echo $target->treasureCategoriesFormatted;
         echo "</code>)</small><br/>";
-        echo "<i class='fas fa-fire'></i> ", $target->total_findings,": Services<br/><i class='fas fa-calculator'></i> ",number_format($target->points), " pts";
+        echo "<i class='fas fa-fire'></i> ", $target->total_findings,": Service".($target->total_findings>1?'s':'')."<br/><i class='fas fa-calculator'></i> ",number_format($target->points), " pts";
         $hs=Headshot::find()->target_avg_time($target->id)->one();
         if($hs && $hs->average>0)
           echo '<br/><i class="fas fa-stopwatch"></i> Avg. headshot: '.number_format($hs->average/60).' minutes';
@@ -68,7 +83,7 @@ if($target->progress==100) {
                         ]),Html::encode($identity->bio)),
         ]);
         echo "<p class='text-primary '><i class='fas fa-flag-checkered'></i> ", $target->player_treasures,": Flags found<br/>";
-        echo '<i class="fas fa-fire-alt"></i> ', $target->player_findings,": Services discovered<br/>";
+        echo '<i class="fas fa-fire-alt"></i> ', $target->player_findings,": Service".($target->player_findings>1?'s':'')." discovered<br/>";
         echo '<i class="fas fa-calculator"></i> ',number_format($playerPoints)," pts<br/>";
         echo $player_timer;
         Card::end(); ?>
