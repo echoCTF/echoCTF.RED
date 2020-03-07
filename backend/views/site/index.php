@@ -62,8 +62,12 @@ $this->title = 'echoCTF mUI';
                           return Html::a($model['title'],['activity/report/view','id'=>$model['id']]);}),['encode'=>false]) ?>
                 </p>
                 <p>
+                  <?php if(Player::find()->count()>0):?>
                   <?= Html::a(sprintf("Player %d: %s", Player::find()->limit(1)->orderBy('id desc')->one()->id, Player::find()->limit(1)->orderBy('id desc')->one()->username), ['/frontend/player/view','id'=>Player::find()->limit(1)->orderBy('id desc')->one()->id] ) ?><br/>
+                  <?php endif;?>
+                  <?php if(Stream::find()->count()>0):?>
                   <?= Html::a(sprintf("Stream %d: %s", Stream::find()->limit(1)->orderBy('id desc')->one()->id, Stream::find()->limit(1)->orderBy('id desc')->one()->formatted), ['/activity/stream/view','id'=>Stream::find()->limit(1)->orderBy('id desc')->one()->id] ) ?>
+                  <?php endif;?>
                 </p>
 
             </div>
