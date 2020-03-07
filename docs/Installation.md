@@ -51,6 +51,11 @@ mkdir -p backend/web/assets frontend/web/assets
 chown www-data backend/web/assets frontend/web/assets
 ```
 
+* Ensure runtime folder on both backend and fronend are also writable
+```sh
+chown www-data backend/runtime frontend/runtime
+```
+
 * Ensure your web server configuration for the frontend points to `echoCTF.RED/frontend/web`
 * Ensure your web server configuration for the backend points to `echoCTF.RED/backend/web`
  - for apache you can create `/etc/apache2/sites-available/echoCTF.RED.conf` with the following entries
