@@ -22,7 +22,6 @@ mysql echoCTF<./echoCTF.RED/schemas/echoCTF-events.sql
 cp echoCTF.RED/backend/config/cache-local.php echoCTF.RED/backend/config/cache.php
 cp echoCTF.RED/backend/config/validationKey-local.php echoCTF.RED/backend/config/validationKey.php
 cp echoCTF.RED/backend/config/db-sample.php echoCTF.RED/backend/config/db.php
-
 cp echoCTF.RED/frontend/config/memcached-local.php echoCTF.RED/frontend/config/memcached.php
 cp echoCTF.RED/frontend/config/validationKey-local.php echoCTF.RED/frontend/config/validationKey.php
 cp echoCTF.RED/frontend/config/db-local.php echoCTF.RED/frontend/config/db.php
@@ -48,8 +47,27 @@ composer install
 
 * Ensure your web server configuration for the frontend points to `echoCTF.RED/frontend/web`
 * Ensure your web server configuration for the backend points to `echoCTF.RED/backend/web`
+ - for apache you can create `/etc/apache2/sites-available/echoCTF.RED.conf` with the following entries
+```
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    ServerName echoCTF.RED
+    ServerAlias www.your_domain
+    DocumentRoot /var/www/echoCTF.RED/frontend/web/
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+    DirectoryIndex index.php
+</VirtualHost>
+<VirtualHost *:80>
+    ServerName backend.echoCTF.RED
+    DocumentRoot "/var/www/echoCTF.RED/backend/web/"
+    DirectoryIndex index.php
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+```
 
-If you're using apache you are going to need something like the following for clean URLs to work.
+ - enable mod_rewrite and add the following under `backend/web/.htaccess` and `frontend/web/.htaccess`
 ```
 RewriteEngine on
 # If a directory or a file exists, use it directly
