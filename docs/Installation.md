@@ -45,6 +45,12 @@ composer install
 ./echoCTF.RED/backend/yii migrate-red --interactive=0
 ```
 
+* Create assets folders and make sure they are writable by your webserver
+```sh
+mkdir -p backend/web/assets frontend/web/assets
+chown www-data backend/web/assets frontend/web/assets
+```
+
 * Ensure your web server configuration for the frontend points to `echoCTF.RED/frontend/web`
 * Ensure your web server configuration for the backend points to `echoCTF.RED/backend/web`
  - for apache you can create `/etc/apache2/sites-available/echoCTF.RED.conf` with the following entries
