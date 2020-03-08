@@ -47,7 +47,9 @@ use app\modules\activity\models\SpinHistory;
 class Player extends \yii\db\ActiveRecord
 {
   public $ovpn=null,$online=null,$last_seen=null;
-
+  const STATUS_DELETED = 0;
+  const STATUS_INACTIVE = 9;
+  const STATUS_ACTIVE = 10;
     /**
      * {@inheritdoc}
      */

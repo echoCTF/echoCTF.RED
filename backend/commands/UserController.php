@@ -78,6 +78,7 @@ class UserController extends Controller
         $user->username = $name;
         $user->email = $email;
         $user->status = User::STATUS_ACTIVE;
+        $user->generateAuthKey();
         $user->setPassword(empty($password) ? $random : $password);
         if ($user->save()) {
             $this->p('User "{name}" has been created.', ['name' => $user->username]);

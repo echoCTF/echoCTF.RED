@@ -162,6 +162,7 @@ class PlayerController extends Controller {
         $player->password=$password;
 
       $player->active=intval($active);
+      $player->status=10;
 
       $player->activkey=Yii::$app->security->generateRandomString(20);
       if(!$player->save())
@@ -180,21 +181,22 @@ class PlayerController extends Controller {
           $team->save(false);
         }
 
+        if($team && $team->id && $team->owner_id!=$player->id)
+        {
+          $tp=new TeamPlayer;
+          $tp->player_id=$player->id;
+          $tp->team_id=$team->id;
+          $tp->approved=0;
+          if(!$tp->save())
+            printf("Error saving team player\n");
+        }
       }
-      if($team && $team->id && $team->owner_id!=$player->id)
-      {
-        $tp=new TeamPlayer;
-        $tp->player_id=$player->id;
-        $tp->team_id=$team->id;
-        $tp->approved=0;
-        if(!$tp->save())
-          printf("Error saving team player\n");
-      }
-      $pi=new PlayerIp();
-      $pi->player_id=$player->id;
-      $pi->ipoctet=long2ip($player->id);
-      if(!$pi->save())
-        printf("Error saving Player IP\n");
+
+//      $pi=new PlayerIp();
+//      $pi->player_id=$player->id;
+//      $pi->ipoctet=long2ip($player->id);
+//      if(!$pi->save())
+//        printf("Error saving Player IP\n");
       $trans->commit();
     }
     catch (Exception $e)
