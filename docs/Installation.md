@@ -3,8 +3,9 @@ The following steps outline the installation instructions for the applications h
 
 Keep in mind that you are advised to run `frontend` and `backend` from seperate nginx instances, each with its own uid and chroot location. Similarly the same logic must be followed when/if you're using `php-fpm`.
 
-Before we start make sure you have MariaDB, NGiNX/Apache + PHP, php-memcached, composer and MEMCACHED running, this guide will not deal with these.
+Before we start make sure you have MariaDB, NGiNX/Apache + PHP, php-memcached, composer and MEMCACHED running, this guide will not deal with these. 
 
+Also make sure you have installed the following UDF https://github.com/echoCTF/memcached_functions_mysql.git
 
 * cd /var/www
 * git clone --depth 1 https://github.com/echoCTF/echoCTF.RED.git
@@ -49,6 +50,11 @@ composer install
 ```sh
 mkdir -p backend/web/assets frontend/web/assets
 chown www-data backend/web/assets frontend/web/assets
+```
+
+* Ensure runtime folder on both backend and fronend are also writable
+```sh
+chown www-data backend/runtime frontend/runtime
 ```
 
 * Ensure your web server configuration for the frontend points to `echoCTF.RED/frontend/web`
