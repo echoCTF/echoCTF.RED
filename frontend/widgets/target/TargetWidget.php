@@ -71,7 +71,7 @@ class TargetWidget extends Widget
     protected function initTargetProvider($id)
     {
       $tmod=\app\modules\target\models\Target::find();
-
+      if($tmod->count()===0) return false;
       foreach($tmod->all() as $model)
       {
         $orderByHeadshots[]=(object)['id'=>$model->id,'ip'=>$model->ip,'headshots'=>count($model->headshots)];
