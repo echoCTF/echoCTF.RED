@@ -53,6 +53,9 @@ class TargetWidget extends Widget
 
     public function run()
     {
+      $tmod=\app\modules\target\models\Target::find();
+      if(intval($tmod->count())===0) return false;
+
         TargetWidgetAsset::register($this->getView());
         return $this->render('target',[
           'dataProvider'=>$this->dataProvider,
@@ -71,7 +74,8 @@ class TargetWidget extends Widget
     protected function initTargetProvider($id)
     {
       $tmod=\app\modules\target\models\Target::find();
-      if($tmod->count()===0) return false;
+      if(intval($tmod->count())===0) return null;
+
       foreach($tmod->all() as $model)
       {
         $orderByHeadshots[]=(object)['id'=>$model->id,'ip'=>$model->ip,'headshots'=>count($model->headshots)];
