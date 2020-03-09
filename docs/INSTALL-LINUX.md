@@ -15,7 +15,6 @@ On systems with limited memory you may get similar errors during the build proce
 /sbin/swapon /var/swap.1
 ```
 
-
 Start a container with the image
 ```sh
 docker run -it echoctf_red bash
@@ -34,6 +33,14 @@ Create a player for the `frontend` interface
 Set the mail from address for new registrations
 ```sh
 ./backend/yii sysconfig/set mail_from dontreply@example.red
+```
+
+Note that in order to allow registrations from the web interface you need to
+also set the following sysconfig keys
+```sh
+./backend/yii sysconfig/set mail_fromName	"Mail From Name"
+./backend/yii sysconfig/set mail_host smtp.host.com
+./backend/yii sysconfig/set mail_port 25
 ```
 
 ## Install from source
@@ -155,19 +162,13 @@ also set the following sysconfig keys
 ### Prepare the webserver
 
 Copy the sample apache2 config and update to reflect your settings.
-
 ```sh
 a2enmod rewrite
 cp contrib/apache2-red.conf /etc/apache2/sites-enabled/echoctf.conf
 service apache2 restart
 ```
 
-The default configuration under `/etc/apache2/sites-enabled/echoctf.conf`, serve the interfaces at `http://frontend.echoctf.red` and `http://backend.echoctf.red`
-
-You will have to update your '/etc/hosts' to include the IP and hostname of the docker container to be able to access the interfaces
-```
-echo "172.17.0.2 frontend.echoctf.red backend.echoctf.red">>/etc/hosts
-```
+The default interfaces are accessible under http://localhost:8080/ for the frontend and http://localhost:8081/ for the backend.
 
 ### Make mysql populate memcache on reboot and service restarts
 ```sh
@@ -175,6 +176,8 @@ echo "init_file=/etc/mysql/mysql-init.sql" >>/etc/mysql/mariadb.conf.d/50-mysqld
 mysql < /etc/mysql/mysql-init.sql
 ```
 
-
-### Update Cron
-TODO
+## Whats next?
+* configure the docker masters
+* Configure the VPN
+* Prepare your first target
+* Configure cron

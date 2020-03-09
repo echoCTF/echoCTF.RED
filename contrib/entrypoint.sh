@@ -18,7 +18,9 @@ function echoctf() {
     echo "Fixing /etc/hosts"
     echo "${ipaddr} ${HOSTNAME}" >> /etc/hosts
   fi
-  echo "${ipaddr}"
+  echo "You can access the interfaces on:"
+  echo "* [frontend] http://${ipaddr}:8080/"
+  echo "* [backend] http://${ipaddr}:8081/"
 }
 
 echoctf

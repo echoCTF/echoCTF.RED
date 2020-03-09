@@ -63,6 +63,9 @@ RUN chmod 0700 /entrypoint.sh
 
 RUN rm -rf /usr/src/* /var/lib/apt/lists/*
 
+EXPOSE 8080/tcp
+EXPOSE 8081/tcp
+
 WORKDIR /var/www/echoCTF.RED
 CMD ["tail -f /var/log/apache2/error.log"]
 ENTRYPOINT ["/entrypoint.sh"]
