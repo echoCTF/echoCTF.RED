@@ -13,7 +13,6 @@ use app\modules\game\models\Headshot;
   </div>
   <div class="card-body">
     <h6 class="badge badge-secondary">Level <?=$profile->experience->id?> / <?=$profile->experience->name?></h6>
-<!--    <h6 class="card-category text-gray"><?=$profile->rank->ordinalPlace?> Place / Level <?=$profile->experience->id?> (<?=$profile->experience->name?>) <img src="/images/flags/shiny/24/<?=$profile->country?>.png"/></h6>-->
     <h4 class="card-title"><?=Html::encode($profile->owner->username)?></h4>
     <p class="card-description">
       <?=Html::encode($profile->bio)?>
