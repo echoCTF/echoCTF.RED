@@ -37,7 +37,7 @@ RUN set -ex; \
     cp backend/config/cache-local.php backend/config/cache.php; \
     cp backend/config/validationKey-local.php backend/config/validationKey.php; \
     cp backend/config/db-sample.php backend/config/db.php; \
-    cp frontend/config/memcached-local.php frontend/config/memcached.php; \
+    cp frontend/config/memcached-local.php frontend/config/cache.php; \
     cp frontend/config/validationKey-local.php frontend/config/validationKey.php; \
     cp frontend/config/db-local.php frontend/config/db.php; \
     mkdir -p backend/web/assets frontend/web/assets; \

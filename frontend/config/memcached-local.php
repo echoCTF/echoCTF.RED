@@ -9,5 +9,5 @@ return [
             'persistent'=>true,
         ],
     ],
-    'useMemcached'=>true,
+    'useMemcached'=>false, // Change to true if you're using php-memcached
 ];
