@@ -6,20 +6,19 @@ LABEL description="echoCTF.RED all in one"
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
     && apt-get update \
-    && apt-get install --no-install-recommends -y ansible apt-transport-https \
-    build-essential bzip2 ca-certificates dirmngr dnsutils gcc git gzip \
-    iproute2 less libc6-dev libc-client-dev libjpeg-dev libkrb5-dev libpng-dev \
-    libpq-dev libzip-dev locales-all make mariadb-client mariadb-server mcrypt \
-    netcat-traditional nginx procps psmisc socat software-properties-common \
-    memcached libmemcached-dev apache2 unzip vim vim-tiny wget zip python \
-    libtool libmariadbclient-dev autoconf automake php composer \
-    php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache
+    && apt-get install --no-install-recommends -y build-essential gcc \
+    autoconf automake git zip unzip \
+    mariadb-server mariadb-client mcrypt memcached apache2 \
+    libmemcached-dev libtool libmariadbclient-dev \
+    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
+    composer
 
 WORKDIR /var/www/echoCTF.RED
 COPY . .
 
 WORKDIR /usr/src
 RUN set -ex; \
+    echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
     service mysql start; \
     cp /var/www/echoCTF.RED/contrib/apache2-red.conf /etc/apache2/sites-enabled/echoCTF.RED.conf; \
     git clone https://github.com/echoCTF/memcached_functions_mysql.git; \
@@ -47,19 +46,23 @@ RUN set -ex; \
     cd backend; composer install; \
     cd ../frontend; composer install; \
     cd ..; \
-#    ./backend/yii user/create echothrust info echothrust; \
-#    ./backend/yii ssl/create-ca; \
-#    ./backend/yii sysconfig/set mail_from dontreply@example.red; \
+    ./backend/yii migrate --interactive=0; \
+    ./backend/yii init_data --interactive=0; \
+    ./backend/yii ssl/create-ca; \
+#    ./backend/yii sysconfig/set mail_from dontreply@echoctf.red; \
+#    ./backend/yii user/create echothrust info@echothrust.com echothrust; \
+#    ./backend/yii player/register echothrust info@echothrust.com echothrust echothrust offense 1;\
     a2enmod rewrite; \
     mysql -e "update user set plugin='mysql_native_password' where user='root'" mysql; \
+    echo "init_file=/etc/mysql/mysql-init.sql" >>/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
+    sed -e "s/^-- #//g" contrib/mysql-init.sql >/etc/mysql/mysql-init.sql; \
     service mysql stop
 
 ADD contrib/entrypoint.sh /
 RUN chmod 0700 /entrypoint.sh
 
-#HEALTHCHECK --interval=12s --timeout=12s --start-period=30s CMD /usr/local/sbin/healthcheck.sh
-#RUN rm -rf /usr/src/* /var/lib/apt/lists/*
+RUN rm -rf /usr/src/* /var/lib/apt/lists/*
 
-WORKDIR /
-CMD ["bash"]
+WORKDIR /var/www/echoCTF.RED
+CMD ["tail -f /var/log/apache2/error.log"]
 ENTRYPOINT ["/entrypoint.sh"]

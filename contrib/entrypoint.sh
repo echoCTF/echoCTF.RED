@@ -22,8 +22,8 @@ function echoctf() {
 }
 
 echoctf
-service mysql start
 service memcached start
+service mysql start
 service apache2 start
 ## socat tcp-l:2023,reuseaddr,fork exec:/bin/login,pty,setsid,setpgid,stderr,ctty
 $@
