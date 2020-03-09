@@ -34,6 +34,9 @@ $config = [
         ],
     ],
     'components' => [
+      'sys'=> [
+        'class' => 'app\components\Sysconfig',
+      ],
       'mailer' => [
         'class' => 'yii\swiftmailer\Mailer',
         'useFileTransport' => false,
