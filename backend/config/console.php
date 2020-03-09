@@ -14,6 +14,9 @@ $config = [
         '@tests' => '@app/tests',
     ],
     'components' => [
+        'sys'=> [
+          'class' => 'app\components\Sysconfig',
+        ],
         'mailer' => [
           'class' => 'yii\swiftmailer\Mailer',
           'useFileTransport' => true,
@@ -57,6 +60,11 @@ $config = [
             'class' => 'yii\console\controllers\MigrateController',
             'migrationTable' => 'migration_red',
             'migrationPath' => '@app/migrations-red',
+        ],
+        'init_data' => [
+            'class' => 'yii\console\controllers\MigrateController',
+            'migrationTable' => 'init_data',
+            'migrationPath' => '@app/migrations-init',
         ],
       ],
 ];
