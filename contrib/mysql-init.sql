@@ -26,3 +26,5 @@ SELECT memc_set(CONCAT('sysconfig:',id),val) FROM sysconfig;
 
 -- populate findings
 SELECT memc_set(CONCAT('finding:',protocol,':',ifnull(port,0), ':', target_id ),id) FROM finding;
+
+CALL calculate_ranks();
