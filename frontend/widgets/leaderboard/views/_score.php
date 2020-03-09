@@ -6,7 +6,11 @@
       <div class="leader-score_title"><?=number_format($model->score->points);?></div>
     </div>
     <div class="leader-bar">
+      <?php if(intval($totalPoints)===0):?>
+      <div style="width: 0%" class="bar"></div>
+      <?php else: ?>
       <div style="width: <?=round($model->score->points/$totalPoints*100)?>%" class="bar"></div>
+      <?php endif;?>
     </div>
     <div class="border"></div>
 </div>
