@@ -7,6 +7,15 @@ Clone the base repository and build the docker image
 ```sh
 docker build -f contrib/Dockerfile . -t echoctf_red
 ```
+
+On systems with limited memory you may get similar errors during the build process `Cannot allocate memory`. Increase your swap space like the following
+```
+/bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
+/sbin/mkswap /var/swap.1
+/sbin/swapon /var/swap.1
+```
+
+
 Start a container with the image
 ```sh
 docker run -it echoctf_red bash
@@ -130,6 +139,14 @@ cd /var/www/echoCTF.RED
 ./backend/yii sysconfig/set mail_from dontreply@example.red
 ```
 
+Note that in order to allow registrations from the web interface you need to
+also set the following sysconfig keys
+```sh
+./backend/yii sysconfig/set mail_fromName	"Mail From Name"
+./backend/yii sysconfig/set mail_host smtp.host.com
+./backend/yii sysconfig/set mail_port 25
+```
+
 ### Register an active user from the command line
 ```sh
 ./backend/yii player/register username email fullname password offense 1
@@ -147,11 +164,17 @@ service apache2 restart
 
 The default configuration under `/etc/apache2/sites-enabled/echoctf.conf`, serve the interfaces at `http://frontend.echoctf.red` and `http://backend.echoctf.red`
 
+You will have to update your '/etc/hosts' to include the IP and hostname of the docker container to be able to access the interfaces
+```
+echo "172.17.0.2 frontend.echoctf.red backend.echoctf.red">>/etc/hosts
+```
+
 ### Make mysql populate memcache on reboot and service restarts
 ```sh
 echo "init_file=/etc/mysql/mysql-init.sql" >>/etc/mysql/mariadb.conf.d/50-mysqld.cnf
 mysql < /etc/mysql/mysql-init.sql
 ```
+
 
 ### Update Cron
 TODO
