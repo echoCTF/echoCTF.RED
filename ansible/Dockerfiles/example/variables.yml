@@ -6,7 +6,7 @@ hostname: example
 fqdn: example.echocity-f.com
 rootable: 0 # 1 for yes
 difficulty: 3
-scheduled_at: "YYYY-mm-dd HH:MM:SS"
+#scheduled_at: "YYYY-mm-dd HH:MM:SS"
 container:
   name: "{{hostname}}"
   hostname: "{{fqdn}}"
@@ -15,6 +15,9 @@ container:
   state: "started"
   mac_address: "{{mac}}"
   purge_networks: "yes"
+#  tag: "v0.1"
+#  buildargs:
+#   var_name: var_value
   env:
     ETSCTF_FLAG: "ETSCTF_{{ETSCTF_ENV_FLAG}}"
   dns_servers:
@@ -188,6 +191,8 @@ ETSCTF_TREASURES:
 #   expr: "{{ lookup('password', '/dev/null length=45 chars=ascii_letters') }}"
 #   type: {{ 2 | random }}
 #   number: 1024
+
+# These commands are executed at build time by ansible
 BUILD_COMMANDS:
 #  exec:
 #  - { cmd: "mysql < /tmp/ETSCTF.sql" }

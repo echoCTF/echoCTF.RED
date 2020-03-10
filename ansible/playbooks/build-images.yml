@@ -1,5 +1,5 @@
 - name: Build, tag and push docker-target images
-  hosts: docker-targets
+  hosts: targets
   gather_facts: false
   serial: 1
   connection: local

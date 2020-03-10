@@ -1,6 +1,6 @@
 ---
 - name: Configure docker servers for echoCTF
-  hosts: docker-masters
+  hosts: all
   gather_facts: true
   user: root
   become: true
