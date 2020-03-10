@@ -15,6 +15,13 @@ use Http\Client\Socket\Exception\ConnectionException;
 
 class TargetController extends Controller {
 
+  /*
+   * Check for targets that need to power up based on their scheduled_at details
+   * or targets that have been changed during the past $interval per $unit
+   * (default is during the last 5 minutes)
+   * @param int $interval.
+   * @param string $unit (MySQL INTERVAL eg MONTH, DAY, HOUR, MINUTE, SECOND).
+   */
   public function actionCron($interval=5,$unit="MINUTE")
   {
     // Check targets with scheduled_at>=NOW()
@@ -55,15 +62,23 @@ class TargetController extends Controller {
     }
     //foreach target check
   }
+
+  /*
+   * Destroy a docker container for the given $target_id
+   * @param int $target_id.
+   */
   public function actionDestroy($target_id)
   {
     $target = Target::findOne($target_id);
     printf("Destroying target %s from %s: %s\n",$target->name, $target->server, $target->destroy()? "success" : "fail");
 
   }
+
   /*
-    Spin target/targets
-  */
+   * Spin target or targets.
+   * This will try to spin the target even if it is not active
+   * @param string $target.
+   */
   public function actionSpin($target=false)
   {
     $query = Target::find();
@@ -73,11 +88,6 @@ class TargetController extends Controller {
       $query->andFilterWhere([
           'id' => intval($target),
       ]);
-
-    //  $query->andFilterWhere(['like', 'name', $target])
-    //      ->andFilterWhere(['like', 'INET_NTOA(ip)', $target])
-    //      ->andFilterWhere(['like', 'fqdn', $target])
-    //      ->andFilterWhere(['like', 'server', $target]);
     }
     foreach($query->all() as $t)
     {
@@ -92,14 +102,12 @@ class TargetController extends Controller {
           printf(" NOT OK (%s)\n",$ce->getMessage());
       }
     }
-
   }
 
   /*
-    Pull target/targets images
-
+    Pull target/targets images on each of the docker servers
   */
-  public function actionPull($target=false,$filter=null)
+  public function actionPull($target=false)
   {
     $query = Target::find();
 
@@ -107,11 +115,6 @@ class TargetController extends Controller {
       $query->andFilterWhere([
           'id' => $target,
       ]);
-
-    if($filter!=null)
-      $query->andFilterWhere(['like', 'INET_NTOA(ip)', $target])
-          ->orFilterWhere(['like', 'fqdn', $filter])
-          ->orFilterWhere(['like', 'server', $filter]);
 
     foreach($query->all() as $t)
     {
@@ -168,6 +171,7 @@ class TargetController extends Controller {
     }
 
   }
+
   /**
    * Check the status of running containers on each docker server.
    * $spin=true for restart on fail status
@@ -258,6 +262,7 @@ class TargetController extends Controller {
       }
     }
   }
+
   /**
    * Populate pf related tables and rules for targets
    */
@@ -267,7 +272,9 @@ class TargetController extends Controller {
     $this->match_findings($load);
   }
 
-
+  /*
+   * Geneate match rules for target findings and load them
+   */
   private function match_findings($load)
   {
     $rules=array();
@@ -290,6 +297,9 @@ class TargetController extends Controller {
       shell_exec("/sbin/pfctl -a offense/findings -Fr -f /etc/match-findings-pf.conf");
   }
 
+  /*
+   * Find and store active targets IP addresses on their PF table
+   */
   private function active_targets_pf()
   {
     $ips=array();
@@ -316,6 +326,9 @@ class TargetController extends Controller {
     shell_exec("/sbin/pfctl -t $table -T replace -f $file");
   }
 
+  /*
+   * Return an array of unhealthy containers or null
+   */
   private function unhealthy_dockers()
   {
     $unhealthy=null;
@@ -340,6 +353,7 @@ class TargetController extends Controller {
     }
     return $unhealthy;
   }
+
   /**
    * Restart targets who are up for more than 24 hours
    */
