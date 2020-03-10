@@ -122,8 +122,14 @@ Take a look at the `playbooks/docker-masters.yml` for a list of tasks performed
 on the server.
 
 ### docker targets
-Each target must have its own directory under `Dockerfiles/`. You can use the
-existing example `Dockerfiles/example` to get started.
+Each target must reside on its own directory under `Dockerfiles/`. Each target folder has the following structure
+* `autoregister.yml` An ansible playbook that is executed during the docker image build. Most of the times you dont have to modify this file.
+* `Dockerfile` This includes your standard `Dockerfile` instructions in order to build your target image
+* `entrypoint.sh` The script executed when the container starts
+* `README.md` A readme explaining the target, solution and other details (this is empty but you are advised to keep detailed records here as it will become harder to recall details the more targets you got)
+* `variables.yml` The variables used by the `autoregister.yml` playbook to do its job
+
+You can use the existing `Dockerfiles/example` to get started.
 
 Edit the file `Dockerfiles/example/variables.yml` and start by modifying the basic information.
 ```yml
