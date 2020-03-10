@@ -10,7 +10,7 @@ use app\modules\settings\models\Sysconfig;
 
 class SysconfigController extends Controller {
 
-
+/*
   public function actionProfile($profile=false)
   {
     $profiles=[
@@ -66,7 +66,13 @@ class SysconfigController extends Controller {
       }
     }
   }
+*/
 
+  /*
+   * Set a sysconfig key to a specified value
+   * @param string $key.
+   * @param string $val.
+   */
   public function actionSet($key,$val)
   {
       printf("Setting %s => %s\n",$key,$val);
