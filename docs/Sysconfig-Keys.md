@@ -14,19 +14,31 @@ Not implemented on current code-base but are going to
 * `event_name` A name for your event
 * `frontpage_scenario` The event scenario displayed at the `frontend/`, frontpage.
 * `offense_scenario` A scenario displayed to the users once they have signed into the frontend.
-* `vpngw` The VPN gateway IP or FQDN, that participants of the competition will have to connect to be able to access the targeted infrastructure.
 * `spins_per_day` Limit allowed restarts per day per player
 * `online_timeout` Timeout in seconds that a user is no longer considered online on the platform
 * `challenge_home` Web accessible folder that the challenges can be downloaded from. (default: `uploads/`)
-* `mail_from` Email address used to send registration and password reset mails from
-* `mail_fromName` The name appeared on the email send for registration and password resets
 * `offense_registered_tag` PF tag used for registered offense users
 * `defense_registered_tag` PF tag used for registered defense users
+
+## mail configuration
+* `mail_from` Email address used to send registration and password reset mails from
+* `mail_fromName` The name appeared on the email send for registration and password resets
+* `mail_host`
+* `mail_port`
+
+
+## VPN specific keys
 * `CA.csr` The CA CSR
 * `CA.crt` The CA certificate
 * `CA.key` The CA private key
 * `CA.txt.crt` The text version of the CA certificate
 * `vpn-ta.key` The OpenVPN TLS Auth key
+* `vpngw` The VPN gateway IP or FQDN, that participants of the competition will have to connect to be able to access the targeted infrastructure.
+
 
 Not implemented on current `frontend` but are going to
 * _`footer_logos`_: HTML code to display logos for the event on the footer of the page.
+
+## Application specific
+* `platform_codename`
+* `platform_version`
