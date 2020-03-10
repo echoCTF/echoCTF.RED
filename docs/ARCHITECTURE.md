@@ -35,6 +35,8 @@ files or install databases during startup.
 * develop each target with the premise that it has its own IP and FQDN. The
 platform takes care at starting up the targets with the required options.
 
+* avoid using `VOLUME` in your containers, as these can leave traces behind,
+even after restart
 
 ## vpn
 The vpn server is responsible for providing access to the targets through
