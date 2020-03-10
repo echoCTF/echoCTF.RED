@@ -129,7 +129,7 @@ Each target must reside on its own directory under `Dockerfiles/`. Each target f
 * `README.md` A readme explaining the target, solution and other details (this is empty but you are advised to keep detailed records here as it will become harder to recall details the more targets you got)
 * `variables.yml` The variables used by the `autoregister.yml` playbook to do its job
 
-You can use the existing `Dockerfiles/example` to get started.
+You can use the existing `Dockerfiles/example` to get started or create your own.
 
 Edit the file `Dockerfiles/example/variables.yml` and start by modifying the basic information.
 ```yml
