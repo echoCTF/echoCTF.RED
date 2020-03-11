@@ -8,8 +8,11 @@ Clone the base repository and build the docker image
 docker build -f contrib/Dockerfile . -t echoctf_red
 ```
 
-On systems with limited memory you may get similar errors during the build process `Cannot allocate memory`. Increase your swap space like the following
-```
+On systems with limited memory you may get similar errors during the build
+process `Cannot allocate memory`. Increase your swap space by issuing something
+like the following
+
+```sh
 /bin/dd if=/dev/zero of=/var/swap.1 bs=1M count=1024
 /sbin/mkswap /var/swap.1
 /sbin/swapon /var/swap.1

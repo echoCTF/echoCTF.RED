@@ -29,7 +29,7 @@ feeding data to the platform
 The following guide assumes you have Ansible installed and that you have
 completed the installation for the frontend/backend systems.
 
-The ansible playbooks is meant to help you develop and deploy your systems in a
+The ansible playbooks are meant to help you develop and deploy your systems in a
 consistent manner. You can skip any of the ansible steps if you are planning
 for a small setup and you'd rather do things by hand.
 

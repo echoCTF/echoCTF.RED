@@ -1,12 +1,11 @@
 # echoCTF Installation
 The following steps outline the installation instructions for the applications hosted on this repository.
 
-Keep in mind that you are advised to run `frontend` and `backend` from separate nginx instances, each with its own uid and chroot location. Similarly the same logic must be followed when/if you're using `php-fpm`.
+Keep in mind that you are advised to run `frontend` and `backend` from separate nginx instances, each with its own uid and chroot location.
 
 Note: Although the interfaces are able to run on any system, the VPN server is assumed to run on OpenBSD.
 
 Before we start make sure you have MariaDB, NGiNX/Apache + PHP, php-memcached, composer and MEMCACHED running, this guide will not deal with these.
-
 
 
 Also make sure you have installed the following UDF https://github.com/echoCTF/memcached_functions_mysql.git
