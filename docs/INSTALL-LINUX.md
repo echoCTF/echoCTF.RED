@@ -180,7 +180,6 @@ mysql < /etc/mysql/mysql-init.sql
 ```
 
 ## Whats next?
-* configure the docker masters
-* Configure the VPN
-* Prepare your first target
 * Configure cron
+* Prepare your docker servers and targets [/ansible/README.md](/ansible/README.md)
+* Prepare your vpn server [/docs/VPN-SERVER.md](/docs/VPN-SERVER.md)
