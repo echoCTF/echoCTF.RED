@@ -197,7 +197,6 @@ class SslController extends Controller {
   {
     $cmd=sprintf("openssl ca -gencrl %s -out /etc/openvpn/crl.pem",$this->ssl_params);
     shell_exec($cmd);
-    echo "Not implemented\n";
   }
 
   /*
@@ -214,7 +213,7 @@ class SslController extends Controller {
       shell_exec($cmd);
       unlink($tmpcrt);
     }
-    $this->actionCreateCrl();
+    if ($CERTS) $this->actionCreateCrl();
   }
 
   /*
