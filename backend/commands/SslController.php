@@ -63,7 +63,6 @@ class SslController extends Controller {
       file_put_contents("echoCTF-OVPN-CA.txt.crt", $certout);
       file_put_contents("echoCTF-OVPN-CA.key",$pkeyout);
     }
-
   }
 
   /*
@@ -195,8 +194,14 @@ class SslController extends Controller {
    */
   public function actionCreateCrl()
   {
-    $cmd=sprintf("openssl ca -gencrl %s -out /etc/openvpn/crl.pem",$this->ssl_params);
-    shell_exec($cmd);
+    try {
+      $cmd=sprintf("openssl ca -gencrl %s -out /etc/openvpn/crl.pem",$this->ssl_params);
+      shell_exec($cmd);
+    } catch (\Exception $e)
+    {
+      return false;
+    }
+    return true;
   }
 
   /*
@@ -214,6 +219,7 @@ class SslController extends Controller {
       unlink($tmpcrt);
     }
     if ($CERTS) $this->actionCreateCrl();
+    return true;
   }
 
   /*
