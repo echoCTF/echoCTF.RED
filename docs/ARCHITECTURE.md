@@ -54,7 +54,7 @@ For medium/large events (between 100-1000 participants) it is suggested to have
 each service on its own system.
 
 Using the diagram above as an example, this means that `vpn`, `frontend`,
-`backend`, `memcached/mysql` and `dockerd` servers run on their own servers.
+`backend`, `memcached/mysql` and `dockerd` servers run on their own systems.
 
 #### Small events
 For smaller events and lan-parties (less than 100 participants) you can use a
@@ -152,8 +152,20 @@ assigns points to the user who initiated the connection.
 The VPN server needs to be able to access the central mysql database as well
 as the memcache service.
 
+When a user connects to through OpenVPN a local script is executed that takes
+care login/logout of the users and ensures that only a single session exist for
+each player.
+
+The script first connects to the central memcached service to see if the user
+is currently online. After that the script connects to the local mysql database
+which in turn connects to the central database server through the use of
+Federated tables (https://mariadb.com/kb/en/about-federatedx/).
+
+Furthermore, the backend needs to exist on the VPN configured to access the
+main database and memcached for the backend console commands to operate.
+
 ## frontend
-The frontend interface servers as the point of interaction between players and
+The frontend interface serves as the point of interaction between players and
 the platform. It only needs to be able to access the database and memcache
 service.
 
