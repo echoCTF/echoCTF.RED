@@ -140,6 +140,11 @@ cd /var/www/echoCTF.RED
 ```
 
 ### Create the CA keys for signing user certificates
+Edit the file `backend/config/CA.cnf`, `frontend/config/CA.cnf`,
+`backend/config/params.php` and `frontend/config/params.php`to include your own
+details for the CA and generated certificates used by OpenVPN.
+
+Once this is done create your certification authority keys the create-ca command.
 ```sh
 ./backend/yii ssl/create-ca
 ```
