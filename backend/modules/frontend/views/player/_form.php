@@ -22,13 +22,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'type')->dropDownList([ 'offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose player type'])->hint('Choose the type of the player. Either offense or defense') ?>
 
-    <?= $form->field($model, 'password')->textInput(['maxlength' => true])->hint('Choose a password for the player') ?>
+    <?= $form->field($model, 'new_password')->textInput(['maxlength' => true])->hint('Choose a password for the player') ?>
 
     <?= $form->field($model, 'activkey')->textInput(['maxlength' => true])->hint('The activation key, generated automatically by the application. TODO') ?>
 
     <?= $form->field($model, 'active')->checkbox()->hint('Whether the player is active or not') ?>
 
-    <?= $form->field($model, 'status')->textInput(['maxlength' => true])->hint('Account status (0=OK,1=Banned,2=Other)') ?>
+    <?= $form->field($model, 'status')->textInput(['maxlength' => true])->hint('Account status (0=Disabled,9=Banned,10=Enabled)') ?>
 
 
     <div class="form-group">

@@ -23,6 +23,8 @@ use yii\db\Expression;
  */
 class User extends \yii\db\ActiveRecord
 {
+    public $new_password;
+
     /**
      * {@inheritdoc}
      */
@@ -38,15 +40,13 @@ class User extends \yii\db\ActiveRecord
         ];
     }
 
-
-
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['username', 'password_hash', 'email', ], 'required'],
+            [['username',  'email', ], 'required'],
             [['status', 'created_at', 'updated_at', 'admin'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
@@ -57,6 +57,7 @@ class User extends \yii\db\ActiveRecord
             [['username'], 'unique'],
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
+            [['new_password','password_hash'],'safe'],
         ];
     }
 
@@ -77,12 +78,13 @@ class User extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
             'verification_token' => 'Verification Token',
             'admin' => 'Admin',
+            'new_password'=>'New Password',
         ];
     }
     public function beforeSave($insert)
     {
-      if (parent::beforeSave($insert) && $insert) {
-          $this->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
+      if (parent::beforeSave($insert) && $this->new_password!="") {
+          $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
           return true;
       } else {
           return false;

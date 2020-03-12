@@ -47,6 +47,7 @@ use app\modules\activity\models\SpinHistory;
 class Player extends \yii\db\ActiveRecord
 {
   public $ovpn=null,$online=null,$last_seen=null;
+  public $new_password;
   const STATUS_DELETED = 0;
   const STATUS_INACTIVE = 9;
   const STATUS_ACTIVE = 10;
@@ -81,8 +82,10 @@ class Player extends \yii\db\ActiveRecord
             [['email'], 'filter', 'filter'=>'strtolower'],
             [['activkey'], 'string', 'max' => 32],
             [['activkey'], 'default', 'value' => Yii::$app->security->generateRandomString()],
-            [['username', 'fullname', 'email', 'password', 'activkey'], 'string', 'max' => 255],
+            [['username', 'fullname', 'email', 'new_password', 'activkey'], 'string', 'max' => 255],
             [['username'], 'unique'],
+            [['new_password','password'],'safe'],
+
         ];
     }
 
@@ -296,6 +299,16 @@ class Player extends \yii\db\ActiveRecord
     {
         return $this->hasOne(\app\modules\activity\models\PlayerLast::className(), ['id' => 'id']);
     }
+    public function beforeSave($insert)
+    {
+      if (parent::beforeSave($insert) && $this->new_password!="") {
+        $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
+        $this->password = Yii::$app->security->generatePasswordHash($this->new_password);
+        return true;
+      } else {
+          return false;
+      }
+    }
 
   /*  public function getOvpn()
     {
@@ -315,6 +328,7 @@ class Player extends \yii\db\ActiveRecord
     {
       return Yii::$app->cache->Memcache->get("online:".$this->id);
     }*/
+
     public static function find()
     {
       return parent::find()->select(['player.*','ifnull(memc_get(concat("ovpn:",player.id)),0) as ovpn','ifnull(memc_get(concat("online:",player.id)),0) as online','memc_get(concat("last_seen:",player.id)) as last_seen']);
