@@ -35,3 +35,18 @@ any other details you require.
 
 # Live demo?
 Register at our online platform at https://echoctf.red/ :)
+
+
+# FAIR WARNING
+The documents and guides in this repository are only examples and are not meant
+to be used in production.
+
+The project is far from plug-n-play at the moment and you are required to have
+a fairly good understanding of the services involved.
+
+Apply common logic when copy pasting command and files :)
+
+# Credits
+We would like to thank the following people for their contributions, support and persistence :)
+* @HitmanAlharbi for numerous contributions and support
+* @harperaa for suggestions on, and testing of our documentation
