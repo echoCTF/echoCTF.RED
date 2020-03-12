@@ -195,12 +195,13 @@ Update your cron to include the following (assuming you cloned the repositories 
 */4	*	*	*	*	/root/echoCTF.RED/backend/yii target/cron
 # Restart containers every 24 hours to ensure clean state
 */10	*	*	*	*	/root/echoCTF.RED/backend/yii target/restart
-@midnight
+# Generate CRL with revoked player certificates
+@midnight /root/echoCTF.RED/backend/yii ssl/generate-crl
 ```
 
 Finally ensure to set the `vpngw` sysconfig key to the IP that the participants will connect to openvpn.
 ```sh
-./backend/yii sysconfig set vpngw 172.16.10.109
+./backend/yii sysconfig/set vpngw 172.16.10.109
 ```
 
 Ensure that your `em1` interface is assigned `group dmz`
