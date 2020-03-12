@@ -47,7 +47,7 @@ use app\modules\game\models\Headshot;
       <hr/>
       <ul class="nav flex-column">
             <li class="nav-header text-left"><h6>Details</h6></li>
-            <li class="nav-item text-left"><strong><i class="fa fa-signal"></i> Current Rank</strong> <span class="pull-right"><?=$profile->rank->ordinalPlace?></span></li>
+            <li class="nav-item text-left"><strong><i class="fa fa-signal"></i> Current Rank</strong> <span class="pull-right"><?php if($profile->rank) echo $profile->rank->ordinalPlace?></span></li>
             <li class="nav-item text-left"><strong><i class="fas fa-user"></i> Level <?=intval($profile->experience->id)?></strong> <span class="pull-right"><?=$profile->experience->name?></span></li>
             <li class="nav-item text-left"><strong><i class="fa fa-list"></i> Points</strong> <span class="pull-right"><?=number_format($profile->owner->playerScore->points)?></span></li>
             <li class="nav-item text-left"><strong><i class="fas fa-skull-crossbones"></i> Headshosts</strong> <span class="pull-right"><?=$profile->headshotsCount?></span></li>

@@ -226,11 +226,16 @@ class Profile extends \yii\db\ActiveRecord
     }
     public function getBraggingRights()
     {
-      $msg=sprintf("I am at the %s place with %d pts",$this->rank->ordinalPlace,$this->score->points);
-      if($this->headshotsCount>0)
+      if($this->rank)
       {
-        $msg.=sprintf(', and %d headshots',$this->headshotsCount);
+        $msg=sprintf("I am at the %s place with %d pts",$this->rank->ordinalPlace,$this->score->points);
+        if($this->headshotsCount>0)
+        {
+          $msg.=sprintf(', and %d headshots',$this->headshotsCount);
+        }
       }
+      else
+        $msg=sprintf("I have just joined echoCTF.RED!");
       return $msg;
     }
 }
