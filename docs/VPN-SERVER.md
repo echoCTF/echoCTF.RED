@@ -3,9 +3,18 @@
 The VPN server for the platform is the system that allows participants to
 connect to the target infrastructure as well as keeping track of the findings.
 
-The following guide covers the installation of the needed application on an
-OpenBSD to act as a VPN gateway.
+The following guide covers the installation of the needed applications on
+OpenBSD 6.6 to act as a VPN gateway.
 
+The following network details will be used throughout this guide
+* vpn server egress interface: `em0`
+* vpn server egress address: `172.16.10.109`
+* vpn server dmz interface: `em1`
+* vpn server dmz address: `10.0.0.254/16`
+* vpn server tun0 address: `10.10.0.1`
+* vpn server assigned range: `10.10.0.0/16`
+* targets network: `10.0.100.0/16`
+* mysql/memcache server: `172.16.0.1`
 
 Install the needed packages
 ```sh
@@ -113,7 +122,7 @@ Create the OpenVPN needed structure
 mkdir -p /etc/openvpn/certs /etc/openvpn/client_confs /var/log/openvpn /etc/openvpn/crl /etc/openvpn/ccd
 install -d -m 700 /etc/openvpn/private
 ```
-### WIP ###
+
 Copy the server configuration and script
 ```sh
 cp contrib/openvpn_tun0.conf /etc/openvpn
@@ -148,12 +157,14 @@ echo "OPENVPN_ADMIN_PASSWORD">/etc/openvpn/private/mgmt.pwd
 ./backend/yii ssl/get-ca 1
 ./backend/yii ssl/create-cert "VPN Server"
 mv echoCTF-OVPN-CA.crt /etc/openvpn/private/echoCTF-OVPN-CA.crt
+mv echoCTF-OVPN-CA.key /etc/openvpn/private/echoCTF-OVPN-CA.key
 mv VPN\ Server.crt /etc/openvpn/private/VPN\ Server.crt
 mv VPN\ Server.key /etc/openvpn/private/VPN\ Server.key
 chmod 400 /etc/openvpn/private/*
 openssl dhparam -out /etc/openvpn/dh.pem 4096
-openssl ca -gencrl -keyfile /etc/openvpn/private/echoCTF-OVPN-CA.key -cert /etc/openvpn/private/echoCTF-OVPN-CA.crt -out /etc/openvpn/crl.pem -config /etc/openvpn/crl/crl_openssl.conf
+#openssl ca -gencrl -keyfile /etc/openvpn/private/echoCTF-OVPN-CA.key -cert /etc/openvpn/private/echoCTF-OVPN-CA.crt -out /etc/openvpn/crl.pem -config /etc/openvpn/crl/crl_openssl.conf
 openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key
+./backend/yii ssl/create-crl
 ./backend/yii ssl/load-vpn-ta
 ```
 
@@ -169,3 +180,32 @@ Edit `/etc/pf.conf` and replace the address from `Line:11` for table `moderators
 pfctl -nvf /etc/pf.conf
 pfctl -f /etc/pf.conf
 ```
+
+Start the services and test out
+```sh
+rcctl start findingsd
+rcctl start openvpn
+```
+
+Update your cron to include the following (assuming you cloned the repositories under `/root`)
+```
+# check target container health status and spin requests
+*/2	*	*	*	*	/root/echoCTF.RED/backend/yii target/healthcheck 1
+# Perform scheduled powerup/powerdown of targets based on scheduled_at
+*/4	*	*	*	*	/root/echoCTF.RED/backend/yii target/cron
+# Restart containers every 24 hours to ensure clean state
+*/10	*	*	*	*	/root/echoCTF.RED/backend/yii target/restart
+@midnight
+```
+
+Finally ensure to set the `vpngw` sysconfig key to the IP that the participants will connect to openvpn.
+```sh
+./backend/yii sysconfig set vpngw 172.16.10.109
+```
+
+Ensure that your `em1` interface is assigned `group dmz`
+```sh
+echo "group dmz">>/etc/hostname.em1
+```
+
+Restart the system and you should be up and running.
