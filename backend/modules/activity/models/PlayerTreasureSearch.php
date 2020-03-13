@@ -67,8 +67,8 @@ class PlayerTreasureSearch extends PlayerTreasure
         ]);
 
         $query->andFilterWhere(['like', 'player_treasure.ts', $this->ts]);
-        $query->orFilterWhere(['like', 'player.username', $this->player]);
-        $query->orFilterWhere(['like', 'treasure.name', $this->treasure]);
+        $query->andFilterWhere(['like', 'player.username', $this->player]);
+        $query->andFilterWhere(['like', 'treasure.name', $this->treasure]);
 
         $dataProvider->setSort([
             'attributes' => array_merge(
