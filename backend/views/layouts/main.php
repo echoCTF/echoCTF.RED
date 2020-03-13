@@ -54,7 +54,7 @@ AppAsset::register($this);
                 ['label' => 'Player Findings', 'url' => ['/activity/player-finding'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,],
                 ['label' => 'Player Question Answers', 'url' => ['/activity/player-question'],'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,],
                 ['label' => 'Player Hints', 'url' => ['/activity/player-hint'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,],
-                ['label' => 'Player Tutorial Task', 'url' => ['/activity/player-tutorial-task'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,],
+//                ['label' => 'Player Tutorial Task', 'url' => ['/activity/player-tutorial-task'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,],
                 ['label' => 'Headshots', 'url' => ['/activity/headshot'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,],
                 ['label' => 'Spin History', 'url' => ['/activity/spin-history'], 'visible' => !Yii::$app->user->isGuest ,],
                 ['label' => 'Spin Queue', 'url' => ['/activity/spin-queue'], 'visible' => !Yii::$app->user->isGuest ,],
