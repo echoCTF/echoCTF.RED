@@ -84,8 +84,7 @@ for your installation.
 
 Run composer from `backend/`
 ```sh
-cd backend && composer install
-cd ..
+cd backend && composer install && cd ..
 ```
 
 If you **run all the components** (vpn, frontend, backend, mysql, memcached) on the
@@ -162,8 +161,9 @@ mv VPN\ Server.crt /etc/openvpn/private/VPN\ Server.crt
 mv VPN\ Server.key /etc/openvpn/private/VPN\ Server.key
 chmod 400 /etc/openvpn/private/*
 openssl dhparam -out /etc/openvpn/dh.pem 4096
-#openssl ca -gencrl -keyfile /etc/openvpn/private/echoCTF-OVPN-CA.key -cert /etc/openvpn/private/echoCTF-OVPN-CA.crt -out /etc/openvpn/crl.pem -config /etc/openvpn/crl/crl_openssl.conf
 openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key
+# USE THIS IF ssl/create-crl fails
+#openssl ca -gencrl -keyfile /etc/openvpn/private/echoCTF-OVPN-CA.key -cert /etc/openvpn/private/echoCTF-OVPN-CA.crt -out /etc/openvpn/crl.pem -config /etc/openvpn/crl/crl_openssl.conf
 ./backend/yii ssl/create-crl
 ./backend/yii ssl/load-vpn-ta
 ```
