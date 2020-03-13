@@ -17,27 +17,26 @@ class StreamController extends Controller
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::className(),
-                'only' => ['index','create','update','view'],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+     public function behaviors()
+     {
+         return [
+           'access' => [
+                 'class' => \yii\filters\AccessControl::className(),
+                 'rules' => [
+                     [
+                         'allow' => true,
+                         'roles' => ['@'],
+                     ],
+                 ],
+             ],
+             'verbs' => [
+                 'class' => VerbFilter::className(),
+                 'actions' => [
+                     'delete' => ['POST'],
+                 ],
+             ],
+         ];
+     }
 
     /**
      * Lists all Stream models.

@@ -1,18 +1,18 @@
 <?php
 
-namespace app\modules\smartcity\controllers;
+namespace app\modules\settings\controllers;
 
 use Yii;
-use app\modules\smartcity\models\Infrastructure;
-use app\modules\smartcity\models\InfrastructureSearch;
+use app\modules\settings\models\Avatar;
+use app\modules\settings\models\AvatarSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * InfrastructureController implements the CRUD actions for Infrastructure model.
+ * AvatarController implements the CRUD actions for Avatar model.
  */
-class InfrastructureController extends Controller
+class AvatarController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -39,12 +39,12 @@ class InfrastructureController extends Controller
      }
 
     /**
-     * Lists all Infrastructure models.
+     * Lists all Avatar models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new InfrastructureSearch();
+        $searchModel = new AvatarSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -54,8 +54,8 @@ class InfrastructureController extends Controller
     }
 
     /**
-     * Displays a single Infrastructure model.
-     * @param integer $id
+     * Displays a single Avatar model.
+     * @param string $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -67,13 +67,13 @@ class InfrastructureController extends Controller
     }
 
     /**
-     * Creates a new Infrastructure model.
+     * Creates a new Avatar model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Infrastructure();
+        $model = new Avatar();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -85,9 +85,9 @@ class InfrastructureController extends Controller
     }
 
     /**
-     * Updates an existing Infrastructure model.
+     * Updates an existing Avatar model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * @param string $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -105,9 +105,9 @@ class InfrastructureController extends Controller
     }
 
     /**
-     * Deletes an existing Infrastructure model.
+     * Deletes an existing Avatar model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param string $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -119,15 +119,15 @@ class InfrastructureController extends Controller
     }
 
     /**
-     * Finds the Infrastructure model based on its primary key value.
+     * Finds the Avatar model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Infrastructure the loaded model
+     * @param string $id
+     * @return Avatar the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Infrastructure::findOne($id)) !== null) {
+        if (($model = Avatar::findOne($id)) !== null) {
             return $model;
         }
 
