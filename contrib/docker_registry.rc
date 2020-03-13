@@ -1,0 +1,15 @@
+#!/bin/ksh
+
+export GOPATH=/home/registry/go
+daemon="$GOPATH/bin/registry"
+daemon_flags="serve /etc/docker-registry.yml"
+daemon_user="registry"
+export REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY=/home/registry/storage
+
+. /etc/rc.d/rc.subr
+
+rc_start() {
+   nohup ${rcexec} "${daemon} ${daemon_flags}" >/dev/null 2>&1 &
+}
+
+rc_cmd $1
