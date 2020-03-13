@@ -67,14 +67,6 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
-    }
-
-    /**
      * Finds user by username
      *
      * @param string $username
@@ -224,5 +216,9 @@ class User extends ActiveRecord implements IdentityInterface
         case self::STATUS_DELETED:
           return 'DELETED';
       }
+    }
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::findOne(['auth_key' => $token]);
     }
 }
