@@ -111,14 +111,25 @@ class PlayerController extends Controller
     public function actionCreate()
     {
         $model = new Player();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        $trans=Yii::$app->db->beginTransaction();
+        try {
+          if ($model->load(Yii::$app->request->post()) && $model->save()) {
+              $playerSsl=new PlayerSsl();
+              $playerSsl->player_id=$model->id;
+              $playerSsl->generate();
+              $playerSsl->save();
+              $trans->commit();
+              return $this->redirect(['view', 'id' => $model->id]);
+          }
+      }
+      catch (\Exception $e)
+      {
+        $trans->rollBack();
+        \Yii::$app->getSession()->setFlash('error', 'Failed to create player. '.$e->getMessage());
+      }
+      return $this->render('create', [
+          'model' => $model,
+      ]);
     }
 
     /**
