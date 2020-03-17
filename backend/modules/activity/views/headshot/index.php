@@ -28,10 +28,19 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'player_id',
-            'player.username',
+            [
+              'attribute'=>'username',
+              'value'=>'player.username',
+            ],
             'target_id',
-            'target.fqdn',
-            'target.ip',
+            [
+              'attribute'=>'fqdn',
+              'value'=>'target.fqdn',
+            ],
+            [
+              'attribute'=>'ipoctet',
+              'value'=>'target.ipoctet',
+            ],
             'timer',
             'rating',
             'created_at',

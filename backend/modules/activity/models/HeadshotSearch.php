@@ -11,6 +11,9 @@ use app\modules\activity\models\Headshot;
  */
 class HeadshotSearch extends Headshot
 {
+  public $username;
+  public $fqdn;
+  public $ipoctet;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +21,7 @@ class HeadshotSearch extends Headshot
     {
         return [
             [['player_id', 'target_id'], 'integer'],
-            [['created_at'], 'safe'],
+            [['created_at','username','fqdn','ipoctet'], 'safe'],
         ];
     }
 
@@ -40,7 +43,7 @@ class HeadshotSearch extends Headshot
      */
     public function search($params)
     {
-        $query = Headshot::find();
+        $query = Headshot::find()->joinWith(['player','target']);
 
         // add conditions that should always apply here
 
@@ -62,6 +65,29 @@ class HeadshotSearch extends Headshot
             'target_id' => $this->target_id,
             'created_at' => $this->created_at,
         ]);
+        $query->andFilterWhere(['like', 'player.username', $this->username]);
+        $query->andFilterWhere(['like', 'target.fqdn', $this->fqdn]);
+        $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
+        $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'username' => [
+                      'asc' => [ 'player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
+                  ],
+                  'fqdn' => [
+                      'asc' => [ 'target.fqdn' => SORT_ASC],
+                      'desc' => ['target.fqdn' => SORT_DESC],
+                  ],
+                  'ipoctet' => [
+                      'asc' => [ 'target.ip' => SORT_ASC],
+                      'desc' => ['target.ip' => SORT_DESC],
+                  ],
+                ]
+            ),
+        ]);
+
 
         return $dataProvider;
     }
