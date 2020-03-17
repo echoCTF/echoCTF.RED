@@ -301,13 +301,16 @@ class Player extends \yii\db\ActiveRecord
     }
     public function beforeSave($insert)
     {
-      if (parent::beforeSave($insert) && $this->new_password!="") {
+      if ($this->auth_key=="") {
+          $this->auth_key = Yii::$app->security->generateRandomString();
+      }
+
+      if ($this->new_password!="") {
         $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
         $this->password = Yii::$app->security->generatePasswordHash($this->new_password);
-        return true;
-      } else {
-          return false;
       }
+
+      return parent::beforeSave($insert);
     }
 
   /*  public function getOvpn()
@@ -353,4 +356,12 @@ class Player extends \yii\db\ActiveRecord
       return false;
 
     }
+    /**
+     * {@inheritdoc}
+     */
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
+
 }
