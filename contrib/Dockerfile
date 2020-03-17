@@ -1,8 +1,8 @@
 FROM buildpack-deps:buster-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED all in one"
-ARG VPNUSER vpnuser
-ARG VPNUSERPASS vpnuserpass
+ARG VPNUSER=vpnuser
+ARG VPNUSERPASS=vpnuserpass
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
@@ -21,6 +21,7 @@ WORKDIR /usr/src
 RUN set -ex; \
     echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
     echo "bind-address=0.0.0.0" >> /etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
+    echo '-l 0.0.0.0' >>/etc/memcached.conf; \
     service mysql start; \
     cp /var/www/echoCTF.RED/contrib/apache2-red.conf /etc/apache2/sites-enabled/echoCTF.RED.conf; \
     git clone https://github.com/echoCTF/memcached_functions_mysql.git; \
@@ -68,6 +69,8 @@ RUN rm -rf /usr/src/* /var/lib/apt/lists/*
 
 EXPOSE 8080/tcp
 EXPOSE 8081/tcp
+EXPOSE 3306/tcp
+EXPOSE 11211/tcp
 
 WORKDIR /var/www/echoCTF.RED
 CMD ["tail -f /var/log/apache2/error.log"]
