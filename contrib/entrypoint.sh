@@ -21,9 +21,12 @@ function echoctf() {
   echo "You can access the interfaces on:"
   echo "* [frontend] http://${ipaddr}:8080/"
   echo "* [backend] http://${ipaddr}:8081/"
+  echo "* [memcached] tcp://${ipaddr}:11211"
+  echo "* [mysql] tcp://${ipaddr}:3306"
 }
 
 echoctf
+install -d -o memcache /var/run/memcached
 service memcached start
 service mysql start
 service apache2 start
