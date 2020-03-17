@@ -31,6 +31,8 @@ mysql_install_db
 rcctl set mysqld status on
 echo "event_scheduler=on" >>/etc/my.cnf
 echo "plugin_load_add = ha_federatedx">>/etc/my.cnf
+echo "wait_timeout = 2880000">>/etc/my.cnf
+echo "interactive_timeout = 2880000">>/etc/my.cnf
 rcctl restart mysqld
 ```
 
@@ -100,6 +102,11 @@ following strings to their corresponding value. For our example we will use
 * `{{db.pass}}` database user password (ex `vpnuserpass`)
 * `{{db.host}}` database host (prefer IP ex `172.16.0.1`)
 * `{{db.name}}` database name (default ex `echoCTF`)
+
+NOTE: If you are running the docker container that we provide then a user already exists on the database with the following credentials
+* mysql user: `vpnuser`
+* mysql password: `vpnuserpass`
+
 
 ```sh
 sed -e 's#{{db.host}}#172.16.0.1#g' \
@@ -187,8 +194,10 @@ rcctl start findingsd
 rcctl start openvpn
 ```
 
-Update your cron to include the following (assuming you cloned the repositories under `/root`)
+Update your cron to include the following (assuming you cloned the repositories under `/root`) and make sure you update your PATH variable
 ```
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+
 # check target container health status and spin requests
 */2	*	*	*	*	/root/echoCTF.RED/backend/yii target/healthcheck 1
 # Perform scheduled powerup/powerdown of targets based on scheduled_at

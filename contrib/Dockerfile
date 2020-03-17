@@ -1,7 +1,8 @@
 FROM buildpack-deps:buster-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED all in one"
-
+ARG VPNUSER vpnuser
+ARG VPNUSERPASS vpnuserpass
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
@@ -11,7 +12,7 @@ RUN set -ex \
     mariadb-server mariadb-client mcrypt memcached apache2 \
     libmemcached-dev libtool libmariadbclient-dev \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
-    composer
+    composer vim
 
 WORKDIR /var/www/echoCTF.RED
 COPY . .
@@ -19,6 +20,7 @@ COPY . .
 WORKDIR /usr/src
 RUN set -ex; \
     echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
+    echo "bind-address=0.0.0.0" >> /etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
     service mysql start; \
     cp /var/www/echoCTF.RED/contrib/apache2-red.conf /etc/apache2/sites-enabled/echoCTF.RED.conf; \
     git clone https://github.com/echoCTF/memcached_functions_mysql.git; \
@@ -54,6 +56,7 @@ RUN set -ex; \
 #    ./backend/yii player/register echothrust info@echothrust.com echothrust echothrust offense 1;\
     a2enmod rewrite; \
     mysql -e "update user set plugin='mysql_native_password' where user='root'" mysql; \
+    mysql -e "GRANT ALL PRIVILEGES ON *.* TO '$VPNUSER'@'%' IDENTIFIED BY '$VPNUSERPASS'" mysql;\
     echo "init_file=/etc/mysql/mysql-init.sql" >>/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
     sed -e "s/^-- #//g" contrib/mysql-init.sql >/etc/mysql/mysql-init.sql; \
     service mysql stop

@@ -3,9 +3,24 @@
 These instructions will guide you in installing the web interfaces on any linux based on Debian.
 
 ## Using Docker
-Clone the base repository and build the docker image
+You can run the fronend & backend applications through docker. The container
+comes with services and applications pre-configured. You are advised to take a
+look at the following configuration files:
+* `contrib/apache2-red.conf` This is the apache2 configuration used for the
+applications. You can modify and add extra settings as you please
+(eg add ssl certifiates).
+
+
+Clone the base repository and build the docker image with default settings
 ```sh
 docker build -f contrib/Dockerfile . -t echoctf_red
+```
+
+You can modify the username and password for the vpn server user by providing
+the following arguments during build.
+```sh
+docker build -f contrib/Dockerfile . -t echoctf_red  \
+--build-arg VPNUSER=vpnuser --build-arg VPNUSERPASS=vpnuserpass
 ```
 
 On systems with limited memory you may get similar errors during the build
