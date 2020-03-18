@@ -1,0 +1,35 @@
+FROM mariadb:10
+LABEL description="echoCTF.RED database and memcache server"
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN set -ex \
+    && apt-get update \
+    && apt-get install -y build-essential gcc \
+    autoconf automake git zip unzip \
+    mcrypt memcached libmariadb-dev \
+    libmemcached-dev libtool
+
+WORKDIR /always-initdb.d/
+COPY contrib/mysql-init.sql  /always-initdb.d/99_mysql-init.sql
+COPY schemas/echoCTF.sql /docker-entrypoint-initdb.d/01.sql
+COPY schemas/echoCTF-routines.sql /docker-entrypoint-initdb.d/02.sql
+COPY schemas/echoCTF-triggers.sql /docker-entrypoint-initdb.d/03.sql
+COPY schemas/echoCTF-events.sql /docker-entrypoint-initdb.d/04.sql
+COPY contrib/findingsd.sql /docker-entrypoint-initdb.d/05.sql
+COPY contrib/entrypoint-mariadb.sh /usr/local/bin/docker-entrypoint.sh
+WORKDIR /
+RUN set -ex; \
+  echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
+  git clone https://github.com/echoCTF/memcached_functions_mysql.git; \
+  cd memcached_functions_mysql; \
+  ./config/bootstrap; \
+  ./configure --with-mysql=/usr/bin/mariadb_config; \
+  make ; \
+  cp src/.libs/libmemcached_functions_mysql.so /usr/lib/mysql/plugin/; \
+  sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/memcached.conf; \
+  mkdir -p /always-initdb.d; \
+  echo '/usr/bin/memcached -d -m 64 -p 11211 -u mysql -l 0.0.0.0 -P /tmp/memcached.pid' >> /always-initdb.d/00.sh; \
+  chmod +x /always-initdb.d/00.sh; \
+  cp sql/install_functions.sql /docker-entrypoint-initdb.d/00.sql; \
+  sed -i  -e "s/^-- #//g" /always-initdb.d/99_mysql-init.sql; \
+  chmod +x /usr/local/bin/docker-entrypoint.sh

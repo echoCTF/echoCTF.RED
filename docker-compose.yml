@@ -1,0 +1,95 @@
+version: '2'
+services:
+  db:
+    build:
+      context: .
+      dockerfile: contrib/Dockerfile-mariadb
+    restart: "always"
+    volumes:
+      - data-mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=root
+      - MYSQL_USER=vpnuser
+      - MYSQL_PASSWORD=vpnuserpass
+      - MYSQL_DATABASE=echoCTF
+    networks:
+      - private
+
+  backend:
+    build:
+      context: .
+      dockerfile: contrib/Dockerfile-backend
+      args:
+      - RED_APP:backend
+      - MYSQL_HOST:db
+      - MYSQL_USER:vpnuser
+      - MYSQL_PASSWORD:vpnuserpass
+      - MYSQL_DATABASE:echoCTF
+    restart: "always"
+    links:
+      - db:db
+    networks:
+      - public
+      - private
+
+  frontend:
+    build:
+      context: .
+      dockerfile: contrib/Dockerfile-frontend
+      args:
+      - RED_APP:frontend
+      - MYSQL_HOST:db
+      - MYSQL_USER:vpnuser
+      - MYSQL_PASSWORD:vpnuserpass
+      - MYSQL_DATABASE:echoCTF
+    restart: "always"
+    links:
+      - db:db
+    networks:
+      - private
+      - public
+
+
+  vpn:
+    cap_add:
+      - NET_ADMIN
+    privileged: true
+    build:
+      context: .
+      dockerfile: contrib/Dockerfile-vpn
+      args:
+      - RED_APP:backend
+      - MYSQL_HOST:db
+      - MYSQL_USER:vpnuser
+      - MYSQL_PASSWORD:vpnuserpass
+      - MYSQL_DATABASE:echoCTF
+    restart: "always"
+    environment:
+    - RED_APP=backend
+    - MYSQL_HOST=db
+    - MYSQL_USER=vpnuser
+    - MYSQL_PASSWORD=vpnuserpass
+    - MYSQL_DATABASE=echoCTF
+    volumes:
+      - data-openvpn:/etc/openvpn
+    links:
+      - db:db
+    networks:
+      - public
+      - private
+      - targets
+
+
+volumes:
+  data-mysql:
+    driver: local
+  data-openvpn:
+    driver: local
+
+networks:
+  public:
+    driver: bridge
+  private:
+    driver: bridge
+  targets:
+    driver: bridge

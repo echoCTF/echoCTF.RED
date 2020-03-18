@@ -1,0 +1,36 @@
+FROM buildpack-deps:buster-curl
+LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
+LABEL description="echoCTF.RED vpn server"
+ARG VPNUSER=vpnuser
+ARG VPNUSERPASS=vpnuserpass
+ARG RED_APP=frontend
+ARG MYSQL_HOST=db
+ARG MYSQL_USER=vpnuser
+ARG MYSQL_PASSWORD=vpnuserpass
+ARG MYSQL_DATABASE=echoCTF
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN set -ex \
+    && apt-get update \
+    && apt-get install --no-install-recommends -y build-essential gcc \
+    autoconf automake procps netcat git zip unzip \
+    mariadb-server mariadb-client mcrypt memcached \
+    libmemcached-dev libtool libmariadbclient-dev \
+    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
+    composer openvpn
+
+WORKDIR /var/www/echoCTF.RED
+COPY backend ./backend/
+COPY contrib ./contrib/
+COPY contrib/entrypoint-vpn.sh /entrypoint.sh
+
+WORKDIR /var/www/echoCTF.RED/backend
+RUN composer install; rm -rf /usr/src/* /var/lib/apt/lists/*; chmod +x /entrypoint.sh; useradd  _openvpn; touch /var/log/openvpn/openvpn.log
+
+
+EXPOSE 1194/udp
+VOLUME /etc/openvpn
+WORKDIR /var/www/echoCTF.RED
+#CMD ["openvpn", "--dev tun0", "--config /etc/openvpn/openvpn_tun0.conf"]
+CMD ["tail -f /var/log/openvpn/openvpn.log"]
+ENTRYPOINT ["/entrypoint.sh"]

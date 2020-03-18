@@ -1,0 +1,44 @@
+FROM buildpack-deps:buster-curl
+LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
+LABEL description="echoCTF.RED Administration interface (backend)"
+ARG VPNUSER=vpnuser
+ARG VPNUSERPASS=vpnuserpass
+ARG RED_APP=backend
+ARG MYSQL_HOST=db
+ARG MYSQL_USER=vpnuser
+ARG MYSQL_PASSWORD=vpnuserpass
+ARG MYSQL_DATABASE=echoCTF
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN set -ex \
+    && apt-get update \
+    && apt-get install --no-install-recommends -y git zip unzip \
+    mariadb-client mcrypt apache2 \
+    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
+    composer vim
+
+WORKDIR /var/www/echoCTF.RED
+COPY backend ./backend/
+
+RUN set -ex; \
+    cp backend/config/cache-local.php backend/config/cache.php; \
+    cp backend/config/validationKey-local.php backend/config/validationKey.php; \
+    cp backend/config/db-sample.php backend/config/db.php; \
+#    sed -ie "s/localhost/${MYSQL_HOST}/g" backend/config/db.php; \
+    sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" backend/config/cache.php; \
+    mkdir -p backend/web/assets; \
+    chown www-data backend/web/assets; \
+    chown www-data backend/runtime; \
+    cd backend; composer install; \
+    cd ..; \
+    mv /var/www/html /var/www/html.old; \
+    ln -s /var/www/echoCTF.RED/backend/web /var/www/html; \
+    a2enmod rewrite; \
+    echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8',  ];">backend/config/db.php
+
+RUN rm -rf /usr/src/* /var/lib/apt/lists/*
+
+EXPOSE 80/tcp
+
+WORKDIR /var/www/echoCTF.RED
+CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]

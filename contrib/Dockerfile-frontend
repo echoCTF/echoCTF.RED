@@ -1,0 +1,47 @@
+FROM buildpack-deps:buster-curl
+LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
+LABEL description="echoCTF.RED Participants interface (frontend)"
+ARG VPNUSER=vpnuser
+ARG VPNUSERPASS=vpnuserpass
+ARG RED_APP=frontend
+ARG MYSQL_HOST=db
+ARG MYSQL_USER=vpnuser
+ARG MYSQL_PASSWORD=vpnuserpass
+ARG MYSQL_DATABASE=echoCTF
+
+ENV DEBIAN_FRONTEND noninteractive
+RUN set -ex \
+    && apt-get update \
+    && apt-get install --no-install-recommends -y git zip unzip \
+    mariadb-client mcrypt apache2 \
+    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
+    composer vim
+
+WORKDIR /var/www/echoCTF.RED
+COPY frontend ./frontend/
+COPY contrib/html-rewrite.conf /etc/apache2/sites-enabled/html-rewrite.conf
+
+RUN set -ex; \
+    cp frontend/config/memcached-local.php frontend/config/cache.php; \
+    cp frontend/config/validationKey-local.php frontend/config/validationKey.php; \
+    cp frontend/config/db-local.php frontend/config/db.php; \
+    sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" frontend/config/cache.php; \
+    echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8',  ];">frontend/config/db.php; \
+    mkdir -p frontend/web/assets; \
+    chown www-data frontend/web/assets; \
+    chown www-data frontend/runtime; \
+    cd frontend; composer install; \
+    cd ..; \
+    mv /var/www/html /var/www/html.old; \
+    ln -s /var/www/echoCTF.RED/frontend/web /var/www/html; \
+    a2enmod rewrite
+
+ADD contrib/entrypoint.sh /
+RUN chmod 0700 /entrypoint.sh
+
+RUN rm -rf /usr/src/* /var/lib/apt/lists/*
+
+EXPOSE 80/tcp
+
+WORKDIR /var/www/echoCTF.RED
+CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
