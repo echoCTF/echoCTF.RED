@@ -109,7 +109,7 @@ class SslController extends Controller {
    */
   public function actionGenPlayerCerts($email,$fileout=false) {
     $player=Player::findOne(['email'=>$email]);
-    if($player===NULL || $player->playerSsl===null) return false;
+    if($player===NULL || $player->playerSsl===null) return 0;
     $player->playerSsl->generate();
     $player->playerSsl->save();
 
@@ -120,6 +120,7 @@ class SslController extends Controller {
       file_put_contents($player->username.".crt", $player->playerSsl->crt);
       file_put_contents($player->username.".key",$player->playerSsl->privkey);
     }
+    return 0;
   }
 
   /* Generate certificates for a all players */
@@ -183,7 +184,7 @@ class SslController extends Controller {
     if(file_exists($file))
     {
       $vpnta->val=file_get_contents($file);
-      return $vpnta->save();
+      return $vpnta->save()?0:1;
     }
     else printf("File not found: %s\n",$file);
     return -1;
@@ -199,9 +200,10 @@ class SslController extends Controller {
       shell_exec($cmd);
     } catch (\Exception $e)
     {
-      return false;
+      echo $e->getMessage();
+      return 1;
     }
-    return true;
+    return 0;
   }
 
   /*
@@ -219,7 +221,7 @@ class SslController extends Controller {
       unlink($tmpcrt);
     }
     if ($CERTS) $this->actionCreateCrl();
-    return true;
+    return 0;
   }
 
   /*
