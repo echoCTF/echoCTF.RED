@@ -1,6 +1,9 @@
 # docker-compose instructions
 The `docker-compose.yml` builds and starts all the needed applications and targets on a single host running docker.
 
+![echoCTF.RED docker-compose topology](/docs/docker-compose-topology.png?raw=true&1)
+
+
 The docker containers use the following networks
 * echoctfred_public
 
@@ -31,7 +34,7 @@ docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw vpn.example.red
 
 Ensure that the docker containers can communicate with the participants. Once the `echoctfred_vpn` host is up run this on the host you run docker-compose at.
 ```sh
-sudo route add -net 10.10.0.0/16 gw 10.0.160.254
+sudo route add -net 10.10.0.0/16 gw 10.0.160.1
 ```
 
 You can also manipulate a particular container routing table by following the
@@ -42,7 +45,7 @@ pid=$(docker inspect -f '{{.State.Pid}}' echoctfred_target1)
 sudo mkdir -p /var/run/netns
 sudo ln -s /proc/$pid/ns/net /var/run/netns/$pid
 sudo ip netns exec $pid ip route del default
-sudo ip netns exec $pid ip route add default via 10.0.160.254
+sudo ip netns exec $pid ip route add default via 10.0.160.1
 ```
 
 Login to the backend (http://localhost:8080/) and add a target with the following details
@@ -63,10 +66,15 @@ _Same as `target1` entry from `docker-compose.yml`_
 * MAC Address: `02:42:0a:00:a0:02`
 * Dns: `8.8.8.8`
 * Net: `echoctfred_targets`
-* Server: `tcp://172.24.0.1:2376`
+* Server: `tcp://172.24.0.254:2376`
 * Image: `nginx:latest`
 * Parameters: `{"hostConfig":{"Memory":"512"}}`
 
+Once the target is created, click the Spin button on top to start it up. If
+everything is correct you should be able to see the container running
+```sh
+docker inspect echoctfred_target1
+```
 
 Keep in mind that you will have to configure firewall rules in order to limit
 or restrict who can access the target containers as well as what the target
@@ -76,7 +84,7 @@ to be hacked, so take care at limiting their network access with iptables.
 RULES:
 * Allow access to port 1194 by anyone (on the host or forward the port 1194 to the echoctfred_vpn:1194)
 * Allow vpn users `10.10.0.0/16` to access docker target IP's `10.0.160.0/24`
-* Block vpn users `10.10.0.0/16` access to `10.0.160.1` (this is the interface ip docker assigns automatically)
+* Block vpn users `10.10.0.0/16` access to `10.0.160.254` (this is the interface ip docker assigns automatically)
 * Allow targets `10.0.160.0/24` access to `10.10.0.0/16` (for reverse shells to work)
 
 __NOTE:__ The following example is not tested you will have to adapt it according the rules mentioned above
@@ -90,7 +98,7 @@ cat >/etc/iptables/rules.v4<<__EOF__
 -A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT
 
 # Allow tarets to communicate with vpn and vpn clients
--A INPUT -s 10.0.160.0/24 -d 10.0.160.254 -j ACCEPT
+-A INPUT -s 10.0.160.0/24 -d 10.0.160.1 -j ACCEPT
 -A INPUT -s 10.0.160.0/24 -d 10.10.0.0/16 -j ACCEPT
 
 # Reject vpn users and containers access to any other host
