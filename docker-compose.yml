@@ -1,6 +1,7 @@
 version: '2'
 services:
   db:
+    container_name: echoctfred_db
     build:
       context: .
       dockerfile: contrib/Dockerfile-mariadb
@@ -16,16 +17,19 @@ services:
       - private
 
   backend:
+    container_name: echoctfred_backend
     build:
       context: .
       dockerfile: contrib/Dockerfile-backend
       args:
-      - RED_APP:backend
-      - MYSQL_HOST:db
-      - MYSQL_USER:vpnuser
-      - MYSQL_PASSWORD:vpnuserpass
-      - MYSQL_DATABASE:echoCTF
+      - RED_APP=backend
+      - MYSQL_HOST=db
+      - MYSQL_USER=vpnuser
+      - MYSQL_PASSWORD=vpnuserpass
+      - MYSQL_DATABASE=echoCTF
     restart: "always"
+    ports:
+      - 8080:80
     links:
       - db:db
     networks:
@@ -33,24 +37,28 @@ services:
       - private
 
   frontend:
+    container_name: echoctfred_frontend
     build:
       context: .
       dockerfile: contrib/Dockerfile-frontend
       args:
-      - RED_APP:frontend
-      - MYSQL_HOST:db
-      - MYSQL_USER:vpnuser
-      - MYSQL_PASSWORD:vpnuserpass
-      - MYSQL_DATABASE:echoCTF
+      - RED_APP=frontend
+      - MYSQL_HOST=db
+      - MYSQL_USER=vpnuser
+      - MYSQL_PASSWORD=vpnuserpass
+      - MYSQL_DATABASE=echoCTF
     restart: "always"
     links:
       - db:db
+    ports:
+      - 8082:80
     networks:
       - private
       - public
 
 
   vpn:
+    container_name: echoctfred_vpn
     cap_add:
       - NET_ADMIN
     privileged: true
@@ -58,11 +66,11 @@ services:
       context: .
       dockerfile: contrib/Dockerfile-vpn
       args:
-      - RED_APP:backend
-      - MYSQL_HOST:db
-      - MYSQL_USER:vpnuser
-      - MYSQL_PASSWORD:vpnuserpass
-      - MYSQL_DATABASE:echoCTF
+      - RED_APP=backend
+      - MYSQL_HOST=db
+      - MYSQL_USER=vpnuser
+      - MYSQL_PASSWORD=vpnuserpass
+      - MYSQL_DATABASE=echoCTF
     restart: "always"
     environment:
     - RED_APP=backend
@@ -72,12 +80,23 @@ services:
     - MYSQL_DATABASE=echoCTF
     volumes:
       - data-openvpn:/etc/openvpn
+    ports:
+      - 1194
     links:
       - db:db
     networks:
-      - public
-      - private
-      - targets
+      public:
+      private:
+      targets:
+        ipv4_address: "10.0.160.254"
+
+  target1:
+    container_name: echoctfred_target1
+    restart: "always"
+    image: nginx
+    networks:
+      targets:
+        ipv4_address: "10.0.160.2"
 
 
 volumes:
@@ -91,5 +110,17 @@ networks:
     driver: bridge
   private:
     driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.24.0.0/24
   targets:
     driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.160.0/24

@@ -7,7 +7,7 @@ if [ ! -f /etc/openvpn/.configured ]; then
     cp contrib/openvpn_tun0.conf /etc/openvpn
     echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8',  ];">backend/config/db.php
     sed -e "s#{{db.host}}#${MYSQL_HOST}#g" contrib/echoctf_updown_mysql.sh > /etc/openvpn/echoctf_updown_mysql.sh
-    sed -e "s#127.0.0.1#${MYSQL_HOST}#g" -i /etc/openvpn/echoctf_updown_mysql.sh
+    sed -e "s#ksh#bash#" -e "s#127.0.0.1#${MYSQL_HOST}#g" -e "s#{{db.user}}#${MYSQL_USER}#g" -e "s#{{db.pass}}#${MYSQL_PASSWORD}#g" -i /etc/openvpn/echoctf_updown_mysql.sh
     chmod 555 /etc/openvpn/echoctf_updown_mysql.sh
     cp contrib/crl_openssl.conf /etc/openvpn/crl/
     touch /etc/openvpn/crl/index.txt

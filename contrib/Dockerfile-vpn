@@ -13,11 +13,11 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
     && apt-get update \
     && apt-get install --no-install-recommends -y build-essential gcc \
-    autoconf automake procps netcat git zip unzip \
+    autoconf automake procps git zip unzip \
     mariadb-server mariadb-client mcrypt memcached \
     libmemcached-dev libtool libmariadbclient-dev \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
-    composer openvpn
+    composer openvpn netcat-openbsd
 
 WORKDIR /var/www/echoCTF.RED
 COPY backend ./backend/
