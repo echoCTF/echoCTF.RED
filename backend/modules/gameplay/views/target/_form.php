@@ -43,10 +43,10 @@ use yii\bootstrap\ActiveForm;
     </div>
     <div class="row">
         <div class="col-md-6">
-          <?= $form->field($model, 'suggested_xp')->textInput(['maxlength' => true])->hint('Unique short name for the target host') ?>
+          <?= $form->field($model, 'suggested_xp')->textInput(['maxlength' => true])->hint('Suggested XP the participants need to have to be able to complete the target') ?>
         </div>
         <div class="col-md-6">
-          <?= $form->field($model, 'required_xp')->textInput(['maxlength' => true])->hint('Fully Qualified Domain Name for the target host') ?>
+          <?= $form->field($model, 'required_xp')->textInput(['maxlength' => true])->hint('Required XP by the participants to access the target (not enforced at the moment).') ?>
         </div>
     </div>
 

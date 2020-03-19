@@ -75,12 +75,14 @@ class Player extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username'], 'required'],
+            [['username', 'type', 'status'], 'required'],
             [['type'], 'string'],
             [['active','status'], 'integer'],
             [['academic'], 'boolean'],
             [['email'], 'filter', 'filter'=>'strtolower'],
             [['activkey'], 'string', 'max' => 32],
+            [['type'], 'default', 'value' => 'offense'],
+            [['status'], 'default', 'value' => self::STATUS_ACTIVE ],
             [['activkey'], 'default', 'value' => Yii::$app->security->generateRandomString()],
             [['username', 'fullname', 'email', 'new_password', 'activkey'], 'string', 'max' => 255],
             [['username'], 'unique'],
