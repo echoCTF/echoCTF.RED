@@ -30,7 +30,7 @@ services:
       - MYSQL_DATABASE=echoCTF
     restart: "always"
     ports:
-      - 8080:80
+      - 8082:80
     links:
       - db:db
     networks:
@@ -54,7 +54,7 @@ services:
     links:
       - db:db
     ports:
-      - 8082:80
+      - 8080:80
     networks:
       private:
         ipv4_address: "172.24.0.3"

@@ -9,15 +9,15 @@ The docker containers use the following networks
 
 Furthermore the following ports are maped on the host server and containers
 * udp 0.0.0.0:1194 => echoctfred_vpn 172.26.0.1:1194 openvpn
-* tcp 0.0.0.0:8080 => echoctfred_backend 172.26.0.2:80
-* tcp 0.0.0.0:8082 => echoctfred_frontend 172.26.0.3:80
+* tcp 0.0.0.0:8082 => echoctfred_backend 172.26.0.2:80
+* tcp 0.0.0.0:8080 => echoctfred_frontend 172.26.0.3:80
 
 The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
 ![echoCTF.RED docker-compose topology](/docs/docker-compose-topology.png?raw=true&1)
 
 Build and start the containers
 ```sh
-docker-compose up --build 
+docker-compose up --build
 ```
 
 Configure mail address for player registrations
@@ -62,7 +62,8 @@ after dockerd starts you will have to bind to _`0.0.0.0`_ (ie `-H tcp://0.0.0.0:
 
 Make sure you restrict connections to this port to `echoctfred_vpn/172.24.0.1` and `echoctfred_backend/172.24.0.2` containers only.
 
-More information about enabling docker  API https://success.docker.com/article/how-do-i-enable-the-remote-api-for-dockerd
+More information about enabling docker API https://success.docker.com/article/how-do-i-enable-the-remote-api-for-dockerd
+
 
 Login to the backend (http://localhost:8080/) and add a target with the following details
 
