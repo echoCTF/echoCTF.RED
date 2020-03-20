@@ -86,7 +86,7 @@ services:
     volumes:
       - data-openvpn:/etc/openvpn
     ports:
-      - 1194
+      - "1194/udp"
     links:
       - db:db
     networks:
