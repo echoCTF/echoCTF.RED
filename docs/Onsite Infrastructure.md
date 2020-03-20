@@ -68,3 +68,5 @@ The hardware specifications for the servers in that case were as following
 When the option to increase the hardware specs is no longer viable, we switch
 into splitting services into multiple servers starting with the addition of
 new docker servers.
+
+![Onsite Multiple Docker Servers Topology](/docs/onsite-multiple-dockers.png?raw=true&2)
