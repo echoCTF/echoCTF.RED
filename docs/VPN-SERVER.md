@@ -6,6 +6,8 @@ connect to the target infrastructure as well as keeping track of the findings.
 The following guide covers the installation of the needed applications on
 OpenBSD 6.6 to act as a VPN gateway.
 
+![echoCTF.RED docker-compose topology](/docs/docker-compose-topology.png?raw=true&1)
+
 The following network details will be used throughout this guide
 * vpn server egress interface: `em0`
 * vpn server egress address: `172.16.10.109`
@@ -15,6 +17,7 @@ The following network details will be used throughout this guide
 * vpn server assigned range: `10.10.0.0/16`
 * targets network: `10.0.100.0/16`
 * mysql/memcache server: `172.16.0.1`
+
 
 Install the needed packages
 ```sh
