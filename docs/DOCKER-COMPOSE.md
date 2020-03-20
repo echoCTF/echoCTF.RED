@@ -1,15 +1,23 @@
 # docker-compose instructions
 The `docker-compose.yml` builds and starts all the needed applications and targets on a single host running docker.
 
-![echoCTF.RED docker-compose topology](/docs/docker-compose-topology.png?raw=true&1)
-
-
 The docker containers use the following networks
-* echoctfred_public
+* ___echoctfred_public___: `172.26.0.0/24`
+* ___echoctfred_private___: `172.24.0.0/24`
+* ___echoctfred_targets___: `10.0.160.0/24`
+* ___OpenVPN___: `10.10.0.0/16`
+
+Furthermore the following ports are maped on the host server and containers
+* udp 0.0.0.0:1194 => echoctfred_vpn 172.26.0.1:1194 openvpn
+* tcp 0.0.0.0:8080 => echoctfred_backend 172.26.0.2:80
+* tcp 0.0.0.0:8082 => echoctfred_frontend 172.26.0.3:80
+
+The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
+![echoCTF.RED docker-compose topology](/docs/docker-compose-topology.png?raw=true&1)
 
 Build and start the containers
 ```sh
-docker-compose up --build
+docker-compose up --build 
 ```
 
 Configure mail address for player registrations
@@ -47,6 +55,14 @@ sudo ln -s /proc/$pid/ns/net /var/run/netns/$pid
 sudo ip netns exec $pid ip route del default
 sudo ip netns exec $pid ip route add default via 10.0.160.1
 ```
+
+Make sure you configure the host dockerd daemon to have its API to listen tcp
+to the new `private` network. However since the network becomes available only
+after dockerd starts you will have to bind to _`0.0.0.0`_ (ie `-H tcp://0.0.0.0:2376`)
+
+Make sure you restrict connections to this port to `echoctfred_vpn/172.24.0.1` and `echoctfred_backend/172.24.0.2` containers only.
+
+More information about enabling docker  API https://success.docker.com/article/how-do-i-enable-the-remote-api-for-dockerd
 
 Login to the backend (http://localhost:8080/) and add a target with the following details
 
@@ -109,3 +125,37 @@ COMMIT
 __EOF__
 iptables-restore < /etc/iptables/rules.v4
 ```
+
+## Changing Defaults
+The following section will explain what files you need to modify in order to change default values of the setup.
+
+### How do i change the subnet for the VPN clients?
+If you want to change the OpenVPN clients ranges you will have to update the following files and rebuild the images and the volume `openvpn-data`
+
+Edit *`contrib/openvpn_tun0.conf`* and adapt Line 40 to your needs
+```
+server 10.10.0.0 255.255.0.0
+```
+
+### How do i change the subnet for the targets
+If you want to modify the ranges of the targets edit `contrib/openvpn_tun0.conf` and modify the lines 41-43
+```
+push "route 10.0.100.0 255.255.255.0"
+push "route 10.0.160.0 255.255.255.0"
+push "route 10.0.200.0 255.255.255.0"
+```
+
+Update the docker-compose.yml with the respective ranges and rebuild
+
+### How to move the VPN to another VM or host?
+In order to move the VPN server to another host you will have to edit the
+`docker-compose.yml` and comment out the VPN related entries.
+
+Keep in mind that VPN host needs to be able to access the following ports from `echoctfred_db`
+* `3306/tcp` MySQL
+* `11211/tcp` Memcached
+
+You will also need to move the targets on a new host to match the network
+diagram on top.
+
+Follow the [VPN SERVER Installation Guide](/docs/VPN-SERVER.md)
