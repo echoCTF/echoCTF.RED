@@ -29,7 +29,9 @@ RUN set -ex; \
     mkdir -p backend/web/assets; \
     chown www-data backend/web/assets; \
     chown www-data backend/runtime; \
-    cd backend; composer install; \
+    cd backend; \
+    composer config --global github-protocols https; \
+    composer install; \
     cd ..; \
     mv /var/www/html /var/www/html.old; \
     ln -s /var/www/echoCTF.RED/backend/web /var/www/html; \
