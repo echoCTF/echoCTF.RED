@@ -1,6 +1,9 @@
 # docker-compose instructions
 The `docker-compose.yml` builds and starts all the needed applications and targets on a single host running docker.
 
+Keep in mind that this may require a lot of memory to run (our tests are
+performed on systems with at least 8GB ram).
+
 The docker containers use the following networks
 * ___echoctfred_public___: `172.26.0.0/24`
 * ___echoctfred_private___: `172.24.0.0/24`
@@ -27,11 +30,12 @@ docker exec -it echoctfred_vpn ./backend/yii sysconfig/set mail_from dontreply@e
 
 Create backend and frontend users to test
 ```
-# syntax: ./backend/yii user/create <username> <email> <password>
 docker exec -it echoctfred_vpn ./backend/yii user/create echothrust info@echothrust.com echothrust
-# syntax: ./backend/yii player/register <username> <email> <fullname> <password> <offense/defense> <0:inactive/1:active>
 docker exec -it echoctfred_vpn ./backend/yii player/register echothrust info@echothrust.com echothrust echothrust offense 1
 ```
+
+The syntax for the commands can be found at [Console-Commands.md](/docs/Console-Commands.md)
+
 
 Set the IP or FQDN that participants will openvpn
 ```
@@ -65,7 +69,9 @@ Make sure you restrict connections to this port to `echoctfred_vpn/172.24.0.1` a
 More information about enabling docker API https://success.docker.com/article/how-do-i-enable-the-remote-api-for-dockerd
 
 
-Login to the backend (http://localhost:8080/) and add a target with the following details
+Your `frontend` is accessible at http://localhost:8080/
+
+Login to the backend (http://localhost:8082/) and add a target with the following details
 
 * Name: `echoctfred_target1`
 * FQDN: `echoctfred_target1.example.com`
