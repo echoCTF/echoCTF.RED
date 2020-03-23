@@ -41,7 +41,7 @@ if($target->progress==100) {
          Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
-            'icon'=>sprintf('<img src="/images/targets/_%s.png" class="img-fluid" style="max-width: 10rem; max-height: 4rem;"/>',$target->name),
+            'icon'=>sprintf('<img src="%s" class="img-fluid" style="max-width: 10rem; max-height: 4rem;"/>',$target->logo),
             'color'=>'warning',
             'subtitle'=>sprintf("%s, %s", ucfirst($target->difficultyText),boolval($target->rootable) ? "Rootable" : "Non rootable"),
             'title'=>sprintf('%s / %s',$target->name,long2ip($target->ip)),
