@@ -321,5 +321,24 @@ class Target extends \yii\db\ActiveRecord
     {
         return new TargetQuery(get_called_class());
     }
+    public function getFullLogo()
+    {
+        if(file_exists(Yii::getAlias("@webroot/images/targets/".$this->name.".png")))
+          return '/images/targets/'.$this->name.'.png';
+        return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMM+M9QDwAExgHQHiLdYgAAAABJRU5ErkJggg==';
+    }
 
+    public function getLogo()
+    {
+      if(file_exists(Yii::getAlias("@webroot/images/targets/_".$this->name.".png")))
+        return '/images/targets/_'.$this->name.'.png';
+      return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMM+M9QDwAExgHQHiLdYgAAAABJRU5ErkJggg==';
+    }
+
+    public function getThumbnail()
+    {
+      if(file_exists(Yii::getAlias("@webroot/images/targets/_".$this->name."-thumbnail.png")))
+        return '/images/targets/_'.$this->name.'-thumbnail.png';
+      return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMM+M9QDwAExgHQHiLdYgAAAABJRU5ErkJggg==';
+    }
 }
