@@ -13,7 +13,7 @@ use yii\bootstrap\ActiveForm;
     <?php $form = ActiveForm::begin([]); ?>
     <div class="row">
         <div class="col-md-6">
-          <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('Unique short name for the target host') ?>
+          <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('Unique short name for the target host. Keep in mind that this name is also been used to select the logo for the target on <code>frontend/web/images/target</code>') ?>
         </div>
         <div class="col-md-6">
           <?= $form->field($model, 'fqdn')->textInput(['maxlength' => true])->hint('Fully Qualified Domain Name for the target host') ?>
