@@ -1,11 +1,11 @@
 ---
-ansible_host: 172.17.0.2
-DOCKER: localhost
-mac: "de:ad:be:ef:c0:ff:ee"
+ansible_host: 10.0.160.3
+DOCKER: 172.24.0.1
+mac: "02:42:0a:00:a0:03"
 hostname: example
 fqdn: example.echocity-f.com
 rootable: 0 # 1 for yes
-difficulty: 3
+difficulty: 0
 #scheduled_at: "YYYY-mm-dd HH:MM:SS"
 container:
   name: "{{hostname}}"
@@ -21,15 +21,15 @@ container:
   env:
     ETSCTF_FLAG: "ETSCTF_{{ETSCTF_ENV_FLAG}}"
   dns_servers:
-    - "10.0.0.254"
+    - "8.8.8.8"
   networks:
-    - { name: AAnet, ipv4_address: "{{ansible_host}}" }
+    - { name: echoctfred_targets, ipv4_address: "{{ansible_host}}" }
   volumes: []
 
-ETSCTF_ROOT_FLAG: ""
-ETSCTF_ENV_FLAG: ""
-ETSCTF_SHADOW_FLAG: ""
-ETSCTF_PASSWD_FLAG: ""
+ETSCTF_ROOT_FLAG: "ETSCTF_ROOT_FLAG"
+ETSCTF_ENV_FLAG: "ETSCTF_ENV_FLAG"
+ETSCTF_SHADOW_FLAG: "ETSCTF_SHADOW_FLAG"
+ETSCTF_PASSWD_FLAG: "ETSCTF_PASSWD_FLAG"
 envstr:  "ETSCTF_FLAG=ETSCTF_{{ETSCTF_ENV_FLAG}}\n"
 envhash:  "{{envstr|hash('sha256')}}"
 
