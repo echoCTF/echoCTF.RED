@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'ts',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => /*'{generate-ssl} {toggle-academic} '*/ '{view} {update} {delete} {ban} {mail}',
+              'template' => '{generate-ssl} {toggle-academic} '. '{view} {update} {delete} {ban} {mail}',
               'header' => Html::a(
                   '<span class="glyphicon glyphicon-ban-circle"></span>',
                   ['ban-filtered'],
@@ -96,7 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                               'title' => 'Generate SSL Certificates',
                               'data-pjax' => '0',
                               'data-method' => 'POST',
-                              'data'=>['confirm'=>"Are you sure you want to regenerate the SSL for this user?\nNOTE: No revoke takes place on the previous key."]
+                              'data'=>['confirm'=>"Are you sure you want to regenerate the SSL for this user?"]
                           ]
                       );
                   },

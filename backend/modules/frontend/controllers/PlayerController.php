@@ -176,37 +176,13 @@ class PlayerController extends Controller
                   }
                   if($model->player_ssl=='1')
                   {
-                    Yii::$app->params['dn']['commonName'] = $p->id;
-                    // Generate a new private (and public) key pair
-                    $privkey = openssl_pkey_new(Yii::$app->params['pkey_config']);
-
-                    // Generate a certificate signing request
-                    $csr = openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'config'=>__DIR__ . '/../../../config/CA.cnf','encrypt_key'=>false));
-
-                    // Generate a self-signed cert, valid for 365 days
-                    $CAcert = "file:///tmp/echoCTF-OVPN-CA.crt";
-                    $CAprivkey = array("file:///tmp/echoCTF-OVPN-CA.key",null);
-                    file_put_contents('/tmp/echoCTF-OVPN-CA.key',Sysconfig::findOne('CA.key')->val);
-                    file_put_contents('/tmp/echoCTF-OVPN-CA.crt',Sysconfig::findOne('CA.crt')->val);
-                    $x509 = openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256','config'=>__DIR__ . '/../../../config/CA.cnf','x509_extensions'=>'usr_cert'), time() );
-                    openssl_csr_export($csr, $csrout);
-                    openssl_x509_export($x509, $certout,false);
-                    openssl_x509_export($x509, $crtout);
-                    openssl_pkey_export($privkey, $pkeyout);
-                    unlink('/tmp/echoCTF-OVPN-CA.key');
-                    unlink('/tmp/echoCTF-OVPN-CA.crt');
-
                     if($p->playerSsl!==NULL)
                       $ps=$p->playerSsl;
                     else {
                       $ps=new PlayerSsl;
                       $ps->player_id=$p->id;
                     }
-                    $ps->subject=serialize(Yii::$app->params['dn']);
-                    $ps->csr=$csrout;
-                    $ps->crt=$crtout;
-                    $ps->txtcrt=$certout;
-                    $ps->privkey=$pkeyout;
+                    $ps->generate();
                     $ps->save();
                   }
                 }
@@ -343,39 +319,8 @@ class PlayerController extends Controller
 
     public function actionGenerateSsl($id) {
         $player=$this->findModel($id);
-        Yii::$app->params['dn']['commonName'] = $player->id;
-        Yii::$app->params['dn']['emailAddress']=$player->email;
-        // Generate a new private (and public) key pair
-        $privkey = openssl_pkey_new(Yii::$app->params['pkey_config']);
-
-        // Generate a certificate signing request
-        $csr = openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'config'=>__DIR__ . '/../../../config/CA.cnf','encrypt_key'=>false));
-
-        // Generate a self-signed cert, valid for 365 days
-        $CAcert = "file:///tmp/echoCTF-OVPN-CA.crt";
-        $CAprivkey = array("file:///tmp/echoCTF-OVPN-CA.key",null);
-        file_put_contents('/tmp/echoCTF-OVPN-CA.key',Sysconfig::findOne('CA.key')->val);
-        file_put_contents('/tmp/echoCTF-OVPN-CA.crt',Sysconfig::findOne('CA.crt')->val);
-        $x509 = openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256','config'=>__DIR__ . '/../../../config/CA.cnf','x509_extensions'=>'usr_cert'), time() );
-        var_dump(openssl_error_string());
-        openssl_csr_export($csr, $csrout);
-        openssl_x509_export($x509, $certout,false);
-        openssl_x509_export($x509, $crtout);
-        openssl_pkey_export($privkey, $pkeyout);
-        unlink('/tmp/echoCTF-OVPN-CA.key');
-        unlink('/tmp/echoCTF-OVPN-CA.crt');
-
-        if($player->playerSsl!==NULL)
-          $ps=$player->playerSsl;
-        else {
-          $ps=new PlayerSsl;
-          $ps->player_id=$player->id;
-        }
-        $ps->subject=serialize(Yii::$app->params['dn']);
-        $ps->csr=$csrout;
-        $ps->crt=$crtout;
-        $ps->txtcrt=$certout;
-        $ps->privkey=$pkeyout;
+        $ps=$player->playerSsl;
+        $ps->generate();
         if($ps->save())
         {
           Yii::$app->session->setFlash('success', "SSL Keys regenerated.");
