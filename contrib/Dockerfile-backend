@@ -24,7 +24,7 @@ RUN set -ex; \
     cp backend/config/cache-local.php backend/config/cache.php; \
     cp backend/config/validationKey-local.php backend/config/validationKey.php; \
     cp backend/config/db-sample.php backend/config/db.php; \
-#    sed -ie "s/localhost/${MYSQL_HOST}/g" backend/config/db.php; \
+    sed -ie "s/localhost/${MYSQL_HOST}/g" backend/config/db.php; \
     sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" backend/config/cache.php; \
     mkdir -p backend/web/assets; \
     chown www-data backend/web/assets; \
@@ -41,6 +41,9 @@ RUN set -ex; \
 RUN rm -rf /usr/src/* /var/lib/apt/lists/*
 
 EXPOSE 80/tcp
+
+# Challenge files volume
+VOLUME /var/www/echoCTF.RED/backend/web/uploads
 
 WORKDIR /var/www/echoCTF.RED
 CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]

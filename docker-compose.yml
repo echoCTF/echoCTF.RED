@@ -29,6 +29,9 @@ services:
       - MYSQL_PASSWORD=vpnuserpass
       - MYSQL_DATABASE=echoCTF
     restart: "always"
+    volumes:
+      - data-challenges:/var/www/echoCTF.RED/backend/web/uploads
+      - ./themes/images:/var/www/echoCTF.RED/backend/web/images
     ports:
       - 8082:80
     links:
@@ -51,6 +54,9 @@ services:
       - MYSQL_PASSWORD=vpnuserpass
       - MYSQL_DATABASE=echoCTF
     restart: "always"
+    volumes:
+      - data-challenges:/var/www/echoCTF.RED/frontend/web/uploads
+      - ./themes/images:/var/www/echoCTF.RED/frontend/web/images
     links:
       - db:db
     ports:
@@ -110,6 +116,8 @@ volumes:
   data-mysql:
     driver: local
   data-openvpn:
+    driver: local
+  data-challenges:
     driver: local
 
 networks:

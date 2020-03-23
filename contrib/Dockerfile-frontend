@@ -45,5 +45,6 @@ RUN rm -rf /usr/src/* /var/lib/apt/lists/*
 
 EXPOSE 80/tcp
 
+VOLUME /var/www/echoCTF.RED/frontend/web/uploads
 WORKDIR /var/www/echoCTF.RED
 CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
