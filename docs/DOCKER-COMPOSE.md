@@ -15,6 +15,12 @@ Furthermore the following ports are maped on the host server and containers
 * tcp 0.0.0.0:8082 => echoctfred_backend 172.26.0.2:80
 * tcp 0.0.0.0:8080 => echoctfred_frontend 172.26.0.3:80
 
+The following volumes are configured and used
+* `echoctfred_data-mysql` For persistent mysql data
+* `echoctfred_data-openvpn` For persistent openvpn data
+* `echoctfred_data-challenges` under backend & frontned `/var/www/echoCTF.RED/*/web/uploads`
+* `./themes/images` under `/var/www/echoCTF.RED/*/web/images` for logos and images
+
 The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
 ![echoCTF.RED docker-compose topology](/docs/docker-compose-topology.png?raw=true&1)
 
@@ -29,7 +35,7 @@ docker exec -it echoctfred_vpn ./backend/yii sysconfig/set mail_from dontreply@e
 ```
 
 Create backend and frontend users to test
-```
+```sh
 docker exec -it echoctfred_vpn ./backend/yii user/create echothrust info@echothrust.com echothrust
 docker exec -it echoctfred_vpn ./backend/yii player/register echothrust info@echothrust.com echothrust echothrust offense 1
 ```
@@ -38,7 +44,7 @@ The syntax for the commands can be found at [Console-Commands.md](/docs/Console-
 
 
 Set the IP or FQDN that participants will openvpn
-```
+```sh
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw 172.22.0.4
 # or
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw vpn.example.red
