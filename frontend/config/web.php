@@ -189,7 +189,7 @@ $config = [
                 'reset-password' => 'site/reset-password',
                 'resend-verification-email'=>'site/resend-verification-email',
                 'verify-email'=>'site/verify-email',
-                'changelog' => 'site/changelog',
+                //'changelog' => 'site/changelog',
                 // app/modules/challenge/controllers/ChallengeController.php
                 'challenges' => 'challenge/default/index',
                 'challenge/<id:\d+>' => 'challenge/default/view',

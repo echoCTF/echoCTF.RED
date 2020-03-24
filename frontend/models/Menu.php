@@ -22,7 +22,7 @@ class Menu
                     //['label' => 'Rules','icon'=>'list_alt', 'url' => ['/help/rule/index']],
                     ['label' => 'Instructions', 'icon'=>'info','url' => ['/help/instruction/index']],
                     ['label' => 'FAQ', 'icon'=>'help', 'url' => ['/help/faq/index']],
-                    ['label' => 'Changelog', 'icon'=>'assignment','url' => ['/site/changelog']],
+                    //['label' => 'Changelog', 'icon'=>'assignment','url' => ['/site/changelog']],
                 ]
             ]
         );
