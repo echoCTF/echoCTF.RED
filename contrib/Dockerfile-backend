@@ -30,6 +30,7 @@ RUN set -ex; \
     chown www-data backend/web/assets; \
     chown www-data backend/runtime; \
     cd backend; \
+    git config --global url."https://".insteadOf "git://" ; \    
     composer config --global github-protocols https; \
     composer install; \
     cd ..; \

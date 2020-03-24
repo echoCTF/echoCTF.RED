@@ -25,7 +25,7 @@ COPY contrib ./contrib/
 COPY contrib/entrypoint-vpn.sh /entrypoint.sh
 
 WORKDIR /var/www/echoCTF.RED/backend
-RUN  composer config --global github-protocols https; composer install; rm -rf /usr/src/* /var/lib/apt/lists/*; chmod +x /entrypoint.sh; useradd  _openvpn; touch /var/log/openvpn/openvpn.log
+RUN git config --global url."https://".insteadOf "git://" ; composer config --global github-protocols https; composer install; rm -rf /usr/src/* /var/lib/apt/lists/*; chmod +x /entrypoint.sh; useradd  _openvpn; touch /var/log/openvpn/openvpn.log
 
 
 EXPOSE 1194/udp

@@ -32,6 +32,7 @@ RUN set -ex; \
     chown www-data frontend/runtime; \
     cd frontend;  \
     composer config --global github-protocols https; \
+    git config --global url."https://".insteadOf "git://" ; \
     composer install; \
     cd ..; \
     mv /var/www/html /var/www/html.old; \
