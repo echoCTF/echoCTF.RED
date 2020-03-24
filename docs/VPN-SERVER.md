@@ -215,9 +215,9 @@ Finally ensure to set the `vpngw` sysconfig key to the IP that the participants 
 ./backend/yii sysconfig/set vpngw 172.26.0.1
 ```
 
-Ensure that your `em1` interface is assigned `group dmz`
+Ensure that your `em1` interface is assigned `group targets`
 ```sh
-echo "group dmz">>/etc/hostname.em1
+echo "group targets">>/etc/hostname.em1
 ```
 
 Restart the system and you should be up and running.
