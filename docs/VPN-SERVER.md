@@ -10,14 +10,13 @@ OpenBSD 6.6 to act as a VPN gateway.
 
 The following network details will be used throughout this guide
 * vpn server egress interface: `em0`
-* vpn server egress address: `172.16.10.109`
-* vpn server dmz interface: `em1`
-* vpn server dmz address: `10.0.0.254/16`
+* vpn server egress address: `172.26.0.1`
+* vpn server targets interface: `em1`
+* vpn server targets address: `10.0.160.254/24`
 * vpn server tun0 address: `10.10.0.1`
 * vpn server assigned range: `10.10.0.0/16`
 * targets network: `10.0.100.0/16`
-* mysql/memcache server: `172.16.0.1`
-
+* mysql/memcache server: `172.24.0.253`
 
 Install the needed packages
 ```sh
@@ -103,7 +102,7 @@ edit the file `echoCTF.RED/contrib/findingsd-federated.sql` and replace the
 following strings to their corresponding value. For our example we will use
 * `{{db.user}}` database username (ex `vpnuser`)
 * `{{db.pass}}` database user password (ex `vpnuserpass`)
-* `{{db.host}}` database host (prefer IP ex `172.16.0.1`)
+* `{{db.host}}` database host (prefer IP ex `172.24.0.253`)
 * `{{db.name}}` database name (default ex `echoCTF`)
 
 NOTE: If you are running the docker container that we provide then a user already exists on the database with the following credentials
@@ -112,7 +111,7 @@ NOTE: If you are running the docker container that we provide then a user alread
 
 
 ```sh
-sed -e 's#{{db.host}}#172.16.0.1#g' \
+sed -e 's#{{db.host}}#172.24.0.253#g' \
 -e 's#{{db.user}}#vpnuser#g' \
 -e 's#{{db.pass}}#vpnuserpass#g' \
 -e 's#{{db.name}}#echoCTF#g' contrib/findingsd-federated.sql > /tmp/findingsd.sql
@@ -143,9 +142,9 @@ Edit `/etc/openvpn/openvpn_tun0.conf` and uncomment the first line and replace
 
 Edit the script at `/etc/openvpn/echoctf_updown_mysql.sh` and update the first
 line with the IP of your database server. If all services run on the local
-system use `127.0.0.1` alternatively use the same IP we used on the findingsd.sql examples above (172.16.0.1)
+system use `127.0.0.1` alternatively use the same IP we used on the findingsd.sql examples above (172.24.0.253)
 ```sh
-sed -i -e 's#{{db.host}}#172.16.0.1#g' /etc/openvpn/echoctf_updown_mysql.sh
+sed -i -e 's#{{db.host}}#172.24.0.253#g' /etc/openvpn/echoctf_updown_mysql.sh
 ```
 
 Prepare the tun0 interface and rc scripts
@@ -213,7 +212,7 @@ PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
 Finally ensure to set the `vpngw` sysconfig key to the IP that the participants will connect to openvpn.
 ```sh
-./backend/yii sysconfig/set vpngw 172.16.10.109
+./backend/yii sysconfig/set vpngw 172.26.0.1
 ```
 
 Ensure that your `em1` interface is assigned `group dmz`
