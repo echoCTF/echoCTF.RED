@@ -26,7 +26,7 @@ CREATE TABLE player_finding (
   `finding_id` int(11) NOT NULL,
   `ts` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (player_id,finding_id)
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db.user}}:{{db.pass}}@{{db.host}}:3306/{{db.name}}/player_finding';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_finding';
 
 DROP TABLE IF EXISTS `player_last`;
 CREATE TABLE `player_last` (
@@ -36,14 +36,14 @@ CREATE TABLE `player_last` (
   `on_vpn` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `vpn_remote_address` int(11) UNSIGNED DEFAULT NULL,
   `vpn_local_address` int(11) UNSIGNED DEFAULT NULL
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db.user}}:{{db.pass}}@{{db.host}}:3306/{{db.name}}/player_last';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_last';
 
 DROP TABLE IF EXISTS `player`;
 CREATE TABLE `player` (
   `id` int(10) unsigned NOT NULL,
   `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `status` int(11) DEFAULT '0'
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db.user}}:{{db.pass}}@{{db.host}}:3306/{{db.name}}/player';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player';
 
 DROP TABLE IF EXISTS `debuglogs`;
 CREATE TABLE debuglogs (
@@ -59,7 +59,7 @@ BEGIN
   DECLARE userMAC VARCHAR(32) DEFAULT NULL;
 
   IF (select memc_server_count()<1) THEN
-    select memc_servers_set('{{db.host}}') INTO @memc_server_set_status;
+    select memc_servers_set('{{db_host}}') INTO @memc_server_set_status;
   END IF;
   SELECT memc_get('sysconfig:debug') INTO @debug;
   SELECT memc_get('sysconfig:mac_auth') INTO mac_auth;
@@ -101,7 +101,7 @@ DROP PROCEDURE IF EXISTS `VPN_LOGIN` //
 CREATE PROCEDURE `VPN_LOGIN`(IN usid BIGINT, IN  assignedIP INT UNSIGNED, IN remoteIP INT UNSIGNED)
 BEGIN
   IF (select memc_server_count()<1) THEN
-    select memc_servers_set('{{db.host}}') INTO @memc_server_set_status;
+    select memc_servers_set('{{db_host}}') INTO @memc_server_set_status;
   END IF;
 
   IF (SELECT COUNT(*) FROM player WHERE id=usid AND status=10)>0 THEN
@@ -117,7 +117,7 @@ DROP PROCEDURE IF EXISTS `VPN_LOGOUT_STALLED` //
 CREATE PROCEDURE `VPN_LOGOUT_STALLED`(IN vpn_server CHAR(15))
 BEGIN
   IF (select memc_server_count()<1) THEN
-    select memc_servers_set('{{db.host}}') INTO @memc_server_set_status;
+    select memc_servers_set('{{db_host}}') INTO @memc_server_set_status;
   END IF;
 
   SELECT memc_delete(CONCAT('ovpn:',id)), memc_delete(CONCAT('ovpn_remote:',id)) from player_last where vpn_remote_address is not null or vpn_local_address is not null;
@@ -129,7 +129,7 @@ DROP PROCEDURE IF EXISTS `VPN_LOGOUT` //
 CREATE PROCEDURE `VPN_LOGOUT`(IN usid BIGINT, IN  assignedIP INT UNSIGNED, IN remoteIP INT UNSIGNED)
 BEGIN
   IF (select memc_server_count()<1) THEN
-    select memc_servers_set('{{db.host}}') INTO @memc_server_set_status;
+    select memc_servers_set('{{db_host}}') INTO @memc_server_set_status;
   END IF;
 
   IF (SELECT COUNT(*) FROM player WHERE id=usid AND status=10)>0 THEN

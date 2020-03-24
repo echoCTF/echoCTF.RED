@@ -18,6 +18,17 @@ The following network details will be used throughout this guide
 * targets network: `10.0.100.0/16`
 * mysql/memcache server: `172.24.0.253`
 
+There is an experimental playbook you can run locally on your OpenBSD that will
+configure all that is needed for you. Once you answer the questions asked you
+are set to go
+```sh
+pkg_add ansible
+cd ansible && ansible-playbook playbook/vpngw-openbsd.yml
+```
+
+Alternatively you can manually configure your sytem by following these steps,
+adapting them to your needs where needed.
+
 Install the needed packages
 ```sh
 pkg_add -vi curl git openvpn-2.4.7p1 mariadb-server easy-rsa \
@@ -100,21 +111,23 @@ mysql echoCTF < contrib/findingsd.sql
 If the VPN host **runs on a different host** than your main database server
 edit the file `echoCTF.RED/contrib/findingsd-federated.sql` and replace the
 following strings to their corresponding value. For our example we will use
-* `{{db.user}}` database username (ex `vpnuser`)
-* `{{db.pass}}` database user password (ex `vpnuserpass`)
-* `{{db.host}}` database host (prefer IP ex `172.24.0.253`)
-* `{{db.name}}` database name (default ex `echoCTF`)
+* `{{db_user}}` database username (ex `vpnuser`)
+* `{{db_pass}}` database user password (ex `vpnuserpass`)
+* `{{db_host}}` database host (prefer IP ex `172.24.0.253`)
+* `{{db_name}}` database name (default ex `echoCTF`)
 
-NOTE: If you are running the docker container that we provide then a user already exists on the database with the following credentials
+NOTE: If you are running the docker container that we provide then a user
+already exists on the database with the following credentials, otherwise you'll
+have to GRANT the permissions to your mysql host.
 * mysql user: `vpnuser`
 * mysql password: `vpnuserpass`
 
 
 ```sh
-sed -e 's#{{db.host}}#172.24.0.253#g' \
--e 's#{{db.user}}#vpnuser#g' \
--e 's#{{db.pass}}#vpnuserpass#g' \
--e 's#{{db.name}}#echoCTF#g' contrib/findingsd-federated.sql > /tmp/findingsd.sql
+sed -e 's#{{db_host}}#172.24.0.253#g' \
+-e 's#{{db_user}}#vpnuser#g' \
+-e 's#{{db_pass}}#vpnuserpass#g' \
+-e 's#{{db_name}}#echoCTF#g' contrib/findingsd-federated.sql > /tmp/findingsd.sql
 mysqladmin create echoCTF
 mysql echoCTF < /tmp/findingsd.sql
 ```

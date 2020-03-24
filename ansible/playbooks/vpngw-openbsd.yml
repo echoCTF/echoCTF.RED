@@ -1,0 +1,315 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  gather_facts: true
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+    users:
+      - { name: _findingsd, comment: "findingsd user", password: '*' }
+    sysctl:
+      net.inet.ip.forwarding: 1
+      net.inet.ip.mforwarding: 1
+      kern.bufcachepercent: 30
+#      net.inet.ip.ifq.maxlen: 2560
+      net.inet.ip.maxqueue: 2048
+      kern.somaxconn: 2048
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      kern.seminfo.semmni: 1024
+      kern.seminfo.semmns: 4096
+      kern.shminfo.shmmax: 67018864
+      kern.shminfo.shmall: 32768
+      kern.maxfiles: 104060
+    rcctl:
+      - { name: check_quotas, state: "disable" }
+      - { name: cron, state: "disable" }
+      - { name: ntpd, state: "enable" }
+      - { name: pflogd, state: "disable" }
+      - { name: slaacd, state: "disable" }
+      - { name: smtpd, state: "disable" }
+      - { name: sndiod, state: "disable" }
+      - { name: openvpn, state: "enable"}
+      - { name: mysqld, state: "enable"}
+    packages:
+      - curl
+      - git
+      - openvpn-2.4.7p1
+      - mariadb-server
+      - php-gd-7.3.16
+      - php-curl-7.3.16
+      - php-intl-7.3.16
+      - php-pdo_mysql-7.3.16
+      - php-zip-7.3.16
+      - composer
+      - libmemcached
+      - py3-mysqlclient
+      - libtool
+      - autoconf-2.69p2
+      - automake-1.16.1
+      - pecl73-memcached
+  vars_prompt:
+    - name: "vpngw"
+      prompt: "OpenVPN gateway hostname or IP?"
+      default: "vpn.example.red"
+      private: no
+    - name: "egress_if"
+      prompt: "Egress network interface (ifconfig egress)?"
+      default: "em0"
+      private: no
+    - name: "targets_if"
+      prompt: "Targets network interface?"
+      default: "em1"
+      private: no
+    - name: "targets_if_ipv4"
+      prompt: "Targets network interface IPv4?"
+      default: "10.0.160.254"
+      private: no
+    - name: "targets_subnet"
+      prompt: "Targets network subnet?"
+      default: "10.0.160.0"
+      private: no
+    - name: "targets_netmask"
+      prompt: "Targets network netmask?"
+      default: "255.255.255.0"
+      private: no
+    - name: "echoCTF_VPN_mgmt_passwd"
+      prompt: "OpenVPN managment interface password?"
+      default: "openvpn"
+      private: no
+    - name: "offense_network"
+      prompt: "OpenVPN client range?"
+      default: "10.10.0.0/16"
+      private: no
+    - name: "db_host"
+      prompt: "Database Server IP?"
+      default: "172.24.0.253"
+      private: no
+    - name: "db_name"
+      prompt: "Database name?"
+      default: "echoCTF"
+      private: no
+    - name: "db_user"
+      prompt: "Database Server user?"
+      default: "vpnuser"
+      private: no
+    - name: "db_pass"
+      prompt: "Database Server user password?"
+      default: "vpnuserpass"
+      private: no
+
+  tasks:
+  - name: Install packages
+    openbsd_pkg:
+      name: "{{packages}}"
+
+  - name: Activate install php modules
+    shell: cp /etc/php-7.3.sample/*.ini /etc/php-7.3/
+
+
+  - name: Update my.cnf
+    ini_file:
+      path: /etc/my.cnf
+      section: mysqld
+      option: "{{ item.key }}"
+      value: "{{ item.value }}"
+    with_dict:
+      - event_scheduler: "on"
+      - plugin_load_add: "ha_federatedx"
+      - wait_timeout: "2880000"
+      - interactive_timeout: "2880000"
+
+  - name: Configure default services
+    command: "rcctl {{item.state}} {{item.name}}"
+    when: item.state is defined
+    with_items: "{{rcctl}}"
+
+  - name: Check if /var/mysql exists
+    stat:
+      path: /var/mysql
+    register: stat_result
+
+  - name: execute mysql_install_db if /var/mysql do not exist
+    command: mysql_install_db
+    when: stat_result.stat.exists == False
+
+  - name: start mysqld
+    command: rcctl restart mysqld
+
+  - name: Create local echoCTF mysql database
+    mysql_db:
+      state: present
+      name: echoCTF
+      collation: utf8_unicode_ci
+      encoding: utf8
+      login_user: "root"
+
+  - name: Clone memcached udf repo
+    git:
+      repo: 'https://github.com/echoCTF/memcached_functions_mysql.git'
+      dest: /tmp/memcached_functions_mysql
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Clone findingsd repo
+    git:
+      repo: 'https://github.com/echoCTF/findingsd.git'
+      dest: /tmp/findingsd
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Configure and install
+    shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 ./config/bootstrap
+    args:
+      chdir: /tmp/memcached_functions_mysql
+
+  - name: Configure memcached udf
+    shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
+    args:
+      chdir: /tmp/memcached_functions_mysql
+
+  - name: Build and install memcached udf
+    shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 make all install
+    args:
+      chdir: /tmp/memcached_functions_mysql
+
+  - name: Create temporary findingsd-federated.sql
+    template:
+      src: ../../contrib/findingsd-federated.sql
+      dest: /tmp/findingsd.sql
+
+  - name: Import echoCTF mysql schemas
+    mysql_db:
+      state: import
+      name: echoCTF
+      target: "{{item}}"
+      login_user: "root"
+    with_items:
+      - "/tmp/memcached_functions_mysql/sql/install_functions.sql"
+      - "/tmp/findingsd.sql"
+
+  - name: Build findingsd
+    shell: "{{item}}"
+    args:
+      chdir: /tmp/findingsd
+    with_items:
+      - "make"
+      - "install -c -s -o root -g bin -m 555 findingsd /usr/local/sbin/findingsd"
+      - "install -c -o root -g wheel -m 555 findingsd.rc /etc/rc.d/findingsd"
+      - "rcctl set findingsd status on"
+      - "rcctl set findingsd flags -l pflog1 -n echoCTF -u root"
+
+  - name: Add users
+    user:
+      name: "{{item.name}}"
+      comment: "{{item.comment}}"
+      uid: "{{item.uid|default(omit)}}"
+      password: '{{item.password}}'
+    with_items: "{{users}}"
+
+  - name: "Create backend/config/db.php"
+    copy:
+      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8',  ];"
+      dest: ../../backend/config/db.php
+
+
+  - name: "configure composer to fetch from https:// instead of git://"
+    command: chdir={{playbook_dir}}/../../backend composer config --global github-protocols https
+
+  - name: run composer
+    command: chdir={{playbook_dir}}/../../backend composer install
+
+  - name: "Prepare /etc/hostname.pflog1"
+    copy:
+      content: "up"
+      dest: /etc/hostname.pflog1
+
+  - name: "Prepare /etc/hostname.tun0"
+    copy:
+      content: "up group offense"
+      dest: /etc/hostname.tun0
+
+  - name: Prepare openvpn
+    command: "{{item}}"
+    with_items:
+      - "mkdir -p /etc/openvpn/certs /etc/openvpn/client_confs /var/log/openvpn /etc/openvpn/crl /etc/openvpn/ccd"
+      - "install -d -m 700 /etc/openvpn/private"
+      - "rcctl set openvpn status on"
+      - "rcctl set openvpn flags --dev tun0 --config /etc/openvpn/openvpn_tun0.conf"
+
+  - name: "Copy openvpn conf files"
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: '{{playbook_dir}}/../../contrib/openvpn_tun0.conf', dest: '/etc/openvpn/openvpn_tun0.conf' }
+      - { src: '{{playbook_dir}}/../../contrib/crl_openssl.conf', dest: '/etc/openvpn/crl/crl_openssl.conf' }
+      - { src: '{{playbook_dir}}/../../contrib/pf-vpn.conf', dest: '/etc/pf.conf' }
+
+  - name: Create echoctf_updown_mysql.sh
+    template:
+      src:  ../../contrib/echoctf_updown_mysql.sh
+      dest: /etc/openvpn/echoctf_updown_mysql.sh
+      mode: "0555"
+    vars:
+      db:
+        host: "{{db_host}}"
+        user: "root"
+        pass: ""
+
+  - name: "Create openvpn management password file"
+    copy:
+      content: "{{echoCTF_VPN_mgmt_passwd}}"
+      dest: /etc/openvpn/private/mgmt.pwd
+
+  - name: "Create openvpn CRL serial file"
+    copy:
+      content: "00"
+      dest: /etc/openvpn/crl/number
+
+  - name: "Create openvpn CRL index"
+    copy:
+      content: ""
+      dest: /etc/openvpn/crl/index.txt
+
+  - name: Generate OpenVPN and pf files
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+      chdir: "{{item.chdir|default(omit)}}"
+    with_items:
+    - { cmd: "openssl dhparam -out /etc/openvpn/dh.pem 2048", creates: "/etc/openvpn/dh.pem" }
+    - { cmd: "openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key", creates: "/etc/openvpn/private/vpn-ta.key" }
+    - { cmd: "{{playbook_dir}}/../../backend/yii ssl/get-ca 1", creates: "/etc/openvpn/private/echoCTF-OVPN-CA.key", chdir: "/etc/openvpn/private" }
+    - { cmd: '{{playbook_dir}}/../../backend/yii ssl/create-cert "VPN Server"', creates: "/etc/openvpn/private/VPN Server.key", chdir: "/etc/openvpn/private" }
+    - { cmd: "{{playbook_dir}}/../../backend/yii ssl/create-crl", creates: "/etc/openvpn/crl.pem" }
+    - { cmd: "{{playbook_dir}}/../../backend/yii ssl/load-vpn-ta"}
+    - { cmd: "touch /etc/maintenance.conf /etc/targets.conf /etc/match-findings-pf.conf", creates: "/etc/targets.conf" }
+    - { cmd: "{{playbook_dir}}/../../backend/yii target/pf" }
+
+  - name: "Create targets network interface hostname.{{targets_if}}"
+    copy:
+      content: "inet {{targets_if_ipv4}} {{targets_netmask}} NONE group targets\n"
+      dest: "/etc/hostname.{{targets_if}}"
+
+  - name: Set /etc/openvpn/private permissions
+    raw: chmod 400 /etc/openvpn/private/*
+
+  - name: Set rc scripts order
+    raw: rcctl order mysqld findingsd openvpn
+  - name: Setting up sysctl.conf
+    sysctl:
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+    with_dict: "{{ sysctl }}"
+
+  - name: Execute fw_update
+    command: fw_update -a
+
+  - name: Execute syspatch
+    command: syspatch
+
+  - name: Re-Execute syspatch in case it updated it self on the previous run
+    command: syspatch
