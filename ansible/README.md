@@ -62,7 +62,7 @@ This allows the distribution of multiple targets on any number of servers on
 the network.
 
 The following example assumes the server is named `dockerd.echoctf.red` with IP
-address `4.3.2.1` assigned on `eth0`, with a network subnet `4.3.2.0/24`, for
+address `10.0.160.1` assigned on `eth0`, with a network subnet `10.0.160.0/24`, for
 our targets.
 
 For more information about docker networks take a look at https://docs.docker.com/network/
@@ -79,7 +79,7 @@ match your setup and make sure that at the following details are correct
 
 ```yml
 ---
-ansible_host: 4.3.2.1
+ansible_host: 10.0.160.1
 ansible_user: root
 hostname: dockerd
 fqdn: dockerd.echoctf.red
@@ -96,9 +96,9 @@ network:
     # Existing Network interface to attach the macvlan network
     parent: eth0
   ipam_options:
-    subnet: '4.3.2.0/24'
-    gateway: 4.3.2.254
-    iprange: '4.3.2.0/24'
+    subnet: '10.0.160.0/24'
+    gateway: 10.0.160.254
+    iprange: '10.0.160.0/24'
 
 ETSCTF_TREASURES: []
 ETSCTF_FINDINGS: []
@@ -134,7 +134,7 @@ You can use the existing `Dockerfiles/example` to get started or create your own
 
 Edit the file `Dockerfiles/example/variables.yml` and start by modifying the basic information.
 ```yml
-ansible_host: 172.17.0.2
+ansible_host: 10.0.160.3
 DOCKER: localhost
 mac: "de:ad:be:ef:c0:ff:ee"
 hostname: example
