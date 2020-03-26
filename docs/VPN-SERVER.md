@@ -23,7 +23,7 @@ configure all that is needed for you. Once you answer the questions asked you
 are set to go
 ```sh
 pkg_add ansible
-cd ansible && ansible-playbook playbook/vpngw-openbsd.yml
+cd ansible && ansible-playbook playbooks/vpngw-openbsd.yml
 ```
 
 Alternatively you can manually configure your sytem by following these steps,
