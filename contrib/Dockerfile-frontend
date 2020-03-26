@@ -15,7 +15,7 @@ RUN set -ex \
     && apt-get update \
     && apt-get install --no-install-recommends -y git zip unzip \
     mariadb-client mcrypt apache2 \
-    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcached \
+    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
     composer vim
 
 WORKDIR /var/www/echoCTF.RED
