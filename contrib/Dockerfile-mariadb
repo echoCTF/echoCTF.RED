@@ -1,5 +1,6 @@
 FROM mariadb:10
 LABEL description="echoCTF.RED database and memcache server"
+ARG MEMCACHED_MEM=64
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
@@ -28,7 +29,7 @@ RUN set -ex; \
   cp src/.libs/libmemcached_functions_mysql.so /usr/lib/mysql/plugin/; \
   sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/memcached.conf; \
   mkdir -p /always-initdb.d; \
-  echo '/usr/bin/memcached -d -m 64 -p 11211 -u mysql -l 0.0.0.0 -P /tmp/memcached.pid' >> /always-initdb.d/00.sh; \
+  echo "/usr/bin/memcached -d -m ${MEMCACHED_MEM} -p 11211 -u mysql -l 0.0.0.0 -P /tmp/memcached.pid" >> /always-initdb.d/00.sh; \
   chmod +x /always-initdb.d/00.sh; \
   cp sql/install_functions.sql /docker-entrypoint-initdb.d/00.sql; \
   sed -i  -e "s/^-- #//g" /always-initdb.d/99_mysql-init.sql; \
