@@ -33,3 +33,6 @@ RUN set -ex; \
   cp sql/install_functions.sql /docker-entrypoint-initdb.d/00.sql; \
   sed -i  -e "s/^-- #//g" /always-initdb.d/99_mysql-init.sql; \
   chmod +x /usr/local/bin/docker-entrypoint.sh
+
+EXPOSE 3306/tcp
+EXPOSE 11211/tcp
