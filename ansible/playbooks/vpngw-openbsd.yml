@@ -160,7 +160,7 @@
       force: yes
       depth: 1
 
-  - name: Configure and install
+  - name: Bootstrap memcached udf
     shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 ./config/bootstrap
     args:
       chdir: /tmp/memcached_functions_mysql
@@ -170,7 +170,7 @@
     args:
       chdir: /tmp/memcached_functions_mysql
 
-  - name: Build and install memcached udf
+  - name: make install memcached udf
     shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 make all install
     args:
       chdir: /tmp/memcached_functions_mysql
@@ -214,6 +214,8 @@
       content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8',  ];"
       dest: ../../backend/config/db.php
 
+  - name: "configure git to fetch from https:// instead of git://"
+    raw: git config --global url."https://".insteadOf "git://"
 
   - name: "configure composer to fetch from https:// instead of git://"
     command: chdir={{playbook_dir}}/../../backend composer config --global github-protocols https
@@ -282,10 +284,11 @@
     with_items:
     - { cmd: "openssl dhparam -out /etc/openvpn/dh.pem 2048", creates: "/etc/openvpn/dh.pem" }
     - { cmd: "openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key", creates: "/etc/openvpn/private/vpn-ta.key" }
-    - { cmd: "{{playbook_dir}}/../../backend/yii ssl/get-ca 1", creates: "/etc/openvpn/private/echoCTF-OVPN-CA.key", chdir: "/etc/openvpn/private" }
+    - { cmd: "{{playbook_dir}}/../../backend/yii ssl/create-ca 1", creates: "/etc/openvpn/private/echoCTF-OVPN-CA.key", chdir: "/etc/openvpn/private" }
     - { cmd: '{{playbook_dir}}/../../backend/yii ssl/create-cert "VPN Server"', creates: "/etc/openvpn/private/VPN Server.key", chdir: "/etc/openvpn/private" }
     - { cmd: "{{playbook_dir}}/../../backend/yii ssl/create-crl", creates: "/etc/openvpn/crl.pem" }
     - { cmd: "{{playbook_dir}}/../../backend/yii ssl/load-vpn-ta"}
+    - { cmd: "{{playbook_dir}}/../../backend/yii sysconfig/set vpngw {{vpngw}}"}
     - { cmd: "touch /etc/maintenance.conf /etc/targets.conf /etc/match-findings-pf.conf", creates: "/etc/targets.conf" }
     - { cmd: "{{playbook_dir}}/../../backend/yii target/pf" }
 
