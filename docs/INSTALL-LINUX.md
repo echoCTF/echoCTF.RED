@@ -11,7 +11,7 @@ apt-get update
 apt-get install build-essential gcc git mariadb-server mariadb-client mcrypt \
 memcached libmemcached-dev apache2 libtool libmariadbclient-dev autoconf \
 automake php composer php-gd php-mbstring php-mysqli php-dom php-intl \
-php-curl php-memcache
+php-curl php-memcached
 ```
 
 ### Enable event scheduler on the database
