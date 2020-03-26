@@ -33,9 +33,10 @@ Once you've generated your token you can build the images by executing
 ```sh
 GITHUB_OAUTH_TOKEN=MY_TOKEN_HERE docker-compose build
 ```
+
 Build and start the containers
 ```sh
-docker-compose up --build
+docker-compose up
 ```
 
 Configure mail address for player registrations
