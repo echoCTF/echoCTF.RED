@@ -24,6 +24,15 @@ The following volumes are configured and used
 The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
 ![echoCTF.RED docker-compose topology](/docs/docker-compose-topology.png?raw=true&1)
 
+Before you start building you are advised to generate a Github OAuth Token to
+be used by the composer utility. This is needed in order to avoid hitting
+Github rate limits on their API, which is used by `composer`. More information
+about generating a token to use can be found @[Creating a personal access token for the command line](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
+
+Once you've generated your token you can build the images by executing
+```sh
+GITHUB_OAUTH_TOKEN=MY_TOKEN_HERE docker-compose build
+```
 Build and start the containers
 ```sh
 docker-compose up --build

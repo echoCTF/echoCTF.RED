@@ -26,6 +26,7 @@ services:
       context: .
       dockerfile: contrib/Dockerfile-backend
       args:
+      - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
       - RED_APP=backend
       - MYSQL_HOST=db
       - MYSQL_USER=vpnuser
@@ -51,6 +52,7 @@ services:
       context: .
       dockerfile: contrib/Dockerfile-frontend
       args:
+      - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
       - RED_APP=frontend
       - MYSQL_HOST=db
       - MYSQL_USER=vpnuser

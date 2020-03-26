@@ -8,6 +8,7 @@ ARG MYSQL_HOST=db
 ARG MYSQL_USER=vpnuser
 ARG MYSQL_PASSWORD=vpnuserpass
 ARG MYSQL_DATABASE=echoCTF
+ARG GITHUB_OAUTH_TOKEN=YOUR_TOKEN_HERE
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
@@ -31,6 +32,7 @@ RUN set -ex; \
     chown www-data frontend/web/assets; \
     chown www-data frontend/runtime; \
     cd frontend;  \
+    composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
     composer config --global github-protocols https; \
     git config --global url."https://".insteadOf "git://" ; \
     composer install; \
