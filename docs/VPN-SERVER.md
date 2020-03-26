@@ -175,6 +175,8 @@ cp contrib/crl_openssl.conf /etc/openvpn/crl/
 touch /etc/openvpn/crl/index.txt
 echo "00" > /etc/openvpn/crl/number
 echo "OPENVPN_ADMIN_PASSWORD">/etc/openvpn/private/mgmt.pwd
+./backend/yii migrate --interactive=0
+./backend/yii init_data --interactive=0
 ./backend/yii ssl/get-ca 1
 ./backend/yii ssl/create-cert "VPN Server"
 mv echoCTF-OVPN-CA.crt /etc/openvpn/private/echoCTF-OVPN-CA.crt
@@ -188,6 +190,15 @@ openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key
 #openssl ca -gencrl -keyfile /etc/openvpn/private/echoCTF-OVPN-CA.key -cert /etc/openvpn/private/echoCTF-OVPN-CA.crt -out /etc/openvpn/crl.pem -config /etc/openvpn/crl/crl_openssl.conf
 ./backend/yii ssl/create-crl
 ./backend/yii ssl/load-vpn-ta
+```
+
+
+Create a backend user and a frontend user by executing the following commands
+```sh
+# backend user
+./backend/yii user/create username email password
+# frontend player
+./backend/yii player/register "username" "email" "fullname" "password" offense 1
 ```
 
 Prepare pf

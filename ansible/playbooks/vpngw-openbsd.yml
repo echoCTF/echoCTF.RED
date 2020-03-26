@@ -284,6 +284,8 @@
     with_items:
     - { cmd: "openssl dhparam -out /etc/openvpn/dh.pem 2048", creates: "/etc/openvpn/dh.pem" }
     - { cmd: "openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key", creates: "/etc/openvpn/private/vpn-ta.key" }
+    - { cmd: "{{playbook_dir}}/../../backend/yii migrate --interactive=0" }
+    - { cmd: "{{playbook_dir}}/../../backend/yii init_data --interactive=0" }
     - { cmd: "{{playbook_dir}}/../../backend/yii ssl/create-ca 1", creates: "/etc/openvpn/private/echoCTF-OVPN-CA.key", chdir: "/etc/openvpn/private" }
     - { cmd: '{{playbook_dir}}/../../backend/yii ssl/create-cert "VPN Server"', creates: "/etc/openvpn/private/VPN Server.key", chdir: "/etc/openvpn/private" }
     - { cmd: "{{playbook_dir}}/../../backend/yii ssl/create-crl", creates: "/etc/openvpn/crl.pem" }
