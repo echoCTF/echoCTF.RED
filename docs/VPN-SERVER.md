@@ -37,7 +37,14 @@ pkg_add ansible
 cd ansible && ansible-playbook playbooks/vpngw-openbsd.yml
 ```
 
-Alternatively you can manually configure your sytem by following these steps,
+Or if you'd rather execute the playbook in a non interactive mode, copy the
+file `templates/default-settings.yml` and edit to with your own values.
+```sh
+cp templates/default-settings.yml settings.yml
+ansible-playbook playbooks/vpngw-openbsd.yml -e '@settings.yml'
+```
+
+Alternatively you can manually configure your system by following these steps,
 adapting them to your needs where needed.
 
 Install the needed packages
