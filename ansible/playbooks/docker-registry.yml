@@ -1,0 +1,85 @@
+- name: Setup docker registry on an OpenBSD server
+  hosts: all
+  become_method: doas
+  vars_prompt:
+    - name: "registry_user"
+      prompt: "1. User to run the registry as?"
+      default: "registry"
+      private: no
+    - name: "registry_home"
+      prompt: "2. Home folder for registry user?"
+      default: "/home/registry"
+      private: no
+    - name: "registry_storage"
+      prompt: "3. Storage location for registry images?"
+      default: "/home/registry/storage"
+      private: no
+    - name: "registry_bind_ip"
+      prompt: "4. Registry bind IP?"
+      default: "0.0.0.0"
+      private: no
+    - name: "registry_bind_port"
+      prompt: "5. Registry bind port?"
+      default: "5000"
+      private: no
+  vars:
+    registry:
+      user: "{{registry_user}}"
+      home: "{{registry_home}}"
+      storage: "{{registry_storage}}"
+      ip: "{{registry_bind_ip}}"
+      port: "{{registry_bind_port}}"
+    users:
+      - { name: "{{registry_user}}", comment: "Docker Registry User", uid: 3750, password: '*' }
+    rcctl:
+      - { name: 'docker_registry', state: "enable" }
+    packages:
+    - go
+
+  tasks:
+  - name: Install packages
+    openbsd_pkg:
+      name: "{{packages}}"
+
+  - name: Add users
+    user:
+      name: "{{item.name}}"
+      comment: "{{item.comment}}"
+      uid: "{{item.uid}}"
+      password: '{{item.password}}'
+    with_items: "{{users}}"
+    tags: create_users
+
+  - name: Get registry distribution
+    command: go get github.com/docker/distribution/cmd/registry
+    environment:
+      GOPATH: "{{registry.home}}/go"
+
+  - name: Prepare registry folder
+    command: mkdir -p {{registry.storage}}
+
+  - name: Create /etc/rc.d/docker_registry
+    template:
+      src: files/docker_registry.rc.j2
+      dest: "/etc/rc.d/docker_registry"
+      mode: "0555"
+
+  - name: Create /etc/docker-registry.yml
+    template:
+      src: "{{playbook_dir}}/../files/docker-registry.yml.j2"
+      dest: "/etc/docker-registry.yml"
+
+  - name: Change ownerships
+    command: chown -R {{registry.user}}:{{registry.user}} {{registry.home}}/go {{registry.storage}}
+
+  - name: Configure default services
+    command: "rcctl {{item.state}} {{item.name}}"
+    when: item.state is defined
+    with_items: "{{rcctl}}"
+
+#  - set_fact:
+#      post_install: |
+#        Dont forget:
+#          - Registry is public
+#
+#  - debug: msg={{ post_install.split('\n') }
