@@ -2,9 +2,9 @@
 - name: Configure docker servers for echoCTF
   hosts: all
   gather_facts: true
-  user: root
+  user: sysadmin
   become: true
-  become_method: sudo
+  become_method: su
   tasks:
   - name: set timezone to UTC
     timezone:
@@ -53,12 +53,13 @@
 
   - name: install remaining packages
     apt: name="{{item.name}}" state="{{item.state}}"
-    when: item.stage is not defined
+    when: apt is defined and item.stage is not defined
     with_items: "{{apt}}"
 
-  - name: install pip
-    easy_install: name=pip state=present
-
+#  - name: install pip
+#    easy_install: name=pip state=present
+#    when: pip is defined
+#
   - name: pip install
     pip: name="{{item.name}}" version="{{item.version}}" state="{{item.state}}"
     with_items: "{{pip}}"
@@ -100,11 +101,13 @@
     lineinfile:
       path: /etc/default/grub
       regexp: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet"'
-      line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1 net.ifnames=0 biosdevname=0"'
+      line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1"'
+#      line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1 net.ifnames=0 biosdevname=0"'
 
   - name: Push grub updates
-    command: update-grub
-
+    command: /usr/sbin/update-grub
+    environment:
+            PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
   - name: "Allow plaintext registry"
     lineinfile:
       create: yes
