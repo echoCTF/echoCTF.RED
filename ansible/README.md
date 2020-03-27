@@ -1,7 +1,8 @@
 # echoCTF Ansible Playbooks
 
 This folder holds the structure for the various ansible related tasks that can
-be used to automate certain aspects of setting up a CTF infrastructure.
+be used to automate certain aspects of setting up and maintaining a single or
+multiple CTF networks.
 
 The directory structure is as follows
 * `Dockerfiles/` Holds the targets to be build, with each target in its own directory.
