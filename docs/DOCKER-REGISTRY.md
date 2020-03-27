@@ -7,9 +7,20 @@ There are many ways you can do that depending on your network topology and avail
 The following guide will provide instructions on running your own registry.
 
 ## On VPN gateway
-One of the proposed methods is to run the docker registry on your VPN gateway and limit access to the registry to `dockerd` servers.
+The suggested way is to run the docker registry on its own system, however the
+next best thing as far as flexibility goes is to run it on your VPN gateway and
+limit access to the registry to `dockerd` servers.
 
-We assume you followed the instructions from VPN-SERVER.md
+We assume you followed the instructions from [/docs/VPN-SERVER.md](/docs/VPN-SERVER.md)
+
+You can use the provided playbook to setup the docker registry on the VPN gateway
+```sh
+ansible-playbook --connection=local -i 127.0.0.1, playbooks/docker-registry.yml
+# or with settings.yml
+ansible-playbook --connection=local -i 127.0.0.1, playbooks/docker-registry.yml -e '@settings.yml'
+```
+
+Alternatively, you can proceed with manual installation by following the steps.
 
 Install the needed packages
 ```sh
