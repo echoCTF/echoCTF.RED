@@ -177,7 +177,7 @@
 
   - name: Create temporary findingsd-federated.sql
     template:
-      src: ../../contrib/findingsd-federated.sql
+      src: "{{playbook_dir}}/../../contrib/findingsd-federated.sql"
       dest: /tmp/findingsd.sql
 
   - name: Import echoCTF mysql schemas
@@ -212,7 +212,7 @@
   - name: "Create backend/config/db.php"
     copy:
       content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8',  ];\n"
-      dest: ../../backend/config/db.php
+      dest: "{{playbook_dir}}/../../backend/config/db.php"
 
   - name: "configure git to fetch from https:// instead of git://"
     raw: git config --global url."https://".insteadOf "git://"
@@ -252,7 +252,7 @@
 
   - name: Create echoctf_updown_mysql.sh
     template:
-      src:  ../../contrib/echoctf_updown_mysql.sh
+      src:  "{{playbook_dir}}/../../contrib/echoctf_updown_mysql.sh"
       dest: /etc/openvpn/echoctf_updown_mysql.sh
       mode: "0555"
     vars:
