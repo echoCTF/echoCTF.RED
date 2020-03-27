@@ -24,12 +24,14 @@
     with_items: "{{apt}}"
 
   - name: Add apt keys
+    when: aptKeys is defined
     apt_key:
       url: "{{item.key}}"
       state: "{{item.state}}"
     with_items: "{{aptKeys}}"
 
   - name: Add apt repositories
+    when: aptRepos is defined
     apt_repository:
       repo: "{{item.repo}}"
       state: "{{item.state}}"
@@ -60,6 +62,8 @@
   - name: pip install
     pip: name="{{item.name}}" version="{{item.version}}" state="{{item.state}}"
     with_items: "{{pip}}"
+    when: pip is defined
+
 
   - name: Copy docker data folder structure
     synchronize:
