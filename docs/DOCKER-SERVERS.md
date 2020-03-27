@@ -27,6 +27,7 @@ iface enp0s3 inet static
 	gateway 10.0.160.254
 ```
 
+We assume that you have configured the the VPN server according the [VPN-SERVER.md](/docs/VPN-SERVER.md) and you will contunue working from the project folder (eg. `/root/echoCTF.RED/ansible`)
 
 Prepare the base directory structure for ansible on the VPN server
 ```sh
