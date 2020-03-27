@@ -50,51 +50,51 @@
       - pecl73-memcached
   vars_prompt:
     - name: "vpngw"
-      prompt: "OpenVPN gateway hostname or IP?"
+      prompt: "1/12. OpenVPN gateway hostname or IP?"
       default: "vpn.example.red"
       private: no
     - name: "egress_if"
-      prompt: "Egress network interface (ifconfig egress)?"
+      prompt: "2/12. Egress network interface (ifconfig egress)?"
       default: "em0"
       private: no
     - name: "targets_if"
-      prompt: "Targets network interface?"
+      prompt: "3/12. Targets network interface?"
       default: "em1"
       private: no
     - name: "targets_if_ipv4"
-      prompt: "Targets network interface IPv4?"
+      prompt: "4/12. Targets network interface IPv4?"
       default: "10.0.160.254"
       private: no
     - name: "targets_subnet"
-      prompt: "Targets network subnet?"
+      prompt: "5/12. Targets network subnet?"
       default: "10.0.160.0"
       private: no
     - name: "targets_netmask"
-      prompt: "Targets network netmask?"
+      prompt: "6/12. Targets network netmask?"
       default: "255.255.255.0"
       private: no
     - name: "echoCTF_VPN_mgmt_passwd"
-      prompt: "OpenVPN managment interface password?"
+      prompt: "7/12. OpenVPN managment interface password?"
       default: "openvpn"
       private: no
     - name: "offense_network"
-      prompt: "OpenVPN client range?"
+      prompt: "8/12. OpenVPN client range?"
       default: "10.10.0.0/16"
       private: no
     - name: "db_host"
-      prompt: "Database Server IP?"
+      prompt: "9/12. Database Server IP?"
       default: "172.24.0.253"
       private: no
     - name: "db_name"
-      prompt: "Database name?"
+      prompt: "10/12. Database name?"
       default: "echoCTF"
       private: no
     - name: "db_user"
-      prompt: "Database Server user?"
+      prompt: "11/12. Database Server user?"
       default: "vpnuser"
       private: no
     - name: "db_pass"
-      prompt: "Database Server user password?"
+      prompt: "12/12. Database Server user password?"
       default: "vpnuserpass"
       private: no
 
