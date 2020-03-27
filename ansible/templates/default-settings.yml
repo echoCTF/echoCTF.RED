@@ -1,0 +1,18 @@
+---
+registry_user: registry
+registry_home: "/home/registry"
+registry_storage: "/home/registry/storage"
+registry_bind_ip: "0.0.0.0"
+registry_bind_port: "5000"
+vpngw: "vpngw.example.red"
+egress_if: "em0"
+targets_if: "em1"
+targets_if_ipv4: "10.0.160.254"
+targets_subnet: "10.0.160.0"
+targets_netmask: "255.255.255.0"
+echoCTF_VPN_mgmt_passwd: "openvpn"
+offense_network: "10.10.0.0/16"
+db_host: "172.24.0.253"
+db_name: "echoCTF"
+db_user: "vpnuser"
+db_pass: "vpnuserpass"
