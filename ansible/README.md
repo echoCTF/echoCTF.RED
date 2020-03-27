@@ -51,7 +51,7 @@ mkdir -p inventories/dockers/{host_vars,group_vars}
 Generate a set of ssh keys that will be used for administering the servers
 ```sh
 mkdir -p ssh_keys/
-ssh-keygen -t rsa -C "keycomment" -f ssh_keys/ctf_rsa -N''
+ssh-keygen -t rsa -C "keycomment" -f ssh_keys/ctf_rsa -N ''
 ```
 
 ### docker servers
