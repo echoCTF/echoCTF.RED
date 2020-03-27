@@ -19,8 +19,19 @@ The following network details will be used throughout this guide
 * mysql/memcache server: `172.24.0.253`
 
 There is an experimental playbook you can run locally on your OpenBSD that will
-configure all that is needed for you. Once you answer the questions asked you
-are set to go
+configure all that is needed for you.
+
+Before you start ensure you are able to access your existing database from the
+server by running something like the following
+```sh
+nc -zv 172.24.0.253 3306
+nc -zv 172.24.0.253 11211
+```
+
+Note: If you're using the supplied `docker-compose` without VPN this IP will be
+the IP of the docker host and not the container.
+
+Once you answer the questions asked you are set to go
 ```sh
 pkg_add ansible
 cd ansible && ansible-playbook playbooks/vpngw-openbsd.yml
@@ -245,3 +256,6 @@ echo "group targets">>/etc/hostname.em1
 ```
 
 Restart the system and you should be up and running.
+
+# NEXT STEPS
+* Run your own [Docker Registry](/docs/DOCKER-REGISTRY.mg)
