@@ -1,0 +1,100 @@
+version: '2'
+services:
+  db:
+    container_name: echoctfred_db
+    build:
+      context: .
+      dockerfile: contrib/Dockerfile-mariadb
+    restart: "always"
+    ports:
+      - 3306:3306
+      - 11211:11211
+    volumes:
+      - data-mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=root
+      - MYSQL_USER=vpnuser
+      - MYSQL_PASSWORD=vpnuserpass
+      - MYSQL_DATABASE=echoCTF
+    networks:
+      private:
+        ipv4_address: "172.24.0.253"
+
+  backend:
+    container_name: echoctfred_backend
+    build:
+      context: .
+      dockerfile: contrib/Dockerfile-backend
+      args:
+      - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
+      - RED_APP=backend
+      - MYSQL_HOST=db
+      - MYSQL_USER=vpnuser
+      - MYSQL_PASSWORD=vpnuserpass
+      - MYSQL_DATABASE=echoCTF
+    restart: "always"
+    volumes:
+      - data-challenges:/var/www/echoCTF.RED/backend/web/uploads
+      - ./themes/images:/var/www/echoCTF.RED/backend/web/images
+    ports:
+      - 8082:80
+    links:
+      - db:db
+    networks:
+      public:
+        ipv4_address: "172.26.0.2"
+      private:
+        ipv4_address: "172.24.0.2"
+
+  frontend:
+    container_name: echoctfred_frontend
+    build:
+      context: .
+      dockerfile: contrib/Dockerfile-frontend
+      args:
+      - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
+      - RED_APP=frontend
+      - MYSQL_HOST=db
+      - MYSQL_USER=vpnuser
+      - MYSQL_PASSWORD=vpnuserpass
+      - MYSQL_DATABASE=echoCTF
+    restart: "always"
+    volumes:
+      - data-challenges:/var/www/echoCTF.RED/frontend/web/uploads
+      - ./themes/images:/var/www/echoCTF.RED/frontend/web/images
+    links:
+      - db:db
+    ports:
+      - 8080:80
+    networks:
+      private:
+        ipv4_address: "172.24.0.3"
+      public:
+        ipv4_address: "172.26.0.3"
+
+
+volumes:
+  data-mysql:
+    driver: local
+  data-challenges:
+    driver: local
+
+networks:
+  public:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.26.0.0/24
+        gateway: 172.26.0.254
+  private:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 172.24.0.0/24
+        gateway: 172.24.0.254
