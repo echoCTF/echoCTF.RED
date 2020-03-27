@@ -60,7 +60,7 @@
 
   - name: Create /etc/rc.d/docker_registry
     template:
-      src: files/docker_registry.rc.j2
+      src: "{{playbook_dir}}/../files/docker_registry.rc.j2"
       dest: "/etc/rc.d/docker_registry"
       mode: "0555"
 
