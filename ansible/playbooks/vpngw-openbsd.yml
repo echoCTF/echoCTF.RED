@@ -211,7 +211,7 @@
 
   - name: "Create backend/config/db.php"
     copy:
-      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8',  ];"
+      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8',  ];\n"
       dest: ../../backend/config/db.php
 
   - name: "configure git to fetch from https:// instead of git://"
@@ -225,12 +225,12 @@
 
   - name: "Prepare /etc/hostname.pflog1"
     copy:
-      content: "up"
+      content: "up\n"
       dest: /etc/hostname.pflog1
 
   - name: "Prepare /etc/hostname.tun0"
     copy:
-      content: "up group offense"
+      content: "up group offense\n"
       dest: /etc/hostname.tun0
 
   - name: Prepare openvpn
