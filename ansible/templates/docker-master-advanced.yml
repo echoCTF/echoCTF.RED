@@ -1,3 +1,4 @@
+---
 ansible_host: 10.0.160.1
 ansible_user: sysadmin
 ansible_python_interpreter: /usr/bin/python3
@@ -17,13 +18,9 @@ network:
     subnet: '10.0.160.0/24'
     gateway: 10.0.160.254
     iprange: '10.0.160.0/16'
-
 ETSCTF_TREASURES: []
-
 ETSCTF_FINDINGS: []
-
 ETSCTF_users: []
-
 ETSCTF_authorized_keys:
  - { user: "root", key: "../ssh_keys/ctf_rsa.pub" }
  - { user: "sysadmin", key: "../ssh_keys/ctf_rsa.pub" }
