@@ -41,7 +41,7 @@ ssh-add ssh_keys/ctf_rsa
 
 Copy the `docker-master-advanced.yml` to prepare it for `dockerd160`
 ```sh
-cp templates/docker-master-template.yml inventories/dockers/host_vars/dockerd160.yml
+cp templates/docker-master-advanced.yml inventories/dockers/host_vars/dockerd160.yml
 ```
 
 Modify the file `inventories/dockers/host_vars/dockerd160.yml` to match your settings, for our setup this is
@@ -66,13 +66,9 @@ network:
     subnet: '10.0.160.0/24'
     gateway: 10.0.160.254
     iprange: '10.0.160.0/16'
-
 ETSCTF_TREASURES: []
-
 ETSCTF_FINDINGS: []
-
 ETSCTF_users: []
-
 ETSCTF_authorized_keys:
  - { user: "root", key: "../ssh_keys/ctf_rsa.pub" }
  - { user: "sysadmin", key: "../ssh_keys/ctf_rsa.pub" }
