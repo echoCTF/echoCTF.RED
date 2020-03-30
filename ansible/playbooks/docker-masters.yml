@@ -76,13 +76,13 @@
     tags:
       - SYNC
 
-  - name: Copy Dockerfiles data folder structure
-    when: SYNC_DOCKERFILES is defined and SYNC_DOCKERFILES
-    synchronize:
-      src: "../Dockerfiles"
-      dest: /opt
-    tags:
-      - SYNC
+#  - name: Copy Dockerfiles data folder structure
+#    when: SYNC_DOCKERFILES is defined and SYNC_DOCKERFILES
+#    synchronize:
+#      src: "../Dockerfiles"
+#      dest: /opt
+#    tags:
+#      - SYNC
 
   - name: Set authorized keys
     when: ETSCTF_authorized_keys is defined and item.key is defined
