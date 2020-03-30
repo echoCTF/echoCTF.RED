@@ -9,12 +9,13 @@ RUN set -ex \
     && apt-get install --no-install-recommends -y ansible apt-transport-https \
     build-essential bzip2 ca-certificates curl dirmngr dnsutils gcc git gzip \
     iproute2 less libc6-dev libc-client-dev libjpeg-dev libkrb5-dev libpng-dev \
-    libpq-dev libzip-dev locales-all make mariadb-client mariadb-server mcrypt \
+    libpq-dev libzip-dev locales-all make mcrypt \
     netcat-traditional nginx procps psmisc socat software-properties-common \
     unzip vim vim-tiny wget zip python \
     && rm -rf /usr/src/* /var/lib/apt/lists/*
 
 COPY healthcheck.sh /usr/local/sbin/healthcheck.sh
+#COPY your-files-here /at/some/place
 
 COPY *.yml /tmp/
 RUN set -ex ; chmod 0700 /usr/local/sbin/healthcheck.sh; ansible-playbook -i 'localhost,' /tmp/autoregister.yml; \
