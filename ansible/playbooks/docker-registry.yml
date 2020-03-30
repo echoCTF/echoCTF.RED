@@ -1,25 +1,25 @@
-- name: Setup docker registry on an OpenBSD server
+- name: "Setup docker registry on an OpenBSD server (standalone)"
   hosts: all
   become_method: doas
   vars_prompt:
     - name: "registry_user"
-      prompt: "1. User to run the registry as?"
+      prompt: "1/5. User to run the registry as?"
       default: "registry"
       private: no
     - name: "registry_home"
-      prompt: "2. Home folder for registry user?"
+      prompt: "2/5. Home folder for registry user?"
       default: "/home/registry"
       private: no
     - name: "registry_storage"
-      prompt: "3. Storage location for registry images?"
+      prompt: "3/5. Storage location for registry images?"
       default: "/home/registry/storage"
       private: no
     - name: "registry_bind_ip"
-      prompt: "4. Registry bind IP?"
+      prompt: "4/5. Registry bind IP?"
       default: "0.0.0.0"
       private: no
     - name: "registry_bind_port"
-      prompt: "5. Registry bind port?"
+      prompt: "5/5. Registry bind port?"
       default: "5000"
       private: no
   vars:
