@@ -24,6 +24,14 @@ mkdir -p inventories/targets/{host_vars,group_vars}
 echo "[targets]"> inventories/targets/hosts
 ```
 
+On the system that will perform the actual docker build make sure you enable plaintext registry support by adding `insercure-registries` to the `/etc/docker/daemon.json` like so
+```json
+{
+  "insecure-registries" : ["myregistryip:5000"]
+}
+```
+More details about insecure registries can be found at https://docs.docker.com/registry/insecure/
+
 ## Decide on your scenario
 This is the most important step, as it will determine how you will proceed with
 any of the other steps.
