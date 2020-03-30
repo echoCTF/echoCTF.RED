@@ -257,6 +257,11 @@ Finally ensure to set the `vpngw` sysconfig key to the IP that the participants 
 ./backend/yii sysconfig/set vpngw 172.26.0.1
 ```
 
+Also set the PF tag for the firewall/findings rules generation
+```sh
+./backend/yii sysconfig/set offense_registered_tag OFFENSE_REGISTERED
+```
+
 Ensure that your `em1` interface is assigned `group targets`
 ```sh
 echo "group targets">>/etc/hostname.em1
