@@ -1,5 +1,6 @@
 ---
-- hosts: 127.0.0.1
+- name: "Setup echoCTF.RED VPN OpenBSD Gateway (standalone)"
+  hosts: 127.0.0.1
   connection: local
   gather_facts: true
   vars:
@@ -291,6 +292,7 @@
     - { cmd: "{{playbook_dir}}/../../backend/yii ssl/create-crl", creates: "/etc/openvpn/crl.pem" }
     - { cmd: "{{playbook_dir}}/../../backend/yii ssl/load-vpn-ta"}
     - { cmd: "{{playbook_dir}}/../../backend/yii sysconfig/set vpngw {{vpngw}}"}
+    - { cmd: "{{playbook_dir}}/../../backend/yii sysconfig/set offense_registered_tag OFFENSE_REGISTERED"}
     - { cmd: "touch /etc/maintenance.conf /etc/targets.conf /etc/match-findings-pf.conf", creates: "/etc/targets.conf" }
     - { cmd: "{{playbook_dir}}/../../backend/yii target/pf" }
 
