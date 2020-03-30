@@ -30,6 +30,7 @@ aptRepos:
  - { repo: "deb [arch=amd64] https://download.docker.com/linux/debian buster stable", state: "present"}
 apt:
  - { name: "python3-pip", state: "present", stage: 'preInst'}
+ - { name: "rsync", state: "present", stage: 'preInst'}
  - { name: "open-vm-tools", state: "present", stage: 'preInst' }
  - { name: "python3-setuptools", state: "present", stage: 'preInst' }
  - { name: "docker-ce", state: "present" }
