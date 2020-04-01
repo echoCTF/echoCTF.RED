@@ -82,10 +82,9 @@ Make sure you configure the host dockerd daemon to have its API to listen tcp
 to the new `private` network. However since the network becomes available only
 after dockerd starts you will have to bind to _`0.0.0.0`_ (ie `-H tcp://0.0.0.0:2376`)
 
-Make sure you restrict connections to this port to `echoctfred_vpn/172.24.0.1` and `echoctfred_backend/172.24.0.2` containers only.
-
 More information about enabling docker API https://success.docker.com/article/how-do-i-enable-the-remote-api-for-dockerd
 
+Make sure you restrict connections to this port to `echoctfred_vpn/172.24.0.1` and `echoctfred_backend/172.24.0.2` containers only.
 
 Your `frontend` is accessible at http://localhost:8080/
 
