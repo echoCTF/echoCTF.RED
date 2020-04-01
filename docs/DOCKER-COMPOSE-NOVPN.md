@@ -3,7 +3,7 @@ The following guide will provide instructions on running the backend, fronend,
 and db from docker-compose along with separate servers for VPN and docker
 targets as can be seen on the diagram below.
 
-![echoCTF.RED docker-compose-novpn diagram](/docs/assets/docker-compose-including-vpn-topology.png?2)
+<center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-including-vpn-topology.png" alt="echoCTF.RED docker-compose-novpn diagram" height="400px"/></center>
 
 In this guide the infrastructure assumes a separate servers/vms. The servers described are as following:
 
@@ -48,7 +48,7 @@ GITHUB_OAUTH_TOKEN=MY_TOKEN_HERE docker-compose -f docker-compose-novpn.yml buil
 From this point on the installation deviated depending on whether or not you want to have a dedicated ethernet interface for the `private` network, used for communication between `vpn` and `db`.
 
 ## Communication through docker exported ports
-![docker-compose including vpn with explanation](/docs/assets/docker-compose-including-vpn-explained-topology.png?)
+<center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-including-vpn-explained-topology.png" alt="docker-compose including vpn with explanation"/></center>
 
 Start the containers on the _Linux Host_ to bring up frontend, backend and db containers (as illustrated on the diagram below).
 ```sh
@@ -56,8 +56,7 @@ docker-compose -f docker-compose-novpn.yml up
 # or start in detached mode
 docker-compose -f docker-compose-novpn.yml up -d
 ```
-![linux host](/docs/assets/docker-compose-novpn-topology.png?1)
-
+<center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png" alt="docker-compose-novpn-topology" height="400px"/></center>
 
 Follow the instructions of [VPN-SERVER.md](/docs/VPN-SERVER.md) and adapt your values accordingly.
 
@@ -74,7 +73,7 @@ route add -net 10.0.160.0/24 gw <vpn_public_ip>
 ## Dedicated ethernet interface for private network
 There is also an alternative setup for providing a dedicated network interface for the private network `private` (color red). This involves the addition of an extra ethernet adapter on both vpn and linux host.
 
-![linux host](/docs/assets/docker-compose-including-vpn-dedicated-topology.png?12)
+<center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-including-vpn-dedicated-topology.png" alt="docker-compose-including-vpn-dedicated-topology" height="400px"/></center>
 
 Ensure that all containers are stopped by running the following from the Linux Host
 ```sh
@@ -96,7 +95,6 @@ sh /etc/netstart em2
 ```
 
 If you are using virtual machines make sure that you allow promiscues mode to the interface you dedicate for the macvlan bridge.
-
-![Virtualbox Network Settings](/docs/assets/vbox-network-settings.png)
+<center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/vbox-network-settings.png" alt="Virtualbox Network Settings for macvlan and gateway" width="500px"/></center>
 
 For VMware related options you can look at the following link [Configuring promiscuous mode on a virtual switch or portgroup (1004099)](https://kb.vmware.com/s/article/1004099)
