@@ -12,7 +12,7 @@ Not implemented on current code-base but are going to
 
 ## String and numeric key/val pairs
 * `event_name` A name for your event
-* `frontpage_scenario` The event scenario displayed at the `frontend/`, frontpage.
+* `frontpage_scenario` The event scenario displayed at the `frontend/`, landing page for guests.
 * `offense_scenario` A scenario displayed to the users once they have signed into the frontend.
 * `spins_per_day` Limit allowed restarts per day per player
 * `online_timeout` Timeout in seconds that a user is no longer considered online on the platform

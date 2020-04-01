@@ -1,4 +1,4 @@
-# Docker Targets guide
+# WIP: Docker Targets guide
 The following guide will help in creating, building and deploying new targets to your infrastructure.
 
 The general outline of the steps required to build a target are
@@ -164,6 +164,14 @@ Test run the image
 ```sh
 docker run -it alephone
 ```
-## Building your target
 
-## Deploying your target
+Once you're done tag appropriately and push your image to your registry
+```sh
+docker tag alephone 10.0.160.254:5000/mytargets/alephone:v0.1
+docker tag alephone 10.0.160.254:5000/mytargets/alephone:latest
+docker push 10.0.160.254:5000/mytargets/alephone:v0.1
+docker push 10.0.160.254:5000/mytargets/alephone:latest
+```
+
+Now you are ready to add your target to the `backend` and have it deployed by
+the system.

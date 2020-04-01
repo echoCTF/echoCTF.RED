@@ -98,3 +98,11 @@ networks:
       config:
       - subnet: 172.24.0.0/24
         gateway: 172.24.0.254
+#  private:
+#    driver: macvlan
+#    driver_opts:
+#      parent: eth0
+#    ipam:
+#      config:
+#        - subnet: 172.24.0.0/24
+#          gateway: 172.24.0.1

@@ -58,9 +58,3 @@ also set the following sysconfig keys
 ./backend/yii sysconfig/set mail_host smtp.host.com
 ./backend/yii sysconfig/set mail_port 25
 ```
-
-## Separate docker images
-The following section will help you build the separate docker images for each
-of the services (frontend, backend, db, vpn).
-
-This is similar to running `docker-compose up`

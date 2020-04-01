@@ -4,16 +4,20 @@ The `docker-compose.yml` builds and starts all the needed applications and targe
 Keep in mind that this may require a lot of memory to run (our tests are
 performed on systems with at least 8GB ram).
 
-The docker containers use the following networks
-* ___echoctfred_public___: `172.26.0.0/24`
-* ___echoctfred_private___: `172.24.0.0/24`
-* ___echoctfred_targets___: `10.0.160.0/24`
-* ___OpenVPN___: `10.10.0.0/16`
+XXXFIXMEXXX Add route
 
-Furthermore the following ports are maped on the host server and containers
+The docker containers use the following networks
+* `echoctfred_public`: `172.26.0.0/24`
+* `echoctfred_private`: `172.24.0.0/24`
+* `echoctfred_targets`: `10.0.160.0/24`
+* `OpenVPN`: `10.10.0.0/16`
+
+Furthermore the following ports are mapped on the host server and containers
 * udp 0.0.0.0:1194 => echoctfred_vpn 172.26.0.1:1194 openvpn
 * tcp 0.0.0.0:8082 => echoctfred_backend 172.26.0.2:80
 * tcp 0.0.0.0:8080 => echoctfred_frontend 172.26.0.3:80
+* tcp 0.0.0.0:3306 => echoctfred_db 172.24.0.253:3306
+* tcp 0.0.0.0:11211 => echoctfred_db 172.24.0.253:11211
 
 The following volumes are configured and used
 * `echoctfred_data-mysql` For persistent mysql data
@@ -22,7 +26,7 @@ The following volumes are configured and used
 * `./themes/images` under `/var/www/echoCTF.RED/*/web/images` for logos and images
 
 The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
-![echoCTF.RED docker-compose topology](/docs/docker-compose-topology.png?raw=true&1)
+![echoCTF.RED docker-compose topology](/docs/assets/docker-compose-topology.png?)
 
 Before you start building you are advised to generate a Github OAuth Token to
 be used by the composer utility. This is needed in order to avoid hitting
@@ -171,14 +175,4 @@ push "route 10.0.200.0 255.255.255.0"
 Update the docker-compose.yml with the respective ranges and rebuild
 
 ### How to move the VPN to another VM or host?
-In order to move the VPN server to another host you will have to edit the
-`docker-compose.yml` and comment out the VPN related entries.
-
-Keep in mind that VPN host needs to be able to access the following ports from `echoctfred_db`
-* `3306/tcp` MySQL
-* `11211/tcp` Memcached
-
-You will also need to move the targets on a new host to match the network
-diagram on top.
-
-Follow the [VPN SERVER Installation Guide](/docs/VPN-SERVER.md)
+Follow the instructions from (/docs/DOCKER-COMPOSE-NOVPN.md)

@@ -1,7 +1,7 @@
-# echoCTF.RED architecture details
+# echoCTF.RED Architecture Details
 The following document provides a generic overview of the various components of the platform.
 
-![echoCTF.RED Components Architecture](/docs/architecture%20diagram.png?raw=true&1)
+![echoCTF.RED Components Architecture](/docs/assets/architecture%20diagram.png?raw=true&1)
 
 ## Possible Installation Scenarios
 Choosing the right setup can be a little tricky. The infrastructure needs,
