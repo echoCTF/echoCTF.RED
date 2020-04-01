@@ -84,6 +84,7 @@ The entire infrastructure is hosted on 7 servers at Vultr.com, our cloud
 provider of choice... You can signup with Vultr and help us out at the same
 time, by using this link https://www.vultr.com/?ref=8475962-6G
 
+![Vultr network topology](/docs/assets/our-vultr-topology.png)
 The infrastructure uses the Medium/Large setup scenario with the following system details.
 
 **frontend.echoctf.red / db.echoctf.red**
