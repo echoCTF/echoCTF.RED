@@ -55,16 +55,42 @@ Follow the instructions of [VPN-SERVER.md](/docs/VPN-SERVER.md) and adapt your v
 
 Follow the instructions from [DOCKER-SERVERS.md](/docs/DOCKER-SERVERS.md) to prepare your docker api server (dockerd160).
 
-If you followed the instructions correctly your network topology should like the diagram on top.
+If you followed the instructions correctly your network topology should look like the diagram.
+
+![docker-compose including vpn with explanation](/docs/assets/docker-compose-including-vpn-explained-topology.png?)
 
 Add a route to the _Linux Host_  backend will need to be able to access Docker API Servers from the 10.0.160.0/24 and for this reason we will have to add a route on the Linux Host to be able to access this through the vpn host, eg by executing.
 ```sh
 route add -net 10.0.160.0/24 gw <vpn_public_ip>
 ```
 
-![docker-compose including vpn with explanation](/docs/assets/docker-compose-including-vpn-explained-topology.png?)
 
 ## Dedicated ethernet interface for private network
 There is also an alternative setup for providing a dedicated network interface for the private network `echoctfred_private`. This involves the addition of an additional ethernet on both vpn and linux host.
 
 ![linux host](/docs/assets/docker-compose-including-vpn-dedicated-topology.png?)
+
+Ensure that all containers are stopped by running the following from the Linux Host
+```sh
+docker-compose -f docker-compose-novpn.yml down
+```
+
+Decide what is the ethernet interface you will dedicate for the `private` network (`enp2s0` in our example) and bring the containers up using the `docker-compose-novpn-macvlan.yml`
+```sh
+PRIVATE_PARENT_INTERFACE=enp2s0 docker-compose -f docker-compose-novpn-macvlan.yml up
+# or
+export PRIVATE_PARENT_INTERFACE=enp2s0
+docker-compose -f docker-compose-novpn-macvlan.yml up
+```
+
+Add an additional ethernet adapter to the VPN host (em2 in our case). Once added configure the interface by running the following commands from the vpn server
+```sh
+echo "inet 172.24.0.1 255.255.255.0 NONE group private">/etc/hostname.em2
+sh /etc/netstart em2
+```
+
+If you are using virtual machines make sure that you allow promiscues mode to the interface you dedicate for the macvlan bridge.
+
+![Virtualbox Network Settings](/docs/assets/vbox-network-settings.png)
+
+For VMware related options you can look at the following link [Configuring promiscuous mode on a virtual switch or portgroup (1004099)](https://kb.vmware.com/s/article/1004099)
