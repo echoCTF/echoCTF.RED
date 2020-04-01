@@ -2,7 +2,7 @@
 echoCTF.RED supports a variety of installation methods and topology setups. This README serves as an index to the various methods and topics documented.
 
 
-The first thing you need to do is start reading the [echoCTF.RED Architecture Details](/docs/ARCHITECTURE.md) and our [Onsite Infrastructure examples](/docs/Onsite Infrastructure.md) to get a better understanding of the general topology and terminology used.
+The first thing you need to do is start reading the [echoCTF.RED Architecture Details](/docs/ARCHITECTURE.md) and our [Onsite Infrastructure examples](/docs/Onsite%20Infrastructure.md) to get a better understanding of the general topology and terminology used.
 
 Once you've got a general understanding of the involved components for the
 platform the next thing is to decide on what type of installation you would
