@@ -37,19 +37,27 @@ be used by the composer utility.
 This is only needed once and we do it in order to avoid hitting Github rate limits on their API, which is used by `composer`.
 More information about generating a token to use can be found at [Creating a personal access token for the command line](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
 
-Once you've generated your token you can build the images by executing the following command.
+Once you've generated your token you can build the images.
+
 _Keep in mind that this may require a lot of memory to run (our tests are performed on systems with at least 8GB ram)._
+
 ```sh
 GITHUB_OAUTH_TOKEN=MY_TOKEN_HERE docker-compose -f docker-compose-novpn.yml build
 ```
 
-Start the containers on the _Linux Host_ to bring up fronend, backend and db hosts.
-![linux host](/docs/assets/docker-compose-novpn-topology.png?1)
+From this point on the installation deviated depending on whether or not you want to have a dedicated ethernet interface for the `private` network, used for communication between `vpn` and `db`.
+
+## Communication through docker exported ports
+![docker-compose including vpn with explanation](/docs/assets/docker-compose-including-vpn-explained-topology.png?)
+
+Start the containers on the _Linux Host_ to bring up frontend, backend and db containers (as illustrated on the diagram below).
 ```sh
 docker-compose -f docker-compose-novpn.yml up
 # or start in detached mode
 docker-compose -f docker-compose-novpn.yml up -d
 ```
+![linux host](/docs/assets/docker-compose-novpn-topology.png?1)
+
 
 Follow the instructions of [VPN-SERVER.md](/docs/VPN-SERVER.md) and adapt your values accordingly.
 
@@ -57,18 +65,16 @@ Follow the instructions from [DOCKER-SERVERS.md](/docs/DOCKER-SERVERS.md) to pre
 
 If you followed the instructions correctly your network topology should look like the diagram.
 
-![docker-compose including vpn with explanation](/docs/assets/docker-compose-including-vpn-explained-topology.png?)
 
-Add a route to the _Linux Host_  backend will need to be able to access Docker API Servers from the 10.0.160.0/24 and for this reason we will have to add a route on the Linux Host to be able to access this through the vpn host, eg by executing.
+The _Linux Host_  `backend` will need to be able to access the Docker API Servers behind the `vpn` server. For this reason we will have to add a network route for the network `10.0.160.0/24` on the Linux Host by executing
 ```sh
 route add -net 10.0.160.0/24 gw <vpn_public_ip>
 ```
 
-
 ## Dedicated ethernet interface for private network
-There is also an alternative setup for providing a dedicated network interface for the private network `echoctfred_private`. This involves the addition of an additional ethernet on both vpn and linux host.
+There is also an alternative setup for providing a dedicated network interface for the private network `private` (color red). This involves the addition of an extra ethernet adapter on both vpn and linux host.
 
-![linux host](/docs/assets/docker-compose-including-vpn-dedicated-topology.png?)
+![linux host](/docs/assets/docker-compose-including-vpn-dedicated-topology.png?12)
 
 Ensure that all containers are stopped by running the following from the Linux Host
 ```sh
