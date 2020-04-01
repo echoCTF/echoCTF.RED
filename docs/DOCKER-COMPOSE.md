@@ -4,8 +4,6 @@ The `docker-compose.yml` builds and starts all the needed applications and targe
 Keep in mind that this may require a lot of memory to run (our tests are
 performed on systems with at least 8GB ram).
 
-XXXFIXMEXXX Add route
-
 The docker containers use the following networks
 * `echoctfred_public`: `172.26.0.0/24`
 * `echoctfred_private`: `172.24.0.0/24`
