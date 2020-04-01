@@ -101,14 +101,13 @@ Login to the backend (http://localhost:8082/) and add a target with the followin
 * Required XP: 0
 * Purpose: `this will appear when participants tweet about targets`
 * Description: `this will to participants on the frontend`
-* IP Address: `10.0.160.2` \
-_Same as `target1` entry from `docker-compose.yml`_
+* IP Address: `10.0.160.2` _Same as `target1` entry from `docker-compose.yml`_
 * MAC Address: `02:42:0a:00:a0:02`
 * Dns: `8.8.8.8`
 * Net: `echoctfred_targets`
 * Server: `tcp://172.24.0.254:2376`
 * Image: `nginx:latest`
-* Parameters: `{"hostConfig":{"Memory":"512"}}`
+* Parameters (optional): `{"hostConfig":{"Memory":"512"}}`
 
 Once the target is created, click the Spin button on top to start it up. If
 everything is correct you should be able to see the container running
@@ -172,4 +171,4 @@ push "route 10.0.200.0 255.255.255.0"
 Update the docker-compose.yml with the respective ranges and rebuild
 
 ### How to move the VPN to another VM or host?
-Follow the instructions from (/docs/DOCKER-COMPOSE-NOVPN.md)
+Follow the instructions from [/docs/DOCKER-COMPOSE-NOVPN.md](/docs/DOCKER-COMPOSE-NOVPN.md)
