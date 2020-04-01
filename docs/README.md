@@ -30,8 +30,8 @@ the one best fit for your needs.
 ![docker-compose-novpn-topology](/docs/assets/docker-compose-novpn-topology.png?1)
 
 ## Manual installations
-* [echoCTF.RED Linux Installation Instructions](/docs/INSTALL-LINUX.md): Manual installation of all application on a single linux host
 * [echoCTF.RED Installation](/docs/INSTALL.md): OpenBSD General installation instructions of applications
+* [echoCTF.RED Linux Installation Instructions](/docs/INSTALL-LINUX.md): Manual installation of all application on a single linux host
 * [Build echoCTF.RED applications Docker images](/docs/BUILD-DOCKER.md)
 
 ## Extras
