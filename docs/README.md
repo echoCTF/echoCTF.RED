@@ -35,8 +35,8 @@ the one best fit for your needs.
 * [Build echoCTF.RED applications Docker images](/docs/BUILD-DOCKER.md)
 
 ## Extras
-* [Install VPN Gateway on OpenBSD](/docs/VPN-SERVER.md)
-* [Setup a Private Docker Registry](/docs/DOCKER-REGISTRY.md)
-* [Docker Servers Setup Guide](/docs/DOCKER-SERVERS.md)
-* [Docker Targets Guide](/docs/DOCKER-TARGETS.md)
-* [Personalize your installation](/docs/PESONALIZING.md)
+* [Install VPN Gateway on OpenBSD (/docs/VPN-SERVER.md)](/docs/VPN-SERVER.md)
+* [Setup a Private Docker Registry (/docs/DOCKER-REGISTRY.md)](/docs/DOCKER-REGISTRY.md)
+* [Docker Servers Setup Guide (/docs/DOCKER-SERVERS.md)](/docs/DOCKER-SERVERS.md)
+* [Docker Targets Guide (/docs/DOCKER-TARGETS.md)](/docs/DOCKER-TARGETS.md)
+* [Personalize your installation (/docs/PESONALIZING.md)](/docs/PESONALIZING.md)
