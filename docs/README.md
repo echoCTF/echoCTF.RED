@@ -26,6 +26,7 @@ the one best fit for your needs.
 
 ## No VPN All in one
 **[docker-compose no VPN server](/docs/DOCKER-COMPOSE-NOVPN.md)**: Run frontend, backend and db on a single __Linux Host__ using docker-compose, useful for preparing for your first CTF.
+
 ![docker-compose-novpn-topology](/docs/assets/docker-compose-novpn-topology.png?1)
 
 ## Manual installations
