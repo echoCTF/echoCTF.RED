@@ -1,7 +1,7 @@
 # echoCTF.RED Architecture Details
 The following document provides a generic overview of the various components of the platform.
 
-![echoCTF.RED Components Architecture](/docs/assets/architecture%20diagram.png?raw=true&1)
+![echoCTF.RED Components Architecture](/docs/assets/architecture%20diagram.png?raw=true&3)
 
 ## Possible Installation Scenarios
 Choosing the right setup can be a little tricky. The infrastructure needs,
@@ -47,7 +47,7 @@ OpenBSD server, otherwise the VPN can be any Linux server or container.
 _Findings correspond to network ports for services running on targets
 (eg port 80/tcp for a webserver). When users try to connect to these services,
 a daemon (`findingsd`) is responsible for detecting the connection and
-assigning point to the user ._
+assigning points to the user ._
 
 #### Medium/Large events
 For medium/large events (between 100-1000 participants) it is suggested to have
@@ -84,7 +84,7 @@ The entire infrastructure is hosted on 7 servers at Vultr.com, our cloud
 provider of choice... You can signup with Vultr and help us out at the same
 time, by using this link https://www.vultr.com/?ref=8475962-6G
 
-![Vultr network topology](/docs/assets/our-vultr-topology.png)
+![Vultr network topology](/docs/assets/our-vultr-topology.png?1)
 
 The infrastructure uses the Medium/Large setup scenario with the following system details.
 
