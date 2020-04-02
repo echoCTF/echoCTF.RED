@@ -23,6 +23,7 @@ function echoctf() {
   echo "* [backend] http://${ipaddr}:8081/"
   echo "* [memcached] tcp://${ipaddr}:11211"
   echo "* [mysql] tcp://${ipaddr}:3306"
+  echo "Backend username/password: echoctf/echoctf"
 }
 
 echoctf

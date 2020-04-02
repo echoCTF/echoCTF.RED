@@ -52,9 +52,8 @@ RUN set -ex; \
     ./backend/yii migrate --interactive=0; \
     ./backend/yii init_data --interactive=0; \
     ./backend/yii ssl/create-ca; \
-#    ./backend/yii sysconfig/set mail_from dontreply@echoctf.red; \
-#    ./backend/yii user/create echothrust info@echothrust.com echothrust; \
-#    ./backend/yii player/register echothrust info@echothrust.com echothrust echothrust offense 1;\
+    ./backend/yii sysconfig/set mail_from dontreply@example.red; \
+    ./backend/yii user/create echoctf echoctf echoctf; \
     a2enmod rewrite; \
     mysql -e "update user set plugin='mysql_native_password' where user='root'" mysql; \
     mysql -e "GRANT ALL PRIVILEGES ON echoCTF.* TO '$VPNUSER'@'%' IDENTIFIED BY '$VPNUSERPASS'" mysql;\
