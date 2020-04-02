@@ -16,8 +16,10 @@ https://echoCTF.RED/
 This project is currently under HEAVY restructure and development and may not
 be in a _usable_ state.
 
-However, get in touch with us and we will let you know of the best way to
-proceed if you're interested in testing the platform.
+Our main goals for echoCTF include:
+* **Completeness** - Provide a complete set of tools and applications to develop, deploy and maintain competitions
+* **Modularity** - Each component has a unique and clear role
+* **Expandability** - echoCTF's components are designed to permit expansion
 
 Also keep in mind that the system comes up with absolutely no data. This means
 that it is up to you to create targets, challenges, rules, instructions and
@@ -33,11 +35,7 @@ any other details you require.
  * `schemas` => database schema
  * `themes` => Various theme, images and layout sources
 
-# Live demo?
-Register at our online platform at https://echoctf.red/ :)
-
-
-# FAIR WARNING
+# Disclaimer
 The documents and guides in this repository are only examples and are not meant
 to be used in production.
 
@@ -46,10 +44,6 @@ a fairly good understanding of the services involved.
 
 Apply common logic when copy pasting command and files :)
 
-# Credits
-We would like to thank the following people for their contributions, support and persistence :)
-* @HitmanAlharbi for numerous contributions and support
-* @harperaa for suggestions on, and testing of our documentation
-
-And our past developers
-* @gadamo, @pkotsiop
+echoCTF is software that comes with absolutely no warranties whatsoever. By
+using echoCTF, you take full responsibility for any and all outcomes that
+result.
