@@ -1,7 +1,10 @@
 FROM mariadb:10
 LABEL description="echoCTF.RED database and memcache server"
 ARG MEMCACHED_MEM=64
-
+ENV MYSQL_ALLOW_EMPTY_PASSWORD root
+ENV MYSQL_USER vpnuser
+ENV MYSQL_PASSWORD vpnuserpass
+ENV MYSQL_DATABASE echoCTF
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
     && apt-get update \
