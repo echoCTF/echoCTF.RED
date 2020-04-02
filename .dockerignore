@@ -1,0 +1,5 @@
+.git
+backend/vendor/**/*
+backend/vendor
+frontend/vendor/**/*
+frontend/vendor
