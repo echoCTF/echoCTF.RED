@@ -11,7 +11,8 @@ like to have for your own setup.
 The ideal setup is to have separate instances of each of the infrastructure
 services like the topology used by our online platform echoCTF.RED, illustrated
 on the diagram below.
-![echoCTF.RED Vultr Infrastructure](/docs/assets/our-vultr-topology.png)
+
+<center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/our-vultr-topology.png" alt="echoCTF.RED Vultr Infrastructure" width="400px"/></center>
 
 How elaborate or not the topology gets depends on your needs and requirements.
 We provide the following guides for some of most common installations, choose
@@ -19,14 +20,13 @@ the one best fit for your needs.
 
 ## All in one
 **[docker-compose instructions](/docs/DOCKER-COMPOSE.md)**: Run all the services (including VPN) on a single linux host with docker-compose, useful for testing and customizing the applications as well as familiarize with the platform
-
-![docker-compose-topology](/docs/assets/docker-compose-topology.png?)
+<center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-topology.png" alt="docker-compose-topology" width="400px"/></center>
 
 
 ## No VPN All in one
 **[docker-compose no VPN server](/docs/DOCKER-COMPOSE-NOVPN.md)**: Run frontend, backend and db on a single __Linux Host__ using docker-compose, useful for preparing for your first CTF.
 
-![docker-compose-novpn-topology](/docs/assets/docker-compose-novpn-topology.png?1)
+<center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png" alt="docker-compose-novpn-topology" width="400px"/></center>
 
 ## Manual installations
 * [echoCTF.RED Installation](/docs/INSTALL.md): OpenBSD General installation instructions of applications
