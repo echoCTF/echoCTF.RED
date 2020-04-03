@@ -1,3 +1,4 @@
+Sitemap: https://echoCTF.RED/sitemap.xml
 User-agent: *
 Crawl-delay: 10
 # generic
@@ -12,30 +13,10 @@ Disallow: /changelog
 Disallow: /changelog?
 Disallow: /changelog/
 Disallow: /changelog/?
-# register
-Disallow: /register
-Disallow: /register?
-Disallow: /register/
-Disallow: /register/?
-# login
-Disallow: /login
-Disallow: /login?
-Disallow: /login/
-Disallow: /login/?
 # logout
 Disallow: /logout?
 Disallow: /logout/
 Disallow: /logout/?
-# password reset
-Disallow: /request-password-reset
-Disallow: /request-password-reset?
-Disallow: /request-password-reset/
-Disallow: /request-password-reset/?
-# email verification
-Disallow: /resend-verification-email
-Disallow: /resend-verification-email?
-Disallow: /resend-verification-email/
-Disallow: /resend-verification-email/?
 # verify mail
 Disallow: /verify-email
 Disallow: /verify-email?

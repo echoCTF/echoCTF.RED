@@ -38,3 +38,4 @@ config/db.php
 config/memcached.php
 config/cache.php
 config/validationKey.php
+web/sitemap.xml
