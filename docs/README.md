@@ -11,7 +11,6 @@ like to have for your own setup.
 The ideal setup is to have separate instances of each of the infrastructure
 services like the topology used by our online platform echoCTF.RED, illustrated
 on the diagram below.
-
 ![echoCTF.RED Vultr Infrastructure](/docs/assets/our-vultr-topology.png)
 
 How elaborate or not the topology gets depends on your needs and requirements.
