@@ -17,7 +17,9 @@ RUN set -ex \
     mariadb-server mariadb-client mcrypt memcached \
     libmemcached-dev libtool libmariadbclient-dev \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
-    composer openvpn netcat-openbsd
+    composer openvpn netcat-openbsd; \
+    rm -rf /usr/src/* /var/lib/apt/lists/*
+
 
 WORKDIR /var/www/echoCTF.RED
 COPY backend ./backend/

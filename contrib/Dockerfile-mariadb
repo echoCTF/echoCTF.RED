@@ -38,5 +38,7 @@ RUN set -ex; \
   sed -i  -e "s/^-- #//g" /always-initdb.d/99_mysql-init.sql; \
   chmod +x /usr/local/bin/docker-entrypoint.sh
 
+RUN rm -rf /usr/src/* /var/lib/apt/lists/*
+
 EXPOSE 3306/tcp
 EXPOSE 11211/tcp
