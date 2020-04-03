@@ -1,6 +1,6 @@
 ![echoCTF RED logo](https://echoctf.red/images/logo-red-small.png)
 
-# What is echoCTF.RED
+# echoCTF.RED
 echoCTF.RED <small>codename Mycenae</small>, is the first iteration of our online service,
 based on our unique framework, for setting up and executing cyber security
 training, exercises and Capture the Flag events.
@@ -26,17 +26,15 @@ Also keep in mind that the system comes up with absolutely no data. This means
 that it is up to you to create targets, challenges, rules, instructions and
 any other details you require.
 
-## Project Structure
- * `ansible` => Ansible playbooks for setting up and updating the infrastructure
- * `backend` => Admin interface and commands
- * `contrib` => Various contributed materials
- * `docs` => Documentation folder
- * `frontend` => User interface (what you see at https://echoctf.red/)
- * `nodejs` => Various nodejs scripts for bots and live feeds
- * `schemas` => database schema
- * `themes` => Various theme, images and layout sources
+## Quick start
+```sh
+$ git clone https://github.com/echoCTF/echoCTF.RED.git
+$ cd echoCTF.RED
+$ docker-compose up
+```
 
-# Disclaimer
+For more details check [docs/](docs/) folder.
+## Disclaimer
 The documents and guides in this repository are only examples and are not meant
 to be used in production.
 
