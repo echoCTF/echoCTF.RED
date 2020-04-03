@@ -6,12 +6,6 @@ ENV MYSQL_USER vpnuser
 ENV MYSQL_PASSWORD vpnuserpass
 ENV MYSQL_DATABASE echoCTF
 ENV DEBIAN_FRONTEND noninteractive
-RUN set -ex \
-    && apt-get update \
-    && apt-get install -y build-essential gcc \
-    autoconf automake git zip unzip \
-    mcrypt memcached libmariadb-dev \
-    libmemcached-dev libtool
 
 WORKDIR /always-initdb.d/
 COPY contrib/mysql-init.sql  /always-initdb.d/99_mysql-init.sql
@@ -23,6 +17,8 @@ COPY contrib/findingsd.sql /docker-entrypoint-initdb.d/05.sql
 COPY contrib/entrypoint-mariadb.sh /usr/local/bin/docker-entrypoint.sh
 WORKDIR /
 RUN set -ex; \
+  apt-get update; \
+  apt-get install -y build-essential gcc autoconf automake git zip unzip mcrypt memcached libmariadb-dev libmemcached-dev libtool; \
   echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
   git clone https://github.com/echoCTF/memcached_functions_mysql.git; \
   cd memcached_functions_mysql; \
@@ -36,9 +32,10 @@ RUN set -ex; \
   chmod +x /always-initdb.d/00.sh; \
   cp sql/install_functions.sql /docker-entrypoint-initdb.d/00.sql; \
   sed -i  -e "s/^-- #//g" /always-initdb.d/99_mysql-init.sql; \
-  chmod +x /usr/local/bin/docker-entrypoint.sh
-
-RUN rm -rf /usr/src/* /var/lib/apt/lists/*
+  chmod +x /usr/local/bin/docker-entrypoint.sh; \
+  apt-get purge -y build-essential gcc autoconf automake git zip unzip mcrypt libmariadb-dev libtool; \
+  apt-get autoremove -y; \
+  rm -rf /usr/src/* /var/lib/apt/lists/*
 
 EXPOSE 3306/tcp
 EXPOSE 11211/tcp
