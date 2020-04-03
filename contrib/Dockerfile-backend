@@ -11,42 +11,40 @@ ARG MYSQL_DATABASE=echoCTF
 ARG GITHUB_OAUTH_TOKEN=abcdef0123456789
 
 ENV DEBIAN_FRONTEND noninteractive
-RUN set -ex \
-    && apt-get update \
-    && apt-get install --no-install-recommends -y git zip unzip \
-    mariadb-client mcrypt apache2 \
-    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
-    composer vim
 
 WORKDIR /var/www/echoCTF.RED
-COPY backend ./backend/
+COPY ${RED_APP} ./${RED_APP}/
 
 RUN set -ex; \
-    cp backend/config/cache-local.php backend/config/cache.php; \
-    cp backend/config/validationKey-local.php backend/config/validationKey.php; \
-    cp backend/config/db-sample.php backend/config/db.php; \
-    sed -ie "s/localhost/${MYSQL_HOST}/g" backend/config/db.php; \
-    sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" backend/config/cache.php; \
-    mkdir -p backend/web/assets; \
-    chown www-data backend/web/assets; \
-    chown www-data backend/runtime; \
-    cd backend; \
+    apt-get update; \
+    apt-get install --no-install-recommends -y git zip unzip mariadb-client mcrypt apache2 \
+    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
+    composer vim; \
+    cp ${RED_APP}/config/cache-local.php ${RED_APP}/config/cache.php; \
+    cp ${RED_APP}/config/validationKey-local.php ${RED_APP}/config/validationKey.php; \
+    cp ${RED_APP}/config/db-sample.php ${RED_APP}/config/db.php; \
+    sed -ie "s/localhost/${MYSQL_HOST}/g" ${RED_APP}/config/db.php; \
+    sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" ${RED_APP}/config/cache.php; \
+    mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime; \
+    chown www-data ${RED_APP}/web/assets; \
+    chown www-data ${RED_APP}/runtime; \
+    cd ${RED_APP}; \
     git config --global url."https://".insteadOf "git://" ; \
     composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
     composer config --global github-protocols https; \
     composer install; \
     cd ..; \
     mv /var/www/html /var/www/html.old; \
-    ln -s /var/www/echoCTF.RED/backend/web /var/www/html; \
+    ln -s /var/www/echoCTF.RED/${RED_APP}/web /var/www/html; \
     a2enmod rewrite; \
-    echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8',  ];">backend/config/db.php
-
-RUN rm -rf /usr/src/* /var/lib/apt/lists/*
+    echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8',  ];">${RED_APP}/config/db.php; \
+    apt-get autoremove -y; \
+    rm -rf /usr/src/* /var/lib/apt/lists/*
 
 EXPOSE 80/tcp
 
 # Challenge files volume
-VOLUME /var/www/echoCTF.RED/backend/web/uploads
+VOLUME /var/www/echoCTF.RED/${RED_APP}/web/uploads
 
 WORKDIR /var/www/echoCTF.RED
 CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]

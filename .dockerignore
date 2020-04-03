@@ -1,5 +1,13 @@
 .git
 backend/vendor/**/*
 backend/vendor
+backend/web/images/**/*
+backend/web/images
+backend/runtime/**/*
+backend/runtime
 frontend/vendor/**/*
 frontend/vendor
+frontend/web/images/**/*
+frontend/web/images
+frontend/runtime/**/*
+frontend/runtime
