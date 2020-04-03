@@ -10,9 +10,9 @@ real-life systems and services, to train and sharpen your offensive and
 defensive security skills. Scan, brute-force and do whatever it takes to
 attack the systems and solve the real-life security scenarios to gain points.
 
-For more information about our competitions visit https://echoCTF.com/ or if
+For more information about our competitions visit [https://echoCTF.com/](https://echoCTF.com/) or if
 you'd rather see a live example of our platform feel free to visit
-https://echoCTF.RED/
+[https://echoCTF.RED/](https://echoCTF.RED/)
 
 This project is currently under HEAVY restructure and development and may not
 be in a _usable_ state.
