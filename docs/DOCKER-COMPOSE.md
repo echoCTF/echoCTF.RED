@@ -20,7 +20,7 @@ Furthermore the following ports are mapped on the host server and containers
 The following volumes are configured and used
 * `echoctfred_data-mysql` For persistent mysql data
 * `echoctfred_data-openvpn` For persistent openvpn data
-* `echoctfred_data-challenges` under backend & frontned `/var/www/echoCTF.RED/*/web/uploads`
+* `echoctfred_data-challenges` under backend & frontend `/var/www/echoCTF.RED/*/web/uploads`
 * `./themes/images` under `/var/www/echoCTF.RED/*/web/images` for logos and images
 
 The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.

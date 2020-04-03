@@ -39,7 +39,7 @@ Install required composer files
 ```sh
 cd backend
 composer install
-cd ../frontned
+cd ../frontend
 composer install
 cd ..
 ```
