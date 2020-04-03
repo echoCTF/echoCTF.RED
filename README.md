@@ -1,7 +1,7 @@
 ![echoCTF RED logo](https://echoctf.red/images/logo-red-small.png)
 
 # echoCTF.RED
-echoCTF.RED <small>codename Mycenae</small>, is the first iteration of our online service,
+echoCTF.RED <sub>codename Mycenae</sub>, is the first iteration of our online service,
 based on our unique framework, for setting up and executing cyber security
 training, exercises and Capture the Flag events.
 
