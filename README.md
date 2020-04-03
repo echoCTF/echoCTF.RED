@@ -27,7 +27,7 @@ $ cd echoCTF.RED
 $ docker-compose up
 ```
 
-For more details checkout [https://github.com/echoCTF/echoCTF.RED/docs/](https://github.com/echoCTF/echoCTF.RED/docs/) folder.
+For more details check our [/docs/](https://github.com/echoCTF/echoCTF.RED/tree/master/docs) folder.
 
 ## Disclaimer
 This project is currently under HEAVY restructure and development and may not
