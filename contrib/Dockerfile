@@ -43,7 +43,7 @@ RUN set -ex; \
     cp frontend/config/memcached-local.php frontend/config/cache.php; \
     cp frontend/config/validationKey-local.php frontend/config/validationKey.php; \
     cp frontend/config/db-local.php frontend/config/db.php; \
-    mkdir -p backend/web/assets frontend/web/assets; \
+    mkdir -p backend/web/assets frontend/web/assets backend/runtime frontend/runtime; \
     chown www-data backend/web/assets frontend/web/assets; \
     chown www-data backend/runtime frontend/runtime; \
     cd backend; composer install; \
