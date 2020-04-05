@@ -1,7 +1,11 @@
 ![echoCTF RED logo](https://echoctf.red/images/logo-red-small.png)
-echoCTF is a pioneer computer security framework, developed by Echothrust Solutions, for running security related competitions (CTF).
 
-echoCTF allows building and running capture the flag competitions for network penetration testing and security auditing on real IT infrastructure. It can also be used for security awareness and training purposes, by businesses and educational institutes.
+echoCTF is a pioneer computer security framework, developed by Echothrust Solutions, for running Cyber Ranges and security related competitions such as capture the flag.
+
+echoCTF allows building and running capture the flag competitions for network
+penetration testing and security auditing on real IT infrastructure. It is
+also used for security awareness and training purposes, by businesses and
+educational institutes.
 
 # What is echoCTF.RED
 echoCTF.RED <sub>(codename Mycenae),</sub> is the first iteration of our online
