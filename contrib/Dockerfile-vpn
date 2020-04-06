@@ -25,6 +25,7 @@ RUN set -ex \
     git config --global url."https://".insteadOf "git://" ; \
     composer config --global github-protocols https; \
     composer install --no-dev; \
+    composer clearcache; \
     rm -rf /usr/src/* /var/lib/apt/lists/*; \
     chmod +x /entrypoint.sh; useradd  _openvpn; \
     touch /var/log/openvpn/openvpn.log
