@@ -10,10 +10,10 @@ class GeneratorController extends Controller {
   /**
    * Generate sitemap.xml
    */
-   public function actionSitemap()
+   public function actionSitemap($baseurl='https://echoctf.red/')
    {
      $targets=Target::find()->active()->all();
-     $contents=$this->renderFile(\Yii::getAlias('@app/views/sitemap.php'), ['targets'=>$targets, 'BASEURL'=>'https://echoctf.red/', 'profiles'=>[], 'TvsP'=>[]], true);
-     file_put_contents(Yii::getAlias('@app/web/sitemap.xml'),$content);
+     $contents=$this->renderFile(\Yii::getAlias('@app/views/sitemap.php'), ['targets'=>$targets, 'BASEURL'=>$baseurl, 'profiles'=>[], 'TvsP'=>[]], true);
+     file_put_contents(\Yii::getAlias('@app/web/sitemap.xml'),$contents);
    }
 }
