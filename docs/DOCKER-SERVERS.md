@@ -98,16 +98,19 @@ echo -e "[dockers]\ndockerd160" >> inventories/dockers/hosts
 ```
 
 Push your changes to the server by running ansible-playbook. Ansible will try
-to connect based on the user defined on the `dockerd160.yml` file. The options
-`-k` asks for ssh password and `-K` asks for the `su root` password.
+to connect based on the user defined on the `dockerd160.yml` file. The first
+password is for the SSH to connect with the user supplied (eg `sysadmin`) and
+the second is for becoming root through `su`.
 ```sh
 ansible-playbook -K -k -i inventories/dockers playbooks/docker-masters.yml
 ```
 
-NOTE: Take a look at the following page for more information on the options `-K` and `-k` https://docs.ansible.com/ansible/2.3/become.html#command-line-options
+**NOTE:** The options `-k` asks for ssh password and `-K` asks for the
+`su` password for `root`. For more information on the ansible options `-K` and
+`-k`, take a look at the following page https://docs.ansible.com/ansible/2.3/become.html#command-line-options
 
-Once this is done, you will have to restart your docker server (`dockerd160`)
-for all the changes to activate.
+Once this the playbook is complete without failures, you will have to restart
+your docker server (`dockerd160`) for all the changes to activate.
 
 If you're using virtual machines for the docker servers make sure you allow
 promiscuous mode settings and as well as mac address changes. This is needed
