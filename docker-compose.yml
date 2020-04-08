@@ -2,6 +2,7 @@ version: '2'
 services:
   db:
     container_name: echoctfred_db
+    image: echothrust/echoctf.red-db
     build:
       context: .
       dockerfile: contrib/Dockerfile-mariadb
@@ -22,6 +23,7 @@ services:
 
   backend:
     container_name: echoctfred_backend
+    image: echothrust/echoctf.red-backend
     build:
       context: .
       dockerfile: contrib/Dockerfile-backend
@@ -48,6 +50,7 @@ services:
 
   frontend:
     container_name: echoctfred_frontend
+    image: echothrust/echoctf.red-frontend
     build:
       context: .
       dockerfile: contrib/Dockerfile-frontend
@@ -78,6 +81,7 @@ services:
     cap_add:
       - NET_ADMIN
     privileged: true
+    image: echothrust/echoctf.red-vpn
     build:
       context: .
       dockerfile: contrib/Dockerfile-vpn
