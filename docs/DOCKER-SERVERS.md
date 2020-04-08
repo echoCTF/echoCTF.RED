@@ -8,6 +8,7 @@ through docker API to start and stop containers.
 ___ FIXME: Add a diagram showing the server we are configuring... ___
 
 The guide is based on a system base installation of `debian-10.3.0-amd64-netinst.iso` on a system with the following details
+
 * Hostname: `dockerd160`
 * interface: `enp0s3`
 * IP: `10.0.160.1/24`

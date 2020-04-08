@@ -2,23 +2,71 @@
 
 The user interfaces allow certain operations to be performed from the console in order to allow easy integration into shell scripts.
 
-### Etc command
-Manipulate `/etc/` related files.
+## User command (`backend/yii user/*`)
+Manipulate users that can access the backend interface
 
-* `./backend/yii etc/pftables` Generate targets and participant related pf table files and also populate the tables
-* `./backend/yii etc/npppd-users` (not implemented) Sync players with npppd-users
-* `./backend/yii etc/bridge-rules` Generate bridge rules for when MAC authentication is enabled
-* `./backend/yii etc/openvpn` (obsolete) create participant OpenVPN configuration files and certificates
 
-### Player command
+### List Users (`backend/yii user/index`)
+
+* `./backend/yii user` List current users
+
+
+### Find user (`backend/yii user/find`)
+
+* `./backend/yii user/find` Find user
+
+
+### Create (`backend/yii user/create`)
+
+* `./backend/yii user/create` Create a user
+
+
+### Delete (`backend/yii user/delete`)
+
+* `./backend/yii user/delete` Delete a user
+
+
+### Set user deleted flag (`backend/yii user/deleted`)
+
+* `./backend/yii user/deleted` Set deleted status for user
+
+
+
+### Set user disabled flag (`backend/yii user/disable`)
+
+* `./backend/yii user/disable` Set user to disabled
+
+
+### Set user enabled flag (`backend/yii user/enable`)
+
+* `./backend/yii user/enable` Enable user
+
+
+### Set user password (`backend/yii user/password`)
+
+* `./backend/yii user/password` set user password
+
+
+## Player command (`backend/yii player/*`)
 Perform player related operations (frontend users).
 
+
+### List players (`backend/yii player/index`)
+
 * `./backend/yii player` list players
+
+
+### Mail players (`backend/yii player/mail`)
+
 * `./backend/yii player/mail` Generate participant emails for account activation
+
+
+### Register player (`backend/yii player/register`)
+
 * `./backend/yii player/register` Register a player from the command line
-```
-./backend/yii player/register $username $email $fullname $password=false $player_type="offense" $active=false $academic=false $team_name=false $team_logo=false $team_id=false $baseIP="10.10.0.0" $skip=0
-```
+
+Arguments:
+
  - `username`: The username for the new player eg. `SuperDooper`
  - `email`: The email of the player eg. `sdooper@example.com`
  - `fullname`: Full name for the player eg. `"Super Dooper"`
@@ -33,7 +81,12 @@ Perform player related operations (frontend users).
  - `skip`:  How many blocks to skip from generation. For our setups the first range (eg `10.10.0.1`) is assigned to the `tun(4)` interface used by openvpn so we use skip 1.
 
 
-### SSL Command
+ ```sh
+ ./backend/yii player/register $username $email $fullname $password=false $player_type="offense" $active=false $academic=false $team_name=false $team_logo=false $team_id=false $baseIP="10.10.0.0" $skip=0
+ ```
+
+
+## SSL Command
 Ssl related operations. Generate and manipulate a very simple PKI for OpenVPN authentication.
 
 * `./backend/yii ssl` Usage
@@ -41,26 +94,15 @@ Ssl related operations. Generate and manipulate a very simple PKI for OpenVPN au
 * `./backend/yii ssl/create-ca` Create a self sign certificate for a local CA
 * `./backend/yii ssl/player-certs` Generate certificates for the player and sign their keys with our CA
 
-### Sysconfig command
+## Sysconfig command
 Manipulate `sysconfig` key/val pairs.
 
 * `./backend/yii sysconfig/profile` load a sysconfig profile with a predefined key/val pairs
 * `./backend/yii sysconfig/set` Set a key to the given value
 
-### User command
-Manipulate backend users.
-
-* `./backend/yii user` List current users
-* `./backend/yii user/find` Find user
-* `./backend/yii user/create` Create a user
-* `./backend/yii user/delete` Delete a user
-* `./backend/yii user/deleted` Set deleted status for user
-* `./backend/yii user/disable` Set user to disabled
-* `./backend/yii user/enable` Enable user
-* `./backend/yii user/password` set user password
 
 
-### Target command
+## Target command
 Manipulate and manage targets.
 
 * `./yii target/cron $INTERVAL=5 $unit=MINUTE` Check for changes on the targets during the last INTERVAL units. This is what powers up/down targets based on the `scheduled_at`
@@ -74,3 +116,11 @@ Manipulate and manage targets.
 * `./yii target/pf` Update PF related targets.conf and rules needed for the findings (match-findings-pf.conf)
 * `./yii target/pf 1` Update PF related targets.conf and rules and LOAD them
 * `./yii target/restart` Restart a single target that is up for more than 24 hours
+
+## etc/ command
+Manipulate `/etc/` related files.
+
+* `./backend/yii etc/pftables` Generate targets and participant related pf table files and also populate the tables
+* `./backend/yii etc/npppd-users` (not implemented) Sync players with npppd-users
+* `./backend/yii etc/bridge-rules` Generate bridge rules for when MAC authentication is enabled
+* `./backend/yii etc/openvpn` (obsolete) create participant OpenVPN configuration files and certificates

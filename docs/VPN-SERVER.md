@@ -11,7 +11,9 @@ OpenBSD 6.6 to act as a VPN gateway.
 Before you start ensure you have the db server up and running as the VPN needs
 to connect to the database server to operate. Check the [DOCKER-COMPOSE-NOVPN.md](/docs/DOCKER-COMPOSE-NOVPN.md)
 
+
 The following network details will be used throughout this guide
+
 * vpn server egress interface: `em0`
 * vpn server egress address: `172.26.0.1`
 * vpn server targets interface: `em1`
@@ -40,6 +42,7 @@ pkg_add ansible
 cd ansible && ansible-playbook playbooks/vpngw-openbsd.yml
 ```
 
+## Manual Installation
 Or if you'd rather execute the playbook in a non interactive mode, copy the
 file `templates/default-settings.yml` and edit to with your own values.
 ```sh
