@@ -31,7 +31,12 @@ The following volumes are configured and used
 * `echoctfred_data-challenges` under backend & frontend `/var/www/echoCTF.RED/*/web/uploads`
 * `./themes/images` under `/var/www/echoCTF.RED/*/web/images` for logos and images
 
-Before you start building you are advised to generate a Github OAuth Token to
+Pull the official images for the applications
+```sh
+docker-compose -f docker-compose-novpn.yml pull
+```
+
+If you prefer to build your images you will have to generate a Github OAuth Token to
 be used by the composer utility.
 
 This is only needed once and we do it in order to avoid hitting Github rate limits on their API, which is used by `composer`.
@@ -62,16 +67,21 @@ Follow the instructions of [VPN-SERVER.md](/docs/VPN-SERVER.md) and adapt your v
 
 Follow the instructions from [DOCKER-SERVERS.md](/docs/DOCKER-SERVERS.md) to prepare your docker api server (dockerd160).
 
-If you followed the instructions correctly your network topology should look like the diagram.
+If you followed the instructions correctly your network topology should look
+like the diagram.
 
 
-The _Linux Host_  `backend` will need to be able to access the Docker API Servers behind the `vpn` server. For this reason we will have to add a network route for the network `10.0.160.0/24` on the Linux Host by executing
+The _Linux Host_  `backend` will need to be able to access the Docker API
+Servers behind the `vpn` server. For this reason we will have to add a network
+route for the network `10.0.160.0/24` on the Linux Host by executing
 ```sh
 route add -net 10.0.160.0/24 gw <vpn_public_ip>
 ```
 
 ## Dedicated ethernet interface for private network
-There is also an alternative setup for providing a dedicated network interface for the private network `private` (color red). This involves the addition of an extra ethernet adapter on both vpn and linux host.
+There is also an alternative setup for providing a dedicated network interface
+for the private network `private` (color red). This involves the addition of an
+extra ethernet adapter on both vpn and linux host.
 
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-including-vpn-dedicated-topology.png" alt="docker-compose-including-vpn-dedicated-topology" height="400px"/></center>
 
@@ -80,21 +90,44 @@ Ensure that all containers are stopped by running the following from the Linux H
 docker-compose -f docker-compose-novpn.yml down
 ```
 
-Decide what is the ethernet interface you will dedicate for the `private` network (`enp2s0` in our example) and bring the containers up using the `docker-compose-novpn-macvlan.yml`
+Decide what is the network interface you will dedicate for the `private`
+network (`enp0s8` in our example) and configure accordingly. We assign an IP
+to the interface (`172.24.0.252` and place it on promisc mode to be able to
+process packets), edit `/etc/network/interfaces` and add something like the
+following
 ```sh
-PRIVATE_PARENT_INTERFACE=enp2s0 docker-compose -f docker-compose-novpn-macvlan.yml up
+auto enp0s8
+iface enp0s8 inet static
+	address 172.24.0.252/24
+	up ifconfig $IFACE promisc
+```
+
+Restart networking and start the containers up using the `docker-compose-novpn-macvlan.yml`
+```sh
+PRIVATE_PARENT_INTERFACE=enp0s8 docker-compose -f docker-compose-novpn-macvlan.yml up
 # or
-export PRIVATE_PARENT_INTERFACE=enp2s0
+export PRIVATE_PARENT_INTERFACE=enp0s8
 docker-compose -f docker-compose-novpn-macvlan.yml up
 ```
 
-Add an additional ethernet adapter to the VPN host (em2 in our case). Once added configure the interface by running the following commands from the vpn server
+Add an additional ethernet adapter to the VPN host (em2 in our case). Once
+added, configure the interface by running the following commands from the vpn
+server
 ```sh
 echo "inet 172.24.0.1 255.255.255.0 NONE group private">/etc/hostname.em2
 sh /etc/netstart em2
 ```
 
-If you are using virtual machines make sure that you allow promiscues mode to the interface you dedicate for the macvlan bridge.
+Ensure the link is up and you can connect to the database host from the vpn
+```sh
+ping -c 1 172.24.0.252 # the Linux Host IP
+ping -c 1 172.24.0.253 # the echoctfred_db container
+mysql -uvpnuser -pvpnuserpass -h 172.24.0.253 -e "SELECT user();" echoCTF
+```
+
+Re-run the `vpngw-openbsd.yml` playbook and make sure you use the internal IP for the database server.
+
+If you are using virtual machines make sure that you allow promiscuous mode to the interface you dedicate for the macvlan bridge.
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/vbox-network-settings.png" alt="Virtualbox Network Settings for macvlan and gateway" width="500px"/></center>
 
 For VMware related options you can look at the following link [Configuring promiscuous mode on a virtual switch or portgroup (1004099)](https://kb.vmware.com/s/article/1004099)

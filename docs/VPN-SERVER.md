@@ -9,7 +9,7 @@ OpenBSD 6.6 to act as a VPN gateway.
 ![echoCTF.RED docker-compose topology](/docs/assets/docker-compose-topology.png?raw=true&1)
 
 Before you start ensure you have the db server up and running as the VPN needs
-to connect to the database server to operate.
+to connect to the database server to operate. Check the [DOCKER-COMPOSE-NOVPN.md](/docs/DOCKER-COMPOSE-NOVPN.md)
 
 The following network details will be used throughout this guide
 * vpn server egress interface: `em0`
