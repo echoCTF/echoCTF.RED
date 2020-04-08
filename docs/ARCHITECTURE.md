@@ -1,7 +1,7 @@
 # echoCTF.RED Architecture Details
 The following document provides a generic overview of the various components of the platform.
 
-![echoCTF.RED Components Architecture](/docs/assets/architecture%20diagram.png?raw=true&3)
+![echoCTF.RED Components Architecture](assets/architecture%20diagram.png?raw=true&3)
 
 ## Possible Installation Scenarios
 Choosing the right setup can be a little tricky. The infrastructure needs,
@@ -87,7 +87,7 @@ The entire infrastructure is hosted on 7 servers at Vultr.com, our cloud
 provider of choice... You can signup with Vultr and help us out at the same
 time, by using this link https://www.vultr.com/?ref=8475962-6G
 
-![Vultr network topology](/docs/assets/our-vultr-topology.png?1)
+![Vultr network topology](assets/our-vultr-topology.png?1)
 
 The infrastructure uses the Medium/Large setup scenario with the following system details.
 

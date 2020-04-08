@@ -27,7 +27,7 @@ The following volumes are configured and used
 * `./themes/images` under `/var/www/echoCTF.RED/*/web/images` for logos and images
 
 The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
-![echoCTF.RED docker-compose topology](/docs/assets/docker-compose-topology.png?)
+![echoCTF.RED docker-compose topology](assets/docker-compose-topology.png?)
 
 The easy way to start is to use the official docker images by executing
 ```sh
@@ -60,7 +60,7 @@ docker exec -it echoctfred_vpn ./backend/yii user/create echothrust info@echothr
 docker exec -it echoctfred_vpn ./backend/yii player/register echothrust info@echothrust.com echothrust echothrust offense 1
 ```
 
-The syntax for the commands can be found at [Console-Commands.md](/docs/Console-Commands.md)
+The syntax for the commands can be found at [Console-Commands.md](Console-Commands.md)
 
 
 Set the IP or FQDN that participants will openvpn

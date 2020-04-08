@@ -22,7 +22,7 @@ push "route 10.0.200.0 255.255.255.0"
 Update the docker-compose.yml with the respective ranges and rebuild
 
 ### How to move the VPN to another VM or host?
-Follow the instructions from [/docs/DOCKER-COMPOSE-NOVPN.md](/docs/DOCKER-COMPOSE-NOVPN.md)
+Follow the instructions from [DOCKER-COMPOSE-NOVPN.md](DOCKER-COMPOSE-NOVPN.md)
 
 
 ## Images and Logos

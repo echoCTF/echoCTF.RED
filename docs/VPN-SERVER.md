@@ -9,7 +9,7 @@ OpenBSD 6.6 to act as a VPN gateway.
 <img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-topology.png?nocache" alt="echoCTF.RED docker-compose topology" width="400px"/>
 
 Before you start ensure you have the db server up and running as the VPN needs
-to connect to the database server to operate. Check the [DOCKER-COMPOSE-NOVPN.md](/docs/DOCKER-COMPOSE-NOVPN.md)
+to connect to the database server to operate. Check the [DOCKER-COMPOSE-NOVPN.md](DOCKER-COMPOSE-NOVPN.md)
 
 
 The following network details will be used throughout this guide
@@ -276,4 +276,4 @@ echo "group targets">>/etc/hostname.em1
 Restart the system and you should be up and running.
 
 # NEXT STEPS
-* Run your own [Docker Registry](/docs/DOCKER-REGISTRY.mg)
+* Run your own [Docker Registry](DOCKER-REGISTRY.mg)

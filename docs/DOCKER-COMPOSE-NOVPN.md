@@ -10,7 +10,7 @@ In this guide the infrastructure assumes a separate servers/vms. The servers des
 * **Linux Host**: The linux host that the `docker-compose` command will run on. The file `docker-compose-novpn.yml` builds and starts containers for  `frontend`, `backend` and `db` on a Linux host as can be seen on the diagram below.
 
 * **VPN Host**: An OpenBSD gateway host for VPN and docker servers and target
-containers configured following the instructions from [VPN Server Installation](/docs/VPN-SERVER.md).
+containers configured following the instructions from [VPN Server Installation](VPN-SERVER.md).
 
 * **Docker Server**: A linux debian host (dockerd160 on the diagram above) that we will utilize as docker API server and that the actual target containers will run on (_target1 and target2 on the diagram above_).
 
@@ -68,9 +68,9 @@ docker-compose -f docker-compose-novpn.yml up -d
 ```
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png" alt="docker-compose-novpn-topology" height="400px"/></center>
 
-Follow the instructions of [VPN-SERVER.md](/docs/VPN-SERVER.md) and adapt your values accordingly.
+Follow the instructions of [VPN-SERVER.md](VPN-SERVER.md) and adapt your values accordingly.
 
-Follow the instructions from [DOCKER-SERVERS.md](/docs/DOCKER-SERVERS.md) to prepare your docker api server (dockerd160).
+Follow the instructions from [DOCKER-SERVERS.md](DOCKER-SERVERS.md) to prepare your docker api server (dockerd160).
 
 If you followed the instructions correctly your network topology should look
 like the diagram.

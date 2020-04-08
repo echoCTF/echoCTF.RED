@@ -142,4 +142,4 @@ mysql < /etc/mysql/mysql-init.sql
 
 ## Whats next?
 * Prepare your docker servers and targets [/ansible/README.md](/ansible/README.md)
-* Prepare your vpn server [/docs/VPN-SERVER.md](/docs/VPN-SERVER.md)
+* Prepare your vpn server [VPN-SERVER.md](VPN-SERVER.md)
