@@ -1,0 +1,8 @@
+site_name: echoCTF.RED Documentation
+site_url:  https://echoctfred.readthedocs.io/en/latest/
+site_description: A framework for developing, deploying, running and maintain CTFs
+repo_url: https://github.com/echoCTF/echoCTF.RED
+theme: readthedocs
+
+pages:
+  - Home: docs/README.md
