@@ -14,19 +14,24 @@ containers configured following the instructions from [VPN Server Installation](
 
 * **Docker Server**: A linux debian host (dockerd160 on the diagram above) that we will utilize as docker API server and that the actual target containers will run on (_target1 and target2 on the diagram above_).
 
+
 The following networks are used throughout the document
+
 * `echoctfred_public`: `172.26.0.0/24`
 * `echoctfred_private`: `172.24.0.0/24`
 * `echoctfred_targets`: `10.0.160.0/24`
 * `OpenVPN`: `10.10.0.0/16`
 
+
 Furthermore the following ports are mapped on the host server and containers
+
 * tcp 0.0.0.0:8082 => echoctfred_backend 172.26.0.2:80
 * tcp 0.0.0.0:8080 => echoctfred_frontend 172.26.0.3:80
 * tcp 0.0.0.0:3306 => echoctfred_db 172.24.0.253:3306
 * tcp 0.0.0.0:11211 => echoctfred_db 172.24.0.253:11211
 
 The following volumes are configured and used
+
 * `echoctfred_data-mysql` For persistent mysql data
 * `echoctfred_data-challenges` under backend & frontend `/var/www/echoCTF.RED/*/web/uploads`
 * `./themes/images` under `/var/www/echoCTF.RED/*/web/images` for logos and images

@@ -61,11 +61,13 @@ For smaller events and lan-parties (less than 100 participants) you can use a
 more conservative approach.
 
 One option is to have
+
 * One server for frontend, backend, database
 * One server for VPN
 * One or more servers for dockerd
 
 Or alternatively if your resources are limited
+
 * One server for frontend, backend, database AND vpn
 * One or more servers for dockerd
 
@@ -75,6 +77,7 @@ of participants and number of targets we take the infrastructure needs of our
 online long-running CTF platform __https://echoCTF.RED/__
 
 Platform details, at the time of this writing (11/03/2020)
+
 * Number of participants: 400 and keep on growing :)
 * Event duration: for ever and ever...
 * Number of targets: 30 with plans to reach 400-500
@@ -88,17 +91,23 @@ time, by using this link https://www.vultr.com/?ref=8475962-6G
 
 The infrastructure uses the Medium/Large setup scenario with the following system details.
 
+
 **frontend.echoctf.red / db.echoctf.red**
+
 * CPU: 1 vCore
 * RAM: 1024 MB
 * Storage: 32 GB NVMe
 
+
 **backend.echoctf.red / vpn.echoctf.red**
+
 * CPU: 1 vCore
 * RAM: 1024 MB
 * Storage: 25 GB SSD
 
+
 **docker10 / docker16 / docker20**
+
 * CPU: 1 vCore
 * RAM: 2048 MB
 * Storage: 64 GB NVMe

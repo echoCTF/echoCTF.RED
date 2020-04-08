@@ -5,12 +5,14 @@ Keep in mind that this may require a lot of memory to run (our tests are
 performed on systems with at least 8GB ram).
 
 The docker containers use the following networks
+
 * `echoctfred_public`: `172.26.0.0/24`
 * `echoctfred_private`: `172.24.0.0/24`
 * `echoctfred_targets`: `10.0.160.0/24`
 * `OpenVPN`: `10.10.0.0/16`
 
 Furthermore the following ports are mapped on the host server and containers
+
 * udp 0.0.0.0:1194 => echoctfred_vpn 172.26.0.1:1194 openvpn
 * tcp 0.0.0.0:8082 => echoctfred_backend 172.26.0.2:80
 * tcp 0.0.0.0:8080 => echoctfred_frontend 172.26.0.3:80
@@ -18,6 +20,7 @@ Furthermore the following ports are mapped on the host server and containers
 * tcp 0.0.0.0:11211 => echoctfred_db 172.24.0.253:11211
 
 The following volumes are configured and used
+
 * `echoctfred_data-mysql` For persistent mysql data
 * `echoctfred_data-openvpn` For persistent openvpn data
 * `echoctfred_data-challenges` under backend & frontend `/var/www/echoCTF.RED/*/web/uploads`
@@ -126,6 +129,7 @@ containers will be allowed to access. Keep in mind that these targets are meant
 to be hacked, so take care at limiting their network access with iptables.
 
 RULES:
+
 * Allow access to port 1194 by anyone (on the host or forward the port 1194 to the echoctfred_vpn:1194)
 * Allow vpn users `10.10.0.0/16` to access docker target IP's `10.0.160.0/24`
 * Block vpn users `10.10.0.0/16` access to `10.0.160.254` (this is the interface ip docker assigns automatically)
