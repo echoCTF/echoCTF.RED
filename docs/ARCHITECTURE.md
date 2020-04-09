@@ -1,5 +1,6 @@
-# echoCTF.RED Architecture Details
-The following document provides a generic overview of the various components of the platform.
+# Architecture Details
+The following document provides a generic overview of the various components of
+the echoCTF.RED platform.
 
 <img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/architecture-diagram.png" alt="echoCTF.RED Components Architecture" width="400px"/>
 
