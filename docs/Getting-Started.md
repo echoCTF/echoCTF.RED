@@ -38,4 +38,4 @@ the one best fit for your needs.
 * [Setup a Private Docker Registry (DOCKER-REGISTRY.md)](DOCKER-REGISTRY.md)
 * [Docker Servers Setup Guide (DOCKER-SERVERS.md)](DOCKER-SERVERS.md)
 * [Docker Targets Guide (DOCKER-TARGETS.md)](DOCKER-TARGETS.md)
-* [Personalize your installation (PESONALIZING.md)](PESONALIZING.md)
+* [Personalize your installation (PERSONALIZING.md)](PERSONALIZING.md)
