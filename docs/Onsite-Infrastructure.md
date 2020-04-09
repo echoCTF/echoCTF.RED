@@ -17,7 +17,7 @@ gateway/vpn server and a Debian docker server, as illustrated below.
 
 This basic setup assumes 50 local participants with 10 to 20 targets.
 
-![Onsite echoCTF Basic Topology](/docs/assets/onsite-basic-topology.png?raw=true&2)
+![Onsite echoCTF Basic Topology](assets/onsite-basic-topology.png?raw=true&2)
 
 The hardware specifications for the servers vary but for a small event the
 following should be more than enough:
@@ -69,4 +69,4 @@ When the option to increase the hardware specs is no longer viable, we switch
 into splitting services into multiple servers starting with the addition of
 new docker servers.
 
-![Onsite Multiple Docker Servers Topology](/docs/assets/onsite-multiple-dockers.png?raw=true&2)
+![Onsite Multiple Docker Servers Topology](assets/onsite-multiple-dockers.png?raw=true&2)
