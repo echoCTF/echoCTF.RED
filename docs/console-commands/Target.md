@@ -1,6 +1,10 @@
 # Target commands
 Manipulate and manage targets.
 
+* Optional command line arguments are enclosed in `[]`
+* Required command line arguments are enclosed in `<>`
+
+
 * `./yii target/cron $INTERVAL=5 $unit=MINUTE` Check for changes on the targets during the last INTERVAL units. This is what powers up/down targets based on the `scheduled_at`
 * `./yii target/destroy target_id` Destroy a target container
 * `./yii target/spin` Spin all targets

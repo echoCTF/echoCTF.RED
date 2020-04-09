@@ -1,5 +1,9 @@
-# SSL Commands (`backend/yii ssl/*`)
+# SSL commands
 SSL related operations. Generate and manipulate keys for OpenVPN authentication.
+
+* Optional command line arguments are enclosed in `[]`
+* Required command line arguments are enclosed in `<>`
+
 
 ## Create Certification Authority (`./backend/yii ssl/create-ca`)
 Create and store CA keys in the database.

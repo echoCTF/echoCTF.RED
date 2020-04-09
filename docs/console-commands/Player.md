@@ -1,5 +1,8 @@
-# Player commands (`backend/yii player/*`)
+# Player commands
 Perform player related operations (frontend users).
+
+* Optional command line arguments are enclosed in `[]`
+* Required command line arguments are enclosed in `<>`
 
 
 ## List players (`backend/yii player/index`)
