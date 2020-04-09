@@ -1,7 +1,8 @@
-## Infrastructure Sizing
+# Infrastructure Sizing
 Choosing the right setup can be a little tricky. The infrastructure needs,
 depend heavily on your event specifications and requirements.
 
+## Size affecting factors
 Some things that you need to consider before choosing the right setup for your
 event are...
 
@@ -44,14 +45,15 @@ _Findings correspond to network ports for services running on targets
 a daemon (`findingsd`) is responsible for detecting the connection and
 assigning points to the user ._
 
-#### Medium/Large events
+## Event Sizes
+### Medium/Large events
 For medium/large events (between 100-1000 participants) it is suggested to have
 each service on its own system.
 
 Using the diagram above as an example, this means that `vpn`, `frontend`,
 `backend`, `memcached/mysql` and `dockerd` servers run on their own systems.
 
-#### Small events
+### Small events
 For smaller events and lan-parties (less than 100 participants) you can use a
 more conservative approach.
 
@@ -66,7 +68,7 @@ Or alternatively if your resources are limited
 * One server for frontend, backend, database AND vpn
 * One or more servers for dockerd
 
-#### echoCTF.RED
+## Size example of https://echoCTF.RED/
 As an example to help you understand some of the relations of resources, number
 of participants and number of targets we take the infrastructure needs of our
 online long-running CTF platform __https://echoCTF.RED/__
