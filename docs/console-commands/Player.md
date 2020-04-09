@@ -5,36 +5,34 @@ Perform player related operations (frontend users).
 * Required command line arguments are enclosed in `<>`
 
 
-## List players (`backend/yii player/index`)
+## List players
 
-* `./backend/yii player` list players
+Usage: `./backend/yii player/index [filter]`
 
-
-## Mail players (`backend/yii player/mail`)
-
-* `./backend/yii player/mail` Generate participant emails for account activation
+Accepted filter values include one of `all`, `active`, `inactive`
 
 
-## Register player (`backend/yii player/register`)
+## Mail players
+Generate and mail participant account activation URLs
 
-* `./backend/yii player/register` Register a player from the command line
+Usage: `./backend/yii player/mail [baseURL] [active] [email]`
 
-Arguments:
+- `baseURL`: Base URL to use constructing the account activation url for the player (default: "https://echoctf.red/index.php?r=site/activate&key=")
+- `active`:
+## Register player
 
- - `username`: The username for the new player eg. `SuperDooper`
- - `email`: The email of the player eg. `sdooper@example.com`
- - `fullname`: Full name for the player eg. `"Super Dooper"`
- - `password`: Password for the user. If `0` is used then the system will generate a random password
- - `player_type`: The player type `offense` or `defense`
- - `active`: Register the user as active, `0=inactive, 1=active`
- - `academic`: Academic user flag `0=non academic, 1=academic`
- - `team_name`: Team name, to be created. The user will be owner of the team
- - `team_logo`: Team logo to use
- - `team_id`: Team id if the user is to be assigned to an existing team
- - `baseIP`: The base IP to generate ranges for users. (Can be ignored)
- - `skip`:  How many blocks to skip from generation. For our setups the first range (eg `10.10.0.1`) is assigned to the `tun(4)` interface used by openvpn so we use skip 1.
+Usage: `./backend/yii player/register <username> <email> <fullname> [password] [player_type] [active] [academic] [team_name]` Register a player from the command line
+
+- `username`: Unique username for the new player
+- `email`: Unique email of the player
+- `fullname`: Full name for the player
+- `password`: Password for the user. Special value _`0`_ is used then the system will generate a random password
+- `player_type`: The player type `offense` or `defense` (default: "offense")
+- `active`: The registered users active status, `0=inactive, 1=active` (default: false)
+- `academic`: Academic user flag `0=non academic, 1=academic` (default: false)
+- `team_name`: Team name, to be created or join for the player (default: false)
 
 
- ```sh
- ./backend/yii player/register $username $email $fullname $password=false $player_type="offense" $active=false $academic=false $team_name=false $team_logo=false $team_id=false $baseIP="10.10.0.0" $skip=0
- ```
+## Change player password
+
+Usage: `./backend/yii player/password <email or id> <password>`
