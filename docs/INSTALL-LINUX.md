@@ -1,4 +1,4 @@
-# echoCTF.RED Linux Installation Instructions
+# echoCTF.RED Installation Instructions for Linux
 
 These instructions will guide you in installing the web interfaces on any linux based on Debian.
 
@@ -139,7 +139,3 @@ The default interfaces are accessible under http://localhost:8080/ for the front
 echo "init_file=/etc/mysql/mysql-init.sql" >>/etc/mysql/mariadb.conf.d/50-mysqld.cnf
 mysql < /etc/mysql/mysql-init.sql
 ```
-
-## Whats next?
-* Prepare your docker servers and targets [/ansible/README.md](/ansible/README.md)
-* Prepare your vpn server [VPN-SERVER.md](VPN-SERVER.md)
