@@ -2,6 +2,7 @@
 The following guide will help in creating, building and deploying new targets to your infrastructure.
 
 The general outline of the steps required to build a target are
+
 1. Prepare your environment
 2. Decide on your scenario
 3. Develop the target
