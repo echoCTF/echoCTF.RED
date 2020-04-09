@@ -15,7 +15,6 @@ pages:
   - Manual installation:
     - OpenBSD General installation instructions of applications: INSTALL.md
     - Manual installation of all application on a single linux host: INSTALL-LINUX.md
-    - Build echoCTF.RED applications Docker images: BUILD-DOCKER.md
   - Extras:
     - Install VPN Gateway on OpenBSD: VPN-SERVER.md
     - Setup a Private Docker Registry: DOCKER-REGISTRY.md
