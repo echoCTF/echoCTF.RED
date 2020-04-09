@@ -6,7 +6,7 @@ connect to the target infrastructure as well as keeping track of the findings.
 The following guide covers the installation of the needed applications on
 OpenBSD 6.6 to act as a VPN gateway.
 
-<img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-topology.png?nocache" alt="echoCTF.RED docker-compose topology" width="400px"/>
+<img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png?nocache" alt="echoCTF.RED docker-compose topology" width="400px"/>
 
 Before you start ensure you have the db server up and running as the VPN needs
 to connect to the database server to operate. Check the [DOCKER-COMPOSE-NOVPN.md](DOCKER-COMPOSE-NOVPN.md)
@@ -135,6 +135,8 @@ mysql echoCTF < contrib/findingsd.sql
 If the VPN host **runs on a different host** than your main database server
 edit the file `echoCTF.RED/contrib/findingsd-federated.sql` and replace the
 following strings to their corresponding value. For our example we will use
+the following details
+
 * `{{db_user}}` database username (ex `vpnuser`)
 * `{{db_pass}}` database user password (ex `vpnuserpass`)
 * `{{db_host}}` database host (prefer IP ex `172.24.0.253`)
@@ -143,6 +145,7 @@ following strings to their corresponding value. For our example we will use
 NOTE: If you are running the docker container that we provide then a user
 already exists on the database with the following credentials, otherwise you'll
 have to GRANT the permissions to your mysql host.
+
 * mysql user: `vpnuser`
 * mysql password: `vpnuserpass`
 
@@ -274,6 +277,3 @@ echo "group targets">>/etc/hostname.em1
 ```
 
 Restart the system and you should be up and running.
-
-# NEXT STEPS
-* Run your own [Docker Registry](DOCKER-REGISTRY.mg)
