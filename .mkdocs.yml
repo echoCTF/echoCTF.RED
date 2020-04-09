@@ -5,22 +5,22 @@ repo_url: https://github.com/echoCTF/echoCTF.RED
 theme: readthedocs
 
 pages:
-  - Home: README.md
+  - Home: index.md
   - Architecture: ARCHITECTURE.md
-  - Installation:
-    - Using Docker Compose:
-      - All in one host: DOCKER-COMPOSE.md
-      - All in one with separate VPN: DOCKER-COMPOSE-NOVPN.md
-    - Manual installation:
-      - OpenBSD General installation instructions of applications: INSTALL.md
-      - Manual installation of all application on a single linux host: INSTALL-LINUX.md
-      - Build echoCTF.RED applications Docker images: BUILD-DOCKER.md
-    - Extras:
-      - Install VPN Gateway on OpenBSD: VPN-SERVER.md
-      - Setup a Private Docker Registry: DOCKER-REGISTRY.md
-      - Docker Servers Setup Guide: DOCKER-SERVERS.md
-      - Docker Targets Guide: DOCKER-TARGETS.md
-      - Personalize your installation: PESONALIZING.md
+  - Choosing your installation method: README.md
+  - Install using docker-compose:
+    - All in one host: DOCKER-COMPOSE.md
+    - All in one with separate VPN: DOCKER-COMPOSE-NOVPN.md
+  - Manual installation:
+    - OpenBSD General installation instructions of applications: INSTALL.md
+    - Manual installation of all application on a single linux host: INSTALL-LINUX.md
+    - Build echoCTF.RED applications Docker images: BUILD-DOCKER.md
+  - Extras:
+    - Install VPN Gateway on OpenBSD: VPN-SERVER.md
+    - Setup a Private Docker Registry: DOCKER-REGISTRY.md
+    - Docker Servers Setup Guide: DOCKER-SERVERS.md
+    - Docker Targets Guide: DOCKER-TARGETS.md
+    - Personalize your installation: PERSONALIZING.md
   - Administration:
       - Sysconfig Keys: Sysconfig-Keys.md
       - Console Commands: Console-Commands.md
