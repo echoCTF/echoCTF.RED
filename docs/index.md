@@ -16,9 +16,7 @@ echoCTF.RED is comprised of a few separate components each of witch requires its
 
 These components are are as follows:
 
-* Web Interfaces
-  * frontend: Web Interface accessible by participants
-  * backend: Web Interface and console commands accessible only by administrators
+* Web Interfaces: frontend and backend web interfaces for players and administrators
 * Docker API Servers: Servers running docker
 * Docker Targets: docker containers running as targets that participants attack
 * (optional) VPN Gateway server: for remote access
