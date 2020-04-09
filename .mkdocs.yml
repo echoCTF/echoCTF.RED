@@ -24,9 +24,9 @@ pages:
   - Administration:
       - Sysconfig Keys: Sysconfig-Keys.md
       - Console Commands: Console-Commands.md
-        - console-commands/Etc.md
-        - console-commands/Player.md
-        - console-commands/Ssl.md
-        - console-commands/Sysconfig.md
-        - console-commands/Target.md
-        - console-commands/User.md
+        - Etc Commands: console-commands/Etc.md
+        - Player Commands: console-commands/Player.md
+        - Ssl Commands: console-commands/Ssl.md
+        - Sysconfig Commands: console-commands/Sysconfig.md
+        - Target Commands: console-commands/Target.md
+        - User Commands: console-commands/User.md
