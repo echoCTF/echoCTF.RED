@@ -31,7 +31,7 @@ $ cd echoCTF.RED
 $ docker-compose up
 ```
 
-For more details check our [/docs/](https://github.com/echoCTF/echoCTF.RED/tree/master/docs) folder.
+For more details check [echoCTF.RED@ReadTheDocs](https://echoctfred.rtfd.io).
 
 ## Disclaimer
 This project is currently under HEAVY restructure and development and may not
