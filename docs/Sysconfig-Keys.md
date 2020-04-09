@@ -19,6 +19,7 @@ Not implemented on current code-base but are going to
 * `challenge_home` Web accessible folder that the challenges can be downloaded from. (default: `uploads/`)
 * `offense_registered_tag` PF tag used for registered offense users
 * `defense_registered_tag` PF tag used for registered defense users
+* _`footer_logos`_: HTML code to display logos for the event on the footer of the page. (PENDING)
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
@@ -35,9 +36,6 @@ Not implemented on current code-base but are going to
 * `vpn-ta.key` The OpenVPN TLS Auth key
 * `vpngw` The VPN gateway IP or FQDN, that participants of the competition will have to connect to be able to access the targeted infrastructure.
 
-
-Not implemented on current `frontend` but are going to
-* _`footer_logos`_: HTML code to display logos for the event on the footer of the page.
 
 ## Application specific
 * `platform_codename`
