@@ -97,6 +97,7 @@ void main(int argc, char *argv[]) {
 
 Edit and modify the `variables.yml`
 ```yml
+---
 ansible_host: 10.0.160.3
 DOCKER: dockerd160
 mac: "02:42:0a:00:a0:03"
