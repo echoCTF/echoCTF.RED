@@ -5,41 +5,61 @@ SSL related operations. Generate and manipulate keys for OpenVPN authentication.
 * Required command line arguments are enclosed in `<>`
 
 
-## Create Certification Authority (`./backend/yii ssl/create-ca`)
-Create and store CA keys in the database.
+## Create Certification Authority
+Create and store CA keys in the database
 
 Usage: `./backend/yii ssl/create-ca [fileout]`
 
-## Get Certification Authority files (`./backend/yii ssl/get-ca`)
-Create and store CA keys in the database.
+If the optional `fileout` is set to _`1`_ the keys and certificates will also be
+stored on the current directory.
+
+
+## Get Certification Authority files
+Get the Certificate Authority related keys and certificates from the database
 
 Usage: `./backend/yii ssl/get-ca [fileout]`
 
-## Load existing VPN TLS Auth key into the database (`./backend/yii ssl/load-vpn-ta`)
+If the optional `fileout` is set to _`1`_ the keys and certificates will be
+stored on the current directory instead of stdout.
+
+
+## Load existing VPN TLS Auth key into the database
 Load an existing TLS Auth key file into the database
 
 Usage: `./backend/yii ssl/load-vpn-ta [file]`
 
-## Create Certificate Revocation List (`./backend/yii ssl/create-crl`)
+
+## Create Certificate Revocation List
+Usage: `./backend/yii ssl/create-crl`
 
 
-## Generate Certificate Revocation List (`./backend/yii ssl/generate-crl`)
 
-## Revoke player (`./backend/yii ssl/revoke`)
+## Generate Certificate Revocation List
+Usage: `./backend/yii ssl/generate-crl`
 
 
-## Create server certificate and sign by default CA (`./backend/yii ssl/create-cert`)
+
+## Revoke player VPN keys
+Revoke a given players certificates
+
+Usage: `./backend/yii ssl/revoke <player_id>`
+
+
+## Create server certificate and sign by default CA
 Create and Sign certificate for Servers (openvpn, web servers etc)
 
-Usage: `./backend/yii ssl/create-cert [commonName] [emailAddress] [subjectAltName] [CAcert] [CAkey]`
+Usage: `./backend/yii ssl/create-cert [commonName] [emailAddress]`
 
 
-## Generate and sign Player Certificates (`./backend/yii ssl/gen-player-certs`)
+* `commonName`: Certificate common name (default: "VPN Server")
+* `emailAddress`: Email address for the certificate (default: empty)
+
+## Generate and sign Player Certificates
 Generate and sign player certificates
 
-Usage: `./backend/yii ssl/gen-player-certs [email] [fileout]`
+Usage: `./backend/yii ssl/gen-player-certs <email> [fileout]`
 
-## Generate all players certificates (`./backend/yii ssl/gen-all-player-certs`)
+## Generate all players certificates
 Generate certificates for all players
 
 Usage: `./backend/yii ssl/gen-all-player-certs [fileout]`
