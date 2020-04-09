@@ -39,6 +39,7 @@ Follow the instructions from [DOCKER-COMPOSE-NOVPN.md](DOCKER-COMPOSE-NOVPN.md)
 
 ## Theme
 The sources for the themes and images being used can be found under `themes/`
+
 * `fontawesome/` Font Awesome theme
 * `images/avatars/` (sample avatars)
 * `images/flags/` (flag icons)
