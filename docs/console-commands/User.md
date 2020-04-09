@@ -1,43 +1,56 @@
-# User commands (`backend/yii user/*`)
-Manipulate users that can access the backend interface
+# User commands
+Manipulate users that can access the backend interface.
+
+* Optional command line arguments are enclosed in `[]`
+* Required command line arguments are enclosed in `<>`
 
 
-## List Users (`backend/yii user/index`)
+## List users
+List users based on filter (default `all`)
 
-* `./backend/yii user` List current users
+Usage: `./backend/yii user/index [filter]`
 
-
-## Find user (`backend/yii user/find`)
-
-* `./backend/yii user/find` Find user
+Accepted filter values include one of `all`, `enabled`, `disabled`, `pending`.
 
 
-## Create (`backend/yii user/create`)
+## Find users
+Find and list a given user based on name or email
 
-* `./backend/yii user/create` Create a user
-
-
-## Delete (`backend/yii user/delete`)
-
-* `./backend/yii user/delete` Delete a user
+Usage: `./backend/yii user/find <pattern>`
 
 
-## Set user deleted flag (`backend/yii user/deleted`)
+## Create users
+Create a new backend user
 
-* `./backend/yii user/deleted` Set deleted status for user
-
-
-
-## Set user disabled flag (`backend/yii user/disable`)
-
-* `./backend/yii user/disable` Set user to disabled
+Usage: `./backend/yii user/create <name> <email> [password]`
 
 
-## Set user enabled flag (`backend/yii user/enable`)
+## Delete users
+Delete a given user record, completely
 
-* `./backend/yii user/enable` Enable user
+Usage: `./backend/yii user/delete <email>`
 
 
-## Set user password (`backend/yii user/password`)
+## Set user deleted flag
+Set deleted status for user, the record stays in the database
 
-* `./backend/yii user/password` set user password
+Usage: `./backend/yii user/deleted <email>`
+
+
+## Set user disabled flag
+Set user to disabled
+
+Usage: `./backend/yii user/disable <email>`
+
+
+## Set user enabled flag
+Enable user
+
+Usage: `./backend/yii user/enable <email>`
+
+
+## Set user password
+Set new password for user. If no `password` is supplied, then the command will
+generate a random one.
+
+Usage: `./backend/yii user/password <email> [password]`
