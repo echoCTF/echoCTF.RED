@@ -1,4 +1,4 @@
-# echoCTF Installation
+# OpenBSD General installation instructions of applications
 The following steps outline the installation instructions for the applications hosted on this repository.
 
 Keep in mind that you are advised to run `frontend` and `backend` from separate nginx instances, each with its own uid and chroot location.
