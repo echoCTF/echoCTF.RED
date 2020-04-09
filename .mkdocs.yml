@@ -7,6 +7,7 @@ theme: readthedocs
 pages:
   - Home: index.md
   - Architecture: ARCHITECTURE.md
+  - Sizing: Infrastructure-Sizing.md
   - Choosing your installation method: README.md
   - Install using docker-compose:
     - All in one host: DOCKER-COMPOSE.md
