@@ -18,7 +18,9 @@ Generate and mail participant account activation URLs
 Usage: `./backend/yii player/mail [baseURL] [active] [email]`
 
 - `baseURL`: Base URL to use constructing the account activation url for the player (default: "https://echoctf.red/index.php?r=site/activate&key=")
-- `active`:
+- `active`: Mail only users that are `0=inactive, 1=active` (default)
+
+
 ## Register player
 
 Usage: `./backend/yii player/register <username> <email> <fullname> [password] [player_type] [active] [academic] [team_name]` Register a player from the command line
