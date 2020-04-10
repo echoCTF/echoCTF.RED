@@ -1,4 +1,8 @@
 # WIP: Docker Targets guide
+
+**THE FOLLOWING DOCUMENT IS STILL A WORK IN PROGRESS**
+
+
 The following guide will help in creating, building and deploying new targets to your infrastructure.
 
 The general outline of the steps required to build a target are
@@ -38,10 +42,15 @@ This is the most important step, as it will determine how you will proceed with
 any of the other steps.
 
 For the purposes of this guide we will start with a simple target scenario. We
-will implement the amazing paper [Smashing the stack for fun and profit from AlephOne](http://phrack.org/issues/49/14.html)
+will implement a set of vulnerable applications based, among others, on the amazing paper [Smashing the stack for fun and profit from AlephOne](http://phrack.org/issues/49/14.html)
 
-The target will be named `alephone` and will implement a stack overflow, based
-on the paper example X. The system will have the following basic flags:
+The target will be named `alephone` and will include programs that implement the following
+
+1. a stack based overflow vulnerability
+2. a format string vulnerability
+3. a buffer overflow
+
+The following flags will be included
 
 1. /root/ETSCTF: User is able to read any file in the filesystem. This usually
 means the user got root access
@@ -75,7 +84,7 @@ The general development cycle goes something like this:
 1. modify files
 2. build docker (build not ok goto 1)
 3. run target (run not ok goto 1)
-4. push image to local registry or target
+4. push image to local registry or docker server
 5. Profit
 
 
@@ -85,18 +94,78 @@ cp -r Dockerfiles/example Dockerfiles/alephone
 cd Dockerfiles/alephone
 ```
 
-Create the source code for the vulnerable example (lines 971-976 of Phrack49-14.txt)
-```c
-/* vulnerable.c */
-// EXAMPLE_REPLACE_PLACEHOLDER
-void main(int argc, char *argv[]) {
-  char buffer[512];
-  char ETSCTF_FLAG[]="EXAMPLE_FLAG_PLACEHOLDER";
+Create the source code for the vulnerable examples
 
-  if (argc > 1)
-    strcpy(buffer,argv[1]);
-}
+1. `stack_overflow.c`
+```c
+  /*
+   * Author: http://phrack.org/issues/49/14.html
+   */
+  // EXAMPLE_REPLACE_PLACEHOLDER
+  void main(int argc, char *argv[]) {
+    char buffer[512];
+    char ETSCTF_FLAG[]="EXAMPLE_FLAG_PLACEHOLDER";
+
+    if (argc > 1)
+      strcpy(buffer,argv[1]);
+  }
 ```
+
+2. `format_string.c`
+```c
+  /*
+   * Author: http://www.cis.syr.edu/~wedu/Teaching/cis643/LectureNotes_New/Format_String.pdf
+   */
+  int main(int argc, char *argv[])
+  {
+    char user_input[100];
+    scanf("%99s", user_input); /* getting a string from user */
+    printf(user_input); /* Vulnerable place */
+    return 0;
+  }
+```
+
+3. `bof.c`
+```c
+  /*
+   * Author: https://www.thegeekstuff.com/2013/06/buffer-overflow/
+   */
+  #include <stdio.h>
+  #include <string.h>
+
+  int main(void)
+  {
+    char buff[15];
+    int pass = 0;
+
+    printf("\n Enter the password : \n");
+    gets(buff);
+
+    if(strcmp(buff, "thegeekstuff"))
+    {
+        printf ("\n Wrong Password \n");
+    }
+    else
+    {
+        printf ("\n Correct Password \n");
+        pass = 1;
+    }
+
+    if(pass)
+    {
+       /* Now Give root or admin rights to user*/
+        printf ("\n Root privileges given to the user \n");
+    }
+
+    return 0;
+  }
+```
+
+Modify `Dockerfile` to add our files. Add the following after line 28
+```
+COPY *.c /usr/src/
+```
+
 
 Edit and modify the `variables.yml`
 ```yml
@@ -119,23 +188,25 @@ container:
 ...
 ETSCTF_TREASURES:
   - {
-      name: "Discovered the ETSCTF username flag of {{fqdn}}/{{ansible_host}}",
-      pubname: "Discovered an authentication flag on a web server",
+      name: "Discovered the ETSCTF flag from <code>stack_overflow.c</code>",
+      pubname: "Discovered an ETSCTF flag on {{fqdn}}",
       points: 100,
       player_type: offense,
       stock: -1,
       code: "THIS_IS_MY_EXAMPLE_ETSCTF_FLAG",
       replace: "EXAMPLE_FLAG_PLACEHOLDER",
-      file: "/usr/src/vulnerable.c",
+      file: "/usr/src/stack_overflow.c",
     }
 ...    
 BUILD_COMMANDS:
   exec:
-  - { cmd: "gcc -o /usr/local/bin/vulnerable /usr/src/vulnerable.c" }
+  - { cmd: "gcc -o /usr/local/bin/stack_overflow /usr/src/stack_overflow.c" }
+  - { cmd: "gcc -o /usr/local/bin/bof /usr/src/bof.c" }
+  - { cmd: "gcc -o /usr/local/bin/format_string /usr/src/format_string.c" }
   replace:
   - { #0
       pattern: "EXAMPLE_REPLACE_PLACEHOLDER",
-      file: "/usr/src/vulnerable.c",
+      file: "/usr/src/stack_overflow.c",
       value: "This was compiled for {{fqdn}}",
     }
   - { #1
@@ -147,13 +218,6 @@ BUILD_COMMANDS:
 ...
 ```
 
-
-
-Update the `Dockerfile` to include the new file and compile it. We add these lines right after the directive `COPY healthcheck.sh`.
-```
-COPY vulnerable.c /usr/src/vulnerable.c
-RUN gcc -o /usr/src/vulnerable /usr/src/vulnerable.c
-```
 
 Test build the image
 ```sh
