@@ -1,9 +1,14 @@
+# METADATA
 FROM buildpack-deps:stretch-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="Base debian-stretch image"
 
-
+#####################
+# ENV AND BUILD ARGS
+#####################
 ENV DEBIAN_FRONTEND noninteractive
+
+# PACKAGE INSTALLATIONS
 RUN set -ex \
     && apt-get update \
     && apt-get install --no-install-recommends -y ansible apt-transport-https \
@@ -14,21 +19,35 @@ RUN set -ex \
     unzip vim vim-tiny wget zip python \
     && rm -rf /usr/src/* /var/lib/apt/lists/*
 
+##############
+# COPY FILES
+##############
 COPY healthcheck.sh /usr/local/sbin/healthcheck.sh
-COPY vulnerable.c /usr/src/vulnerable.c
-#RUN gcc -o /usr/src/vulnerable /usr/src/vulnerable.c
-
 COPY *.yml /tmp/
+COPY entrypoint.sh /
+COPY vulnerable.c /usr/src/vulnerable.c
+
+################
+# RUN COMMANDS
+################
+
+# Add your commands here
+
+#################################
+# RUN playbook and generate
+# file checksums for healthcheck
+#################################
 RUN set -ex ; chmod 0700 /usr/local/sbin/healthcheck.sh; ansible-playbook -i 'localhost,' /tmp/autoregister.yml; \
 	rm /tmp/*.yml
 
-RUN sha512sum /root/* /var/www/html/* /etc/passwd /etc/shadow > /usr/local/lib/.sha512sum; chmod 0400 /usr/local/lib/.sha512sum
+RUN sha512sum /root/* /var/www/html/* /etc/passwd /etc/shadow > /usr/local/lib/.sha512sum; chmod 0400 /usr/local/lib/.sha512sum; chmod 0700 /entrypoint.sh
 
-ADD entrypoint.sh /
-RUN chmod 0700 /entrypoint.sh
-
+##############
+# HEALTHCHECK
+##############
 HEALTHCHECK --interval=12s --timeout=12s --start-period=30s CMD /usr/local/sbin/healthcheck.sh
 
+# RUNTIME
 WORKDIR /
 CMD ["bash"]
 ENTRYPOINT ["/entrypoint.sh"]

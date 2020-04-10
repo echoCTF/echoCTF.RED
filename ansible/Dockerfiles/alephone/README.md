@@ -1,7 +1,0 @@
-#
-
-## Administration
-
-## Refs
-
-## Exploitation
