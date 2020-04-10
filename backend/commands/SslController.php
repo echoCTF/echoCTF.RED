@@ -77,7 +77,7 @@ class SslController extends Controller {
     $privkey = openssl_pkey_new(Yii::$app->params['pkey_config']);
 
     // Generate a certificate signing request
-    $csr = openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'config'=>__DIR__ . '/../config/CA.cnf','encrypt_key'=>false));
+    $csr = openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'config'=>\Yii::getAlias('@appconfig').'/CA.cnf','encrypt_key'=>false));
     $tmpCAcert=tempnam("/tmp", "echoCTF-OVPN-CA.crt");
     $tmpCAprivkey=tempnam("/tmp", "echoCTF-OVPN-CA.key");
     $CAcert = "file://".$tmpCAcert;
@@ -86,7 +86,7 @@ class SslController extends Controller {
     file_put_contents($tmpCAcert,Yii::$app->sys->{'CA.crt'});
 
     // Generate a self-signed cert, valid for 365 days
-    $x509 = openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256','config'=>Yii::getAlias('@appconfig').'/CA.cnf','x509_extensions'=>'server_cert'), 0 );
+    $x509 = openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256','config'=>\Yii::getAlias('@appconfig').'/CA.cnf','x509_extensions'=>'server_cert'), 0 );
 
     openssl_csr_export($csr, $csrout);
     openssl_x509_export($x509, $certout,false);
