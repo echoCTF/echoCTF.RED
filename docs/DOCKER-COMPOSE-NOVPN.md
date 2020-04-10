@@ -97,7 +97,7 @@ docker-compose -f docker-compose-novpn.yml down
 
 Decide what is the network interface you will dedicate for the `private`
 network (`enp0s8` in our example) and configure accordingly. We assign an IP
-to the interface (`172.24.0.252` and place it on promisc mode to be able to
+to the interface (`172.24.0.252` and place it on promiscuous mode to be able to
 process packets), edit `/etc/network/interfaces` and add something like the
 following
 ```sh
