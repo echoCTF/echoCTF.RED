@@ -42,6 +42,7 @@ will implement the amazing paper [Smashing the stack for fun and profit from Ale
 
 The target will be named `alephone` and will implement a stack overflow, based
 on the paper example X. The system will have the following basic flags:
+
 1. /root/ETSCTF: User is able to read any file in the filesystem. This usually
 means the user got root access
 
@@ -70,6 +71,7 @@ images (eg build them from within dockerd160) but is not advisable as it may
 leave traces behind that you dont want to.
 
 The general development cycle goes something like this:
+
 1. modify files
 2. build docker (build not ok goto 1)
 3. run target (run not ok goto 1)
