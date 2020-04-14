@@ -28,6 +28,7 @@ Our main goals for echoCTF include:
 ```sh
 $ git clone https://github.com/echoCTF/echoCTF.RED.git
 $ cd echoCTF.RED
+$ docker-compose pull
 $ docker-compose up
 ```
 
