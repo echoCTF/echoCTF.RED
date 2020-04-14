@@ -1,0 +1,26 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the all-in-one Docker image
+      run: docker build . --file contrib/Dockerfile --tag echoctf.red-all-in-one:$(date +%s)
+    - name: Build the DB Docker image
+      run: docker build . --file contrib/Dockerfile-mariadb --tag echoctf.red-db:$(date +%s)
+    - name: Build the frontend Docker image
+      run: docker build . --file contrib/Dockerfile-frontend --tag echoctf.red-frontend:$(date +%s)
+    - name: Build the backend Docker image
+      run: docker build . --file contrib/Dockerfile-backend --tag echoctf.red-backend:$(date +%s)
+    - name: Build the vpn Docker image
+      run: docker build . --file contrib/Dockerfile-vpn --tag echoctf.red-vpn:$(date +%s)
