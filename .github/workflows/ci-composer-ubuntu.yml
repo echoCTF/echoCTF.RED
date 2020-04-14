@@ -14,11 +14,26 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate
+    - name: Validate frontend composer.json and composer.lock
+      run: |
+        cd frontend
+        composer validate
 
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-suggest
+    - name: Validate backend composer.json and composer.lock
+      run: |
+        cd backend
+        composer validate
+
+
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        composer install --prefer-dist --no-progress --no-suggest
+
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        composer install --prefer-dist --no-progress --no-suggest
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
