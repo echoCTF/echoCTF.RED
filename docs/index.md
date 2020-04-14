@@ -1,6 +1,6 @@
 Welcome to the echoCTF.RED documentation!
 
-echoCTF is a pioneer computer security framework, developed by Echothrust Solutions, for developing, running, and maintaining cybersecurity related competitions (such as CTF).
+echoCTF is a pioneer computer security framework, developed by Echothrust Solutions, for developing, running, and maintaining Cybersecurity related competitions (such as CTF and Cyber Range).
 
 Our main goals for echoCTF include:
 
@@ -9,10 +9,12 @@ Our main goals for echoCTF include:
 * **Expandability** - echoCTF's components are designed to permit expansion
 
 
-The following pages include instructions for installing, configuring and running your own self-hosted echoCTF based events.
+The following pages include instructions for installing, configuring and running
+your own self-hosted echoCTF based events.
 
 ## Components
-echoCTF.RED is comprised of a few separate components each of witch requires its own installation and configuration depending on the use case and event type.
+echoCTF.RED is comprised of a few separate components each of witch requires
+its own installation and configuration depending on the use case and event type.
 
 These components are are as follows:
 
