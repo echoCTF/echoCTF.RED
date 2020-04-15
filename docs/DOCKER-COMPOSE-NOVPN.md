@@ -132,7 +132,13 @@ mysql -uvpnuser -pvpnuserpass -h 172.24.0.253 -e "SELECT user();" echoCTF
 
 Re-run the `vpngw-openbsd.yml` playbook and make sure you use the internal IP for the database server.
 
-If you are using virtual machines make sure that you allow promiscuous mode to the interface you dedicate for the macvlan bridge.
+If you are using virtual machines make sure that you allow promiscuous mode to
+the interface you dedicate for the macvlan bridge.
+
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/vbox-network-settings.png" alt="Virtualbox Network Settings for macvlan and gateway" width="500px"/></center>
+
+And this is how it looks for vSphere
+
+<center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/vsphere-network-settings.png" alt="vSphere Network Settings for macvlan and gateway" width="500px"/></center>
 
 For VMware related options you can look at the following link [Configuring promiscuous mode on a virtual switch or portgroup (1004099)](https://kb.vmware.com/s/article/1004099)
