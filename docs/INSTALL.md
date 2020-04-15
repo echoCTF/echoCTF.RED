@@ -38,9 +38,9 @@ cp frontend/config/db-local.php frontend/config/db.php
 Install required composer files
 ```sh
 cd backend
-composer install
+composer install --no-dev --prefer-dist --no-progress --no-suggest
 cd ../frontend
-composer install
+composer install --no-dev --prefer-dist --no-progress --no-suggest
 cd ..
 ```
 

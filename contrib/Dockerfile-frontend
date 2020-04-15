@@ -35,7 +35,7 @@ RUN set -ex; \
     composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
     composer config --global github-protocols https; \
     git config --global url."https://".insteadOf "git://" ; \
-    composer install --no-dev ; \
+    composer install --no-dev --prefer-dist --no-progress --no-suggest; \
     composer clearcache; \
     cd ..; \
     mv /var/www/html /var/www/html.old; \

@@ -78,9 +78,9 @@ chown www-data backend/runtime frontend/runtime
 ### Install composer files
 ```sh
 cd backend
-composer install
+composer install --no-dev --prefer-dist --no-progress --no-suggest
 cd ../frontend
-composer install
+composer install --no-dev --prefer-dist --no-progress --no-suggest
 ```
 
 ### Run migrations and import initial data

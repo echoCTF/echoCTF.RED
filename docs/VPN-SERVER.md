@@ -36,11 +36,16 @@ nc -zv 172.24.0.253 11211
 Note: If you're using the supplied `docker-compose` without VPN this IP will be
 the IP of the docker host and not the container.
 
-Once you answer the questions asked you are set to go
 ```sh
-pkg_add ansible
-cd ansible && ansible-playbook playbooks/vpngw-openbsd.yml
+pkg_add -vvi git ansible
+git clone https://github.com/echoCTF/echoCTF.RED.git
+cd echoCTF.RED/ansible
+ansible-playbook playbooks/vpngw-openbsd.yml
 ```
+
+Once you answer the questions asked you are set to go. Restart the system and
+you should be up and running.
+
 
 ## Manual Installation
 Or if you'd rather execute the playbook in a non interactive mode, copy the
@@ -123,7 +128,9 @@ for your installation.
 
 Run composer from `backend/`
 ```sh
-cd backend && composer install && cd ..
+cd backend
+composer install --no-dev --prefer-dist --no-progress --no-suggest
+cd ..
 ```
 
 If you **run all the components** (vpn, frontend, backend, mysql, memcached) on the

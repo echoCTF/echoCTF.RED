@@ -222,7 +222,7 @@
     command: chdir={{playbook_dir}}/../../backend composer config --global github-protocols https
 
   - name: run composer
-    command: chdir={{playbook_dir}}/../../backend composer install
+    command: chdir={{playbook_dir}}/../../backend composer install --no-dev --prefer-dist --no-progress --no-suggest
 
   - name: "Prepare /etc/hostname.pflog1"
     copy:

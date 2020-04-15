@@ -46,8 +46,8 @@ RUN set -ex; \
     mkdir -p backend/web/assets frontend/web/assets backend/runtime frontend/runtime; \
     chown www-data backend/web/assets frontend/web/assets; \
     chown www-data backend/runtime frontend/runtime; \
-    cd backend; composer install; \
-    cd ../frontend; composer install; \
+    cd backend; composer install --no-dev --prefer-dist --no-progress --no-suggest; \
+    cd ../frontend; composer install --no-dev --prefer-dist --no-progress --no-suggest; \
     cd ..; \
     ./backend/yii migrate --interactive=0; \
     ./backend/yii init_data --interactive=0; \

@@ -24,7 +24,7 @@ RUN set -ex \
     cd /var/www/echoCTF.RED/${RED_APP}; \
     git config --global url."https://".insteadOf "git://" ; \
     composer config --global github-protocols https; \
-    composer install --no-dev; \
+    composer install --no-dev --prefer-dist --no-progress --no-suggest; \
     composer clearcache; \
     rm -rf /usr/src/* /var/lib/apt/lists/*; \
     chmod +x /entrypoint.sh; useradd  _openvpn; \
