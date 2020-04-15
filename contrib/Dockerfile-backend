@@ -30,7 +30,7 @@ RUN set -ex; \
     chown www-data ${RED_APP}/runtime; \
     cd ${RED_APP}; \
     git config --global url."https://".insteadOf "git://" ; \
-    composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
+    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
     composer config --global github-protocols https; \
     composer install --no-dev --prefer-dist --no-progress --no-suggest --no-dev ; \
     composer clearcache; \
