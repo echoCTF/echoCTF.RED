@@ -7,7 +7,14 @@ through docker API to start and stop containers.
 
 ___ FIXME: Add a diagram showing the server we are configuring... ___
 
-The guide is based on a system base installation of `debian-10.3.0-amd64-netinst.iso` on a system with the following details
+We assume that you have configured the VPN server according to the
+[VPN Server Installation](VPN-SERVER.md) as well as having a working
+[Docker Registry](DOCKER-REGISTRY.md).
+
+All the commands assume you're working from the project folder (eg. `/root/echoCTF.RED/ansible`)
+
+
+The guide is based on a system base installation of `debian-10.3.0-amd64-netinst.iso` on a server with the following details
 
 * Hostname: `dockerd160`
 * interface: `enp0s3`
@@ -28,7 +35,6 @@ iface enp0s3 inet static
 	gateway 10.0.160.254
 ```
 
-We assume that you have configured the the VPN server according the [VPN-SERVER.md](VPN-SERVER.md) and you will contunue working from the project folder (eg. `/root/echoCTF.RED/ansible`)
 
 Prepare the base directory structure for ansible on the VPN server
 ```sh
@@ -92,6 +98,17 @@ pip:
 #sync:
 #  - { src: "../files/docker/build", dst: "/opt" }
 ```
+
+Ensure you modified the following values according to your setup
+
+* `ansible_host: 10.0.160.1` Change the IP for the host
+* `ansible_user: sysadmin` The user that is allowed to ssh into the host and use the `su` command
+* `DOCKER_REGISTRY: "10.0.160.254:5000"` Change the registry IP for your setup
+* `parent: enp0s3` Change the interface name to your existing one
+* `subnet: '10.0.160.0/24'` Change according to your setup
+* `gateway: 10.0.160.254` Change according to your setup
+* `iprange: '10.0.160.0/24'` Change according to your setup
+* `ETSCTF_authorized_keys:` Append any authorized_keys you would like to be added to the remote server
 
 Create a hosts file under `inventories/dockers` for the server
 ```sh
