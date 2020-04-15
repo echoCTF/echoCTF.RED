@@ -4,7 +4,6 @@ The user interfaces allow certain operations to be performed from the console in
 
 The following commands currently exist:
 
-- [Etc Commands](console-commands/Etc.md)
 - [Player Commands](console-commands/Player.md)
 - [Ssl Commands](console-commands/Ssl.md)
 - [Sysconfig Commands](console-commands/Sysconfig.md)
