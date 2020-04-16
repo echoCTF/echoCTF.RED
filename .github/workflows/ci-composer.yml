@@ -11,8 +11,15 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    env:
+      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
+
     steps:
     - uses: actions/checkout@v2
+
+    - name: Configure github token
+      run: composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"
+
 
     - name: Validate frontend composer.json and composer.lock
       run: |
@@ -28,12 +35,12 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        composer install --prefer-dist --no-progress --no-suggest
+        composer install --no-dev --prefer-dist --no-progress --no-suggest
 
     - name: Install backend dependencies
       run: |
         cd backend
-        composer install --prefer-dist --no-progress --no-suggest
+        composer install --no-dev --prefer-dist --no-progress --no-suggest
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
