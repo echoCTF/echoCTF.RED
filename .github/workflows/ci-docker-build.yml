@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      GITHUB_OAUTH_TOKEN: abcdef1234567890abcdef
+      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
 
     steps:
     - uses: actions/checkout@v2
@@ -22,11 +22,11 @@ jobs:
     - name: Build the DB Docker image
       run: docker build . --file contrib/Dockerfile-mariadb --tag echoctf.red-db:$(date +%s)
     - name: Build the frontend Docker image
-      run: docker build . --file contrib/Dockerfile-frontend --tag echoctf.red-frontend:$(date +%s)
+      run: docker build --build-arg GITHUB_OAUTH_TOKEN=$GITHUB_OAUTH_TOKEN . --file contrib/Dockerfile-frontend --tag echoctf.red-frontend:$(date +%s)
     - name: Build the backend Docker image
-      run: docker build . --file contrib/Dockerfile-backend --tag echoctf.red-backend:$(date +%s)
+      run: docker build --build-arg GITHUB_OAUTH_TOKEN=$GITHUB_OAUTH_TOKEN . --file contrib/Dockerfile-backend --tag echoctf.red-backend:$(date +%s)
     - name: Build the vpn Docker image
-      run: docker build . --file contrib/Dockerfile-vpn --tag echoctf.red-vpn:$(date +%s)
+      run: docker build --build-arg GITHUB_OAUTH_TOKEN=$GITHUB_OAUTH_TOKEN . --file contrib/Dockerfile-vpn --tag echoctf.red-vpn:$(date +%s)
 
     - name: Build the docker-compose stack
       run: docker-compose up -d
