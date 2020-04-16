@@ -63,6 +63,7 @@
     },
     "repositories": [
         { "type": "vcs", "url": "https://github.com/echoCTF/docker-php.git" },
+        { "type": "vcs", "url": "https://github.com/echoCTF/docker-php-api.git" },
         {
             "type": "composer",
             "url": "https://asset-packagist.org"
