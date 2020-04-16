@@ -1,6 +1,10 @@
 ![echoCTF RED logo](https://echoctf.red/images/logo-red-small.png)
 
-![PHP Composer](https://github.com/echoCTF/echoCTF.RED/workflows/PHP%20Composer/badge.svg) ![Docker Build](https://github.com/echoCTF/echoCTF.RED/workflows/Docker%20Build/badge.svg)
+![PHP Composer](https://github.com/echoCTF/echoCTF.RED/workflows/PHP%20Composer/badge.svg)
+![Docker Build](https://github.com/echoCTF/echoCTF.RED/workflows/Docker%20Build/badge.svg)
+[![Documentation Status](https://readthedocs.org/projects/echoctfred/badge/?version=latest)](http://echoctfred.readthedocs.org/en/latest/)
+
+
 
 echoCTF is a pioneer computer security framework, developed by Echothrust Solutions, for running Cyber Ranges and security related competitions such as capture the flag.
 
