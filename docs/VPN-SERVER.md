@@ -44,7 +44,8 @@ ansible-playbook playbooks/vpngw-openbsd.yml
 ```
 
 Once you answer the questions asked you are set to go. Restart the system and
-you should be up and running.
+once it comes back up following the instructions at
+[After restart](#after-restart) and you should be up and running.
 
 
 ## Manual Installation
@@ -227,14 +228,6 @@ openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key
 ```
 
 
-Create a backend user and a frontend user by executing the following commands
-```sh
-# backend user
-./backend/yii user/create username email password
-# frontend player
-./backend/yii player/register "username" "email" "fullname" "password" offense 1
-```
-
 Prepare pf
 ```sh
 touch /etc/maintenance.conf /etc/targets.conf /etc/match-findings-pf.conf
@@ -256,16 +249,19 @@ rcctl start openvpn
 
 Update your cron to include the following (assuming you cloned the repositories under `/root`) and make sure you update your PATH variable
 ```
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+  PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
 
-# check target container health status and spin requests
-*/2	*	*	*	*	/root/echoCTF.RED/backend/yii target/healthcheck 1
-# Perform scheduled powerup/powerdown of targets based on scheduled_at
-*/4	*	*	*	*	/root/echoCTF.RED/backend/yii target/cron
-# Restart containers every 24 hours to ensure clean state
-*/10	*	*	*	*	/root/echoCTF.RED/backend/yii target/restart
-# Generate CRL with revoked player certificates
-@midnight /root/echoCTF.RED/backend/yii ssl/generate-crl
+  # check target container health status and spin requests
+  */2 * * * * /root/echoCTF.RED/backend/yii target/healthcheck 1
+
+  # Perform scheduled powerup/powerdown of targets based on scheduled_at
+  */4 * * * * /root/echoCTF.RED/backend/yii target/cron
+
+  # Restart containers every 24 hours to ensure clean state
+  */10 * * * * /root/echoCTF.RED/backend/yii target/restart
+
+  # Generate CRL with revoked player certificates
+  @midnight /root/echoCTF.RED/backend/yii ssl/generate-crl
 ```
 
 Finally ensure to set the `vpngw` sysconfig key to the IP that the participants will connect to openvpn.
@@ -284,3 +280,27 @@ echo "group targets">>/etc/hostname.em1
 ```
 
 Restart the system and you should be up and running.
+
+
+## After restart
+
+Set the mail FROM system configuration key
+```sh
+./backend/yii sysconfig/set mail_from dontreply@example.red
+```
+
+Note that in order to allow registrations from the web interface you need to
+also set the following sysconfig keys
+```sh
+./backend/yii sysconfig/set mail_fromName	"Mail From Name"
+./backend/yii sysconfig/set mail_host smtp.host.com
+./backend/yii sysconfig/set mail_port 25
+```
+
+Create a backend user and a frontend user by executing the following commands
+```sh
+# backend user
+./backend/yii user/create username email password
+# frontend player
+./backend/yii player/register "username" "email" "fullname" "password" offense 1
+```

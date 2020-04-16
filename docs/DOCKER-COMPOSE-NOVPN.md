@@ -66,6 +66,25 @@ docker-compose -f docker-compose-novpn.yml up
 # or start in detached mode
 docker-compose -f docker-compose-novpn.yml up -d
 ```
+
+
+Set the mail related system configuration keys by running the following commands from `echoctfred_backend`
+
+```sh
+docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_from dontreply@example.red
+docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_fromName	"Mail From Name"
+docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_host smtp.host.com
+docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_port 25
+```
+
+Create a backend user and a frontend user by executing the following commands
+```sh
+# backend user
+./backend/yii user/create username email password
+# frontend player
+./backend/yii player/register "username" "email" "fullname" "password" offense 1
+```
+
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png" alt="docker-compose-novpn-topology" height="400px"/></center>
 
 Follow the instructions of [VPN-SERVER.md](VPN-SERVER.md) and adapt your values accordingly.
