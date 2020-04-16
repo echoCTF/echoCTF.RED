@@ -86,6 +86,7 @@ services:
       context: .
       dockerfile: contrib/Dockerfile-vpn
       args:
+      - GITHUB_OAUTH_TOKEN=${GITHUB_OAUTH_TOKEN}
       - RED_APP=backend
       - MYSQL_HOST=db
       - MYSQL_USER=vpnuser

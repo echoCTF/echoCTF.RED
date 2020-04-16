@@ -8,6 +8,7 @@ ARG MYSQL_HOST=db
 ARG MYSQL_USER=vpnuser
 ARG MYSQL_PASSWORD=vpnuserpass
 ARG MYSQL_DATABASE=echoCTF
+ARG GITHUB_OAUTH_TOKEN=abcdef0123456789
 
 ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /var/www/echoCTF.RED
@@ -23,6 +24,7 @@ RUN set -ex \
     composer openvpn netcat-openbsd; \
     cd /var/www/echoCTF.RED/${RED_APP}; \
     git config --global url."https://".insteadOf "git://" ; \
+    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
     composer config --global github-protocols https; \
     composer install --no-dev --prefer-dist --no-progress --no-suggest; \
     composer clearcache; \
