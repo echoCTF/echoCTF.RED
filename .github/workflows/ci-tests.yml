@@ -2,6 +2,8 @@ name: CI Tests
 
 on:
   push:
+    paths-ignore:
+    - '**.md'
     branches: [ master ]
 
 jobs:
