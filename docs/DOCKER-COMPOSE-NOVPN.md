@@ -77,12 +77,20 @@ docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_host smtp.ho
 docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_port 25
 ```
 
+
+Create SSL certificates to be used for new users
+```sh
+docker exec -it echoctfred_backend ./backend/yii ssl/create-ca
+docker exec -it echoctfred_backend ./backend/yii ssl/create-cert
+```
+
+
 Create a backend user and a frontend user by executing the following commands
 ```sh
 # backend user
-./backend/yii user/create username email password
+docker exec -it echoctfred_backend ./backend/yii user/create username email password
 # frontend player
-./backend/yii player/register "username" "email" "fullname" "password" offense 1
+docker exec -it echoctfred_backend ./backend/yii player/register "username" "email" "fullname" "password" offense 1
 ```
 
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png" alt="docker-compose-novpn-topology" height="400px"/></center>
