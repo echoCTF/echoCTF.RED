@@ -120,6 +120,18 @@ class PlayerController extends Controller {
       $this->stdout("Mailing Registered users:\n", Console::BOLD);
     }
     $event_name=Sysconfig::findOne('event_name')->val;
+    if(Sysconfig::findOne('mail_host'))
+      \Yii::$app->mailer->transport->setHost(Sysconfig::findOne('mail_host')->val);
+
+    if(Sysconfig::findOne('mail_port'))
+      \Yii::$app->mailer->transport->setPort(Sysconfig::findOne('mail_port')->val);
+
+    if(Sysconfig::findOne('mail_username'))
+      \Yii::$app->mailer->transport->setUserName(Sysconfig::findOne('mail_username')->val);
+
+    if(Sysconfig::findOne('mail_password'))
+      \Yii::$app->mailer->transport->setPassword(Sysconfig::findOne('mail_password')->val);
+
     foreach($players as $player)
     {
       // Generate activation URL
@@ -127,7 +139,7 @@ class PlayerController extends Controller {
       $MAILCONTENT=$this->renderFile('mail/layouts/activation.php', ['activationURL'=>$activationURL,'player'=>$player,'event_name'=>$event_name], true);
       $this->stdout($player->email);
       $numSend=\Yii::$app->mailer->compose()
-          ->setFrom(array(Yii::$app->params['senderEmail'] => Yii::$app->params['senderName']))
+          ->setFrom([Sysconfig::findOne('mail_from')->val => Sysconfig::findOne('mail_fromName')->val])
           ->setTo($player->email)
           ->setSubject(Sysconfig::findOne('event_name')->val.' account activation details')
           ->setTextBody($MAILCONTENT)

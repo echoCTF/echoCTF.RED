@@ -53,6 +53,18 @@ class PasswordResetRequestForm extends Model
                 return false;
             }
         }
+        if(Yii::$app->sys->mail_host!==false)
+          \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
+
+        if(Yii::$app->sys->mail_port!==false)
+          \Yii::$app->mailer->transport->setPort(Yii::$app->sys->mail_port);
+
+        if(Yii::$app->sys->mail_username!==false)
+          \Yii::$app->mailer->transport->setUserName(Yii::$app->sys->mail_username);
+
+        if(Yii::$app->sys->mail_password!==false)
+          \Yii::$app->mailer->transport->setPassword(Yii::$app->sys->mail_password);
+
         return Yii::$app
             ->mailer
             ->compose(
