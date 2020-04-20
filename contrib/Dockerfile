@@ -3,6 +3,7 @@ LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED all in one"
 ARG VPNUSER=vpnuser
 ARG VPNUSERPASS=vpnuserpass
+ARG GITHUB_OAUTH_TOKEN=abcdef0123456789
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
@@ -46,6 +47,7 @@ RUN set -ex; \
     mkdir -p backend/web/assets frontend/web/assets backend/runtime frontend/runtime; \
     chown www-data backend/web/assets frontend/web/assets; \
     chown www-data backend/runtime frontend/runtime; \
+    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
     cd backend; composer install --no-dev --prefer-dist --no-progress --no-suggest; \
     cd ../frontend; composer install --no-dev --prefer-dist --no-progress --no-suggest; \
     cd ..; \
