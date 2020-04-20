@@ -48,7 +48,7 @@ jobs:
     # - name: Run test suite
     #   run: composer run-script test
   dockerbuilds:
-
+    needs: [phpcomposer]
     runs-on: ubuntu-latest
 
     env:
