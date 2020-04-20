@@ -322,7 +322,7 @@
       - { name: "target/healthcheck", minute: "*/2",  job: "{{playbook_dir}}/../../backend/yii target/healthcheck 1" }
       - { name: "target/cron", minute: "*/4",  job: "{{playbook_dir}}/../../backend/yii target/cron" }
       - { name: "restart targets up for more than 24h", minute: "*/10",  job: "{{playbook_dir}}/../../backend/yii target/restart" }
-      - { name: "Generate CRL", special_time: "midnight",  job: "{{playbook_dir}}/../../backend/yii ssl/generate-crl" }
+      - { name: "Generate CRL", special_time: "daily",  job: "{{playbook_dir}}/../../backend/yii ssl/generate-crl" }
 
   - name: Set rc scripts order
     raw: rcctl order mysqld findingsd openvpn
