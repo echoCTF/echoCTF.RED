@@ -30,3 +30,5 @@ pages:
       - Sysconfig Commands: console-commands/Sysconfig.md
       - Target Commands: console-commands/Target.md
       - User Commands: console-commands/User.md
+  - Player Guides:
+      - Participants Tutorial: Participants-Tutorial.md
