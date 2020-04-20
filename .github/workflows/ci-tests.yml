@@ -4,6 +4,8 @@ on:
   push:
     paths-ignore:
     - '**.md'
+    - '.mkdocs.yml'
+    - 'docs/**'
     branches: [ master ]
 
 jobs:
