@@ -304,6 +304,26 @@
   - name: Set /etc/openvpn/private permissions
     raw: chmod 400 /etc/openvpn/private/*
 
+  - name: Update crontab PATH variable
+    cron:
+      user: root
+      name: PATH
+      env: yes
+      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin"
+
+  - name: Install cron entries
+    cron:
+      name: "{{item.name}}"
+      user: "root"
+      minute: "{{item.minute | default(omit)}}"
+      special_time: "{{item.special_time|default(omit)}}"
+      job: "{{item.job}}"
+    with_items:
+      - { name: "target/healthcheck", minute: "*/2",  job: "{{playbook_dir}}/../../backend/yii target/healthcheck 1" }
+      - { name: "target/cron", minute: "*/4",  job: "{{playbook_dir}}/../../backend/yii target/cron" }
+      - { name: "restart targets up for more than 24h", minute: "*/10",  job: "{{playbook_dir}}/../../backend/yii target/restart" }
+      - { name: "Generate CRL", special_time: "daily",  job: "{{playbook_dir}}/../../backend/yii ssl/generate-crl" }
+
   - name: Set rc scripts order
     raw: rcctl order mysqld findingsd openvpn
   - name: Setting up sysctl.conf
