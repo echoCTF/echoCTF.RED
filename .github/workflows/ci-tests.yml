@@ -45,7 +45,8 @@ jobs:
   dockerbuilds:
     needs: [phpcomposer]
     runs-on: ubuntu-latest
-
+    env:
+      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
     steps:
     - uses: actions/checkout@v2
     - name: Build the all-in-one Docker image
@@ -77,6 +78,12 @@ jobs:
     - name: Drop containers
       run: docker-compose down --rmi all
 
+  dockerhub:
+    needs: [dockerbuilds]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
     - uses: docker/build-push-action@v1
       with:
         dockerfile: contrib/Dockerfile
