@@ -91,6 +91,7 @@ class Question extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PlayerQuestion::className(), ['question_id' => 'id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -99,12 +100,16 @@ class Question extends \yii\db\ActiveRecord
         return $this->hasOne(PlayerQuestion::className(), ['question_id' => 'id'])->andOnCondition(['player_id'=>Yii::$app->user->id]);
     }
 
-
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getChallenge()
     {
         return $this->hasOne(Challenge::className(), ['id' => 'challenge_id']);
+    }
+
+    public function save($runValidation = true, $attributeNames = NULL)
+    {
+        throw new \LogicException("Saving is disabled for this model.");
     }
 }

@@ -341,4 +341,10 @@ class Target extends \yii\db\ActiveRecord
         return '/images/targets/_'.$this->name.'-thumbnail.png';
       return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMM+M9QDwAExgHQHiLdYgAAAABJRU5ErkJggg==';
     }
+
+    public function save($runValidation = true, $attributeNames = NULL)
+    {
+        throw new \LogicException("Saving is disabled for this model.");
+    }
+
 }

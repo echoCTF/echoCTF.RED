@@ -45,4 +45,10 @@ class Country extends \yii\db\ActiveRecord
             'name' => 'Name',
         ];
     }
+
+    public function save($runValidation = true, $attributeNames = NULL)
+    {
+        throw new \LogicException("Saving is disabled for this model.");
+    }
+
 }

@@ -41,4 +41,9 @@ class Avatar extends \yii\db\ActiveRecord
             'id' => 'ID',
         ];
     }
+
+    public function save($runValidation = true, $attributeNames = NULL)
+    {
+        throw new \LogicException("Saving is disabled for this model.");
+    }
 }
