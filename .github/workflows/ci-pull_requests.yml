@@ -1,22 +1,16 @@
-name: CI Tests
+name: PR CI Tests
 
 on:
   pull_request:
-    types: [ closed ]
+    types: [ opened, edited, reopened, synchronize ]
     branches: [ master ]
 
 jobs:
   phpcomposer:
-    if: github.event.pull_request.merged == 'true'
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: Configure github token
-      run: composer config -g github-oauth.github.com "${{ secrets.GITHUBOAUTHTOKEN }}"
-
 
     - name: Validate frontend composer.json and composer.lock
       run: |
@@ -28,7 +22,6 @@ jobs:
         cd backend
         composer validate
 
-
     - name: Install frontend dependencies
       run: |
         cd frontend
@@ -38,39 +31,3 @@ jobs:
       run: |
         cd backend
         composer install --no-dev --prefer-dist --no-progress --no-suggest
-
-  dockerbuilds:
-    if: github.event.pull_request.merged == 'true'
-    needs: [phpcomposer]
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-    - name: Build the all-in-one Docker image
-      run: docker build --build-arg GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }} . --file contrib/Dockerfile --tag echoctf.red-all-in-one:$(date +%s)
-    - name: Build the DB Docker image
-      run: docker build . --file contrib/Dockerfile-mariadb --tag echoctf.red-db:$(date +%s)
-    - name: Build the frontend Docker image
-      run: docker build --build-arg GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }} . --file contrib/Dockerfile-frontend --tag echoctf.red-frontend:$(date +%s)
-    - name: Build the backend Docker image
-      run: docker build --build-arg GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }} . --file contrib/Dockerfile-backend --tag echoctf.red-backend:$(date +%s)
-    - name: Build the vpn Docker image
-      run: docker build --build-arg GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }} . --file contrib/Dockerfile-vpn --tag echoctf.red-vpn:$(date +%s)
-
-    - name: Build the docker-compose stack
-      run: docker-compose up -d
-
-    - name: Check running containers
-      run: docker ps -a
-
-    - name: Drop containers
-      run: docker-compose down --rmi all
-
-    - name: Build the docker-compose-novpn.yml stack
-      run: docker-compose -f docker-compose-novpn.yml up -d
-
-    - name: Check running containers
-      run: docker ps -a
-
-    - name: Drop containers
-      run: docker-compose down --rmi all
