@@ -1,9 +1,6 @@
 name: CI Tests
 
 on:
-#  pull_request:
-#    branches: [ master ]
-
   push:
     paths-ignore:
     - '**.md'
@@ -16,14 +13,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
-
     steps:
     - uses: actions/checkout@v2
 
     - name: Configure github token
-      run: composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"
+      run: composer config -g github-oauth.github.com "${{ secrets.GITHUBOAUTHTOKEN }}"
 
 
     - name: Validate frontend composer.json and composer.lock
@@ -47,17 +41,10 @@ jobs:
         cd backend
         composer install --no-dev --prefer-dist --no-progress --no-suggest
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
 
-    # - name: Run test suite
-    #   run: composer run-script test
   dockerbuilds:
     needs: [phpcomposer]
     runs-on: ubuntu-latest
-
-    env:
-      GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
 
     steps:
     - uses: actions/checkout@v2
@@ -132,6 +119,3 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: echothrust/echoctf.red-vpn
         tags: latest
-
-#    - name: Run test suite
-#      run: docker exec backend pytest --skip-auth
