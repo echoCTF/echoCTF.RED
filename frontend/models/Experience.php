@@ -69,4 +69,10 @@ class Experience extends \yii\db\ActiveRecord
             'max_points' => 'Max Points',
         ];
     }
+
+    public function save($runValidation = true, $attributeNames = NULL)
+    {
+        throw new \LogicException("Saving is disabled for this model.");
+    }
+
 }

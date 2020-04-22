@@ -53,4 +53,10 @@ class Instruction extends \yii\db\ActiveRecord
             'ts' => 'Ts',
         ];
     }
+
+    public function save($runValidation = true, $attributeNames = NULL)
+    {
+        throw new \LogicException("Saving is disabled for this model.");
+    }
+
 }

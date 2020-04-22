@@ -143,4 +143,11 @@ class Badge extends \yii\db\ActiveRecord
     {
         return new BadgeQuery(get_called_class());
     }
+
+    public function save($runValidation = true, $attributeNames = NULL)
+    {
+        throw new \LogicException("Saving is disabled for this model.");
+    }
+
+
 }

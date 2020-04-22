@@ -157,4 +157,10 @@ class Treasure extends \yii\db\ActiveRecord
     {
         return new TreasureQuery(get_called_class());
     }
+
+    public function save($runValidation = true, $attributeNames = NULL)
+    {
+        throw new \LogicException("Saving is disabled for this model.");
+    }
+
 }
