@@ -251,6 +251,19 @@
       - { src: '{{playbook_dir}}/../../contrib/crl_openssl.conf', dest: '/etc/openvpn/crl/crl_openssl.conf' }
       - { src: '{{playbook_dir}}/../../contrib/pf-vpn.conf', dest: '/etc/pf.conf' }
 
+
+  - name: Update files with provided ip ranges
+    replace:
+      path: '{{item.file}}'
+      regexp: '{{item.regexp}}'
+      replace: '{{item.replace}}'
+    with_items:
+      - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'server 10\.10\.0\.0 255\.255\.0\.0', replace: 'server {{offense_network|ipaddr("network")}} {{offense_network|ipaddr("netmask")}}' }
+      - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'route 10\.0\.160\.0 255\.255\.255\.0', replace: 'route {{target_subnet}} {{target_netmask}}' }
+      - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
+
+
+
   - name: Create echoctf_updown_mysql.sh
     template:
       src:  "{{playbook_dir}}/../../contrib/echoctf_updown_mysql.sh"
@@ -293,7 +306,9 @@
     - { cmd: "{{playbook_dir}}/../../backend/yii ssl/load-vpn-ta"}
     - { cmd: "{{playbook_dir}}/../../backend/yii sysconfig/set vpngw {{vpngw}}"}
     - { cmd: "{{playbook_dir}}/../../backend/yii sysconfig/set offense_registered_tag OFFENSE_REGISTERED"}
-    - { cmd: "touch /etc/maintenance.conf /etc/targets.conf /etc/match-findings-pf.conf", creates: "/etc/targets.conf" }
+    - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
+    - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
+    - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
     - { cmd: "{{playbook_dir}}/../../backend/yii target/pf" }
 
   - name: "Create targets network interface hostname.{{targets_if}}"
