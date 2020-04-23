@@ -67,6 +67,13 @@ docker-compose -f docker-compose-novpn.yml up
 docker-compose -f docker-compose-novpn.yml up -d
 ```
 
+Perform the needed migrations and initialize needed application data
+
+```sh
+docker exec -it echoctfred_backend ./backend/yii migrate --interactive=0
+docker exec -it echoctfred_backend ./backend/yii init_data --interactive=0
+```
+
 
 Set the mail related system configuration keys by running the following commands from `echoctfred_backend`
 
