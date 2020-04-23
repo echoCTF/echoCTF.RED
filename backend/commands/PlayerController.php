@@ -74,8 +74,9 @@ class PlayerController extends Controller {
        foreach($players->all() as $player)
        {
         $player->activkey=substr(hash('sha512',Yii::$app->security->generateRandomString(64)),0,32);;
-        if(!$player->save())
-          die(var_dump($player->getErrors()));
+        if(!$player->save()) {
+                  die(var_dump($player->getErrors()));
+        }
        }
    }
 
@@ -113,24 +114,27 @@ class PlayerController extends Controller {
     {
       $players=Player::find()->where(['active'=>$active,'email'=>trim(str_replace(array("\xc2\xa0","\r\n","\r"),"",$email))])->all();
       $this->stdout("Mailing user: ".trim(str_replace(array("\xc2\xa0","\r\n","\r"),"",$email))."\n", Console::BOLD);
-    }
-    else
+    } else
     {
       $players=Player::find()->where(['active'=>$active])->all();
       $this->stdout("Mailing Registered users:\n", Console::BOLD);
     }
     $event_name=Sysconfig::findOne('event_name')->val;
-    if(Sysconfig::findOne('mail_host'))
-      \Yii::$app->mailer->transport->setHost(Sysconfig::findOne('mail_host')->val);
+    if(Sysconfig::findOne('mail_host')) {
+          \Yii::$app->mailer->transport->setHost(Sysconfig::findOne('mail_host')->val);
+    }
 
-    if(Sysconfig::findOne('mail_port'))
-      \Yii::$app->mailer->transport->setPort(Sysconfig::findOne('mail_port')->val);
+    if(Sysconfig::findOne('mail_port')) {
+          \Yii::$app->mailer->transport->setPort(Sysconfig::findOne('mail_port')->val);
+    }
 
-    if(Sysconfig::findOne('mail_username'))
-      \Yii::$app->mailer->transport->setUserName(Sysconfig::findOne('mail_username')->val);
+    if(Sysconfig::findOne('mail_username')) {
+          \Yii::$app->mailer->transport->setUserName(Sysconfig::findOne('mail_username')->val);
+    }
 
-    if(Sysconfig::findOne('mail_password'))
-      \Yii::$app->mailer->transport->setPassword(Sysconfig::findOne('mail_password')->val);
+    if(Sysconfig::findOne('mail_password')) {
+          \Yii::$app->mailer->transport->setPassword(Sysconfig::findOne('mail_password')->val);
+    }
 
     foreach($players as $player)
     {
@@ -179,13 +183,15 @@ class PlayerController extends Controller {
       $player->status=10;
       $player->auth_key = Yii::$app->security->generateRandomString();
       $player->activkey=Yii::$app->security->generateRandomString(20);
-      if(!$player->save())
-        die(var_dump($player->getErrors()));
+      if(!$player->save()) {
+              die(var_dump($player->getErrors()));
+      }
       $playerSsl=new PlayerSsl();
       $playerSsl->player_id=$player->id;
       $playerSsl->generate();
-      if($playerSsl->save()!==false)
-        $playerSsl->refresh();
+      if($playerSsl->save()!==false) {
+              $playerSsl->refresh();
+      }
 
       if($team_name!==false)
       {
@@ -207,8 +213,9 @@ class PlayerController extends Controller {
           $tp->player_id=$player->id;
           $tp->team_id=$team->id;
           $tp->approved=0;
-          if(!$tp->save())
-            printf("Error saving team player\n");
+          if(!$tp->save()) {
+                      printf("Error saving team player\n");
+          }
         }
       }
 
@@ -218,8 +225,7 @@ class PlayerController extends Controller {
 //      if(!$pi->save())
 //        printf("Error saving Player IP\n");
       $trans->commit();
-    }
-    catch (Exception $e)
+    } catch (Exception $e)
     {
       print $e->getMessage();
       $trans->rollback();
@@ -232,25 +238,27 @@ class PlayerController extends Controller {
   public function actionPassword($emailORid,$password)
   {
     $p=Player::find();
-    if(intval($emailORid)===-1)
-      return Player::updateAll(['password'=>Yii::$app->security->generatePasswordHash($password)])===false;
-    if($emailORid==='all')
-      $players=$p->all();
-    else
-      $players=$p->where(['id'=>$emailORid])->orWhere(['email'=>$emailORid])->all();
+    if(intval($emailORid)===-1) {
+          return Player::updateAll(['password'=>Yii::$app->security->generatePasswordHash($password)])===false;
+    }
+    if($emailORid==='all') {
+          $players=$p->all();
+    } else {
+          $players=$p->where(['id'=>$emailORid])->orWhere(['email'=>$emailORid])->all();
+    }
     $trans=Yii::$app->db->beginTransaction();
     try {
       foreach($players as $player)
       {
         $player->password=Yii::$app->security->generatePasswordHash($password);
-        if(!$player->update(['password']))
-          $this->p("Failed to change password for [{player}]",['player'=>$player->username]);
-        else
-          $this->p("Password for [{player}] changed",['player'=>$player->username]);
+        if(!$player->update(['password'])) {
+                  $this->p("Failed to change password for [{player}]",['player'=>$player->username]);
+        } else {
+                  $this->p("Password for [{player}] changed",['player'=>$player->username]);
+        }
       }
       $trans->commit();
-    }
-    catch (Exception $e)
+    } catch (Exception $e)
     {
       print $e->getMessage();
       $trans->rollback();

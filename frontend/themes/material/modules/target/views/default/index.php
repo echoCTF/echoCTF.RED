@@ -18,10 +18,11 @@ $this->_fluid='-fluid';
     <?=sprintf('<img src="%s" width="100px"/>',$target->logo)?>
     </div>
     <?php
-    if(Yii::$app->user->isGuest)
-      echo $this->render('_guest',['target'=>$target,'playerPoints'=>$playerPoints]);
-    else
-      echo $this->render('_versus',['target'=>$target,'playerPoints'=>$playerPoints,'identity'=>Yii::$app->user->identity->profile]);
+    if(Yii::$app->user->isGuest) {
+          echo $this->render('_guest',['target'=>$target,'playerPoints'=>$playerPoints]);
+    } else {
+          echo $this->render('_versus',['target'=>$target,'playerPoints'=>$playerPoints,'identity'=>Yii::$app->user->identity->profile]);
+    }
      ?>
 
         <?php \yii\widgets\Pjax::begin(['id'=>'stream-listing','enablePushState'=>false,'linkSelector'=>'#stream-pager a', 'formSelector'=>false]); ?>

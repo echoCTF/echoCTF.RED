@@ -40,8 +40,9 @@ class Twitter extends Widget{
         if($this->message===null){
             $this->message= 'Tweet this';
         }
-        if($this->url===NULL)
-          $this->url=Url::to('','https');
+        if($this->url===NULL) {
+                  $this->url=Url::to('','https');
+        }
 
         $this->message=sprintf("%s via @%s\n%s",Html::encode(strip_tags($this->message)),$this->via,Html::encode($this->hashtags));
     }

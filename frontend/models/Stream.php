@@ -102,7 +102,9 @@ class Stream extends \yii\db\ActiveRecord
 
     public function getFormatted(bool $pub=true)
     {
-      if(!Yii::$app->user->isGuest && Yii::$app->user->id==$this->player_id) $pub=false;
+      if(!Yii::$app->user->isGuest && Yii::$app->user->id==$this->player_id) {
+          $pub=false;
+      }
 
       $icon=array(
         'headshot'=>'<i class="fas fa-skull" style="font-size: 1.5em;"></i>',
@@ -127,10 +129,11 @@ class Stream extends \yii\db\ActiveRecord
           break;
         case 'headshot':
           $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$this->model_id,'player_id'=>$this->player_id]);
-          if($headshot->timer>0)
-            $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes", $icon[$this->model],$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]),number_format($headshot->timer/60));
-          else
-            $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>]", $icon[$this->model],$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
+          if($headshot->timer>0) {
+                      $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes", $icon[$this->model],$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]),number_format($headshot->timer/60));
+          } else {
+                      $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>]", $icon[$this->model],$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
+          }
           break;
       	case 'user':
       		$message=sprintf("%s <b>%s</b> %s", $icon[$this->model],$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
@@ -139,10 +142,11 @@ class Stream extends \yii\db\ActiveRecord
       		$message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $icon[$this->model],$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
       		break;
         case 'report':
-          if(Yii::app()->sys->teams)
-            $message=sprintf("%s <b>%s</b> from team <b>[%s]</b> Reported <b>%s</b>",$icon[$this->model],$this->player->profile->link, $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$pub ? $this->pubtitle : $this->title);
-          else
-            $message=sprintf("%s <b>%s</b> Reported <b>%s</b>",$icon[$this->model],$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
+          if(Yii::app()->sys->teams) {
+                      $message=sprintf("%s <b>%s</b> from team <b>[%s]</b> Reported <b>%s</b>",$icon[$this->model],$this->player->profile->link, $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$pub ? $this->pubtitle : $this->title);
+          } else {
+                      $message=sprintf("%s <b>%s</b> Reported <b>%s</b>",$icon[$this->model],$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
+          }
           break;
         case 'question':
             $message=sprintf("%s <b>%s</b> Answered a question from <b>%s</b>",$icon[$this->model],$this->player->profile->link, \app\modules\challenge\models\Question::findOne($this->model_id )->challenge->name);
@@ -152,8 +156,9 @@ class Stream extends \yii\db\ActiveRecord
         default:
             $message= sprintf("%s <b>%s</b> %s", $icon[$this->model],$this->player->profile->link, $pub ? $this->pubtitle : $this->title);
       }
-      if($this->points!=0)
-        $message=sprintf("%s for %d points", $message, $this->points);
+      if($this->points!=0) {
+              $message=sprintf("%s for %d points", $message, $this->points);
+      }
       return $message;
     }
 

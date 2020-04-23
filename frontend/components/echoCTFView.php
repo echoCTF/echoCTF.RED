@@ -16,8 +16,9 @@ class echoCTFView extends \yii\web\View
   {
 //      if($this->_url===null)
 //        $this->_url=\yii\helpers\Url::to([null],'https');
-      if($this->_image===null)
-        $this->_image=\yii\helpers\Url::to('/images/logotw.png','https');
+      if($this->_image===null) {
+              $this->_image=\yii\helpers\Url::to('/images/logotw.png','https');
+      }
       $this->title=sprintf("%s - %s: %s",\Yii::$app->sys->event_name,ucfirst(\Yii::$app->controller->id), \Yii::$app->controller->action->id);
       if(!\Yii::$app->user->isGuest)
       {
@@ -29,8 +30,9 @@ class echoCTFView extends \yii\web\View
   public function getOg_title()
   {
     //<meta property="og:title" content="Key Concepts: Dependency Injection Container" />
-    if($this->_title===null)
-      return ['property'=>'og:title', 'content'=>trim($this->title)];
+    if($this->_title===null) {
+          return ['property'=>'og:title', 'content'=>trim($this->title)];
+    }
   }
   public function getOg_description()
   {

@@ -82,9 +82,9 @@ class SysconfigController extends Controller {
         $conf=new Sysconfig();
         $conf->id=$key;
         $conf->val=$val;
+      } else {
+              $conf->val=$val;
       }
-      else
-        $conf->val=$val;
 
         $conf->save();
   }
@@ -96,8 +96,9 @@ class SysconfigController extends Controller {
   public function actionGet($key)
   {
     $conf=Sysconfig::findOne(['id'=>$key]);
-    if(!$conf)
-      return;
+    if(!$conf) {
+          return;
+    }
 
     echo $conf->val,"\n";
   }

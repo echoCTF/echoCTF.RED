@@ -65,25 +65,31 @@ class DefaultController extends Controller
        $sum=0;
        $userTarget=null;
        $profile=$this->findProfile($profile_id);
-       if(Yii::$app->user->isGuest && $profile->visibility!='public')
-         			return $this->redirect(['/']);
+       if(Yii::$app->user->isGuest && $profile->visibility!='public') {
+                			return $this->redirect(['/']);
+       }
 
-       if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
-         			return $this->redirect(['/']);
+       if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin) {
+                			return $this->redirect(['/']);
+       }
 
 
        $target=Target::find()->where(['t.id'=>$id])->player_progress($profile->player_id)->one();
        $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>$profile->player_id,'finding.target_id'=>$id])->all();
        $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>$profile->player_id,'treasure.target_id'=>$id])->all();
-       foreach($PF as $pf)
-         $sum+=$pf->finding->points;
-       foreach($PT as $pt)
-         $sum+=$pt->treasure->points;
+       foreach($PF as $pf) {
+                $sum+=$pf->finding->points;
+       }
+       foreach($PT as $pt) {
+                $sum+=$pt->treasure->points;
+       }
        $treasures=$findings=[];
-       foreach($target->treasures as $treasure)
-         $treasures[]=$treasure->id;
-       foreach($target->findings as $finding)
-         $findings[]=$finding->id;
+       foreach($target->treasures as $treasure) {
+                $treasures[]=$treasure->id;
+       }
+       foreach($target->findings as $finding) {
+                $findings[]=$finding->id;
+       }
        $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
        ->where(['model_id'=>$findings, 'model'=>'finding'])
        ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
@@ -131,16 +137,20 @@ class DefaultController extends Controller
         $target=Target::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
         $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>Yii::$app->user->id,'finding.target_id'=>$id])->all();
         $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>Yii::$app->user->id,'treasure.target_id'=>$id])->all();
-        foreach($PF as $pf)
-          $sum+=$pf->finding->points;
-        foreach($PT as $pt)
-          $sum+=$pt->treasure->points;
+        foreach($PF as $pf) {
+                  $sum+=$pf->finding->points;
+        }
+        foreach($PT as $pt) {
+                  $sum+=$pt->treasure->points;
+        }
       }
       $treasures=$findings=[];
-      foreach($target->treasures as $treasure)
-        $treasures[]=$treasure->id;
-      foreach($target->findings as $finding)
-        $findings[]=$finding->id;
+      foreach($target->treasures as $treasure) {
+              $treasures[]=$treasure->id;
+      }
+      foreach($target->findings as $finding) {
+              $findings[]=$finding->id;
+      }
       $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
       ->where(['model_id'=>$findings, 'model'=>'finding'])
       ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
@@ -193,14 +203,15 @@ class DefaultController extends Controller
     {
         $string = Yii::$app->request->post('hash');
         //$string = Yii::$app->request->get('hash');
-        if(empty($string)) return $this->renderAjax('claim');
+        if(empty($string)) {
+            return $this->renderAjax('claim');
+        }
         $treasure=Treasure::find()->claimable()->byCode($string)->one();
         if($treasure!==null && Treasure::find()->byCode($string)->claimable()->notBy(Yii::$app->user->id)->one()===null)
         {
           Yii::$app->session->setFlash('warning',sprintf('Flag [%s] claimed before',$treasure->name,$treasure->target->name));
           return $this->renderAjax('claim');
-        }
-        elseif($treasure===null)
+        } elseif($treasure===null)
         {
           Yii::$app->session->setFlash('error',sprintf('Flag [<strong>%s</strong>] does not exist!',Html::encode($string)));
           return $this->renderAjax('claim');
@@ -222,14 +233,12 @@ class DefaultController extends Controller
           }
           $transaction->commit();
           Yii::$app->session->setFlash('success',sprintf('Flag [%s] claimed for %s points',$treasure->name,number_format($treasure->points)));
-        }
-        catch (\Exception $e)
+        } catch (\Exception $e)
         {
           $transaction->rollBack();
           Yii::$app->session->setFlash('error','Flag failed');
           throw $e;
-        }
-        catch (\Throwable $e)
+        } catch (\Throwable $e)
         {
           $transaction->rollBack();
           throw $e;
@@ -254,9 +263,9 @@ class DefaultController extends Controller
       $consolecolor = imagecolorallocate($src, 148,148,148);
       $greencolor = imagecolorallocate($src, 148,193,31);
       //imagettftext($src, 11.5, 0, 0, 14, $textcolor, Yii::getAlias('@app/web/webfonts/fa-solid-900.ttf'), $text);
-      if(Headshot::find(['target_id'=>$target->id])->last()->one())
-        $lastHeadshot=Headshot::find(['target_id'=>$target->id])->last()->one()->player->username;
-      else {
+      if(Headshot::find(['target_id'=>$target->id])->last()->one()) {
+              $lastHeadshot=Headshot::find(['target_id'=>$target->id])->last()->one()->player->username;
+      } else {
         $lastHeadshot="";
       }
       $lineheight=18;

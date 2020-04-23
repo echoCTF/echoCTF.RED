@@ -155,11 +155,17 @@ class Profile extends \yii\db\ActiveRecord
     }
     public function getVisible(): bool
   	{
-  		if(Yii::$app->sys->player_profile===false) return false;
-  		elseif($this->visibility=='public') return true;
-  		elseif(intval(Yii::$app->user->id)===intval($this->player_id)) return true;
-      elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin) return true;
-  		else return array_search($this->visibility,['public','ingame'],true) === FALSE ? false : true;
+  		if(Yii::$app->sys->player_profile===false) {
+  		    return false;
+  		} elseif($this->visibility=='public') {
+  		    return true;
+  		} elseif(intval(Yii::$app->user->id)===intval($this->player_id)) {
+  		    return true;
+  		} elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin) {
+          return true;
+      } else {
+  		    return array_search($this->visibility,['public','ingame'],true) === FALSE ? false : true;
+  		}
   	}
 
     /**
@@ -168,18 +174,22 @@ class Profile extends \yii\db\ActiveRecord
     public function getLink()
   	{
 
-  		if(intval(Yii::$app->user->id)===intval($this->player_id))
-        return Html::a(Html::encode($this->owner->username),['/profile/me']);
-      else if($this->visible===true)
-        return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
+  		if(intval(Yii::$app->user->id)===intval($this->player_id)) {
+  		        return Html::a(Html::encode($this->owner->username),['/profile/me']);
+  		} else if($this->visible===true) {
+              return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
+      }
   		return Html::encode($this->owner->username);
   	}
 
     public function getLinkto()
   	{
 
-  		if(intval(Yii::$app->user->id)===intval($this->player_id)) return Url::to(['/profile/me']);
-  		else if($this->visible===true) return Url::to(['/profile/index','id'=>$this->id]);
+  		if(intval(Yii::$app->user->id)===intval($this->player_id)) {
+  		    return Url::to(['/profile/me']);
+  		} else if($this->visible===true) {
+  		    return Url::to(['/profile/index','id'=>$this->id]);
+  		}
   		return null;
   	}
 
@@ -210,10 +220,12 @@ class Profile extends \yii\db\ActiveRecord
 
     public function getIsMine():bool
     {
-      if(Yii::$app->user->isGuest)
-        return false;
-      if(Yii::$app->user->id===$this->player_id)
-        return true;
+      if(Yii::$app->user->isGuest) {
+              return false;
+      }
+      if(Yii::$app->user->id===$this->player_id) {
+              return true;
+      }
       return false;
     }
     public function getTwitterHandle()
@@ -233,9 +245,9 @@ class Profile extends \yii\db\ActiveRecord
         {
           $msg.=sprintf(', and %d headshots',$this->headshotsCount);
         }
+      } else {
+              $msg=sprintf("I have just joined echoCTF.RED!");
       }
-      else
-        $msg=sprintf("I have just joined echoCTF.RED!");
       return $msg;
     }
 }

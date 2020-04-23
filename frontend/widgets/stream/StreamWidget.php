@@ -38,16 +38,15 @@ class StreamWidget extends Widget
       {
         $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago');
 
-      }
-      else if ($this->player_id!==NULL)
+      } else if ($this->player_id!==NULL)
       {
         $model=\app\models\Stream::find()
           ->select('stream.*,TS_AGO(ts) as ts_ago')
           ->where(['player_id'=>$this->player_id]);
 
       }
-      if(isset($model) && $this->dataProvider===NULL)
-        $this->dataProvider = new ActiveDataProvider([
+      if(isset($model) && $this->dataProvider===NULL) {
+              $this->dataProvider = new ActiveDataProvider([
             'query' => $model->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]),
             'pagination' => [
                 'pageSizeParam'=>'stream-perpage',
@@ -55,6 +54,7 @@ class StreamWidget extends Widget
                 'pageSize' => 10,
             ]
           ]);
+      }
 
       $this->summary=\Yii::t('app', $this->summary, ['TITLE' => $this->title, 'CATEGORY'=>$this->category]);
       parent::init();

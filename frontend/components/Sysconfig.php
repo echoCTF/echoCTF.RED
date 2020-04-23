@@ -12,10 +12,11 @@ class Sysconfig extends Component
  {
   $val=Yii::$app->cache->Memcache->get('sysconfig:'.$attribute);
   // key not found
-  if($val===false || $val==="0")
-    return false;
-  elseif($val==="1")
-    return true;
+  if($val===false || $val==="0") {
+      return false;
+  } elseif($val==="1") {
+      return true;
+  }
   return $val;
  }
 

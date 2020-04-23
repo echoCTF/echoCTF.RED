@@ -92,8 +92,9 @@ class DefaultController extends Controller
     public function actionDownload(int $id)
     {
         $model=$this->findModel($id);
-        if($model->filename===null)
-            throw new NotFoundHttpException('The requested challenge does not have a file to download.');
+        if($model->filename===null) {
+                    throw new NotFoundHttpException('The requested challenge does not have a file to download.');
+        }
         $storagePath = Yii::getAlias(Yii::$app->sys->challenge_home);
 
         return Yii::$app->response->sendFile("{$storagePath}/{$model->filename}", $model->filename)->send();

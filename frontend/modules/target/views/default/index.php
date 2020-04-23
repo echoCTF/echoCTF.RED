@@ -50,10 +50,13 @@ $this->registerCssFile("@web/css/scores.css", [
     			'format'=>'raw',
     			'value'=>function($model){
   									$headshots=null;
-  									foreach($model->headshots as $player)
-                      if((int)$player->active===1)
+  									foreach($model->headshots as $player) {
+  									                      if((int)$player->active===1)
   											$headshots[]=$player->profile->link;
-  								if ($headshots===NULL) return "None";
+  									}
+  								if ($headshots===NULL) {
+  								    return "None";
+  								}
   								return implode(", ",$headshots);
   							}
         ],

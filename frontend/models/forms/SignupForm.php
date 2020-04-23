@@ -72,8 +72,9 @@ class SignupForm extends Model
           $playerSsl=new PlayerSsl();
           $playerSsl->player_id=$player->id;
           $playerSsl->generate();
-          if($playerSsl->save()!==false)
-            $playerSsl->refresh();
+          if($playerSsl->save()!==false) {
+                      $playerSsl->refresh();
+          }
           $profile=$player->profile;
           $profile->scenario='signup';
           $profile->gdpr=true;
@@ -100,17 +101,21 @@ class SignupForm extends Model
      */
     protected function sendEmail($player)
     {
-      if(Yii::$app->sys->mail_host!==false)
-        \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
+      if(Yii::$app->sys->mail_host!==false) {
+              \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
+      }
 
-      if(Yii::$app->sys->mail_port!==false)
-        \Yii::$app->mailer->transport->setPort(Yii::$app->sys->mail_port);
+      if(Yii::$app->sys->mail_port!==false) {
+              \Yii::$app->mailer->transport->setPort(Yii::$app->sys->mail_port);
+      }
 
-      if(Yii::$app->sys->mail_username!==false)
-        \Yii::$app->mailer->transport->setUserName(Yii::$app->sys->mail_username);
+      if(Yii::$app->sys->mail_username!==false) {
+              \Yii::$app->mailer->transport->setUserName(Yii::$app->sys->mail_username);
+      }
 
-      if(Yii::$app->sys->mail_password!==false)
-        \Yii::$app->mailer->transport->setPassword(Yii::$app->sys->mail_password);
+      if(Yii::$app->sys->mail_password!==false) {
+              \Yii::$app->mailer->transport->setPassword(Yii::$app->sys->mail_password);
+      }
 
         return Yii::$app
             ->mailer

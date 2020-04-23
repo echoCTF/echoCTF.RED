@@ -107,8 +107,9 @@ class PlayerSsl extends \yii\db\ActiveRecord
      public function getSubjectString()
      {
        $subj=unserialize($this->subject);
-       foreach($subj as $key => $val)
-        $subject_arr[]="$key=$val";
+       foreach($subj as $key => $val) {
+               $subject_arr[]="$key=$val";
+       }
       return implode(", ",$subject_arr);
      }
 

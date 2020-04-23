@@ -193,10 +193,11 @@ class Target extends \yii\db\ActiveRecord
         $categories=[];
         foreach($this->treasures as $t)
         {
-          if(isset($categories[$t->category]))
-            $categories[$t->category]++;
-          else
-            $categories[$t->category]=1;
+          if(isset($categories[$t->category])) {
+                      $categories[$t->category]++;
+          } else {
+                      $categories[$t->category]=1;
+          }
         }
         return $categories;
     }
@@ -206,10 +207,11 @@ class Target extends \yii\db\ActiveRecord
       $categories=[];
       foreach($this->treasureCategories as $category => $cnt)
       {
-        if($cnt>1)
-          $categories[]=sprintf("%d:%s",$cnt,$category);
-        else
-          $categories[]=sprintf("%s",$category);
+        if($cnt>1) {
+                  $categories[]=sprintf("%d:%s",$cnt,$category);
+        } else {
+                  $categories[]=sprintf("%s",$category);
+        }
       }
       return implode(', ',$categories);
 
@@ -233,10 +235,11 @@ class Target extends \yii\db\ActiveRecord
 
     public function getSchedule()
     {
-      if(intval($this->active)===1 && $this->status==='powerdown')
-        return sprintf('Target scheduled for powerdown at %s',$this->scheduled_at);
-      elseif(intval($this->active)===0  && $this->status==='powerup' )
-        return sprintf('Target scheduled for powerup at %s',$this->scheduled_at);
+      if(intval($this->active)===1 && $this->status==='powerdown') {
+              return sprintf('Target scheduled for powerdown at %s',$this->scheduled_at);
+      } elseif(intval($this->active)===0  && $this->status==='powerup' ) {
+              return sprintf('Target scheduled for powerup at %s',$this->scheduled_at);
+      }
     }
     public function getDifficultyText()
     {
@@ -255,11 +258,13 @@ class Target extends \yii\db\ActiveRecord
     public function getPoints()
     {
       $sum_points=0;
-      foreach($this->treasures as $tr)
-        $sum_points+=$tr->points;
+      foreach($this->treasures as $tr) {
+              $sum_points+=$tr->points;
+      }
 
-      foreach($this->findings as $tr)
-        $sum_points+=$tr->points;
+      foreach($this->findings as $tr) {
+              $sum_points+=$tr->points;
+      }
       return $sum_points;
     }
 
@@ -284,27 +289,31 @@ class Target extends \yii\db\ActiveRecord
       $command->bindValue(':target_id',$this->id);
       $treasures = $command->query();
       $tplayers=$fplayers=[];
-      foreach($treasures->readAll() as $rec)
-        $tplayers[]=$rec['id'];
-      foreach($findings->readAll() as $rec)
-        $fplayers[]=$rec['id'];
+      foreach($treasures->readAll() as $rec) {
+              $tplayers[]=$rec['id'];
+      }
+      foreach($findings->readAll() as $rec) {
+              $fplayers[]=$rec['id'];
+      }
       return count(array_intersect($tplayers,$fplayers));
     }
 
     public function getFormattedExtras()
   	{
       $scheduled=null;
-      if(intval($this->active)===1 && $this->status==='powerdown')
-        $scheduled=sprintf('<abbr title="Scheduled to powedown at %s"><i class="glyphicon glyphicon-hand-down"></i></abbr>',$this->scheduled_at);
-      elseif(intval($this->active)===0  && $this->status==='powerup' )
-        $scheduled=sprintf('<abbr title="Scheduled to powerup %s"><i class="glyphicon glyphicon-hand-up"></i></abbr>',$this->scheduled_at);
+      if(intval($this->active)===1 && $this->status==='powerdown') {
+              $scheduled=sprintf('<abbr title="Scheduled to powedown at %s"><i class="glyphicon glyphicon-hand-down"></i></abbr>',$this->scheduled_at);
+      } elseif(intval($this->active)===0  && $this->status==='powerup' ) {
+              $scheduled=sprintf('<abbr title="Scheduled to powerup %s"><i class="glyphicon glyphicon-hand-up"></i></abbr>',$this->scheduled_at);
+      }
   		return sprintf("<center><abbr title='Flags'><i class='material-icons'>flag</i>%d</abbr> / <abbr title='Service'><i class='material-icons'>whatshot</i>%d</abbr> / <abbr title='Headshots'><i class='material-icons'>memory</i>%d</abbr> %s</center>",count($this->treasures),count($this->findings),count($this->getHeadshots()),$scheduled);
   	}
 
     public function getSpinable()/*: bool*/
     {
-        if(Yii::$app->user->isGuest)
-          return false;
+        if(Yii::$app->user->isGuest) {
+                  return false;
+        }
         if($this->spinQueue!==null || intval($this->active)!=1 )
         {
           return false; // Not active or already queued
@@ -313,8 +322,9 @@ class Target extends \yii\db\ActiveRecord
         {
           return false; // user is not allowed spins for the day.
         }
-        if(intval($this->player_findings)==0 && intval($this->player_treasures)==0 && Yii::$app->user->identity->profile->last->vpn_local_address===NULL)
-          return false;
+        if(intval($this->player_findings)==0 && intval($this->player_treasures)==0 && Yii::$app->user->identity->profile->last->vpn_local_address===NULL) {
+                  return false;
+        }
         return true;
     }
     public static function find()
@@ -323,22 +333,25 @@ class Target extends \yii\db\ActiveRecord
     }
     public function getFullLogo()
     {
-        if(file_exists(Yii::getAlias("@webroot/images/targets/".$this->name.".png")))
-          return '/images/targets/'.$this->name.'.png';
+        if(file_exists(Yii::getAlias("@webroot/images/targets/".$this->name.".png"))) {
+                  return '/images/targets/'.$this->name.'.png';
+        }
         return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMM+M9QDwAExgHQHiLdYgAAAABJRU5ErkJggg==';
     }
 
     public function getLogo()
     {
-      if(file_exists(Yii::getAlias("@webroot/images/targets/_".$this->name.".png")))
-        return '/images/targets/_'.$this->name.'.png';
+      if(file_exists(Yii::getAlias("@webroot/images/targets/_".$this->name.".png"))) {
+              return '/images/targets/_'.$this->name.'.png';
+      }
       return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMM+M9QDwAExgHQHiLdYgAAAABJRU5ErkJggg==';
     }
 
     public function getThumbnail()
     {
-      if(file_exists(Yii::getAlias("@webroot/images/targets/_".$this->name."-thumbnail.png")))
-        return '/images/targets/_'.$this->name.'-thumbnail.png';
+      if(file_exists(Yii::getAlias("@webroot/images/targets/_".$this->name."-thumbnail.png"))) {
+              return '/images/targets/_'.$this->name.'-thumbnail.png';
+      }
       return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMM+M9QDwAExgHQHiLdYgAAAABJRU5ErkJggg==';
     }
 

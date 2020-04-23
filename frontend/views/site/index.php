@@ -8,10 +8,11 @@ use yii\helpers\ArrayHelper;
 <div class="site-index">
   <div class="body-content">
 <?php
-if(Yii::$app->user->isGuest)
+if(Yii::$app->user->isGuest) {
 	echo Yii::$app->sys->frontpage_scenario;
-else
+} else {
 	echo Yii::$app->sys->offense_scenario;
+}
 ?>
   </div>
 </div>

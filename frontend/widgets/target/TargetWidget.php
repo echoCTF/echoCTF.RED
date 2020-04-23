@@ -37,8 +37,7 @@ class TargetWidget extends Widget
       if ($this->dataProvider===NULL && $this->player_id===NULL)
       {
         return false;
-      }
-      else if ($this->dataProvider===NULL)
+      } else if ($this->dataProvider===NULL)
       {
         $this->dataProvider=$this->initTargetProvider($this->player_id);
       }
@@ -54,7 +53,9 @@ class TargetWidget extends Widget
     public function run()
     {
       $tmod=\app\modules\target\models\Target::find();
-      if(intval($tmod->count())===0) return false;
+      if(intval($tmod->count())===0) {
+          return false;
+      }
 
         TargetWidgetAsset::register($this->getView());
         return $this->render('target',[
@@ -74,7 +75,9 @@ class TargetWidget extends Widget
     protected function initTargetProvider($id)
     {
       $tmod=\app\modules\target\models\Target::find();
-      if(intval($tmod->count())===0) return null;
+      if(intval($tmod->count())===0) {
+          return null;
+      }
 
       foreach($tmod->all() as $model)
       {
@@ -97,8 +100,7 @@ class TargetWidget extends Widget
 
         ]);
         $defaultOrder= [ 'progress' => SORT_DESC, 'ip'=>SORT_ASC ];
-      }
-      else {
+      } else {
         $targetProgressProvider = new ActiveDataProvider([
             'query' => $tmod->player_progress($id),
             'pagination' => [

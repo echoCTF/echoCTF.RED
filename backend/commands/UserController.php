@@ -85,8 +85,7 @@ class UserController extends Controller
             if (empty($password)) {
                 $this->p('Random password "{password}" has been generated.', ['password' => $random]);
             }
-        }
-        else {
+        } else {
             $this->err('Couldn\'t create user.');
             foreach ($user->getErrors() as $attribute => $error) {
                 print reset($error) . PHP_EOL;
@@ -106,8 +105,7 @@ class UserController extends Controller
         }
         if ($user->delete()) {
             $this->p('User deleted.');
-        }
-        else {
+        } else {
             $this->err('Couldn\'t delete user.');
         }
     }

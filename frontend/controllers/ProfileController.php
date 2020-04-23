@@ -64,15 +64,18 @@ class ProfileController extends \yii\web\Controller
 
     public function actionIndex(int $id)
     {
-      if(intval($id)==intval(Yii::$app->user->id))
-        return $this->redirect(['/profile/me']);
+      if(intval($id)==intval(Yii::$app->user->id)) {
+              return $this->redirect(['/profile/me']);
+      }
 
       $profile=$this->findModel($id);
-      if(Yii::$app->user->isGuest && $profile->visibility!='public')
-        			return $this->redirect(['/']);
+      if(Yii::$app->user->isGuest && $profile->visibility!='public') {
+              			return $this->redirect(['/']);
+      }
 
-      if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
-        			return $this->redirect(['/']);
+      if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin) {
+              			return $this->redirect(['/']);
+      }
 
         return $this->render('index',[
           'profile'=>$profile,
@@ -110,17 +113,19 @@ class ProfileController extends \yii\web\Controller
         {
           $accountForm->setPassword($accountForm->new_password);
         }
-        if($accountForm->save())
-          $success[]="Account updated";
-        else {
+        if($accountForm->save()) {
+                  $success[]="Account updated";
+        } else {
           $errors[]="Failed to save updated account details.";
         }
       }
 
-      if($errors!==null)
-        Yii::$app->session->setFlash('error',$errors);
-      if($success!==null)
-        Yii::$app->session->setFlash('success',$success);
+      if($errors!==null) {
+              Yii::$app->session->setFlash('error',$errors);
+      }
+      if($success!==null) {
+              Yii::$app->session->setFlash('success',$success);
+      }
 
       $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
       $playerSpin=$command->bindValue(':player_id',Yii::$app->user->id)->query()->read();

@@ -37,10 +37,18 @@ class SslController extends Controller {
     $cacrt=Sysconfig::findOne('CA.crt') ;
     $catxtcrt=Sysconfig::findOne('CA.txt.crt') ;
     $cakey=Sysconfig::findOne('CA.key');
-    if(!$cacsr)  $cacsr=new Sysconfig;
-    if(!$cacrt)  $cacrt=new Sysconfig;
-    if(!$catxtcrt)  $catxtcrt=new Sysconfig;
-    if(!$cakey)  $cakey=new Sysconfig;
+    if(!$cacsr) {
+        $cacsr=new Sysconfig;
+    }
+    if(!$cacrt) {
+        $cacrt=new Sysconfig;
+    }
+    if(!$catxtcrt) {
+        $catxtcrt=new Sysconfig;
+    }
+    if(!$cakey) {
+        $cakey=new Sysconfig;
+    }
 
     $cacsr->id='CA.csr';
     $cacrt->id='CA.crt';
@@ -70,8 +78,12 @@ class SslController extends Controller {
    */
   public function actionCreateCert($commonName="VPN Server",$emailAddress=null, $subjectAltName='IP:0.0.0.0', $CAcert = "file://echoCTF-OVPN-CA.crt", $CAkey="file://echoCTF-OVPN-CA.key"){
     Yii::$app->params['dn']['commonName'] = $commonName;
-    if($emailAddress!==null) Yii::$app->params['dn']['emailAddress']=$emailAddress;
-    if($subjectAltName!=='IP:0.0.0.0') Yii::$app->params['dn']['subjectAltName']=$subjectAltName;
+    if($emailAddress!==null) {
+        Yii::$app->params['dn']['emailAddress']=$emailAddress;
+    }
+    if($subjectAltName!=='IP:0.0.0.0') {
+        Yii::$app->params['dn']['subjectAltName']=$subjectAltName;
+    }
 
     // Generate a new private (and public) key pair
     $privkey = openssl_pkey_new(Yii::$app->params['pkey_config']);
@@ -109,7 +121,9 @@ class SslController extends Controller {
    */
   public function actionGenPlayerCerts($email,$fileout=false) {
     $player=Player::findOne(['email'=>$email]);
-    if($player===NULL || $player->playerSsl===null) return 0;
+    if($player===NULL || $player->playerSsl===null) {
+        return 0;
+    }
     $player->playerSsl->generate();
     $player->playerSsl->save();
 
@@ -159,8 +173,7 @@ class SslController extends Controller {
         file_put_contents("echoCTF-OVPN-CA.crt", $crt);
         file_put_contents("echoCTF-OVPN-CA.txt.crt", $txtcrt);
         file_put_contents("echoCTF-OVPN-CA.key",$key);
-    }
-    else
+    } else
     {
       printf("echoCTF-OVPN-CA.csr\n%s", $csr);
       printf("echoCTF-OVPN-CA.crt\n%s", $crt);
@@ -185,8 +198,9 @@ class SslController extends Controller {
     {
       $vpnta->val=file_get_contents($file);
       return $vpnta->save()?0:1;
+    } else {
+        printf("File not found: %s\n",$file);
     }
-    else printf("File not found: %s\n",$file);
     return -1;
   }
 
@@ -220,7 +234,9 @@ class SslController extends Controller {
       shell_exec($cmd);
       unlink($tmpcrt);
     }
-    if ($CERTS) $this->actionCreateCrl();
+    if ($CERTS) {
+        $this->actionCreateCrl();
+    }
     return 0;
   }
 

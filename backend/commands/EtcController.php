@@ -15,7 +15,9 @@ class EtcController extends Controller {
    */
   private function store_and_load($table,$file,$contents)
   {
-    if(empty($contents)) return;
+    if(empty($contents)) {
+        return;
+    }
     file_put_contents($file,implode("\n",$contents));
     shell_exec("/sbin/pfctl -t $table -T replace -f $file");
   }
@@ -37,8 +39,9 @@ class EtcController extends Controller {
   {
     $ips=array();
     $targets=Target::find()->where(['active'=>true])->all();
-    foreach($targets as $target)
-      $ips[]=$target->ipoctet;
+    foreach($targets as $target) {
+          $ips[]=$target->ipoctet;
+    }
     $this->store_and_load('targets','/etc/targets.conf',$ips);
   }
 
@@ -53,8 +56,7 @@ class EtcController extends Controller {
     if($event_active!==null && $event_active->val==='1')
     {
       $this->active_targets_pf();
-    }
-    else {
+    } else {
       printf("Event is not active, flushing tables\n");
       $this->flush_pf_table('offense_activated');
       $this->flush_pf_table('defense_activated');
