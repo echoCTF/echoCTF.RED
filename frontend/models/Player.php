@@ -282,7 +282,7 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function getTreasures()
     {
-        return $this->hasMany(app\modules\target\models\Treasure::className(), ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\target\models\Treasure::className(), ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
     }
     /**
      * @return \yii\db\ActiveQuery
@@ -297,7 +297,7 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function getFindings()
     {
-        return $this->hasMany(app\modules\target\models\Finding::className(), ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\target\models\Finding::className(), ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
     }
 
     public function getIsAdmin():bool
