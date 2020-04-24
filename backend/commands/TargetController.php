@@ -255,7 +255,6 @@ class TargetController extends Controller {
           $sh->target_id=$target->id;
           $sh->created_at=new \yii\db\Expression('NOW()');
           $sh->updated_at=new \yii\db\Expression('NOW()');
-          /* XXXFIXMEXXX Hardcoded uid this needs fixing */
           $sh->player_id=1;
           $sh->save();
         }
@@ -272,7 +271,39 @@ class TargetController extends Controller {
         }
         SpinQueue::deleteAll(['target_id'=>$target->id]);
       }
-    }    
+    }
+  }
+
+  /**
+   * Restart targets who are up for more than 24 hours
+   */
+  public function actionRestart()
+  {
+    foreach(Target::find()->select('server')->distinct()->all() as $master)
+    {
+      if($master->server==null) continue;
+      $client = DockerClientFactory::create([
+        'remote_socket' => $master->server,
+        'ssl' => false,
+      ]);
+      $docker = Docker::create($client);
+      $containers = $docker->containerList();
+      foreach ($containers as $container)
+      {
+        $name=str_replace('/','',$container->getNames()[0]);
+        $d=Target::findOne(['name'=>$name]);
+        $cstatus=$container->getStatus();
+        if(preg_match('/Up ([0-9]+) hours/', $cstatus,$matches)!==false)
+        {
+          $hours=intval(@$matches[1]);
+          if($hours>=24)
+          {
+            printf("Restarting %s/%s [%s]\n",$master->server,$d->name,$cstatus);
+            return $d->spin();
+          }
+        }
+      }
+    } // end docker servers
   }
 
   /**
@@ -321,6 +352,94 @@ class TargetController extends Controller {
     $this->store_and_load('targets','/etc/targets.conf',$ips);
   }
 
+  /*
+   * Return an array of unhealthy containers or null
+   */
+  private function unhealthy_dockers()
+  {
+    $unhealthy=[];
+    foreach(Target::find()->select('server')->distinct()->all() as $target)
+    {
+      if($target->server==null) continue;
+      $docker=$this->docker_connect($target->server);
+
+      $containers = $this->containers_list($docker);
+      foreach ($containers as $container)
+      {
+          if(strstr($container->getStatus(), 'unhealthy'))
+          {
+            $name=str_replace('/','',$container->getNames()[0]);
+            if(($unhealthyTarget=Target::findOne(['name'=>$name]))!==NULL)
+              $unhealthy[$name]=$unhealtyTarget;
+          }
+      }
+    }
+    return $unhealthy;
+  }
+
+  /**
+   * Get a list of containers from a connected docker
+   */
+  private function containers_list($docker)
+  {
+    if($docker===false) return [];
+    try
+    {
+     $containerList=$docker->containerList();
+    }
+    catch (\Exception $e)
+    {
+      return [];
+    }
+    return $containerList;
+  }
+
+  /**
+   * Connect to a docker server API and return docker client object
+   */
+  private function docker_connect($remote_socket)
+  {
+      $client = DockerClientFactory::create([
+        'remote_socket' => $remote_socket,
+        'ssl' => false,
+      ]);
+    try
+    {
+      $docker = Docker::create($client);
+    }
+    catch(\Exception $e)
+    {
+      return false;
+    }
+    return $docker;
+  }
+
+   private function containerList()
+   {
+     $unhealthy=[];
+     foreach(Target::find()->select('server')->distinct()->all() as $target)
+     {
+       if($target->server==null) continue;
+       $client = DockerClientFactory::create([
+         'remote_socket' => $target->server,
+         'ssl' => false,
+       ]);
+       $docker = Docker::create($client);
+       $containers = $docker->containerList();
+       foreach ($containers as $container)
+       {
+           if(strstr($container->getStatus(), 'unhealthy'))
+           {
+             $name=str_replace('/','',$container->getNames()[0]);
+             if(($unhealthyTarget=Target::findOne(['name'=>$name]))!==NULL)
+               $unhealthy[$name]=$unhealtyTarget;
+           }
+       }
+     }
+     return $unhealthy;
+   }
+
+
   /**
    * Store list of IP's to a file and load it on pf a pf table
    */
@@ -336,66 +455,6 @@ class TargetController extends Controller {
       return;
     }
     shell_exec("/sbin/pfctl -t $table -T replace -f $file");
-  }
-
-  /*
-   * Return an array of unhealthy containers or null
-   */
-  private function unhealthy_dockers()
-  {
-    $unhealthy=[];
-    foreach(Target::find()->select('server')->distinct()->all() as $target)
-    {
-      if($target->server==null) continue;
-      $client = DockerClientFactory::create([
-        'remote_socket' => $target->server,
-        'ssl' => false,
-      ]);
-      $docker = Docker::create($client);
-      $containers = $docker->containerList();
-      foreach ($containers as $container)
-      {
-          if(strstr($container->getStatus(), 'unhealthy'))
-          {
-            $name=str_replace('/','',$container->getNames()[0]);
-            if(($unhealthyTarget=Target::findOne(['name'=>$name]))!==NULL)
-              $unhealthy[$name]=$unhealtyTarget;
-          }
-      }
-    }
-    return $unhealthy;
-  }
-
-  /**
-   * Restart targets who are up for more than 24 hours
-   */
-  public function actionRestart()
-  {
-    foreach(Target::find()->select('server')->distinct()->all() as $master)
-    {
-      if($master->server==null) continue;
-      $client = DockerClientFactory::create([
-        'remote_socket' => $master->server,
-        'ssl' => false,
-      ]);
-      $docker = Docker::create($client);
-      $containers = $docker->containerList();
-      foreach ($containers as $container)
-      {
-        $name=str_replace('/','',$container->getNames()[0]);
-        $d=Target::findOne(['name'=>$name]);
-        $cstatus=$container->getStatus();
-        if(preg_match('/Up ([0-9]+) hours/', $cstatus,$matches)!==false)
-        {
-          $hours=intval(@$matches[1]);
-          if($hours>=24)
-          {
-            printf("Restarting %s/%s [%s]\n",$master->server,$d->name,$cstatus);
-            return $d->spin();
-          }
-        }
-      }
-    } // end docker servers
   }
 
 }
