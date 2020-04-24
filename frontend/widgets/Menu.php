@@ -116,7 +116,7 @@ class Menu extends \yii\widgets\Menu
                 }
             }
             if (!isset($item['active'])) {
-                if ($this->activateParents && $hasActiveChild || $this->activateItems && $this->isItemActive($item)) {
+                if (($this->activateParents && $hasActiveChild) || ($this->activateItems && $this->isItemActive($item))) {
                     $active = $items[$i]['active'] = true;
                 } else {
                     $items[$i]['active'] = false;

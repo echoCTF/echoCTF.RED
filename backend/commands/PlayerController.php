@@ -71,11 +71,14 @@ class PlayerController extends Controller {
                break;
 
        }
+
        foreach($players->all() as $player)
        {
         $player->activkey=substr(hash('sha512',Yii::$app->security->generateRandomString(64)),0,32);;
         if(!$player->save())
-          die(var_dump($player->getErrors()));
+        {
+          throw new ConsoleException('Failed to save player:'.$player->username.'. '.$player->getErrors());
+        }
        }
    }
 
@@ -85,7 +88,8 @@ class PlayerController extends Controller {
   protected function playerList(array $players)
   {
       if (empty($players)) {
-          return $this->p('No players found.');
+          $this->p('No players found.');
+          return;
       }
 
       $this->stdout(sprintf("%4s %-32s %-24s %-16s %-8s\n", 'ID', 'Email address', 'User name', 'Created', 'Status'), Console::BOLD);
@@ -180,7 +184,7 @@ class PlayerController extends Controller {
       $player->auth_key = Yii::$app->security->generateRandomString();
       $player->activkey=Yii::$app->security->generateRandomString(20);
       if(!$player->save())
-        die(var_dump($player->getErrors()));
+        throw new ConsoleException('Failed to save player:'.$player->username.'. '.$player->getErrors());
       $playerSsl=new PlayerSsl();
       $playerSsl->player_id=$player->id;
       $playerSsl->generate();
@@ -219,7 +223,7 @@ class PlayerController extends Controller {
 //        printf("Error saving Player IP\n");
       $trans->commit();
     }
-    catch (Exception $e)
+    catch (\Exception $e)
     {
       print $e->getMessage();
       $trans->rollback();
@@ -250,7 +254,7 @@ class PlayerController extends Controller {
       }
       $trans->commit();
     }
-    catch (Exception $e)
+    catch (\Exception $e)
     {
       print $e->getMessage();
       $trans->rollback();

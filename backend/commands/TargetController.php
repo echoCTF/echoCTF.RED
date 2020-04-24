@@ -97,7 +97,7 @@ class TargetController extends Controller {
         $t->spin();
         echo " OK\n";
       }
-      catch (ConnectionException | \LogicException $ce)
+      catch (\ConnectionException | \LogicException $ce)
       {
           printf(" NOT OK (%s)\n",$ce->getMessage());
       }
@@ -126,7 +126,7 @@ class TargetController extends Controller {
         else
           echo " Failed\n";
       }
-      catch (ConnectionException | \LogicException $ce)
+      catch (\ConnectionException | \LogicException $ce)
       {
           printf(" NOT OK (%s)\n",$ce->getMessage());
       }
@@ -156,7 +156,7 @@ class TargetController extends Controller {
           $notification->save();
           echo " OK\n";
         }
-        catch (ConnectionException | \LogicException $ce)
+        catch (\ConnectionException | \LogicException $ce)
         {
           printf(" NOT OK (%s)\n",$ce->getMessage());
         }
