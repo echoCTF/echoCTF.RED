@@ -70,31 +70,31 @@ class Target extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'target';
+      return 'target';
     }
 
 
     public function behaviors()
     {
-        return [
-            'typecast' => [
-                'class' => AttributeTypecastBehavior::className(),
-                'attributeTypes' => [
-                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
-                    'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
-                    'player_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
-                    'player_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
-                    'total_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
-                    'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
-                    'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
-                    'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-                    'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
-                ],
-                'typecastAfterValidate' => true,
-                'typecastBeforeSave' => true,
-                'typecastAfterFind' => true,
+      return [
+        'typecast' => [
+          'class' => AttributeTypecastBehavior::className(),
+          'attributeTypes' => [
+            'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'player_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'player_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'total_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
+            'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
           ],
-        ];
+          'typecastAfterValidate' => true,
+          'typecastBeforeSave' => true,
+          'typecastAfterFind' => true,
+        ],
+      ];
     }
 
     /**
@@ -103,16 +103,16 @@ class Target extends \yii\db\ActiveRecord
     public function rules()
     {
       return [
-          [['description'], 'string'],
-          [['ip'], 'required'],
-          [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp'], 'integer'],
-          [['scheduled_at', 'ts'], 'safe'],
-          [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
-          [['mac'], 'string', 'max' => 30],
-          [['status'], 'string', 'max' => 32],
-          [['name'], 'unique'],
-          [['fqdn'], 'unique'],
-          [['mac'], 'unique'],
+        [['description'], 'string'],
+        [['ip'], 'required'],
+        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp'], 'integer'],
+        [['scheduled_at', 'ts'], 'safe'],
+        [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
+        [['mac'], 'string', 'max' => 30],
+        [['status'], 'string', 'max' => 32],
+        [['name'], 'unique'],
+        [['fqdn'], 'unique'],
+        [['mac'], 'unique'],
       ];
     }
 
