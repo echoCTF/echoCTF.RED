@@ -196,7 +196,7 @@ class PlayerController extends Controller
                   Yii::$app->session->setFlash('error', 'Failed to import file with error message ['.$e->errorInfo[2].']');
                 else
                 {
-                  Yii::$app->session->setFlash('error', 'Failed to import file, '.$e->getErrors());
+                  Yii::$app->session->setFlash('error', 'Failed to import file, '.$e->getMessage());
                 }
               }
           }
