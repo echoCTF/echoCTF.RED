@@ -71,11 +71,14 @@ class PlayerController extends Controller {
                break;
 
        }
+
        foreach($players->all() as $player)
        {
         $player->activkey=substr(hash('sha512',Yii::$app->security->generateRandomString(64)),0,32);;
         if(!$player->save())
-          die(var_dump($player->getErrors()));
+        {
+          throw new ConsoleException('Failed to save player:'.$player->username.'. '.$player->getErrors());
+        }
        }
    }
 
@@ -219,7 +222,7 @@ class PlayerController extends Controller {
 //        printf("Error saving Player IP\n");
       $trans->commit();
     }
-    catch (Exception $e)
+    catch (\Exception $e)
     {
       print $e->getMessage();
       $trans->rollback();
@@ -250,7 +253,7 @@ class PlayerController extends Controller {
       }
       $trans->commit();
     }
-    catch (Exception $e)
+    catch (\Exception $e)
     {
       print $e->getMessage();
       $trans->rollback();
