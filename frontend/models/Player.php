@@ -9,6 +9,7 @@ use yii\db\Expression;
 use yii\web\IdentityInterface;
 use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\game\models\Headshot;
+
 /**
  * Player model
  *
@@ -281,7 +282,7 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function getTreasures()
     {
-        return $this->hasMany(Treasure::className(), ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
+        return $this->hasMany(app\modules\target\models\Treasure::className(), ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
     }
     /**
      * @return \yii\db\ActiveQuery
@@ -296,7 +297,7 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function getFindings()
     {
-        return $this->hasMany(Finding::className(), ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
+        return $this->hasMany(app\modules\target\models\Finding::className(), ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
     }
 
     public function getIsAdmin():bool
