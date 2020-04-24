@@ -9,7 +9,7 @@ use app\modules\frontend\models\Player;
  *
  * @property string $id
  * @property int $expire
- * @property resource $data
+ * @property string $data
  * @property int $player_id
  * @property string $ip
  * @property string $ts
