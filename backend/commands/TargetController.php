@@ -37,12 +37,9 @@ class TargetController extends Controller {
       switch($target->status)
       {
         case 'powerdown':
-          printf("scheduled for [%s] at [%s] , destroyed: %s\n",$target->status,$target->scheduled_at,$target->destroy()?"success":"fail");
-          $target->status='offline';
-          $target->scheduled_at=null;
-          $target->active=0;
-          $requirePF=true;
-          $target->save();
+          printf("scheduled for [%s] at [%s]",$target->status,$target->scheduled_at);
+          $requirePF=$target->powerdown();
+          printf(", destroyed: %s\n", $requirePF ? "success":"fail");
           break;
         case 'powerup':
           $target->pull();
@@ -71,7 +68,6 @@ class TargetController extends Controller {
   {
     $target = Target::findOne($target_id);
     printf("Destroying target %s from %s: %s\n",$target->name, $target->server, $target->destroy()? "success" : "fail");
-
   }
 
   /*
@@ -173,108 +169,84 @@ class TargetController extends Controller {
   }
 
   /**
-   * Check the status of running containers on each docker server.
-   * $spin=true for restart on fail status
-   */
-  public function actionDockerHealthStatus($spin=false)
-  {
-    foreach(Target::find()->select('server')->distinct()->all() as $server)
-    {
-      echo "Connecting to: ",$server->server,"\n";
-      $client = DockerClientFactory::create([
-        'remote_socket' => $server->server,
-        'ssl' => false,
-      ]);
-      try
-      {
-        $docker = Docker::create($client);
-        $containers = $docker->containerList();
-
-        $unhealthy_found=false;
-
-        foreach ($containers as $container)
-        {
-          if(strstr($container->getStatus(), 'unhealthy'))
-          {
-            $unhealthy_found=true;
-            $name=str_replace('/','',$container->getNames()[0]);
-            echo "$name unhealthy ";
-
-            if(($target=Target::findOne(['name'=>$name]))!==NULL && $spin)
-            {
-              echo "spining";
-              $target->spin();
-            }
-
-            echo "\n";
-          }
-        }
-
-        if(!$unhealthy_found)
-        {
-          echo "No unhealthy containers found\n";
-        }
-
-      }
-      catch (\Exception $e)
-      {
-        echo $e->getMessage(),"\n";
-      }
-    }
-
-
-  }
-
-  /**
    * Check container health status and merge with spin queue
    */
   public function actionHealthcheck($spin=false)
   {
-    //$this->unhealthy=null;
     $unhealthy=$this->unhealthy_dockers();
     $query = SpinQueue::find();
     foreach($query->all() as $t)
     {
       $unhealthy[$t->target->name]=$t->target;
     }
-    if($unhealthy)
+
+    foreach($unhealthy as $target)
     {
-      foreach($unhealthy as $target)
+      printf("Processing [%s] on docker [%s]",$target->name,$target->server);
+      if($target->spinQueue)
       {
-        printf("Processing [%s] on docker [%s]",$target->name,$target->server);
-        if($target->spinQueue)
+        printf(" by [%s] on %s",$target->spinQueue->player->username,$target->spinQueue->created_at);
+      }
+      echo "\n";
+
+      if($spin!==false)
+      {
+        $target->spin();
+        if(!$target->spinQueue)
         {
-          printf(" by [%s] on %s",$target->spinQueue->player->username,$target->spinQueue->created_at);
+          $sh=new SpinHistory;
+          $sh->target_id=$target->id;
+          $sh->created_at=new \yii\db\Expression('NOW()');
+          $sh->updated_at=new \yii\db\Expression('NOW()');
+          $sh->player_id=1;
+          $sh->save();
         }
-        echo "\n";
-        if($spin!==false)
+        else
         {
-          $target->spin();
-          if(!$target->spinQueue)
-          {
-            $sh=new SpinHistory;
-            $sh->target_id=$target->id;
-            $sh->created_at=new \yii\db\Expression('NOW()');
-            $sh->updated_at=new \yii\db\Expression('NOW()');
-            /* XXXFIXMEXXX Hardcoded uid this needs fixing */
-            $sh->player_id=1;
-            $sh->save();
-          }
-          else
-          {
-            $notif=new Notification;
-            $notif->player_id=$target->spinQueue->player_id;
-            $notif->title=sprintf("Target [%s] restart request completed",$target->name);
-            $notif->body=sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>",$target->name);
-            $notif->archived=0;
-            $notif->created_at=new \yii\db\Expression('NOW()');
-            $notif->updated_at=new \yii\db\Expression('NOW()');
-            $notif->save();
-          }
-          SpinQueue::deleteAll(['target_id'=>$target->id]);
+          $notif=new Notification;
+          $notif->player_id=$target->spinQueue->player_id;
+          $notif->title=sprintf("Target [%s] restart request completed",$target->name);
+          $notif->body=sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>",$target->name);
+          $notif->archived=0;
+          $notif->created_at=new \yii\db\Expression('NOW()');
+          $notif->updated_at=new \yii\db\Expression('NOW()');
+          $notif->save();
         }
+        SpinQueue::deleteAll(['target_id'=>$target->id]);
       }
     }
+  }
+
+  /**
+   * Restart targets who are up for more than 24 hours
+   */
+  public function actionRestart()
+  {
+    foreach(Target::find()->select('server')->distinct()->all() as $master)
+    {
+      if($master->server==null) continue;
+      $client = DockerClientFactory::create([
+        'remote_socket' => $master->server,
+        'ssl' => false,
+      ]);
+      $docker = Docker::create($client);
+      $containers = $docker->containerList();
+      foreach ($containers as $container)
+      {
+        $name=str_replace('/','',$container->getNames()[0]);
+        $d=Target::findOne(['name'=>$name]);
+        $cstatus=$container->getStatus();
+        if(preg_match('/Up ([0-9]+) hours/', $cstatus,$matches)!==false)
+        {
+          $hours=intval(@$matches[1]);
+          if($hours>=24)
+          {
+            printf("Restarting %s/%s [%s]\n",$master->server,$d->name,$cstatus);
+            return $d->spin();
+          }
+        }
+      }
+    } // end docker servers
   }
 
   /**
@@ -323,6 +295,68 @@ class TargetController extends Controller {
     $this->store_and_load('targets','/etc/targets.conf',$ips);
   }
 
+  /*
+   * Return an array of unhealthy containers or null
+   */
+  private function unhealthy_dockers()
+  {
+    $unhealthy=[];
+    foreach(Target::find()->select('server')->distinct()->all() as $target)
+    {
+      if($target->server==null) continue;
+      $docker=$this->docker_connect($target->server);
+
+      $containers = $this->containers_list($docker);
+      foreach ($containers as $container)
+      {
+          if(strstr($container->getStatus(), 'unhealthy'))
+          {
+            $name=str_replace('/','',$container->getNames()[0]);
+            if(($unhealthyTarget=Target::findOne(['name'=>$name]))!==NULL)
+              $unhealthy[$name]=$unhealthyTarget;
+          }
+      }
+    }
+    return $unhealthy;
+  }
+
+  /**
+   * Get a list of containers from a connected docker
+   */
+  private function containers_list($docker)
+  {
+    if($docker===false) return [];
+    try
+    {
+      $containerList=$docker->containerList();
+    }
+    catch (\Exception $e)
+    {
+      return [];
+    }
+    return $containerList;
+  }
+
+  /**
+   * Connect to a docker server API and return docker client object
+   */
+  private function docker_connect($remote_socket)
+  {
+      $client = DockerClientFactory::create([
+        'remote_socket' => $remote_socket,
+        'ssl' => false,
+      ]);
+    try
+    {
+      $docker = Docker::create($client);
+    }
+    catch(\Exception $e)
+    {
+      return false;
+    }
+    return $docker;
+  }
+
   /**
    * Store list of IP's to a file and load it on pf a pf table
    */
@@ -339,65 +373,4 @@ class TargetController extends Controller {
     }
     shell_exec("/sbin/pfctl -t $table -T replace -f $file");
   }
-
-  /*
-   * Return an array of unhealthy containers or null
-   */
-  private function unhealthy_dockers()
-  {
-    $unhealthy=null;
-    foreach(Target::find()->select('server')->distinct()->all() as $target)
-    {
-      if($target->server==null) continue;
-      $client = DockerClientFactory::create([
-        'remote_socket' => $target->server,
-        'ssl' => false,
-      ]);
-      $docker = Docker::create($client);
-      $containers = $docker->containerList();
-      foreach ($containers as $container)
-      {
-          if(strstr($container->getStatus(), 'unhealthy'))
-          {
-            $name=str_replace('/','',$container->getNames()[0]);
-            if(($target=Target::findOne(['name'=>$name]))!==NULL)
-              $unhealthy[$name]=$target;
-          }
-      }
-    }
-    return $unhealthy;
-  }
-
-  /**
-   * Restart targets who are up for more than 24 hours
-   */
-  public function actionRestart()
-  {
-    foreach(Target::find()->select('server')->distinct()->all() as $master)
-    {
-      if($master->server==null) continue;
-      $client = DockerClientFactory::create([
-        'remote_socket' => $master->server,
-        'ssl' => false,
-      ]);
-      $docker = Docker::create($client);
-      $containers = $docker->containerList();
-      foreach ($containers as $container)
-      {
-        $name=str_replace('/','',$container->getNames()[0]);
-        $d=Target::findOne(['name'=>$name]);
-        $cstatus=$container->getStatus();
-        if(preg_match('/Up ([0-9]+) hours/', $cstatus,$matches)!==false)
-        {
-          $hours=intval(@$matches[1]);
-          if($hours>=24)
-          {
-            printf("Restarting %s/%s [%s]\n",$master->server,$d->name,$cstatus);
-            return $d->spin();
-          }
-        }
-      }
-    } // end docker servers
-  }
-
 }

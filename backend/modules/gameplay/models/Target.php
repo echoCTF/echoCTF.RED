@@ -55,13 +55,13 @@ class Target extends \yii\db\ActiveRecord
     'powerdown'=>'powerdown',
     'maintenance'=>'maintenance'];
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'target';
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public static function tableName()
+  {
+    return 'target';
+  }
 
     /**
      * {@inheritdoc}
@@ -222,7 +222,6 @@ class Target extends \yii\db\ActiveRecord
       catch(ImageCreateNotFoundException $e)
       {
         Yii::$app->session->setFlash('error', 'ImageCreateNotFound: Failed to create image ['.$this->image.']. The error was <code>'.$e->getMessage().'</code>');
-//        return false;
       }
 
       try {
@@ -320,14 +319,31 @@ class Target extends \yii\db\ActiveRecord
       return true;
     }
 
-    public function getMemory()
+  public function getMemory()
+  {
+    if($this->parameters!==NULL)
     {
-      if($this->parameters!==NULL)
-      {
-        $decoded=\yii\helpers\Json::decode($this->parameters,false);
-        if($decoded!==null && property_exists($decoded,'hostConfig') && property_exists($decoded->hostConfig,'Memory'))
-          return intval($decoded->hostConfig->Memory)*1024*1024;
-      }
-      return null;
+      $decoded=\yii\helpers\Json::decode($this->parameters,false);
+      if($decoded!==null && property_exists($decoded,'hostConfig') && property_exists($decoded->hostConfig,'Memory'))
+        return intval($decoded->hostConfig->Memory)*1024*1024;
     }
+    return null;
+  }
+
+  public function powerdown()
+  {
+    if($this->destroy())
+    {
+      $this->status='offline';
+      $this->scheduled_at=null;
+      $this->active=0;
+      return $this->save();
+    }
+    return false;
+  }
+
+  public function powerup()
+  {
+
+  }
 }
