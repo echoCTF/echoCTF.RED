@@ -23,10 +23,8 @@ class Menu extends \yii\widgets\Menu
     protected function renderItem($item)
     {
         if(isset($item['items'])) {
-            $labelTemplate = '<a href="{url}" class="{class}">{dropdownicon} {label}</a>';
             $linkTemplate = '<a href="{url}" class="{class}">{icon} {dropdownicon} {label}</a>';
         }else {
-            $labelTemplate = $this->labelTemplate;
             $linkTemplate = $this->linkTemplate;
         }
 
