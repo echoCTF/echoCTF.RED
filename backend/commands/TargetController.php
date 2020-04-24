@@ -71,7 +71,6 @@ class TargetController extends Controller {
   {
     $target = Target::findOne($target_id);
     printf("Destroying target %s from %s: %s\n",$target->name, $target->server, $target->destroy()? "success" : "fail");
-
   }
 
   /*
@@ -169,59 +168,6 @@ class TargetController extends Controller {
         $transaction->rollBack();
         throw $e;
     }
-
-  }
-
-  /**
-   * Check the status of running containers on each docker server.
-   * $spin=true for restart on fail status
-   */
-  public function actionDockerHealthStatus($spin=false)
-  {
-    foreach(Target::find()->select('server')->distinct()->all() as $server)
-    {
-      echo "Connecting to: ",$server->server,"\n";
-      $client = DockerClientFactory::create([
-        'remote_socket' => $server->server,
-        'ssl' => false,
-      ]);
-      try
-      {
-        $docker = Docker::create($client);
-        $containers = $docker->containerList();
-
-        $unhealthy_found=false;
-
-        foreach ($containers as $container)
-        {
-          if(strstr($container->getStatus(), 'unhealthy'))
-          {
-            $unhealthy_found=true;
-            $name=str_replace('/','',$container->getNames()[0]);
-            echo "$name unhealthy ";
-
-            if(($target=Target::findOne(['name'=>$name]))!==NULL && $spin)
-            {
-              echo "spining";
-              $target->spin();
-            }
-
-            echo "\n";
-          }
-        }
-
-        if(!$unhealthy_found)
-        {
-          echo "No unhealthy containers found\n";
-        }
-
-      }
-      catch (\Exception $e)
-      {
-        echo $e->getMessage(),"\n";
-      }
-    }
-
 
   }
 
@@ -413,32 +359,6 @@ class TargetController extends Controller {
     }
     return $docker;
   }
-
-   private function containerList()
-   {
-     $unhealthy=[];
-     foreach(Target::find()->select('server')->distinct()->all() as $target)
-     {
-       if($target->server==null) continue;
-       $client = DockerClientFactory::create([
-         'remote_socket' => $target->server,
-         'ssl' => false,
-       ]);
-       $docker = Docker::create($client);
-       $containers = $docker->containerList();
-       foreach ($containers as $container)
-       {
-           if(strstr($container->getStatus(), 'unhealthy'))
-           {
-             $name=str_replace('/','',$container->getNames()[0]);
-             if(($unhealthyTarget=Target::findOne(['name'=>$name]))!==NULL)
-               $unhealthy[$name]=$unhealthyTarget;
-           }
-       }
-     }
-     return $unhealthy;
-   }
-
 
   /**
    * Store list of IP's to a file and load it on pf a pf table
