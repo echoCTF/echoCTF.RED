@@ -39,122 +39,126 @@ class Stream extends \yii\db\ActiveRecord
   ];
 
   public $ts_ago;
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'stream';
-    }
-    public function behaviors()
-    {
-      return [
-        'typecast' => [
-            'class' => AttributeTypecastBehavior::className(),
-            'attributeTypes' => [
-                'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
-                'points' => AttributeTypecastBehavior::TYPE_FLOAT,
-            ],
-            'typecastAfterValidate' => true,
-            'typecastBeforeSave' => false,
-            'typecastAfterFind' => true,
+
+  /**
+   * {@inheritdoc}
+   */
+  public static function tableName()
+  {
+      return 'stream';
+  }
+
+  public function behaviors()
+  {
+    return [
+      'typecast' => [
+        'class' => AttributeTypecastBehavior::className(),
+        'attributeTypes' => [
+          'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'points' => AttributeTypecastBehavior::TYPE_FLOAT,
         ],
-        [
-              'class' => TimestampBehavior::className(),
-              'createdAtAttribute' => 'ts',
-              'updatedAtAttribute' => 'ts',
-              'value' => new Expression('NOW()'),
-        ],
-      ];
-    }
+        'typecastAfterValidate' => true,
+        'typecastBeforeSave' => false,
+        'typecastAfterFind' => true,
+      ],
+      [
+        'class' => TimestampBehavior::className(),
+        'createdAtAttribute' => 'ts',
+        'updatedAtAttribute' => 'ts',
+        'value' => new Expression('NOW()'),
+      ],
+    ];
+  }
 
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
-        return [
-            [['player_id', 'model_id', 'points'], 'integer'],
-            [['player_id','title', 'message', 'pubtitle', 'pubmessage'], 'required'],
-            [['message', 'pubmessage'], 'string'],
-            [['points'],'default', 'value'=>0],
-            [['ts'], 'safe'],
-            [['model', 'title', 'pubtitle'], 'string', 'max' => 255],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-        ];
+      return [
+        [['player_id', 'model_id', 'points'], 'integer'],
+        [['player_id','title', 'message', 'pubtitle', 'pubmessage'], 'required'],
+        [['message', 'pubmessage'], 'string'],
+        [['points'],'default', 'value' => 0],
+        [['ts'], 'safe'],
+        [['model', 'title', 'pubtitle'], 'string', 'max' => 255],
+        [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+      ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
+  /**
+   * {@inheritdoc}
+   */
+  public function attributeLabels()
+  {
+    return [
+      'id' => 'ID',
+      'player_id' => 'Player ID',
+      'model' => 'Model',
+      'model_id' => 'Model ID',
+      'points' => 'Points',
+      'title' => 'Title',
+      'message' => 'Message',
+      'pubtitle' => 'Pubtitle',
+      'pubmessage' => 'Pubmessage',
+      'ts' => 'Ts',
+    ];
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getPlayer()
+  {
+    return $this->hasOne(Player::className(), ['id' => 'player_id']);
+  }
+
+  public function getIcon()
+  {
+    return self::MODEL_ICONS[$this->model];
+  }
+
+  public function getFormatted(bool $pub=true)
+  {
+    if(!Yii::$app->user->isGuest && Yii::$app->user->id===$this->player_id)
+      $pub=false;
+
+    switch($this->model)
     {
-        return [
-            'id' => 'ID',
-            'player_id' => 'Player ID',
-            'model' => 'Model',
-            'model_id' => 'Model ID',
-            'points' => 'Points',
-            'title' => 'Title',
-            'message' => 'Message',
-            'pubtitle' => 'Pubtitle',
-            'pubmessage' => 'Pubmessage',
-            'ts' => 'Ts',
-        ];
+      case 'badge':
+        $message=sprintf("%s <b>%s</b> got the badge [<code>%s</code>]", $this->icon,$this->player->profile->link,Badge::findOne(['id'=>$this->model_id])->name);
+        break;
+      case 'headshot':
+        $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$this->model_id,'player_id'=>$this->player_id]);
+        if($headshot->timer>0)
+          $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes", $this->icon,$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]),number_format($headshot->timer/60));
+        else
+          $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>]", $this->icon,$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
+        break;
+      case 'user':
+        $message=sprintf("%s <b>%s</b> %s", $this->icon,$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
+        break;
+      case 'team_player':
+        $message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $this->icon,$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
+        break;
+      case 'report':
+        if(Yii::app()->sys->teams)
+          $message=sprintf("%s <b>%s</b> from team <b>[%s]</b> Reported <b>%s</b>",$this->icon,$this->player->profile->link, $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$pub ? $this->pubtitle : $this->title);
+        else
+          $message=sprintf("%s <b>%s</b> Reported <b>%s</b>",$this->icon,$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
+        break;
+      case 'question':
+        $message=sprintf("%s <b>%s</b> Answered a question from <b>%s</b>",$this->icon,$this->player->profile->link, \app\modules\challenge\models\Question::findOne($this->model_id )->challenge->name);
+        break;
+      case 'treasure':
+      case 'finding':
+      default:
+        $message= sprintf("%s <b>%s</b> %s", $this->icon,$this->player->profile->link, $pub ? $this->pubtitle : $this->title);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPlayer()
-    {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
-    }
+    if($this->points!=0)
+      $message=sprintf("%s for %d points", $message, $this->points);
 
-    public function getIcon()
-    {
-      return self::MODEL_ICONS[$this->model];
-    }
-
-    public function getFormatted(bool $pub=true)
-    {
-      if(!Yii::$app->user->isGuest && Yii::$app->user->id==$this->player_id) $pub=false;
-
-      switch($this->model)
-      {
-        case 'badge':
-          $message=sprintf("%s <b>%s</b> got the badge [<code>%s</code>]", $this->icon,$this->player->profile->link,Badge::findOne(['id'=>$this->model_id])->name);
-          break;
-        case 'headshot':
-          $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$this->model_id,'player_id'=>$this->player_id]);
-          if($headshot->timer>0)
-            $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes", $this->icon,$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]),number_format($headshot->timer/60));
-          else
-            $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>]", $this->icon,$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
-          break;
-      	case 'user':
-      		$message=sprintf("%s <b>%s</b> %s", $this->icon,$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
-      		break;
-      	case 'team_player':
-      		$message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $this->icon,$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
-      		break;
-        case 'report':
-          if(Yii::app()->sys->teams)
-            $message=sprintf("%s <b>%s</b> from team <b>[%s]</b> Reported <b>%s</b>",$this->icon,$this->player->profile->link, $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$pub ? $this->pubtitle : $this->title);
-          else
-            $message=sprintf("%s <b>%s</b> Reported <b>%s</b>",$this->icon,$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
-          break;
-        case 'question':
-            $message=sprintf("%s <b>%s</b> Answered a question from <b>%s</b>",$this->icon,$this->player->profile->link, \app\modules\challenge\models\Question::findOne($this->model_id )->challenge->name);
-          break;
-        case 'treasure':
-        case 'finding':
-        default:
-            $message= sprintf("%s <b>%s</b> %s", $this->icon,$this->player->profile->link, $pub ? $this->pubtitle : $this->title);
-      }
-      if($this->points!=0)
-        $message=sprintf("%s for %d points", $message, $this->points);
-      return $message;
-    }
-
+    return $message;
+  }
 }
