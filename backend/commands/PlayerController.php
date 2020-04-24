@@ -88,7 +88,8 @@ class PlayerController extends Controller {
   protected function playerList(array $players)
   {
       if (empty($players)) {
-          return $this->p('No players found.');
+          $this->p('No players found.');
+          return;
       }
 
       $this->stdout(sprintf("%4s %-32s %-24s %-16s %-8s\n", 'ID', 'Email address', 'User name', 'Created', 'Status'), Console::BOLD);
