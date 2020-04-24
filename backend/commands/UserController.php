@@ -200,7 +200,8 @@ class UserController extends Controller
     protected function userList(array $users)
     {
         if (empty($users)) {
-            return $this->p('No users found.');
+            $this->p('No users found.');
+            return;
         }
 
         $this->stdout(sprintf("%4s %-32s %-24s %-16s %-8s\n", 'ID', 'Email address', 'User name', 'Created', 'Status'), Console::BOLD);
