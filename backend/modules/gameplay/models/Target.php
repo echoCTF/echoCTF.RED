@@ -196,18 +196,8 @@ class Target extends \yii\db\ActiveRecord
       //$containerConfig->setMacAddress($this->mac); // target->mac
       $containerConfig->setHostConfig($hostConfig);
 
-      if(!$this->pull())
-        throw Exception('Failed to create image ['.$this->image.'] on target docker ['.$this->server.'].');
-
-      try {
-        $containerCreateResult = $docker->containerCreate($containerConfig,['name'=>$this->name]); // target->name
-
-      }
-      catch (ContainerCreateNotFoundException | ContainerStartInternalServerErrorException | ContainerStartNotFoundException $e)
-      {
-        Yii::$app->session->setFlash('error', 'ContainerStartNotFound: Failed to create container ['.$this->name.']. The error was <code>'.$e->getMessage().'</code>');
-        return false;
-      }
+      $this->pull();
+      $containerCreateResult = $docker->containerCreate($containerConfig,['name'=>$this->name]); // target->name
 
       $docker->containerStart($containerCreateResult->getId());
 
@@ -264,18 +254,10 @@ class Target extends \yii\db\ActiveRecord
 
     public function pull()
     {
-      $targetVariables=null;
-      $targetVolumes=null;
       if($this->server==null) return false;
       $docker = $this->connectAPI();
-      try {
-        $imageCreateResult=$docker->imageCreate($this->image, ['fromImage'=>$this->image]);
-        $imageCreateResult->wait();
-      }
-      catch(\Exception $e)
-      {
-        return false;
-      }
+      $imageCreateResult=$docker->imageCreate($this->image, ['fromImage'=>$this->image]);
+      $imageCreateResult->wait();
       return true;
     }
 
