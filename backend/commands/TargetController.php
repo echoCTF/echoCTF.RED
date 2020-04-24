@@ -83,7 +83,7 @@ class TargetController extends Controller {
   {
     $query = Target::find();
 
-    if($target!==false && mb_strtolower($target)!=='all')
+    if($target!==false)
     {
       $query->andFilterWhere([
           'id' => intval($target),
@@ -111,20 +111,20 @@ class TargetController extends Controller {
   {
     $query = Target::find();
 
-    if($target!==false && mb_strtolower($target)!=='all' && intval($target)!==0)
+    if($target!==false)
+    {
       $query->andFilterWhere([
           'id' => $target,
       ]);
+    }
 
     foreach($query->all() as $t)
     {
       echo "Pulling: ",$t->fqdn," / ",$t->ipoctet;
       try
       {
-        if($t->pull())
-          echo " OK\n";
-        else
-          echo " Failed\n";
+        $t->pull();
+        echo " OK\n";
       }
       catch (\ConnectionException | \LogicException $ce)
       {
@@ -187,25 +187,30 @@ class TargetController extends Controller {
       ]);
       $docker = Docker::create($client);
       $containers = $docker->containerList();
-      //var_dump($containers);
-      if(!$containers) echo "No containers found on {$target->server}\n";
+
+      if(!$containers)
+      {
+        echo "No containers found on {$target->server}\n";
+        break;
+      }
       $unhealthy_found=false;
-      foreach ($containers as $container) {
-          if(strstr($container->getStatus(), 'unhealthy'))
+      foreach ($containers as $container)
+      {
+        if(strstr($container->getStatus(), 'unhealthy'))
+        {
+          $unhealthy_found=true;
+          $name=str_replace('/','',$container->getNames()[0]);
+          echo "$name unhealthy ";
+          if(($target=Target::findOne(['name'=>$name]))!==NULL)
           {
-            $unhealthy_found=true;
-            $name=str_replace('/','',$container->getNames()[0]);
-            echo "$name unhealthy ";
-            if(($target=Target::findOne(['name'=>$name]))!==NULL)
+            if($spin!==false)
             {
-              if($spin!==false)
-              {
-                echo "spining";
-                $target->spin();
-              }
+              echo "spining";
+              $target->spin();
             }
-            echo "\n";
           }
+          echo "\n";
+        }
       }
       if(!$unhealthy_found) echo "No unhealthy containers found\n";
     }
