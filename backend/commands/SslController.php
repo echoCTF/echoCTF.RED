@@ -56,7 +56,7 @@ class SslController extends Controller {
     $cacrt->save();
     $catxtcrt->save();
     $cakey->save();
-    if($fileout)
+    if((bool)$fileout)
     {
       file_put_contents("echoCTF-OVPN-CA.csr", $csrout);
       file_put_contents("echoCTF-OVPN-CA.crt", $crtout);
