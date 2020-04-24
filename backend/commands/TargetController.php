@@ -230,51 +230,49 @@ class TargetController extends Controller {
    */
   public function actionHealthcheck($spin=false)
   {
-    //$this->unhealthy=null;
     $unhealthy=$this->unhealthy_dockers();
     $query = SpinQueue::find();
     foreach($query->all() as $t)
     {
       $unhealthy[$t->target->name]=$t->target;
     }
-    if($unhealthy)
+
+    foreach($unhealthy as $target)
     {
-      foreach($unhealthy as $target)
+      printf("Processing [%s] on docker [%s]",$target->name,$target->server);
+      if($target->spinQueue)
       {
-        printf("Processing [%s] on docker [%s]",$target->name,$target->server);
-        if($target->spinQueue)
-        {
-          printf(" by [%s] on %s",$target->spinQueue->player->username,$target->spinQueue->created_at);
-        }
-        echo "\n";
-        if($spin!==false)
-        {
-          $target->spin();
-          if(!$target->spinQueue)
-          {
-            $sh=new SpinHistory;
-            $sh->target_id=$target->id;
-            $sh->created_at=new \yii\db\Expression('NOW()');
-            $sh->updated_at=new \yii\db\Expression('NOW()');
-            /* XXXFIXMEXXX Hardcoded uid this needs fixing */
-            $sh->player_id=1;
-            $sh->save();
-          }
-          else
-          {
-            $notif=new Notification;
-            $notif->player_id=$target->spinQueue->player_id;
-            $notif->title=sprintf("Target [%s] restart request completed",$target->name);
-            $notif->body=sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>",$target->name);
-            $notif->archived=0;
-            $notif->created_at=new \yii\db\Expression('NOW()');
-            $notif->updated_at=new \yii\db\Expression('NOW()');
-            $notif->save();
-          }
-          SpinQueue::deleteAll(['target_id'=>$target->id]);
-        }
+        printf(" by [%s] on %s",$target->spinQueue->player->username,$target->spinQueue->created_at);
       }
-    }
+      echo "\n";
+
+      if($spin!==false)
+      {
+        $target->spin();
+        if(!$target->spinQueue)
+        {
+          $sh=new SpinHistory;
+          $sh->target_id=$target->id;
+          $sh->created_at=new \yii\db\Expression('NOW()');
+          $sh->updated_at=new \yii\db\Expression('NOW()');
+          /* XXXFIXMEXXX Hardcoded uid this needs fixing */
+          $sh->player_id=1;
+          $sh->save();
+        }
+        else
+        {
+          $notif=new Notification;
+          $notif->player_id=$target->spinQueue->player_id;
+          $notif->title=sprintf("Target [%s] restart request completed",$target->name);
+          $notif->body=sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>",$target->name);
+          $notif->archived=0;
+          $notif->created_at=new \yii\db\Expression('NOW()');
+          $notif->updated_at=new \yii\db\Expression('NOW()');
+          $notif->save();
+        }
+        SpinQueue::deleteAll(['target_id'=>$target->id]);
+      }
+    }    
   }
 
   /**
@@ -345,7 +343,7 @@ class TargetController extends Controller {
    */
   private function unhealthy_dockers()
   {
-    $unhealthy=null;
+    $unhealthy=[];
     foreach(Target::find()->select('server')->distinct()->all() as $target)
     {
       if($target->server==null) continue;
@@ -360,8 +358,8 @@ class TargetController extends Controller {
           if(strstr($container->getStatus(), 'unhealthy'))
           {
             $name=str_replace('/','',$container->getNames()[0]);
-            if(($target=Target::findOne(['name'=>$name]))!==NULL)
-              $unhealthy[$name]=$target;
+            if(($unhealthyTarget=Target::findOne(['name'=>$name]))!==NULL)
+              $unhealthy[$name]=$unhealtyTarget;
           }
       }
     }
