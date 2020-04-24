@@ -171,32 +171,12 @@ class Target extends \yii\db\ActiveRecord
     public function spin()
     {
       $targetVariables=null;
-      $targetVolumes=null;
-      if($this->server==null) return;
-      $client = DockerClientFactory::create([
-        'remote_socket' => $this->server, // target->server
-        'ssl' => false,
-      ]);
-      $docker = Docker::create($client);
-      try {
-        $docker->containerDelete($this->name,['force'=>true]);
-      }
-      catch (\Exception $e)
-      {
+      if($this->server==null) return false;
+      $docker = $this->connectAPI();
+      $this->destroy();
 
-      }
-      $restartPolicy=new RestartPolicy();
-      $restartPolicy->setName('always');
-      $hostConfig = new HostConfig();
-      if($this->memory!==null)
-        $hostConfig->setMemory($this->memory); // Set memory limit to 512MB
-      $hostConfig->setNetworkMode($this->net); // target->net
-      $hostConfig->setDns([$this->dns]); // target->dns
-      foreach($this->targetVolumes as $var)
-        $targetVolumes[]=sprintf("%s:%s",$var->volume,$var->bind);
-      $hostConfig->setBinds($targetVolumes); // target->targetVolumes
+      $hostConfig = $this->hostConfig();
 
-      $hostConfig->setRestartPolicy($restartPolicy);
       $containerConfig = new ContainersCreatePostBody();
       $endpointSettings=new EndpointSettings();
       $endpointIPAMConfig=new EndpointIPAMConfig();
@@ -215,40 +195,34 @@ class Target extends \yii\db\ActiveRecord
       $containerConfig->setEnv($targetVariables); // target->targetVariables
       //$containerConfig->setMacAddress($this->mac); // target->mac
       $containerConfig->setHostConfig($hostConfig);
-      try {
-        $imageCreateResult=$docker->imageCreate($this->image, ['fromImage'=>$this->image]);
-        $imageCreateResult->wait();
-      }
-      catch(ImageCreateNotFoundException $e)
-      {
-        Yii::$app->session->setFlash('error', 'ImageCreateNotFound: Failed to create image ['.$this->image.']. The error was <code>'.$e->getMessage().'</code>');
-      }
 
-      try {
-        $containerCreateResult = $docker->containerCreate($containerConfig,['name'=>$this->name]); // target->name
-
-      }
-      catch (ContainerStartNotFoundException $e)
-      {
-        Yii::$app->session->setFlash('error', 'ContainerStartNotFound: Failed to create container ['.$this->name.']. The error was <code>'.$e->getMessage().'</code>');
-        return false;
-      }
-      catch (ContainerStartInternalServerErrorException $e)
-      {
-        Yii::$app->session->setFlash('error', 'ContainerStartInternalServerError: Failed to create container ['.$this->name.']. The error was <code>'.$e->getMessage().'</code>');
-        return false;
-      }
-      catch (ContainerCreateNotFoundException $e)
-      {
-        Yii::$app->session->setFlash('error', 'ContainerCreateNotFound: Failed to create container ['.$this->name.']. The error was <code>'.$e->getMessage().'</code>');
-        return false;
-      }
+      $this->pull();
+      $containerCreateResult = $docker->containerCreate($containerConfig,['name'=>$this->name]); // target->name
 
       $docker->containerStart($containerCreateResult->getId());
 
       return true;
     }
 
+    public function hostConfig()
+    {
+      $targetVariables=null;
+      $targetVolumes=null;
+      $restartPolicy=new RestartPolicy();
+      $restartPolicy->setName('always');
+      $hostConfig = new HostConfig();
+      if($this->memory!==null)
+        $hostConfig->setMemory($this->memory); // Set memory limit to 512MB
+
+      $hostConfig->setNetworkMode($this->net); // target->net
+      $hostConfig->setDns([$this->dns]); // target->dns
+      foreach($this->targetVolumes as $var)
+        $targetVolumes[]=sprintf("%s:%s",$var->volume,$var->bind);
+      $hostConfig->setBinds($targetVolumes); // target->targetVolumes
+
+      $hostConfig->setRestartPolicy($restartPolicy);
+      return $hostConfig;
+    }
     public function getContainer()
     {
       try
@@ -280,22 +254,10 @@ class Target extends \yii\db\ActiveRecord
 
     public function pull()
     {
-      $targetVariables=null;
-      $targetVolumes=null;
-      if($this->server==null) return;
-      $client = DockerClientFactory::create([
-        'remote_socket' => $this->server, // target->server
-        'ssl' => false,
-      ]);
-      $docker = Docker::create($client);
-      try {
-        $imageCreateResult=$docker->imageCreate($this->image, ['fromImage'=>$this->image]);
-        $imageCreateResult->wait();
-      }
-      catch(ImageCreateNotFoundException $e)
-      {
-        return false;
-      }
+      if($this->server==null) return false;
+      $docker = $this->connectAPI();
+      $imageCreateResult=$docker->imageCreate($this->image, ['fromImage'=>$this->image]);
+      $imageCreateResult->wait();
       return true;
     }
 
@@ -304,11 +266,7 @@ class Target extends \yii\db\ActiveRecord
       $targetVariables=null;
       $targetVolumes=null;
       if($this->server==null) return false;
-      $client = DockerClientFactory::create([
-        'remote_socket' => $this->server, // target->server
-        'ssl' => false,
-      ]);
-      $docker = Docker::create($client);
+      $docker = $this->connectAPI();
       try {
         $docker->containerDelete($this->name,['force'=>true]);
       }
@@ -330,6 +288,24 @@ class Target extends \yii\db\ActiveRecord
     return null;
   }
 
+  public function connectAPI()
+  {
+    if($this->server==null) return false;
+
+    try
+    {
+      $client = DockerClientFactory::create([
+        'remote_socket' => $this->server, // target->server
+        'ssl' => false,
+      ]);
+      return Docker::create($client);
+    }
+    catch(\Exception $e)
+    {
+      return false;
+    }
+
+  }
   public function powerdown()
   {
     if($this->destroy())

@@ -162,25 +162,26 @@ class TargetController extends Controller
      */
     public function actionSpin($id)
     {
+      try
+      {
         if($id==='all')
         {
           $models=Target::find()->all();
           foreach($models as $model)
             $model->spin();
           \Yii::$app->getSession()->setFlash('success', 'Containers succesfuly restarted');
-          return $this->redirect(['index']);
-
         }
         else
         {
-          if($this->findModel($id)->spin())
-            \Yii::$app->getSession()->setFlash('success', 'Container succesfuly restarted');
-          else {
-            \Yii::$app->getSession()->setFlash('error', 'Failed to restart container');
-          }
-          return $this->goBack(Yii::$app->request->referrer);
+          $this->findModel($id)->spin();
+          \Yii::$app->getSession()->setFlash('success', 'Container succesfuly restarted');
         }
-
+      }
+      catch(\Exception $e)
+      {
+        \Yii::$app->getSession()->setFlash('error', 'Failed to restart container. '.$e->getMessage());
+      }
+      return $this->goBack(Yii::$app->request->referrer);
     }
 
     /**
