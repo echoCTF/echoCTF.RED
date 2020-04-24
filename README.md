@@ -2,6 +2,7 @@
 
 ![CI Tests](https://github.com/echoCTF/echoCTF.RED/workflows/CI%20Tests/badge.svg)
 [![Documentation Status](https://readthedocs.org/projects/echoctfred/badge/?version=latest)](http://echoctfred.readthedocs.org/en/latest/)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/echoCTF/echoCTF.RED/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/echoCTF/echoCTF.RED/?branch=master)
 
 
 
