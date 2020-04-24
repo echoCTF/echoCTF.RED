@@ -370,7 +370,7 @@ class TargetController extends Controller {
           {
             $name=str_replace('/','',$container->getNames()[0]);
             if(($unhealthyTarget=Target::findOne(['name'=>$name]))!==NULL)
-              $unhealthy[$name]=$unhealtyTarget;
+              $unhealthy[$name]=$unhealthyTarget;
           }
       }
     }
@@ -432,7 +432,7 @@ class TargetController extends Controller {
            {
              $name=str_replace('/','',$container->getNames()[0]);
              if(($unhealthyTarget=Target::findOne(['name'=>$name]))!==NULL)
-               $unhealthy[$name]=$unhealtyTarget;
+               $unhealthy[$name]=$unhealthyTarget;
            }
        }
      }
