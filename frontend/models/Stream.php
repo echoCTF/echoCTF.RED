@@ -118,6 +118,16 @@ class Stream extends \yii\db\ActiveRecord
     return self::MODEL_ICONS[$this->model];
   }
 
+  public function prefix()
+  {
+    return sprintf("%s <b>%s</b>",$this->icon,$this->player->profile->link);
+  }
+
+  public function Title(bool $pub=true)
+  {
+    return $pub ? $this->pubtitle : $this->title;
+  }
+
   public function getFormatted(bool $pub=true)
   {
     if(!Yii::$app->user->isGuest && Yii::$app->user->id===$this->player_id)
@@ -126,34 +136,32 @@ class Stream extends \yii\db\ActiveRecord
     switch($this->model)
     {
       case 'badge':
-        $message=sprintf("%s <b>%s</b> got the badge [<code>%s</code>]", $this->icon,$this->player->profile->link,Badge::findOne(['id'=>$this->model_id])->name);
+        $message=sprintf("%s got the badge [<code>%s</code>]",$this->prefix(),Badge::findOne(['id'=>$this->model_id])->name);
         break;
       case 'headshot':
         $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$this->model_id,'player_id'=>$this->player_id]);
         if($headshot->timer>0)
-          $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes", $this->icon,$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]),number_format($headshot->timer/60));
+          $message=sprintf("%s managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes",$this->prefix(),Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]),number_format($headshot->timer/60));
         else
-          $message=sprintf("%s <b>%s</b> managed to headshot [<code>%s</code>]", $this->icon,$this->player->profile->link,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
-        break;
-      case 'user':
-        $message=sprintf("%s <b>%s</b> %s", $this->icon,$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
+          $message=sprintf("%s managed to headshot [<code>%s</code>]",$this->prefix(),Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
         break;
       case 'team_player':
         $message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $this->icon,$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
         break;
       case 'report':
         if(Yii::app()->sys->teams)
-          $message=sprintf("%s <b>%s</b> from team <b>[%s]</b> Reported <b>%s</b>",$this->icon,$this->player->profile->link, $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$pub ? $this->pubtitle : $this->title);
+          $message=sprintf("%s from team <b>[%s]</b> Reported <b>%s</b>",$this->prefix(), $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$this->Title($pub));
         else
-          $message=sprintf("%s <b>%s</b> Reported <b>%s</b>",$this->icon,$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
+          $message=sprintf("%s Reported <b>%s</b>",$this->prefix(),$this->Title($pub));
         break;
       case 'question':
-        $message=sprintf("%s <b>%s</b> Answered a question from <b>%s</b>",$this->icon,$this->player->profile->link, \app\modules\challenge\models\Question::findOne($this->model_id )->challenge->name);
+        $message=sprintf("%s Answered a question from <b>%s</b>",$this->prefix(), \app\modules\challenge\models\Question::findOne($this->model_id )->challenge->name);
         break;
       case 'treasure':
       case 'finding':
+      case 'user':
       default:
-        $message= sprintf("%s <b>%s</b> %s", $this->icon,$this->player->profile->link, $pub ? $this->pubtitle : $this->title);
+        $message=sprintf("%s %s",$this->prefix(), $this->Title($pub));
     }
 
     if($this->points!=0)
@@ -161,4 +169,6 @@ class Stream extends \yii\db\ActiveRecord
 
     return $message;
   }
+
+
 }
