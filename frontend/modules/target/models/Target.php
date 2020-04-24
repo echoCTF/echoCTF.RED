@@ -76,6 +76,7 @@ class Target extends \yii\db\ActiveRecord
                     'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
                     'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                    'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
                 ],
                 'typecastAfterValidate' => true,
                 'typecastBeforeSave' => true,
@@ -135,14 +136,6 @@ class Target extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCredentials()
-    {
-        return $this->hasMany(Credential::className(), ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getFindings()
     {
         return $this->hasMany(Finding::className(), ['target_id' => 'id']);
@@ -151,25 +144,9 @@ class Target extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getInfrastructureTarget()
-    {
-        return $this->hasOne(InfrastructureTarget::className(), ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getInfrastructures()
-    {
-        return $this->hasMany(Infrastructure::className(), ['id' => 'infrastructure_id'])->viaTable('infrastructure_target', ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getNetworkTargets()
     {
-        return $this->hasMany(NetworkTarget::className(), ['target_id' => 'id']);
+        return $this->hasMany(app\modules\network\models\NetworkTarget::className(), ['target_id' => 'id']);
     }
 
     /**
@@ -177,7 +154,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getNetworks()
     {
-        return $this->hasMany(Network::className(), ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+        return $this->hasMany(app\modules\network\models\Network::className(), ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
     }
 
     /**
@@ -213,13 +190,6 @@ class Target extends \yii\db\ActiveRecord
       }
       return implode(', ',$categories);
 
-    }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSpinHistories()
-    {
-        return $this->hasMany(SpinHistory::className(), ['target_id' => 'id']);
     }
 
     /**
@@ -277,6 +247,7 @@ class Target extends \yii\db\ActiveRecord
     {
       return $this->headshots()->count();
       /* XXXFIXMEXX THIS IS TEMPORARY WE NEED TO REMOVE IT EVENTUALY */
+      /*
       $command = Yii::$app->db->createCommand('select player_id as id from player_finding  as t1 WHERE finding_id IN (SELECT id FROM finding WHERE target_id=:target_id) GROUP BY player_id HAVING count(t1.finding_id)=(SELECT count(*) FROM finding WHERE target_id=:target_id)');
       $command->bindValue(':target_id',$this->id);
       $findings = $command->query();
@@ -289,6 +260,7 @@ class Target extends \yii\db\ActiveRecord
       foreach($findings->readAll() as $rec)
         $fplayers[]=$rec['id'];
       return count(array_intersect($tplayers,$fplayers));
+      */
     }
 
     public function getFormattedExtras()
