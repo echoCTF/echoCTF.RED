@@ -37,12 +37,9 @@ class TargetController extends Controller {
       switch($target->status)
       {
         case 'powerdown':
-          printf("scheduled for [%s] at [%s] , destroyed: %s\n",$target->status,$target->scheduled_at,$target->destroy()?"success":"fail");
-          $target->status='offline';
-          $target->scheduled_at=null;
-          $target->active=0;
-          $requirePF=true;
-          $target->save();
+          printf("scheduled for [%s] at [%s]",$target->status,$target->scheduled_at);
+          $requirePF=$target->powerdown();
+          printf(", destroyed: %s\n", $requirePF ? "success":"fail");
           break;
         case 'powerup':
           $target->pull();
@@ -376,5 +373,4 @@ class TargetController extends Controller {
     }
     shell_exec("/sbin/pfctl -t $table -T replace -f $file");
   }
-
 }
