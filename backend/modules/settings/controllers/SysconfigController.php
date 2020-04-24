@@ -141,50 +141,6 @@ class SysconfigController extends Controller
         return $this->redirect(['index']);
     }
 
-    public function actionMigrate()
-    {
-        $pre_up=ob_get_clean();
-        ob_start();
-        $oldapp=Yii::$app;
-        defined('STDIN') or define('STDIN', fopen('php://input', 'r'));
-        defined('STDOUT') or define('STDOUT', fopen('php://output', 'w'));
-        $runner = new \yii\console\Application([
-            'id'       => 'basic-console',
-            'controllerNamespace' => dirname(__DIR__.'/../../../migrations'),
-            'basePath' => dirname(__DIR__ . '/../../../config'),
-            'components' => [
-                        'db' => Yii::$app->db,
-                    ],
-        ]);
-        try
-        {
-          $newstatus=$runner->runAction('migrate/new');
-          $new_up=$this->stripYii();
-          if(count($new_up)>0)
-          {
-            ob_start();
-            $upstatus=$runner->runAction('migrate/up',[1,'interactive'=>0]);
-            $post_up=$this->stripYii();
-
-            if($upstatus==0)
-            {
-              ob_start();
-              echo "migrate/down\n";
-              $runner->runAction('migrate/down',[1,'interactive'=>0]);
-              $post_down=$this->stripYii();
-            }
-          }
-        }
-        catch(\Exception $ex)
-        {
-            echo $ex->getMessage();
-        }
-        Yii::$app=$oldapp;
-        var_dump($new_up);
-        var_dump($post_up);
-        var_dump($post_down);
-        die();
-    }
     /**
      * Finds the Sysconfig model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
