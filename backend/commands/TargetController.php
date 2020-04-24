@@ -178,42 +178,51 @@ class TargetController extends Controller {
    */
   public function actionDockerHealthStatus($spin=false)
   {
-    foreach(Target::find()->select('server')->distinct()->all() as $target)
+    foreach(Target::find()->select('server')->distinct()->all() as $server)
     {
-      echo "Connecting to: ",$target->server,"\n";
+      echo "Connecting to: ",$server->server,"\n";
       $client = DockerClientFactory::create([
-        'remote_socket' => $target->server,
+        'remote_socket' => $server->server,
         'ssl' => false,
       ]);
-      $docker = Docker::create($client);
-      $containers = $docker->containerList();
+      try
+      {
+        $docker = Docker::create($client);
+        $containers = $docker->containerList();
 
-      if(!$containers)
-      {
-        echo "No containers found on {$target->server}\n";
-        break;
-      }
-      $unhealthy_found=false;
-      foreach ($containers as $container)
-      {
-        if(strstr($container->getStatus(), 'unhealthy'))
+        $unhealthy_found=false;
+
+        foreach ($containers as $container)
         {
-          $unhealthy_found=true;
-          $name=str_replace('/','',$container->getNames()[0]);
-          echo "$name unhealthy ";
-          if(($target=Target::findOne(['name'=>$name]))!==NULL)
+          if(strstr($container->getStatus(), 'unhealthy'))
           {
-            if($spin!==false)
+            $unhealthy_found=true;
+            $name=str_replace('/','',$container->getNames()[0]);
+            echo "$name unhealthy ";
+
+            if(($target=Target::findOne(['name'=>$name]))!==NULL && $spin)
             {
               echo "spining";
               $target->spin();
             }
+
+            echo "\n";
           }
-          echo "\n";
         }
+
+        if(!$unhealthy_found)
+        {
+          echo "No unhealthy containers found\n";
+        }
+
       }
-      if(!$unhealthy_found) echo "No unhealthy containers found\n";
+      catch (\Exception $e)
+      {
+        echo $e->getMessage(),"\n";
+      }
     }
+
+
   }
 
   /**
