@@ -68,7 +68,7 @@ class SslController extends Controller {
   /*
    * Create a server certificate for the OpenVPN server and sign it with our CA
    */
-  public function actionCreateCert($commonName="VPN Server",$emailAddress=null, $subjectAltName='IP:0.0.0.0', $CAcert = "file://echoCTF-OVPN-CA.crt", $CAkey="file://echoCTF-OVPN-CA.key"){
+  public function actionCreateCert($commonName="VPN Server",$emailAddress=null, $subjectAltName='IP:0.0.0.0'){
     Yii::$app->params['dn']['commonName'] = $commonName;
     if($emailAddress!==null) Yii::$app->params['dn']['emailAddress']=$emailAddress;
     if($subjectAltName!=='IP:0.0.0.0') Yii::$app->params['dn']['subjectAltName']=$subjectAltName;
@@ -124,7 +124,7 @@ class SslController extends Controller {
   }
 
   /* Generate certificates for a all players */
-  public function actionGenAllPlayerCerts($fileout=false, $ccd=false)
+  public function actionGenAllPlayerCerts($fileout=false)
   {
     foreach (Player::find()->all() as $player)
     {
@@ -133,7 +133,7 @@ class SslController extends Controller {
         $player->playerSsl->generate();
         $player->playerSsl->save();
 
-        if($fileout)
+        if((bool)$fileout)
         {
           file_put_contents($player->username.".csr", $player->playerSsl->csr);
           file_put_contents($player->username.".txt.crt", $player->playerSsl->txtcrt);
@@ -220,7 +220,7 @@ class SslController extends Controller {
       shell_exec($cmd);
       unlink($tmpcrt);
     }
-    if ($CERTS) $this->actionCreateCrl();
+    if (!empty($CERTS)) $this->actionCreateCrl();
     return 0;
   }
 
