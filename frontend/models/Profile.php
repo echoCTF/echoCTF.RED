@@ -28,7 +28,13 @@ use app\modules\target\models\Target;
  * @property int $gdpr
  * @property string $created_at
  * @property string $updated_at
- */
+ * @property boolean $visible
+ *
+ * @property Owner[] $owner
+ * @property Score[] $score
+ * @property Rank[] $rank
+ * @property HeadshotsCount[] $headshotsCount
+*/
 class Profile extends \yii\db\ActiveRecord
 {
   const SCENARIO_ME = 'me';
