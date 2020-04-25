@@ -22,7 +22,7 @@ class DashboardController extends \yii\web\Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['index'],
                 'rules' => [
                     [
@@ -33,7 +33,7 @@ class DashboardController extends \yii\web\Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                 ],
             ],
