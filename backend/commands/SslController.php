@@ -37,10 +37,10 @@ class SslController extends Controller {
     $cacrt=Sysconfig::findOne('CA.crt') ;
     $catxtcrt=Sysconfig::findOne('CA.txt.crt') ;
     $cakey=Sysconfig::findOne('CA.key');
-    if(!$cacsr)  $cacsr=new Sysconfig;
-    if(!$cacrt)  $cacrt=new Sysconfig;
-    if(!$catxtcrt)  $catxtcrt=new Sysconfig;
-    if(!$cakey)  $cakey=new Sysconfig;
+    if($cacsr!==null)  $cacsr=new Sysconfig;
+    if($cacrt!==null)  $cacrt=new Sysconfig;
+    if($catxtcrt!==null)  $catxtcrt=new Sysconfig;
+    if($cakey!==null)  $cakey=new Sysconfig;
 
     $cacsr->id='CA.csr';
     $cacrt->id='CA.crt';
