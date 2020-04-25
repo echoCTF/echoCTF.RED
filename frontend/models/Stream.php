@@ -150,10 +150,10 @@ class Stream extends \yii\db\ActiveRecord
 //        $message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $this->icon,$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
 //        break;
       case 'report':
-        if(Yii::$app->sys->teams)
-          $message=sprintf("%s from team <b>[%s]</b> Reported <b>%s</b>",$this->prefix(), $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$this->Title($pub));
-        else
-          $message=sprintf("%s Reported <b>%s</b>",$this->prefix(),$this->Title($pub));
+//        if(Yii::$app->sys->teams)
+//          $message=sprintf("%s from team <b>[%s]</b> Reported <b>%s</b>",$this->prefix(), $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$this->Title($pub));
+//        else
+        $message=sprintf("%s Reported <b>%s</b>",$this->prefix(),$this->Title($pub));
         break;
       case 'question':
         $message=sprintf("%s Answered a question from <b>%s</b>",$this->prefix(), \app\modules\challenge\models\Question::findOne($this->model_id )->challenge->name);
