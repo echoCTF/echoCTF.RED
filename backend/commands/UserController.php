@@ -68,15 +68,20 @@ class UserController extends Controller
      */
     public function actionCreate($name, $email, $password = '')
     {
-        if (empty($password)) {
-            $random = Yii::$app->security->generateRandomString(8);
+        if (empty($password))
+        {
+          $random = Yii::$app->security->generateRandomString(8);
+        }
+        else
+        {
+          $random=$password;
         }
         $user = new User();
         $user->username = $name;
         $user->email = $email;
         $user->status = User::STATUS_ACTIVE;
         $user->generateAuthKey();
-        $user->setPassword(empty($password) ? $random : $password);
+        $user->setPassword($random);
         if ($user->save()) {
             $this->p('User "{name}" has been created.', ['name' => $user->username]);
             if (empty($password)) {
@@ -165,15 +170,23 @@ class UserController extends Controller
     {
         $user = $this->findUser($email);
         if (empty($new_password)) {
-            $random = Yii::$app->security->generateRandomString(8);
+          $random = Yii::$app->security->generateRandomString(8);
         }
-        $user->setPassword(empty($new_password) ? $random : $new_password);
-        if ($user->save()) {
-            if (empty($new_password)) {
-                $this->p('Password has been changed to random "{random}"', compact('random'));
-            } else {
-                $this->p('Password has been changed.');
-            }
+        else
+        {
+          $random=$new_password;
+        }
+        $user->setPassword($random);
+        if ($user->save())
+        {
+          if (empty($new_password))
+          {
+            $this->p('Password has been changed to random "{random}"', compact('random'));
+          }
+          else
+          {
+            $this->p('Password has been changed.');
+          }
         }
     }
 
