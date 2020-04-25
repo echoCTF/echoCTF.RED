@@ -101,7 +101,7 @@ class UserController extends Controller
         if (!$this->confirm('Are you sure to delete user "' . $user->email . '"')) {
             return;
         }
-        if ($user->delete()) {
+        if ($user->delete()!==false) {
             $this->p('User deleted.');
         }
         else {
