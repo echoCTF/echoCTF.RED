@@ -164,7 +164,7 @@ class Profile extends \yii\db\ActiveRecord
   		if(Yii::$app->sys->player_profile===false) return false;
   		elseif($this->visibility=='public') return true;
   		elseif(intval(Yii::$app->user->id)===intval($this->player_id)) return true;
-      elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin) return true;
+      elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin!==false) return true;
   		else return array_search($this->visibility,['public','ingame'],true) === FALSE ? false : true;
   	}
 
