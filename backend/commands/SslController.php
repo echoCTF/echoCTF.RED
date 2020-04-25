@@ -128,7 +128,7 @@ class SslController extends Controller {
   {
     foreach (Player::find()->all() as $player)
     {
-      if($player->playerSsl!==null)
+      if(!($player->playerSsl instanceof PlayerSsl))
       {
         $player->playerSsl->generate();
         $player->playerSsl->save();
