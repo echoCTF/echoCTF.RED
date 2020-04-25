@@ -13,7 +13,7 @@ use app\modules\frontend\models\Player;
  * @property int $player_id
  * @property string $ip
  * @property string $ts
- * @property string $decodedData
+ * @property array $decodedData
  *
  * @property Player $player
  */
