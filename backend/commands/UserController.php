@@ -231,4 +231,9 @@ class UserController extends Controller
     {
         $this->stdout(Yii::t('app', $message, $params) . PHP_EOL);
     }
+
+    public function err($message, array $params = [])
+    {
+        $this->stderr(Yii::t('app', $message, $params) . PHP_EOL);
+    }
 }
