@@ -112,7 +112,6 @@ class PlayerController extends Controller {
   public function actionMail($baseURL="https://echoctf.red/index.php?r=site/activate&key=", $active=false,$email=false)
   {
     // Get innactive players
-    $failedSend=$okSend=[];
     if($email!==false)
     {
       $players=Player::find()->where(['active'=>$active,'email'=>trim(str_replace(array("\xc2\xa0","\r\n","\r"),"",$email))])->all();
