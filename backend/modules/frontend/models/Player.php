@@ -347,7 +347,7 @@ class Player extends \yii\db\ActiveRecord
       $ban->email=$this->email;
       $ban->registered_at=$this->created;
       $ban->banned_at=new \yii\db\Expression('NOW()');
-      if($ban->save() && $this->delete())
+      if($ban->save() && $this->delete()!==false)
         return true;
       return false;
 
