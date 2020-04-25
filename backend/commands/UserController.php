@@ -27,7 +27,7 @@ class UserController extends Controller
      */
     public function actionIndex($filter = 'all')
     {
-        $filters = ['all', 'enabled', 'disabled', 'pending'];
+        $filters = ['all', 'enabled', 'disabled'];
         if (!in_array($filter, $filters)) {
             throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
         }
@@ -42,9 +42,6 @@ class UserController extends Controller
                 $users->where(['status' => User::STATUS_INACTIVE]);
                 break;
 
-            case 'pending':
-                $users->where(['status' => User::STATUS_PENDING]);
-                break;
         }
 
         $this->userList($users->all());
