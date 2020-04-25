@@ -63,12 +63,11 @@ class DefaultController extends Controller
      public function actionVersus(int $id,int $profile_id)
      {
        $sum=0;
-       $userTarget=null;
        $profile=$this->findProfile($profile_id);
        if(Yii::$app->user->isGuest && $profile->visibility!='public')
          			return $this->redirect(['/']);
 
-       if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
+       if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin!==true)
          			return $this->redirect(['/']);
 
 
@@ -124,11 +123,10 @@ class DefaultController extends Controller
     public function actionIndex(int $id)
     {
       $sum=0;
-      $userTarget=null;
       $target=$this->findModel($id);
       if(!Yii::$app->user->isGuest)
       {
-        $target=Target::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
+        $target=Target::find()->where(['t.id'=>$id])->player_progress((int)Yii::$app->user->id)->one();
         $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>Yii::$app->user->id,'finding.target_id'=>$id])->all();
         $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>Yii::$app->user->id,'treasure.target_id'=>$id])->all();
         foreach($PF as $pf)
