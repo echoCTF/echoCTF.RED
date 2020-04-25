@@ -21,6 +21,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property PlayerQuestion[] $playerQuestions
  * @property Challenge $challenge
+ * @property PlayerQuestion $answered
  */
 class Question extends \yii\db\ActiveRecord
 {
@@ -97,7 +98,7 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getAnswered()
     {
-        return $this->hasOne(PlayerQuestion::class, ['question_id' => 'id'])->andOnCondition(['player_id'=>Yii::$app->user->id]);
+        return $this->hasOne(PlayerQuestion::class, ['question_id' => 'id'])->andOnCondition(['player_id'=>(int)Yii::$app->user->id]);
     }
 
     /**
