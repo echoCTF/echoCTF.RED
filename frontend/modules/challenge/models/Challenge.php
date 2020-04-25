@@ -35,7 +35,7 @@ class Challenge extends \yii\db\ActiveRecord
     {
         return [
           'typecast' => [
-              'class' => AttributeTypecastBehavior::className(),
+              'class' => AttributeTypecastBehavior::class,
               'attributeTypes' => [
                   'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                   'total_questions' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -84,7 +84,7 @@ class Challenge extends \yii\db\ActiveRecord
      */
     public function getQuestions()
     {
-        return $this->hasMany(Question::className(), ['challenge_id' => 'id']);
+        return $this->hasMany(Question::class, ['challenge_id' => 'id']);
     }
 
     /**

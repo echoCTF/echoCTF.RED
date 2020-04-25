@@ -49,7 +49,7 @@ class Player extends ActiveRecord implements IdentityInterface
     {
         return [
             'typecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'status' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -60,7 +60,7 @@ class Player extends ActiveRecord implements IdentityInterface
                 'typecastAfterFind' => true,
           ],
           [
-                'class' => TimestampBehavior::className(),
+                'class' => TimestampBehavior::class,
                 'createdAtAttribute' => 'created',
                 'updatedAtAttribute' => 'ts',
                 'value' => new Expression('NOW()'),
@@ -249,15 +249,15 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function getProfile()
     {
-        return $this->hasOne(Profile::className(), ['player_id' => 'id']);
+        return $this->hasOne(Profile::class, ['player_id' => 'id']);
     }
     public function getPlayerScore()
     {
-        return $this->hasOne(PlayerScore::className(), ['player_id' => 'id']);
+        return $this->hasOne(PlayerScore::class, ['player_id' => 'id']);
     }
     public function getSSL()
     {
-      return $this->hasOne(PlayerSsl::className(), ['player_id' => 'id']);
+      return $this->hasOne(PlayerSsl::class, ['player_id' => 'id']);
     }
     public function getSpins()
     {
@@ -266,15 +266,15 @@ class Player extends ActiveRecord implements IdentityInterface
     }
     public function getPlayerTreasures()
     {
-        return $this->hasMany(PlayerTreasure::className(), ['player_id' => 'id']);
+        return $this->hasMany(PlayerTreasure::class, ['player_id' => 'id']);
     }
     public function getHeadshots()
     {
-        return $this->hasMany(Headshot::className(), ['player_id' => 'id']);
+        return $this->hasMany(Headshot::class, ['player_id' => 'id']);
     }
     public function getHeadshotsCount()
     {
-        return $this->hasMany(Headshot::className(), ['player_id' => 'id'])->count();
+        return $this->hasMany(Headshot::class, ['player_id' => 'id'])->count();
     }
 
     /**
@@ -282,14 +282,14 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function getTreasures()
     {
-        return $this->hasMany(\app\modules\target\models\Treasure::className(), ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\target\models\Treasure::class, ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
     }
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPlayerFindings()
     {
-        return $this->hasMany(PlayerFinding::className(), ['player_id' => 'id']);
+        return $this->hasMany(PlayerFinding::class, ['player_id' => 'id']);
     }
 
     /**
@@ -297,7 +297,7 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function getFindings()
     {
-        return $this->hasMany(\app\modules\target\models\Finding::className(), ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
     }
 
     public function getIsAdmin():bool
@@ -327,32 +327,32 @@ class Player extends ActiveRecord implements IdentityInterface
 */
     public function getNotifications()
     {
-        return $this->hasMany(Notification::className(), ['player_id' => 'id']);
+        return $this->hasMany(Notification::class, ['player_id' => 'id']);
     }
     public function getPendingNotifications()
     {
-        return $this->hasMany(Notification::className(), ['player_id' => 'id'])->pending();
+        return $this->hasMany(Notification::class, ['player_id' => 'id'])->pending();
     }
 
     public function getPlayerHints()
     {
-        return $this->hasMany(PlayerHint::className(), ['player_id' => 'id']);
+        return $this->hasMany(PlayerHint::class, ['player_id' => 'id']);
     }
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getHints()
     {
-        return $this->hasMany(Hint::className(), ['id' => 'player_id'])->viaTable('player_hint', ['hint_id' => 'id']);
+        return $this->hasMany(Hint::class, ['id' => 'player_id'])->viaTable('player_hint', ['hint_id' => 'id']);
     }
 
     public function getPlayerHintsForTarget(int $target_id)
     {
-        return $this->hasMany(PlayerHint::className(), ['player_id' => 'id'])->forTarget($target_id);
+        return $this->hasMany(PlayerHint::class, ['player_id' => 'id'])->forTarget($target_id);
     }
     public function getPendingHints()
     {
-        return $this->hasMany(PlayerHint::className(), ['player_id' => 'id'])->pending();
+        return $this->hasMany(PlayerHint::class, ['player_id' => 'id'])->pending();
     }
 
     public static function find()

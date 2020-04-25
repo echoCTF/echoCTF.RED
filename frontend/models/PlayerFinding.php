@@ -29,7 +29,7 @@ class PlayerFinding extends \yii\db\ActiveRecord
     {
       return [
         'typecast' => [
-            'class' => AttributeTypecastBehavior::className(),
+            'class' => AttributeTypecastBehavior::class,
             'attributeTypes' => [
                 'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                 'finding_id' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -51,8 +51,8 @@ class PlayerFinding extends \yii\db\ActiveRecord
             [['player_id', 'finding_id'], 'integer'],
             [['ts'], 'safe'],
             [['player_id', 'finding_id'], 'unique', 'targetAttribute' => ['player_id', 'finding_id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-            [['finding_id'], 'exist', 'skipOnError' => true, 'targetClass' => Finding::className(), 'targetAttribute' => ['finding_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['finding_id'], 'exist', 'skipOnError' => true, 'targetClass' => Finding::class, 'targetAttribute' => ['finding_id' => 'id']],
         ];
     }
 
@@ -73,7 +73,7 @@ class PlayerFinding extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -81,6 +81,6 @@ class PlayerFinding extends \yii\db\ActiveRecord
      */
     public function getFinding()
     {
-        return $this->hasOne(Finding::className(), ['id' => 'finding_id']);
+        return $this->hasOne(Finding::class, ['id' => 'finding_id']);
     }
 }

@@ -9,7 +9,7 @@ $this->title = Yii::$app->sys->event_name .' - Target: '.$target->name;
 #$this->pageURL=$this->createAbsoluteUrl('target/view',array('id'=>$target->id));
 #Yii::$app->clientScript->registerCssFile(Yii::app()->baseUrl . '/css/scores.css');
 $this->registerCssFile("@web/css/scores.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'screen',
 ], 'scores-theme');
 ?>

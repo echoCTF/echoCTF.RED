@@ -38,8 +38,8 @@ class PlayerQuestion extends \yii\db\ActiveRecord
             [['question_id', 'player_id'], 'integer'],
             [['points'], 'number'],
             [['ts'], 'safe'],
-            [['question_id'], 'exist', 'skipOnError' => true, 'targetClass' => Question::className(), 'targetAttribute' => ['question_id' => 'id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['question_id'], 'exist', 'skipOnError' => true, 'targetClass' => Question::class, 'targetAttribute' => ['question_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -62,7 +62,7 @@ class PlayerQuestion extends \yii\db\ActiveRecord
      */
     public function getQuestion()
     {
-        return $this->hasOne(Question::className(), ['id' => 'question_id']);
+        return $this->hasOne(Question::class, ['id' => 'question_id']);
     }
 
     /**
@@ -70,6 +70,6 @@ class PlayerQuestion extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 }

@@ -54,7 +54,7 @@ class Profile extends \yii\db\ActiveRecord
     {
         return [
             'typecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -130,28 +130,28 @@ class Profile extends \yii\db\ActiveRecord
      */
     public function getOwner()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
     public function getLast()
     {
-        return $this->hasOne(PlayerLast::className(), ['id' => 'player_id']);
+        return $this->hasOne(PlayerLast::class, ['id' => 'player_id']);
     }
     public function getSpins()
     {
-        return $this->hasOne(PlayerSpin::className(), ['player_id' => 'player_id'])->todays();
+        return $this->hasOne(PlayerSpin::class, ['player_id' => 'player_id'])->todays();
     }
 
     public function getRank()
     {
-        return $this->hasOne(PlayerRank::className(), ['player_id' => 'player_id']);
+        return $this->hasOne(PlayerRank::class, ['player_id' => 'player_id']);
     }
     public function getScore()
     {
-        return $this->hasOne(PlayerScore::className(), ['player_id' => 'player_id']);
+        return $this->hasOne(PlayerScore::class, ['player_id' => 'player_id']);
     }
     public function getRCountry()
     {
-        return $this->hasOne(Country::className(), ['id' => 'country']);
+        return $this->hasOne(Country::class, ['id' => 'country']);
     }
     public function getVisible(): bool
   	{
@@ -185,7 +185,7 @@ class Profile extends \yii\db\ActiveRecord
 
     public function getExperience()
 		{
-      //return $this->hasOne(Experience::className(), ['id' => 'player_id']);
+      //return $this->hasOne(Experience::class, ['id' => 'player_id']);
 			return Experience::find()->where("{$this->score->points} BETWEEN min_points AND max_points");
 		}
     public function getTotalTreasures()
@@ -198,14 +198,14 @@ class Profile extends \yii\db\ActiveRecord
     }
     public function getHeadshotRelation()
     {
-      return $this->hasMany(Headshot::className(), ['player_id' => 'player_id']);
+      return $this->hasMany(Headshot::class, ['player_id' => 'player_id']);
     }
     public function getHeadshots(){
-      return $this->hasMany(Target::className(),['id' => 'target_id'])->via('headshotRelation');
+      return $this->hasMany(Target::class,['id' => 'target_id'])->via('headshotRelation');
     }
 
     public function getHeadshotsCount():int {
-      return (int)$this->hasMany(Headshot::className(), ['player_id' => 'player_id'])->count();
+      return (int)$this->hasMany(Headshot::class, ['player_id' => 'player_id'])->count();
     }
 
     public function getIsMine():bool

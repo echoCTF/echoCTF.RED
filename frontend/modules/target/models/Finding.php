@@ -40,7 +40,7 @@ class Finding extends \yii\db\ActiveRecord
     {
         return [
             'typecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'stock' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -67,7 +67,7 @@ class Finding extends \yii\db\ActiveRecord
             [['name', 'pubname'], 'string', 'max' => 255],
             [['protocol'], 'string', 'max' => 30],
             [['protocol', 'target_id', 'port'], 'unique', 'targetAttribute' => ['protocol', 'target_id', 'port']],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -96,7 +96,7 @@ class Finding extends \yii\db\ActiveRecord
      */
     public function getBadgeFindings()
     {
-        return $this->hasMany(BadgeFinding::className(), ['finding_id' => 'id']);
+        return $this->hasMany(BadgeFinding::class, ['finding_id' => 'id']);
     }
 
     /**
@@ -104,7 +104,7 @@ class Finding extends \yii\db\ActiveRecord
      */
     public function getBadges()
     {
-        return $this->hasMany(Badge::className(), ['id' => 'badge_id'])->viaTable('badge_finding', ['finding_id' => 'id']);
+        return $this->hasMany(Badge::class, ['id' => 'badge_id'])->viaTable('badge_finding', ['finding_id' => 'id']);
     }
 
     /**
@@ -112,7 +112,7 @@ class Finding extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 
     /**
@@ -120,7 +120,7 @@ class Finding extends \yii\db\ActiveRecord
      */
     public function getHints()
     {
-        return $this->hasMany(Hint::className(), ['finding_id' => 'id']);
+        return $this->hasMany(Hint::class, ['finding_id' => 'id']);
     }
 
     /**
@@ -128,7 +128,7 @@ class Finding extends \yii\db\ActiveRecord
      */
     public function getPlayerFindings()
     {
-        return $this->hasMany(PlayerFinding::className(), ['finding_id' => 'id']);
+        return $this->hasMany(PlayerFinding::class, ['finding_id' => 'id']);
     }
 
     /**
@@ -136,7 +136,7 @@ class Finding extends \yii\db\ActiveRecord
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::className(), ['id' => 'player_id'])->viaTable('player_finding', ['finding_id' => 'id']);
+        return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('player_finding', ['finding_id' => 'id']);
     }
 
     public function save($runValidation = true, $attributeNames = NULL)

@@ -36,8 +36,8 @@ class PlayerTreasure extends \yii\db\ActiveRecord
             [['player_id', 'treasure_id'], 'integer'],
             [['ts'], 'safe'],
             [['player_id', 'treasure_id'], 'unique', 'targetAttribute' => ['player_id', 'treasure_id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::className(), 'targetAttribute' => ['treasure_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::class, 'targetAttribute' => ['treasure_id' => 'id']],
         ];
     }
 
@@ -58,7 +58,7 @@ class PlayerTreasure extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -66,6 +66,6 @@ class PlayerTreasure extends \yii\db\ActiveRecord
      */
     public function getTreasure()
     {
-        return $this->hasOne(Treasure::className(), ['id' => 'treasure_id']);
+        return $this->hasOne(Treasure::class, ['id' => 'treasure_id']);
     }
 }

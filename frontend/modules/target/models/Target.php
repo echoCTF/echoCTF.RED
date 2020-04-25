@@ -78,7 +78,7 @@ class Target extends \yii\db\ActiveRecord
     {
       return [
         'typecast' => [
-          'class' => AttributeTypecastBehavior::className(),
+          'class' => AttributeTypecastBehavior::class,
           'attributeTypes' => [
             'id' => AttributeTypecastBehavior::TYPE_INTEGER,
             'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -150,7 +150,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getFindings()
     {
-      return $this->hasMany(Finding::className(), ['target_id' => 'id']);
+      return $this->hasMany(Finding::class, ['target_id' => 'id']);
     }
 
     /**
@@ -158,7 +158,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getNetworkTargets()
     {
-      return $this->hasMany(\app\modules\network\models\NetworkTarget::className(), ['target_id' => 'id']);
+      return $this->hasMany(\app\modules\network\models\NetworkTarget::class, ['target_id' => 'id']);
     }
 
     /**
@@ -166,7 +166,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getNetworks()
     {
-      return $this->hasMany(\app\modules\network\models\Network::className(), ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
     }
 
     /**
@@ -174,7 +174,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getTreasures()
     {
-      return $this->hasMany(Treasure::className(), ['target_id' => 'id']);
+      return $this->hasMany(Treasure::class, ['target_id' => 'id']);
     }
 
     public function getTreasureCategories()
@@ -209,7 +209,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getSpinQueue()
     {
-      return $this->hasOne(SpinQueue::className(), ['target_id' => 'id']);
+      return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
     }
 
     public function getSchedule()
@@ -247,7 +247,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getHeadshots()
     {
-      return $this->hasMany(Headshot::className(), ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
+      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
     }
 
     /*

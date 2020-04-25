@@ -29,7 +29,7 @@ class Experience extends \yii\db\ActiveRecord
     {
       return [
         'typecast' => [
-            'class' => AttributeTypecastBehavior::className(),
+            'class' => AttributeTypecastBehavior::class,
             'attributeTypes' => [
                 'min_points' => AttributeTypecastBehavior::TYPE_INTEGER,
                 'max_points' => AttributeTypecastBehavior::TYPE_INTEGER,

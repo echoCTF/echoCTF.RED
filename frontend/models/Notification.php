@@ -31,7 +31,7 @@ class Notification extends \yii\db\ActiveRecord
     {
       return [
         'typecast' => [
-            'class' => AttributeTypecastBehavior::className(),
+            'class' => AttributeTypecastBehavior::class,
             'attributeTypes' => [
                 'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                 'archived' => AttributeTypecastBehavior::TYPE_BOOLEAN,
@@ -54,7 +54,7 @@ class Notification extends \yii\db\ActiveRecord
             [['body'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['title'], 'string', 'max' => 255],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -79,7 +79,7 @@ class Notification extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**

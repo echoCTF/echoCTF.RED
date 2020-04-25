@@ -36,8 +36,8 @@ class NetworkTarget extends \yii\db\ActiveRecord
             [['network_id', 'target_id', 'weight'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['network_id', 'target_id'], 'unique', 'targetAttribute' => ['network_id', 'target_id']],
-            [['network_id'], 'exist', 'skipOnError' => true, 'targetClass' => Network::className(), 'targetAttribute' => ['network_id' => 'id']],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['network_id'], 'exist', 'skipOnError' => true, 'targetClass' => Network::class, 'targetAttribute' => ['network_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -60,7 +60,7 @@ class NetworkTarget extends \yii\db\ActiveRecord
      */
     public function getNetwork()
     {
-        return $this->hasOne(Network::className(), ['id' => 'network_id']);
+        return $this->hasOne(Network::class, ['id' => 'network_id']);
     }
 
     /**
@@ -68,7 +68,7 @@ class NetworkTarget extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 
     /**
