@@ -96,7 +96,8 @@ class DefaultController extends Controller
             throw new NotFoundHttpException('The requested challenge does not have a file to download.');
         $storagePath = Yii::getAlias(Yii::$app->sys->challenge_home);
 
-        return Yii::$app->response->sendFile("{$storagePath}/{$model->filename}", $model->filename)->send();
+        Yii::$app->response->sendFile("{$storagePath}/{$model->filename}", $model->filename)->send();
+        return;
     }
 
     /**
