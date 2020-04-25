@@ -15,12 +15,7 @@ use app\widgets\Twitter;
 echo GridView::widget([
    'id'=>$divID,
    'dataProvider' => $dataProvider,
-   'rowOptions'=>function($model){
-/*            if(intval($model->progress)===100)
-              return ['class'=>'bg-dark'];
-            if($model->progress>0)
-              return ['class'=>'bg-warning'];*/
-    },
+   'rowOptions'=>function(){ },
    'pager'=>[
      'class'=>'yii\bootstrap4\LinkPager',
      'linkOptions'=>['class' => ['page-link'],'aria-label'=>'Pager link'],
@@ -95,7 +90,7 @@ echo GridView::widget([
        'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell'],
        'value'=>function($model){
          $progress=($model->difficulty*20);
-         $color="";
+         $bgcolor="";
          $abbr=ucfirst($model->difficultyText);
          switch($model->difficulty)
          {
