@@ -263,7 +263,7 @@ class PlayerController extends Controller
     public function actionDelete($id)
     {
 
-        if(($model = Player::findOne($id)) !== null && $model->delete())
+        if(($model = Player::findOne($id)) !== null && $model->delete()!==false)
           Yii::$app->session->setFlash('success',sprintf('Player [%s] deleted.',$model->username));
         else
           Yii::$app->session->setFlash('error','Player deletion failed.');
@@ -378,7 +378,7 @@ class PlayerController extends Controller
         $event_name=Sysconfig::findOne('event_name')->val;
         // Generate activation URL
         $activationURL=sprintf("%s%s",$baseURL,$player->activkey);
-        $content =   $this->renderPartial('_account_activation_email', ['player' => $player,'activationURL'=>$activationURL,'event_name'=>$event_name], true);
+        $content=$this->renderPartial('_account_activation_email', ['player' => $player,'activationURL'=>$activationURL,'event_name'=>$event_name]);
         if($this->mailPlayer($content,$player,'echoCTF RED re-sending of account activation URL'))
           Yii::$app->session->setFlash('success',"The user has been mailed.");
         else
