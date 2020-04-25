@@ -193,9 +193,9 @@ class DefaultController extends Controller
     {
         $string = Yii::$app->request->post('hash');
         //$string = Yii::$app->request->get('hash');
-        if(empty($string)) return $this->renderAjax('claim');
+        if(empty($string) || is_string($string)!==false) return $this->renderAjax('claim');
         $treasure=Treasure::find()->claimable()->byCode($string)->one();
-        if($treasure!==null && Treasure::find()->byCode($string)->claimable()->notBy(Yii::$app->user->id)->one()===null)
+        if($treasure!==null && Treasure::find()->byCode($string)->claimable()->notBy((int)Yii::$app->user->id)->one()===null)
         {
           Yii::$app->session->setFlash('warning',sprintf('Flag [%s] claimed before',$treasure->name,$treasure->target->name));
           return $this->renderAjax('claim');
@@ -212,7 +212,7 @@ class DefaultController extends Controller
           if($treasure!==null)
           {
             $PT=new PlayerTreasure();
-            $PT->player_id=Yii::$app->user->id;
+            $PT->player_id=(int)Yii::$app->user->id;
             $PT->treasure_id=$treasure->id;
             $PT->save();
             if($treasure->appears!==-1)
