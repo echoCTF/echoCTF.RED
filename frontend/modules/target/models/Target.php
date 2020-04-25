@@ -32,6 +32,9 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int|null $required_xp
  * @property string $ts
  *
+ * @property int $points
+ * @property array $treasureCategories
+ *
  * @property Credential[] $credentials
  * @property Finding[] $findings
  * @property InfrastructureTarget $infrastructureTarget
@@ -43,6 +46,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property TargetVariable[] $targetVariables
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
+ * @property Headshot[] $headshots
  */
 class Target extends \yii\db\ActiveRecord
 {

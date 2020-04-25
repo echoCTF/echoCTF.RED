@@ -24,6 +24,10 @@ use app\modules\game\models\Headshot;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ *
+ * @property Profile $profile
+ * @property PlayerScore $playerScore
+ * @property PlayerSsl $playerSsl
  */
 class Player extends ActiveRecord implements IdentityInterface
 {

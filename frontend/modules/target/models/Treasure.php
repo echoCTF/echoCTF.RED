@@ -22,6 +22,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property string|null $code
  * @property string $ts
  *
+ * @property string|null $category
+ *
  * @property BadgeTreasure[] $badgeTreasures
  * @property Badge[] $badges
  * @property Hint[] $hints
