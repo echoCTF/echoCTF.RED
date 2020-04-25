@@ -146,9 +146,9 @@ class Stream extends \yii\db\ActiveRecord
         else
           $message=sprintf("%s managed to headshot [<code>%s</code>]",$this->prefix(),Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]));
         break;
-      case 'team_player':
-        $message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $this->icon,$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
-        break;
+//      case 'team_player':
+//        $message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $this->icon,$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
+//        break;
       case 'report':
         if(Yii::$app->sys->teams)
           $message=sprintf("%s from team <b>[%s]</b> Reported <b>%s</b>",$this->prefix(), $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$this->Title($pub));
