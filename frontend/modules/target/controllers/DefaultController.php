@@ -245,7 +245,7 @@ class DefaultController extends Controller
       $target=$this->findModel($id);
       $fname=Yii::getAlias(sprintf('@app/web/images/targets/%s.png',$target->name));
       $src = imagecreatefrompng($fname);
-      $skull = json_decode('"&#xf714;"');
+//      $skull = json_decode('"&#xf714;"');
       imagealphablending($src, false);
       imagesavealpha($src, true);
       $textcolor = imagecolorallocate($src, 255, 255, 255);
@@ -267,8 +267,7 @@ class DefaultController extends Controller
       imagestring($src, 6, 40, $lineheight*8, sprintf("points.......: %s",number_format($target->points)),$greencolor);
       imagepng($src);
       imagedestroy($src);
-      exit();
-
+      return;
     }
 
     /**
