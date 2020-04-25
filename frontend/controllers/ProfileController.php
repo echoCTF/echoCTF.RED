@@ -20,7 +20,7 @@ class ProfileController extends \yii\web\Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::::class,
+                'class' => AccessControl::class,
                 'only' => ['me','index','notifications','hints','update','ovpn','settings'],
                 'rules' => [
                     [
@@ -39,7 +39,7 @@ class ProfileController extends \yii\web\Controller
               'only' => ['notifications','hints']
             ],
           'verbs' => [
-                'class' => VerbFilter::::class,
+                'class' => VerbFilter::class,
                 'actions' => [
                 ],
             ],
