@@ -246,7 +246,7 @@ class PlayerController extends Controller {
       foreach($players as $player)
       {
         $player->password=Yii::$app->security->generatePasswordHash($password);
-        if(!$player->update(['password']))
+        if(!$player->update(true, ['password']))
           $this->p("Failed to change password for [{player}]",['player'=>$player->username]);
         else
           $this->p("Password for [{player}] changed",['player'=>$player->username]);
