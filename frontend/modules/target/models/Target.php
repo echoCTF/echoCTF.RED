@@ -33,6 +33,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property string $ts
  *
  * @property int $points
+ * @property int $countHeadshots
  * @property array $treasureCategories
  *
  * @property Credential[] $credentials
