@@ -267,7 +267,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getCountHeadshots()
     {
-      return $this->headshots()->count();
+      return $this->headshots->count();
     }
 
     public function getFormattedExtras()
@@ -277,7 +277,7 @@ class Target extends \yii\db\ActiveRecord
         $scheduled=sprintf('<abbr title="Scheduled to powedown at %s"><i class="glyphicon glyphicon-hand-down"></i></abbr>',$this->scheduled_at);
       elseif(intval($this->active)===0  && $this->status==='powerup' )
         $scheduled=sprintf('<abbr title="Scheduled to powerup %s"><i class="glyphicon glyphicon-hand-up"></i></abbr>',$this->scheduled_at);
-      return sprintf("<center><abbr title='Flags'><i class='material-icons'>flag</i>%d</abbr> / <abbr title='Service'><i class='material-icons'>whatshot</i>%d</abbr> / <abbr title='Headshots'><i class='material-icons'>memory</i>%d</abbr> %s</center>",count($this->treasures),count($this->findings),count($this->getHeadshots()),$scheduled);
+      return sprintf("<center><abbr title='Flags'><i class='material-icons'>flag</i>%d</abbr> / <abbr title='Service'><i class='material-icons'>whatshot</i>%d</abbr> / <abbr title='Headshots'><i class='material-icons'>memory</i>%d</abbr> %s</center>",count($this->treasures),count($this->findings),$this->countHeadshots,$scheduled);
     }
 
     /*
