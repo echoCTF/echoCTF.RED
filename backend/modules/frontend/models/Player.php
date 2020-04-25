@@ -45,6 +45,8 @@ use app\modules\activity\models\SpinHistory;
  * @property Team[] $teams
  * @property TeamPlayer $teamPlayer
  * @property Team[] $teams0
+ * @property Profile[] $profile
+ * @property PlayerSsl[] $playerSsl
  */
 class Player extends \yii\db\ActiveRecord
 {
