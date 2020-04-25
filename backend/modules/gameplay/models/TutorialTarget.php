@@ -33,8 +33,8 @@ class TutorialTarget extends \yii\db\ActiveRecord
             [['tutorial_id', 'target_id'], 'required'],
             [['tutorial_id', 'target_id', 'weight'], 'integer'],
             [['tutorial_id', 'target_id'], 'unique', 'targetAttribute' => ['tutorial_id', 'target_id']],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
-            [['tutorial_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tutorial::className(), 'targetAttribute' => ['tutorial_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
+            [['tutorial_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tutorial::class, 'targetAttribute' => ['tutorial_id' => 'id']],
         ];
     }
 
@@ -55,7 +55,7 @@ class TutorialTarget extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 
     /**
@@ -63,7 +63,7 @@ class TutorialTarget extends \yii\db\ActiveRecord
      */
     public function getTutorial()
     {
-        return $this->hasOne(Tutorial::className(), ['id' => 'tutorial_id']);
+        return $this->hasOne(Tutorial::class, ['id' => 'tutorial_id']);
     }
 
     /**

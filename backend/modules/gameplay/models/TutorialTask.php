@@ -37,7 +37,7 @@ class TutorialTask extends \yii\db\ActiveRecord
             [['tutorial_id', 'points', 'weight'], 'integer'],
             [['description'], 'string'],
             [['title', 'answer'], 'string', 'max' => 255],
-            [['tutorial_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tutorial::className(), 'targetAttribute' => ['tutorial_id' => 'id']],
+            [['tutorial_id'], 'exist', 'skipOnError' => true, 'targetClass' => Tutorial::class, 'targetAttribute' => ['tutorial_id' => 'id']],
         ];
     }
 
@@ -62,7 +62,7 @@ class TutorialTask extends \yii\db\ActiveRecord
      */
     public function getTutorial()
     {
-        return $this->hasOne(Tutorial::className(), ['id' => 'tutorial_id']);
+        return $this->hasOne(Tutorial::class, ['id' => 'tutorial_id']);
     }
 
     /**
@@ -70,7 +70,7 @@ class TutorialTask extends \yii\db\ActiveRecord
      */
     public function getTutorialTaskDependencies()
     {
-        return $this->hasMany(TutorialTaskDependency::className(), ['tutorial_task_id' => 'id']);
+        return $this->hasMany(TutorialTaskDependency::class, ['tutorial_task_id' => 'id']);
     }
 
     /**

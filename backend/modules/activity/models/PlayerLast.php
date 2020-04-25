@@ -52,7 +52,7 @@ class PlayerLast extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(\app\modules\frontend\models\Player::className(), ['id' => 'id']);
+        return $this->hasOne(\app\modules\frontend\models\Player::class, ['id' => 'id']);
     }
 
 }

@@ -63,6 +63,6 @@ class Challenge extends \yii\db\ActiveRecord
      */
     public function getQuestions()
     {
-        return $this->hasMany(Question::className(), ['challenge_id' => 'id']);
+        return $this->hasMany(Question::class, ['challenge_id' => 'id']);
     }
 }

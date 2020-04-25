@@ -43,7 +43,7 @@ class Credential extends \yii\db\ActiveRecord
             [['service'], 'string', 'max' => 50],
             [['title', 'pubtitle', 'username', 'password'], 'string', 'max' => 255],
             [['service', 'target_id', 'username', 'password'], 'unique', 'targetAttribute' => ['service', 'target_id', 'username', 'password']],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -71,6 +71,6 @@ class Credential extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 }

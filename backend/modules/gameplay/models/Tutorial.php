@@ -58,7 +58,7 @@ class Tutorial extends \yii\db\ActiveRecord
      */
     public function getTutorialTargets()
     {
-        return $this->hasMany(TutorialTarget::className(), ['tutorial_id' => 'id']);
+        return $this->hasMany(TutorialTarget::class, ['tutorial_id' => 'id']);
     }
 
     /**
@@ -66,7 +66,7 @@ class Tutorial extends \yii\db\ActiveRecord
      */
     public function getTargets()
     {
-        return $this->hasMany(Target::className(), ['id' => 'target_id'])->viaTable('tutorial_target', ['tutorial_id' => 'id']);
+        return $this->hasMany(Target::class, ['id' => 'target_id'])->viaTable('tutorial_target', ['tutorial_id' => 'id']);
     }
 
     /**
@@ -74,7 +74,7 @@ class Tutorial extends \yii\db\ActiveRecord
      */
     public function getTutorialTasks()
     {
-        return $this->hasMany(TutorialTask::className(), ['tutorial_id' => 'id']);
+        return $this->hasMany(TutorialTask::class, ['tutorial_id' => 'id']);
     }
 
     /**

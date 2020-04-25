@@ -57,7 +57,7 @@ class Infrastructure extends \yii\db\ActiveRecord
      */
     public function getInfrastructureTargets()
     {
-        return $this->hasMany(InfrastructureTarget::className(), ['infrastructure_id' => 'id']);
+        return $this->hasMany(InfrastructureTarget::class, ['infrastructure_id' => 'id']);
     }
 
     /**
@@ -65,6 +65,6 @@ class Infrastructure extends \yii\db\ActiveRecord
      */
     public function getTargets()
     {
-        return $this->hasMany(Target::className(), ['id' => 'target_id'])->viaTable('infrastructure_target', ['infrastructure_id' => 'id']);
+        return $this->hasMany(Target::class, ['id' => 'target_id'])->viaTable('infrastructure_target', ['infrastructure_id' => 'id']);
     }
 }

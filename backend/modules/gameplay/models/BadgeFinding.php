@@ -32,8 +32,8 @@ class BadgeFinding extends \yii\db\ActiveRecord
             [['badge_id', 'finding_id'], 'required'],
             [['badge_id', 'finding_id'], 'integer'],
             [['badge_id', 'finding_id'], 'unique', 'targetAttribute' => ['badge_id', 'finding_id']],
-            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::className(), 'targetAttribute' => ['badge_id' => 'id']],
-            [['finding_id'], 'exist', 'skipOnError' => true, 'targetClass' => Finding::className(), 'targetAttribute' => ['finding_id' => 'id']],
+            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::class, 'targetAttribute' => ['badge_id' => 'id']],
+            [['finding_id'], 'exist', 'skipOnError' => true, 'targetClass' => Finding::class, 'targetAttribute' => ['finding_id' => 'id']],
         ];
     }
 
@@ -53,7 +53,7 @@ class BadgeFinding extends \yii\db\ActiveRecord
      */
     public function getBadge()
     {
-        return $this->hasOne(Badge::className(), ['id' => 'badge_id']);
+        return $this->hasOne(Badge::class, ['id' => 'badge_id']);
     }
 
     /**
@@ -61,6 +61,6 @@ class BadgeFinding extends \yii\db\ActiveRecord
      */
     public function getFinding()
     {
-        return $this->hasOne(Finding::className(), ['id' => 'finding_id']);
+        return $this->hasOne(Finding::class, ['id' => 'finding_id']);
     }
 }

@@ -39,7 +39,7 @@ class TreasureAction extends \yii\db\ActiveRecord
             [['treasure_id'], 'required'],
             [['treasure_id', 'ip', 'port', 'weight'], 'integer'],
             [['command'], 'string'],
-            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::className(), 'targetAttribute' => ['treasure_id' => 'id']],
+            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::class, 'targetAttribute' => ['treasure_id' => 'id']],
         ];
     }
 
@@ -63,7 +63,7 @@ class TreasureAction extends \yii\db\ActiveRecord
      */
     public function getTreasure()
     {
-        return $this->hasOne(Treasure::className(), ['id' => 'treasure_id']);
+        return $this->hasOne(Treasure::class, ['id' => 'treasure_id']);
     }
 
     public function afterFind(){

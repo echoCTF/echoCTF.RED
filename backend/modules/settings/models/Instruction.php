@@ -33,7 +33,7 @@ class Instruction extends \yii\db\ActiveRecord
     {
       return [
           [
-              'class' => TimestampBehavior::className(),
+              'class' => TimestampBehavior::class,
               'createdAtAttribute' => 'ts',
               'updatedAtAttribute' => 'ts',
               'value' => new Expression('NOW()'),

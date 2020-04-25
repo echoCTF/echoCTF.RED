@@ -117,7 +117,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getFindings()
     {
-        return $this->hasMany(Finding::className(), ['target_id' => 'id']);
+        return $this->hasMany(Finding::class, ['target_id' => 'id']);
     }
 
     /**
@@ -125,7 +125,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getTargetVariables()
     {
-        return $this->hasMany(TargetVariable::className(), ['target_id' => 'id']);
+        return $this->hasMany(TargetVariable::class, ['target_id' => 'id']);
     }
 
     /**
@@ -133,7 +133,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getTargetVolumes()
     {
-        return $this->hasMany(TargetVolume::className(), ['target_id' => 'id']);
+        return $this->hasMany(TargetVolume::class, ['target_id' => 'id']);
     }
 
     /**
@@ -141,7 +141,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getTreasures()
     {
-        return $this->hasMany(Treasure::className(), ['target_id' => 'id']);
+        return $this->hasMany(Treasure::class, ['target_id' => 'id']);
     }
 
     /**
@@ -149,7 +149,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getSpinQueue()
     {
-        return $this->hasOne(SpinQueue::className(), ['target_id' => 'id']);
+        return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
     }
 
     public function afterFind(){

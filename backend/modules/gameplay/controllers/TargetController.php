@@ -22,7 +22,7 @@ class TargetController extends Controller
     {
         return [
           'access' => [
-                'class' => \yii\filters\AccessControl::className(),
+                'class' => \yii\filters\AccessControl::class,
                 'only' => ['index','create','update','view','test'],
                 'rules' => [
                     [
@@ -32,7 +32,7 @@ class TargetController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                     'destroy' => ['POST'],

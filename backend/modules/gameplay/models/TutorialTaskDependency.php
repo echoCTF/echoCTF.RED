@@ -35,7 +35,7 @@ class TutorialTaskDependency extends \yii\db\ActiveRecord
             [['tutorial_task_id', 'item_id'], 'integer'],
             [['item_id'], 'required'],
             [['item'], 'string', 'max' => 255],
-            [['tutorial_task_id'], 'exist', 'skipOnError' => true, 'targetClass' => TutorialTask::className(), 'targetAttribute' => ['tutorial_task_id' => 'id']],
+            [['tutorial_task_id'], 'exist', 'skipOnError' => true, 'targetClass' => TutorialTask::class, 'targetAttribute' => ['tutorial_task_id' => 'id']],
         ];
     }
 
@@ -57,7 +57,7 @@ class TutorialTaskDependency extends \yii\db\ActiveRecord
      */
     public function getPlayerTutorialTasks()
     {
-        return $this->hasMany(PlayerTutorialTask::className(), ['tutorial_task_dependency_id' => 'id']);
+        return $this->hasMany(PlayerTutorialTask::class, ['tutorial_task_dependency_id' => 'id']);
     }
 
     /**
@@ -65,7 +65,7 @@ class TutorialTaskDependency extends \yii\db\ActiveRecord
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::className(), ['id' => 'player_id'])->viaTable('player_tutorial_task', ['tutorial_task_dependency_id' => 'id']);
+        return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('player_tutorial_task', ['tutorial_task_dependency_id' => 'id']);
     }
 
     /**
@@ -73,7 +73,7 @@ class TutorialTaskDependency extends \yii\db\ActiveRecord
      */
     public function getTutorialTask()
     {
-        return $this->hasOne(TutorialTask::className(), ['id' => 'tutorial_task_id']);
+        return $this->hasOne(TutorialTask::class, ['id' => 'tutorial_task_id']);
     }
 
     /**

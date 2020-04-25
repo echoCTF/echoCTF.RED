@@ -88,7 +88,7 @@ class Profile extends \yii\db\ActiveRecord
      */
     public function getOwner()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
     public function getLink()
   	{

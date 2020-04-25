@@ -32,8 +32,8 @@ class BadgeTreasure extends \yii\db\ActiveRecord
             [['badge_id', 'treasure_id'], 'required'],
             [['badge_id', 'treasure_id'], 'integer'],
             [['badge_id', 'treasure_id'], 'unique', 'targetAttribute' => ['badge_id', 'treasure_id']],
-            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::className(), 'targetAttribute' => ['badge_id' => 'id']],
-            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::className(), 'targetAttribute' => ['treasure_id' => 'id']],
+            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::class, 'targetAttribute' => ['badge_id' => 'id']],
+            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::class, 'targetAttribute' => ['treasure_id' => 'id']],
         ];
     }
 
@@ -53,7 +53,7 @@ class BadgeTreasure extends \yii\db\ActiveRecord
      */
     public function getBadge()
     {
-        return $this->hasOne(Badge::className(), ['id' => 'badge_id']);
+        return $this->hasOne(Badge::class, ['id' => 'badge_id']);
     }
 
     /**
@@ -61,6 +61,6 @@ class BadgeTreasure extends \yii\db\ActiveRecord
      */
     public function getTreasure()
     {
-        return $this->hasOne(Treasure::className(), ['id' => 'treasure_id']);
+        return $this->hasOne(Treasure::class, ['id' => 'treasure_id']);
     }
 }

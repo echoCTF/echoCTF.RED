@@ -38,7 +38,7 @@ class PlayerSsl extends \yii\db\ActiveRecord
             [['subject', 'csr', 'crt', 'txtcrt', 'privkey'], 'string'],
             [['ts'], 'safe'],
             [['player_id'], 'unique'],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -63,7 +63,7 @@ class PlayerSsl extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**

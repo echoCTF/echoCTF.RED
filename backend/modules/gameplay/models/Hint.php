@@ -44,7 +44,7 @@ class Hint extends \yii\db\ActiveRecord
     {
       return [
           [
-              'class' => TimestampBehavior::className(),
+              'class' => TimestampBehavior::class,
               'createdAtAttribute' => 'ts',
               'updatedAtAttribute' => 'ts',
               'value' => new Expression('NOW()'),
@@ -63,9 +63,9 @@ class Hint extends \yii\db\ActiveRecord
             [['badge_id', 'finding_id', 'treasure_id', 'points_user', 'points_team', 'timeafter', 'active'], 'integer'],
             [['title', 'category'], 'string', 'max' => 255],
             //[['title'], 'unique'],
-            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::className(), 'targetAttribute' => ['badge_id' => 'id']],
-            [['finding_id'], 'exist', 'skipOnError' => true, 'targetClass' => Finding::className(), 'targetAttribute' => ['finding_id' => 'id']],
-            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::className(), 'targetAttribute' => ['treasure_id' => 'id']],
+            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::class, 'targetAttribute' => ['badge_id' => 'id']],
+            [['finding_id'], 'exist', 'skipOnError' => true, 'targetClass' => Finding::class, 'targetAttribute' => ['finding_id' => 'id']],
+            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::class, 'targetAttribute' => ['treasure_id' => 'id']],
         ];
     }
 
@@ -96,7 +96,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getBadge()
     {
-        return $this->hasOne(Badge::className(), ['id' => 'badge_id']);
+        return $this->hasOne(Badge::class, ['id' => 'badge_id']);
     }
 
     /**
@@ -104,7 +104,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getFinding()
     {
-        return $this->hasOne(Finding::className(), ['id' => 'finding_id']);
+        return $this->hasOne(Finding::class, ['id' => 'finding_id']);
     }
 
     /**
@@ -112,7 +112,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getTreasure()
     {
-        return $this->hasOne(Treasure::className(), ['id' => 'treasure_id']);
+        return $this->hasOne(Treasure::class, ['id' => 'treasure_id']);
     }
 
     /**
@@ -120,7 +120,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getQuestion()
     {
-        return $this->hasOne(Question::className(), ['id' => 'question_id']);
+        return $this->hasOne(Question::class, ['id' => 'question_id']);
     }
 
     /**
@@ -128,7 +128,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getUserHints()
     {
-        return $this->hasMany(UserHint::className(), ['hint_id' => 'id']);
+        return $this->hasMany(UserHint::class, ['hint_id' => 'id']);
     }
 
     /**
@@ -136,6 +136,6 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::className(), ['id' => 'player_id'])->viaTable('user_hint', ['hint_id' => 'id']);
+        return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('user_hint', ['hint_id' => 'id']);
     }
 }

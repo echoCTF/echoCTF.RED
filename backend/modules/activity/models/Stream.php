@@ -36,7 +36,7 @@ class Stream extends \yii\db\ActiveRecord
     {
       return [
           [
-              'class' => TimestampBehavior::className(),
+              'class' => TimestampBehavior::class,
               'createdAtAttribute' => 'ts',
               'updatedAtAttribute' => 'ts',
               'value' => new Expression('NOW()'),
@@ -56,7 +56,7 @@ class Stream extends \yii\db\ActiveRecord
             [['points'],'default', 'value'=>0],
             [['ts'], 'safe'],
             [['model', 'title', 'pubtitle'], 'string', 'max' => 255],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -84,7 +84,7 @@ class Stream extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     public function getFormatted($pub=true)

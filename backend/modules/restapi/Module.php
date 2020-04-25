@@ -20,10 +20,10 @@ class Module extends \yii\base\Module
     {
         $behaviors = parent::behaviors();
         $behaviors['authenticator'] = [
-            'class' => CompositeAuth::className(),
+            'class' => CompositeAuth::class,
             'authMethods' => [
-                HttpBearerAuth::className(),
-                QueryParamAuth::className(),
+                HttpBearerAuth::class,
+                QueryParamAuth::class,
             ],
         ];
         return $behaviors;

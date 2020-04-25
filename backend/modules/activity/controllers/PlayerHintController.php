@@ -23,7 +23,7 @@ class PlayerHintController extends Controller
      {
          return [
            'access' => [
-                 'class' => \yii\filters\AccessControl::className(),
+                 'class' => \yii\filters\AccessControl::class,
                  'rules' => [
                      [
                          'allow' => true,
@@ -32,7 +32,7 @@ class PlayerHintController extends Controller
                  ],
              ],
              'verbs' => [
-                 'class' => VerbFilter::className(),
+                 'class' => VerbFilter::class,
                  'actions' => [
                      'delete' => ['POST'],
                  ],

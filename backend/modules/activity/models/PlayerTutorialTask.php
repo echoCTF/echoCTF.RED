@@ -36,8 +36,8 @@ class PlayerTutorialTask extends \yii\db\ActiveRecord
             [['player_id', 'tutorial_task_dependency_id', 'points'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['player_id', 'tutorial_task_dependency_id'], 'unique', 'targetAttribute' => ['player_id', 'tutorial_task_dependency_id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-            [['tutorial_task_dependency_id'], 'exist', 'skipOnError' => true, 'targetClass' => TutorialTaskDependency::className(), 'targetAttribute' => ['tutorial_task_dependency_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['tutorial_task_dependency_id'], 'exist', 'skipOnError' => true, 'targetClass' => TutorialTaskDependency::class, 'targetAttribute' => ['tutorial_task_dependency_id' => 'id']],
         ];
     }
 
@@ -60,7 +60,7 @@ class PlayerTutorialTask extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -68,7 +68,7 @@ class PlayerTutorialTask extends \yii\db\ActiveRecord
      */
     public function getTutorialTaskDependency()
     {
-        return $this->hasOne(TutorialTaskDependency::className(), ['id' => 'tutorial_task_dependency_id']);
+        return $this->hasOne(TutorialTaskDependency::class, ['id' => 'tutorial_task_dependency_id']);
     }
 
     /**

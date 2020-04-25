@@ -34,8 +34,8 @@ class InfrastructureTarget extends \yii\db\ActiveRecord
             [['infrastructure_id', 'target_id'], 'integer'],
             [['target_id'], 'unique'],
             [['infrastructure_id', 'target_id'], 'unique', 'targetAttribute' => ['infrastructure_id', 'target_id']],
-            [['infrastructure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Infrastructure::className(), 'targetAttribute' => ['infrastructure_id' => 'id']],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['infrastructure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Infrastructure::class, 'targetAttribute' => ['infrastructure_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -55,7 +55,7 @@ class InfrastructureTarget extends \yii\db\ActiveRecord
      */
     public function getinfrastructure()
     {
-        return $this->hasOne(Infrastructure::className(), ['id' => 'infrastructure_id']);
+        return $this->hasOne(Infrastructure::class, ['id' => 'infrastructure_id']);
     }
 
     /**
@@ -63,6 +63,6 @@ class InfrastructureTarget extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 }

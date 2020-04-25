@@ -53,6 +53,6 @@ class PlayerVpnHistory extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(\app\modules\frontend\models\Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(\app\modules\frontend\models\Player::class, ['id' => 'player_id']);
     }
 }
