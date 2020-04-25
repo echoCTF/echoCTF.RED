@@ -84,16 +84,18 @@ class ProfileController extends \yii\web\Controller
     public function actionOvpn()
   	{
   		$model = Yii::$app->user->identity->sSL;
-  		$content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php',array('model'=>$model),true);
+  		$content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php',['model'=>$model]);
       \Yii::$app->response->data=$content;
       \Yii::$app->response->setDownloadHeaders('echoCTF.ovpn','application/octet-stream',false,strlen($content));
-      return Yii::$app->response->send();
+      \Yii::$app->response->send();
+      return;
 
   	}
 
     public function actionSettings()
     {
-      $errors=$success=null;
+      $errors=null;
+      $success=null;
 
       $profile=Yii::$app->user->identity->profile;
       $profileForm=$profile;
