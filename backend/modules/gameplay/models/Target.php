@@ -43,6 +43,7 @@ use app\modules\activity\models\SpinQueue;
  * @property TargetVariable[] $targetVariables
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
+ * @property string $memory
  */
 class Target extends \yii\db\ActiveRecord
 {

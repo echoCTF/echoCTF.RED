@@ -25,7 +25,10 @@ use yii\helpers\Html;
  * @property int $gdpr
  * @property string $created_at
  * @property string $updated_at
+ *
+ * @property Owner[] $owner
  */
+
 class Profile extends \yii\db\ActiveRecord
 {
   public $visibilities=[
