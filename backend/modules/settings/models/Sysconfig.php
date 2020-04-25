@@ -8,7 +8,7 @@ use Yii;
  * This is the model class for table "sysconfig".
  *
  * @property string $id
- * @property resource $val
+ * @property string $val
  */
 class Sysconfig extends \yii\db\ActiveRecord
 {
