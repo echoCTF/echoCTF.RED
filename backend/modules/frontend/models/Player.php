@@ -17,7 +17,9 @@ use app\modules\activity\models\SpinHistory;
  * @property string $email
  * @property string $type
  * @property string $password
+ * @property string $password_hash
  * @property string $activkey
+ * @property string $auth_key
  * @property int $created
  * @property int $active
  * @property int $academic
