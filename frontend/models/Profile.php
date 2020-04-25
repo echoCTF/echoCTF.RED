@@ -30,10 +30,10 @@ use app\modules\target\models\Target;
  * @property string $updated_at
  * @property boolean $visible
  *
- * @property Owner[] $owner
- * @property Score[] $score
- * @property Rank[] $rank
- * @property HeadshotsCount[] $headshotsCount
+ * @property Owner $owner
+ * @property Score $score
+ * @property Rank $rank
+ * @property HeadshotsCount $headshotsCount
 */
 class Profile extends \yii\db\ActiveRecord
 {

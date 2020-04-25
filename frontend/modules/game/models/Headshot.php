@@ -16,6 +16,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $player_id
  * @property int $target_id
  * @property string|null $created_at
+ * @property int $timer
  *
  * @property Player $player
  * @property Target $target
@@ -23,6 +24,7 @@ use yii\behaviors\AttributeTypecastBehavior;
 class Headshot extends \yii\db\ActiveRecord
 {
   public $average=0;
+
   public function behaviors()
   {
       return [

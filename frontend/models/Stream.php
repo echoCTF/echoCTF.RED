@@ -22,6 +22,7 @@ use app\modules\game\models\Badge;
  * @property string $pubtitle
  * @property string $pubmessage
  * @property string $ts
+ * @property string $icon
  *
  * @property Player $player
  */
