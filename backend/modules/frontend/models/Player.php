@@ -119,7 +119,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerBadges()
     {
-        return $this->hasMany(PlayerBadge::className(), ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\PlayerBadge::className(), ['player_id' => 'id']);
     }
 
     /**
@@ -127,7 +127,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getBadges()
     {
-        return $this->hasMany(Badge::className(), ['id' => 'badge_id'])->viaTable('player_badge', ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\gameplay\models\Badge::className(), ['id' => 'badge_id'])->viaTable('player_badge', ['player_id' => 'id']);
     }
 
     /**
@@ -135,7 +135,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerFindings()
     {
-        return $this->hasMany(PlayerFinding::className(), ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\PlayerFinding::className(), ['player_id' => 'id']);
     }
 
     /**
@@ -151,7 +151,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerHints()
     {
-        return $this->hasMany(PlayerHint::className(), ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\PlayerHint::className(), ['player_id' => 'id']);
     }
 
     /**
@@ -197,15 +197,7 @@ class Player extends \yii\db\ActiveRecord
 
     public function getSpinHistory()
     {
-        return $this->hasMany(SpinHistory::className(), ['player_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPlayerMacs()
-    {
-        return $this->hasMany(PlayerMac::className(), ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\SpinHistory::className(), ['player_id' => 'id']);
     }
 
     /**
