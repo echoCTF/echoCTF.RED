@@ -23,7 +23,7 @@ class AnswerForm extends Model
         return [
             [['answer'], 'required'],
             [['answer'],'exist',
-              'targetClass' => Question::ClassName() ,
+              'targetClass' => Question::class,
               'targetAttribute' => ['answer'=>'code']]
         ];
     }
