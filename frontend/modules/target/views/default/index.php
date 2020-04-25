@@ -4,10 +4,6 @@ use yii\widgets\DetailView;
 use yii\widgets\ListView;
 
 $this->title = Yii::$app->sys->event_name .' - Target: '.$target->name;
-#$this->pageDescription=CHtml::encode($target->purpose);
-#$this->pageImage=Yii::app()->getBaseUrl(true)."/images/targets/".$target->name.".png";
-#$this->pageURL=$this->createAbsoluteUrl('target/view',array('id'=>$target->id));
-#Yii::$app->clientScript->registerCssFile(Yii::app()->baseUrl . '/css/scores.css');
 $this->registerCssFile("@web/css/scores.css", [
     'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'screen',
