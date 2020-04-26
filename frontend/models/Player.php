@@ -320,7 +320,7 @@ class Player extends ActiveRecord implements IdentityInterface
 
     public function getProgress()
     {
-  		$targets=\app\modules\target\models\Target::model()->player_progress($this->id);
+  		$targets=\app\modules\target\models\Target::find()->player_progress($this->id);
   		$targets->getDbCriteria()->mergeWith(array('having'=>'player_findings>0 or player_treasures>0'));
   		return $targets;
     }
