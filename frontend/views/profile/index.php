@@ -31,7 +31,7 @@ $this->registerCssFile("@web/css/scores.css", [
                 <a href="<?=Url::to('profile/me')?>" class="pull-right"><img title="<?=Html::encode($profile->owner->username)?> Avatar" class="img-circle img-responsive" src="/images/avatars/<?=$profile->avatar?>" width="220px"></a>
                 <span class="pull-right"><?php echo Html::a('<b>Download OpenVPN configuration</b>',  array('profile/ovpn'),array('class'=>'btn btn-success btn-small')); ?></span>
             <?php else:?>
-                <a href="<?=Url::to('profile/index',['id'=>$profile->id])?>" class="pull-right"><img title="<?=Html::encode($profile->owner->username)?> Avatar" class="img-circle img-responsive" src="/images/avatars/<?=$profile->avatar?>" width="220px"></a>
+                <a href="<?=Url::to(['profile/index','id'=>$profile->id])?>" class="pull-right"><img title="<?=Html::encode($profile->owner->username)?> Avatar" class="img-circle img-responsive" src="/images/avatars/<?=$profile->avatar?>" width="220px"></a>
         		<?php endif;?>
         </div>
     </div>
