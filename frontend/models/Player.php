@@ -15,6 +15,7 @@ use app\modules\game\models\Headshot;
  *
  * @property integer $id
  * @property string $username
+ * @property string $fullname
  * @property string $password_hash
  * @property string $password_reset_token
  * @property string $verification_token
@@ -24,6 +25,7 @@ use app\modules\game\models\Headshot;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @property boolean $active
  *
  * @property Profile $profile
  * @property PlayerScore $playerScore
@@ -318,7 +320,7 @@ class Player extends ActiveRecord implements IdentityInterface
 
     public function getProgress()
     {
-  		$targets=Target::model()->player_progress($this->id);
+  		$targets=\app\modules\target\models\Target::model()->player_progress($this->id);
   		$targets->getDbCriteria()->mergeWith(array('having'=>'player_findings>0 or player_treasures>0'));
   		return $targets;
     }

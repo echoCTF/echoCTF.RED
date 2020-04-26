@@ -94,17 +94,17 @@ class Finding extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBadgeFindings()
-    {
-        return $this->hasMany(BadgeFinding::class, ['finding_id' => 'id']);
-    }
+//    public function getBadgeFindings()
+//    {
+//        return $this->hasMany(BadgeFinding::class, ['finding_id' => 'id']);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getBadges()
     {
-        return $this->hasMany(Badge::class, ['id' => 'badge_id'])->viaTable('badge_finding', ['finding_id' => 'id']);
+        return $this->hasMany(\app\modules\game\models\Badge::class, ['id' => 'badge_id'])->viaTable('badge_finding', ['finding_id' => 'id']);
     }
 
     /**
@@ -120,23 +120,23 @@ class Finding extends \yii\db\ActiveRecord
      */
     public function getHints()
     {
-        return $this->hasMany(Hint::class, ['finding_id' => 'id']);
+        return $this->hasMany(\app\models\Hint::class, ['finding_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPlayerFindings()
-    {
-        return $this->hasMany(PlayerFinding::class, ['finding_id' => 'id']);
-    }
+//    public function getPlayerFindings()
+//    {
+//        return $this->hasMany(PlayerFinding::class, ['finding_id' => 'id']);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('player_finding', ['finding_id' => 'id']);
+        return $this->hasMany(\app\models\Player::class, ['id' => 'player_id'])->viaTable('player_finding', ['finding_id' => 'id']);
     }
 
     public function save($runValidation = true, $attributeNames = NULL)

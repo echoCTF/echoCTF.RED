@@ -36,7 +36,7 @@ class NetworkPlayer extends \yii\db\ActiveRecord
             [['created_at', 'updated_at'], 'safe'],
             [['network_id', 'player_id'], 'unique', 'targetAttribute' => ['network_id', 'player_id']],
             [['network_id'], 'exist', 'skipOnError' => true, 'targetClass' => Network::class, 'targetAttribute' => ['network_id' => 'id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -66,7 +66,7 @@ class NetworkPlayer extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::class, ['id' => 'player_id']);
+        return $this->hasOne(\app\models\Player::class, ['id' => 'player_id']);
     }
 
     /**

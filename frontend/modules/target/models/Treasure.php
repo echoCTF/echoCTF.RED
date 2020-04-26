@@ -102,17 +102,17 @@ class Treasure extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBadgeTreasures()
-    {
-        return $this->hasMany(BadgeTreasure::class, ['treasure_id' => 'id']);
-    }
+//    public function getBadgeTreasures()
+//    {
+//        return $this->hasMany(BadgeTreasure::class, ['treasure_id' => 'id']);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getBadges()
     {
-        return $this->hasMany(Badge::class, ['id' => 'badge_id'])->viaTable('badge_treasure', ['treasure_id' => 'id']);
+        return $this->hasMany(\app\modules\game\models\Badge::class, ['id' => 'badge_id'])->viaTable('badge_treasure', ['treasure_id' => 'id']);
     }
 
     /**
@@ -120,7 +120,7 @@ class Treasure extends \yii\db\ActiveRecord
      */
     public function getHints()
     {
-        return $this->hasMany(Hint::class, ['treasure_id' => 'id']);
+        return $this->hasMany(\app\models\Hint::class, ['treasure_id' => 'id']);
     }
 
     /**
@@ -128,7 +128,7 @@ class Treasure extends \yii\db\ActiveRecord
      */
     public function getPlayerTreasures()
     {
-        return $this->hasMany(PlayerTreasure::class, ['treasure_id' => 'id']);
+        return $this->hasMany(\app\models\PlayerTreasure::class, ['treasure_id' => 'id']);
     }
 
     /**
@@ -136,7 +136,7 @@ class Treasure extends \yii\db\ActiveRecord
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('player_treasure', ['treasure_id' => 'id']);
+        return $this->hasMany(\app\models\Player::class, ['id' => 'player_id'])->viaTable('player_treasure', ['treasure_id' => 'id']);
     }
 
     /**
@@ -150,10 +150,10 @@ class Treasure extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTreasureActions()
-    {
-        return $this->hasMany(TreasureAction::class, ['treasure_id' => 'id']);
-    }
+//    public function getTreasureActions()
+//    {
+//        return $this->hasMany(TreasureAction::class, ['treasure_id' => 'id']);
+//    }
 
     public static function find()
     {

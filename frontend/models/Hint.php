@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\target\models\Treasure;
 use app\modules\target\models\Finding;
+use app\modules\game\models\Badge;
 /**
  * This is the model class for table "hint".
  *
