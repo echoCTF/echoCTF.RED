@@ -3,7 +3,7 @@
 namespace app\modules\network\models;
 
 use Yii;
-
+use \app\modules\target\models\Target;
 /**
  * This is the model class for table "network_target".
  *
