@@ -45,11 +45,11 @@ $this->registerCssFile("@web/css/scores.css", [
           'label'=>'Headshots',
     			'format'=>'raw',
     			'value'=>function($model){
-  									$headshots=null;
+  									$headshots=[];
   									foreach($model->headshots as $player)
                       if((int)$player->active===1)
   											$headshots[]=$player->profile->link;
-  								if ($headshots===NULL) return "None";
+  								if (empty($headshots)) return "None";
   								return implode(", ",$headshots);
   							}
         ],
