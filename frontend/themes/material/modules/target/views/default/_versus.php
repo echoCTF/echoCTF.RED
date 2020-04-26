@@ -105,13 +105,16 @@ if($target->progress==100) {
         <h4><i class="fas fa-skull"></i> Headshots (older first)</h4>
         <div class="card-body table-responsive">
           <?php
-          $headshots=null;
+          $headshots=[];
           foreach($target->headshots as $hs)
+          {
             if((int)$hs->player->active===1)
               $headshots[]=$hs->player->profile->link;
-            if ($headshots!==NULL)
-              echo "<code>",implode(", ",$headshots), "</code>";
-            else echo '<code>none yet...</code>';?>
+          }
+          if (!empty($headshots))
+            echo "<code>",implode(", ",$headshots), "</code>";
+          else
+            echo '<code>none yet...</code>';?>
         </div>
       </div>
     </div>

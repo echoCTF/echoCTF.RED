@@ -40,11 +40,11 @@ use yii\widgets\DetailView;
       'label'=>'Headshots',
       'format'=>'raw',
       'value'=>function($model){
-                $headshots=null;
+                $headshots=[];
                 foreach($model->headshots as $hs)
                   if((int)$hs->player->active===1)
                     $headshots[]=$hs->player->profile->link;
-              if ($headshots===NULL) return "None";
+              if (empty($headshots)) return "None";
               return implode(", ",$headshots);
             }
     ],
