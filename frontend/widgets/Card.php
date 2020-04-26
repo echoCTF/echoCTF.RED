@@ -159,7 +159,7 @@ class Card extends \yii\base\Widget
         if ($this->header=='img-bottom')
             return '<img class="card-img-bottom" src="'.Html::encode($this->url).'" alt="">';
 
-        if ($this->footer == true)
+        if ($this->footer !== false)
             return '<div class="card-footer text-muted">'.$this->footer.'</div>';
 
         return '<div></div>';
