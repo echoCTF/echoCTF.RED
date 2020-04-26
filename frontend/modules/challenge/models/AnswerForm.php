@@ -47,7 +47,7 @@ class AnswerForm extends Model
         return false;
       }
 
-      if($this->_question->answered instanceof PlayerQuestion)
+      if($this->_question->answered!==null)
       {
         $this->addError('answer','You have already answered this question.');
         return false;
