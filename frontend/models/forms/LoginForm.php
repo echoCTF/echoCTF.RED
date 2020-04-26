@@ -19,7 +19,7 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
-    private $_player = false;
+    private $_player = null;
 
 
     /**
@@ -73,7 +73,7 @@ class LoginForm extends Model
      */
     public function getPlayer()
     {
-        if ($this->_player === false) {
+        if ($this->_player === null) {
             $this->_player = Player::findByUsername($this->username);
         }
 
