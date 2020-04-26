@@ -25,7 +25,7 @@ use app\modules\game\models\Headshot;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
- * @property boolean $active
+ * @property integer $active
  *
  * @property Profile $profile
  * @property PlayerScore $playerScore
@@ -165,7 +165,7 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function getId()
     {
-        return $this->getPrimaryKey();
+        return $this->id;
     }
 
     /**
@@ -318,12 +318,12 @@ class Player extends ActiveRecord implements IdentityInterface
       return !(array_search(intval($this->id),$admin_ids)===FALSE); // error is here
     }
 
-    public function getProgress()
-    {
-  		$targets=\app\modules\target\models\Target::find()->player_progress($this->id);
-  		$targets->getDbCriteria()->mergeWith(array('having'=>'player_findings>0 or player_treasures>0'));
-  		return $targets;
-    }
+//    public function getProgress()
+//    {
+//  		$targets=\app\modules\target\models\Target::find()->player_progress($this->id);
+//  		$targets->getDbCriteria()->mergeWith(array('having'=>'player_findings>0 or player_treasures>0'));
+//  		return $targets;
+//    }
 
 /* XXXREMOVEXXX
    public static function createQuery()
