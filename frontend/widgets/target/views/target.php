@@ -89,7 +89,7 @@ echo GridView::widget([
        'contentOptions' => ['class' => 'd-none d-xl-table-cell text-center'],
        'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell'],
        'value'=>function($model){
-         $progress=($model->difficulty*20);
+         
          $bgcolor="";
          $abbr=ucfirst($model->difficultyText);
          switch($model->difficulty)
