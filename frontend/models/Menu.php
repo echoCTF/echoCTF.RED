@@ -6,7 +6,7 @@ use app\widgets\Menu as RCEmenu;
 
 class Menu
 {
-    static function getMenu() {
+    public static function getMenu() {
         $menu = RCEmenu::widget(
             [
               'options'=>['class'=>'nav'],
