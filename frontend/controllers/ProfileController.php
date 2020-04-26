@@ -94,8 +94,8 @@ class ProfileController extends \yii\web\Controller
 
     public function actionSettings()
     {
-      $errors=null;
-      $success=null;
+      $errors=[];
+      $success=[];
 
       $profile=Yii::$app->user->identity->profile;
       $profileForm=$profile;
@@ -119,9 +119,9 @@ class ProfileController extends \yii\web\Controller
         }
       }
 
-      if($errors!==null)
+      if(!empty($errors))
         Yii::$app->session->setFlash('error',$errors);
-      if($success!==null)
+      if(!empty($success))
         Yii::$app->session->setFlash('success',$success);
 
       $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
