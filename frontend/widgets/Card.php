@@ -55,7 +55,7 @@ class Card extends \yii\base\Widget
     public $type = '';
     /*
      * boolean/string Card footer html
-     * false | footer's html
+     * @var string|false $footer
      */
     public $footer = false;
 

@@ -23,9 +23,9 @@ use app\modules\target\models\Target;
  * @property string $twitter Twitter handle
  * @property string $github Github handle
  * @property string $htb HTB avatar
- * @property int $terms_and_conditions
- * @property int $mail_optin
- * @property int $gdpr
+ * @property boolean $terms_and_conditions
+ * @property boolean $mail_optin
+ * @property boolean $gdpr
  * @property string $created_at
  * @property string $updated_at
  * @property boolean $visible
