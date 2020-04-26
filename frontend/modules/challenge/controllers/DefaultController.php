@@ -60,7 +60,7 @@ class DefaultController extends Controller
      */
     public function actionView(int $id)
     {
-      $model=$this->findModel($id);
+//      $model=$this->findModel($id);
       $model=Challenge::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
       $query=Question::find()->orderBy(['weight'=>SORT_ASC,'id'=>SORT_ASC]);
 
