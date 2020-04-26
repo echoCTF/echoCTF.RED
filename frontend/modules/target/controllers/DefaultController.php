@@ -236,41 +236,6 @@ class DefaultController extends Controller
     }
 
     /**
-    * Autogenerate and display dynamic details target badge
-    */
-    public function actionBadge(int $id)
-    {
-      ob_get_clean();
-      header('Content-Type: image/png');
-      $target=$this->findModel($id);
-      $fname=Yii::getAlias(sprintf('@app/web/images/targets/%s.png',$target->name));
-      $src = imagecreatefrompng($fname);
-//      $skull = json_decode('"&#xf714;"');
-      imagealphablending($src, false);
-      imagesavealpha($src, true);
-      $textcolor = imagecolorallocate($src, 255, 255, 255);
-      $consolecolor = imagecolorallocate($src, 148,148,148);
-      $greencolor = imagecolorallocate($src, 148,193,31);
-      //imagettftext($src, 11.5, 0, 0, 14, $textcolor, Yii::getAlias('@app/web/webfonts/fa-solid-900.ttf'), $text);
-      if(Headshot::find(['target_id'=>$target->id])->last()->one())
-        $lastHeadshot=Headshot::find(['target_id'=>$target->id])->last()->one()->player->username;
-      else {
-        $lastHeadshot="";
-      }
-      $lineheight=18;
-      imagestring($src, 6, 40, $lineheight*3, sprintf("root@echoctf.red:/#",$target->name),$consolecolor);
-      imagestring($src, 6, 215, $lineheight*3, sprintf("./target --stats %s",$target->name),$textcolor);
-      imagestring($src, 6, 40, $lineheight*4, sprintf("ipv4.........: %s",long2ip($target->ip)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*5, sprintf("fqdn.........: %s",$target->fqdn),$greencolor);
-      imagestring($src, 6, 40, $lineheight*6, sprintf("headshots....: %d",count($target->headshots)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*7, sprintf("last headshot: %s",$lastHeadshot),$greencolor);
-      imagestring($src, 6, 40, $lineheight*8, sprintf("points.......: %s",number_format($target->points)),$greencolor);
-      imagepng($src);
-      imagedestroy($src);
-      return;
-    }
-
-    /**
      * Finds the Target model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
