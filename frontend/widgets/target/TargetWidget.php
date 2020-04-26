@@ -45,7 +45,7 @@ class TargetWidget extends Widget
 
       if($this->pagerID===null)
       {
-        unset($his->pagerOptions['id']);
+        unset($this->pagerOptions['id']);
       }
       $this->summary=\Yii::t('app', $this->summary, ['TITLE' => $this->title, 'CATEGORY'=>$this->category]);
       parent::init();

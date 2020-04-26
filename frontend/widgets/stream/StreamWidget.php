@@ -32,7 +32,7 @@ class StreamWidget extends Widget
     {
       if($this->pagerID===null)
       {
-        unset($his->pagerOptions['id']);
+        unset($this->pagerOptions['id']);
       }
       if($this->dataProvider===NULL && $this->player_id===NULL)
       {
