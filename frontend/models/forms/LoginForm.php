@@ -47,7 +47,7 @@ class LoginForm extends Model
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
-            $player = $this->getPlayer();
+            $player = $this->player;
             if (!$player || !$player->validatePassword($this->password)) {
                 $this->addError($attribute, 'Incorrect username or password.');
             }
@@ -61,7 +61,7 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            return Yii::$app->user->login($this->getPlayer(), $this->rememberMe ? 3600*24*30 : 0);
+            return Yii::$app->user->login($this->player, $this->rememberMe ? 3600*24*30 : 0);
         }
         return false;
     }
@@ -73,10 +73,7 @@ class LoginForm extends Model
      */
     public function getPlayer()
     {
-        if ($this->_player === null) {
-            $this->_player = Player::findByUsername($this->username);
-        }
-
-        return $this->_player;
+      $this->_player = Player::findByUsername($this->username);
+      return $this->_player;
     }
 }
