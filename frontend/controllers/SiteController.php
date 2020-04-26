@@ -38,7 +38,7 @@ class SiteController extends Controller
                         'actions' => ['register'],
                         'allow' => false,
                         'roles' => ['@'],
-                        'denyCallback' => function($rule, $action) {
+                        'denyCallback' => function() {
                           return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
                         }
                     ],
