@@ -76,11 +76,11 @@ class LowerRangeValidator extends \yii\validators\Validator
 
         if ($this->allowArray
             && ($value instanceof \Traversable || is_array($value))
-            && ArrayHelper::isSubset($value, $this->range, $this->strict)
+            && ArrayHelper::isSubset($value, (array)$this->range, $this->strict)
         ) {
             $in = true;
         }
-        if (!$in && ArrayHelper::isIn(strtolower($value), $this->range, $this->strict)) {
+        if (!$in && ArrayHelper::isIn(strtolower($value), (array)$this->range, $this->strict)) {
             $in = true;
         }
         return $this->not !== $in ? null : [$this->message, []];
