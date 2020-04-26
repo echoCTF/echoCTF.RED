@@ -10,7 +10,7 @@ $this->title = Yii::$app->sys->event_name .' - Profile of '.Html::encode($profil
 //$this->pageImage=Yii::$app->getBaseUrl(true)."/images/avatars/".$profile->avatar;
 //$this->pageURL=$this->createAbsoluteUrl('/profile/index',array('id'=>$profile->id));
 $this->registerCssFile("@web/css/scores.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'screen',
 ], 'scores-theme');
 
