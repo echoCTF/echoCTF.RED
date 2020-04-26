@@ -24,15 +24,7 @@ use yii\validators\ValidationAsset;
 class LowerRangeValidator extends \yii\validators\Validator
 {
     /**
-     * @var array|\Traversable|\Closure a list of valid values that the attribute value should be among or an anonymous function that returns
-     * such a list. The signature of the anonymous function should be as follows,
-     *
-     * ```php
-     * function($model, $attribute) {
-     *     // compute range
-     *     return $range;
-     * }
-     * ```
+     * @var array|\Traversable|\Closure $range
      */
     public $range;
     /**
