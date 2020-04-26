@@ -54,7 +54,7 @@ class AnswerForm extends Model
       }
 
       $pq=new PlayerQuestion;
-  		$pq->player_id=Yii::$app->user->id;
+  		$pq->player_id=(int)Yii::$app->user->id;
   		$pq->question_id=$this->_question->id;
   		if($pq->save())
   		{
