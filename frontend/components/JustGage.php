@@ -23,12 +23,12 @@ class JustGage extends \yii\base\Widget
 
 
     /**
-     * @var options
+     * @var array|null $options
      */
 	public $options = [];
 
     /**
-     * @var HTML options
+     * @var array|null $htmlOptions
      */
 	public $htmlOptions = [];
 
