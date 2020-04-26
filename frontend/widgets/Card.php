@@ -105,11 +105,10 @@ class Card extends \yii\base\Widget
      */
     public function getHeaderhtml()
     {
-        if ($this->header!=false) {
+        if ($this->header!==false) {
             switch ($this->header){
                 case 'img-top':
                     return '<img class="card-img-top" src="'.Html::encode($this->url).'" alt="">';
-                    break;
                 case 'header-icon':
                     if ($this->type!='card-stats')
                         return '<div class="card-header card-header-icon card-header-'.$this->color.'">
@@ -125,7 +124,6 @@ class Card extends \yii\base\Widget
                                 <p class="card-category">'.Html::encode($this->subtitle).'</p>
                                 <h4 class="card-title">'.Html::encode($this->title).'</h4>
                               </div>';
-                    break;
                 case 'header-text':
                     return '<div class="card-header card-header-text card-header-'.$this->color.'">
                                 <div class="card-text">
@@ -133,19 +131,15 @@ class Card extends \yii\base\Widget
                                     <p class="category">'.Html::encode($this->subtitle).'</p>
                                 </div>
                               </div>';
-                    break;
                 case 'chart':
                     return '<div class="card-header card-chart card-header-'.$this->color.'">
                               <div class="ct-chart" id="'.$this->chartId.'"></div>
                             </div>';
-                    break;
-
                 default:
                     return '<div class="card-header">
                                 <h4 class="card-title">'.Html::encode($this->title).'</h4>
                                 <p class="category">'.Html::encode($this->subtitle).'</p>
                               </div>';
-                    break;
             }
         }
         return '<div></div>';
@@ -159,7 +153,7 @@ class Card extends \yii\base\Widget
         if ($this->header=='img-bottom')
             return '<img class="card-img-bottom" src="'.Html::encode($this->url).'" alt="">';
 
-        if ($this->footer !== false)
+        if (is_string($this->footer))
             return '<div class="card-footer text-muted">'.$this->footer.'</div>';
 
         return '<div></div>';
