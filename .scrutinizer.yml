@@ -2,33 +2,43 @@ build:
     environment:
         php: 7.3.0
     nodes:
-        analysis:
+        frontend:
+            root_path: "./frontend"
+            project_setup:
+                override:
+                    - 'true'
+            tests:
+                override:
+                    - pwd
+                    - php-scrutinizer-run --enable-security-analysis --sub-project-dir=frontend/
+#                    -
+#                      command: phpcs-run
+#                      idle_timeout: 1200
+        backend:
+            root_path: "./backend"
             project_setup:
                 override:
                     - 'true'
             tests:
                 override:
                     - php-scrutinizer-run --enable-security-analysis --sub-project-dir=backend/
-                    - php-scrutinizer-run --enable-security-analysis --sub-project-dir=frontend/
-                    - phpcs-run --standard=phpcs.xml.dist build/frontend
-                      idle_timeout: 1200
-#                      use_website_config: true
+#                    -
+#                      command: phpcs-run
+#                      idle_timeout: 1200
+
         tests: true
     dependencies:
         before:
             - composer global require "fxp/composer-asset-plugin" --no-interaction
-            - cd frontend; composer install  --no-interaction
-            - composer require mito/yii2-coding-standards:"~2.0.0@beta"
-            - cd ../backend; composer install --no-interaction
-            - composer require mito/yii2-coding-standards:"~2.0.0@beta"
-            - cd ..
-
+filter:
+  dependency_paths:
+    - "*/vendor/"
 checks:
   php:
     code_rating: true
     duplication: true
+
 tools:
-  external_code_coverage: true
   php_code_sniffer:
     config:
       standard: "PSR2"
