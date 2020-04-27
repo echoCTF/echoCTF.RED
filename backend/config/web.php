@@ -43,17 +43,7 @@ $config = [
         'viewPath' => '@app/mail/layouts',
         'transport' => [
             'class' => 'Swift_SmtpTransport',
-//            'host' => 'smtp-relay.gmail.com',
-//            'username' => 'username',
-//            'password' => 'password',
             'port' => '25',
-//            'encryption' => 'none',
-//            'streamOptions' => [
-//              'ssl' => [
-//                  'verify_peer' => false,
-//                  'verify_peer_name' => false,
-//              ],
-//            ],
         ],
       ],
         'session' => [
@@ -67,7 +57,6 @@ $config = [
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
             ],
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => $cookieValidationKey,
         ],
         'cache' => $cache_config,
