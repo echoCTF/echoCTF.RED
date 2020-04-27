@@ -190,9 +190,14 @@ class DefaultController extends Controller
     public function actionClaim()
     {
         $string = Yii::$app->request->post('hash');
-        //$string = Yii::$app->request->get('hash');
-        if(empty($string) || is_string($string)!==false) return $this->renderAjax('claim');
+
+        if(!is_string($string))
+        {
+          return $this->renderAjax('claim');
+        }
+
         $treasure=Treasure::find()->claimable()->byCode($string)->one();
+
         if($treasure!==null && Treasure::find()->byCode($string)->claimable()->notBy((int)Yii::$app->user->id)->one()===null)
         {
           Yii::$app->session->setFlash('warning',sprintf('Flag [%s] claimed before',$treasure->name,$treasure->target->name));
