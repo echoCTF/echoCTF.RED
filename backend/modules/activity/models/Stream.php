@@ -103,13 +103,13 @@ class Stream extends \yii\db\ActiveRecord
       	case 'user':
       		$message=sprintf("%s <b>%s</b> %s", $icon[$this->model],$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
       		break;
-      	case 'team_player':
-      		$message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $icon[$this->model],$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
-      		break;
+//      	case 'team_player':
+//      		$message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $icon[$this->model],$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
+//      		break;
         case 'report':
-          if(Yii::$app->sys->teams)
-            $message=sprintf("%s <b>%s</b> from team <b>[%s]</b> Reported <b>%s</b>",$icon[$this->model],$this->player->profile->link, $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$pub ? $this->pubtitle : $this->title);
-          else
+//          if(Yii::$app->sys->teams)
+//            $message=sprintf("%s <b>%s</b> from team <b>[%s]</b> Reported <b>%s</b>",$icon[$this->model],$this->player->profile->link, $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$pub ? $this->pubtitle : $this->title);
+//          else
             $message=sprintf("%s <b>%s</b> Reported <b>%s</b>",$icon[$this->model],$this->player->profile->link,$pub ? $this->pubtitle : $this->title);
           break;
         case 'question':
