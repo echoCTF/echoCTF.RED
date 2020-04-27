@@ -10,7 +10,9 @@ build:
                 override:
                     - php-scrutinizer-run --enable-security-analysis --sub-project-dir=backend/
                     - php-scrutinizer-run --enable-security-analysis --sub-project-dir=frontend/
-                    - phpcs-run --standard=phpcs.xml.dist build/frontend
+                    - phpcs-run --standard=phpcs.xml.dist
+                      idle_timeout: 1200
+                    - phpcs-run --standard=phpcs.xml.dist
                       idle_timeout: 1200
 #                      use_website_config: true
         tests: true
@@ -27,8 +29,8 @@ checks:
   php:
     code_rating: true
     duplication: true
+
 tools:
-  external_code_coverage: true
   php_code_sniffer:
     config:
       standard: "PSR2"
