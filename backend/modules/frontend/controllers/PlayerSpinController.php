@@ -147,7 +147,7 @@ class PlayerSpinController extends Controller
         $trans->commit();
         Yii::$app->session->setFlash('success','Player spin counters zeroed.');
       }
-      catch (Exception $e)
+      catch (\Exception $e)
       {
         $trans->rollBack();
         Yii::$app->session->setFlash('error','Player spin counters failed to zero out.');

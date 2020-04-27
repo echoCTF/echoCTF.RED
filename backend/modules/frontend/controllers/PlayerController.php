@@ -71,6 +71,8 @@ class PlayerController extends Controller
         $categories=[];
         $registrations=[];
         $activations=[];
+        $claims=[];
+        $dates=[];
         foreach($dataProvider as $key => $rec)
         {
           $categories[]=$rec['dateindex'];
@@ -149,14 +151,13 @@ class PlayerController extends Controller
               $trans=Yii::$app->db->beginTransaction();
               try
               {
-                $records=0;
                 foreach($model->csvRecords as $rec)
                 {
                   $p=new Player;
                   $p->username=$rec[0];
                   $p->fullname=$rec[0];
                   $p->email=$rec[0];
-                  $p->academic=$rec[2] == 'no' ? false : true;
+                  $p->academic=$rec[2] == 'no' ? 0 : 1;
                   $p->save(false);
                   if(Team::find()->where( [ 'name' => $rec[1] ] )->exists())
                   {
@@ -208,7 +209,7 @@ class PlayerController extends Controller
     public function actionResetPlayerProgress()
     {
       try {
-        $result=\Yii::$app->db->createCommand("CALL reset_player_progress()")->execute();
+        \Yii::$app->db->createCommand("CALL reset_player_progress()")->execute();
         Yii::$app->session->setFlash('success', 'Successfully reseted all player progress');
       }
       catch (\Exception $e)
@@ -222,7 +223,7 @@ class PlayerController extends Controller
     public function actionResetPlaydata()
     {
       try {
-        $result=\Yii::$app->db->createCommand("CALL reset_playdata()")->execute();
+        \Yii::$app->db->createCommand("CALL reset_playdata()")->execute();
         Yii::$app->session->setFlash('success', 'Successfully removed all player data');
       }
       catch (\Exception $e)
@@ -373,7 +374,6 @@ class PlayerController extends Controller
       public function actionMail(int $id, $baseURL="https://echoctf.red/activate/")
       {
         // Get innactive players
-        $failedSend=$okSend=[];
         $player=$this->findModel($id);
         $event_name=Sysconfig::findOne('event_name')->val;
         // Generate activation URL
@@ -398,7 +398,7 @@ class PlayerController extends Controller
             ->setTextBody($content)
             ->send();
           }
-      		catch(Exception $e)
+      		catch(\Exception $e)
       		{
       			return false;
       		}

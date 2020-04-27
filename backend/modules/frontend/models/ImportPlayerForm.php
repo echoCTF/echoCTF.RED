@@ -46,7 +46,7 @@ class ImportPlayerForm extends Model
       if (($handle = fopen($fname, "r")) !== FALSE)
       {
           while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-              $num = count($data);
+              //$num = count($data);
               $this->csvRecords[]=$data;
           }
           fclose($handle);

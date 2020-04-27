@@ -80,21 +80,20 @@ class HintController extends Controller
         $db=Yii::$app->db;
         $transaction = $db->beginTransaction();
         try {
-          if($hint->finding)
-          {
-            // fetch player_finding
-
-          }
-          if($hint->treasure)
-          {
-            // fetch player_treasure
-          }
-
-          if($hint->question)
-          {
-            // fetch player_question
-          }
-          $give = $db->createCommand('INSERT INTO player_hint (player_id, hint_id) SELECT id,:hint_id FROM player WHERE active=1 and `type`=:ptype ON DUPLICATE KEY UPDATE player_id=values(player_id)')
+//          if($hint->finding)
+//          {
+//            // fetch player_finding
+//          }
+//          if($hint->treasure)
+//          {
+//            // fetch player_treasure
+//          }
+//
+//          if($hint->question)
+//          {
+//            // fetch player_question
+//          }
+          $db->createCommand('INSERT INTO player_hint (player_id, hint_id) SELECT id,:hint_id FROM player WHERE active=1 and `type`=:ptype ON DUPLICATE KEY UPDATE player_id=values(player_id)')
                     ->bindValue(':hint_id',$hint->id)
                     ->bindValue(':ptype', $hint->player_type)
                     ->execute();
@@ -103,12 +102,10 @@ class HintController extends Controller
             $transaction->rollBack();
             \Yii::$app->getSession()->setFlash('error', 'Failed to give hint to users');
             return $this->redirect(['view','id'=>$id]);
-            throw $e;
         } catch (\Throwable $e) {
             $transaction->rollBack();
             \Yii::$app->getSession()->setFlash('error', 'Failed to give hint to users');
             return $this->redirect(['view','id'=>$id]);
-            throw $e;
         }
         \Yii::$app->getSession()->setFlash('success', 'Hint was sent to all active users.');
         return $this->redirect(['view','id'=>$id]);

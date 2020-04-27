@@ -84,7 +84,7 @@ class ChallengeController extends Controller
                 $model->file->saveAs('uploads/' . $model->id );
               Yii::$app->session->setFlash('success','Challenge ['.$model->name.'] created.');
             }
-            catch (Exception $e)
+            catch (\Exception $e)
             {
               Yii::$app->session->setFlash('error','Failed to create challenge ['.$model->name.']');
             }

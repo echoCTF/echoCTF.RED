@@ -5,8 +5,15 @@ namespace app\modules\frontend\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use app\models\Hint;
+use app\modules\activity\models\PlayerQuestion;
+use app\modules\activity\models\PlayerTreasure;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\SpinHistory;
+use app\modules\gameplay\models\Finding;
+use app\modules\gameplay\models\Treasure;
+use app\modules\gameplay\models\Report;
+use app\modules\gameplay\models\Stream;
 
 /**
  * This is the model class for table "player".
@@ -245,10 +252,10 @@ class Player extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSshkey()
-    {
-        return $this->hasOne(Sshkey::class, ['player_id' => 'id']);
-    }
+//    public function getSshkey()
+//    {
+//        return $this->hasOne(Sshkey::class, ['player_id' => 'id']);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery

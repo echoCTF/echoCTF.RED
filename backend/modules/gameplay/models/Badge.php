@@ -3,6 +3,7 @@
 namespace app\modules\gameplay\models;
 
 use Yii;
+use app\modules\frontend\models\Player;
 
 /**
  * This is the model class for table "badge".
@@ -19,7 +20,7 @@ use Yii;
  * @property BadgeTreasure[] $badgeTreasures
  * @property Treasure[] $treasures
  * @property Hint[] $hints
- * @property UserBadge[] $userBadges
+ * @property PlayerBadge[] $playerBadges
  * @property Player[] $players
  */
 class Badge extends \yii\db\ActiveRecord
@@ -103,9 +104,9 @@ class Badge extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserBadges()
+    public function getPlayerBadges()
     {
-        return $this->hasMany(UserBadge::class, ['badge_id' => 'id']);
+        return $this->hasMany(PlayerBadge::class, ['badge_id' => 'id']);
     }
 
     /**
