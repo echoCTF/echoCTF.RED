@@ -1,149 +1,149 @@
 build:
-    environment:
-        php: 7.3.0
-    nodes:
-        frontend:
-            root_path: "./frontend"
-            project_setup:
-                override:
-                    - 'true'
-            tests:
-                override:
-                    - php-scrutinizer-run --enable-security-analysis
-                    -
-                      command: phpcs-run
-                      idle_timeout: 1200
-        backend:
-            root_path: "./backend"
-            project_setup:
-                override:
-                    - 'true'
-            tests:
-                override:
-                    - php-scrutinizer-run --enable-security-analysis
-                    -
-                      command: phpcs-run
-                      idle_timeout: 1200
+		environment:
+				php: 7.3.0
+		nodes:
+				frontend:
+						root_path: "./frontend"
+						project_setup:
+								override:
+										- 'true'
+						tests:
+								override:
+										- php-scrutinizer-run --enable-security-analysis
+										-
+											command: phpcs-run
+											idle_timeout: 1200
+				backend:
+						root_path: "./backend"
+						project_setup:
+								override:
+										- 'true'
+						tests:
+								override:
+										- php-scrutinizer-run --enable-security-analysis
+										-
+											command: phpcs-run
+											idle_timeout: 1200
 
-        tests: true
-    dependencies:
-        before:
-            - composer global require "fxp/composer-asset-plugin" --no-interaction
-            - composer install  -q --no-suggest --no-progress --no-dev --no-interaction
+				tests: true
+		dependencies:
+				before:
+						- composer global require "fxp/composer-asset-plugin" --no-interaction
+						- composer install -q --no-suggest --no-progress --no-dev --no-interaction
 filter:
-  dependency_paths:
-    - "vendor/"
+	dependency_paths:
+		- "vendor/"
 checks:
-  php:
-    code_rating: true
-    duplication: true
+	php:
+		code_rating: true
+		duplication: true
 
 tools:
-  php_code_sniffer:
-    config:
-      standard: "PSR2"
+	php_code_sniffer:
+		config:
+			standard: "PSR2"
 
 coding_style:
-    php:
-        indentation:
-            general:
-                use_tabs: false
-                size: 2
-            switch:
-                indent_case: true
-        spaces:
-            general:
-                linefeed_character: newline
-            before_parentheses:
-                function_declaration: false
-                closure_definition: false
-                function_call: false
-                if: true
-                for: true
-                while: true
-                switch: true
-                catch: true
-                array_initializer: false
-            around_operators:
-                assignment: false
-                logical: true
-                equality: true
-                relational: true
-                bitwise: true
-                additive: true
-                multiplicative: true
-                shift: true
-                unary_additive: false
-                concatenation: false
-                negation: false
-            before_left_brace:
-                class: true
-                function: true
-                if: true
-                else: true
-                for: true
-                while: true
-                do: true
-                switch: true
-                try: true
-                catch: true
-                finally: true
-            before_keywords:
-                else: true
-                while: true
-                catch: true
-                finally: true
-            within:
-                brackets: false
-                array_initializer: false
-                grouping: false
-                function_call: false
-                function_declaration: false
-                if: false
-                for: false
-                while: false
-                switch: false
-                catch: false
-                type_cast: false
-            ternary_operator:
-                before_condition: true
-                after_condition: true
-                before_alternative: true
-                after_alternative: true
-                in_short_version: false
-            other:
-                before_comma: false
-                after_comma: true
-                before_semicolon: false
-                after_semicolon: false
-                after_type_cast: true
-        braces:
-            classes_functions:
-                class: undefined
-                function: undefined
-                closure: undefined
-            if:
-                opening: new-line
-                always: false
-                else_on_new_line: true
-            for:
-                opening: new-line
-                always: false
-            while:
-                opening: undefined
-                always: false
-            do_while:
-                opening: undefined
-                always: false
-                while_on_new_line: false
-            switch:
-                opening: undefined
-            try:
-                opening: new-line
-                catch_on_new_line: true
-                finally_on_new_line: true
-        upper_lower_casing:
-            keywords:
-                general: undefined
-            constants:
-                true_false_null: undefined
+		php:
+				indentation:
+						general:
+								use_tabs: false
+								size: 2
+						switch:
+								indent_case: true
+				spaces:
+						general:
+								linefeed_character: newline
+						before_parentheses:
+								function_declaration: false
+								closure_definition: false
+								function_call: false
+								if: true
+								for: true
+								while: true
+								switch: true
+								catch: true
+								array_initializer: false
+						around_operators:
+								assignment: false
+								logical: true
+								equality: true
+								relational: true
+								bitwise: true
+								additive: true
+								multiplicative: true
+								shift: true
+								unary_additive: false
+								concatenation: false
+								negation: false
+						before_left_brace:
+								class: true
+								function: true
+								if: true
+								else: true
+								for: true
+								while: true
+								do: true
+								switch: true
+								try: true
+								catch: true
+								finally: true
+						before_keywords:
+								else: true
+								while: true
+								catch: true
+								finally: true
+						within:
+								brackets: false
+								array_initializer: false
+								grouping: false
+								function_call: false
+								function_declaration: false
+								if: false
+								for: false
+								while: false
+								switch: false
+								catch: false
+								type_cast: false
+						ternary_operator:
+								before_condition: true
+								after_condition: true
+								before_alternative: true
+								after_alternative: true
+								in_short_version: false
+						other:
+								before_comma: false
+								after_comma: true
+								before_semicolon: false
+								after_semicolon: false
+								after_type_cast: true
+				braces:
+						classes_functions:
+								class: undefined
+								function: undefined
+								closure: undefined
+						if:
+								opening: new-line
+								always: false
+								else_on_new_line: true
+						for:
+								opening: new-line
+								always: false
+						while:
+								opening: undefined
+								always: false
+						do_while:
+								opening: undefined
+								always: false
+								while_on_new_line: false
+						switch:
+								opening: undefined
+						try:
+								opening: new-line
+								catch_on_new_line: true
+								finally_on_new_line: true
+				upper_lower_casing:
+						keywords:
+								general: undefined
+						constants:
+								true_false_null: undefined
