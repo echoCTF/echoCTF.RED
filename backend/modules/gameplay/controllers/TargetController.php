@@ -112,7 +112,7 @@ class TargetController extends Controller
           if($model->save())
             Yii::$app->session->setFlash('success',$msg);
           else
-            Yii::$app->session->setFlash('error','Server failed to be updated ['.$model->getMessage.']');
+            Yii::$app->session->setFlash('error','Server failed to be updated ['.implode(", ", $model->getErrors()).']');
           return $this->redirect(['view', 'id' => $model->id]);
         }
 
