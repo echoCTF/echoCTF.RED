@@ -60,21 +60,6 @@ echo GridView::widget([
          return Html::a(Html::encode($model->name), ['/target/default/index', 'id'=>$model->id]).$append;
        }
      ],
-/*     [
-       'attribute'=>'status',
-       'label'=>'Status',
-       'contentOptions' => ['class' => 'text-center'],
-       'headerOptions' => ['class' => 'text-center'],
-       'format'=>'raw',
-       'value'=>function($model){
-          if($model->status==='powerup')
-            return sprintf('<abbr title="Scheduled for powerup at %s"><i class="fas fa-arrow-alt-circle-up" style="font-size: 1.2em"></i></abbr>',$model->scheduled_at);
-          if($model->status==='powerdown')
-          return sprintf('<abbr title="Scheduled for powerdown at %s"><i class="fas fa-arrow-alt-circle-down" style="font-size: 1.2em"></i></abbr>',$model->scheduled_at);
-
-          return sprintf('<abbr title="Target online"><i class="fas fa-plug" style="font-size: 1.2em"></i></abbr>',$model->status);
-        }
-     ],*/
      [
        'attribute'=>'ip',
        'label'=>'IP',
@@ -89,7 +74,7 @@ echo GridView::widget([
        'contentOptions' => ['class' => 'd-none d-xl-table-cell text-center'],
        'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell'],
        'value'=>function($model){
-         
+
          $bgcolor="";
          $abbr=ucfirst($model->difficultyText);
          switch($model->difficulty)
@@ -112,6 +97,8 @@ echo GridView::widget([
              break;
            case 4:
              $bgcolor="text-danger";
+             $icon='fa-battery-full';
+             break;
            default:
              $icon='fa-battery-full';
          }
