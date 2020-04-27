@@ -4,6 +4,7 @@ namespace app\modules\gameplay\models;
 
 use Yii;
 use app\modules\activity\models\PlayerFinding;
+use app\modules\frontend\models\Player;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 

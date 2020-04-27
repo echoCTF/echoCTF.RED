@@ -4,6 +4,7 @@ namespace app\modules\gameplay\models;
 
 use Yii;
 use app\modules\activity\models\PlayerTreasure;
+use app\modules\frontend\models\Player;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 
@@ -18,6 +19,7 @@ use yii\db\Expression;
  * @property string $points
  * @property string $player_type
  * @property string $csum If there is a file attached to this treasure
+ * @property string $category
  * @property int $appears
  * @property string $effects
  * @property int $target_id A target system that this treasure is hidden on. This is not required but its good to have

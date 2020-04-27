@@ -36,6 +36,8 @@ use app\modules\activity\models\SpinQueue;
  * @property string $image
  * @property string $dns
  * @property string $parameters
+ * @property int $suggested_xp
+ * @property int $required_xp
  * @property int $rootable
  * @property int $difficulty
  *
@@ -207,7 +209,7 @@ class Target extends \yii\db\ActiveRecord
 
     public function hostConfig()
     {
-      $targetVariables=null;
+//      $targetVariables=null;
       $targetVolumes=null;
       $restartPolicy=new RestartPolicy();
       $restartPolicy->setName('always');
@@ -264,8 +266,8 @@ class Target extends \yii\db\ActiveRecord
 
     public function destroy()
     {
-      $targetVariables=null;
-      $targetVolumes=null;
+//      $targetVariables=null;
+//      $targetVolumes=null;
       if($this->server==null) return false;
       $docker = $this->connectAPI();
       try {

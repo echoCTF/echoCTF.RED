@@ -187,7 +187,7 @@ class TargetController extends Controller
     /**
      * Pull an image based of existing Target model.
      * If pull is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param mixed $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */

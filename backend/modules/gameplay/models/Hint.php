@@ -5,6 +5,8 @@ namespace app\modules\gameplay\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use app\modules\activity\models\PlayerHint;
+use app\modules\frontend\models\Player;
 
 /**
  * This is the model class for table "hint".
@@ -17,6 +19,7 @@ use yii\db\Expression;
  * @property int $badge_id Display this record after the user received the badge_id
  * @property int $finding_id Display this record after the user received the finding_id
  * @property int $treasure_id Display this record after the user received the treasure_id
+ * @property int $question_id Display this record after the user answered the question_id
  * @property int $points_user Display this record after the user reaches these many points
  * @property int $points_team Display this record after the team reaches these many points
  * @property int $timeafter Display this hint after X seconds have been passed since the Start of the event
@@ -27,7 +30,7 @@ use yii\db\Expression;
  * @property Finding $finding
  * @property Treasure $treasure
  * @property Question $question
- * @property UserHint[] $userHints
+ * @property PlayerHint[] $playerHints
  * @property Player[] $players
  */
 class Hint extends \yii\db\ActiveRecord
@@ -126,9 +129,9 @@ class Hint extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getUserHints()
+    public function getPlayerHints()
     {
-        return $this->hasMany(UserHint::class, ['hint_id' => 'id']);
+        return $this->hasMany(PlayerHint::class, ['hint_id' => 'id']);
     }
 
     /**

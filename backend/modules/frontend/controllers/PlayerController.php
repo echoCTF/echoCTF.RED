@@ -288,7 +288,7 @@ class PlayerController extends Controller
           Yii::$app->session->setFlash('success','Player deleted and placed on banned table.');
         }
         else {
-           new Exception('Faled to delete and ban player.');
+           throw new \LogicException('Faled to delete and ban player.');
         }
       }
       catch (Exception $e)
