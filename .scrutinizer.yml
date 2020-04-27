@@ -3,6 +3,9 @@ build:
         php: 7.3.0
     nodes:
         frontend:
+            filter:
+              dependency_paths:
+                - "frontend/vendor/"
             root_path: "./frontend"
             project_setup:
                 override:
@@ -14,6 +17,9 @@ build:
 #                      command: phpcs-run
 #                      idle_timeout: 1200
         backend:
+            filter:
+              dependency_paths:
+                - "backend/vendor/"
             root_path: "./backend"
             project_setup:
                 override:
@@ -29,10 +35,6 @@ build:
     dependencies:
         before:
             - composer global require "fxp/composer-asset-plugin" --no-interaction
-            - composer install --no-interaction
-filter:
-  dependency_paths:
-    - "frontend/vendor/"
 checks:
   php:
     code_rating: true
