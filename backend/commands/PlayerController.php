@@ -139,7 +139,7 @@ class PlayerController extends Controller {
     {
       // Generate activation URL
       $activationURL=sprintf("%s%s",$baseURL,$player->activkey);
-      $MAILCONTENT=$this->renderFile('mail/layouts/activation.php', ['activationURL'=>$activationURL,'player'=>$player,'event_name'=>$event_name], true);
+      $MAILCONTENT=$this->renderFile('mail/layouts/activation.php', ['activationURL'=>$activationURL,'player'=>$player,'event_name'=>$event_name]);
       $this->stdout($player->email);
       $numSend=\Yii::$app->mailer->compose()
           ->setFrom([Sysconfig::findOne('mail_from')->val => Sysconfig::findOne('mail_fromName')->val])
@@ -193,7 +193,7 @@ class PlayerController extends Controller {
       if($team_name!==false)
       {
         $team=Team::findOne(['name'=>$team_name]);
-        if(!$team)
+        if($team!==null)
         {
           $team=new Team();
           $team->name=$team_name;
