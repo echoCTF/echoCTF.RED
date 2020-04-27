@@ -5,15 +5,15 @@ namespace app\modules\frontend\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
-use app\models\Hint;
 use app\modules\activity\models\PlayerQuestion;
 use app\modules\activity\models\PlayerTreasure;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\SpinHistory;
+use app\modules\activity\models\Report;
+use app\modules\activity\models\Stream;
+use app\modules\gameplay\models\Hint;
 use app\modules\gameplay\models\Finding;
 use app\modules\gameplay\models\Treasure;
-use app\modules\gameplay\models\Report;
-use app\modules\gameplay\models\Stream;
 
 /**
  * This is the model class for table "player".

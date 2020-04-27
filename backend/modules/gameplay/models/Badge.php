@@ -4,6 +4,7 @@ namespace app\modules\gameplay\models;
 
 use Yii;
 use app\modules\frontend\models\Player;
+use app\modules\activity\models\PlayerBadge;
 
 /**
  * This is the model class for table "badge".

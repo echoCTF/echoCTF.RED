@@ -6,6 +6,7 @@ use yii\base\Model;
 
 /**
  * Login form
+ * @property User|null $user
  */
 class LoginForm extends Model
 {
@@ -42,7 +43,7 @@ class LoginForm extends Model
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
+            if ($user!==null || !$user->validatePassword($this->password)) {
                 $this->addError($attribute, 'Incorrect username or password.');
             }
         }
