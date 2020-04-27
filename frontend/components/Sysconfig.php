@@ -10,10 +10,10 @@ class Sysconfig extends Component
 {
  public function __get($attribute)
  {
-  if(\Yii::$app->cache->memcache===null)
+  if(\Yii::$app->cache->memcache===null || !(\Yii::$app->cache->memcache instanceof \Memcache))
     throw new \LogicException('Memcache not initialized.');
 
-  $val=Yii::$app->cache->Memcache->get('sysconfig:'.$attribute);
+  $val=Yii::$app->cache->memcache->get('sysconfig:'.$attribute);
   // key not found
   if($val===false || $val==="0")
     return false;
