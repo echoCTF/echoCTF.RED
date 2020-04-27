@@ -9,7 +9,7 @@ build:
                     - 'true'
             tests:
                 override:
-                    - php-scrutinizer-run --enable-security-analysis
+                    - php-scrutinizer-run --enable-security-analysis --sub-project-dir=frontend/
                     -
                       command: phpcs-run
                       idle_timeout: 1200
@@ -20,7 +20,7 @@ build:
                     - 'true'
             tests:
                 override:
-                    - php-scrutinizer-run --enable-security-analysis
+                    - php-scrutinizer-run --enable-security-analysis --sub-project-dir=backend/
                     -
                       command: phpcs-run
                       idle_timeout: 1200
@@ -29,7 +29,7 @@ build:
     dependencies:
         before:
             - composer global require "fxp/composer-asset-plugin" --no-interaction
-            - composer install -q --no-suggest --no-progress --no-dev --no-interaction
+            - composer install --no-interaction
 filter:
   dependency_paths:
     - "vendor/"
