@@ -50,7 +50,7 @@ class LowerRangeValidator extends \yii\validators\Validator
         parent::init();
         if (!is_array($this->range)
             && !($this->range instanceof \Closure)
-            && !($this->range instanceof \Traversable)
+//            && !($this->range instanceof \Traversable)
         ) {
             throw new InvalidConfigException('The "range" property must be set.');
         }

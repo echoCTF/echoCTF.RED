@@ -291,7 +291,7 @@ class PlayerController extends Controller
            throw new \LogicException('Faled to delete and ban player.');
         }
       }
-      catch (Exception $e)
+      catch (\Exception $e)
       {
         $trans->rollBack();
         Yii::$app->session->setFlash('error','Failed to ban player.');
@@ -344,7 +344,7 @@ class PlayerController extends Controller
         Yii::$app->session->setFlash('success','[<code><b>'.intval($counter).'</b></code>] Users banned');
 
       }
-      catch (Exception $e)
+      catch (\Exception $e)
       {
         $trans->rollBack();
         Yii::$app->session->setFlash('error','Failed to ban users');

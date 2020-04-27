@@ -10,6 +10,7 @@ use Yii;
  * @property int $id
  * @property string $name
  * @property string $description
+ * @property string $category
  * @property string $icon
  * @property int $min_points
  * @property int $max_points

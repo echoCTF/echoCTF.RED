@@ -21,7 +21,7 @@ class ChallengeController extends ActiveController
       /* Open a file for writing */
       $tmpfname = tempnam("/tmp", "challenge_upload");
       $fp = fopen($tmpfname, "w");
-      if($fp===false)
+      if($fp===false || $putdata===false)
       {
         \Yii::$app->response->statusCode = 422;
         return ['status' => false, 'data' => 'Failed to open temporary file'];

@@ -4,6 +4,7 @@ namespace app\modules\smartcity\models;
 
 use Yii;
 
+use app\modules\gameplay\models\Target;
 /**
  * This is the model class for table "infrastructure".
  *
