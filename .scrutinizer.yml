@@ -10,9 +10,9 @@ build:
             tests:
                 override:
                     - php-scrutinizer-run --enable-security-analysis --sub-project-dir=frontend/
-                    -
-                      command: phpcs-run
-                      idle_timeout: 1200
+#                    -
+#                      command: phpcs-run
+#                      idle_timeout: 1200
         backend:
             root_path: "./backend"
             project_setup:
@@ -21,9 +21,9 @@ build:
             tests:
                 override:
                     - php-scrutinizer-run --enable-security-analysis --sub-project-dir=backend/
-                    -
-                      command: phpcs-run
-                      idle_timeout: 1200
+#                    -
+#                      command: phpcs-run
+#                      idle_timeout: 1200
 
         tests: true
     dependencies:
@@ -32,7 +32,7 @@ build:
             - composer install --no-interaction
 filter:
   dependency_paths:
-    - "vendor/"
+    - "frontend/vendor/"
 checks:
   php:
     code_rating: true
