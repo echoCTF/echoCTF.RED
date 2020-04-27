@@ -10,6 +10,7 @@ use app\modules\gameplay\models\Target;
  *
  * @property int $player_id
  * @property int $target_id
+ * @property int $timer
  * @property string|null $created_at
  *
  * @property Player $player
