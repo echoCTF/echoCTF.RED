@@ -14,6 +14,7 @@ use app\modules\frontend\models\Player;
  * @property string $ip
  * @property string $ts
  * @property array $decodedData
+ * @property string $decodedDataAsString
  *
  * @property Player $player
  */
@@ -89,6 +90,7 @@ class Sessions extends \yii\db\ActiveRecord
       if(trim($this->data)=="") return "";
       $r = array();
       $str=$this->data;
+      $sessid=null;
       while ($i = strpos($str, '|'))
       {
           $k = substr($str, 0, $i);

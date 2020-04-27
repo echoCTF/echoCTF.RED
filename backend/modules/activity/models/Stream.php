@@ -3,10 +3,13 @@
 namespace app\modules\activity\models;
 
 use Yii;
+use yii\helpers\Html;
 use app\modules\frontend\models\Player;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\db\Expression;
+use app\modules\gameplay\models\Badge;
+use app\modules\gameplay\models\Target;
 
 /**
  * This is the model class for table "stream".
@@ -21,6 +24,7 @@ use yii\db\Expression;
  * @property string $pubtitle
  * @property string $pubmessage
  * @property string $ts
+ * @property string $icon
  *
  * @property Player $player
  */
