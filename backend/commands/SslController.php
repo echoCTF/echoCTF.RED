@@ -113,7 +113,7 @@ class SslController extends Controller {
     $player->playerSsl->generate();
     $player->playerSsl->save();
 
-    if($fileout)
+    if((bool)$fileout)
     {
       file_put_contents($player->username.".csr", $player->playerSsl->csr);
       file_put_contents($player->username.".txt.crt", $player->playerSsl->txtcrt);
