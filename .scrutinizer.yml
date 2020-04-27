@@ -11,10 +11,10 @@ build:
                     - php-scrutinizer-run --enable-security-analysis --sub-project-dir=backend/
                     - php-scrutinizer-run --enable-security-analysis --sub-project-dir=frontend/
                     -
-                      command: phpcs-run --standard=build/phpcs.xml.dist build/frontend
+                      command: phpcs-run --standard=build/phpcs.xml.dist frontend
                       idle_timeout: 1200
                     -
-                      command: phpcs-run phpcs-run --standard=build/phpcs.xml.dist build/backend
+                      command: phpcs-run phpcs-run --standard=phpcs.xml.dist backend
                       idle_timeout: 1200
         tests: true
     dependencies:
@@ -23,6 +23,8 @@ build:
             - cd frontend; composer install  --no-progress --no-dev --no-interaction
             - cd ../backend; composer install --no-progress  --no-dev --no-interaction
             - cd ..
+filter:
+
 checks:
   php:
     code_rating: true
