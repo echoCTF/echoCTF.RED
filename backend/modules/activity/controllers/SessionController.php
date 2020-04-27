@@ -127,9 +127,8 @@ class SessionController extends Controller
      */
     public function actionDeleteExpired()
     {
-        $searchModel = new SessionsSearch();
         $expired=new \yii\db\Expression('UNIX_TIMESTAMP(NOW() - INTERVAL 2 DAY)');
-        $expired_at=(new \yii\db\Query)->select($expired)->scalar();
+//        $expired_at=(new \yii\db\Query)->select($expired)->scalar();
         $sess=Sessions::deleteAll(['<', 'expire', $expired]);
         if($sess>0)
           Yii::$app->session->setFlash('success',"Deleted $sess expired sessions.");
