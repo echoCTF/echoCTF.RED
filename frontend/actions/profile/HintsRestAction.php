@@ -11,7 +11,7 @@ class HintsRestAction extends \yii\rest\IndexAction
   {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
     $requestParams = Yii::$app->request->get();
-    $playerHints=\app\models\PlayerHint::find()->forAjax()->forPlayer(Yii::$app->user->id);
+    $playerHints=\app\models\PlayerHint::find()->forAjax()->forPlayer((int)Yii::$app->user->id);
     $dataProvider = new ActiveDataProvider([
         'query' => $playerHints,
         'pagination' => [

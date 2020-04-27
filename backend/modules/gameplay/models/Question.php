@@ -43,7 +43,7 @@ class Question extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 255],
             [['code'], 'string', 'max' => 128],
             [['challenge_id', 'name'], 'unique', 'targetAttribute' => ['challenge_id', 'name']],
-            [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::className(), 'targetAttribute' => ['challenge_id' => 'id']],
+            [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::class, 'targetAttribute' => ['challenge_id' => 'id']],
         ];
     }
 
@@ -69,7 +69,7 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getPlayerQuestions()
     {
-        return $this->hasMany(\app\modules\activity\models\PlayerQuestion::className(), ['question_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\PlayerQuestion::class, ['question_id' => 'id']);
     }
 
     /**
@@ -77,7 +77,7 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getChallenge()
     {
-        return $this->hasOne(Challenge::className(), ['id' => 'challenge_id']);
+        return $this->hasOne(Challenge::class, ['id' => 'challenge_id']);
     }
 
 }

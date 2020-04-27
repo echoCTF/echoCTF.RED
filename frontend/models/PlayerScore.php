@@ -25,7 +25,7 @@ class PlayerScore extends \yii\db\ActiveRecord
     {
         return [
           'typecast' => [
-              'class' => AttributeTypecastBehavior::className(),
+              'class' => AttributeTypecastBehavior::class,
               'attributeTypes' => [
                   'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                   'points' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -63,11 +63,11 @@ class PlayerScore extends \yii\db\ActiveRecord
     }
     public function getPlayer()
     {
-      return $this->hasOne(Player::className(), ['id' => 'player_id']);
+      return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
     public function getRank()
     {
-      return $this->hasOne(PlayerRank::className(), ['player_id' => 'player_id']);
+      return $this->hasOne(PlayerRank::class, ['player_id' => 'player_id']);
     }
 
     public static function find(){    return new PlayerScoreQuery(get_called_class()); }

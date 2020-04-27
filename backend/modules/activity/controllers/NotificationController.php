@@ -22,7 +22,7 @@ class NotificationController extends Controller
      {
          return [
            'access' => [
-                 'class' => \yii\filters\AccessControl::className(),
+                 'class' => \yii\filters\AccessControl::class,
                  'rules' => [
                      [
                          'allow' => true,
@@ -31,7 +31,7 @@ class NotificationController extends Controller
                  ],
              ],
              'verbs' => [
-                 'class' => VerbFilter::className(),
+                 'class' => VerbFilter::class,
                  'actions' => [
                      'delete' => ['POST'],
                  ],
@@ -81,7 +81,7 @@ class NotificationController extends Controller
           if($model->player_id==null)
           {
             // Send notification to all players
-            foreach(Player::find(['active'=>1])->all() as $player)
+            foreach(Player::find()->where(['active'=>1])->all() as $player)
             {
               $notif=new Notification;
               $notif->load(Yii::$app->request->post());

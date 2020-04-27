@@ -1,11 +1,12 @@
 <?php
 namespace app\components;
 
-
 use Yii;
+
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use app\modules\settings\models\Sysconfig as dbSys;
+
 class Sysconfig extends Component
 {
  public function __get($attribute)

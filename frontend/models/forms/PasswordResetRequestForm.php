@@ -43,7 +43,7 @@ class PasswordResetRequestForm extends Model
             'status' => Player::STATUS_ACTIVE,
             'email' => $this->email,
         ]);
-        if (!$player) {
+        if ($player===null) {
             return false;
         }
 

@@ -25,7 +25,7 @@ class DefaultController extends Controller
   {
       return [
           'access' => [
-              'class' => AccessControl::className(),
+              'class' => AccessControl::class,
               'only' => ['index','view','download'],
               'rules' => [
                   [
@@ -60,7 +60,7 @@ class DefaultController extends Controller
      */
     public function actionView(int $id)
     {
-      $model=$this->findModel($id);
+//      $model=$this->findModel($id);
       $model=Challenge::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
       $query=Question::find()->orderBy(['weight'=>SORT_ASC,'id'=>SORT_ASC]);
 
@@ -96,7 +96,8 @@ class DefaultController extends Controller
             throw new NotFoundHttpException('The requested challenge does not have a file to download.');
         $storagePath = Yii::getAlias(Yii::$app->sys->challenge_home);
 
-        return Yii::$app->response->sendFile("{$storagePath}/{$model->filename}", $model->filename)->send();
+        Yii::$app->response->sendFile("{$storagePath}/{$model->filename}", $model->filename)->send();
+        return;
     }
 
     /**

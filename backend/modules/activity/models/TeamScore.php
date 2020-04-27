@@ -46,7 +46,7 @@ class TeamScore extends \yii\db\ActiveRecord
 
     public function getTeam()
     {
-        return $this->hasOne(Team::className(), ['id' => 'team_id']);
+        return $this->hasOne(Team::class, ['id' => 'team_id']);
     }
 
 }

@@ -22,7 +22,7 @@ class ChallengeController extends Controller
     {
         return [
           'access' => [
-                'class' => \yii\filters\AccessControl::className(),
+                'class' => \yii\filters\AccessControl::class,
                 'only' => ['index','create','update','view'],
                 'rules' => [
                     [
@@ -32,7 +32,7 @@ class ChallengeController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -84,7 +84,7 @@ class ChallengeController extends Controller
                 $model->file->saveAs('uploads/' . $model->id );
               Yii::$app->session->setFlash('success','Challenge ['.$model->name.'] created.');
             }
-            catch (Exception $e)
+            catch (\Exception $e)
             {
               Yii::$app->session->setFlash('error','Failed to create challenge ['.$model->name.']');
             }

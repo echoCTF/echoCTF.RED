@@ -21,7 +21,7 @@ class SpinQueueController extends Controller
      {
          return [
            'access' => [
-                 'class' => \yii\filters\AccessControl::className(),
+                 'class' => \yii\filters\AccessControl::class,
                  'rules' => [
                      [
                          'allow' => true,
@@ -30,7 +30,7 @@ class SpinQueueController extends Controller
                  ],
              ],
              'verbs' => [
-                 'class' => VerbFilter::className(),
+                 'class' => VerbFilter::class,
                  'actions' => [
                      'delete' => ['POST'],
                  ],
@@ -126,12 +126,16 @@ class SpinQueueController extends Controller
      */
     public function actionTruncate()
     {
-        if(Yii::$app->db->createCommand()->truncateTable('spin_queue')->execute()!==false)
-          Yii::$app->session->setFlash('success','Spin Queue truncated');
-        else
-          Yii::$app->session->setFlash('error','Spin Queue failed to get truncated');
-
-        return $this->redirect(['index']);
+      try
+      {
+        Yii::$app->db->createCommand()->truncateTable('spin_queue')->execute();
+        Yii::$app->session->setFlash('success','Spin Queue truncated');
+      }
+      catch(\Exception $e)
+      {
+        Yii::$app->session->setFlash('error','Spin Queue failed to get truncated');
+      }
+      return $this->redirect(['index']);
     }
     /**
      * Finds the SpinQueue model based on its primary key value.

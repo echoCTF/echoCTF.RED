@@ -21,7 +21,7 @@ class SpinHistoryController extends Controller
      {
          return [
            'access' => [
-                 'class' => \yii\filters\AccessControl::className(),
+                 'class' => \yii\filters\AccessControl::class,
                  'rules' => [
                      [
                          'allow' => true,
@@ -30,7 +30,7 @@ class SpinHistoryController extends Controller
                  ],
              ],
              'verbs' => [
-                 'class' => VerbFilter::className(),
+                 'class' => VerbFilter::class,
                  'actions' => [
                      'delete' => ['POST'],
                  ],
@@ -127,13 +127,16 @@ class SpinHistoryController extends Controller
      */
     public function actionTruncate()
     {
-//        if(SpinHistory::deleteAll())
-        if(Yii::$app->db->createCommand()->truncateTable('spin_history')->execute()!==false)
-          Yii::$app->session->setFlash('success','Spin History truncated.');
-        else
-          Yii::$app->session->setFlash('error','Failed to truncate table.');
-
-        return $this->redirect(['index']);
+      try
+      {
+        Yii::$app->db->createCommand()->truncateTable('spin_history')->execute();
+        Yii::$app->session->setFlash('success','Spin History truncated.');
+      }
+      catch(\Exception $e)
+      {
+        Yii::$app->session->setFlash('error','Failed to truncate table.');
+      }
+      return $this->redirect(['index']);
     }
 
     /**

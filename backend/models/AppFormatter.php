@@ -15,16 +15,13 @@ class AppFormatter extends \yii\i18n\Formatter
             default:
                 return 'Both';
         }
-        return 'Both';
     }
     public function asPlayerStatus($value) {
       switch ($value) {
         case 0:
           return 'Deleted';
-          break;
         case 9:
           return 'Inactive';
-          break;
         default:
           return 'Active';
       }

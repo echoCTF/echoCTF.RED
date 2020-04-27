@@ -21,7 +21,7 @@ class AchievementController extends Controller
     {
         return [
           'access' => [
-                'class' => \yii\filters\AccessControl::className(),
+                'class' => \yii\filters\AccessControl::class,
                 'only' => ['index','create','update','view'],
                 'rules' => [
                     [
@@ -31,7 +31,7 @@ class AchievementController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],

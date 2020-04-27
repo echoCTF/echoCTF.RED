@@ -37,8 +37,8 @@ class PlayerHint extends \yii\db\ActiveRecord
             [['player_id', 'hint_id', 'status'], 'integer'],
             [['ts'], 'safe'],
             [['player_id', 'hint_id'], 'unique', 'targetAttribute' => ['player_id', 'hint_id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-            [['hint_id'], 'exist', 'skipOnError' => true, 'targetClass' => Hint::className(), 'targetAttribute' => ['hint_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['hint_id'], 'exist', 'skipOnError' => true, 'targetClass' => Hint::class, 'targetAttribute' => ['hint_id' => 'id']],
         ];
     }
 
@@ -60,7 +60,7 @@ class PlayerHint extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -68,6 +68,6 @@ class PlayerHint extends \yii\db\ActiveRecord
      */
     public function getHint()
     {
-        return $this->hasOne(Hint::className(), ['id' => 'hint_id']);
+        return $this->hasOne(Hint::class, ['id' => 'hint_id']);
     }
 }

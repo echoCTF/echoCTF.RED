@@ -22,7 +22,7 @@ class TargetController extends Controller
     {
         return [
           'access' => [
-                'class' => \yii\filters\AccessControl::className(),
+                'class' => \yii\filters\AccessControl::class,
                 'only' => ['index','create','update','view','test'],
                 'rules' => [
                     [
@@ -32,7 +32,7 @@ class TargetController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                     'destroy' => ['POST'],
@@ -103,7 +103,7 @@ class TargetController extends Controller
         {
 
           // if the target has changed server destroy from old one
-          $keys=['server','net'];
+//          $keys=['server','net'];
           if(($modelOrig->server!=$model->server || $modelOrig->net!=$model->net || $modelOrig->ipoctet!=$model->ipoctet)  && array_key_exists('destroy',Yii::$app->request->post()))
           {
             $modelOrig->destroy();
@@ -112,7 +112,7 @@ class TargetController extends Controller
           if($model->save())
             Yii::$app->session->setFlash('success',$msg);
           else
-            Yii::$app->session->setFlash('error','Server failed to be updated ['.$model->getMessage.']');
+            Yii::$app->session->setFlash('error','Server failed to be updated ['.implode(", ", $model->getErrors()).']');
           return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -156,7 +156,7 @@ class TargetController extends Controller
     /**
      * Spin an existing Target model.
      * If spin is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param mixed $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -187,7 +187,7 @@ class TargetController extends Controller
     /**
      * Pull an image based of existing Target model.
      * If pull is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param mixed $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */

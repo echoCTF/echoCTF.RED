@@ -21,7 +21,7 @@ class BadgeController extends Controller
     {
         return [
           'access' => [
-                'class' => \yii\filters\AccessControl::className(),
+                'class' => \yii\filters\AccessControl::class,
                 'only' => ['index','create','update','view'],
                 'rules' => [
                     [
@@ -31,7 +31,7 @@ class BadgeController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -105,7 +105,7 @@ class BadgeController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
           }
         }
-        catch (Exception $e)
+        catch (\Exception $e)
         {
           $transaction->rollback();
           Yii::$app->session->setFlash('error',"Failed to create badge");

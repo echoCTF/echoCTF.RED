@@ -40,7 +40,7 @@ class Report extends \yii\db\ActiveRecord
             [['player_id', 'points'], 'integer'],
             [['body', 'status', 'modcomment', 'pubbody'], 'string'],
             [['title', 'pubtitle'], 'string', 'max' => 255],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -67,6 +67,6 @@ class Report extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 }

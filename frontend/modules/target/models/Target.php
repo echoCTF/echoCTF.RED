@@ -32,6 +32,10 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int|null $required_xp
  * @property string $ts
  *
+ * @property int $points
+ * @property int $countHeadshots
+ * @property array $treasureCategories
+ *
  * @property Credential[] $credentials
  * @property Finding[] $findings
  * @property InfrastructureTarget $infrastructureTarget
@@ -43,6 +47,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property TargetVariable[] $targetVariables
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
+ * @property Headshot[] $headshots
  */
 class Target extends \yii\db\ActiveRecord
 {
@@ -78,7 +83,7 @@ class Target extends \yii\db\ActiveRecord
     {
       return [
         'typecast' => [
-          'class' => AttributeTypecastBehavior::className(),
+          'class' => AttributeTypecastBehavior::class,
           'attributeTypes' => [
             'id' => AttributeTypecastBehavior::TYPE_INTEGER,
             'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -150,7 +155,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getFindings()
     {
-      return $this->hasMany(Finding::className(), ['target_id' => 'id']);
+      return $this->hasMany(Finding::class, ['target_id' => 'id']);
     }
 
     /**
@@ -158,7 +163,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getNetworkTargets()
     {
-      return $this->hasMany(\app\modules\network\models\NetworkTarget::className(), ['target_id' => 'id']);
+      return $this->hasMany(\app\modules\network\models\NetworkTarget::class, ['target_id' => 'id']);
     }
 
     /**
@@ -166,7 +171,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getNetworks()
     {
-      return $this->hasMany(\app\modules\network\models\Network::className(), ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
     }
 
     /**
@@ -174,7 +179,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getTreasures()
     {
-      return $this->hasMany(Treasure::className(), ['target_id' => 'id']);
+      return $this->hasMany(Treasure::class, ['target_id' => 'id']);
     }
 
     public function getTreasureCategories()
@@ -209,7 +214,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getSpinQueue()
     {
-      return $this->hasOne(SpinQueue::className(), ['target_id' => 'id']);
+      return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
     }
 
     public function getSchedule()
@@ -247,7 +252,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getHeadshots()
     {
-      return $this->hasMany(Headshot::className(), ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
+      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
     }
 
     /*
@@ -263,7 +268,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getCountHeadshots()
     {
-      return $this->headshots()->count();
+      return $this->headshots->count();
     }
 
     public function getFormattedExtras()
@@ -273,7 +278,7 @@ class Target extends \yii\db\ActiveRecord
         $scheduled=sprintf('<abbr title="Scheduled to powedown at %s"><i class="glyphicon glyphicon-hand-down"></i></abbr>',$this->scheduled_at);
       elseif(intval($this->active)===0  && $this->status==='powerup' )
         $scheduled=sprintf('<abbr title="Scheduled to powerup %s"><i class="glyphicon glyphicon-hand-up"></i></abbr>',$this->scheduled_at);
-      return sprintf("<center><abbr title='Flags'><i class='material-icons'>flag</i>%d</abbr> / <abbr title='Service'><i class='material-icons'>whatshot</i>%d</abbr> / <abbr title='Headshots'><i class='material-icons'>memory</i>%d</abbr> %s</center>",count($this->treasures),count($this->findings),count($this->getHeadshots()),$scheduled);
+      return sprintf("<center><abbr title='Flags'><i class='material-icons'>flag</i>%d</abbr> / <abbr title='Service'><i class='material-icons'>whatshot</i>%d</abbr> / <abbr title='Headshots'><i class='material-icons'>memory</i>%d</abbr> %s</center>",count($this->treasures),count($this->findings),$this->countHeadshots,$scheduled);
     }
 
     /*

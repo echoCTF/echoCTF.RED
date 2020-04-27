@@ -21,6 +21,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property PlayerQuestion[] $playerQuestions
  * @property Challenge $challenge
+ * @property PlayerQuestion $answered
  */
 class Question extends \yii\db\ActiveRecord
 {
@@ -36,7 +37,7 @@ class Question extends \yii\db\ActiveRecord
     {
         return [
             'typecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'challenge_id' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -89,7 +90,7 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getPlayerQuestions()
     {
-        return $this->hasMany(PlayerQuestion::className(), ['question_id' => 'id']);
+        return $this->hasMany(PlayerQuestion::class, ['question_id' => 'id']);
     }
 
     /**
@@ -97,7 +98,7 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getAnswered()
     {
-        return $this->hasOne(PlayerQuestion::className(), ['question_id' => 'id'])->andOnCondition(['player_id'=>Yii::$app->user->id]);
+        return $this->hasOne(PlayerQuestion::class, ['question_id' => 'id'])->andOnCondition(['player_id'=>(int)Yii::$app->user->id]);
     }
 
     /**
@@ -105,7 +106,7 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getChallenge()
     {
-        return $this->hasOne(Challenge::className(), ['id' => 'challenge_id']);
+        return $this->hasOne(Challenge::class, ['id' => 'challenge_id']);
     }
 
     public function save($runValidation = true, $attributeNames = NULL)

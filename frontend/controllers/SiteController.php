@@ -26,7 +26,7 @@ class SiteController extends Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['logout','register'],
                 'rules' => [
                     [
@@ -38,7 +38,7 @@ class SiteController extends Controller
                         'actions' => ['register'],
                         'allow' => false,
                         'roles' => ['@'],
-                        'denyCallback' => function($rule, $action) {
+                        'denyCallback' => function() {
                           return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
                         }
                     ],
@@ -50,7 +50,7 @@ class SiteController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'logout' => ['post'],
                 ],

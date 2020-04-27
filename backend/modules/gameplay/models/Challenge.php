@@ -14,6 +14,7 @@ use yii\web\UploadedFile;
  * @property string $difficulty
  * @property string $description
  * @property string $player_type
+ * @property string $filename The filename that will be provided to participants
  * @property string $file The filename that will be provided to participants
  *
  * @property Question[] $questions
@@ -63,6 +64,6 @@ class Challenge extends \yii\db\ActiveRecord
      */
     public function getQuestions()
     {
-        return $this->hasMany(Question::className(), ['challenge_id' => 'id']);
+        return $this->hasMany(Question::class, ['challenge_id' => 'id']);
     }
 }

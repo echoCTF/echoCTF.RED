@@ -9,10 +9,12 @@ use app\modules\frontend\models\Player;
  *
  * @property string $id
  * @property int $expire
- * @property resource $data
+ * @property string $data
  * @property int $player_id
  * @property string $ip
  * @property string $ts
+ * @property array $decodedData
+ * @property string $decodedDataAsString
  *
  * @property Player $player
  */
@@ -40,7 +42,7 @@ class Sessions extends \yii\db\ActiveRecord
             [['ts'], 'safe'],
             [['id'], 'string', 'max' => 32],
             [['id'], 'unique'],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -65,7 +67,7 @@ class Sessions extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     public function afterFind(){
@@ -88,6 +90,7 @@ class Sessions extends \yii\db\ActiveRecord
       if(trim($this->data)=="") return "";
       $r = array();
       $str=$this->data;
+      $sessid=null;
       while ($i = strpos($str, '|'))
       {
           $k = substr($str, 0, $i);

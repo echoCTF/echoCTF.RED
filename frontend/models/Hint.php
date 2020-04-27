@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\target\models\Treasure;
 use app\modules\target\models\Finding;
+use app\modules\game\models\Badge;
 /**
  * This is the model class for table "hint".
  *
@@ -52,9 +53,9 @@ class Hint extends \yii\db\ActiveRecord
             [['ts'], 'safe'],
             [['title', 'category'], 'string', 'max' => 255],
             [['badge_id', 'finding_id', 'treasure_id', 'question_id', 'player_type'], 'unique', 'targetAttribute' => ['badge_id', 'finding_id', 'treasure_id', 'question_id', 'player_type']],
-            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::className(), 'targetAttribute' => ['badge_id' => 'id']],
-            [['finding_id'], 'exist', 'skipOnError' => true, 'targetClass' => Finding::className(), 'targetAttribute' => ['finding_id' => 'id']],
-            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::className(), 'targetAttribute' => ['treasure_id' => 'id']],
+            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::class, 'targetAttribute' => ['badge_id' => 'id']],
+            [['finding_id'], 'exist', 'skipOnError' => true, 'targetClass' => Finding::class, 'targetAttribute' => ['finding_id' => 'id']],
+            [['treasure_id'], 'exist', 'skipOnError' => true, 'targetClass' => Treasure::class, 'targetAttribute' => ['treasure_id' => 'id']],
         ];
     }
 
@@ -86,7 +87,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getBadge()
     {
-        return $this->hasOne(Badge::className(), ['id' => 'badge_id']);
+        return $this->hasOne(Badge::class, ['id' => 'badge_id']);
     }
 
     /**
@@ -94,7 +95,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getFinding()
     {
-        return $this->hasOne(Finding::className(), ['id' => 'finding_id']);
+        return $this->hasOne(Finding::class, ['id' => 'finding_id']);
     }
 
     /**
@@ -102,7 +103,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getTreasure()
     {
-        return $this->hasOne(Treasure::className(), ['id' => 'treasure_id']);
+        return $this->hasOne(Treasure::class, ['id' => 'treasure_id']);
     }
 
     /**
@@ -110,7 +111,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getPlayerHints()
     {
-        return $this->hasMany(PlayerHint::className(), ['hint_id' => 'id']);
+        return $this->hasMany(PlayerHint::class, ['hint_id' => 'id']);
     }
 
     /**
@@ -118,7 +119,7 @@ class Hint extends \yii\db\ActiveRecord
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::className(), ['id' => 'player_id'])->viaTable('player_hint', ['hint_id' => 'id']);
+        return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('player_hint', ['hint_id' => 'id']);
     }
 
     /**

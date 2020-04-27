@@ -36,6 +36,8 @@ use app\modules\activity\models\SpinQueue;
  * @property string $image
  * @property string $dns
  * @property string $parameters
+ * @property int $suggested_xp
+ * @property int $required_xp
  * @property int $rootable
  * @property int $difficulty
  *
@@ -43,6 +45,7 @@ use app\modules\activity\models\SpinQueue;
  * @property TargetVariable[] $targetVariables
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
+ * @property int $memory
  */
 class Target extends \yii\db\ActiveRecord
 {
@@ -117,7 +120,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getFindings()
     {
-        return $this->hasMany(Finding::className(), ['target_id' => 'id']);
+        return $this->hasMany(Finding::class, ['target_id' => 'id']);
     }
 
     /**
@@ -125,7 +128,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getTargetVariables()
     {
-        return $this->hasMany(TargetVariable::className(), ['target_id' => 'id']);
+        return $this->hasMany(TargetVariable::class, ['target_id' => 'id']);
     }
 
     /**
@@ -133,7 +136,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getTargetVolumes()
     {
-        return $this->hasMany(TargetVolume::className(), ['target_id' => 'id']);
+        return $this->hasMany(TargetVolume::class, ['target_id' => 'id']);
     }
 
     /**
@@ -141,7 +144,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getTreasures()
     {
-        return $this->hasMany(Treasure::className(), ['target_id' => 'id']);
+        return $this->hasMany(Treasure::class, ['target_id' => 'id']);
     }
 
     /**
@@ -149,7 +152,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getSpinQueue()
     {
-        return $this->hasOne(SpinQueue::className(), ['target_id' => 'id']);
+        return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
     }
 
     public function afterFind(){
@@ -206,7 +209,7 @@ class Target extends \yii\db\ActiveRecord
 
     public function hostConfig()
     {
-      $targetVariables=null;
+//      $targetVariables=null;
       $targetVolumes=null;
       $restartPolicy=new RestartPolicy();
       $restartPolicy->setName('always');
@@ -263,8 +266,8 @@ class Target extends \yii\db\ActiveRecord
 
     public function destroy()
     {
-      $targetVariables=null;
-      $targetVolumes=null;
+//      $targetVariables=null;
+//      $targetVolumes=null;
       if($this->server==null) return false;
       $docker = $this->connectAPI();
       try {

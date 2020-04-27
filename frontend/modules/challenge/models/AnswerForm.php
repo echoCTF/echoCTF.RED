@@ -7,6 +7,7 @@ use yii\base\Model;
 
 /**
  * ContactForm is the model behind the contact form.
+ * @property Question $question
  */
 class AnswerForm extends Model
 {
@@ -22,7 +23,7 @@ class AnswerForm extends Model
         return [
             [['answer'], 'required'],
             [['answer'],'exist',
-              'targetClass' => Question::ClassName() ,
+              'targetClass' => Question::class,
               'targetAttribute' => ['answer'=>'code']]
         ];
     }
@@ -46,14 +47,14 @@ class AnswerForm extends Model
         return false;
       }
 
-      if($this->_question->answered instanceof PlayerQuestion)
+      if($this->_question->answered!==null)
       {
         $this->addError('answer','You have already answered this question.');
         return false;
       }
 
       $pq=new PlayerQuestion;
-  		$pq->player_id=Yii::$app->user->id;
+  		$pq->player_id=(int)Yii::$app->user->id;
   		$pq->question_id=$this->_question->id;
   		if($pq->save())
   		{

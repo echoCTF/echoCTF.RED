@@ -38,13 +38,13 @@ class Team extends \yii\db\ActiveRecord
             [['name', 'owner_id'], 'required'],
             [['description', 'logo'], 'string'],
             [['academic', 'owner_id'], 'integer'],
-            [['academic'], 'boolean'],            
+            [['academic'], 'boolean'],
             [['name'], 'string', 'max' => 255],
             [['token'], 'string', 'max' => 30],
             [['token'], 'default', 'value' => substr(Yii::$app->security->generateRandomString(),0,30)],
             [['name'], 'unique'],
             [['token'], 'unique'],
-            [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['owner_id' => 'id']],
+            [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['owner_id' => 'id']],
         ];
     }
 
@@ -69,7 +69,7 @@ class Team extends \yii\db\ActiveRecord
      */
     public function getOwner()
     {
-        return $this->hasOne(Player::className(), ['id' => 'owner_id']);
+        return $this->hasOne(Player::class, ['id' => 'owner_id']);
     }
 
     /**
@@ -77,7 +77,7 @@ class Team extends \yii\db\ActiveRecord
      */
     public function getTeamPlayers()
     {
-        return $this->hasMany(TeamPlayer::className(), ['team_id' => 'id']);
+        return $this->hasMany(TeamPlayer::class, ['team_id' => 'id']);
     }
 
     /**
@@ -85,6 +85,6 @@ class Team extends \yii\db\ActiveRecord
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::className(), ['id' => 'player_id'])->viaTable('team_player', ['team_id' => 'id']);
+        return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('team_player', ['team_id' => 'id']);
     }
 }

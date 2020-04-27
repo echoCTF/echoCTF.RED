@@ -24,15 +24,7 @@ use yii\validators\ValidationAsset;
 class LowerRangeValidator extends \yii\validators\Validator
 {
     /**
-     * @var array|\Traversable|\Closure a list of valid values that the attribute value should be among or an anonymous function that returns
-     * such a list. The signature of the anonymous function should be as follows,
-     *
-     * ```php
-     * function($model, $attribute) {
-     *     // compute range
-     *     return $range;
-     * }
-     * ```
+     * @var array|\Traversable|\Closure $range
      */
     public $range;
     /**
@@ -58,7 +50,7 @@ class LowerRangeValidator extends \yii\validators\Validator
         parent::init();
         if (!is_array($this->range)
             && !($this->range instanceof \Closure)
-            && !($this->range instanceof \Traversable)
+//            && !($this->range instanceof \Traversable)
         ) {
             throw new InvalidConfigException('The "range" property must be set.');
         }
@@ -76,11 +68,11 @@ class LowerRangeValidator extends \yii\validators\Validator
 
         if ($this->allowArray
             && ($value instanceof \Traversable || is_array($value))
-            && ArrayHelper::isSubset($value, $this->range, $this->strict)
+            && ArrayHelper::isSubset($value, (array)$this->range, $this->strict)
         ) {
             $in = true;
         }
-        if (!$in && ArrayHelper::isIn(strtolower($value), $this->range, $this->strict)) {
+        if (!$in && ArrayHelper::isIn(strtolower($value), (array)$this->range, $this->strict)) {
             $in = true;
         }
         return $this->not !== $in ? null : [$this->message, []];

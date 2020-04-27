@@ -20,7 +20,7 @@ class ProfileController extends \yii\web\Controller
     {
         return [
             'access' => [
-                'class' => AccessControl::className(),
+                'class' => AccessControl::class,
                 'only' => ['me','index','notifications','hints','update','ovpn','settings'],
                 'rules' => [
                     [
@@ -39,7 +39,7 @@ class ProfileController extends \yii\web\Controller
               'only' => ['notifications','hints']
             ],
           'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                 ],
             ],
@@ -84,16 +84,18 @@ class ProfileController extends \yii\web\Controller
     public function actionOvpn()
   	{
   		$model = Yii::$app->user->identity->sSL;
-  		$content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php',array('model'=>$model),true);
+  		$content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php',['model'=>$model]);
       \Yii::$app->response->data=$content;
       \Yii::$app->response->setDownloadHeaders('echoCTF.ovpn','application/octet-stream',false,strlen($content));
-      return Yii::$app->response->send();
+      \Yii::$app->response->send();
+      return;
 
   	}
 
     public function actionSettings()
     {
-      $errors=$success=null;
+      $errors=[];
+      $success=[];
 
       $profile=Yii::$app->user->identity->profile;
       $profileForm=$profile;
@@ -117,9 +119,9 @@ class ProfileController extends \yii\web\Controller
         }
       }
 
-      if($errors!==null)
+      if(!empty($errors))
         Yii::$app->session->setFlash('error',$errors);
-      if($success!==null)
+      if(!empty($success))
         Yii::$app->session->setFlash('success',$success);
 
       $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');

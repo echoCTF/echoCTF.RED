@@ -33,7 +33,7 @@ class TargetVariable extends \yii\db\ActiveRecord
             [['target_id'], 'integer'],
             [['key', 'val'], 'string', 'max' => 255],
             [['target_id', 'key'], 'unique', 'targetAttribute' => ['target_id', 'key']],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -54,6 +54,6 @@ class TargetVariable extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 }

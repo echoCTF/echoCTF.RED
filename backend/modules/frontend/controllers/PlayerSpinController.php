@@ -21,7 +21,7 @@ class PlayerSpinController extends Controller
      {
          return [
            'access' => [
-                 'class' => \yii\filters\AccessControl::className(),
+                 'class' => \yii\filters\AccessControl::class,
                  'rules' => [
                      [
                          'allow' => true,
@@ -30,7 +30,7 @@ class PlayerSpinController extends Controller
                  ],
              ],
              'verbs' => [
-                 'class' => VerbFilter::className(),
+                 'class' => VerbFilter::class,
                  'actions' => [
                      'delete' => ['POST'],
                      'reset' => ['POST'],
@@ -132,12 +132,10 @@ class PlayerSpinController extends Controller
       {
         if($id===0)
         {
-          if(PlayerSpin::updateAll(['counter'=>0])!==false)
-            Yii::$app->session->setFlash('success','Player spin counters zeroed.');
-          else
-            Yii::$app->session->setFlash('error','Player spin counters failed to zero out.');
+          PlayerSpin::updateAll(['counter'=>0]);
         }
-        elseif (($ps=PlayerSpin::findOne($id))!==null){
+        elseif (($ps=PlayerSpin::findOne($id))!==null)
+        {
           $ps->counter=0;
           $ps->save();
           $notif=new \app\modules\activity\models\Notification;
@@ -148,10 +146,11 @@ class PlayerSpinController extends Controller
         }
         $trans->commit();
         Yii::$app->session->setFlash('success','Player spin counters zeroed.');
-      } catch (Exception $e) {
+      }
+      catch (\Exception $e)
+      {
         $trans->rollBack();
         Yii::$app->session->setFlash('error','Player spin counters failed to zero out.');
-
       }
 
       return $this->goBack(Yii::$app->request->referrer);

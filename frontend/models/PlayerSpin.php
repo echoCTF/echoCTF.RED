@@ -32,7 +32,7 @@ class PlayerSpin extends \yii\db\ActiveRecord
     {
         return [
           'typecast' => [
-              'class' => AttributeTypecastBehavior::className(),
+              'class' => AttributeTypecastBehavior::class,
               'attributeTypes' => [
                   'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                   'counter' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -43,7 +43,7 @@ class PlayerSpin extends \yii\db\ActiveRecord
               'typecastAfterFind' => false,
           ],
           [
-              'class' => TimestampBehavior::className(),
+              'class' => TimestampBehavior::class,
               'createdAtAttribute' => 'updated_at',
               'updatedAtAttribute' => 'updated_at',
               'value' => new Expression('NOW()'),
@@ -60,7 +60,7 @@ class PlayerSpin extends \yii\db\ActiveRecord
             [['player_id', 'counter', 'total'], 'integer'],
             [['updated_at', 'ts'], 'safe'],
             [['player_id'], 'unique'],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -83,7 +83,7 @@ class PlayerSpin extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**

@@ -6,7 +6,7 @@ use yii\widgets\ListView;
 
 $this->title = Yii::$app->sys->event_name .' - Dashboard';
 $this->registerCssFile("@web/css/scores.css", [
-    'depends' => [\yii\bootstrap\BootstrapAsset::className()],
+    'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'screen',
 ], 'scores-theme');
 ?>

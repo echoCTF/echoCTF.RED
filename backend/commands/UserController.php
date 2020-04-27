@@ -27,7 +27,7 @@ class UserController extends Controller
      */
     public function actionIndex($filter = 'all')
     {
-        $filters = ['all', 'enabled', 'disabled', 'pending'];
+        $filters = ['all', 'enabled', 'disabled'];
         if (!in_array($filter, $filters)) {
             throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
         }
@@ -42,9 +42,6 @@ class UserController extends Controller
                 $users->where(['status' => User::STATUS_INACTIVE]);
                 break;
 
-            case 'pending':
-                $users->where(['status' => User::STATUS_PENDING]);
-                break;
         }
 
         $this->userList($users->all());
@@ -71,15 +68,20 @@ class UserController extends Controller
      */
     public function actionCreate($name, $email, $password = '')
     {
-        if (empty($password)) {
-            $random = Yii::$app->security->generateRandomString(8);
+        if (empty($password))
+        {
+          $random = Yii::$app->security->generateRandomString(8);
+        }
+        else
+        {
+          $random=$password;
         }
         $user = new User();
         $user->username = $name;
         $user->email = $email;
         $user->status = User::STATUS_ACTIVE;
         $user->generateAuthKey();
-        $user->setPassword(empty($password) ? $random : $password);
+        $user->setPassword($random);
         if ($user->save()) {
             $this->p('User "{name}" has been created.', ['name' => $user->username]);
             if (empty($password)) {
@@ -104,7 +106,7 @@ class UserController extends Controller
         if (!$this->confirm('Are you sure to delete user "' . $user->email . '"')) {
             return;
         }
-        if ($user->delete()) {
+        if ($user->delete()!==false) {
             $this->p('User deleted.');
         }
         else {
@@ -168,15 +170,23 @@ class UserController extends Controller
     {
         $user = $this->findUser($email);
         if (empty($new_password)) {
-            $random = Yii::$app->security->generateRandomString(8);
+          $random = Yii::$app->security->generateRandomString(8);
         }
-        $user->setPassword(empty($new_password) ? $random : $new_password);
-        if ($user->save()) {
-            if (empty($new_password)) {
-                $this->p('Password has been changed to random "{random}"', compact('random'));
-            } else {
-                $this->p('Password has been changed.');
-            }
+        else
+        {
+          $random=$new_password;
+        }
+        $user->setPassword($random);
+        if ($user->save())
+        {
+          if (empty($new_password))
+          {
+            $this->p('Password has been changed to random "{random}"', compact('random'));
+          }
+          else
+          {
+            $this->p('Password has been changed.');
+          }
         }
     }
 
@@ -200,7 +210,8 @@ class UserController extends Controller
     protected function userList(array $users)
     {
         if (empty($users)) {
-            return $this->p('No users found.');
+            $this->p('No users found.');
+            return;
         }
 
         $this->stdout(sprintf("%4s %-32s %-24s %-16s %-8s\n", 'ID', 'Email address', 'User name', 'Created', 'Status'), Console::BOLD);
@@ -219,5 +230,10 @@ class UserController extends Controller
     public function p($message, array $params = [])
     {
         $this->stdout(Yii::t('app', $message, $params) . PHP_EOL);
+    }
+
+    public function err($message, array $params = [])
+    {
+        $this->stderr(Yii::t('app', $message, $params) . PHP_EOL);
     }
 }

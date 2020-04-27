@@ -21,7 +21,7 @@ class UserController extends Controller
     {
         return [
           'access' => [
-                'class' => \yii\filters\AccessControl::className(),
+                'class' => \yii\filters\AccessControl::class,
                 'only' => ['index','create','update','view','password'],
                 'rules' => [
                     // allow authenticated users
@@ -33,7 +33,7 @@ class UserController extends Controller
                 ],
             ],
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
@@ -86,33 +86,7 @@ class UserController extends Controller
             'model' => $model,
         ]);
     }
-    /**
-     * Change a User model password.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-     public function actionPassword($id) {
-        if (!($user = \app\models\User::findOne(['id'=>$id]))) {
-           \Yii::$app->getSession()->setFlash('error', 'There is no such user to change password');
-           return $this->redirect(['index']);
-        }
 
-        if (empty($new_password)) {
-            $random = Yii::$app->security->generateRandomString(8);
-        }
-        $user->setPassword(empty($new_password) ? $random : $new_password);
-        if ($user->save()) {
-            if (empty($new_password)) {
-                \Yii::$app->getSession()->setFlash('warning',sprintf('Password has been changed to random {<code>%s</code>}',$random));
-            } else {
-                \Yii::$app->getSession()->setFlash('success','Password has been changed.');
-            }
-        }
-        return $this->redirect(['view','id'=>$user->id]);
-
-    }
     /**
      * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.

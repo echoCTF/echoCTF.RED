@@ -37,10 +37,10 @@ class SslController extends Controller {
     $cacrt=Sysconfig::findOne('CA.crt') ;
     $catxtcrt=Sysconfig::findOne('CA.txt.crt') ;
     $cakey=Sysconfig::findOne('CA.key');
-    if(!$cacsr)  $cacsr=new Sysconfig;
-    if(!$cacrt)  $cacrt=new Sysconfig;
-    if(!$catxtcrt)  $catxtcrt=new Sysconfig;
-    if(!$cakey)  $cakey=new Sysconfig;
+    if($cacsr!==null)  $cacsr=new Sysconfig;
+    if($cacrt!==null)  $cacrt=new Sysconfig;
+    if($catxtcrt!==null)  $catxtcrt=new Sysconfig;
+    if($cakey!==null)  $cakey=new Sysconfig;
 
     $cacsr->id='CA.csr';
     $cacrt->id='CA.crt';
@@ -56,7 +56,7 @@ class SslController extends Controller {
     $cacrt->save();
     $catxtcrt->save();
     $cakey->save();
-    if($fileout)
+    if((bool)$fileout)
     {
       file_put_contents("echoCTF-OVPN-CA.csr", $csrout);
       file_put_contents("echoCTF-OVPN-CA.crt", $crtout);
@@ -68,7 +68,7 @@ class SslController extends Controller {
   /*
    * Create a server certificate for the OpenVPN server and sign it with our CA
    */
-  public function actionCreateCert($commonName="VPN Server",$emailAddress=null, $subjectAltName='IP:0.0.0.0', $CAcert = "file://echoCTF-OVPN-CA.crt", $CAkey="file://echoCTF-OVPN-CA.key"){
+  public function actionCreateCert($commonName="VPN Server",$emailAddress=null, $subjectAltName='IP:0.0.0.0'){
     Yii::$app->params['dn']['commonName'] = $commonName;
     if($emailAddress!==null) Yii::$app->params['dn']['emailAddress']=$emailAddress;
     if($subjectAltName!=='IP:0.0.0.0') Yii::$app->params['dn']['subjectAltName']=$subjectAltName;
@@ -113,7 +113,7 @@ class SslController extends Controller {
     $player->playerSsl->generate();
     $player->playerSsl->save();
 
-    if($fileout)
+    if((bool)$fileout)
     {
       file_put_contents($player->username.".csr", $player->playerSsl->csr);
       file_put_contents($player->username.".txt.crt", $player->playerSsl->txtcrt);
@@ -124,16 +124,16 @@ class SslController extends Controller {
   }
 
   /* Generate certificates for a all players */
-  public function actionGenAllPlayerCerts($fileout=false, $ccd=false)
+  public function actionGenAllPlayerCerts($fileout=false)
   {
     foreach (Player::find()->all() as $player)
     {
-      if($player->playerSsl!==null)
+      if(!($player->playerSsl instanceof PlayerSsl))
       {
         $player->playerSsl->generate();
         $player->playerSsl->save();
 
-        if($fileout)
+        if((bool)$fileout)
         {
           file_put_contents($player->username.".csr", $player->playerSsl->csr);
           file_put_contents($player->username.".txt.crt", $player->playerSsl->txtcrt);
@@ -220,7 +220,7 @@ class SslController extends Controller {
       shell_exec($cmd);
       unlink($tmpcrt);
     }
-    if ($CERTS) $this->actionCreateCrl();
+    if (!empty($CERTS)) $this->actionCreateCrl();
     return 0;
   }
 

@@ -4,7 +4,6 @@ namespace app\modules\help\controllers;
 
 use Yii;
 use app\modules\help\models\Faq;
-use app\modules\help\models\FaqSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;

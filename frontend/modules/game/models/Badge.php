@@ -37,7 +37,7 @@ class Badge extends \yii\db\ActiveRecord
     {
       return [
         'typecast' => [
-            'class' => AttributeTypecastBehavior::className(),
+            'class' => AttributeTypecastBehavior::class,
             'attributeTypes' => [
                 'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                 'points' => AttributeTypecastBehavior::TYPE_FLOAT,
@@ -82,33 +82,33 @@ class Badge extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBadgeFindings()
-    {
-        return $this->hasMany(BadgeFinding::className(), ['badge_id' => 'id']);
-    }
+//    public function getBadgeFindings()
+//    {
+//        return $this->hasMany(BadgeFinding::class, ['badge_id' => 'id']);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getFindings()
     {
-        return $this->hasMany(Finding::className(), ['id' => 'finding_id'])->viaTable('badge_finding', ['badge_id' => 'id']);
+        return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->viaTable('badge_finding', ['badge_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBadgeTreasures()
-    {
-        return $this->hasMany(BadgeTreasure::className(), ['badge_id' => 'id']);
-    }
+//    public function getBadgeTreasures()
+//    {
+//        return $this->hasMany(BadgeTreasure::class, ['badge_id' => 'id']);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTreasures()
     {
-        return $this->hasMany(Treasure::className(), ['id' => 'treasure_id'])->viaTable('badge_treasure', ['badge_id' => 'id']);
+        return $this->hasMany(\app\modules\target\models\Treasure::class, ['id' => 'treasure_id'])->viaTable('badge_treasure', ['badge_id' => 'id']);
     }
 
     /**
@@ -116,23 +116,23 @@ class Badge extends \yii\db\ActiveRecord
      */
     public function getHints()
     {
-        return $this->hasMany(Hint::className(), ['badge_id' => 'id']);
+        return $this->hasMany(\app\models\Hint::class, ['badge_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPlayerBadges()
-    {
-        return $this->hasMany(PlayerBadge::className(), ['badge_id' => 'id']);
-    }
+//    public function getPlayerBadges()
+//    {
+//        return $this->hasMany(PlayerBadge::class, ['badge_id' => 'id']);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::className(), ['id' => 'player_id'])->viaTable('player_badge', ['badge_id' => 'id']);
+        return $this->hasMany(\app\models\Player::class, ['id' => 'player_id'])->viaTable('player_badge', ['badge_id' => 'id']);
     }
 
     /**

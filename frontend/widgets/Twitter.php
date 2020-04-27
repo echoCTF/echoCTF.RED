@@ -21,7 +21,7 @@ use yii\helpers\Url;
 
 class Twitter extends Widget{
     private $twUrl="https://twitter.com/intent/tweet";
-    private $_query;
+//    private $_query;
     /* The message to render */
     public $message;
     /* The model to draw info from */

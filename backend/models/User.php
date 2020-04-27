@@ -18,6 +18,7 @@ use yii\web\IdentityInterface;
  * @property string $email
  * @property string $auth_key
  * @property integer $status
+ * @property boolean $admin
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
@@ -43,7 +44,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 
@@ -130,7 +131,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function getId()
     {
-        return $this->getPrimaryKey();
+        return $this->id;
     }
 
     /**
@@ -201,7 +202,7 @@ class User extends ActiveRecord implements IdentityInterface
 
     public function getIsAdmin()
     {
-      return $this->admin;
+      return (bool)$this->admin;
     }
    /**
     * Get status Label

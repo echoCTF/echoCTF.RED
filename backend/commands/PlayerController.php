@@ -112,7 +112,6 @@ class PlayerController extends Controller {
   public function actionMail($baseURL="https://echoctf.red/index.php?r=site/activate&key=", $active=false,$email=false)
   {
     // Get innactive players
-    $failedSend=$okSend=[];
     if($email!==false)
     {
       $players=Player::find()->where(['active'=>$active,'email'=>trim(str_replace(array("\xc2\xa0","\r\n","\r"),"",$email))])->all();
@@ -140,7 +139,7 @@ class PlayerController extends Controller {
     {
       // Generate activation URL
       $activationURL=sprintf("%s%s",$baseURL,$player->activkey);
-      $MAILCONTENT=$this->renderFile('mail/layouts/activation.php', ['activationURL'=>$activationURL,'player'=>$player,'event_name'=>$event_name], true);
+      $MAILCONTENT=$this->renderFile('mail/layouts/activation.php', ['activationURL'=>$activationURL,'player'=>$player,'event_name'=>$event_name]);
       $this->stdout($player->email);
       $numSend=\Yii::$app->mailer->compose()
           ->setFrom([Sysconfig::findOne('mail_from')->val => Sysconfig::findOne('mail_fromName')->val])
@@ -194,7 +193,7 @@ class PlayerController extends Controller {
       if($team_name!==false)
       {
         $team=Team::findOne(['name'=>$team_name]);
-        if(!$team)
+        if($team!==null)
         {
           $team=new Team();
           $team->name=$team_name;
@@ -247,7 +246,7 @@ class PlayerController extends Controller {
       foreach($players as $player)
       {
         $player->password=Yii::$app->security->generatePasswordHash($password);
-        if(!$player->update(['password']))
+        if(!$player->update(true, ['password']))
           $this->p("Failed to change password for [{player}]",['player'=>$player->username]);
         else
           $this->p("Password for [{player}] changed",['player'=>$player->username]);

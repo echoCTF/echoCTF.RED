@@ -22,7 +22,7 @@ class StreamSearch extends Stream
         return [
             [['id', 'player_id', 'model_id', 'points'], 'integer'],
             [['model', 'title', 'message', 'pubtitle', 'pubmessage', 'ts', 'player'], 'safe'],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 

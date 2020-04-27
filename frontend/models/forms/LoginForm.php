@@ -19,7 +19,7 @@ class LoginForm extends Model
     public $password;
     public $rememberMe = true;
 
-    private $_player = false;
+    private $_player = null;
 
 
     /**
@@ -44,10 +44,10 @@ class LoginForm extends Model
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
      */
-    public function validatePassword($attribute, $params)
+    public function validatePassword($attribute)
     {
         if (!$this->hasErrors()) {
-            $player = $this->getPlayer();
+            $player = $this->player;
             if (!$player || !$player->validatePassword($this->password)) {
                 $this->addError($attribute, 'Incorrect username or password.');
             }
@@ -60,8 +60,8 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
-            return Yii::$app->user->login($this->getPlayer(), $this->rememberMe ? 3600*24*30 : 0);
+        if ($this->validate() && $this->player!==null) {
+            return Yii::$app->user->login($this->player, $this->rememberMe ? 3600*24*30 : 0);
         }
         return false;
     }
@@ -73,10 +73,7 @@ class LoginForm extends Model
      */
     public function getPlayer()
     {
-        if ($this->_player === false) {
-            $this->_player = Player::findByUsername($this->username);
-        }
-
-        return $this->_player;
+      $this->_player = Player::findByUsername($this->username);
+      return $this->_player;
     }
 }

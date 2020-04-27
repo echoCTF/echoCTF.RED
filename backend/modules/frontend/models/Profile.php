@@ -25,7 +25,10 @@ use yii\helpers\Html;
  * @property int $gdpr
  * @property string $created_at
  * @property string $updated_at
+ *
+ * @property Owner[] $owner
  */
+
 class Profile extends \yii\db\ActiveRecord
 {
   public $visibilities=[
@@ -88,7 +91,7 @@ class Profile extends \yii\db\ActiveRecord
      */
     public function getOwner()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
     public function getLink()
   	{

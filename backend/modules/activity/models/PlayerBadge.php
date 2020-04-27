@@ -31,7 +31,7 @@ class PlayerBadge extends \yii\db\ActiveRecord
     {
       return [
           [
-              'class' => TimestampBehavior::className(),
+              'class' => TimestampBehavior::class,
               'createdAtAttribute' => 'ts',
               'updatedAtAttribute' => 'ts',
               'value' => new Expression('NOW()'),
@@ -49,8 +49,8 @@ class PlayerBadge extends \yii\db\ActiveRecord
             [['player_id', 'badge_id'], 'integer'],
             [['ts'], 'safe'],
             [['player_id', 'badge_id'], 'unique', 'targetAttribute' => ['player_id', 'badge_id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::className(), 'targetAttribute' => ['badge_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['badge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Badge::class, 'targetAttribute' => ['badge_id' => 'id']],
         ];
     }
 
@@ -71,7 +71,7 @@ class PlayerBadge extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -79,6 +79,6 @@ class PlayerBadge extends \yii\db\ActiveRecord
      */
     public function getBadge()
     {
-        return $this->hasOne(Badge::className(), ['id' => 'badge_id']);
+        return $this->hasOne(Badge::class, ['id' => 'badge_id']);
     }
 }

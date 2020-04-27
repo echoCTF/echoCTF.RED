@@ -16,6 +16,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $player_id
  * @property int $target_id
  * @property string|null $created_at
+ * @property int $timer
  *
  * @property Player $player
  * @property Target $target
@@ -23,11 +24,12 @@ use yii\behaviors\AttributeTypecastBehavior;
 class Headshot extends \yii\db\ActiveRecord
 {
   public $average=0;
+
   public function behaviors()
   {
       return [
           'typecast' => [
-              'class' => AttributeTypecastBehavior::className(),
+              'class' => AttributeTypecastBehavior::class,
               'attributeTypes' => [
                   'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                   'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -38,7 +40,7 @@ class Headshot extends \yii\db\ActiveRecord
               'typecastAfterFind' => true,
         ],
         [
-              'class' => TimestampBehavior::className(),
+              'class' => TimestampBehavior::class,
               'createdAtAttribute' => 'created_at',
               'value' => new Expression('NOW()'),
         ],
@@ -63,8 +65,8 @@ class Headshot extends \yii\db\ActiveRecord
             [['player_id', 'target_id','timer'], 'integer'],
             [['created_at','timer'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -86,7 +88,7 @@ class Headshot extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -94,7 +96,7 @@ class Headshot extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 
     /**

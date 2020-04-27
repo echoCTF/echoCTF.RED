@@ -22,6 +22,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property string|null $code
  * @property string $ts
  *
+ * @property string|null $category
+ *
  * @property BadgeTreasure[] $badgeTreasures
  * @property Badge[] $badges
  * @property Hint[] $hints
@@ -43,7 +45,7 @@ class Treasure extends \yii\db\ActiveRecord
     {
         return [
             'typecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'points' => AttributeTypecastBehavior::TYPE_FLOAT,
@@ -71,7 +73,7 @@ class Treasure extends \yii\db\ActiveRecord
             [['csum', 'code'], 'string', 'max' => 128],
             [['name', 'target_id', 'code', 'csum'], 'unique', 'targetAttribute' => ['name', 'target_id', 'code', 'csum']],
             [['code'], 'unique'],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -100,17 +102,17 @@ class Treasure extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getBadgeTreasures()
-    {
-        return $this->hasMany(BadgeTreasure::className(), ['treasure_id' => 'id']);
-    }
+//    public function getBadgeTreasures()
+//    {
+//        return $this->hasMany(BadgeTreasure::class, ['treasure_id' => 'id']);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getBadges()
     {
-        return $this->hasMany(Badge::className(), ['id' => 'badge_id'])->viaTable('badge_treasure', ['treasure_id' => 'id']);
+        return $this->hasMany(\app\modules\game\models\Badge::class, ['id' => 'badge_id'])->viaTable('badge_treasure', ['treasure_id' => 'id']);
     }
 
     /**
@@ -118,7 +120,7 @@ class Treasure extends \yii\db\ActiveRecord
      */
     public function getHints()
     {
-        return $this->hasMany(Hint::className(), ['treasure_id' => 'id']);
+        return $this->hasMany(\app\models\Hint::class, ['treasure_id' => 'id']);
     }
 
     /**
@@ -126,7 +128,7 @@ class Treasure extends \yii\db\ActiveRecord
      */
     public function getPlayerTreasures()
     {
-        return $this->hasMany(PlayerTreasure::className(), ['treasure_id' => 'id']);
+        return $this->hasMany(\app\models\PlayerTreasure::class, ['treasure_id' => 'id']);
     }
 
     /**
@@ -134,7 +136,7 @@ class Treasure extends \yii\db\ActiveRecord
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::className(), ['id' => 'player_id'])->viaTable('player_treasure', ['treasure_id' => 'id']);
+        return $this->hasMany(\app\models\Player::class, ['id' => 'player_id'])->viaTable('player_treasure', ['treasure_id' => 'id']);
     }
 
     /**
@@ -142,16 +144,16 @@ class Treasure extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTreasureActions()
-    {
-        return $this->hasMany(TreasureAction::className(), ['treasure_id' => 'id']);
-    }
+//    public function getTreasureActions()
+//    {
+//        return $this->hasMany(TreasureAction::class, ['treasure_id' => 'id']);
+//    }
 
     public static function find()
     {

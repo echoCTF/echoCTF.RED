@@ -4,7 +4,6 @@ namespace app\modules\help\controllers;
 
 use Yii;
 use app\modules\help\models\Rule;
-use app\modules\help\models\RuleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -22,7 +21,7 @@ class RuleController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
+                'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],

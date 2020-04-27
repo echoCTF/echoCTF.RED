@@ -4,6 +4,9 @@ namespace app\modules\game;
 
 /**
  * game module definition class
+ * @property Badge[] $badges
+ * @property Headhost[] $headshots
+ *
  */
 class Module extends \yii\base\Module
 {

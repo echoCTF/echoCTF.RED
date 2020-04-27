@@ -3,6 +3,7 @@
 namespace app\modules\gameplay\models;
 
 use Yii;
+use app\modules\frontend\models\Player;
 
 /**
  * This is the model class for table "network".
@@ -45,7 +46,7 @@ class Network extends \yii\db\ActiveRecord
     {
         return [
             [
-                'class' => \yii\behaviors\TimestampBehavior::className(),
+                'class' => \yii\behaviors\TimestampBehavior::class,
                 'createdAtAttribute' => 'ts',
                 'updatedAtAttribute' => 'ts',
                 'value' => new \yii\db\Expression('NOW()'),
@@ -70,7 +71,7 @@ class Network extends \yii\db\ActiveRecord
      */
     public function getNetworkPlayers()
     {
-        return $this->hasMany(NetworkPlayer::className(), ['network_id' => 'id']);
+        return $this->hasMany(NetworkPlayer::class, ['network_id' => 'id']);
     }
 
     /**
@@ -78,7 +79,7 @@ class Network extends \yii\db\ActiveRecord
      */
     public function getPlayers()
     {
-        return $this->hasMany(Player::className(), ['id' => 'player_id'])->viaTable('network_player', ['network_id' => 'id']);
+        return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('network_player', ['network_id' => 'id']);
     }
 
     /**
@@ -86,7 +87,7 @@ class Network extends \yii\db\ActiveRecord
      */
     public function getNetworkTargets()
     {
-        return $this->hasMany(NetworkTarget::className(), ['network_id' => 'id']);
+        return $this->hasMany(NetworkTarget::class, ['network_id' => 'id']);
     }
 
     /**
@@ -94,6 +95,6 @@ class Network extends \yii\db\ActiveRecord
      */
     public function getTargets()
     {
-        return $this->hasMany(Target::className(), ['id' => 'target_id'])->viaTable('network_target', ['network_id' => 'id']);
+        return $this->hasMany(Target::class, ['id' => 'target_id'])->viaTable('network_target', ['network_id' => 'id']);
     }
 }

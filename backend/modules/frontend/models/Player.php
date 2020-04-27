@@ -5,8 +5,15 @@ namespace app\modules\frontend\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use app\modules\activity\models\PlayerQuestion;
+use app\modules\activity\models\PlayerTreasure;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\SpinHistory;
+use app\modules\activity\models\Report;
+use app\modules\activity\models\Stream;
+use app\modules\gameplay\models\Hint;
+use app\modules\gameplay\models\Finding;
+use app\modules\gameplay\models\Treasure;
 
 /**
  * This is the model class for table "player".
@@ -17,7 +24,9 @@ use app\modules\activity\models\SpinHistory;
  * @property string $email
  * @property string $type
  * @property string $password
+ * @property string $password_hash
  * @property string $activkey
+ * @property string $auth_key
  * @property int $created
  * @property int $active
  * @property int $academic
@@ -43,6 +52,8 @@ use app\modules\activity\models\SpinHistory;
  * @property Team[] $teams
  * @property TeamPlayer $teamPlayer
  * @property Team[] $teams0
+ * @property Profile[] $profile
+ * @property PlayerSsl[] $playerSsl
  */
 class Player extends \yii\db\ActiveRecord
 {
@@ -62,7 +73,7 @@ class Player extends \yii\db\ActiveRecord
     {
       return [
           [
-              'class' => TimestampBehavior::className(),
+              'class' => TimestampBehavior::class,
               'createdAtAttribute' => 'created',
               'updatedAtAttribute' => 'ts',
               'value' => new Expression('NOW()'),
@@ -117,7 +128,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerBadges()
     {
-        return $this->hasMany(PlayerBadge::className(), ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\PlayerBadge::class, ['player_id' => 'id']);
     }
 
     /**
@@ -125,7 +136,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getBadges()
     {
-        return $this->hasMany(Badge::className(), ['id' => 'badge_id'])->viaTable('player_badge', ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\gameplay\models\Badge::class, ['id' => 'badge_id'])->viaTable('player_badge', ['player_id' => 'id']);
     }
 
     /**
@@ -133,7 +144,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerFindings()
     {
-        return $this->hasMany(PlayerFinding::className(), ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\PlayerFinding::class, ['player_id' => 'id']);
     }
 
     /**
@@ -141,7 +152,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getFindings()
     {
-        return $this->hasMany(Finding::className(), ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
+        return $this->hasMany(Finding::class, ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
     }
 
     /**
@@ -149,7 +160,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerHints()
     {
-        return $this->hasMany(PlayerHint::className(), ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\PlayerHint::class, ['player_id' => 'id']);
     }
 
     /**
@@ -157,7 +168,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getHints()
     {
-        return $this->hasMany(Hint::className(), ['id' => 'hint_id'])->viaTable('player_hint', ['player_id' => 'id']);
+        return $this->hasMany(Hint::class, ['id' => 'hint_id'])->viaTable('player_hint', ['player_id' => 'id']);
     }
 
     /**
@@ -165,14 +176,14 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerIp()
     {
-        return $this->hasOne(PlayerIp::className(), ['player_id' => 'id']);
+        return $this->hasOne(PlayerIp::class, ['player_id' => 'id']);
     }
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getPlayerIps()
     {
-        return $this->hasMany(PlayerIp::className(), ['player_id' => 'id']);
+        return $this->hasMany(PlayerIp::class, ['player_id' => 'id']);
     }
 
     /**
@@ -180,30 +191,22 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerSsl()
     {
-        return $this->hasOne(PlayerSsl::className(), ['player_id' => 'id']);
+        return $this->hasOne(PlayerSsl::class, ['player_id' => 'id']);
     }
 
     public function getPlayerSpin()
     {
-        return $this->hasOne(PlayerSpin::className(), ['player_id' => 'id']);
+        return $this->hasOne(PlayerSpin::class, ['player_id' => 'id']);
     }
 
     public function getSpinQueue()
     {
-        return $this->hasMany(SpinQueue::className(), ['player_id' => 'id']);
+        return $this->hasMany(SpinQueue::class, ['player_id' => 'id']);
     }
 
     public function getSpinHistory()
     {
-        return $this->hasMany(SpinHistory::className(), ['player_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPlayerMacs()
-    {
-        return $this->hasMany(PlayerMac::className(), ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\SpinHistory::class, ['player_id' => 'id']);
     }
 
     /**
@@ -211,7 +214,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerQuestions()
     {
-        return $this->hasMany(PlayerQuestion::className(), ['player_id' => 'id']);
+        return $this->hasMany(PlayerQuestion::class, ['player_id' => 'id']);
     }
 
     /**
@@ -219,7 +222,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getPlayerTreasures()
     {
-        return $this->hasMany(PlayerTreasure::className(), ['player_id' => 'id']);
+        return $this->hasMany(PlayerTreasure::class, ['player_id' => 'id']);
     }
 
     /**
@@ -227,7 +230,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getTreasures()
     {
-        return $this->hasMany(Treasure::className(), ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
+        return $this->hasMany(Treasure::class, ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
     }
 
     /**
@@ -235,7 +238,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getReports()
     {
-        return $this->hasMany(Report::className(), ['player_id' => 'id']);
+        return $this->hasMany(Report::class, ['player_id' => 'id']);
     }
 
     /**
@@ -243,23 +246,23 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getSessions()
     {
-        return $this->hasMany(\app\modules\activity\models\Sessions::className(), ['player_id' => 'id']);
+        return $this->hasMany(\app\modules\activity\models\Sessions::class, ['player_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getSshkey()
-    {
-        return $this->hasOne(Sshkey::className(), ['player_id' => 'id']);
-    }
+//    public function getSshkey()
+//    {
+//        return $this->hasOne(Sshkey::class, ['player_id' => 'id']);
+//    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getProfile()
     {
-        return $this->hasOne(Profile::className(), ['player_id' => 'id']);
+        return $this->hasOne(Profile::class, ['player_id' => 'id']);
     }
 
     /**
@@ -267,7 +270,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getStreams()
     {
-        return $this->hasMany(Stream::className(), ['player_id' => 'id']);
+        return $this->hasMany(Stream::class, ['player_id' => 'id']);
     }
 
     /**
@@ -275,7 +278,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getTeams()
     {
-        return $this->hasMany(Team::className(), ['owner_id' => 'id']);
+        return $this->hasMany(Team::class, ['owner_id' => 'id']);
     }
 
     /**
@@ -283,7 +286,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getTeamPlayer()
     {
-        return $this->hasOne(TeamPlayer::className(), ['player_id' => 'id']);
+        return $this->hasOne(TeamPlayer::class, ['player_id' => 'id']);
     }
 
     /**
@@ -291,7 +294,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getTeams0()
     {
-        return $this->hasOne(Team::className(), ['id' => 'team_id'])->viaTable('team_player', ['player_id' => 'id']);
+        return $this->hasOne(Team::class, ['id' => 'team_id'])->viaTable('team_player', ['player_id' => 'id']);
     }
 
     /**
@@ -299,7 +302,7 @@ class Player extends \yii\db\ActiveRecord
      */
     public function getLast()
     {
-        return $this->hasOne(\app\modules\activity\models\PlayerLast::className(), ['id' => 'id']);
+        return $this->hasOne(\app\modules\activity\models\PlayerLast::class, ['id' => 'id']);
     }
     public function beforeSave($insert)
     {
@@ -353,7 +356,7 @@ class Player extends \yii\db\ActiveRecord
       $ban->email=$this->email;
       $ban->registered_at=$this->created;
       $ban->banned_at=new \yii\db\Expression('NOW()');
-      if($ban->save() && $this->delete())
+      if($ban->save() && $this->delete()!==false)
         return true;
       return false;
 

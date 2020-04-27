@@ -27,10 +27,10 @@ $this->_url=\yii\helpers\Url::to(['index','id'=>$profile->id],'https');
         <?=$this->render('_card',['profile'=>$profile]);?>
       </div><!-- // end profile card col-md-4 -->
     </div><!--/row-->
-    <?php if($game->badges->received_by($profile->player_id)->count()>0):?><h3>Player badges</h3><?php endif;?>
+    <?php if($game->badges!==null && $game->badges->received_by($profile->player_id)->count()>0):?><h3>Player badges</h3><?php endif;?>
     <div class="row game-badges">
 
-<?php foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
+<?php if($game->badges!==null) foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
       <div class="col-sm-1" style="font-size: 450%">
         <?php printf('<abbr title="%s">%s</abbr>', $badge->name, $badge->pubname);?>
       </div>

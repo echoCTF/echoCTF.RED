@@ -4,7 +4,6 @@ namespace app\modules\challenge\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Challenge;
 
 /**
  * ChallengeSearch represents the model behind the search form of `app\models\Challenge`.
