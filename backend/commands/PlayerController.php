@@ -77,7 +77,7 @@ class PlayerController extends Controller {
         $player->activkey=substr(hash('sha512',Yii::$app->security->generateRandomString(64)),0,32);;
         if(!$player->save())
         {
-          throw new ConsoleException('Failed to save player:'.$player->username.'. '.concat(', ',$player->getErrors()));
+          throw new ConsoleException('Failed to save player:'.$player->username.'. '.implode(', ',$player->getErrors()));
         }
        }
    }
