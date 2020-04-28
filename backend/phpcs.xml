@@ -5,5 +5,5 @@
     <exclude-pattern>**.js</exclude-pattern>
     <exclude-pattern>**.css</exclude-pattern>
     <exclude-pattern>**.md</exclude-pattern>
-    <rule ref="PSR1" />
+    <rule ref="PSR2" />
 </ruleset>
