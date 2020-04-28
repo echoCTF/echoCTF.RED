@@ -4,6 +4,11 @@
     <!-- Path to directory which are checked. -->
     <file>frontend/</file>
     <file>backend/</file>
+    <exclude-pattern>frontend/vendor/*</exclude-pattern>
+    <exclude-pattern>backend/vendor/*</exclude-pattern>
+    <exclude-pattern>*.js</exclude-pattern>
+    <exclude-pattern>**/*.js</exclude-pattern>
+
     <rule ref="PSR2">
         <!-- Property names MUST start with an initial underscore if they are private. -->
         <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
