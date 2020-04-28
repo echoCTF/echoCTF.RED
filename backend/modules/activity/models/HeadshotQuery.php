@@ -15,8 +15,9 @@ class HeadshotQuery extends \yii\db\ActiveQuery
     }*/
 
     /**
-     * {@inheritdoc}
-     * @return Headshot[]|array
+     * Return all records
+     *
+     * @return Headshot[]|array|null
      */
     public function all($db = null)
     {
@@ -24,7 +25,8 @@ class HeadshotQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     * {@inheritdoc}
+     * Return one record
+     *
      * @return Headshot|array|null
      */
     public function one($db = null)

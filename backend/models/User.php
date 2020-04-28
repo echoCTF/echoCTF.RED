@@ -22,6 +22,7 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * @method IdentityInterface|null login()
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -60,7 +61,10 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Finds user identity by id
+     *
+     * @param string $username
+     * @return static|null
      */
     public static function findIdentity($id)
     {
@@ -218,6 +222,14 @@ class User extends ActiveRecord implements IdentityInterface
           return 'DELETED';
       }
     }
+
+    /**
+     * Finds user identity by token
+     *
+     * @param string $token
+     * @param string|null $type
+     * @return static User|null
+     */
     public static function findIdentityByAccessToken($token, $type = null)
     {
         return static::findOne(['auth_key' => $token]);
