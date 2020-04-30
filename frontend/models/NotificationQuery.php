@@ -23,7 +23,6 @@ class NotificationQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     * {@inheritdoc}
      * @return Notification[]|array
      */
     public function all($db = null)
@@ -32,7 +31,6 @@ class NotificationQuery extends \yii\db\ActiveQuery
     }
 
     /**
-     * {@inheritdoc}
      * @return Notification|array|null
      */
     public function one($db = null)
