@@ -22,7 +22,7 @@ class SpinRestAction extends \yii\rest\ViewAction
         throw new NotFoundHttpException('Not allowed to spin target. Target not spinable.');
       $playerSpin=Yii::$app->user->identity->profile->spins;
       $SQ=new \app\modules\target\models\SpinQueue;
-      $SQ->player_id=\Yii::$app->user->id;
+      $SQ->player_id=(int)\Yii::$app->user->id;
       $SQ->target_id=$target->id;
       $playerSpin->counter=intval($playerSpin->counter)+1;
       $playerSpin->total=intval($playerSpin->total)+1;
