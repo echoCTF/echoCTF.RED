@@ -183,7 +183,7 @@ class PlayerController extends Controller {
       $player->auth_key = Yii::$app->security->generateRandomString();
       $player->activkey=Yii::$app->security->generateRandomString(20);
       if(!$player->save())
-        throw new ConsoleException('Failed to save player:'.$player->username.'. '.$player->getErrors());
+        throw new ConsoleException('Failed to save player:'.$player->username.'. '.implode(', ',$player->getErrors()));
       $playerSsl=new PlayerSsl();
       $playerSsl->player_id=$player->id;
       $playerSsl->generate();
