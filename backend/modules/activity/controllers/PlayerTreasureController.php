@@ -83,13 +83,15 @@ class PlayerTreasureController extends Controller
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
-        if(Treasure::find()->count()==0) {
+        if(Treasure::find()->count()==0)
+        {
           // If there are no questions redirect to create question
           Yii::$app->session->setFlash('warning', "No Treasures found create one first.");
           return $this->redirect(['/gameplay/treasure/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'treasure_id' => $model->treasure_id]);
         }
 
@@ -110,7 +112,8 @@ class PlayerTreasureController extends Controller
     {
         $model = $this->findModel($player_id, $treasure_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'treasure_id' => $model->treasure_id]);
         }
 
@@ -144,7 +147,8 @@ class PlayerTreasureController extends Controller
      */
     protected function findModel($player_id, $treasure_id)
     {
-        if (($model = PlayerTreasure::findOne(['player_id' => $player_id, 'treasure_id' => $treasure_id])) !== null) {
+        if (($model = PlayerTreasure::findOne(['player_id' => $player_id, 'treasure_id' => $treasure_id])) !== null)
+        {
             return $model;
         }
 

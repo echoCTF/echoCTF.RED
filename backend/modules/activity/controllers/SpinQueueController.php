@@ -75,7 +75,8 @@ class SpinQueueController extends Controller
     {
         $model = new SpinQueue();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->target_id]);
         }
 
@@ -95,7 +96,8 @@ class SpinQueueController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->target_id]);
         }
 
@@ -146,7 +148,8 @@ class SpinQueueController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = SpinQueue::findOne($id)) !== null) {
+        if (($model = SpinQueue::findOne($id)) !== null)
+        {
             return $model;
         }
 

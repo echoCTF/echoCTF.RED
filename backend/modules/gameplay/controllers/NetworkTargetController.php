@@ -76,7 +76,8 @@ class NetworkTargetController extends Controller
     {
         $model = new NetworkTarget();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'network_id' => $model->network_id, 'target_id' => $model->target_id]);
         }
 
@@ -97,7 +98,8 @@ class NetworkTargetController extends Controller
     {
         $model = $this->findModel($network_id, $target_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'network_id' => $model->network_id, 'target_id' => $model->target_id]);
         }
 
@@ -131,7 +133,8 @@ class NetworkTargetController extends Controller
      */
     protected function findModel($network_id, $target_id)
     {
-        if (($model = NetworkTarget::findOne(['network_id' => $network_id, 'target_id' => $target_id])) !== null) {
+        if (($model = NetworkTarget::findOne(['network_id' => $network_id, 'target_id' => $target_id])) !== null)
+        {
             return $model;
         }
 

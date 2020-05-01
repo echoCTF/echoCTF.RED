@@ -98,7 +98,8 @@ class TargetWidget extends Widget
         ]);
         $defaultOrder= [ 'progress' => SORT_DESC, 'ip'=>SORT_ASC ];
       }
-      else {
+      else
+      {
         $targetProgressProvider = new ActiveDataProvider([
             'query' => $tmod->player_progress($id),
             'pagination' => [

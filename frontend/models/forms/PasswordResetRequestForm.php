@@ -43,13 +43,16 @@ class PasswordResetRequestForm extends Model
             'status' => Player::STATUS_ACTIVE,
             'email' => $this->email,
         ]);
-        if ($player===null) {
+        if ($player===null)
+        {
             return false;
         }
 
-        if (!Player::isPasswordResetTokenValid($player->password_reset_token)) {
+        if (!Player::isPasswordResetTokenValid($player->password_reset_token))
+        {
             $player->generatePasswordResetToken();
-            if (!$player->save()) {
+            if (!$player->save())
+            {
                 return false;
             }
         }

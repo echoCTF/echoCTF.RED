@@ -75,7 +75,8 @@ class InfrastructureController extends Controller
     {
         $model = new Infrastructure();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -95,7 +96,8 @@ class InfrastructureController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -127,7 +129,8 @@ class InfrastructureController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Infrastructure::findOne($id)) !== null) {
+        if (($model = Infrastructure::findOne($id)) !== null)
+        {
             return $model;
         }
 

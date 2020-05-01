@@ -46,9 +46,11 @@ class LoginForm extends Model
      */
     public function validatePassword($attribute)
     {
-        if (!$this->hasErrors()) {
+        if (!$this->hasErrors())
+        {
             $player = $this->player;
-            if (!$player || !$player->validatePassword($this->password)) {
+            if (!$player || !$player->validatePassword($this->password))
+            {
                 $this->addError($attribute, 'Incorrect username or password.');
             }
         }
@@ -60,7 +62,8 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate() && $this->player!==null) {
+        if ($this->validate() && $this->player!==null)
+        {
             return Yii::$app->user->login($this->player, $this->rememberMe ? 3600*24*30 : 0);
         }
         return false;

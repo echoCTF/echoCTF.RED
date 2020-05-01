@@ -75,7 +75,8 @@ class PlayerLastController extends Controller
     {
         $model = new PlayerLast();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -95,7 +96,8 @@ class PlayerLastController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -127,7 +129,8 @@ class PlayerLastController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = PlayerLast::findOne($id)) !== null) {
+        if (($model = PlayerLast::findOne($id)) !== null)
+        {
             return $model;
         }
 

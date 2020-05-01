@@ -37,7 +37,8 @@ class Twitter extends Widget{
 
     public function init(){
         parent::init();
-        if($this->message===null){
+        if($this->message===null)
+        {
             $this->message= 'Tweet this';
         }
         if($this->url===NULL)

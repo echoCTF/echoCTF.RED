@@ -74,10 +74,13 @@ class TreasureAction extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-      if (parent::beforeSave($insert)) {
+      if (parent::beforeSave($insert))
+      {
           $this->ip = ip2long($this->ipoctet);
           return true;
-      } else {
+      }
+      else
+      {
           return false;
       }
     }

@@ -82,7 +82,8 @@ class TargetVariableController extends Controller
           return $this->redirect(['/gameplay/target/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'target_id' => $model->target_id, 'key' => $model->key]);
         }
 
@@ -103,7 +104,8 @@ class TargetVariableController extends Controller
     {
         $model = $this->findModel($target_id, $key);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'target_id' => $model->target_id, 'key' => $model->key]);
         }
 
@@ -137,7 +139,8 @@ class TargetVariableController extends Controller
      */
     protected function findModel($target_id, $key)
     {
-        if (($model = TargetVariable::findOne(['target_id' => $target_id, 'key' => $key])) !== null) {
+        if (($model = TargetVariable::findOne(['target_id' => $target_id, 'key' => $key])) !== null)
+        {
             return $model;
         }
 

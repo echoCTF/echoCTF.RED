@@ -78,7 +78,8 @@ class ObjectiveController extends Controller
     {
         $model = new Objective();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -98,7 +99,8 @@ class ObjectiveController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -130,7 +132,8 @@ class ObjectiveController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Objective::findOne($id)) !== null) {
+        if (($model = Objective::findOne($id)) !== null)
+        {
             return $model;
         }
 

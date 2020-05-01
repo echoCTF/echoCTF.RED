@@ -82,7 +82,8 @@ class TargetVolumeController extends Controller
           return $this->redirect(['/gameplay/target/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'target_id' => $model->target_id, 'volume' => $model->volume]);
         }
 
@@ -103,7 +104,8 @@ class TargetVolumeController extends Controller
     {
         $model = $this->findModel($target_id, $volume);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'target_id' => $model->target_id, 'volume' => $model->volume]);
         }
 
@@ -137,7 +139,8 @@ class TargetVolumeController extends Controller
      */
     protected function findModel($target_id, $volume)
     {
-        if (($model = TargetVolume::findOne(['target_id' => $target_id, 'volume' => $volume])) !== null) {
+        if (($model = TargetVolume::findOne(['target_id' => $target_id, 'volume' => $volume])) !== null)
+        {
             return $model;
         }
 

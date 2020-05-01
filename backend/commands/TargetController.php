@@ -136,12 +136,14 @@ class TargetController extends Controller {
   {
 
     $transaction = \Yii::$app->db->beginTransaction();
-    try {
+    try
+    {
       $query = SpinQueue::find();
       foreach($query->all() as $t)
       {
         echo "Restarting: ",$t->target->fqdn," / ",$t->target->ipoctet;
-        try {
+        try
+        {
           $t->target->spin();
           $t->delete();
           $notification=new Notification;
@@ -158,10 +160,14 @@ class TargetController extends Controller {
         }
       }
       $transaction->commit();
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e)
+    {
         $transaction->rollBack();
         throw $e;
-    } catch (\Throwable $e) {
+    }
+    catch (\Throwable $e)
+    {
         $transaction->rollBack();
         throw $e;
     }
@@ -272,9 +278,12 @@ class TargetController extends Controller {
       else
         $rules[]=sprintf('match log (to pflog1) inet proto %s to %s port %d tagged %s label "$dstaddr:$dstport"',$finding->protocol,$finding->target->ipoctet,$finding->port,trim(Sysconfig::findOne('offense_registered_tag')->val));
     }
-    try {
+    try
+    {
       file_put_contents('/etc/match-findings-pf.conf',implode("\n",$rules)."\n");
-    } catch (\Exception $e) {
+    }
+    catch (\Exception $e)
+    {
       echo "Failed to save /etc/match-findings-pf.conf\n";
       return;
     }
@@ -363,7 +372,8 @@ class TargetController extends Controller {
   private function store_and_load($table,$file,$contents)
   {
     if(empty($contents)) return;
-    try {
+    try
+    {
       file_put_contents($file,implode("\n",$contents)."\n");
     }
     catch (\Exception $e)

@@ -79,7 +79,8 @@ class SysconfigController extends Controller
     {
         $model = new Sysconfig();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -99,7 +100,8 @@ class SysconfigController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             Yii::$app->session->setFlash('success','<code>'.$model->id.'</code> updated.');
         }
 
@@ -118,7 +120,8 @@ class SysconfigController extends Controller
     public function actionConfigure()
     {
       $model = new ConfigureForm();
-      if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      if ($model->load(Yii::$app->request->post()) && $model->save())
+      {
         return $this->redirect(['configure']);
       }
 
@@ -150,7 +153,8 @@ class SysconfigController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Sysconfig::findOne($id)) !== null) {
+        if (($model = Sysconfig::findOne($id)) !== null)
+        {
             return $model;
         }
 

@@ -82,12 +82,14 @@ class PlayerQuestionController extends Controller
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
-        if(Question::find()->count()==0) {
+        if(Question::find()->count()==0)
+        {
           // If there are no questions redirect to create question
           Yii::$app->session->setFlash('warning', "No Questions found create one first.");
           return $this->redirect(['/gameplay/question/create']);
         }
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -107,7 +109,8 @@ class PlayerQuestionController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -139,7 +142,8 @@ class PlayerQuestionController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = PlayerQuestion::findOne($id)) !== null) {
+        if (($model = PlayerQuestion::findOne($id)) !== null)
+        {
             return $model;
         }
 

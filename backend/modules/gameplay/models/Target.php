@@ -163,10 +163,13 @@ class Target extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-      if (parent::beforeSave($insert)) {
+      if (parent::beforeSave($insert))
+      {
           $this->ip = ip2long($this->ipoctet);
           return true;
-      } else {
+      }
+      else
+      {
           return false;
       }
     }
@@ -270,7 +273,8 @@ class Target extends \yii\db\ActiveRecord
 //      $targetVolumes=null;
       if($this->server==null) return false;
       $docker = $this->connectAPI();
-      try {
+      try
+      {
         $docker->containerDelete($this->name,['force'=>true]);
       }
       catch (\Exception $e)

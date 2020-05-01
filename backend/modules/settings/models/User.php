@@ -83,7 +83,8 @@ class User extends \yii\db\ActiveRecord
     }
     public function beforeSave($insert)
     {
-      if ($this->new_password!="") {
+      if ($this->new_password!="")
+      {
           $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
       }
       return parent::beforeSave($insert);

@@ -31,7 +31,8 @@ class PlayerController extends Controller {
   public function actionIndex($filter = 'all')
   {
       $filters = ['all', 'active', 'inactive'];
-      if (!in_array($filter, $filters)) {
+      if (!in_array($filter, $filters))
+      {
           throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
       }
 
@@ -56,7 +57,8 @@ class PlayerController extends Controller {
     public function actionGenerateTokens($filter = 'all')
     {
         $filters = ['all', 'active', 'inactive'];
-        if (!in_array($filter, $filters)) {
+        if (!in_array($filter, $filters))
+        {
             throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
         }
 
@@ -87,7 +89,8 @@ class PlayerController extends Controller {
    */
   protected function playerList(array $players)
   {
-      if (empty($players)) {
+      if (empty($players))
+      {
           $this->p('No players found.');
           return;
       }
@@ -95,7 +98,8 @@ class PlayerController extends Controller {
       $this->stdout(sprintf("%4s %-32s %-24s %-16s %-8s\n", 'ID', 'Email address', 'User name', 'Created', 'Status'), Console::BOLD);
       $this->stdout(str_repeat('-', 94) . PHP_EOL);
 
-      foreach ($players as $player) {
+      foreach ($players as $player)
+      {
           printf("%4d %-32s %-24s %-16s %-8s\n",
                   $player->id,
                   $player->email,
@@ -160,7 +164,8 @@ class PlayerController extends Controller {
     echo "Registering: ", $email,"\n";
     echo "Player Network: ",long2ip($player_network),"\n";
     $trans=Yii::$app->db->beginTransaction();
-    try {
+    try
+    {
       $player=new Player;
 //      $player->id=$player_network+1;
       $player->academic=intval(boolval($academic));
@@ -242,7 +247,8 @@ class PlayerController extends Controller {
     else
       $players=$p->where(['id'=>$emailORid])->orWhere(['email'=>$emailORid])->all();
     $trans=Yii::$app->db->beginTransaction();
-    try {
+    try
+    {
       foreach($players as $player)
       {
         $player->password=Yii::$app->security->generatePasswordHash($password);

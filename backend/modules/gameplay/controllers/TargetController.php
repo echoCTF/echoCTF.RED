@@ -78,7 +78,8 @@ class TargetController extends Controller
     {
         $model = new Target();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -206,7 +207,8 @@ class TargetController extends Controller
         {
           if($this->findModel($id)->pull())
             \Yii::$app->getSession()->setFlash('success', 'Image succesfuly pulled');
-          else {
+          else
+          {
             \Yii::$app->getSession()->setFlash('error', 'Failed to pull container image');
           }
           return $this->goBack(Yii::$app->request->referrer);
@@ -223,7 +225,8 @@ class TargetController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Target::findOne($id)) !== null) {
+        if (($model = Target::findOne($id)) !== null)
+        {
             return $model;
         }
 

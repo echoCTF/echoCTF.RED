@@ -79,7 +79,8 @@ class HintController extends Controller
         $hint=$this->findModel($id);
         $db=Yii::$app->db;
         $transaction = $db->beginTransaction();
-        try {
+        try
+        {
 //          if($hint->finding)
 //          {
 //            // fetch player_finding
@@ -98,11 +99,15 @@ class HintController extends Controller
                     ->bindValue(':ptype', $hint->player_type)
                     ->execute();
           $transaction->commit();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e)
+        {
             $transaction->rollBack();
             \Yii::$app->getSession()->setFlash('error', 'Failed to give hint to users');
             return $this->redirect(['view','id'=>$id]);
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e)
+        {
             $transaction->rollBack();
             \Yii::$app->getSession()->setFlash('error', 'Failed to give hint to users');
             return $this->redirect(['view','id'=>$id]);
@@ -121,7 +126,8 @@ class HintController extends Controller
     {
         $model = new Hint();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -141,7 +147,8 @@ class HintController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -173,7 +180,8 @@ class HintController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Hint::findOne($id)) !== null) {
+        if (($model = Hint::findOne($id)) !== null)
+        {
             return $model;
         }
 

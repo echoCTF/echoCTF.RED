@@ -15,7 +15,8 @@ class SpinRestAction extends \yii\rest\ViewAction
 
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
     $target=Target::find()->where(['t.id'=>$id])->player_progress(\Yii::$app->user->id)->one();
-    try {
+    try
+    {
       if ($target===NULL)
         throw new NotFoundHttpException('The requested page does not exist.');
       if ($target->spinable!==true)
@@ -37,9 +38,12 @@ class SpinRestAction extends \yii\rest\ViewAction
       Yii::$app->session->setFlash('error',$e->getMessage());
     }
 
-    if(Yii::$app->request->referrer){
+    if(Yii::$app->request->referrer)
+    {
       return Yii::$app->getResponse()->redirect(Yii::$app->request->referrer);
-    }else{
+    }
+    else
+    {
       return Yii::$app->getResponse()->redirect(['/dashboard/index']);
     }
 

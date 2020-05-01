@@ -374,7 +374,8 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public static function isPasswordResetTokenValid($token,$expire=86400): bool
     {
-        if (empty($token)) {
+        if (empty($token))
+        {
             return false;
         }
 
@@ -389,7 +390,8 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public static function findByPasswordResetToken($token)
     {
-        if (!static::isPasswordResetTokenValid($token)) {
+        if (!static::isPasswordResetTokenValid($token))
+        {
             return null;
         }
 

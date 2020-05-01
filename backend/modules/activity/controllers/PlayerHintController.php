@@ -83,13 +83,15 @@ class PlayerHintController extends Controller
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
-        if(Hint::find()->count()==0) {
+        if(Hint::find()->count()==0)
+        {
           // If there are no questions redirect to create question
           Yii::$app->session->setFlash('warning', "No Hints found create one first.");
           return $this->redirect(['/gameplay/hint/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'hint_id' => $model->hint_id]);
         }
 
@@ -110,7 +112,8 @@ class PlayerHintController extends Controller
     {
         $model = $this->findModel($player_id, $hint_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'hint_id' => $model->hint_id]);
         }
 
@@ -144,7 +147,8 @@ class PlayerHintController extends Controller
      */
     protected function findModel($player_id, $hint_id)
     {
-        if (($model = PlayerHint::findOne(['player_id' => $player_id, 'hint_id' => $hint_id])) !== null) {
+        if (($model = PlayerHint::findOne(['player_id' => $player_id, 'hint_id' => $hint_id])) !== null)
+        {
             return $model;
         }
 

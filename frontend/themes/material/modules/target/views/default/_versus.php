@@ -16,7 +16,8 @@ else
   $noheadshot_icon='fa-not-equal';
 }
 $player_timer='';
-if($target->progress==100) {
+if($target->progress==100)
+{
   if($target->headshot($identity->player_id)!=null && $target->headshot($identity->player_id)->timer>0)
     $player_timer='<i class="fas fa-stopwatch"></i> '.number_format($target->headshot($identity->player_id)->timer/60).' minutes';
 }

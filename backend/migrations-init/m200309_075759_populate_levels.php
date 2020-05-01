@@ -37,7 +37,9 @@ class m200309_075759_populate_levels extends Migration
         $this->db->createCommand()->insert('{{%experience}}', $xp)->execute();
         $max_points=$xp['max_points'];
         $min_points=$max_points+1;
-        if(($dyn%4)==0) { $lvl++; $dyn=0; }
+        if(($dyn%4)==0)
+        {
+$lvl++; $dyn=0; }
         $dyn++;
       }
     }

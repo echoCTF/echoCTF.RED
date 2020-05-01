@@ -70,7 +70,8 @@ class DefaultController extends Controller
       $query->andFilterWhere(['challenge_id'=>$model->id]);
 
       $answer = new AnswerForm();
-      if ($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id)) {
+      if ($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id))
+      {
             Yii::$app->session->setFlash('success',sprintf('Accepted answer for question [%s] for %d pts.',$answer->question->name, intval($answer->question->points)));
             return $this->redirect(Yii::$app->request->referrer);
       }
@@ -109,7 +110,8 @@ class DefaultController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Challenge::findOne($id)) !== null) {
+        if (($model = Challenge::findOne($id)) !== null)
+        {
             return $model;
         }
 

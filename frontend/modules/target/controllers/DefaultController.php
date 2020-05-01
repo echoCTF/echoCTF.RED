@@ -211,7 +211,8 @@ class DefaultController extends Controller
 
         $connection=Yii::$app->db;
         $transaction = $connection->beginTransaction();
-        try {
+        try
+        {
           if($treasure!==null)
           {
             $PT=new PlayerTreasure();
@@ -249,7 +250,8 @@ class DefaultController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = \app\modules\target\models\Target::findOne($id)) !== null) {
+        if (($model = \app\modules\target\models\Target::findOne($id)) !== null)
+        {
             return $model;
         }
 
@@ -257,7 +259,8 @@ class DefaultController extends Controller
     }
     protected function findProfile($id)
     {
-        if (($model = \app\models\Profile::findOne($id)) !== null) {
+        if (($model = \app\models\Profile::findOne($id)) !== null)
+        {
             return $model;
         }
 

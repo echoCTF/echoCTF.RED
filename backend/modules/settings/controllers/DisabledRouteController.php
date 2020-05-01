@@ -75,7 +75,8 @@ class DisabledRouteController extends Controller
     {
         $model = new DisabledRoute();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->route]);
         }
 
@@ -95,7 +96,8 @@ class DisabledRouteController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->route]);
         }
 
@@ -127,7 +129,8 @@ class DisabledRouteController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = DisabledRoute::findOne($id)) !== null) {
+        if (($model = DisabledRoute::findOne($id)) !== null)
+        {
             return $model;
         }
 

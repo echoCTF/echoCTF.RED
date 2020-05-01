@@ -82,7 +82,8 @@ class TreasureController extends Controller
           return $this->redirect(['/gameplay/target/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -102,7 +103,8 @@ class TreasureController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -134,7 +136,8 @@ class TreasureController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Treasure::findOne($id)) !== null) {
+        if (($model = Treasure::findOne($id)) !== null)
+        {
             return $model;
         }
 

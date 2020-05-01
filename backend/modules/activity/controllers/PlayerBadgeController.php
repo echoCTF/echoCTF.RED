@@ -83,12 +83,14 @@ class PlayerBadgeController extends Controller
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
-        if(Badge::find()->count()==0) {
+        if(Badge::find()->count()==0)
+        {
           // If there are no questions redirect to create question
           Yii::$app->session->setFlash('warning', "No Badges found create one first.");
           return $this->redirect(['/gameplay/badge/create']);
         }
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'badge_id' => $model->badge_id]);
         }
 
@@ -109,7 +111,8 @@ class PlayerBadgeController extends Controller
     {
         $model = $this->findModel($player_id, $badge_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'badge_id' => $model->badge_id]);
         }
 
@@ -143,7 +146,8 @@ class PlayerBadgeController extends Controller
      */
     protected function findModel($player_id, $badge_id)
     {
-        if (($model = PlayerBadge::findOne(['player_id' => $player_id, 'badge_id' => $badge_id])) !== null) {
+        if (($model = PlayerBadge::findOne(['player_id' => $player_id, 'badge_id' => $badge_id])) !== null)
+        {
             return $model;
         }
 

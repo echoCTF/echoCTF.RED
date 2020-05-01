@@ -76,7 +76,8 @@ class InfrastructureTargetController extends Controller
     {
         $model = new InfrastructureTarget();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'infrastructure_id' => $model->infrastructure_id, 'target_id' => $model->target_id]);
         }
 
@@ -97,7 +98,8 @@ class InfrastructureTargetController extends Controller
     {
         $model = $this->findModel($infrastructure_id, $target_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'infrastructure_id' => $model->infrastructure_id, 'target_id' => $model->target_id]);
         }
 
@@ -131,7 +133,8 @@ class InfrastructureTargetController extends Controller
      */
     protected function findModel($infrastructure_id, $target_id)
     {
-        if (($model = InfrastructureTarget::findOne(['infrastructure_id' => $infrastructure_id, 'target_id' => $target_id])) !== null) {
+        if (($model = InfrastructureTarget::findOne(['infrastructure_id' => $infrastructure_id, 'target_id' => $target_id])) !== null)
+        {
             return $model;
         }
 

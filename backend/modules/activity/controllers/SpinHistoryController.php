@@ -75,7 +75,8 @@ class SpinHistoryController extends Controller
     {
         $model = new SpinHistory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -95,7 +96,8 @@ class SpinHistoryController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -148,7 +150,8 @@ class SpinHistoryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = SpinHistory::findOne($id)) !== null) {
+        if (($model = SpinHistory::findOne($id)) !== null)
+        {
             return $model;
         }
 

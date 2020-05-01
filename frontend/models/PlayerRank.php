@@ -60,7 +60,8 @@ class PlayerRank extends \yii\db\ActiveRecord
         ];
     }
   function getOrdinalPlace() {
-    if (!in_array(($this->id % 100),array(11,12,13))){
+    if (!in_array(($this->id % 100),array(11,12,13)))
+    {
       switch ($this->id % 10) {
         // Handle 1st, 2nd, 3rd
         case 1:  return $this->id.'st';

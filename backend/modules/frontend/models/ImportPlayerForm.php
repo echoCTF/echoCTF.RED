@@ -33,10 +33,13 @@ class ImportPlayerForm extends Model
 
     public function upload()
     {
-        if ($this->validate()) {
+        if ($this->validate())
+        {
             $this->csvFile->saveAs( \Yii::getAlias('@webroot').'/uploads/' . $this->csvFile->baseName . '.' . $this->csvFile->extension);
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }

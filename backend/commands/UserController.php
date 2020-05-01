@@ -28,7 +28,8 @@ class UserController extends Controller
     public function actionIndex($filter = 'all')
     {
         $filters = ['all', 'enabled', 'disabled'];
-        if (!in_array($filter, $filters)) {
+        if (!in_array($filter, $filters))
+        {
             throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
         }
 
@@ -82,15 +83,19 @@ class UserController extends Controller
         $user->status = User::STATUS_ACTIVE;
         $user->generateAuthKey();
         $user->setPassword($random);
-        if ($user->save()) {
+        if ($user->save())
+        {
             $this->p('User "{name}" has been created.', ['name' => $user->username]);
-            if (empty($password)) {
+            if (empty($password))
+            {
                 $this->p('Random password "{password}" has been generated.', ['password' => $random]);
             }
         }
-        else {
+        else
+        {
             $this->err('Couldn\'t create user.');
-            foreach ($user->getErrors() as $attribute => $error) {
+            foreach ($user->getErrors() as $attribute => $error)
+            {
                 print reset($error) . PHP_EOL;
             }
         }
@@ -103,13 +108,16 @@ class UserController extends Controller
     public function actionDelete($email)
     {
         $user = $this->findUser($email);
-        if (!$this->confirm('Are you sure to delete user "' . $user->email . '"')) {
+        if (!$this->confirm('Are you sure to delete user "' . $user->email . '"'))
+        {
             return;
         }
-        if ($user->delete()!==false) {
+        if ($user->delete()!==false)
+        {
             $this->p('User deleted.');
         }
-        else {
+        else
+        {
             $this->err('Couldn\'t delete user.');
         }
     }
@@ -120,11 +128,13 @@ class UserController extends Controller
     public function actionDeleted($email)
     {
         $user = $this->findUser($email);
-        if ($user->status === User::STATUS_DELETED) {
+        if ($user->status === User::STATUS_DELETED)
+        {
             throw new ConsoleException(Yii::t('app', 'User "{email}" already deleted.', compact('email')));
         }
         $user->status = User::STATUS_DELETED;
-        if ($user->save()) {
+        if ($user->save())
+        {
             $this->p('User "{email}" deleted.', compact('email'));
         }
     }
@@ -136,11 +146,13 @@ class UserController extends Controller
     public function actionDisable($email)
     {
         $user = $this->findUser($email);
-        if ($user->status === User::STATUS_INACTIVE) {
+        if ($user->status === User::STATUS_INACTIVE)
+        {
             throw new ConsoleException(Yii::t('app', 'User "{email}" already disabled.', compact('email')));
         }
         $user->status = User::STATUS_INACTIVE;
-        if ($user->save()) {
+        if ($user->save())
+        {
             $this->p('User "{email}" disabled.', compact('email'));
         }
     }
@@ -152,11 +164,13 @@ class UserController extends Controller
     public function actionEnable($email)
     {
         $user = $this->findUser($email);
-        if ($user->status === User::STATUS_ACTIVE) {
+        if ($user->status === User::STATUS_ACTIVE)
+        {
             throw new ConsoleException(Yii::t('app', 'User "{email}" already enabled.', compact('email')));
         }
         $user->status = User::STATUS_ACTIVE;
-        if ($user->save()) {
+        if ($user->save())
+        {
             $this->p('User "{email}" enabled.', compact('email'));
         }
     }
@@ -169,7 +183,8 @@ class UserController extends Controller
     public function actionPassword($email, $new_password = '')
     {
         $user = $this->findUser($email);
-        if (empty($new_password)) {
+        if (empty($new_password))
+        {
           $random = Yii::$app->security->generateRandomString(8);
         }
         else
@@ -198,7 +213,8 @@ class UserController extends Controller
      */
     protected function findUser($email)
     {
-        if (!($user = User::findOne(['email'=>$email]))) {
+        if (!($user = User::findOne(['email'=>$email])))
+        {
             throw new ConsoleException(Yii::t('app', 'User not found.'));
         }
         return $user;
@@ -209,7 +225,8 @@ class UserController extends Controller
      */
     protected function userList(array $users)
     {
-        if (empty($users)) {
+        if (empty($users))
+        {
             $this->p('No users found.');
             return;
         }
@@ -217,7 +234,8 @@ class UserController extends Controller
         $this->stdout(sprintf("%4s %-32s %-24s %-16s %-8s\n", 'ID', 'Email address', 'User name', 'Created', 'Status'), Console::BOLD);
         $this->stdout(str_repeat('-', 94) . PHP_EOL);
 
-        foreach ($users as $user) {
+        foreach ($users as $user)
+        {
             printf("%4d %-32s %-24s %-16s %-8s\n",
                     $user->id,
                     $user->email,

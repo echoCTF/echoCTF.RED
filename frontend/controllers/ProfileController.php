@@ -102,20 +102,23 @@ class ProfileController extends \yii\web\Controller
       $profileForm=$profile;
       $profileForm->scenario='me';
       $accountForm=$profile->owner;
-      if ($profileForm->load(Yii::$app->request->post()) && $profileForm->validate()) {
+      if ($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
+      {
         $profileForm->save();
         $success[]="Profile updated";
       }
 
 
-      if ($accountForm->load(Yii::$app->request->post()) && $accountForm->validate()) {
+      if ($accountForm->load(Yii::$app->request->post()) && $accountForm->validate())
+      {
         if($accountForm->new_password!="")
         {
           $accountForm->setPassword($accountForm->new_password);
         }
         if($accountForm->save())
           $success[]="Account updated";
-        else {
+        else
+        {
           $errors[]="Failed to save updated account details.";
         }
       }
@@ -144,7 +147,8 @@ class ProfileController extends \yii\web\Controller
      */
     protected function findModel($id)
     {
-        if (($model = Profile::findOne($id)) !== null) {
+        if (($model = Profile::findOne($id)) !== null)
+        {
             return $model;
         }
 

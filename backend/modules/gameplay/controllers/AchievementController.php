@@ -76,7 +76,8 @@ class AchievementController extends Controller
     {
         $model = new Achievement();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -96,7 +97,8 @@ class AchievementController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -128,7 +130,8 @@ class AchievementController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Achievement::findOne($id)) !== null) {
+        if (($model = Achievement::findOne($id)) !== null)
+        {
             return $model;
         }
 

@@ -75,7 +75,8 @@ class AvatarController extends Controller
     {
         $model = new Avatar();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -95,7 +96,8 @@ class AvatarController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -127,7 +129,8 @@ class AvatarController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Avatar::findOne($id)) !== null) {
+        if (($model = Avatar::findOne($id)) !== null)
+        {
             return $model;
         }
 

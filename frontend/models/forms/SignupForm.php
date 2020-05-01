@@ -56,7 +56,8 @@ class SignupForm extends Model
      */
     public function signup()
     {
-        if (!$this->validate()) {
+        if (!$this->validate())
+        {
             return null;
         }
 

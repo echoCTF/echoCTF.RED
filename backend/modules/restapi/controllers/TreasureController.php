@@ -12,7 +12,8 @@ class TreasureController extends ActiveController
       \Yii::$app->response->format = \yii\web\Response:: FORMAT_JSON;
       $connection=\Yii::$app->db;
       $transaction=$connection->beginTransaction();
-      try {
+      try
+      {
         $treasure = new \app\modules\gameplay\models\Treasure;
         $post=\yii::$app->request->post();
         $treasure->attributes = $post;
@@ -32,7 +33,9 @@ class TreasureController extends ActiveController
           $transaction->commit();
           return array('status' => true, 'data'=> "Saved");
         }
-      } catch (\Throwable $e) {
+      }
+      catch (\Throwable $e)
+      {
           \Yii::$app->response->statusCode = 422;
           $transaction->rollBack();
           return array('status' => false, 'data'=>  $e->getMessage());

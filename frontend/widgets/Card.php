@@ -105,7 +105,8 @@ class Card extends \yii\base\Widget
      */
     public function getHeaderhtml()
     {
-        if ($this->header!==false) {
+        if ($this->header!==false)
+        {
             switch ($this->header){
                 case 'img-top':
                     return '<img class="card-img-top" src="'.Html::encode($this->url).'" alt="">';

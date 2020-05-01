@@ -75,7 +75,8 @@ class SessionController extends Controller
     {
         $model = new Sessions();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -95,7 +96,8 @@ class SessionController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -147,7 +149,8 @@ class SessionController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Sessions::findOne($id)) !== null) {
+        if (($model = Sessions::findOne($id)) !== null)
+        {
             return $model;
         }
 

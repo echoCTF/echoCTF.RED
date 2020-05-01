@@ -93,12 +93,14 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
+        if (!Yii::$app->user->isGuest)
+        {
             return $this->goHome();
         }
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        if ($model->load(Yii::$app->request->post()) && $model->login())
+        {
             return $this->goBack();
         }
 
@@ -117,17 +119,23 @@ class SiteController extends Controller
     {
         $model = new SignupForm();
         $transaction = Yii::$app->db->beginTransaction();
-        try {
-          if ($model->load(Yii::$app->request->post()) && $model->signup()) {
+        try
+        {
+          if ($model->load(Yii::$app->request->post()) && $model->signup())
+          {
               $transaction->commit();
               Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>');
               return $this->goHome();
           }
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e)
+        {
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', 'Registration failed.');
             throw $e;
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e)
+        {
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', 'Registration failed.');
             throw $e;
@@ -147,12 +155,16 @@ class SiteController extends Controller
     public function actionRequestPasswordReset()
     {
         $model = new PasswordResetRequestForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate())
+        {
+            if ($model->sendEmail())
+            {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
 
                 return $this->goHome();
-            } else {
+            }
+            else
+            {
                 Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
             }
         }
@@ -171,13 +183,17 @@ class SiteController extends Controller
      */
     public function actionResetPassword($token)
     {
-        try {
+        try
+        {
             $model = new ResetPasswordForm($token);
-        } catch (InvalidArgumentException $e) {
+        }
+        catch (InvalidArgumentException $e)
+        {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword())
+        {
             Yii::$app->session->setFlash('success', 'New password saved.');
 
             return $this->goHome();
@@ -197,9 +213,12 @@ class SiteController extends Controller
      */
     public function actionVerifyEmail($token)
     {
-        try {
+        try
+        {
             $model = new VerifyEmailForm($token);
-        } catch (InvalidArgumentException $e) {
+        }
+        catch (InvalidArgumentException $e)
+        {
             throw new BadRequestHttpException($e->getMessage());
         }
         $post=Yii::$app->request->post('VerifyEmailForm');
@@ -210,15 +229,20 @@ class SiteController extends Controller
             return $this->render('verify-email',['model'=>$model,'token'=>$token]);
         }
         $transaction=Yii::$app->db->beginTransaction();
-        try {
-          if ($user = $model->verifyEmail()) {
-              if (Yii::$app->user->login($user)) {
+        try
+        {
+          if ($user = $model->verifyEmail())
+          {
+              if (Yii::$app->user->login($user))
+              {
                   $transaction->commit();
                   Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
                   return $this->redirect(['/profile/me']);
               }
           }
-        } catch(\Exception $e) {
+        }
+        catch(\Exception $e)
+        {
           $transaction->rollBack();
         }
 
@@ -234,8 +258,10 @@ class SiteController extends Controller
     public function actionResendVerificationEmail()
     {
         $model = new ResendVerificationEmailForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            if ($model->sendEmail()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate())
+        {
+            if ($model->sendEmail())
+            {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                 return $this->goHome();
             }

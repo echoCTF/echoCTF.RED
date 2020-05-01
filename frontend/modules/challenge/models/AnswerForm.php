@@ -42,7 +42,8 @@ class AnswerForm extends Model
     {
       // first check if it is a valid answer
       $this->_question=Question::find()->where(['challenge_id'=>$challenge_id,'code'=>$this->answer])->one();
-      if(!($this->_question instanceof Question)){
+      if(!($this->_question instanceof Question))
+      {
         $this->addError('answer','Invalid answer');
         return false;
       }

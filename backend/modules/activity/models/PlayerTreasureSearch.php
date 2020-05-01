@@ -53,7 +53,8 @@ class PlayerTreasureSearch extends PlayerTreasure
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if (!$this->validate())
+        {
             $query->where('0=1');
             return $dataProvider;
         }

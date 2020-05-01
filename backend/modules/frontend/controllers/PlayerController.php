@@ -114,8 +114,10 @@ class PlayerController extends Controller
     {
         $model = new Player();
         $trans=Yii::$app->db->beginTransaction();
-        try {
-          if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        try
+        {
+          if ($model->load(Yii::$app->request->post()) && $model->save())
+          {
               $playerSsl=new PlayerSsl();
               $playerSsl->player_id=$model->id;
               $playerSsl->generate();
@@ -143,7 +145,8 @@ class PlayerController extends Controller
     {
       $model = new ImportPlayerForm();
 
-      if (Yii::$app->request->isPost) {
+      if (Yii::$app->request->isPost)
+      {
           $model->attributes=Yii::$app->request->post()["ImportPlayerForm"];
           $model->csvFile = UploadedFile::getInstance($model, 'csvFile');
           if ($model->upload() && $model->parseCSV())
@@ -179,7 +182,8 @@ class PlayerController extends Controller
                   {
                     if($p->playerSsl!==NULL)
                       $ps=$p->playerSsl;
-                    else {
+                    else
+                    {
                       $ps=new PlayerSsl;
                       $ps->player_id=$p->id;
                     }
@@ -208,7 +212,8 @@ class PlayerController extends Controller
 
     public function actionResetPlayerProgress()
     {
-      try {
+      try
+      {
         \Yii::$app->db->createCommand("CALL reset_player_progress()")->execute();
         Yii::$app->session->setFlash('success', 'Successfully reseted all player progress');
       }
@@ -222,7 +227,8 @@ class PlayerController extends Controller
 
     public function actionResetPlaydata()
     {
-      try {
+      try
+      {
         \Yii::$app->db->createCommand("CALL reset_playdata()")->execute();
         Yii::$app->session->setFlash('success', 'Successfully removed all player data');
       }
@@ -245,7 +251,8 @@ class PlayerController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -283,11 +290,13 @@ class PlayerController extends Controller
       $trans=Yii::$app->db->beginTransaction();
       try
       {
-        if($this->findModel($id)->ban()) {
+        if($this->findModel($id)->ban())
+        {
           $trans->commit();
           Yii::$app->session->setFlash('success','Player deleted and placed on banned table.');
         }
-        else {
+        else
+        {
             throw new \LogicException('Faled to delete and ban player.');
         }
       }
@@ -296,9 +305,12 @@ class PlayerController extends Controller
         $trans->rollBack();
         Yii::$app->session->setFlash('error','Failed to ban player.');
       }
-      if(Yii::$app->request->referrer){
+      if(Yii::$app->request->referrer)
+      {
         return $this->redirect(Yii::$app->request->referrer);
-      }else{
+      }
+      else
+      {
         return $this->redirect(['index']);
       }
     }
@@ -360,7 +372,8 @@ class PlayerController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Player::findOne($id)) !== null) {
+        if (($model = Player::findOne($id)) !== null)
+        {
             return $model;
         }
 
@@ -390,7 +403,8 @@ class PlayerController extends Controller
       private function mailPlayer($content,$player,$subject)
       {
       // Get mailer
-        try {
+        try
+        {
           \Yii::$app->mailer->compose()
             ->setFrom([Sysconfig::findOne('mail_from')->val => Sysconfig::findOne('mail_fromName')->val])
             ->setTo([$player->email=>$player->username])

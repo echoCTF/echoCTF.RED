@@ -74,7 +74,8 @@ class FaqController extends Controller
     {
         $model = new Faq();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -94,7 +95,8 @@ class FaqController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -126,7 +128,8 @@ class FaqController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Faq::findOne($id)) !== null) {
+        if (($model = Faq::findOne($id)) !== null)
+        {
             return $model;
         }
 

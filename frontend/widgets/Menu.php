@@ -22,9 +22,12 @@ class Menu extends \yii\widgets\Menu
      */
     protected function renderItem($item)
     {
-        if(isset($item['items'])) {
+        if(isset($item['items']))
+        {
             $linkTemplate = '<a href="{url}" class="{class}">{icon} {dropdownicon} {label}</a>';
-        }else {
+        }
+        else
+        {
             $linkTemplate = $this->linkTemplate;
         }
 
@@ -53,30 +56,39 @@ class Menu extends \yii\widgets\Menu
     {
         $n = count($items);
         $lines = [];
-        foreach ($items as $i => $item) {
+        foreach ($items as $i => $item)
+        {
             $options = array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
             $tag = ArrayHelper::remove($options, 'tag', 'li');
             $class = [];
-            if ($item['active']) {
+            if ($item['active'])
+            {
                 $class[] = $this->activeCssClass;
             }
-            if ($i === 0 && $this->firstItemCssClass !== null) {
+            if ($i === 0 && $this->firstItemCssClass !== null)
+            {
                 $class[] = $this->firstItemCssClass;
             }
-            if ($i === $n - 1 && $this->lastItemCssClass !== null) {
+            if ($i === $n - 1 && $this->lastItemCssClass !== null)
+            {
                 $class[] = $this->lastItemCssClass;
             }
-            if (!empty($class)) {
-                if (empty($options['class'])) {
+            if (!empty($class))
+            {
+                if (empty($options['class']))
+                {
                     $options['class'] = implode(' ', $class);
-                } else {
+                }
+                else
+                {
                     $options['class'] .= ' ' . implode(' ', $class);
                 }
             }/*else{
                 $options['class'] = '';
             }*/
             $menu = $this->renderItem($item);
-            if (!empty($item['items'])) {
+            if (!empty($item['items']))
+            {
                 $menu .= strtr($this->submenuTemplate, [
                     '{show}' => $item['active'] ? "style='display: block'" : "style='display: none'",
                     '{items}' => $this->renderItems($item['items']),
@@ -91,35 +103,47 @@ class Menu extends \yii\widgets\Menu
      */
     protected function normalizeItems($items, &$active)
     {
-        foreach ($items as $i => $item) {
-            if (isset($item['visible']) && !$item['visible']) {
+        foreach ($items as $i => $item)
+        {
+            if (isset($item['visible']) && !$item['visible'])
+            {
                 unset($items[$i]);
                 continue;
             }
-            if (!isset($item['label'])) {
+            if (!isset($item['label']))
+            {
                 $item['label'] = '';
             }
             $encodeLabel = isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
             $items[$i]['label'] = $encodeLabel ? Html::encode($item['label']) : $item['label'];
             $items[$i]['icon'] = isset($item['icon']) ? $item['icon'] : '';
             $hasActiveChild = false;
-            if (isset($item['items'])) {
+            if (isset($item['items']))
+            {
                 $items[$i]['items'] = $this->normalizeItems($item['items'], $hasActiveChild);
-                if (empty($items[$i]['items']) && $this->hideEmptyItems) {
+                if (empty($items[$i]['items']) && $this->hideEmptyItems)
+                {
                     unset($items[$i]['items']);
-                    if (!isset($item['url'])) {
+                    if (!isset($item['url']))
+                    {
                         unset($items[$i]);
                         continue;
                     }
                 }
             }
-            if (!isset($item['active'])) {
-                if (($this->activateParents && $hasActiveChild) || ($this->activateItems && $this->isItemActive($item))) {
+            if (!isset($item['active']))
+            {
+                if (($this->activateParents && $hasActiveChild) || ($this->activateItems && $this->isItemActive($item)))
+                {
                     $active = $items[$i]['active'] = true;
-                } else {
+                }
+                else
+                {
                     $items[$i]['active'] = false;
                 }
-            } elseif ($item['active']) {
+            }
+            elseif ($item['active'])
+            {
                 $active = true;
             }
         }
@@ -137,26 +161,34 @@ class Menu extends \yii\widgets\Menu
      */
     protected function isItemActive($item)
     {
-        if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0])) {
+        if (isset($item['url']) && is_array($item['url']) && isset($item['url'][0]))
+        {
             $route = $item['url'][0];
-            if ($route[0] !== '/' && Yii::$app->controller) {
+            if ($route[0] !== '/' && Yii::$app->controller)
+            {
                 $route = Yii::$app->controller->module->getUniqueId() . '/' . $route;
             }
             $arrayRoute = explode('/', ltrim($route, '/'));
             $arrayThisRoute = explode('/', $this->route);
-            if ($arrayRoute[0] !== $arrayThisRoute[0]) {
+            if ($arrayRoute[0] !== $arrayThisRoute[0])
+            {
                 return false;
             }
-            if (isset($arrayRoute[1]) && $arrayRoute[1] !== $arrayThisRoute[1]) {
+            if (isset($arrayRoute[1]) && $arrayRoute[1] !== $arrayThisRoute[1])
+            {
                 return false;
             }
-            if (isset($arrayRoute[2]) && $arrayRoute[2] !== $arrayThisRoute[2]) {
+            if (isset($arrayRoute[2]) && $arrayRoute[2] !== $arrayThisRoute[2])
+            {
                 return false;
             }
             unset($item['url']['#']);
-            if (count($item['url']) > 1) {
-                foreach (array_splice($item['url'], 1) as $name => $value) {
-                    if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value)) {
+            if (count($item['url']) > 1)
+            {
+                foreach (array_splice($item['url'], 1) as $name => $value)
+                {
+                    if ($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value))
+                    {
                         return false;
                     }
                 }

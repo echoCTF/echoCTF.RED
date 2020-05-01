@@ -45,7 +45,8 @@ class ResendVerificationEmailForm extends Model
             'status' => Player::STATUS_INACTIVE
         ]);
 
-        if ($player === null) {
+        if ($player === null)
+        {
             return false;
         }
         if(Yii::$app->sys->mail_host!==false)

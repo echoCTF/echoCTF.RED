@@ -76,8 +76,10 @@ class BadgeController extends Controller
     {
         $model = new Badge();
         $transaction=\Yii::$app->db->beginTransaction();
-        try {
-          if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        try
+        {
+          if ($model->load(Yii::$app->request->post()) && $model->save())
+          {
             $treasures=Yii::$app->request->post()['Badge']['treasures'];
             $findings=Yii::$app->request->post()['Badge']['findings'];
             if(is_array($findings))
@@ -125,7 +127,8 @@ class BadgeController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
 
             $findings=Yii::$app->request->post()['Badge']['findings'];
             $treasures=Yii::$app->request->post()['Badge']['treasures'];
@@ -168,7 +171,8 @@ class BadgeController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Badge::findOne($id)) !== null) {
+        if (($model = Badge::findOne($id)) !== null)
+        {
             return $model;
         }
 

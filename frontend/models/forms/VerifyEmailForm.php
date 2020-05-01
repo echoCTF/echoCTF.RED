@@ -29,11 +29,13 @@ class VerifyEmailForm extends Model
      */
     public function __construct($token, array $config = [])
     {
-        if (empty($token) || !is_string($token)) {
+        if (empty($token) || !is_string($token))
+        {
             throw new InvalidArgumentException('Verify email token cannot be blank.');
         }
         $this->_player = Player::findByVerificationToken($token);
-        if (!$this->_player) {
+        if (!$this->_player)
+        {
             throw new InvalidArgumentException('Wrong verify email token.');
         }
         parent::__construct($config);

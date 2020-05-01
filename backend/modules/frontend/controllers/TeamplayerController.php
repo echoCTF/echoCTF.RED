@@ -88,7 +88,8 @@ class TeamplayerController extends Controller
           return $this->redirect(['/frontend/team/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -108,7 +109,8 @@ class TeamplayerController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -140,7 +142,8 @@ class TeamplayerController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = TeamPlayer::findOne($id)) !== null) {
+        if (($model = TeamPlayer::findOne($id)) !== null)
+        {
             return $model;
         }
 

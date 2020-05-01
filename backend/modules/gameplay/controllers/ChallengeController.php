@@ -77,9 +77,11 @@ class ChallengeController extends Controller
     {
         $model = new Challenge();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             $model->file = UploadedFile::getInstance($model, 'file');
-            try {
+            try
+            {
               if($model->file)
                 $model->file->saveAs('uploads/' . $model->id );
               Yii::$app->session->setFlash('success','Challenge ['.$model->name.'] created.');
@@ -107,7 +109,8 @@ class ChallengeController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             $model->file = UploadedFile::getInstance($model, 'file');
             if($model->file!==null)
               $model->file->saveAs('uploads/' . $model->id );
@@ -142,7 +145,8 @@ class ChallengeController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Challenge::findOne($id)) !== null) {
+        if (($model = Challenge::findOne($id)) !== null)
+        {
             return $model;
         }
 

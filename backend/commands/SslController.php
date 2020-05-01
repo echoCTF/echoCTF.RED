@@ -195,10 +195,12 @@ class SslController extends Controller {
    */
   public function actionCreateCrl()
   {
-    try {
+    try
+    {
       $cmd=sprintf("openssl ca -gencrl %s -out /etc/openvpn/crl.pem",$this->ssl_params);
       shell_exec($cmd);
-    } catch (\Exception $e)
+    }
+    catch (\Exception $e)
     {
       echo $e->getMessage();
       return 1;

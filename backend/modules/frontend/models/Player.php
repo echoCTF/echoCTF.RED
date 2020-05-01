@@ -306,11 +306,13 @@ class Player extends \yii\db\ActiveRecord
     }
     public function beforeSave($insert)
     {
-      if ($this->auth_key=="") {
+      if ($this->auth_key=="")
+      {
           $this->auth_key = Yii::$app->security->generateRandomString();
       }
 
-      if ($this->new_password!="") {
+      if ($this->new_password!="")
+      {
         $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
         $this->password = Yii::$app->security->generatePasswordHash($this->new_password);
       }

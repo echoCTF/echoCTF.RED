@@ -38,9 +38,12 @@ class JustGage extends \yii\base\Widget
   public function run()
   {
     // 1. Get or generate an ID.
-    if (isset($this->htmlOptions['id'])) {
+    if (isset($this->htmlOptions['id']))
+    {
       $this->id = $this->htmlOptions['id'];
-    } else {
+    }
+    else
+    {
       $this->id = $this->htmlOptions['id'] = $this->getId();
     }
 

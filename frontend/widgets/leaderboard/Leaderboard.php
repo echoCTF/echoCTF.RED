@@ -46,7 +46,8 @@ class Leaderboard extends Widget
           ]
         ]);
       }
-      else {
+      else
+      {
         $this->player_id=Yii::$app->user->id;
       }
 

@@ -75,7 +75,8 @@ class PlayerSslController extends Controller
     {
         $model = new PlayerSsl();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->player_id]);
         }
 
@@ -95,7 +96,8 @@ class PlayerSslController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->player_id]);
         }
 
@@ -127,7 +129,8 @@ class PlayerSslController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = PlayerSsl::findOne($id)) !== null) {
+        if (($model = PlayerSsl::findOne($id)) !== null)
+        {
             return $model;
         }
 

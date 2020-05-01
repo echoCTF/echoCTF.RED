@@ -75,7 +75,8 @@ class ExperienceController extends Controller
     {
         $model = new Experience();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -95,7 +96,8 @@ class ExperienceController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -127,7 +129,8 @@ class ExperienceController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Experience::findOne($id)) !== null) {
+        if (($model = Experience::findOne($id)) !== null)
+        {
             return $model;
         }
 

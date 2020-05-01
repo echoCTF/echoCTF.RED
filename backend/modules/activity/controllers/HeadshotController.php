@@ -76,7 +76,8 @@ class HeadshotController extends Controller
     {
         $model = new Headshot();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
         }
 
@@ -95,7 +96,8 @@ class HeadshotController extends Controller
     {
       $model = new Headshot();
 
-      if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+      if ($model->load(Yii::$app->request->post()) && $model->validate())
+      {
           Yii::$app->db->createCommand('insert ignore into player_finding (player_id,finding_id) select :player_id,id from finding where target_id=:target_id')
             ->bindValue(':player_id', $model->player_id)
             ->bindValue(':target_id', $model->target_id)
@@ -126,7 +128,8 @@ class HeadshotController extends Controller
     {
         $model = $this->findModel($player_id, $target_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
         }
 
@@ -160,7 +163,8 @@ class HeadshotController extends Controller
      */
     protected function findModel($player_id, $target_id)
     {
-        if (($model = Headshot::findOne(['player_id' => $player_id, 'target_id' => $target_id])) !== null) {
+        if (($model = Headshot::findOne(['player_id' => $player_id, 'target_id' => $target_id])) !== null)
+        {
             return $model;
         }
 

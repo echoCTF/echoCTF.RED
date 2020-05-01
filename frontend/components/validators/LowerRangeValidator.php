@@ -54,7 +54,8 @@ class LowerRangeValidator extends \yii\validators\Validator
         ) {
             throw new InvalidConfigException('The "range" property must be set.');
         }
-        if ($this->message === null) {
+        if ($this->message === null)
+        {
             $this->message = Yii::t('yii', '{attribute} is invalid.');
         }
     }
@@ -72,7 +73,8 @@ class LowerRangeValidator extends \yii\validators\Validator
         ) {
             $in = true;
         }
-        if (!$in && ArrayHelper::isIn(strtolower($value), (array)$this->range, $this->strict)) {
+        if (!$in && ArrayHelper::isIn(strtolower($value), (array)$this->range, $this->strict))
+        {
             $in = true;
         }
         return $this->not !== $in ? null : [$this->message, []];
@@ -83,7 +85,8 @@ class LowerRangeValidator extends \yii\validators\Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if ($this->range instanceof \Closure) {
+        if ($this->range instanceof \Closure)
+        {
             $this->range = call_user_func($this->range, $model, $attribute);
         }
         parent::validateAttribute($model, $attribute);
@@ -94,7 +97,8 @@ class LowerRangeValidator extends \yii\validators\Validator
      */
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        if ($this->range instanceof \Closure) {
+        if ($this->range instanceof \Closure)
+        {
             $this->range = call_user_func($this->range, $model, $attribute);
         }
 
@@ -110,7 +114,8 @@ class LowerRangeValidator extends \yii\validators\Validator
     public function getClientOptions($model, $attribute)
     {
         $range = [];
-        foreach ($this->range as $value) {
+        foreach ($this->range as $value)
+        {
             $range[] = (string) $value;
         }
         $options = [
@@ -120,10 +125,12 @@ class LowerRangeValidator extends \yii\validators\Validator
                 'attribute' => $model->getAttributeLabel($attribute),
             ]),
         ];
-        if ($this->skipOnEmpty) {
+        if ($this->skipOnEmpty)
+        {
             $options['skipOnEmpty'] = 1;
         }
-        if ($this->allowArray) {
+        if ($this->allowArray)
+        {
             $options['allowArray'] = 1;
         }
 

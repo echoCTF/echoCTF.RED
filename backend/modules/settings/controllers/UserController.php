@@ -78,7 +78,8 @@ class UserController extends Controller
     {
         $model = new User();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -97,7 +98,8 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
         return $this->render('update', [
@@ -128,7 +130,8 @@ class UserController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = \app\modules\settings\models\User::findOne($id)) !== null) {
+        if (($model = \app\modules\settings\models\User::findOne($id)) !== null)
+        {
             return $model;
         }
 
