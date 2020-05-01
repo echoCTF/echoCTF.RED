@@ -33,12 +33,12 @@ class Leaderboard extends Widget
 
     public function init()
     {
-      if($this->player_id!==NULL)
+      if($this->player_id !== NULL)
       {
 
-        $this->dataProvider = new ActiveDataProvider([
+        $this->dataProvider=new ActiveDataProvider([
 //          'query' => PlayerScore::find()->active()->orderBy(['points'=>SORT_DESC,'player_id'=>SORT_ASC]),
-          'query' => PlayerRank::find()->orderBy(['id'=>SORT_ASC,'player_id'=>SORT_ASC]),
+          'query' => PlayerRank::find()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
           'pagination' => [
               'pageSizeParam'=>'score-perpage',
               'pageParam'=>'score-page',
@@ -52,14 +52,14 @@ class Leaderboard extends Widget
       }
 
       $rank=Profile::find()->where(['player_id'=>$this->player_id])->one()->rank;
-      if(Yii::$app->request->get('score-page')===null && $rank!=null)
-        $this->dataProvider->pagination->page = ($rank->id-1)/$this->dataProvider->pagination->pageSize;
+      if(Yii::$app->request->get('score-page') === null && $rank != null)
+        $this->dataProvider->pagination->page=($rank->id - 1) / $this->dataProvider->pagination->pageSize;
 
-      if($this->totalPoints===null)
+      if($this->totalPoints === null)
       {
-        $command = Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
-        $command->bindValue(':player_type','offense');
-        $this->totalPoints = $command->queryScalar();
+        $command=Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
+        $command->bindValue(':player_type', 'offense');
+        $this->totalPoints=$command->queryScalar();
       }
       $this->summary=\Yii::t('app', $this->summary, ['TITLE' => $this->title, 'CATEGORY'=>$this->category]);
 
@@ -69,6 +69,6 @@ class Leaderboard extends Widget
     public function run()
     {
         LeaderboardAsset::register($this->getView());
-        return $this->render('leaderboard',['dataProvider'=>$this->dataProvider,'totalPoints'=>$this->totalPoints,'divID'=>$this->divID,'pagerID'=>$this->pagerID,'player_id'=>$this->player_id,'summary'=>$this->summary]);
+        return $this->render('leaderboard', ['dataProvider'=>$this->dataProvider, 'totalPoints'=>$this->totalPoints, 'divID'=>$this->divID, 'pagerID'=>$this->pagerID, 'player_id'=>$this->player_id, 'summary'=>$this->summary]);
     }
 }

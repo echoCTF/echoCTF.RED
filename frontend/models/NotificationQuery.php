@@ -19,13 +19,13 @@ class NotificationQuery extends \yii\db\ActiveQuery
     }
     public function forAjax()
     {
-        return $this->select(['id','title','body','created_at','archived']);
+        return $this->select(['id', 'title', 'body', 'created_at', 'archived']);
     }
 
     /**
      * @return Notification[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -33,7 +33,7 @@ class NotificationQuery extends \yii\db\ActiveQuery
     /**
      * @return Notification|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

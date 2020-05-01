@@ -28,22 +28,22 @@ class TargetWidget extends Widget
     public $totalPoints;
     public $pagerID='stream-pager';
     public $summary='';
-    public $pagerOptions=['class'=>'d-flex align-items-end justify-content-between','id'=>'stream-pager'];
+    public $pagerOptions=['class'=>'d-flex align-items-end justify-content-between', 'id'=>'stream-pager'];
     public $layout='{summary}{items}{pager}';
     public $personal=false;
     public $profile=null;
     public function init()
     {
-      if ($this->dataProvider===NULL && $this->player_id===NULL)
+      if($this->dataProvider === NULL && $this->player_id === NULL)
       {
         return false;
       }
-      else if ($this->dataProvider===NULL)
+      else if($this->dataProvider === NULL)
       {
         $this->dataProvider=$this->initTargetProvider($this->player_id);
       }
 
-      if($this->pagerID===null)
+      if($this->pagerID === null)
       {
         unset($this->pagerOptions['id']);
       }
@@ -54,10 +54,10 @@ class TargetWidget extends Widget
     public function run()
     {
       $tmod=\app\modules\target\models\Target::find();
-      if(intval($tmod->count())===0) return false;
+      if(intval($tmod->count()) === 0) return false;
 
         TargetWidgetAsset::register($this->getView());
-        return $this->render('target',[
+        return $this->render('target', [
           'dataProvider'=>$this->dataProvider,
           'divID'=>$this->divID,
           'summary'=>$this->summary,
@@ -74,20 +74,20 @@ class TargetWidget extends Widget
     protected function initTargetProvider($id)
     {
       $tmod=\app\modules\target\models\Target::find();
-      if(intval($tmod->count())===0) return null;
+      if(intval($tmod->count()) === 0) return null;
 
       foreach($tmod->all() as $model)
       {
-        $orderByHeadshots[]=(object)['id'=>$model->id,'ip'=>$model->ip,'headshots'=>count($model->headshots)];
+        $orderByHeadshots[]=(object) ['id'=>$model->id, 'ip'=>$model->ip, 'headshots'=>count($model->headshots)];
       }
 
-      ArrayHelper::multisort($orderByHeadshots, ['headshots','ip'], [SORT_ASC,SORT_ASC]);
-      $orderByHeadshotsASC=ArrayHelper::getColumn($orderByHeadshots,'id');
-      ArrayHelper::multisort($orderByHeadshots, ['headshots','ip'], [SORT_DESC,SORT_ASC]);
-      $orderByHeadshotsDESC=ArrayHelper::getColumn($orderByHeadshots,'id');
+      ArrayHelper::multisort($orderByHeadshots, ['headshots', 'ip'], [SORT_ASC, SORT_ASC]);
+      $orderByHeadshotsASC=ArrayHelper::getColumn($orderByHeadshots, 'id');
+      ArrayHelper::multisort($orderByHeadshots, ['headshots', 'ip'], [SORT_DESC, SORT_ASC]);
+      $orderByHeadshotsDESC=ArrayHelper::getColumn($orderByHeadshots, 'id');
       if($this->personal)
       {
-        $targetProgressProvider = new ActiveDataProvider([
+        $targetProgressProvider=new ActiveDataProvider([
             'query' => $tmod->player_progress($id)->having('player_treasures>0 or player_findings>0'),
             'pagination' => [
                 'pageSizeParam'=>'target-perpage',
@@ -96,11 +96,11 @@ class TargetWidget extends Widget
             ]
 
         ]);
-        $defaultOrder= [ 'progress' => SORT_DESC, 'ip'=>SORT_ASC ];
+        $defaultOrder=['progress' => SORT_DESC, 'ip'=>SORT_ASC];
       }
       else
       {
-        $targetProgressProvider = new ActiveDataProvider([
+        $targetProgressProvider=new ActiveDataProvider([
             'query' => $tmod->player_progress($id),
             'pagination' => [
                 'pageSizeParam'=>'target-perpage',
@@ -109,7 +109,7 @@ class TargetWidget extends Widget
             ]
 
         ]);
-        $defaultOrder= [ 'ip' => SORT_ASC ];
+        $defaultOrder=['ip' => SORT_ASC];
       }
       $targetProgressProvider->setSort([
           'sortParam'=>'target-sort',
@@ -148,8 +148,8 @@ class TargetWidget extends Widget
                   'default' => SORT_ASC
               ],
               'headshots' => [
-                  'asc' => [ new \yii\db\Expression('FIELD (t.id, ' . implode(',',$orderByHeadshotsASC ) . ')') ],
-                  'desc' => [new \yii\db\Expression('FIELD (t.id, ' . implode(',',$orderByHeadshotsDESC ) . ')')],
+                  'asc' => [new \yii\db\Expression('FIELD (t.id, '.implode(',', $orderByHeadshotsASC).')')],
+                  'desc' => [new \yii\db\Expression('FIELD (t.id, '.implode(',', $orderByHeadshotsDESC).')')],
                   'default' => SORT_ASC
               ],
               'progress' => [

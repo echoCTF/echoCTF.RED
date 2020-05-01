@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="network-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'codename')->textInput(['maxlength' => true]) ?>
@@ -25,6 +25,6 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

@@ -57,11 +57,11 @@ use app\modules\gameplay\models\Treasure;
  */
 class Player extends \yii\db\ActiveRecord
 {
-  public $ovpn=null,$online=null,$last_seen=null;
+  public $ovpn=null, $online=null, $last_seen=null;
   public $new_password;
-  const STATUS_DELETED = 0;
-  const STATUS_INACTIVE = 9;
-  const STATUS_ACTIVE = 10;
+  const STATUS_DELETED=0;
+  const STATUS_INACTIVE=9;
+  const STATUS_ACTIVE=10;
     /**
      * {@inheritdoc}
      */
@@ -88,16 +88,16 @@ class Player extends \yii\db\ActiveRecord
         return [
             [['username', 'type', 'status'], 'required'],
             [['type'], 'string'],
-            [['active','status'], 'integer'],
+            [['active', 'status'], 'integer'],
             [['academic'], 'boolean'],
             [['email'], 'filter', 'filter'=>'strtolower'],
             [['activkey'], 'string', 'max' => 32],
             [['type'], 'default', 'value' => 'offense'],
-            [['status'], 'default', 'value' => self::STATUS_ACTIVE ],
+            [['status'], 'default', 'value' => self::STATUS_ACTIVE],
             [['activkey'], 'default', 'value' => Yii::$app->security->generateRandomString()],
             [['username', 'fullname', 'email', 'new_password', 'activkey'], 'string', 'max' => 255],
             [['username'], 'unique'],
-            [['new_password','password'],'safe'],
+            [['new_password', 'password'], 'safe'],
 
         ];
     }
@@ -306,15 +306,15 @@ class Player extends \yii\db\ActiveRecord
     }
     public function beforeSave($insert)
     {
-      if ($this->auth_key=="")
+      if($this->auth_key == "")
       {
-          $this->auth_key = Yii::$app->security->generateRandomString();
+          $this->auth_key=Yii::$app->security->generateRandomString();
       }
 
-      if ($this->new_password!="")
+      if($this->new_password != "")
       {
-        $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
-        $this->password = Yii::$app->security->generatePasswordHash($this->new_password);
+        $this->password_hash=Yii::$app->security->generatePasswordHash($this->new_password);
+        $this->password=Yii::$app->security->generatePasswordHash($this->new_password);
       }
 
       return parent::beforeSave($insert);
@@ -341,12 +341,12 @@ class Player extends \yii\db\ActiveRecord
 
     public static function find()
     {
-      return parent::find()->select(['player.*','ifnull(memc_get(concat("ovpn:",player.id)),0) as ovpn','ifnull(memc_get(concat("online:",player.id)),0) as online','memc_get(concat("last_seen:",player.id)) as last_seen']);
+      return parent::find()->select(['player.*', 'ifnull(memc_get(concat("ovpn:",player.id)),0) as ovpn', 'ifnull(memc_get(concat("online:",player.id)),0) as online', 'memc_get(concat("last_seen:",player.id)) as last_seen']);
     }
 
-    public function getHeadshots(){
+    public function getHeadshots() {
       $QUERY="SELECT t.* FROM target AS t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=:player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=:player_id GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id) ORDER BY t.ip,t.fqdn,t.name";
-      $targets = Yii::$app->db->createCommand($QUERY, [':player_id'=>$this->id])->queryAll();
+      $targets=Yii::$app->db->createCommand($QUERY, [':player_id'=>$this->id])->queryAll();
       return $targets;
     }
 
@@ -358,7 +358,7 @@ class Player extends \yii\db\ActiveRecord
       $ban->email=$this->email;
       $ban->registered_at=$this->created;
       $ban->banned_at=new \yii\db\Expression('NOW()');
-      if($ban->save() && $this->delete()!==false)
+      if($ban->save() && $this->delete() !== false)
         return true;
       return false;
 

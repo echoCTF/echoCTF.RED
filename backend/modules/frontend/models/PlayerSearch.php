@@ -11,15 +11,15 @@ use app\modules\frontend\models\Player;
  */
 class PlayerSearch extends Player
 {
-  public $on_pui,$on_vpn,$vpn_local_address;
+  public $on_pui, $on_vpn, $vpn_local_address;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'created','academic','status','active'], 'integer'],
-            [['vpn_local_address','status','username', 'fullname', 'email', 'type', 'password', 'activkey', 'ts', 'last_seen','online','ovpn', 'on_pui','on_vpn'], 'safe'],
+            [['id', 'created', 'academic', 'status', 'active'], 'integer'],
+            [['vpn_local_address', 'status', 'username', 'fullname', 'email', 'type', 'password', 'activkey', 'ts', 'last_seen', 'online', 'ovpn', 'on_pui', 'on_vpn'], 'safe'],
         ];
     }
 
@@ -41,16 +41,16 @@ class PlayerSearch extends Player
      */
     public function search($params)
     {
-        $query = Player::find()->joinWith(['last']);
+        $query=Player::find()->joinWith(['last']);
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -78,32 +78,32 @@ class PlayerSearch extends Player
             ->andFilterWhere(['like', 'player.activkey', $this->activkey])
             ->andFilterWhere(['like', 'INET_NTOA(player_last.vpn_local_address)', $this->vpn_local_address]);
 
-        if($this->ovpn!=="" && $this->ovpn!==NULL)$query->andHaving(['like','ovpn',$this->ovpn]);
-        if($this->last_seen!=="" && $this->last_seen!==NULL)$query->andHaving(['like','last_seen',$this->last_seen]);
-        if($this->online==="1") $query->andHaving(['>','ifnull(online,0)',$this->online]);
-        else if($this->online==="0") $query->andHaving(['=','ifnull(online,0)',$this->online]);
+        if($this->ovpn !== "" && $this->ovpn !== NULL)$query->andHaving(['like', 'ovpn', $this->ovpn]);
+        if($this->last_seen !== "" && $this->last_seen !== NULL)$query->andHaving(['like', 'last_seen', $this->last_seen]);
+        if($this->online === "1") $query->andHaving(['>', 'ifnull(online,0)', $this->online]);
+        else if($this->online === "0") $query->andHaving(['=', 'ifnull(online,0)', $this->online]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
                   'id' => [
-                      'asc' => [ 'player.id' => SORT_ASC],
+                      'asc' => ['player.id' => SORT_ASC],
                       'desc' => ['player.id' => SORT_DESC],
                   ],
                   'online' => [
-                      'asc' => [ 'online' => SORT_ASC],
+                      'asc' => ['online' => SORT_ASC],
                       'desc' => ['online' => SORT_DESC],
                   ],
                   'on_pui' => [
-                      'asc' => [ 'player_last.on_pui' => SORT_ASC],
+                      'asc' => ['player_last.on_pui' => SORT_ASC],
                       'desc' => ['player_last.on_pui' => SORT_DESC],
                   ],
                   'on_vpn' => [
-                      'asc' => [ 'player_last.on_vpn' => SORT_ASC],
+                      'asc' => ['player_last.on_vpn' => SORT_ASC],
                       'desc' => ['player_last.on_vpn' => SORT_DESC],
                   ],
                   'vpn_local_address' => [
-                      'asc' => [ 'player_last.vpn_local_address' => SORT_ASC],
+                      'asc' => ['player_last.vpn_local_address' => SORT_ASC],
                       'desc' => ['player_last.vpn_local_address' => SORT_DESC],
                   ],
 
@@ -115,7 +115,7 @@ class PlayerSearch extends Player
     }
     public function searchBan($params)
     {
-        $query = Player::find();
+        $query=Player::find();
         // add conditions that should always apply here
 
         $this->load($params);

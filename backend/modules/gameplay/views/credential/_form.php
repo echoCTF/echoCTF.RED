@@ -12,10 +12,10 @@ use app\modules\gameplay\models\Target;
 
 <div class="credential-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(),'id',function($model) {
-        return sprintf("(id:%d) %s/%s", $model['id'],$model['fqdn'],$model['ipoctet']);}),['prompt'=>'Select the target'])->Label('Target') ?>
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(), 'id', function($model) {
+        return sprintf("(id:%d) %s/%s", $model['id'], $model['fqdn'], $model['ipoctet']);}), ['prompt'=>'Select the target'])->Label('Target') ?>
 
     <?= $form->field($model, 'service')->textInput(['maxlength' => true]) ?>
 
@@ -29,7 +29,7 @@ use app\modules\gameplay\models\Target;
 
     <?= $form->field($model, 'points')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'player_type')->dropDownList([ 'offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => '']) ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => '']) ?>
 
     <?= $form->field($model, 'stock')->textInput() ?>
 
@@ -37,6 +37,6 @@ use app\modules\gameplay\models\Target;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

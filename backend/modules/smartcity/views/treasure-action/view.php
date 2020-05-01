@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\TreasureAction */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => 'Treasure Actions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->id;
+$this->params['breadcrumbs'][]=['label' => 'Treasure Actions', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="treasure-action-view">

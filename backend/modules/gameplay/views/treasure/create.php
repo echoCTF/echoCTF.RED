@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Treasure */
 
-$this->title = 'Create Treasure';
-$this->params['breadcrumbs'][] = ['label' => 'Treasures', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Treasure';
+$this->params['breadcrumbs'][]=['label' => 'Treasures', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="treasure-create">
 

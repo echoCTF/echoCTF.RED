@@ -41,17 +41,17 @@ class PlayerScoreSearch extends PlayerScore
      */
     public function search($params)
     {
-        $query = PlayerScore::find()->joinWith(['player']);
+        $query=PlayerScore::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -65,16 +65,16 @@ class PlayerScoreSearch extends PlayerScore
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->player]);
         $dataProvider->setSort([
-            'defaultOrder' => ['points'=>SORT_DESC,'player_id'=>SORT_ASC],
+            'defaultOrder' => ['points'=>SORT_DESC, 'player_id'=>SORT_ASC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
                   'points' => [
-                    'asc' => [ 'points'=>SORT_ASC,'player_id'=>SORT_ASC],
-                    'desc' => ['points'=>SORT_DESC,'player_id'=>SORT_ASC],
+                    'asc' => ['points'=>SORT_ASC, 'player_id'=>SORT_ASC],
+                    'desc' => ['points'=>SORT_DESC, 'player_id'=>SORT_ASC],
                   ],
                   'player' => [
-                      'asc' => [ 'player_id' => SORT_ASC],
+                      'asc' => ['player_id' => SORT_ASC],
                       'desc' => ['player_id' => SORT_DESC],
                   ],
                 ]

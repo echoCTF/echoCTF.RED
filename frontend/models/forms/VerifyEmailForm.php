@@ -27,14 +27,14 @@ class VerifyEmailForm extends Model
      * @param array $config name-value pairs that will be used to initialize the object properties
      * @throws InvalidArgumentException if token is empty or not valid
      */
-    public function __construct($token, array $config = [])
+    public function __construct($token, array $config=[])
     {
-        if (empty($token) || !is_string($token))
+        if(empty($token) || !is_string($token))
         {
             throw new InvalidArgumentException('Verify email token cannot be blank.');
         }
-        $this->_player = Player::findByVerificationToken($token);
-        if (!$this->_player)
+        $this->_player=Player::findByVerificationToken($token);
+        if(!$this->_player)
         {
             throw new InvalidArgumentException('Wrong verify email token.');
         }
@@ -48,8 +48,8 @@ class VerifyEmailForm extends Model
      */
     public function verifyEmail()
     {
-        $player = $this->_player;
-        $player->status = Player::STATUS_ACTIVE;
+        $player=$this->_player;
+        $player->status=Player::STATUS_ACTIVE;
         $player->active=1;
         return $player->save(false) ? $player : null;
     }

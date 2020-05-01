@@ -42,17 +42,17 @@ class PlayerHintSearch extends PlayerHint
      */
     public function search($params)
     {
-        $query = PlayerHint::find()->joinWith(['player','hint']);
+        $query=PlayerHint::find()->joinWith(['player', 'hint']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -76,11 +76,11 @@ class PlayerHintSearch extends PlayerHint
                 $dataProvider->getSort()->attributes,
                 [
                   'player' => [
-                      'asc' => [ 'player_id' => SORT_ASC],
+                      'asc' => ['player_id' => SORT_ASC],
                       'desc' => ['player_id' => SORT_DESC],
                   ],
                   'hint' => [
-                      'asc' => [ 'hint_id' => SORT_ASC],
+                      'asc' => ['hint_id' => SORT_ASC],
                       'desc' => ['hint_id' => SORT_DESC],
                   ],
                 ]

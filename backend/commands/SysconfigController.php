@@ -73,11 +73,11 @@ class SysconfigController extends Controller {
    * @param string $key.
    * @param string $val.
    */
-  public function actionSet($key,$val)
+  public function actionSet($key, $val)
   {
-      printf("Setting %s => %s\n",$key,$val);
+      printf("Setting %s => %s\n", $key, $val);
       $conf=Sysconfig::findOne(['id'=>$key]);
-      if($conf!==null)
+      if($conf !== null)
       {
         $conf=new Sysconfig();
         $conf->id=$key;
@@ -96,10 +96,10 @@ class SysconfigController extends Controller {
   public function actionGet($key)
   {
     $conf=Sysconfig::findOne(['id'=>$key]);
-    if($conf!==null)
+    if($conf !== null)
       return;
 
-    echo $conf->val,"\n";
+    echo $conf->val, "\n";
   }
 
 }

@@ -39,33 +39,33 @@ class PasswordResetRequestForm extends Model
     public function sendEmail()
     {
         /* @var $player Player */
-        $player = Player::findOne([
+        $player=Player::findOne([
             'status' => Player::STATUS_ACTIVE,
             'email' => $this->email,
         ]);
-        if ($player===null)
+        if($player === null)
         {
             return false;
         }
 
-        if (!Player::isPasswordResetTokenValid($player->password_reset_token))
+        if(!Player::isPasswordResetTokenValid($player->password_reset_token))
         {
             $player->generatePasswordResetToken();
-            if (!$player->save())
+            if(!$player->save())
             {
                 return false;
             }
         }
-        if(Yii::$app->sys->mail_host!==false)
+        if(Yii::$app->sys->mail_host !== false)
           \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
 
-        if(Yii::$app->sys->mail_port!==false)
+        if(Yii::$app->sys->mail_port !== false)
           \Yii::$app->mailer->transport->setPort(Yii::$app->sys->mail_port);
 
-        if(Yii::$app->sys->mail_username!==false)
+        if(Yii::$app->sys->mail_username !== false)
           \Yii::$app->mailer->transport->setUserName(Yii::$app->sys->mail_username);
 
-        if(Yii::$app->sys->mail_password!==false)
+        if(Yii::$app->sys->mail_password !== false)
           \Yii::$app->mailer->transport->setPassword(Yii::$app->sys->mail_password);
 
         return Yii::$app
@@ -74,9 +74,9 @@ class PasswordResetRequestForm extends Model
                 ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
                 ['user' => $player]
             )
-            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName . ' robot'])
+            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
             ->setTo([$player->email => $player->fullname])
-            ->setSubject('Password reset request for ' . trim(Yii::$app->sys->event_name))
+            ->setSubject('Password reset request for '.trim(Yii::$app->sys->event_name))
             ->send();
     }
 }

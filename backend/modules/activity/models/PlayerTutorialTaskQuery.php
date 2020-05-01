@@ -18,7 +18,7 @@ class PlayerTutorialTaskQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return PlayerTutorialTask[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -27,7 +27,7 @@ class PlayerTutorialTaskQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return PlayerTutorialTask|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

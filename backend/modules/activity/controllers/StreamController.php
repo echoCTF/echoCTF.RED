@@ -44,8 +44,8 @@ class StreamController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new StreamSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new StreamSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -73,9 +73,9 @@ class StreamController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Stream();
+        $model=new Stream();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -94,9 +94,9 @@ class StreamController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -129,7 +129,7 @@ class StreamController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Stream::findOne($id)) !== null)
+        if(($model=Stream::findOne($id)) !== null)
         {
             return $model;
         }

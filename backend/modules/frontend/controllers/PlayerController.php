@@ -54,8 +54,8 @@ class PlayerController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new PlayerSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new PlayerSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -112,11 +112,11 @@ class PlayerController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Player();
+        $model=new Player();
         $trans=Yii::$app->db->beginTransaction();
         try
         {
-          if ($model->load(Yii::$app->request->post()) && $model->save())
+          if($model->load(Yii::$app->request->post()) && $model->save())
           {
               $playerSsl=new PlayerSsl();
               $playerSsl->player_id=$model->id;
@@ -126,7 +126,7 @@ class PlayerController extends Controller
               return $this->redirect(['view', 'id' => $model->id]);
           }
       }
-      catch (\Exception $e)
+      catch(\Exception $e)
       {
         $trans->rollBack();
         \Yii::$app->getSession()->setFlash('error', 'Failed to create player. '.$e->getMessage());
@@ -143,13 +143,13 @@ class PlayerController extends Controller
      */
     public function actionImport()
     {
-      $model = new ImportPlayerForm();
+      $model=new ImportPlayerForm();
 
-      if (Yii::$app->request->isPost)
+      if(Yii::$app->request->isPost)
       {
           $model->attributes=Yii::$app->request->post()["ImportPlayerForm"];
-          $model->csvFile = UploadedFile::getInstance($model, 'csvFile');
-          if ($model->upload() && $model->parseCSV())
+          $model->csvFile=UploadedFile::getInstance($model, 'csvFile');
+          if($model->upload() && $model->parseCSV())
           {
               $trans=Yii::$app->db->beginTransaction();
               try
@@ -162,9 +162,9 @@ class PlayerController extends Controller
                   $p->email=$rec[0];
                   $p->academic=$rec[2] == 'no' ? 0 : 1;
                   $p->save(false);
-                  if(Team::find()->where( [ 'name' => $rec[1] ] )->exists())
+                  if(Team::find()->where(['name' => $rec[1]])->exists())
                   {
-                    $team=Team::find()->where( [ 'name' => $rec[1] ] )->one();
+                    $team=Team::find()->where(['name' => $rec[1]])->one();
                     $tp=new TeamPlayer;
                     $tp->team_id=$team->id;
                     $tp->player_id=$p->id;
@@ -178,9 +178,9 @@ class PlayerController extends Controller
                     $team->academic=$rec[2] == 'no' ? 0 : 1;
                     $team->save();
                   }
-                  if($model->player_ssl=='1')
+                  if($model->player_ssl == '1')
                   {
-                    if($p->playerSsl!==NULL)
+                    if($p->playerSsl !== NULL)
                       $ps=$p->playerSsl;
                     else
                     {
@@ -194,10 +194,10 @@ class PlayerController extends Controller
                 $trans->commit();
                 \Yii::$app->getSession()->setFlash('success', 'successful import of csv records');
               }
-              catch (\Exception $e)
+              catch(\Exception $e)
               {
                 $trans->rollBack();
-                if (isset($e->errorInfo) && $e->errorInfo[0]=="23000" && $e->errorInfo[1]==1062)
+                if(isset($e->errorInfo) && $e->errorInfo[0] == "23000" && $e->errorInfo[1] == 1062)
                   Yii::$app->session->setFlash('error', 'Failed to import file with error message ['.$e->errorInfo[2].']');
                 else
                 {
@@ -217,7 +217,7 @@ class PlayerController extends Controller
         \Yii::$app->db->createCommand("CALL reset_player_progress()")->execute();
         Yii::$app->session->setFlash('success', 'Successfully reseted all player progress');
       }
-      catch (\Exception $e)
+      catch(\Exception $e)
       {
         Yii::$app->session->setFlash('error', 'Failed to reset player progress');
       }
@@ -232,7 +232,7 @@ class PlayerController extends Controller
         \Yii::$app->db->createCommand("CALL reset_playdata()")->execute();
         Yii::$app->session->setFlash('success', 'Successfully removed all player data');
       }
-      catch (\Exception $e)
+      catch(\Exception $e)
       {
         Yii::$app->session->setFlash('error', 'Failed to remove player data');
       }
@@ -249,9 +249,9 @@ class PlayerController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -271,10 +271,10 @@ class PlayerController extends Controller
     public function actionDelete($id)
     {
 
-        if(($model = Player::findOne($id)) !== null && $model->delete()!==false)
-          Yii::$app->session->setFlash('success',sprintf('Player [%s] deleted.',$model->username));
+        if(($model=Player::findOne($id)) !== null && $model->delete() !== false)
+          Yii::$app->session->setFlash('success', sprintf('Player [%s] deleted.', $model->username));
         else
-          Yii::$app->session->setFlash('error','Player deletion failed.');
+          Yii::$app->session->setFlash('error', 'Player deletion failed.');
         return $this->redirect(['index']);
     }
 
@@ -293,17 +293,17 @@ class PlayerController extends Controller
         if($this->findModel($id)->ban())
         {
           $trans->commit();
-          Yii::$app->session->setFlash('success','Player deleted and placed on banned table.');
+          Yii::$app->session->setFlash('success', 'Player deleted and placed on banned table.');
         }
         else
         {
             throw new \LogicException('Faled to delete and ban player.');
         }
       }
-      catch (\Exception $e)
+      catch(\Exception $e)
       {
         $trans->rollBack();
-        Yii::$app->session->setFlash('error','Failed to ban player.');
+        Yii::$app->session->setFlash('error', 'Failed to ban player.');
       }
       if(Yii::$app->request->referrer)
       {
@@ -344,8 +344,8 @@ class PlayerController extends Controller
 
     public function actionBanFiltered()
     {
-      $searchModel = new PlayerSearch();
-      $query = $searchModel->searchBan(['PlayerSearch'=>Yii::$app->request->post()]);
+      $searchModel=new PlayerSearch();
+      $query=$searchModel->searchBan(['PlayerSearch'=>Yii::$app->request->post()]);
       $trans=Yii::$app->db->beginTransaction();
       try
       {
@@ -353,13 +353,13 @@ class PlayerController extends Controller
         foreach($query->all() as $q)
           $q->ban();
         $trans->commit();
-        Yii::$app->session->setFlash('success','[<code><b>'.intval($counter).'</b></code>] Users banned');
+        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Users banned');
 
       }
-      catch (\Exception $e)
+      catch(\Exception $e)
       {
         $trans->rollBack();
-        Yii::$app->session->setFlash('error','Failed to ban users');
+        Yii::$app->session->setFlash('error', 'Failed to ban users');
       }
       return $this->redirect(['index']);
     }
@@ -372,7 +372,7 @@ class PlayerController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Player::findOne($id)) !== null)
+        if(($model=Player::findOne($id)) !== null)
         {
             return $model;
         }
@@ -390,17 +390,17 @@ class PlayerController extends Controller
         $player=$this->findModel($id);
         $event_name=Sysconfig::findOne('event_name')->val;
         // Generate activation URL
-        $activationURL=sprintf("%s%s",$baseURL,$player->activkey);
-        $content=$this->renderPartial('_account_activation_email', ['player' => $player,'activationURL'=>$activationURL,'event_name'=>$event_name]);
-        if($this->mailPlayer($content,$player,'echoCTF RED re-sending of account activation URL'))
-          Yii::$app->session->setFlash('success',"The user has been mailed.");
+        $activationURL=sprintf("%s%s", $baseURL, $player->activkey);
+        $content=$this->renderPartial('_account_activation_email', ['player' => $player, 'activationURL'=>$activationURL, 'event_name'=>$event_name]);
+        if($this->mailPlayer($content, $player, 'echoCTF RED re-sending of account activation URL'))
+          Yii::$app->session->setFlash('success', "The user has been mailed.");
         else
-          Yii::$app->session->setFlash('notice',"Failed to send mail to user.");
+          Yii::$app->session->setFlash('notice', "Failed to send mail to user.");
 
         return $this->goBack(Yii::$app->request->referrer);
       }
 
-      private function mailPlayer($content,$player,$subject)
+      private function mailPlayer($content, $player, $subject)
       {
       // Get mailer
         try

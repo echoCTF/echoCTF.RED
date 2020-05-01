@@ -41,17 +41,17 @@ class TeamScoreSearch extends TeamScore
      */
     public function search($params)
     {
-        $query = TeamScore::find()->joinWith(['team']);
+        $query=TeamScore::find()->joinWith(['team']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -65,16 +65,16 @@ class TeamScoreSearch extends TeamScore
         ]);
         $query->andFilterWhere(['like', 'team.name', $this->team]);
         $dataProvider->setSort([
-            'defaultOrder' => ['points'=>SORT_DESC,'team_id'=>SORT_ASC],
+            'defaultOrder' => ['points'=>SORT_DESC, 'team_id'=>SORT_ASC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
                   'points' => [
-                    'asc' => [ 'points'=>SORT_ASC,'team_id'=>SORT_ASC],
-                    'desc' => ['points'=>SORT_DESC,'team_id'=>SORT_ASC],
+                    'asc' => ['points'=>SORT_ASC, 'team_id'=>SORT_ASC],
+                    'desc' => ['points'=>SORT_DESC, 'team_id'=>SORT_ASC],
                   ],
                   'team' => [
-                      'asc' => [ 'team_id' => SORT_ASC],
+                      'asc' => ['team_id' => SORT_ASC],
                       'desc' => ['team_id' => SORT_DESC],
                   ],
                 ]

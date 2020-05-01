@@ -6,10 +6,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\TargetVariable */
 
-$this->title = $model->target_id;
-$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][] = ['label' => 'Target Variables', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->target_id;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Target Variables', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="target-variable-view">
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'target',
               'label'=>'Target',
-              'value'=> function($model) {return sprintf("(id:%d) %s/%s",$model->target_id,$model->target->name,$model->target->ipoctet);},
+              'value'=> function($model) {return sprintf("(id:%d) %s/%s", $model->target_id, $model->target->name, $model->target->ipoctet);},
             ],
             'key',
             'val',

@@ -40,25 +40,25 @@ class ResendVerificationEmailForm extends Model
      */
     public function sendEmail()
     {
-        $player = Player::findOne([
+        $player=Player::findOne([
             'email' => $this->email,
             'status' => Player::STATUS_INACTIVE
         ]);
 
-        if ($player === null)
+        if($player === null)
         {
             return false;
         }
-        if(Yii::$app->sys->mail_host!==false)
+        if(Yii::$app->sys->mail_host !== false)
           \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
 
-        if(Yii::$app->sys->mail_port!==false)
+        if(Yii::$app->sys->mail_port !== false)
           \Yii::$app->mailer->transport->setPort(Yii::$app->sys->mail_port);
 
-        if(Yii::$app->sys->mail_username!==false)
+        if(Yii::$app->sys->mail_username !== false)
           \Yii::$app->mailer->transport->setUserName(Yii::$app->sys->mail_username);
 
-        if(Yii::$app->sys->mail_password!==false)
+        if(Yii::$app->sys->mail_password !== false)
           \Yii::$app->mailer->transport->setPassword(Yii::$app->sys->mail_password);
         
         return Yii::$app
@@ -67,9 +67,9 @@ class ResendVerificationEmailForm extends Model
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                 ['user' => $player]
             )
-            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName . ' robot'])
+            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
             ->setTo([$player->email => $player->fullname])
-            ->setSubject('Account registration for ' . trim(Yii::$app->sys->event_name))
+            ->setSubject('Account registration for '.trim(Yii::$app->sys->event_name))
             ->send();
     }
 }

@@ -44,8 +44,8 @@ class TeamScoreController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TeamScoreSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new TeamScoreSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -73,9 +73,9 @@ class TeamScoreController extends Controller
      */
     public function actionCreate()
     {
-        $model = new TeamScore();
+        $model=new TeamScore();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->team_id]);
         }
@@ -94,9 +94,9 @@ class TeamScoreController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->team_id]);
         }
@@ -129,7 +129,7 @@ class TeamScoreController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = TeamScore::findOne($id)) !== null)
+        if(($model=TeamScore::findOne($id)) !== null)
         {
             return $model;
         }

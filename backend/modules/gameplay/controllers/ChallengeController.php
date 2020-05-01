@@ -23,7 +23,7 @@ class ChallengeController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -46,8 +46,8 @@ class ChallengeController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ChallengeSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new ChallengeSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -75,20 +75,20 @@ class ChallengeController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Challenge();
+        $model=new Challenge();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            $model->file = UploadedFile::getInstance($model, 'file');
+            $model->file=UploadedFile::getInstance($model, 'file');
             try
             {
               if($model->file)
-                $model->file->saveAs('uploads/' . $model->id );
-              Yii::$app->session->setFlash('success','Challenge ['.$model->name.'] created.');
+                $model->file->saveAs('uploads/'.$model->id);
+              Yii::$app->session->setFlash('success', 'Challenge ['.$model->name.'] created.');
             }
-            catch (\Exception $e)
+            catch(\Exception $e)
             {
-              Yii::$app->session->setFlash('error','Failed to create challenge ['.$model->name.']');
+              Yii::$app->session->setFlash('error', 'Failed to create challenge ['.$model->name.']');
             }
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -107,13 +107,13 @@ class ChallengeController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            $model->file = UploadedFile::getInstance($model, 'file');
-            if($model->file!==null)
-              $model->file->saveAs('uploads/' . $model->id );
+            $model->file=UploadedFile::getInstance($model, 'file');
+            if($model->file !== null)
+              $model->file->saveAs('uploads/'.$model->id);
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -145,7 +145,7 @@ class ChallengeController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Challenge::findOne($id)) !== null)
+        if(($model=Challenge::findOne($id)) !== null)
         {
             return $model;
         }

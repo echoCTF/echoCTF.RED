@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\TargetVariableSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="target-variable-index">
 
@@ -28,14 +28,14 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'target',
               'label'=>'Target',
-              'value'=> function($model) {return sprintf("(id:%d) %s/%s",$model->target_id,$model->target->name,$model->target->ipoctet);},
+              'value'=> function($model) {return sprintf("(id:%d) %s/%s", $model->target_id, $model->target->name, $model->target->ipoctet);},
             ],
             'key',
             'val',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

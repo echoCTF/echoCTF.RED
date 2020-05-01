@@ -42,17 +42,17 @@ class NotificationSearch extends Notification
      */
     public function search($params)
     {
-        $query = Notification::find()->joinWith(['player']);
+        $query=Notification::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -76,7 +76,7 @@ class NotificationSearch extends Notification
                     $dataProvider->getSort()->attributes,
                     [
                       'player' => [
-                          'asc' => [ 'player_id' => SORT_ASC],
+                          'asc' => ['player_id' => SORT_ASC],
                           'desc' => ['player_id' => SORT_DESC],
                       ],
                     ]

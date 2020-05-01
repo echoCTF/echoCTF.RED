@@ -22,7 +22,7 @@ class QuestionController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -45,8 +45,8 @@ class QuestionController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new QuestionSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new QuestionSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,15 +74,15 @@ class QuestionController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Question();
-        if(\app\modules\gameplay\models\Challenge::find()->count()==0)
+        $model=new Question();
+        if(\app\modules\gameplay\models\Challenge::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No Challenges found create one first.");
           return $this->redirect(['/frontend/challenge/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -101,9 +101,9 @@ class QuestionController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -136,7 +136,7 @@ class QuestionController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Question::findOne($id)) !== null)
+        if(($model=Question::findOne($id)) !== null)
         {
             return $model;
         }

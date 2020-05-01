@@ -12,12 +12,12 @@ use app\modules\frontend\models\Player;
 
 <div class="profile-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(),'id',function($model) {
-        return $model['id'].' '.$model['username'].'/'.$model['email'];}),['prompt'=>'Select player'])->Label('Player')->hint('Choose the player on which you want to add an additional IP address to be recognised as attacking source') ?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(), 'id', function($model) {
+        return $model['id'].' '.$model['username'].'/'.$model['email'];}), ['prompt'=>'Select player'])->Label('Player')->hint('Choose the player on which you want to add an additional IP address to be recognised as attacking source') ?>
     <?= $form->field($model, 'visibility')->dropDownList($model->visibilities) ?>
 
     <?= $form->field($model, 'bio')->textarea(['rows' => 6]) ?>
@@ -37,6 +37,6 @@ use app\modules\frontend\models\Player;
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

@@ -1,6 +1,6 @@
 <?php
 /* @var $this yii\web\View */
-$this->title=Yii::$app->sys->event_name. ' Terms and Conditions'
+$this->title=Yii::$app->sys->event_name.' Terms and Conditions'
 
 ?>
 <div class="terms-and-conditions-index">

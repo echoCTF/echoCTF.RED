@@ -80,9 +80,9 @@ class Stream extends \yii\db\ActiveRecord
     {
       return [
         [['player_id', 'model_id', 'points'], 'integer'],
-        [['player_id','title', 'message', 'pubtitle', 'pubmessage'], 'required'],
+        [['player_id', 'title', 'message', 'pubtitle', 'pubmessage'], 'required'],
         [['message', 'pubmessage'], 'string'],
-        [['points'],'default', 'value' => 0],
+        [['points'], 'default', 'value' => 0],
         [['ts'], 'safe'],
         [['model', 'title', 'pubtitle'], 'string', 'max' => 255],
         [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -123,7 +123,7 @@ class Stream extends \yii\db\ActiveRecord
 
   public function getPrefix()
   {
-    return sprintf("%s <b>%s</b>",$this->icon,$this->player->profile->link);
+    return sprintf("%s <b>%s</b>", $this->icon, $this->player->profile->link);
   }
 
   public function Title(bool $pub=true)
@@ -133,17 +133,17 @@ class Stream extends \yii\db\ActiveRecord
 
   public function getFormatted(bool $pub=true)
   {
-    if(!Yii::$app->user->isGuest && Yii::$app->user->id===$this->player_id)
+    if(!Yii::$app->user->isGuest && Yii::$app->user->id === $this->player_id)
       $pub=false;
 
     switch($this->model)
     {
       case 'badge':
-        $message=sprintf("%s got the badge [<code>%s</code>]%s",$this->prefix,Badge::findOne(['id'=>$this->model_id])->name,$this->suffix);
+        $message=sprintf("%s got the badge [<code>%s</code>]%s", $this->prefix, Badge::findOne(['id'=>$this->model_id])->name, $this->suffix);
         break;
       case 'headshot':
-        $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$this->model_id,'player_id'=>$this->player_id]);
-        $message=sprintf("%s managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes%s",$this->prefix,Html::a(Target::findOne(['id'=>$this->model_id])->fqdn,['/target/default/index','id'=>$this->model_id]),number_format($headshot->timer/60),$this->suffix);
+        $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$this->model_id, 'player_id'=>$this->player_id]);
+        $message=sprintf("%s managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->fqdn, ['/target/default/index', 'id'=>$this->model_id]), number_format($headshot->timer / 60), $this->suffix);
         break;
 //      case 'team_player':
 //        $message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $this->icon,$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
@@ -152,13 +152,13 @@ class Stream extends \yii\db\ActiveRecord
 //        if(Yii::$app->sys->teams)
 //          $message=sprintf("%s from team <b>[%s]</b> Reported <b>%s</b>",$this->prefix, $this->player->teamMembership ? $this->player->teamMembership->name: "N/A",$this->Title($pub));
 //        else
-        $message=sprintf("%s Reported <b>%s</b>%s",$this->prefix,$this->Title($pub),$this->suffix);
+        $message=sprintf("%s Reported <b>%s</b>%s", $this->prefix, $this->Title($pub), $this->suffix);
         break;
       case 'question':
-        $message=sprintf("%s Answered a question from <b>%s</b>%s",$this->prefix, \app\modules\challenge\models\Question::findOne($this->model_id )->challenge->name,$this->suffix);
+        $message=sprintf("%s Answered a question from <b>%s</b>%s", $this->prefix, \app\modules\challenge\models\Question::findOne($this->model_id)->challenge->name, $this->suffix);
         break;
       default:
-        $message=sprintf("%s %s%s",$this->prefix, $this->Title($pub),$this->suffix);
+        $message=sprintf("%s %s%s", $this->prefix, $this->Title($pub), $this->suffix);
     }
 
     return $message;
@@ -166,7 +166,7 @@ class Stream extends \yii\db\ActiveRecord
 
   public function getSuffix()
   {
-    if($this->points!=0)
+    if($this->points != 0)
       return sprintf(" for %d points", $this->points);
     return "";
   }

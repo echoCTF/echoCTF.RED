@@ -44,8 +44,8 @@ class CountryController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new CountrySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new CountrySearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -73,9 +73,9 @@ class CountryController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Country();
+        $model=new Country();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -94,9 +94,9 @@ class CountryController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -129,7 +129,7 @@ class CountryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Country::findOne($id)) !== null)
+        if(($model=Country::findOne($id)) !== null)
         {
             return $model;
         }

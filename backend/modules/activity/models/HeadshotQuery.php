@@ -19,7 +19,7 @@ class HeadshotQuery extends \yii\db\ActiveQuery
      *
      * @return Headshot[]|array|null
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -29,7 +29,7 @@ class HeadshotQuery extends \yii\db\ActiveQuery
      *
      * @return Headshot|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

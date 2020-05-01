@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\smartcity\models\InfrastructureSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Infrastructures';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Infrastructures';
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="infrastructure-index">
 
@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

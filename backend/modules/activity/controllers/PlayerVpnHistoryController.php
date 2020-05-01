@@ -44,8 +44,8 @@ class PlayerVpnHistoryController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new PlayerVpnHistorySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new PlayerVpnHistorySearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -73,9 +73,9 @@ class PlayerVpnHistoryController extends Controller
      */
     public function actionCreate()
     {
-        $model = new PlayerVpnHistory();
+        $model=new PlayerVpnHistory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -94,9 +94,9 @@ class PlayerVpnHistoryController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -129,7 +129,7 @@ class PlayerVpnHistoryController extends Controller
     public function actionTruncate()
     {
         if(PlayerVpnHistory::deleteAll())
-          Yii::$app->session->setFlash('success',"Truncated Player VPN History.");
+          Yii::$app->session->setFlash('success', "Truncated Player VPN History.");
 
         return $this->redirect(['index']);
     }
@@ -143,7 +143,7 @@ class PlayerVpnHistoryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = PlayerVpnHistory::findOne($id)) !== null)
+        if(($model=PlayerVpnHistory::findOne($id)) !== null)
         {
             return $model;
         }

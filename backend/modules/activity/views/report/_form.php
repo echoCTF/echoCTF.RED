@@ -12,14 +12,14 @@ use app\modules\frontend\models\Player;
 
 <div class="report-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
     <?= $form->field($model, 'title')->textInput(['maxlength' => true])->hint('Filled in by the player: The title of the Report') ?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->with('teams0')->all(),'id', function($model) { return '['.$model->username.']: '.$model->email;},function($model) { return $model->teams0 ? $model->teams0->name : '-NO TEAM-' ;}),['prompt'=>'Select the target'])->Label('Player')->hint('The id of the player which commited this report') ?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->with('teams0')->all(), 'id', function($model) { return '['.$model->username.']: '.$model->email;},function($model) { return $model->teams0 ? $model->teams0->name : '-NO TEAM-';}), ['prompt'=>'Select the target'])->Label('Player')->hint('The id of the player which commited this report') ?>
 
     <?= $form->field($model, 'body')->textarea(['rows' => 6])->hint('Filled in by the player: The body of the report, including full details') ?>
 
-    <?= $form->field($model, 'status')->dropDownList([ 'pending' => 'Pending', 'invalid' => 'Invalid', 'approved' => 'Approved', ], ['prompt' => ''])->hint('You may either consider a pending report invalid or approve it which will grant the player with the point you fill in below') ?>
+    <?= $form->field($model, 'status')->dropDownList(['pending' => 'Pending', 'invalid' => 'Invalid', 'approved' => 'Approved', ], ['prompt' => ''])->hint('You may either consider a pending report invalid or approve it which will grant the player with the point you fill in below') ?>
 
     <?= $form->field($model, 'points')->textInput()->hint('Moderators must fillin the points to be awarded to the player/team for this report') ?>
 
@@ -33,6 +33,6 @@ use app\modules\frontend\models\Player;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

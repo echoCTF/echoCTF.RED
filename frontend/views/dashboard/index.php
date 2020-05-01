@@ -4,7 +4,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\ListView;
 
-$this->title = Yii::$app->sys->event_name .' - Dashboard';
+$this->title=Yii::$app->sys->event_name.' - Dashboard';
 $this->registerCssFile("@web/css/scores.css", [
     'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'screen',
@@ -32,7 +32,7 @@ $this->registerCssFile("@web/css/scores.css", [
             [
               'attribute'=>'ip',
               'header'=>'IP',
-              'value'=>function($model){return long2ip($model->ip);}
+              'value'=>function($model) {return long2ip($model->ip);}
             ],
             [
               'attribute'=>'difficultyText',
@@ -52,10 +52,10 @@ $this->registerCssFile("@web/css/scores.css", [
               'class' => 'yii\grid\ActionColumn',
               'template'=>'{view} {spin}',
               'buttons' => [
-                'spin' => function ($url,$model) {
+                'spin' => function($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon glyphicon-off"></span>',
-                        Url::to(['/target/default/spin','id'=>$model->id]),
+                        Url::to(['/target/default/spin', 'id'=>$model->id]),
                         [
                             'title' => 'Spin container up/down',
                             'data-pjax' => '0',
@@ -63,10 +63,10 @@ $this->registerCssFile("@web/css/scores.css", [
                         ]
                     );
                 },
-                'view' => function ($url,$model) {
+                'view' => function($url, $model) {
                     return Html::a(
                         '<span class="glyphicon glyphicon glyphicon-eye-open"></span>',
-                        Url::to(['/target/default/index','id'=>$model->id]),
+                        Url::to(['/target/default/index', 'id'=>$model->id]),
                         [
                             'title' => 'View target',
                             'data-pjax' => '0',
@@ -75,7 +75,7 @@ $this->registerCssFile("@web/css/scores.css", [
                 }
             ],
             'visibleButtons' => [
-              'spin' => function ($model) {
+              'spin' => function($model) {
                   return $model->spinable;
                 },
             ]

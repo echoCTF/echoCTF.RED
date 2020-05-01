@@ -50,7 +50,7 @@ class Treasure extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'points', 'target', 'code'], 'required'],
-            [['description', 'category','pubdescription', 'player_type', 'effects'], 'string'],
+            [['description', 'category', 'pubdescription', 'player_type', 'effects'], 'string'],
             [['points'], 'number'],
             [['appears', 'target_id'], 'integer'],
             [['name', 'pubname', 'hint'], 'string', 'max' => 255],
@@ -129,7 +129,7 @@ class Treasure extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('user_treasure', ['treasure_id' => 'id']);
     }
-    public function afterSave($insert,$changedAttributes)
+    public function afterSave($insert, $changedAttributes)
     {
       parent::afterSave($insert, $changedAttributes);
       if(!empty($this->hint))

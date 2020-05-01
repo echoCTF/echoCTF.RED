@@ -44,17 +44,17 @@ class StreamSearch extends Stream
      */
     public function search($params)
     {
-        $query = Stream::find()->joinWith(['player']);
+        $query=Stream::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -84,7 +84,7 @@ class StreamSearch extends Stream
                 $dataProvider->getSort()->attributes,
                 [
                   'player' => [
-                      'asc' => [ 'stream.player_id' => SORT_ASC],
+                      'asc' => ['stream.player_id' => SORT_ASC],
                       'desc' => ['stream.player_id' => SORT_DESC],
                   ],
                 ]

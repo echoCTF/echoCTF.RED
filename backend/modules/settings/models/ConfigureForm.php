@@ -82,10 +82,10 @@ class ConfigureForm extends Model
               'mail_fromName',
               'frontpage_scenario',
           ], 'required'],
-            [['online_timeout','spins_per_day'],'integer'],
-            [['online_timeout'],'default','value'=>900 ],
-            [['spins_per_day'],'default','value'=> 2 ],
-            [['dashboard_is_home','teams', 'require_activation', 'disable_registration', 'player_profile'], 'boolean'],
+            [['online_timeout', 'spins_per_day'], 'integer'],
+            [['online_timeout'], 'default', 'value'=>900],
+            [['spins_per_day'], 'default', 'value'=> 2],
+            [['dashboard_is_home', 'teams', 'require_activation', 'disable_registration', 'player_profile'], 'boolean'],
 
         ];
     }

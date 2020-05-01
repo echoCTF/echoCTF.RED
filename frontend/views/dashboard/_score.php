@@ -6,7 +6,7 @@
       <div class="leader-score_title"><?=number_format($model->points);?></div>
     </div>
     <div class="leader-bar">
-      <div style="width: <?=round($model->points/$totalPoints*100)?>%" class="bar"></div>
+      <div style="width: <?=round($model->points / $totalPoints * 100)?>%" class="bar"></div>
     </div>
     <div class="border"></div>
 </div>

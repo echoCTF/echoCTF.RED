@@ -18,7 +18,7 @@ class FaqQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Faq[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -27,7 +27,7 @@ class FaqQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Faq|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

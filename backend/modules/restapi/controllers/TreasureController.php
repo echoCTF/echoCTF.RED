@@ -5,18 +5,18 @@ use yii\rest\ActiveController;
 
 class TreasureController extends ActiveController
 {
-    public $modelClass = 'app\modules\gameplay\models\Treasure';
+    public $modelClass='app\modules\gameplay\models\Treasure';
 
   public function actionCreateWithActions()
     {
-      \Yii::$app->response->format = \yii\web\Response:: FORMAT_JSON;
+      \Yii::$app->response->format=\yii\web\Response:: FORMAT_JSON;
       $connection=\Yii::$app->db;
       $transaction=$connection->beginTransaction();
       try
       {
-        $treasure = new \app\modules\gameplay\models\Treasure;
+        $treasure=new \app\modules\gameplay\models\Treasure;
         $post=\yii::$app->request->post();
-        $treasure->attributes = $post;
+        $treasure->attributes=$post;
         if($treasure->validate())
         {
           $treasure->save();
@@ -29,14 +29,14 @@ class TreasureController extends ActiveController
               $model=$treasure_action;
               $model->save();
             }
-          \Yii::$app->response->statusCode = 201;
+          \Yii::$app->response->statusCode=201;
           $transaction->commit();
           return array('status' => true, 'data'=> "Saved");
         }
       }
-      catch (\Throwable $e)
+      catch(\Throwable $e)
       {
-          \Yii::$app->response->statusCode = 422;
+          \Yii::$app->response->statusCode=422;
           $transaction->rollBack();
           return array('status' => false, 'data'=>  $e->getMessage());
       }

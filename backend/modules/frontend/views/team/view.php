@@ -6,10 +6,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Team */
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][] = ['label' => 'Teams', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->name;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Teams', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="team-view">

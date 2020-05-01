@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\PlayerScore */
 
-$this->title = 'Create Player Score';
-$this->params['breadcrumbs'][] = ['label' => 'Player Scores', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Player Score';
+$this->params['breadcrumbs'][]=['label' => 'Player Scores', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-score-create">
 

@@ -13,7 +13,7 @@ class Card extends \yii\base\Widget
      * boolean/string Card header type
      * true | false | header-icon | header-text | img-top | img-bottom | chart
      */
-    public $header = true;
+    public $header=true;
     /*
      * string Card header title (optional) .card-title class
      */
@@ -26,7 +26,7 @@ class Card extends \yii\base\Widget
      * string Card header color
      * primary | info | success | warning | danger | rose
      */
-    public $color = 'transparent';
+    public $color='transparent';
     /*
      * string Take effect only if $header = img-top | img-bottom
      */
@@ -47,17 +47,17 @@ class Card extends \yii\base\Widget
      * boolean If you want to use the cards on white background you can remove it’s shadow
      * default to false
      */
-    public $plain = false;
+    public $plain=false;
     /*
      * string If you want align car's content
      * text-right | text-center | card-stats
      */
-    public $type = '';
+    public $type='';
     /*
      * boolean/string Card footer html
      * @var string|false $footer
      */
-    public $footer = false;
+    public $footer=false;
 
     /*
      *
@@ -90,10 +90,10 @@ class Card extends \yii\base\Widget
 
     public function run()
     {
-        $content = ob_get_clean();
+        $content=ob_get_clean();
         $body='';
-        if (!empty($content) && $content!=null && $content!='')
-            $body ='<div class="card-body">'.$content.'</div>';
+        if(!empty($content) && $content != null && $content != '')
+            $body='<div class="card-body">'.$content.'</div>';
 
         return '<div class="card '.$this->type.'">'.
                   $this->getHeaderhtml().$body.$this->getFooterhtml().
@@ -105,13 +105,13 @@ class Card extends \yii\base\Widget
      */
     public function getHeaderhtml()
     {
-        if ($this->header!==false)
+        if($this->header !== false)
         {
-            switch ($this->header){
+            switch($this->header) {
                 case 'img-top':
                     return '<img class="card-img-top" src="'.Html::encode($this->url).'" alt="">';
                 case 'header-icon':
-                    if ($this->type!='card-stats')
+                    if($this->type != 'card-stats')
                         return '<div class="card-header card-header-icon card-header-'.$this->color.'">
                                 <div class="card-icon">
                                   '.$this->icon.'
@@ -151,10 +151,10 @@ class Card extends \yii\base\Widget
      */
     public function getFooterhtml()
     {
-        if ($this->header=='img-bottom')
+        if($this->header == 'img-bottom')
             return '<img class="card-img-bottom" src="'.Html::encode($this->url).'" alt="">';
 
-        if (is_string($this->footer))
+        if(is_string($this->footer))
             return '<div class="card-footer text-muted">'.$this->footer.'</div>';
 
         return '<div></div>';

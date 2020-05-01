@@ -52,7 +52,7 @@ class PlayerHint extends \yii\db\ActiveRecord
         return [
             [['player_id', 'hint_id'], 'required'],
             [['player_id', 'hint_id', 'status'], 'integer'],
-            [['ts','title','message'], 'safe'],
+            [['ts', 'title', 'message'], 'safe'],
             [['player_id', 'hint_id'], 'unique', 'targetAttribute' => ['player_id', 'hint_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
             [['hint_id'], 'exist', 'skipOnError' => true, 'targetClass' => Hint::class, 'targetAttribute' => ['hint_id' => 'id']],
@@ -97,7 +97,7 @@ class PlayerHint extends \yii\db\ActiveRecord
     {
         return new PlayerHintQuery(get_called_class());
     }
-    public function fields(){
-      return ['hint_id','player_id','ts','status','title','message'];
+    public function fields() {
+      return ['hint_id', 'player_id', 'ts', 'status', 'title', 'message'];
     }
 }

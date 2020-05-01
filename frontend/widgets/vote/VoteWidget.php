@@ -25,6 +25,6 @@ class VoteWidget extends Widget
     {
           // Register AssetBundle
         VoteWidgetAsset::register($this->getView());
-        return $this->render('_vote', ['model' => $this->model,'htmlOptions'=>$this->htmlOptions]);
+        return $this->render('_vote', ['model' => $this->model, 'htmlOptions'=>$this->htmlOptions]);
     }
 }

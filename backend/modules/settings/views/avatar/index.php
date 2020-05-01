@@ -7,8 +7,8 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\modules\settings\models\AvatarSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Avatars';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Avatars';
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="avatar-index">
 
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Avatar', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php Pjax::begin(); ?>
+    <?php Pjax::begin();?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -31,8 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
-    <?php Pjax::end(); ?>
+    <?php Pjax::end();?>
 
 </div>

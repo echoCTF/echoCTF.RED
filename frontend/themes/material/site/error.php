@@ -7,7 +7,7 @@
 use yii\helpers\Html;
 use rce\material\widgets\Noti;
 
-$this->title = $name;
+$this->title=$name;
 ?>
 <div class="site-error">
 

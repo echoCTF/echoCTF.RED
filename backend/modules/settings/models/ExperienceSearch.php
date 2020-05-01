@@ -18,7 +18,7 @@ class ExperienceSearch extends Experience
     {
         return [
             [['id', 'min_points', 'max_points'], 'integer'],
-            [['name', 'description', 'icon','category'], 'safe'],
+            [['name', 'description', 'icon', 'category'], 'safe'],
         ];
     }
 
@@ -40,17 +40,17 @@ class ExperienceSearch extends Experience
      */
     public function search($params)
     {
-        $query = Experience::find();
+        $query=Experience::find();
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');

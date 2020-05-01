@@ -5,5 +5,5 @@ use yii\rest\ActiveController;
 
 class FindingController extends ActiveController
 {
-    public $modelClass = 'app\modules\gameplay\models\Finding';
+    public $modelClass='app\modules\gameplay\models\Finding';
 }

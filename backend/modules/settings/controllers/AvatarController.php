@@ -44,8 +44,8 @@ class AvatarController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AvatarSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new AvatarSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -73,9 +73,9 @@ class AvatarController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Avatar();
+        $model=new Avatar();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -94,9 +94,9 @@ class AvatarController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -129,7 +129,7 @@ class AvatarController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Avatar::findOne($id)) !== null)
+        if(($model=Avatar::findOne($id)) !== null)
         {
             return $model;
         }

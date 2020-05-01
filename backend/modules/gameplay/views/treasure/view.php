@@ -6,10 +6,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Treasure */
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][] = ['label' => 'Treasures', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->name;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Treasures', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="treasure-view">
@@ -43,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'effects',
             [
                 'label'=>'Target',
-                'value'=>sprintf("(id:%d) %s/%s",$model->target_id,$model->target->name,$model->target->ipoctet),
+                'value'=>sprintf("(id:%d) %s/%s", $model->target_id, $model->target->name, $model->target->ipoctet),
             ],
             'code',
             'ts',

@@ -66,7 +66,7 @@ class TreasureAction extends \yii\db\ActiveRecord
         return $this->hasOne(Treasure::class, ['id' => 'treasure_id']);
     }
 
-    public function afterFind(){
+    public function afterFind() {
       parent::afterFind();
       $this->ipoctet=long2ip($this->ip);
     }
@@ -74,9 +74,9 @@ class TreasureAction extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-      if (parent::beforeSave($insert))
+      if(parent::beforeSave($insert))
       {
-          $this->ip = ip2long($this->ipoctet);
+          $this->ip=ip2long($this->ipoctet);
           return true;
       }
       else

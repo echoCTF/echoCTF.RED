@@ -44,8 +44,8 @@ class SpinQueueController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new SpinQueueSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new SpinQueueSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -73,9 +73,9 @@ class SpinQueueController extends Controller
      */
     public function actionCreate()
     {
-        $model = new SpinQueue();
+        $model=new SpinQueue();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->target_id]);
         }
@@ -94,9 +94,9 @@ class SpinQueueController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->target_id]);
         }
@@ -131,11 +131,11 @@ class SpinQueueController extends Controller
       try
       {
         Yii::$app->db->createCommand()->truncateTable('spin_queue')->execute();
-        Yii::$app->session->setFlash('success','Spin Queue truncated');
+        Yii::$app->session->setFlash('success', 'Spin Queue truncated');
       }
       catch(\Exception $e)
       {
-        Yii::$app->session->setFlash('error','Spin Queue failed to get truncated');
+        Yii::$app->session->setFlash('error', 'Spin Queue failed to get truncated');
       }
       return $this->redirect(['index']);
     }
@@ -148,7 +148,7 @@ class SpinQueueController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = SpinQueue::findOne($id)) !== null)
+        if(($model=SpinQueue::findOne($id)) !== null)
         {
             return $model;
         }

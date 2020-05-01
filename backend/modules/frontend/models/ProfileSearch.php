@@ -19,8 +19,8 @@ class ProfileSearch extends Profile
     {
         return [
             [['id', 'player_id'], 'integer'],
-            [['visibility'],'in', 'range' => ['public', 'private', 'ingame']],
-            [['username','bio', 'avatar', 'twitter', 'country', 'github','created_at', 'updated_at'], 'safe'],
+            [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
+            [['username', 'bio', 'avatar', 'twitter', 'country', 'github', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -42,17 +42,17 @@ class ProfileSearch extends Profile
      */
     public function search($params)
     {
-        $query = Profile::find()->joinWith(['owner']);
+        $query=Profile::find()->joinWith(['owner']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -76,14 +76,14 @@ class ProfileSearch extends Profile
 
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $dataProvider->setSort([
-            'defaultOrder' => ['player_id'=>SORT_ASC,'id'=>SORT_ASC],
+            'defaultOrder' => ['player_id'=>SORT_ASC, 'id'=>SORT_ASC],
         ]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
                   'username' => [
-                      'asc' => [ 'player.username' => SORT_ASC],
+                      'asc' => ['player.username' => SORT_ASC],
                       'desc' => ['player.username' => SORT_DESC],
                   ],
 

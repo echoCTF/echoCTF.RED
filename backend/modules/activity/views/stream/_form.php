@@ -12,8 +12,8 @@ use app\modules\frontend\models\Player;
 
 <div class="stream-form">
 
-    <?php $form = ActiveForm::begin(); ?>
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(),'id', function($model) { return '['.$model->username.']: '.$model->email;}),['prompt'=>'Select the player'])->Label('Player')->hint('The id of the player that this entry will appear from') ?>
+    <?php $form=ActiveForm::begin();?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(), 'id', function($model) { return '['.$model->username.']: '.$model->email;}), ['prompt'=>'Select the player'])->Label('Player')->hint('The id of the player that this entry will appear from') ?>
 
 
     <?= $form->field($model, 'model')->textInput(['maxlength' => true]) ?>
@@ -35,6 +35,6 @@ use app\modules\frontend\models\Player;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

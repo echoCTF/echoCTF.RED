@@ -6,9 +6,9 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\modules\settings\models\Sysconfig */
 
-$this->title = 'Configure System';
-$this->params['breadcrumbs'][] = ['label' => 'Sysconfigs', 'url' => ['configure']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Configure System';
+$this->params['breadcrumbs'][]=['label' => 'Sysconfigs', 'url' => ['configure']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="sysconfig-create">
 
@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="sysconfig-form">
 
-        <?php $form = ActiveForm::begin([]); ?>
+        <?php $form=ActiveForm::begin([]);?>
 
         <?= $form->field($model, 'event_name')->textInput(['maxlength' => true])->hint('Enter the event name') ?>
         <?= $form->field($model, 'footer_logos')->textarea()->hint('Raw html to be placed at the footer of the pUI pages') ?>
@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
         </div>
 
-        <?php ActiveForm::end(); ?>
+        <?php ActiveForm::end();?>
 
     </div>
 

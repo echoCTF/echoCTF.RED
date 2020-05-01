@@ -17,28 +17,28 @@ use yii\web\AssetBundle;
  */
 class MaterialAsset extends AssetBundle
 {
-    public $siteTitle = 'echoCTF.RED';
-    public $logoMini = '/images/logo-red-small.png';
-    public $sidebarColor = '';
-    public $sidebarBackgroundColor = 'black';
-    public $sidebarBackgroundImage = '';
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
+    public $siteTitle='echoCTF.RED';
+    public $logoMini='/images/logo-red-small.png';
+    public $sidebarColor='';
+    public $sidebarBackgroundColor='black';
+    public $sidebarBackgroundImage='';
+    public $basePath='@webroot';
+    public $baseUrl='@web';
 
-    public $jsOptions = [
+    public $jsOptions=[
     ];
 
-    public $cssOptions = [
+    public $cssOptions=[
     ];
 
-    public $css = [
-        ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono&display=swap','async'=>'async', 'crossorigin'=>"anonymous" ],
-        ['css/all.min.css?v=0.0.1','defer'=>'defer'],
+    public $css=[
+        ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono&display=swap', 'async'=>'async', 'crossorigin'=>"anonymous"],
+        ['css/all.min.css?v=0.0.1', 'defer'=>'defer'],
         'css/material-dashboard.css?v=0.0.1',
         'css/material.css?v=0.0.1',
     ];
 
-    public $js = [
+    public $js=[
         '/js/core/popper.min.js?v=0.0.1',
         '/js/core/bootstrap-material-design.min.js?v=0.0.1',
         '/js/plugins/perfect-scrollbar.jquery.min.js?v=0.0.1',
@@ -83,7 +83,7 @@ class MaterialAsset extends AssetBundle
         '/js/libechoctf.js?v=0.0.1',
         // 'js/superfish.js'
     ];
-    public $depends = [
+    public $depends=[
         'yii\web\YiiAsset',
         'yii\web\JqueryAsset',
         // 'yii\bootstrap\BootstrapAsset',

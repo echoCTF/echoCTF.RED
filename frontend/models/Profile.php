@@ -37,9 +37,9 @@ use app\modules\target\models\Target;
 */
 class Profile extends \yii\db\ActiveRecord
 {
-  const SCENARIO_ME = 'me';
-  const SCENARIO_REGISTER = 'register';
-  const SCENARIO_SIGNUP = 'signup';
+  const SCENARIO_ME='me';
+  const SCENARIO_REGISTER='register';
+  const SCENARIO_SIGNUP='signup';
   public $gravatar,
           $twitter_avatar,
           $github_avatar;
@@ -77,9 +77,9 @@ class Profile extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            self::SCENARIO_ME => ['visibility','country','avatar','bio','discord','twitter','github','htb','terms_and_conditions','mail_optin','gdpr'],
+            self::SCENARIO_ME => ['visibility', 'country', 'avatar', 'bio', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
             self::SCENARIO_REGISTER => ['username', 'email', 'password'],
-            self::SCENARIO_SIGNUP => ['gdpr','terms_and_conditions'],
+            self::SCENARIO_SIGNUP => ['gdpr', 'terms_and_conditions'],
         ];
     }
     /**
@@ -88,19 +88,19 @@ class Profile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['discord','twitter','github','htb','avatar','bio'],'trim'],
+            [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio'], 'trim'],
             ['country', 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country' => 'id']],
             ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
-            [['player_id','country','avatar','visibility'], 'required'],
-            [['terms_and_conditions','mail_optin','gdpr'],'boolean', 'trueValue' => true, 'falseValue' => false],
-            [['visibility'],'in', 'range' => ['public', 'private', 'ingame']],
-            [['visibility'],'default', 'value' =>  'ingame'],
-            [['id'],'default', 'value' =>  new Expression('round(rand()*10000000)'),'on'=>['register']],
+            [['player_id', 'country', 'avatar', 'visibility'], 'required'],
+            [['terms_and_conditions', 'mail_optin', 'gdpr'], 'boolean', 'trueValue' => true, 'falseValue' => false],
+            [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
+            [['visibility'], 'default', 'value' =>  'ingame'],
+            [['id'], 'default', 'value' =>  new Expression('round(rand()*10000000)'), 'on'=>['register']],
             [['id', 'player_id'], 'integer'],
             [['bio'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['avatar', 'twitter','github'], 'string', 'max' => 255],
-            [['country'], 'string','max'=>3],
+            [['avatar', 'twitter', 'github'], 'string', 'max' => 255],
+            [['country'], 'string', 'max'=>3],
             [['player_id'], 'unique'],
             [['id'], 'unique'],
         ];
@@ -161,11 +161,11 @@ class Profile extends \yii\db\ActiveRecord
     }
     public function getVisible(): bool
     {
-      if(Yii::$app->sys->player_profile===false) return false;
-      elseif($this->visibility=='public') return true;
-      elseif(intval(Yii::$app->user->id)===intval($this->player_id)) return true;
-      elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin!==false) return true;
-      else return array_search($this->visibility,['public','ingame'],true) === FALSE ? false : true;
+      if(Yii::$app->sys->player_profile === false) return false;
+      elseif($this->visibility == 'public') return true;
+      elseif(intval(Yii::$app->user->id) === intval($this->player_id)) return true;
+      elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin !== false) return true;
+      else return array_search($this->visibility, ['public', 'ingame'], true) === FALSE ? false : true;
     }
 
     /**
@@ -174,18 +174,18 @@ class Profile extends \yii\db\ActiveRecord
     public function getLink()
     {
 
-      if(intval(Yii::$app->user->id)===intval($this->player_id))
-        return Html::a(Html::encode($this->owner->username),['/profile/me']);
-      else if($this->visible===true)
-        return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
+      if(intval(Yii::$app->user->id) === intval($this->player_id))
+        return Html::a(Html::encode($this->owner->username), ['/profile/me']);
+      else if($this->visible === true)
+        return Html::a(Html::encode($this->owner->username), ['/profile/index', 'id'=>$this->id], ['data-pjax'=>0]);
       return Html::encode($this->owner->username);
     }
 
     public function getLinkto()
     {
 
-      if(intval(Yii::$app->user->id)===intval($this->player_id)) return Url::to(['/profile/me']);
-      else if($this->visible===true) return Url::to(['/profile/index','id'=>$this->id]);
+      if(intval(Yii::$app->user->id) === intval($this->player_id)) return Url::to(['/profile/me']);
+      else if($this->visible === true) return Url::to(['/profile/index', 'id'=>$this->id]);
       return null;
     }
 
@@ -196,37 +196,37 @@ class Profile extends \yii\db\ActiveRecord
     }
     public function getTotalTreasures()
     {
-      return Yii::$app->db->createCommand('SELECT count(*) FROM player_treasure WHERE player_id=:player_id')->bindValue(':player_id',$this->player_id)->queryScalar();
+      return Yii::$app->db->createCommand('SELECT count(*) FROM player_treasure WHERE player_id=:player_id')->bindValue(':player_id', $this->player_id)->queryScalar();
     }
     public function getTotalFindings()
     {
-      return Yii::$app->db->createCommand('SELECT count(*) FROM player_finding WHERE player_id=:player_id')->bindValue(':player_id',$this->player_id)->queryScalar();
+      return Yii::$app->db->createCommand('SELECT count(*) FROM player_finding WHERE player_id=:player_id')->bindValue(':player_id', $this->player_id)->queryScalar();
     }
     public function getHeadshotRelation()
     {
       return $this->hasMany(Headshot::class, ['player_id' => 'player_id']);
     }
-    public function getHeadshots(){
-      return $this->hasMany(Target::class,['id' => 'target_id'])->via('headshotRelation');
+    public function getHeadshots() {
+      return $this->hasMany(Target::class, ['id' => 'target_id'])->via('headshotRelation');
     }
 
     public function getHeadshotsCount():int {
-      return (int)$this->hasMany(Headshot::class, ['player_id' => 'player_id'])->count();
+      return (int) $this->hasMany(Headshot::class, ['player_id' => 'player_id'])->count();
     }
 
     public function getIsMine():bool
     {
       if(Yii::$app->user->isGuest)
         return false;
-      if(Yii::$app->user->id===$this->player_id)
+      if(Yii::$app->user->id === $this->player_id)
         return true;
       return false;
     }
     public function getTwitterHandle()
     {
-      if($this->twitter!="")
+      if($this->twitter != "")
       {
-        return $this->twitter{0}=== '@' ? $this->twitter : '@'.$this->twitter;
+        return $this->twitter{0} === '@' ? $this->twitter : '@'.$this->twitter;
       }
       return $this->owner->username;
     }
@@ -234,10 +234,10 @@ class Profile extends \yii\db\ActiveRecord
     {
       if($this->rank)
       {
-        $msg=sprintf("I am at the %s place with %d pts",$this->rank->ordinalPlace,$this->score->points);
-        if($this->headshotsCount>0)
+        $msg=sprintf("I am at the %s place with %d pts", $this->rank->ordinalPlace, $this->score->points);
+        if($this->headshotsCount > 0)
         {
-          $msg.=sprintf(', and %d headshots',$this->headshotsCount);
+          $msg.=sprintf(', and %d headshots', $this->headshotsCount);
         }
       }
       else

@@ -24,11 +24,11 @@ class TargetQuery extends \yii\db\ActiveQuery
       {
         $this->alias('t');
         $this->select(['t.*, count(distinct treasure.id) as total_treasures, count(distinct finding.id) as total_findings,count(distinct player_treasure.treasure_id) as player_treasures,count(distinct player_finding.finding_id) as player_findings, (((count(distinct player_treasure.treasure_id)+count(distinct player_finding.finding_id))*100)/(count(distinct finding.id)+count(distinct treasure.id))) as progress']);
-        $this->join('LEFT JOIN', 'treasure','treasure.target_id=t.id');
-        $this->join('LEFT JOIN', 'finding','finding.target_id=t.id');
+        $this->join('LEFT JOIN', 'treasure', 'treasure.target_id=t.id');
+        $this->join('LEFT JOIN', 'finding', 'finding.target_id=t.id');
         //$this->join('LEFT JOIN', 'player_treasure','player_treasure.treasure_id=treasure.id and player_treasure.player_id='.$player_id);
-        $this->join('LEFT JOIN', 'player_treasure','player_treasure.treasure_id=treasure.id and player_treasure.player_id='.$player_id);
-        $this->join('LEFT JOIN', 'player_finding','player_finding.finding_id=finding.id and player_finding.player_id='.$player_id);
+        $this->join('LEFT JOIN', 'player_treasure', 'player_treasure.treasure_id=treasure.id and player_treasure.player_id='.$player_id);
+        $this->join('LEFT JOIN', 'player_finding', 'player_finding.finding_id=finding.id and player_finding.player_id='.$player_id);
         $this->groupBy('t.id');
         return $this;
 /*       $this->findBySql('

@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Stream */
 
-$this->title = 'Create Stream';
-$this->params['breadcrumbs'][] = ['label' => 'Streams', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Stream';
+$this->params['breadcrumbs'][]=['label' => 'Streams', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="stream-create">
 

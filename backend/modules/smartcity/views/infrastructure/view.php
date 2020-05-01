@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\smartcity\models\Infrastructure */
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Infrastructures', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->name;
+$this->params['breadcrumbs'][]=['label' => 'Infrastructures', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="infrastructure-view">

@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Tutorial */
 
-$this->title = Yii::t('app', 'Create Tutorial');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Tutorials'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Create Tutorial');
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Tutorials'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="tutorial-create">
 

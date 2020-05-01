@@ -12,7 +12,7 @@ use app\modules\gameplay\models\Target;
 
 <div class="finding-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('The name of the finding (will not show in public places)') ?>
 
@@ -26,10 +26,10 @@ use app\modules\gameplay\models\Target;
 
     <?= $form->field($model, 'stock')->textInput()->hint('The maximum amount of times this finding can be awarded before it is depleted ( -1 for unlimited)') ?>
 
-    <?= $form->field($model, 'protocol')->dropDownList([ 'icmp' => 'ICMP', 'tcp' => 'TCP', 'udp' => 'UDP', ], ['prompt' => 'Choose the protocol of the finding']) ?>
+    <?= $form->field($model, 'protocol')->dropDownList(['icmp' => 'ICMP', 'tcp' => 'TCP', 'udp' => 'UDP', ], ['prompt' => 'Choose the protocol of the finding']) ?>
 
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(),'id',function($model) {
-        return sprintf("(id:%d) %s/%s", $model['id'],$model['fqdn'],$model['ipoctet']);}),['prompt'=>'Select the target'])->Label('Target') ?>
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(), 'id', function($model) {
+        return sprintf("(id:%d) %s/%s", $model['id'], $model['fqdn'], $model['ipoctet']);}), ['prompt'=>'Select the target'])->Label('Target') ?>
 
     <?= $form->field($model, 'port')->textInput()->hint('The port where the service listens to (use 0 for icmp)') ?>
 
@@ -37,6 +37,6 @@ use app\modules\gameplay\models\Target;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

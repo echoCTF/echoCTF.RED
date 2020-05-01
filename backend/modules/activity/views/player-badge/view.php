@@ -6,10 +6,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\PlayerBadge */
 
-$this->title = $model->player_id;
-$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][] = ['label' => 'Player Badges', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->player_id;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Player Badges', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="player-badge-view">
@@ -33,12 +33,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'player',
               'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
             [
               'attribute' => 'badge',
               'label'=>'Badge',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->badge_id,$model->badge->name);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->badge_id, $model->badge->name);},
             ],
             'ts',
         ],

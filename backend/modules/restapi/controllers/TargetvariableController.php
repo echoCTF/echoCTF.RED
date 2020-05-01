@@ -5,5 +5,5 @@ use yii\rest\ActiveController;
 
 class TargetvariableController extends ActiveController
 {
-    public $modelClass = 'app\modules\gameplay\models\TargetVariable';
+    public $modelClass='app\modules\gameplay\models\TargetVariable';
 }

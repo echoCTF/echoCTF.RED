@@ -5,11 +5,11 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\TargetVolume */
 
-$this->title = 'Update Target Volume: ' . $model->target_id;
-$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][] = ['label' => 'Target Volumes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->target_id, 'url' => ['view', 'target_id' => $model->target_id, 'volume' => $model->volume]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title='Update Target Volume: '.$model->target_id;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Target Volumes', 'url' => ['index']];
+$this->params['breadcrumbs'][]=['label' => $model->target_id, 'url' => ['view', 'target_id' => $model->target_id, 'volume' => $model->volume]];
+$this->params['breadcrumbs'][]='Update';
 ?>
 <div class="target-volume-update">
 

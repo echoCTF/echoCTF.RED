@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\settings\models\Rule */
 
-$this->title = 'Create Rule';
-$this->params['breadcrumbs'][] = ['label' => 'Rules', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Rule';
+$this->params['breadcrumbs'][]=['label' => 'Rules', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="rule-create">
 

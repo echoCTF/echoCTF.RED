@@ -10,10 +10,10 @@ use yii\widgets\ActiveForm;
 
 <div class="player-search">
 
-    <?php $form = ActiveForm::begin([
+    <?php $form=ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
-    ]); ?>
+    ]);?>
     <div class="row form-group">
       <div class="col-sm-3"><?= $form->field($model, 'id') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'username') ?></div>
@@ -23,7 +23,7 @@ use yii\widgets\ActiveForm;
     <div class="row form-group">
       <div class="col-sm-3"><?= $form->field($model, 'academic')->checkbox()->hint('Whether the player is academic or not') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'active')->checkbox()->hint('Whether the player is active or not') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'type')->dropDownList([ 'offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose player type'])->hint('Choose the type of the player. Either offense or defense') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose player type'])->hint('Choose the type of the player. Either offense or defense') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'activkey')->textInput(['maxlength' => true])->hint('The activation key, generated automatically by the application. TODO') ?></div>
     </div>
 
@@ -32,6 +32,6 @@ use yii\widgets\ActiveForm;
         <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

@@ -20,7 +20,7 @@ class FindingSearch extends Finding
     {
         return [
             [['id', 'stock', 'target_id', 'port'], 'integer'],
-            [['discovered','name', 'pubname', 'description', 'pubdescription', 'protocol','ipoctet'], 'safe'],
+            [['discovered', 'name', 'pubname', 'description', 'pubdescription', 'protocol', 'ipoctet'], 'safe'],
             [['points'], 'number'],
         ];
     }
@@ -43,18 +43,18 @@ class FindingSearch extends Finding
      */
     public function search($params)
     {
-        $query = Finding::find()->joinWith(['target']);
+        $query=Finding::find()->joinWith(['target']);
         $query->select('finding.*,(SELECT COUNT(finding_id) FROM player_finding WHERE finding.id=player_finding.finding_id) as discovered');
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -86,11 +86,11 @@ class FindingSearch extends Finding
                 $dataProvider->getSort()->attributes,
                 [
                   'ipoctet' => [
-                      'asc' => [ 'ip' => SORT_ASC],
+                      'asc' => ['ip' => SORT_ASC],
                       'desc' => ['ip' => SORT_DESC],
                   ],
                   'discovered' => [
-                      'asc' => [ 'discovered' => SORT_ASC],
+                      'asc' => ['discovered' => SORT_ASC],
                       'desc' => ['discovered' => SORT_DESC],
                   ],
                 ]

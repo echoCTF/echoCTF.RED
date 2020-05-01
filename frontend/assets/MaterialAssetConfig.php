@@ -8,7 +8,7 @@ class MaterialAssetConfig
     public static function sidebarColor()
     {
         /** @var Asset $bundle */
-        $bundle = Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
+        $bundle=Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
 
         return $bundle->sidebarColor;
     }
@@ -17,7 +17,7 @@ class MaterialAssetConfig
     public static function sidebarBackgroundColor()
     {
         /** @var Asset */
-        $bundle = Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
+        $bundle=Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
 
         return $bundle->sidebarBackgroundColor;
     }
@@ -25,7 +25,7 @@ class MaterialAssetConfig
     public static function sidebarBackgroundImage()
     {
         /** @var Asset */
-        $bundle = Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
+        $bundle=Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
 
         return $bundle->sidebarBackgroundImage;
     }
@@ -33,7 +33,7 @@ class MaterialAssetConfig
     public static function siteTitle()
     {
         /** @var Asset */
-        $bundle = Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
+        $bundle=Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
 
         return $bundle->siteTitle;
     }
@@ -41,7 +41,7 @@ class MaterialAssetConfig
     public static function logoMini()
     {
         /** @var Asset */
-        $bundle = Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
+        $bundle=Yii::$app->assetManager->getBundle('app\assets\MaterialAsset');
 
         return $bundle->logoMini;
     }

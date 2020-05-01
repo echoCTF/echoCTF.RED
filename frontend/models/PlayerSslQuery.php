@@ -18,7 +18,7 @@ class PlayerSslQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return PlayerSsl[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -27,7 +27,7 @@ class PlayerSslQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return PlayerSsl|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

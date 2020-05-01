@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\activity\models\PlayerBadgeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-badge-index">
 
@@ -29,19 +29,19 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'player',
               'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
             'badge_id',
             [
               'attribute' => 'badge',
               'label'=>'Badge',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->badge_id,$model->badge->name);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->badge_id, $model->badge->name);},
             ],
             'ts',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

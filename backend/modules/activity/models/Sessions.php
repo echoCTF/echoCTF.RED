@@ -70,16 +70,16 @@ class Sessions extends \yii\db\ActiveRecord
         return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
-    public function afterFind(){
+    public function afterFind() {
       parent::afterFind();
       $this->ipoctet=long2ip($this->ip);
     }
 
     public function beforeSave($insert)
     {
-      if (parent::beforeSave($insert))
+      if(parent::beforeSave($insert))
       {
-          $this->ip = ip2long($this->ipoctet);
+          $this->ip=ip2long($this->ipoctet);
           return true;
       }
       else
@@ -90,17 +90,17 @@ class Sessions extends \yii\db\ActiveRecord
 
     public function getDecodedData()
     {
-      if(trim($this->data)=="") return "";
-      $r = array();
+      if(trim($this->data) == "") return "";
+      $r=array();
       $str=$this->data;
       $sessid=null;
-      while ($i = strpos($str, '|'))
+      while($i=strpos($str, '|'))
       {
-          $k = substr($str, 0, $i);
-          $sessid=explode("__",$k)[0];
-          $v = unserialize(substr($str, 1 + $i));
-          $str = substr($str, 1 + $i + strlen(serialize($v)));
-          $r[$k] = $v;
+          $k=substr($str, 0, $i);
+          $sessid=explode("__", $k)[0];
+          $v=unserialize(substr($str, 1 + $i));
+          $str=substr($str, 1 + $i + strlen(serialize($v)));
+          $r[$k]=$v;
       }
       $r['PHPSESSION_ID']=$sessid;
       return $r;
@@ -108,14 +108,14 @@ class Sessions extends \yii\db\ActiveRecord
 
     public function getDecodedDataAsString()
     {
-      if(trim($this->data)=="") return "";
-      $r = array();
+      if(trim($this->data) == "") return "";
+      $r=array();
       foreach($this->decodedData as $key=>$val)
       {
         if(!is_array($val))
-          $r[]=sprintf("%s => %s",$key,$val);
+          $r[]=sprintf("%s => %s", $key, $val);
       }
-      return '<pre>'.implode("\n",$r).'</pre>';
+      return '<pre>'.implode("\n", $r).'</pre>';
     }
 
 }

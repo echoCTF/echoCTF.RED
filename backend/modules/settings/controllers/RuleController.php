@@ -22,7 +22,7 @@ class RuleController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     // allow authenticated users
                     [
@@ -47,8 +47,8 @@ class RuleController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new RuleSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new RuleSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -76,9 +76,9 @@ class RuleController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Rule();
+        $model=new Rule();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -97,9 +97,9 @@ class RuleController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -132,7 +132,7 @@ class RuleController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Rule::findOne($id)) !== null)
+        if(($model=Rule::findOne($id)) !== null)
         {
             return $model;
         }

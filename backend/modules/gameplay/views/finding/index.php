@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\FindingSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="finding-index">
 
@@ -33,24 +33,24 @@ $this->params['breadcrumbs'][] = $this->title;
             'points',
             [
               'attribute'=>'protocol',
-              'filter'=>['tcp'=>'TCP', 'udp'=>'UDP','icmp'=>'ICMP'],
+              'filter'=>['tcp'=>'TCP', 'udp'=>'UDP', 'icmp'=>'ICMP'],
             ],
             'target_id',
             [
                 'attribute' => 'ipoctet',
                 'label'=>'Target',
-                'value'=> function($model) {return sprintf("(id:%d) %s/%s",$model->target_id,$model->target->name,$model->target->ipoctet);},
+                'value'=> function($model) {return sprintf("(id:%d) %s/%s", $model->target_id, $model->target->name, $model->target->ipoctet);},
             ],
             'port',
             'stock',
             [
               'attribute'=>'discovered',
               'value'=>function($model) {return count($model->playerFindings);},
-              'filter'=>[0=>'No',1=>'Yes'],
+              'filter'=>[0=>'No', 1=>'Yes'],
             ],
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

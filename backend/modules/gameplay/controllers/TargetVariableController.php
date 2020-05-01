@@ -44,8 +44,8 @@ class TargetVariableController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TargetVariableSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new TargetVariableSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,15 +74,15 @@ class TargetVariableController extends Controller
      */
     public function actionCreate()
     {
-        $model = new TargetVariable();
-        if(\app\modules\gameplay\models\Target::find()->count()==0)
+        $model=new TargetVariable();
+        if(\app\modules\gameplay\models\Target::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No targets found create one first.");
           return $this->redirect(['/gameplay/target/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'target_id' => $model->target_id, 'key' => $model->key]);
         }
@@ -102,9 +102,9 @@ class TargetVariableController extends Controller
      */
     public function actionUpdate($target_id, $key)
     {
-        $model = $this->findModel($target_id, $key);
+        $model=$this->findModel($target_id, $key);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'target_id' => $model->target_id, 'key' => $model->key]);
         }
@@ -139,7 +139,7 @@ class TargetVariableController extends Controller
      */
     protected function findModel($target_id, $key)
     {
-        if (($model = TargetVariable::findOne(['target_id' => $target_id, 'key' => $key])) !== null)
+        if(($model=TargetVariable::findOne(['target_id' => $target_id, 'key' => $key])) !== null)
         {
             return $model;
         }

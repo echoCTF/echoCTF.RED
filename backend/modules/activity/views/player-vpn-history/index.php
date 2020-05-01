@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\activity\models\PlayerVpnHistorySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Player Vpn Histories');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Player Vpn Histories');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-vpn-history-index">
 
@@ -33,17 +33,17 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
               'attribute'=>'vpn_remote_address',
-              'value'=>function($model){return long2ip($model->vpn_remote_address);},
+              'value'=>function($model) {return long2ip($model->vpn_remote_address);},
             ],
             [
               'attribute'=>'vpn_local_address',
-              'value'=>function($model){return long2ip($model->vpn_local_address);},
+              'value'=>function($model) {return long2ip($model->vpn_local_address);},
             ],
             'ts',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

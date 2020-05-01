@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="sysconfig-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'id')->textInput(['maxlength' => true])->hint('The name of the sysconfig key')  ?>
 
@@ -20,6 +20,6 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

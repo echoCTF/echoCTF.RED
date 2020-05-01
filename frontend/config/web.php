@@ -1,11 +1,11 @@
 <?php
 
-$params = require __DIR__ . '/params.php';
-$db = require __DIR__ . '/db.php';
-$cache = require __DIR__ . '/cache.php';
-$cookieValidationKey = require __DIR__ . '/validationKey.php';
+$params=require __DIR__.'/params.php';
+$db=require __DIR__.'/db.php';
+$cache=require __DIR__.'/cache.php';
+$cookieValidationKey=require __DIR__.'/validationKey.php';
 
-$config = [
+$config=[
     'id' => 'pui2',
     'name'=>'echoCTF.RED Mycenae',
     'basePath' => dirname(__DIR__),
@@ -40,12 +40,12 @@ $config = [
               'yii\captcha\CaptchaAsset' => [
                 'sourcePath' => null,
 //                'jsOptions' => ['async' => 'async'],
-                'js' => ['js/yii.captcha.min.js',],
+                'js' => ['js/yii.captcha.min.js', ],
               ],
               'yii\bootstrap4\BootstrapAsset' => [
 //                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
-                'css' => [    ],
+                'css' => [],
               ],
               'yii\validators\ValidationAsset' => [
 //                'jsOptions' => ['async' => 'async'],

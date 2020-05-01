@@ -21,7 +21,7 @@ class PlayerQuestionSearch extends PlayerQuestion
         return [
             [['id'], 'integer'],
             [['points'], 'number'],
-            [['ts', 'player','question','question_id','player_id'], 'safe'],
+            [['ts', 'player', 'question', 'question_id', 'player_id'], 'safe'],
         ];
     }
 
@@ -43,17 +43,17 @@ class PlayerQuestionSearch extends PlayerQuestion
      */
     public function search($params)
     {
-        $query = PlayerQuestion::find()->joinWith(['question', 'player']);
+        $query=PlayerQuestion::find()->joinWith(['question', 'player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -75,11 +75,11 @@ class PlayerQuestionSearch extends PlayerQuestion
                 $dataProvider->getSort()->attributes,
                 [
                   'question' => [
-                      'asc' => [ 'question_id' => SORT_ASC],
+                      'asc' => ['question_id' => SORT_ASC],
                       'desc' => ['question_id' => SORT_DESC],
                   ],
                   'player' => [
-                      'asc' => [ 'player_id' => SORT_ASC],
+                      'asc' => ['player_id' => SORT_ASC],
                       'desc' => ['player_id' => SORT_DESC],
                   ],
                 ]

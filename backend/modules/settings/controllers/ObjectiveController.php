@@ -22,7 +22,7 @@ class ObjectiveController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     // allow authenticated users
                     [
@@ -47,8 +47,8 @@ class ObjectiveController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ObjectiveSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new ObjectiveSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -76,9 +76,9 @@ class ObjectiveController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Objective();
+        $model=new Objective();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -97,9 +97,9 @@ class ObjectiveController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -132,7 +132,7 @@ class ObjectiveController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Objective::findOne($id)) !== null)
+        if(($model=Objective::findOne($id)) !== null)
         {
             return $model;
         }

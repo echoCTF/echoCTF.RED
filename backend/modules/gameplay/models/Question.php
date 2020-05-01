@@ -37,7 +37,7 @@ class Question extends \yii\db\ActiveRecord
         return [
             [['challenge_id'], 'required'],
             [['challenge_id', 'weight'], 'integer'],
-            [['weight'], 'default', 'value'=> 0 ],
+            [['weight'], 'default', 'value'=> 0],
             [['description', 'player_type'], 'string'],
             [['points'], 'number'],
             [['name'], 'string', 'max' => 255],

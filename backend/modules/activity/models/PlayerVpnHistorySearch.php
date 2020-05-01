@@ -19,7 +19,7 @@ class PlayerVpnHistorySearch extends PlayerVpnHistory
     {
         return [
             [['id', 'player_id'], 'integer'],
-            [['ts','vpn_remote_address', 'vpn_local_address','username'], 'safe'],
+            [['ts', 'vpn_remote_address', 'vpn_local_address', 'username'], 'safe'],
         ];
     }
 
@@ -41,17 +41,17 @@ class PlayerVpnHistorySearch extends PlayerVpnHistory
      */
     public function search($params)
     {
-        $query = PlayerVpnHistory::find()->joinWith(['player']);
+        $query=PlayerVpnHistory::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -64,9 +64,9 @@ class PlayerVpnHistorySearch extends PlayerVpnHistory
             'player_vpn_history.player_id' => $this->player_id,
             'player_vpn_history.ts' => $this->ts,
         ]);
-        $query->andFilterWhere(['=', 'vpn_remote_address',$this->vpn_remote_address]);
+        $query->andFilterWhere(['=', 'vpn_remote_address', $this->vpn_remote_address]);
         $query->orFilterWhere(['like', 'INET_NTOA(vpn_remote_address)', $this->vpn_remote_address]);
-        $query->andFilterWhere(['=', 'vpn_local_address',$this->vpn_local_address]);
+        $query->andFilterWhere(['=', 'vpn_local_address', $this->vpn_local_address]);
         $query->orFilterWhere(['like', 'INET_NTOA(vpn_local_address)', $this->vpn_local_address]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $dataProvider->setSort([
@@ -74,7 +74,7 @@ class PlayerVpnHistorySearch extends PlayerVpnHistory
                 $dataProvider->getSort()->attributes,
                 [
                   'username' => [
-                      'asc' => [ 'player.username' => SORT_ASC],
+                      'asc' => ['player.username' => SORT_ASC],
                       'desc' => ['player.username' => SORT_DESC],
                   ],
                 ]

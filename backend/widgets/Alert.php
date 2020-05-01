@@ -30,7 +30,7 @@ class Alert extends \yii\bootstrap\Widget
      * - key: the name of the session flash variable
      * - value: the bootstrap alert type (i.e. danger, success, info, warning)
      */
-    public $alertTypes = [
+    public $alertTypes=[
         'error'   => 'alert-danger',
         'danger'  => 'alert-danger',
         'success' => 'alert-success',
@@ -41,7 +41,7 @@ class Alert extends \yii\bootstrap\Widget
      * @var array the options for rendering the close button tag.
      * Array will be passed to [[\yii\bootstrap\Alert::closeButton]].
      */
-    public $closeButton = [];
+    public $closeButton=[];
 
 
     /**
@@ -49,27 +49,27 @@ class Alert extends \yii\bootstrap\Widget
      */
     public function run()
     {
-        $session = Yii::$app->session;
+        $session=Yii::$app->session;
         $flashes=[];
-        if($session!==null)
-          $flashes = $session->getAllFlashes();
-        $appendClass = isset($this->options['class']) ? ' ' . $this->options['class'] : '';
+        if($session !== null)
+          $flashes=$session->getAllFlashes();
+        $appendClass=isset($this->options['class']) ? ' '.$this->options['class'] : '';
 
-        foreach ($flashes as $type => $flash)
+        foreach($flashes as $type => $flash)
         {
-            if (!isset($this->alertTypes[$type]))
+            if(!isset($this->alertTypes[$type]))
             {
                 continue;
             }
 
-            foreach ((array) $flash as $i => $message)
+            foreach((array) $flash as $i => $message)
             {
                 echo \yii\bootstrap\Alert::widget([
                     'body' => $message,
                     'closeButton' => $this->closeButton,
                     'options' => array_merge($this->options, [
-                        'id' => $this->getId() . '-' . $type . '-' . $i,
-                        'class' => $this->alertTypes[$type] . $appendClass,
+                        'id' => $this->getId().'-'.$type.'-'.$i,
+                        'class' => $this->alertTypes[$type].$appendClass,
                     ]),
                 ]);
             }

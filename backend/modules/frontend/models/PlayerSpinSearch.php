@@ -19,7 +19,7 @@ class PlayerSpinSearch extends PlayerSpin
     {
         return [
             [['player_id', 'counter', 'total'], 'integer'],
-            [['updated_at','player'], 'safe'],
+            [['updated_at', 'player'], 'safe'],
         ];
     }
 
@@ -41,17 +41,17 @@ class PlayerSpinSearch extends PlayerSpin
      */
     public function search($params)
     {
-        $query = PlayerSpin::find()->joinWith(['player']);
+        $query=PlayerSpin::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -72,7 +72,7 @@ class PlayerSpinSearch extends PlayerSpin
                 $dataProvider->getSort()->attributes,
                 [
                   'player' => [
-                      'asc' => [ 'player_spin.player_id' => SORT_ASC],
+                      'asc' => ['player_spin.player_id' => SORT_ASC],
                       'desc' => ['player_spin.player_id' => SORT_DESC],
                   ],
                 ]

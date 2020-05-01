@@ -28,14 +28,14 @@ use yii\widgets\ActiveForm;
 
 <div class="account-form">
 
-    <?php $form = ActiveForm::begin([
+    <?php $form=ActiveForm::begin([
       'id'=>'player-form',
       'options'=>['autocomplete'=>"off"]
-    ]); ?>
+    ]);?>
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => true, 'autocomplete'=>"off"]) ?>
-		<?= $form->field($model, 'fullname')->textInput(['maxlength' => true,'autocomplete'=>"off"]) ?>
-		<?= $form->field($model, 'email')->textInput(['maxlength' => true,'autocomplete'=>"off"]) ?>
+		<?= $form->field($model, 'fullname')->textInput(['maxlength' => true, 'autocomplete'=>"off"]) ?>
+		<?= $form->field($model, 'email')->textInput(['maxlength' => true, 'autocomplete'=>"off"]) ?>
 		<?= $form->field($model, 'password')->passwordInput(['autocomplete'=>"new-password"]) ?>
 		<?= $form->field($model, 'confirm_password')->passwordInput(['autocomplete'=>"new-password"]) ?>
     <?=$model->password?>
@@ -43,6 +43,6 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

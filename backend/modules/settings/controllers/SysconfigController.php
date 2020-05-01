@@ -23,7 +23,7 @@ class SysconfigController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view','configure'],
+                'only' => ['index', 'create', 'update', 'view', 'configure'],
                 'rules' => [
                     // allow authenticated users
                     [
@@ -48,8 +48,8 @@ class SysconfigController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new SysconfigSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new SysconfigSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -77,9 +77,9 @@ class SysconfigController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Sysconfig();
+        $model=new Sysconfig();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -98,11 +98,11 @@ class SysconfigController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            Yii::$app->session->setFlash('success','<code>'.$model->id.'</code> updated.');
+            Yii::$app->session->setFlash('success', '<code>'.$model->id.'</code> updated.');
         }
 
         return $this->render('update', [
@@ -119,8 +119,8 @@ class SysconfigController extends Controller
      */
     public function actionConfigure()
     {
-      $model = new ConfigureForm();
-      if ($model->load(Yii::$app->request->post()) && $model->save())
+      $model=new ConfigureForm();
+      if($model->load(Yii::$app->request->post()) && $model->save())
       {
         return $this->redirect(['configure']);
       }
@@ -153,7 +153,7 @@ class SysconfigController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Sysconfig::findOne($id)) !== null)
+        if(($model=Sysconfig::findOne($id)) !== null)
         {
             return $model;
         }
@@ -162,9 +162,9 @@ class SysconfigController extends Controller
     }
     protected function stripYii()
     {
-      $array=explode("\n",trim(ob_get_clean()));
-      for ($i=0;$i<3;$i++) array_shift($array);
-      return array_map('trim',$array);
+      $array=explode("\n", trim(ob_get_clean()));
+      for($i=0;$i < 3;$i++) array_shift($array);
+      return array_map('trim', $array);
 
     }
 }

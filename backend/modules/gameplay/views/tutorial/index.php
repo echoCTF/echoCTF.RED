@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\TutorialSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Tutorials');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Tutorials');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="tutorial-index">
 
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\InfrastructureTargetSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Infrastructure Targets';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Infrastructure Targets';
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="infrastructure-target-index">
 
@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

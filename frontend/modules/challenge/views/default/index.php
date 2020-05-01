@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ListView;
-$this->title = Yii::$app->sys->event_name.' - Challenges';
+$this->title=Yii::$app->sys->event_name.' - Challenges';
 ?>
 <div class="challenge-index">
   <div class="body-content">

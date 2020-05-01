@@ -22,7 +22,7 @@ class AchievementController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -45,8 +45,8 @@ class AchievementController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new AchievementSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new AchievementSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,9 +74,9 @@ class AchievementController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Achievement();
+        $model=new Achievement();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -95,9 +95,9 @@ class AchievementController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -130,7 +130,7 @@ class AchievementController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Achievement::findOne($id)) !== null)
+        if(($model=Achievement::findOne($id)) !== null)
         {
             return $model;
         }

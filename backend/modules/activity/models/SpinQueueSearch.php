@@ -20,7 +20,7 @@ class SpinQueueSearch extends SpinQueue
     {
         return [
             [['target_id', 'player_id'], 'integer'],
-            [['created_at','target','player'], 'safe'],
+            [['created_at', 'target', 'player'], 'safe'],
         ];
     }
 
@@ -42,17 +42,17 @@ class SpinQueueSearch extends SpinQueue
      */
     public function search($params)
     {
-        $query = SpinQueue::find()->joinWith(['target','player']);
+        $query=SpinQueue::find()->joinWith(['target', 'player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -71,7 +71,7 @@ class SpinQueueSearch extends SpinQueue
                 $dataProvider->getSort()->attributes,
                 [
                   'player' => [
-                      'asc' => [ 'spin_queue.player_id' => SORT_ASC],
+                      'asc' => ['spin_queue.player_id' => SORT_ASC],
                       'desc' => ['spin_queue.player_id' => SORT_DESC],
                   ],
                 ]
@@ -86,7 +86,7 @@ class SpinQueueSearch extends SpinQueue
                 $dataProvider->getSort()->attributes,
                 [
                   'target' => [
-                      'asc' => [ 'target_id' => SORT_ASC],
+                      'asc' => ['target_id' => SORT_ASC],
                       'desc' => ['target_id' => SORT_DESC],
                   ],
                 ]

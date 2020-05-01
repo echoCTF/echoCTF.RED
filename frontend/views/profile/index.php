@@ -5,7 +5,7 @@ use yii\widgets\ListView;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 
-$this->title = Yii::$app->sys->event_name .' - Profile of '.Html::encode($profile->owner->username);
+$this->title=Yii::$app->sys->event_name.' - Profile of '.Html::encode($profile->owner->username);
 //$this->pageDescription=Html::encode(str_replace("\n","",strip_tags($profile->bio)));
 //$this->pageImage=Yii::$app->getBaseUrl(true)."/images/avatars/".$profile->avatar;
 //$this->pageURL=$this->createAbsoluteUrl('/profile/index',array('id'=>$profile->id));
@@ -23,15 +23,15 @@ $this->registerCssFile("@web/css/scores.css", [
   <div class="body-content">
     <div class="row">
         <div class="col-sm-8">
-            <h1>Profile of <?=Html::encode($profile->owner->username)?> <?=Html::img("/images/flags/shiny/24/".$profile->country.".png",['title'=>$profile->country])?></h1>
+            <h1>Profile of <?=Html::encode($profile->owner->username)?> <?=Html::img("/images/flags/shiny/24/".$profile->country.".png", ['title'=>$profile->country])?></h1>
             <p class="lead"><?=Html::encode($profile->bio)?></p>
         </div>
         <div class="col-sm-4">
-            <?php if (!Yii::$app->user->isGuest && Yii::$app->user->id==$profile->player_id && Yii::$app->user->identity->sSL !== NULL):?>
+            <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id == $profile->player_id && Yii::$app->user->identity->sSL !== NULL):?>
                 <a href="<?=Url::to('profile/me')?>" class="pull-right"><img title="<?=Html::encode($profile->owner->username)?> Avatar" class="img-circle img-responsive" src="/images/avatars/<?=$profile->avatar?>" width="220px"></a>
-                <span class="pull-right"><?php echo Html::a('<b>Download OpenVPN configuration</b>',  array('profile/ovpn'),array('class'=>'btn btn-success btn-small')); ?></span>
+                <span class="pull-right"><?php echo Html::a('<b>Download OpenVPN configuration</b>', array('profile/ovpn'), array('class'=>'btn btn-success btn-small'));?></span>
             <?php else:?>
-                <a href="<?=Url::to(['profile/index','id'=>$profile->id])?>" class="pull-right"><img title="<?=Html::encode($profile->owner->username)?> Avatar" class="img-circle img-responsive" src="/images/avatars/<?=$profile->avatar?>" width="220px"></a>
+                <a href="<?=Url::to(['profile/index', 'id'=>$profile->id])?>" class="pull-right"><img title="<?=Html::encode($profile->owner->username)?> Avatar" class="img-circle img-responsive" src="/images/avatars/<?=$profile->avatar?>" width="220px"></a>
         		<?php endif;?>
         </div>
     </div>
@@ -41,18 +41,18 @@ $this->registerCssFile("@web/css/scores.css", [
 
             <ul class="nav nav-list">
                 <li class="nav-header"><h4>Profile</h4></li>
-<?php if(Yii::$app->user->id==$profile->player_id):?>
+<?php if(Yii::$app->user->id == $profile->player_id):?>
                 <li><strong>Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
                 <li><strong>Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($playerSpin['counter'])?></abbr> / <abbr title="Total Spins"><?=$playerSpin['total']?></abbr></span></li>
 <?php endif;?>
                 <li><strong>Real name</strong> <span class="pull-right"><?=Html::encode($profile->owner->fullname)?></span></li>
                 <li><strong>Country</strong> <span class="pull-right"><?=$profile->country?></span></li>
-                <li><strong>Joined</strong> <span class="pull-right"><?=date("d.m.Y",strtotime($profile->owner->created))?></span></li>
-                <li><strong>Last seen</strong> <span class="pull-right"><?=date("d.m.Y",strtotime($profile->last->on_pui))?></span></li>
-                <?php if (trim($profile->twitter)):?><li><strong>Twitter</strong> <span class="pull-right"><?=Html::a('@'.Html::encode($profile->twitter),"https://twitter.com/".Html::encode($profile->twitter),['target'=>'_blank'])?></span></li><?php endif;?>
-                <?php if (trim($profile->github)):?><li><strong>Github</strong> <span class="pull-right"><?=Html::a(Html::encode($profile->github),"https://github.com/".Html::encode($profile->github),['target'=>'_blank'])?></span></li><?php endif;?>
-                <?php if (trim($profile->discord)):?><li><strong>Discord</strong> <span class="pull-right"><?=Html::encode($profile->discord)?></span></li><?php endif;?>
-                <?php if (trim($profile->htb)):?><li><strong>HTB</strong> <span class="pull-right"><small><?=Html::a("https://hackthebox.eu/profile/".Html::encode($profile->htb),"https://hackthebox.eu/profile/".Html::encode($profile->htb),['target'=>'_blank'])?></small></span></li><?php endif;?>
+                <li><strong>Joined</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->owner->created))?></span></li>
+                <li><strong>Last seen</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->last->on_pui))?></span></li>
+                <?php if(trim($profile->twitter)):?><li><strong>Twitter</strong> <span class="pull-right"><?=Html::a('@'.Html::encode($profile->twitter), "https://twitter.com/".Html::encode($profile->twitter), ['target'=>'_blank'])?></span></li><?php endif;?>
+                <?php if(trim($profile->github)):?><li><strong>Github</strong> <span class="pull-right"><?=Html::a(Html::encode($profile->github), "https://github.com/".Html::encode($profile->github), ['target'=>'_blank'])?></span></li><?php endif;?>
+                <?php if(trim($profile->discord)):?><li><strong>Discord</strong> <span class="pull-right"><?=Html::encode($profile->discord)?></span></li><?php endif;?>
+                <?php if(trim($profile->htb)):?><li><strong>HTB</strong> <span class="pull-right"><small><?=Html::a("https://hackthebox.eu/profile/".Html::encode($profile->htb), "https://hackthebox.eu/profile/".Html::encode($profile->htb), ['target'=>'_blank'])?></small></span></li><?php endif;?>
 
             </ul>
             <br/>
@@ -74,7 +74,7 @@ $this->registerCssFile("@web/css/scores.css", [
                 <li class="active"><a href="#activity" data-toggle="tab">Activity</a></li>
                 <li><a href="#progress" data-toggle="tab">Progress</a></li>
                 <li><a href="#badges" data-toggle="tab">Badges</a></li>
-<?php if(Yii::$app->sys->player_profile!==false && Yii::$app->user->id==$profile->player_id):?>
+<?php if(Yii::$app->sys->player_profile !== false && Yii::$app->user->id == $profile->player_id):?>
                 <li><a href="#account-settings" data-toggle="tab">Account settings</a></li>
                 <li><a href="#profile-settings" data-toggle="tab">Profile settings</a></li>
 <?php endif;?>
@@ -119,27 +119,27 @@ $this->registerCssFile("@web/css/scores.css", [
                       [
                         'format'=>'raw',
                         'header'=>false,
-                      'value'=>function($data){return sprintf("<b>%s <small>%s</small></b>",$data['name'],$data['ipoctet']);}
+                      'value'=>function($data) {return sprintf("<b>%s <small>%s</small></b>", $data['name'], $data['ipoctet']);}
                       ],
                       [
                         'header'=>false,
                         'format'=>'raw',
-                        'value'=>function($data){
-                                  return sprintf('<abbr title="Flags"><i class="glyphicon glyphicon-flag"></i></abbr> %d of %d',$data['player_treasures'],$data['total_treasures']);
+                        'value'=>function($data) {
+                                  return sprintf('<abbr title="Flags"><i class="glyphicon glyphicon-flag"></i></abbr> %d of %d', $data['player_treasures'], $data['total_treasures']);
                                 }
                       ],
                       [
                         'header'=>false,
                         'format'=>'raw',
-                        'value'=>function($data){
-                                  return sprintf('<abbr title="Services"><i class="glyphicon glyphicon-fire"></i></abbr> %d of %d',$data['player_findings'],$data['total_findings']);
+                        'value'=>function($data) {
+                                  return sprintf('<abbr title="Services"><i class="glyphicon glyphicon-fire"></i></abbr> %d of %d', $data['player_findings'], $data['total_findings']);
                                 }
                       ],
                       [
                         'header'=>false,
                         'format'=>'raw',
-                        'value'=>function($data){
-                                  return ($data['total_treasures']==$data['player_treasures'] && $data['total_findings']==$data['player_findings']) ?
+                        'value'=>function($data) {
+                                  return ($data['total_treasures'] == $data['player_treasures'] && $data['total_findings'] == $data['player_findings']) ?
                                   sprintf('<abbr title="Headshot"><i class="glyphicon glyphicon-screenshot"></i></abbr>') : "";
                                 }
                       ],
@@ -220,12 +220,12 @@ $this->registerCssFile("@web/css/scores.css", [
 
                 </div>
                 <!--/tab-pane-->
-<?php if(Yii::$app->user->id==$profile->player_id):?>
+<?php if(Yii::$app->user->id == $profile->player_id):?>
                 <div class="tab-pane" id="account-settings">
-                  <?php echo $this->render('_account_settings',['model'=>$accountForm]); ?>
+                  <?php echo $this->render('_account_settings', ['model'=>$accountForm]);?>
                 </div>
                 <div class="tab-pane" id="profile-settings">
-                  <?php echo $this->render('_profile_settings',['model'=>$profileForm]); ?>
+                  <?php echo $this->render('_profile_settings', ['model'=>$profileForm]);?>
                 </div>
                 <script>
                 $('#Profile_avatar').change(function() { $('#preview_avatar').attr('src','/images/avatars/'+$(this).val()); });

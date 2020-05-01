@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\settings\models\FaqSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'FAQ');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'FAQ');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="faq-index">
 
@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

@@ -22,7 +22,7 @@ class HintController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -45,8 +45,8 @@ class HintController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new HintSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new HintSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -78,7 +78,7 @@ class HintController extends Controller
         // fetch hint
         $hint=$this->findModel($id);
         $db=Yii::$app->db;
-        $transaction = $db->beginTransaction();
+        $transaction=$db->beginTransaction();
         try
         {
 //          if($hint->finding)
@@ -95,25 +95,25 @@ class HintController extends Controller
 //            // fetch player_question
 //          }
           $db->createCommand('INSERT INTO player_hint (player_id, hint_id) SELECT id,:hint_id FROM player WHERE active=1 and `type`=:ptype ON DUPLICATE KEY UPDATE player_id=values(player_id)')
-                    ->bindValue(':hint_id',$hint->id)
+                    ->bindValue(':hint_id', $hint->id)
                     ->bindValue(':ptype', $hint->player_type)
                     ->execute();
           $transaction->commit();
         }
-        catch (\Exception $e)
+        catch(\Exception $e)
         {
             $transaction->rollBack();
             \Yii::$app->getSession()->setFlash('error', 'Failed to give hint to users');
-            return $this->redirect(['view','id'=>$id]);
+            return $this->redirect(['view', 'id'=>$id]);
         }
-        catch (\Throwable $e)
+        catch(\Throwable $e)
         {
             $transaction->rollBack();
             \Yii::$app->getSession()->setFlash('error', 'Failed to give hint to users');
-            return $this->redirect(['view','id'=>$id]);
+            return $this->redirect(['view', 'id'=>$id]);
         }
         \Yii::$app->getSession()->setFlash('success', 'Hint was sent to all active users.');
-        return $this->redirect(['view','id'=>$id]);
+        return $this->redirect(['view', 'id'=>$id]);
 
     }
 
@@ -124,9 +124,9 @@ class HintController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Hint();
+        $model=new Hint();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -145,9 +145,9 @@ class HintController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -180,7 +180,7 @@ class HintController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Hint::findOne($id)) !== null)
+        if(($model=Hint::findOne($id)) !== null)
         {
             return $model;
         }

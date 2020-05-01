@@ -46,8 +46,8 @@ class PlayerQuestionController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new PlayerQuestionSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new PlayerQuestionSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -75,20 +75,20 @@ class PlayerQuestionController extends Controller
      */
     public function actionCreate()
     {
-        $model = new PlayerQuestion();
-        if(Player::find()->count()==0)
+        $model=new PlayerQuestion();
+        if(Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
-        if(Question::find()->count()==0)
+        if(Question::find()->count() == 0)
         {
           // If there are no questions redirect to create question
           Yii::$app->session->setFlash('warning', "No Questions found create one first.");
           return $this->redirect(['/gameplay/question/create']);
         }
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -107,9 +107,9 @@ class PlayerQuestionController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -142,7 +142,7 @@ class PlayerQuestionController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = PlayerQuestion::findOne($id)) !== null)
+        if(($model=PlayerQuestion::findOne($id)) !== null)
         {
             return $model;
         }

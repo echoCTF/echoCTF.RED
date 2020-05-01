@@ -12,10 +12,10 @@ use app\modules\gameplay\models\Target;
 
 <div class="treasure-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(),'id',function($model) {
-        return sprintf("(id:%d) %s/%s", $model['id'],$model['fqdn'],$model['ipoctet']);}),['prompt'=>'Select the target'])->Label('Target') ?>
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(), 'id', function($model) {
+        return sprintf("(id:%d) %s/%s", $model['id'], $model['fqdn'], $model['ipoctet']);}), ['prompt'=>'Select the target'])->Label('Target') ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('A name for the treasure') ?>
 
@@ -29,13 +29,13 @@ use app\modules\gameplay\models\Target;
 
     <?= $form->field($model, 'points')->textInput(['maxlength' => true])->hint('The amount of points to be awarded to a player which claims this treasure/flag') ?>
 
-    <?= $form->field($model, 'player_type')->dropDownList([ 'offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose the type of the player']) ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose the type of the player']) ?>
 
     <?= $form->field($model, 'csum')->textInput(['maxlength' => true])->hint('TODO') ?>
 
     <?= $form->field($model, 'appears')->textInput()->hint('The number of times this treasure may be claimed during the competition ( -1 for unlimited)') ?>
 
-    <?= $form->field($model, 'effects')->dropDownList([ 'player' => 'Once per player claim', 'team' => 'Once per team claim', 'total' => 'Treasure can only be claimed once', ], ['prompt' => 'Choose how the appearances of this treasure are retracted']) ?>
+    <?= $form->field($model, 'effects')->dropDownList(['player' => 'Once per player claim', 'team' => 'Once per team claim', 'total' => 'Treasure can only be claimed once', ], ['prompt' => 'Choose how the appearances of this treasure are retracted']) ?>
 
     <?= $form->field($model, 'code')->textInput(['maxlength' => true])->hint('The actual treasure/flag') ?>
 
@@ -43,6 +43,6 @@ use app\modules\gameplay\models\Target;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

@@ -72,25 +72,25 @@ class PlayerSsl extends \yii\db\ActiveRecord
       public function generate() {
           $player=Player::findOne(['id'=>$this->player_id]);
           $params=Yii::$app->params['dn'];
-          $params['commonName'] = $this->player_id;
+          $params['commonName']=$this->player_id;
           $params['emailAddress']=$player->email;
 
           // Generate a new private (and public) key pair
-          $privkey = openssl_pkey_new(Yii::$app->params['pkey_config']);
+          $privkey=openssl_pkey_new(Yii::$app->params['pkey_config']);
 
           // Generate a certificate signing request
-          $csr = openssl_csr_new($params, $privkey, array('digest_alg' => 'sha256', 'config'=>Yii::getAlias('@appconfig').'/CA.cnf','encrypt_key'=>false));
+          $csr=openssl_csr_new($params, $privkey, array('digest_alg' => 'sha256', 'config'=>Yii::getAlias('@appconfig').'/CA.cnf', 'encrypt_key'=>false));
 
           // Generate a self-signed cert, valid for 365 days
           $tmpCAcert=tempnam("/tmp", "echoCTF-OVPN-CA.crt");
           $tmpCAprivkey=tempnam("/tmp", "echoCTF-OVPN-CA.key");
-          $CAcert = "file://".$tmpCAcert;
-          $CAprivkey = array("file://".$tmpCAprivkey,null);
-          file_put_contents($tmpCAprivkey,Yii::$app->sys->{'CA.key'});
-          file_put_contents($tmpCAcert,Yii::$app->sys->{'CA.crt'});
-          $x509 = openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256','config'=>Yii::getAlias('@appconfig').'/CA.cnf','x509_extensions'=>'usr_cert'), time() );
+          $CAcert="file://".$tmpCAcert;
+          $CAprivkey=array("file://".$tmpCAprivkey, null);
+          file_put_contents($tmpCAprivkey, Yii::$app->sys->{'CA.key'});
+          file_put_contents($tmpCAcert, Yii::$app->sys->{'CA.crt'});
+          $x509=openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256', 'config'=>Yii::getAlias('@appconfig').'/CA.cnf', 'x509_extensions'=>'usr_cert'), time());
           openssl_csr_export($csr, $csrout);
-          openssl_x509_export($x509, $certout,false);
+          openssl_x509_export($x509, $certout, false);
           openssl_x509_export($x509, $crtout);
           openssl_pkey_export($privkey, $pkeyout);
           unlink($tmpCAcert);
@@ -109,7 +109,7 @@ class PlayerSsl extends \yii\db\ActiveRecord
         $subject_arr=[];
         foreach($subj as $key => $val)
         $subject_arr[]="$key=$val";
-      return implode(", ",$subject_arr);
+      return implode(", ", $subject_arr);
       }
 
 }

@@ -12,9 +12,9 @@ use app\modules\gameplay\models\Challenge;
 
 <div class="question-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'challenge_id')->dropDownList(ArrayHelper::map(Challenge::find()->all(),'id','name'),
+    <?= $form->field($model, 'challenge_id')->dropDownList(ArrayHelper::map(Challenge::find()->all(), 'id', 'name'),
             ['prompt'=>'Select Challenge'])->Label('Challenge')->hint('The challenge this question is part of') ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('The name/title of the question') ?>
@@ -23,7 +23,7 @@ use app\modules\gameplay\models\Challenge;
 
     <?= $form->field($model, 'points')->textInput(['maxlength' => true])->hint('The points you want to award for answering this question') ?>
 
-    <?= $form->field($model, 'player_type')->dropDownList([ 'offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose player type']) ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose player type']) ?>
 
     <?= $form->field($model, 'code')->textInput(['maxlength' => true])->hint('The answer to the question in the form of a treasure/flag to be claimed (the format should be described on the description of the question or the challenge e.g. "C#1Q#2 answer")') ?>
 
@@ -33,6 +33,6 @@ use app\modules\gameplay\models\Challenge;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

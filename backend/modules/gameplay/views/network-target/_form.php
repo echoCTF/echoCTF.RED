@@ -11,12 +11,12 @@ use yii\helpers\ArrayHelper;
 
 <div class="network-target-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'network_id')->dropDownList(ArrayHelper::map(app\modules\gameplay\models\Network::find()->all(),'id','name'),
+    <?= $form->field($model, 'network_id')->dropDownList(ArrayHelper::map(app\modules\gameplay\models\Network::find()->all(), 'id', 'name'),
             ['prompt'=>'Select Network'])->Label('Network')->hint('The network this Target will belong') ?>
 
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(app\modules\gameplay\models\Target::find()->all(),'id','name'),
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(app\modules\gameplay\models\Target::find()->all(), 'id', 'name'),
                     ['prompt'=>'Select Target'])->Label('Target')->hint('The Target to assign to the network') ?>
 
     <?= $form->field($model, 'weight')->textInput() ?>
@@ -29,6 +29,6 @@ use yii\helpers\ArrayHelper;
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

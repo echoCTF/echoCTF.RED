@@ -9,7 +9,7 @@ echo ListView::widget([
       'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
       'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
       'maxButtonCount'=>3,
-      'linkOptions'=>['class' => ['page-link'],'aria-label'=>'Pager link'],
+      'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
       'disableCurrentPageButton'=>true,
       'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
       'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',

@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 use yii\widgets\ListView;
 
-$this->title = Yii::$app->sys->event_name .' - Target: '.$target->name;
+$this->title=Yii::$app->sys->event_name.' - Target: '.$target->name;
 $this->registerCssFile("@web/css/scores.css", [
     'depends' => [\yii\bootstrap\BootstrapAsset::class],
     'media' => 'screen',
@@ -13,7 +13,7 @@ $this->registerCssFile("@web/css/scores.css", [
 <div class="target-index">
   <div class="body-content">
 
-  <h2>Target: <?php echo $target->name; ?> #<?php echo $target->id; ?> <small><?=$target->schedule?></small></h2>
+  <h2>Target: <?php echo $target->name;?> #<?php echo $target->id;?> <small><?=$target->schedule?></small></h2>
     <?= DetailView::widget([
       'id'=>'target-fulldetails',
       'model' => $target,
@@ -38,19 +38,19 @@ $this->registerCssFile("@web/css/scores.css", [
         [
           'label'=>'Flags / Services',
           'format'=>'raw',
-          'value'=>'<i class="glyphicon glyphicon-flag"></i> '.count($target->treasures).' / <i class="glyphicon glyphicon-fire"></i> '.count($target->findings) ,
+          'value'=>'<i class="glyphicon glyphicon-flag"></i> '.count($target->treasures).' / <i class="glyphicon glyphicon-fire"></i> '.count($target->findings),
         ],
 
         [
           'label'=>'Headshots',
           'format'=>'raw',
-          'value'=>function($model){
+          'value'=>function($model) {
                     $headshots=[];
                     foreach($model->headshots as $player)
-                      if((int)$player->active===1)
+                      if((int) $player->active === 1)
                         $headshots[]=$player->profile->link;
-                  if (empty($headshots)) return "None";
-                  return implode(", ",$headshots);
+                  if(empty($headshots)) return "None";
+                  return implode(", ", $headshots);
                 }
         ],
         [
@@ -74,7 +74,7 @@ $this->registerCssFile("@web/css/scores.css", [
 
 <h3>Latest activity</h3>
 <hr />
-<?php \yii\widgets\Pjax::begin(); ?>
+<?php \yii\widgets\Pjax::begin();?>
 <?php echo ListView::widget([
     'id'=>'target-activity',
     'dataProvider' => $streamProvider,
@@ -87,6 +87,6 @@ $this->registerCssFile("@web/css/scores.css", [
 
     ],
 ]);?>
-<?php \yii\widgets\Pjax::end(); ?>
+<?php \yii\widgets\Pjax::end();?>
 </div>
 </div>

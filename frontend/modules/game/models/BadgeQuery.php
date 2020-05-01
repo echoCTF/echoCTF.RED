@@ -22,7 +22,7 @@ class BadgeQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Badge[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -31,7 +31,7 @@ class BadgeQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Badge|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

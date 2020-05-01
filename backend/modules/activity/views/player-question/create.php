@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\PlayerQuestion */
 
-$this->title = 'Create Player Question';
-$this->params['breadcrumbs'][] = ['label' => 'Player Questions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Player Question';
+$this->params['breadcrumbs'][]=['label' => 'Player Questions', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-question-create">
 

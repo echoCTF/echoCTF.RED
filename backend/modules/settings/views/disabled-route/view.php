@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\settings\models\DisabledRoute */
 
-$this->title = $model->route;
-$this->params['breadcrumbs'][] = ['label' => 'Disabled Routes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->route;
+$this->params['breadcrumbs'][]=['label' => 'Disabled Routes', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="disabled-route-view">

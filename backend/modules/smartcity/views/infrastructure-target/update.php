@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\InfrastructureTarget */
 
-$this->title = 'Update Infrastructure Target: ' . $model->infrastructure_id;
-$this->params['breadcrumbs'][] = ['label' => 'Infrastructure Targets', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->infrastructure_id, 'url' => ['view', 'infrastructure_id' => $model->infrastructure_id, 'target_id' => $model->target_id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title='Update Infrastructure Target: '.$model->infrastructure_id;
+$this->params['breadcrumbs'][]=['label' => 'Infrastructure Targets', 'url' => ['index']];
+$this->params['breadcrumbs'][]=['label' => $model->infrastructure_id, 'url' => ['view', 'infrastructure_id' => $model->infrastructure_id, 'target_id' => $model->target_id]];
+$this->params['breadcrumbs'][]='Update';
 ?>
 <div class="infrastructure-target-update">
 

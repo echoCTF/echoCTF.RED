@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\settings\models\Avatar */
 
-$this->title = 'Create Avatar';
-$this->params['breadcrumbs'][] = ['label' => 'Avatars', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Avatar';
+$this->params['breadcrumbs'][]=['label' => 'Avatars', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="avatar-create">
 

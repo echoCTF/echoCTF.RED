@@ -20,7 +20,7 @@ class PlayerFindingSearch extends PlayerFinding
     {
         return [
             [['player_id', 'finding_id'], 'integer'],
-            [['ts', 'player','finding'], 'safe'],
+            [['ts', 'player', 'finding'], 'safe'],
         ];
     }
 
@@ -42,17 +42,17 @@ class PlayerFindingSearch extends PlayerFinding
      */
     public function search($params)
     {
-        $query = PlayerFinding::find()->joinWith(['player','finding']);
+        $query=PlayerFinding::find()->joinWith(['player', 'finding']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -75,11 +75,11 @@ class PlayerFindingSearch extends PlayerFinding
                 $dataProvider->getSort()->attributes,
                 [
                   'player' => [
-                      'asc' => [ 'player_id' => SORT_ASC],
+                      'asc' => ['player_id' => SORT_ASC],
                       'desc' => ['player_id' => SORT_DESC],
                   ],
                   'finding' => [
-                      'asc' => [ 'finding_id' => SORT_ASC],
+                      'asc' => ['finding_id' => SORT_ASC],
                       'desc' => ['finding_id' => SORT_DESC],
                   ],
                 ]

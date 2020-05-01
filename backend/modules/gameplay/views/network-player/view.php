@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\NetworkPlayer */
 
-$this->title = $model->network_id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Network Players'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->network_id;
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Network Players'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="network-player-view">

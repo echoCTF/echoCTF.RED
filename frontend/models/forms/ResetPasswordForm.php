@@ -26,15 +26,15 @@ class ResetPasswordForm extends Model
      * @param array $config name-value pairs that will be used to initialize the object properties
      * @throws InvalidArgumentException if token is empty or not valid
      */
-    public function __construct($token, $config = [])
+    public function __construct($token, $config=[])
     {
-        if (empty($token) || !is_string($token))
+        if(empty($token) || !is_string($token))
         {
             throw new InvalidArgumentException('Password reset token cannot be blank.');
         }
-        $this->_player = Player::findByPasswordResetToken($token);
+        $this->_player=Player::findByPasswordResetToken($token);
 
-        if (!$this->_player)
+        if(!$this->_player)
         {
             throw new InvalidArgumentException('Wrong password reset token.');
         }
@@ -59,7 +59,7 @@ class ResetPasswordForm extends Model
      */
     public function resetPassword()
     {
-        $player = $this->_player;
+        $player=$this->_player;
         $player->setPassword($this->password);
         $player->removePasswordResetToken();
 

@@ -4,7 +4,7 @@ use rce\material\widgets\Noti;
 use app\assets\MaterialAsset;
 $bundle=MaterialAsset::register($this);
 //$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/ricar2ce/yii2-material-theme/assets');
-$this->registerMetaTag(['name'=>'description', 'content'=>$this->_description],'description');
+$this->registerMetaTag(['name'=>'description', 'content'=>$this->_description], 'description');
 $this->registerMetaTag($this->og_title, 'og_title');
 $this->registerMetaTag($this->og_site_name, 'og_site_name');
 $this->registerMetaTag($this->og_description, 'og_description');

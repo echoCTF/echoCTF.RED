@@ -5,8 +5,8 @@ use app\widgets\target\TargetWidget;
 use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
 $this->_fluid="-fluid";
-$this->title = Yii::$app->sys->event_name .' Dashboard';
-$this->_description ="The echoCTF dashboard page";
+$this->title=Yii::$app->sys->event_name.' Dashboard';
+$this->_description="The echoCTF dashboard page";
 ?>
 
 <div class="dashboard-index">
@@ -18,12 +18,12 @@ $this->_description ="The echoCTF dashboard page";
                 'type'=>'card-stats',
                 'icon'=>'<i class="fa fa-flag"></i>',
                 'color'=>'primary',
-                'title'=>sprintf('%d/%d',$treasureStats->claimed,$treasureStats->total),
+                'title'=>sprintf('%d/%d', $treasureStats->claimed, $treasureStats->total),
                 'subtitle'=>'Claimed/Total Flags',
                 'footer'=>'<div class="stats">
                         <i class="material-icons flag-claim">flag</i>'.number_format($treasureStats->claims).' total claims
                       </div>',
-            ]); Card::end(); ?>
+            ]);Card::end();?>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-6">
             <?php Card::begin([
@@ -31,12 +31,12 @@ $this->_description ="The echoCTF dashboard page";
                 'type'=>'card-stats',
                 'icon'=>'<i class="fa fa-skull"></i>',
                 'color'=>'danger',
-                'title'=>sprintf('%d',$totalHeadshots),
+                'title'=>sprintf('%d', $totalHeadshots),
                 'subtitle'=>'Headshots',
                 'footer'=>'<div class="stats">
                         <i class="material-icons">memory</i> You have '.count(Yii::$app->user->identity->headshots).' headshots
                       </div>',
-            ]); Card::end(); ?>
+            ]);Card::end();?>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-6">
             <?php Card::begin([
@@ -49,7 +49,7 @@ $this->_description ="The echoCTF dashboard page";
                 'footer'=>'<div class="stats">
                         <i class="material-icons">memory</i> '.number_format($totalPoints).' Total points
                       </div>',
-            ]); Card::end(); ?>
+            ]);Card::end();?>
         </div>
         <div class="col-lg-3 col-md-6 col-sm-6">
             <?php Card::begin([
@@ -62,28 +62,28 @@ $this->_description ="The echoCTF dashboard page";
                 'footer'=>'<div class="stats">
                         <i class="material-icons">update</i> '.\app\models\Player::find()->active()->with_score()->count().' with score
                       </div>',
-            ]); Card::end(); ?>
+            ]);Card::end();?>
         </div>
     </div>
 
 
     <div class="row">
       <div class="col-sm-8">
-      <?php Pjax::begin(['id'=>'target-listing','enablePushState'=>false,'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-      <?php echo TargetWidget::widget(['dataProvider' => null,'player_id'=>Yii::$app->user->id]);?>
+      <?php Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
+      <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>Yii::$app->user->id]);?>
       <?php Pjax::end();?>
       </div>
       <div class="col-sm-4">
 <?php
-Pjax::begin(['id'=>'leaderboard-listing','enablePushState'=>false,'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-echo Leaderboard::widget(['dataProvider'=>null,'player_id'=>Yii::$app->user->id,'divID'=>"Leaderboard",'title'=>'Leaderboard']);
+Pjax::begin(['id'=>'leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
+echo Leaderboard::widget(['dataProvider'=>null, 'player_id'=>Yii::$app->user->id, 'divID'=>"Leaderboard", 'title'=>'Leaderboard']);
 Pjax::end();
 ?>
       </div>
     </div><!-- //row -->
 <?php
-Pjax::begin(['id'=>'stream-listing','enablePushState'=>false,'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
-echo Stream::widget(['divID'=>'stream','dataProvider' => null,'pagerID'=>'stream-pager']);
+Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
+echo Stream::widget(['divID'=>'stream', 'dataProvider' => null, 'pagerID'=>'stream-pager']);
 Pjax::end();
 ?>
   </div><!-- //body-content -->

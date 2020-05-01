@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\settings\models\InstructionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="instruction-index">
 
@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'title',
             [
               'attribute'=>'player_type',
-              'filter'=>['offense'=>'Offense', 'defense'=>'Defense','both'=>'Both'],
+              'filter'=>['offense'=>'Offense', 'defense'=>'Defense', 'both'=>'Both'],
             ],
             'message:ntext',
             'weight',
@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

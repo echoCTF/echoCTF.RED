@@ -6,10 +6,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Stream */
 
-$this->title = $model->title;
-$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][] = ['label' => 'Streams', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->title;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Streams', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="stream-view">
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'player',
                 'label'=>'Player',
-                'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
+                'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
             'model',
             'model_id',

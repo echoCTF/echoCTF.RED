@@ -43,13 +43,13 @@ class DashboardController extends \yii\web\Controller
     public function actionIndex()
     {
 
-      $command = Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
-      $command->bindValue(':player_type','offense');
-      $totalPoints = $command->queryScalar();
+      $command=Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
+      $command->bindValue(':player_type', 'offense');
+      $totalPoints=$command->queryScalar();
       $treasureStats=new \stdClass();
-      $treasureStats->total=(int)Treasure::find()->count();
-      $treasureStats->claims=(int)PlayerTreasure::find()->count();
-      $treasureStats->claimed=(int)PlayerTreasure::find()->where(['player_id'=>Yii::$app->user->id])->count();
+      $treasureStats->total=(int) Treasure::find()->count();
+      $treasureStats->claims=(int) PlayerTreasure::find()->count();
+      $treasureStats->claimed=(int) PlayerTreasure::find()->where(['player_id'=>Yii::$app->user->id])->count();
       $totalHeadshots=Headshot::find()->count();
 
       return $this->render('index', [

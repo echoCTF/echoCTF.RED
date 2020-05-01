@@ -14,23 +14,23 @@ use app\modules\gameplay\models\Treasure;
 
 <div class="hint-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true])->hint('Short hint title') ?>
 
-    <?= $form->field($model, 'player_type')->dropDownList([ 'offense' => 'Offense', 'defense' => 'Defense', 'both' => 'Both', ], ['prompt' => 'Choose player type']) ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', 'both' => 'Both', ], ['prompt' => 'Choose player type']) ?>
 
     <?= $form->field($model, 'message')->textarea(['rows' => 6])->hint('Descriptive hint message details') ?>
 
     <?= $form->field($model, 'category')->textInput(['maxlength' => true])->hint('Who knows? TODO') ?>
 
-    <?= $form->field($model, 'badge_id')->dropDownList(ArrayHelper::map(Badge::find()->all(),'id','name'),
+    <?= $form->field($model, 'badge_id')->dropDownList(ArrayHelper::map(Badge::find()->all(), 'id', 'name'),
             ['prompt'=>'Select Badge'])->Label('Badge')->hint('Give this hint to users who have the given badge') ?>
 
-    <?= $form->field($model, 'finding_id')->dropDownList(ArrayHelper::map(Finding::find()->all(),'id','name','target.fqdn'),
+    <?= $form->field($model, 'finding_id')->dropDownList(ArrayHelper::map(Finding::find()->all(), 'id', 'name', 'target.fqdn'),
             ['prompt'=>'Select Finding'])->Label('Finding')->hint('Give this hint to users who have the given finding') ?>
 
-    <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->all(),'id','name','target.fqdn'),
+    <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->all(), 'id', 'name', 'target.fqdn'),
             ['prompt'=>'Select Treasure'])->Label('Treasure')->hint('Give this hint to users who have the given treasure') ?>
 
     <?= $form->field($model, 'points_user')->textInput()->hint('Give this hint to users who have reached the given points') ?>
@@ -45,6 +45,6 @@ use app\modules\gameplay\models\Treasure;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

@@ -27,7 +27,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout','register'],
+                'only' => ['logout', 'register'],
                 'rules' => [
                     [
                         'actions' => ['logout'],
@@ -82,7 +82,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
       if(!Yii::$app->user->isGuest && Yii::$app->sys->dashboard_is_home)
-          $this->redirect ( ['/dashboard/index'] );
+          $this->redirect(['/dashboard/index']);
         return $this->render('index');
     }
 
@@ -93,18 +93,18 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest)
+        if(!Yii::$app->user->isGuest)
         {
             return $this->goHome();
         }
 
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login())
+        $model=new LoginForm();
+        if($model->load(Yii::$app->request->post()) && $model->login())
         {
             return $this->goBack();
         }
 
-        $model->password = '';
+        $model->password='';
         return $this->render('login', [
             'model' => $model,
         ]);
@@ -117,24 +117,24 @@ class SiteController extends Controller
      */
     public function actionRegister()
     {
-        $model = new SignupForm();
-        $transaction = Yii::$app->db->beginTransaction();
+        $model=new SignupForm();
+        $transaction=Yii::$app->db->beginTransaction();
         try
         {
-          if ($model->load(Yii::$app->request->post()) && $model->signup())
+          if($model->load(Yii::$app->request->post()) && $model->signup())
           {
               $transaction->commit();
               Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>');
               return $this->goHome();
           }
         }
-        catch (\Exception $e)
+        catch(\Exception $e)
         {
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', 'Registration failed.');
             throw $e;
         }
-        catch (\Throwable $e)
+        catch(\Throwable $e)
         {
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', 'Registration failed.');
@@ -154,10 +154,10 @@ class SiteController extends Controller
      */
     public function actionRequestPasswordReset()
     {
-        $model = new PasswordResetRequestForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate())
+        $model=new PasswordResetRequestForm();
+        if($model->load(Yii::$app->request->post()) && $model->validate())
         {
-            if ($model->sendEmail())
+            if($model->sendEmail())
             {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
 
@@ -185,14 +185,14 @@ class SiteController extends Controller
     {
         try
         {
-            $model = new ResetPasswordForm($token);
+            $model=new ResetPasswordForm($token);
         }
-        catch (InvalidArgumentException $e)
+        catch(InvalidArgumentException $e)
         {
             throw new BadRequestHttpException($e->getMessage());
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword())
+        if($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword())
         {
             Yii::$app->session->setFlash('success', 'New password saved.');
 
@@ -215,25 +215,25 @@ class SiteController extends Controller
     {
         try
         {
-            $model = new VerifyEmailForm($token);
+            $model=new VerifyEmailForm($token);
         }
-        catch (InvalidArgumentException $e)
+        catch(InvalidArgumentException $e)
         {
             throw new BadRequestHttpException($e->getMessage());
         }
         $post=Yii::$app->request->post('VerifyEmailForm');
-        $value = ArrayHelper::getValue($post, 'token');
+        $value=ArrayHelper::getValue($post, 'token');
 
-        if($value!==$token)
+        if($value !== $token)
         {
-            return $this->render('verify-email',['model'=>$model,'token'=>$token]);
+            return $this->render('verify-email', ['model'=>$model, 'token'=>$token]);
         }
         $transaction=Yii::$app->db->beginTransaction();
         try
         {
-          if ($user = $model->verifyEmail())
+          if($user=$model->verifyEmail())
           {
-              if (Yii::$app->user->login($user))
+              if(Yii::$app->user->login($user))
               {
                   $transaction->commit();
                   Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
@@ -257,10 +257,10 @@ class SiteController extends Controller
      */
     public function actionResendVerificationEmail()
     {
-        $model = new ResendVerificationEmailForm();
-        if ($model->load(Yii::$app->request->post()) && $model->validate())
+        $model=new ResendVerificationEmailForm();
+        if($model->load(Yii::$app->request->post()) && $model->validate())
         {
-            if ($model->sendEmail())
+            if($model->sendEmail())
             {
                 Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
                 return $this->goHome();
@@ -288,7 +288,7 @@ class SiteController extends Controller
     {
       $changelog=file_get_contents('../Changelog.md');
       $todo=file_get_contents('../TODO.md');
-      return $this->render('changelog',[
+      return $this->render('changelog', [
         'changelog'=>$changelog,
         'todo'=>$todo
       ]);

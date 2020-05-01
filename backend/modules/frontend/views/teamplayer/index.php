@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\frontend\models\TeamPlayerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="team-player-index">
 
@@ -29,18 +29,18 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'player',
               'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
             [
               'attribute' => 'team',
               'label'=>'Team',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->team_id,$model->team->name);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->team_id, $model->team->name);},
             ],
             'approved:boolean',
             'ts',
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\TargetSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="target-index">
 
@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'class' => 'yii\grid\ActionColumn',
               'template' => '{spin} {view} {update} {delete}',
               'buttons' => [
-                  'spin' => function ($url) {
+                  'spin' => function($url) {
                       return Html::a(
                           '<span class="glyphicon glyphicon glyphicon-off"></span>',
                           $url,
@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
             ],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

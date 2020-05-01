@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\frontend\models\BannedPlayerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Banned Players');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Banned Players');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="banned-player-index">
 
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

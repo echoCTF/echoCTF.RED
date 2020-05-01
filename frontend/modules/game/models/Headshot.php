@@ -62,8 +62,8 @@ class Headshot extends \yii\db\ActiveRecord
     {
         return [
             [['player_id', 'target_id'], 'required'],
-            [['player_id', 'target_id','timer'], 'integer'],
-            [['created_at','timer'], 'safe'],
+            [['player_id', 'target_id', 'timer'], 'integer'],
+            [['created_at', 'timer'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
@@ -108,7 +108,7 @@ class Headshot extends \yii\db\ActiveRecord
         return new HeadshotQuery(get_called_class());
     }
 
-    public function save($runValidation = true, $attributeNames = NULL)
+    public function save($runValidation=true, $attributeNames=NULL)
     {
         throw new \LogicException("Saving is disabled for this model.");
     }

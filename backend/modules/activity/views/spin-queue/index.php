@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\activity\models\SpinQueueSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Spin Queues');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Spin Queues');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="spin-queue-index">
 
@@ -35,19 +35,19 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'target',
               'label'=>'Target',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->target_id,$model->target->name);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->target_id, $model->target->name);},
             ],
             'player_id',
             [
               'attribute' => 'player',
               'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
             'created_at:date',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

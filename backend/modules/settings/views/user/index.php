@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\settings\models\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="user-index">
 
@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'status',
                 'format'=>'playerstatus',
                 'label'=>'Status',
-                'filter'=>[0=>'Deleted',9=>'Inactive',10=>'Active'],
+                'filter'=>[0=>'Deleted', 9=>'Inactive', 10=>'Active'],
             ],
             //'created_at',
             //'updated_at',
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

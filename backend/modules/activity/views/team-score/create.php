@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\TeamScore */
 
-$this->title = 'Create Team Score';
-$this->params['breadcrumbs'][] = ['label' => 'Team Scores', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Team Score';
+$this->params['breadcrumbs'][]=['label' => 'Team Scores', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="team-score-create">
 

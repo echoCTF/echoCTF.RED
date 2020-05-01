@@ -44,8 +44,8 @@ class SpinHistoryController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new SpinHistorySearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new SpinHistorySearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -73,9 +73,9 @@ class SpinHistoryController extends Controller
      */
     public function actionCreate()
     {
-        $model = new SpinHistory();
+        $model=new SpinHistory();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -94,9 +94,9 @@ class SpinHistoryController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -132,11 +132,11 @@ class SpinHistoryController extends Controller
       try
       {
         Yii::$app->db->createCommand()->truncateTable('spin_history')->execute();
-        Yii::$app->session->setFlash('success','Spin History truncated.');
+        Yii::$app->session->setFlash('success', 'Spin History truncated.');
       }
       catch(\Exception $e)
       {
-        Yii::$app->session->setFlash('error','Failed to truncate table.');
+        Yii::$app->session->setFlash('error', 'Failed to truncate table.');
       }
       return $this->redirect(['index']);
     }
@@ -150,7 +150,7 @@ class SpinHistoryController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = SpinHistory::findOne($id)) !== null)
+        if(($model=SpinHistory::findOne($id)) !== null)
         {
             return $model;
         }

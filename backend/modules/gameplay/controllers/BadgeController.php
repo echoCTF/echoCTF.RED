@@ -22,7 +22,7 @@ class BadgeController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -45,8 +45,8 @@ class BadgeController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new BadgeSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new BadgeSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,11 +74,11 @@ class BadgeController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Badge();
+        $model=new Badge();
         $transaction=\Yii::$app->db->beginTransaction();
         try
         {
-          if ($model->load(Yii::$app->request->post()) && $model->save())
+          if($model->load(Yii::$app->request->post()) && $model->save())
           {
             $treasures=Yii::$app->request->post()['Badge']['treasures'];
             $findings=Yii::$app->request->post()['Badge']['findings'];
@@ -103,14 +103,14 @@ class BadgeController extends Controller
               }
             }
             $transaction->commit();
-            Yii::$app->session->setFlash('success',"Badge created with success");
+            Yii::$app->session->setFlash('success', "Badge created with success");
             return $this->redirect(['view', 'id' => $model->id]);
           }
         }
-        catch (\Exception $e)
+        catch(\Exception $e)
         {
           $transaction->rollback();
-          Yii::$app->session->setFlash('error',"Failed to create badge");
+          Yii::$app->session->setFlash('error', "Failed to create badge");
         }
         return $this->render('create', [
             'model' => $model,
@@ -126,8 +126,8 @@ class BadgeController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        $model=$this->findModel($id);
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
 
             $findings=Yii::$app->request->post()['Badge']['findings'];
@@ -171,7 +171,7 @@ class BadgeController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Badge::findOne($id)) !== null)
+        if(($model=Badge::findOne($id)) !== null)
         {
             return $model;
         }

@@ -41,17 +41,17 @@ class TargetVariableSearch extends TargetVariable
      */
     public function search($params)
     {
-        $query = TargetVariable::find()->joinWith('target');
+        $query=TargetVariable::find()->joinWith('target');
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate())
+        if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
@@ -74,7 +74,7 @@ class TargetVariableSearch extends TargetVariable
                 $dataProvider->getSort()->attributes,
                 [
                   'target' => [
-                      'asc' => [ 'target_id' => SORT_ASC],
+                      'asc' => ['target_id' => SORT_ASC],
                       'desc' => ['target_id' => SORT_DESC],
                   ],
                 ]

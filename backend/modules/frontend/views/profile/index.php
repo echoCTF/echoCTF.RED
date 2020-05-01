@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\frontend\models\ProfileSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Profiles');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Profiles');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="profile-index">
 
@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'username',
               'label'=>'Username',
-              'value'=>function($model){return sprintf("%d: %s",$model->player_id,$model->owner->username);}
+              'value'=>function($model) {return sprintf("%d: %s", $model->player_id, $model->owner->username);}
             ],
             'bio:ntext',
             'country',
@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

@@ -45,8 +45,8 @@ class PlayerSpinController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new PlayerSpinSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new PlayerSpinSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,9 +74,9 @@ class PlayerSpinController extends Controller
      */
     public function actionCreate()
     {
-        $model = new PlayerSpin();
+        $model=new PlayerSpin();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->player_id]);
         }
@@ -95,9 +95,9 @@ class PlayerSpinController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'id' => $model->player_id]);
         }
@@ -132,11 +132,11 @@ class PlayerSpinController extends Controller
       $trans=Yii::$app->db->beginTransaction();
       try
       {
-        if($id===0)
+        if($id === 0)
         {
           PlayerSpin::updateAll(['counter'=>0]);
         }
-        elseif (($ps=PlayerSpin::findOne($id))!==null)
+        elseif(($ps=PlayerSpin::findOne($id)) !== null)
         {
           $ps->counter=0;
           $ps->save();
@@ -147,12 +147,12 @@ class PlayerSpinController extends Controller
           $notif->save();
         }
         $trans->commit();
-        Yii::$app->session->setFlash('success','Player spin counters zeroed.');
+        Yii::$app->session->setFlash('success', 'Player spin counters zeroed.');
       }
-      catch (\Exception $e)
+      catch(\Exception $e)
       {
         $trans->rollBack();
-        Yii::$app->session->setFlash('error','Player spin counters failed to zero out.');
+        Yii::$app->session->setFlash('error', 'Player spin counters failed to zero out.');
       }
 
       return $this->goBack(Yii::$app->request->referrer);
@@ -167,7 +167,7 @@ class PlayerSpinController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = PlayerSpin::findOne($id)) !== null)
+        if(($model=PlayerSpin::findOne($id)) !== null)
         {
             return $model;
         }

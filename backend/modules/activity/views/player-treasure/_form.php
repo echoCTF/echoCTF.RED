@@ -13,11 +13,11 @@ use app\modules\gameplay\models\Treasure;
 
 <div class="player-treasure-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(),'id','username'),['prompt'=>'Select player'])->Label('Player')->hint('The player you want to give this hint') ?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(), 'id', 'username'), ['prompt'=>'Select player'])->Label('Player')->hint('The player you want to give this hint') ?>
 
-    <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->all(),'id','name','target.fqdn'),['prompt'=>'Select treasure']) ?>
+    <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->all(), 'id', 'name', 'target.fqdn'), ['prompt'=>'Select treasure']) ?>
 
     <?= $form->field($model, 'ts')->textInput() ?>
 
@@ -25,6 +25,6 @@ use app\modules\gameplay\models\Treasure;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

@@ -13,7 +13,7 @@ class HintQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Hint[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -22,7 +22,7 @@ class HintQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Hint|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

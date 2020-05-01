@@ -44,8 +44,8 @@ class TargetVolumeController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TargetVolumeSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new TargetVolumeSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,15 +74,15 @@ class TargetVolumeController extends Controller
      */
     public function actionCreate()
     {
-        $model = new TargetVolume();
-        if(\app\modules\gameplay\models\Target::find()->count()==0)
+        $model=new TargetVolume();
+        if(\app\modules\gameplay\models\Target::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No targets found create one first.");
           return $this->redirect(['/gameplay/target/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'target_id' => $model->target_id, 'volume' => $model->volume]);
         }
@@ -102,9 +102,9 @@ class TargetVolumeController extends Controller
      */
     public function actionUpdate($target_id, $volume)
     {
-        $model = $this->findModel($target_id, $volume);
+        $model=$this->findModel($target_id, $volume);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'target_id' => $model->target_id, 'volume' => $model->volume]);
         }
@@ -139,7 +139,7 @@ class TargetVolumeController extends Controller
      */
     protected function findModel($target_id, $volume)
     {
-        if (($model = TargetVolume::findOne(['target_id' => $target_id, 'volume' => $volume])) !== null)
+        if(($model=TargetVolume::findOne(['target_id' => $target_id, 'volume' => $volume])) !== null)
         {
             return $model;
         }

@@ -98,7 +98,7 @@ class Challenge extends \yii\db\ActiveRecord
 
     public function getCompleted(): bool
     {
-      return $this->total_questions===$this->player_answers;
+      return $this->total_questions === $this->player_answers;
     }
 
     public function getPoints()
@@ -111,7 +111,7 @@ class Challenge extends \yii\db\ActiveRecord
       return $sum_points;
     }
 
-    public function save($runValidation = true, $attributeNames = NULL)
+    public function save($runValidation=true, $attributeNames=NULL)
     {
         throw new \LogicException("Saving is disabled for this model.");
     }

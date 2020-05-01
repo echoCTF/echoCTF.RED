@@ -44,8 +44,8 @@ class HeadshotController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new HeadshotSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new HeadshotSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,9 +74,9 @@ class HeadshotController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Headshot();
+        $model=new Headshot();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
         }
@@ -94,9 +94,9 @@ class HeadshotController extends Controller
      */
     public function actionGive()
     {
-      $model = new Headshot();
+      $model=new Headshot();
 
-      if ($model->load(Yii::$app->request->post()) && $model->validate())
+      if($model->load(Yii::$app->request->post()) && $model->validate())
       {
           Yii::$app->db->createCommand('insert ignore into player_finding (player_id,finding_id) select :player_id,id from finding where target_id=:target_id')
             ->bindValue(':player_id', $model->player_id)
@@ -126,9 +126,9 @@ class HeadshotController extends Controller
      */
     public function actionUpdate($player_id, $target_id)
     {
-        $model = $this->findModel($player_id, $target_id);
+        $model=$this->findModel($player_id, $target_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save())
+        if($model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
         }
@@ -163,7 +163,7 @@ class HeadshotController extends Controller
      */
     protected function findModel($player_id, $target_id)
     {
-        if (($model = Headshot::findOne(['player_id' => $player_id, 'target_id' => $target_id])) !== null)
+        if(($model=Headshot::findOne(['player_id' => $player_id, 'target_id' => $target_id])) !== null)
         {
             return $model;
         }

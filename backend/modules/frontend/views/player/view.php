@@ -6,10 +6,10 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Player */
 
-$this->title = sprintf("View player [ID:%d] %s details", $model->id,$model->username);
-$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][] = ['label' => 'Players', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=sprintf("View player [ID:%d] %s details", $model->id, $model->username);
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Players', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="player-view">
@@ -88,22 +88,22 @@ $this->params['breadcrumbs'][] = $this->title;
           'online:boolean',
           [
             'label'=>'Headshots',
-            'value'=>function($model){return count($model->headshots);}
+            'value'=>function($model) {return count($model->headshots);}
           ],
           [
             'attribute'=>'on_pui',
             'label'=>'Last seen on pUI',
-            'value'=>function($model){if($model->last) return $model->last->on_pui==0 ? null : $model->last->on_pui; else return null;}
+            'value'=>function($model) {if($model->last) return $model->last->on_pui == 0 ? null : $model->last->on_pui;else return null;}
           ],
           [
             'attribute'=>'on_vpn',
             'label'=>'Last seen on VPN',
-            'value'=>function($model){if($model->last) return $model->last->on_vpn==0 ? null : $model->last->on_vpn; else return null;}
+            'value'=>function($model) {if($model->last) return $model->last->on_vpn == 0 ? null : $model->last->on_vpn;else return null;}
           ],
           [
             'attribute'=>'vpn_local_address',
             'label'=> 'VPN Local IP',
-            'value'=>function($model){ return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
+            'value'=>function($model) { return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
           ],
           'playerSpin.counter',
           'playerSpin.total',
@@ -123,7 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
                               [
                                 'allModels' =>  $model->sessions,
                                 'sort' => [
-                                  'attributes' => ['id', 'ipoctet', 'expire','ts'],
+                                  'attributes' => ['id', 'ipoctet', 'expire', 'ts'],
                                 ],
                                 'pagination' => [
                                   'pageSize' => 10,
@@ -141,7 +141,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'template' => '{delete}',
             ],
         ],
-    ]); ?>
+    ]);?>
   </details>
 
 </div>

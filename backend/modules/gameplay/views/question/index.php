@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\QuestionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="question-index">
 
@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'challengename',
               'label'=>'Challenge Name',
-              'value'=> function($model) {return sprintf("%s",$model->challenge->name);},
+              'value'=> function($model) {return sprintf("%s", $model->challenge->name);},
             ],
             'name',
             'description:ntext',
@@ -41,12 +41,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'answered',
               'value'=>function($model) {return count($model->playerQuestions);},
-              'filter'=>[0=>'No',1=>'Yes'],
+              'filter'=>[0=>'No', 1=>'Yes'],
             ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>
