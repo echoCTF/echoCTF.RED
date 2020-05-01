@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\PlayerLast */
 
-$this->title = Yii::t('app', 'Create Player Last');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Player Lasts'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Create Player Last');
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Player Lasts'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-last-create">
 

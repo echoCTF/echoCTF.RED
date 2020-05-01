@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Crl */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Crls'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->id;
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Crls'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="crl-view">

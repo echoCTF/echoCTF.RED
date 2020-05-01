@@ -22,7 +22,7 @@ class AnswerForm extends Model
     {
         return [
             [['answer'], 'required'],
-            [['answer'],'exist',
+            [['answer'], 'exist',
               'targetClass' => Question::class,
               'targetAttribute' => ['answer'=>'code']]
         ];
@@ -41,30 +41,31 @@ class AnswerForm extends Model
     public function give($challenge_id)
     {
       // first check if it is a valid answer
-      $this->_question=Question::find()->where(['challenge_id'=>$challenge_id,'code'=>$this->answer])->one();
-      if(!($this->_question instanceof Question)){
-        $this->addError('answer','Invalid answer');
+      $this->_question=Question::find()->where(['challenge_id'=>$challenge_id, 'code'=>$this->answer])->one();
+      if(!($this->_question instanceof Question))
+      {
+        $this->addError('answer', 'Invalid answer');
         return false;
       }
 
-      if($this->_question->answered!==null)
+      if($this->_question->answered !== null)
       {
-        $this->addError('answer','You have already answered this question.');
+        $this->addError('answer', 'You have already answered this question.');
         return false;
       }
 
       $pq=new PlayerQuestion;
-  		$pq->player_id=(int)Yii::$app->user->id;
-  		$pq->question_id=$this->_question->id;
-  		if($pq->save())
-  		{
-  			$pq->refresh();
-  			$this->points=$pq->points;
-  			return true;
-  		}
+      $pq->player_id=(int) Yii::$app->user->id;
+      $pq->question_id=$this->_question->id;
+      if($pq->save())
+      {
+        $pq->refresh();
+        $this->points=$pq->points;
+        return true;
+      }
       else
       {
-        $this->addError('answer','Failed to save the given answer. Contact the administrators if the problem persists.');
+        $this->addError('answer', 'Failed to save the given answer. Contact the administrators if the problem persists.');
         return false;
       }
     }

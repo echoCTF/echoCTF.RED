@@ -17,26 +17,26 @@ class TreasureActionController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
-     {
-         return [
-           'access' => [
-                 'class' => \yii\filters\AccessControl::class,
-                 'rules' => [
-                     [
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
-                 ],
-             ],
-             'verbs' => [
-                 'class' => VerbFilter::class,
-                 'actions' => [
-                     'delete' => ['POST'],
-                 ],
-             ],
-         ];
-     }
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
 
     /**
      * Lists all TreasureAction models.
@@ -44,8 +44,8 @@ class TreasureActionController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TreasureActionSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new TreasureActionSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -73,9 +73,10 @@ class TreasureActionController extends Controller
      */
     public function actionCreate()
     {
-        $model = new TreasureAction();
+        $model=new TreasureAction();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -93,9 +94,10 @@ class TreasureActionController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -127,7 +129,8 @@ class TreasureActionController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = TreasureAction::findOne($id)) !== null) {
+        if(($model=TreasureAction::findOne($id)) !== null)
+        {
             return $model;
         }
 

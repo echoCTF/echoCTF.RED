@@ -20,7 +20,7 @@ class QuestionSearch extends Question
     {
         return [
             [['id', 'challenge_id', 'weight'], 'integer'],
-            [['answered','name', 'description', 'player_type', 'code', 'challengename'], 'safe'],
+            [['answered', 'name', 'description', 'player_type', 'code', 'challengename'], 'safe'],
             [['points'], 'number'],
         ];
     }
@@ -43,18 +43,19 @@ class QuestionSearch extends Question
      */
     public function search($params)
     {
-        $query = Question::find()->joinWith('challenge');
+        $query=Question::find()->joinWith('challenge');
 
         $query->select('question.*,(SELECT COUNT(question_id) FROM player_question WHERE question.id=player_question.question_id) as answered');
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -80,11 +81,11 @@ class QuestionSearch extends Question
                 $dataProvider->getSort()->attributes,
                 [
                   'challengename' => [
-                      'asc' => [ 'challengename' => SORT_ASC],
+                      'asc' => ['challengename' => SORT_ASC],
                       'desc' => ['challengename' => SORT_DESC],
                   ],
                   'answered' => [
-                      'asc' => [ 'answered' => SORT_ASC],
+                      'asc' => ['answered' => SORT_ASC],
                       'desc' => ['answered' => SORT_DESC],
                   ],
                 ]

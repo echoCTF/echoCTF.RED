@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\HintSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="hint-index">
 
@@ -30,26 +30,26 @@ $this->params['breadcrumbs'][] = $this->title;
             'message:ntext',
             [
               'attribute'=>'badge_id',
-              'value'=> function($model) {return $model->badge !== NULL ? sprintf("(id:%d) %s/%s",$model->badge_id,$model->badge->name,$model->badge->points): "";} ,
+              'value'=> function($model) {return $model->badge !== NULL ? sprintf("(id:%d) %s/%s", $model->badge_id, $model->badge->name, $model->badge->points) : "";} ,
             ],
             [
               'attribute'=>'finding_id',
-              'value'=> function($model) {return $model->finding !== NULL ? sprintf("(id:%d) %s/%s",$model->finding_id,$model->finding->name,$model->finding->points): "";} ,
+              'value'=> function($model) {return $model->finding !== NULL ? sprintf("(id:%d) %s/%s", $model->finding_id, $model->finding->name, $model->finding->points) : "";} ,
             ],
             [
               'attribute'=>'treasure_id',
-              'value'=> function($model) {return $model->treasure !== NULL ? sprintf("(id:%d) %s/%s",$model->treasure_id,$model->treasure->name,$model->treasure->points): "";} ,
+              'value'=> function($model) {return $model->treasure !== NULL ? sprintf("(id:%d) %s/%s", $model->treasure_id, $model->treasure->name, $model->treasure->points) : "";} ,
             ],
             [
               'attribute'=>'question_id',
-              'value'=> function($model) {return $model->question !== NULL ? sprintf("(id:%d) %s/%s",$model->question_id,$model->question->name,$model->question->points): "";} ,
+              'value'=> function($model) {return $model->question !== NULL ? sprintf("(id:%d) %s/%s", $model->question_id, $model->question->name, $model->question->points) : "";} ,
             ],
             //'points_user',
             //'points_team',
             //'timeafter:datetime',
             [
               'attribute'=>'player_type',
-              'filter'=>['offense'=>'Offense', 'defense'=>'Defense','both'=>'Both'],
+              'filter'=>['offense'=>'Offense', 'defense'=>'Defense', 'both'=>'Both'],
             ],
             'active:boolean',
             //'ts',
@@ -58,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'class' => 'yii\grid\ActionColumn',
               'template' => '{give} {view} {update} {delete}',
               'buttons' => [
-                  'give' => function ($url) {
+                  'give' => function($url) {
                       return Html::a(
                           '<span class="glyphicon glyphicon-send"></span>',
                           $url,
@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
 
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

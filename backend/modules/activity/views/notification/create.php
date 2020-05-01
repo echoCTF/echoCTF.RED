@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Notification */
 
-$this->title = 'Create Notification';
-$this->params['breadcrumbs'][] = ['label' => 'Notifications', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Notification';
+$this->params['breadcrumbs'][]=['label' => 'Notifications', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="notification-create">
 

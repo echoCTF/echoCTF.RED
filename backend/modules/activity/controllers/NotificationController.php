@@ -18,26 +18,26 @@ class NotificationController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
-     {
-         return [
-           'access' => [
-                 'class' => \yii\filters\AccessControl::class,
-                 'rules' => [
-                     [
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
-                 ],
-             ],
-             'verbs' => [
-                 'class' => VerbFilter::class,
-                 'actions' => [
-                     'delete' => ['POST'],
-                 ],
-             ],
-         ];
-     }
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
 
     /**
      * Lists all Notification models.
@@ -45,8 +45,8 @@ class NotificationController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new NotificationSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new NotificationSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -75,10 +75,10 @@ class NotificationController extends Controller
     public function actionCreate()
     {
 
-        $model = new Notification();
+        $model=new Notification();
         if($model->load(Yii::$app->request->post()))
         {
-          if($model->player_id==null)
+          if($model->player_id == null)
           {
             // Send notification to all players
             foreach(Player::find()->where(['active'=>1])->all() as $player)
@@ -90,7 +90,7 @@ class NotificationController extends Controller
             }
             return $this->redirect(['index']);
           }
-          else if ($model->save())
+          else if($model->save())
           {
               return $this->redirect(['view', 'id' => $model->id]);
           }
@@ -109,9 +109,10 @@ class NotificationController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -143,7 +144,8 @@ class NotificationController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Notification::findOne($id)) !== null) {
+        if(($model=Notification::findOne($id)) !== null)
+        {
             return $model;
         }
 

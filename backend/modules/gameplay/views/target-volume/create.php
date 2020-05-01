@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\TargetVolume */
 
-$this->title = 'Create Target Volume';
-$this->params['breadcrumbs'][] = ['label' => 'Target Volumes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Target Volume';
+$this->params['breadcrumbs'][]=['label' => 'Target Volumes', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="target-volume-create">
 

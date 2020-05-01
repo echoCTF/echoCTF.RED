@@ -73,8 +73,8 @@ class Target extends \yii\db\ActiveRecord
     {
         return [
             [['description'], 'string'],
-            [['name','fqdn','mac'], 'required'],
-            [['ip', 'active', 'rootable','difficulty','suggested_xp','required_xp'], 'integer'],
+            [['name', 'fqdn', 'mac'], 'required'],
+            [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp'], 'integer'],
             [['ipoctet'], 'ip'],
             [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
             [['image'], 'filter', 'filter'=>'strtolower'],
@@ -82,9 +82,9 @@ class Target extends \yii\db\ActiveRecord
             [['name'], 'unique'],
             [['fqdn'], 'unique'],
             [['mac'], 'unique'],
-            [['status'],'in', 'range' => ['online','offline','powerup','powerdown','maintenance']],
-            [['status'],'default', 'value'=> 'offline'],
-            [['scheduled_at'],'datetime','format'=>'php:Y-m-d H:i:s'],
+            [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
+            [['status'], 'default', 'value'=> 'offline'],
+            [['scheduled_at'], 'datetime', 'format'=>'php:Y-m-d H:i:s'],
 
         ];
     }
@@ -155,7 +155,7 @@ class Target extends \yii\db\ActiveRecord
         return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
     }
 
-    public function afterFind(){
+    public function afterFind() {
       parent::afterFind();
       $this->ipoctet=long2ip($this->ip);
     }
@@ -163,10 +163,13 @@ class Target extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-      if (parent::beforeSave($insert)) {
-          $this->ip = ip2long($this->ipoctet);
+      if(parent::beforeSave($insert))
+      {
+          $this->ip=ip2long($this->ipoctet);
           return true;
-      } else {
+      }
+      else
+      {
           return false;
       }
     }
@@ -174,16 +177,16 @@ class Target extends \yii\db\ActiveRecord
     public function spin()
     {
       $targetVariables=null;
-      if($this->server==null) return false;
-      $docker = $this->connectAPI();
+      if($this->server == null) return false;
+      $docker=$this->connectAPI();
       $this->destroy();
 
-      $hostConfig = $this->hostConfig();
+      $hostConfig=$this->hostConfig();
 
-      $containerConfig = new ContainersCreatePostBody();
+      $containerConfig=new ContainersCreatePostBody();
       $endpointSettings=new EndpointSettings();
       $endpointIPAMConfig=new EndpointIPAMConfig();
-      $endpointIPAMConfig->setIPv4Address($this->ipoctet); // target->ipoctet
+      $endpointIPAMConfig->setIPv4Address($this->ipoctet);// target->ipoctet
       $endpointSettings->setIPAMConfig($endpointIPAMConfig);
 
       $nwc=new ContainersCreatePostBodyNetworkingConfig();
@@ -191,16 +194,16 @@ class Target extends \yii\db\ActiveRecord
         $this->net => $endpointSettings
       ]));
       $containerConfig->setNetworkingConfig($nwc);
-      $containerConfig->setHostname($this->fqdn); // target->fqdn
-      $containerConfig->setImage($this->image); // target->image
+      $containerConfig->setHostname($this->fqdn);// target->fqdn
+      $containerConfig->setImage($this->image);// target->image
       foreach($this->targetVariables as $var)
-        $targetVariables[]=sprintf("%s=%s",$var->key,$var->val);
-      $containerConfig->setEnv($targetVariables); // target->targetVariables
+        $targetVariables[]=sprintf("%s=%s", $var->key, $var->val);
+      $containerConfig->setEnv($targetVariables);// target->targetVariables
       //$containerConfig->setMacAddress($this->mac); // target->mac
       $containerConfig->setHostConfig($hostConfig);
 
       $this->pull();
-      $containerCreateResult = $docker->containerCreate($containerConfig,['name'=>$this->name]); // target->name
+      $containerCreateResult=$docker->containerCreate($containerConfig, ['name'=>$this->name]);// target->name
 
       $docker->containerStart($containerCreateResult->getId());
 
@@ -213,15 +216,15 @@ class Target extends \yii\db\ActiveRecord
       $targetVolumes=null;
       $restartPolicy=new RestartPolicy();
       $restartPolicy->setName('always');
-      $hostConfig = new HostConfig();
-      if($this->memory!==null)
-        $hostConfig->setMemory($this->memory); // Set memory limit to 512MB
+      $hostConfig=new HostConfig();
+      if($this->memory !== null)
+        $hostConfig->setMemory($this->memory);// Set memory limit to 512MB
 
-      $hostConfig->setNetworkMode($this->net); // target->net
-      $hostConfig->setDns([$this->dns]); // target->dns
+      $hostConfig->setNetworkMode($this->net);// target->net
+      $hostConfig->setDns([$this->dns]);// target->dns
       foreach($this->targetVolumes as $var)
-        $targetVolumes[]=sprintf("%s:%s",$var->volume,$var->bind);
-      $hostConfig->setBinds($targetVolumes); // target->targetVolumes
+        $targetVolumes[]=sprintf("%s:%s", $var->volume, $var->bind);
+      $hostConfig->setBinds($targetVolumes);// target->targetVolumes
 
       $hostConfig->setRestartPolicy($restartPolicy);
       return $hostConfig;
@@ -230,16 +233,16 @@ class Target extends \yii\db\ActiveRecord
     {
       try
       {
-        $client = DockerClientFactory::create([
+        $client=DockerClientFactory::create([
           'remote_socket' => $this->server,
           'ssl' => false,
         ]);
-        $docker = Docker::create($client);
+        $docker=Docker::create($client);
 
         if($docker->systemPing())
           $this->container=$docker->getContainerManager()->find($this->name);
       }
-      catch (\Exception $e)
+      catch(\Exception $e)
       {
         $this->container=1;
       }
@@ -248,17 +251,17 @@ class Target extends \yii\db\ActiveRecord
 
     public function getFindingPoints()
     {
-      return (int)(new \yii\db\Query())->from('finding')->where(['target_id'=>$this->id])->sum('points');
+      return (int) (new \yii\db\Query())->from('finding')->where(['target_id'=>$this->id])->sum('points');
     }
     public function getTreasurePoints()
     {
-      return (int)(new \yii\db\Query())->from('treasure')->where(['target_id'=>$this->id])->sum('points');
+      return (int) (new \yii\db\Query())->from('treasure')->where(['target_id'=>$this->id])->sum('points');
     }
 
     public function pull()
     {
-      if($this->server==null) return false;
-      $docker = $this->connectAPI();
+      if($this->server == null) return false;
+      $docker=$this->connectAPI();
       $imageCreateResult=$docker->imageCreate($this->image, ['fromImage'=>$this->image]);
       $imageCreateResult->wait();
       return true;
@@ -268,12 +271,13 @@ class Target extends \yii\db\ActiveRecord
     {
 //      $targetVariables=null;
 //      $targetVolumes=null;
-      if($this->server==null) return false;
-      $docker = $this->connectAPI();
-      try {
-        $docker->containerDelete($this->name,['force'=>true]);
+      if($this->server == null) return false;
+      $docker=$this->connectAPI();
+      try
+      {
+        $docker->containerDelete($this->name, ['force'=>true]);
       }
-      catch (\Exception $e)
+      catch(\Exception $e)
       {
         return false;
       }
@@ -282,22 +286,22 @@ class Target extends \yii\db\ActiveRecord
 
   public function getMemory()
   {
-    if($this->parameters!==NULL)
+    if($this->parameters !== NULL)
     {
-      $decoded=\yii\helpers\Json::decode($this->parameters,false);
-      if($decoded!==null && property_exists($decoded,'hostConfig') && property_exists($decoded->hostConfig,'Memory'))
-        return intval($decoded->hostConfig->Memory)*1024*1024;
+      $decoded=\yii\helpers\Json::decode($this->parameters, false);
+      if($decoded !== null && property_exists($decoded, 'hostConfig') && property_exists($decoded->hostConfig, 'Memory'))
+        return intval($decoded->hostConfig->Memory) * 1024 * 1024;
     }
     return null;
   }
 
   public function connectAPI()
   {
-    if($this->server==null) return false;
+    if($this->server == null) return false;
 
     try
     {
-      $client = DockerClientFactory::create([
+      $client=DockerClientFactory::create([
         'remote_socket' => $this->server, // target->server
         'ssl' => false,
       ]);

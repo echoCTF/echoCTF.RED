@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\AchievementSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="achievement-index">
 
@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'points',
             [
               'attribute'=>'player_type',
-              'filter'=>['offense'=>'Offense', 'defense'=>'Defense','both'=>'Both'],
+              'filter'=>['offense'=>'Offense', 'defense'=>'Defense', 'both'=>'Both'],
             ],
             //'appears',
             //'effects',
@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

@@ -12,12 +12,12 @@ use app\modules\frontend\models\Player;
 
 <div class="player-score-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
 <?php if($model->isNewRecord):?>
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->leftJoin('player_score','player_score.player_id = player.id')->where(['player_score.player_id' => null])->all(),'id','username'),['prompt'=>'Select Player'])->Label('Player')->hint('Choose the Player to create score entry')?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->leftJoin('player_score', 'player_score.player_id = player.id')->where(['player_score.player_id' => null])->all(), 'id', 'username'), ['prompt'=>'Select Player'])->Label('Player')->hint('Choose the Player to create score entry')?>
 <?php else:?>
-  <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(),'id','username'),['prompt'=>'Select Player'])->Label('Player')->hint('Choose the Player to create score entry')?>
+  <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(), 'id', 'username'), ['prompt'=>'Select Player'])->Label('Player')->hint('Choose the Player to create score entry')?>
 <?php endif;?>
     <?= $form->field($model, 'points')->textInput() ?>
 
@@ -25,6 +25,6 @@ use app\modules\frontend\models\Player;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

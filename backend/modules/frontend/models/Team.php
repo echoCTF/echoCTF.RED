@@ -41,7 +41,7 @@ class Team extends \yii\db\ActiveRecord
             [['academic'], 'boolean'],
             [['name'], 'string', 'max' => 255],
             [['token'], 'string', 'max' => 30],
-            [['token'], 'default', 'value' => substr(Yii::$app->security->generateRandomString(),0,30)],
+            [['token'], 'default', 'value' => substr(Yii::$app->security->generateRandomString(), 0, 30)],
             [['name'], 'unique'],
             [['token'], 'unique'],
             [['owner_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['owner_id' => 'id']],

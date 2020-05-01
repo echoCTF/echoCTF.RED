@@ -17,34 +17,34 @@ class FaqController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
-     {
-         return [
-           'access' => [
-                 'class' => \yii\filters\AccessControl::class,
-                 'rules' => [
-                     [
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
-                 ],
-             ],
-             'verbs' => [
-                 'class' => VerbFilter::class,
-                 'actions' => [
-                     'delete' => ['POST'],
-                 ],
-             ],
-         ];
-     }
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
     /**
      * Lists all Faq models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new FaqSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new FaqSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -72,9 +72,10 @@ class FaqController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Faq();
+        $model=new Faq();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -92,9 +93,10 @@ class FaqController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -126,7 +128,8 @@ class FaqController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Faq::findOne($id)) !== null) {
+        if(($model=Faq::findOne($id)) !== null)
+        {
             return $model;
         }
 

@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Credential */
 
-$this->title = 'Create Credential';
-$this->params['breadcrumbs'][] = ['label' => 'Credentials', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Credential';
+$this->params['breadcrumbs'][]=['label' => 'Credentials', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="credential-create">
 

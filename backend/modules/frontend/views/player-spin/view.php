@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\PlayerSpin */
 
-$this->title = $model->player_id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Player Spins'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->player_id;
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Player Spins'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="player-spin-view">

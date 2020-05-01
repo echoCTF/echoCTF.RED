@@ -15,14 +15,14 @@ class BadgeQuery extends \yii\db\ActiveQuery
      */
     public function received_by(int $player_id)
     {
-       return $this->andWhere('id in (SELECT badge_id FROM player_badge WHERE player_id='.$player_id.')');
+        return $this->andWhere('id in (SELECT badge_id FROM player_badge WHERE player_id='.$player_id.')');
     }
 
     /**
      * {@inheritdoc}
      * @return Badge[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -31,7 +31,7 @@ class BadgeQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Badge|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

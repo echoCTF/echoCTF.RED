@@ -17,26 +17,26 @@ class SessionController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
-     {
-         return [
-           'access' => [
-                 'class' => \yii\filters\AccessControl::class,
-                 'rules' => [
-                     [
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
-                 ],
-             ],
-             'verbs' => [
-                 'class' => VerbFilter::class,
-                 'actions' => [
-                     'delete' => ['POST'],
-                 ],
-             ],
-         ];
-     }
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
 
     /**
      * Lists all Sessions models.
@@ -44,8 +44,8 @@ class SessionController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new SessionsSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new SessionsSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -73,9 +73,10 @@ class SessionController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Sessions();
+        $model=new Sessions();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -93,9 +94,10 @@ class SessionController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -130,10 +132,10 @@ class SessionController extends Controller
         $expired=new \yii\db\Expression('UNIX_TIMESTAMP(NOW() - INTERVAL 2 DAY)');
 //        $expired_at=(new \yii\db\Query)->select($expired)->scalar();
         $sess=Sessions::deleteAll(['<', 'expire', $expired]);
-        if($sess>0)
-          Yii::$app->session->setFlash('success',"Deleted $sess expired sessions.");
+        if($sess > 0)
+          Yii::$app->session->setFlash('success', "Deleted $sess expired sessions.");
         else
-          Yii::$app->session->setFlash('warning',"No expired sessions found to delete.");
+          Yii::$app->session->setFlash('warning', "No expired sessions found to delete.");
 
         return $this->redirect(['index']);
     }
@@ -147,7 +149,8 @@ class SessionController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Sessions::findOne($id)) !== null) {
+        if(($model=Sessions::findOne($id)) !== null)
+        {
             return $model;
         }
 

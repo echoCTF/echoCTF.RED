@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ListView;
-$this->title = Yii::$app->sys->event_name.' - Rules';
+$this->title=Yii::$app->sys->event_name.' - Rules';
 ?>
 <div class="rule-index">
   <div class="body-content">

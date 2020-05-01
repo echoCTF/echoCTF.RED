@@ -20,7 +20,7 @@ class TreasureSearch extends Treasure
     {
         return [
             [['id', 'appears', 'target_id'], 'integer'],
-            [['discovered','name', 'pubname','category', 'description', 'pubdescription', 'player_type', 'csum', 'effects', 'code', 'ipoctet'], 'safe'],
+            [['discovered', 'name', 'pubname', 'category', 'description', 'pubdescription', 'player_type', 'csum', 'effects', 'code', 'ipoctet'], 'safe'],
             [['points'], 'number'],
         ];
     }
@@ -43,18 +43,19 @@ class TreasureSearch extends Treasure
      */
     public function search($params)
     {
-        $query = Treasure::find()->joinWith(['target']);
+        $query=Treasure::find()->joinWith(['target']);
         $query->select('treasure.*,(SELECT COUNT(treasure_id) FROM player_treasure WHERE treasure.id=player_treasure.treasure_id) as discovered');
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -91,7 +92,7 @@ class TreasureSearch extends Treasure
                       'desc' => ['ip' => SORT_DESC],
                   ],
                   'discovered' => [
-                      'asc' => [ 'discovered' => SORT_ASC],
+                      'asc' => ['discovered' => SORT_ASC],
                       'desc' => ['discovered' => SORT_DESC],
                   ],
                 ]

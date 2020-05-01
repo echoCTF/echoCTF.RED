@@ -1,8 +1,8 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ListView;
-$this->title = Html::encode(Yii::$app->sys->event_name. ' Instructions');
-$this->_description = 'Instructions on connecting and getting help';
+$this->title=Html::encode(Yii::$app->sys->event_name.' Instructions');
+$this->_description='Instructions on connecting and getting help';
 ?>
 <div class="instruction-index">
   <div class="body-content">

@@ -5,13 +5,13 @@ use yii\web\AssetBundle;
 
 class StreamWidgetAsset extends AssetBundle
 {
-    public $js = [
+    public $js=[
     ];
 
-    public $css = [
+    public $css=[
     ];
 
-    public $depends = [
+    public $depends=[
     ];
 
     public function init()

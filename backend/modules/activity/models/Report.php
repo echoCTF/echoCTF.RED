@@ -36,7 +36,7 @@ class Report extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['player_id','points'], 'required'],
+            [['player_id', 'points'], 'required'],
             [['player_id', 'points'], 'integer'],
             [['body', 'status', 'modcomment', 'pubbody'], 'string'],
             [['title', 'pubtitle'], 'string', 'max' => 255],

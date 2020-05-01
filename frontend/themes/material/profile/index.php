@@ -11,26 +11,26 @@ use app\widgets\leaderboard\Leaderboard;
 
 $game=Yii::$app->getModule('game');
 $this->_fluid="-fluid";
-$this->title = Yii::$app->sys->event_name .' Profile of: '.Html::encode($profile->owner->username);
-$this->_description = Html::encode($profile->bio);
-$this->_url=\yii\helpers\Url::to(['index','id'=>$profile->id],'https');
+$this->title=Yii::$app->sys->event_name.' Profile of: '.Html::encode($profile->owner->username);
+$this->_description=Html::encode($profile->bio);
+$this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
 ?>
 <div class="profile-index">
   <div class="body-content">
     <div class="row">
       <div class="col-md-8">
-        <?php \yii\widgets\Pjax::begin(['id'=>'target-listing','enablePushState'=>false,'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-        <?php echo TargetWidget::widget(['dataProvider' => null,'player_id'=>$profile->player_id,'profile'=>$profile,'title'=>'Progress','category'=>'Progress of '.Html::encode($profile->owner->username).' on platform targets.','personal'=>true]);?>
+        <?php \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
+        <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
       </div>
       <div class="col-md-4">
-        <?=$this->render('_card',['profile'=>$profile]);?>
+        <?=$this->render('_card', ['profile'=>$profile]);?>
       </div><!-- // end profile card col-md-4 -->
     </div><!--/row-->
-    <?php if($game->badges!==null && $game->badges->received_by($profile->player_id)->count()>0):?><h3>Player badges</h3><?php endif;?>
+    <?php if($game->badges !== null && $game->badges->received_by($profile->player_id)->count() > 0):?><h3>Player badges</h3><?php endif;?>
     <div class="row game-badges">
 
-<?php if($game->badges!==null) foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
+<?php if($game->badges !== null) foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
       <div class="col-sm-1" style="font-size: 450%">
         <?php printf('<abbr title="%s">%s</abbr>', $badge->name, $badge->pubname);?>
       </div>
@@ -38,14 +38,14 @@ $this->_url=\yii\helpers\Url::to(['index','id'=>$profile->id],'https');
     </div>
     <div class="row">
     <div class="col-sm-8"><?php
-    \yii\widgets\Pjax::begin(['id'=>'stream-listing','enablePushState'=>false,'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
-    echo Stream::widget(['divID'=>'stream','dataProvider' => null,'player_id'=>$profile->player_id,'pagerID'=>'stream-pager']);
+    \yii\widgets\Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
+    echo Stream::widget(['divID'=>'stream', 'dataProvider' => null, 'player_id'=>$profile->player_id, 'pagerID'=>'stream-pager']);
     \yii\widgets\Pjax::end();
     ?></div>
     <div class="col-sm-4">
       <?php
-      Pjax::begin(['id'=>'leaderboard-listing','enablePushState'=>false,'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-      echo Leaderboard::widget(['divID'=>"Leaderboard",'player_id'=>$profile->player_id, 'pageSize'=>8,'title'=>'Leaderboard','category'=>'Listing current player page. <small>Updated every 10 minutes</small>']);
+      Pjax::begin(['id'=>'leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
+      echo Leaderboard::widget(['divID'=>"Leaderboard", 'player_id'=>$profile->player_id, 'pageSize'=>8, 'title'=>'Leaderboard', 'category'=>'Listing current player page. <small>Updated every 10 minutes</small>']);
       Pjax::end();
       ?>
     </div>

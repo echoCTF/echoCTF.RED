@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\frontend\models\PlayerSpinSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Player Spins');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Player Spins');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-spin-index">
 
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'player',
               'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
             'counter',
             'total',
@@ -45,7 +45,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'class' => 'yii\grid\ActionColumn',
               'template' => '{reset} {view} {update} {delete}',
               'buttons' => [
-                  'reset' => function ($url) {
+                  'reset' => function($url) {
                       return Html::a(
                           '<span class="glyphicon glyphicon-refresh"></span>',
                           $url,
@@ -59,7 +59,7 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
             ],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

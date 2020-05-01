@@ -19,7 +19,7 @@ class PlayerSslSearch extends PlayerSsl
     {
         return [
             [['player_id'], 'integer'],
-            [['subject', 'csr', 'crt', 'txtcrt', 'privkey', 'ts','player'], 'safe'],
+            [['subject', 'csr', 'crt', 'txtcrt', 'privkey', 'ts', 'player'], 'safe'],
         ];
     }
 
@@ -41,17 +41,18 @@ class PlayerSslSearch extends PlayerSsl
      */
     public function search($params)
     {
-        $query = PlayerSsl::find()->joinWith(['player']);
+        $query=PlayerSsl::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -76,7 +77,7 @@ class PlayerSslSearch extends PlayerSsl
                     $dataProvider->getSort()->attributes,
                     [
                       'player' => [
-                          'asc' => [ 'player_id' => SORT_ASC],
+                          'asc' => ['player_id' => SORT_ASC],
                           'desc' => ['player_id' => SORT_DESC],
                       ],
                     ]

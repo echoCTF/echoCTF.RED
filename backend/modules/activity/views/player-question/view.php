@@ -6,10 +6,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\PlayerQuestion */
 
-$this->title = $model->id;
-$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][] = ['label' => 'Player Questions', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->id;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Player Questions', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="player-question-view">
@@ -33,11 +33,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             [
                 'label'=>'Question',
-                'value'=>sprintf("id:%d %s",$model->question_id,$model->question->name),
+                'value'=>sprintf("id:%d %s", $model->question_id, $model->question->name),
             ],
             [
                 'label'=>'Player',
-                'value'=>sprintf("id:%d %s",$model->player_id,$model->player->username),
+                'value'=>sprintf("id:%d %s", $model->player_id, $model->player->username),
             ],
             'points',
             'ts',

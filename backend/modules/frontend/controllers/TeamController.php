@@ -22,7 +22,7 @@ class TeamController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -46,8 +46,8 @@ class TeamController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TeamSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new TeamSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -75,15 +75,16 @@ class TeamController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Team();
-        if(\app\modules\frontend\models\Player::find()->count()==0)
+        $model=new Team();
+        if(\app\modules\frontend\models\Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -101,9 +102,10 @@ class TeamController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -148,7 +150,8 @@ class TeamController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Team::findOne($id)) !== null) {
+        if(($model=Team::findOne($id)) !== null)
+        {
             return $model;
         }
 

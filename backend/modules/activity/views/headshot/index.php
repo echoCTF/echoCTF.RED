@@ -7,8 +7,8 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\modules\activity\models\HeadshotSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Headshots');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Headshots');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="headshot-index">
 
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app', 'Create Headshot'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php Pjax::begin(); ?>
+    <?php Pjax::begin();?>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
@@ -47,8 +47,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
-    <?php Pjax::end(); ?>
+    <?php Pjax::end();?>
 
 </div>

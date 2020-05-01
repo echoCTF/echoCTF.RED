@@ -10,11 +10,11 @@ use yii\widgets\ActiveForm;
 
 <div class="rule-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true])->hint("A unique title for the rule")?>
 
-    <?= $form->field($model, 'player_type')->dropDownList([ 'offense' => 'Offense', 'defense' => 'Defense', 'both' => 'Both', ], ['prompt' => 'Choose player type']) ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', 'both' => 'Both', ], ['prompt' => 'Choose player type']) ?>
 
     <?= $form->field($model, 'message')->textarea(['rows' => 6])->hint('Detailed rule message in raw HTML') ?>
 
@@ -24,6 +24,6 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\PlayerSpin */
 
-$this->title = Yii::t('app', 'Create Player Spin');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Player Spins'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Create Player Spin');
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Player Spins'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-spin-create">
 

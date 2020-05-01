@@ -35,8 +35,8 @@ class InstructionController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Instruction::find()->orderBy(['weight'=>SORT_ASC,'id'=>SORT_ASC]),
+        $dataProvider=new ActiveDataProvider([
+            'query' => Instruction::find()->orderBy(['weight'=>SORT_ASC, 'id'=>SORT_ASC]),
         ]);
 
         return $this->render('index', [
@@ -64,9 +64,10 @@ class InstructionController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Instruction();
+        $model=new Instruction();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -84,9 +85,10 @@ class InstructionController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -118,7 +120,8 @@ class InstructionController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Instruction::findOne($id)) !== null) {
+        if(($model=Instruction::findOne($id)) !== null)
+        {
             return $model;
         }
 

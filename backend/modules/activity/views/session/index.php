@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\activity\models\SessionsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Sessions');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Sessions');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="sessions-index">
 
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'player',
                 'label'=>'Player',
-                'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player ? $model->player->username: "");},
+                'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player ? $model->player->username : "");},
             ],
             'ipoctet',
             'id',
@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

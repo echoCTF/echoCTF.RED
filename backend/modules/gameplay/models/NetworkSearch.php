@@ -18,8 +18,8 @@ class NetworkSearch extends Network
     {
         return [
             [['id'], 'integer'],
-            [['public','active'], 'boolean'],
-            [['name', 'description','codename','icon', 'ts'], 'safe'],
+            [['public', 'active'], 'boolean'],
+            [['name', 'description', 'codename', 'icon', 'ts'], 'safe'],
         ];
     }
 
@@ -41,17 +41,18 @@ class NetworkSearch extends Network
      */
     public function search($params)
     {
-        $query = Network::find();
+        $query=Network::find();
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;

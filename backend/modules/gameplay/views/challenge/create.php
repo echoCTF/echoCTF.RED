@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Challenge */
 
-$this->title = 'Create Challenge';
-$this->params['breadcrumbs'][] = ['label' => 'Challenges', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Challenge';
+$this->params['breadcrumbs'][]=['label' => 'Challenges', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="challenge-create">
 

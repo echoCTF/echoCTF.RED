@@ -18,8 +18,8 @@ class ImportPlayerForm extends Model
     public function rules()
     {
         return [
-            [['heading_first','player_ssl'], 'boolean'],
-            [['csvFile'], 'file', 'skipOnEmpty' => false, 'extensions' => ['csv'],'checkExtensionByMimeType'=>false],
+            [['heading_first', 'player_ssl'], 'boolean'],
+            [['csvFile'], 'file', 'skipOnEmpty' => false, 'extensions' => ['csv'], 'checkExtensionByMimeType'=>false],
         ];
     }
     public function attributeLabels()
@@ -33,25 +33,28 @@ class ImportPlayerForm extends Model
 
     public function upload()
     {
-        if ($this->validate()) {
-            $this->csvFile->saveAs( \Yii::getAlias('@webroot').'/uploads/' . $this->csvFile->baseName . '.' . $this->csvFile->extension);
+        if($this->validate())
+        {
+            $this->csvFile->saveAs(\Yii::getAlias('@webroot').'/uploads/'.$this->csvFile->baseName.'.'.$this->csvFile->extension);
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
     public function parseCSV()
     {
-      $fname=\Yii::getAlias('@webroot').'/uploads/' . $this->csvFile->baseName . '.' . $this->csvFile->extension;
-      if (($handle = fopen($fname, "r")) !== FALSE)
+      $fname=\Yii::getAlias('@webroot').'/uploads/'.$this->csvFile->baseName.'.'.$this->csvFile->extension;
+      if(($handle=fopen($fname, "r")) !== FALSE)
       {
-          while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+          while(($data=fgetcsv($handle, 1000, ",")) !== FALSE) {
               //$num = count($data);
               $this->csvRecords[]=$data;
           }
           fclose($handle);
       }
-      if($this->heading_first==='1')
+      if($this->heading_first === '1')
         array_shift($this->csvRecords);
 
       return true;

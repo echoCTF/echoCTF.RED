@@ -18,7 +18,7 @@ class SessionsSearch extends Sessions
     public function rules()
     {
         return [
-            [['id', 'data', 'ts','ip','ipoctet','player'], 'safe'],
+            [['id', 'data', 'ts', 'ip', 'ipoctet', 'player'], 'safe'],
             [['expire', 'player_id', 'ip'], 'integer'],
         ];
     }
@@ -41,17 +41,18 @@ class SessionsSearch extends Sessions
      */
     public function search($params)
     {
-        $query = Sessions::find()->joinWith(['player']);
+        $query=Sessions::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -79,7 +80,7 @@ class SessionsSearch extends Sessions
                           'desc' => ['ip' => SORT_DESC],
                       ],
                       'player' => [
-                          'asc' => [ 'player_id' => SORT_ASC],
+                          'asc' => ['player_id' => SORT_ASC],
                           'desc' => ['player_id' => SORT_DESC],
                       ],
                     ]

@@ -17,26 +17,26 @@ class NetworkPlayerController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
-     {
-         return [
-           'access' => [
-                 'class' => \yii\filters\AccessControl::class,
-                 'rules' => [
-                     [
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
-                 ],
-             ],
-             'verbs' => [
-                 'class' => VerbFilter::class,
-                 'actions' => [
-                     'delete' => ['POST'],
-                 ],
-             ],
-         ];
-     }
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
 
     /**
      * Lists all NetworkPlayer models.
@@ -44,8 +44,8 @@ class NetworkPlayerController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new NetworkPlayerSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new NetworkPlayerSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,9 +74,10 @@ class NetworkPlayerController extends Controller
      */
     public function actionCreate()
     {
-        $model = new NetworkPlayer();
+        $model=new NetworkPlayer();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'network_id' => $model->network_id, 'player_id' => $model->player_id]);
         }
 
@@ -95,9 +96,10 @@ class NetworkPlayerController extends Controller
      */
     public function actionUpdate($network_id, $player_id)
     {
-        $model = $this->findModel($network_id, $player_id);
+        $model=$this->findModel($network_id, $player_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'network_id' => $model->network_id, 'player_id' => $model->player_id]);
         }
 
@@ -131,7 +133,8 @@ class NetworkPlayerController extends Controller
      */
     protected function findModel($network_id, $player_id)
     {
-        if (($model = NetworkPlayer::findOne(['network_id' => $network_id, 'player_id' => $player_id])) !== null) {
+        if(($model=NetworkPlayer::findOne(['network_id' => $network_id, 'player_id' => $player_id])) !== null)
+        {
             return $model;
         }
 

@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\activity\models\PlayerScoreSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Player Scores';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Player Scores';
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-score-index">
 
@@ -28,14 +28,14 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'player',
               'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
             'points',
             'ts',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

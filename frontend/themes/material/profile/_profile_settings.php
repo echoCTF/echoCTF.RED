@@ -13,15 +13,15 @@ $this->_fluid="-fluid";
 ?>
 
 <div class="profile-form">
-    <?php $form = ActiveForm::begin([
+    <?php $form=ActiveForm::begin([
       'id'=>'profile-form',
-     ]); ?>
+      ]);?>
     <div class="row">
       <div class="col-lg-6">
-        <?=$form->field($model, 'visibility')->dropDownList($model->visibilities,['prompt'=>'Select your profile visibility','class'=>'form-control selectpicker','data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select the desired visibility setting for your profile')?>
+        <?=$form->field($model, 'visibility')->dropDownList($model->visibilities, ['prompt'=>'Select your profile visibility', 'class'=>'form-control selectpicker', 'data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select the desired visibility setting for your profile')?>
       </div>
       <div class="col-lg-6">
-	      <?=$form->field($model, 'country')->dropDownList(ArrayHelper::map(Country::find()->all(), 'id', 'name'),['prompt'=>'Select your Country','class'=>'form-control selectpicker','data-size'=>'5','data-style'=>"btn-info"])->hint('Select your country')?>
+	      <?=$form->field($model, 'country')->dropDownList(ArrayHelper::map(Country::find()->all(), 'id', 'name'), ['prompt'=>'Select your Country', 'class'=>'form-control selectpicker', 'data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select your country')?>
       </div>
     </div>
     <div class="row">
@@ -31,7 +31,7 @@ $this->_fluid="-fluid";
         <?=$form->field($model, 'github_avatar')->checkbox(['label'=>'Use github avatar'])->hint('')->label(false) ?>
       </div>-->
       <div class="col-lg-10">
-		      <?=$form->field($model, 'avatar')->dropDownList(ArrayHelper::map(Avatar::find()->all(), 'id', 'id'),['prompt'=>'Select your avatar','class'=>'form-control selectpicker','data-size'=>'5','data-style'=>"btn-info"])->hint('Select an avatar from the list')?>
+		      <?=$form->field($model, 'avatar')->dropDownList(ArrayHelper::map(Avatar::find()->all(), 'id', 'id'), ['prompt'=>'Select your avatar', 'class'=>'form-control selectpicker', 'data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select an avatar from the list')?>
       </div>
       <div class="col-lg-2">
 		      <img class="thumbnail img-fluid pull-right" id="preview_avatar" src="/images/avatars/<?=$model->avatar?>" alt="<?=$model->avatar?>"/>
@@ -61,7 +61,7 @@ $this->_fluid="-fluid";
         <?=Html::submitButton(Yii::t('app', 'Update Profile'), ['class' => 'btn btn-info pull-right']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
     <div class="clearfix"></div>
 </div>

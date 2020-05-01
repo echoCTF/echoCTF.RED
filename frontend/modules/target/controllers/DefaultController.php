@@ -26,8 +26,8 @@ class DefaultController extends Controller
 
       public function actions()
       {
-        $actions = parent::actions();
-        $actions['spin']['class'] = 'app\modules\target\actions\SpinRestAction';
+        $actions=parent::actions();
+        $actions['spin']['class']='app\modules\target\actions\SpinRestAction';
         return $actions;
       }
 
@@ -36,7 +36,7 @@ class DefaultController extends Controller
           return [
               'access' => [
                   'class' => AccessControl::class,
-                  'only' => ['index', 'claim','spin'],
+                  'only' => ['index', 'claim', 'spin'],
                   'rules' => [
                       [
                           'allow' => true,
@@ -44,7 +44,7 @@ class DefaultController extends Controller
                       ],
                       [
                           'allow' => true,
-                          'actions' => ['claim','spin'],
+                          'actions' => ['claim', 'spin'],
                           'roles' => ['@'],
                           'verbs'=>['post'],
                       ],
@@ -60,61 +60,61 @@ class DefaultController extends Controller
      * Renders a target versus a profile
      *
      */
-     public function actionVersus(int $id,int $profile_id)
-     {
-       $sum=0;
-       $profile=$this->findProfile($profile_id);
-       if(Yii::$app->user->isGuest && $profile->visibility!='public')
-         			return $this->redirect(['/']);
+      public function actionVersus(int $id, int $profile_id)
+      {
+        $sum=0;
+        $profile=$this->findProfile($profile_id);
+        if(Yii::$app->user->isGuest && $profile->visibility != 'public')
+                return $this->redirect(['/']);
 
-       if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin!==true)
-         			return $this->redirect(['/']);
+        if($profile->visibility != 'public' && $profile->visibility != 'ingame' && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin !== true)
+                return $this->redirect(['/']);
 
 
-       $target=Target::find()->where(['t.id'=>$id])->player_progress($profile->player_id)->one();
-       $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>$profile->player_id,'finding.target_id'=>$id])->all();
-       $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>$profile->player_id,'treasure.target_id'=>$id])->all();
-       foreach($PF as $pf)
-         $sum+=$pf->finding->points;
-       foreach($PT as $pt)
-         $sum+=$pt->treasure->points;
-       $treasures=$findings=[];
-       foreach($target->treasures as $treasure)
-         $treasures[]=$treasure->id;
-       foreach($target->findings as $finding)
-         $findings[]=$finding->id;
-       $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
-       ->where(['model_id'=>$findings, 'model'=>'finding'])
-       ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
-       ->orWhere(['model_id'=>$id, 'model'=>'headshot'])
-       ->andWhere(['player_id'=>$profile->player_id])
-       ;
-       $dataProvider = new ActiveDataProvider([
-             'query' => $model->orderBy(['ts'=>SORT_DESC]),
-             'pagination' => [
-                 'pageSizeParam'=>'stream-perpage',
-                 'pageParam'=>'stream-page',
-                 'pageSize' => 10,
-             ]
-       ]);
+        $target=Target::find()->where(['t.id'=>$id])->player_progress($profile->player_id)->one();
+        $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>$profile->player_id, 'finding.target_id'=>$id])->all();
+        $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>$profile->player_id, 'treasure.target_id'=>$id])->all();
+        foreach($PF as $pf)
+          $sum+=$pf->finding->points;
+        foreach($PT as $pt)
+          $sum+=$pt->treasure->points;
+        $treasures=$findings=[];
+        foreach($target->treasures as $treasure)
+          $treasures[]=$treasure->id;
+        foreach($target->findings as $finding)
+          $findings[]=$finding->id;
+        $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
+        ->where(['model_id'=>$findings, 'model'=>'finding'])
+        ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
+        ->orWhere(['model_id'=>$id, 'model'=>'headshot'])
+        ->andWhere(['player_id'=>$profile->player_id])
+        ;
+        $dataProvider=new ActiveDataProvider([
+              'query' => $model->orderBy(['ts'=>SORT_DESC]),
+              'pagination' => [
+                  'pageSizeParam'=>'stream-perpage',
+                  'pageParam'=>'stream-page',
+                  'pageSize' => 10,
+              ]
+        ]);
 
-       $headshotsProvider = new ArrayDataProvider([
-             'allModels' => $target->headshots,
-             'pagination' => [
-                 'pageSizeParam'=>'headshot-perpage',
-                 'pageParam'=>'headshot-page',
-                 'pageSize' => 10,
-             ]]);
+        $headshotsProvider=new ArrayDataProvider([
+              'allModels' => $target->headshots,
+              'pagination' => [
+                  'pageSizeParam'=>'headshot-perpage',
+                  'pageParam'=>'headshot-page',
+                  'pageSize' => 10,
+              ]]);
 
-       return $this->render('versus', [
-             'profile'=>$profile,
-             'target' => $target,
-             'streamProvider'=>$dataProvider,
-             'playerPoints'=>$sum,
-             'headshotsProvider'=>$headshotsProvider
-         ]);
+        return $this->render('versus', [
+              'profile'=>$profile,
+              'target' => $target,
+              'streamProvider'=>$dataProvider,
+              'playerPoints'=>$sum,
+              'headshotsProvider'=>$headshotsProvider
+          ]);
 
-     }
+      }
 
     /**
      * Renders a Target model details view
@@ -126,9 +126,9 @@ class DefaultController extends Controller
       $target=$this->findModel($id);
       if(!Yii::$app->user->isGuest)
       {
-        $target=Target::find()->where(['t.id'=>$id])->player_progress((int)Yii::$app->user->id)->one();
-        $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>Yii::$app->user->id,'finding.target_id'=>$id])->all();
-        $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>Yii::$app->user->id,'treasure.target_id'=>$id])->all();
+        $target=Target::find()->where(['t.id'=>$id])->player_progress((int) Yii::$app->user->id)->one();
+        $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>Yii::$app->user->id, 'finding.target_id'=>$id])->all();
+        $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>Yii::$app->user->id, 'treasure.target_id'=>$id])->all();
         foreach($PF as $pf)
           $sum+=$pf->finding->points;
         foreach($PT as $pt)
@@ -143,8 +143,8 @@ class DefaultController extends Controller
       ->where(['model_id'=>$findings, 'model'=>'finding'])
       ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
       ->orWhere(['model_id'=>$id, 'model'=>'headshot'])
-      ->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]);
-      $dataProvider = new ActiveDataProvider([
+      ->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]);
+      $dataProvider=new ActiveDataProvider([
             'query' => $model,
             'pagination' => [
                 'pageSizeParam'=>'stream-perpage',
@@ -155,7 +155,7 @@ class DefaultController extends Controller
 
 
 
-      $headshotsProvider = new ArrayDataProvider([
+      $headshotsProvider=new ArrayDataProvider([
             'allModels' => $target->headshots,
             'pagination' => [
                 'pageSizeParam'=>'headshot-perpage',
@@ -189,7 +189,7 @@ class DefaultController extends Controller
      */
     public function actionClaim()
     {
-        $string = Yii::$app->request->post('hash');
+        $string=Yii::$app->request->post('hash');
 
         if(!is_string($string))
         {
@@ -198,41 +198,42 @@ class DefaultController extends Controller
 
         $treasure=Treasure::find()->claimable()->byCode($string)->one();
 
-        if($treasure!==null && Treasure::find()->byCode($string)->claimable()->notBy((int)Yii::$app->user->id)->one()===null)
+        if($treasure !== null && Treasure::find()->byCode($string)->claimable()->notBy((int) Yii::$app->user->id)->one() === null)
         {
-          Yii::$app->session->setFlash('warning',sprintf('Flag [%s] claimed before',$treasure->name,$treasure->target->name));
+          Yii::$app->session->setFlash('warning', sprintf('Flag [%s] claimed before', $treasure->name, $treasure->target->name));
           return $this->renderAjax('claim');
         }
-        elseif($treasure===null)
+        elseif($treasure === null)
         {
-          Yii::$app->session->setFlash('error',sprintf('Flag [<strong>%s</strong>] does not exist!',Html::encode($string)));
+          Yii::$app->session->setFlash('error', sprintf('Flag [<strong>%s</strong>] does not exist!', Html::encode($string)));
           return $this->renderAjax('claim');
         }
 
         $connection=Yii::$app->db;
-        $transaction = $connection->beginTransaction();
-        try {
-          if($treasure!==null)
+        $transaction=$connection->beginTransaction();
+        try
+        {
+          if($treasure !== null)
           {
             $PT=new PlayerTreasure();
-            $PT->player_id=(int)Yii::$app->user->id;
+            $PT->player_id=(int) Yii::$app->user->id;
             $PT->treasure_id=$treasure->id;
             $PT->save();
-            if($treasure->appears!==-1)
+            if($treasure->appears !== -1)
             {
-              $treasure->updateAttributes(['appears' => intval($treasure->appears)-1]);
+              $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
             }
           }
           $transaction->commit();
-          Yii::$app->session->setFlash('success',sprintf('Flag [%s] claimed for %s points',$treasure->name,number_format($treasure->points)));
+          Yii::$app->session->setFlash('success', sprintf('Flag [%s] claimed for %s points', $treasure->name, number_format($treasure->points)));
         }
-        catch (\Exception $e)
+        catch(\Exception $e)
         {
           $transaction->rollBack();
-          Yii::$app->session->setFlash('error','Flag failed');
+          Yii::$app->session->setFlash('error', 'Flag failed');
           throw $e;
         }
-        catch (\Throwable $e)
+        catch(\Throwable $e)
         {
           $transaction->rollBack();
           throw $e;
@@ -249,7 +250,8 @@ class DefaultController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = \app\modules\target\models\Target::findOne($id)) !== null) {
+        if(($model=\app\modules\target\models\Target::findOne($id)) !== null)
+        {
             return $model;
         }
 
@@ -257,7 +259,8 @@ class DefaultController extends Controller
     }
     protected function findProfile($id)
     {
-        if (($model = \app\models\Profile::findOne($id)) !== null) {
+        if(($model=\app\models\Profile::findOne($id)) !== null)
+        {
             return $model;
         }
 

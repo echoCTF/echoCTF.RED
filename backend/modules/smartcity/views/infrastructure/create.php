@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\smartcity\models\Infrastructure */
 
-$this->title = 'Create Infrastructure';
-$this->params['breadcrumbs'][] = ['label' => 'Infrastructures', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Infrastructure';
+$this->params['breadcrumbs'][]=['label' => 'Infrastructures', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="infrastructure-create">
 

@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Credential */
 
-$this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Credentials', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->title;
+$this->params['breadcrumbs'][]=['label' => 'Credentials', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="credential-view">

@@ -38,7 +38,7 @@ class Challenge extends \yii\db\ActiveRecord
         return [
             [['description', 'player_type'], 'string'],
             [['file'], 'file'],
-            [['name', 'category', 'difficulty','filename'], 'string', 'max' => 255],
+            [['name', 'category', 'difficulty', 'filename'], 'string', 'max' => 255],
             [['name'], 'unique'],
         ];
     }

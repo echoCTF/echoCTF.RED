@@ -21,7 +21,7 @@ class HeadshotSearch extends Headshot
     {
         return [
             [['player_id', 'target_id'], 'integer'],
-            [['created_at','username','fqdn','ipoctet'], 'safe'],
+            [['created_at', 'username', 'fqdn', 'ipoctet'], 'safe'],
         ];
     }
 
@@ -43,17 +43,18 @@ class HeadshotSearch extends Headshot
      */
     public function search($params)
     {
-        $query = Headshot::find()->joinWith(['player','target']);
+        $query=Headshot::find()->joinWith(['player', 'target']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -73,15 +74,15 @@ class HeadshotSearch extends Headshot
                 $dataProvider->getSort()->attributes,
                 [
                   'username' => [
-                      'asc' => [ 'player.username' => SORT_ASC],
+                      'asc' => ['player.username' => SORT_ASC],
                       'desc' => ['player.username' => SORT_DESC],
                   ],
                   'fqdn' => [
-                      'asc' => [ 'target.fqdn' => SORT_ASC],
+                      'asc' => ['target.fqdn' => SORT_ASC],
                       'desc' => ['target.fqdn' => SORT_DESC],
                   ],
                   'ipoctet' => [
-                      'asc' => [ 'target.ip' => SORT_ASC],
+                      'asc' => ['target.ip' => SORT_ASC],
                       'desc' => ['target.ip' => SORT_DESC],
                   ],
                 ]

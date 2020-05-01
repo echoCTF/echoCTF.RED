@@ -200,12 +200,12 @@ class Target extends \yii\db\ActiveRecord
       $categories=[];
       foreach($this->treasureCategories as $category => $cnt)
       {
-        if($cnt>1)
-          $categories[]=sprintf("%d:%s",$cnt,$category);
+        if($cnt > 1)
+          $categories[]=sprintf("%d:%s", $cnt, $category);
         else
-          $categories[]=sprintf("%s",$category);
+          $categories[]=sprintf("%s", $category);
       }
-      return implode(', ',$categories);
+      return implode(', ', $categories);
 
     }
 
@@ -219,10 +219,10 @@ class Target extends \yii\db\ActiveRecord
 
     public function getSchedule()
     {
-      if(intval($this->active)===1 && $this->status==='powerdown')
-        return sprintf('Target scheduled for powerdown at %s',$this->scheduled_at);
-      elseif(intval($this->active)===0  && $this->status==='powerup' )
-        return sprintf('Target scheduled for powerup at %s',$this->scheduled_at);
+      if(intval($this->active) === 1 && $this->status === 'powerdown')
+        return sprintf('Target scheduled for powerdown at %s', $this->scheduled_at);
+      elseif(intval($this->active) === 0 && $this->status === 'powerup')
+        return sprintf('Target scheduled for powerup at %s', $this->scheduled_at);
     }
 
     /*
@@ -230,7 +230,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getDifficultyText()
     {
-      return $this->difficulties[(int)$this->difficulty];
+      return $this->difficulties[(int) $this->difficulty];
     }
 
     /*
@@ -260,7 +260,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function headshot($player_id)
     {
-      return Headshot::find()->where(['target_id' => $this->id,'player_id'=>$player_id])->one();
+      return Headshot::find()->where(['target_id' => $this->id, 'player_id'=>$player_id])->one();
     }
 
     /*
@@ -274,11 +274,11 @@ class Target extends \yii\db\ActiveRecord
     public function getFormattedExtras()
     {
       $scheduled=null;
-      if(intval($this->active)===1 && $this->status==='powerdown')
-        $scheduled=sprintf('<abbr title="Scheduled to powedown at %s"><i class="glyphicon glyphicon-hand-down"></i></abbr>',$this->scheduled_at);
-      elseif(intval($this->active)===0  && $this->status==='powerup' )
-        $scheduled=sprintf('<abbr title="Scheduled to powerup %s"><i class="glyphicon glyphicon-hand-up"></i></abbr>',$this->scheduled_at);
-      return sprintf("<center><abbr title='Flags'><i class='material-icons'>flag</i>%d</abbr> / <abbr title='Service'><i class='material-icons'>whatshot</i>%d</abbr> / <abbr title='Headshots'><i class='material-icons'>memory</i>%d</abbr> %s</center>",count($this->treasures),count($this->findings),$this->countHeadshots,$scheduled);
+      if(intval($this->active) === 1 && $this->status === 'powerdown')
+        $scheduled=sprintf('<abbr title="Scheduled to powedown at %s"><i class="glyphicon glyphicon-hand-down"></i></abbr>', $this->scheduled_at);
+      elseif(intval($this->active) === 0 && $this->status === 'powerup')
+        $scheduled=sprintf('<abbr title="Scheduled to powerup %s"><i class="glyphicon glyphicon-hand-up"></i></abbr>', $this->scheduled_at);
+      return sprintf("<center><abbr title='Flags'><i class='material-icons'>flag</i>%d</abbr> / <abbr title='Service'><i class='material-icons'>whatshot</i>%d</abbr> / <abbr title='Headshots'><i class='material-icons'>memory</i>%d</abbr> %s</center>", count($this->treasures), count($this->findings), $this->countHeadshots, $scheduled);
     }
 
     /*
@@ -291,17 +291,17 @@ class Target extends \yii\db\ActiveRecord
         return false;
       }
 
-      if($this->spinQueue!==null || intval($this->active)!=1 )
+      if($this->spinQueue !== null || intval($this->active) != 1)
       {
-        return false; // Not active or already queued
+        return false;// Not active or already queued
       }
 
-      if(intval(Yii::$app->user->identity->profile->spins->counter)>=intval(Yii::$app->sys->spins_per_day))
+      if(intval(Yii::$app->user->identity->profile->spins->counter) >= intval(Yii::$app->sys->spins_per_day))
       {
-        return false; // user is not allowed spins for the day.
+        return false;// user is not allowed spins for the day.
       }
 
-      if(intval($this->player_findings)==0 && intval($this->player_treasures)==0 && Yii::$app->user->identity->profile->last->vpn_local_address===NULL)
+      if(intval($this->player_findings) == 0 && intval($this->player_treasures) == 0 && Yii::$app->user->identity->profile->last->vpn_local_address === NULL)
         return false;
       return true;
     }
@@ -350,7 +350,7 @@ class Target extends \yii\db\ActiveRecord
       return self::DEFAULT_LOGO;
     }
 
-    public function save($runValidation = true, $attributeNames = NULL)
+    public function save($runValidation=true, $attributeNames=NULL)
     {
       throw new \LogicException("Saving is disabled for this model.");
     }

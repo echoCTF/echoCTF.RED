@@ -6,13 +6,13 @@ use yii\data\ActiveDataProvider;
 class HintsRestAction extends \yii\rest\IndexAction
 {
   public $modelClass="\app\models\Hint";
-  public $serializer = 'yii\rest\Serializer';
+  public $serializer='yii\rest\Serializer';
   public function run()
   {
-    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    $requestParams = Yii::$app->request->get();
-    $playerHints=\app\models\PlayerHint::find()->forAjax()->forPlayer((int)Yii::$app->user->id);
-    $dataProvider = new ActiveDataProvider([
+    \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
+    $requestParams=Yii::$app->request->get();
+    $playerHints=\app\models\PlayerHint::find()->forAjax()->forPlayer((int) Yii::$app->user->id);
+    $dataProvider=new ActiveDataProvider([
         'query' => $playerHints,
         'pagination' => [
             'pageParam'=>'playerHint-page',

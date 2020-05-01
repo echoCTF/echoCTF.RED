@@ -98,7 +98,7 @@ class Question extends \yii\db\ActiveRecord
      */
     public function getAnswered()
     {
-        return $this->hasOne(PlayerQuestion::class, ['question_id' => 'id'])->andOnCondition(['player_id'=>(int)Yii::$app->user->id]);
+        return $this->hasOne(PlayerQuestion::class, ['question_id' => 'id'])->andOnCondition(['player_id'=>(int) Yii::$app->user->id]);
     }
 
     /**
@@ -109,7 +109,7 @@ class Question extends \yii\db\ActiveRecord
         return $this->hasOne(Challenge::class, ['id' => 'challenge_id']);
     }
 
-    public function save($runValidation = true, $attributeNames = NULL)
+    public function save($runValidation=true, $attributeNames=NULL)
     {
         throw new \LogicException("Saving is disabled for this model.");
     }

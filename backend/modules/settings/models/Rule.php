@@ -49,7 +49,7 @@ class Rule extends \yii\db\ActiveRecord
         return [
             [['player_type', 'message'], 'string'],
             [['weight'], 'integer'],
-            [['weight'], 'default', 'value'=> 0 ],
+            [['weight'], 'default', 'value'=> 0],
             [['title'], 'string', 'max' => 255],
             [['title'], 'unique'],
         ];

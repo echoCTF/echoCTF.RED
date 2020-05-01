@@ -1,6 +1,6 @@
 <?php
 /* @var $this yii\web\View */
-$this->title=Yii::$app->sys->event_name. ' Privacy Policy'
+$this->title=Yii::$app->sys->event_name.' Privacy Policy'
 ?>
 <div class="privacy-policy-index">
     <div class="body-content">

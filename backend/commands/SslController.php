@@ -13,7 +13,7 @@ use app\modules\settings\models\Sysconfig;
 
 class SslController extends Controller {
 
-  public $ssl_params= "-config /etc/openvpn/crl/crl_openssl.conf -keyfile /etc/openvpn/private/echoCTF-OVPN-CA.key -cert /etc/openvpn/private/echoCTF-OVPN-CA.crt";
+  public $ssl_params="-config /etc/openvpn/crl/crl_openssl.conf -keyfile /etc/openvpn/private/echoCTF-OVPN-CA.key -cert /etc/openvpn/private/echoCTF-OVPN-CA.crt";
 
   /*
    * Create Certification Authority keys
@@ -21,26 +21,26 @@ class SslController extends Controller {
    * @param int $fileout.
    */
   public function actionCreateCa($fileout=false) {
-    $privkey = openssl_pkey_new(Yii::$app->params['pkey_config']);
+    $privkey=openssl_pkey_new(Yii::$app->params['pkey_config']);
 
     // Generate a certificate signing request
-    $csr = openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'x509_extensions'=>'v3_ca', 'config'=>__DIR__ . '/../config/CA.cnf','encrypt_key'=>false));
+    $csr=openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'x509_extensions'=>'v3_ca', 'config'=>__DIR__.'/../config/CA.cnf', 'encrypt_key'=>false));
 
     // sign csr
-    $x509 = openssl_csr_sign($csr, null, $privkey, $days=365, array('digest_alg' => 'sha256', 'config'=>__DIR__ . '/../config/CA.cnf','encrypt_key'=>false));
+    $x509=openssl_csr_sign($csr, null, $privkey, $days=365, array('digest_alg' => 'sha256', 'config'=>__DIR__.'/../config/CA.cnf', 'encrypt_key'=>false));
 
     openssl_csr_export($csr, $csrout);
     openssl_x509_export($x509, $crtout);
     openssl_pkey_export($privkey, $pkeyout);
     openssl_x509_export($x509, $certout, false);
-    $cacsr=Sysconfig::findOne('CA.csr') ;
-    $cacrt=Sysconfig::findOne('CA.crt') ;
-    $catxtcrt=Sysconfig::findOne('CA.txt.crt') ;
+    $cacsr=Sysconfig::findOne('CA.csr');
+    $cacrt=Sysconfig::findOne('CA.crt');
+    $catxtcrt=Sysconfig::findOne('CA.txt.crt');
     $cakey=Sysconfig::findOne('CA.key');
-    if($cacsr!==null)  $cacsr=new Sysconfig;
-    if($cacrt!==null)  $cacrt=new Sysconfig;
-    if($catxtcrt!==null)  $catxtcrt=new Sysconfig;
-    if($cakey!==null)  $cakey=new Sysconfig;
+    if($cacsr !== null)  $cacsr=new Sysconfig;
+    if($cacrt !== null)  $cacrt=new Sysconfig;
+    if($catxtcrt !== null)  $catxtcrt=new Sysconfig;
+    if($cakey !== null)  $cakey=new Sysconfig;
 
     $cacsr->id='CA.csr';
     $cacrt->id='CA.crt';
@@ -56,40 +56,40 @@ class SslController extends Controller {
     $cacrt->save();
     $catxtcrt->save();
     $cakey->save();
-    if((bool)$fileout)
+    if((bool) $fileout)
     {
       file_put_contents("echoCTF-OVPN-CA.csr", $csrout);
       file_put_contents("echoCTF-OVPN-CA.crt", $crtout);
       file_put_contents("echoCTF-OVPN-CA.txt.crt", $certout);
-      file_put_contents("echoCTF-OVPN-CA.key",$pkeyout);
+      file_put_contents("echoCTF-OVPN-CA.key", $pkeyout);
     }
   }
 
   /*
    * Create a server certificate for the OpenVPN server and sign it with our CA
    */
-  public function actionCreateCert($commonName="VPN Server",$emailAddress=null, $subjectAltName='IP:0.0.0.0'){
-    Yii::$app->params['dn']['commonName'] = $commonName;
-    if($emailAddress!==null) Yii::$app->params['dn']['emailAddress']=$emailAddress;
-    if($subjectAltName!=='IP:0.0.0.0') Yii::$app->params['dn']['subjectAltName']=$subjectAltName;
+  public function actionCreateCert($commonName="VPN Server", $emailAddress=null, $subjectAltName='IP:0.0.0.0') {
+    Yii::$app->params['dn']['commonName']=$commonName;
+    if($emailAddress !== null) Yii::$app->params['dn']['emailAddress']=$emailAddress;
+    if($subjectAltName !== 'IP:0.0.0.0') Yii::$app->params['dn']['subjectAltName']=$subjectAltName;
 
     // Generate a new private (and public) key pair
-    $privkey = openssl_pkey_new(Yii::$app->params['pkey_config']);
+    $privkey=openssl_pkey_new(Yii::$app->params['pkey_config']);
 
     // Generate a certificate signing request
-    $csr = openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'config'=>\Yii::getAlias('@appconfig').'/CA.cnf','encrypt_key'=>false));
+    $csr=openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'config'=>\Yii::getAlias('@appconfig').'/CA.cnf', 'encrypt_key'=>false));
     $tmpCAcert=tempnam("/tmp", "echoCTF-OVPN-CA.crt");
     $tmpCAprivkey=tempnam("/tmp", "echoCTF-OVPN-CA.key");
-    $CAcert = "file://".$tmpCAcert;
-    $CAprivkey = array("file://".$tmpCAprivkey,null);
-    file_put_contents($tmpCAprivkey,Yii::$app->sys->{'CA.key'});
-    file_put_contents($tmpCAcert,Yii::$app->sys->{'CA.crt'});
+    $CAcert="file://".$tmpCAcert;
+    $CAprivkey=array("file://".$tmpCAprivkey, null);
+    file_put_contents($tmpCAprivkey, Yii::$app->sys->{'CA.key'});
+    file_put_contents($tmpCAcert, Yii::$app->sys->{'CA.crt'});
 
     // Generate a self-signed cert, valid for 365 days
-    $x509 = openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256','config'=>\Yii::getAlias('@appconfig').'/CA.cnf','x509_extensions'=>'server_cert'), 0 );
+    $x509=openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256', 'config'=>\Yii::getAlias('@appconfig').'/CA.cnf', 'x509_extensions'=>'server_cert'), 0);
 
     openssl_csr_export($csr, $csrout);
-    openssl_x509_export($x509, $certout,false);
+    openssl_x509_export($x509, $certout, false);
     openssl_x509_export($x509, $crtout);
     openssl_pkey_export($privkey, $pkeyout);
 
@@ -99,7 +99,7 @@ class SslController extends Controller {
     file_put_contents($commonName.".csr", $csrout);
     file_put_contents($commonName.".txt.crt", $certout);
     file_put_contents($commonName.".crt", $crtout);
-    file_put_contents($commonName.".key",$pkeyout);
+    file_put_contents($commonName.".key", $pkeyout);
   }
 
   /**
@@ -107,18 +107,18 @@ class SslController extends Controller {
    * @param string $email Email to generate keys for.
    * @param int $fileout Flag to store cert details on local files
    */
-  public function actionGenPlayerCerts($email,$fileout=false) {
+  public function actionGenPlayerCerts($email, $fileout=false) {
     $player=Player::findOne(['email'=>$email]);
-    if($player===NULL || $player->playerSsl===null) return 0;
+    if($player === NULL || $player->playerSsl === null) return 0;
     $player->playerSsl->generate();
     $player->playerSsl->save();
 
-    if((bool)$fileout)
+    if((bool) $fileout)
     {
       file_put_contents($player->username.".csr", $player->playerSsl->csr);
       file_put_contents($player->username.".txt.crt", $player->playerSsl->txtcrt);
       file_put_contents($player->username.".crt", $player->playerSsl->crt);
-      file_put_contents($player->username.".key",$player->playerSsl->privkey);
+      file_put_contents($player->username.".key", $player->playerSsl->privkey);
     }
     return 0;
   }
@@ -126,19 +126,19 @@ class SslController extends Controller {
   /* Generate certificates for a all players */
   public function actionGenAllPlayerCerts($fileout=false)
   {
-    foreach (Player::find()->all() as $player)
+    foreach(Player::find()->all() as $player)
     {
       if(!($player->playerSsl instanceof PlayerSsl))
       {
         $player->playerSsl->generate();
         $player->playerSsl->save();
 
-        if((bool)$fileout)
+        if((bool) $fileout)
         {
           file_put_contents($player->username.".csr", $player->playerSsl->csr);
           file_put_contents($player->username.".txt.crt", $player->playerSsl->txtcrt);
           file_put_contents($player->username.".crt", $player->playerSsl->crt);
-          file_put_contents($player->username.".key",$player->playerSsl->privkey);
+          file_put_contents($player->username.".key", $player->playerSsl->privkey);
         }
       }
     }
@@ -158,14 +158,14 @@ class SslController extends Controller {
         file_put_contents("echoCTF-OVPN-CA.csr", $csr);
         file_put_contents("echoCTF-OVPN-CA.crt", $crt);
         file_put_contents("echoCTF-OVPN-CA.txt.crt", $txtcrt);
-        file_put_contents("echoCTF-OVPN-CA.key",$key);
+        file_put_contents("echoCTF-OVPN-CA.key", $key);
     }
     else
     {
       printf("echoCTF-OVPN-CA.csr\n%s", $csr);
       printf("echoCTF-OVPN-CA.crt\n%s", $crt);
       printf("echoCTF-OVPN-CA.txt.crt\n%s", $txtcrt);
-      printf("echoCTF-OVPN-CA.key\n%s",$key);
+      printf("echoCTF-OVPN-CA.key\n%s", $key);
     }
   }
 
@@ -175,7 +175,7 @@ class SslController extends Controller {
   public function actionLoadVpnTa($file='/etc/openvpn/private/vpn-ta.key')
   {
     $vpnta=Sysconfig::findOne('vpn-ta.key');
-    if($vpnta===null)
+    if($vpnta === null)
     {
       $vpnta=new Sysconfig;
       $vpnta->id='vpn-ta.key';
@@ -184,9 +184,9 @@ class SslController extends Controller {
     if(file_exists($file))
     {
       $vpnta->val=file_get_contents($file);
-      return $vpnta->save()?0:1;
+      return $vpnta->save() ? 0 : 1;
     }
-    else printf("File not found: %s\n",$file);
+    else printf("File not found: %s\n", $file);
     return -1;
   }
 
@@ -195,10 +195,12 @@ class SslController extends Controller {
    */
   public function actionCreateCrl()
   {
-    try {
-      $cmd=sprintf("openssl ca -gencrl %s -out /etc/openvpn/crl.pem",$this->ssl_params);
+    try
+    {
+      $cmd=sprintf("openssl ca -gencrl %s -out /etc/openvpn/crl.pem", $this->ssl_params);
       shell_exec($cmd);
-    } catch (\Exception $e)
+    }
+    catch(\Exception $e)
     {
       echo $e->getMessage();
       return 1;
@@ -214,13 +216,13 @@ class SslController extends Controller {
     $CERTS=Crl::find()->all();
     foreach($CERTS as $cert)
     {
-      $tmpcrt=tempnam( '/tmp', 'crt' );
-      file_put_contents($tmpcrt,$cert->crt);
-      $cmd=sprintf("openssl ca -revoke %s %s ", $tmpcrt,$this->ssl_params);
+      $tmpcrt=tempnam('/tmp', 'crt');
+      file_put_contents($tmpcrt, $cert->crt);
+      $cmd=sprintf("openssl ca -revoke %s %s ", $tmpcrt, $this->ssl_params);
       shell_exec($cmd);
       unlink($tmpcrt);
     }
-    if (!empty($CERTS)) $this->actionCreateCrl();
+    if(!empty($CERTS)) $this->actionCreateCrl();
     return 0;
   }
 
@@ -230,9 +232,9 @@ class SslController extends Controller {
   public function actionRevoke($player_id)
   {
     $player=Player::findOne($player_id);
-    $tmpcrt=tempnam( '/tmp', 'crt' );
-    file_put_contents($tmpcrt,$player->playerSsl->crt);
-    $cmd=sprintf("openssl ca -revoke %s %s ", $tmpcrt,$this->ssl_params);
+    $tmpcrt=tempnam('/tmp', 'crt');
+    file_put_contents($tmpcrt, $player->playerSsl->crt);
+    $cmd=sprintf("openssl ca -revoke %s %s ", $tmpcrt, $this->ssl_params);
     shell_exec($cmd);
     $this->actionCreateCrl();
     unlink($tmpcrt);

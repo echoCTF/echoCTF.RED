@@ -50,7 +50,7 @@ class Rule extends \yii\db\ActiveRecord
         return [
             [['player_type', 'message'], 'string'],
             [['weight'], 'integer'],
-            [['weight'], 'default', 'value'=> 0 ],
+            [['weight'], 'default', 'value'=> 0],
             [['title'], 'string', 'max' => 255],
             [['title'], 'unique'],
         ];
@@ -71,7 +71,7 @@ class Rule extends \yii\db\ActiveRecord
         ];
     }
 
-    public function save($runValidation = true, $attributeNames = NULL)
+    public function save($runValidation=true, $attributeNames=NULL)
     {
         throw new \LogicException("Saving is disabled for this model.");
     }

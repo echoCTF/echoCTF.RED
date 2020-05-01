@@ -71,11 +71,11 @@ coding_style:
                 function_declaration: false
                 closure_definition: false
                 function_call: false
-                if: true
-                for: true
-                while: true
-                switch: true
-                catch: true
+                if: false
+                for: false
+                while: false
+                switch: false
+                catch: false
                 array_initializer: false
             around_operators:
                 assignment: false

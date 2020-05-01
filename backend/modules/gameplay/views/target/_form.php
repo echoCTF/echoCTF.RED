@@ -10,7 +10,7 @@ use yii\bootstrap\ActiveForm;
 
 <div class="target-form">
 
-    <?php $form = ActiveForm::begin([]); ?>
+    <?php $form=ActiveForm::begin([]);?>
     <div class="row">
         <div class="col-md-6">
           <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('Unique short name for the target host. Keep in mind that this name is also been used to select the logo for the target on <code>frontend/web/images/target</code>') ?>
@@ -89,11 +89,11 @@ use yii\bootstrap\ActiveForm;
     <?php // $form->field($model, 'parameters')->textInput(['maxlength' => true])->hint('Command line parameters for the target') ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['name'=>'save','class' => 'btn btn-success']) ?>
-        <?= Html::submitButton('Save and destroy', ['name'=>'destroy','class' => 'btn btn-danger']) ?>
+        <?= Html::submitButton('Save', ['name'=>'save', 'class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Save and destroy', ['name'=>'destroy', 'class' => 'btn btn-danger']) ?>
 
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

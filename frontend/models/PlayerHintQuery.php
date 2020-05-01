@@ -35,7 +35,7 @@ class PlayerHintQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return PlayerHint[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -44,7 +44,7 @@ class PlayerHintQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return PlayerHint|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

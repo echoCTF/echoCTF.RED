@@ -22,7 +22,7 @@ class FindingController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -45,8 +45,8 @@ class FindingController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new FindingSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new FindingSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,15 +74,16 @@ class FindingController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Finding();
-        if(\app\modules\gameplay\models\Target::find()->count()==0)
+        $model=new Finding();
+        if(\app\modules\gameplay\models\Target::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No targets found create one first.");
           return $this->redirect(['/gameplay/target/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -100,9 +101,10 @@ class FindingController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -134,7 +136,8 @@ class FindingController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Finding::findOne($id)) !== null) {
+        if(($model=Finding::findOne($id)) !== null)
+        {
             return $model;
         }
 

@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\frontend\models\CrlSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Crls');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Crls');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="crl-index">
 
@@ -30,11 +30,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'player_id',
             [
               'attribute'=>'subject',
-              'value'=>function($model){ return wordwrap($model->subject,80,"\n",true);}
+              'value'=>function($model) { return wordwrap($model->subject, 80, "\n", true);}
             ],
             [
               'attribute'=>'txtcrt',
-              'value'=>function($model){ return explode("\n",$model->txtcrt)[3];}
+              'value'=>function($model) { return explode("\n", $model->txtcrt)[3];}
             ],
             //'csr:ntext',
             //'crt:ntext',
@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

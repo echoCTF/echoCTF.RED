@@ -21,10 +21,10 @@ class ProfileController extends \yii\web\Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['me','index','notifications','hints','update','ovpn','settings'],
+                'only' => ['me', 'index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
                 'rules' => [
                     [
-                        'actions' => ['me','notifications','hints','update','ovpn','settings'],
+                        'actions' => ['me', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -36,7 +36,7 @@ class ProfileController extends \yii\web\Controller
             ],
             [
               'class' => 'yii\filters\AjaxFilter',
-              'only' => ['notifications','hints']
+              'only' => ['notifications', 'hints']
             ],
           'verbs' => [
                 'class' => VerbFilter::class,
@@ -48,33 +48,33 @@ class ProfileController extends \yii\web\Controller
 
     public function actions()
     {
-      $actions = parent::actions();
-      $actions['notifications']['class'] = 'app\actions\profile\NotificationsRestAction';
-      $actions['hints']['class'] = 'app\actions\profile\HintsRestAction';
+      $actions=parent::actions();
+      $actions['notifications']['class']='app\actions\profile\NotificationsRestAction';
+      $actions['hints']['class']='app\actions\profile\HintsRestAction';
       return $actions;
     }
 
     public function actionMe()
     {
       $profile=Yii::$app->user->identity->profile;
-      return $this->render('index',[
+      return $this->render('index', [
           'profile'=>$profile,
       ]);
     }
 
     public function actionIndex(int $id)
     {
-      if(intval($id)==intval(Yii::$app->user->id))
+      if(intval($id) == intval(Yii::$app->user->id))
         return $this->redirect(['/profile/me']);
 
       $profile=$this->findModel($id);
-      if(Yii::$app->user->isGuest && $profile->visibility!='public')
-        			return $this->redirect(['/']);
+      if(Yii::$app->user->isGuest && $profile->visibility != 'public')
+              return $this->redirect(['/']);
 
-      if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
-        			return $this->redirect(['/']);
+      if($profile->visibility != 'public' && $profile->visibility != 'ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
+              return $this->redirect(['/']);
 
-        return $this->render('index',[
+        return $this->render('index', [
           'profile'=>$profile,
           'accountForm'=>null,
           'profileForm'=>null,
@@ -82,16 +82,16 @@ class ProfileController extends \yii\web\Controller
     }
 
     public function actionOvpn()
-  	{
-  		$model = Yii::$app->user->identity->sSL;
-  		$content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php',['model'=>$model]);
-      \Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
+    {
+      $model=Yii::$app->user->identity->sSL;
+      $content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php', ['model'=>$model]);
+      \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
       \Yii::$app->response->content=$content;
-      \Yii::$app->response->setDownloadHeaders('echoCTF.ovpn','application/octet-stream',false,strlen($content));
+      \Yii::$app->response->setDownloadHeaders('echoCTF.ovpn', 'application/octet-stream', false, strlen($content));
       \Yii::$app->response->send();
       return;
 
-  	}
+    }
 
     public function actionSettings()
     {
@@ -102,33 +102,36 @@ class ProfileController extends \yii\web\Controller
       $profileForm=$profile;
       $profileForm->scenario='me';
       $accountForm=$profile->owner;
-      if ($profileForm->load(Yii::$app->request->post()) && $profileForm->validate()) {
+      if($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
+      {
         $profileForm->save();
         $success[]="Profile updated";
       }
 
 
-      if ($accountForm->load(Yii::$app->request->post()) && $accountForm->validate()) {
-        if($accountForm->new_password!="")
+      if($accountForm->load(Yii::$app->request->post()) && $accountForm->validate())
+      {
+        if($accountForm->new_password != "")
         {
           $accountForm->setPassword($accountForm->new_password);
         }
         if($accountForm->save())
           $success[]="Account updated";
-        else {
+        else
+        {
           $errors[]="Failed to save updated account details.";
         }
       }
 
       if(!empty($errors))
-        Yii::$app->session->setFlash('error',$errors);
+        Yii::$app->session->setFlash('error', $errors);
       if(!empty($success))
-        Yii::$app->session->setFlash('success',$success);
+        Yii::$app->session->setFlash('success', $success);
 
-      $command = Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
-      $playerSpin=$command->bindValue(':player_id',Yii::$app->user->id)->query()->read();
+      $command=Yii::$app->db->createCommand('select * from player_spin WHERE player_id=:player_id');
+      $playerSpin=$command->bindValue(':player_id', Yii::$app->user->id)->query()->read();
       $accountForm->new_password=$accountForm->confirm_password=null;
-      return $this->render('settings',[
+      return $this->render('settings', [
         'profile'=>$profile,
         'playerSpin'=>$playerSpin,
         'accountForm'=>$accountForm,
@@ -144,7 +147,8 @@ class ProfileController extends \yii\web\Controller
      */
     protected function findModel($id)
     {
-        if (($model = Profile::findOne($id)) !== null) {
+        if(($model=Profile::findOne($id)) !== null)
+        {
             return $model;
         }
 

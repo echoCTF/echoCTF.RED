@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="player-last-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'on_pui')->textInput() ?>
 
@@ -24,6 +24,6 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

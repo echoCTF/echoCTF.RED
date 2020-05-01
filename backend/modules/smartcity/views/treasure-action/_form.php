@@ -12,9 +12,9 @@ use app\modules\gameplay\models\Treasure;
 
 <div class="treasure-action-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->all(),'id','name','target.fqdn'),
+    <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->all(), 'id', 'name', 'target.fqdn'),
             ['prompt'=>'Select Treasure'])->Label('Treasure')->hint('The treasure this action will fire upon') ?>
 
     <?= $form->field($model, 'ipoctet')->textInput() ?>
@@ -29,6 +29,6 @@ use app\modules\gameplay\models\Treasure;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ListView;
-$this->title = Yii::$app->sys->event_name.' - Instructions';
+$this->title=Yii::$app->sys->event_name.' - Instructions';
 ?>
 <div class="instruction-index">
   <div class="body-content">

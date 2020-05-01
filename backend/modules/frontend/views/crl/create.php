@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Crl */
 
-$this->title = Yii::t('app', 'Create Crl');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Crls'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Create Crl');
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Crls'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="crl-create">
 

@@ -12,9 +12,9 @@ use app\modules\frontend\models\Team;
 
 <div class="team-score-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'team_id')->dropDownList(ArrayHelper::map(Team::find()->leftJoin('team_score','team_score.team_id = team.id')->where(['team_score.team_id' => null])->all(),'id','name'),['prompt'=>'Select team'])->Label('Team')->hint('Choose the Team to create score entry')?>
+    <?= $form->field($model, 'team_id')->dropDownList(ArrayHelper::map(Team::find()->leftJoin('team_score', 'team_score.team_id = team.id')->where(['team_score.team_id' => null])->all(), 'id', 'name'), ['prompt'=>'Select team'])->Label('Team')->hint('Choose the Team to create score entry')?>
 
     <?= $form->field($model, 'points')->textInput() ?>
 
@@ -22,6 +22,6 @@ use app\modules\frontend\models\Team;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

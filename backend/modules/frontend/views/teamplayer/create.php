@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\TeamPlayer */
 
-$this->title = 'Create Team Player';
-$this->params['breadcrumbs'][] = ['label' => 'Team Players', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Team Player';
+$this->params['breadcrumbs'][]=['label' => 'Team Players', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="team-player-create">
 

@@ -13,13 +13,13 @@ class Module extends \yii\base\Module
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace = 'app\modules\restapi\controllers';
+    public $controllerNamespace='app\modules\restapi\controllers';
 
 
     public function behaviors()
     {
-        $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
+        $behaviors=parent::behaviors();
+        $behaviors['authenticator']=[
             'class' => CompositeAuth::class,
             'authMethods' => [
                 HttpBearerAuth::class,
@@ -32,8 +32,8 @@ class Module extends \yii\base\Module
     /**
      * {@inheritdoc}
      */
-     public function init()
-     {
-         parent::init();
-         \Yii::$app->user->enableSession = false;
-     }}
+      public function init()
+      {
+          parent::init();
+          \Yii::$app->user->enableSession=false;
+      }}

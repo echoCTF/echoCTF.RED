@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Hint */
 
-$this->title = 'Create Hint';
-$this->params['breadcrumbs'][] = ['label' => 'Hints', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Hint';
+$this->params['breadcrumbs'][]=['label' => 'Hints', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="hint-create">
 

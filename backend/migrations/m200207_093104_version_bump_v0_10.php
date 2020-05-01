@@ -13,7 +13,7 @@ class m200207_093104_version_bump_v0_10 extends Migration
    */
   public function safeUp()
   {
-    $this->update('sysconfig',['val'=>'v0.10'],['id'=>'platform_version']);
+    $this->update('sysconfig', ['val'=>'v0.10'], ['id'=>'platform_version']);
     $this->update('sysconfig', ['val'=>new Expression('REPLACE(val,"v0.9","v0.10")')], ['id' => 'frontpage_scenario']);
   }
 
@@ -22,8 +22,8 @@ class m200207_093104_version_bump_v0_10 extends Migration
    */
   public function safeDown()
   {
-    $this->update('sysconfig',['val'=>'v0.9'],['id'=>'platform_version']);
-    $this->update('sysconfig',['val'=>new Expression('REPLACE(val,"v0.10","v0.9")')], ['id' => 'frontpage_scenario']);
+    $this->update('sysconfig', ['val'=>'v0.9'], ['id'=>'platform_version']);
+    $this->update('sysconfig', ['val'=>new Expression('REPLACE(val,"v0.10","v0.9")')], ['id' => 'frontpage_scenario']);
   }
 
 }

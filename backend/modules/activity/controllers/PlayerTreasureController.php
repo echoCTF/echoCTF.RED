@@ -19,26 +19,26 @@ class PlayerTreasureController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
-     {
-         return [
-           'access' => [
-                 'class' => \yii\filters\AccessControl::class,
-                 'rules' => [
-                     [
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
-                 ],
-             ],
-             'verbs' => [
-                 'class' => VerbFilter::class,
-                 'actions' => [
-                     'delete' => ['POST'],
-                 ],
-             ],
-         ];
-     }
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
 
     /**
      * Lists all PlayerTreasure models.
@@ -46,8 +46,8 @@ class PlayerTreasureController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new PlayerTreasureSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new PlayerTreasureSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -76,20 +76,22 @@ class PlayerTreasureController extends Controller
      */
     public function actionCreate()
     {
-        $model = new PlayerTreasure();
-        if(Player::find()->count()==0)
+        $model=new PlayerTreasure();
+        if(Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
-        if(Treasure::find()->count()==0) {
+        if(Treasure::find()->count() == 0)
+        {
           // If there are no questions redirect to create question
           Yii::$app->session->setFlash('warning', "No Treasures found create one first.");
           return $this->redirect(['/gameplay/treasure/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'treasure_id' => $model->treasure_id]);
         }
 
@@ -108,9 +110,10 @@ class PlayerTreasureController extends Controller
      */
     public function actionUpdate($player_id, $treasure_id)
     {
-        $model = $this->findModel($player_id, $treasure_id);
+        $model=$this->findModel($player_id, $treasure_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'treasure_id' => $model->treasure_id]);
         }
 
@@ -144,7 +147,8 @@ class PlayerTreasureController extends Controller
      */
     protected function findModel($player_id, $treasure_id)
     {
-        if (($model = PlayerTreasure::findOne(['player_id' => $player_id, 'treasure_id' => $treasure_id])) !== null) {
+        if(($model=PlayerTreasure::findOne(['player_id' => $player_id, 'treasure_id' => $treasure_id])) !== null)
+        {
             return $model;
         }
 

@@ -12,11 +12,11 @@ class HeadshotQuery extends \yii\db\ActiveQuery
 
     public function target_avg_time($target_id)
     {
-        return $this->addSelect(['*','avg(timer) as average'])->andWhere(['target_id'=>$target_id]);
+        return $this->addSelect(['*', 'avg(timer) as average'])->andWhere(['target_id'=>$target_id]);
     }
     public function player_avg_time($player_id)
     {
-        return $this->addSelect(['*','avg(timer) as average'])->andWhere(['player_id'=>$player_id]);
+        return $this->addSelect(['*', 'avg(timer) as average'])->andWhere(['player_id'=>$player_id]);
     }
 
     public function mine()
@@ -33,7 +33,7 @@ class HeadshotQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Headshot[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -42,7 +42,7 @@ class HeadshotQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Headshot|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

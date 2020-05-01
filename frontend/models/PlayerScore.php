@@ -70,6 +70,6 @@ class PlayerScore extends \yii\db\ActiveRecord
       return $this->hasOne(PlayerRank::class, ['player_id' => 'player_id']);
     }
 
-    public static function find(){    return new PlayerScoreQuery(get_called_class()); }
+    public static function find() {    return new PlayerScoreQuery(get_called_class());}
 
 }

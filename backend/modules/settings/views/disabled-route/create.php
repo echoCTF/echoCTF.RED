@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\settings\models\DisabledRoute */
 
-$this->title = 'Create Disabled Route';
-$this->params['breadcrumbs'][] = ['label' => 'Disabled Routes', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Disabled Route';
+$this->params['breadcrumbs'][]=['label' => 'Disabled Routes', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="disabled-route-create">
 

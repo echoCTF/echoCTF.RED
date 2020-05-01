@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Finding */
 
-$this->title = 'Create Finding';
-$this->params['breadcrumbs'][] = ['label' => 'Findings', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Finding';
+$this->params['breadcrumbs'][]=['label' => 'Findings', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="finding-create">
 

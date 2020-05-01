@@ -19,26 +19,26 @@ class PlayerBadgeController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
-     {
-         return [
-           'access' => [
-                 'class' => \yii\filters\AccessControl::class,
-                 'rules' => [
-                     [
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
-                 ],
-             ],
-             'verbs' => [
-                 'class' => VerbFilter::class,
-                 'actions' => [
-                     'delete' => ['POST'],
-                 ],
-             ],
-         ];
-     }
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
 
     /**
      * Lists all PlayerBadge models.
@@ -46,8 +46,8 @@ class PlayerBadgeController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new PlayerBadgeSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new PlayerBadgeSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -76,19 +76,21 @@ class PlayerBadgeController extends Controller
      */
     public function actionCreate()
     {
-        $model = new PlayerBadge();
-        if(Player::find()->count()==0)
+        $model=new PlayerBadge();
+        if(Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
-        if(Badge::find()->count()==0) {
+        if(Badge::find()->count() == 0)
+        {
           // If there are no questions redirect to create question
           Yii::$app->session->setFlash('warning', "No Badges found create one first.");
           return $this->redirect(['/gameplay/badge/create']);
         }
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'badge_id' => $model->badge_id]);
         }
 
@@ -107,9 +109,10 @@ class PlayerBadgeController extends Controller
      */
     public function actionUpdate($player_id, $badge_id)
     {
-        $model = $this->findModel($player_id, $badge_id);
+        $model=$this->findModel($player_id, $badge_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'badge_id' => $model->badge_id]);
         }
 
@@ -143,7 +146,8 @@ class PlayerBadgeController extends Controller
      */
     protected function findModel($player_id, $badge_id)
     {
-        if (($model = PlayerBadge::findOne(['player_id' => $player_id, 'badge_id' => $badge_id])) !== null) {
+        if(($model=PlayerBadge::findOne(['player_id' => $player_id, 'badge_id' => $badge_id])) !== null)
+        {
             return $model;
         }
 

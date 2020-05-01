@@ -33,19 +33,19 @@ use yii\widgets\DetailView;
     [
       'label'=>'Flags / Services',
       'format'=>'raw',
-      'value'=>'<i class="fas fa-flag"></i> '.count($target->treasures).' / <i class="fas fa-fingerprint"></i> '.count($target->findings) ,
+      'value'=>'<i class="fas fa-flag"></i> '.count($target->treasures).' / <i class="fas fa-fingerprint"></i> '.count($target->findings),
     ],
 
     [
       'label'=>'Headshots',
       'format'=>'raw',
-      'value'=>function($model){
+      'value'=>function($model) {
                 $headshots=[];
                 foreach($model->headshots as $hs)
-                  if((int)$hs->player->active===1)
+                  if((int) $hs->player->active === 1)
                     $headshots[]=$hs->player->profile->link;
-              if (empty($headshots)) return "None";
-              return implode(", ",$headshots);
+              if(empty($headshots)) return "None";
+              return implode(", ", $headshots);
             }
     ],
     [

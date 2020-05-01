@@ -33,9 +33,9 @@ use app\modules\game\models\Headshot;
  */
 class Player extends ActiveRecord implements IdentityInterface
 {
-    const STATUS_DELETED = 0;
-    const STATUS_INACTIVE = 9;
-    const STATUS_ACTIVE = 10;
+    const STATUS_DELETED=0;
+    const STATUS_INACTIVE=9;
+    const STATUS_ACTIVE=10;
     public $new_password;
     public $confirm_password;
 
@@ -86,19 +86,19 @@ class Player extends ActiveRecord implements IdentityInterface
 
             /* email field rules */
             [['email'], 'trim'],
-            [['email'], 'string','max'=>255],
+            [['email'], 'string', 'max'=>255],
             [['email'], 'email'],
-            ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email has already been taken.','when' => function ($model, $attribute) {
+            ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email has already been taken.', 'when' => function($model, $attribute) {
                 return $model->{$attribute} !== $model->getOldAttribute($attribute);
             }],
 
             /* username field rules */
             [['username'], 'trim'],
             [['username'], 'string', 'max'=>32],
-            [['username'], 'match','not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>'Invalid characters in username.'],
-            [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin','administrator','echoctf','root','support']],
+            [['username'], 'match', 'not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>'Invalid characters in username.'],
+            [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'administrator', 'echoctf', 'root', 'support']],
             [['username'], 'required', 'message' => 'Please choose a username.'],
-            ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This username has already been taken.','when' => function ($model, $attribute) {
+            ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This username has already been taken.', 'when' => function($model, $attribute) {
                 return $model->{$attribute} !== $model->getOldAttribute($attribute);
             }],
 
@@ -113,10 +113,10 @@ class Player extends ActiveRecord implements IdentityInterface
             /* password field rules */
 
 //            [['password',], 'default','value'=>null],
-            [['new_password',], 'string', 'max'=>255],
+            [['new_password', ], 'string', 'max'=>255],
             [['confirm_password'], 'string', 'max'=>255],
             [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
-            [['created','ts'],'safe'],
+            [['created', 'ts'], 'safe'],
         ];
     }
 
@@ -131,7 +131,7 @@ class Player extends ActiveRecord implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type = null)
+    public static function findIdentityByAccessToken($token, $type=null)
     {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
@@ -202,8 +202,8 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
-        $this->password_hash = Yii::$app->security->generatePasswordHash($password);
-        $this->password = Yii::$app->security->generatePasswordHash($password);
+        $this->password_hash=Yii::$app->security->generatePasswordHash($password);
+        $this->password=Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
@@ -211,7 +211,7 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->auth_key = Yii::$app->security->generateRandomString();
+        $this->auth_key=Yii::$app->security->generateRandomString();
     }
 
     /**
@@ -219,12 +219,12 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function generatePasswordResetToken()
     {
-        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+        $this->password_reset_token=Yii::$app->security->generateRandomString().'_'.time();
     }
 
     public function generateEmailVerificationToken()
     {
-        $this->verification_token = Yii::$app->security->generateRandomString() . '_' . time();
+        $this->verification_token=Yii::$app->security->generateRandomString().'_'.time();
     }
 
     /**
@@ -232,12 +232,12 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public function removePasswordResetToken()
     {
-        $this->password_reset_token = null;
+        $this->password_reset_token=null;
     }
 
-   /**
-    * Get status Label
-    */
+    /**
+     * Get status Label
+     */
     public function getStatusLabel()
     {
       switch($this->status) {
@@ -267,8 +267,8 @@ class Player extends ActiveRecord implements IdentityInterface
     }
     public function getSpins()
     {
-      $command = Yii::$app->db->createCommand('select counter from player_spin WHERE player_id=:player_id');
-      return (int)$command->bindValue(':player_id',$this->id)->queryScalar();
+      $command=Yii::$app->db->createCommand('select counter from player_spin WHERE player_id=:player_id');
+      return (int) $command->bindValue(':player_id', $this->id)->queryScalar();
     }
     public function getPlayerTreasures()
     {
@@ -308,14 +308,14 @@ class Player extends ActiveRecord implements IdentityInterface
 
     public function getIsAdmin():bool
     {
-      $admin_ids=[1,24];
-      return !(array_search(intval($this->id),$admin_ids)===FALSE); // error is here
+      $admin_ids=[1, 24];
+      return !(array_search(intval($this->id), $admin_ids) === FALSE);// error is here
     }
 
     public function isAdmin():bool
     {
       $admin_ids=[1];
-      return !(array_search(intval($this->id),$admin_ids)===FALSE); // error is here
+      return !(array_search(intval($this->id), $admin_ids) === FALSE);// error is here
     }
 
 //    public function getProgress()
@@ -372,13 +372,14 @@ class Player extends ActiveRecord implements IdentityInterface
      * @param string $token password reset token
      * @return bool
      */
-    public static function isPasswordResetTokenValid($token,$expire=86400): bool
+    public static function isPasswordResetTokenValid($token, $expire=86400): bool
     {
-        if (empty($token)) {
+        if(empty($token))
+        {
             return false;
         }
 
-        $timestamp = (int) substr($token, strrpos($token, '_') + 1);
+        $timestamp=(int) substr($token, strrpos($token, '_') + 1);
         return $timestamp + $expire >= time();
     }
     /**
@@ -389,7 +390,8 @@ class Player extends ActiveRecord implements IdentityInterface
      */
     public static function findByPasswordResetToken($token)
     {
-        if (!static::isPasswordResetTokenValid($token)) {
+        if(!static::isPasswordResetTokenValid($token))
+        {
             return null;
         }
 
@@ -401,12 +403,12 @@ class Player extends ActiveRecord implements IdentityInterface
 
     public static function updateStream($event)
     {
-      if($event->changedAttributes!==[] && (array_key_exists('active',$event->changedAttributes)===true || array_key_exists('status',$event->changedAttributes)===true))
+      if($event->changedAttributes !== [] && (array_key_exists('active', $event->changedAttributes) === true || array_key_exists('status', $event->changedAttributes) === true))
       {
-        if($event->sender->status===self::STATUS_ACTIVE || $event->senter->active===1)
+        if($event->sender->status === self::STATUS_ACTIVE || $event->senter->active === 1)
         {
-          Yii::$app->db->createCommand("INSERT INTO player_rank (id,player_id) SELECT max(id)+1,:player_id FROM player_rank")->bindValue(':player_id',$event->sender->id)->execute();
-          Yii::$app->db->createCommand("INSERT INTO player_hint (hint_id,player_id,status) VALUES (-1,:player_id,1)")->bindValue(':player_id',$event->sender->id)->execute();
+          Yii::$app->db->createCommand("INSERT INTO player_rank (id,player_id) SELECT max(id)+1,:player_id FROM player_rank")->bindValue(':player_id', $event->sender->id)->execute();
+          Yii::$app->db->createCommand("INSERT INTO player_hint (hint_id,player_id,status) VALUES (-1,:player_id,1)")->bindValue(':player_id', $event->sender->id)->execute();
           $n=new Notification;
           $n->player_id=$event->sender->id;
           $n->archived=0;

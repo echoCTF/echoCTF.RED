@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="achievement-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('The name of the achievement') ?>
 
@@ -22,11 +22,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'points')->textInput(['maxlength' => true])->hint('The amount of points to be awarded when a player/team completes this achievement') ?>
 
-    <?= $form->field($model, 'player_type')->dropDownList([ 'offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => ''])->hint('The type of the player/team') ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => ''])->hint('The type of the player/team') ?>
 
     <?= $form->field($model, 'appears')->textInput()->hint('TODO') ?>
 
-    <?= $form->field($model, 'effects')->dropDownList([ 'users_id' => 'Users', 'team' => 'Team', 'total' => 'Total', ], ['prompt' => ''])->hint('Whether this achievement is only for users, only for teams or both') ?>
+    <?= $form->field($model, 'effects')->dropDownList(['users_id' => 'Users', 'team' => 'Team', 'total' => 'Total', ], ['prompt' => ''])->hint('Whether this achievement is only for users, only for teams or both') ?>
 
     <?= $form->field($model, 'code')->textInput(['maxlength' => true])->hint('The code/flag players/teams must provide in order to claim this achievement') ?>
 
@@ -34,6 +34,6 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

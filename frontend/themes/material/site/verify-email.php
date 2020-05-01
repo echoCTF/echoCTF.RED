@@ -7,7 +7,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = Yii::$app->sys->event_name.' Account Email Verification';
+$this->title=Yii::$app->sys->event_name.' Account Email Verification';
 ?>
 <div class="site-verify-email">
     <h2><?=Html::encode($this->title) ?></h2>
@@ -16,15 +16,15 @@ $this->title = Yii::$app->sys->event_name.' Account Email Verification';
 
     <div class="row">
         <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'verify-email-request']); ?>
+            <?php $form=ActiveForm::begin(['id' => 'verify-email-request']);?>
 
-                <?=$form->field($model, 'token')->textInput()->hiddenInput(['value'=>Html::encode($token)])->label(false); ?>
+                <?=$form->field($model, 'token')->textInput()->hiddenInput(['value'=>Html::encode($token)])->label(false);?>
 
                 <div class="form-group">
                     <?=Html::submitButton('Activate', ['class' => 'btn btn-primary']) ?>
                 </div>
 
-            <?php ActiveForm::end(); ?>
+            <?php ActiveForm::end();?>
         </div>
     </div>
 </div>

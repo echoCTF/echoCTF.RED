@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Credential */
 
-$this->title = 'Update Credential: ' . $model->title;
-$this->params['breadcrumbs'][] = ['label' => 'Credentials', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title='Update Credential: '.$model->title;
+$this->params['breadcrumbs'][]=['label' => 'Credentials', 'url' => ['index']];
+$this->params['breadcrumbs'][]=['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
+$this->params['breadcrumbs'][]='Update';
 ?>
 <div class="credential-update">
 

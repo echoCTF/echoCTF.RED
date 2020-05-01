@@ -27,10 +27,10 @@ use yii\widgets\ActiveForm;
 
 <div class="profile-form">
 
-    <?php $form = ActiveForm::begin(['id'=>'profile-form']); ?>
-    <?= $form->field($model, 'visibility')->dropDownList($model->visibilities,['prompt'=>'Select your profile visibility'])->Label('Visibility')->hint('Select the desired visibility setting for your profile')?>
-		<?= $form->field($model, 'country')->dropDownList($model->visibilities,['prompt'=>'Select your profile visibility'])->Label('Visibility')->hint('Select the desired visibility setting for your profile')?>
-		<?= $form->field($model, 'avatar')->dropDownList($model->visibilities,['prompt'=>'Select your profile visibility'])->Label('Visibility')->hint('Select the desired visibility setting for your profile')?>
+    <?php $form=ActiveForm::begin(['id'=>'profile-form']);?>
+    <?= $form->field($model, 'visibility')->dropDownList($model->visibilities, ['prompt'=>'Select your profile visibility'])->Label('Visibility')->hint('Select the desired visibility setting for your profile')?>
+		<?= $form->field($model, 'country')->dropDownList($model->visibilities, ['prompt'=>'Select your profile visibility'])->Label('Visibility')->hint('Select the desired visibility setting for your profile')?>
+		<?= $form->field($model, 'avatar')->dropDownList($model->visibilities, ['prompt'=>'Select your profile visibility'])->Label('Visibility')->hint('Select the desired visibility setting for your profile')?>
 		<div class="row"><div class="span3 col-sm"><img class="thumbnail pull-right" id="preview_avatar" width="50px" src="/images/avatars/<?=$model->avatar?>" alt="<?=$model->avatar?>"/></div></div>
 		<?= $form->field($model, 'bio')->textarea(['rows' => 6]) ?>
 
@@ -48,6 +48,6 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

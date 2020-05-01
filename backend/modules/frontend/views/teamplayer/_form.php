@@ -13,11 +13,11 @@ use app\modules\frontend\models\Team;
 
 <div class="team-player-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'team_id')->dropDownList(ArrayHelper::map(Team::find()->all(),'id','name'),['prompt'=>'Select team'])->hint('Choose the team to add the player chosen below') ?>
+    <?= $form->field($model, 'team_id')->dropDownList(ArrayHelper::map(Team::find()->all(), 'id', 'name'), ['prompt'=>'Select team'])->hint('Choose the team to add the player chosen below') ?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->leftJoin('team_player','team_player.player_id = player.id')->where(['team_player.id' => null])->all(),'id','username'),['prompt'=>'Select player'])->Label('Player')->hint('Choose the player to be added to the team chosen above')?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->leftJoin('team_player', 'team_player.player_id = player.id')->where(['team_player.id' => null])->all(), 'id', 'username'), ['prompt'=>'Select player'])->Label('Player')->hint('Choose the player to be added to the team chosen above')?>
 
     <?= $form->field($model, 'approved')->checkbox()->hint('Team member approved') ?>
 
@@ -25,6 +25,6 @@ use app\modules\frontend\models\Team;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

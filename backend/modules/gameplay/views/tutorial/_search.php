@@ -10,10 +10,10 @@ use yii\widgets\ActiveForm;
 
 <div class="tutorial-search">
 
-    <?php $form = ActiveForm::begin([
+    <?php $form=ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
-    ]); ?>
+    ]);?>
 
     <?= $form->field($model, 'id') ?>
 
@@ -30,6 +30,6 @@ use yii\widgets\ActiveForm;
         <?= Html::resetButton(Yii::t('app', 'Reset'), ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

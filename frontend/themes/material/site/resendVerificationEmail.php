@@ -6,7 +6,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 
-$this->title = Yii::$app->sys->event_name.' Resend verification email';
+$this->title=Yii::$app->sys->event_name.' Resend verification email';
 ?>
 <div class="site-resend-verification-email">
   <div class="body-content">
@@ -16,7 +16,7 @@ $this->title = Yii::$app->sys->event_name.' Resend verification email';
 
     <div class="row">
         <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'resend-verification-email-form']); ?>
+            <?php $form=ActiveForm::begin(['id' => 'resend-verification-email-form']);?>
 
             <?=$form->field($model, 'email')->textInput(['autofocus' => true]) ?>
 
@@ -24,7 +24,7 @@ $this->title = Yii::$app->sys->event_name.' Resend verification email';
                 <?=Html::submitButton('Send', ['class' => 'btn btn-primary']) ?>
             </div>
 
-            <?php ActiveForm::end(); ?>
+            <?php ActiveForm::end();?>
         </div>
     </div>
   </div>

@@ -23,7 +23,7 @@ class TargetController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view','test'],
+                'only' => ['index', 'create', 'update', 'view', 'test'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -47,8 +47,8 @@ class TargetController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TargetSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new TargetSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -76,9 +76,10 @@ class TargetController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Target();
+        $model=new Target();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -96,23 +97,23 @@ class TargetController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
-        $modelOrig = $this->findModel($id);
+        $model=$this->findModel($id);
+        $modelOrig=$this->findModel($id);
         $msg="Server updated succesfully";
-        if ($model->load(Yii::$app->request->post()))
+        if($model->load(Yii::$app->request->post()))
         {
 
           // if the target has changed server destroy from old one
 //          $keys=['server','net'];
-          if(($modelOrig->server!=$model->server || $modelOrig->net!=$model->net || $modelOrig->ipoctet!=$model->ipoctet)  && array_key_exists('destroy',Yii::$app->request->post()))
+          if(($modelOrig->server != $model->server || $modelOrig->net != $model->net || $modelOrig->ipoctet != $model->ipoctet) && array_key_exists('destroy', Yii::$app->request->post()))
           {
             $modelOrig->destroy();
             $msg="Server destroyed and updated succesfully";
           }
           if($model->save())
-            Yii::$app->session->setFlash('success',$msg);
+            Yii::$app->session->setFlash('success', $msg);
           else
-            Yii::$app->session->setFlash('error','Server failed to be updated ['.implode(", ", $model->getErrors()).']');
+            Yii::$app->session->setFlash('error', 'Server failed to be updated ['.implode(", ", $model->getErrors()).']');
           return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -146,9 +147,9 @@ class TargetController extends Controller
     {
       $model=$this->findModel($id);
         if($model->destroy())
-          Yii::$app->session->setFlash('success','Container destroyed from docker server [<code>'.$model->server.'</code>]');
+          Yii::$app->session->setFlash('success', 'Container destroyed from docker server [<code>'.$model->server.'</code>]');
         else
-          Yii::$app->session->setFlash('error','Failed to destroy container from docker server [<code>'.$model->server.'</code>]');
+          Yii::$app->session->setFlash('error', 'Failed to destroy container from docker server [<code>'.$model->server.'</code>]');
 
         return $this->goBack(Yii::$app->request->referrer);
     }
@@ -164,7 +165,7 @@ class TargetController extends Controller
     {
       try
       {
-        if($id==='all')
+        if($id === 'all')
         {
           $models=Target::find()->all();
           foreach($models as $model)
@@ -193,7 +194,7 @@ class TargetController extends Controller
      */
     public function actionPull($id)
     {
-        if($id==='all')
+        if($id === 'all')
         {
           $models=Target::find()->all();
           foreach($models as $model)
@@ -206,7 +207,8 @@ class TargetController extends Controller
         {
           if($this->findModel($id)->pull())
             \Yii::$app->getSession()->setFlash('success', 'Image succesfuly pulled');
-          else {
+          else
+          {
             \Yii::$app->getSession()->setFlash('error', 'Failed to pull container image');
           }
           return $this->goBack(Yii::$app->request->referrer);
@@ -223,7 +225,8 @@ class TargetController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = Target::findOne($id)) !== null) {
+        if(($model=Target::findOne($id)) !== null)
+        {
             return $model;
         }
 

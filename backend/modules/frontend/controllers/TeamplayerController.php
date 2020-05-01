@@ -22,7 +22,7 @@ class TeamplayerController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','create','update','view'],
+                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -45,8 +45,8 @@ class TeamplayerController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new TeamPlayerSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new TeamPlayerSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,21 +74,22 @@ class TeamplayerController extends Controller
      */
     public function actionCreate()
     {
-        $model = new TeamPlayer();
-        if(\app\modules\frontend\models\Player::find()->count()==0)
+        $model=new TeamPlayer();
+        if(\app\modules\frontend\models\Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
-        if(\app\modules\frontend\models\Team::find()->count()==0)
+        if(\app\modules\frontend\models\Team::find()->count() == 0)
         {
           // If there are no player redirect to create player page
           Yii::$app->session->setFlash('warning', "No Teams found create one first.");
           return $this->redirect(['/frontend/team/create']);
         }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -106,9 +107,10 @@ class TeamplayerController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $model=$this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -140,7 +142,8 @@ class TeamplayerController extends Controller
      */
     protected function findModel($id)
     {
-        if (($model = TeamPlayer::findOne($id)) !== null) {
+        if(($model=TeamPlayer::findOne($id)) !== null)
+        {
             return $model;
         }
 

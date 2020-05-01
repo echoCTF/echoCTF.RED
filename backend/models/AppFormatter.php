@@ -7,7 +7,7 @@ class AppFormatter extends \yii\i18n\Formatter
 {
     public function asPlayerType($value)
     {
-        switch ($value) {
+        switch($value) {
             case 'offense':
                 return 'Offense';
             case 'defense':
@@ -17,7 +17,7 @@ class AppFormatter extends \yii\i18n\Formatter
         }
     }
     public function asPlayerStatus($value) {
-      switch ($value) {
+      switch($value) {
         case 0:
           return 'Deleted';
         case 9:

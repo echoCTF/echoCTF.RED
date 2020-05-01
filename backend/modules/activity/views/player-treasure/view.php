@@ -6,10 +6,10 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\PlayerTreasure */
 
-$this->title = $model->player_id;
-$this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][] = ['label' => 'Player Treasures', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->player_id;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Player Treasures', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="player-treasure-view">
@@ -33,12 +33,12 @@ $this->params['breadcrumbs'][] = $this->title;
           [
             'attribute' => 'player',
             'label'=>'Player',
-            'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
+            'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
           ],
           [
             'attribute' => 'treasure',
             'label'=>'Treasure',
-            'value'=> function($model) {return sprintf("id:%d %s",$model->treasure_id,$model->treasure->name);},
+            'value'=> function($model) {return sprintf("id:%d %s", $model->treasure_id, $model->treasure->name);},
           ],
           'ts',
         ],

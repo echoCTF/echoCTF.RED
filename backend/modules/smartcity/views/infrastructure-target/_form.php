@@ -13,18 +13,18 @@ use app\modules\gameplay\models\Target;
 
 <div class="infrastructure-target-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'infrastructure_id')->dropDownList(ArrayHelper::map(Infrastructure::find()->all(),'id','name'),
+    <?= $form->field($model, 'infrastructure_id')->dropDownList(ArrayHelper::map(Infrastructure::find()->all(), 'id', 'name'),
             ['prompt'=>'Select Infrastructure'])->Label('Infrastructure')->hint('The infrastructure this target belongs') ?>
 
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(),'id','name'),
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(), 'id', 'name'),
             ['prompt'=>'Select Target'])->Label('Target')->hint('The target associated with the infrastructure') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

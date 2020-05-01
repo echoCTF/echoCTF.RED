@@ -41,8 +41,8 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'encodeLabels'=>true,
         'items' => [
-            ['label' => 'Dashboard', 'url' => ['/dashboard/index'],'visible'=>!Yii::$app->user->isGuest],
-            ['label' => 'Challenges', 'url' => ['/challenge/default/index'],'visible'=>!Yii::$app->user->isGuest],
+            ['label' => 'Dashboard', 'url' => ['/dashboard/index'], 'visible'=>!Yii::$app->user->isGuest],
+            ['label' => 'Challenges', 'url' => ['/challenge/default/index'], 'visible'=>!Yii::$app->user->isGuest],
             ['label' => 'Help', 'url' => ['/help/index'],
               'items'=> [
                 ['label' => 'FAQ', 'url' => ['/help/faq/index']],
@@ -50,11 +50,11 @@ AppAsset::register($this);
                 ['label' => 'Instructions', 'url' => ['/help/instruction/index']],
               ],
             ],
-            ['label' => 'Login', 'url' => ['/site/login'],'visible'=>Yii::$app->user->isGuest],
-            Yii::$app->user->isGuest?'<li><b style="color: #9d9d9d; padding-top: 15px;￼    position: relative;    display: block;￼    padding: 10px 15px;">or</b></li>': '',
+            ['label' => 'Login', 'url' => ['/site/login'], 'visible'=>Yii::$app->user->isGuest],
+            Yii::$app->user->isGuest ? '<li><b style="color: #9d9d9d; padding-top: 15px;￼    position: relative;    display: block;￼    padding: 10px 15px;">or</b></li>' : '',
             ['label' => 'Register', 'url' => ['/site/register'], 'visible'=>Yii::$app->user->isGuest],
             ['label' => Yii::$app->user->isGuest ? 'Guest' : Yii::$app->user->identity->username.' ('.number_format(Yii::$app->user->identity->playerScore->points).')', 'url' => ['/profile/me'], 'visible'=>!Yii::$app->user->isGuest],
-            !Yii::$app->user->isGuest?'<li>'
+            !Yii::$app->user->isGuest ? '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
                 'Logout',
@@ -79,7 +79,7 @@ AppAsset::register($this);
 <footer class="footer">
     <div class="container">
         <p>
-          <span class="pull-left">&copy; <?= Html::a('Echothrust Solutions', 'https://www.echothrust.com/' ) ?> 2012-<?= date('y') ?></span>
+          <span class="pull-left">&copy; <?= Html::a('Echothrust Solutions', 'https://www.echothrust.com/') ?> 2012-<?= date('y') ?></span>
         </p>
     </div>
 </footer>

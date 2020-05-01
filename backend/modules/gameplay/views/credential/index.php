@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\CredentialSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Credentials';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Credentials';
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="credential-index">
 
@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

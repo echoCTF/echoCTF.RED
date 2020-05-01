@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\NetworkSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Networks');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Networks');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="network-index">
 
@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

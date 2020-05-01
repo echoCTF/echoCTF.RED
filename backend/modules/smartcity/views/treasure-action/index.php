@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\TreasureActionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Treasure Actions';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Treasure Actions';
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="treasure-action-index">
 
@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

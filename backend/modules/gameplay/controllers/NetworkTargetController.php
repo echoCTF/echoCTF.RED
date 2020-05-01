@@ -17,26 +17,26 @@ class NetworkTargetController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
-     {
-         return [
-           'access' => [
-                 'class' => \yii\filters\AccessControl::class,
-                 'rules' => [
-                     [
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
-                 ],
-             ],
-             'verbs' => [
-                 'class' => VerbFilter::class,
-                 'actions' => [
-                     'delete' => ['POST'],
-                 ],
-             ],
-         ];
-     }
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
 
     /**
      * Lists all NetworkTarget models.
@@ -44,8 +44,8 @@ class NetworkTargetController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new NetworkTargetSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel=new NetworkTargetSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -74,9 +74,10 @@ class NetworkTargetController extends Controller
      */
     public function actionCreate()
     {
-        $model = new NetworkTarget();
+        $model=new NetworkTarget();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'network_id' => $model->network_id, 'target_id' => $model->target_id]);
         }
 
@@ -95,9 +96,10 @@ class NetworkTargetController extends Controller
      */
     public function actionUpdate($network_id, $target_id)
     {
-        $model = $this->findModel($network_id, $target_id);
+        $model=$this->findModel($network_id, $target_id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
             return $this->redirect(['view', 'network_id' => $model->network_id, 'target_id' => $model->target_id]);
         }
 
@@ -131,7 +133,8 @@ class NetworkTargetController extends Controller
      */
     protected function findModel($network_id, $target_id)
     {
-        if (($model = NetworkTarget::findOne(['network_id' => $network_id, 'target_id' => $target_id])) !== null) {
+        if(($model=NetworkTarget::findOne(['network_id' => $network_id, 'target_id' => $target_id])) !== null)
+        {
             return $model;
         }
 

@@ -13,11 +13,11 @@ use app\modules\gameplay\models\Hint;
 
 <div class="player-hint-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(),'id','username'),['prompt'=>'Select player'])->Label('Player')->hint('The player you want to give this hint') ?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(), 'id', 'username'), ['prompt'=>'Select player'])->Label('Player')->hint('The player you want to give this hint') ?>
 
-    <?= $form->field($model, 'hint_id')->dropDownList(ArrayHelper::map(Hint::find()->all(),'id','title'),['prompt'=>'Select Hint']) ?>
+    <?= $form->field($model, 'hint_id')->dropDownList(ArrayHelper::map(Hint::find()->all(), 'id', 'title'), ['prompt'=>'Select Hint']) ?>
 
     <?= $form->field($model, 'status')->textInput() ?>
 
@@ -27,6 +27,6 @@ use app\modules\gameplay\models\Hint;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

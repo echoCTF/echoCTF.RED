@@ -56,7 +56,7 @@ class Faq extends \yii\db\ActiveRecord
         return new FaqQuery(get_called_class());
     }
 
-    public function save($runValidation = true, $attributeNames = NULL)
+    public function save($runValidation=true, $attributeNames=NULL)
     {
         throw new \LogicException("Saving is disabled for this model.");
     }

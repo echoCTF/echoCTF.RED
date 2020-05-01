@@ -19,7 +19,7 @@ class PlayerLastSearch extends PlayerLast
     {
         return [
             [['id'], 'integer'],
-            [['on_pui', 'on_vpn', 'vpn_remote_address', 'vpn_local_address','username'], 'safe'],
+            [['on_pui', 'on_vpn', 'vpn_remote_address', 'vpn_local_address', 'username'], 'safe'],
         ];
     }
 
@@ -41,17 +41,18 @@ class PlayerLastSearch extends PlayerLast
      */
     public function search($params)
     {
-        $query = PlayerLast::find()->joinWith(['player']);
+        $query=PlayerLast::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -63,9 +64,9 @@ class PlayerLastSearch extends PlayerLast
             'player_last.on_pui' => $this->on_pui,
             'player_last.on_vpn' => $this->on_vpn,
         ]);
-        $query->andFilterWhere(['=', 'player_last.vpn_remote_address',$this->vpn_remote_address]);
+        $query->andFilterWhere(['=', 'player_last.vpn_remote_address', $this->vpn_remote_address]);
         $query->orFilterWhere(['like', 'INET_NTOA(player_last.vpn_remote_address)', $this->vpn_remote_address]);
-        $query->andFilterWhere(['=', 'player_last.vpn_local_address',$this->vpn_local_address]);
+        $query->andFilterWhere(['=', 'player_last.vpn_local_address', $this->vpn_local_address]);
         $query->orFilterWhere(['like', 'INET_NTOA(player_last.vpn_local_address)', $this->vpn_local_address]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $dataProvider->setSort([
@@ -73,7 +74,7 @@ class PlayerLastSearch extends PlayerLast
                 $dataProvider->getSort()->attributes,
                 [
                   'username' => [
-                      'asc' => [ 'player.username' => SORT_ASC],
+                      'asc' => ['player.username' => SORT_ASC],
                       'desc' => ['player.username' => SORT_DESC],
                   ],
                 ]

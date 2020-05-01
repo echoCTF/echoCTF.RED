@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\settings\models\Sysconfig */
 
-$this->title = 'Create Sysconfig';
-$this->params['breadcrumbs'][] = ['label' => 'Sysconfigs', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Sysconfig';
+$this->params['breadcrumbs'][]=['label' => 'Sysconfigs', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="sysconfig-create">
 

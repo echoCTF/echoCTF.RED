@@ -25,30 +25,30 @@ class StreamWidget extends Widget
     public $totalPoints;
     public $pagerID='stream-pager';
     public $summary='<div class="card-header card-header-primary"><h4 class="card-title">{TITLE}</h4><p class="card-category">{CATEGORY}</p></div>';
-    public $pagerOptions=['class'=>'d-flex align-items-end justify-content-between','id'=>'stream-pager'];
+    public $pagerOptions=['class'=>'d-flex align-items-end justify-content-between', 'id'=>'stream-pager'];
     public $layout='{summary}<div class="card-body">{items}</div><div class="card-footer">{pager}</div>';
     public $player_id=null;
     public function init()
     {
-      if($this->pagerID===null)
+      if($this->pagerID === null)
       {
         unset($this->pagerOptions['id']);
       }
-      if($this->dataProvider===NULL && $this->player_id===NULL)
+      if($this->dataProvider === NULL && $this->player_id === NULL)
       {
         $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago');
 
       }
-      else if ($this->player_id!==NULL)
+      else if($this->player_id !== NULL)
       {
         $model=\app\models\Stream::find()
           ->select('stream.*,TS_AGO(ts) as ts_ago')
           ->where(['player_id'=>$this->player_id]);
 
       }
-      if(isset($model) && $this->dataProvider===NULL)
-        $this->dataProvider = new ActiveDataProvider([
-            'query' => $model->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]),
+      if(isset($model) && $this->dataProvider === NULL)
+        $this->dataProvider=new ActiveDataProvider([
+            'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
             'pagination' => [
                 'pageSizeParam'=>'stream-perpage',
                 'pageParam'=>'stream-page',
@@ -64,7 +64,7 @@ class StreamWidget extends Widget
     {
         StreamWidgetAsset::register($this->getView());
 
-        return $this->render('stream',[
+        return $this->render('stream', [
           'dataProvider'=>$this->dataProvider,
           'divID'=>$this->divID,
           'summary'=>$this->summary,

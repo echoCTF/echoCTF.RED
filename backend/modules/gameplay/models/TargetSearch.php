@@ -17,10 +17,10 @@ class TargetSearch extends Target
     public function rules()
     {
         return [
-            [['id', 'ip', 'active', 'rootable','difficulty','required_xp','suggested_xp'], 'integer'],
-            [['status'],'in', 'range' => ['online','offline','powerup','powerdown','maintenance']],
-            [['scheduled_at'],'datetime'],
-            [['name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet','status','scheduled_at','required_xp','suggested_xp'], 'safe'],
+            [['id', 'ip', 'active', 'rootable', 'difficulty', 'required_xp', 'suggested_xp'], 'integer'],
+            [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
+            [['scheduled_at'], 'datetime'],
+            [['name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp'], 'safe'],
         ];
     }
 
@@ -42,17 +42,18 @@ class TargetSearch extends Target
      */
     public function search($params)
     {
-        $query = Target::find();
+        $query=Target::find();
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;

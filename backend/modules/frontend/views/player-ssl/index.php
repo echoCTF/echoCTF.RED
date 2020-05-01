@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\frontend\models\PlayerSslSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Player VPN Certificates';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Player VPN Certificates';
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-ssl-index">
 
@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute' => 'player',
               'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
+              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
             [
               'attribute' => 'subject',
@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

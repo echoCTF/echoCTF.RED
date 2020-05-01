@@ -12,9 +12,9 @@ use app\modules\frontend\models\Player;
 
 <div class="notification-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->where(['active' => 1])->all(),'id','username'),['prompt'=>'All','value'=>'0'])->Label('Player')->hint('Choose the Player to create score entry')?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->where(['active' => 1])->all(), 'id', 'username'), ['prompt'=>'All', 'value'=>'0'])->Label('Player')->hint('Choose the Player to create score entry')?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
@@ -26,6 +26,6 @@ use app\modules\frontend\models\Player;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

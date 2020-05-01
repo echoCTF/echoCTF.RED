@@ -7,7 +7,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\captcha\Captcha;
-$this->title = Yii::$app->sys->event_name. ' Signup';
+$this->title=Yii::$app->sys->event_name.' Signup';
 ?>
 <div class="site-signup">
   <div class="body-content">
@@ -16,7 +16,7 @@ $this->title = Yii::$app->sys->event_name. ' Signup';
     <p class="text-warning">All our email communications come from the following address: <small><code class="text-warning"><?=Html::encode(Yii::$app->sys->mail_from)?></code></small></p>
     <div class="row">
         <div class="col-lg-5">
-            <?php $form = ActiveForm::begin(['id' => 'form-signup']); ?>
+            <?php $form=ActiveForm::begin(['id' => 'form-signup']);?>
 
                 <?=$form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 
@@ -33,7 +33,7 @@ $this->title = Yii::$app->sys->event_name. ' Signup';
                     <?=Html::submitButton('Signup', ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
                 </div>
 
-            <?php ActiveForm::end(); ?>
+            <?php ActiveForm::end();?>
         </div>
     </div>
   </div>

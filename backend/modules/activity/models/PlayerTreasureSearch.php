@@ -21,7 +21,7 @@ class PlayerTreasureSearch extends PlayerTreasure
     {
         return [
             [['player_id', 'treasure_id'], 'integer'],
-            [['ts', 'player', 'treasure','target_id'], 'safe'],
+            [['ts', 'player', 'treasure', 'target_id'], 'safe'],
         ];
     }
 
@@ -43,17 +43,18 @@ class PlayerTreasureSearch extends PlayerTreasure
      */
     public function search($params)
     {
-        $query = PlayerTreasure::find()->joinWith(['player','treasure']);
+        $query=PlayerTreasure::find()->joinWith(['player', 'treasure']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             $query->where('0=1');
             return $dataProvider;
         }
@@ -75,15 +76,15 @@ class PlayerTreasureSearch extends PlayerTreasure
                 $dataProvider->getSort()->attributes,
                 [
                   'target_id' => [
-                      'asc' => [ 'treasure.target_id' => SORT_ASC],
+                      'asc' => ['treasure.target_id' => SORT_ASC],
                       'desc' => ['treasure.target_id' => SORT_DESC],
                   ],
                   'player' => [
-                      'asc' => [ 'player_id' => SORT_ASC],
+                      'asc' => ['player_id' => SORT_ASC],
                       'desc' => ['player_id' => SORT_DESC],
                   ],
                   'treasure' => [
-                      'asc' => [ 'treasure_id' => SORT_ASC],
+                      'asc' => ['treasure_id' => SORT_ASC],
                       'desc' => ['treasure_id' => SORT_DESC],
                   ],
                 ]

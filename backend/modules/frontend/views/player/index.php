@@ -5,8 +5,8 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\frontend\models\PlayerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="player-index">
 
@@ -15,8 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Create Player', ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Import Players', ['import'], ['class' => 'btn btn-info']) ?>
-        <?= Html::a('Reset All player data', ['reset-playdata'], ['class' => 'btn btn-danger', 'data' => ['confirm' => 'Are you sure you want to delete all player data?','method' => 'post',]]) ?>
-        <?= Html::a('Reset All player progress', ['reset-player-progress'], ['class' => 'btn btn-warning', 'data' => ['confirm' => 'Are you sure you want to delete all player progress?','method' => 'post',]]) ?>
+        <?= Html::a('Reset All player data', ['reset-playdata'], ['class' => 'btn btn-danger', 'data' => ['confirm' => 'Are you sure you want to delete all player data?', 'method' => 'post', ]]) ?>
+        <?= Html::a('Reset All player progress', ['reset-player-progress'], ['class' => 'btn btn-warning', 'data' => ['confirm' => 'Are you sure you want to delete all player progress?', 'method' => 'post', ]]) ?>
     </p>
 
     <details>
@@ -29,9 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             [
-             'attribute'=>'id',
-             'headerOptions' => ['style' => 'width:4em'],
-           ],
+              'attribute'=>'id',
+              'headerOptions' => ['style' => 'width:4em'],
+            ],
 
             'username',
             'email:email',
@@ -46,16 +46,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
               'attribute'=>'on_pui',
-              'value'=>function($model){if($model->last) return $model->last->on_pui==0 ? null : $model->last->on_pui; else return null;}
+              'value'=>function($model) {if($model->last) return $model->last->on_pui == 0 ? null : $model->last->on_pui;else return null;}
             ],
             [
               'attribute'=>'on_vpn',
-              'value'=>function($model){if($model->last) return $model->last->on_vpn==0 ? null : $model->last->on_vpn; else return null;}
+              'value'=>function($model) {if($model->last) return $model->last->on_vpn == 0 ? null : $model->last->on_vpn;else return null;}
             ],
             [
               'attribute'=>'vpn_local_address',
               'label'=> 'VPN Local IP',
-              'value'=>function($model){ return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
+              'value'=>function($model) { return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
             ],
             'online:boolean',
             'active:boolean',
@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'ts',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{generate-ssl} {toggle-academic} '. '{view} {update} {delete} {ban} {mail}',
+              'template' => '{generate-ssl} {toggle-academic} '.'{view} {update} {delete} {ban} {mail}',
               'header' => Html::a(
                   '<span class="glyphicon glyphicon-ban-circle"></span>',
                   ['ban-filtered'],
@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   ]
               ),
               'buttons' => [
-                  'delete' => function($url, $model){
+                  'delete' => function($url, $model) {
                       return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->id], [
                           'class' => '',
                           'data' => [
@@ -88,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                           ],
                       ]);
                   },
-                  'generate-ssl' => function ($url) {
+                  'generate-ssl' => function($url) {
                       return Html::a(
                           '<span class="glyphicon glyphicon-lock"></span>',
                           $url,
@@ -100,7 +100,7 @@ $this->params['breadcrumbs'][] = $this->title;
                           ]
                       );
                   },
-                  'toggle-academic' => function ($url) {
+                  'toggle-academic' => function($url) {
                       return Html::a(
                           '<span class="glyphicon glyphicon-education"></span>',
                           $url,
@@ -113,7 +113,7 @@ $this->params['breadcrumbs'][] = $this->title;
                           ]
                       );
                   },
-                  'ban' => function ($url) {
+                  'ban' => function($url) {
                       return Html::a(
                           '<span class="glyphicon glyphicon-ban-circle"></span>',
                           $url,
@@ -125,7 +125,7 @@ $this->params['breadcrumbs'][] = $this->title;
                           ]
                       );
                   },
-                  'mail' => function ($url) {
+                  'mail' => function($url) {
                       return Html::a(
                           '<span class="glyphicon glyphicon-envelope"></span>',
                           $url,
@@ -140,7 +140,7 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
             ],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

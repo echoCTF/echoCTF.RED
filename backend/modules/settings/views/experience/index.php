@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\settings\models\ExperienceSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Experiences');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=Yii::t('app', 'Experiences');
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="experience-index">
 
@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

@@ -10,7 +10,7 @@ use yii\widgets\ActiveForm;
 
 <div class="challenge-form">
 
-    <?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]); ?>
+    <?php $form=ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]);?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('The name of the challenge') ?>
 
@@ -20,7 +20,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6])->hint('The full description/scenario of the challenge (do not add any questions here, they should be created on "Gameplay"->"Challenge Questions")') ?>
 
-    <?= $form->field($model, 'player_type')->dropDownList([ 'offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => ''])->hint('Whether this challenge will be available to offense or defense players/teams') ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => ''])->hint('Whether this challenge will be available to offense or defense players/teams') ?>
 
     <?= $form->field($model, 'filename')->textInput()->hint('What name to show to the player for download') ?>
 
@@ -30,6 +30,6 @@ use yii\widgets\ActiveForm;
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php ActiveForm::end();?>
 
 </div>

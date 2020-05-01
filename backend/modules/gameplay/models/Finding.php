@@ -49,7 +49,7 @@ class Finding extends \yii\db\ActiveRecord
             [['description', 'pubdescription'], 'string'],
             [['points'], 'number'],
             [['stock', 'target_id', 'port'], 'integer'],
-            [['name', 'pubname','hint'], 'string', 'max' => 255],
+            [['name', 'pubname', 'hint'], 'string', 'max' => 255],
             [['protocol'], 'string', 'max' => 30],
             [['protocol', 'target_id', 'port'], 'unique', 'targetAttribute' => ['protocol', 'target_id', 'port']],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
@@ -123,7 +123,7 @@ class Finding extends \yii\db\ActiveRecord
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('user_finding', ['finding_id' => 'id']);
     }
 
-    public function afterSave($insert,$changedAttributes)
+    public function afterSave($insert, $changedAttributes)
     {
       parent::afterSave($insert, $changedAttributes);
       if(!empty($this->hint))

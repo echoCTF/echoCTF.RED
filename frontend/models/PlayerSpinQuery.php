@@ -12,14 +12,14 @@ class PlayerSpinQuery extends \yii\db\ActiveQuery
     public function todays()
     {
       //        'select'=>["t.player_id","t.total","if(DATE(t.updated_at) < DATE(NOW()),0,t.counter) as counter"],
-        return $this->select(['player_id','total',"if(DATE(updated_at) < DATE(NOW()),0,counter) as counter",'updated_at']);
+        return $this->select(['player_id', 'total', "if(DATE(updated_at) < DATE(NOW()),0,counter) as counter", 'updated_at']);
     }
 
     /**
      * {@inheritdoc}
      * @return PlayerSpin[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -28,7 +28,7 @@ class PlayerSpinQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return PlayerSpin|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }

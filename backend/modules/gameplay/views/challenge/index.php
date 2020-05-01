@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\ChallengeSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="challenge-index">
 
@@ -32,13 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'description:ntext',
             [
               'attribute'=>'player_type',
-              'filter'=>['offense'=>'Offense', 'defense'=>'Defense','both'=>'Both'],
+              'filter'=>['offense'=>'Offense', 'defense'=>'Defense', 'both'=>'Both'],
             ],
             //'file:ntext',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

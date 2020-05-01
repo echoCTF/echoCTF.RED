@@ -1,8 +1,8 @@
 <?php
-    $menu = $img = "";
-    $config = new app\assets\MaterialAssetConfig();
-    $menu = app\models\Menu::getMenu();
-    $img = $config::sidebarBackgroundImage();
+    $menu=$img="";
+    $config=new app\assets\MaterialAssetConfig();
+    $menu=app\models\Menu::getMenu();
+    $img=$config::sidebarBackgroundImage();
 use yii\helpers\Html;
 use yii\helpers\Url;
 ?>

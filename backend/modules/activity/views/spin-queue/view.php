@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\SpinQueue */
 
-$this->title = $model->target_id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Spin Queues'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title=$model->target_id;
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Spin Queues'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="spin-queue-view">

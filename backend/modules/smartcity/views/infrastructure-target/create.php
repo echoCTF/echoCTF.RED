@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\InfrastructureTarget */
 
-$this->title = 'Create Infrastructure Target';
-$this->params['breadcrumbs'][] = ['label' => 'Infrastructure Targets', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Create Infrastructure Target';
+$this->params['breadcrumbs'][]=['label' => 'Infrastructure Targets', 'url' => ['index']];
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="infrastructure-target-create">
 

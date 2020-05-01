@@ -69,47 +69,47 @@ class PlayerSsl extends \yii\db\ActiveRecord
     /**
      * Generate SSL keys for this model
      */
-     public function generate() {
-         $player=Player::findOne(['id'=>$this->player_id]);
-         $params=Yii::$app->params['dn'];
-         $params['commonName'] = $this->player_id;
-         $params['emailAddress']=$player->email;
+      public function generate() {
+          $player=Player::findOne(['id'=>$this->player_id]);
+          $params=Yii::$app->params['dn'];
+          $params['commonName']=$this->player_id;
+          $params['emailAddress']=$player->email;
 
-         // Generate a new private (and public) key pair
-         $privkey = openssl_pkey_new(Yii::$app->params['pkey_config']);
+          // Generate a new private (and public) key pair
+          $privkey=openssl_pkey_new(Yii::$app->params['pkey_config']);
 
-         // Generate a certificate signing request
-         $csr = openssl_csr_new($params, $privkey, array('digest_alg' => 'sha256', 'config'=>Yii::getAlias('@appconfig').'/CA.cnf','encrypt_key'=>false));
+          // Generate a certificate signing request
+          $csr=openssl_csr_new($params, $privkey, array('digest_alg' => 'sha256', 'config'=>Yii::getAlias('@appconfig').'/CA.cnf', 'encrypt_key'=>false));
 
-         // Generate a self-signed cert, valid for 365 days
-         $tmpCAcert=tempnam("/tmp", "echoCTF-OVPN-CA.crt");
-         $tmpCAprivkey=tempnam("/tmp", "echoCTF-OVPN-CA.key");
-         $CAcert = "file://".$tmpCAcert;
-         $CAprivkey = array("file://".$tmpCAprivkey,null);
-         file_put_contents($tmpCAprivkey,Yii::$app->sys->{'CA.key'});
-         file_put_contents($tmpCAcert,Yii::$app->sys->{'CA.crt'});
-         $x509 = openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256','config'=>Yii::getAlias('@appconfig').'/CA.cnf','x509_extensions'=>'usr_cert'), time() );
-         openssl_csr_export($csr, $csrout);
-         openssl_x509_export($x509, $certout,false);
-         openssl_x509_export($x509, $crtout);
-         openssl_pkey_export($privkey, $pkeyout);
-         unlink($tmpCAcert);
-         unlink($tmpCAprivkey);
+          // Generate a self-signed cert, valid for 365 days
+          $tmpCAcert=tempnam("/tmp", "echoCTF-OVPN-CA.crt");
+          $tmpCAprivkey=tempnam("/tmp", "echoCTF-OVPN-CA.key");
+          $CAcert="file://".$tmpCAcert;
+          $CAprivkey=array("file://".$tmpCAprivkey, null);
+          file_put_contents($tmpCAprivkey, Yii::$app->sys->{'CA.key'});
+          file_put_contents($tmpCAcert, Yii::$app->sys->{'CA.crt'});
+          $x509=openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256', 'config'=>Yii::getAlias('@appconfig').'/CA.cnf', 'x509_extensions'=>'usr_cert'), time());
+          openssl_csr_export($csr, $csrout);
+          openssl_x509_export($x509, $certout, false);
+          openssl_x509_export($x509, $crtout);
+          openssl_pkey_export($privkey, $pkeyout);
+          unlink($tmpCAcert);
+          unlink($tmpCAprivkey);
 
-         $this->subject=serialize($params);
-         $this->csr=$csrout;
-         $this->crt=$crtout;
-         $this->txtcrt=$certout;
-         $this->privkey=$pkeyout;
-     }
+          $this->subject=serialize($params);
+          $this->csr=$csrout;
+          $this->crt=$crtout;
+          $this->txtcrt=$certout;
+          $this->privkey=$pkeyout;
+      }
 
-     public function getSubjectString()
-     {
-       $subj=unserialize($this->subject);
-       $subject_arr=[];
-       foreach($subj as $key => $val)
+      public function getSubjectString()
+      {
+        $subj=unserialize($this->subject);
+        $subject_arr=[];
+        foreach($subj as $key => $val)
         $subject_arr[]="$key=$val";
-      return implode(", ",$subject_arr);
-     }
+      return implode(", ", $subject_arr);
+      }
 
 }

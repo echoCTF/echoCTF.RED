@@ -42,17 +42,18 @@ class PlayerBadgeSearch extends PlayerBadge
      */
     public function search($params)
     {
-        $query = PlayerBadge::find()->joinWith(['player','badge']);
+        $query=PlayerBadge::find()->joinWith(['player', 'badge']);
 
         // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider=new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if (!$this->validate()) {
+        if(!$this->validate())
+        {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -74,11 +75,11 @@ class PlayerBadgeSearch extends PlayerBadge
                 $dataProvider->getSort()->attributes,
                 [
                   'player' => [
-                      'asc' => [ 'player_id' => SORT_ASC],
+                      'asc' => ['player_id' => SORT_ASC],
                       'desc' => ['player_id' => SORT_DESC],
                   ],
                   'badge' => [
-                      'asc' => [ 'badge_id' => SORT_ASC],
+                      'asc' => ['badge_id' => SORT_ASC],
                       'desc' => ['badge_id' => SORT_DESC],
                   ],
                 ]

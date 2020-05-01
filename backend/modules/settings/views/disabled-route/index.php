@@ -7,8 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\settings\models\DisabledRouteSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Disabled Routes';
-$this->params['breadcrumbs'][] = $this->title;
+$this->title='Disabled Routes';
+$this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="disabled-route-index">
 
@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
-    ]); ?>
+    ]);?>
 
 
 </div>

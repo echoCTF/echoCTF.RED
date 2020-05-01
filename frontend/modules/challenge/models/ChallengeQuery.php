@@ -13,8 +13,8 @@ class ChallengeQuery extends \yii\db\ActiveQuery
     {
       $this->alias('t');
       $this->select(['t.*,count(question.id) as total_questions,count(player_question.question_id) as player_answers']);
-      $this->join('LEFT JOIN', 'question','question.challenge_id=t.id');
-      $this->join('LEFT JOIN', 'player_question','player_question.question_id=question.id and player_question.player_id='.$player_id);
+      $this->join('LEFT JOIN', 'question', 'question.challenge_id=t.id');
+      $this->join('LEFT JOIN', 'player_question', 'player_question.question_id=question.id and player_question.player_id='.$player_id);
       $this->groupBy('t.id');
       return $this;
     }
@@ -23,7 +23,7 @@ class ChallengeQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Challenge[]|array
      */
-    public function all($db = null)
+    public function all($db=null)
     {
         return parent::all($db);
     }
@@ -32,7 +32,7 @@ class ChallengeQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Challenge|array|null
      */
-    public function one($db = null)
+    public function one($db=null)
     {
         return parent::one($db);
     }
