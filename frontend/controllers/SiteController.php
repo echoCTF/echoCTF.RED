@@ -82,7 +82,7 @@ class SiteController extends Controller
     public function actionIndex()
     {
       if(!Yii::$app->user->isGuest && Yii::$app->sys->dashboard_is_home)
-			   $this->redirect ( ['/dashboard/index'] );
+          $this->redirect ( ['/dashboard/index'] );
         return $this->render('index');
     }
 

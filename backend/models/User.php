@@ -207,9 +207,9 @@ class User extends ActiveRecord implements IdentityInterface
     {
       return (bool)$this->admin;
     }
-   /**
-    * Get status Label
-    */
+    /**
+     * Get status Label
+     */
     public function getStatusLabel()
     {
       switch($this->status) {

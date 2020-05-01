@@ -29,9 +29,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             [
-             'attribute'=>'id',
-             'headerOptions' => ['style' => 'width:4em'],
-           ],
+              'attribute'=>'id',
+              'headerOptions' => ['style' => 'width:4em'],
+            ],
 
             'username',
             'email:email',

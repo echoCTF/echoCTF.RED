@@ -288,7 +288,7 @@ class PlayerController extends Controller
           Yii::$app->session->setFlash('success','Player deleted and placed on banned table.');
         }
         else {
-           throw new \LogicException('Faled to delete and ban player.');
+            throw new \LogicException('Faled to delete and ban player.');
         }
       }
       catch (\Exception $e)
@@ -388,8 +388,8 @@ class PlayerController extends Controller
       }
 
       private function mailPlayer($content,$player,$subject)
-    	{
-    	// Get mailer
+      {
+      // Get mailer
         try {
           \Yii::$app->mailer->compose()
             ->setFrom([Sysconfig::findOne('mail_from')->val => Sysconfig::findOne('mail_fromName')->val])
@@ -398,11 +398,11 @@ class PlayerController extends Controller
             ->setTextBody($content)
             ->send();
           }
-      		catch(\Exception $e)
-      		{
-      			return false;
-      		}
-      		return true;
-    	}
+          catch(\Exception $e)
+          {
+            return false;
+          }
+          return true;
+      }
 
 }

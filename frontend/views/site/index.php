@@ -9,9 +9,9 @@ use yii\helpers\ArrayHelper;
   <div class="body-content">
 <?php
 if(Yii::$app->user->isGuest)
-	echo Yii::$app->sys->frontpage_scenario;
+  echo Yii::$app->sys->frontpage_scenario;
 else
-	echo Yii::$app->sys->offense_scenario;
+  echo Yii::$app->sys->offense_scenario;
 ?>
   </div>
 </div>

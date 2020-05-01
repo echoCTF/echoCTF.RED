@@ -38,7 +38,7 @@ if($target->progress==100) {
                   "</b>.</p>";
  }
 }*/
-         Card::begin([
+          Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
             'icon'=>sprintf('<img src="%s" class="img-fluid" style="max-width: 10rem; max-height: 4rem;"/>',$target->logo),
@@ -77,9 +77,9 @@ if($target->progress==100) {
             'subtitle'=>'Level '.$identity->experience->id.' / '.$identity->experience->name,
             'title'=>$identity->owner->username." / ".$identity->rank->ordinalPlace." Place",
             'footer'=>sprintf('<div class="stats">%s %s</div>', Twitter::widget([
-                           'message'=>sprintf('Hey check this out, %s have found %d out of %d services and %d out of %d flags on [%s]', $identity->isMine ? "I" : $identity->twitterHandle,$target->player_findings,$target->total_findings,$target->player_treasures,$target->total_treasures,$target->name),
-                           /*'url'=>Url::to(['/target/default/index'*,'id'=>$target->id],'https'),*/
-                           'linkOptions'=>['class'=>'target-view-tweet','target'=>'_blank','style'=>'font-size: 1.4em;'],
+                            'message'=>sprintf('Hey check this out, %s have found %d out of %d services and %d out of %d flags on [%s]', $identity->isMine ? "I" : $identity->twitterHandle,$target->player_findings,$target->total_findings,$target->player_treasures,$target->total_treasures,$target->name),
+                            /*'url'=>Url::to(['/target/default/index'*,'id'=>$target->id],'https'),*/
+                            'linkOptions'=>['class'=>'target-view-tweet','target'=>'_blank','style'=>'font-size: 1.4em;'],
                         ]),Html::encode($identity->bio)),
         ]);
         echo "<p class='text-primary '><i class='fas fa-flag-checkered'></i> ", $target->player_treasures,": Flags found<br/>";

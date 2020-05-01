@@ -69,10 +69,10 @@ class ProfileController extends \yii\web\Controller
 
       $profile=$this->findModel($id);
       if(Yii::$app->user->isGuest && $profile->visibility!='public')
-        			return $this->redirect(['/']);
+              return $this->redirect(['/']);
 
       if($profile->visibility!='public' && $profile->visibility!='ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
-        			return $this->redirect(['/']);
+              return $this->redirect(['/']);
 
         return $this->render('index',[
           'profile'=>$profile,
@@ -82,16 +82,16 @@ class ProfileController extends \yii\web\Controller
     }
 
     public function actionOvpn()
-  	{
-  		$model = Yii::$app->user->identity->sSL;
-  		$content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php',['model'=>$model]);
+    {
+      $model = Yii::$app->user->identity->sSL;
+      $content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php',['model'=>$model]);
       \Yii::$app->response->format = \yii\web\Response::FORMAT_RAW;
       \Yii::$app->response->content=$content;
       \Yii::$app->response->setDownloadHeaders('echoCTF.ovpn','application/octet-stream',false,strlen($content));
       \Yii::$app->response->send();
       return;
 
-  	}
+    }
 
     public function actionSettings()
     {

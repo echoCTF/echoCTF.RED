@@ -4,12 +4,12 @@ namespace app\components;
 class echoCTFView extends \yii\web\View
 {
   public $_title,
-         $_description="An online platform to train your offensive and defensive IT security skills.",
-         $_url,
-         $_image,
-         $_image_width="1200",
-         $_image_height="628",
-         $_card='summary_large_image';
+          $_description="An online platform to train your offensive and defensive IT security skills.",
+          $_url,
+          $_image,
+          $_image_width="1200",
+          $_image_height="628",
+          $_card='summary_large_image';
 
   public $_fluid;
 

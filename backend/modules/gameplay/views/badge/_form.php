@@ -21,18 +21,18 @@ use app\modules\gameplay\models\Treasure;
       <?= $form->field($model, 'pubdescription')->textarea(['rows' => 6])->hint('A description of the scenario of the badge without leaking any information like target hostnames, IPs, services, ports etc.') ?>
       <?= $form->field($model, 'points')->textInput(['maxlength' => true])->hint('The amount of points to be awarded when a player/team gets this badge') ?>
         <?= $form->field($model, 'findings')->dropDownList(ArrayHelper::map(Finding::find()->all(),'id','name','target.name'),
-         [
+          [
           'class'=>'chosen-select input-md required',
           'multiple'=>'multiple',
           'size'=>"10",
-         ]
+          ]
         )->label("Select Findings");?>
         <?= $form->field($model, 'treasures')->dropDownList(ArrayHelper::map(Treasure::find()->all(),'id','name','target.name'),
-         [
+          [
           'class'=>'chosen-select input-md required',
           'multiple'=>'multiple',
           'size'=>"10",
-         ]
+          ]
         )->label("Select Treasures");?>
 
     <div class="form-group">

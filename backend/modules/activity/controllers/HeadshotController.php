@@ -17,26 +17,26 @@ class HeadshotController extends Controller
     /**
      * {@inheritdoc}
      */
-     public function behaviors()
-     {
-         return [
-           'access' => [
-                 'class' => \yii\filters\AccessControl::class,
-                 'rules' => [
-                     [
-                         'allow' => true,
-                         'roles' => ['@'],
-                     ],
-                 ],
-             ],
-             'verbs' => [
-                 'class' => VerbFilter::class,
-                 'actions' => [
-                     'delete' => ['POST'],
-                 ],
-             ],
-         ];
-     }
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
 
     /**
      * Lists all Headshot models.
@@ -97,13 +97,13 @@ class HeadshotController extends Controller
 
       if ($model->load(Yii::$app->request->post()) && $model->validate()) {
           Yii::$app->db->createCommand('insert ignore into player_finding (player_id,finding_id) select :player_id,id from finding where target_id=:target_id')
-           ->bindValue(':player_id', $model->player_id)
-           ->bindValue(':target_id', $model->target_id)
-           ->query();
+            ->bindValue(':player_id', $model->player_id)
+            ->bindValue(':target_id', $model->target_id)
+            ->query();
           Yii::$app->db->createCommand('insert ignore into player_treasure (player_id,treasure_id) select :player_id,id from treasure where target_id=:target_id')
-           ->bindValue(':player_id', $model->player_id)
-           ->bindValue(':target_id', $model->target_id)
-           ->query();
+            ->bindValue(':player_id', $model->player_id)
+            ->bindValue(':target_id', $model->target_id)
+            ->query();
 
           return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
       }

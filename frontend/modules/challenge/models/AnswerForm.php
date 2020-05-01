@@ -54,14 +54,14 @@ class AnswerForm extends Model
       }
 
       $pq=new PlayerQuestion;
-  		$pq->player_id=(int)Yii::$app->user->id;
-  		$pq->question_id=$this->_question->id;
-  		if($pq->save())
-  		{
-  			$pq->refresh();
-  			$this->points=$pq->points;
-  			return true;
-  		}
+      $pq->player_id=(int)Yii::$app->user->id;
+      $pq->question_id=$this->_question->id;
+      if($pq->save())
+      {
+        $pq->refresh();
+        $this->points=$pq->points;
+        return true;
+      }
       else
       {
         $this->addError('answer','Failed to save the given answer. Contact the administrators if the problem persists.');

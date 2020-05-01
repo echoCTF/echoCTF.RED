@@ -19,14 +19,14 @@ use app\modules\game\models\Headshot;
     </p>
     <?php if($profile->isMine):?>
       <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id],'https'),['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
-           'message'=>sprintf('Checkout my profile at echoCTF.RED! %s',$profile->braggingRights),
-           'url'=>Url::to(['profile/index','id'=>$profile->id],'https'),
-           'linkOptions'=>['class'=>'profile-tweet','target'=>'_blank','style'=>'font-size: 1.3em;'],
+            'message'=>sprintf('Checkout my profile at echoCTF.RED! %s',$profile->braggingRights),
+            'url'=>Url::to(['profile/index','id'=>$profile->id],'https'),
+            'linkOptions'=>['class'=>'profile-tweet','target'=>'_blank','style'=>'font-size: 1.3em;'],
         ]);?>
     <?php else: ?>
       <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id],'https'),['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
-           'message'=>sprintf('Checkout the profile of %s at echoCTF.RED',$profile->twitterHandle),
-           'linkOptions'=>['class'=>'profile-tweet','target'=>'_blank','style'=>'font-size: 1.3em;'],
+            'message'=>sprintf('Checkout the profile of %s at echoCTF.RED',$profile->twitterHandle),
+            'linkOptions'=>['class'=>'profile-tweet','target'=>'_blank','style'=>'font-size: 1.3em;'],
         ]);?>
     <?php endif;?>
     <ul class="nav flex-column">

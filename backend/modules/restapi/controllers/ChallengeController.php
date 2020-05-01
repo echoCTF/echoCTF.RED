@@ -57,19 +57,19 @@ class ChallengeController extends ActiveController
         }
         if($challenge->save())
         {
-           if(array_key_exists("questions", $post))
-           {
-             foreach($post['questions'] as $q)
-             {
-               $question=new \app\modules\gameplay\models\Question;
-               $question->attributes=$q;
-               $question->challenge_id=$challenge->id;
-               $question->save();
-             }
-           }
-         \Yii::$app->response->statusCode = 201;
-         $transaction->commit();
-         return array('status' => true, 'data'=> "Saved", 'challenge_id'=>$challenge->id);
+            if(array_key_exists("questions", $post))
+            {
+              foreach($post['questions'] as $q)
+              {
+                $question=new \app\modules\gameplay\models\Question;
+                $question->attributes=$q;
+                $question->challenge_id=$challenge->id;
+                $question->save();
+              }
+            }
+          \Yii::$app->response->statusCode = 201;
+          $transaction->commit();
+          return array('status' => true, 'data'=> "Saved", 'challenge_id'=>$challenge->id);
         }
       }
       catch (\Throwable $e)

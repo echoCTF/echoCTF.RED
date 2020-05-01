@@ -13,8 +13,8 @@ class ProfileSearch extends Profile
 {
   public $username;
   /**
-     * {@inheritdoc}
-     */
+   * {@inheritdoc}
+   */
     public function rules()
     {
         return [

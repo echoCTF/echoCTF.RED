@@ -235,9 +235,9 @@ class Player extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
-   /**
-    * Get status Label
-    */
+    /**
+     * Get status Label
+     */
     public function getStatusLabel()
     {
       switch($this->status) {

@@ -22,33 +22,33 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php
 use miloschuman\highcharts\Highcharts;
 echo Highcharts::widget([
-   'options' => [
+    'options' => [
       'title' => ['text' => 'Registrations Per day'],
       'xAxis' => [
-         'categories' => array_values($categories)
+          'categories' => array_values($categories)
       ],
       'yAxis' => [
-         'title' => ['text' => 'Users']
+          'title' => ['text' => 'Users']
       ],
       'series' => [
-         ['name' => 'Registrations', 'data' => $registrations],
+          ['name' => 'Registrations', 'data' => $registrations],
       ]
-   ]
+    ]
 ]);
 
 echo Highcharts::widget([
-   'options' => [
+    'options' => [
       'title' => ['text' => 'Claims per day'],
       'xAxis' => [
-         'categories' => array_values($claimDates)
+          'categories' => array_values($claimDates)
       ],
       'yAxis' => [
-         'title' => ['text' => 'Claims']
+          'title' => ['text' => 'Claims']
       ],
       'series' => [
-         ['name' => 'Treasure claims', 'data' => $claims],
+          ['name' => 'Treasure claims', 'data' => $claims],
       ]
-   ]
+    ]
 ]);
 ?>
 </div>

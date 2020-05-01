@@ -94,8 +94,8 @@ class Profile extends \yii\db\ActiveRecord
         return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
     public function getLink()
-  	{
-  		return Html::a(Html::encode($this->owner->username),['frontend/profile/view','id'=>$this->id]);
-  	}
+    {
+      return Html::a(Html::encode($this->owner->username),['frontend/profile/view','id'=>$this->id]);
+    }
 
 }

@@ -41,8 +41,8 @@ class Profile extends \yii\db\ActiveRecord
   const SCENARIO_REGISTER = 'register';
   const SCENARIO_SIGNUP = 'signup';
   public $gravatar,
-         $twitter_avatar,
-         $github_avatar;
+          $twitter_avatar,
+          $github_avatar;
   public $visibilities=[
       'private'=>'Private',
       'public'=>'Public',
@@ -113,21 +113,21 @@ class Profile extends \yii\db\ActiveRecord
     {
         return [
           'id' => 'ID',
-  				'player_id' => 'Player ID',
-  				'visibility' => 'Profile Visibility',
-  				'bio' => 'Bio',
-  				'country' => 'Country',
-  				'avatar' => 'Avatar',
-  				'discord' => 'Discord',
-  				'twitter' => 'Twitter',
-  				'github' => 'Github',
-  				'htb'=>'HTB',
-  				'terms_and_conditions'=>'I accept the echoCTF RED <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',
-  				'mail_optin'=>'<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from echoCTF RED</abbr>',
-  				'gdpr'=>'I accept the echoCTF RED <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>.',
-  				'created_at' => 'Created At',
-  				'updated_at' => 'Updated At',
-  				'owner.username' => 'Username',
+          'player_id' => 'Player ID',
+          'visibility' => 'Profile Visibility',
+          'bio' => 'Bio',
+          'country' => 'Country',
+          'avatar' => 'Avatar',
+          'discord' => 'Discord',
+          'twitter' => 'Twitter',
+          'github' => 'Github',
+          'htb'=>'HTB',
+          'terms_and_conditions'=>'I accept the echoCTF RED <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',
+          'mail_optin'=>'<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from echoCTF RED</abbr>',
+          'gdpr'=>'I accept the echoCTF RED <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>.',
+          'created_at' => 'Created At',
+          'updated_at' => 'Updated At',
+          'owner.username' => 'Username',
         ];
     }
 
@@ -160,40 +160,40 @@ class Profile extends \yii\db\ActiveRecord
         return $this->hasOne(Country::class, ['id' => 'country']);
     }
     public function getVisible(): bool
-  	{
-  		if(Yii::$app->sys->player_profile===false) return false;
-  		elseif($this->visibility=='public') return true;
-  		elseif(intval(Yii::$app->user->id)===intval($this->player_id)) return true;
+    {
+      if(Yii::$app->sys->player_profile===false) return false;
+      elseif($this->visibility=='public') return true;
+      elseif(intval(Yii::$app->user->id)===intval($this->player_id)) return true;
       elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin!==false) return true;
-  		else return array_search($this->visibility,['public','ingame'],true) === FALSE ? false : true;
-  	}
+      else return array_search($this->visibility,['public','ingame'],true) === FALSE ? false : true;
+    }
 
     /**
      * Get profile link based on player permissions,
      */
     public function getLink()
-  	{
+    {
 
-  		if(intval(Yii::$app->user->id)===intval($this->player_id))
+      if(intval(Yii::$app->user->id)===intval($this->player_id))
         return Html::a(Html::encode($this->owner->username),['/profile/me']);
       else if($this->visible===true)
         return Html::a(Html::encode($this->owner->username),['/profile/index','id'=>$this->id],['data-pjax'=>0]);
-  		return Html::encode($this->owner->username);
-  	}
+      return Html::encode($this->owner->username);
+    }
 
     public function getLinkto()
-  	{
+    {
 
-  		if(intval(Yii::$app->user->id)===intval($this->player_id)) return Url::to(['/profile/me']);
-  		else if($this->visible===true) return Url::to(['/profile/index','id'=>$this->id]);
-  		return null;
-  	}
+      if(intval(Yii::$app->user->id)===intval($this->player_id)) return Url::to(['/profile/me']);
+      else if($this->visible===true) return Url::to(['/profile/index','id'=>$this->id]);
+      return null;
+    }
 
     public function getExperience()
-		{
+    {
       //return $this->hasOne(Experience::class, ['id' => 'player_id']);
-			return Experience::find()->where("{$this->score->points} BETWEEN min_points AND max_points");
-		}
+      return Experience::find()->where("{$this->score->points} BETWEEN min_points AND max_points");
+    }
     public function getTotalTreasures()
     {
       return Yii::$app->db->createCommand('SELECT count(*) FROM player_treasure WHERE player_id=:player_id')->bindValue(':player_id',$this->player_id)->queryScalar();

@@ -53,34 +53,34 @@ class PlayerController extends Controller {
   /**
    * Regenerate player activkeys
    */
-   public function actionGenerateTokens($filter = 'all')
-   {
-       $filters = ['all', 'active', 'inactive'];
-       if (!in_array($filter, $filters)) {
-           throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
-       }
+    public function actionGenerateTokens($filter = 'all')
+    {
+        $filters = ['all', 'active', 'inactive'];
+        if (!in_array($filter, $filters)) {
+            throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
+        }
 
-       $players = Player::find();
-       switch ($filter) {
-           case 'active':
+        $players = Player::find();
+        switch ($filter) {
+            case 'active':
                $players->where(['active' => 1]);
-               break;
+                break;
 
-           case 'inactive':
+            case 'inactive':
                $players->where(['active' => 0]);
-               break;
+                break;
 
-       }
+        }
 
-       foreach($players->all() as $player)
-       {
+        foreach($players->all() as $player)
+        {
         $player->activkey=substr(hash('sha512',Yii::$app->security->generateRandomString(64)),0,32);;
         if(!$player->save())
         {
           throw new ConsoleException('Failed to save player:'.$player->username.'. '.implode(', ',$player->getErrors()));
         }
-       }
-   }
+        }
+    }
 
   /**
    * @param Player[] $players

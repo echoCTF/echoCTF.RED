@@ -15,7 +15,7 @@ $this->_fluid="-fluid";
 <div class="profile-form">
     <?php $form = ActiveForm::begin([
       'id'=>'profile-form',
-     ]); ?>
+      ]); ?>
     <div class="row">
       <div class="col-lg-6">
         <?=$form->field($model, 'visibility')->dropDownList($model->visibilities,['prompt'=>'Select your profile visibility','class'=>'form-control selectpicker','data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select the desired visibility setting for your profile')?>

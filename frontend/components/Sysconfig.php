@@ -8,8 +8,8 @@ use yii\base\InvalidConfigException;
 
 class Sysconfig extends Component
 {
- public function __get($attribute)
- {
+  public function __get($attribute)
+  {
   if(!(\Yii::$app->cache instanceof \yii\caching\MemCache))
     throw new \LogicException('Memcache not initialized.');
 
@@ -20,6 +20,6 @@ class Sysconfig extends Component
   elseif($val==="1")
     return true;
   return $val;
- }
+  }
 
 }

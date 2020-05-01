@@ -23,7 +23,7 @@ class VoteWidget extends Widget
 
     public function run()
     {
-         // Register AssetBundle
+          // Register AssetBundle
         VoteWidgetAsset::register($this->getView());
         return $this->render('_vote', ['model' => $this->model,'htmlOptions'=>$this->htmlOptions]);
     }

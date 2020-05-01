@@ -25,14 +25,14 @@ $this->registerCssFile("@web/css/scores.css", [
           'attribute'=>'ip',
           'value'=>long2ip($target->ip)
         ],
-    		[
-    			'attribute'=>'difficulty',
-    			'value'=>$target->difficultyText,
-    		],
+        [
+          'attribute'=>'difficulty',
+          'value'=>$target->difficultyText,
+        ],
         'rootable:boolean',
         [
           'label'=>'Total points',
-    			'type'=>'number',
+          'type'=>'number',
           'value'=>$target->points,
         ],
         [
@@ -41,17 +41,17 @@ $this->registerCssFile("@web/css/scores.css", [
           'value'=>'<i class="glyphicon glyphicon-flag"></i> '.count($target->treasures).' / <i class="glyphicon glyphicon-fire"></i> '.count($target->findings) ,
         ],
 
-    		[
+        [
           'label'=>'Headshots',
-    			'format'=>'raw',
-    			'value'=>function($model){
-  									$headshots=[];
-  									foreach($model->headshots as $player)
+          'format'=>'raw',
+          'value'=>function($model){
+                    $headshots=[];
+                    foreach($model->headshots as $player)
                       if((int)$player->active===1)
-  											$headshots[]=$player->profile->link;
-  								if (empty($headshots)) return "None";
-  								return implode(", ",$headshots);
-  							}
+                        $headshots[]=$player->profile->link;
+                  if (empty($headshots)) return "None";
+                  return implode(", ",$headshots);
+                }
         ],
         [
           'attribute'=>'description',
