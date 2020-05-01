@@ -122,7 +122,7 @@ class TargetController extends Controller {
         $t->pull();
         echo " OK\n";
       }
-      catch (\ConnectionException | \LogicException $ce)
+      catch (\Exception $ce)
       {
           printf(" NOT OK (%s)\n",$ce->getMessage());
       }
@@ -152,7 +152,7 @@ class TargetController extends Controller {
           $notification->save();
           echo " OK\n";
         }
-        catch (\ConnectionException | \LogicException $ce)
+        catch (\Exception $ce)
         {
           printf(" NOT OK (%s)\n",$ce->getMessage());
         }

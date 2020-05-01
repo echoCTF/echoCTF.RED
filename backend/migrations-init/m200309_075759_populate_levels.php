@@ -26,6 +26,7 @@ class m200309_075759_populate_levels extends Migration
       $lvl=0;
       for($i=0; $i<20;$i++)
       {
+        $xp=[];
         $xp['id']=intval($i+1);
         $xp['name']=sprintf("%s %d",$this->experiences[$lvl]['name'],($dyn%5));
         $xp['category']=sprintf("%s",$this->experiences[$lvl]['name']);

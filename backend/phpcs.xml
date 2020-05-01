@@ -6,4 +6,14 @@
     <exclude-pattern>**.css</exclude-pattern>
     <exclude-pattern>**.md</exclude-pattern>
     <rule ref="PSR2" />
+<!--    <rule ref="Generic.Formatting.SpaceAfterCast">
+      <properties>
+          <property name="spacing" value="0" />
+      </properties>
+    </rule>
+    <rule ref="Generic.Formatting.SpaceAfterNot">
+      <properties>
+          <property name="spacing" value="0" />
+      </properties>
+    </rule> -->
 </ruleset>
