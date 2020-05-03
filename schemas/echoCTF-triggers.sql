@@ -83,9 +83,9 @@ thisBegin:BEGIN
   INSERT INTO player_last (id,on_pui) VALUES (NEW.id,now());
   INSERT INTO player_spin (player_id,counter,total,updated_at) values (NEW.id,0,0,NOW());
   INSERT INTO player_score (player_id) VALUES (NEW.id);
-  IF NEW.active=1 THEN
-    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.id,'user',NEW.id,0,ltitle,ltitle,ltitle,ltitle,now());
-  END IF;
+--  IF NEW.active=1 THEN
+--    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.id,'user',NEW.id,0,ltitle,ltitle,ltitle,ltitle,now());
+--  END IF;
 END ;;
 
 DROP TRIGGER IF EXISTS `tau_player` ;;
@@ -103,9 +103,9 @@ thisBegin:BEGIN
   IF NEW.type!=OLD.type THEN
     SELECT memc_set(CONCAT('player_type:',NEW.id), NEW.type) INTO @devnull;
   END IF;
-  IF (NEW.active!=OLD.active AND NEW.active=1) THEN
-    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.id,'user',NEW.id,0,ltitle,ltitle,ltitle,ltitle,now());
-  END IF;
+--  IF (NEW.active!=OLD.active AND NEW.active=1) THEN
+--    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.id,'user',NEW.id,0,ltitle,ltitle,ltitle,ltitle,now());
+--  END IF;
 END ;;
 
 
