@@ -58,7 +58,9 @@ RUN set -ex; \
     mysql -e "GRANT ALL PRIVILEGES ON echoCTF.* TO '$VPNUSER'@'%' IDENTIFIED BY '$VPNUSERPASS'" mysql;\
     echo "init_file=/etc/mysql/mysql-init.sql" >>/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
     sed -e "s/^-- #//g" contrib/mysql-init.sql >/etc/mysql/mysql-init.sql; \
-    service mysql stop
+    service mysql stop; \
+    rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
+
 
 ADD contrib/entrypoint.sh /
 RUN chmod 0700 /entrypoint.sh

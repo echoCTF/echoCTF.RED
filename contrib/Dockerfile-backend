@@ -40,7 +40,7 @@ RUN set -ex; \
     a2enmod rewrite; \
     echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8',  ];">${RED_APP}/config/db.php; \
     apt-get autoremove -y; \
-    rm -rf /usr/src/* /var/lib/apt/lists/*
+    rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
 
 EXPOSE 80/tcp
 
