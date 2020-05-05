@@ -1,6 +1,6 @@
 <?php
 use yii\helpers\Html;
-use rce\material\widgets\Noti;
+use app\widgets\Noti;
 use app\assets\MaterialAsset;
 $bundle=MaterialAsset::register($this);
 //$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/ricar2ce/yii2-material-theme/assets');
