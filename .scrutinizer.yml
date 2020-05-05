@@ -126,10 +126,10 @@ coding_style:
                 in_short_version: false
             other:
                 before_comma: false
-                after_comma: true
+                after_comma: false
                 before_semicolon: false
                 after_semicolon: false
-                after_type_cast: true
+                after_type_cast: false
         braces:
             classes_functions:
                 class: undefined
