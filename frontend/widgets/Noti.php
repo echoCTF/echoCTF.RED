@@ -83,30 +83,35 @@ class Noti extends Widget
     {
       $session = Yii::$app->getSession();
       $flashes = $session->getAllFlashes();
-      foreach ($flashes as $type => $data) {
-          if (isset($this->alertTypes[$type])) {
-              if (ArrayHelper::isAssociative($data)) {
-                  $this->options = ArrayHelper::merge($this->options, $data);
-                  $this->clientOptions['type'] = $this->alertTypes[$type];
-                  $this->renderMessage();
-              } else {
-                  $data = (array)$data;
-                  $this->processArrayFlashData($data,$type);
-              }
-              $this->options = [];
-              $session->removeFlash($type);
+      foreach ($flashes as $type => $data)
+      {
+        if (isset($this->alertTypes[$type]))
+        {
+          if (ArrayHelper::isAssociative($data))
+          {
+              $this->options = ArrayHelper::merge($this->options, $data);
+              $this->clientOptions['type'] = $this->alertTypes[$type];
+              $this->renderMessage();
           }
+          else
+          {
+              $data = (array)$data;
+              $this->processArrayFlashData($data,$type);
+          }
+          $this->options = [];
+          $session->removeFlash($type);
+        }
       }
     }
 
     protected function processArrayFlashData($data,$type)
     {
-      foreach ($data as $i => $message) {
-          $this->options['message'] = $message;
-          $this->options['icon'] = $this->iconTypes[$type];
-          $this->clientOptions['type'] = $this->alertTypes[$type];
-          $this->renderMessage();
+      foreach ($data as $i => $message)
+      {
+        $this->options['message'] = $message;
+        $this->options['icon'] = $this->iconTypes[$type];
+        $this->clientOptions['type'] = $this->alertTypes[$type];
+        $this->renderMessage();
       }
-
     }
 }
