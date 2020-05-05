@@ -8,7 +8,7 @@ use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * Password reset form
- * @property Player|null
+ * @property Player|null $player
  */
 class ResetPasswordForm extends Model
 {
