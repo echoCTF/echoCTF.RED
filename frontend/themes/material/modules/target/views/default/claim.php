@@ -1,6 +1,6 @@
 <?php
 use yii\helpers\Html;
-use rce\material\widgets\Noti;
+use app\widgets\Noti;
 ?>
 <?=Noti::widget() ?>
 <?php echo Html::beginForm(['/target/default/claim'], 'post', ['class'=>'navbar-form', 'id'=>'claim', 'autocomplete'=>Yii::$app->security->generateRandomString(8)]);?>

@@ -159,7 +159,7 @@ echo GridView::widget([
         },
       ],
       [
-        'class'=> 'rce\material\grid\ActionColumn',
+        'class'=> 'app\actions\ActionColumn',
         //'visible'=>!$personal,
         'headerOptions' => ["style"=>'width: 4rem'],
         'template'=>'{spin} {view} {tweet}',

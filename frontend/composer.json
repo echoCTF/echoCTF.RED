@@ -1,13 +1,13 @@
 {
-    "name": "echoctf/echoctf-pui2",
+    "name": "echoctf/echoctf.red",
     "description": "echoCTF Participant UI",
     "keywords": ["echoctf"],
     "homepage": "https://www.echoctf.com/",
     "type": "project",
     "license": "BSD-3-Clause",
     "support": {
-        "issues": "https://github.com/echoCTF/echoCTF-pUI2/issues?state=open",
-        "source": "https://github.com/echoCTF/echoCTF-pUI2"
+        "issues": "https://github.com/echoCTF/echoCTF.RED/issues?state=open",
+        "source": "https://github.com/echoCTF/echoCTF.RED"
     },
     "minimum-stability": "stable",
     "require": {
@@ -15,9 +15,7 @@
         "yiisoft/yii2": "~2.0.14",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
-        "yiisoft/yii2-bootstrap4": "^2.0",
-        "ricar2ce/yii2-material-theme": "*",
-        "simonmesmith/yii2-justgage": "^1.0"
+        "yiisoft/yii2-bootstrap4": "^2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
