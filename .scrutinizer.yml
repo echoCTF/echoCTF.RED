@@ -92,13 +92,13 @@ coding_style:
             before_left_brace:
                 class: true
                 function: true
-                if: true
-                else: true
-                for: true
-                while: true
-                do: true
+                if: false
+                else: false
+                for: false
+                while: false
+                do: false
                 switch: true
-                try: true
+                try: false
                 catch: true
                 finally: true
             before_keywords:
