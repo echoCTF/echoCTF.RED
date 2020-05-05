@@ -65,4 +65,14 @@ class ResetPasswordForm extends Model
 
         return $player->save(false);
     }
+
+    /**
+     * Get Player model
+     *
+     * @return Player|null
+     */
+    public function getPlayer()
+    {
+      return $this->_player;
+    }
 }

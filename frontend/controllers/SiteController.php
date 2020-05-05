@@ -194,7 +194,14 @@ class SiteController extends Controller
 
         if($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword())
         {
-            Yii::$app->session->setFlash('success', 'New password saved.');
+            if(Yii::$app->user->login($model->player))
+            {
+              Yii::$app->session->setFlash('success', 'New password saved.');
+            }
+            else
+            {
+              Yii::$app->session->setFlash('notice', 'New password saved but failed to signin.');
+            }
 
             return $this->goHome();
         }
