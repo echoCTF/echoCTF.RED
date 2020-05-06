@@ -1,5 +1,4 @@
 <?php
-Yii::setAlias('@appconfig', realpath(dirname(__FILE__)));
 return [
   'adminEmail' => 'info@echothrust.com',
   'senderEmail' => 'noreply@echothrust.com',

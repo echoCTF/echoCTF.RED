@@ -14,6 +14,7 @@ $config=[
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
+        '@appconfig' => realpath(dirname(__FILE__)),
     ],
     'modules' => [
       'game' => [
@@ -147,7 +148,7 @@ $config=[
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-//            'useFileTransport' => true,
+//            'useFileTransport' => defined(YII_ENV_DEV),
 //            'viewPath' => '@app/mail/layouts',
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
