@@ -5,6 +5,7 @@ namespace app\modules\gameplay\models;
 use Yii;
 use app\modules\frontend\models\Player;
 use app\modules\activity\models\PlayerBadge;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "badge".
@@ -33,6 +34,23 @@ class Badge extends \yii\db\ActiveRecord
     {
         return 'badge';
     }
+
+
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'points' => AttributeTypecastBehavior::TYPE_INTEGER,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
+            'typecastAfterFind' => true,
+        ],
+      ];
+    }
+
 
     /**
      * {@inheritdoc}
