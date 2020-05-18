@@ -286,9 +286,12 @@ class Player extends ActiveRecord implements IdentityInterface
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTreasures()
+    public function getTreasures(int $target_id=null)
     {
+      if($target_id===null)
         return $this->hasMany(\app\modules\target\models\Treasure::class, ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
+
+      return $this->hasMany(\app\modules\target\models\Treasure::class, ['id' => 'treasure_id'])->onCondition(['target_id' => $target_id])->viaTable('player_treasure', ['player_id' => 'id']);
     }
     /**
      * @return \yii\db\ActiveQuery
@@ -301,10 +304,14 @@ class Player extends ActiveRecord implements IdentityInterface
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getFindings()
+    public function getFindings(int $target_id=null)
     {
+      if($target_id===null)
         return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
+
+      return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->onCondition(['target_id' => $target_id])->viaTable('player_finding', ['player_id' => 'id']);
     }
+
 
     public function getIsAdmin():bool
     {
@@ -356,6 +363,7 @@ class Player extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(PlayerHint::class, ['player_id' => 'id'])->forTarget($target_id);
     }
+
     public function getPendingHints()
     {
         return $this->hasMany(PlayerHint::class, ['player_id' => 'id'])->pending();
