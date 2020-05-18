@@ -38,6 +38,9 @@ use app\modules\gameplay\models\Target;
     <?= $form->field($model, 'effects')->dropDownList(['player' => 'Once per player claim', 'team' => 'Once per team claim', 'total' => 'Treasure can only be claimed once', ], ['prompt' => 'Choose how the appearances of this treasure are retracted']) ?>
 
     <?= $form->field($model, 'code')->textInput(['maxlength' => true])->hint('The actual treasure/flag') ?>
+    <?= $form->field($model, 'location')->textInput(['maxlength' => true])->hint('The location where this flag can be found') ?>
+    <?= $form->field($model, 'suggestion')->textarea(['rows' => 6])->hint('A suggestion for the user on how to get the flag') ?>
+    <?= $form->field($model, 'solution')->textarea(['rows' => 6])->hint('The actual steps required to get the flag (sort of like a write-up)') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

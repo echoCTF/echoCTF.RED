@@ -31,6 +31,10 @@ $this->params['breadcrumbs'][]=$this->title;
         'model' => $model,
         'attributes' => [
             'id',
+            [
+                'label'=>'Target',
+                'value'=>sprintf("(id:%d) %s/%s", $model->target_id, $model->target->name, $model->target->ipoctet),
+            ],
             'name',
             'pubname',
             'category',
@@ -41,11 +45,10 @@ $this->params['breadcrumbs'][]=$this->title;
             'csum',
             'appears',
             'effects',
-            [
-                'label'=>'Target',
-                'value'=>sprintf("(id:%d) %s/%s", $model->target_id, $model->target->name, $model->target->ipoctet),
-            ],
             'code',
+            'location',
+            'suggestion',
+            'solution',
             'ts',
         ],
     ]) ?>

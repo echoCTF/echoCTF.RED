@@ -24,7 +24,10 @@ use yii\db\Expression;
  * @property string $effects
  * @property int $target_id A target system that this treasure is hidden on. This is not required but its good to have
  * @property string $code
- *
+ * @property string $location
+ * @property string $suggestion
+ * @property string $solution
+*
  * @property BadgeTreasure[] $badgeTreasures
  * @property Badge[] $badges
  * @property Hint[] $hints
@@ -50,7 +53,7 @@ class Treasure extends \yii\db\ActiveRecord
     {
         return [
             [['name', 'points', 'target', 'code'], 'required'],
-            [['description', 'category', 'pubdescription', 'player_type', 'effects'], 'string'],
+            [['description', 'category', 'pubdescription', 'player_type', 'effects','location','suggestion','solution'], 'string'],
             [['points'], 'number'],
             [['appears', 'target_id'], 'integer'],
             [['name', 'pubname', 'hint'], 'string', 'max' => 255],
@@ -79,6 +82,9 @@ class Treasure extends \yii\db\ActiveRecord
             'target_id' => 'Target ID',
             'category' => 'category',
             'code' => 'Code',
+            'location'=>'Flag location',
+            'suggestion'=>'Suggestion',
+            'solution'=>'Solution'
         ];
     }
 
