@@ -97,7 +97,7 @@ if($target->progress == 100)
           <?=$target->description?>
           <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
           <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
-          <pre style="color: #cecece; font-size: 0.85em; font-weight: 100">
+          <pre class="col-lg-8 col-md-8 col-sm-8" style="color: white; font-size: 0.85em; font-weight: 100">
 <?php
           if(Yii::$app->user->identity->getFindings($target->id)->count()>0) echo '# Discovered services',"\n";
           foreach(Yii::$app->user->identity->getFindings($target->id)->all() as $finding)
@@ -108,8 +108,11 @@ if($target->progress == 100)
           if(Yii::$app->user->identity->getTreasures($target->id)->count()>0) echo "\n",'# Discovered flags',"\n";
           foreach(Yii::$app->user->identity->getTreasures($target->id)->all() as $treasure)
           {
-            printf("* [%s] %s\n",$treasure->location,$treasure->category);
+            echo " * ";
+            printf("(%s/%d pts) ",$treasure->category,$treasure->points);
+            if(trim($treasure->location)!=='') echo "[",$treasure->location,"]\n";
             if(trim($treasure->solution)!=='') echo "  ",$treasure->solution;
+            echo "\n";
           }
 ?>
           </pre>
