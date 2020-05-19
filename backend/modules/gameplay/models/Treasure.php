@@ -24,7 +24,10 @@ use yii\db\Expression;
  * @property string $effects
  * @property int $target_id A target system that this treasure is hidden on. This is not required but its good to have
  * @property string $code
- *
+ * @property string $location
+ * @property string $suggestion
+ * @property string $solution
+*
  * @property BadgeTreasure[] $badgeTreasures
  * @property Badge[] $badges
  * @property Hint[] $hints
@@ -35,6 +38,10 @@ use yii\db\Expression;
 class Treasure extends \yii\db\ActiveRecord
 {
   public $hint;
+  public $path;
+  public $file;
+  public $fullpath;
+  public $content;
     /**
      * {@inheritdoc}
      */
@@ -49,8 +56,9 @@ class Treasure extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['path','file','fullpath','content'],'safe'],
             [['name', 'points', 'target', 'code'], 'required'],
-            [['description', 'category', 'pubdescription', 'player_type', 'effects'], 'string'],
+            [['description', 'category', 'pubdescription', 'player_type', 'effects','location','suggestion','solution'], 'string'],
             [['points'], 'number'],
             [['appears', 'target_id'], 'integer'],
             [['name', 'pubname', 'hint'], 'string', 'max' => 255],
@@ -79,6 +87,9 @@ class Treasure extends \yii\db\ActiveRecord
             'target_id' => 'Target ID',
             'category' => 'category',
             'code' => 'Code',
+            'location'=>'Flag location',
+            'suggestion'=>'Suggestion',
+            'solution'=>'Solution'
         ];
     }
 
@@ -129,6 +140,7 @@ class Treasure extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('user_treasure', ['treasure_id' => 'id']);
     }
+
     public function afterSave($insert, $changedAttributes)
     {
       parent::afterSave($insert, $changedAttributes);

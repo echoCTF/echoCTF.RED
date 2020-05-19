@@ -96,10 +96,35 @@ if($target->progress == 100)
         <div class="card-body table-responsive">
           <?=$target->description?>
           <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
-          <?php if($identity->owner->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
+            <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
           <?php endif;?>
         </div>
       </div>
+
+<?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id && (Yii::$app->user->identity->getFindings($target->id)->count()>0 || Yii::$app->user->identity->getTreasures($target->id)->count()>0)):?>
+      <div class="card terminal">
+        <div class="card-body">
+          <pre>
+<?php
+          if(Yii::$app->user->identity->getFindings($target->id)->count()>0) echo '# Discovered services',"\n";
+          foreach(Yii::$app->user->identity->getFindings($target->id)->all() as $finding)
+          {
+            printf("* %s://%s:%d\n",$finding->protocol,long2ip($target->ip),$finding->port);
+          }
+
+          if(Yii::$app->user->identity->getTreasures($target->id)->count()>0) echo "\n",'# Discovered flags',"\n";
+          foreach(Yii::$app->user->identity->getTreasures($target->id)->all() as $treasure)
+          {
+            echo " * ";
+            printf("(%s/%d pts)\n",$treasure->category,$treasure->points);
+            if(trim($treasure->location)!=='') echo "  [",$treasure->location,"]\n";
+            if(trim($treasure->solution)!=='') echo "  ",$treasure->solution,"\n";
+          }
+?></pre>
+        </div>
+      </div>
+    <?php endif;?>
+
     </div>
     <div class="col-lg-4 col-md-6 col-sm-6">
       <div class="card bg-dark headshots">
