@@ -38,6 +38,10 @@ use yii\db\Expression;
 class Treasure extends \yii\db\ActiveRecord
 {
   public $hint;
+  public $path;
+  public $file;
+  public $fullpath;
+  public $content;
     /**
      * {@inheritdoc}
      */
@@ -52,6 +56,7 @@ class Treasure extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['path','file','fullpath','content'],'safe'],
             [['name', 'points', 'target', 'code'], 'required'],
             [['description', 'category', 'pubdescription', 'player_type', 'effects','location','suggestion','solution'], 'string'],
             [['points'], 'number'],
@@ -135,6 +140,7 @@ class Treasure extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('user_treasure', ['treasure_id' => 'id']);
     }
+
     public function afterSave($insert, $changedAttributes)
     {
       parent::afterSave($insert, $changedAttributes);
