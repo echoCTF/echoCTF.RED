@@ -1,4 +1,4 @@
-name: Merged PR CI Tests
+name: ci-merged-pull_requests
 
 on:
   pull_request:

@@ -1,4 +1,4 @@
-name: PR CI Tests
+name: ci-pull_requests
 
 on:
   pull_request:
