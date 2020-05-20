@@ -54,7 +54,7 @@ if($target->progress == 100)
         echo "</code>)</small><br/>";
         echo "<i class='fas fa-fire'></i> ", $target->total_findings, ": Service".($target->total_findings > 1 ? 's' : '')."<br/><i class='fas fa-calculator'></i> ", number_format($target->points), " pts";
         $hs=Headshot::find()->target_avg_time($target->id)->one();
-        if($hs && $hs->average > 0)
+        if($hs && $hs->average > 0 && $target->timer!==0)
           echo '<br/><i class="fas fa-stopwatch"></i> Avg. headshot: '.number_format($hs->average / 60).' minutes';
         echo "</p>";
         Card::end();?>
