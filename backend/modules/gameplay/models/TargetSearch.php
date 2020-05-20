@@ -17,10 +17,10 @@ class TargetSearch extends Target
     public function rules()
     {
         return [
-            [['id', 'ip', 'active', 'rootable', 'difficulty', 'required_xp', 'suggested_xp'], 'integer'],
+            [['id', 'ip', 'active', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp'], 'integer'],
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
             [['scheduled_at'], 'datetime'],
-            [['name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp'], 'safe'],
+            [['timer','name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp'], 'safe'],
         ];
     }
 
@@ -68,6 +68,7 @@ class TargetSearch extends Target
             'difficulty' => $this->difficulty,
             'suggested_xp' => $this->suggested_xp,
             'required_xp' => $this->required_xp,
+            'timer' => $this->timer,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])

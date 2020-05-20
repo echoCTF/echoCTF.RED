@@ -45,6 +45,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'scheduled_at:dateTime',
             'rootable:boolean',
             'active:boolean',
+            'timer:boolean',
             'difficulty',
             'required_xp',
             'suggested_xp',

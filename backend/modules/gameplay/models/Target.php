@@ -74,7 +74,7 @@ class Target extends \yii\db\ActiveRecord
         return [
             [['description'], 'string'],
             [['name', 'fqdn', 'mac'], 'required'],
-            [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp'], 'integer'],
+            [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp'], 'integer'],
             [['ipoctet'], 'ip'],
             [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
             [['image'], 'filter', 'filter'=>'strtolower'],
@@ -112,6 +112,7 @@ class Target extends \yii\db\ActiveRecord
             'difficulty' => 'Difficulty',
             'suggested_xp'=>'Suggested XP',
             'required_xp'=>'Required XP',
+            'timer'=>'Timer',
         ];
     }
 

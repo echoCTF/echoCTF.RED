@@ -31,14 +31,17 @@ use yii\bootstrap\ActiveForm;
 
 
     <div class="row">
-        <div class="col-md-4">
+        <div class="col-md-3">
           <?= $form->field($model, 'difficulty')->textInput()->hint('The initial difficulty rating for this target (eg. 0=easy)') ?>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <?= $form->field($model, 'active')->checkbox()->hint('Whether the target is active or not (if this is not checked, the target will NOT be available to the players)') ?>
         </div>
-        <div class="col-md-4">
+        <div class="col-md-3">
           <?= $form->field($model, 'rootable')->checkbox()->hint('Whether the target is rootable or not (checked=rootable)') ?>
+        </div>
+        <div class="col-md-3">
+          <?= $form->field($model, 'timer')->checkbox()->hint('Should we use timer for this target headshots?') ?>
         </div>
     </div>
     <div class="row">
