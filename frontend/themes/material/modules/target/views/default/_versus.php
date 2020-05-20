@@ -113,7 +113,7 @@ if($target->progress == 100)
           }
 
           if(Yii::$app->user->identity->getTreasures($target->id)->count()>0) echo "\n",'# Discovered flags',"\n";
-          foreach(Yii::$app->user->identity->getTreasures($target->id)->all() as $treasure)
+          foreach(Yii::$app->user->identity->getTreasures($target->id)->orderBy(['id' => SORT_DESC])->all() as $treasure)
           {
             echo " * ";
             printf("(%s/%d pts)\n",$treasure->category,$treasure->points);
