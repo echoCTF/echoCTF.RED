@@ -90,7 +90,7 @@ class DefaultController extends Controller
         ->andWhere(['player_id'=>$profile->player_id])
         ;
         $dataProvider=new ActiveDataProvider([
-              'query' => $model->orderBy(['ts'=>SORT_DESC]),
+              'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
               'pagination' => [
                   'pageSizeParam'=>'stream-perpage',
                   'pageParam'=>'stream-page',
