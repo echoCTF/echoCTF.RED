@@ -44,7 +44,7 @@ if($target->progress == 100)
             'type'=>'card-stats',
             'icon'=>sprintf('<img src="%s" class="img-fluid" style="max-width: 10rem; max-height: 4rem;"/>', $target->logo),
             'color'=>'warning',
-            'subtitle'=>sprintf("%s, %s", ucfirst($target->difficultyText), boolval($target->rootable) ? "Rootable" : "Non rootable"),
+            'subtitle'=>sprintf("%s, %s%s", ucfirst($target->difficultyText), boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===0 ? '':', Timed'),
             'title'=>sprintf('%s / %s', $target->name, long2ip($target->ip)),
             'footer'=>sprintf('<div class="stats">%s</div>', $target->purpose),
         ]);
@@ -54,7 +54,7 @@ if($target->progress == 100)
         echo "</code>)</small><br/>";
         echo "<i class='fas fa-fire'></i> ", $target->total_findings, ": Service".($target->total_findings > 1 ? 's' : '')."<br/><i class='fas fa-calculator'></i> ", number_format($target->points), " pts";
         $hs=Headshot::find()->target_avg_time($target->id)->one();
-        if($hs && $hs->average > 0)
+        if($hs && $hs->average > 0 && $target->timer!==0)
           echo '<br/><i class="fas fa-stopwatch"></i> Avg. headshot: '.number_format($hs->average / 60).' minutes';
         echo "</p>";
         Card::end();?>

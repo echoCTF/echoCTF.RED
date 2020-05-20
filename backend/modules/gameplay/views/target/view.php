@@ -53,6 +53,7 @@ $this->params['breadcrumbs'][]=$this->title;
         'model' => $model,
         'attributes' => [
             'id',
+            'timer',
             'name',
             'fqdn',
             'difficulty',
