@@ -109,7 +109,7 @@ class TargetWidget extends Widget
             ]
 
         ]);
-        $defaultOrder=['ip' => SORT_ASC];
+        $defaultOrder=['difficulty' => SORT_ASC,'ip' => SORT_ASC, 'name' => SORT_ASC];
       }
       $targetProgressProvider->setSort([
           'sortParam'=>'target-sort',
