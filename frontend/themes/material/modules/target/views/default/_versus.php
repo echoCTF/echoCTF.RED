@@ -104,7 +104,7 @@ if($target->progress == 100)
 <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id && (Yii::$app->user->identity->getFindings($target->id)->count()>0 || Yii::$app->user->identity->getTreasures($target->id)->count()>0)):?>
       <div class="card terminal">
         <div class="card-body">
-          <pre>
+          <pre style="font-size: 0.9em;">
 <?php
           if(Yii::$app->user->identity->getFindings($target->id)->count()>0) echo '# Discovered services',"\n";
           foreach(Yii::$app->user->identity->getFindings($target->id)->all() as $finding)
@@ -115,10 +115,8 @@ if($target->progress == 100)
           if(Yii::$app->user->identity->getTreasures($target->id)->count()>0) echo "\n",'# Discovered flags',"\n";
           foreach(Yii::$app->user->identity->getTreasures($target->id)->orderBy(['id' => SORT_DESC])->all() as $treasure)
           {
-            echo " * ";
-            printf("(%s/%d pts)\n",$treasure->category,$treasure->points);
-            if(trim($treasure->location)!=='') echo "  [",$treasure->location,"]\n";
-            if(trim($treasure->solution)!=='') echo "  ",$treasure->solution,"\n";
+            printf("* (%s/%d pts) %s\n",$treasure->category,$treasure->points,$treasure->location);
+            //if(trim($treasure->solution)!=='') echo $treasure->solution,"\n";
           }
 ?></pre>
         </div>
