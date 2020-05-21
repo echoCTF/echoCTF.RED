@@ -17,15 +17,17 @@ class TreasureController extends ActiveController
         $treasure=new \app\modules\gameplay\models\Treasure;
         $post=\yii::$app->request->post();
         $treasure->attributes=$post;
+        if($treasure->location===null)
+        {
+          if($treasure->path!==null)
+            $treasure->location=$treasure->path.$treasure->code;
 
-        if($treasure->path!==null)
-          $treasure->location=$treasure->path.$treasure->code;
+          if($treasure->file!==null)
+            $treasure->location=$treasure->file;
 
-        if($treasure->file!==null)
-          $treasure->location=$treasure->file;
-
-        if($treasure->fullpath!==null)
-          $treasure->location=$treasure->fullpath;
+          if($treasure->fullpath!==null)
+            $treasure->location=$treasure->fullpath;
+        }
 
         if($treasure->validate())
         {

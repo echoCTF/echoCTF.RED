@@ -162,6 +162,17 @@ END ;;
 
 
 
+DROP PROCEDURE IF EXISTS `give_headshot` ;;
+CREATE PROCEDURE `give_headshot`(IN usid BIGINT, IN tid INT, IN ttimer INT)
+BEGIN
+  INSERT IGNORE INTO player_finding (player_id,finding_id) SELECT usid,id FROM finding WHERE target_id=tid ORDER BY id DESC;
+  INSERT IGNORE INTO player_treasure (player_id,treasure_id) SELECT usid,id FROM treasure WHERE target_id=tid ORDER BY id DESC;
+  IF ttimer>0 THEN
+    UPDATE headshot SET timer=ttimer WHERE player_id=usid AND target_id=tid;
+  END IF;
+END ;;
+
+
 DROP PROCEDURE IF EXISTS `time_headshot` ;;
 CREATE PROCEDURE `time_headshot` (IN pid INT, IN tid INT)
 BEGIN
