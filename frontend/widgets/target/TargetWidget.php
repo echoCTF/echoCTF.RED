@@ -109,7 +109,7 @@ class TargetWidget extends Widget
             ]
 
         ]);
-        $defaultOrder=['difficulty' => SORT_ASC,'ip' => SORT_ASC, 'name' => SORT_ASC];
+        $defaultOrder=['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'difficulty' => SORT_ASC,'ip' => SORT_ASC, 'name' => SORT_ASC];
       }
       $targetProgressProvider->setSort([
           'sortParam'=>'target-sort',
@@ -157,6 +157,17 @@ class TargetWidget extends Widget
                   'desc' => ['progress'=>SORT_DESC],
                   'default' => SORT_ASC
               ],
+              'scheduled_at' => [
+                  'asc' =>  ['scheduled_at'=>SORT_ASC],
+                  'desc' => ['scheduled_at'=>SORT_DESC],
+                  'default' => SORT_ASC
+              ],
+              'status' => [
+                  'asc' =>  ['status'=>SORT_ASC],
+                  'desc' => ['status'=>SORT_DESC],
+                  'default' => SORT_ASC
+              ],
+
           ],
           'defaultOrder'=>$defaultOrder,
       ]);
