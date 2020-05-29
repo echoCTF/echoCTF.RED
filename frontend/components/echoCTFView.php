@@ -42,7 +42,7 @@ class echoCTFView extends \yii\web\View
   public function getOg_description()
   {
     //<meta property="og:description" content="" />
-    return ['property'=>'og:description', 'content'=>$this->_description];
+    return ['property'=>'og:description', 'content'=>trim($this->_description)];
   }
 
   public function getOg_site_name()
@@ -83,7 +83,7 @@ class echoCTFView extends \yii\web\View
   public function getTwitter_description()
   {
 //    <meta name="twitter:description" content="" />
-    return ['name'=>'twitter:description', 'content'=>$this->_description];
+    return ['name'=>'twitter:description', 'content'=>trim($this->_description)];
   }
 
   public function getTwitter_image()
