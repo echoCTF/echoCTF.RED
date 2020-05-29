@@ -46,7 +46,8 @@
     "gulp-install": "^1.1.0",
     "gulp-open": "^3.0.1",
     "gulp-sass": "^4.1.0",
-    "gulp-sourcemaps": "^2.6.4"
+    "gulp-sourcemaps": "^2.6.4",
+    "lodash.template": "^4.5.0"
   },
   "homepage": "http://demos.creative-tim.com/material-dashboard/examples/dashboard.html?_ga=2.143239282.69692347.1519629130-329288944.1519374311",
   "dependencies": {
