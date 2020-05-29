@@ -74,9 +74,10 @@ class HeadshotController extends Controller
      */
     public function actionCreate()
     {
+        $submit=Yii::$app->request->post('submit');
         $model=new Headshot();
-
-        if($model->load(Yii::$app->request->post()) && $model->save())
+        if($submit==='give') $this->give();
+        elseif($submit==='save' && $model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
         }
@@ -92,27 +93,18 @@ class HeadshotController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionGive()
+    public function give()
     {
       $model=new Headshot();
-
       if($model->load(Yii::$app->request->post()) && $model->validate())
       {
-          Yii::$app->db->createCommand('insert ignore into player_finding (player_id,finding_id) select :player_id,id from finding where target_id=:target_id')
+          Yii::$app->db->createCommand('CALL give_headshot(:player_id,:target_id,:timer)')
             ->bindValue(':player_id', $model->player_id)
             ->bindValue(':target_id', $model->target_id)
+            ->bindValue(':timer', $model->timer)
             ->query();
-          Yii::$app->db->createCommand('insert ignore into player_treasure (player_id,treasure_id) select :player_id,id from treasure where target_id=:target_id')
-            ->bindValue(':player_id', $model->player_id)
-            ->bindValue(':target_id', $model->target_id)
-            ->query();
-
           return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
       }
-
-      return $this->render('create', [
-          'model' => $model,
-      ]);
     }
 
 
