@@ -16,30 +16,21 @@ else
   $noheadshot_icon='fa-not-equal';
 }
 $player_timer='';
+$twmsg=sprintf('Hey check this out, %s have found %d out of %d services and %d out of %d flags on [%s]', $identity->isMine ? "I" : $identity->twitterHandle, $target->player_findings, $target->total_findings, $target->player_treasures, $target->total_treasures, $target->name);
 if($target->progress == 100)
 {
   if($target->headshot($identity->player_id) != null && $target->headshot($identity->player_id)->timer > 0)
+  {
     $player_timer='<i class="fas fa-stopwatch"></i> '.number_format($target->headshot($identity->player_id)->timer / 60).' minutes';
+    $twmsg=sprintf('Hey check this out, %s managed to headshot [%s] in %d minutes', $identity->isMine ? "I" : $identity->twitterHandle, $target->name,$target->headshot($identity->player_id)->timer/60);
+  }
+  else
+    $twmsg=sprintf('Hey check this out, %s managed to headshot [%s]', $identity->isMine ? "I" : $identity->twitterHandle, $target->name);
 }
 ?>
 <div class="row">
       <div class="col-lg-4 col-md-6 col-sm-6">
-<?php /* if($target->headshot($identity->player_id)!==null && $identity->player_id===Yii::$app->user->id)
-{
-  if($target->headshot($identity->player_id)->rating===-1)
-  {
-    echo "<p>Hey, don't forget to <b>",
-          Html::a('rate me <i class="fas fa-star"></i>',
-                  ['/target/default/rate','id' => $target->id],
-                  [
-                    'title' => 'Rate this target',
-                    'data-toggle'=>'modal',
-                    'data-target'=>'#modalrate',
-                  ]),
-                  "</b>.</p>";
- }
-}*/
-          Card::begin([
+<?php Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
             'icon'=>sprintf('<img src="%s" class="img-fluid" style="max-width: 10rem; max-height: 4rem;"/>', $target->logo),
@@ -78,7 +69,7 @@ if($target->progress == 100)
             'subtitle'=>'Level '.$identity->experience->id.' / '.$identity->experience->name,
             'title'=>$identity->owner->username." / ".$identity->rank->ordinalPlace." Place",
             'footer'=>sprintf('<div class="stats">%s %s</div>', Twitter::widget([
-                            'message'=>sprintf('Hey check this out, %s have found %d out of %d services and %d out of %d flags on [%s]', $identity->isMine ? "I" : $identity->twitterHandle, $target->player_findings, $target->total_findings, $target->player_treasures, $target->total_treasures, $target->name),
+                            'message'=>$twmsg,
                             /*'url'=>Url::to(['/target/default/index'*,'id'=>$target->id],'https'),*/
                             'linkOptions'=>['class'=>'target-view-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.4em;'],
                         ]), Html::encode($identity->bio)),
