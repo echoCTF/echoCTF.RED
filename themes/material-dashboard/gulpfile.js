@@ -19,17 +19,17 @@ var Paths = {
   SCSS: './assets/scss/**/**'
 };
 gulp.task('createMiniIMG', function() {
-  return gulp.src(['../images/targets/*'])
+  return gulp.src(['../images/targets/!(*thumbnail).png'])
         .pipe(imageResize({percentage : 50 }))
         .pipe(rename(function (path) { path.basename += "-thumbnail"; }))
       .pipe(gulp.dest('../images/targets'));
 });
 
 gulp.task('minifyIMG', function() {
-  return gulp.src(['../images/**/*'])
+  return gulp.src(['../images/targets/*'])
         .pipe(imagemin([
           imagemin.gifsicle({interlaced: true}),
-          imagemin.jpegtran({progressive: true}),
+          imagemin.mozjpeg({progressive: true}),
           imagemin.optipng({optimizationLevel: 7}),
           imagemin.svgo({
               plugins: [
@@ -38,7 +38,7 @@ gulp.task('minifyIMG', function() {
               ]
           })
       ],{ verbose: true }))
-      .pipe(gulp.dest('../images'));
+      .pipe(gulp.dest('../images/targets'));
 });
 
 gulp.task('minifyJS', function() {
@@ -78,4 +78,4 @@ gulp.task('open', function() {
     .pipe(open());
 });
 
-gulp.task('open-app', ['open', 'watch']);
+//gulp.task('open-app', ['open', 'watch']);
