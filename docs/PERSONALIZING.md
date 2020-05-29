@@ -36,6 +36,28 @@ Follow the instructions from [DOCKER-COMPOSE-NOVPN.md](DOCKER-COMPOSE-NOVPN.md)
 * Target Listing image `@webroot/images/targets/_targetname-thumbnail.png`
 * Target view image `@webroot/images/targets/_targetname.png`
 
+#### Adding a new target image
+For each target two files must be created. The first is used by the target listing and target view/vs on the left side. This is a plain "character" logo for the target prefixed with an underscore (`_`) such as
+
+![barney](../themes/images/targets/_barney.png)
+
+The second includes and one that has a background of the main black logo and the target overlayed such as
+
+![barney](../themes/images/targets/barney.png)
+
+Once these images are in place you have to run the following command to generate the thumbnails: `gulp createMiniIMG`
+
+
+In order to minify and optimize the generated images you need to run the following: `gulp minifyIMG`
+
+Both commands need to run under `echoCTF.RED/themes/material-dashboard`.
+
+Finally ensure you have copied the images over at `echoCTF.RED/frontend/web/images/targets/` like so
+
+```sh
+cp echoCTF.RED/themes/images/targets/*.png  echoCTF.RED/frontend/web/images/targets/
+```
+
 
 ## Theme
 The sources for the themes and images being used can be found under `themes/`
