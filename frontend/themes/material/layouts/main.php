@@ -18,15 +18,6 @@ $this->registerMetaTag($this->twitter_description, 'twitter_description');
 $this->registerMetaTag($this->twitter_image, 'twitter_image');
 $this->registerMetaTag($this->twitter_image_width, 'twitter_image_width');
 $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
-if(!\Yii::$app->user->isGuest)
-{
-  if((\Yii::$app->cache instanceof \yii\caching\MemCache) && (\Yii::$app->cache->memcache instanceof \Memcache))
-  {
-    \Yii::$app->cache->Memcache->set("last_seen:".\Yii::$app->user->id, time());
-    \Yii::$app->cache->Memcache->set("online:".\Yii::$app->user->id, time(), 0, \Yii::$app->sys->online_timeout);
-  }
-}
-
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
