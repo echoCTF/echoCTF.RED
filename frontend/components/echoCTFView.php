@@ -25,8 +25,8 @@ class echoCTFView extends \yii\web\View
     {
       if((\Yii::$app->cache instanceof \yii\caching\MemCache) && (\Yii::$app->cache->memcache instanceof \Memcache))
       {
-        \Yii::$app->cache->memcache->set("last_seen:".\Yii::$app->user->id, time());
-        \Yii::$app->cache->memcache->set("online:".\Yii::$app->user->id, time(), 0, \Yii::$app->sys->online_timeout);
+        \Yii::$app->cache->Memcache->set("last_seen:".\Yii::$app->user->id, time());
+        \Yii::$app->cache->Memcache->set("online:".\Yii::$app->user->id, time(), 0, \Yii::$app->sys->online_timeout);
       }
     }
     parent::init();
