@@ -58,6 +58,7 @@ AppAsset::register($this);
                 ['label' => 'Headshots', 'url' => ['/activity/headshot'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Spin History', 'url' => ['/activity/spin-history'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Spin Queue', 'url' => ['/activity/spin-queue'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Player vs Target Progress', 'url' => ['/activity/player-vs-target'], 'visible' => !Yii::$app->user->isGuest, ],
               ],
             ],
 
