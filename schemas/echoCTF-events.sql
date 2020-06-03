@@ -12,7 +12,13 @@ BEGIN
  UPDATE `player_last` SET `on_pui`=FROM_UNIXTIME(memc_get(CONCAT('last_seen:',id))) WHERE memc_get(CONCAT('last_seen:',id)) IS NOT NULL;
 END //
 
--- 
+DROP EVENT IF EXISTS `rotate_notifications` //
+CREATE EVENT `rotate_notifications` ON SCHEDULE EVERY 1 DAY ON COMPLETION PRESERVE ENABLE DO
+BEGIN
+ DELETE FROM `notification` WHERE `archived`=1 AND `updated_at` < NOW() - INTERVAL 7 DAY;
+END //
+
+--
 -- This event can be used in heavy loaded systems to calculate the timers for the
 -- headshots after they have been assigned. This will require modifications to
 -- the tai_player_finding and tai_player_treasure.
