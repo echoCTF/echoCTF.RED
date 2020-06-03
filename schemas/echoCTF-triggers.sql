@@ -378,6 +378,19 @@ thisBegin:BEGIN
   INSERT IGNORE INTO spin_queue (target_id, player_id,created_at) VALUES (NEW.target_id,NEW.player_id,NOW());
 END ;;
 
+DROP TRIGGER IF EXISTS `tad_player_finding` ;;
+CREATE TRIGGER `tad_player_finding` AFTER DELETE ON `player_finding` FOR EACH ROW
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
+  END IF;
+  SELECT memc_delete(CONCAT('player_finding:',OLD.player_id, ':', OLD.finding_id)) INTO @devnull;
+END ;;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
