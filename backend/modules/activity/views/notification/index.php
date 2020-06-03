@@ -8,7 +8,8 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title='Notifications';
-$this->params['breadcrumbs'][]=$this->title;
+$this->params['breadcrumbs'][]=['label' => 'Notifications', 'url' => ['index']];
+
 ?>
 <div class="notification-index">
 
