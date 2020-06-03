@@ -4,6 +4,8 @@ namespace app\models;
 
 use Yii;
 use yii\behaviors\AttributeTypecastBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "notification".
@@ -39,6 +41,14 @@ class Notification extends \yii\db\ActiveRecord
             'typecastAfterValidate' => true,
             'typecastBeforeSave' => false,
             'typecastAfterFind' => true,
+        ],
+        'timestamp'=> [
+          'class' => TimestampBehavior::class,
+          'attributes' => [
+                \yii\db\ActiveRecord::EVENT_BEFORE_INSERT => ['created_at', 'updated_at'],
+                \yii\db\ActiveRecord::EVENT_BEFORE_UPDATE => ['updated_at'],
+          ],
+          'value' => new Expression('NOW()'),
         ],
       ];
     }
