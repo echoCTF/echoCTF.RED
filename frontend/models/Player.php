@@ -420,7 +420,7 @@ class Player extends ActiveRecord implements IdentityInterface
           $n=new Notification;
           $n->player_id=$event->sender->id;
           $n->archived=0;
-          $n->body=$n->title='Hi there, dont forget to read the Instructions and Rules';
+          $n->body=$n->title='Hi there, dont forget to read the Instructions';
           $n->save();
           $s=new Stream;
           $s->player_id=$event->sender->id;
