@@ -28,7 +28,8 @@ class NotificationsRestAction extends \yii\rest\IndexAction
       {
         if(intval($n->archived) === 0)
         {
-          $n->updateAttributes(['archived' => 1]);
+          $n->touch('updated_at');
+          $n->updateAttributes(['archived' => 1,'updated_at']);
         }
       }
       return $ret;
