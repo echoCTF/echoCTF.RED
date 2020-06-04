@@ -176,6 +176,6 @@ class Stream extends \yii\db\ActiveRecord
     if($headshot->target->timer===0 || $headshot->timer===0)
       return sprintf("%s managed to headshot [<code>%s</code>]%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->fqdn, ['/target/default/index', 'id'=>$this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to headshot [<code>%s</code>] in <i class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->fqdn, ['/target/default/index', 'id'=>$this->model_id]), number_format($headshot->timer / 60), $this->suffix);
+    return sprintf("%s managed to headshot [<code>%s</code>] in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->fqdn, ['/target/default/index', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
   }
 }
