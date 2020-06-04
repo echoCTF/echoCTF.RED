@@ -69,11 +69,8 @@ class ProfileController extends \yii\web\Controller
     {
       ob_end_clean();
       $profile=$this->findModel($id);
-      if(Yii::$app->user->isGuest && $profile->visibility !== 'public')
+      if(!$profile->visible)
           return $this->redirect(['/']);
-
-      if($profile->visibility !== 'public' && $profile->visibility !== 'ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
-        return $this->redirect(['/']);
 
       $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profile->avatar));
       $image = imagecreatetruecolor(800,220);
