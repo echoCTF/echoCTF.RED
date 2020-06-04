@@ -62,6 +62,72 @@ class ProfileController extends \yii\web\Controller
       ]);
     }
 
+    /**
+    * Generate and display target badge with dynamic details
+    */
+    public function actionBadge(int $id)
+    {
+      ob_end_clean();
+      $profile=$this->findModel($id);
+      if(Yii::$app->user->isGuest && $profile->visibility !== 'public')
+          return $this->redirect(['/']);
+
+      if($profile->visibility !== 'public' && $profile->visibility !== 'ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
+        return $this->redirect(['/']);
+
+      $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profile->avatar));
+      $image = imagecreatetruecolor(800,220);
+      imagealphablending($image, false);
+      $col=imagecolorallocatealpha($image,255,255,255,127);
+      $textcolor = imagecolorallocate($image, 255, 255, 255);
+      $consolecolor = imagecolorallocate($image, 148,148,148);
+      $greencolor = imagecolorallocate($image, 148,193,31);
+
+      imagefilledrectangle($image,0,0,800, 220,$col);
+      imagefilledrectangle($image,20,20,180, 180,$greencolor);
+      imagealphablending($image,true);
+      header('Content-Type: image/png');
+
+      $src = imagecreatefrompng($fname);
+      $x=160;
+      $avatar=imagescale($src,$x);
+      $y=imagesy($avatar);
+      imagecopyresampled($image, $avatar, /*dst_x*/ 20, /*dst_y*/ 20, /*src_x*/ 0, /*src_y*/ 0, /*dst_w*/ $x, /*dst_h*/ $x, /*src_w*/ $x, /*src_y*/ $x);
+      imagealphablending($image,true);
+
+      $cover = imagecreatefrompng(Yii::getAlias('@app/web/images/badge.tpl.png'));
+
+      imagecopyresampled($image, $cover, 0, 0, 0, 0, 800, 220, 800, 220);
+      imagealphablending($image,true);
+
+
+      imagealphablending($image, false);
+      imagesavealpha($image, true);
+
+      $lineheight=18.5;
+      $i=1.5;
+      imagestring($image, 6, 200, $lineheight*$i++, sprintf("root@echoctf.red:/# ./userinfo --profile=%d",$profile->id),$textcolor);
+      imagestring($image, 6, 200, $lineheight*$i++, sprintf("username.....: %s",$profile->owner->username),$greencolor);
+      imagestring($image, 6, 200, $lineheight*$i++, sprintf("points.......: %s",number_format($profile->owner->playerScore->points)),$greencolor);
+      imagestring($image, 6, 200, $lineheight*$i++, sprintf("rank.........: %s",$profile->rank->ordinalPlace),$greencolor);
+      imagestring($image, 6, 200, $lineheight*$i++, sprintf("level........: %d / %s",$profile->experience->id, $profile->experience->name),$greencolor);
+      imagestring($image, 6, 200, $lineheight*$i++, sprintf("flags........: %d", $profile->totalTreasures),$greencolor);
+      imagestring($image, 6, 200, $lineheight*$i++, sprintf("headshots....: %d",$profile->headshotsCount),$greencolor);
+      $hs=\app\modules\game\models\Headshot::find()->player_avg_time($profile->player_id)->one();
+      if($hs && $hs->average > 0)
+        imagestring($image, 6, 200, $lineheight*$i++, sprintf("avg headshot.: %s",\Yii::$app->formatter->asDuration($hs->average)),$greencolor);
+
+
+      ob_get_clean();
+      header('Content-Type: image/png');
+      imagepng($image);
+      imagedestroy($avatar);
+      imagedestroy($cover);
+      imagedestroy($src);
+      imagedestroy($image);
+      return;
+    }
+
     public function actionIndex(int $id)
     {
       if(intval($id) == intval(Yii::$app->user->id))
