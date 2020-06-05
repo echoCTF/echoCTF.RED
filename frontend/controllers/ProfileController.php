@@ -10,6 +10,9 @@ use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
+use yii\web\BadRequestHttpException;
+use yii\base\InvalidArgumentException;
 
 class ProfileController extends \yii\web\Controller
 {
@@ -67,7 +70,6 @@ class ProfileController extends \yii\web\Controller
     */
     public function actionBadge(int $id)
     {
-      ob_end_clean();
       $profile=$this->findModel($id);
       if(!$profile->visible)
           return $this->redirect(['/']);
@@ -86,7 +88,6 @@ class ProfileController extends \yii\web\Controller
       imagefilledrectangle($image,0,0,800, 220,$col);
       imagefilledrectangle($image,20,20,180, 180,$greencolor);
       imagealphablending($image,true);
-      header('Content-Type: image/png');
 
       $src = imagecreatefrompng($fname);
       if($src===false) return $this->redirect(['/']);
@@ -122,15 +123,21 @@ class ProfileController extends \yii\web\Controller
 //      if($hs && $hs->average > 0)
 //        imagestring($image, 6, 200, $lineheight*$i++, sprintf("avg headshot.: %s",\Yii::$app->formatter->asDuration($hs->average)),$greencolor);
 
+      Yii::$app->getResponse()->getHeaders()
+          ->set('Pragma', 'public')
+          ->set('Expires', '0')
+          ->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+          ->set('Content-Transfer-Encoding', 'binary')
+          ->set('Content-type', 'image/png');
 
-      ob_get_clean();
-      header('Content-Type: image/png');
+      Yii::$app->response->format = Response::FORMAT_RAW;
+      ob_start();
       imagepng($image);
+      imagedestroy($image);
       imagedestroy($avatar);
       imagedestroy($cover);
       imagedestroy($src);
-      imagedestroy($image);
-      return;
+      return ob_get_clean();
     }
 
     public function actionIndex(int $id)

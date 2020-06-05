@@ -4,6 +4,7 @@ namespace app\modules\target\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\Response;
 use yii\web\BadRequestHttpException;
 use yii\base\InvalidArgumentException;
 use yii\web\NotFoundHttpException;
@@ -256,7 +257,6 @@ class DefaultController extends Controller
       $textcolor = imagecolorallocate($src, 255, 255, 255);
       $consolecolor = imagecolorallocate($src, 148,148,148);
       $greencolor = imagecolorallocate($src, 148,193,31);
-      //imagettftext($src, 11.5, 0, 0, 14, $textcolor, Yii::getAlias('@app/web/webfonts/fa-solid-900.ttf'), $text);
       if(Headshot::find()->where(['target_id'=>$target->id])->last()->one())
       {
         $lastHeadshot=Headshot::find()->where(['target_id'=>$target->id])->last()->one()->player->username;
@@ -279,11 +279,19 @@ class DefaultController extends Controller
       imagestring($src, 5, 60, $lineheight*$i++, sprintf("last headshot.: %s",$lastHeadshot),$greencolor);
 //      if($hs && $hs->average > 0 && $target->timer!==0)
 //        imagestring($src, 6, 40, $lineheight*9, sprintf("avg headshot.: %s",\Yii::$app->formatter->asDuration($hs->average)),$greencolor);
-      ob_get_clean();
-      header('Content-Type: image/png');
+
+      Yii::$app->getResponse()->getHeaders()
+          ->set('Pragma', 'public')
+          ->set('Expires', '0')
+          ->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+          ->set('Content-Transfer-Encoding', 'binary')
+          ->set('Content-type', 'image/png');
+
+      Yii::$app->response->format = Response::FORMAT_RAW;
+      ob_start();
       imagepng($src);
       imagedestroy($src);
-      return;
+      return ob_get_clean();
     }
 
     /**
