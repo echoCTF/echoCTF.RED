@@ -19,7 +19,7 @@ use app\modules\target\models\Target;
  * @property string $bio
  * @property string $country Player Country
  * @property string $avatar Profile avatar
- * @property string $discord Profile avatar
+ * @property string $discord Discord handle
  * @property string $twitter Twitter handle
  * @property string $github Github handle
  * @property string $htb HTB avatar
@@ -79,7 +79,7 @@ class Profile extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            self::SCENARIO_ME => ['visibility', 'country', 'avatar', 'bio', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
+            self::SCENARIO_ME => ['visibility', 'country', 'bio', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
             self::SCENARIO_REGISTER => ['username', 'email', 'password'],
             self::SCENARIO_SIGNUP => ['gdpr', 'terms_and_conditions'],
         ];
@@ -92,7 +92,7 @@ class Profile extends \yii\db\ActiveRecord
         return [
             [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio'], 'trim'],
             ['country', 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country' => 'id']],
-            ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
+//            ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
             [['player_id', 'country', 'avatar', 'visibility'], 'required'],
             [['terms_and_conditions', 'mail_optin', 'gdpr'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
@@ -101,7 +101,7 @@ class Profile extends \yii\db\ActiveRecord
             [['id', 'player_id'], 'integer'],
             [['bio'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['avatar', 'twitter', 'github'], 'string', 'max' => 255],
+            [['avatar','twitter', 'github'], 'string', 'max' => 255],
             [['country'], 'string', 'max'=>3],
             [['player_id'], 'unique'],
             [['id'], 'unique'],
