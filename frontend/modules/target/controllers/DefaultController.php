@@ -249,32 +249,34 @@ class DefaultController extends Controller
       $target=$this->findModel($id);
       $fname=Yii::getAlias(sprintf('@app/web/images/targets/%s.png',$target->name));
       $src = imagecreatefrompng($fname);
+      if($src===false) return $this->redirect(['/']);
+
       imagealphablending($src, false);
       imagesavealpha($src, true);
       $textcolor = imagecolorallocate($src, 255, 255, 255);
       $consolecolor = imagecolorallocate($src, 148,148,148);
       $greencolor = imagecolorallocate($src, 148,193,31);
       //imagettftext($src, 11.5, 0, 0, 14, $textcolor, Yii::getAlias('@app/web/webfonts/fa-solid-900.ttf'), $text);
-      if(Headshot::find(['target_id'=>$target->id])->last()->one())
+      if(Headshot::find()->where(['target_id'=>$target->id])->last()->one())
       {
         $lastHeadshot=Headshot::find()->where(['target_id'=>$target->id])->last()->one()->player->username;
-        $hs=Headshot::find()->target_avg_time($target->id)->one();
+//        $hs=Headshot::find()->target_avg_time($target->id)->one();
       }
       else
       {
         $lastHeadshot="none yet";
       }
-      $lineheight=18;
+      $lineheight=20;
       $i=3;
-      imagestring($src, 6, 40, $lineheight*$i, sprintf("root@echoctf.red:/#",$target->name),$consolecolor);
-      imagestring($src, 6, 215, $lineheight*$i++, sprintf("./target --stats %s",$target->name),$textcolor);
-      imagestring($src, 6, 40, $lineheight*$i++, sprintf("ipv4.........: %s",long2ip($target->ip)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*$i++, sprintf("fqdn.........: %s",$target->fqdn),$greencolor);
-      imagestring($src, 6, 40, $lineheight*$i++, sprintf("points.......: %s",number_format($target->points)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*$i++, sprintf("flags........: %d",count($target->treasures)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*$i++, sprintf("services.....: %d",count($target->findings)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*$i++, sprintf("headshots....: %d",count($target->headshots)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*$i++, sprintf("last headshot: %s",$lastHeadshot),$greencolor);
+      imagestring($src, 5, 60, $lineheight*$i, sprintf("root@echoctf.red:/#",$target->name),$consolecolor);
+      imagestring($src, 5, 235, $lineheight*$i++, sprintf("./target --stats %s",$target->name),$textcolor);
+      imagestring($src, 5, 60, $lineheight*$i++, sprintf("ipv4..........: %s",long2ip($target->ip)),$greencolor);
+      imagestring($src, 5, 60, $lineheight*$i++, sprintf("fqdn..........: %s",$target->fqdn),$greencolor);
+      imagestring($src, 5, 60, $lineheight*$i++, sprintf("points........: %s",number_format($target->points)),$greencolor);
+      imagestring($src, 5, 60, $lineheight*$i++, sprintf("flags.........: %d",count($target->treasures)),$greencolor);
+      imagestring($src, 5, 60, $lineheight*$i++, sprintf("services......: %d",count($target->findings)),$greencolor);
+      imagestring($src, 5, 60, $lineheight*$i++, sprintf("headshots.....: %d",count($target->headshots)),$greencolor);
+      imagestring($src, 5, 60, $lineheight*$i++, sprintf("last headshot.: %s",$lastHeadshot),$greencolor);
 //      if($hs && $hs->average > 0 && $target->timer!==0)
 //        imagestring($src, 6, 40, $lineheight*9, sprintf("avg headshot.: %s",\Yii::$app->formatter->asDuration($hs->average)),$greencolor);
       ob_get_clean();
