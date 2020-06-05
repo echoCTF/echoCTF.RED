@@ -51,6 +51,20 @@ class VerifyEmailForm extends Model
         $player=$this->_player;
         $player->status=Player::STATUS_ACTIVE;
         $player->active=1;
+        $this->genAvatar();
         return $player->save(false) ? $player : null;
+    }
+    private function genAvatar()
+    {
+      $robohash=new \app\models\Robohash($this->_player->profile->id,'set1');
+      $image=$robohash->generate_image();
+      if(get_resource_type($image)=== 'gd')
+      {
+        $dst_img=\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png');
+        imagepng($image,$dst_img);
+        imagedestroy($image);
+        $this->_player->profile->avatar=$this->_player->profile->id.'.png';
+        $this->_player->profile->save(false);
+      }
     }
 }
