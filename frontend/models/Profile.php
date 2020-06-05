@@ -34,6 +34,8 @@ use app\modules\target\models\Target;
  * @property Score $score
  * @property Rank $rank
  * @property HeadshotsCount $headshotsCount
+ * @property Experience $experience
+ * @property TotalTreasures $totalTreasures
 */
 class Profile extends \yii\db\ActiveRecord
 {

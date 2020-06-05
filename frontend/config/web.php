@@ -197,13 +197,15 @@ $config=[
                 //'challenge/<id:\d+>/download' => 'challenge/default/download',
                 // app/modules/target/controllers/TargetController.php
                 'target/<id:\d+>' => 'target/default/index',
-                //'target/<id:\d+>/badge' => 'target/default/badge',
+                'target/<id:\d+>/badge' => 'target/default/badge',
                 'target/<id:\d+>/spin'=>'target/default/spin',
                 //'target/<id:\d+>/rate'=>'target/default/rate',
                 'claim'=>'target/default/claim',
                 // app/controllers/ProfileController
                 'profile/<id:\d+>' => 'profile/index',
+                'profile/<id:\d+>/badge' => 'profile/badge',
                 'p/<id:\d+>' => 'profile/index',
+                'p/<id:\d+>/badge' => 'profile/badge',
                 'profile/me'=>'profile/me',
                 'profile/ovpn'=>'profile/ovpn',
                 'profile/settings'=>'profile/settings',
@@ -226,6 +228,7 @@ $config=[
                 'site/captcha'=>'site/captcha',
                 'target/<id:\d+>/vs/<profile_id:\d+>'=>'target/default/versus',
                 'target/<id:\d+>/versus/<profile_id:\d+>'=>'target/default/versus',
+                //'target/<id:\d+>/vs/<profile_id:\d+>/badge'=>'target/default/versusBadge',
                 // Network Module
                 //'networks' => 'network/default/index',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
