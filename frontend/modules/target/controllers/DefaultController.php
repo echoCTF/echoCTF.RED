@@ -265,15 +265,18 @@ class DefaultController extends Controller
         $lastHeadshot="none yet";
       }
       $lineheight=18;
-      imagestring($src, 6, 40, $lineheight*3, sprintf("root@echoctf.red:/#",$target->name),$consolecolor);
-      imagestring($src, 6, 215, $lineheight*3, sprintf("./target --stats %s",$target->name),$textcolor);
-      imagestring($src, 6, 40, $lineheight*4, sprintf("ipv4.........: %s",long2ip($target->ip)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*5, sprintf("fqdn.........: %s",$target->fqdn),$greencolor);
-      imagestring($src, 6, 40, $lineheight*6, sprintf("points.......: %s",number_format($target->points)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*7, sprintf("headshots....: %d",count($target->headshots)),$greencolor);
-      imagestring($src, 6, 40, $lineheight*8, sprintf("last headshot: %s",$lastHeadshot),$greencolor);
-      if($hs && $hs->average > 0 && $target->timer!==0)
-        imagestring($src, 6, 40, $lineheight*9, sprintf("avg headshot.: %s",\Yii::$app->formatter->asDuration($hs->average)),$greencolor);
+      $i=3;
+      imagestring($src, 6, 40, $lineheight*$i, sprintf("root@echoctf.red:/#",$target->name),$consolecolor);
+      imagestring($src, 6, 215, $lineheight*$i++, sprintf("./target --stats %s",$target->name),$textcolor);
+      imagestring($src, 6, 40, $lineheight*$i++, sprintf("ipv4.........: %s",long2ip($target->ip)),$greencolor);
+      imagestring($src, 6, 40, $lineheight*$i++, sprintf("fqdn.........: %s",$target->fqdn),$greencolor);
+      imagestring($src, 6, 40, $lineheight*$i++, sprintf("points.......: %s",number_format($target->points)),$greencolor);
+      imagestring($src, 6, 40, $lineheight*$i++, sprintf("flags........: %d",count($target->treasures)),$greencolor);
+      imagestring($src, 6, 40, $lineheight*$i++, sprintf("services.....: %d",count($target->findings)),$greencolor);
+      imagestring($src, 6, 40, $lineheight*$i++, sprintf("headshots....: %d",count($target->headshots)),$greencolor);
+      imagestring($src, 6, 40, $lineheight*$i++, sprintf("last headshot: %s",$lastHeadshot),$greencolor);
+//      if($hs && $hs->average > 0 && $target->timer!==0)
+//        imagestring($src, 6, 40, $lineheight*9, sprintf("avg headshot.: %s",\Yii::$app->formatter->asDuration($hs->average)),$greencolor);
       ob_get_clean();
       header('Content-Type: image/png');
       imagepng($src);
