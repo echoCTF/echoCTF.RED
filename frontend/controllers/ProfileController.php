@@ -66,7 +66,7 @@ class ProfileController extends \yii\web\Controller
     }
 
     /**
-    * Generate and display target badge with dynamic details
+    * Generate and display profile badge with dynamic details
     */
     public function actionBadge(int $id)
     {
