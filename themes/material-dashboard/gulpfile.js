@@ -25,6 +25,12 @@ gulp.task('createMiniIMG', function() {
       .pipe(gulp.dest('../images/targets'));
 });
 
+gulp.task('robohash', function() {
+  return gulp.src(['../../frontend/web/images/robohash/**/*.png'])
+        .pipe(imageResize({width : 300, height: 300 }))
+      .pipe(gulp.dest('../../frontend/web/images/robohash'));
+});
+
 gulp.task('minifyIMG', function() {
   return gulp.src(['../images/targets/*'])
         .pipe(imagemin([
