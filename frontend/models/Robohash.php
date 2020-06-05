@@ -1,8 +1,14 @@
 <?php
+// Original Class taken from php-robohash
+// (C) 2012 hush2 <hushywushy@gmail.com>
+// https://github.com/hush2/php-robohash.git
+
+// Extra sets and images from https://github.com/e1ven/Robohash.git
 namespace app\models;
 
 use yii\base\Widget;
 use yii\helpers\Html;
+
 
 class Robohash
 {
@@ -41,11 +47,6 @@ class Robohash
         $this->set_color();
         $this->robodata=sprintf("%s/%s",$this->set,$this->color);
     }
-
-//    public function run()
-//    {
-//        return $this->generate_image();
-//    }
 
     private function create_hashes($text, $length=11)
     {
