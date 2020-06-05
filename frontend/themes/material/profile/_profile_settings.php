@@ -25,19 +25,10 @@ $this->_fluid="-fluid";
       </div>
     </div>
     <div class="row">
-      <!--<div class="col-lg-3">
-        <?=$form->field($model, 'gravatar')->checkbox(['label'=>'Use Gravatar'])->hint('')->label(false) ?>
-        <?=$form->field($model, 'twitter_avatar')->checkbox(['label'=>'Use Twitter avatar'])->hint('')->label(false) ?>
-        <?=$form->field($model, 'github_avatar')->checkbox(['label'=>'Use github avatar'])->hint('')->label(false) ?>
-      </div>-->
-      <div class="col-lg-10">
-		      <?=$form->field($model, 'avatar')->dropDownList(ArrayHelper::map(Avatar::find()->all(), 'id', 'id'), ['prompt'=>'Select your avatar', 'class'=>'form-control selectpicker', 'data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select an avatar from the list')?>
-      </div>
-      <div class="col-lg-2">
-		      <img class="thumbnail img-fluid pull-right" id="preview_avatar" src="/images/avatars/<?=$model->avatar?>" alt="<?=$model->avatar?>"/>
+      <div class="col-lg-12">
+        <?=$form->field($model, 'bio')->textarea(['rows'=>'4']) ?>
       </div>
     </div>
-		<?=$form->field($model, 'bio')->textarea(['rows'=>'4']) ?>
     <div class="row">
       <div class="col-lg-3">
         <?=$form->field($model, 'discord')->textInput(['maxlength' => true])->Label('<i class="fab fa-discord"></i> Discord') ?>
