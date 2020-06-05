@@ -211,6 +211,7 @@ $config=[
                 'profile/settings'=>'profile/settings',
                 'profile/notifications'=>'profile/notifications',
                 'profile/hints'=>'profile/hints',
+                'profile/robohash' => 'profile/robohash',
                 // app/controllers/DashboardController.php
                 'dashboard' => 'dashboard/index',
                 // HELP MODULE

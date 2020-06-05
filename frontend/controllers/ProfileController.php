@@ -27,7 +27,7 @@ class ProfileController extends \yii\web\Controller
                 'only' => ['me', 'index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
                 'rules' => [
                     [
-                        'actions' => ['me', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
+                        'actions' => ['me', 'notifications', 'hints', 'update', 'ovpn', 'settings', 'robohash'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -64,6 +64,31 @@ class ProfileController extends \yii\web\Controller
           'profile'=>$profile,
       ]);
     }
+/*
+    robohash action will be needed in the future
+    public function actionRobohash()
+    {
+      $robohash=new \app\models\Robohash(Yii::$app->user->identity->username);
+      $image=$robohash->generate_image();
+      if(get_resource_type($image)=== 'gd')
+      {
+        Yii::$app->getResponse()->getHeaders()
+            ->set('Pragma', 'public')
+            ->set('Expires', '0')
+            ->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
+            ->set('Content-Transfer-Encoding', 'binary')
+            ->set('Content-type', 'image/png');
+
+        Yii::$app->response->format = Response::FORMAT_RAW;
+        ob_start();
+        imagepng($image);
+        imagedestroy($image);
+        return ob_get_clean();
+      }
+      // If we reach this point then something went wrong...
+      throw new \yii\web\HttpException(500, 'Something went wrong in robohash generation.');
+    }
+  */
 
     /**
     * Generate and display profile badge with dynamic details
