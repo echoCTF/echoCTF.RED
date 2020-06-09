@@ -15,6 +15,7 @@ $this->_fluid="-fluid";
 <div class="profile-form">
     <?php $form=ActiveForm::begin([
       'id'=>'profile-form',
+      'options' => ['enctype' => 'multipart/form-data']
       ]);?>
     <div class="row">
       <div class="col-lg-6">
@@ -24,6 +25,25 @@ $this->_fluid="-fluid";
 	      <?=$form->field($model, 'country')->dropDownList(ArrayHelper::map(Country::find()->all(), 'id', 'name'), ['prompt'=>'Select your Country', 'class'=>'form-control selectpicker', 'data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select your country')?>
       </div>
     </div>
+    <div class="row">
+      <div class="col-md-12">
+        <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+          <div class="fileinput-new thumbnail img-circle img-raised">
+         	  <img src="/images/avatars/<?=$model->avatar?>" rel="nofollow" class="rounded img-thumbnail" alt="Avatar of <?=Html::encode($model->owner->username)?>">
+          </div>
+          <div class="fileinput-preview fileinput-exists thumbnail img-circle img-raised"></div>
+          <div>
+            <?= $form->field($model, 'uploadedAvatar')->label('Choose avatar (300x300 PNG)',['class'=>'btn btn-raised btn-round btn-rose btn-file'])->fileInput() ?>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+      </div>
+    </div>
+
     <div class="row">
       <div class="col-lg-12">
         <?=$form->field($model, 'bio')->textarea(['rows'=>'4']) ?>
