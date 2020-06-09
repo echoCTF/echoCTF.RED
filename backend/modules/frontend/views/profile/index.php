@@ -33,7 +33,6 @@ $this->params['breadcrumbs'][]=$this->title;
             ],
             'bio:ntext',
             'country',
-            'avatar',
             [
               'attribute'=>'visibility',
               'filter'=>$searchModel->visibilities
@@ -44,6 +43,11 @@ $this->params['breadcrumbs'][]=$this->title;
 //            'terms_and_conditions:boolean',
 //            'mail_optin:boolean',
 //            'gdpr:boolean',
+            [
+              'attribute'=>'avatar',
+              'format'=>'html',
+              'value'=>function($data) { return Html::img('http://localhost:8082/images/avatars/' . $data['avatar'],['width' => '50px']);}
+            ],
             'approved_avatar:boolean',
             [
               'class' => 'yii\grid\ActionColumn',
