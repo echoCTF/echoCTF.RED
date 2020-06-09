@@ -210,7 +210,7 @@ class ProfileController extends \yii\web\Controller
       {
         $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
         $profileForm->save();
-        if($this->handle_upload($profileForm->uploadedAvatar))
+        if($this->HandleUpload($profileForm->uploadedAvatar))
         {
           $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profileForm->avatar));
           $profileForm->uploadedAvatar->saveAs($fname);
@@ -261,7 +261,7 @@ class ProfileController extends \yii\web\Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    protected function handle_upload($uploadedAvatar)
+    protected function HandleUpload($uploadedAvatar)
     {
       if(!$uploadedAvatar) return false;
       $src = imagecreatefrompng($uploadedAvatar->tempName);
@@ -269,24 +269,8 @@ class ProfileController extends \yii\web\Controller
       {
         $old_x = imageSX($src);
         $old_y = imageSY($src);
+        list($thumb_w,$thumb_h) = $this->ScaleXY($old_x,$old_y);
 
-        if($old_x > $old_y)
-        {
-          $thumb_w    =   300;
-          $thumb_h    =   $old_y*(300/$old_x);
-        }
-
-        if($old_x < $old_y)
-        {
-          $thumb_w    =   $old_x*(300/$old_y);
-          $thumb_h    =   300;
-        }
-
-        if($old_x == $old_y)
-        {
-          $thumb_w    =   300;
-          $thumb_h    =   300;
-        }
         $avatar=imagescale($src,$thumb_w,$thumb_h);
         imagealphablending($avatar, false);
         imagesavealpha($avatar, true);
@@ -296,5 +280,28 @@ class ProfileController extends \yii\web\Controller
         return true;
       }
       return false;
+    }
+
+    protected function ScaleXY($old_x,$old_y)
+    {
+      $thumb_h = $thumb_w = 300;
+      if($old_x > $old_y)
+      {
+        $thumb_w    =   300;
+        $thumb_h    =   $old_y*(300/$old_x);
+      }
+
+      if($old_x < $old_y)
+      {
+        $thumb_w    =   $old_x*(300/$old_y);
+        $thumb_h    =   300;
+      }
+
+      if($old_x == $old_y)
+      {
+        $thumb_w    =   300;
+        $thumb_h    =   300;
+      }
+      return [$thumb_w, $thumb_h];
     }
 }
