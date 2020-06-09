@@ -209,36 +209,10 @@ class ProfileController extends \yii\web\Controller
       if($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
       {
         $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
-        if($profileForm->save() && $profileForm->uploadedAvatar)
+        if($profileForm->save() && $profileForm->uploadedAvatar && $this->handle_upload($profileForm->uploadedAvatar->tempName))
         {
-          $src = imagecreatefrompng($profileForm->uploadedAvatar->tempName);
-          if($src!==false)
-          {
-            $old_x = imageSX($src);
-            $old_y = imageSY($src);
-            if($old_x > $old_y)
-            {
-              $thumb_w    =   300;
-              $thumb_h    =   $old_y*(300/$old_x);
-            }
-            if($old_x < $old_y)
-            {
-              $thumb_w    =   $old_x*(300/$old_y);
-              $thumb_h    =   300;
-            }
-
-            if($old_x == $old_y)
-            {
-              $thumb_w    =   300;
-              $thumb_h    =   300;
-            }
-            $avatar=imagescale($src,$thumb_w,$thumb_h);
-            imagepng($avatar,$profileForm->uploadedAvatar->tempName);
-            imagedestroy($src);
-            imagedestroy($avatar);
-            $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profileForm->avatar));
-            $profileForm->uploadedAvatar->saveAs($fname);
-          }
+          $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profileForm->avatar));
+          $profileForm->uploadedAvatar->saveAs($fname);
         }
 
         $success[]="Profile updated";
@@ -285,5 +259,39 @@ class ProfileController extends \yii\web\Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function handle_upload($tempName)
+    {
+      $src = imagecreatefrompng($tempName);
+      if($src!==false)
+      {
+        $old_x = imageSX($src);
+        $old_y = imageSY($src);
+
+        if($old_x > $old_y)
+        {
+          $thumb_w    =   300;
+          $thumb_h    =   $old_y*(300/$old_x);
+        }
+
+        if($old_x < $old_y)
+        {
+          $thumb_w    =   $old_x*(300/$old_y);
+          $thumb_h    =   300;
+        }
+
+        if($old_x == $old_y)
+        {
+          $thumb_w    =   300;
+          $thumb_h    =   300;
+        }
+        $avatar=imagescale($src,$thumb_w,$thumb_h);
+        imagepng($avatar,$tempName);
+        imagedestroy($src);
+        imagedestroy($avatar);
+        return true;
+      }
+      return false;
     }
 }
