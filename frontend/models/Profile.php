@@ -50,6 +50,7 @@ class Profile extends \yii\db\ActiveRecord
       'public'=>'Public',
       'ingame'=>'In Game',
     ];
+  public $uploadedAvatar;
     /**
      * {@inheritdoc}
      */
@@ -79,7 +80,7 @@ class Profile extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            self::SCENARIO_ME => ['visibility', 'country', 'bio', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
+            self::SCENARIO_ME => ['visibility', 'country', 'uploadedAvatar', 'bio', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
             self::SCENARIO_REGISTER => ['username', 'email', 'password'],
             self::SCENARIO_SIGNUP => ['gdpr', 'terms_and_conditions'],
         ];
@@ -105,6 +106,7 @@ class Profile extends \yii\db\ActiveRecord
             [['country'], 'string', 'max'=>3],
             [['player_id'], 'unique'],
             [['id'], 'unique'],
+            [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png'],
         ];
     }
 
