@@ -45,7 +45,25 @@ $this->params['breadcrumbs'][]=$this->title;
 //            'mail_optin:boolean',
 //            'gdpr:boolean',
             'approved_avatar:boolean',
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+              'class' => 'yii\grid\ActionColumn',
+              'template' => '{view} {update} {delete} {approve_avatar}',
+              'buttons' => [
+                  'approve_avatar' => function($url, $model) {
+                    if(!$model->approved_avatar)
+                    return Html::a(
+                        '<span class="glyphicon glyphicon-file"></span>',
+                        $url,
+                        [
+                          'title' => 'Approve avatar for the user',
+                          'data-pjax' => '0',
+                          'data-method' => 'POST',
+                          'data'=>['confirm'=>"Are you sure you want to approve the user avatar?"]
+                        ]
+                    );
+                  },
+              ]
+            ],
         ],
     ]);?>
 
