@@ -13,6 +13,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\BadRequestHttpException;
 use yii\base\InvalidArgumentException;
+use yii\web\UploadedFile;
 
 class ProfileController extends \yii\web\Controller
 {
@@ -207,10 +208,41 @@ class ProfileController extends \yii\web\Controller
       $accountForm=$profile->owner;
       if($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
       {
-        $profileForm->save();
+        $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
+        if($profileForm->save() && $profileForm->uploadedAvatar)
+        {
+          $src = imagecreatefrompng($profileForm->uploadedAvatar->tempName);
+          if($src!==false)
+          {
+            $old_x = imageSX($src);
+            $old_y = imageSY($src);
+            if($old_x > $old_y)
+            {
+              $thumb_w    =   300;
+              $thumb_h    =   $old_y*(300/$old_x);
+            }
+            if($old_x < $old_y)
+            {
+              $thumb_w    =   $old_x*(300/$old_y);
+              $thumb_h    =   300;
+            }
+
+            if($old_x == $old_y)
+            {
+              $thumb_w    =   300;
+              $thumb_h    =   300;
+            }
+            $avatar=imagescale($src,$thumb_w,$thumb_h);
+            imagepng($avatar,$profileForm->uploadedAvatar->tempName);
+            imagedestroy($src);
+            imagedestroy($avatar);
+            $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profileForm->avatar));
+            $profileForm->uploadedAvatar->saveAs($fname);
+          }
+        }
+
         $success[]="Profile updated";
       }
-
 
       if($accountForm->load(Yii::$app->request->post()) && $accountForm->validate())
       {
