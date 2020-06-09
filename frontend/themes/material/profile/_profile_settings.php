@@ -33,7 +33,7 @@ $this->_fluid="-fluid";
           </div>
           <div class="fileinput-preview fileinput-exists thumbnail img-circle img-raised"></div>
           <div>
-            <?= $form->field($model, 'uploadedAvatar')->label('Choose avatar (300x300 PNG)',['class'=>'btn btn-raised btn-round btn-rose btn-file'])->fileInput() ?>
+            <?= $form->field($model, 'uploadedAvatar')->label('Choose avatar (300x300 PNG)',['class'=>'btn btn-raised btn-round btn-rose btn-file'])->fileInput()->hint('Choose an image to use as your avatar. Please be considerate of what you upload.') ?>
           </div>
         </div>
       </div>
