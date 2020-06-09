@@ -31,6 +31,7 @@ use app\modules\target\models\Target;
  * @property boolean $visible
  * @property boolean $approved_avatar
  * @property string $avtr
+ * @property boolean $isMine
  *
  * @property Owner $owner
  * @property Score $score
