@@ -209,12 +209,12 @@ class ProfileController extends \yii\web\Controller
       if($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
       {
         $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
-        if($profileForm->save() && $profileForm->uploadedAvatar && $this->handle_upload($profileForm->uploadedAvatar->tempName))
+        $profileForm->save();
+        if($this->handle_upload($profileForm->uploadedAvatar))
         {
           $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profileForm->avatar));
           $profileForm->uploadedAvatar->saveAs($fname);
         }
-
         $success[]="Profile updated";
       }
 
@@ -261,9 +261,10 @@ class ProfileController extends \yii\web\Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    protected function handle_upload($tempName)
+    protected function handle_upload($uploadedAvatar)
     {
-      $src = imagecreatefrompng($tempName);
+      if(!$uploadedAvatar) return false;
+      $src = imagecreatefrompng($uploadedAvatar->tempName);
       if($src!==false)
       {
         $old_x = imageSX($src);
@@ -287,7 +288,9 @@ class ProfileController extends \yii\web\Controller
           $thumb_h    =   300;
         }
         $avatar=imagescale($src,$thumb_w,$thumb_h);
-        imagepng($avatar,$tempName);
+        imagealphablending($avatar, false);
+        imagesavealpha($avatar, true);
+        imagepng($avatar,$uploadedAvatar->tempName);
         imagedestroy($src);
         imagedestroy($avatar);
         return true;
