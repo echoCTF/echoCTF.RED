@@ -8,7 +8,7 @@ use app\modules\game\models\Headshot;
 <div class="card card-profile">
   <div class="card-avatar bg-primary">
     <a href="<?=$profile->linkTo?>">
-      <img class="img" src="/images/avatars/<?=$profile->avatar?>" />
+      <img class="img" src="/images/avatars/<?=$profile->avtr?>" />
     </a>
   </div>
   <div class="card-body">

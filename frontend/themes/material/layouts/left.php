@@ -13,7 +13,7 @@ use yii\helpers\Url;
         </a>
         <?php if(!Yii::$app->user->isGuest):?>
           <a href="<?=Url::to(['/profile/me'])?>" class="simple-text logo-normal" style="text-transform:none" title="Profile of <?=Html::encode(Yii::$app->user->identity->username)?>">
-            <img src="/images/avatars/<?=Yii::$app->user->identity->profile->avatar;?>" class="img-fluid rounded-corners" style="max-width: 40px; max-height: 50px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"><br/>
+            <img src="/images/avatars/<?=Yii::$app->user->identity->profile->avtr;?>" class="img-fluid rounded-corners" style="max-width: 40px; max-height: 50px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"><br/>
             <?=Html::encode(Yii::$app->user->identity->username)?> <small style="font-size: 0.65em">(<code><?=number_format(Yii::$app->user->identity->profile->score->points)?> pts</code>)</small>
           </a>
         <?php endif;?>
