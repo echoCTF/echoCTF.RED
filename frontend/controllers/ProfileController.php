@@ -100,7 +100,7 @@ class ProfileController extends \yii\web\Controller
       if(!$profile->visible)
           return $this->redirect(['/']);
 
-      $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profile->avatar));
+      $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profile->avtr));
 
       $image = imagecreatetruecolor(800,220);
       if($image===false) return $this->redirect(['/']);
@@ -209,12 +209,14 @@ class ProfileController extends \yii\web\Controller
       if($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
       {
         $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
-        $profileForm->save();
         if($this->HandleUpload($profileForm->uploadedAvatar))
         {
           $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profileForm->avatar));
           $profileForm->uploadedAvatar->saveAs($fname);
+          $profileForm->uploadedAvatar=null;
+          $profileForm->approved_avatar=false;
         }
+        $profileForm->save();
         $success[]="Profile updated";
       }
 
