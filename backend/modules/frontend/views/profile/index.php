@@ -41,10 +41,10 @@ $this->params['breadcrumbs'][]=$this->title;
             'twitter',
             'github',
             'discord',
-            'terms_and_conditions:boolean',
-            'mail_optin:boolean',
-            'gdpr:boolean',
-
+//            'terms_and_conditions:boolean',
+//            'mail_optin:boolean',
+//            'gdpr:boolean',
+            'approved_avatar:boolean',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]);?>
