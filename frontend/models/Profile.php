@@ -106,7 +106,7 @@ class Profile extends \yii\db\ActiveRecord
             [['country'], 'string', 'max'=>3],
             [['player_id'], 'unique'],
             [['id'], 'unique'],
-            [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png'],
+            [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => 'File larger than expected, limit is 500KB'],
         ];
     }
 
