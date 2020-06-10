@@ -59,6 +59,7 @@ $this->params['breadcrumbs'][]=$this->title;
             ],
             'online:boolean',
             'active:boolean',
+            'status',
             'created',
             //'ts',
             [

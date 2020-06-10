@@ -18,6 +18,12 @@ BEGIN
  DELETE FROM `notification` WHERE `archived`=1 AND `updated_at` < NOW() - INTERVAL 7 DAY;
 END //
 
+DROP EVENT IF EXISTS `delete_old_inactive_users` //
+CREATE EVENT `delete_old_inactive_users` ON SCHEDULE EVERY 1 DAY STARTS '2020-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO
+BEGIN
+ DELETE FROM `player` WHERE `created` < NOW() - INTERVAL 10 DAY AND `status` IN (0,9);
+END //
+
 --
 -- This event can be used in heavy loaded systems to calculate the timers for the
 -- headshots after they have been assigned. This will require modifications to
