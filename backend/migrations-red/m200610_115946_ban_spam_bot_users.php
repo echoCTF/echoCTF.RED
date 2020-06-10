@@ -10,6 +10,7 @@ class m200610_115946_ban_spam_bot_users extends Migration
   public $filters=[
     '%bigmir.___',
     '%nextfashion.__',
+    '%gmial.com'
   ];
   public $emails=[
     'test@gmail.com',
