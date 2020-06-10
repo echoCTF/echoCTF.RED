@@ -13,7 +13,9 @@ class m200610_115946_ban_spam_bot_users extends Migration
   ];
   public $emails=[
     'test@gmail.com',
-    'prostitutki.rostova.vip@gmail.com'
+    'prostitutki.rostova.vip@gmail.com',
+    'tsio.mar2@gmail.com',
+    'smdssaj@gmial.com',
   ];
     /**
      * {@inheritdoc}
