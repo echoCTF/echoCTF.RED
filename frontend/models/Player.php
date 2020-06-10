@@ -91,6 +91,17 @@ class Player extends ActiveRecord implements IdentityInterface
             ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email has already been taken.', 'when' => function($model, $attribute) {
                 return $model->{$attribute} !== $model->getOldAttribute($attribute);
             }],
+            ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => 'This email is banned.', 'when' => function($model, $attribute) {
+                return $model->{$attribute} !== $model->getOldAttribute($attribute);
+            }],
+            ['email', function($attribute, $params){
+              $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
+                  ->bindValue(':email', $this->email)
+                  ->queryScalar();
+
+              if(intval($count)!==0)
+                  $this->addError($attribute, 'This email is banned.');
+            }],
 
             /* username field rules */
             [['username'], 'trim'],
