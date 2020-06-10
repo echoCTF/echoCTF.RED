@@ -23,6 +23,7 @@ use yii\helpers\Html;
  * @property int $terms_and_conditions
  * @property int $mail_optin
  * @property int $gdpr
+ * @property boolean $approved_avatar
  * @property string $created_at
  * @property string $updated_at
  *

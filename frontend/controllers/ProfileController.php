@@ -13,6 +13,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\Response;
 use yii\web\BadRequestHttpException;
 use yii\base\InvalidArgumentException;
+use yii\web\UploadedFile;
 
 class ProfileController extends \yii\web\Controller
 {
@@ -99,7 +100,7 @@ class ProfileController extends \yii\web\Controller
       if(!$profile->visible)
           return $this->redirect(['/']);
 
-      $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profile->avatar));
+      $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profile->avtr));
 
       $image = imagecreatetruecolor(800,220);
       if($image===false) return $this->redirect(['/']);
@@ -207,10 +208,17 @@ class ProfileController extends \yii\web\Controller
       $accountForm=$profile->owner;
       if($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
       {
+        $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
+        if($this->HandleUpload($profileForm->uploadedAvatar))
+        {
+          $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profileForm->avatar));
+          $profileForm->uploadedAvatar->saveAs($fname);
+          $profileForm->uploadedAvatar=null;
+          $profileForm->approved_avatar=false;
+        }
         $profileForm->save();
         $success[]="Profile updated";
       }
-
 
       if($accountForm->load(Yii::$app->request->post()) && $accountForm->validate())
       {
@@ -253,5 +261,76 @@ class ProfileController extends \yii\web\Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    protected function HandleUpload($uploadedAvatar)
+    {
+      if(!$uploadedAvatar) return false;
+      $src = imagecreatefrompng($uploadedAvatar->tempName);
+      if($src!==false)
+      {
+
+        $old_x = imageSX($src);
+        $old_y = imageSY($src);
+        list($thumb_w,$thumb_h) = $this->ScaledXY($old_x,$old_y);
+
+        $avatar=imagescale($src,$thumb_w,$thumb_h);
+
+        $image = imagecreatetruecolor(300,300);
+        if(!$image) return false;
+
+        imagealphablending($image, false);
+        $col=imagecolorallocatealpha($image,255,255,255,127);
+        imagefilledrectangle($image,0,0,300, 300,$col);
+        imagealphablending($image,true);
+
+        list($dst_x,$dst_y) = $this->DestinationXY($thumb_w,$thumb_h);
+        imagecopyresampled($image, $avatar, $dst_x, $dst_y, /*src_x*/ 0, /*src_y*/ 0, /*dst_w*/ $thumb_w, /*dst_h*/ $thumb_h, /*src_w*/ $thumb_w, /*src_y*/ $thumb_h);
+        imagesavealpha($image, true);
+        imagepng($image,$uploadedAvatar->tempName);
+        imagedestroy($image);
+        imagedestroy($src);
+        imagedestroy($avatar);
+        return true;
+      }
+      return false;
+    }
+
+    protected function DestinationXY($x,$y)
+    {
+      $pos_x = $pos_y = 0;
+
+      if($x<300)
+      {
+        $pos_x = floor((300-$x)/2);
+      }
+      if($y<300)
+      {
+        $pos_y = floor((300-$y)/2);
+      }
+      return [ $pos_x, $pos_y ];
+    }
+
+    protected function ScaledXY($old_x,$old_y)
+    {
+      $thumb_h = $thumb_w = 300;
+      if($old_x > $old_y)
+      {
+        $thumb_w    =   300;
+        $thumb_h    =   $old_y*(300/$old_x);
+      }
+
+      if($old_x < $old_y)
+      {
+        $thumb_w    =   $old_x*(300/$old_y);
+        $thumb_h    =   300;
+      }
+
+      if($old_x == $old_y)
+      {
+        $thumb_w    =   300;
+        $thumb_h    =   300;
+      }
+      return [$thumb_w, $thumb_h];
     }
 }

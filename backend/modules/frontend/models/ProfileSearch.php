@@ -20,7 +20,7 @@ class ProfileSearch extends Profile
         return [
             [['id', 'player_id'], 'integer'],
             [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
-            [['username', 'bio', 'avatar', 'twitter', 'country', 'github', 'created_at', 'updated_at'], 'safe'],
+            [['username', 'bio', 'avatar', 'twitter', 'country', 'github', 'created_at', 'updated_at','approved_avatar','discord'], 'safe'],
         ];
     }
 
@@ -64,6 +64,7 @@ class ProfileSearch extends Profile
             'profile.id' => $this->id,
             'profile.player_id' => $this->player_id,
             'profile.visibility' => $this->visibility,
+            'profile.approved_avatar' => $this->approved_avatar,
             'profile.country' => $this->country,
             'profile.created_at' => $this->created_at,
             'profile.updated_at' => $this->updated_at,
@@ -72,6 +73,7 @@ class ProfileSearch extends Profile
         $query->andFilterWhere(['like', 'profile.bio', $this->bio])
             ->andFilterWhere(['like', 'profile.avatar', $this->avatar])
             ->andFilterWhere(['like', 'profile.github', $this->avatar])
+            ->andFilterWhere(['like', 'profile.discord', $this->discord])
             ->andFilterWhere(['like', 'profile.twitter', $this->twitter]);
 
         $query->andFilterWhere(['like', 'player.username', $this->username]);

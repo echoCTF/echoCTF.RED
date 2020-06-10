@@ -29,6 +29,9 @@ use app\modules\target\models\Target;
  * @property string $created_at
  * @property string $updated_at
  * @property boolean $visible
+ * @property boolean $approved_avatar
+ * @property string $avtr
+ * @property boolean $isMine
  *
  * @property Owner $owner
  * @property Score $score
@@ -50,6 +53,7 @@ class Profile extends \yii\db\ActiveRecord
       'public'=>'Public',
       'ingame'=>'In Game',
     ];
+  public $uploadedAvatar;
     /**
      * {@inheritdoc}
      */
@@ -69,6 +73,7 @@ class Profile extends \yii\db\ActiveRecord
                     'gdpr' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                     'terms_and_conditions' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                     'mail_optin' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                    'approved_avatar' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                 ],
                 'typecastAfterValidate' => true,
                 'typecastBeforeSave' => true,
@@ -79,7 +84,7 @@ class Profile extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            self::SCENARIO_ME => ['visibility', 'country', 'bio', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
+            self::SCENARIO_ME => ['visibility', 'country', 'uploadedAvatar', 'bio', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
             self::SCENARIO_REGISTER => ['username', 'email', 'password'],
             self::SCENARIO_SIGNUP => ['gdpr', 'terms_and_conditions'],
         ];
@@ -94,7 +99,8 @@ class Profile extends \yii\db\ActiveRecord
             ['country', 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country' => 'id']],
 //            ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
             [['player_id', 'country', 'avatar', 'visibility'], 'required'],
-            [['terms_and_conditions', 'mail_optin', 'gdpr'], 'boolean', 'trueValue' => true, 'falseValue' => false],
+            [['terms_and_conditions', 'mail_optin', 'gdpr','approved_avatar'], 'boolean', 'trueValue' => true, 'falseValue' => false],
+            [['approved_avatar'], 'default', 'value'=>true ],
             [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
             [['visibility'], 'default', 'value' =>  'ingame'],
             [['id'], 'default', 'value' =>  new Expression('round(rand()*10000000)'), 'on'=>['register']],
@@ -105,6 +111,7 @@ class Profile extends \yii\db\ActiveRecord
             [['country'], 'string', 'max'=>3],
             [['player_id'], 'unique'],
             [['id'], 'unique'],
+            [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => 'File larger than expected, limit is 500KB'],
         ];
     }
 
@@ -232,6 +239,13 @@ class Profile extends \yii\db\ActiveRecord
       }
       return $this->owner->username;
     }
+
+    public function getAvtr()
+    {
+      if($this->approved_avatar || $this->isMine)
+        return $this->avatar;
+      return '../default_avatar.png';
+    }
     public function getBraggingRights()
     {
       if($this->rank)
@@ -246,4 +260,6 @@ class Profile extends \yii\db\ActiveRecord
         $msg=sprintf("I have just joined echoCTF.RED!");
       return $msg;
     }
+
+
 }

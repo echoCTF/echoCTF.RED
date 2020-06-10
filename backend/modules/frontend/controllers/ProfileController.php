@@ -33,6 +33,7 @@ class ProfileController extends Controller
                   'class' => VerbFilter::class,
                   'actions' => [
                       'delete' => ['POST'],
+                      'approve_avatar' => ['POST'],
                   ],
               ],
           ];
@@ -117,6 +118,15 @@ class ProfileController extends Controller
     {
         $this->findModel($id)->delete();
 
+        return $this->redirect(['index']);
+    }
+
+
+    public function actionApprove_avatar($id)
+    {
+        $model=$this->findModel($id);
+        $model->approved_avatar=true;
+        $model->save();
         return $this->redirect(['index']);
     }
 
