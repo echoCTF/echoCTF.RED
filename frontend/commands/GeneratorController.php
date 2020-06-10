@@ -50,7 +50,7 @@ class GeneratorController extends Controller {
         $player->generateAuthKey();
         if(!$player->save(false))
         {
-          var_dump($player->getErrors());
+          echo $player->id, " ", $player->username, implode(', ', $player->getErrors());
         }
       }
     }
