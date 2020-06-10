@@ -39,4 +39,20 @@ class GeneratorController extends Controller {
         }
       }
 
+    /**
+    * Generate participant avatars based on robohash
+    */
+    public function actionAuthKeys()
+    {
+      $players=Player::find()->where(['auth_key'=>''])->active()->all();
+      foreach($players as $player)
+      {
+        $player->generateAuthKey();
+        if(!$player->save(false))
+        {
+          var_dump($player->getErrors());
+        }
+      }
+    }
+
 }
