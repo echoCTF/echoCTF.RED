@@ -91,6 +91,9 @@ class Player extends ActiveRecord implements IdentityInterface
             ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email has already been taken.', 'when' => function($model, $attribute) {
                 return $model->{$attribute} !== $model->getOldAttribute($attribute);
             }],
+            ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => 'This email is banned.', 'when' => function($model, $attribute) {
+                return $model->{$attribute} !== $model->getOldAttribute($attribute);
+            }],
 
             /* username field rules */
             [['username'], 'trim'],
