@@ -10,6 +10,8 @@ class m200610_115946_ban_spam_bot_users extends Migration
   public $filters=[
     '%bigmir.___',
     '%nextfashion.__',
+  ];
+  public $emails=[
     'test@gmail.com',
     'prostitutki.rostova.vip@gmail.com'
   ];
@@ -18,10 +20,15 @@ class m200610_115946_ban_spam_bot_users extends Migration
      */
     public function safeUp()
     {
-      foreach($this->filters as $filter)
+      foreach(array_merge($this->filters,$this->emails) as $filter)
       {
         $this->db->createCommand("INSERT IGNORE INTO banned_player (old_id,username,email,registered_at,banned_at) SELECT id,username,email,created,NOW() FROM player WHERE email like '$filter'")->execute();
         $this->db->createCommand("DELETE FROM player WHERE email like '$filter'")->execute();
+      }
+
+      foreach($this->filters as $filter)
+      {
+        $this->insert("banned_player", ["email"=>$filter]);
       }
 
     }
