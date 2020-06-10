@@ -51,6 +51,8 @@ $this->params['breadcrumbs'][]=$this->title;
             'status',
             'type',
             'activkey',
+            'auth_key',
+            'verification_token',
             'created',
             'ts',
         ],
