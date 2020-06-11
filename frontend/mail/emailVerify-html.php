@@ -7,9 +7,16 @@ use yii\helpers\Html;
 $verifyLink=Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $user->verification_token]);
 ?>
 <div class="verify-email">
-    <p>Hello <?= Html::encode($user->username) ?>,</p>
+    <h3>Hello and welcome to echoCTF.RED</h3>
 
-    <p>Follow the link below to verify your email:</p>
+    <p>You (or possibly someone else), just requested that this email address be used
+    to create an account on our platform.</p>
+
+    <p>To complete this verification process and activate the account on our platform
+    follow the link below:</p>
 
     <p><?= Html::a(Html::encode($verifyLink), $verifyLink) ?></p>
+
+    <p>If you didn't request the account registration, just ignore this email.</p>
+
 </div>
