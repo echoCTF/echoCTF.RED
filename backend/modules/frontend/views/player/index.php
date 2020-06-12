@@ -75,7 +75,20 @@ $this->params['breadcrumbs'][]=$this->title;
                       'data'=>[
                         'method'=>'post',
                         'params'=> $searchModel->attributes,
-                        'confirm'=>'Are you sure you want to delete and ban the currently visible users?',
+                        'confirm'=>'Are you sure you want to delete and ban the currently filtered users?',
+                      ],
+                  ]
+              ).' '.Html::a(
+                  '<span class="glyphicon glyphicon-trash"></span>',
+                  ['delete-filtered'],
+                  [
+                      'title' => 'Mass Delete users',
+                      'data-pjax' => '0',
+                      'data-method' => 'POST',
+                      'data'=>[
+                        'method'=>'post',
+                        'params'=> $searchModel->attributes,
+                        'confirm'=>'Are you sure you want to delete the currently filtered users?',
                       ],
                   ]
               ),
