@@ -113,23 +113,5 @@ class PlayerSearch extends Player
 
         return $dataProvider;
     }
-    public function searchBan($params)
-    {
-        $query=Player::find();
-        // add conditions that should always apply here
-
-        $this->load($params);
-
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'created' => $this->created,
-            'active' => $this->active,
-            'academic' => $this->academic,
-            'status' => $this->status,
-            'ts' => $this->ts,
-        ]);
-
-        return $query;
-    }
 
 }
