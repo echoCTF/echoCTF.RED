@@ -88,6 +88,18 @@ thisBegin:BEGIN
 --  END IF;
 END ;;
 
+DROP TRIGGER IF EXISTS `tbu_player` ;;
+CREATE TRIGGER `tbu_player` BEFORE UPDATE ON `player` FOR EACH ROW
+thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
+  IF (NEW.status!=OLD.status AND NEW.status=10) THEN
+    SET NEW.verification_token=NULL;
+  END IF;
+END ;;
+
 DROP TRIGGER IF EXISTS `tau_player` ;;
 CREATE TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
 thisBegin:BEGIN

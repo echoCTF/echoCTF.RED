@@ -53,6 +53,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'activkey',
             'auth_key',
             'verification_token',
+            'password_reset_token',
             'created',
             'ts',
         ],

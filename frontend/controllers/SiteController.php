@@ -159,13 +159,13 @@ class SiteController extends Controller
         {
             if($model->sendEmail())
             {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                Yii::$app->session->setFlash('success', 'Check your email for further instructions. Keep in mind that the token will expire after 24 hours.');
 
                 return $this->goHome();
             }
             else
             {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset password for the provided email address.');
+                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset the password for the provided email address.');
             }
         }
 
