@@ -40,6 +40,8 @@ class PlayerController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                     'ban' => ['POST'],
+                    'ban-filtered' => ['POST'],
+                    'delete-filtered' => ['POST'],
                     'reset-playdata' => ['POST'],
                     'reset-player-progress' => ['POST'],
                     'toggle-academic' => ['POST'],
@@ -345,13 +347,21 @@ class PlayerController extends Controller
     public function actionBanFiltered()
     {
       $searchModel=new PlayerSearch();
-      $query=$searchModel->searchBan(['PlayerSearch'=>Yii::$app->request->post()]);
+      $query=$searchModel->search(['PlayerSearch'=>Yii::$app->request->post()]);
+      $query->pagination=false;
+      if(intval($query->count)===intval(Player::find()->count()))
+      {
+        Yii::$app->session->setFlash('error', 'Not allowed to ban all players. Please use the filters to limit the number of players to be banned.');
+        return $this->redirect(['index']);
+      }
+
       $trans=Yii::$app->db->beginTransaction();
       try
       {
-        $counter=$query->count();
-        foreach($query->all() as $q)
+        $counter=$query->counter;
+        foreach($query->getModels() as $q)
           $q->ban();
+
         $trans->commit();
         Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Users banned');
 
@@ -360,6 +370,35 @@ class PlayerController extends Controller
       {
         $trans->rollBack();
         Yii::$app->session->setFlash('error', 'Failed to ban users');
+      }
+      return $this->redirect(['index']);
+    }
+
+    public function actionDeleteFiltered()
+    {
+      $searchModel=new PlayerSearch();
+      $query=$searchModel->search(['PlayerSearch'=>Yii::$app->request->post()]);
+      $query->pagination=false;
+      if(intval($query->count)===intval(Player::find()->count()))
+      {
+        Yii::$app->session->setFlash('error', 'You have attempted to delete all the records. Use the <b>Reset All player data</b> operation instead.');
+        return $this->redirect(['index']);
+      }
+
+      $trans=Yii::$app->db->beginTransaction();
+      try
+      {
+        $counter=$query->count;
+        foreach($query->getModels() as $q)
+          $q->delete();
+        $trans->commit();
+        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Users deleted');
+
+      }
+      catch(\Exception $e)
+      {
+        $trans->rollBack();
+        Yii::$app->session->setFlash('error', 'Failed to delete users');
       }
       return $this->redirect(['index']);
     }
