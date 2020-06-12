@@ -18,10 +18,11 @@ BEGIN
  DELETE FROM `notification` WHERE `archived`=1 AND `updated_at` < NOW() - INTERVAL 7 DAY;
 END //
 
-DROP EVENT IF EXISTS `delete_old_inactive_users` //
-CREATE EVENT `delete_old_inactive_users` ON SCHEDULE EVERY 1 DAY STARTS '2020-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO
+DROP EVENT IF EXISTS `player_maintenance` //
+CREATE EVENT `player_maintenance` ON SCHEDULE EVERY 1 DAY STARTS '2020-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO
 BEGIN
  DELETE FROM `player` WHERE `created` < NOW() - INTERVAL 10 DAY AND `status` IN (0,9);
+ UPDATE `player` SET `password_reset_token`=NULL WHERE `status`=10 AND `password_reset_token` IS NOT NULL AND FROM_UNIXTIME(SUBSTR(`password_reset_token`,-10)) <= NOW() - INTERVAL 1 DAY;
 END //
 
 --
