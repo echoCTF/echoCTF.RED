@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][]=$this->title;
             [
               'attribute'=>'avatar',
               'format'=>'html',
-              'value'=>function($data) { return Html::img('http://localhost:8082/images/avatars/' . $data['avatar'],['width' => '50px']);}
+              'value'=>function($data) { return Html::img('https://'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data['avatar'],['width' => '50px']);}
             ],
             'approved_avatar:boolean',
             [
