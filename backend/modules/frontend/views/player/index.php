@@ -32,6 +32,11 @@ $this->params['breadcrumbs'][]=$this->title;
               'attribute'=>'id',
               'headerOptions' => ['style' => 'width:4em'],
             ],
+            [
+              'attribute'=>'avatar',
+              'format'=>'html',
+              'value'=>function($data) { return Html::img('https://'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar,['width' => '50px']);}
+            ],
 
             'username',
             'email:email',
