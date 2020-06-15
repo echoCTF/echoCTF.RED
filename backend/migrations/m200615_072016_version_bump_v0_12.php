@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use yii\db\Expression;
 
 /**
  * Class m200615_072016_version_bump_v0_12
