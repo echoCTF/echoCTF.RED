@@ -13,6 +13,7 @@ use yii\helpers\Console;
 use yii\console\Controller;
 use app\modules\settings\models\Sysconfig;
 use app\modules\frontend\models\Player;
+use app\modules\frontend\models\Profile;
 use app\modules\frontend\models\Team;
 use app\modules\frontend\models\TeamPlayer;
 use app\modules\frontend\models\PlayerIp;
@@ -264,6 +265,24 @@ class PlayerController extends Controller {
       print $e->getMessage();
       $trans->rollback();
     }
+  }
+
+  /**
+   * List number of pending avatars.
+   * @param boolean $full full listing of pending avatar profile ids and profile owner
+   */
+  public function actionPendingAvatars($full=false)
+  {
+    $pendingProfiles=Profile::find()->where(['approved_avatar'=>false]);
+    if($full!==false)
+    {
+      foreach($pendingProfiles->all() as $p)
+      {
+        echo $p->id," ",$p->owner->username,"\n";
+      }
+    }
+    else if($pendingProfiles->count()>0)
+      echo $pendingProfiles->count()," pending profile avatar",$pendingProfiles->count()>1 ? 's': '',"\n";
   }
 
   public function p($message, array $params=[])
