@@ -24,6 +24,7 @@ use app\modules\frontend\models\Player;
     <?= $form->field($model, 'country')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'avatar')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'approved_avatar')->checkbox() ?>
 
     <?= $form->field($model, 'twitter')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'github')->textInput(['maxlength' => true]) ?>
