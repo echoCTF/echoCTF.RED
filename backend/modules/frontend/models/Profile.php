@@ -53,7 +53,7 @@ class Profile extends \yii\db\ActiveRecord
         return [
             [['player_id'], 'required'],
 //            [['terms_and_conditions','mail_optin','gdpr'],'in', 'range' => ['public', 'private', 'ingame']],
-            [['terms_and_conditions', 'mail_optin', 'gdpr'], 'boolean', 'trueValue' => true, 'falseValue' => false],
+            [['terms_and_conditions', 'mail_optin', 'gdpr','approved_avatar'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
             [['visibility'], 'default', 'value' =>  'private'],
             [['id'], 'default', 'value' =>  new Expression('round(rand()*10000000)')],
