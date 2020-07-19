@@ -40,6 +40,7 @@
     "url": "https://github.com/creativetimofficial/material-dashboard/issues"
   },
   "devDependencies": {
+    "lodash": ">=4.17.19",
     "gulp": "^4.0.0",
     "gulp-autoprefixer": "^5.0.0",
     "gulp-clean": "^0.4.0",
