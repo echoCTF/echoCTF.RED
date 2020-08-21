@@ -35,6 +35,7 @@ class SignupForm extends Model
             ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This username has already been taken.'],
             ['username', 'string', 'min' => 5, 'max' => 32],
             [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'administrator', 'echoctf', 'root', 'support']],
+            [['username'], 'match', 'not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>'Invalid characters in username.'],
 
             ['email', 'trim'],
             ['email', 'required'],
@@ -66,7 +67,7 @@ class SignupForm extends Model
     {
         if(!$this->validate())
         {
-            return null;
+            return false;
         }
 
         $player=new Player();
@@ -88,6 +89,10 @@ class SignupForm extends Model
           $profile->gdpr=true;
           $profile->terms_and_conditions=true;
           $profile->save();
+        }
+        else
+        {
+          return false;
         }
         return $this->sendEmail($player);
 
