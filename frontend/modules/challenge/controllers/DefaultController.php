@@ -62,6 +62,10 @@ class DefaultController extends Controller
     {
 //      $model=$this->findModel($id);
       $model=Challenge::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
+      if($model===null)
+      {
+          throw new NotFoundHttpException('The requested challenge could not be found.');
+      }
       $query=Question::find()->orderBy(['weight'=>SORT_ASC, 'id'=>SORT_ASC]);
 
       $dataProvider=new ActiveDataProvider([
