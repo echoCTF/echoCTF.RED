@@ -434,3 +434,11 @@ select:-webkit-autofill:focus,
 .card-stats .card-header .card-category:not([class*=text-]) {
     color: #333;
 }
+
+.target-card > div > div.card-header.card-header-icon.card-header-warning > h4 {
+  color: black;
+  font-weight: 500;
+  background-color: #94c11f!important;
+  padding-right: 0.1em;
+  border-radius: 4px;
+}

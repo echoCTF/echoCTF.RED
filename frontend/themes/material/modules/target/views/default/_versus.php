@@ -29,7 +29,7 @@ if($target->progress == 100)
 }
 ?>
 <div class="row">
-      <div class="col-lg-4 col-md-6 col-sm-6">
+      <div class="col-lg-4 col-md-6 col-sm-6 target-card">
 <?php Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
