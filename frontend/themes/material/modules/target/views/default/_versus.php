@@ -127,7 +127,15 @@ if($target->progress == 100)
               $headshots[]=$hs->player->profile->link;
           }
           if(!empty($headshots))
-            echo "<code>", implode(", ", $headshots), "</code>";
+          {
+            echo "<code>",implode(", ", array_slice($headshots, 0,19)),"</code>";
+            if(count($headshots)>19){
+              echo "<details class=\"headshotters\">";
+              echo "<summary data-open=\"Hide more\" data-close=\"Show more\"></summary>";
+              echo "<code>",implode(", ", array_slice($headshots, 19)),"</code>";
+              echo "</details>";
+            }
+          }
           else
             echo '<code>none yet...</code>';?>
         </div>
