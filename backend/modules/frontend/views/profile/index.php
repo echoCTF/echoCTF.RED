@@ -51,7 +51,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'approved_avatar:boolean',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{view} {update} {delete} {approve_avatar}',
+              'template' => '{view} {update} {delete} {approve_avatar} {player-view}',
               'buttons' => [
                   'approve_avatar' => function($url, $model) {
                     if(!$model->approved_avatar)
@@ -63,6 +63,17 @@ $this->params['breadcrumbs'][]=$this->title;
                           'data-pjax' => '0',
                           'data-method' => 'POST',
                           'data'=>['confirm'=>"Are you sure you want to approve the user avatar?"]
+                        ]
+                    );
+                  },
+                  'player-view' => function($url, $model) {
+                    $url =  \yii\helpers\Url::to(['player/view', 'id' => $model->player_id]);
+                    return Html::a(
+                        '<span class="glyphicon glyphicon-user"></span>',
+                        $url,
+                        [
+                          'title' => 'View player',
+                          'data-pjax' => '0',
                         ]
                     );
                   },
