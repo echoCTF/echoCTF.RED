@@ -28,15 +28,21 @@ $this->params['breadcrumbs'][]=$this->title;
             'id',
             'question_id',
             [
+              'attribute' => 'challenge_id',
+              'label'=>'Challenge ID',
+              'value'=>function($model) {return $model->question->challenge_id;},
+            ],
+            [
                 'attribute' => 'question',
                 'label'=>'Question',
-                'value'=> function($model) {return sprintf("id:%d %s", $model->question_id, $model->question->name);},
+                'value'=> function($model) {return sprintf("%s", $model->question->name);},
+                'headerOptions' => ['style' => 'width:20vw'],
             ],
             'player_id',
             [
                 'attribute' => 'player',
                 'label'=>'Player',
-                'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
+                'value'=> function($model) {return sprintf("%s", Html::encode($model->player->username));},
             ],
             'points',
             'ts',
