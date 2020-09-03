@@ -21,7 +21,7 @@ class StreamSearch extends Stream
     {
         return [
             [['id', 'player_id', 'model_id', 'points'], 'integer'],
-            [['model', 'title', 'message', 'pubtitle', 'pubmessage', 'ts', 'player'], 'safe'],
+            [['player','player_id','model', 'title', 'message', 'pubtitle', 'pubmessage', 'ts', 'player'], 'safe'],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
@@ -75,7 +75,6 @@ class StreamSearch extends Stream
             ->andFilterWhere(['like', 'stream.message', $this->message])
             ->andFilterWhere(['like', 'stream.pubtitle', $this->pubtitle])
             ->andFilterWhere(['like', 'stream.pubmessage', $this->pubmessage]);
-        $query->andFilterWhere(['like', 'player.id', $this->player]);
         $query->orFilterWhere(['like', 'player.username', $this->player]);
 
         $dataProvider->setSort([
