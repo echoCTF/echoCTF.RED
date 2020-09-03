@@ -130,8 +130,8 @@ if($target->progress == 100)
           {
             echo "<code>",implode(", ", array_slice($headshots, 0,19)),"</code>";
             if(count($headshots)>19){
-              echo "<details>";
-              echo "<summary>see more</summary>";
+              echo "<details class=\"headshotters\">";
+              echo "<summary data-open=\"Hide more\" data-close=\"Show more\"></summary>";
               echo "<code>",implode(", ", array_slice($headshots, 19)),"</code>";
               echo "</details>";
             }

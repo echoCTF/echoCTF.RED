@@ -442,3 +442,22 @@ select:-webkit-autofill:focus,
   padding-right: 0.1em;
   border-radius: 4px;
 }
+
+
+details.headshotters summary::after {
+  content: attr(data-open);
+  opacity: 0;
+  font-size: 5px;
+}
+
+details.headshotters[open] summary::after {
+  content: attr(data-open);
+  opacity: 1;
+  font-size: 14px;
+}
+
+details.headshotters:not([open]) summary::after {
+  content: attr(data-close);
+  opacity: 1;
+  font-size: 14px;
+}
