@@ -14,7 +14,7 @@ use app\modules\frontend\models\Player;
 
     <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->where(['active' => 1])->all(), 'id', 'username'), ['prompt'=>'All', 'value'=>'0'])->Label('Player')->hint('Choose the Player to create score entry')?>
+    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->where(['active' => 1])->orderBy('username')->all(), 'id', function($model) { return Html::encode($model->username);},function($model) { return ucfirst(mb_substr($model->username,0,1));}), ['prompt'=>'All', 'value'=>'0'])->Label('Player')->hint('Choose the Player to create score entry')?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
