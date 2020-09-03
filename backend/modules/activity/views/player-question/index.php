@@ -35,7 +35,8 @@ $this->params['breadcrumbs'][]=$this->title;
             [
                 'attribute' => 'question',
                 'label'=>'Question',
-                'value'=> function($model) {return sprintf("%s", Html::encode($model->question->name));},
+                'value'=> function($model) {return sprintf("%s", $model->question->name);},
+                'headerOptions' => ['style' => 'width:20vw'],
             ],
             'player_id',
             [
