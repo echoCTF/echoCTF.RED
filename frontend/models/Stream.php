@@ -32,7 +32,7 @@ class Stream extends \yii\db\ActiveRecord
 {
   const MODEL_ICONS=[
     'headshot'=>'<i class="fas fa-skull" style="font-size: 1.5em;"></i>',
-    'challenge_solve'=>'<i class="fas fa-tasks" style="font-size: 1.5em;"></i>',
+    'challenge'=>'<i class="fas fa-tasks" style="font-size: 1.5em;"></i>',
     'treasure'=>'<i class="fas fa-flag" style="font-size: 1.5em;"></i>',
     'finding'=>'<i class="fas fa-fingerprint" style="font-size: 1.5em;"></i>',
     'question'=>'<i class="fas fa-list-ul" style="font-size: 1.5em;"></i>',
