@@ -12,7 +12,7 @@ $this->title="Player vs Target Progress";
 
 <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->orderBy(['ip'=>SORT_ASC])->all(), 'id', function($model) { return $model->name.' / '.$model->ipoctet;},function($model) { return $model->server;}), ['prompt'=>'Select Target'])->hint('The target for the headshot.') ?>
 
-<?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->orderBy(['username'=>SORT_ASC])->all(), 'id', 'username',function($model) { return substr($model->username,0,1); }), ['prompt'=>'Select player'])->Label('Player')->hint('The player id that the headshot will be given.') ?>
+<?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->where(['active'=>1])->orderBy(['username'=>SORT_ASC])->all(), 'id', 'username',function($model) { return ucfirst(mb_substr($model->username,0,1)); }), ['prompt'=>'Select player'])->Label('Player')->hint('The player id that the headshot will be given.') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
