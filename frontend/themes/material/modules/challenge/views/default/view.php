@@ -38,15 +38,16 @@ $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->id], 'https');
 <?php $form=ActiveForm::begin([
     'enableClientValidation' => false,
     'id' => 'answer-form',
-    'options'=>['autocomplete'=>'randomstrings'],
+    'options'=>['autocomplete'=>'off'],
     'layout' => 'horizontal',
     'fieldConfig' => [
-        'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-        'labelOptions' => ['class' => 'col-lg-1 control-label'],
+        'template' => "<div class=\"row\"><div class=\"control-label col-lg-1\">{label}</div>\n<div class=\"col-lg-4\">{input}</div>\n<div class=\"col-lg-8\">{error}</div></div>",
+        //'labelOptions' => ['class' => 'control-label col-lg-2'],
     ],
     ]);?>
 <?php if(!$model->completed):?>
-    <?=$form->field($answer, 'answer')->textInput(['autofocus' => true, 'autocomplete'=>'randomstrings']) ?>
+    <hr/>
+    <?=$form->field($answer, 'answer')->textInput(['autofocus' => true, 'autocomplete'=>'off']) ?>
     <?=Html::submitButton('Submit', ['class' => 'btn btn-primary', 'name' => 'answer-button'])?>
 <?php endif;?>
     <?php ActiveForm::end();?>
