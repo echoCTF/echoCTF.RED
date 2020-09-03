@@ -32,7 +32,7 @@ class Stream extends \yii\db\ActiveRecord
 {
   const MODEL_ICONS=[
     'headshot'=>'<i class="fas fa-skull" style="font-size: 1.5em;"></i>',
-    'challenge_solve'=>'<i class="fas fa-tasks" style="font-size: 1.5em;"></i>',
+    'challenge'=>'<i class="fas fa-tasks" style="font-size: 1.5em;"></i>',
     'treasure'=>'<i class="fas fa-flag" style="font-size: 1.5em;"></i>',
     'finding'=>'<i class="fas fa-fingerprint" style="font-size: 1.5em;"></i>',
     'question'=>'<i class="fas fa-list-ul" style="font-size: 1.5em;"></i>',
@@ -145,6 +145,9 @@ class Stream extends \yii\db\ActiveRecord
       case 'headshot':
         $message=$this->headshotMessage;
         break;
+      case 'challenge':
+        $message=$this->challengeMessage;
+        break;
 //      case 'team_player':
 //        $message=sprintf("%s Team <b>%s</b> welcomes their newest member <b>%s</b> ", $this->icon,$this->player->teamMembership ? $this->player->teamMembership->name: "N/A", $this->player->profile->link);
 //        break;
@@ -178,5 +181,14 @@ class Stream extends \yii\db\ActiveRecord
       return sprintf("%s managed to headshot [<code>%s</code>]%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->fqdn, ['/target/default/index', 'id'=>$this->model_id]), $this->suffix);
 
     return sprintf("%s managed to headshot [<code>%s</code>] in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->fqdn, ['/target/default/index', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
+  }
+
+  public function getChallengeMessage()
+  {
+    $csolver=\app\modules\challenge\models\ChallengeSolver::findOne(['challenge_id'=>$this->model_id, 'player_id'=>$this->player_id]);
+    if($csolver->timer===0)
+      return sprintf("%s managed to complete the challenge [<code>%s</code>]%s", $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), $this->suffix);
+
+    return sprintf("%s managed to complete the challenge [<code>%s</code>] in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($csolver->timer),number_format($csolver->timer / 60), $this->suffix);
   }
 }
