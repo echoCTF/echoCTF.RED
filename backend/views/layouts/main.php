@@ -52,6 +52,7 @@ AppAsset::register($this);
                 ['label' => 'Player Badges', 'url' => ['/activity/player-badge'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Player Treasures', 'url' => ['/activity/player-treasure'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Player Findings', 'url' => ['/activity/player-finding'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
+                ['label' => 'Challenge Solvers', 'url' => ['/activity/challenge-solver'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Player Question Answers', 'url' => ['/activity/player-question'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Player Hints', 'url' => ['/activity/player-hint'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
 //                ['label' => 'Player Tutorial Task', 'url' => ['/activity/player-tutorial-task'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,],
