@@ -154,7 +154,7 @@ class Stream extends \yii\db\ActiveRecord
         $message=sprintf("%s Reported <b>%s</b>%s", $this->prefix, $this->Title($pub), $this->suffix);
         break;
       case 'question':
-        $message=sprintf("%s Answered a question from <b>%s</b>%s", $this->prefix, \app\modules\challenge\models\Question::findOne($this->model_id)->challenge->name, $this->suffix);
+        $message=sprintf("%s Answered the question of <b>%s</b> [%s] %s", $this->prefix, \app\modules\challenge\models\Question::findOne($this->model_id)->challenge->name,\app\modules\challenge\models\Question::findOne($this->model_id)->name, $this->suffix);
         break;
       default:
         $message=sprintf("%s %s%s", $this->prefix, $this->Title($pub), $this->suffix);
