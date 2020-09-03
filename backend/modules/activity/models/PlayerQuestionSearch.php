@@ -13,15 +13,16 @@ class PlayerQuestionSearch extends PlayerQuestion
 {
     public $player;
     public $question;
+    public $challenge_id;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['id','challenge_id'], 'integer'],
             [['points'], 'number'],
-            [['ts', 'player', 'question', 'question_id', 'player_id'], 'safe'],
+            [['ts', 'player', 'question', 'question_id', 'player_id','challenge_id'], 'safe'],
         ];
     }
 
@@ -43,7 +44,7 @@ class PlayerQuestionSearch extends PlayerQuestion
      */
     public function search($params)
     {
-        $query=PlayerQuestion::find()->joinWith(['question', 'player']);
+        $query=PlayerQuestion::find()->joinWith(['question', 'player','question.challenge']);
 
         // add conditions that should always apply here
 
@@ -70,17 +71,22 @@ class PlayerQuestionSearch extends PlayerQuestion
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->player]);
         $query->andFilterWhere(['like', 'question.name', $this->question]);
+        $query->andFilterWhere(['question.challenge_id'=> $this->challenge_id]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
                   'question' => [
-                      'asc' => ['question_id' => SORT_ASC],
-                      'desc' => ['question_id' => SORT_DESC],
+                      'asc' => ['question.name' => SORT_ASC],
+                      'desc' => ['question.name' => SORT_DESC],
+                  ],
+                  'challenge_id' => [
+                      'asc' => ['question.challenge_id' => SORT_ASC],
+                      'desc' => ['question.challenge_id' => SORT_DESC],
                   ],
                   'player' => [
-                      'asc' => ['player_id' => SORT_ASC],
-                      'desc' => ['player_id' => SORT_DESC],
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
                   ],
                 ]
             ),
