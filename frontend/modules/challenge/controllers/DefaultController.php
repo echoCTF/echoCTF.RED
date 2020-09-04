@@ -68,7 +68,7 @@ class DefaultController extends Controller
           throw new NotFoundHttpException('The requested challenge could not be found.');
       }
       $query=Question::find()->orderBy(['weight'=>SORT_ASC, 'id'=>SORT_ASC]);
-      $solvers=ChallengeSolver::find()->where(['challenge_id'=>$model->id])->orderBy(['created_at'=>SORT_DESC, 'player_id'=>SORT_ASC]);
+      $solvers=ChallengeSolver::find()->where(['challenge_id'=>$model->id])->orderBy(['created_at'=>SORT_ASC, 'player_id'=>SORT_ASC]);
       $dataProvider=new ActiveDataProvider([
           'query' => $query,
       ]);
