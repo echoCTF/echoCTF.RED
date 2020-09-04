@@ -18,8 +18,8 @@ $this->_description="The echoCTF dashboard page";
                 'type'=>'card-stats',
                 'icon'=>'<i class="fa fa-flag"></i>',
                 'color'=>'primary',
-                'title'=>sprintf('%d/%d', $treasureStats->claimed, $treasureStats->total),
-                'subtitle'=>'Claimed/Total Flags',
+                'title'=>sprintf('%d / %d', $treasureStats->claimed, $treasureStats->total),
+                'subtitle'=>'Claimed / Total Flags',
                 'footer'=>'<div class="stats">
                         <i class="material-icons flag-claim">flag</i>'.number_format($treasureStats->claims).' total claims
                       </div>',
