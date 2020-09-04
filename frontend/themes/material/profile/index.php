@@ -40,8 +40,8 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
       Pjax::end();
       ?>
     </div>
+    <?php if($game->badges !== null && $game->badges->received_by($profile->player_id)->count() > 0):?><h3>Badges</h3>
     </div>
-    <?php if($game->badges !== null && $game->badges->received_by($profile->player_id)->count() > 0):?><h3>Player badges</h3>
     <div class="row game-badges">
       <?php foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
       <div class="col col-sm-1 col-md-4 col-lg-3">
@@ -59,7 +59,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     </div>
     <?php endif;?>
 
-    <?php if($profile->headshotsCount>0):?><h3>Headshots badges</h3>
+    <?php if($profile->headshotsCount>0):?><h3>Headshots <small>(ordered by date)</small></h3>
     <div class="row">
       <?php foreach($profile->owner->headshots as $headshot):?>
       <div class="col col-sm-1 col-md-5 col-lg-3">
