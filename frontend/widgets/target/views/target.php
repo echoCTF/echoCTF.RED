@@ -162,7 +162,7 @@ echo GridView::widget([
         'class'=> 'app\actions\ActionColumn',
         //'visible'=>!$personal,
         'headerOptions' => ["style"=>'width: 4rem'],
-        'template'=>'{spin} {view} {tweet}',
+        'template'=>'{view} {tweet}',
         'buttons' => [
           'spin' => function($url, $model) {
               return Html::a(
