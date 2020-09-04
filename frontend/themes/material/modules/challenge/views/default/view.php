@@ -43,7 +43,7 @@ $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->id], 'https');
     'options'=>['autocomplete'=>'off'],
     'layout' => 'horizontal',
     'fieldConfig' => [
-        'template' => "<div class=\"row\"><div class=\"control-label col-lg-1\">{label}</div>\n<div class=\"col-lg-4\">{input}</div>\n<div class=\"col-lg-8\">{error}</div></div>",
+        'template' => "<div class=\"row\"><div class=\"control-label col-lg-2\">{label}</div>\n<div class=\"col-lg-6\">{input}</div>\n<div class=\"col-lg-8\">{error}</div></div>",
         //'labelOptions' => ['class' => 'control-label col-lg-2'],
     ],
     ]);?>
