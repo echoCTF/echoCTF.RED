@@ -37,7 +37,18 @@ if($target->progress == 100)
             'color'=>'warning',
             'subtitle'=>sprintf("%s, %s%s", ucfirst($target->difficultyText), boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===0 ? '':', Timed'),
             'title'=>sprintf('%s / %s', $target->name, long2ip($target->ip)),
-            'footer'=>sprintf('<div class="stats">%s</div>', $target->purpose),
+            'footer'=>sprintf('<div class="stats">%s</div>%s', $target->purpose,$target->spinable ? Html::a(
+              '<i class="fas fa-power-off" style="font-size: 2em; float:left"></i>',
+                Url::to(['/target/default/spin', 'id'=>$target->id]),
+                [
+                  'style'=>"font-size: 1.0em;",
+                  'title' => 'Request target Restart',
+                  'rel'=>"tooltip",
+                  'data-pjax' => '0',
+                  'data-method' => 'POST',
+                  'aria-label'=>'Request target Restart',
+                ]
+            ):""),
         ]);
         echo "<p class='text-danger'><i class='fas fa-flag'></i> ", $target->total_treasures, ": Flag".($target->total_treasures > 1 ? 's' : '')."<br/>";
         echo  "<small>(<code class='text-danger'>";
