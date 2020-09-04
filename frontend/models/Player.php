@@ -159,6 +159,17 @@ class Player extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * Finds player by email
+     *
+     * @param string $email
+     * @return static|null
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
+    }
+
+    /**
      * Finds player by verification email token
      *
      * @param string $token verify email token
