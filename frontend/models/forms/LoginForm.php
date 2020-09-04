@@ -29,7 +29,8 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['username', 'password'], 'required'],
+            [['username'], 'required','message' => 'Please provide your username or email.'],
+            [['password'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
             // password is validated by validatePassword()
@@ -77,6 +78,10 @@ class LoginForm extends Model
     public function getPlayer()
     {
       $this->_player=Player::findByUsername($this->username);
+      if($this->_player === NULL)
+      {
+        $this->_player=Player::findByEmail($this->username);
+      }
       return $this->_player;
     }
 }
