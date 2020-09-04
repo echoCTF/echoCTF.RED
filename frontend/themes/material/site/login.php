@@ -18,7 +18,7 @@ $this->title=Yii::$app->sys->event_name.' Login';
     <div class="row">
         <div class="col-lg-5">
           <?php $form=ActiveForm::begin(['id' => 'login-form']);?>
-          <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
+          <?= $form->field($model, 'username')->textInput(['autofocus' => true])->label("Username or Email") ?>
           <?= $form->field($model, 'password')->passwordInput() ?>
           <?= $form->field($model, 'rememberMe')->checkbox() ?>
 
