@@ -31,9 +31,15 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     <div class="row game-badges">
 
 <?php if($game->badges !== null) foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
-      <div class="col-sm-1" style="font-size: 450%">
-        <?php printf('<abbr title="%s">%s</abbr>', $badge->name, $badge->pubname);?>
-      </div>
+
+  <div class="col-md-2">
+    <div class="iconic-card">
+      <center><?=$badge->pubname?></center>
+      <h3><?=$badge->name?></h3>
+      <p><?=$badge->pubdescription?></p>
+    </div>
+  </div>
+
 <?php endforeach;?>
     </div>
     <div class="row">
