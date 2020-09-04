@@ -28,24 +28,6 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
       </div><!-- // end profile card col-md-4 -->
     </div><!--/row-->
 
-    <?php if($game->badges !== null && $game->badges->received_by($profile->player_id)->count() > 0):?><h3>Badges</h3>
-    <div class="row game-badges">
-      <?php foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
-      <div class="col col-sm-12 col-md-4 col-lg-3">
-        <div class="iconic-card">
-          <center><?=$badge->pubname?></center>
-          <h3><?=$badge->name?></h3>
-          <?php if(!Yii::$app->user->isGuest && $profile->player_id===Yii::$app->user->id):?>
-            <p><?=$badge->description?></p>
-          <?php else:?>
-            <p><?=$badge->pubdescription?></p>
-          <?php endif;?>
-        </div>
-      </div>
-      <?php endforeach;?>
-    </div>
-    <?php endif;?>
-
     <?php if($profile->headshotsCount>0):?><h3>Headshots <small>(ordered by date)</small></h3>
     <div class="row">
       <?php foreach($profile->owner->headshots as $headshot):?>
@@ -72,6 +54,23 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     </div>
     <?php endif;?>
 
+    <?php if($game->badges !== null && $game->badges->received_by($profile->player_id)->count() > 0):?><h3>Badges</h3>
+    <div class="row game-badges">
+      <?php foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
+      <div class="col col-sm-12 col-md-4 col-lg-3">
+        <div class="iconic-card">
+          <center><?=$badge->pubname?></center>
+          <h3><?=$badge->name?></h3>
+          <?php if(!Yii::$app->user->isGuest && $profile->player_id===Yii::$app->user->id):?>
+            <p><?=$badge->description?></p>
+          <?php else:?>
+            <p><?=$badge->pubdescription?></p>
+          <?php endif;?>
+        </div>
+      </div>
+      <?php endforeach;?>
+    </div>
+    <?php endif;?>
 
     <div class="row">
       <div class="col-sm-8"><?php
