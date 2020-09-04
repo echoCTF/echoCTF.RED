@@ -485,10 +485,8 @@ details.headshotters:not([open]) summary::after {
 }
 
 .iconic-card img{
-  position: absolute;
-  top: 20px;
-  right: 15px;
-  max-height: 120px;
+  max-height: 80%;
+  max-width: 20%;
 }
 
 @media(max-width: 990px){

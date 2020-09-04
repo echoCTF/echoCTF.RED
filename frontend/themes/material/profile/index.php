@@ -43,7 +43,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     </div>
     <?php if($game->badges !== null && $game->badges->received_by($profile->player_id)->count() > 0):?><h3>Player badges</h3>
     <div class="row game-badges">
-      <?php if($game->badges !== null) foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
+      <?php foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
       <div class="col col-sm-1 col-md-4 col-lg-3">
         <div class="iconic-card">
           <center><?=$badge->pubname?></center>
@@ -53,6 +53,21 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
           <?php else:?>
             <p><?=$badge->pubdescription?></p>
           <?php endif;?>
+        </div>
+      </div>
+      <?php endforeach;?>
+    </div>
+    <?php endif;?>
+
+    <?php if($profile->headshotsCount>0):?><h3>Headshots badges</h3>
+    <div class="row">
+      <?php foreach($profile->owner->headshots as $headshot):?>
+      <div class="col col-sm-1 col-md-5 col-lg-3">
+        <div class="iconic-card">
+          <img align="right" src="/images/targets/_<?=$headshot->target->name?>-thumbnail.png"/>
+          <p><b style="color:#222222"><?=$headshot->target->name?> / <?=long2ip($headshot->target->ip)?></b></p>
+          <p><b><i class="fas fa-stopwatch text-danger"></i> <?=\Yii::$app->formatter->asDuration($headshot->timer)?></b></p>
+          <p><b><i class="far fa-calendar-alt text-warning"></i> <?=\Yii::$app->formatter->asDate($headshot->created_at,'long')?></b></p>
         </div>
       </div>
       <?php endforeach;?>
