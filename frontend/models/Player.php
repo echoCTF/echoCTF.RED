@@ -298,7 +298,7 @@ class Player extends ActiveRecord implements IdentityInterface
     }
     public function getHeadshots()
     {
-        return $this->hasMany(Headshot::class, ['player_id' => 'id']);
+        return $this->hasMany(Headshot::class, ['player_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
     }
     public function getHeadshotsCount()
     {
