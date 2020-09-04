@@ -1,12 +1,3 @@
-input:-webkit-autofill,
-textarea:-webkit-autofill,
-select:-webkit-autofill {
-  border-bottom: 1px solid lightgray;
-  -webkit-text-fill-color: lightgray;
-  -webkit-box-shadow: 0 0 0px 1000px #222222 inset;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
 html,
 body {
     background: #222222;
@@ -400,19 +391,28 @@ td.td-actions,
         transform: scaleX(1)
     }
 }
-
+input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    border-bottom: 1px solid #94c11f;
+    -webkit-text-fill-color: lightgray;
+    transition: background-color 5000s ease-in-out 0s;
+}
+/*#login-form input:-webkit-autofill:hover,
+#login-form input:-webkit-autofill:focus,
 textarea:-webkit-autofill:hover,
 textarea:-webkit-autofill:focus,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus,
+#login-form select:-webkit-autofill:hover,
+#login-form select:-webkit-autofill:focus,
 .bmd-form-group.is-focused .form-control, .form-control:focus {
   border-bottom: 1px solid #94c11f;
+  font-size: 1em;
   -webkit-text-fill-color: lightgray;
   -webkit-box-shadow: 0 0 0px 1000px #222222 inset;
   transition: background-color 5000s ease-in-out 0s;
-}
+}*/
+
 .has-success [class*=' bmd-label'], .has-success [class^=bmd-label] {
     color: #688816;
 }
