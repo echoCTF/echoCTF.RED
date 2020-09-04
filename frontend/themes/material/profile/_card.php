@@ -29,6 +29,7 @@ use app\modules\game\models\Headshot;
             'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;'],
         ]);?>
     <?php endif;?>
+    <p><?php echo Html::a("Profile Badge image", ['profile/badge', 'id'=>$profile->id]);?></p>
     <ul class="nav flex-column">
   <?php if(intval(Yii::$app->user->id) === intval($profile->player_id) || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
           <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> Download OpenVPN configuration", ['profile/ovpn'], ['class'=>'btn btn-primary'])?></li>
