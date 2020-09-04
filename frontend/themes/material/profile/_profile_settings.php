@@ -15,6 +15,7 @@ $this->_fluid="-fluid";
 <div class="profile-form">
     <?php $form=ActiveForm::begin([
       'id'=>'profile-form',
+
       'options' => ['enctype' => 'multipart/form-data']
       ]);?>
     <div class="row">
@@ -51,16 +52,16 @@ $this->_fluid="-fluid";
     </div>
     <div class="row">
       <div class="col-lg-3">
-        <?=$form->field($model, 'discord')->textInput(['maxlength' => true])->Label('<i class="fab fa-discord"></i> Discord') ?>
+        <?=$form->field($model, 'discord')->textInput(['maxlength' => true,'autocomplete'=>'off'])->Label('<i class="fab fa-discord"></i> Discord')->hint('ex. DiscordUsername#Number') ?>
       </div>
       <div class="col-lg-3">
-		    <?=$form->field($model, 'twitter')->textInput(['maxlength' => true])->Label('<i class="fab fa-twitter"></i> Twitter') ?>
+		    <?=$form->field($model, 'twitter')->textInput(['maxlength' => true,'autocomplete'=>'off'])->Label('<i class="fab fa-twitter"></i> Twitter')->hint('ex. TwitterHandle')?>
       </div>
       <div class="col-lg-3">
-    		<?=$form->field($model, 'github')->textInput(['maxlength' => true])->Label('<i class="fab fa-github"></i> Github') ?>
+    		<?=$form->field($model, 'github')->textInput(['maxlength' => true,'autocomplete'=>'off'])->Label('<i class="fab fa-github"></i> Github')->hint('ex. GithubUsername') ?>
       </div>
       <div class="col-lg-3">
-    		<?=$form->field($model, 'htb')->textInput(['maxlength' => true]) ?>
+    		<?=$form->field($model, 'htb')->textInput(['maxlength' => true,'autocomplete'=>'off'])->hint('ex. HTBProfileID') ?>
       </div>
     </div>
     <div class="row">

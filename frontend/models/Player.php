@@ -298,7 +298,7 @@ class Player extends ActiveRecord implements IdentityInterface
     }
     public function getHeadshots()
     {
-        return $this->hasMany(Headshot::class, ['player_id' => 'id']);
+        return $this->hasMany(Headshot::class, ['player_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
     }
     public function getHeadshotsCount()
     {
@@ -323,6 +323,15 @@ class Player extends ActiveRecord implements IdentityInterface
         return $this->hasMany(PlayerFinding::class, ['player_id' => 'id']);
     }
 
+    public function getChallengeSolvers()
+    {
+        return $this->hasMany(\app\modules\challenge\models\ChallengeSolver::class, ['player_id' => 'id']);
+    }
+
+    public function getChallenges()
+    {
+      return $this->hasMany(\app\modules\challenge\models\Challenge::class, ['id' => 'challenge_id'])->viaTable('challenge_solver', ['player_id' => 'id']);
+    }
     /**
      * @return \yii\db\ActiveQuery
      */
