@@ -4,6 +4,7 @@ namespace app\modules\challenge\controllers;
 
 use Yii;
 use app\modules\challenge\models\Challenge;
+use app\modules\challenge\models\ChallengeSolver;
 use app\modules\challenge\models\Question;
 use app\modules\challenge\models\ChallengeSearch;
 use yii\web\Controller;
@@ -67,11 +68,14 @@ class DefaultController extends Controller
           throw new NotFoundHttpException('The requested challenge could not be found.');
       }
       $query=Question::find()->orderBy(['weight'=>SORT_ASC, 'id'=>SORT_ASC]);
-
+      $solvers=ChallengeSolver::find()->where(['challenge_id'=>$model->id])->orderBy(['created_at'=>SORT_DESC, 'player_id'=>SORT_ASC]);
       $dataProvider=new ActiveDataProvider([
           'query' => $query,
       ]);
       $query->andFilterWhere(['challenge_id'=>$model->id]);
+      $solverProvider=new ActiveDataProvider([
+          'query' => $solvers,
+      ]);
 
       $answer=new AnswerForm();
       if($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id))
@@ -84,6 +88,7 @@ class DefaultController extends Controller
       return $this->render('view', [
           'answer'=>$answer,
           'model' => $model,
+          'solvers' => $solvers,
           'dataProvider' => $dataProvider,
       ]);
     }
