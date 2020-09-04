@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 ?>
 <div class="<?=$htmlOptions['class']?>">
-  <h4><i class="fas fa-tasks"></i> <?=$solvers->count()?> Solvers (older first)</h4>
+  <h4><i class="fas fa-tasks"></i> <?=$solvers->count()>0? $solvers->count()." " : ""?>Solvers (older first)</h4>
   <div class="card-body table-responsive"><?php
     $solves=[];
     foreach($solvers->orderBy(['created_at'=>SORT_ASC, 'player_id'=>SORT_ASC])->all() as $solver)
