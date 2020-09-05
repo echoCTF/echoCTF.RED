@@ -19,7 +19,7 @@ class m200905_190000_create_player_country_rank_table extends Migration
             'id' => $this->integer()->notNull()->defaultValue(0),
             'player_id' => $this->integer()->unsigned()->notNull(),
             'country' => $this->string(3)->notNull(),
-        ]);
+        ],'ENGINE=MEMORY');
         $this->addPrimaryKey('{{%PK-player_country_rank}}', '{{%player_country_rank}}', ['id', 'country']);
 
         // creates index for column `player_id`
