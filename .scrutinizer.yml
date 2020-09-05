@@ -67,69 +67,6 @@ coding_style:
         spaces:
             general:
                 linefeed_character: newline
-            before_parentheses:
-                function_declaration: undefined
-                closure_definition: undefined
-                function_call: undefined
-                if: undefined
-                for: undefined
-                while: undefined
-                switch: undefined
-                catch: undefined
-                array_initializer: undefined
-            around_operators:
-                assignment: undefined
-                logical: undefined
-                equality: undefined
-                relational: undefined
-                bitwise: undefined
-                additive: undefined
-                multiplicative: undefined
-                shift: undefined
-                unary_additive: undefined
-                concatenation: undefined
-                negation: undefined
-            before_left_brace:
-                class: undefined
-                function: undefined
-                if: undefined
-                else: undefined
-                for: undefined
-                while: undefined
-                do: undefined
-                switch: undefined
-                try: undefined
-                catch: undefined
-                finally: undefined
-            before_keywords:
-                else: undefined
-                while: undefined
-                catch: undefined
-                finally: undefined
-            within:
-                brackets: undefined
-                array_initializer: undefined
-                grouping: undefined
-                function_call: undefined
-                function_declaration: undefined
-                if: undefined
-                for: undefined
-                while: undefined
-                switch: undefined
-                catch: undefined
-                type_cast: undefined
-            ternary_operator:
-                before_condition: undefined
-                after_condition: undefined
-                before_alternative: undefined
-                after_alternative: undefined
-                in_short_version: undefined
-            other:
-                before_comma: undefined
-                after_comma: undefined
-                before_semicolon: undefined
-                after_semicolon: undefined
-                after_type_cast: undefined
         braces:
             classes_functions:
                 class: undefined
