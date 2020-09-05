@@ -88,7 +88,7 @@ class TargetWidget extends Widget
       if($this->personal)
       {
         $targetProgressProvider=new ActiveDataProvider([
-            'query' => $tmod->player_progress($id)->having('player_treasures>0 or player_findings>0'),
+            'query' => $tmod->player_progress($id)->having('(player_treasures>0 or player_findings>0) AND progress<100'),
             'pagination' => [
                 'pageSizeParam'=>'target-perpage',
                 'pageParam'=>'target-page',
