@@ -25,9 +25,9 @@ RUN set -ex \
     cd /var/www/echoCTF.RED/${RED_APP}; \
     git config --global url."https://".insteadOf "git://" ; \
     [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
-    composer config --global github-protocols https; \
-    composer install --no-dev --prefer-dist --no-progress --no-suggest; \
-    composer clearcache; \
+    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config --global github-protocols https; \
+    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer install --no-dev --prefer-dist --no-progress --no-suggest; \
+    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer clearcache; \
     chmod +x /entrypoint.sh; useradd  _openvpn; \
     touch /var/log/openvpn/openvpn.log; \
     rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*

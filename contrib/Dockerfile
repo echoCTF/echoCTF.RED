@@ -48,9 +48,9 @@ RUN set -ex; \
     chown www-data backend/web/assets frontend/web/assets; \
     chown www-data backend/runtime frontend/runtime; \
     [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
-    cd backend; composer install --no-dev --prefer-dist --no-progress --no-suggest; \
-    cd ../frontend; composer install --no-dev --prefer-dist --no-progress --no-suggest; \
-    cd ..; \
+    [ -z "${GITHUB_OAUTH_TOKEN}" ] || cd backend; composer install --no-dev --prefer-dist --no-progress --no-suggest; \
+    [ -z "${GITHUB_OAUTH_TOKEN}" ] || cd ../frontend; composer install --no-dev --prefer-dist --no-progress --no-suggest; \
+    [ -z "${GITHUB_OAUTH_TOKEN}" ] || cd ..; \
     ./backend/yii migrate --interactive=0; \
     ./backend/yii init_data --interactive=0; \
     a2enmod rewrite; \
