@@ -3,7 +3,7 @@ LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED all in one"
 ARG VPNUSER=vpnuser
 ARG VPNUSERPASS=vpnuserpass
-ARG GITHUB_OAUTH_TOKEN=abcdef0123456789
+ARG GITHUB_OAUTH_TOKEN
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
