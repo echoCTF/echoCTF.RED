@@ -24,15 +24,14 @@ use app\modules\game\models\Headshot;
             'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;'],
         ]);?>
     <?php else: ?>
-      <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id], 'https'), ['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
+      <?php echo Html::a(Url::to(['profile/index', ], 'https'), ['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
             'message'=>sprintf('Checkout the profile of %s at echoCTF.RED', $profile->twitterHandle),
             'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;'],
         ]);?>
     <?php endif;?>
-    <p><?php echo Html::a("Profile Badge image", ['profile/badge', 'id'=>$profile->id]);?></p>
     <ul class="nav flex-column">
   <?php if(intval(Yii::$app->user->id) === intval($profile->player_id) || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
-          <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> Download OpenVPN configuration", ['profile/ovpn'], ['class'=>'btn btn-primary'])?></li>
+          <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> OpenVPN", ['profile/ovpn'], ['class'=>'btn btn-primary','alt'=>'Download OpenVPN Configuration'])?> <?=Html::a("<i class='fas fa-id-badge'></i> Badge", ['profile/badge','id'=>$profile->id], ['class'=>'btn btn-success'])?></li>
           <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($profile->spins->counter)?></abbr> / <abbr title="Total Spins"><?=intval($profile->spins->total)?></abbr></span></li>
   <?php endif;?>
@@ -47,19 +46,12 @@ use app\modules\game\models\Headshot;
       </ul>
       <hr/>
       <ul class="nav flex-column">
-            <li class="nav-header text-left"><h6>Details</h6></li>
-            <li class="nav-item text-left"><strong><i class="fa fa-signal"></i> Current Rank</strong> <span class="pull-right"><?php if($profile->rank) echo $profile->rank->ordinalPlace?></span></li>
-            <li class="nav-item text-left"><strong><i class="fas fa-user"></i> Level <?=intval($profile->experience->id)?></strong> <span class="pull-right"><?=$profile->experience->name?></span></li>
-            <li class="nav-item text-left"><strong><i class="fa fa-list"></i> Points</strong> <span class="pull-right"><?=number_format($profile->owner->playerScore->points)?></span></li>
-            <li class="nav-item text-left"><strong><i class="fas fa-skull-crossbones"></i> Headshosts</strong> <span class="pull-right"><?=$profile->headshotsCount?></span></li>
-            <li class="nav-item text-left"><strong><i class="fas fa-tasks"></i> Challenges</strong> <span class="pull-right"><?=count($profile->owner->challengeSolvers)?></span></li>
-            <li class="nav-item text-left"><strong><i class="fas fa-stopwatch"></i> Avg. time for headshot</strong> <span class="pull-right"><?php
-              $hs=Headshot::find()->player_avg_time($profile->player_id)->one();
-              if($hs && $hs->average > 0)
-                echo number_format($hs->average / 60), " minutes";
-            ?></span></li>
-            <li class="nav-item text-left"><strong><i class="fas fa-flag"></i> Flags</strong> <span class="pull-right"><?php echo $profile->totalTreasures;?></span></li>
-            <li class="nav-item text-left"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo $profile->totalFindings;?></span></li>
-        </ul>
+        <li class="nav-header text-left"><h6>Details</h6></li>
+        <li class="nav-item text-left"><strong><i class="fa fa-signal"></i> Current Rank</strong> <span class="pull-right"><?php if($profile->rank) echo $profile->rank->ordinalPlace?></span></li>
+        <li class="nav-item text-left"><strong><i class="fa fa-list"></i> Points</strong> <span class="pull-right"><?=number_format($profile->owner->playerScore->points)?></span></li>
+        <li class="nav-item text-left"><strong><i class="fas fa-flag"></i> Flags</strong> <span class="pull-right"><?php echo $profile->totalTreasures;?></span></li>
+        <li class="nav-item text-left"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo $profile->totalFindings;?></span></li>
+        <li class="nav-item text-left"><strong><i class="fas fa-tasks"></i> Challenges</strong> <span class="pull-right"><?=count($profile->owner->challengeSolvers)?></span></li>
+      </ul>
   </div>
 </div><!-- // end user profile card -->

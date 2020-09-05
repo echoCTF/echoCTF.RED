@@ -20,7 +20,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     <div class="row">
       <div class="col">
         <?php \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-        <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true]);?>
+        <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Pending progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
       </div>
       <div class="col-md-4">
@@ -28,7 +28,11 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
       </div><!-- // end profile card col-md-4 -->
     </div>
 
-    <?php if($profile->headshotsCount>0):?><h3>Headshots <small>(ordered by date)</small></h3>
+    <?php if($profile->headshotsCount>0):?><h3><code><?=$profile->headshotsCount?></code> Headshots / <small>Average time: <?php
+      $hs=\app\modules\game\models\Headshot::find()->player_avg_time($profile->player_id)->one();
+      if($hs && $hs->average > 0)
+        echo number_format($hs->average / 60), " minutes";
+    ?> <sub>(ordered by date)</small></sub></h3>
     <div class="row">
       <?php foreach($profile->owner->headshots as $headshot):?>
       <div class="col col-sm-1 col-md-5 col-lg-3">
