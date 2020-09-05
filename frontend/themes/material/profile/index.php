@@ -18,7 +18,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
 <div class="profile-index">
   <div class="body-content">
     <div class="row">
-      <div class="col-md-8">
+      <div class="col">
         <?php \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
         <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
@@ -26,7 +26,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
       <div class="col-md-4">
         <?=$this->render('_card', ['profile'=>$profile]);?>
       </div><!-- // end profile card col-md-4 -->
-    </div><!--/row-->
+    </div>
 
     <?php if($profile->headshotsCount>0):?><h3>Headshots <small>(ordered by date)</small></h3>
     <div class="row">
@@ -73,18 +73,28 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     <?php endif;?>
 
     <div class="row">
-      <div class="col-sm-8"><?php
-      \yii\widgets\Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
-      echo Stream::widget(['divID'=>'stream', 'dataProvider' => null, 'player_id'=>$profile->player_id, 'pagerID'=>'stream-pager','title'=>'User History','category'=>'User history on the platform']);
-      \yii\widgets\Pjax::end();
-      ?></div>
-      <div class="col-sm-4">
+      <div class="col">
         <?php
-        Pjax::begin(['id'=>'leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-        echo Leaderboard::widget(['divID'=>"Leaderboard", 'player_id'=>$profile->player_id, 'pageSize'=>8, 'title'=>'Leaderboard', 'category'=>'Listing current player page. <small>Updated every 10 minutes</small>']);
+        Pjax::begin(['id'=>'global-leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
+        echo Leaderboard::widget(['divID'=>"Leaderboard", 'player_id'=>$profile->player_id, 'pageSize'=>8, 'title'=>'Global Leaderboard', 'category'=>'Listing current player page on a global scale. <small>Updated every 10 minutes</small>']);
+        Pjax::end();
+        ?>
+      </div>
+      <div class="col">
+        <?php
+        Pjax::begin(['id'=>'country-leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#country-leaderboard-pager a', 'formSelector'=>false]);
+        echo Leaderboard::widget(['divID'=>"CountryLeaderboard", 'country'=>$profile->country,'player_id'=>$profile->player_id, 'pageSize'=>8, 'title'=>'Leaderboard for '.$profile->fullCountry->name, 'category'=>'Listing current player page for '.$profile->fullCountry->name.'. <small>Updated every 10 minutes</small>','pagerID'=>'country-leaderboard-pager']);
         Pjax::end();
         ?>
       </div>
     </div>
+    <div class="row">
+      <div class="col"><?php
+      \yii\widgets\Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
+      echo Stream::widget(['divID'=>'stream', 'dataProvider' => null, 'player_id'=>$profile->player_id, 'pagerID'=>'stream-pager','title'=>'User History','category'=>'User history on the platform']);
+      \yii\widgets\Pjax::end();
+      ?></div>
+    </div><!--/row-->
+
   </div><!--//body-content-->
 </div><!--//profile-index-->
