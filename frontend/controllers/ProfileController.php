@@ -255,12 +255,13 @@ class ProfileController extends \yii\web\Controller
      */
     protected function findModel($id)
     {
-        if(($model=Profile::findOne($id)) !== null)
-        {
-            return $model;
-        }
-
+      $model=Profile::findOne($id);
+      if($model === null || $model->owner->active!==1)
+      {
         throw new NotFoundHttpException('The requested page does not exist.');
+      }
+
+      return $model;
     }
 
     protected function HandleUpload($uploadedAvatar)
