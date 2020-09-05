@@ -68,15 +68,15 @@ coding_style:
             general:
                 linefeed_character: newline
             before_parentheses:
-                function_declaration: false
-                closure_definition: false
-                function_call: false
-                if: true
-                for: true
-                while: true
-                switch: true
-                catch: true
-                array_initializer: false
+                function_declaration: undefined
+                closure_definition: undefined
+                function_call: undefined
+                if: undefined
+                for: undefined
+                while: undefined
+                switch: undefined
+                catch: undefined
+                array_initializer: undefined
             around_operators:
                 assignment: undefined
                 logical: undefined
