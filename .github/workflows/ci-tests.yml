@@ -75,52 +75,66 @@ jobs:
     - name: Drop containers
       run: docker-compose down --rmi all
 
-#  dockerhub:
-#    needs: [dockerbuilds]
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#    - uses: actions/checkout@v2
-#    - uses: docker/build-push-action@v1
-#      with:
-#        dockerfile: contrib/Dockerfile
-#        username: ${{ secrets.DOCKER_USERNAME }}
-#        password: ${{ secrets.DOCKER_PASSWORD }}
-#        repository: echothrust/echoctf.red-all-in-one
-#        tags: latest
-#
-#    - uses: docker/build-push-action@v1
-#      with:
-#        dockerfile: contrib/Dockerfile-mariadb
-#        username: ${{ secrets.DOCKER_USERNAME }}
-#        password: ${{ secrets.DOCKER_PASSWORD }}
-#        repository: echothrust/echoctf.red-db
-#        tags: latest
-#
-#    - uses: docker/build-push-action@v1
-#      with:
-#        dockerfile: contrib/Dockerfile-frontend
-#        build_args: GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }}
-#        username: ${{ secrets.DOCKER_USERNAME }}
-#        password: ${{ secrets.DOCKER_PASSWORD }}
-#        repository: echothrust/echoctf.red-frontend
-#        tags: latest
-#
-#    - uses: docker/build-push-action@v1
-#      with:
-#        dockerfile: contrib/Dockerfile-backend
-#        build_args: GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }}
-#        username: ${{ secrets.DOCKER_USERNAME }}
-#        password: ${{ secrets.DOCKER_PASSWORD }}
-#        repository: echothrust/echoctf.red-backend
-#        tags: latest
-#
-#    - uses: docker/build-push-action@v1
-#      with:
-#        dockerfile: contrib/Dockerfile-vpn
-#        build_args: GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }}
-#        username: ${{ secrets.DOCKER_USERNAME }}
-#        password: ${{ secrets.DOCKER_PASSWORD }}
-#        repository: echothrust/echoctf.red-vpn
-#        tags: latest
-#
+  dockerhub:
+    needs: [dockerbuilds]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Configure github token
+      run: composer config -g github-oauth.github.com "${{ secrets.GITHUBOAUTHTOKEN }}"
+
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        composer install --no-dev --prefer-dist --no-progress --no-suggest
+
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        composer install --no-dev --prefer-dist --no-progress --no-suggest
+
+
+    - uses: docker/build-push-action@v1
+      with:
+        dockerfile: contrib/Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: echothrust/echoctf.red-all-in-one
+        tags: latest
+
+    - uses: docker/build-push-action@v1
+      with:
+        dockerfile: contrib/Dockerfile-mariadb
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: echothrust/echoctf.red-db
+        tags: latest
+
+    - uses: docker/build-push-action@v1
+      with:
+        dockerfile: contrib/Dockerfile-frontend
+        #build_args: GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: echothrust/echoctf.red-frontend
+        tags: latest
+
+    - uses: docker/build-push-action@v1
+      with:
+        dockerfile: contrib/Dockerfile-backend
+        #build_args: GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: echothrust/echoctf.red-backend
+        tags: latest
+
+    - uses: docker/build-push-action@v1
+      with:
+        dockerfile: contrib/Dockerfile-vpn
+        #build_args: GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }}
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: echothrust/echoctf.red-vpn
+        tags: latest
