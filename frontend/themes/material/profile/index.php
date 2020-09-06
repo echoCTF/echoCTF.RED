@@ -23,7 +23,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
         <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Pending progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <?=$this->render('_card', ['profile'=>$profile]);?>
       </div><!-- // end profile card col-md-4 -->
     </div>
@@ -42,7 +42,6 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
                       $headshot->target->name.' / '.long2ip($headshot->target->ip) ,
                         Url::to(['/target/default/versus', 'id'=>$headshot->target_id, 'profile_id'=>$profile->id]),
                         [
-                          //'class'=>'btn-primary',
                           'style'=>'float: bottom;',
                           'title' => 'View target vs player card',
                           'aria-label'=>'View target vs player card',
@@ -51,7 +50,6 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
                     );?></b></p>
           <p><b><i class="fas fa-stopwatch text-danger"></i> <?=\Yii::$app->formatter->asDuration($headshot->timer)?></b></br>
           <b><i class="far fa-calendar-alt text-warning"></i> <?=\Yii::$app->formatter->asDate($headshot->created_at,'long')?></b></p>
-
         </div>
       </div>
       <?php endforeach;?>
