@@ -4,7 +4,7 @@ DROP EVENT IF EXISTS `update_player_ranks` //
 CREATE EVENT `update_player_ranks` ON SCHEDULE EVERY 1 MINUTE ON COMPLETION PRESERVE ENABLE DO
 BEGIN
   call calculate_ranks();
-  call calculate_country_ranks();
+  call calculate_country_rank();
 END //
 
 DROP EVENT IF EXISTS `update_player_last_seen` //
