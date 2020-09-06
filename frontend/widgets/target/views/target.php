@@ -44,9 +44,10 @@ echo GridView::widget([
         'headerOptions' => ['class'=>'d-none d-xl-table-cell', ],
         'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
         'attribute'=>'id',
-
+        'visible'=>!in_array('id', $hidden_attributes),
       ],
       [
+        'visible'=>!in_array('name', $hidden_attributes),
         'attribute'=>'name',
         'format'=>'raw',
         'label'=>'Target',
@@ -61,12 +62,14 @@ echo GridView::widget([
         }
       ],
       [
+        'visible'=>!in_array('ip', $hidden_attributes),
         'attribute'=>'ip',
         'label'=>'IP',
         'headerOptions' => ["style"=>'width: 6vw;'],
         'value'=>function($model) {return long2ip($model->ip);}
       ],
       [
+        'visible'=>!in_array('difficulty', $hidden_attributes),
         'attribute'=>'difficulty',
         'format'=>'raw',
         'encodeLabel'=>false,
@@ -106,6 +109,7 @@ echo GridView::widget([
         },
       ],
       [
+        'visible'=>!in_array('rootable', $hidden_attributes),
         'attribute'=>'rootable',
         'format'=>'raw',
         'headerOptions' => ['class' => 'text-center', "style"=>'width: 4rem'],
@@ -115,6 +119,7 @@ echo GridView::widget([
         'value'=>function($model) {return intval($model->rootable) == 0 ? '' : '<abbr title="Rootable"><i class="fa fa-hashtag"></i></abbr>';},
       ],
       [
+        'visible'=>!in_array('total_findings', $hidden_attributes),
         'format'=>'raw',
         'encodeLabel'=>false,
         'headerOptions' => ["style"=>'width: 4rem', 'class' => 'text-center'],
@@ -124,6 +129,7 @@ echo GridView::widget([
         'value'=>function($model) { return sprintf('<i class="fas fa-fingerprint"></i> %d<small>/%d</small>', $model->total_findings, $model->player_findings);},
       ],
       [
+        'visible'=>!in_array('total_treasures', $hidden_attributes),
         'format'=>'raw',
         'encodeLabel'=>false,
         'headerOptions' => ["style"=>'width: 4rem', 'class' => 'text-center'],
@@ -133,6 +139,7 @@ echo GridView::widget([
         'value'=>function($model) { return sprintf('<i class="fas fa-flag"></i> %d<small>/%d</small>', $model->total_treasures, $model->player_treasures);},
       ],
       [
+        'visible'=>!in_array('headshots', $hidden_attributes),
         'format'=>'raw',
         'encodeLabel'=>false,
         'headerOptions' => ["style"=>'width: 4rem', 'class' => 'text-center'],
@@ -148,6 +155,7 @@ echo GridView::widget([
           return '<abbr title="'.$msg.'"><i class="fas fa-skull"></i></abbr>';},
       ],
       [
+        'visible'=>!in_array('progress', $hidden_attributes),
         'format'=>'raw',
         'encodeLabel'=>false,
         'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell', ],
@@ -160,7 +168,7 @@ echo GridView::widget([
       ],
       [
         'class'=> 'app\actions\ActionColumn',
-        //'visible'=>!$personal,
+        'visible'=>!in_array('ActionColumn', $hidden_attributes),
         'headerOptions' => ["style"=>'width: 4rem'],
         'template'=>'{view} {tweet}',
         'buttons' => [

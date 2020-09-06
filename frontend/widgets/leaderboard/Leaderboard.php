@@ -22,6 +22,7 @@ use app\models\Profile;
 class Leaderboard extends Widget
 {
     public $divID='Leaderboard';
+    public $country;
     public $dataProvider;
     public $player_id;
     public $totalPoints;
@@ -31,13 +32,11 @@ class Leaderboard extends Widget
     public $title="Scoreboard";
     public $category="List of players by points. <small>Updated every 10 minutes</small>";
 
-    public function init()
+    private function PlayerLeaderboards()
     {
       if($this->player_id !== NULL)
       {
-
         $this->dataProvider=new ActiveDataProvider([
-//          'query' => PlayerScore::find()->active()->orderBy(['points'=>SORT_DESC,'player_id'=>SORT_ASC]),
           'query' => PlayerRank::find()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
           'pagination' => [
               'pageSizeParam'=>'score-perpage',
@@ -55,15 +54,50 @@ class Leaderboard extends Widget
       if(Yii::$app->request->get('score-page') === null && $rank != null)
         $this->dataProvider->pagination->page=($rank->id - 1) / $this->dataProvider->pagination->pageSize;
 
+    }
+    private function countryLeaderboards()
+    {
+      if($this->player_id !== NULL)
+      {
+        $this->dataProvider=new ActiveDataProvider([
+          'query' => \app\models\PlayerCountryRank::find()->where(['country'=>$this->country])->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
+          'pagination' => [
+              'pageSizeParam'=>'country-score-perpage',
+              'pageParam'=>'country-score-page',
+              'pageSize' => $this->pageSize,
+          ]
+        ]);
+      }
+      else
+      {
+        $this->player_id=Yii::$app->user->id;
+      }
+
+      $rank=Profile::find()->where(['player_id'=>$this->player_id])->one()->countryRank;
+      if(Yii::$app->request->get('country-score-page') === null && $rank != null)
+        $this->dataProvider->pagination->page=($rank->id - 1) / $this->dataProvider->pagination->pageSize;
+
+    }
+    public function init()
+    {
       if($this->totalPoints === null)
       {
         $command=Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
         $command->bindValue(':player_type', 'offense');
         $this->totalPoints=$command->queryScalar();
       }
+
+
+      if($this->country===NULL)
+      {
+        $this->PlayerLeaderboards();
+      }
+      else {
+        $this->countryLeaderboards();
+      }
       $this->summary=\Yii::t('app', $this->summary, ['TITLE' => $this->title, 'CATEGORY'=>$this->category]);
 
-        parent::init();
+      parent::init();
     }
 
     public function run()

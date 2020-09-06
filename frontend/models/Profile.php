@@ -155,11 +155,20 @@ class Profile extends \yii\db\ActiveRecord
     {
         return $this->hasOne(PlayerSpin::class, ['player_id' => 'player_id'])->todays();
     }
+    public function getFullCountry()
+    {
+        return $this->hasOne(Country::class, ['id' => 'country']);
+    }
 
     public function getRank()
     {
         return $this->hasOne(PlayerRank::class, ['player_id' => 'player_id']);
     }
+    public function getCountryRank()
+    {
+        return $this->hasOne(\app\models\PlayerCountryRank::class, ['player_id' => 'player_id']);
+    }
+
     public function getScore()
     {
         return $this->hasOne(PlayerScore::class, ['player_id' => 'player_id']);

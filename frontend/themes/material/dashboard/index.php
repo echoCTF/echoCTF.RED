@@ -70,13 +70,13 @@ $this->_description="The echoCTF dashboard page";
     <div class="row">
       <div class="col-sm-8">
       <?php Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-      <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>Yii::$app->user->id]);?>
+      <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>Yii::$app->user->id,'pageSize'=>8]);?>
       <?php Pjax::end();?>
       </div>
       <div class="col-sm-4">
 <?php
 Pjax::begin(['id'=>'leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-echo Leaderboard::widget(['dataProvider'=>null, 'player_id'=>Yii::$app->user->id, 'divID'=>"Leaderboard", 'title'=>'Leaderboard']);
+echo Leaderboard::widget(['dataProvider'=>null, 'player_id'=>Yii::$app->user->id, 'divID'=>"Leaderboard", 'title'=>'Leaderboard','pageSize'=>10]);
 Pjax::end();
 ?>
       </div>
