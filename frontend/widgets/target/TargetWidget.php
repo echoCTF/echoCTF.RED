@@ -32,6 +32,8 @@ class TargetWidget extends Widget
     public $layout='{summary}{items}{pager}';
     public $personal=false;
     public $profile=null;
+    public $viewFile='target';
+    public $hidden_attributes=[];
     public function init()
     {
       if($this->dataProvider === NULL && $this->player_id === NULL)
@@ -57,7 +59,7 @@ class TargetWidget extends Widget
       if(intval($tmod->count()) === 0) return false;
 
         TargetWidgetAsset::register($this->getView());
-        return $this->render('target', [
+        return $this->render($this->viewFile, [
           'dataProvider'=>$this->dataProvider,
           'divID'=>$this->divID,
           'summary'=>$this->summary,
@@ -68,6 +70,7 @@ class TargetWidget extends Widget
           'TITLE'=>$this->title,
           'CATEGORY'=>$this->category,
           'player_id'=>$this->player_id,
+          'hidden_attributes'=>$this->hidden_attributes,
         ]);
     }
 
