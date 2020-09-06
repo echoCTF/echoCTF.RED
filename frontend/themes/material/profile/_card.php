@@ -31,7 +31,7 @@ use app\modules\game\models\Headshot;
     <?php endif;?>
     <ul class="nav flex-column">
   <?php if(intval(Yii::$app->user->id) === intval($profile->player_id) || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
-          <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> OpenVPN", ['profile/ovpn'], ['class'=>'btn btn-primary','alt'=>'Download OpenVPN Configuration'])?> <?=Html::a("<i class='fas fa-id-badge'></i> Badge", ['profile/badge','id'=>$profile->id], ['class'=>'btn btn-success'])?></li>
+          <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> OpenVPN", ['profile/ovpn'], ['class'=>'btn btn-primary','alt'=>'Download OpenVPN Configuration'])?> <?=Html::a("<i class='fas fa-id-badge'></i> Your badge", ['profile/badge','id'=>$profile->id], ['class'=>'btn btn-success'])?></li>
           <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($profile->spins->counter)?></abbr> / <abbr title="Total Spins"><?=intval($profile->spins->total)?></abbr></span></li>
   <?php endif;?>
