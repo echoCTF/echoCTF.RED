@@ -14,11 +14,13 @@ use yii\data\ArrayDataProvider;
 use app\modules\target\models\Target;
 use app\modules\target\models\Finding;
 use app\modules\target\models\Treasure;
+use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\models\PlayerFinding;
 use app\models\PlayerTreasure;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
 use app\modules\game\models\Headshot;
+
 /**
  * Default controller for the `target` module
  */
@@ -226,6 +228,10 @@ class DefaultController extends Controller
             }
           }
           $transaction->commit();
+          if(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$treasure->target_id]))
+          {
+            $treasure->points=$treasure->points/2;
+          }
           Yii::$app->session->setFlash('success', sprintf('Flag [%s] claimed for %s points', $treasure->name, number_format($treasure->points)));
         }
         catch(\Exception $e)
