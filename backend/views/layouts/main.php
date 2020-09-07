@@ -46,6 +46,8 @@ AppAsset::register($this);
                 ['label' => 'Notifications', 'url' => ['/activity/notification'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Player Scores', 'url' => ['/activity/player-score'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Team Scores', 'url' => ['/activity/team-score'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
+                ['label' => 'Writeups', 'url' => ['/activity/writeup'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Player Activated Writeups', 'url' => ['/activity/player-target-help'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Reports', 'url' => ['/activity/report'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Stream', 'url' => ['/activity/stream'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Player VPN History', 'url' => ['/activity/player-vpn-history'], 'visible' => !Yii::$app->user->isGuest, ],
