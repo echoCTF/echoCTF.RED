@@ -9,6 +9,7 @@ use yii\helpers\Url;
 use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\game\models\Headshot;
 use app\modules\target\models\Target;
+use app\modules\target\models\Writeup;
 
 /**
  * This is the model class for table "profile".
@@ -224,6 +225,11 @@ class Profile extends \yii\db\ActiveRecord
     {
       return $this->hasMany(Headshot::class, ['player_id' => 'player_id']);
     }
+    public function getWriteups()
+    {
+      return $this->hasMany(Writeup::class, ['player_id' => 'player_id']);
+    }
+
     public function getHeadshots() {
       return $this->hasMany(Target::class, ['id' => 'target_id'])->via('headshotRelation');
     }
