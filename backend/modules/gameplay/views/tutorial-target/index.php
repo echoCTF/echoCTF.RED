@@ -27,7 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'tutorial_id',
+            'tutorial.title',
             'target_id',
+            'target.name',
+            'target.ipoctet',
             'weight',
 
             ['class' => 'yii\grid\ActionColumn'],
