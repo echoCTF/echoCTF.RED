@@ -62,7 +62,7 @@ class Writeup extends \yii\db\ActiveRecord
                     'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'approved' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                 ],
-                'typecastAfterValidate' => true,
+                'typecastAfterValidate' => false,
                 'typecastBeforeSave' => true,
                 'typecastAfterFind' => true,
           ],
