@@ -48,6 +48,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
  * @property Headshot[] $headshots
+ * @property Writeup[] $writeups
  */
 class Target extends \yii\db\ActiveRecord
 {
@@ -253,6 +254,14 @@ class Target extends \yii\db\ActiveRecord
     public function getHeadshots()
     {
       return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
+    }
+
+    /*
+     * Get Writeup relations of target
+     */
+    public function getWriteups()
+    {
+      return $this->hasMany(Writeup::class, ['target_id' => 'id'])->approved()->orderBy(['created_at'=>SORT_ASC]);
     }
 
     /*
