@@ -3,6 +3,7 @@
 namespace app\modules\activity\controllers;
 
 use Yii;
+use app\modules\activity\models\Notification;
 use app\modules\activity\models\Writeup;
 use app\modules\activity\models\WriteupSearch;
 use yii\web\Controller;
@@ -24,6 +25,7 @@ class WriteupController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
+                    'approve' => ['POST'],
                 ],
             ],
         ];
@@ -84,11 +86,20 @@ class WriteupController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($player_id, $target_id)
+    public function actionUpdate(int $player_id,int $target_id)
     {
         $model = $this->findModel($player_id, $target_id);
+        $oldmodel=$model->attributes;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if($oldmodel['status'] !== $model->status)
+            {
+              $notif=new Notification;
+              $notif->player_id=$player_id;
+              $notif->archived=0;
+              $notif->title=$notif->body=sprintf("The status of the writeup for [%s/%s], has changed to [%s].",$model->target->name,$model->target->ipoctet,$model->status);
+              $notif->save();
+            }
             return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
         }
 
@@ -111,6 +122,38 @@ class WriteupController extends Controller
 
         return $this->redirect(['index']);
     }
+
+    /**
+     * Approves an existing Writeup model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $player_id
+     * @param integer $target_id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionApprove($player_id, $target_id)
+    {
+        $model=$this->findModel($player_id, $target_id);
+        $model->approved=true;
+        $model->status='OK';
+        $model->comment=null;
+        if($model->save())
+        {
+          $notif=new Notification;
+          $notif->player_id=$player_id;
+          $notif->body=$notif->title=sprintf("The writeup you submitted for %s/%s has been approved. Thank you!",$model->target->name,$model->target->ipoctet);
+          $notif->archived=0;
+          $notif->save();
+          Yii::$app->session->setFlash('success','Writeup approved.');
+        }
+        else {
+          Yii::$app->session->setFlash('error','Failed to approve writeup.');
+
+        }
+        return $this->redirect(['index']);
+    }
+
+
 
     /**
      * Finds the Writeup model based on its primary key value.
