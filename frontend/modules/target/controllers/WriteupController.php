@@ -57,7 +57,7 @@ class WriteupController extends Controller
      * Submit a writeup on a the given target
      * @return string
      */
-     public function actionView($id)
+     public function actionView(int $id)
      {
          return $this->render('view', [
              'model' => $this->findModel(Yii::$app->user->id, $id),
@@ -188,7 +188,7 @@ class WriteupController extends Controller
      */
     protected function findModel($player_id,$target_id)
     {
-        if(($model=Writeup::findOne($player_id,$target_id)) !== null)
+        if(($model=Writeup::findOne(['player_id'=>$player_id,'target_id'=>$target_id])) !== null)
         {
             return $model;
         }
