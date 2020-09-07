@@ -137,6 +137,10 @@ if($target->progress == 100)
               ]
           )?><br/><?php endif;?>
           <?=$target->description?>
+          <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
+            <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
+          <?php endif;?>
+
           <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==NULL || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
             <hr/>
             <h4><i class="fas fa-book"></i> Target Writeups</h4>
@@ -147,9 +151,6 @@ if($target->progress == 100)
             <?php endforeach;?>
           <?php endif;?>
 
-          <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
-            <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
-          <?php endif;?>
         </div>
       </div>
 
