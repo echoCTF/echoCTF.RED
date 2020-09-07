@@ -30,12 +30,36 @@ $this->params['breadcrumbs'][] = $this->title;
             'target_id',
             'content',
             'approved:boolean',
-            'status',
+            [
+              'attribute'=>'status',
+              'filter'=>['OK'=>'OK','PENDING'=>'PENDING','REJECTED'=>'REJECTED','NEEDS FIXES'=>'NEEDS FIXES'],
+            ],
             'comment',
             'created_at',
             'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+              'class' => 'yii\grid\ActionColumn',
+              'template' => '{approve} {view} {update} {delete}',
+              'visibleButtons' => [
+                  'approve' => function ($model) {
+                      return !$model->approved || $model->status!=='OK';
+                  },
+              ],
+              'buttons' => [
+                  'approve' => function ($url) {
+                      return Html::a(
+                          '<span class="glyphicon glyphicon-ok"></span>',
+                          $url,
+                          [
+                              'title' => 'Approve writeup',
+                              'data-method'=>'post',
+                              'data-pjax' => '0',
+                          ]
+                      );
+                  },
+              ],
+            ],
         ],
     ]); ?>
 
