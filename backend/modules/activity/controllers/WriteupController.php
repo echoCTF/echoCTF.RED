@@ -137,6 +137,11 @@ class WriteupController extends Controller
         $model->approved=true;
         $model->status='OK';
         $model->comment=null;
+        foreach($model->target->treasures as $treasure)
+        {
+          $string = mb_ereg_replace($treasure->code,md5(Yii::$app->getSecurity()->generateRandomString(32)), $model->content);
+          $model->content=$string;
+        }
         if($model->save())
         {
           $notif=new Notification;
