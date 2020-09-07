@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'content',
               'format'=>'raw',
-              'value'=>function($model){ return "<pre>".$model->content."</pre>"; }
+              'value'=>function($model){ return "<pre>".Html::encode($model->content)."</pre>"; }
             ],
             'approved',
             'status',
