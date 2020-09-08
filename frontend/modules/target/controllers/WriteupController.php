@@ -125,10 +125,7 @@ class WriteupController extends Controller
             Yii::$app->session->setFlash('success', 'The writeup has been updated.');
             return $this->redirect(['view', 'id' => $id]);
           }
-          else {
-            die(var_dump($oldmodel->getErrors()));
-            Yii::$app->session->setFlash('error', 'Failed to update writeup, something went wrong.');
-          }
+          Yii::$app->session->setFlash('error', 'Failed to update writeup, something went wrong.');
         }
 
         return $this->render('update', [
