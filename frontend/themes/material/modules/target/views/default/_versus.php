@@ -122,7 +122,7 @@ if($target->progress == 100)
     <div class="col">
       <div class="card bg-dark">
         <div class="card-body table-responsive">
-          <?php if(count($target->writeups)>0 && PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])===NULL):?>
+          <?php if(count($target->writeups)>0 && PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])===NULL && !($identity->player_id===Yii::$app->user->id && $target->progress==100)):?>
           <?=Html::a(
             '<i class="fas fa-question-circle" style="font-size: 1.5em;"></i> Writeups available.',
               ['/target/writeup/enable', 'id'=>$target->id],
@@ -145,7 +145,7 @@ if($target->progress == 100)
             <hr/>
             <h4><i class="fas fa-book"></i> Target Writeups</h4>
             <?php foreach($target->writeups as $writeup):?>
-              <p><details><summary><b style="font-size: 1.2em;">Writeup by <?=$writeup->player->username?>, submitted <?=$writeup->created_at?></b></summary>
+              <p><details><summary><b style="font-size: 1.2em;">Writeup by <?=$writeup->player->username?>, submitted <?=$writeup->created_at?></b> (<code>status:<?=$writeup->status?></code>)</summary>
                 <pre><?=Html::encode($writeup->content)?></pre>
               </details></p>
             <?php endforeach;?>
