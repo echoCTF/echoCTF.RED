@@ -24,10 +24,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'player_id',
+            [
+              'attribute'=>'username',
+              'value'=>'player.username',
+            ],
             'target_id',
+            [
+              'attribute'=>'fqdn',
+              'value'=>'target.fqdn',
+            ],
+            [
+              'attribute'=>'ipoctet',
+              'value'=>'target.ipoctet',
+            ],
             'content',
             'approved:boolean',
             [

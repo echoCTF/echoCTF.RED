@@ -11,6 +11,10 @@ use app\modules\activity\models\Writeup;
  */
 class WriteupSearch extends Writeup
 {
+  public $username;
+  public $fqdn;
+  public $ipoctet;
+
     /**
      * {@inheritdoc}
      */
@@ -18,7 +22,7 @@ class WriteupSearch extends Writeup
     {
         return [
             [['player_id', 'target_id', 'approved'], 'integer'],
-            [['content', 'status', 'comment', 'created_at', 'updated_at'], 'safe'],
+            [['content', 'status', 'comment', 'created_at', 'updated_at', 'username', 'fqdn', 'ipoctet'], 'safe'],
         ];
     }
 
@@ -40,7 +44,7 @@ class WriteupSearch extends Writeup
      */
     public function search($params)
     {
-        $query = Writeup::find();
+        $query = Writeup::find()->joinWith(['player', 'target']);
 
         // add conditions that should always apply here
 
@@ -66,8 +70,31 @@ class WriteupSearch extends Writeup
         ]);
 
         $query->andFilterWhere(['like', 'content', $this->content])
-            ->andFilterWhere(['like', 'status', $this->status])
+            ->andFilterWhere(['like', 'writeup.status', $this->status])
             ->andFilterWhere(['like', 'comment', $this->comment]);
+        $query->andFilterWhere(['like', 'player.username', $this->username]);
+        $query->andFilterWhere(['like', 'target.fqdn', $this->fqdn]);
+        $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
+
+        $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'username' => [
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
+                  ],
+                  'fqdn' => [
+                      'asc' => ['target.fqdn' => SORT_ASC],
+                      'desc' => ['target.fqdn' => SORT_DESC],
+                  ],
+                  'ipoctet' => [
+                      'asc' => ['target.ip' => SORT_ASC],
+                      'desc' => ['target.ip' => SORT_DESC],
+                  ],
+                ]
+            ),
+        ]);
 
         return $dataProvider;
     }
