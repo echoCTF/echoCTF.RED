@@ -21,6 +21,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property Player $player
  * @property Target $target
+ * @property Writeup $writeup
  */
 class Headshot extends \yii\db\ActiveRecord
 {
