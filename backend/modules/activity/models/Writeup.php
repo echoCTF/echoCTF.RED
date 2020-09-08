@@ -9,6 +9,8 @@ use yii\behaviors\AttributeTypecastBehavior;
 use yii\base\NotSupportedException;
 use app\modules\gameplay\models\Target;
 use app\modules\frontend\models\Player;
+use app\modules\gameplay\models\TargetQuery;
+use app\modules\frontend\models\PlayerQuery;
 /**
  * This is the model class for table "writeup".
  *
