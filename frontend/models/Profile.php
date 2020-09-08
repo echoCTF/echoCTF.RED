@@ -178,10 +178,12 @@ class Profile extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Country::class, ['id' => 'country']);
     }
+
     public function getVisible(): bool
     {
       if(Yii::$app->sys->player_profile === false) return false;
-      elseif($this->visibility == 'public') return true;
+      elseif($this->visibility === 'public') return true;
+      elseif(Yii::$app->user->isGuest && $this->visibility!=='public') return false;
       elseif(intval(Yii::$app->user->id) === intval($this->player_id)) return true;
       elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin !== false) return true;
       else return array_search($this->visibility, ['public', 'ingame'], true) === FALSE ? false : true;
