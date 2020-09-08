@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\Target;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\PlayerTargetHelp */
