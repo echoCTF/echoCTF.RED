@@ -70,14 +70,12 @@ class WriteupController extends Controller
     public function actionSubmit(int $id)
     {
       $headshot=Headshot::findOne(['target_id'=>$id,'player_id'=>Yii::$app->user->id]);
-      $target=Target::findOne($id);
-      $writeup=Writeup::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$id]);
-      if($headshot===NULL || $target===null)
+      if($headshot===NULL)
       {
-        throw new NotFoundHttpException('You dont have a headshot for the requested target or target does not exist.');
+        throw new NotFoundHttpException('You dont have a headshot for the given target.');
       }
 
-      if($writeup!==null)
+      if($headshot->writeup!==null)
       {
         Yii::$app->session->setFlash('error', 'You have already submitted a writeup for this target.');
         return $this->redirect(['default/index','id'=>$id]);
@@ -94,14 +92,12 @@ class WriteupController extends Controller
             Yii::$app->session->setFlash('success', 'Thank you for your submittion. Your writeup has been saved. A member of our staff will review and approve or reject.');
             return $this->redirect(['view', 'id' => $id]);
           }
-          else {
-            Yii::$app->session->setFlash('error', 'Failed to save writeup, something went wrong.');
-          }
+          Yii::$app->session->setFlash('error', 'Failed to save writeup, something went wrong.');
       }
 
       return $this->render('create', [
           'model' => $model,
-          'target'=>$target,
+          'headshot'=>$headshot,
       ]);
 
 
