@@ -65,7 +65,7 @@ class WriteupController extends Controller
      }
     /**
      * Submit a writeup on a the given target
-     * @return string
+     * @return Response|string
      */
     public function actionSubmit(int $id)
     {
@@ -173,13 +173,14 @@ class WriteupController extends Controller
     }
 
     /**
-     * Finds the Target model based on its primary key value.
+     * Finds the Writeup model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Target the loaded model
+     * @param integer $player_id
+     * @param integer $target_id
+     * @return Writeup the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($player_id,$target_id)
+    protected function findModel(int $player_id,int $target_id)
     {
         if(($model=Writeup::findOne(['player_id'=>$player_id,'target_id'=>$target_id])) !== null)
         {
