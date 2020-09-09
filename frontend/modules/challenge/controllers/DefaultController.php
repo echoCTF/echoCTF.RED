@@ -25,17 +25,17 @@ class DefaultController extends Controller
   public function behaviors()
   {
       return [
-          'access' => [
-              'class' => AccessControl::class,
-              'only' => ['index', 'view', 'download'],
-              'rules' => [
-                  [
-                      'actions' => ['index', 'view', 'download'],
-                      'allow' => true,
-                      'roles' => ['@'],
-                  ],
+        'access' => [
+          'class' => AccessControl::class,
+          'only' => ['index', 'view', 'download'],
+          'rules' => [
+              [
+                  'actions' => ['index', 'view', 'download'],
+                  'allow' => true,
+                  'roles' => ['@'],
               ],
           ],
+        ],
       ];
   }
 
@@ -47,10 +47,11 @@ class DefaultController extends Controller
     {
       $dataProvider=new ActiveDataProvider([
           'query' => Challenge::find()->player_progress(Yii::$app->user->id),
+          'pagination' => false,
       ]);
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+      return $this->render('index', [
+          'dataProvider' => $dataProvider,
+      ]);
     }
 
     /**
@@ -61,7 +62,6 @@ class DefaultController extends Controller
      */
     public function actionView(int $id)
     {
-//      $model=$this->findModel($id);
       $model=Challenge::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
       if($model===null)
       {
@@ -71,6 +71,7 @@ class DefaultController extends Controller
       $solvers=ChallengeSolver::find()->where(['challenge_id'=>$model->id])->orderBy(['created_at'=>SORT_ASC, 'player_id'=>SORT_ASC]);
       $dataProvider=new ActiveDataProvider([
           'query' => $query,
+          'pagination'=>false,
       ]);
       $query->andFilterWhere(['challenge_id'=>$model->id]);
       $solverProvider=new ActiveDataProvider([
@@ -80,16 +81,16 @@ class DefaultController extends Controller
       $answer=new AnswerForm();
       if($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id))
       {
-            Yii::$app->session->setFlash('success', sprintf('Accepted answer for question [%s] for %d pts.', $answer->question->name, intval($answer->question->points)));
-            return $this->redirect(Yii::$app->request->referrer);
+        Yii::$app->session->setFlash('success', sprintf('Accepted answer for question [%s] for %d pts.', $answer->question->name, intval($answer->question->points)));
+        return $this->redirect(Yii::$app->request->referrer);
       }
 
 
       return $this->render('view', [
-          'answer'=>$answer,
-          'model' => $model,
-          'solvers' => $solvers,
-          'dataProvider' => $dataProvider,
+        'answer'=>$answer,
+        'model' => $model,
+        'solvers' => $solvers,
+        'dataProvider' => $dataProvider,
       ]);
     }
 
