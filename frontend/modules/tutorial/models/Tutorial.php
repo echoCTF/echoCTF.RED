@@ -15,7 +15,7 @@ use Yii;
  *
  * @property TutorialTarget[] $tutorialTargets
  * @property Target[] $targets
- * @property TutorialTask[] $tutorialTasks
+ * @property TutorialTask[] $tasks
  */
 class Tutorial extends \yii\db\ActiveRecord
 {
@@ -72,7 +72,7 @@ class Tutorial extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTutorialTasks()
+    public function getTasks()
     {
         return $this->hasMany(TutorialTask::class, ['tutorial_id' => 'id']);
     }
