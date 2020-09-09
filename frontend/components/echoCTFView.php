@@ -11,7 +11,7 @@ class echoCTFView extends \yii\web\View
   public $_image_width="1200";
   public $_image_height="628";
   public $_card='summary_large_image';
-  public $_twitter_handle="@echoCTF"
+  public $_twitter_handle="@echoCTF";
 
   public function init()
   {
