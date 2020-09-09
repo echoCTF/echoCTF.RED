@@ -20,7 +20,7 @@ $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->id], 'https');
     <div class="row">
       <div class="col-lg-8 col-md-6 col-sm-6">
         <div class="well">
-          <h2><b><?=Html::encode($model->name).' (ID#'.$model->id.')'?> <?php if($model->completed):?><i class="fas fa-check-double"></i> <?=Twitter::widget(['message'=>'Hey check this out, I completed the challenge '.$model->name]);?><?php else:?><?=Twitter::widget(['message'=>'I currently grinding the challenge '.$model->name]);?><?php endif;?></b></h2>
+          <h2><b><?=$model->name.' (ID#'.$model->id.')'?> <?php if($model->completed):?><i class="fas fa-check-double"></i> <?=Twitter::widget(['message'=>'Hey check this out, I completed the challenge '.$model->name]);?><?php else:?><?=Twitter::widget(['message'=>'I currently grinding the challenge '.$model->name]);?><?php endif;?></b></h2>
           <h4><b>Category:</b> <?=Html::encode($model->category);?></h4>
           <h4><b>Difficulty:</b> <?=Html::encode($model->difficulty)?></h4>
           <h4><b>Points:</b> <?=Html::encode(number_format($model->points));?></h4>
