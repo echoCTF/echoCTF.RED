@@ -8,6 +8,7 @@ use yii\db\ActiveRecord;
 use yii\db\Expression;
 use app\models\Player;
 use app\modules\target\models\Target;
+use app\modules\target\models\Writeup;
 use yii\behaviors\AttributeTypecastBehavior;
 
 /**
@@ -20,6 +21,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property Player $player
  * @property Target $target
+ * @property Writeup $writeup
  */
 class Headshot extends \yii\db\ActiveRecord
 {
@@ -97,6 +99,14 @@ class Headshot extends \yii\db\ActiveRecord
     public function getTarget()
     {
         return $this->hasOne(Target::class, ['id' => 'target_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWriteup()
+    {
+        return $this->hasOne(Writeup::class, ['player_id' => 'player_id','target_id'=>'target_id']);
     }
 
     /**

@@ -72,8 +72,11 @@ CREATE PROCEDURE `add_finding_stream`(IN usid BIGINT, IN tbl VARCHAR(255), IN re
 BEGIN
   DECLARE ltitle,lpubtitle VARCHAR(255);
   DECLARE lmessage,lpubmessage TEXT;
-  DECLARE pts BIGINT;
-  SELECT name,pubname,description,pubdescription,points INTO ltitle,lpubtitle,lmessage,lpubmessage,pts FROM finding WHERE id=recid;
+  DECLARE pts,ltid BIGINT;
+  SELECT name,pubname,description,pubdescription,points,target_id INTO ltitle,lpubtitle,lmessage,lpubmessage,pts,ltid FROM finding WHERE id=recid;
+  IF (SELECT count(*) FROM player_target_help WHERE target_id=ltid AND player_id=usid)>0 THEN
+    SET pts=pts/2;
+  END IF;
   INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (usid,'finding',recid,pts,ltitle,lmessage,lpubtitle,lpubmessage,now());
 END ;;
 
@@ -143,8 +146,11 @@ BEGIN
   DECLARE ltitle,lpubtitle VARCHAR(255);
   DECLARE lmessage,lpubmessage TEXT;
   DECLARE divider INTEGER DEFAULT 1;
-  DECLARE pts BIGINT;
-  SELECT name,pubname,description,pubdescription,points INTO ltitle,lpubtitle,lmessage,lpubmessage,pts FROM treasure WHERE id=recid;
+  DECLARE pts,ltid BIGINT;
+  SELECT name,pubname,description,pubdescription,points,target_id INTO ltitle,lpubtitle,lmessage,lpubmessage,pts,ltid FROM treasure WHERE id=recid;
+  IF (SELECT count(*) FROM player_target_help WHERE target_id=ltid AND player_id=usid)>0 THEN
+    SET pts=pts/2;
+  END IF;
   INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (usid,'treasure',recid,pts,ltitle,lmessage,lpubtitle,lpubmessage,now());
 END ;;
 

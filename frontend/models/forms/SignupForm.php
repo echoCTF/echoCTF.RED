@@ -86,6 +86,7 @@ class SignupForm extends Model
             $playerSsl->refresh();
           $profile=$player->profile;
           $profile->scenario='signup';
+          $profile->visibility='ingame';
           $profile->gdpr=true;
           $profile->terms_and_conditions=true;
           $profile->save();

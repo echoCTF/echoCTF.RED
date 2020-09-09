@@ -199,6 +199,10 @@ $config=[
                 'target/<id:\d+>' => 'target/default/index',
                 'target/<id:\d+>/badge' => 'target/default/badge',
                 'target/<id:\d+>/spin'=>'target/default/spin',
+                'target/<id:\d+>/writeups/enable' => 'target/writeup/enable',
+                'target/<id:\d+>/writeup/submit' => 'target/writeup/submit',
+                'target/<id:\d+>/writeup/view' => 'target/writeup/view',
+                'target/<id:\d+>/writeup/update' => 'target/writeup/update',
                 //'target/<id:\d+>/rate'=>'target/default/rate',
                 'claim'=>'target/default/claim',
                 // app/controllers/ProfileController

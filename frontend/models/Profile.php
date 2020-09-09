@@ -9,6 +9,7 @@ use yii\helpers\Url;
 use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\game\models\Headshot;
 use app\modules\target\models\Target;
+use app\modules\target\models\Writeup;
 
 /**
  * This is the model class for table "profile".
@@ -177,13 +178,21 @@ class Profile extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Country::class, ['id' => 'country']);
     }
+
     public function getVisible(): bool
     {
       if(Yii::$app->sys->player_profile === false) return false;
-      elseif($this->visibility == 'public') return true;
-      elseif(intval(Yii::$app->user->id) === intval($this->player_id)) return true;
-      elseif(!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin !== false) return true;
-      else return array_search($this->visibility, ['public', 'ingame'], true) === FALSE ? false : true;
+
+      if($this->visibility === 'public') return true;
+
+      if(!Yii::$app->user->isGuest)
+      {
+        if($this->visibility==='ingame') return true;
+        if(intval(Yii::$app->user->id) === intval($this->player_id)) return true;
+        if(Yii::$app->user->identity->isAdmin) return true;
+      }
+
+      return false;
     }
 
     /**
@@ -224,6 +233,11 @@ class Profile extends \yii\db\ActiveRecord
     {
       return $this->hasMany(Headshot::class, ['player_id' => 'player_id']);
     }
+    public function getWriteups()
+    {
+      return $this->hasMany(Writeup::class, ['player_id' => 'player_id']);
+    }
+
     public function getHeadshots() {
       return $this->hasMany(Target::class, ['id' => 'target_id'])->via('headshotRelation');
     }

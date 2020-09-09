@@ -5,10 +5,17 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use app\widgets\Twitter;
 use app\modules\game\models\Headshot;
+use app\modules\target\models\PlayerTargetHelp as PTH;
+use app\modules\target\models\Writeup;
 if(date('md') === "0214")
 {
   $headshot_icon='fa-heart';
   $noheadshot_icon='fa-heartbeat';
+}
+elseif(date('md')==="1014")
+{
+  $headshot_icon='fa-birthday-cake';
+  $noheadshot_icon='fa-candy-cane';
 }
 else
 {
@@ -37,7 +44,7 @@ if($target->progress == 100)
             'color'=>'warning',
             'subtitle'=>sprintf("%s, %s%s", ucfirst($target->difficultyText), boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===0 ? '':', Timed'),
             'title'=>sprintf('%s / %s', $target->name, long2ip($target->ip)),
-            'footer'=>sprintf('<div class="stats">%s</div>%s', $target->purpose,$target->spinable ? Html::a(
+            'footer'=>sprintf('<div class="stats">%s</div><span>%s</span>', $target->purpose,  $target->spinable ? Html::a(
               '<i class="fas fa-power-off" style="font-size: 2em; float:left"></i>',
                 Url::to(['/target/default/spin', 'id'=>$target->id]),
                 [
@@ -70,6 +77,25 @@ if($target->progress == 100)
                 <?=$target->progress == 100 ? '#headshot' : number_format($target->progress).'%'?>
             </div>
         </div>
+<?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===NULL && $target->progress==100):?>
+        <div>
+          <center><?=Html::a("<i class='fas fa-book'></i> Submit a writeup",
+                      ['writeup/submit','id'=>$target->id],
+                      [
+                        'class'=>'btn btn-success',
+                        'alt'=>'Submit a writeup for this target'
+                    ])?></center>
+        </div>
+<?php elseif(Yii::$app->user->id === $identity->player_id && $target->progress==100):?>
+        <div>
+          <center><?=Html::a("<i class='fas fa-book'></i> View your writeup",
+                      ['writeup/view','id'=>$target->id],
+                      [
+                        'class'=>'btn btn-success',
+                        'alt'=>'View or update your writeup for this target'
+                    ])?></center>
+        </div>
+<?php endif;?>
       </div>
       <div class="col-lg-4 col-md-6 col-sm-6">
         <?php Card::begin([
@@ -93,13 +119,38 @@ if($target->progress == 100)
       </div>
 </div>
   <div class="row">
-    <div class="col-lg-8 col-md-6 col-sm-6">
+    <div class="col">
       <div class="card bg-dark">
         <div class="card-body table-responsive">
+          <?php if(count($target->writeups)>0 && PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])===NULL && !($identity->player_id===Yii::$app->user->id && $target->progress==100)):?>
+          <?=Html::a(
+            '<i class="fas fa-question-circle" style="font-size: 1.5em;"></i> Writeups available.',
+              ['/target/writeup/enable', 'id'=>$target->id],
+              [
+                'style'=>"font-size: 1.0em;",
+                'title' => 'Request access to writeups',
+                'rel'=>"tooltip",
+                'data-pjax' => '0',
+                'data-method' => 'POST',
+                'data-confirm'=>'Are you sure you want to enable access to writeups for this target? Any remaining flags will have their points reduced by 50%.',
+                'aria-label'=>'Request access to writeups',
+              ]
+          )?><br/><?php endif;?>
           <?=$target->description?>
           <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
             <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
           <?php endif;?>
+
+          <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==NULL || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
+            <hr/>
+            <h4><i class="fas fa-book"></i> Target Writeups</h4>
+            <?php foreach($target->writeups as $writeup):?>
+              <p><details><summary><b style="font-size: 1.2em;">Writeup by <?=$writeup->player->username?>, submitted <?=$writeup->created_at?></b> (<code>status:<?=$writeup->status?></code>)</summary>
+                <pre><?=Html::encode($writeup->content)?></pre>
+              </details></p>
+            <?php endforeach;?>
+          <?php endif;?>
+
         </div>
       </div>
 

@@ -63,6 +63,7 @@ class ProfileController extends \yii\web\Controller
       $profile=Yii::$app->user->identity->profile;
       return $this->render('index', [
           'profile'=>$profile,
+          'me'=>true,
       ]);
     }
 /*
@@ -179,6 +180,7 @@ class ProfileController extends \yii\web\Controller
               return $this->redirect(['/']);
 
         return $this->render('index', [
+          'me'=>false,
           'profile'=>$profile,
           'accountForm'=>null,
           'profileForm'=>null,

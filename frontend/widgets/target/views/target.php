@@ -109,6 +109,16 @@ echo GridView::widget([
         },
       ],
       [
+        'visible'=>!in_array('writeup', $hidden_attributes),
+        'format'=>'raw',
+        'headerOptions' => ['class' => 'text-center', "style"=>'width: 2em'],
+        'contentOptions' => ['class' => 'text-center'],
+        'encodeLabel'=>false,
+        'label'=>false,
+        //'label'=>'<abbr title="Target has writeups or not?"><i class="fa fa-question-circle" aria-hidden="true"></i></abbr>',
+        'value'=>function($model) {return intval(count($model->writeups)) === 0 ? '' : '<abbr title="Writeups available"><i class="fa fa-question-circle text-primary" style="font-size: 1.2em;"></i></abbr>';},
+      ],
+      [
         'visible'=>!in_array('rootable', $hidden_attributes),
         'attribute'=>'rootable',
         'format'=>'raw',
