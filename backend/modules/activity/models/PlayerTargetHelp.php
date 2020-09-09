@@ -81,7 +81,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Player]].
      *
-     * @return \yii\db\ActiveQuery|PlayerQuery
+     * @return \yii\db\ActiveQuery|Player
      */
     public function getPlayer()
     {
@@ -91,7 +91,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Target]].
      *
-     * @return \yii\db\ActiveQuery|TargetQuery
+     * @return \yii\db\ActiveQuery|Target
      */
     public function getTarget()
     {

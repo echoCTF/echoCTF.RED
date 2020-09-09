@@ -135,7 +135,7 @@ class WriteupController extends Controller
 
     /**
      * Enables a writeups for the player on a the given target
-     * @return string
+     * @return Response|string
      */
     public function actionEnable(int $id)
     {
