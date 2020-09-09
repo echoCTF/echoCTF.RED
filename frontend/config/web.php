@@ -23,9 +23,9 @@ $config=[
       'challenge' => [
           'class' => 'app\modules\challenge\Module',
       ],
-      'tutorial' => [
-          'class' => 'app\modules\tutorial\Module',
-      ],
+//      'tutorial' => [
+//          'class' => 'app\modules\tutorial\Module',
+//      ],
       'help' => [
             'class' => 'app\modules\help\Module',
         ],
@@ -232,8 +232,8 @@ $config=[
                 'site/captcha'=>'site/captcha',
                 'target/<id:\d+>/vs/<profile_id:\d+>'=>'target/default/versus',
                 'target/<id:\d+>/versus/<profile_id:\d+>'=>'target/default/versus',
-                'tutorials' => 'tutorial/default/index',
-                'tutorial/<id:\d+>' => 'tutorial/default/view',
+//                'tutorials' => 'tutorial/default/index',
+//                'tutorial/<id:\d+>' => 'tutorial/default/view',
                 //'target/<id:\d+>/vs/<profile_id:\d+>/badge'=>'target/default/versusBadge',
                 // Network Module
                 //'networks' => 'network/default/index',
