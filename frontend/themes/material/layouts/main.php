@@ -31,23 +31,23 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
     <?php $this->head()?>
 
     <?=Html::csrfMetaTags() ?>
-    <title><?=Html::encode($this->title) ?></title>
+    <title><?=trim(Html::encode($this->title))?></title>
 </head>
-	<body>
-		<?php $this->beginBody() ?>
-		  <div class="wrapper">
-		    <?=$this->render('left.php')?>
-		    <div class="main-panel">
-		    	<?=$this->render('header.php');?>
-			    <div class="content">
-			    	<div class="container<?=$this->_fluid?>">
-                  <?=Noti::widget() ?>
-            			<?=$content ?>
-			    	</div>
-			    </div>
-		    </div>
-		  </div>
-		<?php $this->endBody() ?>
-	</body>
+<body>
+<?php $this->beginBody() ?>
+  <div class="wrapper">
+    <?=$this->render('left.php')?>
+    <div class="main-panel">
+    	<?=$this->render('header.php');?>
+	    <div class="content">
+	    	<div class="container<?=$this->_fluid?>">
+            <?=Noti::widget() ?>
+      			<?=$content ?>
+	    	</div>
+	    </div>
+    </div>
+  </div>
+<?php $this->endBody() ?>
+</body>
 </html>
 <?php $this->endPage() ?>
