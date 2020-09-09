@@ -9,8 +9,7 @@ use yii\behaviors\AttributeTypecastBehavior;
 use yii\base\NotSupportedException;
 use app\modules\gameplay\models\Target;
 use app\modules\frontend\models\Player;
-use app\modules\gameplay\models\TargetQuery;
-use app\modules\frontend\models\PlayerQuery;
+
 /**
  * This is the model class for table "writeup".
  *
@@ -97,7 +96,7 @@ class Writeup extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Player]].
      *
-     * @return \yii\db\ActiveQuery|PlayerQuery
+     * @return \yii\db\ActiveQuery|Player
      */
     public function getPlayer()
     {
@@ -107,7 +106,7 @@ class Writeup extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Target]].
      *
-     * @return \yii\db\ActiveQuery|TargetQuery
+     * @return \yii\db\ActiveQuery|Target
      */
     public function getTarget()
     {
