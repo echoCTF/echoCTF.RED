@@ -3,15 +3,15 @@ namespace app\components;
 
 class echoCTFView extends \yii\web\View
 {
-  public $_title,
-          $_description="An online platform to train your offensive and defensive IT security skills.",
-          $_url,
-          $_image,
-          $_image_width="1200",
-          $_image_height="628",
-          $_card='summary_large_image';
-
+  public $_title;
+  public $_url;
   public $_fluid;
+  public $_image;
+  public $_description="An online platform to train your offensive and defensive IT security skills.";
+  public $_image_width="1200";
+  public $_image_height="628";
+  public $_card='summary_large_image';
+  public $_twitter_handle="@echoCTF";
 
   public function init()
   {
@@ -27,6 +27,11 @@ class echoCTFView extends \yii\web\View
         \Yii::$app->cache->Memcache->set("online:".\Yii::$app->user->id, time(), 0, \Yii::$app->sys->online_timeout);
         $this->saveSession();
     }
+    if(\Yii::$app->sys->twitter_account!==null && \Yii::$app->sys->twitter_account!==false)
+    {
+      $this->_twitter_handle='@'.\Yii::$app->sys->twitter_account;
+    }
+
     parent::init();
   }
 
@@ -80,7 +85,7 @@ class echoCTFView extends \yii\web\View
 
   public function getTwitter_site()
   {
-    return ['name'=>'twitter:site', 'content'=>"@echoCTF"];
+    return ['name'=>'twitter:site', 'content'=>$this->_twitter_handle];
   }
 
   public function getTwitter_title()
