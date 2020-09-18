@@ -148,7 +148,7 @@ class Treasure extends \yii\db\ActiveRecord
       {
         $h=new Hint();
         $h->title=$this->hint;
-        $h->finding_id=$this->id;
+        $h->treasure_id=$this->id;
         $h->player_type=$this->player_type;
         if($h->save())
           return true;
