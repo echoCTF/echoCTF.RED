@@ -52,7 +52,13 @@ Once you've generated your token you can build the images.
 _Keep in mind that this may require a lot of memory to run (our tests are performed on systems with at least 8GB ram)._
 
 ```sh
-GITHUB_OAUTH_TOKEN=MY_TOKEN_HERE docker-compose -f docker-compose-novpn.yml build
+composer config -g github-oauth.github.com "MY_TOKEN_HERE"
+cd backend
+composer install --no-dev --prefer-dist --no-progress --no-suggest
+cd ../frontend
+composer install --no-dev --prefer-dist --no-progress --no-suggest
+cd ..
+docker-compose -f docker-compose-novpn.yml build
 ```
 
 From this point on the installation deviated depending on whether or not you want to have a dedicated ethernet interface for the `private` network, used for communication between `vpn` and `db`.

@@ -41,7 +41,13 @@ about generating a token to use can be found @[Creating a personal access token 
 
 Once you've generated your token you can build the images by executing
 ```sh
-GITHUB_OAUTH_TOKEN=MY_TOKEN_HERE docker-compose build
+composer config -g github-oauth.github.com "MY_TOKEN_HERE"
+cd backend
+composer install --no-dev --prefer-dist --no-progress --no-suggest
+cd ../frontend
+composer install --no-dev --prefer-dist --no-progress --no-suggest
+cd ..
+docker-compose build
 ```
 
 Start the containers
