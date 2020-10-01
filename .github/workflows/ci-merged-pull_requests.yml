@@ -50,16 +50,22 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Enable experimental docker features
+      run: |
+        echo $'{\n    "experimental": true\n}' | sudo tee /etc/docker/daemon.json
+        sudo service docker restart
+
     - name: Build the all-in-one Docker image
-      run: docker build --build-arg GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }} . --file contrib/Dockerfile --tag echoctf.red-all-in-one:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile --tag echoctf.red-all-in-one:$(date +%s)
     - name: Build the DB Docker image
-      run: docker build . --file contrib/Dockerfile-mariadb --tag echoctf.red-db:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-mariadb --tag echoctf.red-db:$(date +%s)
     - name: Build the frontend Docker image
-      run: docker build --build-arg GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }} . --file contrib/Dockerfile-frontend --tag echoctf.red-frontend:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-frontend --tag echoctf.red-frontend:$(date +%s)
     - name: Build the backend Docker image
-      run: docker build --build-arg GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }} . --file contrib/Dockerfile-backend --tag echoctf.red-backend:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-backend --tag echoctf.red-backend:$(date +%s)
     - name: Build the vpn Docker image
-      run: docker build --build-arg GITHUB_OAUTH_TOKEN=${{ secrets.GITHUBOAUTHTOKEN }} . --file contrib/Dockerfile-vpn --tag echoctf.red-vpn:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-vpn --tag echoctf.red-vpn:$(date +%s)
 
     - name: Build the docker-compose stack
       run: docker-compose up -d
