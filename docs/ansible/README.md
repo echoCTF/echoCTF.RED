@@ -67,20 +67,20 @@ to them.
 This allows the distribution of multiple targets on any number of servers on
 the network.
 
-The following example assumes the server is named `dockerd.echoctf.red` with IP
+The following example assumes the server is named `dockerd.example.net` with IP
 address `10.0.160.1` assigned on `eth0`, with a network subnet `10.0.160.0/24`, for
 our targets.
 
 For more information about docker networks take a look at https://docs.docker.com/network/
 
 So lets start by preparing the host specific inventory for our docker server.
-Copy the template `docker-master-template.yml` onto `inventories/dockers/host_vars`
+Copy the template `docker-server-template.yml` onto `inventories/dockers/host_vars`
 ```sh
-cp templates/docker-master-template.yml \
- inventories/dockers/host_vars/dockerd.echoctf.red.yml
+cp templates/docker-server-template.yml \
+ inventories/dockers/host_vars/dockerd.example.net.yml
 ```
 
-Update the new file `inventories/dockers/host_vars/dockerd.echoctf.red.yml` to
+Update the new file `inventories/dockers/host_vars/dockerd.example.net.yml` to
 match your setup and make sure that at the following details are correct
 
 ```yml
@@ -88,7 +88,7 @@ match your setup and make sure that at the following details are correct
 ansible_host: 10.0.160.1
 ansible_user: root
 hostname: dockerd
-fqdn: dockerd.echoctf.red
+fqdn: dockerd.example.net
 mac: xx:xx:xx:xx:xx:xx
 OS: debian
 PACKAGES: []
@@ -114,7 +114,7 @@ ETSCTF_authorized_keys: []
 
 Create a hosts file under `inventories/dockers` for the new server
 ```sh
-echo -e "[dockers]\ndockerd.echoctf.red" >> inventories/dockers/hosts
+echo -e "[dockers]\ndockerd.example.net" >> inventories/dockers/hosts
 ```
 
 Push your changes to the server by running
@@ -154,7 +154,7 @@ The meaning and use of the variables is:
 * `ansible_host` the IP address that the container will be assigned. During
 development (eg while testing `docker build`) the default IP is usually one
 from the `172.17.0.0/24` subnet
-* `DOCKER` The docker host that will run this container (eg `dockerd.echoctf.red`)
+* `DOCKER` The docker host that will run this container (eg `dockerd.example.net`)
 * `mac` A valid and unique mac address. A nice trick to generate mac addresses for your hosts is to run something like the following
 ```sh
 printf  "02:42:%.2x:%.2x:%.2x:%.2x\n" $(echo "IP_ADDRESS_OF_TARGET"|sed -e 's/\./ /g')

@@ -46,9 +46,9 @@ ssh-keygen -t rsa -C "keycomment" -f ssh_keys/ctf_rsa -N ''
 ssh-add ssh_keys/ctf_rsa
 ```
 
-Copy the `docker-master-advanced.yml` to prepare it for `dockerd160`
+Copy the `docker-server-advanced.yml` to prepare it for `dockerd160`
 ```sh
-cp templates/docker-master-advanced.yml inventories/dockers/host_vars/dockerd160.yml
+cp templates/docker-server-advanced.yml inventories/dockers/host_vars/dockerd160.yml
 ```
 
 Modify the file `inventories/dockers/host_vars/dockerd160.yml` to match your settings, for our setup this is
