@@ -1,6 +1,6 @@
 ---
 - name: Cleanup docker servers from containers and pulled images
-  hosts: docker-masters
+  hosts: all
   gather_facts: true
   user: sysadmin
   become: true

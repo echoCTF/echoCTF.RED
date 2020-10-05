@@ -120,7 +120,7 @@ to connect based on the user defined on the `dockerd160.yml` file. The first
 password is for the SSH to connect with the user supplied (eg `sysadmin`) and
 the second is for becoming root through `su`.
 ```sh
-ansible-playbook -K -k -i inventories/dockers playbooks/docker-masters.yml
+ansible-playbook -K -k -i inventories/dockers playbooks/docker-servers.yml
 ```
 
 **NOTE:** The options `-k` asks for ssh password and `-K` asks for the
