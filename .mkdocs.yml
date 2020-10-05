@@ -21,13 +21,14 @@ pages:
     - Docker Servers Setup Guide: DOCKER-SERVERS.md
     - Docker Targets Guide: DOCKER-TARGETS.md
     - Personalize your installation: PERSONALIZING.md
+  - Ansible Playbooks folder: ansible/README.md
   - Administration:
-      - Sysconfig Keys: Sysconfig-Keys.md
-      - Console Commands: Console-Commands.md
-      - Player Commands: console-commands/Player.md
-      - Ssl Commands: console-commands/Ssl.md
-      - Sysconfig Commands: console-commands/Sysconfig.md
-      - Target Commands: console-commands/Target.md
-      - User Commands: console-commands/User.md
+    - Sysconfig Keys: Sysconfig-Keys.md
+    - Console Commands: Console-Commands.md
+    - Player Commands: console-commands/Player.md
+    - Ssl Commands: console-commands/Ssl.md
+    - Sysconfig Commands: console-commands/Sysconfig.md
+    - Target Commands: console-commands/Target.md
+    - User Commands: console-commands/User.md
   - Player Guides:
       - Participants Tutorial: Participants-Tutorial.md
