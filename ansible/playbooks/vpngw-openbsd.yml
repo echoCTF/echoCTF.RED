@@ -33,70 +33,73 @@
       - { name: openvpn, state: "enable"}
       - { name: mysqld, state: "enable"}
     packages:
+      - autoconf-2.69p2
+      - automake-1.16.2
       - curl
       - git
-      - openvpn-2.4.7p1
-      - mariadb-server
-      - php-gd-7.3.16
-      - php-curl-7.3.16
-      - php-intl-7.3.16
-      - php-pdo_mysql-7.3.16
-      - php-zip-7.3.16
-      - composer
       - libmemcached
-      - py3-mysqlclient
       - libtool
-      - autoconf-2.69p2
-      - automake-1.16.1
-      - pecl73-memcached
+      - mariadb-server
+      - openvpn-2.4.9
+      - pecl74-memcached-3.1.3p0
+      - php-curl-7.4.10
+      - php-gd-7.4.10
+      - php-intl-7.4.10
+      - php-pdo_mysql-7.4.10
+      - php-zip-7.4.10
+      - py3-mysqlclient
   vars_prompt:
     - name: "vpngw"
-      prompt: "1/12. OpenVPN gateway hostname or IP?"
+      prompt: "1/13. OpenVPN gateway hostname or IP?"
       default: "vpn.example.red"
       private: no
     - name: "egress_if"
-      prompt: "2/12. Egress network interface (ifconfig egress)?"
+      prompt: "2/13. Egress network interface (ifconfig egress)?"
       default: "em0"
       private: no
     - name: "targets_if"
-      prompt: "3/12. Targets network interface?"
+      prompt: "3/13. Targets network interface?"
       default: "em1"
       private: no
     - name: "targets_if_ipv4"
-      prompt: "4/12. Targets network interface IPv4?"
+      prompt: "4/13. Targets network interface IPv4?"
       default: "10.0.160.254"
       private: no
     - name: "targets_subnet"
-      prompt: "5/12. Targets network subnet?"
+      prompt: "5/13. Targets network subnet?"
       default: "10.0.160.0"
       private: no
     - name: "targets_netmask"
-      prompt: "6/12. Targets network netmask?"
+      prompt: "6/13. Targets network netmask?"
       default: "255.255.255.0"
       private: no
     - name: "echoCTF_VPN_mgmt_passwd"
-      prompt: "7/12. OpenVPN managment interface password?"
+      prompt: "7/13. OpenVPN managment interface password?"
       default: "openvpn"
       private: no
     - name: "offense_network"
-      prompt: "8/12. OpenVPN client range?"
+      prompt: "8/13. OpenVPN client range?"
       default: "10.10.0.0/16"
       private: no
     - name: "db_host"
-      prompt: "9/12. Database Server IP?"
+      prompt: "9/13. Database Server IP?"
       default: "172.24.0.253"
       private: no
     - name: "db_name"
-      prompt: "10/12. Database name?"
+      prompt: "10/13. Database name?"
       default: "echoCTF"
       private: no
     - name: "db_user"
-      prompt: "11/12. Database Server user?"
+      prompt: "11/13. Database Server user?"
       default: "vpnuser"
       private: no
     - name: "db_pass"
-      prompt: "12/12. Database Server user password?"
+      prompt: "12/13. Database Server user password?"
       default: "vpnuserpass"
+      private: no
+    - name: "GITHUB_OAUTH_TOKEN"
+      prompt: "13/13. Provide a GITHUB_OAUTH_TOKEN?"
+      default: "randomtoken"
       private: no
 
   tasks:
@@ -105,7 +108,7 @@
       name: "{{packages}}"
 
   - name: Activate install php modules
-    shell: cp /etc/php-7.3.sample/*.ini /etc/php-7.3/
+    shell: cp /etc/php-7.4.sample/*.ini /etc/php-7.4/
 
 
   - name: Update my.cnf
@@ -117,6 +120,7 @@
     with_dict:
       - event_scheduler: "on"
       - plugin_load_add: "ha_federatedx"
+      - plugin_load_add: "ha_blackhole"
       - wait_timeout: "2880000"
       - interactive_timeout: "2880000"
 
@@ -215,14 +219,31 @@
       content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8',  ];\n"
       dest: "{{playbook_dir}}/../../backend/config/db.php"
 
+  - name: Install composer
+    get_url:
+      url: https://getcomposer.org/composer-stable.phar
+      dest: /usr/local/bin/composer
+      mode: '0555'
+
+  - name: Create php symlink without version
+    file:
+      src: /usr/local/bin/php-7.4
+      dest: /usr/local/bin/php
+      owner: root
+      group: wheel
+      state: link
+
   - name: "configure git to fetch from https:// instead of git://"
     raw: git config --global url."https://".insteadOf "git://"
 
   - name: "configure composer to fetch from https:// instead of git://"
     command: chdir={{playbook_dir}}/../../backend composer config --global github-protocols https
 
+  - name: run composer config
+    command: chdir={{playbook_dir}}/../../backend php -d allow_url_fopen=on /usr/local/bin/composer config -g github-oauth.github.com "{{GITHUB_OAUTH_TOKEN}}"
+
   - name: run composer
-    command: chdir={{playbook_dir}}/../../backend composer install --no-dev --prefer-dist --no-progress --no-suggest
+    command: chdir={{playbook_dir}}/../../backend php -d allow_url_fopen=on /usr/local/bin/composer install --no-dev --prefer-dist --no-progress --no-suggest
 
   - name: "Prepare /etc/hostname.pflog1"
     copy:
@@ -259,7 +280,7 @@
       replace: '{{item.replace}}'
     with_items:
       - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'server 10\.10\.0\.0 255\.255\.0\.0', replace: 'server {{offense_network|ipaddr("network")}} {{offense_network|ipaddr("netmask")}}' }
-      - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'route 10\.0\.160\.0 255\.255\.255\.0', replace: 'route {{target_subnet}} {{target_netmask}}' }
+      - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'route 10\.0\.160\.0 255\.255\.255\.0', replace: 'route {{targets_subnet}} {{targets_netmask}}' }
       - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
 
 
@@ -336,7 +357,7 @@
     with_items:
       - { name: "target/healthcheck", minute: "*/2",  job: "{{playbook_dir}}/../../backend/yii target/healthcheck 1" }
       - { name: "target/cron", minute: "*/4",  job: "{{playbook_dir}}/../../backend/yii target/cron" }
-      - { name: "restart targets up for more than 24h", minute: "*/10",  job: "{{playbook_dir}}/../../backend/yii target/restart" }
+      - { name: "restart targets with 24h uptime or more", minute: "*/10",  job: "{{playbook_dir}}/../../backend/yii target/restart" }
       - { name: "Generate CRL", special_time: "daily",  job: "{{playbook_dir}}/../../backend/yii ssl/generate-crl" }
 
   - name: Set rc scripts order
