@@ -24,7 +24,7 @@ use app\modules\game\models\Headshot;
             'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;'],
         ]);?>
     <?php else: ?>
-      <?php echo Html::a(Url::to(['profile/index', ], 'https'), ['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
+      <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id], 'https'), ['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
             'message'=>sprintf('Checkout the profile of %s at echoCTF.RED', $profile->twitterHandle),
             'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;'],
         ]);?>
