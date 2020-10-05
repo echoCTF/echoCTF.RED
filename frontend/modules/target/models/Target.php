@@ -62,12 +62,12 @@ class Target extends \yii\db\ActiveRecord
   public $ipoctet;
   public $progress;
   public $difficulties=[
-    "easy",
-    "easy/medium",
-    "medium",
-    "medium/advanced",
+    "beginner",
+    "basic",
+    "intermediate",
     "advanced",
-    "hard",
+    "expert",
+    "guru",
     "insanse",
   ];
 
