@@ -21,11 +21,13 @@ The directory structure consists of:
 feeding data to the platform
   - `build-images.yml` Build, tag and push to a private registry your docker images
   - `challenges.yml` and `_challenge.yml` used to feed challenges to the backend
-  - `docker-masters.yml` Configures a docker server to be ready to run our containers
+  - `docker-registry.yml` Configures a docker registry on an OpenBSD server
+  - `docker-servers.yml` Configures a docker server to be ready to run our containers
   - `feed-mui.yml` Feed all the target related data to the database through the
   backend web interface
-  - `rpi-model.yml` Configures a Raspberry Pi to act electronics controller (eg for a smart city model)
+  - `rpi-model.yml` Configures a Raspberry Pi to act as electronics controller (eg for a smart city model)
   - `rpi-targets.yml` Configure a Raspberry Pi to act as a target without docker
+  - `vpngw-openbsd.yml` Configure an OpenBSD server to act as an VPN server with findings
 * `templates/` Template configurations to use as a starting point
 
 The following guide assumes you have Ansible installed and that you have
@@ -39,9 +41,10 @@ The ansible folder holds ansible playbooks and inventories for your docker
 servers and targets, more information about ansible inventories can be found at
 https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
 
-## Using ansible
+## Prepare the inventory
 Before you start make sure the inventory folders for the docker servers and
 targets exists by executing
+
 ```sh
 # for the docker targets containers
 mkdir -p inventories/targets/{host_vars,group_vars}
@@ -49,13 +52,14 @@ mkdir -p inventories/targets/{host_vars,group_vars}
 mkdir -p inventories/dockers/{host_vars,group_vars}
 ```
 
+## Generate SSH keys
 Generate a set of ssh keys that will be used for administering the servers
 ```sh
 mkdir -p ssh_keys/
 ssh-keygen -t rsa -C "keycomment" -f ssh_keys/ctf_rsa -N ''
 ```
 
-### docker servers
+## Docker servers
 Setup a Debian system to be used as docker master (docker server). Docker
 masters are systems that we control remotely in order to run deploy targets
 that are assigned to them.
@@ -115,13 +119,13 @@ echo -e "[dockers]\ndockerd.echoctf.red" >> inventories/dockers/hosts
 
 Push your changes to the server by running
 ```sh
-ansible-playbook -i inventories/dockers playbooks/docker-masters.yml
+ansible-playbook -i inventories/dockers playbooks/docker-servers.yml
 ```
 
 The playbook installs any missing packages and configures the system
 accordingly.
 
-Take a look at the `playbooks/docker-masters.yml` for a list of tasks performed
+Take a look at the `playbooks/docker-servers.yml` for a list of tasks performed
 on the server.
 
 ### docker targets
