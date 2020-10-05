@@ -60,9 +60,9 @@ ssh-keygen -t rsa -C "keycomment" -f ssh_keys/ctf_rsa -N ''
 ```
 
 ## Docker servers
-Setup a Debian system to be used as docker master (docker server). Docker
-masters are systems that we control remotely in order to run deploy targets
-that are assigned to them.
+Configure a Debian system to be used as docker server. Docker servers are
+systems that we control remotely in order to deploy targets that are assigned
+to them.
 
 This allows the distribution of multiple targets on any number of servers on
 the network.
