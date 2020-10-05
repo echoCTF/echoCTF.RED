@@ -4,7 +4,8 @@ This folder holds the structure for the various ansible related tasks that can
 be used to automate certain aspects of setting up and maintaining a single or
 multiple CTF networks.
 
-The directory structure is as follows
+The directory structure consists of:
+
 * `Dockerfiles/` Holds the targets to be build, with each target in its own directory.
  - `example/` an example target to use as a starting point for your own
 * `files/` configuration template files, none of these is currently in use
