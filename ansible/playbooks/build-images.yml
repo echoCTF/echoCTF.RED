@@ -13,7 +13,7 @@
       build:
         path: "../Dockerfiles/{{container.build}}"
         args: "{{container.buildargs|default(omit)}}"
-        #nocache: yes
+        nocache: yes
         pull: no
       force: "{{force_build|default('no')}}"
       rm: yes
