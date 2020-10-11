@@ -159,11 +159,11 @@ class PlayerController extends Controller {
   /*
     Register Users and generate OpenVPN keys and settings
   */
-  public function actionRegister($username, $email, $fullname, $password=false, $player_type="offense", $active=false, $academic=false, $team_name=false, $baseIP="10.10.0.0", $skip=0)
+  public function actionRegister($username, $email, $fullname, $password=false, $player_type="offense", $active=false, $academic=false, $team_name=false, $approved=0, $baseIP="10.10.0.0", $skip=0)
   {
-    $player_network=ip2long($baseIP) + ((Player::find()->count() + $skip) * 4);
+  //  $player_network=ip2long($baseIP) + ((Player::find()->count() + $skip) * 4);
     echo "Registering: ", $email, "\n";
-    echo "Player Network: ", long2ip($player_network), "\n";
+    //echo "Player Network: ", long2ip($player_network), "\n";
     $trans=Yii::$app->db->beginTransaction();
     try
     {
@@ -188,34 +188,51 @@ class PlayerController extends Controller {
       $player->status=10;
       $player->auth_key=Yii::$app->security->generateRandomString();
       $player->activkey=Yii::$app->security->generateRandomString(20);
+
       if(!$player->save())
-        throw new ConsoleException('Failed to save player:'.$player->username.'. '.implode(', ', $player->getErrors()));
+      {
+        print_r($player->getErrors());
+        throw new ConsoleException('Failed to save player:'.$player->username);
+      }
+
       $playerSsl=new PlayerSsl();
       $playerSsl->player_id=$player->id;
       $playerSsl->generate();
       if($playerSsl->save() !== false)
         $playerSsl->refresh();
 
+      //var_dump($team_name);
+
       if($team_name !== false)
       {
         $team=Team::findOne(['name'=>$team_name]);
-        if($team !== null)
+        if($team === null)
         {
           $team=new Team();
           $team->name=$team_name;
-          $team->academic=$academic;
+          $team->academic=$player->academic;
           $team->token=Yii::$app->security->generateRandomString(20);
           $team->owner_id=$player->id;
           $team->description=$player->username;
           $team->save(false);
+          $ts=new \app\modules\activity\models\TeamScore();
+          $ts->team_id=$team->id;
+          $ts->points=0;
+          $ts->save();
         }
 
-        if($team && $team->id && $team->owner_id != $player->id)
+        if($team !== NULL)
         {
           $tp=new TeamPlayer;
           $tp->player_id=$player->id;
           $tp->team_id=$team->id;
-          $tp->approved=0;
+          if($team->owner_id===$player->id)
+          {
+            $tp->approved=1;
+          }
+          else {
+            $tp->approved=intval($approved);
+          }
           if(!$tp->save())
             printf("Error saving team player\n");
         }
