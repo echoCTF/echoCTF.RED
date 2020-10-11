@@ -13,9 +13,9 @@
     delegate_to: 127.0.0.1
     register: target
     uri:
-      url: "{{mui.URL}}/index.php?r=restapi/target/get-by-ip&ip={{ansible_host}}"
+      url: "{{mui.URL}}/index.php?r=restapi/target/get-by-ip&ip={{ansible_host}}&access-token={{TOKEN}}"
       validate_certs: false
-      method: get
+      method: GET
     tags:
       - UI
 
@@ -42,7 +42,7 @@
     tags:
       - UI
     uri:
-      url: "{{mui.URL}}/index.php?r=restapi/target/create"
+      url: "{{mui.URL}}/index.php?r=restapi/target/create&access-token={{TOKEN}}"
       method: POST
       validate_certs: false
       body_format: json
@@ -57,11 +57,12 @@
         mac: '{{mac}}'
         net: '{{container.networks[0].name}}'
         server: 'tcp://{{DOCKER}}:2376'
-        active: '{{active|default("0")}}'
-        status: 'powerup'
+        active: "{{ '0' if (scheduled_at is defined) else '1' }}"
+#        active: '{{active|default("0")}}'
+        status: "{{ 'powerup' if (scheduled_at is defined) else 'online' }}"
         dns: "{{container.dns_servers[0]|default('8.8.8.8')}}"
-        scheduled_at: "{{scheduled_at| default('%Y-%m-%d 00:00:00' | strftime( ( ansible_date_time.epoch | int ) ) ) }}"
-#        scheduled_at: "{{ '%Y-%m-%d 00:00:00' | strftime( ( ansible_date_time.epoch | int ) + ( 86400 * 7 )  ) }}"
+        scheduled_at: "{{ sceduled_at|default(omit) }}"
+#        scheduled_at: "{{scheduled_at| default('%Y-%m-%d 00:00:00' | strftime( ( ansible_date_time.epoch | int ) ) ) }}"
         image: '{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{hostname | lower}}:{{container.tag|default("latest")}}'
       status_code: 201
 
@@ -79,7 +80,7 @@
       - UI
     when: target_id is defined and container.env is defined #and item.hint is defined
     uri:
-      url: "{{mui.URL}}/index.php?r=restapi/targetvariable/create"
+      url: "{{mui.URL}}/index.php?r=restapi/targetvariable/create&access-token={{TOKEN}}"
       validate_certs: false
       method: POST
       body_format: json
@@ -99,7 +100,7 @@
       - UI
     when: target_id is defined and ETSCTF_FINDINGS is defined #and item.hint is defined
     uri:
-      url: "{{mui.URL}}/index.php?r=restapi/finding/create"
+      url: "{{mui.URL}}/index.php?r=restapi/finding/create&access-token={{TOKEN}}"
       validate_certs: false
       method: POST
       body_format: json
@@ -121,7 +122,7 @@
     with_items: "{{ETSCTF_TREASURES}}"
     when: target_id is defined and ETSCTF_TREASURES is defined
     uri:
-      url: "{{mui.URL}}/index.php?r=restapi/treasure/create-with-actions"
+      url: "{{mui.URL}}/index.php?r=restapi/treasure/create-with-actions&access-token={{TOKEN}}"
       validate_certs: false
       method: POST
       body_format: json
