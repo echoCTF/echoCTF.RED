@@ -134,6 +134,20 @@ class TeamplayerController extends Controller
     }
 
     /**
+     * Toggles an existing TeamPlayer approval flag.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionToggleApproved($id)
+    {
+        $model=$this->findModel($id);
+        $model->updateAttributes(['approved' => !$model->approved]);
+
+        return $this->redirect(['index']);
+    }
+
+    /**
      * Finds the TeamPlayer model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
