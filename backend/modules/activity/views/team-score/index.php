@@ -27,9 +27,9 @@ $this->params['breadcrumbs'][]=$this->title;
             ['class' => 'yii\grid\SerialColumn'],
             'team_id',
             [
-              'attribute' => 'team',
+              'attribute' => 'team.name',
               'label'=>'Team',
-              'value'=> function($model) {return sprintf("id:%d %s", $model->team_id, $model->team->name);},
+              //'value'=> function($model) {return sprintf("id:%d %s", $model->team_id, $model->team->name);},
             ],
             'points',
 
