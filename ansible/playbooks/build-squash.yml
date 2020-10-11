@@ -1,0 +1,37 @@
+- name: Build with squash and tag docker target images
+  hosts: targets
+  gather_facts: false
+  serial: 1
+  connection: local
+  vars:
+    string: ""
+    pushtag: "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.name|lower}}{{ ':'+container.tag|default(omit)}}"
+  tasks:
+  - set_fact:
+        string: "{{ string }}{{ (index > 0)|ternary(' ','') }}--build-arg {{ item.key }}={{ item.value }}"
+    loop: "{{  container.buildargs|dict2items }}"
+    loop_control:
+      index_var: index
+    when: container.buildargs is defined
+
+  - set_fact:
+        command_str: docker build --rm --force-rm --squash -q --no-cache {{string}} . -t "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.name|lower}}{{ ':'+container.tag|default(omit)}}"
+
+  - name: Build image
+    command: "{{command_str}}"
+    args:
+      chdir: "../Dockerfiles/{{container.build}}"
+    delegate_to: "{{BUILDER}}"
+
+  - name: Push image
+    command: docker push {{pushtag}}
+    delegate_to: "{{BUILDER}}"
+    tags:
+      - push
+
+  - name: Remove image
+    command: docker rmi -f "{{pushtag}}"
+    delegate_to: "{{BUILDER}}"
+    tags:
+      - push
+      - rmi
