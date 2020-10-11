@@ -19,6 +19,11 @@ class HeadshotQuery extends \yii\db\ActiveQuery
         return $this->addSelect(['*', 'avg(timer) as average'])->andWhere(['player_id'=>$player_id]);
     }
 
+    public function academic($academic)
+    {
+        return $this->joinWith(['player'])->andWhere(['player.academic'=>$academic]);
+    }
+
     public function mine()
     {
         return $this->andWhere(['player_id'=>\Yii::$app->user->id]);
