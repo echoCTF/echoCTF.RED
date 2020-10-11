@@ -14,10 +14,10 @@
       challenge_yml: "{{CHALLENGE_YML}}"
 
 
-  - name: "Processing challenges/*.yml"
-    when: CHALLENGE_YML is not defined
-    include: _challenge.yml
-    vars:
-      challenge_yml: "{{item}}"
-    with_fileglob:
-      - "../challenges/*.yml"
+#  - name: "Processing challenges/*.yml"
+#    when: CHALLENGE_YML is not defined
+#    include: _challenge.yml
+#    vars:
+#      challenge_yml: "{{item}}"
+#    with_fileglob:
+#      - "../challenges/*.yml"
