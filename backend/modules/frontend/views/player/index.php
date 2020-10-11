@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][]=$this->title;
             [
               'attribute'=>'avatar',
               'format'=>'html',
-              'value'=>function($data) { return Html::img('https://'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar,['width' => '50px']);}
+              'value'=>function($data) { return Html::img('//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar,['width' => '50px']);}
             ],
 
             'username',
@@ -64,6 +64,7 @@ $this->params['breadcrumbs'][]=$this->title;
             ],
             'online:boolean',
             'active:boolean',
+            'academic:boolean',
             'status',
             'created',
             //'ts',
