@@ -118,6 +118,7 @@ class PlayerController extends Controller
         $trans=Yii::$app->db->beginTransaction();
         try
         {
+          $model->scenario="create";
           if($model->load(Yii::$app->request->post()) && $model->save())
           {
               $playerSsl=new PlayerSsl();
@@ -325,8 +326,28 @@ class PlayerController extends Controller
      */
     public function actionToggleAcademic($id)
     {
+      $trans=Yii::$app->db->beginTransaction();
+      try
+      {
         $model=$this->findModel($id);
         $model->updateAttributes(['academic' => !$model->academic]);
+        if($model->teamPlayer!==NULL)
+        {
+          $model->teamPlayer->delete();
+        }
+
+        if($model->team!==null)
+        {
+          $model->team->delete();
+        }
+        $trans->commit();
+        Yii::$app->session->setFlash('success', 'User ['.$model->username.'] academic set to '.$model->academic);
+      }
+      catch(\Exception $e)
+      {
+        $trans->rollBack();
+        Yii::$app->session->setFlash('error', 'Failed to toggle academic flag for player');
+      }
 
         return $this->redirect(['index']);
     }
