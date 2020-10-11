@@ -1,0 +1,21 @@
+- name: Run a target container with given specs
+  hosts: targets
+  gather_facts: false
+  serial: 1
+  connection: local
+  vars:
+    pushtag: "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.name|lower}}{{ ':'+container.tag|default(omit)}}"
+  tasks:
+
+  - name: "run containers"
+    docker_container:
+      name: "{{hostname}}"
+      image: "{{pushtag}}"
+      state: "started"
+      volumes: "{{ container.volumes | default(omit) }}"
+      hostname: "{{container.hostname| default(omit)}}"
+      domainname: "{{ container.domainname | default(omit) }}"
+      dns: "{{ container.dns | default(omit) }}"
+      env: "{{ container.env | default(omit) }}"
+      cleanup: yes
+      restart_policy: "unless-stopped"
