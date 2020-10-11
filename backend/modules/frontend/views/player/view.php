@@ -50,9 +50,17 @@ $this->params['breadcrumbs'][]=$this->title;
             'active:boolean',
             'status',
             'type',
-            'activkey',
+            [
+              'attribute'=>'activkey',
+              'format'=>'raw',
+              'value'=>function($model){if(!empty($model->activkey)) return Html::a($model->activkey,'//'.Yii::$app->sys->offense_domain.'/verify-email?token='.$model->activkey,['target'=>'_blank']);}
+            ],
             'auth_key',
-            'verification_token',
+            [
+              'attribute'=>'verification_token',
+              'format'=>'raw',
+              'value'=>function($model){if(!empty($model->verification_token)) return Html::a($model->verification_token,'//'.Yii::$app->sys->offense_domain.'/verify-email?token='.$model->verification_token,['target'=>'_blank']);}
+            ],
             'password_reset_token',
             'created',
             'ts',
