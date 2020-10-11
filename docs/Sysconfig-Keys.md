@@ -20,6 +20,9 @@ Not implemented on current code-base but are going to
 * `offense_registered_tag` PF tag used for registered offense users
 * `defense_registered_tag` PF tag used for registered defense users
 * _`footer_logos`_: HTML code to display logos for the event on the footer of the page. (PENDING)
+* `site_description`: Text to be displayed on meta description and social media tags about the site
+* `twitter_account`: The twitter account to link tweets to
+* `twitter_hashtags`: The twitter hashtags to include in the tweets
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
