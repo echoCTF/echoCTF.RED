@@ -79,4 +79,18 @@ class PlayerRank extends \yii\db\ActiveRecord
   {
     return $this->hasOne(Player::class, ['id' => 'player_id']);
   }
+  public function getUsername()
+  {
+    return $this->player->username;
+  }
+
+  public function getAvatar()
+  {
+    return '/images/avatars/'.$this->player->profile->avatar;
+  }
+  public static function find()
+  {
+      return new PlayerRankQuery(get_called_class());
+  }
+
 }
