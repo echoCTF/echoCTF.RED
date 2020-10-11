@@ -38,7 +38,26 @@ $this->params['breadcrumbs'][]=$this->title;
             ],
             'approved:boolean',
             'ts',
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+              'class' => 'yii\grid\ActionColumn',
+              'template' => '{toggle-approved} '.'{view} {update} {delete}',
+              'buttons' => [
+                'toggle-approved' => function($url) {
+                    return Html::a(
+                        '<span class="glyphicon glyphicon-education"></span>',
+                        $url,
+                        [
+                            'title' => 'Toggle membership approved flag',
+                            'data-pjax' => '0',
+                            'data-method' => 'POST',
+                            'data'=>['confirm'=>'Are you sure you want to toggle the approved flag for this user?']
+
+                        ]
+                    );
+                },
+              ]
+
+            ],
         ],
     ]);?>
 
