@@ -92,9 +92,10 @@ class Player extends \yii\db\ActiveRecord
             [['academic'], 'boolean'],
             [['email'], 'filter', 'filter'=>'strtolower'],
             [['activkey'], 'string', 'max' => 32],
+            [['auth_key'], 'string', 'max' => 32],
             [['type'], 'default', 'value' => 'offense'],
             [['status'], 'default', 'value' => self::STATUS_ACTIVE],
-            [['activkey'], 'default', 'value' => Yii::$app->security->generateRandomString()],
+            [['activkey'], 'default', 'value' => Yii::$app->security->generateRandomString(), 'on' => 'create'],
             [['username', 'fullname', 'email', 'new_password', 'activkey'], 'string', 'max' => 255],
             [['username'], 'unique'],
             [['new_password', 'password'], 'safe'],
@@ -276,9 +277,9 @@ class Player extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getTeams()
+    public function getTeam()
     {
-        return $this->hasMany(Team::class, ['owner_id' => 'id']);
+        return $this->hasOne(Team::class, ['owner_id' => 'id']);
     }
 
     /**
@@ -287,14 +288,6 @@ class Player extends \yii\db\ActiveRecord
     public function getTeamPlayer()
     {
         return $this->hasOne(TeamPlayer::class, ['player_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTeams0()
-    {
-        return $this->hasOne(Team::class, ['id' => 'team_id'])->viaTable('team_player', ['player_id' => 'id']);
     }
 
     /**
