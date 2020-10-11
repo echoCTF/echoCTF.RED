@@ -27,7 +27,7 @@ class SslController extends Controller {
     $csr=openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'x509_extensions'=>'v3_ca', 'config'=>__DIR__.'/../config/CA.cnf', 'encrypt_key'=>false));
 
     // sign csr
-    $x509=openssl_csr_sign($csr, null, $privkey, $days=365, array('digest_alg' => 'sha256', 'config'=>__DIR__.'/../config/CA.cnf', 'encrypt_key'=>false));
+    $x509=openssl_csr_sign($csr, null, $privkey, $days=3650, array('digest_alg' => 'sha256', 'config'=>__DIR__.'/../config/CA.cnf', 'encrypt_key'=>false));
 
     openssl_csr_export($csr, $csrout);
     openssl_x509_export($x509, $crtout);
@@ -37,7 +37,6 @@ class SslController extends Controller {
     $cacrt=Sysconfig::findOne('CA.crt');
     $catxtcrt=Sysconfig::findOne('CA.txt.crt');
     $cakey=Sysconfig::findOne('CA.key');
-
     if($cacsr === null)  $cacsr=new Sysconfig;
     if($cacrt === null)  $cacrt=new Sysconfig;
     if($catxtcrt === null)  $catxtcrt=new Sysconfig;
@@ -87,7 +86,7 @@ class SslController extends Controller {
     file_put_contents($tmpCAcert, Yii::$app->sys->{'CA.crt'});
 
     // Generate a self-signed cert, valid for 365 days
-    $x509=openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256', 'config'=>\Yii::getAlias('@appconfig').'/CA.cnf', 'x509_extensions'=>'server_cert'), 0);
+    $x509=openssl_csr_sign($csr, $CAcert, $CAprivkey, 3650, array('digest_alg'=>'sha256', 'config'=>\Yii::getAlias('@appconfig').'/CA.cnf', 'x509_extensions'=>'server_cert'), 0);
 
     openssl_csr_export($csr, $csrout);
     openssl_x509_export($x509, $certout, false);
@@ -110,16 +109,26 @@ class SslController extends Controller {
    */
   public function actionGenPlayerCerts($email, $fileout=false) {
     $player=Player::findOne(['email'=>$email]);
-    if($player === NULL || $player->playerSsl === null) return 0;
-    $player->playerSsl->generate();
-    $player->playerSsl->save();
+    if($player === NULL) return 0;
+    if($player->playerSsl === null)
+    {
+      $playerSsl=new PlayerSsl;
+      $playerSsl->player_id=$player->id;
+    }
+    else
+    {
+      $playerSsl=$player->playerSsl;
+    }
+
+    $playerSsl->generate();
+    $playerSsl->save();
 
     if((bool) $fileout)
     {
-      file_put_contents($player->username.".csr", $player->playerSsl->csr);
-      file_put_contents($player->username.".txt.crt", $player->playerSsl->txtcrt);
-      file_put_contents($player->username.".crt", $player->playerSsl->crt);
-      file_put_contents($player->username.".key", $player->playerSsl->privkey);
+      file_put_contents($player->username.".csr", $playerSsl->csr);
+      file_put_contents($player->username.".txt.crt", $playerSsl->txtcrt);
+      file_put_contents($player->username.".crt", $playerSsl->crt);
+      file_put_contents($player->username.".key", $playerSsl->privkey);
     }
     return 0;
   }
@@ -129,18 +138,23 @@ class SslController extends Controller {
   {
     foreach(Player::find()->all() as $player)
     {
-      if(!($player->playerSsl instanceof PlayerSsl))
+      if($player->playerSsl instanceof PlayerSsl)
       {
-        $player->playerSsl->generate();
-        $player->playerSsl->save();
-
-        if((bool) $fileout)
-        {
-          file_put_contents($player->username.".csr", $player->playerSsl->csr);
-          file_put_contents($player->username.".txt.crt", $player->playerSsl->txtcrt);
-          file_put_contents($player->username.".crt", $player->playerSsl->crt);
-          file_put_contents($player->username.".key", $player->playerSsl->privkey);
-        }
+        $playerSsl=$player->playerSsl;
+      }
+      else
+      {
+        $playerSsl=new PlayerSsl;
+        $playerSsl->player_id=$player->id;
+      }
+      $playerSsl->generate();
+      $playerSsl->save();
+      if((bool) $fileout)
+      {
+        file_put_contents($player->username.".csr", $playerSsl->csr);
+        file_put_contents($player->username.".txt.crt", $playerSsl->txtcrt);
+        file_put_contents($player->username.".crt", $playerSsl->crt);
+        file_put_contents($player->username.".key", $playerSsl->privkey);
       }
     }
   }
