@@ -14,8 +14,9 @@ use app\modules\frontend\models\Team;
 
     <?php $form=ActiveForm::begin();?>
 
+  <?php if($model->isNewRecord):?>
     <?= $form->field($model, 'team_id')->dropDownList(ArrayHelper::map(Team::find()->leftJoin('team_score', 'team_score.team_id = team.id')->where(['team_score.team_id' => null])->all(), 'id', 'name'), ['prompt'=>'Select team'])->Label('Team')->hint('Choose the Team to create score entry')?>
-
+  <?php endif;?>
     <?= $form->field($model, 'points')->textInput() ?>
 
     <div class="form-group">
