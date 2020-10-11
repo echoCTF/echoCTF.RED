@@ -8,7 +8,7 @@
   delegate_to: 127.0.0.1
   register: creation
   uri:
-    url: "{{mui.URL}}/index.php?r=restapi/challenge/create-bundle"
+    url: "{{mui.URL}}/index.php?r=restapi/challenge/create-bundle&access-token={{TOKEN}}"
     method: POST
     validate_certs: false
     body_format: json
@@ -19,9 +19,9 @@
   when: creation.json is defined and creation.json.challenge_id is defined and challenge.filename is defined and challenge.filename != ""
   delegate_to: 127.0.0.1
   uri:
-    url: "{{mui.URL}}/index.php?r=restapi/challenge/upload&challenge_id={{creation.json.challenge_id}}"
+    url: "{{mui.URL}}/index.php?r=restapi/challenge/upload&challenge_id={{creation.json.challenge_id}}&access-token={{TOKEN}}"
     method: PUT
-    src: "../challenges/{{challenge.filename}}"
+    src: "{{challenge_yml|dirname}}/{{challenge.filename}}"
     validate_certs: false
     body_format: json
     status_code: 201
