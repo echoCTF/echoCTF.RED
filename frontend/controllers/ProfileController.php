@@ -213,10 +213,10 @@ class ProfileController extends \yii\web\Controller
         $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
         if($this->HandleUpload($profileForm->uploadedAvatar))
         {
-          $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profileForm->avatar));
+          $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s.png',$profile->id));
           $profileForm->uploadedAvatar->saveAs($fname);
           $profileForm->uploadedAvatar=null;
-          $profileForm->approved_avatar=false;
+          $profileForm->approved_avatar=true;
         }
         $profileForm->save();
         $success[]="Profile updated";
