@@ -26,6 +26,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'activkey')->textInput(['maxlength' => true])->hint('The activation key, generated automatically by the application. TODO') ?>
 
+    <?= $form->field($model, 'auth_key')->textInput(['maxlength' => true])->hint('The authentication key used for cookie validation. Generated automatically by the application if empty.') ?>
+
     <?= $form->field($model, 'active')->checkbox()->hint('Whether the player is active or not') ?>
 
     <?= $form->field($model, 'status')->dropDownList(['0' => 'Disabled', '9' => 'Banned', '10' => 'Enabled'], ['prompt' => 'Choose player status'])->hint('Account status') ?>
