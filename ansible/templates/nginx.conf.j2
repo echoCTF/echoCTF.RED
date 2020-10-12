@@ -1,0 +1,131 @@
+user                      {{item.user}};
+worker_processes          5;
+worker_rlimit_nofile	1024;
+error_log  syslog:server=unix:/dev/log,severity=notice;
+pid                       logs/{{item.domain}}-nginx.pid;
+
+events {
+    worker_connections    1024;
+}
+
+
+http {
+    include               mime.types;
+    default_type          application/octet-stream;
+    index                 /index.php;
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    client_body_temp_path /cache/client_body_temp 1 2;
+	  scgi_temp_path /cache/scgi_temp 1 2;
+	  uwsgi_temp_path /cache/uwsgi_temp 1 2;
+	  fastcgi_temp_path /cache/fastcgi_temp 1 2;
+	  proxy_temp_path /cache/proxy_temp 1 2;
+
+
+
+	access_log  syslog:server=unix:/dev/log,severity=notice main;
+    #tcp_nopush           on;
+    keepalive_timeout     65;
+    gzip                  on;
+    server_tokens         off;
+
+    server {
+        listen              {{item.ip}}:80;
+        server_name         {{item.domain}} {{item.ip}} default _ "";
+        return 302 https://{{item.domain}};
+    }
+
+    server {
+        listen                    	{{item.ip}}:443;
+        server_name         		    default {{item.ip}} _ "";
+        ssl                       	on;
+        ssl_prefer_server_ciphers 	on;
+        ssl_session_timeout       	5m;
+
+        ssl_certificate           /etc/nginx/{{item.domain}}-server.crt;
+        ssl_certificate_key       /etc/nginx/{{item.domain}}-server.key;
+
+        ssl_ciphers               'AES256+EECDH:AES256+EDH:!aNULL';
+        ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+        ssl_session_cache         builtin:1000  shared:SSL:10m;
+
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains";
+        add_header X-Frame-Options DENY;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+        return 302 $scheme://{{item.domain}};
+    }
+
+    server {
+        listen                    {{item.ip}}:443;
+        server_name               {{item.domain}} www.{{item.domain}};
+        root                      {{item.root}};
+        ssl                       on;
+        ssl_prefer_server_ciphers on;
+        ssl_session_timeout       5m;
+
+        ssl_certificate           /etc/nginx/{{item.domain}}-server.crt;
+        ssl_certificate_key       /etc/nginx/{{item.domain}}-server.key;
+        ssl_dhparam               /etc/ssl/private/dhparam.pem;
+
+        ssl_ciphers               'AES256+EECDH:AES256+EDH:!aNULL';
+        ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+        ssl_session_cache         builtin:1000  shared:SSL:10m;
+
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains";
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+        add_header X-Frame-Options DENY;
+        error_page          404               /404.html;
+        error_page          500 502 503 504   /50x.html;
+
+        location /contrib {
+        	autoindex on;
+        }
+
+        location ~ /\.ht {
+            deny  all;
+        }
+        location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+            try_files $uri =404;
+        }
+
+        location ~* \.(?:ico|css|js|gif|jpe?g|png|xml|svg|txt|zip|tgz|exe)$ {
+            access_log        off;
+            log_not_found off;
+            expires 1M;
+            add_header Cache-Control "public";
+        }
+
+        set $yii_bootstrap "/index.php";
+
+        location / {
+                index  index.html index.php;
+                try_files $uri $uri/ /index.php?$args;
+        }
+
+        location ~ \.php$ {
+            fastcgi_split_path_info  ^(.+\.php)(.*)$;
+
+            #let yii catch the calls to unexising PHP files
+            set $fsn /$yii_bootstrap;
+            set $yiiargs r=$request_uri;
+            if (-f $document_root$fastcgi_script_name){
+                set $fsn $fastcgi_script_name;
+                set $yiiargs $query_string;
+            }
+
+            fastcgi_pass   127.0.0.1:9001;
+            include fastcgi_params;
+            fastcgi_param  SCRIPT_FILENAME  $document_root$fsn;
+
+            #PATH_INFO and PATH_TRANSLATED can be omitted, but RFC 3875 specifies them for CGI
+            fastcgi_param  PATH_INFO        $fastcgi_path_info;
+            fastcgi_param  PATH_TRANSLATED  $document_root$fsn;
+            fastcgi_param QUERY_STRING $yiiargs;
+        }
+
+    }
+}
