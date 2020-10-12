@@ -1,0 +1,13 @@
+<?php
+return [
+//            'class' => 'yii\caching\FileCache',
+    'class' => 'yii\caching\MemCache',
+    'useMemcached' => true,
+    'servers' => [
+      [
+        'host' => '{{item.host}}',
+        'port' => {{item.port}},
+        'weight' => 60,
+      ]
+    ],
+];
