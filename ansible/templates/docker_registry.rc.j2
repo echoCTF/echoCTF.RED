@@ -1,0 +1,44 @@
+#!/bin/ksh
+#
+# $OpenBSD: rc.template,v 1.12 2018/01/11 19:30:18 rpe Exp $
+
+export GOPATH={{registry.home}}/go
+daemon="$GOPATH/bin/registry"
+daemon_flags="serve /etc/docker-registry.yml"
+#daemon_rtable=0
+#daemon_timeout="30"
+daemon_user="{{registry.user}}"
+export REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY={{registry.home}}/registry
+#$GOPATH/bin/registry --version
+#$GOPATH/bin/registry serve $GOPATH/src/github.com/docker/distribution/cmd/registry/config-example.yml
+
+. /etc/rc.d/rc.subr
+
+#pexp="${daemon}${daemon_flags:+ ${daemon_flags}}"
+#rc_bg= # (undefined)
+#rc_reload= # (undefined)
+#rc_usercheck=YES
+
+#rc_pre() {
+#}
+
+rc_start() {
+   nohup ${rcexec} "${daemon} ${daemon_flags}" >/dev/null 2>&1 &
+}
+
+#rc_check() {
+#	pgrep -T "${daemon_rtable}" -q -xf "${pexp}"
+#}
+
+#rc_reload() {
+#	pkill -HUP -T "${daemon_rtable}" -xf "${pexp}"
+#}
+
+#rc_stop() {
+#	pkill -T "${daemon_rtable}" -xf "${pexp}"
+#}
+
+#rc_post() {
+#}
+
+rc_cmd $1
