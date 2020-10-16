@@ -57,7 +57,7 @@ RUN set -ex; \
     mysql -e "update user set plugin='mysql_native_password' where user='root'" mysql; \
     mysql -e "GRANT ALL PRIVILEGES ON echoCTF.* TO '$VPNUSER'@'%' IDENTIFIED BY '$VPNUSERPASS'" mysql;\
     echo "init_file=/etc/mysql/mysql-init.sql" >>/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
-    sed -e "s/^-- #//g" contrib/mysql-init.sql >/etc/mysql/mysql-init.sql; \
+    echo "CALL echoCTF.init_mysql();"  >/etc/mysql/mysql-init.sql; \
     service mysql stop; \
     rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
 

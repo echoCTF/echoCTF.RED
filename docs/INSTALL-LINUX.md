@@ -50,7 +50,7 @@ mysql echoCTF<schemas/echoCTF.sql
 mysql echoCTF<schemas/echoCTF-routines.sql
 mysql echoCTF<schemas/echoCTF-triggers.sql
 mysql echoCTF<schemas/echoCTF-events.sql
-sed -e "s/^-- #//g" contrib/mysql-init.sql >/etc/mysql/mysql-init.sql
+cp contrib/mysql-init.sql /etc/mysql/mysql-init.sql
 ```
 
 ### Copy the sample configuration files and update to reflect your system
