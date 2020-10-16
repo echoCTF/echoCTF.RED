@@ -170,7 +170,8 @@ ping -c 1 172.24.0.253 # the echoctfred_db container
 mysql -uvpnuser -pvpnuserpass -h 172.24.0.253 -e "SELECT user();" echoCTF
 ```
 
-Re-run the `vpngw-openbsd.yml` playbook and make sure you use the internal IP for the database server.
+Re-run the `ansible/runonce/vpngw-openbsd.yml` playbook on your vpn server and
+make sure you use the internal IP for the database server.
 
 If you are using virtual machines make sure that you allow promiscuous mode to
 the interface you dedicate for the macvlan bridge.

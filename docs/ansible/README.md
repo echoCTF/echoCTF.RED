@@ -27,6 +27,7 @@ feeding data to the platform
   backend web interface
   - `rpi-model.yml` Configures a Raspberry Pi to act as electronics controller (eg for a smart city model)
   - `rpi-targets.yml` Configure a Raspberry Pi to act as a target without docker
+* `runonce/` Playbooks used to setup specific operations for servers. These playbooks are usually run only once during the server setups.
   - `vpngw-openbsd.yml` Configure an OpenBSD server to act as an VPN server with findings
 * `templates/` Template configurations to use as a starting point
 
