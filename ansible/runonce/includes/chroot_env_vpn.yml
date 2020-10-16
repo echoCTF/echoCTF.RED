@@ -1,0 +1,24 @@
+---
+CHROOT_ENV_VPN:
+- { src: "/bin/sh", mode: "0555" , owner: root, group: wheel }
+- { src: "/bin/ksh", mode: "0555" , owner: root, group: wheel }
+- { src: "/bin/date", mode: "0555" , owner: root, group: wheel }
+- { src: "/bin/echo", mode: "0555" , owner: root, group: wheel }
+- { src: "/var/run/ld.so.hints", mode: "0555", owner: root, group: wheel }
+- { src: "/usr/local/bin/mysql", mode: "0555", owner: root, group: wheel }
+- { src: "/usr/bin/egrep", mode: "0555" , owner: root, group: wheel }
+- { src: "/usr/bin/nc", mode: "0555" , owner: root, group: wheel }
+- { src: "/usr/local/lib/mysql/libmysqlclient.so.28.0", mode: "0444" }
+- { src: "/usr/libexec/ld.so", mode: "0444" , owner: root, group: wheel }
+- { src: "/usr/lib/libc.so.{{versions.libc}}",  mode: "0444" , owner: root, group: wheel }
+- { src: "/usr/lib/libutil.so.{{versions.libutil}}", mode: "0444" }
+- { src: "/usr/lib/libcrypto.so.{{versions.libcrypto}}", mode: "0444" }
+- { src: "/usr/lib/libz.so.5.0", mode: "0444" }
+- { src: "/usr/lib/libreadline.so.4.0", mode: "0444" }
+- { src: "/usr/lib/libcurses.so.14.0", mode: "0444" }
+- { src: "/usr/lib/libpthread.so.26.1", mode: "0444" }
+- { src: "/usr/lib/libc++.so.4.0", mode: "0444" }
+- { src: "/usr/lib/libc++abi.so.2.1", mode: "0444" }
+- { src: "/usr/lib/libm.so.10.1", mode: "0444" }
+- { src: "/usr/lib/libssl.so.48.1", mode: "0444" }
+- { src: "/usr/lib/libtls.so.20.1", mode: "0444" }

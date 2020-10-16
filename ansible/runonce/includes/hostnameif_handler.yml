@@ -1,0 +1,15 @@
+---
+- name: "Removing existing hostname.{{IFNAME}} if any"
+  file:
+    state: absent
+    path: "/etc/hostname.{{IFNAME}}"
+
+- name: "Configuring {{IFNAME}}"
+  lineinfile:
+    dest: "/etc/hostname.{{IFNAME}}"
+    create: yes
+    state: present
+    mode: "0640"
+    regexp: '{{item}}'
+    line: '{{item}}'
+  with_items: "{{IFDATA}}"
