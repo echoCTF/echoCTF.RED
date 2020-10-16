@@ -109,7 +109,11 @@ class SslController extends Controller {
    */
   public function actionGenPlayerCerts($email, $fileout=false) {
     $player=Player::findOne(['email'=>$email]);
-    if($player === NULL) return 0;
+    if($player === NULL)
+    {
+      throw new ConsoleException(Yii::t('app', 'Player email {email} not found.', ['email' => $email]));
+    }
+
     if($player->playerSsl === null)
     {
       $playerSsl=new PlayerSsl;
