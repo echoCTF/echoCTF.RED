@@ -22,6 +22,9 @@ WORKDIR /usr/src
 RUN set -ex; \
     echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
     sed -i -E 's/bind-address.*$//g' /etc/mysql/mariadb.conf.d/50-server.cnf; \
+    echo "plugin_load_add = ha_federatedx">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
+    echo "plugin_load_add = ha_blackhole">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
+    echo "blackhole = FORCE">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
     sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/memcached.conf; \
     service mysql start; \
     cp /var/www/echoCTF.RED/contrib/apache2-red.conf /etc/apache2/sites-enabled/echoCTF.RED.conf; \

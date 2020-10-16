@@ -20,6 +20,9 @@ RUN set -ex; \
   apt-get update; \
   apt-get install -y build-essential gcc autoconf automake git zip unzip mcrypt memcached libmariadb-dev libmemcached-dev libtool; \
   echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
+  echo "plugin_load_add = ha_federatedx">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
+  echo "plugin_load_add = ha_blackhole">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
+  echo "blackhole = FORCE">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
   git clone https://github.com/echoCTF/memcached_functions_mysql.git; \
   cd memcached_functions_mysql; \
   ./config/bootstrap; \
