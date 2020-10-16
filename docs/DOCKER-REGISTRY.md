@@ -15,9 +15,9 @@ We assume you followed the instructions from [VPN-SERVER.md](VPN-SERVER.md)
 
 You can use the provided playbook to setup the docker registry on the VPN gateway
 ```sh
-ansible-playbook --connection=local -i 127.0.0.1, playbooks/docker-registry.yml
+ansible-playbook --connection=local -i 127.0.0.1, runonce/docker-registry.yml
 # or with settings.yml
-ansible-playbook --connection=local -i 127.0.0.1, playbooks/docker-registry.yml -e '@settings.yml'
+ansible-playbook --connection=local -i 127.0.0.1, runonce/docker-registry.yml -e '@settings.yml'
 ```
 
 Alternatively, you can proceed with manual installation by following the steps.

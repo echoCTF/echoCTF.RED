@@ -21,13 +21,13 @@ The directory structure consists of:
 feeding data to the platform
   - `build-images.yml` Build, tag and push to a private registry your docker images
   - `challenges.yml` and `_challenge.yml` used to feed challenges to the backend
-  - `docker-registry.yml` Configures a docker registry on an OpenBSD server
-  - `docker-servers.yml` Configures a docker server to be ready to run our containers
   - `feed-mui.yml` Feed all the target related data to the database through the
   backend web interface
+* `runonce/` Playbooks used to setup specific operations for servers. These playbooks are usually run only once during the server setups.
+  - `docker-registry.yml` Configures a docker registry on an OpenBSD server
+  - `docker-servers.yml` Configures a docker server to be ready to run our containers
   - `rpi-model.yml` Configures a Raspberry Pi to act as electronics controller (eg for a smart city model)
   - `rpi-targets.yml` Configure a Raspberry Pi to act as a target without docker
-* `runonce/` Playbooks used to setup specific operations for servers. These playbooks are usually run only once during the server setups.
   - `vpngw-openbsd.yml` Configure an OpenBSD server to act as an VPN server with findings
 * `templates/` Template configurations to use as a starting point
 
