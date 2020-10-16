@@ -214,6 +214,7 @@ class ProfileController extends \yii\web\Controller
         if($this->HandleUpload($profileForm->uploadedAvatar))
         {
           $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s.png',$profile->id));
+          $profileForm->avatar=sprintf("%s.png",$profile->id);
           $profileForm->uploadedAvatar->saveAs($fname);
           $profileForm->uploadedAvatar=null;
           $profileForm->approved_avatar=true;
