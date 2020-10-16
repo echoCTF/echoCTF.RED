@@ -17,7 +17,7 @@ $this->_fluid='-fluid';
     <div class="col">
       <div class="card bg-dark">
         <div class="card-body">
-          <h4 class="card-title <?=$model->status==='OK' ? 'text-primary' : 'text-danger'?>">Status: PENDING</h4>
+          <h4 class="card-title <?=$model->status==='OK' ? 'text-primary' : 'text-warning'?>">Status: PENDING</h4>
           <?= $this->render('_form', [
               'model' => $model,
           ]) ?>
