@@ -30,7 +30,7 @@ class echoCTFView extends \yii\web\View
     {
         \Yii::$app->cache->Memcache->set("last_seen:".\Yii::$app->user->id, time());
         \Yii::$app->cache->Memcache->set("online:".\Yii::$app->user->id, time(), 0, \Yii::$app->sys->online_timeout);
-        $this->saveSession();
+        \Yii::$app->cache->Memcache->set("player_session:".\Yii::$app->user->id, \Yii::$app->session->id, 0, \Yii::$app->sys->online_timeout);
     }
     if(\Yii::$app->sys->twitter_account!==null && \Yii::$app->sys->twitter_account!==false)
     {
@@ -40,23 +40,6 @@ class echoCTFView extends \yii\web\View
     parent::init();
   }
 
-  public function saveSession()
-  {
-    if(\Yii::$app->cache->Memcache->get("player_session:".\Yii::$app->user->id)!==false)
-      return;
-
-    \Yii::$app->cache->Memcache->set("player_session:".\Yii::$app->user->id, \Yii::$app->session->id, 0, \Yii::$app->sys->online_timeout);
-    $session=\app\models\Sessions::findOne(\Yii::$app->session->id);
-    if($session===null)
-      $session=new \app\models\Sessions;
-    $session->player_id=\Yii::$app->user->id;
-    $session->ipoctet=\Yii::$app->getRequest()->userIP;
-    $session->id=\Yii::$app->session->id;
-    $session->data=json_encode($_SESSION);
-    $session->expire=new \yii\db\Expression('UNIX_TIMESTAMP(NOW()+INTERVAL 15 DAY)');
-    $session->save(false);
-    unset($session);
-  }
   public function getOg_title()
   {
     if($this->_title === null)
