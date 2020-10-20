@@ -40,7 +40,7 @@ the IP of the docker host and not the container.
 pkg_add -vvi git ansible
 git clone https://github.com/echoCTF/echoCTF.RED.git
 cd echoCTF.RED/ansible
-ansible-playbook runonce/vpngw-openbsd.yml
+ansible-playbook runonce/vpngw.yml
 ```
 
 Once you answer the questions asked you are set to go. Restart the system and
@@ -53,7 +53,7 @@ Or if you'd rather execute the playbook in a non interactive mode, copy the
 file `templates/default-settings.yml` and edit to with your own values.
 ```sh
 cp templates/default-settings.yml settings.yml
-ansible-playbook runonce/vpngw-openbsd.yml -e '@settings.yml'
+ansible-playbook runonce/vpngw.yml -e '@settings.yml'
 ```
 
 Alternatively you can manually configure your system by following these steps,

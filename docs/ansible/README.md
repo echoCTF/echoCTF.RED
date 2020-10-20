@@ -28,7 +28,7 @@ feeding data to the platform
   - `docker-servers.yml` Configures a docker server to be ready to run our containers
   - `rpi-model.yml` Configures a Raspberry Pi to act as electronics controller (eg for a smart city model)
   - `rpi-targets.yml` Configure a Raspberry Pi to act as a target without docker
-  - `vpngw-openbsd.yml` Configure an OpenBSD server to act as an VPN server with findings
+  - `vpngw.yml` Configure an OpenBSD server to act as an VPN server with findings
 * `templates/` Template configurations to use as a starting point
 
 The following guide assumes you have Ansible installed and that you have

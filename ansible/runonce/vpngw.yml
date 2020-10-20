@@ -1,8 +1,9 @@
 ---
 - name: "Setup echoCTF.RED VPN OpenBSD Gateway (standalone)"
-  hosts: 127.0.0.1
-  connection: local
-  gather_facts: true
+  hosts: all
+#  hosts: 127.0.0.1
+#  connection: local
+  gather_facts: false
   vars:
     ansible_python_interpreter: /usr/local/bin/python3
     ansible_user: root
@@ -42,70 +43,123 @@
       - mariadb-server
       - openvpn-2.4.9
       - pecl74-memcached-3.1.3p0
-      - php-curl-7.4.10
-      - php-gd-7.4.10
-      - php-intl-7.4.10
-      - php-pdo_mysql-7.4.10
-      - php-zip-7.4.10
+      - php-curl-7.4.11
+      - php-gd-7.4.11
+      - php-intl-7.4.11
+      - php-pdo_mysql-7.4.11
+      - php-zip-7.4.11
       - py3-mysqlclient
   vars_prompt:
     - name: "vpngw"
-      prompt: "1/13. OpenVPN gateway hostname or IP?"
+      prompt: "1/14. OpenVPN gateway hostname or IP?"
       default: "vpn.example.red"
       private: no
     - name: "egress_if"
-      prompt: "2/13. Egress network interface (ifconfig egress)?"
+      prompt: "2/14. Egress network interface (ifconfig egress)?"
       default: "em0"
       private: no
     - name: "targets_if"
-      prompt: "3/13. Targets network interface?"
+      prompt: "3/14. Targets network interface?"
       default: "em1"
       private: no
     - name: "targets_if_ipv4"
-      prompt: "4/13. Targets network interface IPv4?"
+      prompt: "4/14. Targets network interface IPv4?"
       default: "10.0.160.254"
       private: no
     - name: "targets_subnet"
-      prompt: "5/13. Targets network subnet?"
+      prompt: "5/14. Targets network subnet?"
       default: "10.0.160.0"
       private: no
     - name: "targets_netmask"
-      prompt: "6/13. Targets network netmask?"
+      prompt: "6/14. Targets network netmask?"
       default: "255.255.255.0"
       private: no
     - name: "echoCTF_VPN_mgmt_passwd"
-      prompt: "7/13. OpenVPN managment interface password?"
+      prompt: "7/14. OpenVPN managment interface password?"
       default: "openvpn"
       private: no
     - name: "offense_network"
-      prompt: "8/13. OpenVPN client range?"
+      prompt: "8/14. OpenVPN client range?"
       default: "10.10.0.0/16"
       private: no
     - name: "db_host"
-      prompt: "9/13. Database Server IP?"
+      prompt: "9/14. Database Server IP?"
       default: "172.24.0.253"
       private: no
     - name: "db_name"
-      prompt: "10/13. Database name?"
+      prompt: "10/14. Database name?"
       default: "echoCTF"
       private: no
     - name: "db_user"
-      prompt: "11/13. Database Server user?"
+      prompt: "11/14. Database Server user?"
       default: "vpnuser"
       private: no
     - name: "db_pass"
-      prompt: "12/13. Database Server user password?"
+      prompt: "12/14. Database Server user password?"
       default: "vpnuserpass"
       private: no
     - name: "GITHUB_OAUTH_TOKEN"
-      prompt: "13/13. Provide a GITHUB_OAUTH_TOKEN?"
+      prompt: "13/14. Provide a GITHUB_OAUTH_TOKEN?"
       default: "randomtoken"
+      private: no
+    - name: "GITHUB_REPO"
+      prompt: "14/14. Provide a github repo to clone?"
+      default: "https://github.com/echoCTF/echoCTF.RED.git"
       private: no
 
   tasks:
+  - name: Install ansible (raw)
+    raw: pkg_add ansible py3-mysqlclient
+
+  - name: Gather facts
+    setup:
+
+  - name: Set APP_DIR to /root/sources
+    when: ansible_connection != 'local'
+    set_fact:
+      APP_DIR: /root/sources
+
+  - name: Set APP_DIR to {{playbook_dir}}
+    when: ansible_connection == 'local'
+    set_fact:
+      APP_DIR: "{{playbook_dir}}/../../"
+
   - name: Install packages
     openbsd_pkg:
       name: "{{packages}}"
+
+  - name: Configure PS1 for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export PS1='\\u@\\H:\\w\\$ '"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTFILE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTFILE=~/.sh_history"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTSIZE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTSIZE=10000"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
 
   - name: Activate install php modules
     shell: cp /etc/php-7.4.sample/*.ini /etc/php-7.4/
@@ -148,6 +202,17 @@
       collation: utf8_unicode_ci
       encoding: utf8
       login_user: "root"
+
+  - name: Clone sources repo
+    when: ansible_connection != 'local'
+    git:
+      repo: "{{GITHUB_REPO}}"
+      dest: /root/sources
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+
 
   - name: Clone memcached udf repo
     git:
@@ -217,7 +282,7 @@
   - name: "Create backend/config/db.php"
     copy:
       content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8',  ];\n"
-      dest: "{{playbook_dir}}/../../backend/config/db.php"
+      dest: "{{APP_DIR}}/backend/config/db.php"
 
   - name: Install composer
     get_url:
@@ -237,14 +302,14 @@
     raw: git config --global url."https://".insteadOf "git://"
 
   - name: "configure composer to fetch from https:// instead of git://"
-    command: chdir={{playbook_dir}}/../../backend composer config --global github-protocols https
+    command: chdir={{APP_DIR}}/backend composer config --global github-protocols https
 
   - name: run composer config
-    command: chdir={{playbook_dir}}/../../backend php -d allow_url_fopen=on /usr/local/bin/composer config -g github-oauth.github.com "{{GITHUB_OAUTH_TOKEN}}"
+    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer config -g github-oauth.github.com "{{GITHUB_OAUTH_TOKEN}}"
     when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN != "randomtoken" and GITHUB_OAUTH_TOKEN!=""
 
   - name: run composer
-    command: chdir={{playbook_dir}}/../../backend php -d allow_url_fopen=on /usr/local/bin/composer install --no-dev --prefer-dist --no-progress --no-suggest
+    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install --no-dev --prefer-dist --no-progress --no-suggest
 
   - name: "Prepare /etc/hostname.pflog1"
     copy:
@@ -320,18 +385,18 @@
     with_items:
     - { cmd: "openssl dhparam -out /etc/openvpn/dh.pem 2048", creates: "/etc/openvpn/dh.pem" }
     - { cmd: "openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key", creates: "/etc/openvpn/private/vpn-ta.key" }
-    - { cmd: "{{playbook_dir}}/../../backend/yii migrate --interactive=0" }
-    - { cmd: "{{playbook_dir}}/../../backend/yii init_data --interactive=0" }
-    - { cmd: "{{playbook_dir}}/../../backend/yii ssl/create-ca 1", creates: "/etc/openvpn/private/echoCTF-OVPN-CA.key", chdir: "/etc/openvpn/private" }
-    - { cmd: '{{playbook_dir}}/../../backend/yii ssl/create-cert "VPN Server"', creates: "/etc/openvpn/private/VPN Server.key", chdir: "/etc/openvpn/private" }
-    - { cmd: "{{playbook_dir}}/../../backend/yii ssl/create-crl", creates: "/etc/openvpn/crl.pem" }
-    - { cmd: "{{playbook_dir}}/../../backend/yii ssl/load-vpn-ta"}
-    - { cmd: "{{playbook_dir}}/../../backend/yii sysconfig/set vpngw {{vpngw}}"}
-    - { cmd: "{{playbook_dir}}/../../backend/yii sysconfig/set offense_registered_tag OFFENSE_REGISTERED"}
+    - { cmd: "{{APP_DIR}}/backend/yii migrate --interactive=0" }
+    - { cmd: "{{APP_DIR}}/backend/yii init_data --interactive=0" }
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/create-ca 1", creates: "/etc/openvpn/private/echoCTF-OVPN-CA.key", chdir: "/etc/openvpn/private" }
+    - { cmd: '{{APP_DIR}}/backend/yii ssl/create-cert "VPN Server"', creates: "/etc/openvpn/private/VPN Server.key", chdir: "/etc/openvpn/private" }
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/create-crl", creates: "/etc/openvpn/crl.pem" }
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/load-vpn-ta"}
+    - { cmd: "{{APP_DIR}}/backend/yii sysconfig/set vpngw {{vpngw}}"}
+    - { cmd: "{{APP_DIR}}/backend/yii sysconfig/set offense_registered_tag OFFENSE_REGISTERED"}
     - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
     - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
-    - { cmd: "{{playbook_dir}}/../../backend/yii target/pf" }
+    - { cmd: "{{APP_DIR}}/backend/yii target/pf" }
 
   - name: "Create targets network interface hostname.{{targets_if}}"
     copy:
@@ -356,10 +421,10 @@
       special_time: "{{item.special_time|default(omit)}}"
       job: "{{item.job}}"
     with_items:
-      - { name: "target/healthcheck", minute: "*/2",  job: "{{playbook_dir}}/../../backend/yii target/healthcheck 1" }
-      - { name: "target/cron", minute: "*/4",  job: "{{playbook_dir}}/../../backend/yii target/cron" }
-      - { name: "restart targets with 24h uptime or more", minute: "*/10",  job: "{{playbook_dir}}/../../backend/yii target/restart" }
-      - { name: "Generate CRL", special_time: "daily",  job: "{{playbook_dir}}/../../backend/yii ssl/generate-crl" }
+      - { name: "target/healthcheck", minute: "*/2",  job: "{{APP_DIR}}/backend/yii target/healthcheck 1" }
+      - { name: "target/cron", minute: "*/4",  job: "{{APP_DIR}}/backend/yii target/cron" }
+      - { name: "restart targets with 24h uptime or more", minute: "*/10",  job: "{{APP_DIR}}/backend/yii target/restart" }
+      - { name: "Generate CRL", special_time: "daily",  job: "{{APP_DIR}}/backend/yii ssl/generate-crl" }
 
   - name: Set rc scripts order
     raw: rcctl order mysqld findingsd openvpn
@@ -377,3 +442,6 @@
 
   - name: Re-Execute syspatch in case it updated it self on the previous run
     command: syspatch
+
+  - name: display post install message
+    debug: msg="Reboot the system for the changes to take effect"
