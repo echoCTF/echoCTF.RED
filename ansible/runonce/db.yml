@@ -1,0 +1,318 @@
+---
+- name: Setup an OpenBSD to act as a database server for echoCTF.RED
+  hosts: all
+  gather_facts: false
+  vars_prompt:
+    - name: "db_ip"
+      prompt: "1/5. What is the IP mysql should bind to?"
+      default: "10.7.0.253"
+      private: no
+    - name: "pui_ip"
+      prompt: "2/5. What is the internal participantUI IP?"
+      default: "10.7.0.200"
+      private: no
+    - name: "mui_ip"
+      prompt: "3/5. What is the internal moderatorUI IP?"
+      default: "10.7.0.201"
+      private: no
+    - name: "vpn_ip"
+      prompt: "4/5. What is the internal VPN IP?"
+      default: "10.7.0.254"
+      private: no
+    - name: "GITHUB_REPO"
+      prompt: "5/5. Provide a github repo to clone?"
+      default: "https://github.com/echoCTF/echoCTF.RED.git"
+      private: no
+  vars:
+    mysql_users:
+      - { name: participantUI, password: 'participantUI', host: '{{pui_ip}}' }
+      - { name: moderatorUI, password: 'moderatorUI', host: '{{mui_ip}}' }
+      - { name: moderatorUI, password: 'moderatorUI', host: '{{vpn_ip}}' }
+      - { name: vpnuser, password: 'vpnuserpass', host: '{{vpn_ip}}' }
+      - { name: participantUI, password: 'participantUI', host: 'localhost' }
+      - { name: moderatorUI, password: 'moderatorUI', host: 'localhost' }
+      - { name: participantUI, password: 'participantUI', host: '127.0.0.1' }
+      - { name: moderatorUI, password: 'moderatorUI', host: '127.0.0.1' }
+# add your github username to fetch your public keys
+#    sshkeys:
+#      - octoprint
+    users:
+      - { name: sysadmin, comment: "CTF Admin", uid: 375, password: '*' }
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+    versions:
+      AUTOCONF: 2.69
+      AUTOCONFP: p2
+      AUTOMAKE: 1.16.2
+      AUTOMAKEP: ""
+      memcached: 1.5.18
+      syslog_ng: 3.12.1p7
+      libc: 96.0
+      libutil: 15.0
+      libcrypto: 46.1
+      ICU_MAJOR: 67
+      ICU_MINOR: 1
+    sysctl:
+      kern.bufcachepercent: 30
+      net.inet.ip.ifq.maxlen: 2560
+      net.inet.ip.maxqueue: 2048
+      kern.somaxconn: 2048
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      kern.seminfo.semmni: 1024
+      kern.seminfo.semmns: 4096
+      kern.shminfo.shmmax: 67018864
+      kern.shminfo.shmall: 32768
+      kern.maxfiles: 104060
+    rcctl:
+      - { name: check_quotas, state: "disable" }
+      - { name: cron, state: "disable" }
+      - { name: ntpd, state: "enable" }
+      - { name: pflogd, state: "disable" }
+      - { name: slaacd, state: "disable" }
+      - { name: smtpd, state: "disable" }
+      - { name: sndiod, state: "disable" }
+      - { name: memcached, state: "enable" }
+      - { name: mysqld, state: "enable" }
+    packages:
+      - curl
+      - git
+      - mariadb-server
+      - memcached-1.5.18
+      - libmemcached
+      - py3-mysqlclient
+      - libtool
+      - autoconf-2.69p2
+      - automake-1.16.2
+    my_cnf:
+      - { init_file:  "/etc/mysql-init.sql"}
+      - { bind-address:  "{{db_ip}}" }
+      - { character-set-server: utf8 }
+      - { collation-server: utf8_unicode_ci }
+      - { default-storage-engine: innodb }
+      - { default-time-zone: "'+00:00'" }
+      - { event_scheduler: "ON" }
+      - { skip-character-set-client-handshake: 1 }
+      - { skip-external-locking: 1 }
+      - { skip-name-resolve: 1 }
+      - { plugin_load_add: "ha_federatedx" }
+      - { plugin_load_add: "ha_blackhole" }
+      - { blackhole: "FORCE" }
+
+  tasks:
+  - name: Install ansible (raw)
+    raw: pkg_add ansible py3-mysqlclient
+
+  - name: Gather facts
+    setup:
+
+  - name: Set APP_DIR to /root/sources
+    when: ansible_connection != 'local'
+    set_fact:
+      APP_DIR: /root/sources
+
+  - name: Set APP_DIR to {{playbook_dir}}
+    when: ansible_connection == 'local'
+    set_fact:
+      APP_DIR: "{{playbook_dir}}/../../"
+
+
+  - name: Install packages
+    openbsd_pkg:
+      name: "{{packages}}"
+
+  - name: Add user 'sysadmin'
+    user:
+      name: "{{item.name}}"
+      comment: "{{item.comment}}"
+      uid: "{{item.uid}}"
+      password: '{{item.password}}'
+    with_items: "{{users}}"
+
+  - name: Allow sysadmin to execute 'doas'
+    lineinfile:
+      path: /etc/doas.conf
+      owner: root
+      group: wheel
+      mode: '0640'
+      regexp: '^permit nopass keepenv sysadmin as root'
+      line: 'permit nopass keepenv sysadmin as root'
+      create: yes
+
+  - name: Configure PS1 for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export PS1='\\u@\\H:\\w\\$ '"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTFILE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTFILE=~/.sh_history"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTSIZE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTSIZE=10000"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Set authorized keys for root
+    when: sshkeys is defined
+    authorized_key:
+      user: root
+      state: present
+      key: "https://github.com/{{item}}.keys"
+    with_items: "{{sshkeys}}"
+
+  - name: Set authorized keys for sysadmin
+    when: sshkeys is defined
+    authorized_key:
+      user: sysadmin
+      state: present
+      key: "https://github.com/{{item}}.keys"
+    with_items: "{{sshkeys}}"
+
+  - name: Configure default services
+    command: "rcctl {{item.state}} {{item.name}}"
+    when: item.state is defined
+    with_items: "{{rcctl}}"
+
+  - name: Clone sources repo
+    when: ansible_connection != 'local'
+    git:
+      repo: "{{GITHUB_REPO}}"
+      dest: "{{APP_DIR}}"
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Check if /var/mysql exists
+    stat:
+      path: /var/mysql
+    register: stat_result
+
+  - name: execute mysql_install_db if /var/mysql do not exist
+    command: mysql_install_db
+    when: stat_result.stat.exists == False
+
+  - name: start mysqld
+    command: rcctl start mysqld
+
+  - name: Create mysql db schema
+    mysql_db:
+      state: present
+      name: echoCTF
+      collation: utf8_unicode_ci
+      encoding: utf8
+      login_user: "root"
+
+  - name: Clone memcached_functions_mysql repo
+    git:
+      repo: 'https://github.com/echoCTF/memcached_functions_mysql.git'
+      dest: /root/memcached_functions_mysql
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Bootstrap /root/memcached_functions_mysql
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 ./config/bootstrap
+    args:
+      chdir: /root/memcached_functions_mysql
+
+  - name: Configure /root/memcached_functions_mysql
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
+    args:
+      chdir: /root/memcached_functions_mysql
+
+  - name: Make all install /root/memcached_functions_mysql
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 make all install
+    args:
+      chdir: /root/memcached_functions_mysql
+
+  - name: Import mysql schema
+    mysql_db:
+      state: import
+      name: echoCTF
+      target: "{{APP_DIR}}/schemas/{{item}}"
+      login_user: "root"
+    with_items:
+      - ../../memcached_functions_mysql/sql/install_functions.sql
+      - echoCTF.sql
+      - echoCTF-routines.sql
+      - echoCTF-triggers.sql
+      - echoCTF-events.sql
+
+  - name: create echoCTF users for mysql
+    mysql_user:
+      name: "{{item.name}}"
+      password: "{{item.password}}"
+      host: "{{item.host}}"
+      priv: '*.*:ALL'
+      state: present
+    with_items: "{{mysql_users}}"
+    tags:
+      - create_users
+
+  - name: Copy mysql-init.sql for populating memcached at boot
+    copy:
+      content: "CALL echoCTF.init_mysql();"
+      dest: "/etc/mysql-init.sql"
+
+  - name: "Configuring my.cnf"
+    ini_file:
+      dest: "/etc/my.cnf"
+      section: "mysqld"
+      option: "{{item.key}}"
+      value: "{{item.value}}"
+    with_dict: "{{my_cnf}}"
+    tags:
+      - set_ini
+
+  - name: configure participant rc.d
+    command: rcctl {{item}}
+    with_items:
+      - set memcached flags -u _memcached -l {{db_ip}} -l 127.0.0.1 -m 1024 -c 181920
+    tags:
+      - rcctl
+
+  - name: start memcached
+    command: rcctl start memcached
+
+  - name: restart mysqld
+    command: rcctl restart mysqld
+
+  - name: Setting up sysctl.conf
+    sysctl:
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+    with_dict: "{{ sysctl }}"
+
+  - name: Execute fw_update
+    command: fw_update -a
+
+  - name: Execute syspatch
+    command: syspatch
+
+  - name: Re-Execute syspatch in case it updated it self on the previous run
+    command: syspatch
+
+  - name: display post install message
+    debug: msg="Reboot the system for the changes to take effect"
