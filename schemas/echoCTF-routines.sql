@@ -204,8 +204,6 @@ BEGIN
   DELETE FROM `hint` where id>1;
   ALTER TABLE `hint` AUTO_INCREMENT=1;
 
-  CALL reset_playdata();
-
   DELETE FROM `target`;
   ALTER TABLE `target` AUTO_INCREMENT=1;
 
