@@ -1,0 +1,66 @@
+# $OpenBSD: login.conf,v 1.9 2017/02/06 18:11:33 sthen Exp $
+
+# Default allowed authentication styles
+auth-defaults:auth=passwd,skey:
+
+# Default allowed authentication styles for authentication type ftp
+auth-ftp-defaults:auth-ftp=passwd:
+
+default:\
+	:path=/usr/bin /bin /usr/sbin /sbin /usr/X11R6/bin /usr/local/bin /usr/local/sbin:\
+	:umask=022:\
+	:datasize-max=infinity:\
+	:datasize-cur=infinity:\
+	:maxproc-max=infinity:\
+	:maxproc-cur=2048:\
+	:openfiles-max=10240:\
+	:openfiles-cur=10240:\
+	:stacksize-cur=32M:\
+	:localcipher=blowfish,a:\
+	:tc=auth-defaults:\
+	:tc=auth-ftp-defaults:
+
+daemon:\
+	:ignorenologin:\
+	:datasize=infinity:\
+	:maxproc=infinity:\
+	:openfiles-max=10240:\
+	:openfiles-cur=10240:\
+	:stacksize-cur=32M:\
+	:localcipher=blowfish,a:\
+	:tc=default:
+
+staff:\
+	:datasize-cur=1536M:\
+	:datasize-max=infinity:\
+	:maxproc-max=10240:\
+	:maxproc-cur=10240:\
+	:ignorenologin:\
+	:requirehome@:\
+	:tc=default:
+
+#
+# Authpf accounts get a special motd and shell
+#
+authpf:\
+	:welcome=/etc/motd.authpf:\
+	:shell=/usr/sbin/authpf:\
+	:tc=default:
+
+#
+# Building ports with DPB uses raised limits
+#
+pbuild:\
+	:datasize-max=infinity:\
+	:datasize-cur=4096M:\
+	:maxproc-max=1024:\
+	:maxproc-cur=256:\
+	:tc=default:
+
+bgpd:\
+	:openfiles=512:\
+	:tc=daemon:
+
+unbound:\
+	:openfiles=10240:\
+	:tc=daemon:

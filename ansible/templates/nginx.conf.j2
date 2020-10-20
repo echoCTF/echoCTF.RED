@@ -38,9 +38,8 @@ http {
     }
 
     server {
-        listen                    	{{item.ip}}:443;
+        listen                    	{{item.ip}}:443 ssl;
         server_name         		    default {{item.ip}} _ "";
-        ssl                       	on;
         ssl_prefer_server_ciphers 	on;
         ssl_session_timeout       	5m;
 
@@ -59,10 +58,10 @@ http {
     }
 
     server {
-        listen                    {{item.ip}}:443;
+        listen                    {{item.ip}}:443 ssl;
         server_name               {{item.domain}} www.{{item.domain}};
         root                      {{item.root}};
-        ssl                       on;
+#        ssl                       on;
         ssl_prefer_server_ciphers on;
         ssl_session_timeout       5m;
 
