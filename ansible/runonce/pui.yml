@@ -9,7 +9,7 @@
       private: no
     - name: "db_server_ip"
       prompt: "2/5. What is the database server IP?"
-      default: "1.2.3.4"
+      default: "10.7.0.253"
       private: no
     - name: "GITHUB_OAUTH_TOKEN"
       prompt: "3/5. Provide a github oauth token?"
@@ -21,7 +21,7 @@
       private: no
     - name: "domain_name"
       prompt: "5/5. Provide the domain the frontend will run on?"
-      default: "example.com"
+      default: "pui.example.com"
       private: no
 
   vars:
