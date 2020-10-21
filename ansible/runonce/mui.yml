@@ -255,6 +255,12 @@
     tags:
       - nginx
 
+  - name: Copy nginx cache folder to moderatorUI
+    command: "{{item}}"
+    with_items:
+      - cp -pr /var/www/cache /home/moderatorUI/
+      - chown -R moderatorUI /home/moderatorUI/cache
+
   - name: Remove existing php-fpm.conf
     file:
       state: absent
