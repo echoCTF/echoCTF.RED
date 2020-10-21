@@ -1,0 +1,390 @@
+---
+- hosts: all
+  gather_facts: false
+  vars_prompt:
+    - name: "mui_ip"
+      prompt: "1/5. What is the external (public) IP?"
+      default: "1.2.3.4"
+      private: no
+    - name: "db_server_ip"
+      prompt: "2/5. What is the database server IP?"
+      default: "10.7.0.253"
+      private: no
+    - name: "GITHUB_OAUTH_TOKEN"
+      prompt: "3/5. Provide a github oauth token?"
+      default: ""
+      private: no
+    - name: "GITHUB_REPO"
+      prompt: "4/5. Provide a github repo to clone?"
+      default: "https://github.com/echoCTF/echoCTF.RED.git"
+      private: no
+    - name: "domain_name"
+      prompt: "5/5. Provide the fqdn the backend will run on?"
+      default: "mui.example.com"
+      private: no
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+    validation_key: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
+    versions:
+      PHP: 7.4
+      PHP_MINOR: 9
+      PHP_patch_level:
+      AUTOCONF: 2.69
+      AUTOCONFP: p2
+      AUTOMAKE: 1.16.2
+      AUTOMAKEP: ""
+      memcached: 1.5.18
+      syslog_ng: 3.12.1p7
+      nginx: 1.14.2
+      libc: 96.0
+      libutil: 15.0
+      libcrypto: 46.1
+      ICU_MAJOR: 67
+      ICU_MINOR: 1
+    sysctl:
+      kern.bufcachepercent: 30
+      net.inet.ip.ifq.maxlen: 2560
+      net.inet.ip.maxqueue: 2048
+      kern.somaxconn: 2048
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      kern.seminfo.semmni: 1024
+      kern.seminfo.semmns: 4096
+      kern.shminfo.shmmax: 67018864
+      kern.shminfo.shmall: 32768
+      kern.maxfiles: 104060
+#    sshkeys:
+#     - octoprint
+    users:
+      - { name: sysadmin, comment: "Echothrust Admin", uid: 375, password: '*' }
+      - { name: moderatorUI, comment: "echoctf.red Moderator UI", uid: 3750, password: '*' }
+    rcctl:
+      - { name: check_quotas, state: "disable" }
+      - { name: cron, state: "disable" }
+      - { name: ntpd, state: "enable" }
+      - { name: pflogd, state: "disable" }
+      - { name: slaacd, state: "disable" }
+      - { name: smtpd, state: "disable" }
+      - { name: sndiod, state: "disable" }
+      - { name: php74_fpm, state: "enable" }
+      - { name: mysqld, state: "disable" }
+      - { name: memcached, state: "disable" }
+    packages:
+      - curl
+      - git
+      - memcached-1.5.18
+      - libmemcached
+      - py3-mysqlclient
+      - libtool
+      - autoconf-2.69p2
+      - automake-1.16.2
+      - pecl74-memcached-3.1.3p0
+      - nginx
+      - php-gd%7.4
+      - php-curl%7.4
+      - php-intl%7.4
+      - php-pdo_mysql%7.4
+      - php-zip%7.4
+
+  tasks:
+  - name: Install ansible (raw)
+    raw: pkg_add ansible py3-mysqlclient
+
+  - name: Gather facts
+    setup:
+
+  - name: Configure PS1 for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export PS1='\\u@\\H:\\w\\$ '"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTFILE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTFILE=~/.sh_history"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTSIZE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTSIZE=10000"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Install packages
+    openbsd_pkg:
+      name: "{{packages}}"
+
+  - name: Add users
+    user:
+      name: "{{item.name}}"
+      comment: "{{item.comment}}"
+      uid: "{{item.uid}}"
+      password: '{{item.password}}'
+    with_items: "{{users}}"
+
+  - name: Set authorized keys for root
+    when: sshkeys is defined
+    authorized_key:
+      user: root
+      state: present
+      key: "https://github.com/{{item}}.keys"
+    with_items: "{{sshkeys}}"
+
+  - name: Set authorized keys for sysadmin
+    when: sshkeys is defined
+    authorized_key:
+      user: sysadmin
+      state: present
+      key: "https://github.com/{{item}}.keys"
+    with_items: "{{sshkeys}}"
+
+
+  - name: Configure default services
+    command: "rcctl {{item.state}} {{item.name}}"
+    when: item.state is defined
+    with_items: "{{rcctl}}"
+
+  - name: Clone echoCTF repo
+    git:
+      repo: '{{GITHUB_REPO}}'
+      dest: "/home/moderatorUI/{{domain_name}}"
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Fix CHROOT environment for moderatorUI
+    file: path=/home/moderatorUI/{{item}} mode=0755 state=directory
+    tags:
+      - chroot
+    with_items:
+      - dev
+      - etc
+      - etc/ssl
+      - bin
+      - usr/libexec
+      - usr/X11R6/lib
+      - usr/bin
+      - usr/local/lib
+      - usr/local/share/icu/67.1
+      - usr/lib
+
+
+  - name: Fix CHROOT environment
+    file: path=/home/{{item.user}}/{{item.dir}} mode="{{item.mode}}" state=directory
+    tags:
+      - chroot
+    with_items:
+      - { user: moderatorUI, dir: logs, mode: "0755" }
+      - { user: moderatorUI, dir: tmp, mode: "1777" }
+
+  - name: Create default chroot /dev entries
+    command: chdir=/home/{{item}}/dev /dev/MAKEDEV std
+    with_items:
+      - moderatorUI
+    tags:
+      - chroot
+
+  - include_vars: includes/chroot_env.yml
+    tags:
+      - chroot
+
+  - name: Copying needed files to moderatorUI chroot
+    copy:
+      src: "{{item.src}}"
+      remote_src: yes
+      dest: "/home/moderatorUI/{{item.src}}"
+      owner: "{{item.owner|default(omit)}}"
+      group: "{{item.group|default(omit)}}"
+      mode: "{{item.mode|default(omit)}}"
+    with_items: "{{CHROOT_ENV}}"
+    tags:
+      - chroot
+
+  - name: Activate install php modules
+    shell: cp /etc/php-7.4.sample/*.ini /etc/php-7.4/
+
+  - name: "Create moderatorUI config/db.php"
+    copy:
+      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_server_ip}};dbname=echoCTF', 'username' => 'moderatorUI', 'password' => 'moderatorUI', 'charset' => 'utf8'];\n"
+      dest: "/home/moderatorUI/{{domain_name}}/backend/config/db.php"
+      mode: '0444'
+    tags:
+      - conf
+
+  - name: "Create moderatorUI /config/cache.php"
+    copy:
+      content: "<?php  return [ 'class' => 'yii\\caching\\MemCache', 'useMemcached' => true, 'servers' => [['host' => '{{db_server_ip}}','port' => 11211, 'weight' => 60]]];\n"
+      dest: "/home/moderatorUI/{{domain_name}}/backend/config/cache.php"
+      mode: '0444'
+    tags:
+      - conf
+
+
+  - name: Create validation key for moderatorUI
+    copy:
+      content: "<?php return '{{validation_key}}';"
+      dest: /home/moderatorUI/{{domain_name}}/backend/config/validationKey.php
+      mode: '0444'
+    tags:
+      - conf
+
+  - name: Creat moderatorUI nginx.conf
+    template:
+      src: ../templates/nginx.conf.j2
+      dest: /etc/nginx/{{item.user}}.conf
+    with_items:
+      - { user: 'moderatorUI', domain: '{{domain_name}}', root: "/{{domain_name}}/backend/web", port: 80, fpm: '127.0.0.1:9000', home: '/home/moderatorUI', ip: '{{mui_ip}}' }
+    tags:
+      - nginx
+
+  - name: Remove existing php-fpm.conf
+    file:
+      state: absent
+      path: /etc/php-fpm.conf
+
+  - name: Fixing php-fpm.conf
+    ini_file: dest=/etc/php-fpm.conf section="{{item.section}}" option="{{item.option}}" value="{{item.value}}" mode="0644" owner=root group=wheel create=yes
+    tags:
+      - ini
+    with_items:
+      - { section: "global", option: "include", value: "/etc/php-fpm.d/*.conf" }
+      - { section: "moderatorui", option: "user", value: "moderatorUI" }
+      - { section: moderatorui, option: group, value: "moderatorUI" }
+      - { section: moderatorui, option: listen, value: "127.0.0.1:9000" }
+      - { section: moderatorui, option: listen.owner, value: "www" }
+      - { section: moderatorui, option: listen.group, value: "www" }
+      - { section: moderatorui, option: listen.mode , value: "0660" }
+      - { section: moderatorui, option: pm, value: "dynamic" }
+      - { section: moderatorui, option: pm.max_children, value: 5 }
+      - { section: moderatorui, option: pm.start_servers, value: 2 }
+      - { section: moderatorui, option: pm.max_spare_servers, value: 3 }
+      - { section: moderatorui, option: pm.min_spare_servers, value: 1 }
+      - { section: moderatorui, option: chroot, value: "/home/moderatorUI" }
+      - { section: moderatorui, option: "php_admin_value[sendmail_path]", value: "/bin/femail -t" }
+      - { section: moderatorui, option: "php_admin_value[session.save_handler]", value: "memcached" }
+      - { section: moderatorui, option: "php_admin_value[session.save_path]", value: "{{db_server_ip}}:11211" }
+      - { section: moderatorui, option: "php_admin_value[session.name]", value: "MUISESSID" }
+
+
+  - name: Fixing /etc/php.ini
+    ini_file: dest=/etc/php-7.4.ini section={{item.section}} option={{item.option}} value={{item.value}} mode=0644 owner=root group=wheel
+    with_items:
+      - { section: PHP, option: "cgi.fix_pathinfo", value: 0 }
+      - { section: PHP, option: "expose_php", value: "Off" }
+      - { section: PHP, option: "log_errors_max_len", value: 4096 }
+      - { section: PHP, option: "html_errors", value: "Off" }
+      - { section: PHP, option: "max_execution_time", value: "60" }
+      - { section: PHP, option: "max_input_time", value: "120" }
+      - { section: PHP, option: "memory_limit", value: "256M" }
+      - { section: PHP, option: "error_reporting", value: "E_NONE" }
+      - { section: PHP, option: "post_max_size", value: "180M" }
+      - { section: PHP, option: "upload_max_filesize", value: "120M" }
+      - { section: PHP, option: "session.save_handler", value: "memcached"}
+      - { section: PHP, option: "session.save_path", value: "{{db_server_ip}}:11211"}
+
+  - name: copy nginx rc.d into moderator
+    command: cp /etc/rc.d/nginx "/etc/rc.d/{{item}}"
+    with_items:
+      - moderator
+
+  - name: configure assets and staff
+    command: "{{item}}"
+    with_items:
+      - "mkdir -p /home/moderatorUI/{{domain_name}}/backend/web/assets"
+      - "chown -R moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/assets"
+
+  - name: configure moderator rc.d
+    command: rcctl {{item}}
+    with_items:
+      - enable moderator
+      - set moderator flags -c /etc/nginx/moderatorUI.conf
+      - set ntpd flags -s
+    tags:
+      - rcctl
+
+  - name: Generate DH params file for nginx
+    command: openssl dhparam -out /etc/ssl/private/dhparam.pem 2048
+
+
+  - name: Fix needed permissions
+    file:
+      path: "{{item.path}}"
+      owner: "{{item.owner}}"
+      group: "{{item.group}}"
+      mode: "{{item.mode}}"
+    with_items:
+      - { path: "/home/moderatorUI/{{domain_name}}/backend/runtime", owner: 'moderatorUI', group: 'moderatorUI', mode: '0755' }
+
+  - name: Install composer
+    get_url:
+      url: https://getcomposer.org/composer-stable.phar
+      dest: /usr/local/bin/composer
+      mode: '0555'
+
+  - name: Create php symlink without version
+    file:
+      src: /usr/local/bin/php-{{versions.PHP}}
+      dest: /usr/local/bin/php
+      owner: root
+      group: wheel
+      state: link
+
+  - name: "configure git to fetch from https:// instead of git://"
+    raw: git config --global url."https://".insteadOf "git://"
+
+  - name: "configure composer to fetch from https:// instead of git://"
+    command: chdir=/home/moderatorUI/{{domain_name}}/backend composer config --global github-protocols https
+
+  - name: configure composer
+    command: php -d allow_url_fopen=on /usr/local/bin/composer config --global --auth github-oauth.github.com {{GITHUB_OAUTH_TOKEN}}
+    when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN!=""
+
+  - name: run composer
+    command: chdir=/home/moderatorUI/{{domain_name}}/backend php -d allow_url_fopen=on /usr/local/bin/composer -n install
+
+  - name: Fix home folder permissions for nginx
+    command: chown root.daemon /home/moderatorUI
+
+  - name: Setting up sysctl.conf
+    sysctl:
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+    with_dict: "{{ sysctl }}"
+
+  - name: Copy login.conf
+    copy:
+      src: ../templates/login.conf.j2
+      dest: /etc/login.conf
+      owner: root
+      group: wheel
+      mode: "0644"
+
+  - name: Execute fw_update
+    command: fw_update -a
+
+  - name: Execute syspatch
+    command: syspatch
+
+  - name: Re-Execute syspatch in case it updated it self on the previous run
+    command: syspatch
+
+  - name: display post install message
+    debug: msg="Reboot the system for the changes to take effect"
