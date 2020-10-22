@@ -63,7 +63,7 @@ These details you need to modify include
 
 * `build` and `image` The folder that we are going to build the image from and the name that the intermediate image will have. When the images are pushed to a registry the name changes to `hostname`
 * `tag` A version/build tag. If no tag is defined then the default tag is `latest`
-* `buildargs` Key/Value pair of variables needed to build the container. More details about this can be found at https://docs.docker.com/engine/reference/commandline/build/#set-build-time-variables---build-arg
+* `buildargs` Key/Value pair of variables needed to build the container. More details about this can be found at (docker --build-arg)[https://docs.docker.com/engine/reference/commandline/build/#set-build-time-variables---build-arg]
 * `env` Key/Value environment variables defined upon starting a container. More details about the docker `--env` can be found at https://docs.docker.com/engine/reference/commandline/run/#set-environment-variables--e---env---env-file
 * `dns_servers` A list of dns servers that the container will use for name resolution
 * `networks` The network this container will be attached. This is the same name as the one we created on our docker server (eg `AAnet`)
