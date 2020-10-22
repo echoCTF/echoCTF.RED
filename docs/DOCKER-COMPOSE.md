@@ -29,17 +29,21 @@ The following volumes are configured and used
 The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
 ![echoCTF.RED docker-compose topology](assets/docker-compose-topology.png?)
 
-The easy way to start is to use the official docker images by executing
+## Starting up
+The easy way to start is to use the official docker images and starting them up by executing.
 ```sh
 docker-compose pull
+docker-compose up
 ```
+
+The first time you run `docker-compose up` give the containers a few minutes to complete the startup process.
 
 If you'd rather to build your own images make you sure you generate a Github OAuth Token to
 be used by the composer utility. This is needed in order to avoid hitting
 Github rate limits on their API, which is used by `composer`. More information
 about generating a token to use can be found @[Creating a personal access token for the command line](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
 
-Once you've generated your token you can build the images by executing
+Once you've generated your token you can build the images and start them up by executing
 ```sh
 composer config -g github-oauth.github.com "MY_TOKEN_HERE"
 cd backend
@@ -48,13 +52,10 @@ cd ../frontend
 composer install --no-dev --prefer-dist --no-progress --no-suggest
 cd ..
 docker-compose build
-```
-
-Start the containers
-```sh
 docker-compose up
 ```
 
+## 1st time configuration
 Configure mail address for player registrations
 ```sh
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set mail_from dontreply@example.red
@@ -62,18 +63,18 @@ docker exec -it echoctfred_vpn ./backend/yii sysconfig/set mail_from dontreply@e
 
 Create backend and frontend users to test
 ```sh
-docker exec -it echoctfred_vpn ./backend/yii user/create echothrust info@echothrust.com echothrust
-docker exec -it echoctfred_vpn ./backend/yii player/register echothrust info@echothrust.com echothrust echothrust offense 1
+docker exec -it echoctfred_vpn ./backend/yii user/create username email@example.com password
+docker exec -it echoctfred_vpn ./backend/yii player/register username email@example.com fullname password offense 1
 ```
 
 The syntax for the commands can be found at [Console-Commands.md](Console-Commands.md)
 
 
-Set the IP or FQDN that participants will openvpn
+Set the IP or FQDN for the VPN server that participants will have to connect through openvpn.
 ```sh
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw 172.22.0.4
 # or
-docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw vpn.example.red
+docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw vpn.example.com
 ```
 
 Ensure that the docker containers can communicate with the participants. Once the `echoctfred_vpn` host is up run this on the host you run docker-compose at.
@@ -92,13 +93,12 @@ sudo ip netns exec $pid ip route del default
 sudo ip netns exec $pid ip route add default via 10.0.160.1
 ```
 
-Make sure you configure the host dockerd daemon to have its API to listen tcp
-to the new `private` network. However since the network becomes available only
-after dockerd starts you will have to bind to _`0.0.0.0`_ (ie `-H tcp://0.0.0.0:2376`)
+Make sure you configure the host dockerd daemon to have its API listen to the new `private` network.
+However since the network becomes available only after dockerd starts you will have to bind to _`0.0.0.0`_ (ie `-H tcp://0.0.0.0:2376`)
 
 More information about enabling docker API https://success.docker.com/article/how-do-i-enable-the-remote-api-for-dockerd
 
-Make sure you restrict connections to this port to `echoctfred_vpn/172.24.0.1` and `echoctfred_backend/172.24.0.2` containers only.
+Make sure you restrict connections to the dockerd port to only these containers `echoctfred_vpn/172.24.0.1` and `echoctfred_backend/172.24.0.2`.
 
 Your `frontend` is accessible at http://localhost:8080/
 
