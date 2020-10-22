@@ -1,0 +1,18 @@
+server:
+verbosity: 1
+statistics-interval: 0
+statistics-cumulative: no
+num-threads: 1
+interface-automatic: no
+interface: {{bind.ip}}
+access-control: 0.0.0.0/0 allow
+
+do-ip6: no
+pidfile: "/var/unbound/var/run/unbound.pid"
+hide-identity: yes
+hide-version: yes
+
+forward-zone:
+  name: "."                       # use for ALL queries
+  forward-addr: 8.8.8.8           # google.com
+  forward-first: no               # direct to forwarder if local fails
