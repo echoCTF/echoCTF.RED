@@ -1,4 +1,4 @@
-## Docker servers
+# Docker Servers
 Configure a Debian system to be used as docker server. Docker servers are
 systems that we control remotely in order to deploy targets that are assigned
 to them.
@@ -14,6 +14,7 @@ For more information about docker networks take a look at https://docs.docker.co
 
 So lets start by preparing the host specific inventory for our docker server.
 Copy the template `docker-server-template.yml` onto `inventories/dockers/host_vars`
+
 ```sh
 cp templates/docker-server-template.yml \
  inventories/dockers/host_vars/dockerd.example.net.yml
@@ -51,18 +52,20 @@ ETSCTF_users: []
 ETSCTF_authorized_keys: []
 ```
 
-Create a hosts file under `inventories/dockers` for the new server
+Create a hosts file under `inventories/dockers` for the new server by adding the name you picked (eg `dockerd.example.net`) to the hosts file under `inventories/dockers/hosts`.
+
 ```sh
 echo -e "[dockers]\ndockerd.example.net" >> inventories/dockers/hosts
 ```
 
+
 Push your changes to the server by running
 ```sh
-ansible-playbook -i inventories/dockers playbooks/docker-servers.yml
+ansible-playbook -i inventories/dockers runonce/docker-servers.yml
 ```
 
 The playbook installs any missing packages and configures the system
 accordingly.
 
-Take a look at the `playbooks/docker-servers.yml` for a list of tasks performed
+Take a look at the `runonce/docker-servers.yml` for a list of tasks performed
 on the server.

@@ -1,4 +1,4 @@
-### docker targets
+# Docker Targets
 Each target must reside on its own directory under `Dockerfiles/`. Each target folder has the following structure
 * `autoregister.yml` An ansible playbook that is executed during the docker image build. Most of the times you dont have to modify this file.
 * `Dockerfile` This includes your standard `Dockerfile` instructions in order to build your target image
