@@ -1,5 +1,6 @@
 # Docker Targets
 Each target must reside on its own directory under `Dockerfiles/`. Each target folder has the following structure
+
 * `autoregister.yml` An ansible playbook that is executed during the docker image build. Most of the times you dont have to modify this file.
 * `Dockerfile` This includes your standard `Dockerfile` instructions in order to build your target image
 * `entrypoint.sh` The script executed when the container starts
@@ -21,6 +22,7 @@ difficulty: 3
 ```
 
 The meaning and use of the variables is:
+
 * `ansible_host` the IP address that the container will be assigned. During
 development (eg while testing `docker build`) the default IP is usually one
 from the `172.17.0.0/24` subnet
@@ -58,6 +60,7 @@ container:
 ```
 
 These details you need to modify include
+
 * `build` and `image` The folder that we are going to build the image from and the name that the intermediate image will have. When the images are pushed to a registry the name changes to `hostname`
 * `tag` A version/build tag. If no tag is defined then the default tag is `latest`
 * `buildargs` Key/Value pair of variables needed to build the container. More details about this can be found at https://docs.docker.com/engine/reference/commandline/build/#set-build-time-variables---build-arg
