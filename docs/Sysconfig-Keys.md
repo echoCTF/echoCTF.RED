@@ -5,7 +5,8 @@
 * `player_profile` Enable player profiles
 * `dashboard_is_home` Default home page for the users is the dashboard
 
-Not implemented on current code-base but are going to
+Not activated by default on current code-base but are going to
+
 * _`teams`_ Competition supports teams
 * _`require_activation`_ Whether it is required for users to activate their accounts
 * _`disable_registration`_ Whether online registrations are allowed
@@ -27,9 +28,10 @@ Not implemented on current code-base but are going to
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
 * `mail_fromName` The name appeared on the email send for registration and password resets
-* `mail_host`
-* `mail_port`
-
+* `mail_host` The mail server host to send mails through
+* `mail_port` The mail server port to connect
+* `mail_username` The username to authenticate to the mail server
+* `mail_password` The password to authenticate to the mail server
 
 ## VPN specific keys
 * `CA.csr` The CA CSR
