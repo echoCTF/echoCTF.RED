@@ -54,6 +54,10 @@
       kern.shminfo.shmmax: 67018864
       kern.shminfo.shmall: 32768
       kern.maxfiles: 104060
+    post_inst: |
+      Things to do:
+        - Update /etc/administrators.conf with your IP's
+        - Reboot the system for the changes to take effect
 #    sshkeys:
 #     - octoprint
     users:
@@ -185,6 +189,27 @@
       - usr/local/lib
       - usr/local/share/icu/67.1
       - usr/lib
+
+  - name: "Copy pf conf files"
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
+      - { src: '{{playbook_dir}}/../templates/mui.service.conf.j2', dest: '/etc/service.pf.conf' }
+
+  - name: Generate pf tables files
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+      chdir: "{{item.chdir|default(omit)}}"
+    with_items:
+    - { cmd: "touch /etc/administrators.conf", creates: "/etc/administrators.conf" }
+    - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
+    - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
+    - { cmd: "touch /etc/dockerd.conf", creates: "/etc/dockerd.conf" }
+    - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
+    - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
 
 
   - name: Fix CHROOT environment
@@ -392,5 +417,4 @@
   - name: Re-Execute syspatch in case it updated it self on the previous run
     command: syspatch
 
-  - name: display post install message
-    debug: msg="Reboot the system for the changes to take effect"
+  - debug: msg={{ post_install.split('\n') }

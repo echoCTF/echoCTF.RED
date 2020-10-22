@@ -1,0 +1,28 @@
+# Allow moderators to access the service even when in maintenance
+pass quick on egress inet proto udp from <moderators> to (egress:0) port 1194 label "OpenVPN"
+
+# Dont allow
+pass quick on egress inet proto udp from !<maintenance> to (egress:0) port 1194 label "OpenVPN"
+
+anchor "targets" on targets {
+  pass inet proto udp from <targets> to (targets:0) port 53
+  pass from <targets> to <offense_activated>
+  pass quick inet proto tcp from <registry_clients> to <registry_servers>
+}
+
+anchor "offense" on tun {
+	anchor "findings"
+	anchor "allowed" from <offense_network> to (tun) {
+		# allow ping on connected players interface for troubleshooting
+		pass in inet proto icmp
+	}
+  # block targets from connecting to the VPN interface
+	block quick from <targets> to 10.10.0.1
+  # Allow targets to connect back to offense activated
+	pass from <targets> to <offense_activated>
+}
+
+load anchor "offense/findings" from "/etc/match-findings-pf.conf"
+pass quick inet to <targets> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state
+
+pass quick on interconnect from interconnect:network label "interconnect"

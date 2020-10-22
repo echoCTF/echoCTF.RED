@@ -1,0 +1,9 @@
+
+# Allow users to connect to port 80/443
+pass quick inet proto tcp from <moderators> to (egress:0) port { 80 , 443 } label "www-moderators"
+
+# FOR DT OPERATIONS
+pass in quick inet proto tcp from <maintenance> to port 80 rdr-to 127.0.0.1 port 8080 label "maintenance"
+pass in quick inet proto tcp from <maintenance> to port 443 rdr-to 127.0.0.1 port 8443 label "maintenance"
+
+pass in on egress inet proto tcp to port { 80, 443 } label "www-normal"

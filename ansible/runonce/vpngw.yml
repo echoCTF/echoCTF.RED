@@ -9,6 +9,10 @@
     ansible_user: root
     users:
       - { name: _findingsd, comment: "findingsd user", password: '*' }
+    post_inst: |
+      Things to do:
+        - Update /etc/administrators.conf with your IP's
+        - Reboot the system for the changes to take effect
     sysctl:
       net.inet.ip.forwarding: 1
       net.inet.ip.mforwarding: 1
@@ -329,14 +333,15 @@
       - "rcctl set openvpn status on"
       - "rcctl set openvpn flags --dev tun0 --config /etc/openvpn/openvpn_tun0.conf"
 
-  - name: "Copy openvpn conf files"
+  - name: "Copy openvpn and pf conf files"
     copy:
       src: "{{item.src}}"
       dest: "{{item.dest}}"
     with_items:
       - { src: '{{playbook_dir}}/../../contrib/openvpn_tun0.conf', dest: '/etc/openvpn/openvpn_tun0.conf' }
       - { src: '{{playbook_dir}}/../../contrib/crl_openssl.conf', dest: '/etc/openvpn/crl/crl_openssl.conf' }
-      - { src: '{{playbook_dir}}/../../contrib/pf-vpn.conf', dest: '/etc/pf.conf' }
+      - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
+      - { src: '{{playbook_dir}}/../templates/vpn.service.conf.j2', dest: '/etc/service.pf.conf' }
 
 
   - name: Update files with provided ip ranges
@@ -393,9 +398,12 @@
     - { cmd: "{{APP_DIR}}/backend/yii ssl/load-vpn-ta"}
     - { cmd: "{{APP_DIR}}/backend/yii sysconfig/set vpngw {{vpngw}}"}
     - { cmd: "{{APP_DIR}}/backend/yii sysconfig/set offense_registered_tag OFFENSE_REGISTERED"}
-    - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
+    - { cmd: "touch /etc/administrators.conf", creates: "/etc/administrators.conf" }
     - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
-    - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
+    - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
+    - { cmd: "touch /etc/dockerd.conf", creates: "/etc/dockerd.conf" }
+    - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
+    - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
     - { cmd: "{{APP_DIR}}/backend/yii target/pf" }
 
   - name: "Create targets network interface hostname.{{targets_if}}"
@@ -443,5 +451,4 @@
   - name: Re-Execute syspatch in case it updated it self on the previous run
     command: syspatch
 
-  - name: display post install message
-    debug: msg="Reboot the system for the changes to take effect"
+  - debug: msg={{ post_install.split('\n') }
