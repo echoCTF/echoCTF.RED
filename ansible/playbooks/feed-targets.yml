@@ -1,13 +1,10 @@
 ---
-- name: Update mUI data based on targets host_vars
+- name: Submit targets to mUI
   hosts: all
   order: inventory
   connection: local
   gather_facts: false
   serial: 1
-  become: root
-  vars:
-    volumes: []
   tasks:
   - name: Retrieve host target_id if exists
     delegate_to: 127.0.0.1
