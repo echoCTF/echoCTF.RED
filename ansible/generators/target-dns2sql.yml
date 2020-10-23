@@ -1,6 +1,6 @@
 ---
-- name: Gather details from docker targets and generate DNS zone files
-  hosts: docker-targets
+- name: Gather details from inventory and generate sql based DNS zone files
+  hosts: all
   gather_facts: false
   connection: local
 #  serial: 1
