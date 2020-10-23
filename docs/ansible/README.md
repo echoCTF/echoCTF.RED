@@ -9,20 +9,21 @@ The directory structure consists of:
 * `Dockerfiles/` Holds the targets to be build, with each target in its own directory.
  - `example/` an example target to use as a starting point for your own
 * `files/` configuration template files, none of these is currently in use
+* `generators/` playbooks that assist in generating files based on target, docker and challenge data
+  - `target-dns2sql.yml` Creates an sql file with DNS details to be used for
+* `inventories/` our infrastructure inventories. Everything is held in these inventories.
+  - `challenges/` inventory for your challenges
+  - `dockers/` inventory for the servers running docker api
+  - `targets/` inventory of the targets
 * `maintenance/` Maintenance related playbooks
  - `clean-docker.yml` Removes all containers and images from a docker server
- - `count-treasures.yml` Counts treasures per target as defined in the host_vars
- - `generate-dnszones.yml` Creates an sql file with DNS details to be used for
- forward and reverse resolution.
- - `password-change.yml` Updates the default password for user `pi` on
- Raspberry Pi systems.
+ - `count-treasures.yml` Counts treasures per target as defined in the host_vars forward and reverse resolution.
+ - `password-change.yml` Updates the default password for user `pi` on Raspberry Pi systems.
  - `targets_vultr_dns.yml` Feeds vultr with DNS A records for the targets
-* `playbooks/` most commonly used playbooks for building, configuring and
-feeding data to the platform
+* `playbooks/` most commonly used playbooks for building, configuring and feeding data to the platform
   - `build-images.yml` Build, tag and push to a private registry your docker images
-  - `challenges.yml` and `_challenge.yml` used to feed challenges to the backend
-  - `feed-mui.yml` Feed all the target related data to the database through the
-  backend web interface
+  - `feed-challenges.yml` used to feed challenges to the backend
+  - `feed-targets.yml` Feed all the target related data to the database through the backend web interface
 * `runonce/` Playbooks used to setup specific operations for servers. These playbooks are usually run only once during the server setups.
   - `db.yml` Standalone playbook to setup and configure an openbsd host as database server
   - `docker-registry.yml` Configures a docker registry on an OpenBSD server

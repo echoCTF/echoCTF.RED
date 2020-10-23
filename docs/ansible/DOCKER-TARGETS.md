@@ -111,5 +111,5 @@ ansible-playbook gameplays/build-images.yml -i inventories/targets --extra-vars 
 
 Feed the data to the backend
 ```sh
-ansible-playbook gameplays/feed-mui.yml -i inventories/docker-targets  -e '{"mui":{"URL": "http://127.0.0.1:8080"}}'
+ansible-playbook gameplays/feed-targets.yml -i inventories/targets  -e '{"mui":{"URL": "http://127.0.0.1:8080"}}'
 ```

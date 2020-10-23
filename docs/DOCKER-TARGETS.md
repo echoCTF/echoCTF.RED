@@ -20,7 +20,7 @@ well as files to assist in various tasks such as flag generation.
 
 The targets have their own playbook (autoregister.yml) with specific tasks
 needed during build and its own `variables.yml` that is used during build as
-well as the main playbooks (such as build-images.yml, feed-mui.yml and others)
+well as the main playbooks (such as build-images.yml, feed-targets.yml and others)
 
 ## Prepare your environment
 Prepare the repository for targets building by creating the respective inventory
