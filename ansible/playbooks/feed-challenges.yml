@@ -1,0 +1,43 @@
+---
+- name: Submit challenges to mUI
+  hosts: all
+  order: inventory
+  gather_facts: false
+  connection: local
+  serial: 1
+  vars:
+    TOKEN: randomtoken
+    mui:
+      URL: http://localhost:8080
+  tasks:
+  - name: Submit challenge
+    delegate_to: 127.0.0.1
+    register: creation
+    uri:
+      url: "{{mui.URL}}/index.php?r=restapi/challenge/create-bundle&access-token={{TOKEN}}"
+      method: POST
+      validate_certs: false
+      body_format: json
+      body:
+        author: "{{author|default(omit)}}"
+        name: "{{name}}"
+        category: "{{category}}"
+        difficulty: "{{difficulty}}"
+        player_type: "{{player_type}}"
+        description: "{{description}}"
+        questions: "{{questions}}"
+        filename: "{{filename|default(omit)}}"
+      status_code: 201
+
+  - name: Upload challenge file
+    when: creation.json is defined and creation.json.challenge_id is defined and challenge.filename is defined and challenge.filename != ""
+    delegate_to: 127.0.0.1
+    uri:
+      url: "{{mui.URL}}/index.php?r=restapi/challenge/upload&challenge_id={{creation.json.challenge_id}}&access-token={{TOKEN}}"
+      method: PUT
+      src: "{{challenge.filename}}"
+      validate_certs: false
+      body_format: json
+      status_code: 201
+    tags:
+      - upload
