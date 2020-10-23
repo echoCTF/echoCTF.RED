@@ -50,13 +50,6 @@ https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
 Before you start make sure the inventory folders for the docker servers and
 targets exists by executing
 
-```sh
-# for the docker targets containers
-mkdir -p inventories/targets/{host_vars,group_vars}
-# for the docker server
-mkdir -p inventories/dockers/{host_vars,group_vars}
-```
-
 ## Generate SSH keys
 Generate a set of ssh keys that will be used for administering the servers
 ```sh
