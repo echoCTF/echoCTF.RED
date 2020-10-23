@@ -231,7 +231,10 @@ openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key
 Prepare pf
 ```sh
 touch /etc/maintenance.conf /etc/targets.conf /etc/match-findings-pf.conf
-cp contrib/pf-vpn.conf /etc/pf.conf
+cp ansible/templates/pf.conf.j2 /etc/pf.conf
+cp ansible/templates/vpn.service.conf.j2 /etc/service.pf.conf
+touch /etc/administrators.conf /etc/maintenance.conf /etc/moderators.conf
+touch /etc/dockerd.conf /etc/registry_servers.conf /etc/targets.conf
 ./backend/yii target/pf
 ```
 
