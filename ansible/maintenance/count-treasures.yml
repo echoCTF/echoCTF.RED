@@ -1,6 +1,6 @@
 ---
 - name: Count treasures per target based on targets host_vars
-  hosts: docker-targets:vm-targets
+  hosts: all
   gather_facts: false
 #  serial: 1
   tasks:
