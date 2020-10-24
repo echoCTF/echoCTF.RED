@@ -23,6 +23,8 @@ use app\modules\target\models\Writeup;
  * @property string $discord Discord handle
  * @property string $twitter Twitter handle
  * @property string $github Github handle
+ * @property string $youtube Youtube handle
+ * @property string $twitch Twitch handle
  * @property string $htb HTB avatar
  * @property boolean $terms_and_conditions
  * @property boolean $mail_optin
@@ -85,7 +87,7 @@ class Profile extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            self::SCENARIO_ME => ['visibility', 'country', 'uploadedAvatar', 'bio', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
+            self::SCENARIO_ME => ['visibility', 'country', 'uploadedAvatar', 'bio','youtube','twitch', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
             self::SCENARIO_REGISTER => ['username', 'email', 'password'],
             self::SCENARIO_SIGNUP => ['gdpr', 'terms_and_conditions'],
         ];
@@ -96,7 +98,7 @@ class Profile extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio'], 'trim'],
+            [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio','youtube','twitch'], 'trim'],
             ['country', 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country' => 'id']],
 //            ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
             [['player_id', 'country', 'avatar', 'visibility'], 'required'],
@@ -108,7 +110,7 @@ class Profile extends \yii\db\ActiveRecord
             [['id', 'player_id'], 'integer'],
             [['bio'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['avatar','twitter', 'github'], 'string', 'max' => 255],
+            [['avatar','twitter', 'github','youtube','twitch'], 'string', 'max' => 255],
             [['country'], 'string', 'max'=>3],
             [['player_id'], 'unique'],
             [['id'], 'unique'],
@@ -131,6 +133,8 @@ class Profile extends \yii\db\ActiveRecord
           'discord' => 'Discord',
           'twitter' => 'Twitter',
           'github' => 'Github',
+          'youtube' => 'Youtube',
+          'twitch' => 'Twitch',
           'htb'=>'HTB',
           'terms_and_conditions'=>'I accept the echoCTF RED <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',
           'mail_optin'=>'<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from echoCTF RED</abbr>',

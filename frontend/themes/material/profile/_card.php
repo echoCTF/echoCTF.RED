@@ -39,10 +39,12 @@ use app\modules\game\models\Headshot;
           <li class="nav-item text-left"><strong><i class="fas fa-globe"></i> Country</strong> <span class="pull-right"><?=$profile->rCountry->name?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-calendar-check"></i> Joined</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->owner->created))?></span></li>
           <li class="nav-item text-left"><strong><i class="far fa-calendar-alt"></i> Last seen</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->last->on_pui))?></span></li>
-          <?php if(trim($profile->twitter)):?><li class="nav-item text-left"><strong><i class="fab fa-twitter"></i> Twitter</strong> <span class="pull-right"><?=Html::a(Html::encode($profile->twitterHandle), "https://twitter.com/".Html::encode($profile->twitter), ['target'=>'_blank'])?></span></li><?php endif;?>
-          <?php if(trim($profile->github)):?><li class="nav-item text-left"><strong><i class="fab fa-github"></i> Github</strong> <span class="pull-right"><?=Html::a(Html::encode($profile->github), "https://github.com/".Html::encode($profile->github), ['target'=>'_blank'])?></span></li><?php endif;?>
-          <?php if(trim($profile->discord)):?><li class="nav-item text-left"><strong><i class="fab fa-discord"></i> Discord</strong> <span class="pull-right"><?=Html::encode($profile->discord)?></span></li><?php endif;?>
-          <?php if(trim($profile->htb)):?><li class="nav-item text-left"><strong>HTB</strong> <span class="pull-right"><small><?=Html::a("https://hackthebox.eu/profile/".Html::encode($profile->htb), "https://hackthebox.eu/profile/".Html::encode($profile->htb), ['target'=>'_blank'])?></small></span></li><?php endif;?>
+          <li class="nav-item text-center" style="font-size: 2em"><?php if(trim($profile->twitter)):?><?=Html::a('<i class="fab fa-twitter"></i>', "https://twitter.com/".Html::encode($profile->twitter), ['target'=>'_blank'])?><?php endif;?>
+          <?php if(trim($profile->github)):?><?=Html::a('<i class="fab fa-github"></i>', "https://github.com/".Html::encode($profile->github), ['target'=>'_blank'])?><?php endif;?>
+          <?php if(trim($profile->twitch)):?><?=Html::a('<i class="fab fa-twitch"></i>', "https://twitch.tv/".Html::encode($profile->twitch), ['target'=>'_blank'])?><?php endif;?>
+          <?php if(trim($profile->youtube)):?><?=Html::a('<i class="fab fa-youtube"></i>', "https://youtube.com/channel/".Html::encode($profile->youtube), ['target'=>'_blank'])?><?php endif;?>
+        </li>
+
       </ul>
       <hr/>
       <ul class="nav flex-column">

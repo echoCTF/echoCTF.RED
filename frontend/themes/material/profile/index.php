@@ -31,7 +31,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
         <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Pending progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <?=$this->render('_card', ['profile'=>$profile]);?>
       </div><!-- // end profile card col-md-4 -->
     </div>
