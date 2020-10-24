@@ -23,10 +23,13 @@ class ConfigureForm extends Model
     public $defense_scenario;
     public $frontpage_scenario;
     public $dashboard_is_home;
+    public $default_homepage;
     public $mail_from;
     public $mail_fromName;
     public $mail_host;
     public $mail_port;
+    public $mail_username;
+    public $mail_password;
     public $online_timeout;
     public $spins_per_day;
     public $keys=[
@@ -44,10 +47,13 @@ class ConfigureForm extends Model
             'defense_scenario',
             'frontpage_scenario',
             'dashboard_is_home',
+            'default_homepage',
             'mail_from',
             'mail_fromName',
             'mail_host',
             'mail_port',
+            'mail_username',
+            'mail_password',
             'online_timeout',
             'spins_per_day',
         ];
@@ -72,6 +78,9 @@ class ConfigureForm extends Model
               'mail_fromName',
               'mail_host',
               'mail_port',
+              'mail_username',
+              'mail_password',
+              'default_homepage',
             ], 'string'],
             [['teams',
               'require_activation',
@@ -121,6 +130,7 @@ class ConfigureForm extends Model
           'registerForm_academic' => 'Registration form ask academic',
           'registerForm_fullname' => 'Register form ask fullname',
           'dashboard_is_home' => 'Dashboard page is home',
+          'default_homepage' => 'Default Homepage',
           'mail_from'=>'Mail From',
           'mail_fromName'=>'Mail From Name',
           'mail_host'=>'Mail Host',

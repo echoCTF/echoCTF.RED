@@ -2,7 +2,7 @@
 
 ## Flags (0 false, 1 true)
 * `event_active` Is the event currently active?
-* `player_profile` Enable player profiles
+* `player_profile` Enable/Disable player profiles
 * `dashboard_is_home` Default home page for the users is the dashboard
 
 Not activated by default on current code-base but are going to
@@ -24,6 +24,7 @@ Not activated by default on current code-base but are going to
 * `site_description`: Text to be displayed on meta description and social media tags about the site
 * `twitter_account`: The twitter account to link tweets to
 * `twitter_hashtags`: The twitter hashtags to include in the tweets
+* `default_homepage`: Default page to redirect the users after login
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
