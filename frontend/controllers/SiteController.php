@@ -84,9 +84,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-      if(!Yii::$app->user->isGuest && Yii::$app->sys->dashboard_is_home)
-          $this->redirect(['/dashboard/index']);
-        return $this->render('index');
+      if(!Yii::$app->user->isGuest && Yii::$app->sys->default_homepage!==false)
+          $this->redirect([Yii::$app->sys->default_homepage]);
+      return $this->render('index');
     }
 
     /**
