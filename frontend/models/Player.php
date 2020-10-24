@@ -43,6 +43,7 @@ class Player extends ActiveRecord implements IdentityInterface
     {
         parent::init();
         $this->on(self::EVENT_AFTER_UPDATE, [$this, 'updateStream']);
+        $this->on(self::EVENT_AFTER_INSERT, [$this, 'insertStream']);
     }
     /**
      * {@inheritdoc}
@@ -444,23 +445,35 @@ class Player extends ActiveRecord implements IdentityInterface
     {
       if($event->changedAttributes !== [] && (array_key_exists('active', $event->changedAttributes) === true || array_key_exists('status', $event->changedAttributes) === true))
       {
-        if($event->sender->status === self::STATUS_ACTIVE || $event->senter->active === 1)
+        if($event->sender->status === self::STATUS_ACTIVE || $event->sender->active === 1)
         {
-          Yii::$app->db->createCommand("INSERT INTO player_rank (id,player_id) SELECT max(id)+1,:player_id FROM player_rank")->bindValue(':player_id', $event->sender->id)->execute();
-          Yii::$app->db->createCommand("INSERT INTO player_hint (hint_id,player_id,status) VALUES (-1,:player_id,1)")->bindValue(':player_id', $event->sender->id)->execute();
-          $n=new Notification;
-          $n->player_id=$event->sender->id;
-          $n->archived=0;
-          $n->body=$n->title='Hi there, dont forget to read the Instructions';
-          $n->save();
-          $s=new Stream;
-          $s->player_id=$event->sender->id;
-          $s->points=0;
-          $s->message=$s->pubmessage=$s->pubtitle=$s->title='Joined the platform';
-          $s->model='user';
-          $s->model_id=$event->sender->id;
-          $s->save();
+          self::dostream($event);
         }
       }
+    }
+
+    public static function insertStream($event)
+    {
+        if($event->sender->status === self::STATUS_ACTIVE && $event->sender->active === 1)
+        {
+          self::dostream($event);
+        }
+    }
+    public static function dostream($event)
+    {
+      Yii::$app->db->createCommand("INSERT INTO player_rank (id,player_id) SELECT max(id)+1,:player_id FROM player_rank")->bindValue(':player_id', $event->sender->id)->execute();
+      Yii::$app->db->createCommand("INSERT INTO player_hint (hint_id,player_id,status) VALUES (-1,:player_id,1)")->bindValue(':player_id', $event->sender->id)->execute();
+      $n=new Notification;
+      $n->player_id=$event->sender->id;
+      $n->archived=0;
+      $n->body=$n->title='Hi there, dont forget to read the Instructions';
+      $n->save();
+      $s=new Stream;
+      $s->player_id=$event->sender->id;
+      $s->points=0;
+      $s->message=$s->pubmessage=$s->pubtitle=$s->title='Joined the platform';
+      $s->model='user';
+      $s->model_id=$event->sender->id;
+      $s->save();
     }
 }

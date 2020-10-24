@@ -120,6 +120,7 @@ class SiteController extends Controller
      */
     public function actionRegister()
     {
+
         $model=new SignupForm();
         $transaction=Yii::$app->db->beginTransaction();
         try
@@ -127,7 +128,11 @@ class SiteController extends Controller
           if($model->load(Yii::$app->request->post()) && $model->signup())
           {
               $transaction->commit();
-              Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>');
+              if(Yii::$app->sys->require_activation===true)
+                Yii::$app->session->setFlash('success', 'Thank you for registering. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>');
+              else {
+                Yii::$app->session->setFlash('success', 'Thank you for registering. Your account is activated feel free to login.');
+              }
               return $this->goHome();
           }
         }

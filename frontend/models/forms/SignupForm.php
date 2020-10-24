@@ -73,10 +73,18 @@ class SignupForm extends Model
         $player=new Player();
         $player->username=$this->username;
         $player->email=$this->email;
-        $player->status=Player::STATUS_INACTIVE;
+        if(Yii::$app->sys->require_activation===true)
+        {
+          $player->status=Player::STATUS_INACTIVE;
+          $player->generateEmailVerificationToken();
+        }
+        else
+        {
+          $player->status=Player::STATUS_ACTIVE;
+          $player->active=1;
+        }
         $player->setPassword($this->password);
         $player->generateAuthKey();
-        $player->generateEmailVerificationToken();
         if($player->save())
         {
           $playerSsl=new PlayerSsl();
@@ -95,7 +103,9 @@ class SignupForm extends Model
         {
           return false;
         }
-        return $this->sendEmail($player);
+        if(Yii::$app->sys->require_activation===true)
+          return $this->sendEmail($player);
+        return true;
 
     }
     public function attributeLabels()
