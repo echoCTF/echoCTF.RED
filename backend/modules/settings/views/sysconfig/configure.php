@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-4"><?= $form->field($model, 'require_activation')->checkbox()->hint('Do players need to activate their account?') ?></div>
           <div class="col-sm-4"><?= $form->field($model, 'disable_registration')->checkbox()->hint('Are online registrations allowed on the pUI?') ?></div>
           <div class="col-sm-4"><?= $form->field($model, 'player_profile')->checkbox()->hint('Are player profiles active?') ?></div>
+          <div class="col-sm-4"><?= $form->field($model, 'profile_visibility')->textInput()->hint('Choose default profile visibility (<code>ingame, public, private</code>)') ?></div>
           <div class="col-sm-4"><?= $form->field($model, 'default_homepage')->textInput()->hint('Default homepage for logged in users (eg. /dashboard)') ?></div>
           <div class="col-sm-4"><?= $form->field($model, 'online_timeout')->textInput()->hint('Timeout (in seconds) for the <b><code>online</code></b> memcache key to expire (eg. 900)') ?></div>
           <div class="col-sm-4"><?= $form->field($model, 'spins_per_day')->textInput()->hint('Maximum target spins per day per user (eg. 2)') ?></div>

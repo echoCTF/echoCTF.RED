@@ -13,6 +13,7 @@ class ConfigureForm extends Model
     public $require_activation;
     public $disable_registration;
     public $player_profile;
+    public $profile_visibility;
     public $event_name;
     public $footer_logos;
     public $challenge_home;
@@ -37,6 +38,7 @@ class ConfigureForm extends Model
             'require_activation',
             'disable_registration',
             'player_profile',
+            'profile_visibility',
             'event_name',
             'footer_logos',
             'challenge_home',
@@ -80,21 +82,24 @@ class ConfigureForm extends Model
               'mail_port',
               'mail_username',
               'mail_password',
+              'profile_visibility',
               'default_homepage',
             ], 'string'],
             [['teams',
               'require_activation',
               'disable_registration',
               'player_profile',
+              'profile_visibility',
               'event_name',
               'mail_from',
               'mail_fromName',
               'frontpage_scenario',
           ], 'required'],
-            [['online_timeout', 'spins_per_day'], 'integer'],
-            [['online_timeout'], 'default', 'value'=>900],
-            [['spins_per_day'], 'default', 'value'=> 2],
-            [['dashboard_is_home', 'teams', 'require_activation', 'disable_registration', 'player_profile'], 'boolean'],
+          ['profile_visibility','default','value'=>'ingame'],
+          [['online_timeout', 'spins_per_day'], 'integer'],
+          [['online_timeout'], 'default', 'value'=>900],
+          [['spins_per_day'], 'default', 'value'=> 2],
+          [['dashboard_is_home', 'teams', 'require_activation', 'disable_registration', 'player_profile'], 'boolean'],
 
         ];
     }
@@ -108,6 +113,7 @@ class ConfigureForm extends Model
           'disable_registration' => 'Disable registration',
           'strict_activation' => 'Strict player activations',
           'player_profile' => 'Player profile',
+          'profile_visibility' => 'Player profile visibility',
           'join_team_with_token' => 'Join teams with token',
           'event_name' => 'Event name',
           'footer_logos' => 'Footer logos',
