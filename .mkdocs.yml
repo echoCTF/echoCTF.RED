@@ -21,6 +21,7 @@ pages:
     - Docker Servers Setup Guide: DOCKER-SERVERS.md
     - Docker Targets Guide: DOCKER-TARGETS.md
     - Personalize your installation: PERSONALIZING.md
+    - Firewalling with PF: PF.md
   - Ansible:
     - Ansible folder structure: ansible/README.md
     - Docker Servers: ansible/DOCKER-SERVERS.md
