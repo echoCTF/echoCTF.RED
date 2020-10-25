@@ -71,6 +71,12 @@ class PlayerCountryRank extends \yii\db\ActiveRecord
     }
     return $this->id.'th';
   }
+
+  public function getAvatar()
+  {
+    return '/images/avatars/'.$this->player->profile->avatar;
+  }
+  
   public function getScore()
   {
     return $this->hasOne(PlayerScore::class, ['player_id' => 'player_id']);

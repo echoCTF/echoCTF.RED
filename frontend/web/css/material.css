@@ -265,7 +265,7 @@ td.td-actions,
     float: right;
 }
 .Leaderboard{
-  padding-top: 30px;
+  /*padding-top: 30px;
 /*  max-width: 1400px;*/
 }
 
@@ -307,7 +307,7 @@ td.td-actions,
 }
 
 .leader-ava {
-    padding: 8px;
+    /*padding: 4px;*/
     margin-right: 16px;
     position: relative;
 }
@@ -329,7 +329,7 @@ td.td-actions,
 /*    line-height: 1;*/
 }
 
-.leader-ava::after{
+/*.leader-ava::after{
     content: "";
     left: 0;
     bottom: 0;
@@ -343,7 +343,7 @@ td.td-actions,
     border-bottom-color: #fff;
     transition: border-bottom-color .2s ease-in-out;
 }
-
+*/
 .leader-bar {
     margin-top: 8px;
     margin-left: 30px;
