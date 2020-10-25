@@ -26,10 +26,10 @@ build:
                       idle_timeout: 1200
 
         tests: true
-    dependencies:
-        before:
-            - which composer
-            - php7.3 composer global require "fxp/composer-asset-plugin:dev-master" --no-interaction
+#    dependencies:
+#        before:
+#            - which composer
+#            - php7.3 composer global require "fxp/composer-asset-plugin:dev-master" --no-interaction
 filter:
   dependency_paths:
     - "*/vendor/"
