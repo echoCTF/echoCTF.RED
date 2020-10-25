@@ -207,7 +207,7 @@
     - { cmd: "touch /etc/administrators.conf", creates: "/etc/administrators.conf" }
     - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
     - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
-    - { cmd: "touch /etc/dockerd.conf", creates: "/etc/dockerd.conf" }
+    - { cmd: "touch /etc/registry_clients.conf", creates: "/etc/registry_clients.conf" }
     - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
     - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
 

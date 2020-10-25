@@ -234,7 +234,7 @@ touch /etc/maintenance.conf /etc/targets.conf /etc/match-findings-pf.conf
 cp ansible/templates/pf.conf.j2 /etc/pf.conf
 cp ansible/templates/vpn.service.conf.j2 /etc/service.pf.conf
 touch /etc/administrators.conf /etc/maintenance.conf /etc/moderators.conf
-touch /etc/dockerd.conf /etc/registry_servers.conf /etc/targets.conf
+touch /etc/registry_clients.conf /etc/registry_servers.conf /etc/targets.conf
 ./backend/yii target/pf
 ```
 

@@ -9,12 +9,12 @@ set reassemble yes no-df
 table <administrators> persist counters file "/etc/administrators.conf"
 table <maintenance> persist counters file "/etc/maintenance.conf"
 table <moderators> persist counters file "/etc/moderators.conf"
-table <registry_clients> persist counters "/etc/dockerd.conf"
+table <registry_clients> persist counters "/etc/registry_clients.conf"
 table <registry_servers> persist counters "/etc/registry_servers.conf"
 table <targets> persist counters file "/etc/targets.conf"
 table <offense_activated> persist counters { 10.10.0.0/16 }
 table <offense_network> persist counters { 10.10.0.0/16 }
-table <blacklisted> persist counters
+table <banned> persist counters
 
 set skip on lo
 
@@ -24,7 +24,7 @@ match on tun from <offense_activated> tag OFFENSE_REGISTERED
 
 block return quick to { 239.255.255.250, 224/8 }
 block return log
-block quick from <blacklisted>
+block quick from <banned>
 pass quick from <administrators> label "administrators"
 pass quick from (self) label "selforigin"
 
