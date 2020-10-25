@@ -103,7 +103,7 @@ class Profile extends \yii\db\ActiveRecord
 //            ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
             [['player_id', 'country', 'avatar', 'visibility'], 'required'],
             [['terms_and_conditions', 'mail_optin', 'gdpr','approved_avatar'], 'boolean', 'trueValue' => true, 'falseValue' => false],
-            [['approved_avatar'], 'default', 'value'=>true ],
+            [['approved_avatar'], 'default', 'value'=>Yii::$app->sys->approved_avatar],
             [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
             [['visibility'], 'default', 'value' =>  Yii::$app->sys->profile_visibility!==false ? Yii::$app->sys->profile_visibility : 'ingame'],
             [['id'], 'default', 'value' =>  new Expression('round(rand()*10000000)'), 'on'=>['register']],

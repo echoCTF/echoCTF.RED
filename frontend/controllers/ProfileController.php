@@ -217,7 +217,7 @@ class ProfileController extends \yii\web\Controller
           $profileForm->avatar=sprintf("%s.png",$profile->id);
           $profileForm->uploadedAvatar->saveAs($fname);
           $profileForm->uploadedAvatar=null;
-          $profileForm->approved_avatar=true;
+          $profileForm->approved_avatar=Yii::$app->sys->approved_avatar;
         }
         $profileForm->save();
         $success[]="Profile updated";

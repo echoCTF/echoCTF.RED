@@ -12,6 +12,7 @@ class ConfigureForm extends Model
     public $teams;
     public $require_activation;
     public $disable_registration;
+    public $approved_avatar;
     public $player_profile;
     public $profile_visibility;
     public $event_name;
@@ -36,6 +37,7 @@ class ConfigureForm extends Model
     public $keys=[
             'teams',
             'require_activation',
+            'approved_avatar',
             'disable_registration',
             'player_profile',
             'profile_visibility',
@@ -94,12 +96,13 @@ class ConfigureForm extends Model
               'mail_from',
               'mail_fromName',
               'frontpage_scenario',
+              'approved_avatar'
           ], 'required'],
           ['profile_visibility','default','value'=>'ingame'],
           [['online_timeout', 'spins_per_day'], 'integer'],
           [['online_timeout'], 'default', 'value'=>900],
           [['spins_per_day'], 'default', 'value'=> 2],
-          [['dashboard_is_home', 'teams', 'require_activation', 'disable_registration', 'player_profile'], 'boolean'],
+          [['dashboard_is_home', 'teams', 'require_activation', 'disable_registration', 'player_profile', 'approved_avatar'], 'boolean'],
 
         ];
     }
@@ -125,6 +128,7 @@ class ConfigureForm extends Model
           'defense_domain' => 'Defense domain',
           'moderator_domain' => 'Moderator domain',
           'challenge_home' => 'Challenge home',
+          'approved_avatar' => 'Approved Avatar',
           'offense_vether_network' => 'Offense vether network',
           'offense_vether_netmask' => 'Offense vether netmask',
           'defense_vether_network' => 'Defense vether network',
