@@ -28,7 +28,7 @@ build:
         tests: true
     dependencies:
         before:
-            - composer global require "fxp/composer-asset-plugin:dev-master" --no-interaction
+#            - composer global require "fxp/composer-asset-plugin:dev-master" --no-interaction
 filter:
   dependency_paths:
     - "*/vendor/"
