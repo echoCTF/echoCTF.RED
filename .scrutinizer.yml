@@ -1,6 +1,6 @@
 build:
     environment:
-        php: 7.4.0
+        php: 7.3.0
     nodes:
         frontend:
             root_path: "./frontend"
@@ -28,7 +28,7 @@ build:
         tests: true
     dependencies:
         before:
-            - composer global require "fxp/composer-asset-plugin" --no-interaction
+            - composer global require "fxp/composer-asset-plugin:dev-master" --no-interaction
 filter:
   dependency_paths:
     - "*/vendor/"
