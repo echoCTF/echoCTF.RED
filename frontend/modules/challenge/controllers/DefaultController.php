@@ -49,7 +49,7 @@ class DefaultController extends Controller
     public function actionIndex()
     {
       $dataProvider=new ActiveDataProvider([
-          'query' => Challenge::find()->player_progress(Yii::$app->user->id),
+          'query' => Challenge::find()->active()->player_progress(Yii::$app->user->id),
           'pagination' => false,
       ]);
       return $this->render('index', [
@@ -65,7 +65,7 @@ class DefaultController extends Controller
      */
     public function actionView(int $id)
     {
-      $model=Challenge::find()->where(['t.id'=>$id])->player_progress(Yii::$app->user->id)->one();
+      $model=Challenge::find()->where(['t.id'=>$id])->active()->player_progress(Yii::$app->user->id)->one();
       if($model===null)
       {
           throw new NotFoundHttpException('The requested challenge could not be found.');

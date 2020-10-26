@@ -9,6 +9,10 @@ namespace app\modules\challenge\models;
  */
 class ChallengeQuery extends \yii\db\ActiveQuery
 {
+    public function active()
+    {
+      return $this->andWhere(['t.active'=>1]);
+    }
     public function player_progress($player_id)
     {
       $this->alias('t');

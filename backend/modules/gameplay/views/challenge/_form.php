@@ -14,6 +14,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('The name of the challenge') ?>
 
+    <?= $form->field($model, 'active')->checkbox()->hint('Is challenge active?') ?>
+
     <?= $form->field($model, 'category')->textInput(['maxlength' => true])->hint('The category this chellange belongs to TODO') ?>
 
     <?= $form->field($model, 'difficulty')->textInput(['maxlength' => true])->hint('The difficulty of the challenge (can be easy, medium, hard or very hard) TODO') ?>
