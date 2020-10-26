@@ -46,6 +46,9 @@ class SiteController extends Controller
                         'actions' => ['register'],
                         'allow' => true,
                         'roles' => ['?'],
+                        'matchCallback' => function ($rule, $action) {
+                          return !Yii::$app->DisabledRoute->disabled($action);
+                        },
                     ],
                 ],
             ],

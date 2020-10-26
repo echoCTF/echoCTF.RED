@@ -31,6 +31,9 @@ class ProfileController extends \yii\web\Controller
                         'actions' => ['me', 'notifications', 'hints', 'update', 'ovpn', 'settings', 'robohash'],
                         'allow' => true,
                         'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                          return !Yii::$app->DisabledRoute->disabled($action);
+                        },
                     ],
                     [
                         'actions' => ['index'],

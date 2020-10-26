@@ -29,6 +29,10 @@ class DefaultController extends Controller
                       'actions' => ['index', 'view'],
                       'allow' => true,
                       'roles' => ['@'],
+                      'matchCallback' => function ($rule, $action) {
+                        return !Yii::$app->DisabledRoute->disabled($action);
+                      },
+
                   ],
               ],
           ],
