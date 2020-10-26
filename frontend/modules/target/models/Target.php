@@ -310,7 +310,7 @@ class Target extends \yii\db\ActiveRecord
         return false;// user is not allowed spins for the day.
       }
 
-      if(intval($this->player_findings) == 0 && intval($this->player_treasures) == 0 && Yii::$app->user->identity->profile->last->vpn_local_address === NULL)
+      if(Yii::$app->user->identity->profile->last->vpn_local_address === NULL && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_findings)<1 && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_treasures)<1)
         return false;
       return true;
     }
