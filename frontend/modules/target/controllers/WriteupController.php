@@ -33,6 +33,9 @@ class WriteupController extends Controller
                           'actions' => ['view'],
                           'roles' => ['@'],
                           'verbs'=>['get'],
+                          'matchCallback' => function ($rule, $action) {
+                            return !Yii::$app->DisabledRoute->disabled($action);
+                          },
                       ],
 
                       [
@@ -40,12 +43,18 @@ class WriteupController extends Controller
                           'actions' => ['submit','update'],
                           'roles' => ['@'],
                           'verbs'=>['post','get'],
+                          'matchCallback' => function ($rule, $action) {
+                            return !Yii::$app->DisabledRoute->disabled($action);
+                          },
                       ],
                       [
                           'allow' => true,
                           'actions' => ['enable'],
                           'roles' => ['@'],
                           'verbs'=>['post'],
+                          'matchCallback' => function ($rule, $action) {
+                            return !Yii::$app->DisabledRoute->disabled($action);
+                          },
                       ],
                   ],
               ],

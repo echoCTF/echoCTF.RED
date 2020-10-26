@@ -46,6 +46,9 @@ class SiteController extends Controller
                         'actions' => ['register'],
                         'allow' => true,
                         'roles' => ['?'],
+                        'matchCallback' => function ($rule, $action) {
+                          return !Yii::$app->DisabledRoute->disabled($action);
+                        },
                     ],
                 ],
             ],
@@ -84,7 +87,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-      if(!Yii::$app->user->isGuest && Yii::$app->sys->default_homepage!==false)
+      if(!Yii::$app->user->isGuest && Yii::$app->sys->default_homepage!==false && Yii::$app->sys->default_homepage!=="")
           $this->redirect([Yii::$app->sys->default_homepage]);
       return $this->render('index');
     }

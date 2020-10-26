@@ -44,12 +44,20 @@ class DefaultController extends Controller
                       [
                           'allow' => true,
                           'actions' => ['index'],
+                          'matchCallback' => function ($rule, $action) {
+                            return !Yii::$app->DisabledRoute->disabled($action);
+                          },
+
                       ],
                       [
                           'allow' => true,
                           'actions' => ['claim', 'spin'],
                           'roles' => ['@'],
                           'verbs'=>['post'],
+                          'matchCallback' => function ($rule, $action) {
+                            return !Yii::$app->DisabledRoute->disabled($action);
+                          },
+                          
                       ],
                   ],
               ],
