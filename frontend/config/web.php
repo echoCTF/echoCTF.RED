@@ -132,6 +132,9 @@ $config=[
         'sys'=> [
           'class' => 'app\components\Sysconfig',
         ],
+        'DisabledRoute'=> [
+          'class' => 'app\components\DisabledRoute',
+        ],
         'cache' => $cache,
         'session'=>[
           'name' => 'red',
