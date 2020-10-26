@@ -21,6 +21,7 @@ use yii\db\Expression;
  * @property string $csum If there is a file attached to this treasure
  * @property string $category
  * @property int $appears
+ * @property int $weight
  * @property string $effects
  * @property int $target_id A target system that this treasure is hidden on. This is not required but its good to have
  * @property string $code
@@ -60,10 +61,12 @@ class Treasure extends \yii\db\ActiveRecord
             [['name', 'points', 'target', 'code'], 'required'],
             [['description', 'category', 'pubdescription', 'player_type', 'effects','location','suggestion','solution'], 'string'],
             [['points'], 'number'],
-            [['appears', 'target_id'], 'integer'],
+            [['weight'], 'default','value'=>0],
+            [['appears', 'target_id','weight'], 'integer'],
             [['name', 'pubname', 'hint'], 'string', 'max' => 255],
             [['csum', 'code'], 'string', 'max' => 128],
             [['name', 'target_id', 'code', 'csum'], 'unique', 'targetAttribute' => ['name', 'target_id', 'code', 'csum']],
+            [['code'], 'trim'],
             [['code'], 'unique'],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];

@@ -49,6 +49,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'location',
             'suggestion',
             'solution',
+            'weight',
             'ts',
         ],
     ]) ?>

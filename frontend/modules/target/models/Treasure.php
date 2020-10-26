@@ -17,6 +17,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property string $player_type
  * @property string $csum If there is a file attached to this treasure
  * @property int|null $appears
+ * @property int $weight
  * @property string|null $effects
  * @property int $target_id A target system that this treasure is hidden on. This is not required but its good to have
  * @property string|null $code
@@ -49,6 +50,7 @@ class Treasure extends \yii\db\ActiveRecord
                 'attributeTypes' => [
                     'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'points' => AttributeTypecastBehavior::TYPE_FLOAT,
+                    'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'appears' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                 ],
@@ -67,7 +69,7 @@ class Treasure extends \yii\db\ActiveRecord
         return [
             [['description', 'pubdescription', 'player_type', 'effects'], 'string'],
             [['points'], 'number'],
-            [['appears', 'target_id'], 'integer'],
+            [['appears', 'target_id','weight'], 'integer'],
             [['ts'], 'safe'],
             [['name', 'pubname'], 'string', 'max' => 255],
             [['csum', 'code'], 'string', 'max' => 128],

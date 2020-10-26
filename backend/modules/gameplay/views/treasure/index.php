@@ -63,7 +63,7 @@ $this->params['breadcrumbs'][]=$this->title;
               'value'=>function($model) {return count($model->playerTreasures);},
               'filter'=>[0=>'No', 1=>'Yes'],
             ],
-
+            'weight',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]);?>
