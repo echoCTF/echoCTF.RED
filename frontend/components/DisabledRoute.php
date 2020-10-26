@@ -16,7 +16,7 @@ class DisabledRoute extends Component
 
   static function disabled($action)
   {
-    if($action instanceof yii\base\InlineAction)
+    if(is_object($action))
     {
       $route=self::RequestedRoute($action);
     }
