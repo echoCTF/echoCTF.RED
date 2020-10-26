@@ -145,7 +145,7 @@ class Target extends \yii\db\ActiveRecord
      */
     public function getTreasures()
     {
-        return $this->hasMany(Treasure::class, ['target_id' => 'id']);
+        return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight' => SORT_DESC,'id'=>SORT_DESC]);
     }
 
     /**

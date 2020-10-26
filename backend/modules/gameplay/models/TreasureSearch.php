@@ -19,7 +19,7 @@ class TreasureSearch extends Treasure
     public function rules()
     {
         return [
-            [['id', 'appears', 'target_id'], 'integer'],
+            [['id', 'appears', 'target_id','weight'], 'integer'],
             [['discovered', 'name', 'pubname', 'category', 'description', 'pubdescription', 'player_type', 'csum', 'effects', 'code', 'ipoctet'], 'safe'],
             [['points'], 'number'],
         ];
@@ -66,6 +66,7 @@ class TreasureSearch extends Treasure
             'treasure.id' => $this->id,
             'treasure.points' => $this->points,
             'treasure.appears' => $this->appears,
+            'treasure.weight' => $this->weight,
             'treasure.category' => $this->category,
             'treasure.target_id' => $this->target_id,
             '(SELECT COUNT(DISTINCT treasure_id)>0 FROM player_treasure WHERE treasure.id=player_treasure.treasure_id)' => $this->discovered,
