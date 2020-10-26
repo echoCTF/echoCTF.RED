@@ -27,7 +27,7 @@ class m201026_102939_update_disabled_routes extends Migration
      */
     public function safeDown()
     {
-        return false;
+        return true;
     }
 
 }
