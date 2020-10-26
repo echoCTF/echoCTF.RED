@@ -34,8 +34,9 @@ class Network extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
-            [['description'], 'string'],
+            [['name','codename'], 'required'],
+            [['description','codename','icon'], 'string'],
+            [['public','active'], 'boolean'],            
             [['ts'], 'safe'],
             [['name'], 'string', 'max' => 32],
             [['name'], 'unique'],
