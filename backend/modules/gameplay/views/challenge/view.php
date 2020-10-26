@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][]=$this->title;
         'attributes' => [
             'id',
             'name',
+            'active:boolean',
             'category',
             'difficulty',
             'description:ntext',
