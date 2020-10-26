@@ -24,7 +24,7 @@ class DisabledRoute extends Component
     {
       $route=$action;
     }
-    if((int)\Yii::$app->db->createCommand("SELECT count(*) FROM disabled_route WHERE :route LIKE route")->bindValue(':route', $route)->queryScalar()>0)
+    if((int)\Yii::$app->db->createCommand("SELECT count(*) FROM disabled_route WHERE :route LIKE route OR CONCAT('/',:route) LIKE route")->bindValue(':route', $route)->queryScalar()>0)
       return true;
 
     return false;
