@@ -20,6 +20,9 @@ class ConfigureForm extends Model
     public $challenge_home;
     public $offense_registered_tag;
     public $defense_registered_tag;
+    public $offense_domain;
+    public $defense_domain;
+    public $moderator_domain;
     public $vpngw;
     public $offense_scenario;
     public $defense_scenario;
@@ -49,6 +52,9 @@ class ConfigureForm extends Model
             'vpngw',
             'offense_scenario',
             'defense_scenario',
+            'offense_domain',
+            'defense_domain',
+            'moderator_domain',
             'frontpage_scenario',
             'dashboard_is_home',
             'default_homepage',
@@ -86,6 +92,9 @@ class ConfigureForm extends Model
               'mail_password',
               'profile_visibility',
               'default_homepage',
+              'offense_domain',
+              'defense_domain',
+              'moderator_domain',
             ], 'string'],
             [['teams',
               'require_activation',
