@@ -85,6 +85,7 @@ class PlayerController extends Controller {
         }
     }
 
+
   /**
    * @param Player[] $players
    */
@@ -300,6 +301,54 @@ class PlayerController extends Controller {
     }
     else if($pendingProfiles->count()>0)
       echo $pendingProfiles->count()," pending profile avatar",$pendingProfiles->count()>1 ? 's': '',"\n";
+  }
+
+  /**
+   * Check mails for known spammers.
+   */
+  public function actionCheckStopforumspam($interval=null)
+  {
+    $players=Player::find();
+    if($interval!==null)
+    {
+      $exp=new \yii\db\Expression('created >= NOW() - INTERVAL '.$interval);
+      $players->where($exp);
+    }
+    foreach($players->all() as $p)
+    {
+      echo "Processing ",$p->email,"\n";
+      $result=$this->stopforumspam($p->email);
+      $retData=json_decode($result)->email;
+      if(property_exists($retData,'confidence') && $retData->confidence>0)
+      {
+        printf("Banning %d: %s %d %d => %s\n",$p->id,$p->email,$p->active,$p->status,floatval($retData->confidence));
+        $p->ban();
+      }
+
+    }
+  }
+
+  public function stopforumspam($email)
+  {
+    $url = 'http://api.stopforumspam.org/api';
+    $data = array(
+        'email' => $email,
+        'json'=>'',
+    );
+
+    $data = http_build_query($data);
+
+    // init the request, set some info, send it and finally close it
+    $ch = curl_init($url);
+
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $result = curl_exec($ch);
+
+    curl_close($ch);
+    return $result;
   }
 
   public function p($message, array $params=[])
