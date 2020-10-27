@@ -118,4 +118,14 @@ class Sessions extends \yii\db\ActiveRecord
       return '<pre>'.implode("\n", $r).'</pre>';
     }
 
+    public function beforeDelete()
+    {
+        if (!parent::beforeDelete()) {
+            return false;
+        }
+
+        $key="memc.sess.$this->id";
+        Yii::$app->cache->memcache->delete($key);
+        return true;
+    }
 }
