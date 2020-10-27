@@ -42,7 +42,23 @@ $this->params['breadcrumbs'][]=$this->title;
             'expire:dateTime',
             'ts:dateTime',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+              'class' => 'yii\grid\ActionColumn',
+              'header' => Html::a(
+                  '<span class="glyphicon glyphicon-trash"></span>',
+                  ['delete-filtered'],
+                  [
+                      'title' => 'Mass Delete sessions',
+                      'data-pjax' => '0',
+                      'data-method' => 'POST',
+                      'data'=>[
+                        'method'=>'post',
+                        'params'=> $searchModel->attributes,
+                        'confirm'=>'Are you sure you want to delete the currently filtered sessions?',
+                      ],
+                  ]
+              ),
+            ],
         ],
     ]);?>
 

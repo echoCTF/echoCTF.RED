@@ -33,6 +33,7 @@ class SessionController extends Controller
                   'class' => VerbFilter::class,
                   'actions' => [
                       'delete' => ['POST'],
+                      'delete-filtered' => ['POST'],
                   ],
               ],
           ];
@@ -139,6 +140,30 @@ class SessionController extends Controller
 
         return $this->redirect(['index']);
     }
+
+    public function actionDeleteFiltered()
+    {
+      $searchModel=new SessionsSearch();
+      $query=$searchModel->search(['SessionsSearch'=>Yii::$app->request->post()]);
+      $query->pagination=false;
+      $trans=Yii::$app->db->beginTransaction();
+      try
+      {
+        $counter=$query->count;
+        foreach($query->getModels() as $q)
+          $q->delete();
+        $trans->commit();
+        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Sessions deleted');
+
+      }
+      catch(\Exception $e)
+      {
+        $trans->rollBack();
+        Yii::$app->session->setFlash('error', 'Failed to delete Sessions');
+      }
+      return $this->redirect(['index']);
+    }
+
 
     /**
      * Finds the Sessions model based on its primary key value.
