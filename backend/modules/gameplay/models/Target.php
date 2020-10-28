@@ -127,6 +127,22 @@ class Target extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getNetworkTarget()
+    {
+        return $this->hasOne(NetworkTarget::class, ['target_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNetwork()
+    {
+        return $this->hasOne(Network::class, ['id' => 'network_id'])->via('networkTarget');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTargetVariables()
     {
         return $this->hasMany(TargetVariable::class, ['target_id' => 'id']);

@@ -31,13 +31,17 @@ $this->params['breadcrumbs'][]=$this->title;
             'ipoctet',
             'server',
             [
-                'label'=>'Finding pts',
-                'value'=>'findingPoints'
+              'label'=>'Network',
+              'value'=>'network.name'
             ],
-            [
-                'label'=>'Treasure pts',
-                'value'=>'treasurePoints'
-            ],
+  //          [
+  //              'label'=>'Finding pts',
+  //              'value'=>'findingPoints'
+  //          ],
+  //          [
+  //              'label'=>'Treasure pts',
+  //              'value'=>'treasurePoints'
+  //          ],
             [
               'attribute'=>'status',
               'filter'=>$searchModel->statuses,
@@ -47,8 +51,8 @@ $this->params['breadcrumbs'][]=$this->title;
             'active:boolean',
             'timer:boolean',
             'difficulty',
-            'required_xp',
-            'suggested_xp',
+//            'required_xp',
+//            'suggested_xp',
             [
               'class' => 'yii\grid\ActionColumn',
               'template' => '{spin} {view} {update} {delete}',
@@ -58,7 +62,7 @@ $this->params['breadcrumbs'][]=$this->title;
                           '<span class="glyphicon glyphicon glyphicon-off"></span>',
                           $url,
                           [
-                              'title' => 'Spin container up/down',
+                              'title' => 'Spin container',
                               'data-pjax' => '0',
                               'data-method' => 'POST',
                           ]

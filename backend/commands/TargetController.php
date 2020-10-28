@@ -273,10 +273,13 @@ class TargetController extends Controller {
     $findings=Finding::find()->joinWith(['target'])->where(['target.active'=>true])->all();
     foreach($findings as $finding)
     {
-      if($finding->protocol === 'icmp')
-        $rules[]=sprintf('match log (to pflog1) inet proto %s to %s tagged %s icmp-type echoreq label "$dstaddr:$dstport"', $finding->protocol, $finding->target->ipoctet, trim(Sysconfig::findOne('offense_registered_tag')->val));
-      else
-        $rules[]=sprintf('match log (to pflog1) inet proto %s to %s port %d tagged %s label "$dstaddr:$dstport"', $finding->protocol, $finding->target->ipoctet, $finding->port, trim(Sysconfig::findOne('offense_registered_tag')->val));
+      if($finding->target->networkTarget===null)
+      {
+        if($finding->protocol === 'icmp')
+          $rules[]=sprintf('match log (to pflog1) inet proto %s to %s tagged %s icmp-type echoreq label "$dstaddr:$dstport"', $finding->protocol, $finding->target->ipoctet, trim(Sysconfig::findOne('offense_registered_tag')->val));
+        else
+          $rules[]=sprintf('match log (to pflog1) inet proto %s to %s port %d tagged %s label "$dstaddr:$dstport"', $finding->protocol, $finding->target->ipoctet, $finding->port, trim(Sysconfig::findOne('offense_registered_tag')->val));
+      }
     }
     try
     {
@@ -300,7 +303,10 @@ class TargetController extends Controller {
     $ips=array();
     $targets=Target::find()->where(['active'=>true])->all();
     foreach($targets as $target)
-      $ips[]=$target->ipoctet;
+    {
+      if($target->networkTarget === NULL)
+        $ips[]=$target->ipoctet;
+    }
     $this->store_and_load('targets', '/etc/targets.conf', $ips);
   }
 

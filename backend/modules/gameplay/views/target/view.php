@@ -53,9 +53,13 @@ $this->params['breadcrumbs'][]=$this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'timer',
             'name',
             'fqdn',
+            [
+              'label'=>'Network',
+              'attribute'=>'network.name'
+            ],
+            'timer',
             'difficulty',
             'required_xp',
             'suggested_xp',
