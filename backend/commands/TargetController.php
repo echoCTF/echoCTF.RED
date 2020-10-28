@@ -269,21 +269,26 @@ class TargetController extends Controller {
    */
   private function match_findings($load)
   {
-    $rules=array();
+    $networks=$rules=$frules=array();
     $findings=Finding::find()->joinWith(['target'])->where(['target.active'=>true])->all();
     foreach($findings as $finding)
     {
-      if($finding->target->networkTarget===null)
+      if($finding->target->network)
       {
-        if($finding->protocol === 'icmp')
-          $rules[]=sprintf('match log (to pflog1) inet proto %s to %s tagged %s icmp-type echoreq label "$dstaddr:$dstport"', $finding->protocol, $finding->target->ipoctet, trim(Sysconfig::findOne('offense_registered_tag')->val));
-        else
-          $rules[]=sprintf('match log (to pflog1) inet proto %s to %s port %d tagged %s label "$dstaddr:$dstport"', $finding->protocol, $finding->target->ipoctet, $finding->port, trim(Sysconfig::findOne('offense_registered_tag')->val));
+        $networks[$finding->target->network->codename]=true;
       }
+      $frules[]=$finding->matchRule;
     }
+
     try
     {
-      file_put_contents('/etc/match-findings-pf.conf', implode("\n", $rules)."\n");
+      foreach($networks as $key=>$val)
+      {
+        $rules[]=sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key.'_clients',$key);
+      }
+      $ruleset=implode("\n", $frules)."\n";
+      $ruleset.=implode("\n",$rules);
+      file_put_contents('/etc/match-findings-pf.conf',$ruleset);
     }
     catch(\Exception $e)
     {
@@ -300,14 +305,30 @@ class TargetController extends Controller {
    */
   private function active_targets_pf()
   {
-    $ips=array();
+    $ips=$networks=array();
     $targets=Target::find()->where(['active'=>true])->all();
     foreach($targets as $target)
     {
       if($target->networkTarget === NULL)
         $ips[]=$target->ipoctet;
+      else {
+        $networks[$target->network->codename][]=$target->ipoctet;
+      }
     }
     $this->store_and_load('targets', '/etc/targets.conf', $ips);
+    foreach($networks as $key => $val) {
+      $this->store_and_load($key, '/etc/'.$key.'.conf', $val);
+      $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
+      $rules[]=sprintf("pass quick from <%s> to <%s_clients>",$key,$key);
+    }
+
+    try {
+      file_put_contents("/etc/targets_networks.conf",implode("\n",$rules));
+    }
+    catch (\Exception $e)
+    {
+      echo "Failed to store /etc/targets_networks.conf\n";
+    }
   }
 
   /*
