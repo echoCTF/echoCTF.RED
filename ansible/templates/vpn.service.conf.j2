@@ -5,10 +5,12 @@ pass quick on egress inet proto udp from <moderators> to (egress:0) port 1194 la
 pass quick on egress inet proto udp from !<maintenance> to (egress:0) port 1194 label "OpenVPN"
 
 anchor "targets" on targets {
+  anchor "networks"
   pass inet proto udp from <targets> to (targets:0) port 53
   pass from <targets> to <offense_activated>
   pass quick inet proto tcp from <registry_clients> to <registry_servers>
 }
+load anchor "targets/networks" from "/etc/targets_networks.conf"
 
 anchor "offense" on tun {
 	anchor "findings"
