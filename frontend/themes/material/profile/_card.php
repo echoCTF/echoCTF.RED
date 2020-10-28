@@ -55,5 +55,14 @@ use app\modules\game\models\Headshot;
         <li class="nav-item text-left"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo $profile->totalFindings;?></span></li>
         <li class="nav-item text-left"><strong><i class="fas fa-tasks"></i> Challenges</strong> <span class="pull-right"><?=count($profile->owner->challengeSolvers)?></span></li>
       </ul>
+<?php if($profile->owner->networks && $profile->isMine):?>
+      <hr/>
+      <ul class="nav flex-column">
+        <li class="nav-header text-left"><h6>Networks Access</h6></li>
+        <?php foreach($profile->owner->networks as $network):?>
+          <li class="nav-item text-left"><strong><?=$network->icon?> <?=$network->name?></strong></li>
+        <?php endforeach;?>
+      </ul>
+<?php endif;?>
   </div>
 </div><!-- // end user profile card -->
