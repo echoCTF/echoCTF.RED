@@ -45,6 +45,32 @@ CREATE TABLE `player` (
   `status` int(11) DEFAULT '0'
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player';
 
+DROP TABLE IF EXISTS `network`;
+CREATE TABLE `network` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
+  `description` text COLLATE utf8_unicode_ci,
+  `public` tinyint(1) DEFAULT '1',
+  `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `active` tinyint(1) DEFAULT '1',
+  `codename` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `icon` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/network';
+
+CREATE TABLE `network_player` (
+  `network_id` int(11) NOT NULL,
+  `player_id` int(11) unsigned NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`network_id`,`player_id`),
+  KEY `idx-network_player-network_id` (`network_id`),
+  KEY `idx-network_player-player_id` (`player_id`),
+  CONSTRAINT `fk-network_player-network_id` FOREIGN KEY (`network_id`) REFERENCES `network` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk-network_player-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/network_player';
+
 DROP TABLE IF EXISTS `debuglogs`;
 CREATE TABLE debuglogs (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -119,7 +145,6 @@ BEGIN
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('{{db_host}}') INTO @memc_server_set_status;
   END IF;
-
   SELECT memc_delete(CONCAT('ovpn:',id)), memc_delete(CONCAT('ovpn_remote:',id)) from player_last where vpn_remote_address is not null or vpn_local_address is not null;
   UPDATE player_last SET vpn_remote_address=null, vpn_local_address=null where vpn_remote_address is not null or vpn_local_address is not null;
 END

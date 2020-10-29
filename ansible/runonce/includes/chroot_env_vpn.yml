@@ -4,6 +4,7 @@ CHROOT_ENV_VPN:
 - { src: "/bin/ksh", mode: "0555" , owner: root, group: wheel }
 - { src: "/bin/date", mode: "0555" , owner: root, group: wheel }
 - { src: "/bin/echo", mode: "0555" , owner: root, group: wheel }
+- { src: "/sbin/pfctl", mode: "0555" , owner: root, group: bin }
 - { src: "/var/run/ld.so.hints", mode: "0555", owner: root, group: wheel }
 - { src: "/usr/local/bin/mysql", mode: "0555", owner: root, group: wheel }
 - { src: "/usr/bin/egrep", mode: "0555" , owner: root, group: wheel }
