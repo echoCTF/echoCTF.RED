@@ -89,7 +89,7 @@ BEGIN
       SELECT sys_exec(CONCAT("/sbin/pfctl -t ",t2.codename,"_clients -T add ",INET_NTOA(assignedIP))) INTO @devnull
         FROM network_player AS t1
         LEFT JOIN network AS t2 ON t2.id=t1.network_id
-      WHERE t1.player_id=usid;
+      WHERE t1.player_id=usid and t2.codename is not null;
     END IF;
   END IF;
 END
@@ -123,7 +123,7 @@ BEGIN
       SELECT sys_exec(CONCAT("/sbin/pfctl -t ",t2.codename,"_clients -T delete ",INET_NTOA(assignedIP))) INTO @devnull
         FROM network_player AS t1
         LEFT JOIN network AS t2 ON t2.id=t1.network_id
-      WHERE t1.player_id=usid;
+      WHERE t1.player_id=usid and t2.codename is not null;
     END IF;
   END IF;
 END
