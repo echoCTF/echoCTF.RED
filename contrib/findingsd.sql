@@ -84,7 +84,7 @@ BEGIN
     SELECT memc_set(CONCAT('ovpn:',INET_NTOA(assignedIP)),usid) into @devnull;
     SELECT memc_set(CONCAT('ovpn_remote:',usid),INET_NTOA(remoteIP)) into @devnull;
     UPDATE `player_last` SET `on_vpn`=NOW(), `vpn_local_address`=assignedIP, `vpn_remote_address`=remoteIP WHERE `id`=usid;
-    IF count(SELECT ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="FUNCTION" AND ROUTINE_NAME='lib_mysqludf_sys_info')>0 THEN
+    IF (SELECT count(ROUTINE_NAME) FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="FUNCTION" AND ROUTINE_NAME='lib_mysqludf_sys_info')>0 THEN
     -- pfctl -t network_clients -T add remoteIP
       SELECT sys_exec(CONCAT("/sbin/pfctl -t ",t2.codename,"_clients -T add ",INET_NTOA(assignedIP))) INTO @devnull
         FROM network_player AS t1
@@ -101,7 +101,7 @@ BEGIN
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
   END IF;
-  IF count(SELECT ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="FUNCTION" AND ROUTINE_NAME='lib_mysqludf_sys_info')>0 THEN
+  IF (SELECT count(ROUTINE_NAME) FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="FUNCTION" AND ROUTINE_NAME='lib_mysqludf_sys_info')>0 THEN
     SELECT sys_exec(CONCAT("/sbin/pfctl -t ",t2.codename,"_clients -T delete ",INET_NTOA(t3.vpn_local_address))) INTO @devnull
       FROM network_player AS t1
       LEFT JOIN network AS t2 ON t2.id=t1.network_id
@@ -126,7 +126,7 @@ BEGIN
     SELECT memc_delete(CONCAT('ovpn_remote:',usid)) into @devnull;
     SELECT memc_delete(CONCAT('ovpn:',INET_NTOA(assignedIP))) into @devnull;
     UPDATE `player_last` SET vpn_local_address=NULL, vpn_remote_address=NULL WHERE `id`=usid;
-    IF count(SELECT ROUTINE_NAME FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="FUNCTION" AND ROUTINE_NAME='lib_mysqludf_sys_info')>0 THEN
+    IF (SELECT count(ROUTINE_NAME) FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="FUNCTION" AND ROUTINE_NAME='lib_mysqludf_sys_info')>0 THEN
       SELECT sys_exec(CONCAT("/sbin/pfctl -t ",t2.codename,"_clients -T delete ",INET_NTOA(assignedIP))) INTO @devnull
         FROM network_player AS t1
         LEFT JOIN network AS t2 ON t2.id=t1.network_id
