@@ -126,14 +126,6 @@ BEGIN
   IF (select memc_server_count()<1) THEN
     select memc_servers_set('{{db_host}}') INTO @memc_server_set_status;
   END IF;
-  IF (SELECT count(ROUTINE_NAME) FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="FUNCTION" AND ROUTINE_NAME='lib_mysqludf_sys_info')>0 THEN
-    SELECT sys_exec(CONCAT("/sbin/pfctl -t ",t2.codename,"_clients -T delete ",INET_NTOA(t3.vpn_local_address))) INTO @devnull
-      FROM network_player AS t1
-      LEFT JOIN network AS t2 ON t2.id=t1.network_id
-      LEFT JOIN player_last AS t3 ON t3.id=t1.player_id
-    WHERE t3.vpn_remote_address is not null or t3.vpn_local_address is not null;
-  END IF;
-
   SELECT memc_delete(CONCAT('ovpn:',id)), memc_delete(CONCAT('ovpn_remote:',id)) from player_last where vpn_remote_address is not null or vpn_local_address is not null;
   UPDATE player_last SET vpn_remote_address=null, vpn_local_address=null where vpn_remote_address is not null or vpn_local_address is not null;
 END
@@ -151,12 +143,6 @@ BEGIN
     SELECT memc_delete(CONCAT('ovpn_remote:',usid)) into @devnull;
     SELECT memc_delete(CONCAT('ovpn:',INET_NTOA(assignedIP))) into @devnull;
     UPDATE `player_last` SET vpn_local_address=NULL, vpn_remote_address=NULL WHERE `id`=usid;
-    IF (SELECT count(ROUTINE_NAME) FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="FUNCTION" AND ROUTINE_NAME='lib_mysqludf_sys_info')>0 THEN
-      SELECT sys_exec(CONCAT("/sbin/pfctl -t ",t2.codename,"_clients -T delete ",INET_NTOA(assignedIP))) INTO @devnull
-        FROM network_player AS t1
-        LEFT JOIN network AS t2 ON t2.id=t1.network_id
-      WHERE t1.player_id=usid AND t2.codename is not null;
-    END IF;
   END IF;
 END
 //
