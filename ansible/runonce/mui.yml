@@ -382,14 +382,14 @@
     raw: git config --global url."https://".insteadOf "git://"
 
   - name: "configure composer to fetch from https:// instead of git://"
-    command: chdir=/home/moderatorUI/{{domain_name}}/backend composer config --global github-protocols https
+    command: chdir=/home/moderatorUI/{{domain_name}}/backend composer -n config --global github-protocols https
 
   - name: configure composer
-    command: php -d allow_url_fopen=on /usr/local/bin/composer config --global --auth github-oauth.github.com {{GITHUB_OAUTH_TOKEN}}
+    command: php -d allow_url_fopen=on /usr/local/bin/composer -n config --global --auth github-oauth.github.com {{GITHUB_OAUTH_TOKEN}}
     when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN!=""
 
   - name: run composer
-    command: chdir=/home/moderatorUI/{{domain_name}}/backend php -d allow_url_fopen=on /usr/local/bin/composer -n install
+    command: chdir=/home/moderatorUI/{{domain_name}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --no-suggest
 
   - name: Fix home folder permissions for nginx
     command: chown root.daemon /home/moderatorUI
@@ -417,4 +417,4 @@
   - name: Re-Execute syspatch in case it updated it self on the previous run
     command: syspatch
 
-  - debug: msg={{ post_install.split('\n') }
+  - debug: msg={{ post_inst.split('\n') }}

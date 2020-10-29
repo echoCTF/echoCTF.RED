@@ -123,7 +123,7 @@
     set_fact:
       APP_DIR: /root/sources
 
-  - name: Set APP_DIR to {{playbook_dir}}
+  - name: Set APP_DIR to {{playbook_dir}}/../../
     when: ansible_connection == 'local'
     set_fact:
       APP_DIR: "{{playbook_dir}}/../../"
@@ -306,14 +306,14 @@
     raw: git config --global url."https://".insteadOf "git://"
 
   - name: "configure composer to fetch from https:// instead of git://"
-    command: chdir={{APP_DIR}}/backend composer config --global github-protocols https
+    command: chdir={{APP_DIR}}/backend composer -n config --global github-protocols https
 
   - name: run composer config
-    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer config -g github-oauth.github.com "{{GITHUB_OAUTH_TOKEN}}"
+    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer -n config -g github-oauth.github.com "{{GITHUB_OAUTH_TOKEN}}"
     when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN != "randomtoken" and GITHUB_OAUTH_TOKEN!=""
 
   - name: run composer
-    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install --no-dev --prefer-dist --no-progress --no-suggest
+    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --no-suggest
 
   - name: "Prepare /etc/hostname.pflog1"
     copy:
@@ -452,4 +452,4 @@
   - name: Re-Execute syspatch in case it updated it self on the previous run
     command: syspatch
 
-  - debug: msg={{ post_install.split('\n') }
+  - debug: msg={{ post_inst.split('\n') }}
