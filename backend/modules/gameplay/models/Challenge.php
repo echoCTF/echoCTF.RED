@@ -37,7 +37,7 @@ class Challenge extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['description', 'player_type'], 'string'],
+            [['description', 'player_type','icon'], 'string'],
             [['active'], 'default','value'=>true],
             [['active'], 'boolean'],
             [['file'], 'file'],
