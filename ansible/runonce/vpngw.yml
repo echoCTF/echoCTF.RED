@@ -404,6 +404,7 @@
     - { cmd: "touch /etc/registry_clients.conf", creates: "/etc/registry_clients.conf" }
     - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
     - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
+    - { cmd: "touch /etc/targets_networks.conf", creates: "/etc/targets_networks.conf" }
     - { cmd: "{{APP_DIR}}/backend/yii target/pf" }
 
   - name: "Create targets network interface hostname.{{targets_if}}"
