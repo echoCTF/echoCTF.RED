@@ -111,7 +111,7 @@
     set_fact:
       APP_DIR: /root/sources
 
-  - name: Set APP_DIR to {{playbook_dir}}
+  - name: Set APP_DIR to {{playbook_dir}}/../../
     when: ansible_connection == 'local'
     set_fact:
       APP_DIR: "{{playbook_dir}}/../../"
