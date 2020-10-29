@@ -73,7 +73,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
       <?php foreach($profile->owner->headshots as $headshot):?>
       <div class="col col-sm-1 col-md-5 col-lg-3">
         <div class="iconic-card">
-          <img align="right" src="/images/targets/_<?=$headshot->target->name?>-thumbnail.png"/>
+          <img align="right" src="<?=$headshot->target->thumbnail?>"/>
           <p><b><?=Html::a(
                       $headshot->target->name.' / '.long2ip($headshot->target->ip) ,
                         Url::to(['/target/default/versus', 'id'=>$headshot->target_id, 'profile_id'=>$profile->id]),
