@@ -17,7 +17,9 @@ jQuery( document ).ready(function() {
     if($(this).val()!="")
       $('#preview_avatar').attr('src','/images/avatars/'+$(this).val());
   });
-
+  $('#claim-flag').on('pjax:success', function(event) {
+          window.location.reload();
+  });
   /* Fetch Notifications on click without prevent default */
   $('#navbarDropdownMenuLink').on('click',function(){
       /* Only proceeed if we are about to display the notifications */
