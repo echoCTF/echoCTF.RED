@@ -38,3 +38,19 @@ Usage: `./backend/yii player/register <username> <email> <fullname> [password] [
 ## Change player password
 
 Usage: `./backend/yii player/password <email or id> <password>`
+
+## Check player emails against stopforumspam.com
+
+Usage: `./backend/yii player/check-stopforumspam <interval>`
+
+** Examples:**
+
+Check users that registered the past 3 days
+```sh
+./backend/yii player/check-stopforumspam "3 day"
+```
+
+Check users that registered the past 20 hours
+```sh
+./backend/yii player/check-stopforumspam "20 hour"
+```
