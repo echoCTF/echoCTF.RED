@@ -130,7 +130,7 @@ BEGIN
     SELECT sys_exec(CONCAT("/sbin/pfctl -t ",t2.codename,"_clients -T delete ",INET_NTOA(t3.vpn_local_address))) INTO @devnull
       FROM network_player AS t1
       LEFT JOIN network AS t2 ON t2.id=t1.network_id
-      LEFT JOIN player_last AS t3 ON t3.player_id=t1.player_id
+      LEFT JOIN player_last AS t3 ON t3.id=t1.player_id
     WHERE t3.vpn_remote_address is not null or t3.vpn_local_address is not null;
   END IF;
 
