@@ -135,13 +135,6 @@ BEGIN
     SELECT memc_set(CONCAT('ovpn:',INET_NTOA(assignedIP)),usid) into @devnull;
     SELECT memc_set(CONCAT('ovpn_remote:',usid),INET_NTOA(remoteIP)) into @devnull;
     UPDATE `player_last` SET `on_vpn`=NOW(), `vpn_local_address`=assignedIP, `vpn_remote_address`=remoteIP WHERE `id`=usid;
-    IF (SELECT count(ROUTINE_NAME) FROM INFORMATION_SCHEMA.ROUTINES WHERE ROUTINE_TYPE="FUNCTION" AND ROUTINE_NAME='lib_mysqludf_sys_info')>0 THEN
-    -- pfctl -t network_clients -T add remoteIP
-      SELECT sys_exec(CONCAT("/sbin/pfctl -t ",t2.codename,"_clients -T add ",INET_NTOA(assignedIP))) INTO @devnull
-        FROM network_player AS t1
-        LEFT JOIN network AS t2 ON t2.id=t1.network_id
-      WHERE t1.player_id=usid AND t2.codename is not null;
-    END IF;
   END IF;
 END
 //
