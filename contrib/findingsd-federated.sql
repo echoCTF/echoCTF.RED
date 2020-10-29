@@ -66,9 +66,7 @@ CREATE TABLE `network_player` (
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`network_id`,`player_id`),
   KEY `idx-network_player-network_id` (`network_id`),
-  KEY `idx-network_player-player_id` (`player_id`),
-  CONSTRAINT `fk-network_player-network_id` FOREIGN KEY (`network_id`) REFERENCES `network` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk-network_player-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE
+  KEY `idx-network_player-player_id` (`player_id`)
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/network_player';
 
 DROP TABLE IF EXISTS `debuglogs`;
