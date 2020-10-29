@@ -123,6 +123,21 @@ class Finding extends \yii\db\ActiveRecord
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('user_finding', ['finding_id' => 'id']);
     }
 
+    public function getMatchRule()
+    {
+
+      if($this->protocol === 'icmp')
+        $trule=sprintf('match log (to pflog1) inet proto %s%%s to %s tagged %s icmp-type echoreq label "$dstaddr:$dstport"', $this->protocol, $this->target->ipoctet,trim(\app\modules\settings\models\Sysconfig::findOne('offense_registered_tag')->val));
+      else
+        $trule=sprintf('match log (to pflog1) inet proto %s%%s to %s port %d tagged %s label "$dstaddr:$dstport"', $this->protocol, $this->target->ipoctet,$this->port, trim(\app\modules\settings\models\Sysconfig::findOne('offense_registered_tag')->val));
+
+      if($this->target->network!==NULL)
+        $rule=sprintf($trule,' from <'.$this->target->network->codename.'_clients>');
+      else
+        $rule=sprintf($trule,'');
+      return $rule;
+    }
+
     public function afterSave($insert, $changedAttributes)
     {
       parent::afterSave($insert, $changedAttributes);

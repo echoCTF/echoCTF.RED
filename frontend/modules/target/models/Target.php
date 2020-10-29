@@ -162,7 +162,7 @@ class Target extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getNetworkTargets()
+    public function getNetworkTarget()
     {
       return $this->hasMany(\app\modules\network\models\NetworkTarget::class, ['target_id' => 'id']);
     }
@@ -173,6 +173,14 @@ class Target extends \yii\db\ActiveRecord
     public function getNetworks()
     {
       return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNetwork()
+    {
+      return $this->hasOne(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
     }
 
     /**

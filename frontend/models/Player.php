@@ -301,6 +301,17 @@ class Player extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(Headshot::class, ['player_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
     }
+
+    public function getNetworkPlayer()
+    {
+        return $this->hasMany(\app\modules\network\models\NetworkPlayer::class, ['player_id' => 'id']);
+    }
+    public function getNetworks()
+    {
+      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkPlayer');
+    }
+
+
     public function getHeadshotsCount()
     {
         return $this->hasMany(Headshot::class, ['player_id' => 'id'])->count();
