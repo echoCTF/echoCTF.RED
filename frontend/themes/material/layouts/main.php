@@ -45,6 +45,11 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
       			<?=$content ?>
 	    	</div>
 	    </div>
+      <footer class="footer">
+            <?=Yii::$app->sys->footer_logos?>
+            &copy; <?=date("Y")?> by&nbsp;<a href="https://www.echothrust.com/" target="_blank">echothrust</a>, made with <i class="material-icons text-danger">favorite</i> using&nbsp;
+            <a href="https://github.com/echoCTF/echoCTF.RED" target="_blank"><b style="color: white">echo</b><b>CTF</b></a>
+      </footer>
     </div>
   </div>
 <?php $this->endBody() ?>
