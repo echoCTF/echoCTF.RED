@@ -241,6 +241,7 @@ $config=[
                 'target/<id:\d+>/versus/<profile_id:\d+>'=>'target/default/versus',
                 'tutorials' => 'tutorial/default/index',
                 'tutorial/<id:\d+>' => 'tutorial/default/view',
+                'leaderboards' => 'game/leaderboards/index',
                 //'target/<id:\d+>/vs/<profile_id:\d+>/badge'=>'target/default/versusBadge',
                 // Network Module
                 //'networks' => 'network/default/index',

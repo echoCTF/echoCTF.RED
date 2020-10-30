@@ -10,6 +10,11 @@ namespace app\modules\game\models;
 class HeadshotQuery extends \yii\db\ActiveQuery
 {
 
+    public function timed()
+    {
+        return $this->joinWith(['target'])->andWhere(['target.timer'=>1]);
+    }
+
     public function target_avg_time($target_id)
     {
         return $this->addSelect(['*', 'avg(timer) as average'])->andWhere(['target_id'=>$target_id]);
