@@ -45,6 +45,42 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
       			<?=$content ?>
 	    	</div>
 	    </div>
+      <footer class="footer">
+        <div class="container-fluid">
+          <nav class="float-left">
+            <ul>
+              <li>
+                <a href="https://www.echothrust.com">
+                  echothrust
+                </a>
+              </li>
+              <li>
+                <a href="https://echoctf.com">
+                  echoCTF
+                </a>
+              </li>
+              <li>
+                <a href="https://github.com/echoCTF/echoCTF.RED">
+                  Github
+                </a>
+              </li>
+              <li>
+                <a href="https://twitter.com/echoCTF">
+                  Twitter
+                </a>
+              </li>
+            </ul>
+          </nav>
+          <?=Yii::$app->sys->footer_logos?>
+          <div class="copyright float-right">
+            &copy;
+            <script>
+              document.write(new Date().getFullYear())
+            </script>, made with <i class="material-icons text-danger">favorite</i> by
+            <a href="https://www.echothrust.com" target="_blank">echothrust</a> with <a href="https://echoctf.com/" target="_blank"><b class="text-white">echo</b><b>CTF</b></a>.
+          </div>
+        </div>
+      </footer>
     </div>
   </div>
 <?php $this->endBody() ?>

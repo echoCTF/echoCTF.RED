@@ -35,7 +35,7 @@ class MaterialAsset extends AssetBundle
         ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono&display=swap', 'async'=>'async', 'crossorigin'=>"anonymous"],
         ['css/all.min.css?v=0.0.1', 'defer'=>'defer'],
         'css/material-dashboard.css?v=0.0.1',
-        'css/material.css?v=0.0.1',
+        'css/material.css?v=0.0.2',
     ];
 
     public $js=[
@@ -79,8 +79,8 @@ class MaterialAsset extends AssetBundle
         // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
         /******/
         //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
-        '/js/material-dashboard.js?v=0.0.1',
-        '/js/libechoctf.js?v=0.0.1',
+        '/js/material-dashboard.js?v=0.0.2',
+        '/js/libechoctf.js?v=0.0.2',
         // 'js/superfish.js'
     ];
     public $depends=[
