@@ -131,7 +131,22 @@ class PlayerBadgeController extends Controller
      */
     public function actionDelete($player_id, $badge_id)
     {
-        $this->findModel($player_id, $badge_id)->delete();
+        $connection=Yii::$app->db;
+        $transaction=$connection->beginTransaction();
+        try
+        {
+          $this->findModel($player_id, $badge_id)->delete();
+          if(($stream=\app\modules\activity\models\Stream::findOne(['player_id' => $player_id, 'model'=>'badge','model_id' => $badge_id])) !== null)
+          {
+            $stream->delete();
+          }
+          $transaction->commit();
+          Yii::$app->session->setFlash('success', "Badge deleted from player and stream.");
+        }
+        catch (\Exception $e) {
+          $transaction->rollback();
+          Yii::$app->session->setFlash('error', "Failed to delete Badge from player and stream.");
+        }
 
         return $this->redirect(['index']);
     }
