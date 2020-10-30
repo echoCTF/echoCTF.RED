@@ -486,3 +486,18 @@ details.headshotters:not([open]) summary::after {
     margin: 20px;
   }
 }
+
+
+.text-youtube {
+  color: #FF0000;
+}
+.text-github {
+  color: #333;
+}
+
+.text-twitch {
+  color: #6441A4;
+}
+.text-twitter {
+  color: #1DA1F2;
+}
