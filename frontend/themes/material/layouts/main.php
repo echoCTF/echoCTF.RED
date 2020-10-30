@@ -71,6 +71,7 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
               </li>
             </ul>
           </nav>
+          <?=Yii::$app->sys->footer_logos?>
           <div class="copyright float-right">
             &copy;
             <script>
