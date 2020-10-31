@@ -45,6 +45,13 @@ class LeaderboardsController extends \yii\web\Controller
         'query' => \app\modules\game\models\Headshot::find()->timed()->limit(10)->orderBy(['timer'=>SORT_ASC,'created_at'=>SORT_ASC]),
         'pagination' => false,
       ]);
+
+      $AvgHeadshotDataProvider=new ActiveDataProvider([
+        'query' => \app\modules\game\models\Headshot::find()->select(['headshot.player_id,avg(headshot.timer) as timer'])->timed()->limit(10)->groupBy(['player_id'])->having('count(distinct target_id)>1')->orderBy(['timer'=>SORT_ASC,'player_id'=>SORT_ASC]),
+        'pagination' => false,
+      ]);
+
+
       $mostHeadshotsDataProvider=new ActiveDataProvider([
         'query' => \app\modules\game\models\Headshot::find()->select(['*, COUNT(*) as timer'])->limit(10)->groupBy(['player_id'])->orderBy(['timer'=>SORT_DESC,'created_at'=>SORT_ASC]),
         'pagination' => false,
@@ -54,6 +61,7 @@ class LeaderboardsController extends \yii\web\Controller
           'playerDataProvider'=>$playerDataProvider,
           'headshotDataProvider'=>$headshotDataProvider,
           'mostHeadshotsDataProvider'=>$mostHeadshotsDataProvider,
+          'AvgHeadshotDataProvider'=>$AvgHeadshotDataProvider,
           'totalPoints' => $totalPoints
         ]);
     }

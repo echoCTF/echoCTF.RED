@@ -80,6 +80,25 @@ $this->_description=$this->title;
               ]);?>
         </div>
 
+        <div class="col-md-4">
+              <?php
+              echo ListView::widget([
+                  'id'=>'AvgHeadshotTimers',
+                  'dataProvider' => $AvgHeadshotDataProvider,
+                  'options'=>['id'=>'avgheadshotTimer-leaderboard-pager'],
+                  'options'=>['class'=>'card'],
+                  'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
+                  'summary'=>'<div class="card-header card-header-warning"><h4 class="card-title">Best average headshots times</h4><p class="card-category">Players with best average headshots in seconds</p></div>',
+                  'itemOptions' => [
+                    'tag' => false
+                  ],
+                  'itemView' => '_most_headshot',
+                  'viewParams'=>[
+                    'totalPoints'=>0,
+                  ]
+              ]);?>
+        </div>
+
       </div>
     </div>
 </div>
