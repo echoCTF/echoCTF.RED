@@ -51,7 +51,7 @@ $this->_description=$this->title;
                   'options'=>['id'=>'mostHeadshots-leaderboard-pager'],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-primary"><h4 class="card-title">Most headshots</h4><p class="card-category">Players with most headshots</p></div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Most headshots</h4><p class="card-category">Players with most headshots</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -61,7 +61,28 @@ $this->_description=$this->title;
                   ]
               ]);?>
         </div>
+
         <div class="col-md-4">
+              <?php
+              echo ListView::widget([
+                  'id'=>'mostSolves',
+                  'dataProvider' => $mostSolvesDataProvider,
+                  'options'=>['id'=>'mostSolves-leaderboard-pager'],
+                  'options'=>['class'=>'card'],
+                  'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Most challenges solved</h4><p class="card-category">Players with most challenges solved</p></div>',
+                  'itemOptions' => [
+                    'tag' => false
+                  ],
+                  'itemView' => '_most_headshot',
+                  'viewParams'=>[
+                    'totalPoints'=>0,
+                  ]
+              ]);?>
+        </div>
+
+
+        <div class="col-md-6">
               <?php
               echo ListView::widget([
                   'id'=>'headshotTimers',
@@ -80,7 +101,29 @@ $this->_description=$this->title;
               ]);?>
         </div>
 
-        <div class="col-md-4">
+
+        <div class="col-md-6">
+              <?php
+              echo ListView::widget([
+                  'id'=>'fastestSolvers',
+                  'dataProvider' => $solversDataProvider,
+                  'options'=>['id'=>'solvers-leaderboard-pager'],
+                  'options'=>['class'=>'card'],
+                  'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
+                  'summary'=>'<div class="card-header card-header-warning"><h4 class="card-title">Fastest solves</h4><p class="card-category">Players with the fastest challenge solves in seconds</p></div>',
+                  'itemOptions' => [
+                    'tag' => false
+                  ],
+                  'itemView' => '_fastest_solve',
+                  'viewParams'=>[
+                    'totalPoints'=>0,
+                  ]
+              ]);?>
+        </div>
+
+
+
+        <div class="col-md-6">
               <?php
               echo ListView::widget([
                   'id'=>'AvgHeadshotTimers',
@@ -88,7 +131,7 @@ $this->_description=$this->title;
                   'options'=>['id'=>'avgheadshotTimer-leaderboard-pager'],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-warning"><h4 class="card-title">Best average headshots times</h4><p class="card-category">Players with best average headshots in seconds</p></div>',
+                  'summary'=>'<div class="card-header card-header-info"><h4 class="card-title">Best average headshots times</h4><p class="card-category">Players with best average headshots in seconds</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -98,6 +141,26 @@ $this->_description=$this->title;
                   ]
               ]);?>
         </div>
+
+        <div class="col-md-6">
+              <?php
+              echo ListView::widget([
+                  'id'=>'AvgSolvesTimers',
+                  'dataProvider' => $AvgSolvesDataProvider,
+                  'options'=>['id'=>'avgsolvesTimer-leaderboard-pager'],
+                  'options'=>['class'=>'card'],
+                  'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
+                  'summary'=>'<div class="card-header card-header-info"><h4 class="card-title">Best average solve times</h4><p class="card-category">Players with best average timer solves in seconds</p></div>',
+                  'itemOptions' => [
+                    'tag' => false
+                  ],
+                  'itemView' => '_most_headshot',
+                  'viewParams'=>[
+                    'totalPoints'=>0,
+                  ]
+              ]);?>
+        </div>
+
 
       </div>
     </div>
