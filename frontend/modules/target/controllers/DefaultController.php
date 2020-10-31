@@ -57,7 +57,7 @@ class DefaultController extends Controller
                           'matchCallback' => function ($rule, $action) {
                             return !Yii::$app->DisabledRoute->disabled($action);
                           },
-                          
+
                       ],
                   ],
               ],
@@ -202,7 +202,7 @@ class DefaultController extends Controller
     {
         $string=Yii::$app->request->post('hash');
 
-        if(!is_string($string))
+        if(!is_string($string) || trim($string)=="")
         {
           return $this->renderAjax('claim');
         }
