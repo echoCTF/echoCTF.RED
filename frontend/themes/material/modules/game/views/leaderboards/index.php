@@ -8,6 +8,7 @@ $this->_fluid="-fluid";
 
 $this->title=Yii::$app->sys->event_name.' Leaderboards' ;
 $this->_description=$this->title;
+$this->_url=\yii\helpers\Url::to(['index'], 'https');
 
 ?>
 <div class="scoreboard-index">
