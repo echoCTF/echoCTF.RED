@@ -12,9 +12,9 @@ $this->_description=$this->title;
 ?>
 <div class="scoreboard-index">
   <div class="body-content">
-    <h3>Platform Leaderboards</h3>
+    <h3>Platform <code>most</code> rankings</h3>
     <div class="row">
-        <div class="col-md-4">
+        <div class="col">
               <?php
               echo ListView::widget([
                   'id'=>'playerScore',
@@ -43,7 +43,7 @@ $this->_description=$this->title;
               ]);?>
         </div>
 
-        <div class="col-md-4">
+        <div class="col">
               <?php
               echo ListView::widget([
                   'id'=>'mostHeadshots',
@@ -61,8 +61,7 @@ $this->_description=$this->title;
                   ]
               ]);?>
         </div>
-
-        <div class="col-md-4">
+        <div class="col">
               <?php
               echo ListView::widget([
                   'id'=>'mostSolves',
@@ -80,9 +79,10 @@ $this->_description=$this->title;
                   ]
               ]);?>
         </div>
-
-
-        <div class="col-md-6">
+      </div>
+      <h3>Platform <code>fastest</code> ranking</h3>
+      <div class="row">
+        <div class="col">
               <?php
               echo ListView::widget([
                   'id'=>'headshotTimers',
@@ -100,9 +100,7 @@ $this->_description=$this->title;
                   ]
               ]);?>
         </div>
-
-
-        <div class="col-md-6">
+        <div class="col">
               <?php
               echo ListView::widget([
                   'id'=>'fastestSolvers',
@@ -121,9 +119,12 @@ $this->_description=$this->title;
               ]);?>
         </div>
 
+      </div>
+      <h3>Platform <code>averages</code> rankings</h3>
+      <div class="row">
 
 
-        <div class="col-md-6">
+        <div class="col">
               <?php
               echo ListView::widget([
                   'id'=>'AvgHeadshotTimers',
