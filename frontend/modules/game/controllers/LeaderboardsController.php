@@ -58,7 +58,7 @@ class LeaderboardsController extends \yii\web\Controller
 
 
       $AvgSolvesDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\challenge\models\ChallengeSolver::find()->select(['challenge_solver.player_id,avg(challenge_solver.timer) as timer'])->limit(10)->groupBy(['player_id'])->having('count(distinct challenge_id)>1')->orderBy(['timer'=>SORT_ASC,'player_id'=>SORT_ASC]),
+        'query' => \app\modules\challenge\models\ChallengeSolver::find()->select(['challenge_solver.player_id,avg(challenge_solver.timer) as timer'])->where('challenge_id!=1')->limit(10)->groupBy(['player_id'])->orderBy(['timer'=>SORT_ASC,'player_id'=>SORT_ASC]),
         'pagination' => false,
       ]);
 
