@@ -20,6 +20,7 @@
       body_format: json
       body:
         author: "{{author|default(omit)}}"
+        icon: "{{icon|default(omit)}}"
         name: "{{name}}"
         category: "{{category}}"
         difficulty: "{{difficulty}}"
