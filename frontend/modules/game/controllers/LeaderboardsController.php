@@ -47,7 +47,7 @@ class LeaderboardsController extends \yii\web\Controller
       ]);
 
       $solversDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\challenge\models\ChallengeSolver::find()->where('challenge_id!=1')->limit(10)->orderBy(['challenge_solver.timer'=>SORT_ASC,'challenge_solver.created_at'=>SORT_ASC]),
+        'query' => \app\modules\challenge\models\ChallengeSolver::find()->timed()->limit(10)->orderBy(['challenge_solver.timer'=>SORT_ASC,'challenge_solver.created_at'=>SORT_ASC]),
         'pagination' => false,
       ]);
 
@@ -58,7 +58,7 @@ class LeaderboardsController extends \yii\web\Controller
 
 
       $AvgSolvesDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\challenge\models\ChallengeSolver::find()->select(['challenge_solver.player_id,avg(challenge_solver.timer) as timer'])->where('challenge_id!=1')->limit(10)->groupBy(['player_id'])->orderBy(['timer'=>SORT_ASC,'player_id'=>SORT_ASC]),
+        'query' => \app\modules\challenge\models\ChallengeSolver::find()->timed()->select(['challenge_solver.player_id,avg(challenge_solver.timer) as timer'])->limit(10)->groupBy(['player_id'])->orderBy(['timer'=>SORT_ASC,'player_id'=>SORT_ASC]),
         'pagination' => false,
       ]);
 

@@ -17,6 +17,7 @@ use yii\web\UploadedFile;
  * @property string $filename The filename that will be provided to participants
  * @property string $file The filename that will be provided to participants
  * @property boolean $active Is challenge active?
+ * @property boolean $timer Keep timer for solving?
  *
  * @property Question[] $questions
  */
@@ -38,8 +39,8 @@ class Challenge extends \yii\db\ActiveRecord
     {
         return [
             [['description', 'player_type','icon'], 'string'],
-            [['active'], 'default','value'=>true],
-            [['active'], 'boolean'],
+            [['active','timer'], 'default','value'=>true],
+            [['active','timer'], 'boolean'],
             [['file'], 'file'],
             [['name', 'category', 'difficulty', 'filename'], 'string', 'max' => 255],
             [['name'], 'unique'],

@@ -18,7 +18,7 @@ class ChallengeSearch extends Challenge
     {
         return [
             [['id'], 'integer'],
-            [['active'], 'boolean'],
+            [['active','timer'], 'boolean'],
             [['name', 'category', 'difficulty', 'description', 'player_type', 'filename'], 'safe'],
         ];
     }

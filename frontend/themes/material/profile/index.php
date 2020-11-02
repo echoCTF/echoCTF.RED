@@ -65,7 +65,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     <?php endif;?>
 
     <?php if($profile->headshotsCount>0):?><h3><code><?=$profile->headshotsCount?></code> Headshots / <small>Average time: <?php
-      $hs=\app\modules\game\models\Headshot::find()->player_avg_time($profile->player_id)->one();
+      $hs=\app\modules\game\models\Headshot::find()->timed()->player_avg_time($profile->player_id)->one();
       if($hs && $hs->average > 0)
         echo number_format($hs->average / 60), " minutes";
     ?> <sub>(ordered by date)</small></sub></h3>

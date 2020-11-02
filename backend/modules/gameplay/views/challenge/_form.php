@@ -16,6 +16,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'active')->checkbox()->hint('Is challenge active?') ?>
 
+    <?= $form->field($model, 'timer')->checkbox()->hint('Timer for solving the challenge?') ?>
+
     <?= $form->field($model, 'icon')->textInput(['maxlength' => true])->hint('Challenge icon (<code>raw html</code>)') ?>
 
     <?= $form->field($model, 'category')->textInput(['maxlength' => true])->hint('The category this chellange belongs to TODO') ?>

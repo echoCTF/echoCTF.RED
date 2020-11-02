@@ -9,6 +9,12 @@ namespace app\modules\challenge\models;
  */
 class ChallengeQuery extends \yii\db\ActiveQuery
 {
+
+    public function timed()
+    {
+      return $this->andWhere(['t.timer'=>1]);
+    }
+
     public function active()
     {
       return $this->andWhere(['t.active'=>1]);
