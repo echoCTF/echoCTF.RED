@@ -114,43 +114,33 @@ jobs:
         cd backend
         composer install --no-dev --prefer-dist --no-progress --no-suggest
 
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
 
     - uses: docker/build-push-action@v2
       with:
-        dockerfile: contrib/Dockerfile
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: echothrust/echoctf.red-all-in-one
-        tags: latest
+        push: true
+        tags: echothrust/echoctf.red-all-in-one:latest
 
     - uses: docker/build-push-action@v2
       with:
-        dockerfile: contrib/Dockerfile-mariadb
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: echothrust/echoctf.red-db
-        tags: latest
+        push: true
+        tags: echothrust/echoctf.red-db:latest
 
     - uses: docker/build-push-action@v2
       with:
-        dockerfile: contrib/Dockerfile-frontend
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: echothrust/echoctf.red-frontend
-        tags: latest
+        tags: echothrust/echoctf.red-frontend:latest
+        push: true
 
     - uses: docker/build-push-action@v2
       with:
-        dockerfile: contrib/Dockerfile-backend
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: echothrust/echoctf.red-backend
-        tags: latest
+        push: true
+        tags: echothrust/echoctf.red-backend:latest
 
     - uses: docker/build-push-action@v2
       with:
-        dockerfile: contrib/Dockerfile-vpn
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-        repository: echothrust/echoctf.red-vpn
-        tags: latest
+        push: true
+        tags: echothrust/echoctf.red-vpn:latest
