@@ -51,6 +51,11 @@ $this->params['breadcrumbs'][]=$this->title;
             'active:boolean',
             'timer:boolean',
             'difficulty',
+            [
+              'label' => 'Headshots',
+              'attribute' => 'headshot',
+              'value' => function ($model) { return count($model->headshots);}
+            ],
 //            'required_xp',
 //            'suggested_xp',
             [

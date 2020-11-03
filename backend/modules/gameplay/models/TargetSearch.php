@@ -11,16 +11,18 @@ use app\modules\gameplay\models\Target;
  */
 class TargetSearch extends Target
 {
+  public $headshot;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'ip', 'active', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp'], 'integer'],
+            [['id', 'ip', 'active', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp','headshot'], 'integer'],
+            [['headshot'],'default','value'=>null ],
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
             [['scheduled_at'], 'datetime'],
-            [['timer','name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp'], 'safe'],
+            [['timer','name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp','headshot'], 'safe'],
         ];
     }
 
@@ -42,7 +44,7 @@ class TargetSearch extends Target
      */
     public function search($params)
     {
-        $query=Target::find();
+        $query=Target::find()->joinWith('headshots');
 
         // add conditions that should always apply here
 
@@ -84,6 +86,9 @@ class TargetSearch extends Target
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'dns', $this->dns])
             ->andFilterWhere(['like', 'parameters', $this->parameters]);
+
+        if($this->headshot !== null ) $query->having(["=",'count(headshot.player_id)',$this->headshot]);
+        $query->groupBy(['headshot.target_id']);
         $dataProvider->setSort([
                 'attributes' => array_merge(
                     $dataProvider->getSort()->attributes,
@@ -91,6 +96,10 @@ class TargetSearch extends Target
                       'ipoctet' => [
                           'asc' => ['ip' => SORT_ASC],
                           'desc' => ['ip' => SORT_DESC],
+                      ],
+                      'headshot' => [
+                          'asc' => ['COUNT(headshot.player_id)' => SORT_ASC],
+                          'desc' => ['COUNT(headshot.player_id)' => SORT_DESC],
                       ],
                     ]
                 ),

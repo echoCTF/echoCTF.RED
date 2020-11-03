@@ -16,6 +16,7 @@ use Docker\API\Exception\ContainerCreateNotFoundException;
 use Docker\API\Exception\ContainerStartNotFoundException;
 use Docker\API\Exception\ContainerStartInternalServerErrorException;
 use app\modules\activity\models\SpinQueue;
+use app\modules\activity\models\Headshot;
 
 
 /**
@@ -45,6 +46,7 @@ use app\modules\activity\models\SpinQueue;
  * @property TargetVariable[] $targetVariables
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
+ * @property Headshot[] $headshots
  * @property int $memory
  */
 class Target extends \yii\db\ActiveRecord
@@ -162,6 +164,14 @@ class Target extends \yii\db\ActiveRecord
     public function getTreasures()
     {
         return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight' => SORT_DESC,'id'=>SORT_DESC]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHeadshots()
+    {
+        return $this->hasMany(Headshot::class, ['target_id' => 'id']);
     }
 
     /**
