@@ -41,16 +41,12 @@ $ docker-compose up
 For more details check [echoCTF.RED@ReadTheDocs](https://echoctfred.rtfd.io).
 
 ## Disclaimer
-This project is currently under HEAVY restructure and development and may not
-be in a _usable_ state.
-
 The documents and guides in this repository are only examples and are not meant
-to be used in production.
+to be used to setup production environments.
 
-The project is far from plug-n-play at the moment and you are required to have
-a fairly good understanding of the services involved.
+Special care should be taken with securing and restring access to your setups.
 
-Apply common logic when copy pasting command and files :)
+Apply common logic when copy pasting commands and files :)
 
 echoCTF is software that comes with absolutely no warranties whatsoever. By
 using echoCTF, you take full responsibility for any and all outcomes that
