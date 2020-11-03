@@ -115,7 +115,7 @@ jobs:
         composer install --no-dev --prefer-dist --no-progress --no-suggest
 
 
-    - uses: docker/build-push-action@v1
+    - uses: docker/build-push-action@v2
       with:
         dockerfile: contrib/Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -123,7 +123,7 @@ jobs:
         repository: echothrust/echoctf.red-all-in-one
         tags: latest
 
-    - uses: docker/build-push-action@v1
+    - uses: docker/build-push-action@v2
       with:
         dockerfile: contrib/Dockerfile-mariadb
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -131,7 +131,7 @@ jobs:
         repository: echothrust/echoctf.red-db
         tags: latest
 
-    - uses: docker/build-push-action@v1
+    - uses: docker/build-push-action@v2
       with:
         dockerfile: contrib/Dockerfile-frontend
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -139,7 +139,7 @@ jobs:
         repository: echothrust/echoctf.red-frontend
         tags: latest
 
-    - uses: docker/build-push-action@v1
+    - uses: docker/build-push-action@v2
       with:
         dockerfile: contrib/Dockerfile-backend
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -147,7 +147,7 @@ jobs:
         repository: echothrust/echoctf.red-backend
         tags: latest
 
-    - uses: docker/build-push-action@v1
+    - uses: docker/build-push-action@v2
       with:
         dockerfile: contrib/Dockerfile-vpn
         username: ${{ secrets.DOCKER_USERNAME }}
