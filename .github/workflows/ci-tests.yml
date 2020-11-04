@@ -95,15 +95,15 @@ jobs:
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p${{ secrets.DOCKER_PASSWORD }}
 
     - name: Push the all-in-one Docker image
-      run: docker push echothrust/echoctf.red-all-in-one:latest
+      run: docker push echothrust/echoctf.red-all-in-one
     - name: Push the DB Docker image
-      run: docker push echothrust/echoctf.red-db:latest
+      run: docker push echothrust/echoctf.red-db
     - name: Push the frontend Docker image
-      run: docker push echothrust/echoctf.red-frontend:latest
+      run: docker push echothrust/echoctf.red-frontend
     - name: Push the backend Docker image
-      run: docker push echothrust/echoctf.red-backend:latest
+      run: docker push echothrust/echoctf.red-backend
     - name: Push the vpn Docker image
-      run: docker push echothrust/echoctf.red-vpn:latest
+      run: docker push echothrust/echoctf.red-vpn
 
     - name: Drop containers
       run: docker-compose down --rmi all
