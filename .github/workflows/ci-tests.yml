@@ -66,15 +66,15 @@ jobs:
         composer install --no-dev --prefer-dist --no-progress --no-suggest
 
     - name: Build the all-in-one Docker image
-      run: docker build --squash . --file contrib/Dockerfile --tag echoctf.red-all-in-one:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:$(date +%s)
     - name: Build the DB Docker image
-      run: docker build --squash . --file contrib/Dockerfile-mariadb --tag echoctf.red-db:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-mariadb --tag echothrust/echoctf.red-db:$(date +%s)
     - name: Build the frontend Docker image
-      run: docker build --squash . --file contrib/Dockerfile-frontend --tag echoctf.red-frontend:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-frontend --tag echothrust/echoctf.red-frontend:$(date +%s)
     - name: Build the backend Docker image
-      run: docker build --squash . --file contrib/Dockerfile-backend --tag echoctf.red-backend:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-backend --tag echothrust/echoctf.red-backend:$(date +%s)
     - name: Build the vpn Docker image
-      run: docker build  --squash . --file contrib/Dockerfile-vpn --tag echoctf.red-vpn:$(date +%s)
+      run: docker build  --squash . --file contrib/Dockerfile-vpn --tag echothrust/echoctf.red-vpn:$(date +%s)
 
     - name: Build the docker-compose stack
       run: docker-compose up -d
@@ -91,74 +91,19 @@ jobs:
     - name: Check running containers
       run: docker ps -a
 
+    - name: Login to DockerHub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Push the all-in-one Docker image
+      run: docker push echothrust/echoctf.red-all-in-one:latest
+    - name: Push the DB Docker image
+      run: docker push echothrust/echoctf.red-db:latest
+    - name: Push the frontend Docker image
+      run: docker push echothrust/echoctf.red-frontend:latest
+    - name: Push the backend Docker image
+      run: docker push echothrust/echoctf.red-backend:latest
+    - name: Push the vpn Docker image
+      run: docker push echothrust/echoctf.red-vpn:latest
+
     - name: Drop containers
       run: docker-compose down --rmi all
-
-  dockerhub:
-    needs: [dockerbuilds]
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Configure github token
-      run: composer config -g github-oauth.github.com "${{ secrets.GITHUBOAUTHTOKEN }}"
-
-    - name: Install frontend dependencies
-      run: |
-        cd frontend
-        composer install --no-dev --prefer-dist --no-progress --no-suggest
-
-    - name: Install backend dependencies
-      run: |
-        cd backend
-        composer install --no-dev --prefer-dist --no-progress --no-suggest
-
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-
-    - uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: echothrust/echoctf.red-all-in-one:latest
-        context: .
-        file: contrib/Dockerfile
-        platforms: linux/amd64
-
-    - uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: echothrust/echoctf.red-db:latest
-        context: .
-        file: contrib/Dockerfile-mariadb
-        platforms: linux/amd64
-
-    - uses: docker/build-push-action@v2
-      with:
-        tags: echothrust/echoctf.red-frontend:latest
-        push: true
-        context: .
-        file: contrib/Dockerfile-frontend
-        platforms: linux/amd64
-
-    - uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: echothrust/echoctf.red-backend:latest
-        context: .
-        file: contrib/Dockerfile-backend
-        platforms: linux/amd64
-
-    - uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: echothrust/echoctf.red-vpn:latest
-        context: .
-        file: contrib/Dockerfile-vpn
-        platforms: linux/amd64
