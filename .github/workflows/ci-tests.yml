@@ -66,15 +66,29 @@ jobs:
         composer install --no-dev --prefer-dist --no-progress --no-suggest
 
     - name: Build the all-in-one Docker image
-      run: docker build --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
     - name: Build the DB Docker image
-      run: docker build --squash . --file contrib/Dockerfile-mariadb --tag echothrust/echoctf.red-db:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-mariadb --tag echothrust/echoctf.red-db:latest
     - name: Build the frontend Docker image
-      run: docker build --squash . --file contrib/Dockerfile-frontend --tag echothrust/echoctf.red-frontend:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-frontend --tag echothrust/echoctf.red-frontend:latest
     - name: Build the backend Docker image
-      run: docker build --squash . --file contrib/Dockerfile-backend --tag echothrust/echoctf.red-backend:$(date +%s)
+      run: docker build --squash . --file contrib/Dockerfile-backend --tag echothrust/echoctf.red-backend:latest
     - name: Build the vpn Docker image
-      run: docker build  --squash . --file contrib/Dockerfile-vpn --tag echothrust/echoctf.red-vpn:$(date +%s)
+      run: docker build  --squash . --file contrib/Dockerfile-vpn --tag echothrust/echoctf.red-vpn:latest
+
+    - name: Login to DockerHub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Push the all-in-one Docker image
+      run: docker push echothrust/echoctf.red-all-in-one:latest
+    - name: Push the DB Docker image
+      run: docker push echothrust/echoctf.red-db:latest
+    - name: Push the frontend Docker image
+      run: docker push echothrust/echoctf.red-frontend:latest
+    - name: Push the backend Docker image
+      run: docker push echothrust/echoctf.red-backend:latest
+    - name: Push the vpn Docker image
+      run: docker push echothrust/echoctf.red-vpn:latest
 
     - name: Build the docker-compose stack
       run: docker-compose up -d
@@ -90,20 +104,6 @@ jobs:
 
     - name: Check running containers
       run: docker ps -a
-
-    - name: Login to DockerHub
-      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p${{ secrets.DOCKER_PASSWORD }}
-
-    - name: Push the all-in-one Docker image
-      run: docker push echothrust/echoctf.red-all-in-one
-    - name: Push the DB Docker image
-      run: docker push echothrust/echoctf.red-db
-    - name: Push the frontend Docker image
-      run: docker push echothrust/echoctf.red-frontend
-    - name: Push the backend Docker image
-      run: docker push echothrust/echoctf.red-backend
-    - name: Push the vpn Docker image
-      run: docker push echothrust/echoctf.red-vpn
 
     - name: Drop containers
       run: docker-compose down --rmi all
