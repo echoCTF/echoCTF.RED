@@ -15,8 +15,6 @@ class echoCTFView extends \yii\web\View
 
   public function init()
   {
-      if($this->_url===null)
-        $this->_url=\yii\helpers\Url::to([null],'https');
     if(\Yii::$app->sys->site_description !== null && \Yii::$app->sys->site_description !== false)
     {
       $this->_description=\Yii::$app->sys->site_description;
