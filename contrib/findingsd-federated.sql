@@ -59,6 +59,8 @@ CREATE TABLE `network` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/network';
 
+
+DROP TABLE IF EXISTS `network_player`;
 CREATE TABLE `network_player` (
   `network_id` int(11) NOT NULL,
   `player_id` int(11) unsigned NOT NULL,
