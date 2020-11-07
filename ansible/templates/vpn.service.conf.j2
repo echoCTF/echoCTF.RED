@@ -6,10 +6,18 @@ pass quick on egress inet proto udp from !<maintenance> to (egress:0) port 1194 
 
 anchor "targets" on targets {
   anchor "networks"
-  pass inet proto udp from <targets> to (targets:0) port 53
+  # allow registry clients to have access to the internet
+  pass quick inet from <registry_clients> to !(self)
+  # allow targets to query the dns server on the targets interface
+  pass quick inet proto {tcp, udp} from <targets> to (targets:0) port 53
+  # allow registry_clients to query the dns server on the targets interface
+  pass quick inet proto {tcp, udp} from <registry_clients> to (targets:0) port 53
+  # allow registry_clients to contact private registries
+  pass quick inet proto tcp from <registry_clients> to <registry_servers> port 5000
+  # allow targets to communicate with offense_activated network
   pass from <targets> to <offense_activated>
-  pass quick inet proto tcp from <registry_clients> to <registry_servers>
 }
+
 load anchor "targets/networks" from "/etc/targets_networks.conf"
 
 anchor "offense" on tun {
