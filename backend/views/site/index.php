@@ -21,9 +21,8 @@ $this->title='echoCTF mUI';
 <div class="site-index">
 
     <div class="jumbotron">
-        <img src="/images/logo.png" width="512"/>
-        <h1>echoCTF Management interface</h1>
-
+        <img class="rounded" src="/images/logo.png" width="40%"/>
+        <h2>echoCTF Management interface</h2>
     </div>
 
     <div class="body-content">
@@ -75,7 +74,7 @@ $this->title='echoCTF mUI';
                 <h2>Containers</h2>
                 <p>
                   <?= Html::ul(ArrayHelper::map(Target::find()->where(['!=', 'image', ''])->all(), 'id', function($model) {
-                          return Html::a($model['name'].' | '.$model['ipoctet'].' | '.$model['server'], ['gameplay/target/view', 'id'=>$model['id']]);}), ['encode'=>false]) ?>
+                          return Html::a($model['name'].' | '.$model['ipoctet'], ['gameplay/target/view', 'id'=>$model['id']]);}), ['encode'=>false]) ?>
                 </p>
             </div>
         </div>
