@@ -72,16 +72,7 @@ class DefaultController extends Controller
       ]);
       $query->andFilterWhere(['tutorial_id'=>$model->id]);
 
-      $answer=new AnswerForm();
-      if($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id))
-      {
-            Yii::$app->session->setFlash('success', sprintf('Accepted answer for task [%s] for %d pts.', $answer->task->title, intval($answer->task->points)));
-            return $this->redirect(Yii::$app->request->referrer);
-      }
-
-
       return $this->render('view', [
-          'answer'=>$answer,
           'model' => $model,
           'dataProvider' => $dataProvider,
       ]);
