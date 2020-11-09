@@ -30,6 +30,42 @@ class DefaultController extends Controller
           'only' => ['index', 'view', 'download'],
           'rules' => [
               [
+                 'actions' => ['index', 'view', 'download'],
+                 'allow' => false,
+                 'matchCallback' => function ($rule, $action) {
+                     return Yii::$app->sys->event_start!==false && (time()<Yii::$app->sys->event_start || time()>Yii::$app->sys->event_end);
+                 },
+                 'denyCallback' => function() {
+                   Yii::$app->session->setFlash('info', 'This area is disabled at the moment');
+                   return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
+                 }
+              ],
+              [
+                 'actions' => ['index', 'view', 'download'],
+                 'allow' => false,
+                 'matchCallback' => function ($rule, $action) {
+                   if(Yii::$app->sys->teams===false)
+                   {
+                      return false;
+                   }
+
+                   if(Yii::$app->user->identity->teamPlayer===NULL)
+                   {
+                     Yii::$app->session->setFlash('warning', 'You need to join a team before being able claim flags.');
+                     return true;
+                   }
+                   if(Yii::$app->user->identity->teamPlayer->approved!==1)
+                   {
+                     Yii::$app->session->setFlash('warning', 'You need to have your team membership approved before being able claim flags.');
+                     return true;
+                   }
+                   return false;
+                 },
+                 'denyCallback' => function() {
+                   return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
+                 }
+              ],
+              [
                   'actions' => ['index', 'view', 'download'],
                   'allow' => true,
                   'roles' => ['@'],
@@ -38,8 +74,7 @@ class DefaultController extends Controller
                   },
               ],
           ],
-        ],
-      ];
+      ]];
   }
 
     /**
