@@ -452,6 +452,27 @@ class Player extends ActiveRecord implements IdentityInterface
         ]);
     }
 
+    public function getTeamLeader()
+    {
+      if(array_key_exists('team',Yii::$app->modules))
+        return $this->hasOne(\app\modules\team\models\Team::class, ['owner_id' => 'id']);
+      return null;
+    }
+    public function getTeamPlayer()
+    {
+      if(array_key_exists('team',Yii::$app->modules))
+        return $this->hasOne(\app\modules\team\models\TeamPlayer::class, ['player_id' => 'id']);
+      return null;
+    }
+
+    public function getTeam()
+    {
+      if(array_key_exists('team',Yii::$app->modules))
+        return $this->hasOne(\app\modules\team\models\Team::class, ['id' => 'team_id'])->viaTable('team_player', ['player_id'=>'id']);
+      return null;
+    }
+
+
     public static function updateStream($event)
     {
       if($event->changedAttributes !== [] && (array_key_exists('active', $event->changedAttributes) === true || array_key_exists('status', $event->changedAttributes) === true))
