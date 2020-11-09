@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-$this->title=Yii::$app->sys->event_name.' Update team details ['.Html::encode($team->name).']';
+$this->title=Yii::$app->sys->event_name.' Update team details ['.Html::encode($model->name).']';
 $this->_fluid="-fluid";
 
 ?>
