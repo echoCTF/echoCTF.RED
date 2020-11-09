@@ -10,6 +10,9 @@ NCOPTS="-N"
 #  exit 2
 #fi
 
+# Capture all output that may escape us into /tmp/logging of the chroot
+exec 1>>/tmp/logging
+exec 2>&1
 
 echo "------------" >>/tmp/updown.log
 date >> /tmp/updown.log
