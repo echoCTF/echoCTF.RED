@@ -8,10 +8,10 @@ $this->_description=$this->title
   <div class="body-content">
     <h2><?=Html::encode($this->title)?></h2>
       Challenges for your consumption :)
-
     <hr />
     <?php echo ListView::widget([
         'dataProvider' => $dataProvider,
+        'emptyText'=>'<p class="text-warning"><b>There are no challenges available at the moment...</b></p>',
         'summary'=>false,
         'itemOptions' => [
           'tag' => false
