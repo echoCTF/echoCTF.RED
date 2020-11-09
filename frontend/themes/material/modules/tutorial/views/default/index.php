@@ -1,14 +1,13 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ListView;
-$this->title=Yii::$app->sys->event_name.' - Tutorials';
+$this->title=Yii::$app->sys->event_name.' Tutorials';
+$this->_description=$this->title
 ?>
 <div class="tutorial-index">
   <div class="body-content">
-    <h2>
-      <b><?= Html::encode($this->title)?></b>
-      <span style="display: block;"><small clas="text-muted">Tutorials for your consumption :)</small></span>
-    </h2>
+    <h2><?= Html::encode($this->title)?></h2>
+      Tutorials for your consumption :)
     <hr />
     <?php echo ListView::widget([
         'dataProvider' => $dataProvider,
