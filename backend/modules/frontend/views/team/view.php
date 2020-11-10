@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -36,7 +37,14 @@ $this->params['breadcrumbs'][]=$this->title;
             'academic:boolean',
             'logo',
             'owner_id',
-            'token',
+            [
+              'attribute'=>'token',
+              'format'=>'html',
+              'value'=>function($model){
+                $url=Url::to('//'.Yii::$app->sys->offense_domain.'/team/invite/'.$model->token,'https');
+                return Html::a($url,$url);
+              }
+            ],
             'ts',
         ],
     ]) ?>
