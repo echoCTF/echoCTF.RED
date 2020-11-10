@@ -77,7 +77,7 @@ class SiteController extends Controller
                         },
                     ],
                     [
-                        'actions' => ['register','verify-email', 'resend-verification-email'],
+                        'actions' => ['index','register','verify-email', 'resend-verification-email'],
                         'allow' => true,
                         'roles' => ['?'],
                         'matchCallback' => function ($rule, $action) {
