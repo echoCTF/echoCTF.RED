@@ -39,7 +39,7 @@ class SiteController extends Controller
                         'allow' => false,
                         'roles' => ['@'],
                         'denyCallback' => function() {
-                          return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
+                          return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
                         }
                     ],
                     [
@@ -54,18 +54,18 @@ class SiteController extends Controller
 
                          if(Yii::$app->user->identity->teamPlayer===NULL)
                          {
-                           Yii::$app->session->setFlash('warning', 'You need to join a team before being able claim flags.');
+                           Yii::$app->session->setFlash('warning', 'You need to join a team before being able to access this area.');
                            return true;
                          }
                          if(Yii::$app->user->identity->teamPlayer->approved!==1)
                          {
-                           Yii::$app->session->setFlash('warning', 'You need to have your team membership approved before being able claim flags.');
+                           Yii::$app->session->setFlash('warning', 'You need to have your team membership approved before being able to access this area.');
                            return true;
                          }
                          return false;
                        },
                        'denyCallback' => function() {
-                         return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
+                         return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
                        }
                     ],
                     [
