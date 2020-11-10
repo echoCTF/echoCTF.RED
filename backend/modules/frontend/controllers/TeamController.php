@@ -82,12 +82,21 @@ class TeamController extends Controller
           Yii::$app->session->setFlash('warning', "No Players found create one first.");
           return $this->redirect(['/frontend/player/create']);
         }
+        $trans=Yii::$app->db->beginTransaction();
 
-        if($model->load(Yii::$app->request->post()) && $model->save())
+        try
         {
-            return $this->redirect(['view', 'id' => $model->id]);
+          if($model->load(Yii::$app->request->post()) && $model->save())
+          {
+              $trans->commit();
+              return $this->redirect(['view', 'id' => $model->id]);
+          }
         }
-
+        catch (\Exception $e)
+        {
+          $trans->rollBack();
+          \Yii::$app->getSession()->setFlash('error', 'Failed to create team. '.$e->getMessage());
+        }
         return $this->render('create', [
             'model' => $model,
         ]);
