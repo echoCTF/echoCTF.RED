@@ -29,6 +29,14 @@ class Team extends \yii\db\ActiveRecord
         return 'team';
     }
 
+
+    public function init()
+    {
+        parent::init();
+        $this->on(self::EVENT_AFTER_INSERT, [$this, 'insertTeam']);
+    }
+
+
     /**
      * {@inheritdoc}
      */
@@ -87,4 +95,16 @@ class Team extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('team_player', ['team_id' => 'id']);
     }
+
+    public static function insertTeam($event)
+    {
+      Yii::$app->db
+      ->createCommand("INSERT INTO team_player (team_id,player_id,approved) values (:tid,:pid,:approved)")
+      ->bindValue(':tid',$event->sender->id)
+      ->bindValue(':pid',$event->sender->owner_id)
+      ->bindValue(':approved',1)
+      ->execute();
+    }
+
+
 }
