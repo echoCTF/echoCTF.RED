@@ -27,7 +27,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'register'],
+                'only' => ['logout', 'register', 'verify-email', 'resend-verification-email'],
                 'rules' => [
                     [
                         'actions' => ['logout'],
@@ -43,7 +43,41 @@ class SiteController extends Controller
                         }
                     ],
                     [
-                        'actions' => ['register'],
+                       'actions' => ['index'],
+                       'allow' => false,
+                       'roles' => ['@'],
+                       'matchCallback' => function ($rule, $action) {
+                         if(Yii::$app->sys->teams===false)
+                         {
+                            return false;
+                         }
+
+                         if(Yii::$app->user->identity->teamPlayer===NULL)
+                         {
+                           Yii::$app->session->setFlash('warning', 'You need to join a team before being able claim flags.');
+                           return true;
+                         }
+                         if(Yii::$app->user->identity->teamPlayer->approved!==1)
+                         {
+                           Yii::$app->session->setFlash('warning', 'You need to have your team membership approved before being able claim flags.');
+                           return true;
+                         }
+                         return false;
+                       },
+                       'denyCallback' => function() {
+                         return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
+                       }
+                    ],
+                    [
+                        'actions' => ['register', 'verify-email', 'resend-verification-email'],
+                        'allow' => false,
+                        'roles' => ['?'],
+                        'matchCallback' => function ($rule, $action) {
+                          return Yii::$app->sys->registrations_start!==false && (time()<=Yii::$app->sys->registrations_start || time()>=Yii::$app->sys->registrations_end);
+                        },
+                    ],
+                    [
+                        'actions' => ['register','verify-email', 'resend-verification-email'],
                         'allow' => true,
                         'roles' => ['?'],
                         'matchCallback' => function ($rule, $action) {
