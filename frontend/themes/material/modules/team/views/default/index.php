@@ -17,12 +17,13 @@ $this->_fluid="-fluid";
     $colsCount = 3;
     echo ListView::widget([
           'dataProvider' => $dataProvider,
+          'emptyText'=>'<p class="text-warning"><b>Oh no, there are no teams... Quick create one :) </b></p>',
           'options' => [
               'tag' => false,
           ],
           'itemOptions' => [
               'tag' => 'div',
-              'class'=>"col-md-4",
+              'class'=>"col-md-3",
           ],
           'summary'=>false,
           'itemView' => '_team_card',
