@@ -22,7 +22,9 @@ use yii\helpers\HtmlPurifier;
           <?php endif;?>
         <?php endforeach;?>
       </ul>
+      <?php if($model->getTeamPlayers()->count()<Yii::$app->sys->members_per_team):?>
       <hr/>
       <?= Html::a('Join', ['/team/default/join','token' => $model->token],['class'=>'btn btn-primary', 'data-method' => 'POST']) ?>
+      <?php endif;?>
     </div>
   </div>
