@@ -3,6 +3,7 @@
 namespace app\modules\team;
 
 use yii\filters\AccessControl;
+use yii\web\NotFoundHttpException;
 
 /**
  * target module definition class
@@ -30,8 +31,11 @@ class Module extends \yii\base\Module
               return false;
             },
             'denyCallback' => function() {
-              return  \Yii::$app->getResponse()->redirect(['/site/index']);
+              throw new NotFoundHttpException('Team module is disabled.');
             }
+          ],
+          [
+            'allow'=>true
           ]
         ],
       ],
