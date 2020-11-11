@@ -13,7 +13,7 @@ class m201109_231732_create_tai_team_stream_trigger extends Migration
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
     END IF;
-    INSERT INTO {{%team_score}} ({{%team_id}},{{%points}}) VALUES (NEW.team_id,NEW.points) ON DUPLICATE KEY UPDATE points=points+values(points);
+    INSERT INTO {{%team_score}} ({{%team_id}},{{%points}},{{%ts}}) VALUES (NEW.team_id,NEW.points,NEW.ts) ON DUPLICATE KEY UPDATE points=points+values(points),ts=values(ts);
   END";
 
     public function up()
