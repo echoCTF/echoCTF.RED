@@ -13,11 +13,11 @@ $this->_fluid="-fluid";
 <div class="team-view">
   <div class="body-content">
     <h2>Details for Team [<code><?=Html::encode($team->name)?></code>]</h2>
-    <?php if($team->getTeamPlayers()->count()<Yii::$app->sys->members_per_team):?>
-    <p>Allow other players to join the team easily by providing them with this link: <code><?=Html::a('https://ctf.hackmex.mx/team/invite/'.$team->token,['/team/default/invite','token'=>$team->token]);?></code></p>
-    <?php else:?>
+  <?php if($team->getTeamPlayers()->count()<Yii::$app->sys->members_per_team):?>
+    <p>Allow other players to join the team easily by providing them with this link: <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token],'https'),['/team/default/invite','token'=>$team->token]);?></code></p>
+  <?php else:?>
     <p class="text-warning">Your team is full, you cannot invite any more members</p>
-    <?php endif;?>
+  <?php endif;?>
     <hr />
     <div class="row">
       <div class="col-md-8">
@@ -54,7 +54,11 @@ $this->_fluid="-fluid";
                 'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
                 'attribute'=>'player.username',
                 'format'=>'raw',
-                'value'=>function($model){ return $model->player->profile->link; },
+                'value'=>function($model){
+                  if($model->player_id===$model->team->owner_id)
+                    return '<i class="fas fa-user-secret text-danger"></i> '.$model->player->profile->link;
+                  return '<i class="fas fa-user-ninja '. ($model->approved===0 ? "text-info": "text-primary").'"></i> '.$model->player->profile->link;
+                },
                 'label' => 'Member'
               ],
 /*              [
