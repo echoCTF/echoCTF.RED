@@ -20,7 +20,7 @@ class LeaderboardsController extends \yii\web\Controller
                 [
                     'actions' => ['index'],
                     'allow' => true,
-                    'roles' => ['@'],
+                    //'roles' => ['@'],
                     'matchCallback' => function ($rule, $action) {
                       return !Yii::$app->DisabledRoute->disabled($action);
                     },
@@ -72,8 +72,13 @@ class LeaderboardsController extends \yii\web\Controller
         'query' => \app\modules\game\models\Headshot::find()->select(['*, COUNT(*) as timer'])->limit(10)->groupBy(['player_id'])->orderBy(['timer'=>SORT_DESC,'created_at'=>SORT_ASC]),
         'pagination' => false,
       ]);
+      $teamDataProvider=new ActiveDataProvider([
+        'query' => \app\modules\team\models\TeamRank::find()->orderBy(['id'=>SORT_ASC, 'team_id'=>SORT_ASC])->limit(10),
+        'pagination' => false
+      ]);
 
         return $this->render('index',[
+          'teamDataProvider'=>$teamDataProvider,
           'playerDataProvider'=>$playerDataProvider,
           'headshotDataProvider'=>$headshotDataProvider,
           'mostHeadshotsDataProvider'=>$mostHeadshotsDataProvider,
