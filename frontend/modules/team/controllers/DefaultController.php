@@ -119,7 +119,8 @@ class DefaultController extends Controller
       $model=new CreateTeamForm(['scenario' => CreateTeamForm::SCENARIO_CREATE]);
       if($model->load(Yii::$app->request->post()) && $model->create())
       {
-
+        Yii::$app->user->identity->refresh();
+        Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',Yii::$app->user->identity->teamLeader->id)->execute();
         Yii::$app->session->setFlash('success', 'Your team has been created.');
         return $this->redirect(['update']);
       }
