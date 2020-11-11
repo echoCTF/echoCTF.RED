@@ -6,7 +6,7 @@ use yii\widgets\ListView;
 use yii\widgets\Pjax;
 use app\widgets\stream\StreamWidget as Stream;
 
-$this->title=Yii::$app->sys->event_name.' - Details for Team ['.Html::encode($team->name).']'.  ( Yii::$app->user->identity->academic===1 ? ' (Academic)': ' (Professionals)' );
+$this->title=Yii::$app->sys->event_name.' Details for Team ['.Html::encode($team->name).']';
 $this->_fluid="-fluid";
 
 ?>
@@ -14,7 +14,7 @@ $this->_fluid="-fluid";
   <div class="body-content">
     <h2>Details for Team [<code><?=Html::encode($team->name)?></code>]</h2>
     <?php if($team->getTeamPlayers()->count()<Yii::$app->sys->members_per_team):?>
-    <p>Allow other players to join the team easily by providing them with this link: <code><?=Html::a('https://ctf.hackmex.mx/team/invite/'.$team->token,['/team/default/invite','token'=>$team->token]);?></code></p>
+    <p>Allow other players to join the team easily by providing them with this link: <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token]),['/team/default/invite','token'=>$team->token]);?></code></p>
     <?php else:?>
     <p class="text-warning">Your team is full, you cannot invite any more members</p>
     <?php endif;?>
