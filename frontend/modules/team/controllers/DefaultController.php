@@ -33,18 +33,19 @@ class DefaultController extends Controller
                      'actions' => ['reject'],
                      'allow' => false,
                      'matchCallback' => function ($rule, $action) {
-                         return time()>=Yii::$app->sys->event_start && time()<=Yii::$app->sys->event_end;
+                         return Yii::$app->sys->event_start!==false && (time()>=Yii::$app->sys->event_start && time()<=Yii::$app->sys->event_end);
                      },
                      'denyCallback' => function() {
-                       Yii::$app->session->setFlash('info', 'These actions are disabled during the competition');
+                       \Yii::$app->session->setFlash('info', 'These actions are disabled during the competition');
                        return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
                      }
                  ],
-                [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
+                 [
+                   'actions' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite'],
+                   'allow' => true,
+                   'roles' => ['@'],
+                 ],
+              ],
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
@@ -69,7 +70,7 @@ class DefaultController extends Controller
         {
 
           $dataProvider = new ActiveDataProvider([
-              'query' => TeamPlayer::find()->where(['team_id'=>Yii::$app->user->identity->team->id]),
+              'query' => TeamPlayer::find()->where(['team_id'=>Yii::$app->user->identity->team->id])->orderBy(['ts' => SORT_ASC]),
               'sort' =>false,
               'pagination' => false,
           ]);
@@ -94,7 +95,7 @@ class DefaultController extends Controller
         }
 
         $dataProvider = new ActiveDataProvider([
-            'query' => Team::find()->byAcademic(Yii::$app->user->identity->academic)->joinWith(['teamPlayers'])->groupBy(['team.id'])->andFilterHaving(['<', 'count(player_id)', Yii::$app->sys->members_per_team]),
+            'query' => Team::find()->joinWith(['teamPlayers'])->groupBy(['team.id']), //->andFilterHaving(['<', 'count(player_id)', Yii::$app->sys->members_per_team]),
             'pagination' => false,
         ]);
 
@@ -237,7 +238,10 @@ class DefaultController extends Controller
       if(!$tp->save())
       {
         Yii::$app->session->setFlash('error', 'Failed to approve membership.');
+        return $this->redirect(['index']);
       }
+      Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$tp->team_id)->execute();
+
       Yii::$app->session->setFlash('success', 'Membership approved.');
       return $this->redirect(['index']);
 
@@ -269,6 +273,7 @@ class DefaultController extends Controller
         {
           $this->delete_with_extras();
         }
+        Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$tp->team_id)->execute();
         Yii::$app->session->setFlash('success', 'Your membership has been withdrawn.');
       }
       else {
