@@ -43,7 +43,7 @@ class ProfileController extends \yii\web\Controller
                        'actions' => ['ovpn'],
                        'allow' => false,
                        'matchCallback' => function ($rule, $action) {
-                         if(Yii::$app->sys->teams===false)
+                         if(Yii::$app->sys->team_required===false)
                          {
                             return false;
                          }

@@ -47,7 +47,7 @@ class SiteController extends Controller
                        'allow' => false,
                        'roles' => ['@'],
                        'matchCallback' => function ($rule, $action) {
-                         if(Yii::$app->sys->teams===false)
+                         if(Yii::$app->sys->team_required===false)
                          {
                             return false;
                          }

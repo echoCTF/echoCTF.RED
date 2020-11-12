@@ -44,7 +44,7 @@ class DefaultController extends Controller
                  'actions' => ['index', 'view', 'download'],
                  'allow' => false,
                  'matchCallback' => function ($rule, $action) {
-                   if(Yii::$app->sys->teams===false)
+                   if(Yii::$app->sys->team_required===false)
                    {
                       return false;
                    }
