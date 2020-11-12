@@ -16,9 +16,9 @@ class Menu
                 [
                     ['label' => 'Home', 'icon'=>'home', 'url' => ['/site/index'], 'visible'=>Yii::$app->user->isGuest ],
                     ['label' => 'Dashboard', 'icon'=>'dashboard', 'url' => ['/dashboard/index'], 'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('/dashboard/index')],
+                    ['label' => 'Challenges', 'icon'=>'extension', 'url' => ['/challenge/default/index'], 'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('challenge/default/index'), 'active'=>\Yii::$app->controller->module->id == "challenge"],
                     ['label' => 'Team', 'icon'=>'people', 'url' => ['/team/default/index'], 'visible'=>(!Yii::$app->user->isGuest && array_key_exists('team',Yii::$app->modules) && Yii::$app->sys->teams!==false), 'active'=>\Yii::$app->controller->module->id === "team"],
                     ['label' => 'Networks', 'icon'=>'bug_report','url' => ['/network/default/index'],'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('network/default/index'),'active'=>\Yii::$app->controller->module->id=="network"],
-                    ['label' => 'Challenges', 'icon'=>'extension', 'url' => ['/challenge/default/index'], 'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('challenge/default/index'), 'active'=>\Yii::$app->controller->module->id == "challenge"],
                     ['label' => 'Leaderboards', 'icon'=>'format_list_numbered', 'url' => ['/game/leaderboards/index'], 'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('/game/leaderboards/index')],
                     ['label' => 'Tutorials', 'icon'=>'developer_board','url' => ['/tutorial/default/index'],'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('tutorial/default/index'),'active'=>\Yii::$app->controller->module->id=="tutorial"],
                     ['label' => 'Rules','icon'=>'list_alt', 'url' => ['/help/rule/index'], 'visible'=>Yii::$app->DisabledRoute->enabled('help/rule/index')],
