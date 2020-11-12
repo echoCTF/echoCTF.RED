@@ -12,6 +12,7 @@ use yii\behaviors\AttributeTypecastBehavior;
 class ConfigureForm extends Model
 {
     public $teams;
+    public $team_required;
     public $members_per_team;
     public $team_manage_members;
     public $require_activation;
@@ -48,6 +49,7 @@ class ConfigureForm extends Model
     public $spins_per_day;
     public $keys=[
             'teams',
+            'team_required',
             'team_manage_members',
             'members_per_team',
             'require_activation',
@@ -150,7 +152,7 @@ class ConfigureForm extends Model
           [['online_timeout'], 'default', 'value'=>900],
           [['spins_per_day'], 'default', 'value'=> 2],
           [['event_start','event_end','registrations_start','registrations_end'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
-          [['dashboard_is_home','event_active', 'teams', 'team_manage_members','require_activation', 'disable_registration', 'player_profile', 'approved_avatar'], 'boolean'],
+          [['dashboard_is_home','event_active', 'teams', 'team_required', 'team_manage_members','require_activation', 'disable_registration', 'player_profile', 'approved_avatar'], 'boolean'],
 
         ];
     }

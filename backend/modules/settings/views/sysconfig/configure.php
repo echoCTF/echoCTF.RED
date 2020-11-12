@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][]=$this->title;
         <h4>Team properties</h4>
         <div class="row form-group">
           <div class="col-sm-4"><?= $form->field($model, 'teams')->checkbox()->hint('Are teams supported?') ?></div>
+          <div class="col-sm-4"><?= $form->field($model, 'team_required')->checkbox()->hint('Are teams required?') ?></div>
           <div class="col-sm-4"><?= $form->field($model, 'members_per_team')->textInput(['maxlength'=>true])->hint('How many members are allowed per team (including the team owner)?') ?></div>
         </div>
         <hr/>
