@@ -16,10 +16,12 @@ use yii\helpers\Html;
  * @property string $bio
  * @property string $country Player Country
  * @property string $avatar Profile avatar
- * @property string $discord Profile avatar
+ * @property string $discord Profile handle
  * @property string $twitter Twitter handle
  * @property string $github Github handle
- * @property string $htb HTB avatar
+ * @property string $htb HTB ProfileID
+ * @property string $twitch Twitch.tv handle
+ * @property string $youtube Youtube channelID
  * @property int $terms_and_conditions
  * @property int $mail_optin
  * @property int $gdpr
@@ -60,7 +62,7 @@ class Profile extends \yii\db\ActiveRecord
             [['id', 'player_id'], 'integer'],
             [['bio'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['avatar', 'twitter', 'github'], 'string', 'max' => 255],
+            [['avatar', 'twitter', 'github','htb','twitch','youtube'], 'string', 'max' => 255],
             [['country'], 'string', 'max'=>3],
             [['player_id'], 'unique'],
             [['id'], 'unique'],
