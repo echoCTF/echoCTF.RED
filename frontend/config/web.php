@@ -232,7 +232,7 @@ $config=[
                 'help/faq' => 'help/faq/index',
                 'faq' => 'help/faq/index',
                 //'help/rules' => 'help/rule/index',
-                //'rules' => 'help/rule/index',
+                'rules' => 'help/rule/index',
                 'help/instructions' => 'help/instruction/index',
                 'instructions' => 'help/instruction/index',
                 // app/controllers/LegalController.php
@@ -256,7 +256,7 @@ $config=[
                 'team/reject/<id:\d+>' => 'team/default/reject',
 
                 // Network Module
-                //'networks' => 'network/default/index',
+                'networks' => 'network/default/index',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],
