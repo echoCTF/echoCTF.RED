@@ -41,6 +41,8 @@ $this->params['breadcrumbs'][]=$this->title;
             'twitter',
             'github',
             'discord',
+            'twitch',
+            'youtube',
             'terms_and_conditions:boolean',
             'mail_optin:boolean',
             'gdpr:boolean',
