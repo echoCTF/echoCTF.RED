@@ -18,19 +18,32 @@ $this->params['breadcrumbs'][]=$this->title;
 
         <?php $form=ActiveForm::begin([]);?>
 
-        <?= $form->field($model, 'event_name')->textInput(['maxlength' => true])->hint('Enter the event name') ?>
-        <?= $form->field($model, 'footer_logos')->textarea()->hint('Raw html to be placed at the footer of the pUI pages') ?>
+        <h4>Event/CTF Details</h4>
+        <div class="row form-group">
+          <div class="col-sm-4"><?= $form->field($model, 'event_name')->textInput(['maxlength' => true])->input('text', ['placeholder' => "My Awesome CTF"])->hint('Enter your event or site name') ?></div>
+          <div class="col-sm-2"><?= $form->field($model, 'event_active')->checkbox()->hint('Is the site active?') ?></div>
+        </div>
+        <div class="row form-group">
+          <div class="col-sm-3"><?= $form->field($model, 'event_start')->textInput(['maxlength' => true])->input('text', ['placeholder' => "Y-m-d H:i:s"])->hint('Enter the event start date and time in UTC') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'event_end')->textInput(['maxlength' => true])->input('text', ['placeholder' => "Y-m-d H:i:s"])->hint('Enter the event end date and time in UTC') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'registrations_start')->textInput(['maxlength' => true])->input('text', ['placeholder' => "Y-m-d H:i:s"])->hint('Enter the registration start date and time in UTC') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'registrations_end')->textInput(['maxlength' => true])->input('text', ['placeholder' => "Y-m-d H:i:s"])->hint('Enter the registration end date and time in UTC') ?></div>
+        </div>
+
         <hr/>
-        <h4>Gameplay Scenarios</h4>
+        <h4>Platform website texts</h4>
+          <?= $form->field($model, 'footer_logos')->textarea(['rows' => '6'])->hint('Raw html to be placed at the footer of the pUI pages') ?>
           <?= $form->field($model, 'frontpage_scenario')->textarea()->hint('Raw html to be shown on pUI frontpage for guests') ?>
           <?= $form->field($model, 'offense_scenario')->textarea()->hint('Raw html to be shown on pUI for offense participants') ?>
           <?= $form->field($model, 'defense_scenario')->textarea()->hint('Raw html to be shown on pUI for defense participants') ?>
         <hr/>
-<!--        <h4>Team properties</h4>
+        <h4>Team properties</h4>
         <div class="row form-group">
           <div class="col-sm-4"><?= $form->field($model, 'teams')->checkbox()->hint('Are teams supported?') ?></div>
+          <div class="col-sm-4"><?= $form->field($model, 'team_required')->checkbox()->hint('Are teams required?') ?></div>
+          <div class="col-sm-4"><?= $form->field($model, 'members_per_team')->textInput(['maxlength'=>true])->hint('How many members are allowed per team (including the team owner)?') ?></div>
         </div>
-        <hr/>-->
+        <hr/>
         <h4>Registration and Player properties</h4>
         <div class="row form-group">
           <div class="col-sm-3"><?= $form->field($model, 'require_activation')->checkbox()->hint('Do players need to activate their account?') ?></div>
@@ -47,10 +60,10 @@ $this->params['breadcrumbs'][]=$this->title;
         <hr/>
         <h4>Generic Settings</h4>
         <div class="row form-group">
-          <div class="col-sm-3"><?= $form->field($model, 'moderator_domain')->textInput(['maxlength' => true])->hint('Moderator domain') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'offense_domain')->textInput(['maxlength' => true])->hint('Offense domain') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'defense_domain')->textInput(['maxlength' => true])->hint('Defense domain') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'vpngw')->textInput(['maxlength' => true])->hint('VPN Gateway FQDN or IP (eg. vpn.echoctf.red)') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'moderator_domain')->textInput(['maxlength' => true])->hint('Moderator domain')->input('text', ['placeholder' => "admin.example.ctf"]) ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'offense_domain')->textInput(['maxlength' => true])->hint('Offense domain')->input('text', ['placeholder' => "red.example.ctf"]) ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'defense_domain')->textInput(['maxlength' => true])->hint('Defense domain')->input('text', ['placeholder' => "blue.example.ctf"]) ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'vpngw')->textInput(['maxlength' => true])->hint('VPN Gateway FQDN or IP (eg. vpn.echoctf.red)')->input('text', ['placeholder' => "vpngw.example.ctf"]) ?></div>
         </div>
         <div class="row form-group">
           <div class="col-sm-3"><?= $form->field($model, 'mail_from')->textInput(['maxlength' => true])->hint('Mail From (eg. dontreply@echoctf.red)') ?></div>

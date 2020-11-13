@@ -33,7 +33,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Most points</h4><p class="card-category">Individual player scores</p></div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Player points</h4><p class="card-category">Individual player scores</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -43,7 +43,36 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ]
               ]);?>
         </div>
-
+        <div class="col">
+              <?php
+              echo ListView::widget([
+                  'id'=>'teamScore',
+                  'dataProvider' => $teamDataProvider,
+                  'options'=>['id'=>'team-leaderboard-pager'],
+                  'pager'=>[
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
+                  ],
+                  'options'=>['class'=>'card'],
+                  'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Team points</h4><p class="card-category">Team scores</p></div>',
+                  'itemOptions' => [
+                    'tag' => false
+                  ],
+                  'itemView' => '_team_score',
+                  'viewParams'=>[
+                    'totalPoints'=>$totalPoints,
+                  ]
+              ]);?>
+        </div>
+      </div>
+      <div class="row">
         <div class="col">
               <?php
               echo ListView::widget([

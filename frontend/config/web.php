@@ -35,6 +35,9 @@ $config=[
       'network' => [
             'class' => 'app\modules\network\Module',
       ],
+      'team' => [
+          'class' => 'app\modules\team\Module',
+      ],
     ],
     'components' => [
       'assetManager' => [
@@ -209,6 +212,7 @@ $config=[
                 'target/<id:\d+>/writeup/submit' => 'target/writeup/submit',
                 'target/<id:\d+>/writeup/view' => 'target/writeup/view',
                 'target/<id:\d+>/writeup/update' => 'target/writeup/update',
+                //'target/<id:\d+>/vs/<profile_id:\d+>/badge'=>'target/default/versusBadge',
                 //'target/<id:\d+>/rate'=>'target/default/rate',
                 'claim'=>'target/default/claim',
                 // app/controllers/ProfileController
@@ -242,7 +246,15 @@ $config=[
                 'tutorials' => 'tutorial/default/index',
                 'tutorial/<id:\d+>' => 'tutorial/default/view',
                 'leaderboards' => 'game/leaderboards/index',
-                //'target/<id:\d+>/vs/<profile_id:\d+>/badge'=>'target/default/versusBadge',
+                // Team Module rules
+                'team' => 'team/default/index',
+                'team/create' => 'team/default/create',
+                'team/update' => 'team/default/update',
+                'team/join/<token>' => 'team/default/join',
+                'team/invite/<token>' => 'team/default/invite',
+                'team/approve/<id:\d+>' => 'team/default/approve',
+                'team/reject/<id:\d+>' => 'team/default/reject',
+
                 // Network Module
                 //'networks' => 'network/default/index',
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],

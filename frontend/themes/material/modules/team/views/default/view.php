@@ -6,18 +6,18 @@ use yii\widgets\ListView;
 use yii\widgets\Pjax;
 use app\widgets\stream\StreamWidget as Stream;
 
-$this->title=Yii::$app->sys->event_name.' Details for Team ['.Html::encode($team->name).']';
+$this->title=Yii::$app->sys->event_name.' Team details ['.Html::encode($team->name).']';
 $this->_fluid="-fluid";
 
 ?>
 <div class="team-view">
   <div class="body-content">
     <h2>Details for Team [<code><?=Html::encode($team->name)?></code>]</h2>
-    <?php if($team->getTeamPlayers()->count()<Yii::$app->sys->members_per_team):?>
-    <p>Allow other players to join the team easily by providing them with this link: <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token]),['/team/default/invite','token'=>$team->token]);?></code></p>
-    <?php else:?>
+  <?php if($team->getTeamPlayers()->count()<Yii::$app->sys->members_per_team):?>
+    <p>Allow other players to join the team easily by providing them with this link: <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token],'https'),['/team/default/invite','token'=>$team->token]);?></code></p>
+  <?php else:?>
     <p class="text-warning">Your team is full, you cannot invite any more members</p>
-    <?php endif;?>
+  <?php endif;?>
     <hr />
     <div class="row">
       <div class="col-md-8">
@@ -30,13 +30,13 @@ $this->_fluid="-fluid";
       <div class="col-md-4">
         <div class="card card-profile">
           <div class="card-avatar bg-primary">
-            <a href="/team/update" alt="Update team details" title="Update team details">
               <img class="img" src="/images/avatars/team/<?=$team->validLogo?>" />
-            </a>
           </div>
           <div class="card-body table-responsive">
-            <h6 class="badge badge-secondary"><?=$team->score !== NULL ? number_format($team->score->points) : 0?> points</h6>
+            <?php if(Yii::$app->user->identity->teamLeader!==NULL):?><h4 class="badge"><?=Html::a('Update',['/team/default/update'])?></h4><?php endif;?>
             <h4 class="card-title"><?=Html::encode($team->name)?></h4>
+            <h6 class="badge badge-primary"><?=$team->rank !== NULL ? $team->rank->ordinalPlace : 'empty'?> place</h6>
+            <h6 class="badge badge-secondary"><?=$team->score !== NULL ? number_format($team->score->points) : 0?> points</h6>
             <p class="card-description">
               <?=Html::encode($team->description)?>
             </p>
@@ -54,7 +54,11 @@ $this->_fluid="-fluid";
                 'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
                 'attribute'=>'player.username',
                 'format'=>'raw',
-                'value'=>function($model){ return $model->player->profile->link; },
+                'value'=>function($model){
+                  if($model->player_id===$model->team->owner_id)
+                    return '<i class="fas fa-user-secret text-danger"></i> '.$model->player->profile->link;
+                  return '<i class="fas fa-user-ninja '. ($model->approved===0 ? "text-info": "text-primary").'"></i> '.$model->player->profile->link;
+                },
                 'label' => 'Member'
               ],
 /*              [

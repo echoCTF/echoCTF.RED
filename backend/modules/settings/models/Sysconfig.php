@@ -43,4 +43,43 @@ class Sysconfig extends \yii\db\ActiveRecord
             'val' => 'Val',
         ];
     }
+
+    public function afterFind(){
+        parent::afterFind();
+        switch($this->id){
+            case "event_start":
+            case "event_end":
+            case "registrations_start":
+            case "registrations_end":
+              if($this->val==0)
+                $this->val="";
+              else
+                $this->val=\Yii::$app->formatter->asDate($this->val,'php:Y-m-d H:i:s');
+              break;
+            default:
+              break;
+        }
+    }
+    public function beforeSave($insert){
+        parent::beforeSave($insert);
+        switch($this->id){
+            case "event_start":
+            case "event_end":
+            case "registrations_start":
+            case "registrations_end":
+              if(empty($this->val))
+              {
+                $this->val=0;
+              }
+              else
+              {
+                $this->val=\Yii::$app->formatter->asTimestamp($this->val);
+              }
+              break;
+            default:
+              break;
+        }
+        return true;
+    }
+
 }

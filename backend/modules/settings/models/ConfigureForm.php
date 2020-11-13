@@ -3,6 +3,8 @@ namespace app\modules\settings\models;
 
 use Yii;
 use yii\base\Model;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * Login form
@@ -10,12 +12,20 @@ use yii\base\Model;
 class ConfigureForm extends Model
 {
     public $teams;
+    public $team_required;
+    public $members_per_team;
+    public $team_manage_members;
     public $require_activation;
     public $disable_registration;
     public $approved_avatar;
     public $player_profile;
     public $profile_visibility;
     public $event_name;
+    public $event_active;
+    public $event_start;
+    public $event_end;
+    public $registrations_start;
+    public $registrations_end;
     public $footer_logos;
     public $challenge_home;
     public $offense_registered_tag;
@@ -39,12 +49,20 @@ class ConfigureForm extends Model
     public $spins_per_day;
     public $keys=[
             'teams',
+            'team_required',
+            'team_manage_members',
+            'members_per_team',
             'require_activation',
             'approved_avatar',
             'disable_registration',
             'player_profile',
             'profile_visibility',
             'event_name',
+            'event_active',
+            'event_start',
+            'event_end',
+            'registrations_start',
+            'registrations_end',
             'footer_logos',
             'challenge_home',
             'offense_registered_tag',
@@ -67,9 +85,6 @@ class ConfigureForm extends Model
             'online_timeout',
             'spins_per_day',
         ];
-
-
-
 
     /**
      * {@inheritdoc}
@@ -96,22 +111,48 @@ class ConfigureForm extends Model
               'defense_domain',
               'moderator_domain',
             ], 'string'],
+            [['offense_registered_tag',
+              'defense_registered_tag',
+              'footer_logos',
+              'vpngw',
+              'offense_scenario',
+              'defense_scenario',
+              'frontpage_scenario',
+              'mail_from',
+              'mail_fromName',
+              'mail_host',
+              'mail_port',
+              'mail_username',
+              'mail_password',
+              'profile_visibility',
+              'default_homepage',
+              'offense_domain',
+              'defense_domain',
+              'moderator_domain',
+              'event_start',
+              'event_end',
+              'registrations_start',
+              'registrations_end'
+            ], 'trim'],
             [['teams',
               'require_activation',
               'disable_registration',
               'player_profile',
               'profile_visibility',
               'event_name',
+              'event_active',
               'mail_from',
               'mail_fromName',
               'frontpage_scenario',
-              'approved_avatar'
+              'approved_avatar',
+              'team_manage_members'
           ], 'required'],
           ['profile_visibility','default','value'=>'ingame'],
-          [['online_timeout', 'spins_per_day'], 'integer'],
+          [['online_timeout', 'spins_per_day','members_per_team'], 'integer'],
           [['online_timeout'], 'default', 'value'=>900],
           [['spins_per_day'], 'default', 'value'=> 2],
-          [['dashboard_is_home', 'teams', 'require_activation', 'disable_registration', 'player_profile', 'approved_avatar'], 'boolean'],
+          [['event_start','event_end','registrations_start','registrations_end'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+          [['dashboard_is_home','event_active', 'teams', 'team_required', 'team_manage_members','require_activation', 'disable_registration', 'player_profile', 'approved_avatar'], 'boolean'],
 
         ];
     }
@@ -168,6 +209,10 @@ class ConfigureForm extends Model
         if($sysconfig)
           $this->{$id}=$sysconfig->val;
       }
+    }
+
+    public function beforeSave()
+    {
     }
 
     public function save()
