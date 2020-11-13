@@ -41,16 +41,16 @@ class Twitter extends Widget {
         {
             $this->message='Tweet this';
         }
-        if($this->url === NULL)
+        if($this->url === null)
           $this->url=Url::to('', 'https');
 
-        if(Yii::$app->sys->twitter_account!==NULL)
+        if(!empty(Yii::$app->sys->twitter_account))
         {
           $this->related=Yii::$app->sys->twitter_account;
           $this->via=$this->related;
         }
 
-        if(Yii::$app->sys->twitter_hashtags!==NULL)
+        if(!empty(Yii::$app->sys->twitter_hashtags))
         {
           $this->hashtags=Yii::$app->sys->twitter_hashtags;
         }
