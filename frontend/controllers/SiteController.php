@@ -338,8 +338,8 @@ class SiteController extends Controller
 
     public function actionChangelog()
     {
-      $changelog=file_get_contents('../Changelog.md');
-      $todo=file_get_contents('../TODO.md');
+      $changelog=@file_get_contents('../Changelog.md');
+      $todo=@file_get_contents('../TODO.md');
       return $this->render('changelog', [
         'changelog'=>$changelog,
         'todo'=>$todo
