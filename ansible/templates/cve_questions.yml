@@ -1,0 +1,9 @@
+{% for item in QUESTIONS.QUESTIONS %}
+  - {
+      name: "CVE  {{loop.index }}",
+      description: "CVE {{loop.index }}",
+      points: 200,
+      weight: {{10 * loop.index }},
+      code: "{{item.code}}"
+    }
+{% endfor %}
