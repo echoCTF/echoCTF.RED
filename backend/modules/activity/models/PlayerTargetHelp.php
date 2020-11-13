@@ -40,8 +40,8 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
             [['player_id', 'target_id'], 'integer'],
             [['created_at'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -85,7 +85,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -95,7 +95,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 
     /**
