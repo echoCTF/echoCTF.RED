@@ -38,8 +38,8 @@ class ChallengeSolver extends \yii\db\ActiveRecord
             [['challenge_id', 'player_id', 'timer', 'rating'], 'integer'],
             [['created_at'], 'safe'],
             [['challenge_id', 'player_id'], 'unique', 'targetAttribute' => ['challenge_id', 'player_id']],
-            [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::className(), 'targetAttribute' => ['challenge_id' => 'id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::class, 'targetAttribute' => ['challenge_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -64,7 +64,7 @@ class ChallengeSolver extends \yii\db\ActiveRecord
      */
     public function getChallenge()
     {
-        return $this->hasOne(Challenge::className(), ['id' => 'challenge_id']);
+        return $this->hasOne(Challenge::class, ['id' => 'challenge_id']);
     }
 
     /**
@@ -74,7 +74,7 @@ class ChallengeSolver extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**

@@ -22,7 +22,7 @@ use yii\grid\Column;
  * 'columns' => [
  *     // ...
  *     [
- *         'class' => ActionColumn::className(),
+ *         'class' => ActionColumn::class,
  *         // you may configure additional properties here
  *     ],
  * ]
