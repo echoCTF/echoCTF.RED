@@ -56,6 +56,8 @@ class PasswordResetRequestForm extends Model
                 return false;
             }
         }
+
+        \Yii::$app->mailer->useFileTransport=Yii::$app->sys->mail_useFileTransport;
         if(Yii::$app->sys->mail_host !== false)
           \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
 

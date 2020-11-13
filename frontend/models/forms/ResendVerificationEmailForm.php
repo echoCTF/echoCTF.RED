@@ -49,6 +49,7 @@ class ResendVerificationEmailForm extends Model
         {
             return false;
         }
+        \Yii::$app->mailer->useFileTransport=Yii::$app->sys->mail_useFileTransport;
         if(Yii::$app->sys->mail_host !== false)
           \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
 
@@ -60,7 +61,7 @@ class ResendVerificationEmailForm extends Model
 
         if(Yii::$app->sys->mail_password !== false)
           \Yii::$app->mailer->transport->setPassword(Yii::$app->sys->mail_password);
-        
+
         return Yii::$app
             ->mailer
             ->compose(
