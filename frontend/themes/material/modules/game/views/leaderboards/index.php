@@ -20,6 +20,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'playerScore',
                   'dataProvider' => $playerDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">No player ranks exist at the moment...</b></div>',
                   'options'=>['id'=>'player-leaderboard-pager'],
                   'pager'=>[
                     'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
@@ -48,6 +49,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'teamScore',
                   'dataProvider' => $teamDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">No team ranks exist at the moment...</b></div>',
                   'options'=>['id'=>'team-leaderboard-pager'],
                   'pager'=>[
                     'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
@@ -78,6 +80,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'mostHeadshots',
                   'dataProvider' => $mostHeadshotsDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">No headshots exist at the moment...</b></div>',
                   'options'=>['id'=>'mostHeadshots-leaderboard-pager'],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
@@ -95,6 +98,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               <?php
               echo ListView::widget([
                   'id'=>'mostSolves',
+                  'emptyText'=>'<div class="card-body"><b class="text-info">No challenge solves exist at the moment...</b></div>',
                   'dataProvider' => $mostSolvesDataProvider,
                   'options'=>['id'=>'mostSolves-leaderboard-pager'],
                   'options'=>['class'=>'card'],
@@ -117,6 +121,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'headshotTimers',
                   'dataProvider' => $headshotDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">No headshots exist at the moment...</b></div>',
                   'options'=>['id'=>'headshotTimer-leaderboard-pager'],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
@@ -135,6 +140,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'fastestSolvers',
                   'dataProvider' => $solversDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">No challenge solves exist at the moment...</b></div>',
                   'options'=>['id'=>'solvers-leaderboard-pager'],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
@@ -159,6 +165,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'AvgHeadshotTimers',
                   'dataProvider' => $AvgHeadshotDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">No headshots exist at the moment...</b></div>',
                   'options'=>['id'=>'avgheadshotTimer-leaderboard-pager'],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
@@ -178,6 +185,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'AvgSolvesTimers',
                   'dataProvider' => $AvgSolvesDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">No challenge solves exist at the moment...</b></div>',
                   'options'=>['id'=>'avgsolvesTimer-leaderboard-pager'],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',

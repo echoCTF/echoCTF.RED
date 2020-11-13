@@ -11,6 +11,7 @@ $this->_description='These rules are only in place to keep the platform entertai
   <hr />
   <?php echo ListView::widget([
       'dataProvider' => $dataProvider,
+      'emptyText'=>'<p class="text-info"><b>No rules exist at the moment...</b></p>',
       'summary'=>false,
       'itemOptions' => [
         'tag' => false

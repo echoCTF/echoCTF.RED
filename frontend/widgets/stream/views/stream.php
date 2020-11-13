@@ -3,8 +3,8 @@ use yii\widgets\ListView;
 echo ListView::widget([
     'id'=>$divID,
     'options'=>$options,
+    'emptyText'=>'<div class="card-body"><b class="text-info">No activity to report...</b></div>',
     'dataProvider' => $dataProvider,
-    'emptyText'=>'<b>No activity to report yet...</b>',
     'pager'=>[
       'class'=>'yii\bootstrap4\LinkPager',
       'options'=>$pagerOptions,

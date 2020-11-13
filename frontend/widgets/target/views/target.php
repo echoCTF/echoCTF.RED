@@ -15,6 +15,7 @@ use app\widgets\Twitter;
 echo GridView::widget([
     'id'=>$divID,
     'dataProvider' => $dataProvider,
+    'emptyText'=>'<div class="card-body"><b class="text-info">No targets exist for the given criteria...</b></div>',
     'rowOptions'=>function() { },
     'pager'=>[
       'class'=>'yii\bootstrap4\LinkPager',

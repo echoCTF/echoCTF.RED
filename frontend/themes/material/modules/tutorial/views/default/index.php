@@ -11,7 +11,7 @@ $this->_description=$this->title
     <hr />
     <?php echo ListView::widget([
         'dataProvider' => $dataProvider,
-        'emptyText'=>'<p class="text-warning"><b>There are no tutorials available at the moment...</b></p>',
+        'emptyText'=>'<p class="text-info"><b>There are no tutorials available at the moment...</b></p>',
         'summary'=>false,
         'itemOptions' => [
           'tag' => false
