@@ -74,6 +74,9 @@ class ProfileSearch extends Profile
             ->andFilterWhere(['like', 'profile.avatar', $this->avatar])
             ->andFilterWhere(['like', 'profile.github', $this->avatar])
             ->andFilterWhere(['like', 'profile.discord', $this->discord])
+            ->andFilterWhere(['like', 'profile.htb', $this->htb])
+            ->andFilterWhere(['like', 'profile.youtube', $this->youtube])
+            ->andFilterWhere(['like', 'profile.twitch', $this->twitch])
             ->andFilterWhere(['like', 'profile.twitter', $this->twitter]);
 
         $query->andFilterWhere(['like', 'player.username', $this->username]);
