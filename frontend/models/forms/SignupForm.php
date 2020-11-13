@@ -125,6 +125,7 @@ class SignupForm extends Model
      */
     protected function sendEmail($player)
     {
+      \Yii::$app->mailer->useFileTransport=Yii::$app->sys->mail_useFileTransport;
       if(Yii::$app->sys->mail_host !== false)
         \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
 
@@ -137,7 +138,7 @@ class SignupForm extends Model
       if(Yii::$app->sys->mail_password !== false)
         \Yii::$app->mailer->transport->setPassword(Yii::$app->sys->mail_password);
 
-        return Yii::$app
+      return Yii::$app
             ->mailer
             ->compose(
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],

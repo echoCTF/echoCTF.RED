@@ -47,6 +47,7 @@ class ConfigureForm extends Model
     public $mail_port;
     public $mail_username;
     public $mail_password;
+    public $mail_useFileTransport;
     public $online_timeout;
     public $spins_per_day;
     public $keys=[
@@ -86,6 +87,7 @@ class ConfigureForm extends Model
             'mail_port',
             'mail_username',
             'mail_password',
+            'mail_useFileTransport',
             'online_timeout',
             'spins_per_day',
         ];
@@ -160,7 +162,7 @@ class ConfigureForm extends Model
           [['online_timeout'], 'default', 'value'=>900],
           [['spins_per_day'], 'default', 'value'=> 2],
           [['event_start','event_end','registrations_start','registrations_end'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
-          [['dashboard_is_home','event_active', 'teams', 'team_required', 'team_manage_members','require_activation', 'disable_registration', 'player_profile', 'approved_avatar'], 'boolean'],
+          [['dashboard_is_home','mail_useFileTransport', 'event_active', 'teams', 'team_required', 'team_manage_members','require_activation', 'disable_registration', 'player_profile', 'approved_avatar'], 'boolean'],
 
         ];
     }
