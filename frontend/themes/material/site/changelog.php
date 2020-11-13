@@ -7,11 +7,8 @@ $this->_description="The echoCTF.RED Changelog";
 
 <div class="changelog-index">
   <div class="body-content">
-    <h2>Changelog</h2>
-    <p>Scheduled and completed changes on the platform.</p>
-
     <?=Markdown::process($changelog);?>
-    <?=Markdown::process($todo);?>
 
+    <?=Markdown::process($todo);?>
   </div>
 </div>
