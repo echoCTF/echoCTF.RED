@@ -4,6 +4,7 @@ use yii\widgets\ListView;
 echo ListView::widget([
     'id'=>$divID,
     'dataProvider' => $dataProvider,
+    'emptyText'=>'<div class="card-body"><b class="text-info">No ranks exist at the moment...</b></div>',
     'pager'=>[
       'options'=>['id'=>$pagerID],
       'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
