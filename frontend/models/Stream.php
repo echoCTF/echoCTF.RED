@@ -134,7 +134,7 @@ class Stream extends \yii\db\ActiveRecord
 
   public function getFormatted(bool $pub=true)
   {
-    if(!Yii::$app->user->isGuest && Yii::$app->user->id === $this->player_id)
+    if(!Yii::$app->user->isGuest && (Yii::$app->user->id === $this->player_id || Yii::$app->user->identity->isAdmin))
       $pub=false;
 
     switch($this->model)
