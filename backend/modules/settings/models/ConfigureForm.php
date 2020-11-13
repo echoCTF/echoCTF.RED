@@ -24,6 +24,8 @@ class ConfigureForm extends Model
     public $event_active;
     public $event_start;
     public $event_end;
+    public $twitter_account;
+    public $twitter_hashtags;
     public $registrations_start;
     public $registrations_end;
     public $footer_logos;
@@ -48,6 +50,8 @@ class ConfigureForm extends Model
     public $online_timeout;
     public $spins_per_day;
     public $keys=[
+            'twitter_account',
+            'twitter_hashtags',
             'teams',
             'team_required',
             'team_manage_members',
@@ -110,6 +114,8 @@ class ConfigureForm extends Model
               'offense_domain',
               'defense_domain',
               'moderator_domain',
+              'twitter_account',
+              'twitter_hashtags',
             ], 'string'],
             [['offense_registered_tag',
               'defense_registered_tag',
@@ -132,7 +138,9 @@ class ConfigureForm extends Model
               'event_start',
               'event_end',
               'registrations_start',
-              'registrations_end'
+              'registrations_end',
+              'twitter_account',
+              'twitter_hashtags',
             ], 'trim'],
             [['teams',
               'require_activation',

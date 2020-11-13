@@ -58,13 +58,16 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'spins_per_day')->textInput()->hint('Maximum target spins per day per user (eg. 2)') ?></div>
         </div>
         <hr/>
-        <h4>Generic Settings</h4>
+
+        <h4>Domains and Hosts</h4>
         <div class="row form-group">
           <div class="col-sm-3"><?= $form->field($model, 'moderator_domain')->textInput(['maxlength' => true])->hint('Moderator domain')->input('text', ['placeholder' => "admin.example.ctf"]) ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'offense_domain')->textInput(['maxlength' => true])->hint('Offense domain')->input('text', ['placeholder' => "red.example.ctf"]) ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'defense_domain')->textInput(['maxlength' => true])->hint('Defense domain')->input('text', ['placeholder' => "blue.example.ctf"]) ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'vpngw')->textInput(['maxlength' => true])->hint('VPN Gateway FQDN or IP (eg. vpn.echoctf.red)')->input('text', ['placeholder' => "vpngw.example.ctf"]) ?></div>
         </div>
+
+        <h4>Mail Settings</h4>
         <div class="row form-group">
           <div class="col-sm-3"><?= $form->field($model, 'mail_from')->textInput(['maxlength' => true])->hint('Mail From (eg. dontreply@echoctf.red)') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'mail_fromName')->textInput(['maxlength' => true])->hint('Mail From Name (eg. echoCTF RED)') ?></div>
@@ -72,6 +75,13 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'mail_port')->textInput(['maxlength' => true])->hint('Mail port (eg. 25)') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'mail_username')->textInput(['maxlength' => true])->hint('Mail server username') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'mail_password')->textInput(['maxlength' => true])->hint('Mail server password') ?></div>
+        </div>
+        <hr/>
+
+        <h4>Twitter Settings</h4>
+        <div class="row form-group">
+          <div class="col-sm-3"><?= $form->field($model, 'twitter_account')->textInput(['maxlength' => true])->hint('Twitter account to use for tagging and via') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'twitter_hashtags')->textInput(['maxlength' => true])->hint('Twitter hashtags to use for tweets') ?></div>
         </div>
         <hr/>
 
