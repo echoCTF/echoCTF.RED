@@ -1,4 +1,4 @@
-class<?php
+<?php
 
 namespace app\modules\target\models;
 
