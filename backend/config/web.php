@@ -86,6 +86,7 @@ $config=[
               ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\finding']],
               ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\treasure']],
               ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\hint']],
+              ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\syncfiles']],
             ],
         ],
     ],
