@@ -82,4 +82,9 @@ class ChallengeController extends ActiveController
       return array('status' => false, 'data'=> 'Reached the end');
     }
 
+    public function actionDownload(int $id)
+    {
+      if(($model=\app\modules\gameplay\models\Challenge::findOne($id))!==null && file_exists(\Yii::getAlias('@web/uploads/challenges/'.$model->filename)))
+        return \Yii::$app->response->sendFile(\Yii::getAlias('@web/uploads/challenges/'.$model->filename));
+    }
 }
