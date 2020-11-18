@@ -275,7 +275,7 @@ class TargetController extends Controller {
     {
       if($finding->target->network)
       {
-        $networks[$finding->target->network->codename]=true;
+        $networks[$finding->target->network->codename]=$finding->target->network;
       }
       $frules[]=$finding->matchRule;
     }
@@ -284,7 +284,10 @@ class TargetController extends Controller {
     {
       foreach($networks as $key=>$val)
       {
-        $rules[]=sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key.'_clients',$key);
+        if($val->public==0)
+          $rules[]=sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key.'_clients',$key);
+        else
+          $rules[]=sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",'offense_activated',$key);
       }
       $ruleset=implode("\n", $frules)."\n";
       $ruleset.=implode("\n",$rules);
