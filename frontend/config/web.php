@@ -254,9 +254,10 @@ $config=[
                 'team/invite/<token>' => 'team/default/invite',
                 'team/approve/<id:\d+>' => 'team/default/approve',
                 'team/reject/<id:\d+>' => 'team/default/reject',
-
                 // Network Module
                 'networks' => 'network/default/index',
+                'network/<id:\d+>' => 'network/default/view',
+
                 //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
 //                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
             ],
