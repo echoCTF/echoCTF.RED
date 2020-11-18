@@ -4,6 +4,7 @@ namespace app\modules\target\actions;
 use Yii;
 use yii\data\ActiveDataProvider;
 use app\modules\target\models\Target;
+use app\modules\network\models\NetworkPlayer;
 use \yii\web\NotFoundHttpException;
 class SpinRestAction extends \yii\rest\ViewAction
 {
@@ -17,8 +18,10 @@ class SpinRestAction extends \yii\rest\ViewAction
     $target=Target::find()->where(['t.id'=>$id])->player_progress(\Yii::$app->user->id)->one();
     try
     {
-      if($target === NULL)
+      if($target === null)
         throw new NotFoundHttpException('The requested page does not exist.');
+      if($target->network !== NULL && NetworkPlayer::findOne($target->network->id,\Yii::$app->user->id) === null)
+        throw new NotFoundHttpException('Not allowed to spin target. You dont have access to this network.');
       if($target->spinable !== true)
         throw new NotFoundHttpException('Not allowed to spin target. Target not spinable.');
       $playerSpin=Yii::$app->user->identity->profile->spins;
