@@ -11,6 +11,9 @@ $this->_fluid='-fluid';
 
 <div class="target-index">
   <div class="body-content">
+    <?php if($target->network):?>
+    <div><p class="text-info">Target from: <b><?=$target->network->name?></b></p></div>
+    <?php endif;?>
     <div class="watermarked img-fluid">
     <?=sprintf('<img src="%s" width="100px"/>', $target->logo)?>
     </div>
