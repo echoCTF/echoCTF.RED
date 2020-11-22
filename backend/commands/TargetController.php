@@ -282,13 +282,6 @@ class TargetController extends Controller {
 
     try
     {
-      foreach($networks as $key=>$val)
-      {
-        if($val->public==0)
-          $rules[]=sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key.'_clients',$key);
-        else
-          $rules[]=sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",'offense_activated',$key);
-      }
       $ruleset=implode("\n", $frules)."\n";
       $ruleset.=implode("\n",$rules);
       file_put_contents($base.'/match-findings-pf.conf',$ruleset);
@@ -321,8 +314,10 @@ class TargetController extends Controller {
     $this->store_and_load('targets', $base.'/targets.conf', $ips);
     foreach($networks as $key => $val) {
       $this->store_and_load($key, $base.'/'.$key.'.conf', $val);
-      $rules[]=sprintf("pass quick inet from <%s_clients> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key,$key);
-
+      if($val->public==0)
+        $rules[]=sprintf("pass quick inet from <%s_clients> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key,$key);
+      else
+        $rules[]=sprintf("pass quick inet from <offense_activated> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key);
       $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
       $rules[]=sprintf("pass quick from <%s> to <%s_clients>",$key,$key);
     }
