@@ -310,9 +310,15 @@ class TargetController extends Controller {
       else {
         $networks[$target->network->codename][]=$target->ipoctet;
         if($target->network->public===false)
+        {
           $rules[]=sprintf("pass quick inet from <%s_clients> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename,$target->network->codename);
+          $rules[]=sprintf("pass quick from <%s> to <%s_clients>",$target->network->codename,$target->network->codename);
+        }
         else
+        {
           $rules[]=sprintf("pass quick inet from <offense_activated> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename);
+          $rules[]=sprintf("pass quick from <%s> to <offense_activated>",$target->network->codename);
+        }
 
       }
     }
@@ -320,7 +326,6 @@ class TargetController extends Controller {
     foreach($networks as $key => $val) {
       $this->store_and_load($key, $base.'/'.$key.'.conf', $val);
       $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
-      $rules[]=sprintf("pass quick from <%s> to <%s_clients>",$key,$key);
     }
 
     if($rules!==[])
