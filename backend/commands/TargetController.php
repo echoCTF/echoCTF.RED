@@ -309,15 +309,16 @@ class TargetController extends Controller {
         $ips[]=$target->ipoctet;
       else {
         $networks[$target->network->codename][]=$target->ipoctet;
+        if($target->network->public===false)
+          $rules[]=sprintf("pass quick inet from <%s_clients> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename,$target->network->codename);
+        else
+          $rules[]=sprintf("pass quick inet from <offense_activated> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename);
+
       }
     }
     $this->store_and_load('targets', $base.'/targets.conf', $ips);
     foreach($networks as $key => $val) {
       $this->store_and_load($key, $base.'/'.$key.'.conf', $val);
-      if($val->public==0)
-        $rules[]=sprintf("pass quick inet from <%s_clients> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key,$key);
-      else
-        $rules[]=sprintf("pass quick inet from <offense_activated> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key);
       $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
       $rules[]=sprintf("pass quick from <%s> to <%s_clients>",$key,$key);
     }
