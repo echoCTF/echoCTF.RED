@@ -293,7 +293,7 @@ class TargetController extends Controller {
     }
 
     if($load)
-      shell_exec("/sbin/pfctl -a offense/findings -Fr -f $base/match-findings-pf.conf");
+      shell_exec("/sbin/pfctl -q -a offense/findings -Fr -f $base/match-findings-pf.conf");
   }
 
   /*
@@ -333,7 +333,7 @@ class TargetController extends Controller {
       $rules[]="\n";
       try {
         file_put_contents("$base/targets_networks.conf",implode("\n",$rules));
-        shell_exec("/sbin/pfctl -a targets/networks -Fr -f $base/targets_networks.conf");
+        shell_exec("/sbin/pfctl -q -a targets/networks -Fr -f $base/targets_networks.conf");
       }
       catch (\Exception $e)
       {
@@ -419,6 +419,6 @@ class TargetController extends Controller {
       echo "Failed to save {$file}\n";
       return;
     }
-    shell_exec("/sbin/pfctl -t $table -T replace -f $file");
+    shell_exec("/sbin/pfctl -q -t $table -T replace -f $file");
   }
 }
