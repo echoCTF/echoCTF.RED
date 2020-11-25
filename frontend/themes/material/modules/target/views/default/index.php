@@ -15,7 +15,7 @@ $this->_fluid='-fluid';
     <div><p class="text-warning">Target scheduled for <b><?=$target->status?></b> at <code class="text-warning"><?=$target->scheduled_at?> UTC</code></p></div>
     <?php endif;?>
     <?php if($target->network):?>
-    <div><p class="text-info">Target is only accessible to players with access to <b><?=$target->network->name?></b></p></div>
+    <div><p class="text-info">Target from: <b><?=$target->network->name?></b></p></div>
     <?php endif;?>
 
     <div class="watermarked img-fluid">

@@ -54,8 +54,8 @@ echo GridView::widget([
         'label'=>'Target',
         'value'=>function($model) {
           $append="";
-          if($model->network)
-            $append=" ". $model->network->icon;
+          //if($model->network)
+          //  $append=" ". $model->network->icon;
           if($model->status === 'powerup')
             $append=sprintf(' <abbr title="Scheduled for powerup at %s"><i class="fas fa-arrow-alt-circle-up"></i></abbr>', $model->scheduled_at);
           else if($model->status === 'powerdown')

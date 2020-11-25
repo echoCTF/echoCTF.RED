@@ -43,17 +43,20 @@ class Network extends \yii\db\ActiveRecord
             [['name'], 'unique'],
         ];
     }
-
     public function behaviors()
     {
-        return [
-            [
-                'class' => \yii\behaviors\TimestampBehavior::class,
-                'createdAtAttribute' => 'ts',
-                'updatedAtAttribute' => 'ts',
-                'value' => new \yii\db\Expression('NOW()'),
-            ],
-        ];
+      return [
+        'typecast' => [
+          'class' => \yii\behaviors\AttributeTypecastBehavior::class,
+          'attributeTypes' => [
+            'active' => \yii\behaviors\AttributeTypecastBehavior::TYPE_BOOLEAN,
+
+          ],
+          'typecastAfterValidate' => false,
+          'typecastBeforeSave' => false,
+          'typecastAfterFind' => true,
+        ],
+      ];
     }
     /**
      * {@inheritdoc}
@@ -91,12 +94,29 @@ class Network extends \yii\db\ActiveRecord
     {
         return $this->hasMany(NetworkTarget::class, ['network_id' => 'id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTargetsCount()
+    {
+        return $this->hasMany(NetworkTarget::class, ['network_id' => 'id'])->count();
+    }
 
     /**
      * @return \yii\db\ActiveQuery
      */
     public function getTargets()
     {
-        return $this->hasMany(Target::class, ['id' => 'target_id'])->viaTable('network_target', ['network_id' => 'id']);
+        return $this->hasMany(\app\modules\target\models\Target::class, ['id' => 'target_id'])->viaTable('network_target', ['network_id' => 'id']);
     }
+
+    /**
+     * {@inheritdoc}
+     * @return NetworkQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new NetworkQuery(get_called_class());
+    }
+
 }

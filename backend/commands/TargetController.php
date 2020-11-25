@@ -275,17 +275,13 @@ class TargetController extends Controller {
     {
       if($finding->target->network)
       {
-        $networks[$finding->target->network->codename]=true;
+        $networks[$finding->target->network->codename]=$finding->target->network;
       }
       $frules[]=$finding->matchRule;
     }
 
     try
     {
-      foreach($networks as $key=>$val)
-      {
-        $rules[]=sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$key.'_clients',$key);
-      }
       $ruleset=implode("\n", $frules)."\n";
       $ruleset.=implode("\n",$rules);
       file_put_contents($base.'/match-findings-pf.conf',$ruleset);
@@ -297,7 +293,7 @@ class TargetController extends Controller {
     }
 
     if($load)
-      shell_exec("/sbin/pfctl -a offense/findings -Fr -f $base/match-findings-pf.conf");
+      shell_exec("/sbin/pfctl -q -a offense/findings -Fr -f $base/match-findings-pf.conf");
   }
 
   /*
@@ -313,19 +309,31 @@ class TargetController extends Controller {
         $ips[]=$target->ipoctet;
       else {
         $networks[$target->network->codename][]=$target->ipoctet;
+        if($target->network->public===false)
+        {
+          $rules[]=sprintf("pass quick inet from <%s_clients> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename,$target->network->codename);
+          $rules[]=sprintf("pass quick from <%s> to <%s_clients>",$target->network->codename,$target->network->codename);
+        }
+        else
+        {
+          $rules[]=sprintf("pass quick inet from <offense_activated> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename);
+          $rules[]=sprintf("pass quick from <%s> to <offense_activated>",$target->network->codename);
+        }
+
       }
     }
     $this->store_and_load('targets', $base.'/targets.conf', $ips);
     foreach($networks as $key => $val) {
       $this->store_and_load($key, $base.'/'.$key.'.conf', $val);
       $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
-      $rules[]=sprintf("pass quick from <%s> to <%s_clients>",$key,$key);
     }
 
     if($rules!==[])
     {
+      $rules[]="\n";
       try {
         file_put_contents("$base/targets_networks.conf",implode("\n",$rules));
+        shell_exec("/sbin/pfctl -q -a targets/networks -Fr -f $base/targets_networks.conf");
       }
       catch (\Exception $e)
       {
@@ -411,6 +419,6 @@ class TargetController extends Controller {
       echo "Failed to save {$file}\n";
       return;
     }
-    shell_exec("/sbin/pfctl -t $table -T replace -f $file");
+    shell_exec("/sbin/pfctl -q -t $table -T replace -f $file");
   }
 }

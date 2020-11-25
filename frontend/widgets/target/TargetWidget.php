@@ -104,7 +104,7 @@ class TargetWidget extends Widget
       else
       {
         $targetProgressProvider=new ActiveDataProvider([
-            'query' => $tmod->player_progress($id),
+            'query' => $tmod->player_progress($id)->not_in_network(),
             'pagination' => [
                 'pageSizeParam'=>'target-perpage',
                 'pageParam'=>'target-page',

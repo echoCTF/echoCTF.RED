@@ -4,6 +4,7 @@ namespace app\modules\gameplay\models;
 
 use Yii;
 use app\modules\frontend\models\Player;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "network".
@@ -36,7 +37,7 @@ class Network extends \yii\db\ActiveRecord
         return [
             [['name','codename'], 'required'],
             [['description','codename','icon'], 'string'],
-            [['public','active'], 'boolean'],            
+            [['public','active'], 'boolean'],
             [['ts'], 'safe'],
             [['name'], 'string', 'max' => 32],
             [['name'], 'unique'],
@@ -46,6 +47,16 @@ class Network extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
+          'typecast' => [
+                'class' => AttributeTypecastBehavior::className(),
+                'attributeTypes' => [
+                    'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                    'public' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => false,
+                'typecastAfterFind' => true,
+            ],
             [
                 'class' => \yii\behaviors\TimestampBehavior::class,
                 'createdAtAttribute' => 'ts',
