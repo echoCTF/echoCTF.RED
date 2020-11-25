@@ -12,7 +12,7 @@ use yii\helpers\Url;
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top">
         <div class="container-fluid">
           <div class="navbar-wrapper">
-            <a class="navbar-brand" href="<?=Yii::$app->request->url?>"><?=$this->title?></a>
+            <a class="navbar-brand" href="<?=Html::encode($this->_url)?>"><?=$this->title?></a>
           </div>
           <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="sr-only">Toggle navigation</span>
