@@ -175,7 +175,7 @@ echo GridView::widget([
         'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell', ],
         'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
         'attribute'=>'progress',
-        'label'=>'Your Progress',
+        'label'=>'Progress',
         'value'=>function($model) {
           return yii\bootstrap4\Progress::widget(['percent' => intval(floor($model->progress)), 'label' => false, 'barOptions' => ['class' => 'bg-gradual-progress']]);
         },
