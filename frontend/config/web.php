@@ -17,6 +17,7 @@ $config=[
         '@appconfig' => realpath(dirname(__FILE__)),
     ],
     'modules' => [
+      'user'=> [ 'class' => 'app\components\User'],
       'game' => [
           'class' => 'app\modules\game\Module',
       ],
@@ -41,21 +42,16 @@ $config=[
     ],
     'components' => [
       'assetManager' => [
-          //'class'=>'app\components\echoCTFAssetManager',
-          //'nullPublish'=>false,
           'bundles' => [
               'yii\captcha\CaptchaAsset' => [
                 'sourcePath' => null,
-//                'jsOptions' => ['async' => 'async'],
                 'js' => ['js/yii.captcha.min.js', ],
               ],
               'yii\bootstrap4\BootstrapAsset' => [
-//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'css' => [],
               ],
               'yii\validators\ValidationAsset' => [
-//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/yii.validation.min.js',
@@ -63,35 +59,30 @@ $config=[
 
               ],
               'yii\widgets\ActiveFormAsset'=>[
-//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/yii.activeForm.min.js',
                 ],
               ],
               'yii\grid\GridViewAsset'=>[
-//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/yii.gridView.min.js',
                 ],
               ],
               'yii\web\YiiAsset' => [
-//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/yii.min.js',
                 ],
               ],
               'yii\widgets\PjaxAsset'=>[
-//                'jsOptions' => ['async' => 'async'],
                 'sourcePath' => null,
                 'js' => [
                     'js/jquery.pjax.min.js',
                 ],
               ],
               'yii\web\JqueryAsset' => [
-//                'jsOptions' => ['async' => 'async'],
                   'sourcePath' => null,
                   'js' => [
                       'js/jquery.min.js',
@@ -150,7 +141,6 @@ $config=[
             'identityClass' => 'app\models\Player',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true, /*'sameSite'=>'Lax'*/],
-//            'autoUpdateFlash' => false,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
