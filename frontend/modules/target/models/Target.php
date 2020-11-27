@@ -68,7 +68,7 @@ class Target extends \yii\db\ActiveRecord
     "advanced",
     "expert",
     "guru",
-    "insanse",
+    "insane",
   ];
 
     /**
