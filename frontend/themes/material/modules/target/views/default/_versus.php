@@ -81,28 +81,30 @@ if($target->progress == 100)
 <?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===NULL && $target->progress==100):?>
         <div class="row">
           <div class="col">
-            <?=VoteWidget::widget(['model'=>Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])]);?>
-          </div>
-          <div class="col">
           <?=Html::a("<i class='fas fa-book'></i> Submit a writeup",
                       ['writeup/submit','id'=>$target->id],
                       [
-                        'class'=>'btn btn-success',
+                        'class'=>'btn btn-success btn-block',
                         'alt'=>'Submit a writeup for this target'
                     ])?></div>
+          <div class="col">
+            <?=VoteWidget::widget(['model'=>Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])]);?>
+          </div>
+
         </div>
 <?php elseif(Yii::$app->user->id === $identity->player_id && $target->progress==100):?>
   <div class="row">
       <div class="col">
-        <?=VoteWidget::widget(['model'=>Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])]);?>
-      </div>
-      <div class="col">
         <?=Html::a("<i class='fas fa-book'></i> View your writeup",
                         ['writeup/view','id'=>$target->id],
                         [
-                          'class'=>'btn btn-success',
+                          'class'=>'btn btn-success btn-block',
                           'alt'=>'View or update your writeup for this target'
                       ])?></div>
+        <div class="col">
+          <?=VoteWidget::widget(['model'=>Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])]);?>
+        </div>
+
         </div>
 <?php endif;?>
       </div>
