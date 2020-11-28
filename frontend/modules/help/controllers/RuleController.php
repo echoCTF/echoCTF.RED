@@ -14,6 +14,29 @@ use yii\data\ActiveDataProvider;
  */
 class RuleController extends Controller
 {
+  public function behaviors()
+  {
+      return [
+        'access' => [
+              'class' => \yii\filters\AccessControl::class,
+              'rules' => [
+                'disabledRoute'=>[
+                    'allow' => false,
+                    'matchCallback' => function ($rule, $action) {
+                      return Yii::$app->DisabledRoute->disabled($action);
+                    },
+                    'denyCallback' => function() {
+                      throw new \yii\web\HttpException(404,'This area is disabled.');
+                    },
+                ],
+                [
+                   'allow' => true,
+                ],
+            ],
+          ],
+      ];
+  }
+
     /**
      * Lists all Rule models.
      * @return mixed

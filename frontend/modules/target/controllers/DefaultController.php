@@ -19,12 +19,13 @@ use app\models\PlayerFinding;
 use app\models\PlayerTreasure;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use app\modules\game\models\Headshot;
 
 /**
  * Default controller for the `target` module
  */
-class DefaultController extends Controller
+class DefaultController extends \app\components\BaseController
 {
 
       public function actions()
@@ -36,64 +37,30 @@ class DefaultController extends Controller
 
       public function behaviors()
       {
-          return [
+          return ArrayHelper::merge(parent::behaviors(),[
               'access' => [
                   'class' => AccessControl::class,
                   'only' => ['index', 'claim', 'spin'],
                   'rules' => [
-                       [
+                       'eventStartEnd'=>[
                           'actions' => ['index', 'claim', 'spin'],
-                          'allow' => false,
-                          'matchCallback' => function ($rule, $action) {
-                            return Yii::$app->sys->event_start!==false && (time()<Yii::$app->sys->event_start || time()>Yii::$app->sys->event_end);
-                          },
-                          'denyCallback' => function() {
-                            Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
-                            return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
-                          }
                       ],
-                      [
+                      'teamsAccess'=>[
                          'actions' => ['index', 'claim', 'spin'],
-                         'allow' => false,
-                         'matchCallback' => function ($rule, $action) {
-                           if(Yii::$app->sys->team_required===false)
-                           {
-                              return false;
-                           }
-
-                           if(Yii::$app->user->identity->teamPlayer===NULL)
-                           {
-                             Yii::$app->session->setFlash('warning', 'You need to join a team before being able to access this area.');
-                             return true;
-                           }
-                           if(Yii::$app->user->identity->teamPlayer->approved!==1)
-                           {
-                             Yii::$app->session->setFlash('warning', 'You need to have your team membership approved before being able to access this area.');
-                             return true;
-                           }
-                           return false;
-                         },
-                         'denyCallback' => function() {
-                           return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
-                         }
                       ],
-                      [
-                          'allow' => true,
-                          'actions' => ['index'],
-                          'matchCallback' => function ($rule, $action) {
-                            return !Yii::$app->DisabledRoute->disabled($action);
-                          },
-
+                      'disabledRoute'=>[
+                          'actions' => ['index','claim','spin'],
                       ],
                       [
                           'allow' => true,
                           'actions' => ['claim', 'spin'],
                           'roles' => ['@'],
                           'verbs'=>['post'],
-                          'matchCallback' => function ($rule, $action) {
-                            return !Yii::$app->DisabledRoute->disabled($action);
-                          },
-
+                      ],
+                      [
+                          'actions'=>['index'],
+                          'allow' => true,
+                          'roles'=>['@']
                       ],
                   ],
               ],
@@ -101,7 +68,7 @@ class DefaultController extends Controller
                 'class' => 'yii\filters\AjaxFilter',
                 'only' => ['claim']
               ],
-          ];
+          ]);
       }
     /**
      * Renders a target versus a profile

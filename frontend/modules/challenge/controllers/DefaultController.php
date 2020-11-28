@@ -13,68 +13,38 @@ use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
 use app\modules\challenge\models\AnswerForm;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
  * ChallengeController implements the CRUD actions for Challenge model.
  */
-class DefaultController extends Controller
+class DefaultController extends \app\components\BaseController
 {
   /**
    * {@inheritdoc}
    */
   public function behaviors()
   {
-      return [
+      return ArrayHelper::merge(parent::behaviors(),[
         'access' => [
           'class' => AccessControl::class,
           'only' => ['index', 'view', 'download'],
           'rules' => [
-              [
+              'eventStartEnd'=>[
                  'actions' => ['index', 'view', 'download'],
-                 'allow' => false,
-                 'matchCallback' => function ($rule, $action) {
-                     return Yii::$app->sys->event_start!==false && (time()<Yii::$app->sys->event_start || time()>Yii::$app->sys->event_end);
-                 },
-                 'denyCallback' => function() {
-                   Yii::$app->session->setFlash('info', 'This area is disabled at the moment');
-                   return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
-                 }
               ],
-              [
+              'teamsAccess'=>[
                  'actions' => ['index', 'view', 'download'],
-                 'allow' => false,
-                 'matchCallback' => function ($rule, $action) {
-                   if(Yii::$app->sys->team_required===false)
-                   {
-                      return false;
-                   }
-
-                   if(Yii::$app->user->identity->teamPlayer===NULL)
-                   {
-                     Yii::$app->session->setFlash('warning', 'You need to join a team before being able to access this area.');
-                     return true;
-                   }
-                   if(Yii::$app->user->identity->teamPlayer->approved!==1)
-                   {
-                     Yii::$app->session->setFlash('warning', 'You need to have your team membership approved before being able to access this area.');
-                     return true;
-                   }
-                   return false;
-                 },
-                 'denyCallback' => function() {
-                   return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
-                 }
               ],
-              [
+              'disabledRoute'=>[
                   'actions' => ['index', 'view', 'download'],
-                  'allow' => true,
-                  'roles' => ['@'],
-                  'matchCallback' => function ($rule, $action) {
-                    return !Yii::$app->DisabledRoute->disabled($action);
-                  },
               ],
+              [
+                  'allow' => true,
+                  'roles'=>['@']
+              ],              
           ],
-      ]];
+      ]]);
   }
 
     /**

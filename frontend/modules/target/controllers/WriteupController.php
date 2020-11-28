@@ -15,50 +15,40 @@ use app\modules\target\models\PlayerTargetHelp;
 use app\modules\target\models\Writeup;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
+
 /**
  * Writeup controller for the `target` module
  */
-class WriteupController extends Controller
+class WriteupController extends \app\components\BaseController
 {
 
       public function behaviors()
       {
-          return [
+          return ArrayHelper::merge(parent::behaviors(),[
               'access' => [
                   'class' => AccessControl::class,
                   'only' => ['enable','submit','view','update'],
                   'rules' => [
                       [
                           'allow' => true,
-                          'actions' => ['view'],
-                          'roles' => ['@'],
-                          'verbs'=>['get'],
-                          'matchCallback' => function ($rule, $action) {
-                            return !Yii::$app->DisabledRoute->disabled($action);
-                          },
-                      ],
-
-                      [
-                          'allow' => true,
                           'actions' => ['submit','update'],
                           'roles' => ['@'],
                           'verbs'=>['post','get'],
-                          'matchCallback' => function ($rule, $action) {
-                            return !Yii::$app->DisabledRoute->disabled($action);
-                          },
                       ],
                       [
                           'allow' => true,
                           'actions' => ['enable'],
                           'roles' => ['@'],
                           'verbs'=>['post'],
-                          'matchCallback' => function ($rule, $action) {
-                            return !Yii::$app->DisabledRoute->disabled($action);
-                          },
+                      ],
+                      [
+                          'allow' => true,
+                          'roles'=>['@']
                       ],
                   ],
               ],
-          ];
+          ]);
       }
 
 

@@ -15,62 +15,26 @@ use yii\web\BadRequestHttpException;
 use yii\base\InvalidArgumentException;
 use yii\web\UploadedFile;
 
-class ProfileController extends \yii\web\Controller
+class ProfileController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
                 'only' => ['me', 'index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
                 'rules' => [
-                     [
+                   'eventStartEnd'=>[
                         'actions' => ['ovpn'],
-                        'allow' => false,
-                        'matchCallback' => function ($rule, $action) {
-                          return Yii::$app->sys->event_start!==false && (time()<Yii::$app->sys->event_start || time()>Yii::$app->sys->event_end);
-                        },
-                        'denyCallback' => function() {
-                          Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
-                          return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
-                        }
-
                     ],
-                    [
+                    'teamsAccess'=>[
                        'actions' => ['ovpn'],
-                       'allow' => false,
-                       'matchCallback' => function ($rule, $action) {
-                         if(Yii::$app->sys->team_required===false)
-                         {
-                            return false;
-                         }
-
-                         if(Yii::$app->user->identity->teamPlayer===NULL)
-                         {
-                           Yii::$app->session->setFlash('warning', 'You need to join a team before being able access this area.');
-                           return true;
-                         }
-                         if(Yii::$app->user->identity->teamPlayer->approved!==1)
-                         {
-                           Yii::$app->session->setFlash('warning', 'You need to have your team membership approved before being able to access this area.');
-                           return true;
-                         }
-                         return false;
-                       },
-                       'denyCallback' => function() {
-                         return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
-                       }
                     ],
-                    [
+                    'disabledRoute'=>[
                         'actions' => ['me', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                        'matchCallback' => function ($rule, $action) {
-                          return !Yii::$app->DisabledRoute->disabled($action);
-                        },
                     ],
                     [
                         'actions' => ['index'],
@@ -88,7 +52,7 @@ class ProfileController extends \yii\web\Controller
                 'actions' => [
                 ],
             ],
-        ];
+        ]);
     }
 
     public function actions()
