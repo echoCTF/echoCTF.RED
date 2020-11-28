@@ -38,13 +38,17 @@ class SiteController extends \app\components\BaseController
                         'actions' => ['register'],
                         'allow' => false,
                         'roles' => ['@'],
-                        'denyCallback' => function() {
-                          return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
-                        }
                     ],
                     'teamsAccess'=>[
                        'actions' => ['index'],
                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => ['register'],
+                        'allow' => false,
+                        'matchCallback' => function ($rule, $action) {
+                          return Yii::$app->sys->disable_registration===true;
+                        },
                     ],
                     [
                         'actions' => ['register', 'verify-email', 'resend-verification-email'],
@@ -54,9 +58,10 @@ class SiteController extends \app\components\BaseController
                           return Yii::$app->sys->registrations_start!==false && (time()<=Yii::$app->sys->registrations_start || time()>=Yii::$app->sys->registrations_end);
                         },
                     ],
-                    'disabledRoute'=>[
-                        'actions' => ['index','register','verify-email', 'resend-verification-email'],
-                        'roles' => ['?'],
+                    [
+                      'actions' => ['index','register','verify-email', 'resend-verification-email'],
+                      'allow' => true,
+                      'roles'=>['?']
                     ],
                 ],
             ],
