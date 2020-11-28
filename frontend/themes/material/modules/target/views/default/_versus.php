@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Url;
 use app\widgets\Twitter;
+use app\widgets\vote\VoteWidget;
 use app\modules\game\models\Headshot;
 use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\modules\target\models\Writeup;
@@ -78,22 +79,32 @@ if($target->progress == 100)
             </div>
         </div>
 <?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===NULL && $target->progress==100):?>
-        <div>
-          <center><?=Html::a("<i class='fas fa-book'></i> Submit a writeup",
+        <div class="row">
+          <div class="col">
+          <?=Html::a("<i class='fas fa-book'></i> Submit a writeup",
                       ['writeup/submit','id'=>$target->id],
                       [
-                        'class'=>'btn btn-success',
+                        'class'=>'btn btn-success btn-block',
                         'alt'=>'Submit a writeup for this target'
-                    ])?></center>
+                    ])?></div>
+          <div class="col">
+            <?=VoteWidget::widget(['model'=>Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])]);?>
+          </div>
+
         </div>
 <?php elseif(Yii::$app->user->id === $identity->player_id && $target->progress==100):?>
-        <div>
-          <center><?=Html::a("<i class='fas fa-book'></i> View your writeup",
-                      ['writeup/view','id'=>$target->id],
-                      [
-                        'class'=>'btn btn-success',
-                        'alt'=>'View or update your writeup for this target'
-                    ])?></center>
+  <div class="row">
+      <div class="col">
+        <?=Html::a("<i class='fas fa-book'></i> View your writeup",
+                        ['writeup/view','id'=>$target->id],
+                        [
+                          'class'=>'btn btn-success btn-block',
+                          'alt'=>'View or update your writeup for this target'
+                      ])?></div>
+        <div class="col">
+          <?=VoteWidget::widget(['model'=>Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])]);?>
+        </div>
+
         </div>
 <?php endif;?>
       </div>
