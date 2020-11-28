@@ -12,6 +12,15 @@ class BaseController extends \yii\web\Controller
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
+                    'eventActive'=>[
+                      'allow' => false,
+                      'matchCallback' => function ($rule, $action) {
+                        return Yii::$app->sys->event_active===false;
+                      },
+                      'denyCallback' => function() {
+                        throw new \yii\web\HttpException(403,'The event is not active.');
+                      }
+                    ],
                     'eventStartEnd'=>[
                        'allow' => false,
                        'matchCallback' => function ($rule, $action) {
@@ -21,7 +30,6 @@ class BaseController extends \yii\web\Controller
                          Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
                          return  \Yii::$app->getResponse()->redirect(['/profile/me']);
                        }
-
                    ],
                    'teamsAccess'=>[
                       'allow' => false,
