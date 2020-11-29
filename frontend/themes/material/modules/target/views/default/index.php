@@ -11,12 +11,12 @@ $this->_fluid='-fluid';
 
 <div class="target-index">
   <div class="body-content">
-    <?php if($target->status !== 'online'):?>
-    <div><p class="text-warning">Target scheduled for <b><?=$target->status?></b> at <code class="text-warning"><?=$target->scheduled_at?> UTC</code></p></div>
-    <?php endif;?>
-    <?php if($target->network):?>
+<?php if($target->status !== 'online'):?>
+    <div><p class="text-warning"><code class="text-warning">Target <?php if ($target->scheduled_at!==null):?>scheduled for<?php endif;?> <b><?=$target->status?></b> <?php if ($target->scheduled_at!==null):?>at <?=$target->scheduled_at?> UTC<?php endif;?></code></p></div>
+<?php endif;?>
+<?php if($target->network):?>
     <div><p class="text-info">Target from: <b><?=$target->network->name?></b></p></div>
-    <?php endif;?>
+<?php endif;?>
 
     <div class="watermarked img-fluid">
     <?=sprintf('<img src="%s" width="100px"/>', $target->logo)?>
