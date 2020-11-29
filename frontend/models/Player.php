@@ -33,6 +33,7 @@ use app\modules\game\models\Headshot;
  */
 class Player extends ActiveRecord implements IdentityInterface
 {
+    const SCENARIO_SETTINGS='settings';
     const STATUS_DELETED=0;
     const STATUS_INACTIVE=9;
     const STATUS_ACTIVE=10;
@@ -52,6 +53,7 @@ class Player extends ActiveRecord implements IdentityInterface
     {
         return 'player';
     }
+
     public function behaviors()
     {
         return [
@@ -74,6 +76,15 @@ class Player extends ActiveRecord implements IdentityInterface
           ],
         ];
     }
+
+    public function scenarios()
+    {
+        return [
+            'default' => ['id','username', 'email', 'password','fullname','active','status','new_password','confirm_password','created','ts'],
+            self::SCENARIO_SETTINGS => ['username', 'email', 'fullname','new_password','confirm_password'],
+        ];
+    }
+
 
     /**
      * {@inheritdoc}
