@@ -26,12 +26,12 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
 <div class="profile-index">
   <div class="body-content">
     <div class="row">
-      <div class="col">
+      <div class="col-xl-8 col-lg-8">
         <?php \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
         <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Pending progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
       </div>
-      <div class="col-md-4">
+      <div class="col-xl-4 col-lg-4">
         <?=$this->render('_card', ['profile'=>$profile]);?>
       </div><!-- // end profile card col-md-4 -->
     </div>
