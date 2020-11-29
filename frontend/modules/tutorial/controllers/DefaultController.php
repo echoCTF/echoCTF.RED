@@ -10,17 +10,18 @@ use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use app\modules\tutorial\models\Tutorial;
 use app\modules\tutorial\models\TutorialTask;
+use yii\helpers\ArrayHelper;
 /**
  * TutorialController implements the CRUD actions for Tutorial model.
  */
-class DefaultController extends Controller
+class DefaultController extends \app\components\BaseController
 {
   /**
    * {@inheritdoc}
    */
   public function behaviors()
   {
-      return [
+      return ArrayHelper::merge(parent::behaviors(),[
           'access' => [
               'class' => AccessControl::class,
               'only' => ['index', 'view'],
@@ -29,14 +30,10 @@ class DefaultController extends Controller
                       'actions' => ['index', 'view'],
                       'allow' => true,
                       'roles' => ['@'],
-                      'matchCallback' => function ($rule, $action) {
-                        return !Yii::$app->DisabledRoute->disabled($action);
-                      },
-
                   ],
               ],
           ],
-      ];
+      ]);
   }
 
     /**

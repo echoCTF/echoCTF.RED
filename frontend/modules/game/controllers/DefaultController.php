@@ -5,16 +5,17 @@ namespace app\modules\game\controllers;
 use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
+use yii\helpers\ArrayHelper;
 
 /**
  * Default controller for the `game` module
  */
-class DefaultController extends Controller
+class DefaultController extends \app\components\BaseController
 {
 
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
                 'only' => ['rate'],
@@ -24,13 +25,10 @@ class DefaultController extends Controller
                         'actions' => ['rate'],
                         'roles' => ['@'],
                         'verbs'=>['post'],
-                        'matchCallback' => function ($rule, $action) {
-                          return !Yii::$app->DisabledRoute->disabled($action);
-                        },
                     ],
                 ],
             ],
-        ];
+        ]);
     }
 
 

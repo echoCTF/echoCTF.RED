@@ -17,56 +17,45 @@ use app\models\forms\VerifyEmailForm;
 use app\models\forms\PasswordResetRequestForm;
 use app\models\forms\ResetPasswordForm;
 
-class SiteController extends Controller
+class SiteController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
+        return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
                 'only' => ['logout', 'register', 'verify-email', 'resend-verification-email'],
                 'rules' => [
+                    'eventActive'=>[
+                      'actions' => ['register', 'verify-email', 'resend-verification-email'],
+                    ],
                     [
                         'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['register'],
+                        'actions' => ['register','login'],
                         'allow' => false,
                         'roles' => ['@'],
-                        'denyCallback' => function() {
-                          return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
-                        }
+                    ],
+                    'teamsAccess'=>[
+                       'actions' => ['index'],
+                       'roles' => ['@'],
                     ],
                     [
-                       'actions' => ['index'],
-                       'allow' => false,
-                       'roles' => ['@'],
-                       'matchCallback' => function ($rule, $action) {
-                         if(Yii::$app->sys->team_required===false)
-                         {
-                            return false;
-                         }
-
-                         if(Yii::$app->user->identity->teamPlayer===NULL)
-                         {
-                           Yii::$app->session->setFlash('warning', 'You need to join a team before being able to access this area.');
-                           return true;
-                         }
-                         if(Yii::$app->user->identity->teamPlayer->approved!==1)
-                         {
-                           Yii::$app->session->setFlash('warning', 'You need to have your team membership approved before being able to access this area.');
-                           return true;
-                         }
-                         return false;
-                       },
-                       'denyCallback' => function() {
-                         return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
-                       }
+                        'actions' => ['register'],
+                        'allow' => false,
+                        'matchCallback' => function ($rule, $action) {
+                          return Yii::$app->sys->disable_registration===true;
+                        },
+                        'denyCallback' => function ($rule, $action) {
+                          Yii::$app->session->setFlash('info', 'Registrations are disabled on this competition');
+                          return  \Yii::$app->getResponse()->redirect(['/site/login']);
+                        },
                     ],
                     [
                         'actions' => ['register', 'verify-email', 'resend-verification-email'],
@@ -75,14 +64,19 @@ class SiteController extends Controller
                         'matchCallback' => function ($rule, $action) {
                           return Yii::$app->sys->registrations_start!==false && (time()<=Yii::$app->sys->registrations_start || time()>=Yii::$app->sys->registrations_end);
                         },
+                        'denyCallback' => function ($rule, $action) {
+                          if(time()<(int)Yii::$app->sys->registrations_start)
+                            Yii::$app->session->setFlash('info', 'Registrations havent started yet.');
+                          else
+                            Yii::$app->session->setFlash('info', 'Registrations are closed.');
+                          return  \Yii::$app->getResponse()->redirect(['/site/login']);
+
+                        },
                     ],
                     [
-                        'actions' => ['index','register','verify-email', 'resend-verification-email'],
-                        'allow' => true,
-                        'roles' => ['?'],
-                        'matchCallback' => function ($rule, $action) {
-                          return !Yii::$app->DisabledRoute->disabled($action);
-                        },
+                      'actions' => ['index','register','verify-email', 'resend-verification-email'],
+                      'allow' => true,
+                      'roles'=>['?']
                     ],
                 ],
             ],
@@ -92,7 +86,7 @@ class SiteController extends Controller
                     'logout' => ['post'],
                 ],
             ],
-        ];
+        ]);
     }
 
     /**

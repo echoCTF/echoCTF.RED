@@ -40,6 +40,15 @@ class DefaultController extends Controller
                        return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
                      }
                  ],
+                 'disabledRoute'=>[
+                     'allow' => false,
+                     'matchCallback' => function ($rule, $action) {
+                       return Yii::$app->DisabledRoute->disabled($action);
+                     },
+                     'denyCallback' => function() {
+                       throw new \yii\web\HttpException(404,'This area is disabled.');
+                     },
+                 ],
                  [
                    'actions' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite'],
                    'allow' => true,

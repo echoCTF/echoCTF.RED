@@ -4,30 +4,25 @@ namespace app\modules\game\controllers;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
-
-class LeaderboardsController extends \yii\web\Controller
+use yii\helpers\ArrayHelper;
+class LeaderboardsController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-          'access' => [
-            'class' => AccessControl::class,
-            'only' => ['index'],
-            'rules' => [
-                [
-                    'actions' => ['index'],
-                    'allow' => true,
-                    //'roles' => ['@'],
-                    'matchCallback' => function ($rule, $action) {
-                      return !Yii::$app->DisabledRoute->disabled($action);
-                    },
-                ],
-            ],
+      return ArrayHelper::merge(parent::behaviors(),[
+        'access' => [
+          'class' => AccessControl::class,
+          'rules' => [
+              [
+                  'allow' => true,
+                  'roles'=>['@']
+              ],
           ],
-        ];
+      ]]);
+
     }
 
     public function actionIndex()
