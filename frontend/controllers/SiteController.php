@@ -29,13 +29,16 @@ class SiteController extends \app\components\BaseController
                 'class' => AccessControl::class,
                 'only' => ['logout', 'register', 'verify-email', 'resend-verification-email'],
                 'rules' => [
+                    'eventActive'=>[
+                      'actions' => ['register', 'verify-email', 'resend-verification-email'],
+                    ],
                     [
                         'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['register'],
+                        'actions' => ['register','login'],
                         'allow' => false,
                         'roles' => ['@'],
                     ],
@@ -49,6 +52,10 @@ class SiteController extends \app\components\BaseController
                         'matchCallback' => function ($rule, $action) {
                           return Yii::$app->sys->disable_registration===true;
                         },
+                        'denyCallback' => function ($rule, $action) {
+                          Yii::$app->session->setFlash('info', 'Registrations are disabled on this competition');
+                          return  \Yii::$app->getResponse()->redirect(['/site/login']);
+                        },
                     ],
                     [
                         'actions' => ['register', 'verify-email', 'resend-verification-email'],
@@ -56,6 +63,14 @@ class SiteController extends \app\components\BaseController
                         'roles' => ['?'],
                         'matchCallback' => function ($rule, $action) {
                           return Yii::$app->sys->registrations_start!==false && (time()<=Yii::$app->sys->registrations_start || time()>=Yii::$app->sys->registrations_end);
+                        },
+                        'denyCallback' => function ($rule, $action) {
+                          if(time()<(int)Yii::$app->sys->registrations_start)
+                            Yii::$app->session->setFlash('info', 'Registrations havent started yet.');
+                          else
+                            Yii::$app->session->setFlash('info', 'Registrations are closed.');
+                          return  \Yii::$app->getResponse()->redirect(['/site/login']);
+
                         },
                     ],
                     [

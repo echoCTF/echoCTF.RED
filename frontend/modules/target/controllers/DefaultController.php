@@ -40,10 +40,10 @@ class DefaultController extends \app\components\BaseController
           return ArrayHelper::merge(parent::behaviors(),[
               'access' => [
                   'class' => AccessControl::class,
-                  'only' => ['index', 'claim', 'spin'],
+                  'only' => ['index', 'claim', 'spin','versus'],
                   'rules' => [
                        'eventStartEnd'=>[
-                          'actions' => ['index', 'claim', 'spin'],
+                          'actions' => ['index', 'claim', 'spin','versus'],
                       ],
                       'teamsAccess'=>[
                          'actions' => ['index', 'claim', 'spin'],

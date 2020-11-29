@@ -27,20 +27,27 @@ class ProfileController extends \app\components\BaseController
                 'class' => AccessControl::class,
                 'only' => ['me', 'index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
                 'rules' => [
+                   'eventActive'=>[
+                      'actions' => ['index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
+                   ],
                    'eventStartEnd'=>[
-                        'actions' => ['ovpn'],
-                    ],
-                    'teamsAccess'=>[
-                       'actions' => ['ovpn'],
-                    ],
-                    'disabledRoute'=>[
-                        'actions' => ['me', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
-                    ],
-                    [
-                        'actions' => ['index'],
-                        'allow' => true,
-                    ],
-
+                     'actions' => ['ovpn'],
+                   ],
+                   'teamsAccess'=>[
+                      'actions' => ['ovpn'],
+                   ],
+                   'disabledRoute'=>[
+                     'actions' => ['me', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
+                   ],
+                   [
+                     'actions' => ['index'],
+                     'allow' => true,
+                   ],
+                   [
+                     'actions' => ['me','settings'],
+                     'allow' => true,
+                     'roles'=>['@']
+                   ],
                 ],
             ],
             [
