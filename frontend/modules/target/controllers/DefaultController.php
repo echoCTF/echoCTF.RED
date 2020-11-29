@@ -46,10 +46,10 @@ class DefaultController extends \app\components\BaseController
                           'actions' => ['index', 'claim', 'spin','versus'],
                       ],
                       'teamsAccess'=>[
-                         'actions' => ['index', 'claim', 'spin'],
+                        'actions' => ['index', 'claim', 'spin','versus'],
                       ],
                       'disabledRoute'=>[
-                          'actions' => ['index','claim','spin'],
+                        'actions' => ['index', 'claim', 'spin','versus'],
                       ],
                       [
                           'allow' => true,
@@ -58,7 +58,7 @@ class DefaultController extends \app\components\BaseController
                           'verbs'=>['post'],
                       ],
                       [
-                          'actions'=>['index'],
+                          'actions'=>['index','versus'],
                           'allow' => true,
                           'roles'=>['@']
                       ],
