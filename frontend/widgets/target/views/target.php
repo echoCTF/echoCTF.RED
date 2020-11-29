@@ -16,7 +16,10 @@ echo GridView::widget([
     'id'=>$divID,
     'dataProvider' => $dataProvider,
     'emptyText'=>'<div class="card-body"><b class="text-info">No targets exist for the given criteria...</b></div>',
-    'rowOptions'=>function() { },
+    'rowOptions'=> function ($model, $key, $index, $grid) {
+          return;
+          return ['data-id' => $model->id,'class'=>'clickable-row','data-href'=>Url::to(['/target/default/index', 'id'=>$model->id])];
+    },
     'pager'=>[
       'class'=>'yii\bootstrap4\LinkPager',
       'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
@@ -69,7 +72,8 @@ echo GridView::widget([
         'visible'=>!in_array('ip', $hidden_attributes),
         'attribute'=>'ip',
         'label'=>'IP',
-        'headerOptions' => ["style"=>'width: 6vw;'],
+        'headerOptions' => ["style"=>'width: 6vw;', 'class'=>'d-none d-xl-table-cell'],
+        'contentOptions'=> ["style"=>'width: 6vw;', 'class'=>'d-none d-xl-table-cell'],
         'value'=>function($model) {return long2ip($model->ip);}
       ],
       [
@@ -77,9 +81,9 @@ echo GridView::widget([
         'attribute'=>'difficulty',
         'format'=>'raw',
         'encodeLabel'=>false,
-        'label'=>'<abbr title="Difficulty rating">Difficulty</abbr>',
-        'contentOptions' => ['class' => 'd-none d-xl-table-cell text-center'],
-        'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell'],
+        'label'=>'<abbr title="Difficulty rating"><i class="fa fa-battery-full" aria-hidden="true"></i></abbr>',
+        'contentOptions' => ['class' => 'd-none d-xl-table-cell text-center',],
+        'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell',"style"=>'width: 2em'],
         'value'=>function($model) {
 
           $bgcolor="";
@@ -115,7 +119,7 @@ echo GridView::widget([
       [
         'visible'=>!in_array('writeup', $hidden_attributes),
         'format'=>'raw',
-        'headerOptions' => ['class' => 'text-center', "style"=>'width: 2em'],
+        'headerOptions' => ['class' => 'text-center', "style"=>'width: 4rem'],
         'contentOptions' => ['class' => 'text-center'],
         'encodeLabel'=>false,
         'label'=>false,
@@ -157,7 +161,7 @@ echo GridView::widget([
         'format'=>'raw',
         'encodeLabel'=>false,
         'headerOptions' => ["style"=>'width: 4rem', 'class' => 'text-center'],
-        'contentOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center',],
         'attribute'=>'headshots',
         'label'=>'<abbr title="Number of users who owned all flags and services: Headshots"><i class="fas fa-skull"></i></abbr>',
         'value'=>function($model) {
@@ -183,8 +187,8 @@ echo GridView::widget([
       [
         'class'=> 'app\actions\ActionColumn',
         'visible'=>!in_array('ActionColumn', $hidden_attributes),
-        'headerOptions' => ["style"=>'width: 4rem'],
-        'template'=>'{view} {tweet}',
+        'headerOptions' => ["style"=>'width: 2rem'],
+        'template'=>'{tweet}',
         'buttons' => [
           'spin' => function($url, $model) {
               return Html::a(
