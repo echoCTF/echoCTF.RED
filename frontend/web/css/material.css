@@ -277,8 +277,8 @@ td.td-actions,
 .leader-wrap {
     display: flex;
     margin-top: 10px;
-    margin-left: 30px;
-    margin-right: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .leader{
@@ -296,7 +296,7 @@ td.td-actions,
 }
 
 .leader-name {
-    margin-left: 10px;
+    /*margin-left: 10px;*/
     /* line-height: 1;*/
     /*font-size: 1.1em;*/
 }
