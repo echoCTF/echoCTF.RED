@@ -57,7 +57,7 @@ class Noti extends Widget
     {
         $view = $this->getView();
         $js = "$.notify({$this->getOptions()},{$this->getClientOptions()});";
-        $view->registerJs($js, $view::POS_END);
+        $view->registerJs($js, $view::POS_READY);
     }
     /**
      * Get options in the json format
@@ -111,6 +111,8 @@ class Noti extends Widget
         $this->options['message'] = $message;
         $this->options['icon'] = $this->iconTypes[$type];
         $this->clientOptions['type'] = $this->alertTypes[$type];
+        $this->clientOptions['offset']['y'] = "40";
+        $this->clientOptions['offset']['x'] = "20";
         $this->renderMessage();
       }
     }
