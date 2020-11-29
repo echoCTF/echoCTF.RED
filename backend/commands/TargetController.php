@@ -36,6 +36,7 @@ class TargetController extends Controller {
       $requirePF=false;
       switch($target->status)
       {
+        case 'offline':
         case 'powerdown':
           printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
           $requirePF=$target->powerdown();
