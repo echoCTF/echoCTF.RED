@@ -368,19 +368,6 @@ class Player extends ActiveRecord implements IdentityInterface
       return !(array_search(intval($this->id), $admin_ids) === FALSE);// error is here
     }
 
-//    public function getProgress()
-//    {
-//  		$targets=\app\modules\target\models\Target::find()->player_progress($this->id);
-//  		$targets->getDbCriteria()->mergeWith(array('having'=>'player_findings>0 or player_treasures>0'));
-//  		return $targets;
-//    }
-
-/* XXXREMOVEXXX
-   public static function createQuery()
-    {
-      return new TargetQuery(['modelClass' => get_called_class()]);
-    }
-*/
     public function getNotifications()
     {
         return $this->hasMany(Notification::class, ['player_id' => 'id']);
