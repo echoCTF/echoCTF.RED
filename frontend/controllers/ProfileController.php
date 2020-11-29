@@ -220,6 +220,7 @@ class ProfileController extends \app\components\BaseController
       $profileForm=$profile;
       $profileForm->scenario='me';
       $accountForm=$profile->owner;
+      $accountForm->scenario='settings';
       if($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
       {
         $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
