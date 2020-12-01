@@ -56,6 +56,9 @@ class VerifyEmailForm extends Model
     }
     private function genAvatar()
     {
+      $dst_img=\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png');
+      if(file_exists($dst_img))
+        return;
       $robohash=new \app\models\Robohash($this->_player->profile->id,'set1');
       $image=$robohash->generate_image();
       if(get_resource_type($image)=== 'gd')
