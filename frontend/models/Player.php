@@ -475,7 +475,7 @@ class Player extends ActiveRecord implements IdentityInterface
     {
       if($event->changedAttributes !== [] && (array_key_exists('active', $event->changedAttributes) === true || array_key_exists('status', $event->changedAttributes) === true))
       {
-        if($event->sender->status === self::STATUS_ACTIVE || $event->sender->active === 1)
+        if($event->sender->status === self::STATUS_ACTIVE && $event->sender->active === 1 && $event->getOldAttribute('status')!==9)
         {
           self::dostream($event);
         }
@@ -491,8 +491,8 @@ class Player extends ActiveRecord implements IdentityInterface
     }
     public static function dostream($event)
     {
-      Yii::$app->db->createCommand("INSERT INTO player_rank (id,player_id) SELECT max(id)+1,:player_id FROM player_rank")->bindValue(':player_id', $event->sender->id)->execute();
-      Yii::$app->db->createCommand("INSERT INTO player_hint (hint_id,player_id,status) VALUES (-1,:player_id,1)")->bindValue(':player_id', $event->sender->id)->execute();
+      Yii::$app->db->createCommand("INSERT IGNORE INTO player_rank (id,player_id) SELECT max(id)+1,:player_id FROM player_rank")->bindValue(':player_id', $event->sender->id)->execute();
+      Yii::$app->db->createCommand("INSERT IGNORE INTO player_hint (hint_id,player_id,status) VALUES (-1,:player_id,1)")->bindValue(':player_id', $event->sender->id)->execute();
       $n=new Notification;
       $n->player_id=$event->sender->id;
       $n->archived=0;
