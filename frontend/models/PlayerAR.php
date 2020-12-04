@@ -16,6 +16,7 @@ class PlayerAR extends ActiveRecord
 {
 
   const STATUS_DELETED=0;
+  const STATUS_UNVERIFIED=8;
   const STATUS_INACTIVE=9;
   const STATUS_ACTIVE=10;
   /**
@@ -64,7 +65,7 @@ class PlayerAR extends ActiveRecord
           /* status field rules */
           [['status'], 'filter', 'filter' => 'intval'],
           [['status'], 'default', 'value' => self::STATUS_INACTIVE],
-          [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+          [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_UNVERIFIED, self::STATUS_INACTIVE, self::STATUS_DELETED]],
           /* password field rules */
 
 //            [['password',], 'default','value'=>null],
