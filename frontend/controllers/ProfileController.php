@@ -44,7 +44,7 @@ class ProfileController extends \app\components\BaseController
                      'allow' => true,
                    ],
                    [
-                     'actions' => ['me','settings'],
+                     'actions' => ['me','settings','notifications','hints'],
                      'allow' => true,
                      'roles'=>['@']
                    ],
@@ -213,53 +213,26 @@ class ProfileController extends \app\components\BaseController
 
     public function actionSettings()
     {
-      $errors=[];
-      $success=[];
-
+      $settingsForm=new \app\models\forms\SettingsForm();
       $profile=Yii::$app->user->identity->profile;
-      $profileForm=$profile;
-      $profileForm->scenario='me';
-      $accountForm=$profile->owner;
-      $accountForm->scenario='settings';
-      if($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
+
+      if($settingsForm->load(Yii::$app->request->post()) && $settingsForm->validate())
       {
-        $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
-        if($this->HandleUpload($profileForm->uploadedAvatar))
+        $settingsForm->uploadedAvatar = UploadedFile::getInstance($settingsForm, 'uploadedAvatar');
+        if($this->HandleUpload($settingsForm->uploadedAvatar))
         {
           $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s.png',$profile->id));
-          $profileForm->avatar=sprintf("%s.png",$profile->id);
-          $profileForm->uploadedAvatar->saveAs($fname);
-          $profileForm->uploadedAvatar=null;
-          $profileForm->approved_avatar=Yii::$app->sys->approved_avatar;
+          $settingsForm->avatar=sprintf("%s.png",$profile->id);
+          $settingsForm->uploadedAvatar->saveAs($fname);
+          $settingsForm->uploadedAvatar=null;
         }
-        $profileForm->save();
-        $success[]="Profile updated";
+        $settingsForm->save();
+        $settingsForm->reset();
       }
 
-      if($accountForm->load(Yii::$app->request->post()) && $accountForm->validate())
-      {
-        if($accountForm->new_password != "")
-        {
-          $accountForm->setPassword($accountForm->new_password);
-        }
-        if($accountForm->save())
-          $success[]="Account updated";
-        else
-        {
-          $errors[]="Failed to save updated account details.";
-        }
-      }
-
-      if(!empty($errors))
-        Yii::$app->session->setFlash('error', $errors);
-      if(!empty($success))
-        Yii::$app->session->setFlash('success', $success);
-
-      $accountForm->new_password=$accountForm->confirm_password=null;
       return $this->render('settings', [
         'profile'=>$profile,
-        'accountForm'=>$accountForm,
-        'profileForm'=>$profileForm
+        'settingsForm'=>$settingsForm,
       ]);
     }
     /**
