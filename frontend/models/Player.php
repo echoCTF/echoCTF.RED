@@ -125,7 +125,7 @@ class Player extends PlayerAR implements IdentityInterface
     public static function findByVerificationToken($token) {
         return static::findOne([
             'verification_token' => $token,
-            'status' => self::STATUS_INACTIVE
+            'status' => [self::STATUS_INACTIVE, self::STATUS_UNVERIFIED]
         ]);
     }
 
