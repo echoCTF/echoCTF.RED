@@ -165,7 +165,7 @@ class SettingsForm extends Model
             )
             ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
             ->setTo([$this->player->email => $this->player->fullname])
-            ->setSubject('Account registration at '.trim(Yii::$app->sys->event_name))
+            ->setSubject('Verify your email for '.trim(Yii::$app->sys->event_name))
             ->send();
     }
 
