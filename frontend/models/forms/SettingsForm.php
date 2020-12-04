@@ -177,7 +177,7 @@ class SettingsForm extends Model
       {
         $this->_player->email=$this->email;
         $this->_player->generateEmailVerificationToken();
-        $this->_player->status=9;
+        $this->_player->status=Player::STATUS_UNVERIFIED;
         $this->sendEmail();
         \Yii::$app->session->addFlash('info','You will receive an email to verify your new email address.');
       }
