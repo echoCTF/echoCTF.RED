@@ -31,27 +31,20 @@ use app\modules\game\models\Headshot;
  * @property PlayerScore $playerScore
  * @property PlayerSsl $playerSsl
  */
-class Player extends ActiveRecord implements IdentityInterface
+class Player extends PlayerAR implements IdentityInterface
 {
+    const NEW_PLAYER='new-player';
     const SCENARIO_SETTINGS='settings';
-    const STATUS_DELETED=0;
-    const STATUS_INACTIVE=9;
-    const STATUS_ACTIVE=10;
     public $new_password;
     public $confirm_password;
 
     public function init()
     {
         parent::init();
-        $this->on(self::EVENT_AFTER_UPDATE, [$this, 'updateStream']);
-        $this->on(self::EVENT_AFTER_INSERT, [$this, 'insertStream']);
-    }
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'player';
+        $this->on(self::NEW_PLAYER, ['\app\components\PlayerEvents', 'addToRank']);
+        $this->on(self::NEW_PLAYER, ['\app\components\PlayerEvents', 'giveInitialHint']);
+        $this->on(self::NEW_PLAYER, ['\app\components\PlayerEvents', 'sendInitialNotification']);
+        $this->on(self::NEW_PLAYER, ['\app\components\PlayerEvents', 'addStream']);
     }
 
     public function behaviors()
@@ -82,64 +75,6 @@ class Player extends ActiveRecord implements IdentityInterface
         return [
             'default' => ['id','username', 'email', 'password','fullname','active','status','new_password','confirm_password','created','ts'],
             self::SCENARIO_SETTINGS => ['username', 'email', 'fullname','new_password','confirm_password'],
-        ];
-    }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            /* fullname rules */
-            [['fullname'], 'trim'],
-            [['fullname'], 'string', 'max'=>32],
-
-            /* email field rules */
-            [['email'], 'trim'],
-            [['email'], 'string', 'max'=>255],
-            [['email'], 'email'],
-            ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email has already been taken.', 'when' => function($model, $attribute) {
-                return $model->{$attribute} !== $model->getOldAttribute($attribute);
-            }],
-            ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => 'This email is banned.', 'when' => function($model, $attribute) {
-                return $model->{$attribute} !== $model->getOldAttribute($attribute);
-            }],
-            ['email', function($attribute, $params){
-              $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
-                  ->bindValue(':email', $this->email)
-                  ->queryScalar();
-
-              if(intval($count)!==0)
-                  $this->addError($attribute, 'This email is banned.');
-            }],
-
-            /* username field rules */
-            [['username'], 'trim'],
-            [['username'], 'string', 'max'=>32],
-            [['username'], 'match', 'not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>'Invalid characters in username.'],
-            [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'administrator', 'echoctf', 'root', 'support']],
-            [['username'], 'required', 'message' => 'Please choose a username.'],
-            ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This username has already been taken.', 'when' => function($model, $attribute) {
-                return $model->{$attribute} !== $model->getOldAttribute($attribute);
-            }],
-
-            /* active field rules */
-            [['active'], 'filter', 'filter' => 'boolval'],
-            [['active'], 'default', 'value' => false],
-
-            /* status field rules */
-            [['status'], 'filter', 'filter' => 'intval'],
-            [['status'], 'default', 'value' => self::STATUS_INACTIVE],
-            [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
-            /* password field rules */
-
-//            [['password',], 'default','value'=>null],
-            [['new_password', ], 'string', 'max'=>255],
-            [['confirm_password'], 'string', 'max'=>255],
-            [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
-            [['created', 'ts'], 'safe'],
         ];
     }
 
@@ -284,86 +219,16 @@ class Player extends ActiveRecord implements IdentityInterface
       }
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getProfile()
-    {
-        return $this->hasOne(Profile::class, ['player_id' => 'id']);
-    }
-    public function getPlayerScore()
-    {
-        return $this->hasOne(PlayerScore::class, ['player_id' => 'id']);
-    }
-    public function getSSL()
-    {
-      return $this->hasOne(PlayerSsl::class, ['player_id' => 'id']);
-    }
     public function getSpins()
     {
       $command=Yii::$app->db->createCommand('select counter from player_spin WHERE player_id=:player_id');
       return (int) $command->bindValue(':player_id', $this->id)->queryScalar();
-    }
-    public function getPlayerTreasures()
-    {
-        return $this->hasMany(PlayerTreasure::class, ['player_id' => 'id']);
-    }
-    public function getHeadshots()
-    {
-        return $this->hasMany(Headshot::class, ['player_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
-    }
-
-    public function getNetworkPlayer()
-    {
-        return $this->hasMany(\app\modules\network\models\NetworkPlayer::class, ['player_id' => 'id']);
-    }
-    public function getNetworks()
-    {
-      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkPlayer');
     }
 
 
     public function getHeadshotsCount()
     {
         return $this->hasMany(Headshot::class, ['player_id' => 'id'])->count();
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTreasures(int $target_id=null)
-    {
-      if($target_id===null)
-        return $this->hasMany(\app\modules\target\models\Treasure::class, ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
-
-      return $this->hasMany(\app\modules\target\models\Treasure::class, ['id' => 'treasure_id'])->onCondition(['target_id' => $target_id])->viaTable('player_treasure', ['player_id' => 'id']);
-    }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPlayerFindings()
-    {
-        return $this->hasMany(PlayerFinding::class, ['player_id' => 'id']);
-    }
-
-    public function getChallengeSolvers()
-    {
-        return $this->hasMany(\app\modules\challenge\models\ChallengeSolver::class, ['player_id' => 'id']);
-    }
-
-    public function getChallenges()
-    {
-      return $this->hasMany(\app\modules\challenge\models\Challenge::class, ['id' => 'challenge_id'])->viaTable('challenge_solver', ['player_id' => 'id']);
-    }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFindings(int $target_id=null)
-    {
-      if($target_id===null)
-        return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
-
-      return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->onCondition(['target_id' => $target_id])->viaTable('player_finding', ['player_id' => 'id']);
     }
 
 
@@ -377,37 +242,6 @@ class Player extends ActiveRecord implements IdentityInterface
     {
       $admin_ids=[1];
       return !(array_search(intval($this->id), $admin_ids) === FALSE);// error is here
-    }
-
-    public function getNotifications()
-    {
-        return $this->hasMany(Notification::class, ['player_id' => 'id']);
-    }
-    public function getPendingNotifications()
-    {
-        return $this->hasMany(Notification::class, ['player_id' => 'id'])->pending();
-    }
-
-    public function getPlayerHints()
-    {
-        return $this->hasMany(PlayerHint::class, ['player_id' => 'id']);
-    }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHints()
-    {
-        return $this->hasMany(Hint::class, ['id' => 'player_id'])->viaTable('player_hint', ['hint_id' => 'id']);
-    }
-
-    public function getPlayerHintsForTarget(int $target_id)
-    {
-        return $this->hasMany(PlayerHint::class, ['player_id' => 'id'])->forTarget($target_id);
-    }
-
-    public function getPendingHints()
-    {
-        return $this->hasMany(PlayerHint::class, ['player_id' => 'id'])->pending();
     }
 
     public static function find()
@@ -448,62 +282,5 @@ class Player extends ActiveRecord implements IdentityInterface
             'password_reset_token' => $token,
             'status' => self::STATUS_ACTIVE,
         ]);
-    }
-
-    public function getTeamLeader()
-    {
-      if(array_key_exists('team',Yii::$app->modules))
-        return $this->hasOne(\app\modules\team\models\Team::class, ['owner_id' => 'id']);
-      return null;
-    }
-    public function getTeamPlayer()
-    {
-      if(array_key_exists('team',Yii::$app->modules))
-        return $this->hasOne(\app\modules\team\models\TeamPlayer::class, ['player_id' => 'id']);
-      return null;
-    }
-
-    public function getTeam()
-    {
-      if(array_key_exists('team',Yii::$app->modules))
-        return $this->hasOne(\app\modules\team\models\Team::class, ['id' => 'team_id'])->viaTable('team_player', ['player_id'=>'id']);
-      return null;
-    }
-
-
-    public static function updateStream($event)
-    {
-      if($event->changedAttributes !== [] && (array_key_exists('active', $event->changedAttributes) === true || array_key_exists('status', $event->changedAttributes) === true))
-      {
-        if($event->sender->status === self::STATUS_ACTIVE && $event->sender->active === 1 && $event->getOldAttribute('status')!==9)
-        {
-          self::dostream($event);
-        }
-      }
-    }
-
-    public static function insertStream($event)
-    {
-        if($event->sender->status === self::STATUS_ACTIVE && $event->sender->active === 1)
-        {
-          self::dostream($event);
-        }
-    }
-    public static function dostream($event)
-    {
-      Yii::$app->db->createCommand("INSERT IGNORE INTO player_rank (id,player_id) SELECT max(id)+1,:player_id FROM player_rank")->bindValue(':player_id', $event->sender->id)->execute();
-      Yii::$app->db->createCommand("INSERT IGNORE INTO player_hint (hint_id,player_id,status) VALUES (-1,:player_id,1)")->bindValue(':player_id', $event->sender->id)->execute();
-      $n=new Notification;
-      $n->player_id=$event->sender->id;
-      $n->archived=0;
-      $n->body=$n->title='Hi there, dont forget to read the Instructions';
-      $n->save();
-      $s=new Stream;
-      $s->player_id=$event->sender->id;
-      $s->points=0;
-      $s->message=$s->pubmessage=$s->pubtitle=$s->title='Joined the platform';
-      $s->model='user';
-      $s->model_id=$event->sender->id;
-      $s->save();
     }
 }
