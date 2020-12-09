@@ -160,7 +160,7 @@ class SettingsForm extends Model
       return Yii::$app
             ->mailer
             ->compose(
-                ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
+                ['html' => 'emailChangeVerify-html', 'text' => 'emailChangeVerify-text'],
                 ['user' => $this->player]
             )
             ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
