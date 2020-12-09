@@ -1,5 +1,6 @@
 <?php
 return [
+  'admin_ids' => [1],
   'adminEmail' => 'info@echothrust.com',
   'senderEmail' => 'noreply@echothrust.com',
   'senderName' => 'Echothrust mailer',
