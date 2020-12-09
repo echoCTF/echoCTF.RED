@@ -234,13 +234,7 @@ class Player extends PlayerAR implements IdentityInterface
 
     public function getIsAdmin():bool
     {
-      $admin_ids=[1, 24];
-      return !(array_search(intval($this->id), $admin_ids) === false);// error is here
-    }
-
-    public function isAdmin():bool
-    {
-      $admin_ids=[1];
+      $admin_ids=\Yii::$app->params['admin_ids'];
       return !(array_search(intval($this->id), $admin_ids) === false);// error is here
     }
 
