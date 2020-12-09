@@ -41,7 +41,7 @@ echo GridView::widget([
         'headerOptions' => ['class' => 'text-center', "style"=>'width: 1.5em'],
         'format'=>'raw',
         'value'=>function($model) {
-        return sprintf('<img src="%s" alt="%s" class="rounded-circle" style="height: 20px; max-height: 20px; max-width: 20px">', $model->thumbnail, $model->fqdn);
+        return sprintf('<img src="%s" alt="%s" class="rounded" style="height: 25px; max-height: 25px; max-width: 25px">', $model->thumbnail, $model->fqdn);
         }
       ],
       [
