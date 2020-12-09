@@ -25,10 +25,10 @@ class ProfileController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['me', 'index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
+                'only' => ['badge','me', 'index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
                 'rules' => [
                    'eventActive'=>[
-                      'actions' => ['index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
+                      'actions' => ['badge','index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
                    ],
                    'eventStartEnd'=>[
                      'actions' => ['ovpn'],
@@ -37,14 +37,14 @@ class ProfileController extends \app\components\BaseController
                       'actions' => ['ovpn'],
                    ],
                    'disabledRoute'=>[
-                     'actions' => ['me', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
+                     'actions' => ['badge', 'me', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
                    ],
                    [
-                     'actions' => ['index'],
+                     'actions' => ['index','badge'],
                      'allow' => true,
                    ],
                    [
-                     'actions' => ['me','settings'],
+                     'actions' => ['ovpn','me','settings','notifications','hints'],
                      'allow' => true,
                      'roles'=>['@']
                    ],
@@ -78,31 +78,6 @@ class ProfileController extends \app\components\BaseController
           'me'=>true,
       ]);
     }
-/*
-    robohash action will be needed in the future
-    public function actionRobohash()
-    {
-      $robohash=new \app\models\Robohash(Yii::$app->user->identity->username);
-      $image=$robohash->generate_image();
-      if(get_resource_type($image)=== 'gd')
-      {
-        Yii::$app->getResponse()->getHeaders()
-            ->set('Pragma', 'public')
-            ->set('Expires', '0')
-            ->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
-            ->set('Content-Transfer-Encoding', 'binary')
-            ->set('Content-type', 'image/png');
-
-        Yii::$app->response->format = Response::FORMAT_RAW;
-        ob_start();
-        imagepng($image);
-        imagedestroy($image);
-        return ob_get_clean();
-      }
-      // If we reach this point then something went wrong...
-      throw new \yii\web\HttpException(500, 'Something went wrong in robohash generation.');
-    }
-  */
 
     /**
     * Generate and display profile badge with dynamic details
@@ -213,53 +188,26 @@ class ProfileController extends \app\components\BaseController
 
     public function actionSettings()
     {
-      $errors=[];
-      $success=[];
-
+      $settingsForm=new \app\models\forms\SettingsForm();
       $profile=Yii::$app->user->identity->profile;
-      $profileForm=$profile;
-      $profileForm->scenario='me';
-      $accountForm=$profile->owner;
-      $accountForm->scenario='settings';
-      if($profileForm->load(Yii::$app->request->post()) && $profileForm->validate())
+
+      if($settingsForm->load(Yii::$app->request->post()) && $settingsForm->validate())
       {
-        $profileForm->uploadedAvatar = UploadedFile::getInstance($profileForm, 'uploadedAvatar');
-        if($this->HandleUpload($profileForm->uploadedAvatar))
+        $settingsForm->uploadedAvatar = UploadedFile::getInstance($settingsForm, 'uploadedAvatar');
+        if($this->HandleUpload($settingsForm->uploadedAvatar))
         {
           $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s.png',$profile->id));
-          $profileForm->avatar=sprintf("%s.png",$profile->id);
-          $profileForm->uploadedAvatar->saveAs($fname);
-          $profileForm->uploadedAvatar=null;
-          $profileForm->approved_avatar=Yii::$app->sys->approved_avatar;
+          $settingsForm->avatar=sprintf("%s.png",$profile->id);
+          $settingsForm->uploadedAvatar->saveAs($fname);
+          $settingsForm->uploadedAvatar=null;
         }
-        $profileForm->save();
-        $success[]="Profile updated";
+        $settingsForm->save();
+        $settingsForm->reset();
       }
 
-      if($accountForm->load(Yii::$app->request->post()) && $accountForm->validate())
-      {
-        if($accountForm->new_password != "")
-        {
-          $accountForm->setPassword($accountForm->new_password);
-        }
-        if($accountForm->save())
-          $success[]="Account updated";
-        else
-        {
-          $errors[]="Failed to save updated account details.";
-        }
-      }
-
-      if(!empty($errors))
-        Yii::$app->session->setFlash('error', $errors);
-      if(!empty($success))
-        Yii::$app->session->setFlash('success', $success);
-
-      $accountForm->new_password=$accountForm->confirm_password=null;
       return $this->render('settings', [
         'profile'=>$profile,
-        'accountForm'=>$accountForm,
-        'profileForm'=>$profileForm
+        'settingsForm'=>$settingsForm,
       ]);
     }
     /**

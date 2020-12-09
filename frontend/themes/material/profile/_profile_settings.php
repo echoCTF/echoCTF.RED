@@ -5,7 +5,6 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yii\widgets\ActiveForm;
 use app\models\Country;
 use app\models\Avatar;
 
@@ -13,11 +12,6 @@ $this->_fluid="-fluid";
 ?>
 
 <div class="profile-form">
-    <?php $form=ActiveForm::begin([
-      'id'=>'profile-form',
-
-      'options' => ['enctype' => 'multipart/form-data']
-      ]);?>
     <div class="row">
       <div class="col-lg-6">
         <?=$form->field($model, 'visibility')->dropDownList($model->visibilities, ['prompt'=>'Select your profile visibility', 'class'=>'form-control selectpicker', 'data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select the desired visibility setting for your profile')?>
@@ -30,7 +24,7 @@ $this->_fluid="-fluid";
       <div class="col-md-12">
         <div class="fileinput fileinput-new text-center" data-provides="fileinput">
           <div class="fileinput-new thumbnail img-circle img-raised">
-         	  <img src="/images/avatars/<?=$model->avatar?>" rel="nofollow" class="rounded img-thumbnail" alt="Avatar of <?=Html::encode($model->owner->username)?>">
+         	  <img src="/images/avatars/<?=$model->avatar?>" rel="nofollow" class="rounded img-thumbnail" alt="Avatar of <?=Html::encode($model->username)?>">
           </div>
           <div class="fileinput-preview fileinput-exists thumbnail img-circle img-raised"></div>
           <div>
@@ -70,16 +64,8 @@ $this->_fluid="-fluid";
     		<?=$form->field($model, 'htb')->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text',['placeholder'=>'1234'])->hint('Your HTB profile ID') ?>
       </div>
     </div>
-    <div class="row">
-      <div class="col-lg-4">
-        <?=$form->field($model, 'mail_optin')->checkbox(['label'=>$model->attributeLabels()['mail_optin']])->hint('')->label(false) ?>
-      </div>
-    </div>
     <div class="form-group">
         <?=Html::submitButton(Yii::t('app', 'Update Profile'), ['class' => 'btn btn-info pull-right']) ?>
     </div>
-
-    <?php ActiveForm::end();?>
-
     <div class="clearfix"></div>
 </div>

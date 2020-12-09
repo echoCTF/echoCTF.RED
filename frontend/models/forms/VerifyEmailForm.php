@@ -49,13 +49,22 @@ class VerifyEmailForm extends Model
     public function verifyEmail()
     {
         $player=$this->_player;
+        $oldStatus=$this->_player->status;
         $player->status=Player::STATUS_ACTIVE;
         $player->active=1;
         $this->genAvatar();
-        return $player->save(false) ? $player : null;
+        if($player->save())
+        {
+          if($oldStatus===Player::STATUS_INACTIVE) $player->trigger(Player::NEW_PLAYER);
+          return $this->_player;
+        }
+        return null;
     }
     private function genAvatar()
     {
+      $dst_img=\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png');
+      if(file_exists($dst_img))
+        return;
       $robohash=new \app\models\Robohash($this->_player->profile->id,'set1');
       $image=$robohash->generate_image();
       if(get_resource_type($image)=== 'gd')
