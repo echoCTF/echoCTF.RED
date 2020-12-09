@@ -89,7 +89,7 @@ class Player extends PlayerAR implements IdentityInterface
     /**
      * {@inheritdoc}
      */
-    public static function findIdentityByAccessToken($token, $type=null)
+    public static function findIdentityByAccessToken($token, $type = null)
     {
         throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
     }
@@ -235,13 +235,13 @@ class Player extends PlayerAR implements IdentityInterface
     public function getIsAdmin():bool
     {
       $admin_ids=[1, 24];
-      return !(array_search(intval($this->id), $admin_ids) === FALSE);// error is here
+      return !(array_search(intval($this->id), $admin_ids) === false);// error is here
     }
 
     public function isAdmin():bool
     {
       $admin_ids=[1];
-      return !(array_search(intval($this->id), $admin_ids) === FALSE);// error is here
+      return !(array_search(intval($this->id), $admin_ids) === false);// error is here
     }
 
     public static function find()
@@ -255,7 +255,7 @@ class Player extends PlayerAR implements IdentityInterface
      * @param string $token password reset token
      * @return bool
      */
-    public static function isPasswordResetTokenValid($token, $expire=86400): bool
+    public static function isPasswordResetTokenValid($token, $expire = 86400): bool
     {
         if(empty($token))
         {
