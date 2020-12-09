@@ -2,7 +2,7 @@
     <div class="border"></div>
     <div class="leader-wrap">
       <div class="leader-place"><?=$model->ordinalPlace;?>.</div>
-      <div class="leader-ava d-none d-xl-block"><img src="<?=$model->avatar?>" class="rounded bg-dark" width="30px"/></div>
+      <div class="leader-ava d-none d-xl-block"><img src="<?=$model->avatar?>" class="rounded" width="25px"/></div>
       <div class="leader-name"><?=$model->player->profile->link?></div>
       <div class="leader-score_title"><?=number_format($model->score->points);?></div>
     </div>

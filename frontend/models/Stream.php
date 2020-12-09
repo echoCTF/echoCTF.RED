@@ -124,7 +124,7 @@ class Stream extends \yii\db\ActiveRecord
 
   public function getPrefix()
   {
-    return sprintf("<img src='/images/avatars/%s' class='rounded bg-dark' width='25px'> <b>%s</b> %s", $this->player->profile->avtr,$this->player->profile->link,$this->icon);
+    return sprintf("<img src='/images/avatars/%s' class='rounded' width='25px'> <b>%s</b> %s", $this->player->profile->avtr,$this->player->profile->link,$this->icon);
   }
 
   public function Title(bool $pub=true)
