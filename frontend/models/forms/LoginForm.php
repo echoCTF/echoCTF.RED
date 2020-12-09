@@ -78,7 +78,7 @@ class LoginForm extends Model
     public function getPlayer()
     {
       $this->_player=Player::findByUsername($this->username);
-      if($this->_player === NULL)
+      if($this->_player === null)
       {
         $this->_player=Player::findByEmail($this->username);
       }

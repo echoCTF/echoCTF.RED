@@ -34,19 +34,19 @@ class StreamWidget extends Widget
       {
         unset($this->pagerOptions['id']);
       }
-      if($this->dataProvider === NULL && $this->player_id === NULL)
+      if($this->dataProvider === null && $this->player_id === null)
       {
         $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago');
 
       }
-      else if($this->player_id !== NULL)
+      else if($this->player_id !== null)
       {
         $model=\app\models\Stream::find()
           ->select('stream.*,TS_AGO(ts) as ts_ago')
           ->where(['player_id'=>$this->player_id]);
 
       }
-      if(isset($model) && $this->dataProvider === NULL)
+      if(isset($model) && $this->dataProvider === null)
         $this->dataProvider=new ActiveDataProvider([
             'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
             'pagination' => [

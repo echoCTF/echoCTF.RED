@@ -139,7 +139,7 @@ class Finding extends \yii\db\ActiveRecord
         return $this->hasMany(\app\models\Player::class, ['id' => 'player_id'])->viaTable('player_finding', ['finding_id' => 'id']);
     }
 
-    public function save($runValidation=true, $attributeNames=NULL)
+    public function save($runValidation=true, $attributeNames=null)
     {
         throw new \LogicException("Saving is disabled for this model.");
     }

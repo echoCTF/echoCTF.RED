@@ -35,7 +35,7 @@ $this->_fluid="-fluid";
             </a>
           </div>
           <div class="card-body table-responsive">
-            <h6 class="badge badge-secondary"><?=$team->score !== NULL ? number_format($team->score->points) : 0?> points</h6>
+            <h6 class="badge badge-secondary"><?=$team->score !== null ? number_format($team->score->points) : 0?> points</h6>
             <h4 class="card-title"><?=Html::encode($team->name)?></h4>
             <p class="card-description">
               <?=Html::encode($team->description)?>

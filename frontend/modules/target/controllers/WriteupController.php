@@ -69,7 +69,7 @@ class WriteupController extends \app\components\BaseController
     public function actionSubmit(int $id)
     {
       $headshot=Headshot::findOne(['target_id'=>$id,'player_id'=>Yii::$app->user->id]);
-      if($headshot===NULL)
+      if($headshot===null)
       {
         throw new NotFoundHttpException('You dont have a headshot for the given target.');
       }

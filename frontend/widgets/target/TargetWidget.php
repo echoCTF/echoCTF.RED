@@ -36,11 +36,11 @@ class TargetWidget extends Widget
     public $hidden_attributes=[];
     public function init()
     {
-      if($this->dataProvider === NULL && $this->player_id === NULL)
+      if($this->dataProvider === null && $this->player_id === null)
       {
         return false;
       }
-      else if($this->dataProvider === NULL)
+      else if($this->dataProvider === null)
       {
         $this->dataProvider=$this->initTargetProvider($this->player_id);
       }

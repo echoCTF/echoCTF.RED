@@ -705,7 +705,7 @@ class User extends Component
             if ($this->getIsGuest()) {
                 $this->loginByCookie();
             } elseif ($this->autoRenewCookie) {
-                $authKey = json_decode(Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']),TRUE)[1];
+                $authKey = json_decode(Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']),true)[1];
                 if($identity->validateAuthKey($authKey)) {
                     $this->renewIdentityCookie();
                     Yii::info("User $id succeeded authKey validation");

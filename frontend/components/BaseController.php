@@ -76,7 +76,7 @@ class BaseController extends \yii\web\Controller
          return false;
       }
 
-      if(\Yii::$app->user->identity->teamPlayer===NULL)
+      if(\Yii::$app->user->identity->teamPlayer===null)
       {
         \Yii::$app->session->setFlash('warning', 'You need to join a team before being able to access this area.');
         return true;

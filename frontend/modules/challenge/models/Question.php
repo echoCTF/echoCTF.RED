@@ -109,7 +109,7 @@ class Question extends \yii\db\ActiveRecord
         return $this->hasOne(Challenge::class, ['id' => 'challenge_id']);
     }
 
-    public function save($runValidation=true, $attributeNames=NULL)
+    public function save($runValidation=true, $attributeNames=null)
     {
         throw new \LogicException("Saving is disabled for this model.");
     }

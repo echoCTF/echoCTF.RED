@@ -8,7 +8,7 @@ use yii\helpers\HtmlPurifier;
     </div>
 
     <div class="card-body">
-      <h6 class="badge badge-secondary"><?=$model->score !== NULL ? number_format($model->score->points) : 0?> points</h6>
+      <h6 class="badge badge-secondary"><?=$model->score !== null ? number_format($model->score->points) : 0?> points</h6>
       <h4 class="card-title"><?=Html::encode($model->name)?></h4>
 
       <p class="card-description">

@@ -33,10 +33,10 @@ $this->_fluid="-fluid";
               <img class="img" src="/images/avatars/team/<?=$team->validLogo?>" />
           </div>
           <div class="card-body table-responsive">
-            <?php if(Yii::$app->user->identity->teamLeader!==NULL):?><h4 class="badge"><?=Html::a('Update',['/team/default/update'])?></h4><?php endif;?>
+            <?php if(Yii::$app->user->identity->teamLeader!==null):?><h4 class="badge"><?=Html::a('Update',['/team/default/update'])?></h4><?php endif;?>
             <h4 class="card-title"><?=Html::encode($team->name)?></h4>
-            <h6 class="badge badge-primary"><?=$team->rank !== NULL ? $team->rank->ordinalPlace : 'empty'?> place</h6>
-            <h6 class="badge badge-secondary"><?=$team->score !== NULL ? number_format($team->score->points) : 0?> points</h6>
+            <h6 class="badge badge-primary"><?=$team->rank !== null ? $team->rank->ordinalPlace : 'empty'?> place</h6>
+            <h6 class="badge badge-secondary"><?=$team->score !== null ? number_format($team->score->points) : 0?> points</h6>
             <p class="card-description">
               <?=Html::encode($team->description)?>
             </p>

@@ -118,7 +118,7 @@ class Headshot extends \yii\db\ActiveRecord
         return new HeadshotQuery(get_called_class());
     }
 
-    public function save($runValidation=true, $attributeNames=NULL)
+    public function save($runValidation=true, $attributeNames=null)
     {
         throw new \LogicException("Saving is disabled for this model.");
     }

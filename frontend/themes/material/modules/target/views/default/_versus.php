@@ -78,7 +78,7 @@ if($target->progress == 100)
                 <?=$target->progress == 100 ? '#headshot' : number_format($target->progress).'%'?>
             </div>
         </div>
-<?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===NULL && $target->progress==100):?>
+<?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100):?>
         <div class="row">
           <div class="col">
           <?=Html::a("<i class='fas fa-book'></i> Submit a writeup",
@@ -133,7 +133,7 @@ if($target->progress == 100)
     <div class="col">
       <div class="card bg-dark">
         <div class="card-body table-responsive">
-          <?php if(count($target->writeups)>0 && PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])===NULL && !($identity->player_id===Yii::$app->user->id && $target->progress==100)):?>
+          <?php if(count($target->writeups)>0 && PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])===null && !($identity->player_id===Yii::$app->user->id && $target->progress==100)):?>
           <?=Html::a(
             '<i class="fas fa-question-circle" style="font-size: 1.5em;"></i> Writeups available.',
               ['/target/writeup/enable', 'id'=>$target->id],
@@ -152,7 +152,7 @@ if($target->progress == 100)
             <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
           <?php endif;?>
 
-          <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==NULL || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
+          <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
             <hr/>
             <h4><i class="fas fa-book"></i> Target Writeups</h4>
             <?php foreach($target->writeups as $writeup):?>

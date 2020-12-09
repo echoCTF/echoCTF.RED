@@ -226,7 +226,7 @@ echo GridView::widget([
               return Twitter::widget(['message'=>sprintf('Hey check this target [%s], %s', $model->name, $model->purpose), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer"]]);
           },
           'view' => function($url, $model) {
-            if($this->context->profile !== NULL)
+            if($this->context->profile !== null)
               return Html::a(
                 '<i class="fas fa-eye"></i>',
                   Url::to(['/target/default/versus', 'id'=>$model->id, 'profile_id'=>$this->context->profile->id]),

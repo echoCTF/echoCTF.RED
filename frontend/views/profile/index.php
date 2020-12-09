@@ -27,7 +27,7 @@ $this->registerCssFile("@web/css/scores.css", [
             <p class="lead"><?=Html::encode($profile->bio)?></p>
         </div>
         <div class="col-sm-4">
-            <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id == $profile->player_id && Yii::$app->user->identity->sSL !== NULL):?>
+            <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id == $profile->player_id && Yii::$app->user->identity->sSL !== null):?>
                 <a href="<?=Url::to('profile/me')?>" class="pull-right"><img title="<?=Html::encode($profile->owner->username)?> Avatar" class="img-circle img-responsive" src="/images/avatars/<?=$profile->avatar?>" width="220px"></a>
                 <span class="pull-right"><?php echo Html::a('<b>Download OpenVPN configuration</b>', array('profile/ovpn'), array('class'=>'btn btn-success btn-small'));?></span>
             <?php else:?>
@@ -146,72 +146,6 @@ $this->registerCssFile("@web/css/scores.css", [
                     ],
                   ]);
                   ?>
-<?php
-/*$this->widget('bootstrap.widgets.TbGridView', array(
-	'id' => 'targets-grid',
-	'htmlOptions'=>array('class'=>'span8 col-sm'),
-	'type'=> 'hover',
-	'dataProvider' => new CActiveDataProvider( $profile->owner->progress, array('pagination'=>false) ),
-	'filter' => null,
-	'summaryText'=>'',
-  'enableSorting' => false,
-	'columns' => array(
-		[
-			'type'=>'raw',
-			'header'=>false,
-      'value'=>function($data){return sprintf("<b>%s <small>%s</small></b>",$data->name,$data->ipoctet);}
-		],
-    [
-					'header'=>false,
-					'type'=>'raw',
-					'value'=>function($data){
-                      return sprintf('<abbr title="Flags"><i class="glyphicon glyphicon-large icon-flag"></i></abbr> %d of %d',$data->player_treasures,$data->total_treasures);
-                      }
-		],
-
-    [
-					'header'=>false,
-					'type'=>'raw',
-          'value'=>function($data){
-                      return sprintf('<abbr title="Services"><i class="glyphicon glyphicon-fire"></i></abbr> %d of %d',$data->player_findings,$data->total_findings);
-                      }
-		],
-    [
-					'header'=>false,
-					'type'=>'raw',
-          'value'=>function($data){
-                      return ($data->total_treasures==$data->player_treasures && $data->total_findings==$data->player_findings) ?
-                        sprintf('<abbr title="Headshot"><i class="glyphicon glyphicon-screenshot"></i></abbr>') : "";
-                      }
-		],
-    array(
-			'class' => 'bootstrap.widgets.TbButtonColumn',
-			'template' => '{restart} {view} {tweet}',
-			'htmlOptions'=>array('style'=>'text-align: right;'),
-			'buttons' => array(
-				'view' => array(
-					'label'=>'View',
-          'url'=>'Yii::$app->createUrl("target/view", array("id"=>$data->id))',
-				),
-				'restart' => array(
-					'label'=>'Restart',
-					'icon'=>"glyphicon glyphicon-repeat",
-					'click'=>"function(){return confirm('Do you really want to restart  '+$(this).parent().parent().children(':nth-child(1)').text()+'/'+$(this).parent().parent().children(':nth-child(2)').text()+'?');}",
-          'url'=>'Yii::$app->createUrl("target/spin", array("id"=>$data->id))',
-					'visible'=>'$data->spinable',
-				),
-        'tweet' => array(
-					'label'=>"Tweet progress",
-          'imageUrl'=>"/images/twitterBWcircle.png",
-          'options'=>['class'=>'TweetThisImg'],
-          'url'=>function($data){ $tweet=$this->widget('ext.ets.TweetPortlet',['model'=>$data,'type'=>'TargetProgress','profile'=>$this->curProfile,'returnContent'=>true]); return $tweet->_link; },
-				),
-			),
-		) ,
-	),
-));*/?>
-
-
                 </div>
 
                 <div class="tab-pane" id="badges">

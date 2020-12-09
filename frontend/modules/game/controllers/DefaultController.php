@@ -49,7 +49,7 @@ class DefaultController extends \app\components\BaseController
     public function actionRate($id)
     {
       $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$id,'player_id'=>Yii::$app->user->id]);
-      if($headshot===NULL)
+      if($headshot===null)
       {
         throw new NotFoundHttpException('You dont have a headshot for the given target.');
       }

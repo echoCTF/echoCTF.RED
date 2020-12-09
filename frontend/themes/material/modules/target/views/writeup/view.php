@@ -25,7 +25,7 @@ $this->_fluid='-fluid';
         </div>
       </div>
     </div><!--//col-->
-    <?php if($model->comment!==NULL):?>
+    <?php if($model->comment!==null):?>
     <div class="col">
       <div class="card bg-dark">
         <div class="card-body">

@@ -233,7 +233,7 @@ class DefaultController extends Controller
     public function actionApprove($id)
     {
       $tp=TeamPlayer::findOne($id);
-      if($tp===NULL)
+      if($tp===null)
       {
         Yii::$app->session->setFlash('error', 'Could not find requested membership.');
         return $this->redirect(['index']);
@@ -259,7 +259,7 @@ class DefaultController extends Controller
     public function actionReject($id)
     {
       $tp=TeamPlayer::findOne($id);
-      if($tp===NULL)
+      if($tp===null)
       {
         Yii::$app->session->setFlash('error', 'Could not find requested membership.');
         return $this->redirect(['index']);

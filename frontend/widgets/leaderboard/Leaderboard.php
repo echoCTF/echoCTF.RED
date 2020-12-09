@@ -34,7 +34,7 @@ class Leaderboard extends Widget
 
     private function PlayerLeaderboards()
     {
-      if($this->player_id !== NULL)
+      if($this->player_id !== null)
       {
         $this->dataProvider=new ActiveDataProvider([
           'query' => PlayerRank::find()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
@@ -57,7 +57,7 @@ class Leaderboard extends Widget
     }
     private function countryLeaderboards()
     {
-      if($this->player_id !== NULL)
+      if($this->player_id !== null)
       {
         $this->dataProvider=new ActiveDataProvider([
           'query' => \app\models\PlayerCountryRank::find()->where(['country'=>$this->country])->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
@@ -88,7 +88,7 @@ class Leaderboard extends Widget
       }
 
 
-      if($this->country===NULL)
+      if($this->country===null)
       {
         $this->PlayerLeaderboards();
       }

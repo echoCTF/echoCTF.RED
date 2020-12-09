@@ -111,7 +111,7 @@ class Challenge extends \yii\db\ActiveRecord
       return $sum_points;
     }
 
-    public function save($runValidation=true, $attributeNames=NULL)
+    public function save($runValidation=true, $attributeNames=null)
     {
         throw new \LogicException("Saving is disabled for this model.");
     }

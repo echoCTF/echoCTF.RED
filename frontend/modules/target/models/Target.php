@@ -318,7 +318,7 @@ class Target extends \yii\db\ActiveRecord
         return false;// user is not allowed spins for the day.
       }
 
-      if(Yii::$app->user->identity->profile->last->vpn_local_address === NULL && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_findings)<1 && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_treasures)<1)
+      if(Yii::$app->user->identity->profile->last->vpn_local_address === null && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_findings)<1 && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_treasures)<1)
         return false;
       return true;
     }
@@ -367,7 +367,7 @@ class Target extends \yii\db\ActiveRecord
       return self::DEFAULT_LOGO;
     }
 
-    public function save($runValidation=true, $attributeNames=NULL)
+    public function save($runValidation=true, $attributeNames=null)
     {
       throw new \LogicException("Saving is disabled for this model.");
     }
