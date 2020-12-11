@@ -49,7 +49,7 @@ class DefaultController extends Controller
                     'matchCallback' => function ($rule, $action) {
                       return \Yii::$app->user->identity->team!==null;
                     },
-                    'denyCallback' => function() {
+                    'denyCallback' => function () {
                       \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
                       return $this->redirect(['index']);
                     }
@@ -61,7 +61,7 @@ class DefaultController extends Controller
                     'matchCallback' => function ($rule, $action) {
                       return \Yii::$app->user->identity->teamLeader===null;
                     },
-                    'denyCallback' => function() {
+                    'denyCallback' => function () {
                       \Yii::$app->session->setFlash('error', 'You are not the leader of any teams.');
                       return $this->redirect(['index']);
                     }
@@ -74,7 +74,7 @@ class DefaultController extends Controller
                      'matchCallback' => function ($rule, $action) {
                          return \Yii::$app->sys->event_start!==false && (time()>=\Yii::$app->sys->event_start && time()<=\Yii::$app->sys->event_end);
                      },
-                     'denyCallback' => function() {
+                     'denyCallback' => function () {
                        \Yii::$app->session->setFlash('info', 'These actions are disabled during the competition');
                        return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
                      }
@@ -84,7 +84,7 @@ class DefaultController extends Controller
                      'matchCallback' => function ($rule, $action) {
                        return \Yii::$app->DisabledRoute->disabled($action);
                      },
-                     'denyCallback' => function() {
+                     'denyCallback' => function () {
                        throw new \yii\web\HttpException(404,'This area is disabled.');
                      },
                  ],
