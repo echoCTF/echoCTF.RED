@@ -228,7 +228,7 @@ class TargetController extends Controller {
    */
   public function actionRestart()
   {
-    foreach(Target::find()->select('server')->distinct()->all() as $master)
+    foreach(Target::find()->docker_servers()->all() as $master)
     {
       if($master->server == null) continue;
       $client=DockerClientFactory::create([
@@ -321,9 +321,8 @@ class TargetController extends Controller {
   private function unhealthy_dockers()
   {
     $unhealthy=[];
-    foreach(Target::find()->select('server')->distinct()->all() as $target)
+    foreach(Target::find()->docker_servers()->all() as $target)
     {
-      if($target->server == null) continue;
       $docker=$this->docker_connect($target->server);
 
       $containers=$this->containers_list($docker);
