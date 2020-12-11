@@ -152,7 +152,7 @@ class DefaultController extends Controller
         return $this->redirect(['index']);
       }
 
-      $team=Team::findOne(['token'=>$token]);
+      $team=$this->findOne(['token'=>$token]);
 
       if($team===null)
       {
@@ -165,6 +165,7 @@ class DefaultController extends Controller
         Yii::$app->session->setFlash('error', 'The team you tried to join was not on the same academic scope.');
         return $this->redirect(['index']);
       }
+
       if($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
       {
         Yii::$app->session->setFlash('error', 'The team you are trying to join is full.');
@@ -175,11 +176,12 @@ class DefaultController extends Controller
       $tp->player_id=Yii::$app->user->id;
       $tp->team_id=$team->id;
       $tp->approved=0;
-      if(!$tp->save())
+      if($tp->save()===false)
       {
         Yii::$app->session->setFlash('error', 'Failed to join the team, unknown error occurred.');
         return $this->redirect(['index']);
       }
+
       Yii::$app->session->setFlash('success', 'You joined the team but it is pending approval by the team leader.');
       // XXX Add notification to the team leader
       return $this->redirect(['index']);
@@ -201,7 +203,7 @@ class DefaultController extends Controller
           return $this->redirect(['index']);
         }
 
-        $team=Team::findOne(Yii::$app->user->identity->teamLeader->id);
+        $team=$this->findModel(Yii::$app->user->identity->teamLeader->id);
         $team->scenario='update';
 
         if($team->load(Yii::$app->request->post()) && $team->validate())
@@ -232,12 +234,7 @@ class DefaultController extends Controller
 
     public function actionApprove($id)
     {
-      $tp=TeamPlayer::findOne($id);
-      if($tp===null)
-      {
-        Yii::$app->session->setFlash('error', 'Could not find requested membership.');
-        return $this->redirect(['index']);
-      }
+      $tp=$this->findTPModel($id);
 
       if($tp->team_id!==Yii::$app->user->identity->teamLeader->id)
       {
@@ -256,14 +253,10 @@ class DefaultController extends Controller
       return $this->redirect(['index']);
 
     }
+
     public function actionReject($id)
     {
-      $tp=TeamPlayer::findOne($id);
-      if($tp===null)
-      {
-        Yii::$app->session->setFlash('error', 'Could not find requested membership.');
-        return $this->redirect(['index']);
-      }
+      $tp=$this->findTPModel($id);
 
       if($tp->player_id!==Yii::$app->user->id && $tp->team_id!==Yii::$app->user->identity->teamLeader->id)
       {
@@ -271,7 +264,7 @@ class DefaultController extends Controller
         return $this->redirect(['index']);
       }
 
-      if(!$tp->delete())
+      if($tp->delete()===false)
       {
         Yii::$app->session->setFlash('error', 'Failed to cancel membership.');
         return $this->redirect(['index']);
@@ -294,16 +287,11 @@ class DefaultController extends Controller
 
     public function actionInvite($token)
     {
-      $team=Team::findOne(['token'=>$token]);
+      $team=$this->findModel(['token'=>$token]);
 
-      if($team===null)
-      {
-        Yii::$app->session->setFlash('error', 'There are no teams with this token.');
-        return $this->redirect(['index']);
-      }
       if(Yii::$app->user->identity->team)
       {
-        Yii::$app->session->setFlash('error', 'You are already member of a team.');
+        Yii::$app->session->setFlash('error', 'You are already a member of a team.');
         return $this->redirect(['index']);
       }
       if($team->academic!==Yii::$app->user->identity->academic)
@@ -332,10 +320,12 @@ class DefaultController extends Controller
       }
       return $this->render('invite',['team'=>$team]);
     }
+
     /**
-     * Finds the Team model based on its primary key value.
+     * Finds the Team model based on its primary key value or specific
+     * condition (eg [token=>'val']).
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param integer|array $id
      * @return Team the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -345,7 +335,22 @@ class DefaultController extends Controller
         {
             return $model;
         }
+        throw new NotFoundHttpException('The requested page does not exist.');
+    }
 
+    /**
+     * Finds the TeamPlayer model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer|array $id
+     * @return Team the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findTPModel($id)
+    {
+        if(($model=TeamPlayer::findOne($id)) !== null)
+        {
+            return $model;
+        }
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
@@ -419,6 +424,7 @@ class DefaultController extends Controller
       }
       return [$thumb_w, $thumb_h];
     }
+
     protected function delete_with_extras()
     {
       if(Yii::$app->user->identity->teamLeader->logo!==null)
