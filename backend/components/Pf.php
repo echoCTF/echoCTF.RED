@@ -61,4 +61,31 @@ class Pf extends Component
     return false;
   }
 
+  public static function allowToNetwork($target)
+  {
+    $clients_table=self::clients_table($target);
+    $targets_table=$target->network->codename;
+    return sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$clients_table,$targets_table);
+  }
+
+  public static function allowToClient($target)
+  {
+    $clients_table=self::clients_table($target);
+    $targets_table=$target->network->codename;
+    return sprintf("pass quick from <%s> to <%s>",$targets_table,$clients_table);
+  }
+
+  public static function clients_table($target)
+  {
+    if($target->network->public===false)
+    {
+      return $target->network->codename."_clients";
+    }
+    else
+    {
+      return "offense_activated";
+    }
+
+  }
+
 }
