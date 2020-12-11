@@ -1,0 +1,222 @@
+<?php
+
+namespace app\modules\target\models;
+
+use Yii;
+use app\models\PlayerTreasure;
+use app\models\PlayerFinding;
+use app\modules\game\models\Headshot;
+use yii\behaviors\AttributeTypecastBehavior;
+
+/**
+ * This is the model class for table "target".
+ *
+ * @property int $id target ID
+ * @property string|null $name A name for the target
+ * @property string|null $fqdn The FQDN for the target
+ * @property string|null $purpose The purpose of this target
+ * @property string|null $description
+ * @property int $ip The IP of the target
+ * @property string|null $mac The mac associated with this IP
+ * @property int|null $active
+ * @property string|null $status
+ * @property string|null $scheduled_at
+ * @property string|null $net Network this pod is attached
+ * @property string|null $server Docker Server connection string.
+ * @property string|null $image
+ * @property string|null $dns
+ * @property string|null $parameters
+ * @property int|null $rootable Whether the target is rootable or not
+ * @property int|null $difficulty
+ * @property int|null $suggested_xp
+ * @property int|null $required_xp
+ * @property string $ts
+ *
+ * @property Credential[] $credentials
+ * @property Finding[] $findings
+ * @property InfrastructureTarget $infrastructureTarget
+ * @property Infrastructure[] $infrastructures
+ * @property NetworkTarget[] $networkTargets
+ * @property Network[] $networks
+ * @property SpinHistory[] $spinHistories
+ * @property SpinQueue $spinQueue
+ * @property TargetVariable[] $targetVariables
+ * @property TargetVolume[] $targetVolumes
+ * @property Treasure[] $treasures
+ * @property Headshot[] $headshots
+ * @property Writeup[] $writeups
+ */
+class TargetAR extends \yii\db\ActiveRecord
+{
+  public $total_treasures;
+  public $total_findings;
+  public $player_findings;
+  public $player_treasures;
+  public $player_treasure_points;
+  public $player_finding_points;
+  public $ipoctet;
+  public $progress;
+
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+      return 'target';
+    }
+
+
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+          'class' => AttributeTypecastBehavior::class,
+          'attributeTypes' => [
+            'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'player_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'player_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'total_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
+            'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
+          ],
+          'typecastAfterValidate' => true,
+          'typecastBeforeSave' => true,
+          'typecastAfterFind' => true,
+        ],
+      ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+      return [
+        [['description'], 'string'],
+        [['ip'], 'required'],
+        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp'], 'integer'],
+        [['scheduled_at', 'ts'], 'safe'],
+        [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
+        [['mac'], 'string', 'max' => 30],
+        [['status'], 'string', 'max' => 32],
+        [['name'], 'unique'],
+        [['fqdn'], 'unique'],
+        [['mac'], 'unique'],
+      ];
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+      return [
+        'id' => 'ID',
+        'name' => 'Name',
+        'fqdn' => 'FQDN',
+        'purpose' => 'Purpose',
+        'description' => 'Description',
+        'ip' => 'IP',
+        'mac' => 'Mac',
+        'active' => 'Active',
+        'status' => 'Status',
+        'scheduled_at' => 'Scheduled At',
+        'net' => 'Net',
+        'server' => 'Server',
+        'image' => 'Image',
+        'dns' => 'Dns',
+        'parameters' => 'Parameters',
+        'rootable' => 'Rootable',
+        'difficulty' => 'Difficulty',
+        'suggested_xp' => 'Suggested Xp',
+        'required_xp' => 'Required Xp',
+        'ts' => 'Ts',
+      ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFindings()
+    {
+      return $this->hasMany(Finding::class, ['target_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNetworkTarget()
+    {
+      return $this->hasMany(\app\modules\network\models\NetworkTarget::class, ['target_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNetworks()
+    {
+      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNetwork()
+    {
+      return $this->hasOne(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getTreasures()
+    {
+      return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight'=>SORT_DESC,'id'=>SORT_DESC]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSpinQueue()
+    {
+      return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
+    }
+
+    /*
+     * Get Headshot relations of target
+     */
+    public function getHeadshots()
+    {
+      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
+    }
+
+    /*
+     * Get Writeup relations of target
+     */
+    public function getWriteups()
+    {
+      return $this->hasMany(Writeup::class, ['target_id' => 'id'])->approved()->orderBy(['created_at'=>SORT_ASC]);
+    }
+
+    /*
+     * Check if given $player_id has headshot on the target
+     */
+    public function headshot($player_id)
+    {
+      return Headshot::find()->where(['target_id' => $this->id, 'player_id'=>$player_id])->one();
+    }
+
+    public static function find()
+    {
+      return new TargetQuery(get_called_class());
+    }
+
+    public function save($runValidation=true, $attributeNames=null)
+    {
+      throw new \LogicException("Saving is disabled for this model.");
+    }
+
+}

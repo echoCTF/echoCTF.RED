@@ -11,9 +11,10 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
-use yii\web\UploadedFile;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\web\UploadedFile;
+
 /**
  * TeamController implements the CRUD actions for Team model.
  */
@@ -29,13 +30,52 @@ class DefaultController extends Controller
                 'class' => \yii\filters\AccessControl::class,
                 'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite'],
                 'rules' => [
+
+                  [
+                    'actions'=> ['create'],
+                    'allow'=> false,
+                    'roles' => ['@'],
+                    'matchCallback' => function ($rule, $action) {
+                      return (\Yii::$app->user->identity->teamLeader!==null || \Yii::$app->user->identity->team!==null);
+                    },
+                    'denyCallback' => function() {
+                      \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
+                      return $this->redirect(['index']);
+                    }
+                  ],
+                  [ // Only join when not on team
+                    'actions'=> ['join','invite'],
+                    'allow'=> false,
+                    'roles' => ['@'],
+                    'matchCallback' => function ($rule, $action) {
+                      return \Yii::$app->user->identity->team!==null;
+                    },
+                    'denyCallback' => function () {
+                      \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
+                      return $this->redirect(['index']);
+                    }
+                  ],
+                  [ // Only allow updates from teamLeaders
+                    'actions'=> ['update'],
+                    'allow' => false,
+                    'roles' => ['@'],
+                    'matchCallback' => function ($rule, $action) {
+                      return \Yii::$app->user->identity->teamLeader===null;
+                    },
+                    'denyCallback' => function () {
+                      \Yii::$app->session->setFlash('error', 'You are not the leader of any teams.');
+                      return $this->redirect(['index']);
+                    }
+                  ],
+
                   [
                      'actions' => ['reject'],
                      'allow' => false,
+                     'roles' => ['@'],
                      'matchCallback' => function ($rule, $action) {
-                         return Yii::$app->sys->event_start!==false && (time()>=Yii::$app->sys->event_start && time()<=Yii::$app->sys->event_end);
+                         return \Yii::$app->sys->event_start!==false && (time()>=\Yii::$app->sys->event_start && time()<=\Yii::$app->sys->event_end);
                      },
-                     'denyCallback' => function() {
+                     'denyCallback' => function () {
                        \Yii::$app->session->setFlash('info', 'These actions are disabled during the competition');
                        return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
                      }
@@ -43,9 +83,9 @@ class DefaultController extends Controller
                  'disabledRoute'=>[
                      'allow' => false,
                      'matchCallback' => function ($rule, $action) {
-                       return Yii::$app->DisabledRoute->disabled($action);
+                       return \Yii::$app->DisabledRoute->disabled($action);
                      },
-                     'denyCallback' => function() {
+                     'denyCallback' => function () {
                        throw new \yii\web\HttpException(404,'This area is disabled.');
                      },
                  ],
@@ -120,11 +160,6 @@ class DefaultController extends Controller
      */
     public function actionCreate()
     {
-      if(Yii::$app->user->identity->teamLeader!==null || Yii::$app->user->identity->team!==null )
-      {
-        return $this->redirect(['index']);
-      }
-
       $model=new CreateTeamForm(['scenario' => CreateTeamForm::SCENARIO_CREATE]);
       if($model->load(Yii::$app->request->post()) && $model->create())
       {
@@ -146,25 +181,15 @@ class DefaultController extends Controller
      */
     public function actionJoin($token)
     {
-      if(Yii::$app->user->identity->team!==null)
-      {
-        Yii::$app->session->setFlash('error', 'You are already member of a team.');
-        return $this->redirect(['index']);
-      }
 
-      $team=Team::findOne(['token'=>$token]);
-
-      if($team===null)
-      {
-        Yii::$app->session->setFlash('error', 'The token you provided does not belong to any the teams.');
-        return $this->redirect(['index']);
-      }
+      $team=$this->findModel(['token'=>$token]);
 
       if($team->academic!==Yii::$app->user->identity->academic)
       {
         Yii::$app->session->setFlash('error', 'The team you tried to join was not on the same academic scope.');
         return $this->redirect(['index']);
       }
+
       if($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
       {
         Yii::$app->session->setFlash('error', 'The team you are trying to join is full.');
@@ -175,11 +200,12 @@ class DefaultController extends Controller
       $tp->player_id=Yii::$app->user->id;
       $tp->team_id=$team->id;
       $tp->approved=0;
-      if(!$tp->save())
+      if($tp->save()===false)
       {
         Yii::$app->session->setFlash('error', 'Failed to join the team, unknown error occurred.');
         return $this->redirect(['index']);
       }
+
       Yii::$app->session->setFlash('success', 'You joined the team but it is pending approval by the team leader.');
       // XXX Add notification to the team leader
       return $this->redirect(['index']);
@@ -195,49 +221,28 @@ class DefaultController extends Controller
      */
     public function actionUpdate()
     {
-        if(Yii::$app->user->identity->teamLeader===null)
-        {
-          Yii::$app->session->setFlash('error', 'You are not the leader of any teams.');
-          return $this->redirect(['index']);
-        }
 
-        $team=Team::findOne(Yii::$app->user->identity->teamLeader->id);
+        $team=$this->findModel(Yii::$app->user->identity->teamLeader->id);
         $team->scenario='update';
 
         if($team->load(Yii::$app->request->post()) && $team->validate())
         {
-          $team->uploadedAvatar = UploadedFile::getInstance($team, 'uploadedAvatar');
-          if($team->uploadedAvatar && $this->HandleUpload($team->uploadedAvatar))
-          {
-            $fname=Yii::getAlias(sprintf('@app/web/images/avatars/team/%s.png',$team->id));
             $team->logo=sprintf('%s.png',$team->id);
-            if($team->save() && $team->uploadedAvatar->saveAs($fname))
+            if($team->save())
             {
+              $team->uploadedAvatar = UploadedFile::getInstance($team, 'uploadedAvatar');
+              $team->saveLogo();
               Yii::$app->session->setFlash('success', 'Your team was updated.');
               return $this->redirect(['index']);
             }
-            else
-            {
-              Yii::$app->session->setFlash('error', 'Failed to update your team details.');
-            }
-          }
-          elseif($team->save())
-          {
-            Yii::$app->session->setFlash('success', 'Your team was updated.');
-            return $this->redirect(['index']);
-          }
         }
+
         return $this->render('update',['model'=>$team]);
     }
 
     public function actionApprove($id)
     {
-      $tp=TeamPlayer::findOne($id);
-      if($tp===null)
-      {
-        Yii::$app->session->setFlash('error', 'Could not find requested membership.');
-        return $this->redirect(['index']);
-      }
+      $tp=$this->findTPModel($id);
 
       if($tp->team_id!==Yii::$app->user->identity->teamLeader->id)
       {
@@ -256,14 +261,10 @@ class DefaultController extends Controller
       return $this->redirect(['index']);
 
     }
+
     public function actionReject($id)
     {
-      $tp=TeamPlayer::findOne($id);
-      if($tp===null)
-      {
-        Yii::$app->session->setFlash('error', 'Could not find requested membership.');
-        return $this->redirect(['index']);
-      }
+      $tp=$this->findTPModel($id);
 
       if($tp->player_id!==Yii::$app->user->id && $tp->team_id!==Yii::$app->user->identity->teamLeader->id)
       {
@@ -271,7 +272,7 @@ class DefaultController extends Controller
         return $this->redirect(['index']);
       }
 
-      if(!$tp->delete())
+      if($tp->delete()===false)
       {
         Yii::$app->session->setFlash('error', 'Failed to cancel membership.');
         return $this->redirect(['index']);
@@ -294,18 +295,8 @@ class DefaultController extends Controller
 
     public function actionInvite($token)
     {
-      $team=Team::findOne(['token'=>$token]);
+      $team=$this->findModel(['token'=>$token]);
 
-      if($team===null)
-      {
-        Yii::$app->session->setFlash('error', 'There are no teams with this token.');
-        return $this->redirect(['index']);
-      }
-      if(Yii::$app->user->identity->team)
-      {
-        Yii::$app->session->setFlash('error', 'You are already member of a team.');
-        return $this->redirect(['index']);
-      }
       if($team->academic!==Yii::$app->user->identity->academic)
       {
         Yii::$app->session->setFlash('error', 'The team you are trying to access is not of the same academic type.');
@@ -332,10 +323,12 @@ class DefaultController extends Controller
       }
       return $this->render('invite',['team'=>$team]);
     }
+
     /**
-     * Finds the Team model based on its primary key value.
+     * Finds the Team model based on its primary key value or specific
+     * condition (eg [token=>'val']).
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param integer|array $id
      * @return Team the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -345,80 +338,26 @@ class DefaultController extends Controller
         {
             return $model;
         }
-
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    protected function HandleUpload($uploadedAvatar)
+    /**
+     * Finds the TeamPlayer model based on its primary key value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer|array $id
+     * @return Team the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findTPModel($id)
     {
-      if(!$uploadedAvatar) return false;
-      $src = imagecreatefrompng($uploadedAvatar->tempName);
-      if($src!==false)
-      {
-
-        $old_x = imageSX($src);
-        $old_y = imageSY($src);
-        list($thumb_w,$thumb_h) = $this->ScaledXY($old_x,$old_y);
-
-        $avatar=imagescale($src,$thumb_w,$thumb_h);
-
-        $image = imagecreatetruecolor(300,300);
-        if(!$image) return false;
-
-        imagealphablending($image, false);
-        $col=imagecolorallocatealpha($image,255,255,255,127);
-        imagefilledrectangle($image,0,0,300, 300,$col);
-        imagealphablending($image,true);
-
-        list($dst_x,$dst_y) = $this->DestinationXY($thumb_w,$thumb_h);
-        imagecopyresampled($image, $avatar, $dst_x, $dst_y, /*src_x*/ 0, /*src_y*/ 0, /*dst_w*/ $thumb_w, /*dst_h*/ $thumb_h, /*src_w*/ $thumb_w, /*src_y*/ $thumb_h);
-        imagesavealpha($image, true);
-        imagepng($image,$uploadedAvatar->tempName);
-        imagedestroy($image);
-        imagedestroy($src);
-        imagedestroy($avatar);
-        return true;
-      }
-      return false;
+        if(($model=TeamPlayer::findOne($id)) !== null)
+        {
+            return $model;
+        }
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    protected function DestinationXY($x,$y)
-    {
-      $pos_x = $pos_y = 0;
 
-      if($x<300)
-      {
-        $pos_x = floor((300-$x)/2);
-      }
-      if($y<300)
-      {
-        $pos_y = floor((300-$y)/2);
-      }
-      return [ $pos_x, $pos_y ];
-    }
-
-    protected function ScaledXY($old_x,$old_y)
-    {
-      $thumb_h = $thumb_w = 300;
-      if($old_x > $old_y)
-      {
-        $thumb_w    =   300;
-        $thumb_h    =   $old_y*(300/$old_x);
-      }
-
-      if($old_x < $old_y)
-      {
-        $thumb_w    =   $old_x*(300/$old_y);
-        $thumb_h    =   300;
-      }
-
-      if($old_x == $old_y)
-      {
-        $thumb_w    =   300;
-        $thumb_h    =   300;
-      }
-      return [$thumb_w, $thumb_h];
-    }
     protected function delete_with_extras()
     {
       if(Yii::$app->user->identity->teamLeader->logo!==null)

@@ -43,145 +43,13 @@ use app\modules\target\models\Writeup;
  * @property Experience $experience
  * @property TotalTreasures $totalTreasures
 */
-class Profile extends \yii\db\ActiveRecord
+class Profile extends ProfileAR
 {
-  const SCENARIO_ME='me';
-  const SCENARIO_REGISTER='register';
-  const SCENARIO_SIGNUP='signup';
-  public $gravatar,
-          $twitter_avatar,
-          $github_avatar;
   public $visibilities=[
       'private'=>'Private',
       'public'=>'Public',
       'ingame'=>'In Game',
     ];
-  public $uploadedAvatar;
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'profile';
-    }
-
-    public function behaviors()
-    {
-        return [
-            'typecast' => [
-                'class' => AttributeTypecastBehavior::class,
-                'attributeTypes' => [
-                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
-                    'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
-                    'gdpr' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-                    'terms_and_conditions' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-                    'mail_optin' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-                    'approved_avatar' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-                ],
-                'typecastAfterValidate' => true,
-                'typecastBeforeSave' => true,
-                'typecastAfterFind' => true,
-          ],
-        ];
-    }
-    public function scenarios()
-    {
-        return [
-            self::SCENARIO_ME => ['visibility', 'country', 'uploadedAvatar', 'bio','youtube','twitch', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
-            self::SCENARIO_REGISTER => ['username', 'email', 'password'],
-            self::SCENARIO_SIGNUP => ['gdpr', 'terms_and_conditions'],
-        ];
-    }
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio','youtube','twitch'], 'trim'],
-            ['country', 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country' => 'id']],
-//            ['avatar', 'exist', 'targetClass' => Avatar::class, 'targetAttribute' => ['avatar' => 'id']],
-            [['player_id', 'country', 'avatar', 'visibility'], 'required'],
-            [['terms_and_conditions', 'mail_optin', 'gdpr','approved_avatar'], 'boolean', 'trueValue' => true, 'falseValue' => false],
-            [['approved_avatar'], 'default', 'value'=>Yii::$app->sys->approved_avatar],
-            [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
-            [['visibility'], 'default', 'value' =>  Yii::$app->sys->profile_visibility!==false ? Yii::$app->sys->profile_visibility : 'ingame'],
-            [['id'], 'default', 'value' =>  new Expression('round(rand()*10000000)'), 'on'=>['register']],
-            [['id', 'player_id'], 'integer'],
-            [['bio'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['avatar','twitter', 'github','youtube','twitch'], 'string', 'max' => 255],
-            [['country'], 'string', 'max'=>3],
-            [['player_id'], 'unique'],
-            [['id'], 'unique'],
-            [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => 'File larger than expected, limit is 500KB'],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-          'id' => 'ID',
-          'player_id' => 'Player ID',
-          'visibility' => 'Profile Visibility',
-          'bio' => 'Bio',
-          'country' => 'Country',
-          'avatar' => 'Avatar',
-          'discord' => 'Discord',
-          'twitter' => 'Twitter',
-          'github' => 'Github',
-          'youtube' => 'Youtube',
-          'twitch' => 'Twitch',
-          'htb'=>'HTB',
-          'terms_and_conditions'=>'I accept the echoCTF RED <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',
-          'mail_optin'=>'<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from echoCTF RED</abbr>',
-          'gdpr'=>'I accept the echoCTF RED <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>.',
-          'created_at' => 'Created At',
-          'updated_at' => 'Updated At',
-          'owner.username' => 'Username',
-        ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getOwner()
-    {
-        return $this->hasOne(Player::class, ['id' => 'player_id']);
-    }
-    public function getLast()
-    {
-        return $this->hasOne(PlayerLast::class, ['id' => 'player_id']);
-    }
-    public function getSpins()
-    {
-        return $this->hasOne(PlayerSpin::class, ['player_id' => 'player_id'])->todays();
-    }
-    public function getFullCountry()
-    {
-        return $this->hasOne(Country::class, ['id' => 'country']);
-    }
-
-    public function getRank()
-    {
-        return $this->hasOne(PlayerRank::class, ['player_id' => 'player_id']);
-    }
-    public function getCountryRank()
-    {
-        return $this->hasOne(\app\models\PlayerCountryRank::class, ['player_id' => 'player_id']);
-    }
-
-    public function getScore()
-    {
-        return $this->hasOne(PlayerScore::class, ['player_id' => 'player_id']);
-    }
-    public function getRCountry()
-    {
-        return $this->hasOne(Country::class, ['id' => 'country']);
-    }
 
     public function getVisible(): bool
     {
@@ -222,28 +90,17 @@ class Profile extends \yii\db\ActiveRecord
 
     public function getExperience()
     {
-      //return $this->hasOne(Experience::class, ['id' => 'player_id']);
       return Experience::find()->where("{$this->score->points} BETWEEN min_points AND max_points");
     }
+
     public function getTotalTreasures()
     {
       return Yii::$app->db->createCommand('SELECT count(*) FROM player_treasure WHERE player_id=:player_id')->bindValue(':player_id', $this->player_id)->queryScalar();
     }
+
     public function getTotalFindings()
     {
       return Yii::$app->db->createCommand('SELECT count(*) FROM player_finding WHERE player_id=:player_id')->bindValue(':player_id', $this->player_id)->queryScalar();
-    }
-    public function getHeadshotRelation()
-    {
-      return $this->hasMany(Headshot::class, ['player_id' => 'player_id']);
-    }
-    public function getWriteups()
-    {
-      return $this->hasMany(Writeup::class, ['player_id' => 'player_id']);
-    }
-
-    public function getHeadshots() {
-      return $this->hasMany(Target::class, ['id' => 'target_id'])->via('headshotRelation');
     }
 
     public function getHeadshotsCount():int {
@@ -258,6 +115,7 @@ class Profile extends \yii\db\ActiveRecord
         return true;
       return false;
     }
+
     public function getTwitterHandle()
     {
       if($this->twitter != "")
@@ -273,6 +131,7 @@ class Profile extends \yii\db\ActiveRecord
         return $this->avatar;
       return '../default_avatar.png';
     }
+
     public function getBraggingRights()
     {
       if($this->rank)
