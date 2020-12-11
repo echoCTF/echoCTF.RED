@@ -200,12 +200,7 @@ class PlayerController extends Controller
               catch(\Exception $e)
               {
                 $trans->rollBack();
-                if(isset($e->errorInfo) && $e->errorInfo[0] == "23000" && $e->errorInfo[1] == 1062)
-                  Yii::$app->session->setFlash('error', 'Failed to import file with error message ['.$e->errorInfo[2].']');
-                else
-                {
-                  Yii::$app->session->setFlash('error', 'Failed to import file, '.$e->getMessage());
-                }
+                Yii::$app->session->setFlash('error', 'Failed to import file, '.$e->getMessage());
               }
           }
       }
