@@ -3,6 +3,7 @@ namespace app\commands;
 
 use yii\console\Controller;
 use yii\console\ExitCode;
+use yii\helpers\ArrayHelper;
 use Docker\DockerClientFactory;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Notification;
@@ -10,6 +11,7 @@ use app\modules\activity\models\SpinHistory;
 use app\modules\gameplay\models\Target;
 use app\modules\gameplay\models\Finding;
 use app\modules\settings\models\Sysconfig;
+use app\components\Pf;
 use Docker\Docker;
 use Http\Client\Socket\Exception\ConnectionException;
 
@@ -33,13 +35,12 @@ class TargetController extends Controller {
     foreach($targets->all() as $target)
     {
       printf("Target %s ", $target->fqdn);
-      $requirePF=false;
       switch($target->status)
       {
         case 'offline':
         case 'powerdown':
           printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
-          $requirePF=$target->powerdown();
+          $target->powerdown();
           printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
           break;
         case 'powerup':
@@ -48,15 +49,13 @@ class TargetController extends Controller {
           $target->status='online';
           $target->scheduled_at=null;
           $target->active=1;
-          $requirePF=true;
           $target->save();
           break;
         default:
           printf("updated at %s\n", $target->ts);
-          $requirePF=true;
           break;
       }
-      if($requirePF) $this->actionPf(true);
+      $this->actionPf(true);
     }
     //foreach target check
   }
@@ -281,20 +280,10 @@ class TargetController extends Controller {
       $frules[]=$finding->matchRule;
     }
 
-    try
-    {
-      $ruleset=implode("\n", $frules)."\n";
-      $ruleset.=implode("\n",$rules);
-      file_put_contents($base.'/match-findings-pf.conf',$ruleset);
-    }
-    catch(\Exception $e)
-    {
-      echo "Failed to save $base/match-findings-pf.conf\n";
-      return;
-    }
+    Pf::store($base.'/match-findings-pf.conf',ArrayHelper::merge($frules,$rules));
 
     if($load)
-      shell_exec("/sbin/pfctl -q -a offense/findings -Fr -f $base/match-findings-pf.conf");
+      Pf::load_anchor_file("offense/findings","$base/match-findings-pf.conf");
   }
 
   /*
@@ -323,23 +312,19 @@ class TargetController extends Controller {
 
       }
     }
-    $this->store_and_load('targets', $base.'/targets.conf', $ips);
+    Pf::store($base.'/targets.conf',$ips);
+    Pf::load_table_file('targets',$base.'/targets.conf');
     foreach($networks as $key => $val) {
-      $this->store_and_load($key, $base.'/'.$key.'.conf', $val);
+      Pf::store($base.'/'.$key.'.conf', $val);
+      Pf::load_table_file($key,$base.'/'.$key.'.conf');
       $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
     }
 
     if($rules!==[])
     {
       $rules[]="\n";
-      try {
-        file_put_contents("$base/targets_networks.conf",implode("\n",$rules));
-        shell_exec("/sbin/pfctl -q -a targets/networks -Fr -f $base/targets_networks.conf");
-      }
-      catch (\Exception $e)
-      {
-        echo "Failed to store $base/targets_networks.conf\n";
-      }
+      Pf::store("$base/targets_networks.conf",$rules);
+      Pf::load_anchor_file("targets/networks","$base/targets_networks.conf");
     }
   }
 
@@ -403,23 +388,5 @@ class TargetController extends Controller {
       return false;
     }
     return $docker;
-  }
-
-  /**
-   * Store list of IP's to a file and load it on pf a pf table
-   */
-  private function store_and_load($table, $file, $contents)
-  {
-    if(empty($contents)) return;
-    try
-    {
-      file_put_contents($file, implode("\n", $contents)."\n");
-    }
-    catch(\Exception $e)
-    {
-      echo "Failed to save {$file}\n";
-      return;
-    }
-    shell_exec("/sbin/pfctl -q -t $table -T replace -f $file");
   }
 }
