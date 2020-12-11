@@ -29,11 +29,50 @@ class DefaultController extends Controller
                 'class' => \yii\filters\AccessControl::class,
                 'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite'],
                 'rules' => [
+
+                  [
+                    'actions'=> ['create'],
+                    'allow'=> false,
+                    'roles' => ['@'],
+                    'matchCallback' => function ($rule, $action) {
+                      return (\Yii::$app->user->identity->teamLeader!==null || \Yii::$app->user->identity->team!==null);
+                    },
+                    'denyCallback' => function() {
+                      \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
+                      return $this->redirect(['index']);
+                    }
+                  ],
+                  [ // Only join when not on team
+                    'actions'=> ['join','invite'],
+                    'allow'=> false,
+                    'roles' => ['@'],
+                    'matchCallback' => function ($rule, $action) {
+                      return \Yii::$app->user->identity->team!==null;
+                    },
+                    'denyCallback' => function() {
+                      \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
+                      return $this->redirect(['index']);
+                    }
+                  ],
+                  [ // Only allow updates from teamLeaders
+                    'actions'=> ['update'],
+                    'allow' => false,
+                    'roles' => ['@'],
+                    'matchCallback' => function ($rule, $action) {
+                      return \Yii::$app->user->identity->teamLeader===null;
+                    },
+                    'denyCallback' => function() {
+                      \Yii::$app->session->setFlash('error', 'You are not the leader of any teams.');
+                      return $this->redirect(['index']);
+                    }
+                  ],
+
                   [
                      'actions' => ['reject'],
                      'allow' => false,
+                     'roles' => ['@'],
                      'matchCallback' => function ($rule, $action) {
-                         return Yii::$app->sys->event_start!==false && (time()>=Yii::$app->sys->event_start && time()<=Yii::$app->sys->event_end);
+                         return \Yii::$app->sys->event_start!==false && (time()>=\Yii::$app->sys->event_start && time()<=\Yii::$app->sys->event_end);
                      },
                      'denyCallback' => function() {
                        \Yii::$app->session->setFlash('info', 'These actions are disabled during the competition');
@@ -43,7 +82,7 @@ class DefaultController extends Controller
                  'disabledRoute'=>[
                      'allow' => false,
                      'matchCallback' => function ($rule, $action) {
-                       return Yii::$app->DisabledRoute->disabled($action);
+                       return \Yii::$app->DisabledRoute->disabled($action);
                      },
                      'denyCallback' => function() {
                        throw new \yii\web\HttpException(404,'This area is disabled.');
@@ -120,11 +159,6 @@ class DefaultController extends Controller
      */
     public function actionCreate()
     {
-      if(Yii::$app->user->identity->teamLeader!==null || Yii::$app->user->identity->team!==null )
-      {
-        return $this->redirect(['index']);
-      }
-
       $model=new CreateTeamForm(['scenario' => CreateTeamForm::SCENARIO_CREATE]);
       if($model->load(Yii::$app->request->post()) && $model->create())
       {
@@ -146,11 +180,6 @@ class DefaultController extends Controller
      */
     public function actionJoin($token)
     {
-      if(Yii::$app->user->identity->team!==null)
-      {
-        Yii::$app->session->setFlash('error', 'You are already member of a team.');
-        return $this->redirect(['index']);
-      }
 
       $team=$this->findModel(['token'=>$token]);
 
@@ -191,11 +220,6 @@ class DefaultController extends Controller
      */
     public function actionUpdate()
     {
-        if(Yii::$app->user->identity->teamLeader===null)
-        {
-          Yii::$app->session->setFlash('error', 'You are not the leader of any teams.');
-          return $this->redirect(['index']);
-        }
 
         $team=$this->findModel(Yii::$app->user->identity->teamLeader->id);
         $team->scenario='update';
@@ -283,11 +307,6 @@ class DefaultController extends Controller
     {
       $team=$this->findModel(['token'=>$token]);
 
-      if(Yii::$app->user->identity->team)
-      {
-        Yii::$app->session->setFlash('error', 'You are already a member of a team.');
-        return $this->redirect(['index']);
-      }
       if($team->academic!==Yii::$app->user->identity->academic)
       {
         Yii::$app->session->setFlash('error', 'The team you are trying to access is not of the same academic type.');
