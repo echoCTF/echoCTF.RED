@@ -299,17 +299,8 @@ class TargetController extends Controller {
         $ips[]=$target->ipoctet;
       else {
         $networks[$target->network->codename][]=$target->ipoctet;
-        if($target->network->public===false)
-        {
-          $rules[]=sprintf("pass quick inet from <%s_clients> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename,$target->network->codename);
-          $rules[]=sprintf("pass quick from <%s> to <%s_clients>",$target->network->codename,$target->network->codename);
-        }
-        else
-        {
-          $rules[]=sprintf("pass quick inet from <offense_activated> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename);
-          $rules[]=sprintf("pass quick from <%s> to <offense_activated>",$target->network->codename);
-        }
-
+        $rules[]=Pf::allowToNetwork($target);
+        $rules[]=Pf::allowToClient($target);
       }
     }
     Pf::store($base.'/targets.conf',$ips);
@@ -320,12 +311,8 @@ class TargetController extends Controller {
       $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
     }
 
-    if($rules!==[])
-    {
-      $rules[]="\n";
-      Pf::store("$base/targets_networks.conf",$rules);
-      Pf::load_anchor_file("targets/networks","$base/targets_networks.conf");
-    }
+    Pf::store("$base/targets_networks.conf",$rules);
+    Pf::load_anchor_file("targets/networks","$base/targets_networks.conf");
   }
 
   /*
