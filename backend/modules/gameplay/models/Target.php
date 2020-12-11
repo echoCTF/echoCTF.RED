@@ -49,157 +49,9 @@ use app\modules\activity\models\Headshot;
  * @property Headshot[] $headshots
  * @property int $memory
  */
-class Target extends \yii\db\ActiveRecord
+class Target extends TargetAR
 {
-  public $ipoctet;
-  private $container;
-  public $statuses=[
-    'online'=>'online',
-    'offline'=>'offline',
-    'powerup'=>'powerup',
-    'powerdown'=>'powerdown',
-    'maintenance'=>'maintenance'];
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function tableName()
-  {
-    return 'target';
-  }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['description'], 'string'],
-            [['name', 'fqdn', 'mac'], 'required'],
-            [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp'], 'integer'],
-            [['ipoctet'], 'ip'],
-            [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
-            [['image'], 'filter', 'filter'=>'strtolower'],
-            [['mac'], 'string', 'max' => 30],
-            [['name'], 'unique'],
-            [['fqdn'], 'unique'],
-            [['mac'], 'unique'],
-            [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
-            [['status'], 'default', 'value'=> 'offline'],
-            [['scheduled_at'], 'datetime', 'format'=>'php:Y-m-d H:i:s'],
-
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'fqdn' => 'Fqdn',
-            'purpose' => 'Purpose',
-            'description' => 'Description',
-            'ip' => 'Ip',
-            'mac' => 'Mac',
-            'active' => 'Active',
-            'net' => 'Net',
-            'server' => 'Server',
-            'image' => 'Image',
-            'dns' => 'Dns',
-            'parameters' => 'Parameters',
-            'rootable' => 'Rootable',
-            'difficulty' => 'Difficulty',
-            'suggested_xp'=>'Suggested XP',
-            'required_xp'=>'Required XP',
-            'timer'=>'Timer',
-        ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFindings()
-    {
-        return $this->hasMany(Finding::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNetworkTarget()
-    {
-        return $this->hasOne(NetworkTarget::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNetwork()
-    {
-        return $this->hasOne(Network::class, ['id' => 'network_id'])->via('networkTarget');
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTargetVariables()
-    {
-        return $this->hasMany(TargetVariable::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTargetVolumes()
-    {
-        return $this->hasMany(TargetVolume::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTreasures()
-    {
-        return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight' => SORT_DESC,'id'=>SORT_DESC]);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHeadshots()
-    {
-        return $this->hasMany(Headshot::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSpinQueue()
-    {
-        return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
-    }
-
-    public function afterFind() {
-      parent::afterFind();
-      $this->ipoctet=long2ip($this->ip);
-    }
-
-
-    public function beforeSave($insert)
-    {
-      if(parent::beforeSave($insert))
-      {
-          $this->ip=ip2long($this->ipoctet);
-          return true;
-      }
-      else
-      {
-          return false;
-      }
-    }
+    private $container;
 
     public function spin()
     {
@@ -256,6 +108,7 @@ class Target extends \yii\db\ActiveRecord
       $hostConfig->setRestartPolicy($restartPolicy);
       return $hostConfig;
     }
+
     public function getContainer()
     {
       try
@@ -280,6 +133,7 @@ class Target extends \yii\db\ActiveRecord
     {
       return (int) (new \yii\db\Query())->from('finding')->where(['target_id'=>$this->id])->sum('points');
     }
+
     public function getTreasurePoints()
     {
       return (int) (new \yii\db\Query())->from('treasure')->where(['target_id'=>$this->id])->sum('points');
@@ -340,6 +194,7 @@ class Target extends \yii\db\ActiveRecord
     }
 
   }
+
   public function powerdown()
   {
     if($this->destroy())
