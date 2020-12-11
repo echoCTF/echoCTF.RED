@@ -152,13 +152,7 @@ class DefaultController extends Controller
         return $this->redirect(['index']);
       }
 
-      $team=$this->findOne(['token'=>$token]);
-
-      if($team===null)
-      {
-        Yii::$app->session->setFlash('error', 'The token you provided does not belong to any the teams.');
-        return $this->redirect(['index']);
-      }
+      $team=$this->findModel(['token'=>$token]);
 
       if($team->academic!==Yii::$app->user->identity->academic)
       {
