@@ -15,15 +15,11 @@ class SpinRestAction extends \yii\rest\ViewAction
   {
 
     \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
-    $target=Target::find()->where(['t.id'=>$id])->player_progress(\Yii::$app->user->id)->one();
     try
     {
-      if($target === null)
-        throw new NotFoundHttpException('The requested page does not exist.');
-      if($target->network !== null && NetworkPlayer::findOne($target->network->id,\Yii::$app->user->id) === null)
-        throw new NotFoundHttpException('Not allowed to spin target. You dont have access to this network.');
-      if($target->spinable !== true)
-        throw new NotFoundHttpException('Not allowed to spin target. Target not spinable.');
+      $target=$this->findModelProgres($id);
+      $this->checkNetwork($target);
+      $this->checkSpinable($target);
       $playerSpin=Yii::$app->user->identity->profile->spins;
       $SQ=new \app\modules\target\models\SpinQueue;
       $SQ->player_id=(int) \Yii::$app->user->id;
@@ -40,16 +36,36 @@ class SpinRestAction extends \yii\rest\ViewAction
     {
       Yii::$app->session->setFlash('error', $e->getMessage());
     }
+    return $this->redirectTo();
 
+  }
+
+  protected function redirectTo()
+  {
     if(Yii::$app->request->referrer)
     {
       return Yii::$app->getResponse()->redirect(Yii::$app->request->referrer);
     }
-    else
-    {
-      return Yii::$app->getResponse()->redirect(['/dashboard/index']);
-    }
+    return Yii::$app->getResponse()->redirect(['/dashboard/index']);
+  }
 
+  protected function findModelProgres($id)
+  {
+    if(($model=Target::find()->where(['t.id'=>$id])->player_progress(\Yii::$app->user->id)->one()) !== null)
+    {
+        return $model;
+    }
+    throw new NotFoundHttpException('The requested target does not exist.');
+  }
+  protected function checkNetwork($target)
+  {
+    if($target->network !== null && NetworkPlayer::findOne($target->network->id,\Yii::$app->user->id) === null)
+      throw new NotFoundHttpException('Not allowed to spin target. You dont have access to this network.');
+  }
+  protected function checkSpinable($target)
+  {
+    if($target->spinable !== true)
+      throw new NotFoundHttpException('Not allowed to spin target. Target not spinable.');
   }
 
 }
