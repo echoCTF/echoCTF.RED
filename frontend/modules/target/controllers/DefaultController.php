@@ -78,12 +78,7 @@ class DefaultController extends \app\components\BaseController
       {
         $sum=0;
         $profile=$this->findProfile($profile_id);
-        if(Yii::$app->user->isGuest && $profile->visibility != 'public')
-                return $this->redirect(['/']);
-
-        if($profile->visibility != 'public' && $profile->visibility != 'ingame' && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin !== true)
-                return $this->redirect(['/']);
-
+        $this->checkVisible($profile);
 
         $target=Target::find()->where(['t.id'=>$id])->player_progress($profile->player_id)->one();
         $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>$profile->player_id, 'finding.target_id'=>$id])->all();
@@ -336,5 +331,12 @@ class DefaultController extends \app\components\BaseController
 
         throw new NotFoundHttpException('The requested profile does not exist.');
     }
+    protected function checkVisible($profile)
+    {
+      if(Yii::$app->user->isGuest && $profile->visibility != 'public')
+              return $this->redirect(['/']);
 
+      if($profile->visibility != 'public' && $profile->visibility != 'ingame' && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin !== true)
+              return $this->redirect(['/']);
+    }
 }
