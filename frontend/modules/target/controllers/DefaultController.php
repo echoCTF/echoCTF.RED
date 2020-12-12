@@ -310,16 +310,13 @@ class DefaultController extends \app\components\BaseController
       $transaction=$connection->beginTransaction();
       try
       {
-        if($treasure !== null)
+        $PT=new PlayerTreasure();
+        $PT->player_id=(int) Yii::$app->user->id;
+        $PT->treasure_id=$treasure->id;
+        $PT->save();
+        if($treasure->appears !== -1)
         {
-          $PT=new PlayerTreasure();
-          $PT->player_id=(int) Yii::$app->user->id;
-          $PT->treasure_id=$treasure->id;
-          $PT->save();
-          if($treasure->appears !== -1)
-          {
-            $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
-          }
+          $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
         }
         $transaction->commit();
         if(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$treasure->target_id]))
