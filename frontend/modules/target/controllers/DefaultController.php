@@ -301,11 +301,8 @@ class DefaultController extends \app\components\BaseController
     }
     protected function checkVisible($profile)
     {
-      if(Yii::$app->user->isGuest && $profile->visibility != 'public')
-              return $this->redirect(['/']);
-
-      if($profile->visibility != 'public' && $profile->visibility != 'ingame' && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin !== true)
-              return $this->redirect(['/']);
+      if(!$profile->visible)
+          return $this->redirect(['/']);
     }
     protected function doClaim($treasure)
     {
