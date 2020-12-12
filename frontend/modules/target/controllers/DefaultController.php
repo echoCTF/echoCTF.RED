@@ -218,39 +218,7 @@ class DefaultController extends \app\components\BaseController
           return $this->renderAjax('claim');
         }
 
-        $connection=Yii::$app->db;
-        $transaction=$connection->beginTransaction();
-        try
-        {
-          if($treasure !== null)
-          {
-            $PT=new PlayerTreasure();
-            $PT->player_id=(int) Yii::$app->user->id;
-            $PT->treasure_id=$treasure->id;
-            $PT->save();
-            if($treasure->appears !== -1)
-            {
-              $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
-            }
-          }
-          $transaction->commit();
-          if(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$treasure->target_id]))
-          {
-            $treasure->points=$treasure->points/2;
-          }
-          Yii::$app->session->setFlash('success', sprintf('Flag [%s] claimed for %s points', $treasure->name, number_format($treasure->points)));
-        }
-        catch(\Exception $e)
-        {
-          $transaction->rollBack();
-          Yii::$app->session->setFlash('error', 'Flag failed');
-          throw $e;
-        }
-        catch(\Throwable $e)
-        {
-          $transaction->rollBack();
-          throw $e;
-        }
+        $this->doClaim($treasure);
         return $this->renderAjax('claim');
     }
 
@@ -338,5 +306,41 @@ class DefaultController extends \app\components\BaseController
 
       if($profile->visibility != 'public' && $profile->visibility != 'ingame' && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin !== true)
               return $this->redirect(['/']);
+    }
+    protected function doClaim($treasure)
+    {
+      $connection=Yii::$app->db;
+      $transaction=$connection->beginTransaction();
+      try
+      {
+        if($treasure !== null)
+        {
+          $PT=new PlayerTreasure();
+          $PT->player_id=(int) Yii::$app->user->id;
+          $PT->treasure_id=$treasure->id;
+          $PT->save();
+          if($treasure->appears !== -1)
+          {
+            $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
+          }
+        }
+        $transaction->commit();
+        if(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$treasure->target_id]))
+        {
+          $treasure->points=$treasure->points/2;
+        }
+        Yii::$app->session->setFlash('success', sprintf('Flag [%s] claimed for %s points', $treasure->name, number_format($treasure->points)));
+      }
+      catch(\Exception $e)
+      {
+        $transaction->rollBack();
+        Yii::$app->session->setFlash('error', 'Flag failed');
+        throw $e;
+      }
+      catch(\Throwable $e)
+      {
+        $transaction->rollBack();
+        throw $e;
+      }
     }
 }
