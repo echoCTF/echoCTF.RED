@@ -4,11 +4,16 @@ Manipulate and manage targets.
 * Optional command line arguments are enclosed in `[]`
 * Required command line arguments are enclosed in `<>`
 
-## Cron command
-Check for changes on the targets during the last INTERVAL units. This is what powers up/down targets based on the `scheduled_at`
+## Check heath of target container
+Check health status of running target containers and optionally restart
+unhealthy ones.
 
-Usage: `./yii target/cron [interval] [unit]`
+Usage: `./yii target/healthcheck [spin]`
 
+
+Check hosts for `unhealthy` status and RESTART them.
+
+Usage: `./yii target/healthcheck 1`
 
 ## Destroy target containers
 Destroy a running target container, this command only affects the container and not the database record
@@ -34,23 +39,6 @@ If the target image already exists on the docker server then it will check with 
 Process target spin queue as requested by players,
 
 Usage: `./yii target/spin-queue`
-
-## Check heath of target container
-Check health status of running target containers and optionally restart
-unhealthy ones.
-
-Usage: `./yii target/healthcheck [spin]`
-
-
-Check hosts for `unhealthy` status and RESTART them.
-
-Usage: `./yii target/healthcheck 1`
-
-
-## Update target related PF settings
-Update PF `/etc/targets.conf` and `/etc/match-findings-pf.conf`
-
-Usage: `./yii target/pf [load]`
 
 
 ## Restart targets
