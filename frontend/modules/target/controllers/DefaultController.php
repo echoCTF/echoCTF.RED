@@ -136,12 +136,9 @@ class DefaultController extends \app\components\BaseController
       if(!Yii::$app->user->isGuest)
       {
         $target=Target::find()->where(['t.id'=>$id])->player_progress((int) Yii::$app->user->id)->one();
-        $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>Yii::$app->user->id, 'finding.target_id'=>$id])->all();
-        $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>Yii::$app->user->id, 'treasure.target_id'=>$id])->all();
-        foreach($PF as $pf)
-          $sum+=$pf->finding->points;
-        foreach($PT as $pt)
-          $sum+=$pt->treasure->points;
+        $PF=PlayerFinding::find()->select("sum(player_finding.points) as points")->joinWith(['finding'])->where(['player_id'=>Yii::$app->user->id, 'finding.target_id'=>$id])->one();
+        $PT=PlayerTreasure::find()->select("sum(player_treasure.points) as points")->joinWith(['treasure'])->where(['player_id'=>Yii::$app->user->id, 'treasure.target_id'=>$id])->one();
+        $sum=$PF->points+$PT->points;
       }
       $treasures=$findings=[];
       foreach($target->treasures as $treasure)
@@ -319,11 +316,8 @@ class DefaultController extends \app\components\BaseController
           $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
         }
         $transaction->commit();
-        if(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$treasure->target_id]))
-        {
-          $treasure->points=$treasure->points/2;
-        }
-        Yii::$app->session->setFlash('success', sprintf('Flag [%s] claimed for %s points', $treasure->name, number_format($treasure->points)));
+        $PT->refresh();
+        Yii::$app->session->setFlash('success', sprintf('Flag [%s] claimed for %s points', $treasure->name, number_format($PT->points)));
       }
       catch(\Exception $e)
       {
