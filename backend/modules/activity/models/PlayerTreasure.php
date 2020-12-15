@@ -11,6 +11,7 @@ use app\modules\gameplay\models\Treasure;
  *
  * @property int $player_id
  * @property int $treasure_id
+ * @property float $points
  * @property string $ts
  *
  * @property Player $player

@@ -21,7 +21,7 @@ class PlayerTreasureSearch extends PlayerTreasure
     {
         return [
             [['player_id', 'treasure_id'], 'integer'],
-            [['ts', 'player', 'treasure', 'target_id'], 'safe'],
+            [['ts', 'player', 'treasure', 'target_id','points'], 'safe'],
         ];
     }
 
@@ -63,6 +63,7 @@ class PlayerTreasureSearch extends PlayerTreasure
         $query->andFilterWhere([
             'player_treasure.player_id' => $this->player_id,
             'player_treasure.treasure_id' => $this->treasure_id,
+            'player_treasure.points' => $this->points,
             'player_treasure.ts' => $this->ts,
             'treasure.target_id' => $this->target_id,
         ]);

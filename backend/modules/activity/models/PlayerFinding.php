@@ -11,6 +11,7 @@ use app\modules\gameplay\models\Finding;
  *
  * @property int $player_id
  * @property int $finding_id
+ * @property float $points
  * @property string $ts
  *
  * @property Player $player
