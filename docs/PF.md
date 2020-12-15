@@ -69,7 +69,7 @@ As their names suggest, `registry_clients` lists IP's that are allowed to connec
 table <targets> persist counters file "/etc/targets.conf"
 ```
 
-Table that holds the IPs of the (active) targets that users have unrestricted access to. This table is maintained by the backend console command `backend/yii target/pf`.
+Table that holds the IPs of the (active) targets that users have unrestricted access to. This table is maintained by the backend console command `backend/yii cron/pf`.
 
 ## Tables `offense_network` and `offense_activated`
 ```

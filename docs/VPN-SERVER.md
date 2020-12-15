@@ -235,7 +235,7 @@ cp ansible/templates/pf.conf.j2 /etc/pf.conf
 cp ansible/templates/vpn.service.conf.j2 /etc/service.pf.conf
 touch /etc/administrators.conf /etc/maintenance.conf /etc/moderators.conf
 touch /etc/registry_clients.conf /etc/registry_servers.conf /etc/targets.conf
-./backend/yii target/pf
+./backend/yii cron/pf
 ```
 
 Edit `/etc/pf.conf` and replace the address from `Line:11` for table `moderators_allowed`. The current one `0.0.0.0/0` allows everyone to access all the services. Once done verify the the validity of `pf.conf` and load it
@@ -258,7 +258,7 @@ Update your cron to include the following (assuming you cloned the repositories 
   */2 * * * * /root/echoCTF.RED/backend/yii target/healthcheck 1
 
   # Perform scheduled powerup/powerdown of targets based on scheduled_at
-  */4 * * * * /root/echoCTF.RED/backend/yii target/cron
+  */4 * * * * /root/echoCTF.RED/backend/yii cron
 
   # Restart containers every 24 hours to ensure clean state
   */10 * * * * /root/echoCTF.RED/backend/yii target/restart

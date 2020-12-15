@@ -12,7 +12,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $player_id
  * @property int $treasure_id
  * @property string $ts
- *
+ * @property float $points
+*
  * @property Player $player
  * @property Treasure $treasure
  */
@@ -24,6 +25,23 @@ class PlayerTreasure extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'player_treasure';
+    }
+
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'treasure_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'points' => AttributeTypecastBehavior::TYPE_FLOAT,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
+            'typecastAfterFind' => true,
+        ],
+      ];
     }
 
     /**

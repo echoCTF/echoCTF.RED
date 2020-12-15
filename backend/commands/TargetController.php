@@ -3,6 +3,7 @@ namespace app\commands;
 
 use yii\console\Controller;
 use yii\console\ExitCode;
+use yii\helpers\ArrayHelper;
 use Docker\DockerClientFactory;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Notification;
@@ -10,56 +11,11 @@ use app\modules\activity\models\SpinHistory;
 use app\modules\gameplay\models\Target;
 use app\modules\gameplay\models\Finding;
 use app\modules\settings\models\Sysconfig;
+use app\components\Pf;
 use Docker\Docker;
 use Http\Client\Socket\Exception\ConnectionException;
 
 class TargetController extends Controller {
-
-  /*
-   * Check for targets that need to power up based on their scheduled_at details
-   * or targets that have been changed during the past $interval per $unit
-   * (default is during the last 5 minutes)
-   * @param int $interval.
-   * @param string $unit (MySQL INTERVAL eg MONTH, DAY, HOUR, MINUTE, SECOND).
-   */
-  public function actionCron($interval=5, $unit="MINUTE")
-  {
-    // Check targets with scheduled_at>=NOW()
-    $targets=Target::find();
-    $targets->where(new \yii\db\Expression("IFNULL(scheduled_at,NOW())<NOW() OR (ts >= NOW() - INTERVAL {$interval} {$unit} and active=1)"))
-    ->orWhere(new \yii\db\Expression("id IN (SELECT target_id FROM finding WHERE ts >=NOW() - INTERVAL {$interval} {$unit})"));
-    //echo $targets->createCommand()->getRawSql();
-
-    foreach($targets->all() as $target)
-    {
-      printf("Target %s ", $target->fqdn);
-      $requirePF=false;
-      switch($target->status)
-      {
-        case 'offline':
-        case 'powerdown':
-          printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
-          $requirePF=$target->powerdown();
-          printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
-          break;
-        case 'powerup':
-          $target->pull();
-          printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $target->spin() ? "success" : "fail");
-          $target->status='online';
-          $target->scheduled_at=null;
-          $target->active=1;
-          $requirePF=true;
-          $target->save();
-          break;
-        default:
-          printf("updated at %s\n", $target->ts);
-          $requirePF=true;
-          break;
-      }
-      if($requirePF) $this->actionPf(true);
-    }
-    //foreach target check
-  }
 
   /*
    * Destroy a docker container for the given $target_id
@@ -229,7 +185,7 @@ class TargetController extends Controller {
    */
   public function actionRestart()
   {
-    foreach(Target::find()->select('server')->distinct()->all() as $master)
+    foreach(Target::find()->docker_servers()->all() as $master)
     {
       if($master->server == null) continue;
       $client=DockerClientFactory::create([
@@ -256,102 +212,14 @@ class TargetController extends Controller {
     } // end docker servers
   }
 
-  /**
-   * Populate pf related tables and rules for targets
-   */
-  public function actionPf($load=false,$base="/etc")
-  {
-    $this->active_targets_pf($base);
-    $this->match_findings($load,$base);
-  }
-
-  /*
-   * Geneate match rules for target findings and load them
-   */
-  private function match_findings($load,$base="/etc")
-  {
-    $networks=$rules=$frules=array();
-    $findings=Finding::find()->joinWith(['target'])->where(['target.active'=>true])->all();
-    foreach($findings as $finding)
-    {
-      if($finding->target->network)
-      {
-        $networks[$finding->target->network->codename]=$finding->target->network;
-      }
-      $frules[]=$finding->matchRule;
-    }
-
-    try
-    {
-      $ruleset=implode("\n", $frules)."\n";
-      $ruleset.=implode("\n",$rules);
-      file_put_contents($base.'/match-findings-pf.conf',$ruleset);
-    }
-    catch(\Exception $e)
-    {
-      echo "Failed to save $base/match-findings-pf.conf\n";
-      return;
-    }
-
-    if($load)
-      shell_exec("/sbin/pfctl -q -a offense/findings -Fr -f $base/match-findings-pf.conf");
-  }
-
-  /*
-   * Find and store active targets IP addresses on their PF table
-   */
-  private function active_targets_pf($base="/etc")
-  {
-    $ips=$networks=$rules=array();
-    $targets=Target::find()->where(['active'=>true])->all();
-    foreach($targets as $target)
-    {
-      if($target->networkTarget === NULL)
-        $ips[]=$target->ipoctet;
-      else {
-        $networks[$target->network->codename][]=$target->ipoctet;
-        if($target->network->public===false)
-        {
-          $rules[]=sprintf("pass quick inet from <%s_clients> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename,$target->network->codename);
-          $rules[]=sprintf("pass quick from <%s> to <%s_clients>",$target->network->codename,$target->network->codename);
-        }
-        else
-        {
-          $rules[]=sprintf("pass quick inet from <offense_activated> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$target->network->codename);
-          $rules[]=sprintf("pass quick from <%s> to <offense_activated>",$target->network->codename);
-        }
-
-      }
-    }
-    $this->store_and_load('targets', $base.'/targets.conf', $ips);
-    foreach($networks as $key => $val) {
-      $this->store_and_load($key, $base.'/'.$key.'.conf', $val);
-      $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
-    }
-
-    if($rules!==[])
-    {
-      $rules[]="\n";
-      try {
-        file_put_contents("$base/targets_networks.conf",implode("\n",$rules));
-        shell_exec("/sbin/pfctl -q -a targets/networks -Fr -f $base/targets_networks.conf");
-      }
-      catch (\Exception $e)
-      {
-        echo "Failed to store $base/targets_networks.conf\n";
-      }
-    }
-  }
-
   /*
    * Return an array of unhealthy containers or null
    */
   private function unhealthy_dockers()
   {
     $unhealthy=[];
-    foreach(Target::find()->select('server')->distinct()->all() as $target)
+    foreach(Target::find()->docker_servers()->all() as $target)
     {
-      if($target->server == null) continue;
       $docker=$this->docker_connect($target->server);
 
       $containers=$this->containers_list($docker);
@@ -403,23 +271,5 @@ class TargetController extends Controller {
       return false;
     }
     return $docker;
-  }
-
-  /**
-   * Store list of IP's to a file and load it on pf a pf table
-   */
-  private function store_and_load($table, $file, $contents)
-  {
-    if(empty($contents)) return;
-    try
-    {
-      file_put_contents($file, implode("\n", $contents)."\n");
-    }
-    catch(\Exception $e)
-    {
-      echo "Failed to save {$file}\n";
-      return;
-    }
-    shell_exec("/sbin/pfctl -q -t $table -T replace -f $file");
   }
 }

@@ -12,6 +12,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $player_id
  * @property int $finding_id
  * @property string $ts
+ * @property float $points
  *
  * @property Player $player
  * @property Finding $finding
@@ -25,6 +26,7 @@ class PlayerFinding extends \yii\db\ActiveRecord
     {
         return 'player_finding';
     }
+
     public function behaviors()
     {
       return [
@@ -33,6 +35,7 @@ class PlayerFinding extends \yii\db\ActiveRecord
             'attributeTypes' => [
                 'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                 'finding_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'points' => AttributeTypecastBehavior::TYPE_FLOAT,
             ],
             'typecastAfterValidate' => true,
             'typecastBeforeSave' => false,
