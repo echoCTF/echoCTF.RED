@@ -10,7 +10,7 @@ on:
 
 jobs:
   phpcomposer:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
 
@@ -41,7 +41,7 @@ jobs:
 
   dockerbuilds:
     needs: [phpcomposer]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     env:
       GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
     steps:

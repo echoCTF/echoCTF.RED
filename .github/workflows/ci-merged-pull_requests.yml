@@ -13,7 +13,7 @@ jobs:
   phpcomposer:
     if: github.event.pull_request.merged == 'true'
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
@@ -46,7 +46,7 @@ jobs:
   dockerbuilds:
     if: github.event.pull_request.merged == 'true'
     needs: [phpcomposer]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
