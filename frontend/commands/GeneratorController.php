@@ -68,16 +68,24 @@ class GeneratorController extends Controller {
       $urlmgr->addRules($config['components']['urlManager']['rules']);
       $urlmgr->init();
       $urllist=[];
-      foreach($config['components']['urlManager']['rules'] as $key => $val)
+      foreach ($config['components']['urlManager']['rules'] as $key => $val)
       {
-        if(strstr($key,'<profile')!==false)
-          $urllist[]=$urlmgr->createAbsoluteUrl([$val,'id'=>2,'profile_id'=>1]);
-        elseif(strstr($key,'<id')!==false)
-          $urllist[]=$urlmgr->createAbsoluteUrl([$val,'id'=>1]);
-        elseif(strstr($key,'<token')!==false)
-          $urllist[]=$urlmgr->createAbsoluteUrl([$val,'token'=>'abcdedf']);
+        if (strstr($key,'<profile') !== false)
+        {
+          $urllist[]=$urlmgr->createAbsoluteUrl([$val, 'id'=>2, 'profile_id'=>1]);
+        }
+        elseif (strstr($key,'<id') !== false)
+        {
+          $urllist[]=$urlmgr->createAbsoluteUrl([$val, 'id'=>1]);
+        }
+        elseif (strstr($key,'<token') !== false)
+        {
+          $urllist[]=$urlmgr->createAbsoluteUrl([$val, 'token'=>'abcdedf']);
+        }
         else
+        {
           $urllist[]=$urlmgr->createAbsoluteUrl($val);
+        }
       }
       echo implode("\n",array_unique($urllist)),"\n";
     }
