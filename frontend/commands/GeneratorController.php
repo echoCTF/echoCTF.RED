@@ -58,26 +58,31 @@ class GeneratorController extends Controller {
     public function actionUrls()
     {
       $config=include(__DIR__.'/../config/web.php');
+      $mcache=new \yii\caching\MemCache();
+      $mcache->setServers($config['components']['cache']['servers']);
+      $mcache->useMemcached=$config['components']['cache']['useMemcached'];
+
       $urlmgr=new \yii\web\UrlManager();
       $urlmgr->baseUrl="";
-      $urlmgr->setHostInfo("https://echoctf.red/");
+      $urlmgr->setHostInfo('https://'.$mcache->memcache->get('sysconfig:offense_domain'));
       $urlmgr->enablePrettyUrl = true;
       $urlmgr->enableStrictParsing = true;
       $urlmgr->showScriptName = false;
       $urlmgr->addRules($config['components']['urlManager']['rules']);
       $urlmgr->init();
       //var_dump($urlmgr->createUrl(['site/index']));
+      $urllist=[];
       foreach($config['components']['urlManager']['rules'] as $key => $val)
       {
         if(strstr($key,'<profile')!==false)
-          echo $urlmgr->createAbsoluteUrl([$val,'id'=>2,'profile_id'=>1]),"\n";
+          $urllist[]=$urlmgr->createAbsoluteUrl([$val,'id'=>2,'profile_id'=>1],'https');
         elseif(strstr($key,'<id')!==false)
-          echo $urlmgr->createAbsoluteUrl([$val,'id'=>1]),"\n";
+          $urllist[]=$urlmgr->createAbsoluteUrl([$val,'id'=>1],'https');
         elseif(strstr($key,'<token')!==false)
-          echo $urlmgr->createAbsoluteUrl([$val,'token'=>'abcdedf']),"\n";
+          $urllist[]=$urlmgr->createAbsoluteUrl([$val,'token'=>'abcdedf'],'https');
         else
-          echo $urlmgr->createAbsoluteUrl($val),"\n";
-
+          $urllist[]=$urlmgr->createAbsoluteUrl($val,'https');
       }
+      echo implode("\n",array_unique($urllist)),"\n";
     }
 }
