@@ -37,7 +37,7 @@ class ProfileController extends \app\components\BaseController
                       'actions' => ['ovpn'],
                    ],
                    'disabledRoute'=>[
-                     'actions' => ['badge', 'me', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
+                     'actions' => ['badge', 'me', 'notifications', 'hints', 'update', 'ovpn', 'settings','index'],
                    ],
                    [
                      'actions' => ['index','badge'],

@@ -42,7 +42,7 @@ class DefaultController extends \app\components\BaseController
               [
                   'allow' => true,
                   'roles'=>['@']
-              ],              
+              ],
           ],
       ]]);
   }
@@ -111,7 +111,7 @@ class DefaultController extends \app\components\BaseController
     public function actionDownload(int $id)
     {
         $model=$this->findModel($id);
-        if($model->filename === null)
+        if(empty($model->filename))
             throw new NotFoundHttpException('The requested challenge does not have a file to download.');
         $storagePath=Yii::getAlias(Yii::$app->sys->challenge_home);
 

@@ -10,7 +10,7 @@ on:
 
 jobs:
   phpcomposer:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
 
@@ -32,16 +32,16 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        composer install --no-dev --prefer-dist --no-progress --no-suggest
+        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        composer install --no-dev --prefer-dist --no-progress --no-suggest
+        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
   dockerbuilds:
     needs: [phpcomposer]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     env:
       GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
     steps:
@@ -58,12 +58,12 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        composer install --no-dev --prefer-dist --no-progress --no-suggest
+        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        composer install --no-dev --prefer-dist --no-progress --no-suggest
+        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Build the all-in-one Docker image
       run: docker build --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest

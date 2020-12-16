@@ -40,7 +40,7 @@ class DefaultController extends \app\components\BaseController
           return ArrayHelper::merge(parent::behaviors(),[
               'access' => [
                   'class' => AccessControl::class,
-                  'only' => ['index', 'claim', 'spin','versus'],
+                  'only' => ['index', 'claim', 'spin','versus','badge'],
                   'rules' => [
                        'eventStartEnd'=>[
                           'actions' => ['index', 'claim', 'spin','versus'],
@@ -49,7 +49,7 @@ class DefaultController extends \app\components\BaseController
                         'actions' => ['index', 'claim', 'spin','versus'],
                       ],
                       'disabledRoute'=>[
-                        'actions' => ['index', 'claim', 'spin','versus'],
+                        'actions' => ['badge', 'index', 'claim', 'spin','versus'],
                       ],
                       [
                           'allow' => true,
@@ -58,9 +58,9 @@ class DefaultController extends \app\components\BaseController
                           'verbs'=>['post'],
                       ],
                       [
-                          'actions'=>['index','versus'],
+                          'actions'=>['index','versus','badge'],
                           'allow' => true,
-                          'roles'=>['@']
+                          #'roles'=>['*']
                       ],
                   ],
               ],

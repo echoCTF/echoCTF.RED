@@ -59,7 +59,7 @@ use yii\helpers\Url;
                   <a class="dropdown-item" href="/profile/me">Profile</a>
                   <a class="dropdown-item" href="/profile/settings">Settings</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="/site/logout" style="padding: 0;">
+                  <a class="dropdown-item" href="<?=Url::to(['/site/logout'])?>" style="padding: 0;">
                     <?php
                     if(!Yii::$app->user->isGuest)
                     {

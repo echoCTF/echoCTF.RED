@@ -195,7 +195,7 @@ $config=[
                 'challenge/<id:\d+>' => 'challenge/default/view',
                 'challenge/<id:\d+>/download' => 'challenge/default/download',
                 // app/modules/target/controllers/TargetController.php
-                'target/<id:\d+>/rate' => 'game/default/rate',
+                //'target/<id:\d+>/rate' => 'game/default/rate',
                 'target/<id:\d+>' => 'target/default/index',
                 'target/<id:\d+>/badge' => 'target/default/badge',
                 'target/<id:\d+>/spin'=>'target/default/spin',
@@ -220,12 +220,12 @@ $config=[
                 // app/controllers/DashboardController.php
                 'dashboard' => 'dashboard/index',
                 // HELP MODULE
-                'help/faq' => 'help/faq/index',
                 'faq' => 'help/faq/index',
-                //'help/rules' => 'help/rule/index',
+                'help/faq' => 'help/faq/index',
                 'rules' => 'help/rule/index',
-                'help/instructions' => 'help/instruction/index',
+                'help/rules' => 'help/rule/index',
                 'instructions' => 'help/instruction/index',
+                'help/instructions' => 'help/instruction/index',
                 // app/controllers/LegalController.php
                 'terms_and_conditions'=>'legal/terms-and-conditions',
                 'legal/terms-and-conditions'=>'legal/terms-and-conditions',

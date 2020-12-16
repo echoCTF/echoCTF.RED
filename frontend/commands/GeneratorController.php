@@ -55,4 +55,38 @@ class GeneratorController extends Controller {
       }
     }
 
+    public function actionUrls($domain)
+    {
+      $config=include(__DIR__.'/../config/web.php');
+
+      $urlmgr=new \yii\web\UrlManager();
+      $urlmgr->baseUrl="";
+      $urlmgr->setHostInfo($domain);
+      $urlmgr->enablePrettyUrl = true;
+      $urlmgr->enableStrictParsing = true;
+      $urlmgr->showScriptName = false;
+      $urlmgr->addRules($config['components']['urlManager']['rules']);
+      $urlmgr->init();
+      $urllist=[];
+      foreach ($config['components']['urlManager']['rules'] as $key => $val)
+      {
+        if (strstr($key,'<profile') !== false)
+        {
+          $urllist[]=$urlmgr->createAbsoluteUrl([$val, 'id'=>2, 'profile_id'=>1]);
+        }
+        elseif (strstr($key,'<id') !== false)
+        {
+          $urllist[]=$urlmgr->createAbsoluteUrl([$val, 'id'=>1]);
+        }
+        elseif (strstr($key,'<token') !== false)
+        {
+          $urllist[]=$urlmgr->createAbsoluteUrl([$val, 'token'=>'abcdedf']);
+        }
+        else
+        {
+          $urllist[]=$urlmgr->createAbsoluteUrl($val);
+        }
+      }
+      echo implode("\n",array_unique($urllist)),"\n";
+    }
 }

@@ -13,7 +13,7 @@ jobs:
   phpcomposer:
     if: github.event.pull_request.merged == 'true'
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
@@ -36,17 +36,17 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        composer install --no-dev --prefer-dist --no-progress --no-suggest
+        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        composer install --no-dev --prefer-dist --no-progress --no-suggest
+        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
   dockerbuilds:
     if: github.event.pull_request.merged == 'true'
     needs: [phpcomposer]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
 
     steps:
     - uses: actions/checkout@v2
