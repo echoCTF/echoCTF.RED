@@ -55,4 +55,29 @@ class GeneratorController extends Controller {
       }
     }
 
+    public function actionUrls()
+    {
+      $config=include(__DIR__.'/../config/web.php');
+      $urlmgr=new \yii\web\UrlManager();
+      $urlmgr->baseUrl="";
+      $urlmgr->setHostInfo("https://echoctf.red/");
+      $urlmgr->enablePrettyUrl = true;
+      $urlmgr->enableStrictParsing = true;
+      $urlmgr->showScriptName = false;
+      $urlmgr->addRules($config['components']['urlManager']['rules']);
+      $urlmgr->init();
+      //var_dump($urlmgr->createUrl(['site/index']));
+      foreach($config['components']['urlManager']['rules'] as $key => $val)
+      {
+        if(strstr($key,'<profile')!==false)
+          echo $urlmgr->createAbsoluteUrl([$val,'id'=>2,'profile_id'=>1]),"\n";
+        elseif(strstr($key,'<id')!==false)
+          echo $urlmgr->createAbsoluteUrl([$val,'id'=>1]),"\n";
+        elseif(strstr($key,'<token')!==false)
+          echo $urlmgr->createAbsoluteUrl([$val,'token'=>'abcdedf']),"\n";
+        else
+          echo $urlmgr->createAbsoluteUrl($val),"\n";
+
+      }
+    }
 }
