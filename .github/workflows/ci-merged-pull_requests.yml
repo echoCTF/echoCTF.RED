@@ -36,12 +36,12 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        php7.4 composer update --no-dev --prefer-dist --no-progress --no-suggest
+        php7.4 composer update --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        php7.4 composer update --no-dev --prefer-dist --no-progress --no-suggest
+        php7.4 composer update --no-dev --prefer-dist --no-progress
 
   dockerbuilds:
     if: github.event.pull_request.merged == 'true'
