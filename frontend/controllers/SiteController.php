@@ -27,7 +27,7 @@ class SiteController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'register', 'verify-email', 'resend-verification-email'],
+                'only' => ['logout', 'register', 'verify-email', 'resend-verification-email','changelog'],
                 'rules' => [
                     'eventActive'=>[
                       'actions' => ['register', 'verify-email', 'resend-verification-email'],
@@ -77,6 +77,11 @@ class SiteController extends \app\components\BaseController
                       'actions' => ['index','register','verify-email', 'resend-verification-email'],
                       'allow' => true,
                       'roles'=>['?']
+                    ],
+                    [
+                      'actions' => ['changelog'],
+                      'allow' => true,
+                      'roles'=>['*']
                     ],
                 ],
             ],
