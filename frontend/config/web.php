@@ -193,7 +193,7 @@ $config=[
                 // app/modules/challenge/controllers/ChallengeController.php
                 'challenges' => 'challenge/default/index',
                 'challenge/<id:\d+>' => 'challenge/default/view',
-                //'challenge/<id:\d+>/download' => 'challenge/default/download',
+                'challenge/<id:\d+>/download' => 'challenge/default/download',
                 // app/modules/target/controllers/TargetController.php
                 'target/<id:\d+>/rate' => 'game/default/rate',
                 'target/<id:\d+>' => 'target/default/index',
@@ -216,7 +216,7 @@ $config=[
                 'profile/settings'=>'profile/settings',
                 'profile/notifications'=>'profile/notifications',
                 'profile/hints'=>'profile/hints',
-                'profile/robohash' => 'profile/robohash',
+//                'profile/robohash' => 'profile/robohash',
                 // app/controllers/DashboardController.php
                 'dashboard' => 'dashboard/index',
                 // HELP MODULE
