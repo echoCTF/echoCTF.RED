@@ -24,19 +24,43 @@ $this->params['breadcrumbs'][]=$this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            'player_id',
-            [
-                'attribute' => 'player',
-                'label'=>'Player',
-                'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
-            ],
-            'finding_id',
-            [
-              'attribute' => 'finding',
-              'label'=>'Finding',
-              'value'=> function($model) {return sprintf("id:%d %s", $model->finding_id, $model->finding->name);},
-            ],
-            'ts',
+          'player_id',
+          [
+            'attribute' => 'player',
+            'label'=>'Player',
+            'value'=> 'player.username',
+          ],
+          [
+            'attribute' => 'target_id',
+            'label'=>'Target ID',
+            'value'=> 'finding.target_id',
+          ],
+          'finding_id',
+          [
+            'attribute' => 'finding',
+            'label'=>'Finding',
+            'value'=> 'finding.name',
+          ],
+          [
+            'attribute' => 'points',
+            'label'=>'Points',
+            'value'=> 'points',
+          ],
+          'ts',
+
+//            'player_id',
+//            [
+//                'attribute' => 'player',
+//                'label'=>'Player',
+//                'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
+//            ],
+//            'finding_id',
+//            [
+//              'attribute' => 'finding',
+//              'label'=>'Finding',
+//              'value'=> function($model) {return sprintf("id:%d %s", $model->finding_id, $model->finding->name);},
+//            ],
+//            'ts',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

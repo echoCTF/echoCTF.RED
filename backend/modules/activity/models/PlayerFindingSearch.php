@@ -13,6 +13,8 @@ class PlayerFindingSearch extends PlayerFinding
 {
     public $player;
     public $finding;
+    public $target_id;
+    
     /**
      * {@inheritdoc}
      */
@@ -20,7 +22,7 @@ class PlayerFindingSearch extends PlayerFinding
     {
         return [
             [['player_id', 'finding_id'], 'integer'],
-            [['ts', 'player', 'finding'], 'safe'],
+            [['ts', 'player', 'finding', 'target_id','points'], 'safe'],
         ];
     }
 
@@ -54,8 +56,7 @@ class PlayerFindingSearch extends PlayerFinding
 
         if(!$this->validate())
         {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            $query->where('0=1');
             return $dataProvider;
         }
 
@@ -63,6 +64,8 @@ class PlayerFindingSearch extends PlayerFinding
         $query->andFilterWhere([
             'player_finding.player_id' => $this->player_id,
             'player_finding.finding_id' => $this->finding_id,
+            'player_finding.points' => $this->points,
+            'finding.target_id'=>$this->target_id,
             'player_finding.ts' => $this->ts,
         ]);
 
@@ -74,6 +77,10 @@ class PlayerFindingSearch extends PlayerFinding
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
+                  'target_id' => [
+                      'asc' => ['treasure.target_id' => SORT_ASC],
+                      'desc' => ['treasure.target_id' => SORT_DESC],
+                  ],
                   'player' => [
                       'asc' => ['player_id' => SORT_ASC],
                       'desc' => ['player_id' => SORT_DESC],

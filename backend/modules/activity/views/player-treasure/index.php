@@ -42,9 +42,9 @@ $this->params['breadcrumbs'][]=$this->title;
               'value'=> 'treasure.name',
             ],
             [
-              'attribute' => 'treasure.points',
+              'attribute' => 'points',
               'label'=>'Points',
-              'value'=> 'treasure.points',
+              'value'=> 'points',
             ],
             'ts',
 

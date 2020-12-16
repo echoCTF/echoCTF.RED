@@ -40,6 +40,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'label'=>'Treasure',
             'value'=> function($model) {return sprintf("id:%d %s", $model->treasure_id, $model->treasure->name);},
           ],
+          'points',
           'ts',
         ],
     ]) ?>
