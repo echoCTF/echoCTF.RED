@@ -379,7 +379,7 @@ class Player extends \yii\db\ActiveRecord
       return false;
     }
 
-    private function mail($content, $subject)
+    public function mail($content, $subject)
     {
       // Get mailer
       try
@@ -399,4 +399,5 @@ class Player extends \yii\db\ActiveRecord
       }
       return true;
   }
+
 }
