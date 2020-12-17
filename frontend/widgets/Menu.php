@@ -109,7 +109,7 @@ class Menu extends \yii\widgets\Menu
     {
         foreach($items as $i => $item)
         {
-            if(isset($item['visible']) && !$item['visible'])
+            if($this->isVisible($item))
             {
                 unset($items[$i]);
                 continue;
@@ -118,8 +118,8 @@ class Menu extends \yii\widgets\Menu
             {
                 $item['label']='';
             }
-            $encodeLabel=isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
-            $items[$i]['label']=$encodeLabel ? Html::encode($item['label']) : $item['label'];
+
+            $items[$i]['label']=$this->getEncodedLabels($item,$items);
             $items[$i]['icon']=isset($item['icon']) ? $item['icon'] : '';
             $hasActiveChild=false;
             if(isset($item['items']))
@@ -200,5 +200,15 @@ class Menu extends \yii\widgets\Menu
             return true;
         }
         return false;
+    }
+    protected function isVisible($item)
+    {
+      return isset($item['visible']) && !$item['visible'];
+    }
+
+    protected function getEncodedLabels($item,$items)
+    {
+      $encodeLabel=isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
+      return $encodeLabel ? Html::encode($item['label']) : $item['label'];
     }
 }
