@@ -59,4 +59,40 @@ class ImportPlayerForm extends Model
 
       return true;
     }
+
+    private function processCsvRecords()
+    {
+      foreach($this->csvRecords as $rec)
+      {
+        $p=new Player;
+        $p->username=$rec[0];
+        $p->fullname=$rec[0];
+        $p->email=$rec[0];
+        $p->academic=$rec[2] == 'no' ? 0 : 1;
+        $p->saveWithSsl();
+        $this->processTeam($rec,$p);
+      }
+    }
+
+    private function processTeam($rec,$p)
+    {
+      if(Team::find()->where(['name' => $rec[1]])->exists())
+      {
+        $team=Team::find()->where(['name' => $rec[1]])->one();
+        $tp=new TeamPlayer;
+        $tp->team_id=$team->id;
+        $tp->player_id=$p->id;
+        $tp->save();
+      }
+      else
+      {
+        $team=new Team;
+        $team->name=$rec[1];
+        $team->owner_id=$p->id;
+        $team->academic=$rec[2] == 'no' ? 0 : 1;
+        $team->save();
+      }
+
+    }
+
 }
