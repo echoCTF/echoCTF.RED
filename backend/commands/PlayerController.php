@@ -200,50 +200,12 @@ class PlayerController extends Controller {
       $playerSsl->player_id=$player->id;
       $playerSsl->generate();
       if($playerSsl->save() !== false)
-        $playerSsl->refresh();
-
-      //var_dump($team_name);
-
-      if($team_name !== false)
       {
-        $team=Team::findOne(['name'=>$team_name]);
-        if($team === null)
-        {
-          $team=new Team();
-          $team->name=$team_name;
-          $team->academic=$player->academic;
-          $team->token=Yii::$app->security->generateRandomString(20);
-          $team->owner_id=$player->id;
-          $team->description=$player->username;
-          $team->save(false);
-          $ts=new \app\modules\activity\models\TeamScore();
-          $ts->team_id=$team->id;
-          $ts->points=0;
-          $ts->save();
-        }
-
-        if($team !== NULL)
-        {
-          $tp=new TeamPlayer;
-          $tp->player_id=$player->id;
-          $tp->team_id=$team->id;
-          if($team->owner_id===$player->id)
-          {
-            $tp->approved=1;
-          }
-          else {
-            $tp->approved=intval($approved);
-          }
-          if(!$tp->save())
-            printf("Error saving team player\n");
-        }
+        $playerSsl->refresh();
       }
 
-//      $pi=new PlayerIp();
-//      $pi->player_id=$player->id;
-//      $pi->ipoctet=long2ip($player->id);
-//      if(!$pi->save())
-//        printf("Error saving Player IP\n");
+      $this->createTeam($team_name,$player);
+
       $trans->commit();
     }
     catch(\Exception $e)
@@ -354,5 +316,43 @@ class PlayerController extends Controller {
   public function p($message, array $params=[])
   {
       $this->stdout(Yii::t('app', $message, $params).PHP_EOL);
+  }
+
+  private function createTeam($team_name,$player)
+  {
+    if($team_name !== false)
+    {
+      $team=Team::findOne(['name'=>$team_name]);
+      if($team === null)
+      {
+        $team=new Team();
+        $team->name=$team_name;
+        $team->academic=$player->academic;
+        $team->token=Yii::$app->security->generateRandomString(20);
+        $team->owner_id=$player->id;
+        $team->description=$player->username;
+        $team->save(false);
+        $ts=new \app\modules\activity\models\TeamScore();
+        $ts->team_id=$team->id;
+        $ts->points=0;
+        $ts->save();
+      }
+
+      if($team !== NULL)
+      {
+        $tp=new TeamPlayer;
+        $tp->player_id=$player->id;
+        $tp->team_id=$team->id;
+        if($team->owner_id===$player->id)
+        {
+          $tp->approved=1;
+        }
+        else {
+          $tp->approved=intval($approved);
+        }
+        if(!$tp->save())
+          printf("Error saving team player\n");
+      }
+    }
   }
 }
