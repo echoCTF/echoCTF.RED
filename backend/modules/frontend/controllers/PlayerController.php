@@ -411,32 +411,8 @@ class PlayerController extends Controller
         // Generate activation URL
         $activationURL=sprintf("%s%s", $baseURL, $player->activkey);
         $content=$this->renderPartial('_account_activation_email', ['player' => $player, 'activationURL'=>$activationURL, 'event_name'=>$event_name]);
-        if($this->mailPlayer($content, $player, 'echoCTF RED re-sending of account activation URL'))
-          Yii::$app->session->setFlash('success', "The user has been mailed.");
-        else
-          Yii::$app->session->setFlash('notice', "Failed to send mail to user.");
-
+        $player->mail($content, 'echoCTF RED re-sending of account activation URL');
         return $this->goBack(Yii::$app->request->referrer);
       }
-
-
-      private function mailPlayer($content, $player, $subject)
-      {
-      // Get mailer
-        try
-        {
-          \Yii::$app->mailer->compose()
-            ->setFrom([Sysconfig::findOne('mail_from')->val => Sysconfig::findOne('mail_fromName')->val])
-            ->setTo([$player->email=>$player->username])
-            ->setSubject($subject)
-            ->setTextBody($content)
-            ->send();
-          }
-          catch(\Exception $e)
-          {
-            return false;
-          }
-          return true;
-    }
 
 }
