@@ -25,10 +25,9 @@ class MenuBase extends \yii\widgets\Menu
    * Get item label respecting encoding options
    *
    * @param array $item[]
-   * @param array $items[]
    * @return string
    */
-  protected function getEncodedLabels($item, $items)
+  protected function getEncodedLabels($item)
   {
     if(!isset($item['label']))
     {

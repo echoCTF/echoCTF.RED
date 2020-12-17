@@ -115,7 +115,7 @@ class Menu extends MenuBase
               continue;
           }
 
-          $items[$i]['label']=$this->getEncodedLabels($item, $items);
+          $items[$i]['label']=$this->getEncodedLabels($item);
           $items[$i]['icon']=$this->getItemIcon($item);
           $hasActiveChild=false;
           if (isset($item['items']))
