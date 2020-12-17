@@ -193,7 +193,10 @@ class PlayerController extends Controller {
         $playerSsl->refresh();
       }
 
-      $this->createTeam($team_name,$player);
+      if($team_name !== false)
+      {
+        $this->createTeam($team_name,$player);
+      }
 
       $trans->commit();
     }
@@ -324,8 +327,6 @@ class PlayerController extends Controller {
 
   private function createTeam($team_name,$player)
   {
-    if($team_name !== false)
-    {
       $team=Team::findOne(['name'=>$team_name]);
       if($team === null)
       {
@@ -342,21 +343,17 @@ class PlayerController extends Controller {
         $ts->save();
       }
 
-      if($team !== NULL)
+      $tp=new TeamPlayer;
+      $tp->player_id=$player->id;
+      $tp->team_id=$team->id;
+      if($team->owner_id===$player->id)
       {
-        $tp=new TeamPlayer;
-        $tp->player_id=$player->id;
-        $tp->team_id=$team->id;
-        if($team->owner_id===$player->id)
-        {
-          $tp->approved=1;
-        }
-        else {
-          $tp->approved=intval($approved);
-        }
-        if(!$tp->save())
-          printf("Error saving team player\n");
+        $tp->approved=1;
       }
-    }
+      else {
+        $tp->approved=intval($approved);
+      }
+      if(!$tp->save())
+        printf("Error saving team player\n");
   }
 }
