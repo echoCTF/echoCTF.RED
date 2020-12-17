@@ -364,4 +364,19 @@ class Player extends \yii\db\ActiveRecord
         return $this->auth_key;
     }
 
+    public function saveWithSsl()
+    {
+      if(!$this->save())
+        return false;
+
+      $playerSsl=new PlayerSsl();
+      $playerSsl->player_id=$this->id;
+      $playerSsl->generate();
+      if($playerSsl->save())
+      {
+        return $playerSsl->refresh();
+      }
+      return false;
+    }
+
 }
