@@ -33,6 +33,11 @@ class Menu extends MenuBase
 
     protected function determineActive($item, $hasActiveChild)
     {
+      if (isset($item['active']))
+      {
+        return $item['active'];
+      }
+      
       if(($this->activateParents && $hasActiveChild) || ($this->activateItems && $this->isItemActive($item)))
       {
           return true;
