@@ -157,43 +157,7 @@ class PlayerController extends Controller
               $trans=Yii::$app->db->beginTransaction();
               try
               {
-                foreach($model->csvRecords as $rec)
-                {
-                  $p=new Player;
-                  $p->username=$rec[0];
-                  $p->fullname=$rec[0];
-                  $p->email=$rec[0];
-                  $p->academic=$rec[2] == 'no' ? 0 : 1;
-                  $p->save(false);
-                  if(Team::find()->where(['name' => $rec[1]])->exists())
-                  {
-                    $team=Team::find()->where(['name' => $rec[1]])->one();
-                    $tp=new TeamPlayer;
-                    $tp->team_id=$team->id;
-                    $tp->player_id=$p->id;
-                    $tp->save();
-                  }
-                  else
-                  {
-                    $team=new Team;
-                    $team->name=$rec[1];
-                    $team->owner_id=$p->id;
-                    $team->academic=$rec[2] == 'no' ? 0 : 1;
-                    $team->save();
-                  }
-                  if($model->player_ssl == '1')
-                  {
-                    if($p->playerSsl !== NULL)
-                      $ps=$p->playerSsl;
-                    else
-                    {
-                      $ps=new PlayerSsl;
-                      $ps->player_id=$p->id;
-                    }
-                    $ps->generate();
-                    $ps->save();
-                  }
-                }
+                $this->processImportPost();
                 $trans->commit();
                 \Yii::$app->getSession()->setFlash('success', 'successful import of csv records');
               }
@@ -472,6 +436,46 @@ class PlayerController extends Controller
             return false;
           }
           return true;
+    }
+    private function processImportPost($model)
+    {
+      foreach($model->csvRecords as $rec)
+      {
+        $p=new Player;
+        $p->username=$rec[0];
+        $p->fullname=$rec[0];
+        $p->email=$rec[0];
+        $p->academic=$rec[2] == 'no' ? 0 : 1;
+        $p->save(false);
+        if(Team::find()->where(['name' => $rec[1]])->exists())
+        {
+          $team=Team::find()->where(['name' => $rec[1]])->one();
+          $tp=new TeamPlayer;
+          $tp->team_id=$team->id;
+          $tp->player_id=$p->id;
+          $tp->save();
+        }
+        else
+        {
+          $team=new Team;
+          $team->name=$rec[1];
+          $team->owner_id=$p->id;
+          $team->academic=$rec[2] == 'no' ? 0 : 1;
+          $team->save();
+        }
+        if($model->player_ssl == '1')
+        {
+          if($p->playerSsl !== NULL)
+            $ps=$p->playerSsl;
+          else
+          {
+            $ps=new PlayerSsl;
+            $ps->player_id=$p->id;
+          }
+          $ps->generate();
+          $ps->save();
+        }
       }
+    }
 
 }
