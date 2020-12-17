@@ -49,6 +49,16 @@ class PlayerController extends Controller
             ],
         ];
     }
+    public function actions()
+    {
+      $actions=parent::actions();
+      $actions['import']['class']='app\modules\frontend\actions\player\ImportAction';
+      $actions['ban']['class']='app\modules\frontend\actions\player\BanAction';
+      $actions['mail']['class']='app\modules\frontend\actions\player\MailAction';
+      $actions['reset-player-progress']['class']='app\modules\frontend\actions\player\ResetPlayerProgressAction';
+      $actions['reset-playdata']['class']='app\modules\frontend\actions\player\ResetPlaydataAction';
+      return $actions;
+    }
 
     /**
      * Lists all Player models.
@@ -139,68 +149,6 @@ class PlayerController extends Controller
       ]);
     }
 
-    /**
-     * Imports Players from uploaded CSV file.
-     * If import is successful, the browser will be redirected to the 'index' page.
-     * @return mixed
-     */
-    public function actionImport()
-    {
-      $model=new ImportPlayerForm();
-
-      if(Yii::$app->request->isPost)
-      {
-          $model->attributes=Yii::$app->request->post()["ImportPlayerForm"];
-          $model->csvFile=UploadedFile::getInstance($model, 'csvFile');
-          if($model->upload() && $model->parseCSV())
-          {
-              $trans=Yii::$app->db->beginTransaction();
-              try
-              {
-                $model->processCsvRecords();
-                $trans->commit();
-                \Yii::$app->getSession()->setFlash('success', 'successful import of csv records');
-              }
-              catch(\Exception $e)
-              {
-                $trans->rollBack();
-                Yii::$app->session->setFlash('error', 'Failed to import file, '.$e->getMessage());
-              }
-          }
-      }
-
-      return $this->render('import', ['model' => $model]);
-    }
-
-    public function actionResetPlayerProgress()
-    {
-      try
-      {
-        \Yii::$app->db->createCommand("CALL reset_player_progress()")->execute();
-        Yii::$app->session->setFlash('success', 'Successfully reseted all player progress');
-      }
-      catch(\Exception $e)
-      {
-        Yii::$app->session->setFlash('error', 'Failed to reset player progress');
-      }
-      return $this->redirect(['index']);
-
-    }
-
-    public function actionResetPlaydata()
-    {
-      try
-      {
-        \Yii::$app->db->createCommand("CALL reset_playdata()")->execute();
-        Yii::$app->session->setFlash('success', 'Successfully removed all player data');
-      }
-      catch(\Exception $e)
-      {
-        Yii::$app->session->setFlash('error', 'Failed to remove player data');
-      }
-      return $this->redirect(['index']);
-
-    }
 
     /**
      * Updates an existing Player model.
@@ -240,42 +188,6 @@ class PlayerController extends Controller
         return $this->redirect(['index']);
     }
 
-    /**
-     * Ban an existing Player model
-     * If ban is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionBan($id)
-    {
-      $trans=Yii::$app->db->beginTransaction();
-      try
-      {
-        if($this->findModel($id)->ban())
-        {
-          $trans->commit();
-          Yii::$app->session->setFlash('success', 'Player deleted and placed on banned table.');
-        }
-        else
-        {
-            throw new \LogicException('Faled to delete and ban player.');
-        }
-      }
-      catch(\Exception $e)
-      {
-        $trans->rollBack();
-        Yii::$app->session->setFlash('error', 'Failed to ban player.');
-      }
-      if(Yii::$app->request->referrer)
-      {
-        return $this->redirect(Yii::$app->request->referrer);
-      }
-      else
-      {
-        return $this->redirect(['index']);
-      }
-    }
 
     /**
      * Toggles an existing Player academic flag model.
@@ -389,7 +301,7 @@ class PlayerController extends Controller
      * @return Player the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    public function findModel($id)
     {
         if(($model=Player::findOne($id)) !== null)
         {
@@ -400,19 +312,5 @@ class PlayerController extends Controller
     }
 
 
-      /*
-        Mail Users their activation URL
-      */
-      public function actionMail(int $id, $baseURL="https://echoctf.red/activate/")
-      {
-        // Get innactive players
-        $player=$this->findModel($id);
-        $event_name=Sysconfig::findOne('event_name')->val;
-        // Generate activation URL
-        $activationURL=sprintf("%s%s", $baseURL, $player->activkey);
-        $content=$this->renderPartial('_account_activation_email', ['player' => $player, 'activationURL'=>$activationURL, 'event_name'=>$event_name]);
-        $player->mail($content, 'echoCTF RED re-sending of account activation URL');
-        return $this->goBack(Yii::$app->request->referrer);
-      }
 
 }
