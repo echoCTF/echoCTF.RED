@@ -107,25 +107,24 @@ class Menu extends \yii\widgets\Menu
      */
     protected function normalizeItems($items, &$active)
     {
-        foreach($items as $i => $item)
+        foreach ($items as $i => $item)
         {
-            if($this->isVisible($item))
+            if ($this->isVisible($item))
             {
                 unset($items[$i]);
                 continue;
             }
 
-
-            $items[$i]['label']=$this->getEncodedLabels($item,$items);
+            $items[$i]['label']=$this->getEncodedLabels($item, $items);
             $items[$i]['icon']=$this->getItemIcon($item);
             $hasActiveChild=false;
-            if(isset($item['items']))
+            if (isset($item['items']))
             {
                 $items[$i]['items']=$this->normalizeItems($item['items'], $hasActiveChild);
-                if(empty($items[$i]['items']) && $this->hideEmptyItems)
+                if (empty($items[$i]['items']) && $this->hideEmptyItems)
                 {
                     unset($items[$i]['items']);
-                    if(!isset($item['url']))
+                    if (!isset($item['url']))
                     {
                         unset($items[$i]);
                         continue;
@@ -133,7 +132,7 @@ class Menu extends \yii\widgets\Menu
                 }
             }
 
-            if(!isset($item['active']))
+            if (!isset($item['active']))
             {
               $items[$i]['active']=$this->determineActive($item,$hasActiveChild);
             }
@@ -193,7 +192,7 @@ class Menu extends \yii\widgets\Menu
       return isset($item['visible']) && !$item['visible'];
     }
 
-    protected function getEncodedLabels($item,$items)
+    protected function getEncodedLabels($item, $items)
     {
       if(!isset($item['label']))
       {
@@ -209,7 +208,7 @@ class Menu extends \yii\widgets\Menu
       return isset($item['icon']) ? $item['icon'] : '';
     }
 
-    protected function determineActive($item,$hasActiveChild)
+    protected function determineActive($item, $hasActiveChild)
     {
       if(($this->activateParents && $hasActiveChild) || ($this->activateItems && $this->isItemActive($item)))
       {
