@@ -379,4 +379,24 @@ class Player extends \yii\db\ActiveRecord
       return false;
     }
 
+    private function mail($content, $subject)
+    {
+      // Get mailer
+      try
+      {
+        \Yii::$app->mailer->compose()
+          ->setFrom([\app\modules\settings\models\Sysconfig::findOne('mail_from')->val => \app\modules\settings\models\Sysconfig::findOne('mail_fromName')->val])
+          ->setTo([$this->email=>$this->username])
+          ->setSubject($subject)
+          ->setTextBody($content)
+          ->send();
+        \Yii::$app->session->setFlash('success', "The user has been mailed.");
+      }
+      catch(\Exception $e)
+      {
+        \Yii::$app->session->setFlash('notice', "Failed to send mail to user.");
+        return false;
+      }
+      return true;
+  }
 }
