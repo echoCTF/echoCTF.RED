@@ -447,7 +447,7 @@ class PlayerController extends Controller
         $p->email=$rec[0];
         $p->academic=$rec[2] == 'no' ? 0 : 1;
         $p->save(false);
-        $this->processTeam($rec,$p)
+        $this->processTeam($rec,$p);
         if($model->player_ssl == '1')
         {
           if($p->playerSsl !== NULL)
