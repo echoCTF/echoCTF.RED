@@ -157,7 +157,7 @@ class PlayerController extends Controller
               $trans=Yii::$app->db->beginTransaction();
               try
               {
-                $this->processImportPost();
+                $this->processImportPost($model);
                 $trans->commit();
                 \Yii::$app->getSession()->setFlash('success', 'successful import of csv records');
               }
