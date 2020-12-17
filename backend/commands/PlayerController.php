@@ -195,7 +195,7 @@ class PlayerController extends Controller {
 
       if($team_name !== false)
       {
-        $this->createTeam($team_name,$player);
+        $this->createTeam($team_name,$player,$approved);
       }
 
       $trans->commit();
@@ -325,7 +325,7 @@ class PlayerController extends Controller {
       \Yii::$app->mailer->transport->setPassword(Sysconfig::findOne('mail_password')->val);
   }
 
-  private function createTeam($team_name,$player)
+  private function createTeam($team_name,$player,$approved)
   {
       $team=Team::findOne(['name'=>$team_name]);
       if($team === null)
@@ -346,13 +346,12 @@ class PlayerController extends Controller {
       $tp=new TeamPlayer;
       $tp->player_id=$player->id;
       $tp->team_id=$team->id;
+      $tp->approved=intval($approved);
       if($team->owner_id===$player->id)
       {
         $tp->approved=1;
       }
-      else {
-        $tp->approved=intval($approved);
-      }
+
       if(!$tp->save())
         printf("Error saving team player\n");
   }
