@@ -193,10 +193,7 @@ class PlayerController extends Controller {
         $playerSsl->refresh();
       }
 
-      if($team_name !== false)
-      {
-        $this->createTeam($team_name,$player,$approved);
-      }
+      $this->createTeam($team_name,$player,$approved);
 
       $trans->commit();
     }
@@ -327,6 +324,9 @@ class PlayerController extends Controller {
 
   private function createTeam($team_name,$player,$approved)
   {
+      if($team_name === false)
+        return;
+
       $team=Team::findOne(['name'=>$team_name]);
       if($team === null)
       {
