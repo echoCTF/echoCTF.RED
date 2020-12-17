@@ -132,10 +132,7 @@ class MenuBase extends \yii\widgets\Menu
                 }
             }
 
-            if (!isset($item['active']))
-            {
-              $items[$i]['active']=$this->determineActive($item,$hasActiveChild);
-            }
+            $items[$i]['active']=$this->determineActive($item, $hasActiveChild);
         }
         return array_values($items);
     }
