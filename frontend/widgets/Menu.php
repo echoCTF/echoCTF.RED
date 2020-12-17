@@ -115,10 +115,6 @@ class Menu extends \yii\widgets\Menu
                 continue;
             }
 
-            if(!isset($item['label']))
-            {
-                $item['label']='';
-            }
 
             $items[$i]['label']=$this->getEncodedLabels($item,$items);
             $items[$i]['icon']=$this->getItemIcon($item);
@@ -199,6 +195,11 @@ class Menu extends \yii\widgets\Menu
 
     protected function getEncodedLabels($item,$items)
     {
+      if(!isset($item['label']))
+      {
+          $item['label']='';
+      }
+
       $encodeLabel=isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
       return $encodeLabel ? Html::encode($item['label']) : $item['label'];
     }
