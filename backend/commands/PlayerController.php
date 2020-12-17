@@ -129,18 +129,7 @@ class PlayerController extends Controller {
       $this->stdout("Mailing Registered users:\n", Console::BOLD);
     }
     $event_name=Sysconfig::findOne('event_name')->val;
-    if(Sysconfig::findOne('mail_host'))
-      \Yii::$app->mailer->transport->setHost(Sysconfig::findOne('mail_host')->val);
-
-    if(Sysconfig::findOne('mail_port'))
-      \Yii::$app->mailer->transport->setPort(Sysconfig::findOne('mail_port')->val);
-
-    if(Sysconfig::findOne('mail_username'))
-      \Yii::$app->mailer->transport->setUserName(Sysconfig::findOne('mail_username')->val);
-
-    if(Sysconfig::findOne('mail_password'))
-      \Yii::$app->mailer->transport->setPassword(Sysconfig::findOne('mail_password')->val);
-
+    $this->mailerInit();
     foreach($players as $player)
     {
       // Generate activation URL
@@ -316,6 +305,21 @@ class PlayerController extends Controller {
   public function p($message, array $params=[])
   {
       $this->stdout(Yii::t('app', $message, $params).PHP_EOL);
+  }
+
+  private function mailerInit()
+  {
+    if(Sysconfig::findOne('mail_host'))
+      \Yii::$app->mailer->transport->setHost(Sysconfig::findOne('mail_host')->val);
+
+    if(Sysconfig::findOne('mail_port'))
+      \Yii::$app->mailer->transport->setPort(Sysconfig::findOne('mail_port')->val);
+
+    if(Sysconfig::findOne('mail_username'))
+      \Yii::$app->mailer->transport->setUserName(Sysconfig::findOne('mail_username')->val);
+
+    if(Sysconfig::findOne('mail_password'))
+      \Yii::$app->mailer->transport->setPassword(Sysconfig::findOne('mail_password')->val);
   }
 
   private function createTeam($team_name,$player)
