@@ -149,16 +149,13 @@ class PlayerController extends Controller {
   /*
     Register Users and generate OpenVPN keys and settings
   */
-  public function actionRegister($username, $email, $fullname, $password=false, $player_type="offense", $active=false, $academic=false, $team_name=false, $approved=0, $baseIP="10.10.0.0", $skip=0)
+  public function actionRegister($username, $email, $fullname, $password=false, $player_type="offense", $active=false, $academic=false, $team_name=false, $approved=0)
   {
-  //  $player_network=ip2long($baseIP) + ((Player::find()->count() + $skip) * 4);
     echo "Registering: ", $email, "\n";
-    //echo "Player Network: ", long2ip($player_network), "\n";
     $trans=Yii::$app->db->beginTransaction();
     try
     {
       $player=new Player;
-//      $player->id=$player_network+1;
       $player->academic=intval(boolval($academic));
       $player->username=trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $username));
       $player->email=trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $email));
