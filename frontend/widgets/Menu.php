@@ -114,13 +114,14 @@ class Menu extends \yii\widgets\Menu
                 unset($items[$i]);
                 continue;
             }
+
             if(!isset($item['label']))
             {
                 $item['label']='';
             }
 
             $items[$i]['label']=$this->getEncodedLabels($item,$items);
-            $items[$i]['icon']=isset($item['icon']) ? $item['icon'] : '';
+            $items[$i]['icon']=$this->getItemIcon($item);
             $hasActiveChild=false;
             if(isset($item['items']))
             {
@@ -135,20 +136,10 @@ class Menu extends \yii\widgets\Menu
                     }
                 }
             }
+
             if(!isset($item['active']))
             {
-                if(($this->activateParents && $hasActiveChild) || ($this->activateItems && $this->isItemActive($item)))
-                {
-                    $active=$items[$i]['active']=true;
-                }
-                else
-                {
-                    $items[$i]['active']=false;
-                }
-            }
-            elseif($item['active'])
-            {
-                $active=true;
+              $items[$i]['active']=$this->determineActive($item,$hasActiveChild);
             }
         }
         return array_values($items);
@@ -210,5 +201,19 @@ class Menu extends \yii\widgets\Menu
     {
       $encodeLabel=isset($item['encode']) ? $item['encode'] : $this->encodeLabels;
       return $encodeLabel ? Html::encode($item['label']) : $item['label'];
+    }
+
+    protected function getItemIcon($item)
+    {
+      return isset($item['icon']) ? $item['icon'] : '';
+    }
+
+    protected function determineActive($item,$hasActiveChild)
+    {
+      if(($this->activateParents && $hasActiveChild) || ($this->activateItems && $this->isItemActive($item)))
+      {
+          return true;
+      }
+      return false;
     }
 }
