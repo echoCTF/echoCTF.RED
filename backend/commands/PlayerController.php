@@ -129,19 +129,14 @@ class PlayerController extends Controller {
       $this->stdout("Mailing Registered users:\n", Console::BOLD);
     }
     $event_name=Sysconfig::findOne('event_name')->val;
-    $this->mailerInit();
+    \Yii::$app->sys->mailerInit();
     foreach($players as $player)
     {
       // Generate activation URL
       $activationURL=sprintf("%s%s", $baseURL, $player->activkey);
       $MAILCONTENT=$this->renderFile('mail/layouts/activation.php', ['activationURL'=>$activationURL, 'player'=>$player, 'event_name'=>$event_name]);
       $this->stdout($player->email);
-      $numSend=\Yii::$app->mailer->compose()
-          ->setFrom([Sysconfig::findOne('mail_from')->val => Sysconfig::findOne('mail_fromName')->val])
-          ->setTo($player->email)
-          ->setSubject(Sysconfig::findOne('event_name')->val.' account activation details')
-          ->setTextBody($MAILCONTENT)
-          ->send();
+      $numSend=$player->mail($MAILCONTENT,Sysconfig::findOne('event_name')->val.' account activation details');
       $this->stdout($numSend ? " Ok\n" : "Not Ok\n");
     }
   }
@@ -270,21 +265,6 @@ class PlayerController extends Controller {
       $this->stdout(Yii::t('app', $message, $params).PHP_EOL);
   }
 
-  private function mailerInit()
-  {
-    if(Sysconfig::findOne('mail_host'))
-      \Yii::$app->mailer->transport->setHost(Sysconfig::findOne('mail_host')->val);
-
-    if(Sysconfig::findOne('mail_port'))
-      \Yii::$app->mailer->transport->setPort(Sysconfig::findOne('mail_port')->val);
-
-    if(Sysconfig::findOne('mail_username'))
-      \Yii::$app->mailer->transport->setUserName(Sysconfig::findOne('mail_username')->val);
-
-    if(Sysconfig::findOne('mail_password'))
-      \Yii::$app->mailer->transport->setPassword(Sysconfig::findOne('mail_password')->val);
-  }
-
   private function createTeam($team_name,$player,$approved)
   {
       if($team_name === false)
@@ -318,6 +298,7 @@ class PlayerController extends Controller {
       if(!$tp->save())
         printf("Error saving team player\n");
   }
+
   private function genPassword($password)
   {
     if($password === false or $password === '0')
