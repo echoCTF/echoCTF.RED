@@ -21,6 +21,23 @@ class MenuBase extends \yii\widgets\Menu
     return isset($item['visible']) && !$item['visible'];
   }
 
+  protected function doSubitems($item,&$items,$hasActiveChild,$i)
+  {
+    if (isset($item['items']))
+    {
+        $items[$i]['items']=$this->normalizeItems($item['items'], $hasActiveChild);
+        if (empty($items[$i]['items']) && $this->hideEmptyItems)
+        {
+            unset($items[$i]['items']);
+            if (!isset($item['url']))
+            {
+                unset($items[$i]);
+                //continue;
+            }
+        }
+    }
+
+  }
   /**
    * Get item label respecting encoding options
    *

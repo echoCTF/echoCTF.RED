@@ -118,20 +118,7 @@ class Menu extends MenuBase
           $items[$i]['label']=$this->getEncodedLabels($item);
           $items[$i]['icon']=$this->getItemIcon($item);
           $hasActiveChild=false;
-          if (isset($item['items']))
-          {
-              $items[$i]['items']=$this->normalizeItems($item['items'], $hasActiveChild);
-              if (empty($items[$i]['items']) && $this->hideEmptyItems)
-              {
-                  unset($items[$i]['items']);
-                  if (!isset($item['url']))
-                  {
-                      unset($items[$i]);
-                      continue;
-                  }
-              }
-          }
-
+          $this->doSubitems($item,$items,$hasActiveChild,$i);
           $items[$i]['active']=$this->determineActive($item, $hasActiveChild);
       }
       return array_values($items);
