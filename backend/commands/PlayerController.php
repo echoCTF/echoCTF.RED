@@ -249,10 +249,12 @@ class PlayerController extends Controller {
       $exp=new \yii\db\Expression('created >= NOW() - INTERVAL '.$interval);
       $players->where($exp);
     }
+    $SFS=new \app\components\StopForumSpam();
     foreach($players->all() as $p)
     {
       echo "Processing ",$p->email,"\n";
-      $result=$this->stopforumspam($p->email);
+      $SFS->email=$p->email;
+      $result=$SFS->check();
       $retData=json_decode($result)->email;
       if(property_exists($retData,'confidence') && $retData->confidence>0)
       {
@@ -261,29 +263,6 @@ class PlayerController extends Controller {
       }
 
     }
-  }
-
-  public function stopforumspam($email)
-  {
-    $url = 'http://api.stopforumspam.org/api';
-    $data = array(
-        'email' => $email,
-        'json'=>'',
-    );
-
-    $data = http_build_query($data);
-
-    // init the request, set some info, send it and finally close it
-    $ch = curl_init($url);
-
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $result = curl_exec($ch);
-
-    curl_close($ch);
-    return $result;
   }
 
   public function p($message, array $params=[])
