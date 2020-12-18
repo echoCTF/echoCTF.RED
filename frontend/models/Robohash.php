@@ -57,7 +57,7 @@ class Robohash
         }
     }
 
-    function set_color()
+    private function set_color()
     {
       if (!in_array($this->color, self::$colors))
       {
@@ -71,7 +71,7 @@ class Robohash
       }
     }
 
-    function set_set()
+    public function set_set()
     {
       // if set not in accepted sets pick a random one
       if (!in_array($this->set, self::$sets))
@@ -81,7 +81,7 @@ class Robohash
     }
 
 
-    function get_image_list()
+    private function get_image_list()
     {
         $image_list = array();
         $dirs = glob($this->image_dir . "{$this->robodata}/*");
@@ -164,7 +164,7 @@ class Robohash
     }
 
 
-    function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct){
+    public function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct){
         if(!isset($pct)){
             return false;
         }
