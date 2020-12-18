@@ -164,10 +164,10 @@ class SiteController extends \app\components\BaseController
           if($model->load(Yii::$app->request->post()) && $model->signup())
           {
               $transaction->commit();
+              Yii::$app->session->setFlash('success', 'Thank you for registering. Your account is activated feel free to login.');
               if(Yii::$app->sys->require_activation===true)
+              {
                 Yii::$app->session->setFlash('success', 'Thank you for registering. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>');
-              else {
-                Yii::$app->session->setFlash('success', 'Thank you for registering. Your account is activated feel free to login.');
               }
               return $this->goHome();
           }
