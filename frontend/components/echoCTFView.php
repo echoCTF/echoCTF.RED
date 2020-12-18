@@ -1,6 +1,10 @@
 <?php
 namespace app\components;
-
+/**
+ * @property string $image
+ * @property string $description
+ * @property string $twitter_handle
+ */
 class echoCTFView extends \yii\web\View
 {
   public $_title;
