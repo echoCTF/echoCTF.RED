@@ -37,5 +37,5 @@ EXPOSE 1194/udp
 VOLUME /etc/openvpn
 WORKDIR /var/www/echoCTF.RED
 
-CMD ["tail -f /var/log/openvpn/openvpn.log"]
+CMD ["tail -3f /var/log/openvpn/openvpn.log"]
 ENTRYPOINT ["/entrypoint.sh"]
