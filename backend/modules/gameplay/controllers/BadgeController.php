@@ -82,26 +82,8 @@ class BadgeController extends Controller
           {
             $treasures=Yii::$app->request->post()['Badge']['treasures'];
             $findings=Yii::$app->request->post()['Badge']['findings'];
-            if(is_array($findings))
-            {
-              foreach($findings as $id)
-              {
-                $bf=new \app\modules\gameplay\models\BadgeFinding;
-                $bf->badge_id=$model->id;
-                $bf->finding_id=$id;
-                $bf->save();
-              }
-            }
-            if(is_array($treasures))
-            {
-              foreach($treasures as $id)
-              {
-                $bt=new \app\modules\gameplay\models\BadgeTreasure;
-                $bt->badge_id=$model->id;
-                $bt->treasure_id=$id;
-                $bt->save();
-              }
-            }
+            $this->addBadgeFindings($findings);
+            $this->addBadgeTreasures($treasures);
             $transaction->commit();
             Yii::$app->session->setFlash('success', "Badge created with success");
             return $this->redirect(['view', 'id' => $model->id]);
@@ -178,4 +160,32 @@ class BadgeController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    protected function addBadgeTreasures($treasures)
+    {
+      if(is_array($treasures))
+      {
+        foreach($treasures as $id)
+        {
+          $bt=new \app\modules\gameplay\models\BadgeTreasure;
+          $bt->badge_id=$model->id;
+          $bt->treasure_id=$id;
+          $bt->save();
+        }
+      }
+    }
+    protected function addBadgeFindings($findings)
+    {
+      if(is_array($findings))
+      {
+        foreach($findings as $id)
+        {
+          $bf=new \app\modules\gameplay\models\BadgeFinding;
+          $bf->badge_id=$model->id;
+          $bf->finding_id=$id;
+          $bf->save();
+        }
+      }
+    }
+
 }
