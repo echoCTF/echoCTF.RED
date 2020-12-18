@@ -126,7 +126,7 @@ class Player extends PlayerAR
     return $password;
   }
 
-  private function createTeam($team_name,$approved)
+  public function createTeam($team_name,$approved)
   {
       if($team_name === false)
         return;
