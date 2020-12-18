@@ -69,7 +69,7 @@ class Treasure extends \yii\db\ActiveRecord
             [['code'], 'trim'],
             [['code'], 'unique'],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
-            [['location'],'default','value'=>function($model,$attribute){
+            [['location'],'default','value'=>function($model){
               if($model->path!==null)
                 return $model->path.$model->code;
 
@@ -79,7 +79,6 @@ class Treasure extends \yii\db\ActiveRecord
               if($model->fullpath!==null)
                 return $model->fullpath;
               return null;
-
             }]
         ];
     }
