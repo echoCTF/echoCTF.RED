@@ -156,15 +156,12 @@ class ProfileController extends \app\components\BaseController
 
     public function actionIndex(int $id)
     {
-      if(intval($id) == intval(Yii::$app->user->id))
-        return $this->redirect(['/profile/me']);
+        if(intval($id) == intval(Yii::$app->user->id))
+          return $this->redirect(['/profile/me']);
 
-      $profile=$this->findModel($id);
-      if(Yii::$app->user->isGuest && $profile->visibility != 'public')
-              return $this->redirect(['/']);
-
-      if($profile->visibility != 'public' && $profile->visibility != 'ingame' && !Yii::$app->user->isGuest && !Yii::$app->user->identity->isAdmin)
-              return $this->redirect(['/']);
+        $profile=$this->findModel($id);
+        if(!$profile->visible)
+          return $this->redirect(['/']);
 
         return $this->render('index', [
           'me'=>false,
