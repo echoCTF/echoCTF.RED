@@ -28,6 +28,9 @@ if [ ! -f /etc/openvpn/.configured ]; then
     /var/www/echoCTF.RED/backend/yii ssl/create-crl
     /var/www/echoCTF.RED/backend/yii ssl/load-vpn-ta
     touch /etc/openvpn/.configured
+    echo "***************************************"
+    echo "*** The systems are now configured. ***"
+    echo "***************************************"
 fi
 openvpn --dev tun0 --config /etc/openvpn/openvpn_tun0.conf
 $@
