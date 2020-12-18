@@ -17,22 +17,10 @@ class TreasureController extends ActiveController
         $treasure=new \app\modules\gameplay\models\Treasure;
         $post=\yii::$app->request->post();
         $treasure->attributes=$post;
-        if($treasure->location===null)
+        if($treasure->validate() && $treasure->save())
         {
-          if($treasure->path!==null)
-            $treasure->location=$treasure->path.$treasure->code;
-
-          if($treasure->file!==null)
-            $treasure->location=$treasure->file;
-
-          if($treasure->fullpath!==null)
-            $treasure->location=$treasure->fullpath;
-        }
-
-        if($treasure->validate())
-        {
-          $treasure->save();
           if(array_key_exists("actions", $post))
+          {
             foreach($post['actions'] as $post_action)
             {
               $treasure_action=new \app\modules\smartcity\models\TreasureAction;
@@ -41,6 +29,7 @@ class TreasureController extends ActiveController
               $model=$treasure_action;
               $model->save();
             }
+          }
           \Yii::$app->response->statusCode=201;
           $transaction->commit();
           return array('status' => true, 'data'=> "Saved");
