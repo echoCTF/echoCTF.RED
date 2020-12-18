@@ -18,6 +18,8 @@ class Robohash
 
     // WxH
     public $size;
+    public $width;
+    public $height;
     public $cache;
     public $image_dir;
 
@@ -40,6 +42,9 @@ class Robohash
         $this->text=$text;
         $this->set=$set;
         $this->color=$color;
+        $this->width  = self::IMAGE_WIDTH;
+        $this->height = self::IMAGE_WIDTH;
+
         $this->create_hashes($this->text);
 
         $this->set_set();
@@ -109,28 +114,8 @@ class Robohash
 
     public function get_width_height()
     {
-        $width  = self::IMAGE_WIDTH;
-        $height = self::IMAGE_WIDTH;
-
-        if ($this->size)
-        {
-            $width_height = explode('x', $this->size);
-
-            $width  = isset($width_height[0]) ? (int) $width_height[0] : self::IMAGE_WIDTH;
-            $height = isset($width_height[1]) ? (int) $width_height[1] : self::IMAGE_HEIGHT;
-
-            if ($width  > 1024 || $width  < 10)
-            {
-                $width  = self::IMAGE_WIDTH;
-            }
-            if ($height > 1024 || $height < 10)
-            {
-                $height = self::IMAGE_HEIGHT;
-            }
-        }
-        return array($width, $height);
+        return [$this->width, $this->height];
     }
-
 
     // Use GD as a fallback if host does not support ImageMagick.
     public function generate_image_gd($image_list)
@@ -187,13 +172,13 @@ class Robohash
               }
           }
         }
-         if ($this->pixels_modify_alpha(&$src_im,$minalpha,$pct))
+        if ($this->pixels_modify_alpha($src_im,$minalpha,$pct,$w,$h))
             return false;
         // The image copy
         imagecopy($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h);
     }
 
-    public function pixels_modify_alpha(&$src_im, $minalpha, $pct)
+    public function pixels_modify_alpha(&$src_im, $minalpha, $pct,$w,$h)
     {
       //loop through image pixels and modify alpha for each
       for( $x = 0; $x < $w; $x++ )
