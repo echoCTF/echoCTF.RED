@@ -33,19 +33,10 @@ class SslController extends Controller {
     openssl_x509_export($x509, $crtout);
     openssl_pkey_export($privkey, $pkeyout);
     openssl_x509_export($x509, $certout, false);
-    $cacsr=Sysconfig::findOne('CA.csr');
-    $cacrt=Sysconfig::findOne('CA.crt');
-    $catxtcrt=Sysconfig::findOne('CA.txt.crt');
-    $cakey=Sysconfig::findOne('CA.key');
-    if($cacsr === null)  $cacsr=new Sysconfig;
-    if($cacrt === null)  $cacrt=new Sysconfig;
-    if($catxtcrt === null)  $catxtcrt=new Sysconfig;
-    if($cakey === null)  $cakey=new Sysconfig;
-
-    $cacsr->id='CA.csr';
-    $cacrt->id='CA.crt';
-    $catxtcrt->id='CA.txt.crt';
-    $cakey->id='CA.key';
+    $cacsr=Sysconfig::findOneNew('CA.csr');
+    $cacrt=Sysconfig::findOneNew('CA.crt');
+    $catxtcrt=Sysconfig::findOneNew('CA.txt.crt');
+    $cakey=Sysconfig::findOneNew('CA.key');
 
     $cacsr->val=$csrout;
     $cacrt->val=$crtout;
@@ -193,13 +184,7 @@ class SslController extends Controller {
    */
   public function actionLoadVpnTa($file='/etc/openvpn/private/vpn-ta.key')
   {
-    $vpnta=Sysconfig::findOne('vpn-ta.key');
-    if($vpnta === null)
-    {
-      $vpnta=new Sysconfig;
-      $vpnta->id='vpn-ta.key';
-    }
-
+    $vpnta=Sysconfig::findOneNew('vpn-ta.key');
     if(file_exists($file))
     {
       $vpnta->val=file_get_contents($file);
