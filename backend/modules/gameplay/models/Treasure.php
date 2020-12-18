@@ -69,6 +69,18 @@ class Treasure extends \yii\db\ActiveRecord
             [['code'], 'trim'],
             [['code'], 'unique'],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
+            [['location'],'default','value'=>function($model,$attribute){
+              if($model->path!==null)
+                return $model->path.$model->code;
+
+              if($model->file!==null)
+                return $model->file;
+
+              if($model->fullpath!==null)
+                return $model->fullpath;
+              return null;
+
+            }]
         ];
     }
     /**
