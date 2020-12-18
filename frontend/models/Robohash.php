@@ -83,12 +83,12 @@ class Robohash
 
     private function get_image_list()
     {
-        $image_list = array();
+        $image_list = [];
         $dirs = glob($this->image_dir . "{$this->robodata}/*");
 
         foreach ($dirs as $dir)
         {
-            $files = glob("$dir/*");
+            if(($files = glob("$dir/*"))===false) continue;
             $img_index = $this->hash_list[$this->hash_index] % count($files);
             $this->hash_index++;
             $s = explode('#', $files[$img_index], 2);
