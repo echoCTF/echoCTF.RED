@@ -101,4 +101,11 @@ class Profile extends \yii\db\ActiveRecord
       return Html::a(Html::encode($this->owner->username), ['frontend/profile/view', 'id'=>$this->id]);
     }
 
+    public function getAvtr()
+    {
+      if($this->approved_avatar || $this->isMine)
+        return  $this->avatar;
+      return '../default_avatar.png';
+    }
+
 }
