@@ -1,9 +1,9 @@
 <?php
 namespace app\components;
 /**
- * @property string $image
- * @property string $description
- * @property string $twitter_handle
+ * @property string image
+ * @property string description
+ * @property string twitterHandle
  */
 class echoCTFView extends \yii\web\View
 {
@@ -31,7 +31,7 @@ class echoCTFView extends \yii\web\View
     parent::init();
   }
 
-  public function getTwitter_handle()
+  public function getTwitterHandle()
   {
     if(\Yii::$app->sys->twitter_account!==null && \Yii::$app->sys->twitter_account!==false)
     {
@@ -88,7 +88,7 @@ class echoCTFView extends \yii\web\View
 
   public function getTwitter_site()
   {
-    return ['name'=>'twitter:site', 'content'=>$this->twitter_handle];
+    return ['name'=>'twitter:site', 'content'=>$this->twitterHandle];
   }
 
   public function getTwitter_title()
