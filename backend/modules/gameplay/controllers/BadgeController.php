@@ -82,8 +82,8 @@ class BadgeController extends Controller
           {
             $treasures=Yii::$app->request->post()['Badge']['treasures'];
             $findings=Yii::$app->request->post()['Badge']['findings'];
-            $this->addBadgeFindings($findings);
-            $this->addBadgeTreasures($treasures);
+            $this->addBadgeFindings($findings,$model);
+            $this->addBadgeTreasures($treasures,$model);
             $transaction->commit();
             Yii::$app->session->setFlash('success', "Badge created with success");
             return $this->redirect(['view', 'id' => $model->id]);
@@ -161,7 +161,7 @@ class BadgeController extends Controller
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    protected function addBadgeTreasures($treasures)
+    protected function addBadgeTreasures($treasures,$model)
     {
       if(is_array($treasures))
       {
@@ -174,7 +174,7 @@ class BadgeController extends Controller
         }
       }
     }
-    protected function addBadgeFindings($findings)
+    protected function addBadgeFindings($findings,$model)
     {
       if(is_array($findings))
       {
