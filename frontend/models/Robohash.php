@@ -24,7 +24,7 @@ class Robohash
     private $robodata;
     private $filename;
     private static $colors  = ['blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'];
-    private static $sets    = ['set1','set2', 'set3','set4','set5'];
+    private static $sets    = ['set1', 'set2', 'set3', 'set4', 'set5'];
 
 
     private $hash_index     = 0,
@@ -107,7 +107,7 @@ class Robohash
         return $image_list;
     }
 
-    function get_width_height()
+    public function get_width_height()
     {
         $width  = self::IMAGE_WIDTH;
         $height = self::IMAGE_WIDTH;
@@ -133,7 +133,7 @@ class Robohash
 
 
     // Use GD as a fallback if host does not support ImageMagick.
-    function generate_image_gd($image_list)
+    public function generate_image_gd($image_list)
     {
         // functions with alpha channel support
         $body = array_shift($image_list);
@@ -177,37 +177,53 @@ class Robohash
         // Find the most opaque pixel in the image (the one with the smallest alpha value)
         $minalpha = 127;
         for( $x = 0; $x < $w; $x++ )
-        for( $y = 0; $y < $h; $y++ ){
-            $alpha = ( imagecolorat( $src_im, $x, $y ) >> 24 ) & 0xFF;
-            if( $alpha < $minalpha ){
-                $minalpha = $alpha;
-            }
+        {
+          for( $y = 0; $y < $h; $y++ )
+          {
+              $alpha = ( imagecolorat( $src_im, $x, $y ) >> 24 ) & 0xFF;
+              if( $alpha < $minalpha )
+              {
+                  $minalpha = $alpha;
+              }
+          }
         }
-        //loop through image pixels and modify alpha for each
-        for( $x = 0; $x < $w; $x++ ){
-            for( $y = 0; $y < $h; $y++ ){
-                //get current alpha value (represents the TANSPARENCY!)
-                $colorxy = imagecolorat( $src_im, $x, $y );
-                $alpha = ( $colorxy >> 24 ) & 0xFF;
-                //calculate new alpha
-                if( $minalpha !== 127 ){
-                    $alpha = 127 + 127 * $pct * ( $alpha - 127 ) / ( 127 - $minalpha );
-                } else {
-                    $alpha += 127 * $pct;
-                }
-                //get the color index with new alpha
-                $alphacolorxy = imagecolorallocatealpha( $src_im, ( $colorxy >> 16 ) & 0xFF, ( $colorxy >> 8 ) & 0xFF, $colorxy & 0xFF, $alpha );
-                //set pixel with the new color + opacity
-                if( !imagesetpixel( $src_im, $x, $y, $alphacolorxy ) ){
-                    return false;
-                }
-            }
-        }
+         if ($this->pixels_modify_alpha(&$src_im,$minalpha,$pct))
+            return false;
         // The image copy
         imagecopy($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h);
     }
 
-    function image_resize($src, $width, $height){
+    public function pixels_modify_alpha(&$src_im, $minalpha, $pct)
+    {
+      //loop through image pixels and modify alpha for each
+      for( $x = 0; $x < $w; $x++ )
+      {
+          for( $y = 0; $y < $h; $y++ )
+          {
+              //get current alpha value (represents the TANSPARENCY!)
+              $colorxy = imagecolorat( $src_im, $x, $y );
+              $alpha = ( $colorxy >> 24 ) & 0xFF;
+              //calculate new alpha
+              if( $minalpha !== 127 )
+              {
+                  $alpha = 127 + 127 * $pct * ( $alpha - 127 ) / ( 127 - $minalpha );
+              }
+              else
+              {
+                  $alpha += 127 * $pct;
+              }
+              //get the color index with new alpha
+              $alphacolorxy = imagecolorallocatealpha( $src_im, ( $colorxy >> 16 ) & 0xFF, ( $colorxy >> 8 ) & 0xFF, $colorxy & 0xFF, $alpha );
+              //set pixel with the new color + opacity
+              if( !imagesetpixel( $src_im, $x, $y, $alphacolorxy ) ){
+                  return false;
+              }
+          }
+      }
+      return true;
+
+    }
+    public function image_resize($src, $width, $height){
 
         $img = imagecreatetruecolor($width, $height);
 
