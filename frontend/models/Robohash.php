@@ -18,13 +18,15 @@ class Robohash
 
     // WxH
     public $size;
+    public $width;
+    public $height;
     public $cache;
     public $image_dir;
 
     private $robodata;
     private $filename;
     private static $colors  = ['blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'];
-    private static $sets    = ['set1','set2', 'set3','set4','set5'];
+    private static $sets    = ['set1', 'set2', 'set3', 'set4', 'set5'];
 
 
     private $hash_index     = 0,
@@ -40,6 +42,9 @@ class Robohash
         $this->text=$text;
         $this->set=$set;
         $this->color=$color;
+        $this->width  = self::IMAGE_WIDTH;
+        $this->height = self::IMAGE_WIDTH;
+
         $this->create_hashes($this->text);
 
         $this->set_set();
@@ -57,7 +62,7 @@ class Robohash
         }
     }
 
-    function set_color()
+    private function set_color()
     {
       if (!in_array($this->color, self::$colors))
       {
@@ -71,7 +76,7 @@ class Robohash
       }
     }
 
-    function set_set()
+    public function set_set()
     {
       // if set not in accepted sets pick a random one
       if (!in_array($this->set, self::$sets))
@@ -81,14 +86,14 @@ class Robohash
     }
 
 
-    function get_image_list()
+    private function get_image_list()
     {
-        $image_list = array();
+        $image_list = [];
         $dirs = glob($this->image_dir . "{$this->robodata}/*");
 
         foreach ($dirs as $dir)
         {
-            $files = glob("$dir/*");
+            if(($files = glob("$dir/*"))===false) continue;
             $img_index = $this->hash_list[$this->hash_index] % count($files);
             $this->hash_index++;
             $s = explode('#', $files[$img_index], 2);
@@ -107,33 +112,13 @@ class Robohash
         return $image_list;
     }
 
-    function get_width_height()
+    public function get_width_height()
     {
-        $width  = self::IMAGE_WIDTH;
-        $height = self::IMAGE_WIDTH;
-
-        if ($this->size)
-        {
-            $width_height = explode('x', $this->size);
-
-            $width  = isset($width_height[0]) ? (int) $width_height[0] : self::IMAGE_WIDTH;
-            $height = isset($width_height[1]) ? (int) $width_height[1] : self::IMAGE_HEIGHT;
-
-            if ($width  > 1024 || $width  < 10)
-            {
-                $width  = self::IMAGE_WIDTH;
-            }
-            if ($height > 1024 || $height < 10)
-            {
-                $height = self::IMAGE_HEIGHT;
-            }
-        }
-        return array($width, $height);
+        return [$this->width, $this->height];
     }
 
-
     // Use GD as a fallback if host does not support ImageMagick.
-    function generate_image_gd($image_list)
+    public function generate_image_gd($image_list)
     {
         // functions with alpha channel support
         $body = array_shift($image_list);
@@ -164,7 +149,7 @@ class Robohash
     }
 
 
-    function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct){
+    public function imagecopymerge_alpha($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h, $pct){
         if(!isset($pct)){
             return false;
         }
@@ -177,37 +162,53 @@ class Robohash
         // Find the most opaque pixel in the image (the one with the smallest alpha value)
         $minalpha = 127;
         for( $x = 0; $x < $w; $x++ )
-        for( $y = 0; $y < $h; $y++ ){
-            $alpha = ( imagecolorat( $src_im, $x, $y ) >> 24 ) & 0xFF;
-            if( $alpha < $minalpha ){
-                $minalpha = $alpha;
-            }
+        {
+          for( $y = 0; $y < $h; $y++ )
+          {
+              $alpha = ( imagecolorat( $src_im, $x, $y ) >> 24 ) & 0xFF;
+              if( $alpha < $minalpha )
+              {
+                  $minalpha = $alpha;
+              }
+          }
         }
-        //loop through image pixels and modify alpha for each
-        for( $x = 0; $x < $w; $x++ ){
-            for( $y = 0; $y < $h; $y++ ){
-                //get current alpha value (represents the TANSPARENCY!)
-                $colorxy = imagecolorat( $src_im, $x, $y );
-                $alpha = ( $colorxy >> 24 ) & 0xFF;
-                //calculate new alpha
-                if( $minalpha !== 127 ){
-                    $alpha = 127 + 127 * $pct * ( $alpha - 127 ) / ( 127 - $minalpha );
-                } else {
-                    $alpha += 127 * $pct;
-                }
-                //get the color index with new alpha
-                $alphacolorxy = imagecolorallocatealpha( $src_im, ( $colorxy >> 16 ) & 0xFF, ( $colorxy >> 8 ) & 0xFF, $colorxy & 0xFF, $alpha );
-                //set pixel with the new color + opacity
-                if( !imagesetpixel( $src_im, $x, $y, $alphacolorxy ) ){
-                    return false;
-                }
-            }
-        }
+        if ($this->pixels_modify_alpha($src_im,$minalpha,$pct,$w,$h))
+            return false;
         // The image copy
         imagecopy($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h);
     }
 
-    function image_resize($src, $width, $height){
+    public function pixels_modify_alpha(&$src_im, $minalpha, $pct,$w,$h)
+    {
+      //loop through image pixels and modify alpha for each
+      for( $x = 0; $x < $w; $x++ )
+      {
+          for( $y = 0; $y < $h; $y++ )
+          {
+              //get current alpha value (represents the TANSPARENCY!)
+              $colorxy = imagecolorat( $src_im, $x, $y );
+              $alpha = ( $colorxy >> 24 ) & 0xFF;
+              //calculate new alpha
+              if( $minalpha !== 127 )
+              {
+                  $alpha = 127 + 127 * $pct * ( $alpha - 127 ) / ( 127 - $minalpha );
+              }
+              else
+              {
+                  $alpha += 127 * $pct;
+              }
+              //get the color index with new alpha
+              $alphacolorxy = imagecolorallocatealpha( $src_im, ( $colorxy >> 16 ) & 0xFF, ( $colorxy >> 8 ) & 0xFF, $colorxy & 0xFF, $alpha );
+              //set pixel with the new color + opacity
+              if( !imagesetpixel( $src_im, $x, $y, $alphacolorxy ) ){
+                  return false;
+              }
+          }
+      }
+      return true;
+
+    }
+    public function image_resize($src, $width, $height){
 
         $img = imagecreatetruecolor($width, $height);
 
