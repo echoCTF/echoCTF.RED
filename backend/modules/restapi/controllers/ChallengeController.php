@@ -57,16 +57,7 @@ class ChallengeController extends ActiveController
         }
         if($challenge->save())
         {
-            if(array_key_exists("questions", $post))
-            {
-              foreach($post['questions'] as $q)
-              {
-                $question=new \app\modules\gameplay\models\Question;
-                $question->attributes=$q;
-                $question->challenge_id=$challenge->id;
-                $question->save();
-              }
-            }
+          $this->doQuestions($post,$challenge);
           \Yii::$app->response->statusCode=201;
           $transaction->commit();
           return array('status' => true, 'data'=> "Saved", 'challenge_id'=>$challenge->id);
@@ -86,5 +77,18 @@ class ChallengeController extends ActiveController
     {
       if(($model=\app\modules\gameplay\models\Challenge::findOne($id))!==null && file_exists(\Yii::getAlias('@web/uploads/challenges/'.$model->filename)))
         return \Yii::$app->response->sendFile(\Yii::getAlias('@web/uploads/challenges/'.$model->filename));
+    }
+    private function doQuestions($post,$challenge)
+    {
+      if(array_key_exists("questions", $post))
+      {
+        foreach($post['questions'] as $q)
+        {
+          $question=new \app\modules\gameplay\models\Question;
+          $question->attributes=$q;
+          $question->challenge_id=$challenge->id;
+          $question->save();
+        }
+      }
     }
 }
