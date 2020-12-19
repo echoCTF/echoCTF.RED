@@ -447,9 +447,8 @@ class User extends \yii\web\User
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
             if ($identity !== null) {
-                if (!$identity instanceof \app\models\Player) {
-                    throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
-                } elseif (!$identity->validateAuthKey($authKey)) {
+                $this->identitySanityCheck($identity,$class);
+                if (!$identity->validateAuthKey($authKey)) {
                     Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
                 } else {
                     return ['identity' => $identity, 'duration' => $duration];
@@ -459,6 +458,14 @@ class User extends \yii\web\User
         $this->removeIdentityCookie();
         return null;
     }
+
+    protected function identitySanityCheck($identity,$class)
+    {
+      if (!$identity instanceof \app\models\Player) {
+          throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
+      }
+    }
+
 
     protected function getIdFromSession($session)
     {
@@ -521,22 +528,25 @@ class User extends \yii\web\User
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);
             }
         }
-
-        if ($this->enableAutoLogin) {
-            if ($this->getIsGuest()) {
-                $this->loginByCookie();
-            } elseif ($this->autoRenewCookie) {
-                $authKey = json_decode(Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']),TRUE)[1];
-                if($identity->validateAuthKey($authKey)) {
-                    $this->renewIdentityCookie();
-                    Yii::info("User $id succeeded authKey validation");
-                } else {
-                    $this->logout();
-                    Yii::info("User $id failed authKey validation");
-                }
-            }
-        }
+        $this->doAutoLogin($identity,$id);
     }
 
+    protected function doAutoLogin($identity,$id)
+    {
+      if ($this->enableAutoLogin) {
+          if ($this->getIsGuest()) {
+              $this->loginByCookie();
+          } elseif ($this->autoRenewCookie) {
+              $authKey = json_decode(Yii::$app->getRequest()->getCookies()->getValue($this->identityCookie['name']),TRUE)[1];
+              if($identity->validateAuthKey($authKey)) {
+                  $this->renewIdentityCookie();
+                  Yii::info("User $id succeeded authKey validation");
+              } else {
+                  $this->logout();
+                  Yii::info("User $id failed authKey validation");
+              }
+          }
+      }
+    }
 
 }
