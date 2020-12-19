@@ -21,7 +21,7 @@ use yii\validators\ValidationAsset;
  * @author Qiang Xue <qiang.xue@gmail.com>
  * @since 2.0
  */
-class LowerRangeValidator extends \yii\validators\Validator
+class LowerRangeValidator extends \yii\validators\RangeValidator
 {
     /**
      * @var array|\Traversable|\Closure $range
@@ -48,12 +48,6 @@ class LowerRangeValidator extends \yii\validators\Validator
     public function init()
     {
         parent::init();
-        if(!is_array($this->range)
-            && !($this->range instanceof \Closure)
-//            && !($this->range instanceof \Traversable)
-        ) {
-            throw new InvalidConfigException('The "range" property must be set.');
-        }
         if($this->message === null)
         {
             $this->message=Yii::t('yii', '{attribute} is invalid.');
@@ -67,73 +61,10 @@ class LowerRangeValidator extends \yii\validators\Validator
     {
         $in=false;
 
-        if($this->allowArray
-            && ($value instanceof \Traversable || is_array($value))
-            && ArrayHelper::isSubset($value, (array) $this->range, $this->strict)
-        ) {
-            $in=true;
-        }
-        if(!$in && ArrayHelper::isIn(strtolower($value), (array) $this->range, $this->strict))
+        if(ArrayHelper::isIn(mb_strtolower($value), (array) $this->range, $this->strict))
         {
             $in=true;
         }
         return $this->not !== $in ? null : [$this->message, []];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validateAttribute($model, $attribute)
-    {
-        if($this->range instanceof \Closure)
-        {
-            $this->range=call_user_func($this->range, $model, $attribute);
-        }
-        parent::validateAttribute($model, $attribute);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function clientValidateAttribute($model, $attribute, $view)
-    {
-        if($this->range instanceof \Closure)
-        {
-            $this->range=call_user_func($this->range, $model, $attribute);
-        }
-
-        //ValidationAsset::register($view);
-        $options=$this->getClientOptions($model, $attribute);
-
-        return 'yii.validation.range(value, messages, '.json_encode($options, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE).');';
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getClientOptions($model, $attribute)
-    {
-        $range=[];
-        foreach($this->range as $value)
-        {
-            $range[]=(string) $value;
-        }
-        $options=[
-            'range' => $range,
-            'not' => $this->not,
-            'message' => $this->formatMessage($this->message, [
-                'attribute' => $model->getAttributeLabel($attribute),
-            ]),
-        ];
-        if($this->skipOnEmpty)
-        {
-            $options['skipOnEmpty']=1;
-        }
-        if($this->allowArray)
-        {
-            $options['allowArray']=1;
-        }
-
-        return $options;
     }
 }
