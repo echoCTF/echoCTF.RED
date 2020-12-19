@@ -65,6 +65,7 @@ class SignupForm extends Model
      */
     public function signup()
     {
+        if(!$this->validate()) throw new \Exception("Error Processing Request", 1);
         $player=new Player();
         $player->username=$this->username;
         $player->email=$this->email;
@@ -86,7 +87,7 @@ class SignupForm extends Model
         }
         else
         {
-          return false;
+          throw new \Exception("Error Processing Request", 1);
         }
         if(Yii::$app->sys->require_activation===true)
           return $this->sendEmail($player);
