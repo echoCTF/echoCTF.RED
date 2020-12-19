@@ -293,4 +293,23 @@ class Player extends PlayerAR implements IdentityInterface
       return false;
     }
 
+    public function saveNewPlayer($validation=true)
+    {
+      if(!$this->saveWithSsl($validation))
+        return false;
+
+      if(($profile=$this->profile)==null)
+      {
+        $profile=new Profile();
+        $profile->owner_id=$this->id;
+      }
+
+      $profile->scenario='signup';
+      $profile->visibility=\Yii::$app->sys->profile_visibility!==false ? Yii::$app->sys->profile_visibility : 'ingame';
+      $profile->gdpr=true;
+      $profile->terms_and_conditions=true;
+      if(!$profile->save())
+        return false;
+      return $profile;
+    }
 }
