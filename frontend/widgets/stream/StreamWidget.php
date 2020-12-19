@@ -34,32 +34,31 @@ class StreamWidget extends Widget
       {
         unset($this->pagerOptions['id']);
       }
-      if($this->dataProvider === null && $this->player_id === null)
-      {
-        $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago');
-
-      }
-      else if($this->player_id !== null)
-      {
-        $model=\app\models\Stream::find()
-          ->select('stream.*,TS_AGO(ts) as ts_ago')
-          ->where(['player_id'=>$this->player_id]);
-
-      }
-      if(isset($model) && $this->dataProvider === null)
-        $this->dataProvider=new ActiveDataProvider([
-            'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
-            'pagination' => [
-                'pageSizeParam'=>'stream-perpage',
-                'pageParam'=>'stream-page',
-                'pageSize' => 10,
-            ]
-          ]);
+      if($this->dataProvider === null)
+        $this->configureDataProvider();
 
       $this->summary=\Yii::t('app', $this->summary, ['TITLE' => $this->title, 'CATEGORY'=>$this->category]);
       parent::init();
     }
 
+    private function configureDataProvider()
+    {
+      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago');
+      if($this->player_id !== null)
+      {
+        $model=\app\models\Stream::find()
+          ->select('stream.*,TS_AGO(ts) as ts_ago')
+          ->where(['player_id'=>$this->player_id]);
+      }
+      $this->dataProvider=new ActiveDataProvider([
+          'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
+          'pagination' => [
+              'pageSizeParam'=>'stream-perpage',
+              'pageParam'=>'stream-page',
+              'pageSize' => 10,
+          ]
+        ]);
+    }
     public function run()
     {
         StreamWidgetAsset::register($this->getView());
