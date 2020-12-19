@@ -76,19 +76,11 @@ class SignupForm extends Model
 
         $player->setPassword($this->password);
         $player->generateAuthKey();
-        if($player->validate()!==false && $player->saveWithSsl()!==false)
-        {
-          $profile=$player->profile;
-          $profile->scenario='signup';
-          $profile->visibility=Yii::$app->sys->profile_visibility!==false ? Yii::$app->sys->profile_visibility : 'ingame';
-          $profile->gdpr=true;
-          $profile->terms_and_conditions=true;
-          $profile->save();
-        }
-        else
+        if($player->saveNewPlayer()===false)
         {
           throw new \Exception("Error Processing Request", 1);
         }
+
         if(Yii::$app->sys->require_activation===true)
           return $this->sendEmail($player);
         return true;
