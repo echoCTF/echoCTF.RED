@@ -54,7 +54,8 @@ class Profile extends ProfileAR
     public function getVisible(): bool
     {
       if($this->visibility === 'public') return true;
-      return $this->visibilityAllowed && !$this->visibilityDenied;
+      if($this->visibilityAllowed) return true;
+      return !$this->visibilityDenied;
     }
 
     public function getVisibilityAllowed(): bool
