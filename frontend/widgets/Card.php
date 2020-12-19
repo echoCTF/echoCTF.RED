@@ -109,44 +109,56 @@ class Card extends \yii\base\Widget
         {
           return '<div></div>';
         }
-
-        switch($this->header) {
-            case 'img-top':
-                return '<img class="card-img-top" src="'.Html::encode($this->url).'" alt="">';
-            case 'header-icon':
-                if($this->type != 'card-stats')
-                    return '<div class="card-header card-header-icon card-header-'.$this->color.'">
-                            <div class="card-icon">
-                              '.$this->icon.'
-                            </div>
-                          </div>';
-                else
-                    return '<div class="card-header card-header-icon card-header-'.$this->color.'">
-                            <div class="card-icon">
-                              '.$this->icon.'
-                            </div>
-                            <p class="card-category">'.Html::encode($this->subtitle).'</p>
-                            <h4 class="card-title">'.Html::encode($this->title).'</h4>
-                          </div>';
-            case 'header-text':
-                return '<div class="card-header card-header-text card-header-'.$this->color.'">
-                            <div class="card-text">
-                                <h4 class="card-title">'.Html::encode($this->title).'</h4>
-                                <p class="category">'.Html::encode($this->subtitle).'</p>
-                            </div>
-                          </div>';
-            case 'chart':
-                return '<div class="card-header card-chart card-header-'.$this->color.'">
-                          <div class="ct-chart" id="'.$this->chartId.'"></div>
-                        </div>';
-            default:
-                return '<div class="card-header">
-                            <h4 class="card-title">'.Html::encode($this->title).'</h4>
-                            <p class="category">'.Html::encode($this->subtitle).'</p>
-                          </div>';
-        }
+        $normalizedHeader=str_replace('-','',$this->header);
+        if (method_exists($this,'get'.ucfirst($normalizedHeader)))
+          return $this->{$normalizedHeader};
+        return $this->defaultHeader;
     }
+    public function getDefaultHeader()
+    {
+      return '<div class="card-header">
+                  <h4 class="card-title">'.Html::encode($this->title).'</h4>
+                  <p class="category">'.Html::encode($this->subtitle).'</p>
+                </div>';
 
+    }
+    public function getImgtop()
+    {
+      return '<img class="card-img-top" src="'.Html::encode($this->url).'" alt="">';
+    }
+    public function getHeadericon()
+    {
+      if($this->type != 'card-stats')
+          return '<div class="card-header card-header-icon card-header-'.$this->color.'">
+                  <div class="card-icon">
+                    '.$this->icon.'
+                  </div>
+                </div>';
+      else
+          return '<div class="card-header card-header-icon card-header-'.$this->color.'">
+                  <div class="card-icon">
+                    '.$this->icon.'
+                  </div>
+                  <p class="card-category">'.Html::encode($this->subtitle).'</p>
+                  <h4 class="card-title">'.Html::encode($this->title).'</h4>
+                </div>';
+
+    }
+    public function getHeadertext()
+    {
+      return '<div class="card-header card-header-text card-header-'.$this->color.'">
+                  <div class="card-text">
+                      <h4 class="card-title">'.Html::encode($this->title).'</h4>
+                      <p class="category">'.Html::encode($this->subtitle).'</p>
+                  </div>
+                </div>';
+    }
+    public function getChart()
+    {
+      return '<div class="card-header card-chart card-header-'.$this->color.'">
+                <div class="ct-chart" id="'.$this->chartId.'"></div>
+              </div>';
+    }
     /**
      * @return string
      */
