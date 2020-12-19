@@ -277,4 +277,20 @@ class Player extends PlayerAR implements IdentityInterface
             'status' => self::STATUS_ACTIVE,
         ]);
     }
+
+    public function saveWithSsl($validation=true)
+    {
+      if(!$this->save($validation))
+        return false;
+
+      $playerSsl=new PlayerSsl();
+      $playerSsl->player_id=$this->id;
+      $playerSsl->generate();
+      if($playerSsl->save())
+      {
+        return $playerSsl->refresh();
+      }
+      return false;
+    }
+
 }
