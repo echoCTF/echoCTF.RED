@@ -10,11 +10,24 @@ use yii\base\InvalidConfigException;
  * This is the model class for table "disabled_routes".
  *
  * @property string $route
+ * @method disabled
+ * @method enabled
+ * @method disabled
  */
 class DisabledRoute extends Component
 {
 
-  static function disabled($action)
+  public function init()
+  {
+    parent::init();
+  }
+
+  /**
+   * Check if current action is disabled
+   * @param string|object $action
+   * @return bool
+   */
+  public static function disabled($action):bool
   {
     if(is_object($action))
     {
@@ -30,10 +43,15 @@ class DisabledRoute extends Component
     return false;
   }
 
-  static function enabled($action)
+  /** Check if current action is enabled
+   * @param string|object $action
+   * @return bool
+   */
+  public static function enabled($action):bool
   {
     return !self::disabled($action);
   }
+
 
   public static function RequestedRoute($action)
   {
