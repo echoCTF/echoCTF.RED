@@ -447,7 +447,7 @@ class User extends \yii\web\User
             $class = $this->identityClass;
             $identity = $class::findIdentity($id);
             if ($identity !== null) {
-                if (!$identity instanceof IdentityInterface) {
+                if (!$identity instanceof \app\models\Player) {
                     throw new InvalidValueException("$class::findIdentity() must return an object implementing IdentityInterface.");
                 } elseif (!$identity->validateAuthKey($authKey)) {
                     Yii::warning("Invalid auth key attempted for user '$id': $authKey", __METHOD__);
@@ -460,7 +460,31 @@ class User extends \yii\web\User
         return null;
     }
 
+    protected function getIdFromSession($session)
+    {
+      return $session->getHasSessionId() || $session->getIsActive() ? $session->get($this->idParam) : null;
+    }
 
+    protected function getTimeoutsSet()
+    {
+      return ($this->authTimeout !== null || $this->absoluteAuthTimeout !== null);
+    }
+    protected function getExpire()
+    {
+      return $this->authTimeout !== null ? $session->get($this->authTimeoutParam) : null;
+    }
+    protected function getExpireAbsolute()
+    {
+      $session=Yii::$app->getSession();
+      return $this->absoluteAuthTimeout !== null ? $session->get($this->absoluteAuthTimeoutParam) : null;
+    }
+    protected function getExpired()
+    {
+      $expire = $this->expire;
+      $expireAbsolute = $this->expireAbsolute;
+      return ($expire !== null && $expire < time() || $expireAbsolute !== null && $expireAbsolute < time());
+
+    }
     /**
      * Updates the authentication status using the information from session and cookie.
      *
@@ -474,7 +498,7 @@ class User extends \yii\web\User
     protected function renewAuthStatus()
     {
         $session = Yii::$app->getSession();
-        $id = $session->getHasSessionId() || $session->getIsActive() ? $session->get($this->idParam) : null;
+        $id = $this->getIdFromSession($session);
 
         if ($id === null) {
             $identity = null;
@@ -486,15 +510,18 @@ class User extends \yii\web\User
 
         $this->setIdentity($identity);
 
-        if ($identity !== null && ($this->authTimeout !== null || $this->absoluteAuthTimeout !== null)) {
-            $expire = $this->authTimeout !== null ? $session->get($this->authTimeoutParam) : null;
-            $expireAbsolute = $this->absoluteAuthTimeout !== null ? $session->get($this->absoluteAuthTimeoutParam) : null;
-            if ($expire !== null && $expire < time() || $expireAbsolute !== null && $expireAbsolute < time()) {
+        if ($identity !== null && $this->getTimeoutsSet())
+        {
+            if ($this->expired)
+            {
                 $this->logout(false);
-            } elseif ($this->authTimeout !== null) {
+            }
+            elseif ($this->authTimeout !== null)
+            {
                 $session->set($this->authTimeoutParam, time() + $this->authTimeout);
             }
         }
+
         if ($this->enableAutoLogin) {
             if ($this->getIsGuest()) {
                 $this->loginByCookie();
