@@ -87,7 +87,7 @@ class Sysconfig extends \yii\db\ActiveRecord
       if(($model=self::findOne($id))!==null)
         return $model;
       $model=new self;
-      $model->id=$id
+      $model->id=$id;
       return $model;
     }
 }
