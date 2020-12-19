@@ -74,20 +74,8 @@ class TargetWidget extends Widget
         ]);
     }
 
-    protected function initTargetProvider($id)
+    protected function getTargetProgressProvider($tmod,$id,&$defaultOrder)
     {
-      $tmod=\app\modules\target\models\Target::find();
-      if(intval($tmod->count()) === 0) return null;
-
-      foreach($tmod->all() as $model)
-      {
-        $orderByHeadshots[]=(object) ['id'=>$model->id, 'ip'=>$model->ip, 'headshots'=>count($model->headshots)];
-      }
-
-      ArrayHelper::multisort($orderByHeadshots, ['headshots', 'ip'], [SORT_ASC, SORT_ASC]);
-      $orderByHeadshotsASC=ArrayHelper::getColumn($orderByHeadshots, 'id');
-      ArrayHelper::multisort($orderByHeadshots, ['headshots', 'ip'], [SORT_DESC, SORT_ASC]);
-      $orderByHeadshotsDESC=ArrayHelper::getColumn($orderByHeadshots, 'id');
       if($this->personal)
       {
         $targetProgressProvider=new ActiveDataProvider([
@@ -114,6 +102,25 @@ class TargetWidget extends Widget
         ]);
         $defaultOrder=['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'difficulty' => SORT_ASC,'ip' => SORT_ASC, 'name' => SORT_ASC];
       }
+      return $targetProgressProvider;
+    }
+    protected function initTargetProvider($id)
+    {
+      $tmod=\app\modules\target\models\Target::find();
+      if(intval($tmod->count()) === 0) return null;
+
+      foreach($tmod->all() as $model)
+      {
+        $orderByHeadshots[]=(object) ['id'=>$model->id, 'ip'=>$model->ip, 'headshots'=>count($model->headshots)];
+      }
+
+      ArrayHelper::multisort($orderByHeadshots, ['headshots', 'ip'], [SORT_ASC, SORT_ASC]);
+      $orderByHeadshotsASC=ArrayHelper::getColumn($orderByHeadshots, 'id');
+      ArrayHelper::multisort($orderByHeadshots, ['headshots', 'ip'], [SORT_DESC, SORT_ASC]);
+      $orderByHeadshotsDESC=ArrayHelper::getColumn($orderByHeadshots, 'id');
+
+      $targetProgressProvider=$this->getTargetProgressProvider($tmod,$id,$defaultOrder);
+
       $targetProgressProvider->setSort([
           'sortParam'=>'target-sort',
           'attributes' => [
