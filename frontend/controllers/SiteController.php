@@ -161,7 +161,7 @@ class SiteController extends \app\components\BaseController
         $transaction=Yii::$app->db->beginTransaction();
         try
         {
-          if($model->load(Yii::$app->request->post()) && $model->validate())
+          if($model->load(Yii::$app->request->post()))
           {
               $model->signup();
               $transaction->commit();
