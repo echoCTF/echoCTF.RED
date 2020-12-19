@@ -14,6 +14,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $points
  * @property int $countHeadshots
  * @property array $treasureCategories
+ * @property bool $spinAllowed
+ * @property bool $spinDenied
  *
  */
 class Target extends TargetAR
@@ -108,26 +110,32 @@ class Target extends TargetAR
      */
     public function getSpinable()
     {
+      return $this->spinAllowed && !$this->spinDenied;
+    }
+    public function getSpinDenied()
+    {
       if(Yii::$app->user->isGuest)
       {
-        return false;
+        return true;
       }
-
-      if($this->spinQueue !== null || intval($this->active) != 1)
-      {
-        return false;// Not active or already queued
-      }
-
-      if(intval(Yii::$app->user->identity->profile->spins->counter) >= intval(Yii::$app->sys->spins_per_day))
-      {
-        return false;// user is not allowed spins for the day.
-      }
-
       if(Yii::$app->user->identity->profile->last->vpn_local_address === null && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_findings)<1 && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_treasures)<1)
-        return false;
-      return true;
+        return true;
+
+      return false;
     }
 
+    public function getSpinAllowed()
+    {
+      if($this->spinQueue === null && intval($this->active) === 1)
+      {
+        return true;// Not active or already queued
+      }
+      if(intval(Yii::$app->user->identity->profile->spins->counter) < intval(Yii::$app->sys->spins_per_day))
+      {
+        return true;// user is not allowed spins for the day.
+      }
+      return false;
+    }
     /*
      * Get Full Logo image for target to be used by <img> and related tags
      */

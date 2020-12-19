@@ -53,19 +53,30 @@ class Profile extends ProfileAR
 
     public function getVisible(): bool
     {
-      if(Yii::$app->sys->player_profile === false) return false;
-
       if($this->visibility === 'public') return true;
+      if($this->visibilityAllowed) return true;
+      return !$this->visibilityDenied;
+    }
 
+    public function getVisibilityAllowed(): bool
+    {
       if(!Yii::$app->user->isGuest)
       {
-        if($this->visibility==='ingame') return true;
         if(intval(Yii::$app->user->id) === intval($this->player_id)) return true;
         if(Yii::$app->user->identity->isAdmin) return true;
       }
+      return false;
+    }
+
+    public function getVisibilityDenied(): bool
+    {
+      if(Yii::$app->sys->player_profile === false) return true;
+
+      if($this->visibility === 'private') return true;
 
       return false;
     }
+
 
     /**
      * Get profile link based on player permissions,

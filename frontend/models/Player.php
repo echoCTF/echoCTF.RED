@@ -30,6 +30,8 @@ use app\modules\game\models\Headshot;
  * @property Profile $profile
  * @property PlayerScore $playerScore
  * @property PlayerSsl $playerSsl
+ * @property bool $visibilityAllowed
+ * @property bool $visibilityDenied
  */
 class Player extends PlayerAR implements IdentityInterface
 {

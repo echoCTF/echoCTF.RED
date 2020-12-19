@@ -17,7 +17,6 @@ $config=[
         '@appconfig' => realpath(dirname(__FILE__)),
     ],
     'modules' => [
-      'user'=> [ 'class' => 'app\components\User'],
       'game' => [
           'class' => 'app\modules\game\Module',
       ],
@@ -138,7 +137,8 @@ $config=[
           ],
         ],
         'user' => [
-            'identityClass' => 'app\models\Player',
+            'class' => '\app\components\User',
+            'identityClass' => '\app\models\Player',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true, /*'sameSite'=>'Lax'*/],
         ],

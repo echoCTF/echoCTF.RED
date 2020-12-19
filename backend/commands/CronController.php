@@ -14,6 +14,7 @@ use app\modules\settings\models\Sysconfig;
 use app\components\Pf;
 use Docker\Docker;
 use Http\Client\Socket\Exception\ConnectionException;
+use yii\console\Exception as ConsoleException;
 
 class CronController extends Controller {
 
@@ -26,11 +27,84 @@ class CronController extends Controller {
    */
   public function actionIndex($interval=5, $unit="MINUTE")
   {
+    $this->actionSpinQueue();
+    $this->actionHealthcheck(true);
     $this->actionPowerups();
     $this->actionPowerdowns();
     $this->actionOfflines();
     $this->actionPf();
-    $this->run('target/healthcheck', ['1']);
+  }
+
+  /**
+   * Check container health status and merge with spin queue
+   */
+  public function actionHealthcheck($spin=false)
+  {
+    $unhealthy=$this->unhealthy_dockers();
+
+    foreach($unhealthy as $target)
+    {
+      printf("Processing [%s] on docker [%s]\n", $target->name, $target->server);
+      if($spin !== false)
+      {
+        $target->spin();
+        $sh=new SpinHistory;
+        $sh->target_id=$target->id;
+        $sh->created_at=new \yii\db\Expression('NOW()');
+        $sh->updated_at=new \yii\db\Expression('NOW()');
+        $sh->player_id=1;
+        $sh->save();
+      }
+    }
+  }
+
+  /**
+   *  Process Pending Spin Queue entries
+   */
+  public function actionSpinQueue()
+  {
+
+    $transaction=\Yii::$app->db->beginTransaction();
+    try
+    {
+      $query=SpinQueue::find();
+      foreach($query->all() as $t)
+      {
+        printf("Processing [%s] on docker [%s]", $t->target->name, $t->target->server);
+        printf(" by [%s] on %s", $t->player->username, $t->created_at);
+
+        try
+        {
+          $t->target->spin();
+          $notif=new Notification;
+          $notif->player_id=$t->player_id;
+          $notif->title=sprintf("Target [%s] restart request completed", $t->target->name);
+          $notif->body=sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>", $t->target->name);
+          $notif->archived=0;
+          $notif->created_at=new \yii\db\Expression('NOW()');
+          $notif->updated_at=new \yii\db\Expression('NOW()');
+          $notif->save();
+          $t->delete();
+          echo " OK\n";
+        }
+        catch(\Exception $ce)
+        {
+          printf(" NOT OK (%s)\n", $ce->getMessage());
+        }
+      }
+      $transaction->commit();
+    }
+    catch(\Exception $e)
+    {
+        $transaction->rollBack();
+        throw $e;
+    }
+    catch(\Throwable $e)
+    {
+        $transaction->rollBack();
+        throw $e;
+    }
+
   }
 
 
@@ -131,6 +205,30 @@ class CronController extends Controller {
 
     Pf::store("$base/targets_networks.conf",$rules);
     Pf::load_anchor_file("targets/networks","$base/targets_networks.conf");
+  }
+
+  /*
+   * Return an array of unhealthy containers or null
+   */
+  private function unhealthy_dockers()
+  {
+    $unhealthy=[];
+    foreach(Target::find()->docker_servers()->all() as $target)
+    {
+      $docker=$this->docker_connect($target->server);
+
+      $containers=$this->containers_list($docker);
+      foreach($containers as $container)
+      {
+          if(strstr($container->getStatus(), 'unhealthy'))
+          {
+            $name=str_replace('/', '', $container->getNames()[0]);
+            if(($unhealthyTarget=Target::findOne(['name'=>$name])) !== NULL)
+              $unhealthy[$name]=$unhealthyTarget;
+          }
+      }
+    }
+    return $unhealthy;
   }
 
 }

@@ -10,6 +10,7 @@ use app\modules\frontend\models\PlayerSsl;
 use app\modules\frontend\models\PlayerIp;
 use app\modules\gameplay\models\Target;
 use app\modules\settings\models\Sysconfig;
+use yii\console\Exception as ConsoleException;
 
 class SslController extends Controller {
 
@@ -125,7 +126,6 @@ class SslController extends Controller {
       file_put_contents($player->username.".crt", $playerSsl->crt);
       file_put_contents($player->username.".key", $playerSsl->privkey);
     }
-    return 0;
   }
 
   /* Generate certificates for a all players */
@@ -190,8 +190,7 @@ class SslController extends Controller {
       $vpnta->val=file_get_contents($file);
       return $vpnta->save() ? 0 : 1;
     }
-    else printf("File not found: %s\n", $file);
-    return -1;
+    throw new ConsoleException(Yii::t('app', 'File not found: {file}', ['file' => $file)];
   }
 
   /*
