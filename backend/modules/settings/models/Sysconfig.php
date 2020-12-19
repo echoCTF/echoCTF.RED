@@ -82,4 +82,12 @@ class Sysconfig extends \yii\db\ActiveRecord
         return true;
     }
 
+    public static function findOneNew($id)
+    {
+      if(($model=self::findOne($id))!==null)
+        return $model;
+      $model=new self;
+      $model->id=$id;
+      return $model;
+    }
 }

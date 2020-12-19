@@ -53,7 +53,7 @@ class PlayerSearch extends Player
         if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
+            $query->where('0=1');
             return $dataProvider;
         }
 
@@ -78,8 +78,8 @@ class PlayerSearch extends Player
             ->andFilterWhere(['like', 'player.activkey', $this->activkey])
             ->andFilterWhere(['like', 'INET_NTOA(player_last.vpn_local_address)', $this->vpn_local_address]);
 
-        if($this->ovpn !== "" && $this->ovpn !== NULL)$query->andHaving(['like', 'ovpn', $this->ovpn]);
-        if($this->last_seen !== "" && $this->last_seen !== NULL)$query->andHaving(['like', 'last_seen', $this->last_seen]);
+//        if(!empty($this->ovpn)) $query->andHaving(['like', 'ovpn', $this->ovpn]);
+//        if($this->last_seen !== "" && $this->last_seen !== NULL)$query->andHaving(['like', 'last_seen', $this->last_seen]);
         if($this->online === "1") $query->andHaving(['>', 'ifnull(online,0)', $this->online]);
         else if($this->online === "0") $query->andHaving(['=', 'ifnull(online,0)', $this->online]);
         $dataProvider->setSort([

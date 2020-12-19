@@ -104,17 +104,17 @@ class TargetController extends Controller
         {
 
           // if the target has changed server destroy from old one
-//          $keys=['server','net'];
-          if(($modelOrig->server != $model->server || $modelOrig->net != $model->net || $modelOrig->ipoctet != $model->ipoctet) && array_key_exists('destroy', Yii::$app->request->post()))
+          if($modelOrig->server != $model->server || array_key_exists('destroy', Yii::$app->request->post()))
           {
             $modelOrig->destroy();
             $msg="Server destroyed and updated succesfully";
           }
           if($model->save())
+          {
             Yii::$app->session->setFlash('success', $msg);
-          else
-            Yii::$app->session->setFlash('error', 'Server failed to be updated ['.implode(", ", $model->getErrors()).']');
-          return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->id]);
+          }
+          Yii::$app->session->setFlash('error', 'Server failed to be updated ['.implode(", ", $model->getErrors()).']');
         }
 
         return $this->render('update', [

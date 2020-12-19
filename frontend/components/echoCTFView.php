@@ -1,6 +1,10 @@
 <?php
 namespace app\components;
-
+/**
+ * @property string image
+ * @property string description
+ * @property string twitterHandle
+ */
 class echoCTFView extends \yii\web\View
 {
   public $_title;
@@ -15,13 +19,6 @@ class echoCTFView extends \yii\web\View
 
   public function init()
   {
-    if(\Yii::$app->sys->site_description !== null && \Yii::$app->sys->site_description !== false)
-    {
-      $this->_description=\Yii::$app->sys->site_description;
-    }
-
-    if($this->_image === null)
-      $this->_image=\yii\helpers\Url::to('/images/logotw.png', 'https');
 
     $this->title=sprintf("%s - %s: %s", \Yii::$app->sys->event_name, ucfirst(\Yii::$app->controller->id), \Yii::$app->controller->action->id);
     if(!\Yii::$app->user->isGuest)
@@ -30,12 +27,32 @@ class echoCTFView extends \yii\web\View
         \Yii::$app->cache->memcache->set("online:".\Yii::$app->user->id, time(), 0, \Yii::$app->sys->online_timeout);
         \Yii::$app->cache->memcache->set("player_session:".\Yii::$app->user->id, \Yii::$app->session->id, 0, \Yii::$app->sys->online_timeout);
     }
-    if(\Yii::$app->sys->twitter_account!==null && \Yii::$app->sys->twitter_account!==false)
-    {
-      $this->_twitter_handle='@'.\Yii::$app->sys->twitter_account;
-    }
 
     parent::init();
+  }
+
+  public function getTwitterHandle()
+  {
+    if(\Yii::$app->sys->twitter_account!==null && \Yii::$app->sys->twitter_account!==false)
+    {
+      return '@'.\Yii::$app->sys->twitter_account;
+    }
+    return $this->_twitter_handle;
+  }
+  public function getDescription()
+  {
+    if(\Yii::$app->sys->site_description !== null && \Yii::$app->sys->site_description !== false)
+    {
+      return \Yii::$app->sys->site_description;
+    }
+    return $this->_description;
+  }
+
+  public function getImage()
+  {
+    if($this->_image === null)
+      return \yii\helpers\Url::to('/images/logotw.png', 'https');
+    return $this->_image;
   }
 
   public function getOg_title()
@@ -46,7 +63,7 @@ class echoCTFView extends \yii\web\View
 
   public function getOg_description()
   {
-    return ['property'=>'og:description', 'content'=>trim($this->_description)];
+    return ['property'=>'og:description', 'content'=>trim($this->description)];
   }
 
   public function getOg_site_name()
@@ -56,7 +73,7 @@ class echoCTFView extends \yii\web\View
 
   public function getOg_image()
   {
-    return ['property'=>'og:image', 'content'=>sprintf("%s?%s", $this->_image, \Yii::$app->security->generateRandomString(5))];
+    return ['property'=>'og:image', 'content'=>sprintf("%s?%s", $this->image, \Yii::$app->security->generateRandomString(5))];
   }
 
   public function getOg_url()
@@ -71,7 +88,7 @@ class echoCTFView extends \yii\web\View
 
   public function getTwitter_site()
   {
-    return ['name'=>'twitter:site', 'content'=>$this->_twitter_handle];
+    return ['name'=>'twitter:site', 'content'=>$this->twitterHandle];
   }
 
   public function getTwitter_title()
@@ -81,12 +98,12 @@ class echoCTFView extends \yii\web\View
 
   public function getTwitter_description()
   {
-    return ['name'=>'twitter:description', 'content'=>trim($this->_description)];
+    return ['name'=>'twitter:description', 'content'=>trim($this->description)];
   }
 
   public function getTwitter_image()
   {
-    return ['name'=>'twitter:image', 'content'=>sprintf("%s?%s", $this->_image, \Yii::$app->security->generateRandomString(5))];
+    return ['name'=>'twitter:image', 'content'=>sprintf("%s?%s", $this->image, \Yii::$app->security->generateRandomString(5))];
   }
 
   public function getTwitter_image_width()

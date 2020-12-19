@@ -85,13 +85,8 @@ class SignupForm extends Model
         }
         $player->setPassword($this->password);
         $player->generateAuthKey();
-        if($player->save())
+        if($player->saveWithSsl()!==false)
         {
-          $playerSsl=new PlayerSsl();
-          $playerSsl->player_id=$player->id;
-          $playerSsl->generate();
-          if($playerSsl->save() !== false)
-            $playerSsl->refresh();
           $profile=$player->profile;
           $profile->scenario='signup';
           $profile->visibility=Yii::$app->sys->profile_visibility!==false ? Yii::$app->sys->profile_visibility : 'ingame';

@@ -90,10 +90,10 @@ class Robohash
     {
         $image_list = [];
         $dirs = glob($this->image_dir . "{$this->robodata}/*");
-
         foreach ($dirs as $dir)
         {
             if(($files = glob("$dir/*"))===false) continue;
+            //$files = glob("$dir/*");
             $img_index = $this->hash_list[$this->hash_index] % count($files);
             $this->hash_index++;
             $s = explode('#', $files[$img_index], 2);
@@ -172,7 +172,7 @@ class Robohash
               }
           }
         }
-        if ($this->pixels_modify_alpha($src_im,$minalpha,$pct,$w,$h))
+        if (!$this->pixels_modify_alpha($src_im,$minalpha,$pct,$w,$h))
             return false;
         // The image copy
         imagecopy($dst_im, $src_im, $dst_x, $dst_y, $src_x, $src_y, $src_w, $src_h);
