@@ -85,57 +85,13 @@ class ProfileController extends \app\components\BaseController
     public function actionBadge(int $id)
     {
       $profile=$this->findModel($id);
-      if(!$profile->visible)
+      if($profile->visible===false)
           return $this->redirect(['/']);
 
-      $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profile->avtr));
+      $image=\app\components\Img::profile($profile);
 
-      $image = imagecreatetruecolor(800,220);
-      if($image===false) return $this->redirect(['/']);
-
-      imagealphablending($image, false);
-      $col=imagecolorallocatealpha($image,255,255,255,127);
-      $textcolor = imagecolorallocate($image, 255, 255, 255);
-      $consolecolor = imagecolorallocate($image, 148,148,148);
-      $greencolor = imagecolorallocate($image, 148,193,31);
-
-      imagefilledrectangle($image,0,0,800, 220,$col);
-      imagefilledrectangle($image,20,20,180, 180,$greencolor);
-      imagealphablending($image,true);
-
-      $src = imagecreatefrompng($fname);
-      if($src===false) return $this->redirect(['/']);
-
-      $x=160;
-      $avatar=imagescale($src,$x);
-      if($avatar===false) return $this->redirect(['/']);
-
-      imagecopyresampled($image, $avatar, /*dst_x*/ 20, /*dst_y*/ 20, /*src_x*/ 0, /*src_y*/ 0, /*dst_w*/ $x, /*dst_h*/ $x, /*src_w*/ $x, /*src_y*/ $x);
-      imagealphablending($image,true);
-
-      $cover = imagecreatefrompng(Yii::getAlias('@app/web/images/badge.tpl.png'));
-      if($cover===false) return $this->redirect(['/']);
-
-      imagecopyresampled($image, $cover, 0, 0, 0, 0, 800, 220, 800, 220);
-      imagealphablending($image,true);
-
-
-      imagealphablending($image, false);
-      imagesavealpha($image, true);
-
-      $lineheight=20;
-      $i=1;
-      imagestring($image, 6, 200, $lineheight*$i++, sprintf("root@echoctf.red:/# ./userinfo --profile %d",$profile->id),$textcolor);
-      imagestring($image, 6, 200, $lineheight*$i++, sprintf("username.....: %s",$profile->owner->username),$greencolor);
-      imagestring($image, 6, 200, $lineheight*$i++, sprintf("joined.......: %s",date("d.m.Y", strtotime($profile->owner->created))),$greencolor);
-      imagestring($image, 6, 200, $lineheight*$i++, sprintf("points.......: %s",number_format($profile->owner->playerScore->points)),$greencolor);
-      imagestring($image, 6, 200, $lineheight*$i++, sprintf("rank.........: %s",$profile->rank->ordinalPlace),$greencolor);
-      imagestring($image, 6, 200, $lineheight*$i++, sprintf("level........: %d / %s",$profile->experience->id, $profile->experience->name),$greencolor);
-      imagestring($image, 6, 200, $lineheight*$i++, sprintf("flags........: %d", $profile->totalTreasures),$greencolor);
-      imagestring($image, 6, 200, $lineheight*$i++, sprintf("headshots....: %d",$profile->headshotsCount),$greencolor);
-//      $hs=\app\modules\game\models\Headshot::find()->player_avg_time($profile->player_id)->one();
-//      if($hs && $hs->average > 0)
-//        imagestring($image, 6, 200, $lineheight*$i++, sprintf("avg headshot.: %s",\Yii::$app->formatter->asDuration($hs->average)),$greencolor);
+      if($image==false)
+        return $this->redirect(['/']);
 
       Yii::$app->getResponse()->getHeaders()
           ->set('Pragma', 'public')
@@ -148,9 +104,6 @@ class ProfileController extends \app\components\BaseController
       ob_start();
       imagepng($image);
       imagedestroy($image);
-      imagedestroy($avatar);
-      imagedestroy($cover);
-      imagedestroy($src);
       return ob_get_clean();
     }
 

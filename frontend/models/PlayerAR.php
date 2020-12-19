@@ -59,12 +59,24 @@ class PlayerAR extends ActiveRecord
           }],
 
           /* active field rules */
-          [['active'], 'filter', 'filter' => 'boolval'],
-          [['active'], 'default', 'value' => false],
+          //[['active'], 'filter', 'filter' => 'boolval'],
+          [['active'], 'default', 'value' => function ($model){
+            if(\Yii::$app->sys->require_activation===true)
+            {
+              return true;
+            }
+            return false;
+          }],
 
           /* status field rules */
-          [['status'], 'filter', 'filter' => 'intval'],
-          [['status'], 'default', 'value' => self::STATUS_INACTIVE],
+          //[['status'], 'filter', 'filter' => 'intval'],
+          [['status'], 'default', 'value' => function ($model){
+            if(\Yii::$app->sys->require_activation===true)
+            {
+              return Player::STATUS_INACTIVE;
+            }
+            return Player::STATUS_ACTIVE;
+          }],
           [['status'], 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_UNVERIFIED, self::STATUS_INACTIVE, self::STATUS_DELETED]],
           /* password field rules */
 
@@ -73,6 +85,7 @@ class PlayerAR extends ActiveRecord
           [['confirm_password'], 'string', 'max'=>255],
           [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
           [['created', 'ts'], 'safe'],
+
       ];
   }
 

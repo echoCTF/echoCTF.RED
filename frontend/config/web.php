@@ -146,7 +146,7 @@ $config=[
             'errorAction' => 'site/error',
         ],
         'mailer' => [
-            'class' => 'yii\swiftmailer\Mailer',
+            'class' => 'app\components\Mailer',
 //            'useFileTransport' => defined(YII_ENV_DEV),
 //            'viewPath' => '@app/mail/layouts',
             'transport' => [

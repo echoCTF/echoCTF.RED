@@ -65,27 +65,18 @@ class SignupForm extends Model
      */
     public function signup()
     {
-        if(!$this->validate())
-        {
-            return false;
-        }
-
+        if(!$this->validate()) throw new \Exception("Error Processing Request", 1);
         $player=new Player();
         $player->username=$this->username;
         $player->email=$this->email;
-        if(Yii::$app->sys->require_activation===true)
+        if(\Yii::$app->sys->require_activation===true)
         {
-          $player->status=Player::STATUS_INACTIVE;
           $player->generateEmailVerificationToken();
         }
-        else
-        {
-          $player->status=Player::STATUS_ACTIVE;
-          $player->active=1;
-        }
+
         $player->setPassword($this->password);
         $player->generateAuthKey();
-        if($player->saveWithSsl()!==false)
+        if($player->validate()!==false && $player->saveWithSsl()!==false)
         {
           $profile=$player->profile;
           $profile->scenario='signup';
@@ -96,7 +87,7 @@ class SignupForm extends Model
         }
         else
         {
-          return false;
+          throw new \Exception("Error Processing Request", 1);
         }
         if(Yii::$app->sys->require_activation===true)
           return $this->sendEmail($player);
@@ -120,19 +111,6 @@ class SignupForm extends Model
      */
     protected function sendEmail($player)
     {
-      \Yii::$app->mailer->useFileTransport=Yii::$app->sys->mail_useFileTransport;
-      if(Yii::$app->sys->mail_host !== false)
-        \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
-
-      if(Yii::$app->sys->mail_port !== false)
-        \Yii::$app->mailer->transport->setPort(Yii::$app->sys->mail_port);
-
-      if(Yii::$app->sys->mail_username !== false)
-        \Yii::$app->mailer->transport->setUserName(Yii::$app->sys->mail_username);
-
-      if(Yii::$app->sys->mail_password !== false)
-        \Yii::$app->mailer->transport->setPassword(Yii::$app->sys->mail_password);
-
       return Yii::$app
             ->mailer
             ->compose(
