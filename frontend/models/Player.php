@@ -301,7 +301,7 @@ class Player extends PlayerAR implements IdentityInterface
       if(($profile=$this->profile)==null)
       {
         $profile=new Profile();
-        $profile->owner_id=$this->id;
+        $profile->player_id=$this->id;
       }
 
       $profile->scenario='signup';
