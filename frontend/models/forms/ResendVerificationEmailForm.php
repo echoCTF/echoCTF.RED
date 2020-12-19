@@ -40,27 +40,10 @@ class ResendVerificationEmailForm extends Model
      */
     public function sendEmail()
     {
-        $player=Player::findOne([
-            'email' => $this->email,
-            'status' => Player::STATUS_INACTIVE
-        ]);
-
-        if($player === null)
+        if(($player=Player::findOne(['email' => $this->email,'status' => Player::STATUS_INACTIVE]))===null)
         {
             return false;
         }
-        \Yii::$app->mailer->useFileTransport=Yii::$app->sys->mail_useFileTransport;
-        if(Yii::$app->sys->mail_host !== false)
-          \Yii::$app->mailer->transport->setHost(Yii::$app->sys->mail_host);
-
-        if(Yii::$app->sys->mail_port !== false)
-          \Yii::$app->mailer->transport->setPort(Yii::$app->sys->mail_port);
-
-        if(Yii::$app->sys->mail_username !== false)
-          \Yii::$app->mailer->transport->setUserName(Yii::$app->sys->mail_username);
-
-        if(Yii::$app->sys->mail_password !== false)
-          \Yii::$app->mailer->transport->setPassword(Yii::$app->sys->mail_password);
 
         return Yii::$app
             ->mailer
