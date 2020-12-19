@@ -161,7 +161,7 @@ class SiteController extends \app\components\BaseController
         $transaction=Yii::$app->db->beginTransaction();
         try
         {
-          if($model->load(Yii::$app->request->post()) && $model->signup())
+          if($model->load(Yii::$app->request->post()) && $model->validate() && $model->signup())
           {
               $transaction->commit();
               Yii::$app->session->setFlash('success', 'Thank you for registering. Your account is activated feel free to login.');

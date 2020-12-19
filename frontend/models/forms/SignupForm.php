@@ -65,27 +65,17 @@ class SignupForm extends Model
      */
     public function signup()
     {
-        if(!$this->validate())
-        {
-            return false;
-        }
-
         $player=new Player();
         $player->username=$this->username;
         $player->email=$this->email;
-        if(Yii::$app->sys->require_activation===true)
+        if(\Yii::$app->sys->require_activation===true)
         {
-          $player->status=Player::STATUS_INACTIVE;
           $player->generateEmailVerificationToken();
         }
-        else
-        {
-          $player->status=Player::STATUS_ACTIVE;
-          $player->active=1;
-        }
+
         $player->setPassword($this->password);
         $player->generateAuthKey();
-        if($player->saveWithSsl()!==false)
+        if($player->validate()!==false && $player->saveWithSsl()!==false)
         {
           $profile=$player->profile;
           $profile->scenario='signup';
