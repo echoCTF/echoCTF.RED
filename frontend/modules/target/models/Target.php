@@ -14,6 +14,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $points
  * @property int $countHeadshots
  * @property array $treasureCategories
+ * @property bool $spinAllowed
+ * @property bool $spinDenied
  *
  */
 class Target extends TargetAR
