@@ -13,6 +13,8 @@ use yii\base\InvalidConfigException;
 use yii\base\InvalidValueException;
 use yii\rbac\CheckAccessInterface;
 use yii\web\UserEvent;
+use yii\web\Response;
+use yii\web\ForbiddenHttpException;
 /**
  * User is the class for the `user` application component that manages the user authentication status.
  *
@@ -69,7 +71,7 @@ class User extends \yii\web\User
      * stored in session and reconstruct the corresponding identity object, if it has not done so before.
      * @param bool $autoRenew whether to automatically renew authentication status if it has not been done so before.
      * This is only useful when [[enableSession]] is true.
-     * @return IdentityInterface|null the identity object associated with the currently logged-in user.
+     * @return \app\models\Player|null the identity object associated with the currently logged-in user.
      * `null` is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
@@ -281,7 +283,7 @@ class User extends \yii\web\User
      * @param bool $checkAcceptHeader whether to check if the request accepts HTML responses. Defaults to `true`. When this is true and
      * the request does not accept HTML responses the current URL will not be SET as the return URL. Also instead of
      * redirecting the user an ForbiddenHttpException is thrown. This parameter is available since version 2.0.8.
-     * @return Response the redirection response if [[loginUrl]] is set
+     * @return \yii\web\Response the redirection response if [[loginUrl]] is set
      * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set or a redirect is
      * not applicable.
      */
