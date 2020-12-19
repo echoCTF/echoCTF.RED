@@ -7,6 +7,7 @@ use app\modules\frontend\models\Player;
 use app\modules\frontend\models\PlayerIp;
 use app\modules\gameplay\models\Target;
 use app\modules\settings\models\Sysconfig;
+use yii\console\Exception as ConsoleException;
 
 class SysconfigController extends Controller {
 
