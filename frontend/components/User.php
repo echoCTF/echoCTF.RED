@@ -291,13 +291,10 @@ class User extends \yii\web\User
     {
         $request = Yii::$app->getRequest();
         $canRedirect = !$checkAcceptHeader || $this->checkRedirectAcceptable();
-        if ($this->enableSession
-            && $request->getIsGet()
-            && (!$checkAjax || !$request->getIsAjax())
-            && $canRedirect
-        ) {
+        if ($this->needSetReturnUrl($request,$checkAjax,$canRedirect)) {
             $this->setReturnUrl($request->getAbsoluteUrl());
         }
+
         if ($this->loginUrl !== null && $canRedirect) {
             $loginUrl = (array) $this->loginUrl;
             if ($loginUrl[0] !== Yii::$app->requestedRoute) {
@@ -306,7 +303,11 @@ class User extends \yii\web\User
         }
         throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
     }
-
+    protected function needSetReturnUrl($request,$checkAjax,$canRedirect)
+    {
+      return $this->enableSession && $request->getIsGet()
+              && (!$checkAjax || !$request->getIsAjax()) && $canRedirect;
+    }
     /**
      * This method is called before logging in a user.
      * The default implementation will trigger the [[EVENT_BEFORE_LOGIN]] event.
