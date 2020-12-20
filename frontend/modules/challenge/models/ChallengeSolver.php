@@ -13,6 +13,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $challenge_id
  * @property int|null $player_id
  * @property float|null $points
+ * @property int timer
  * @property string $ts
  *
  * @property Challenge[] $challenge
