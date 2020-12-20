@@ -18,24 +18,33 @@ $config=[
           'class' => 'app\components\Sysconfig',
         ],
         'mailer' => [
-          'class' => 'yii\swiftmailer\Mailer',
-          'useFileTransport' => true,
+          'class' => 'app\components\Mailer',
+          'useFileTransport' => false,
           'viewPath' => '@app/mail/layouts',
           'transport' => [
               'class' => 'Swift_SmtpTransport',
-              'host' => 'smtp.gmail.com',
-              'username' => 'username',
-              'password' => 'password',
-              'port' => '587',
-              'encryption' => 'tls',
-              'streamOptions' => [
-                'ssl' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
-                ],
-              ],
+              'port' => '25',
           ],
         ],
+//        'mailer' => [
+//          'class' => 'yii\swiftmailer\Mailer',
+//          'useFileTransport' => true,
+//          'viewPath' => '@app/mail/layouts',
+//          'transport' => [
+//              'class' => 'Swift_SmtpTransport',
+//              'host' => 'smtp.gmail.com',
+//              'username' => 'username',
+//              'password' => 'password',
+//              'port' => '587',
+//              'encryption' => 'tls',
+//              'streamOptions' => [
+//                'ssl' => [
+//                    'verify_peer' => false,
+//                    'verify_peer_name' => false,
+//                ],
+//              ],
+//          ],
+//        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],

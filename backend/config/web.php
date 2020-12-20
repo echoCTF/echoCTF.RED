@@ -38,7 +38,7 @@ $config=[
         'class' => 'app\components\Sysconfig',
       ],
       'mailer' => [
-        'class' => 'yii\swiftmailer\Mailer',
+        'class' => 'app\components\Mailer',
         'useFileTransport' => false,
         'viewPath' => '@app/mail/layouts',
         'transport' => [
