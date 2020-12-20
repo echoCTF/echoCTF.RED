@@ -7,8 +7,8 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\base\NotSupportedException;
-
 use app\models\Player;
+
 /**
  * This is the model class for table "writeup".
  *
@@ -98,7 +98,7 @@ class Writeup extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Player]].
      *
-     * @return \yii\db\ActiveQuery|PlayerQuery
+     * @return \yii\db\ActiveQuery|PlayerQuery|Player
      */
     public function getPlayer()
     {
@@ -108,7 +108,7 @@ class Writeup extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Target]].
      *
-     * @return \yii\db\ActiveQuery|TargetQuery
+     * @return \yii\db\ActiveQuery|TargetQuery|Target
      */
     public function getTarget()
     {
