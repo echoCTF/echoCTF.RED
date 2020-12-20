@@ -15,6 +15,8 @@ use app\models\Player;
  * @property int $active
  * @property string $ts
  *
+ * @property int targetCount
+ *
  * @property NetworkPlayer[] $networkPlayers
  * @property Player[] $players
  * @property NetworkTarget[] $networkTargets
