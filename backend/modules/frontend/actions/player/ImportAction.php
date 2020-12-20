@@ -9,6 +9,7 @@ use app\modules\frontend\models\TeamPlayer;
 use app\modules\frontend\models\PlayerSsl;
 use app\modules\frontend\models\PlayerSearch;
 use app\modules\settings\models\Sysconfig;
+use app\modules\frontend\models\ImportPlayerForm;
 
 class ImportAction extends \yii\base\Action
 {
