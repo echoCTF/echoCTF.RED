@@ -98,7 +98,7 @@ class Writeup extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Player]].
      *
-     * @return \yii\db\ActiveQuery|PlayerQuery|Player
+     * @return \yii\db\ActiveQuery|\app\models\PlayerQuery|Player
      */
     public function getPlayer()
     {
