@@ -6,6 +6,7 @@ use yii\helpers\Html;
 
 /**
  * This is just an example.
+ * @property string $defaultHeader
  */
 class Card extends \yii\base\Widget
 {
@@ -114,6 +115,10 @@ class Card extends \yii\base\Widget
           return $this->{$normalizedHeader};
         return $this->defaultHeader;
     }
+
+    /**
+     * @return string
+     */
     public function getDefaultHeader()
     {
       return '<div class="card-header">
@@ -122,10 +127,18 @@ class Card extends \yii\base\Widget
                 </div>';
 
     }
+
+    /**
+     * @return string
+     */
     public function getImgtop()
     {
       return '<img class="card-img-top" src="'.Html::encode($this->url).'" alt="">';
     }
+
+    /**
+     * @return string
+     */
     public function getHeadericon()
     {
       if($this->type != 'card-stats')
@@ -144,6 +157,10 @@ class Card extends \yii\base\Widget
                 </div>';
 
     }
+
+    /**
+     * @return string
+     */
     public function getHeadertext()
     {
       return '<div class="card-header card-header-text card-header-'.$this->color.'">
@@ -153,12 +170,17 @@ class Card extends \yii\base\Widget
                   </div>
                 </div>';
     }
+
+    /**
+     * @return string
+     */
     public function getChart()
     {
       return '<div class="card-header card-chart card-header-'.$this->color.'">
                 <div class="ct-chart" id="'.$this->chartId.'"></div>
               </div>';
     }
+
     /**
      * @return string
      */
