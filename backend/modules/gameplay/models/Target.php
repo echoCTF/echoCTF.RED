@@ -41,6 +41,7 @@ use app\modules\activity\models\Headshot;
  * @property int $required_xp
  * @property int $rootable
  * @property int $difficulty
+ * @property bool $timer
  *
  * @property Finding[] $findings
  * @property TargetVariable[] $targetVariables
