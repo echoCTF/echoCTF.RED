@@ -26,12 +26,12 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
 <div class="profile-index">
   <div class="body-content">
     <div class="row">
-      <div class="col-xl-8 col-lg-8">
+      <div class="col-xl-8 col-lg-12">
         <?php \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
         <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Pending progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
       </div>
-      <div class="col-xl-4 col-lg-4">
+      <div class="col">
         <?=$this->render('_card', ['profile'=>$profile]);?>
       </div><!-- // end profile card col-md-4 -->
     </div>
@@ -43,7 +43,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
       <h3><code><?=count($profile->owner->challengeSolvers)?></code> Challenges solved</h2>
       <div class="row">
         <?php foreach($profile->owner->challengeSolvers as $cs):?>
-          <div class="col col-sm-1 col-md-5 col-lg-3">
+          <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
             <div class="iconic-card">
                   <?=$cs->challenge->icon?>
                   <p><b><?=Html::a(
@@ -71,7 +71,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     ?> <sub>(ordered by date)</small></sub></h3>
     <div class="row">
       <?php foreach($profile->owner->headshots as $headshot):?>
-      <div class="col col-sm-1 col-md-5 col-lg-3">
+      <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
         <div class="iconic-card">
           <img align="right" src="<?=$headshot->target->thumbnail?>"/>
           <p><b><?=Html::a(
@@ -97,7 +97,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     <?php if($game->badges !== null && $game->badges->received_by($profile->player_id)->count() > 0):?><h3>Badges</h3>
     <div class="row game-badges">
       <?php foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
-      <div class="col col-sm-12 col-md-4 col-lg-3">
+      <div class="col col-sm-6 col-md-6 col-lg-4">
         <div class="iconic-card">
           <center><?=$badge->pubname?></center>
           <h3><?=$badge->name?></h3>
