@@ -22,14 +22,7 @@ class Menu extends MenuBase
    */
   protected function renderItem($item)
   {
-      if(isset($item['items']))
-      {
-          $linkTemplate='<a href="{url}" class="{class}">{icon} {dropdownicon} {label}</a>';
-      }
-      else
-      {
-          $linkTemplate=$this->linkTemplate;
-      }
+      $linkTemplate=$this->getItemLinkTemplate($item);
 
       $template=ArrayHelper::getValue($item, 'template', $linkTemplate);
       $replace=!empty($item['icon']) ? [
@@ -47,6 +40,15 @@ class Menu extends MenuBase
       ];
       return strtr($template, $replace);
   }
+
+  protected function getItemLinkTemplate($item)
+  {
+    if(isset($item['items']))
+    {
+        return '<a href="{url}" class="{class}">{icon} {dropdownicon} {label}</a>';
+    }
+    return $this->linkTemplate;
+  }
   /**
    * Recursively renders the menu items (without the container tag).
    * @param array $items the menu items to be rendered recursively
@@ -61,32 +63,10 @@ class Menu extends MenuBase
           $options=array_merge($this->itemOptions, ArrayHelper::getValue($item, 'options', []));
           $tag=ArrayHelper::remove($options, 'tag', 'li');
           $class=[];
-          if($item['active'])
-          {
-              $class[]=$this->activeCssClass;
-          }
-          if($i === 0 && $this->firstItemCssClass !== null)
-          {
-              $class[]=$this->firstItemCssClass;
-          }
-          if($i === $n - 1 && $this->lastItemCssClass !== null)
-          {
-              $class[]=$this->lastItemCssClass;
-          }
-          if(!empty($class))
-          {
-              if(empty($options['class']))
-              {
-                  $options['class']=implode(' ', $class);
-              }
-              else
-              {
-                  $options['class'].=' '.implode(' ', $class);
-              }
-          }/*else{
-              $options['class'] = '';
-          }*/
+          $this->getItemClasses($item,$class,$i,$n);
+          $this->getClassOptions($class,$options);
           $menu=$this->renderItem($item);
+
           if(!empty($item['items']))
           {
               $menu.=strtr($this->submenuTemplate, [
@@ -102,6 +82,39 @@ class Menu extends MenuBase
 
       return implode("\n", $lines);
   }
+
+  protected function getClassOptions($class,&$options)
+  {
+    if(!empty($class))
+    {
+        if(empty($options['class']))
+        {
+            $options['class']=implode(' ', $class);
+        }
+        else
+        {
+            $options['class'].=' '.implode(' ', $class);
+        }
+    }/*else{
+        $options['class'] = '';
+    }*/
+  }
+  protected function getItemClasses($item,&$class,$i,$n)
+  {
+    if($item['active'])
+    {
+        $class[]=$this->activeCssClass;
+    }
+    if($i === 0 && $this->firstItemCssClass !== null)
+    {
+        $class[]=$this->firstItemCssClass;
+    }
+    if($i === $n - 1 && $this->lastItemCssClass !== null)
+    {
+        $class[]=$this->lastItemCssClass;
+    }
+  }
+
   /**
    * @inheritdoc
    */
