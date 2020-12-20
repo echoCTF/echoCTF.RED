@@ -125,7 +125,6 @@ class Card extends \yii\base\Widget
                   <h4 class="card-title">'.Html::encode($this->title).'</h4>
                   <p class="category">'.Html::encode($this->subtitle).'</p>
                 </div>';
-
     }
 
     /**
@@ -155,7 +154,6 @@ class Card extends \yii\base\Widget
                   <p class="card-category">'.Html::encode($this->subtitle).'</p>
                   <h4 class="card-title">'.Html::encode($this->title).'</h4>
                 </div>';
-
     }
 
     /**
