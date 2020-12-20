@@ -121,40 +121,5 @@ class TargetController extends Controller {
   }
 
 
-  /**
-   * Get a list of containers from a connected docker
-   */
-  private function containers_list($docker)
-  {
-    if($docker === false) return [];
-    try
-    {
-      $containerList=$docker->containerList();
-    }
-    catch(\Exception $e)
-    {
-      return [];
-    }
-    return $containerList;
-  }
 
-  /**
-   * Connect to a docker server API and return docker client object
-   */
-  private function docker_connect($remote_socket)
-  {
-      $client=DockerClientFactory::create([
-        'remote_socket' => $remote_socket,
-        'ssl' => false,
-      ]);
-    try
-    {
-      $docker=Docker::create($client);
-    }
-    catch(\Exception $e)
-    {
-      return false;
-    }
-    return $docker;
-  }
 }
