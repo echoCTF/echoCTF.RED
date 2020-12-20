@@ -18,46 +18,6 @@ use yii\web\ForbiddenHttpException;
 /**
  * User is the class for the `user` application component that manages the user authentication status.
  *
- * You may use [[isGuest]] to determine whether the current user is a guest or not.
- * If the user is a guest, the [[identity]] property would return `null`. Otherwise, it would
- * be an instance of [[IdentityInterface]].
- *
- * You may call various methods to change the user authentication status:
- *
- * - [[login()]]: sets the specified identity and remembers the authentication status in session and cookie;
- * - [[logout()]]: marks the user as a guest and clears the relevant information from session and cookie;
- * - [[setIdentity()]]: changes the user identity without touching session or cookie
- *   (this is best used in stateless RESTful API implementation).
- *
- * Note that User only maintains the user authentication status. It does NOT handle how to authenticate
- * a user. The logic of how to authenticate a user should be done in the class implementing [[IdentityInterface]].
- * You are also required to set [[identityClass]] with the name of this class.
- *
- * User is configured as an application component in [[\yii\web\Application]] by default.
- * You can access that instance via `Yii::$app->user`.
- *
- * You can modify its configuration by adding an array to your application config under `components`
- * as it is shown in the following example:
- *
- * ```php
- * 'user' => [
- *     'identityClass' => 'app\models\User', // User must implement the IdentityInterface
- *     'enableAutoLogin' => true,
- *     // 'loginUrl' => ['user/login'],
- *     // ...
- * ]
- * ```
- *
- * @property string|int $id The unique identifier for the user. If `null`, it means the user is a guest. This
- * property is read-only.
- * @property IdentityInterface|null $identity The identity object associated with the currently logged-in
- * user. `null` is returned if the user is not logged in (not authenticated).
- * @property bool $isGuest Whether the current user is a guest. This property is read-only.
- * @property string $returnUrl The URL that the user should be redirected to after login. Note that the type
- * of this property differs in getter and setter. See [[getReturnUrl()]] and [[setReturnUrl()]] for details.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
  */
 
 class User extends \yii\web\User
@@ -160,31 +120,6 @@ class User extends \yii\web\User
     }
 
     /**
-     * Logs out the current user.
-     * This will remove authentication-related session data.
-     * If `$destroySession` is true, all session data will be removed.
-     * @param bool $destroySession whether to destroy the whole session. Defaults to true.
-     * This parameter is ignored if [[enableSession]] is false.
-     * @return bool whether the user is logged out
-     */
-    public function logout($destroySession = true)
-    {
-        $identity = $this->getIdentity();
-        if ($identity !== null && $this->beforeLogout($identity)) {
-            $this->switchIdentity(null);
-            $id = $identity->getId();
-            $ip = Yii::$app->getRequest()->getUserIP();
-            Yii::info("User '$id' logged out from $ip.", __METHOD__);
-            if ($destroySession && $this->enableSession) {
-                Yii::$app->getSession()->destroy();
-            }
-            $this->afterLogout($identity);
-        }
-
-        return $this->getIsGuest();
-    }
-
-    /**
      * Returns a value indicating whether the user is a guest (not authenticated).
      * @return bool whether the current user is a guest.
      * @see getIdentity()
@@ -232,21 +167,6 @@ class User extends \yii\web\User
         return $url === null ? Yii::$app->getHomeUrl() : $url;
     }
 
-    /**
-     * Remembers the URL in the session so that it can be retrieved back later by [[getReturnUrl()]].
-     * @param string|array $url the URL that the user should be redirected to after login.
-     * If an array is given, [[UrlManager::createUrl()]] will be called to create the corresponding URL.
-     * The first element of the array should be the route, and the rest of
-     * the name-value pairs are GET parameters used to construct the URL. For example,
-     *
-     * ```php
-     * ['admin/index', 'ref' => 1]
-     * ```
-     */
-    public function setReturnUrl($url)
-    {
-        Yii::$app->getSession()->set($this->returnUrlParam, $url);
-    }
 
     /**
      * Renews the identity cookie.
