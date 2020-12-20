@@ -31,6 +31,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int|null $suggested_xp
  * @property int|null $required_xp
  * @property string $ts
+ * @property bool $timer
  *
  * @property Credential[] $credentials
  * @property Finding[] $findings

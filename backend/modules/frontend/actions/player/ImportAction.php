@@ -9,6 +9,8 @@ use app\modules\frontend\models\TeamPlayer;
 use app\modules\frontend\models\PlayerSsl;
 use app\modules\frontend\models\PlayerSearch;
 use app\modules\settings\models\Sysconfig;
+use app\modules\frontend\models\ImportPlayerForm;
+use yii\web\UploadedFile;
 
 class ImportAction extends \yii\base\Action
 {
@@ -43,6 +45,6 @@ class ImportAction extends \yii\base\Action
           }
       }
 
-      return $this->render('import', ['model' => $model]);
+      return $this->controller->render('import', ['model' => $model]);
     }
 }

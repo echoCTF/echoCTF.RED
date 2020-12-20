@@ -3,7 +3,6 @@
 namespace app\modules\frontend\controllers;
 
 use Yii;
-use app\modules\frontend\models\ImportPlayerForm;
 use app\modules\frontend\models\Player;
 use app\modules\frontend\models\Team;
 use app\modules\frontend\models\TeamPlayer;

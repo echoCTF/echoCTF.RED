@@ -190,7 +190,7 @@ class SslController extends Controller {
       $vpnta->val=file_get_contents($file);
       return $vpnta->save() ? 0 : 1;
     }
-    throw new ConsoleException(Yii::t('app', 'File not found: {file}', ['file' => $file)];
+    throw new ConsoleException(Yii::t('app', 'File not found: {file}', ['file' => $file]));
   }
 
   /*

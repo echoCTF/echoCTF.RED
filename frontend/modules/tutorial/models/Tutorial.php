@@ -3,7 +3,7 @@
 namespace app\modules\tutorial\models;
 
 use Yii;
-
+use app\modules\target\models\Target;
 /**
  * This is the model class for table "tutorial".
  *

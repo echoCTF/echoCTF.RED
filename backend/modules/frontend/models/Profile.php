@@ -30,6 +30,7 @@ use yii\helpers\Html;
  * @property string $updated_at
  *
  * @property Owner[] $owner
+ * @property boolean $isMine
  */
 
 class Profile extends \yii\db\ActiveRecord

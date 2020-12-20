@@ -1,6 +1,5 @@
 <?php
 use yii\helpers\Html;
-use yii\helpers\HtmlPurifier;
 ?>
   <div class="card card-profile">
     <div class="card-avatar bg-primary">

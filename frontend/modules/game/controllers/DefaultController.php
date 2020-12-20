@@ -6,6 +6,7 @@ use Yii;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+use yii\web\NotFoundHttpException;
 
 /**
  * Default controller for the `game` module

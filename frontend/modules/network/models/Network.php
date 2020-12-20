@@ -12,7 +12,10 @@ use app\models\Player;
  * @property string $name
  * @property string $icon
  * @property string $description
+ * @property int $active
  * @property string $ts
+ *
+ * @property int targetCount
  *
  * @property NetworkPlayer[] $networkPlayers
  * @property Player[] $players
@@ -95,7 +98,7 @@ class Network extends \yii\db\ActiveRecord
         return $this->hasMany(NetworkTarget::class, ['network_id' => 'id']);
     }
     /**
-     * @return \yii\db\ActiveQuery
+     * @return int
      */
     public function getTargetsCount()
     {

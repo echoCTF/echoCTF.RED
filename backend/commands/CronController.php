@@ -15,7 +15,10 @@ use app\components\Pf;
 use Docker\Docker;
 use Http\Client\Socket\Exception\ConnectionException;
 use yii\console\Exception as ConsoleException;
-
+/**
+ * @method docker_connect()
+ * @method containers_list()
+ */
 class CronController extends Controller {
 
   /*
@@ -229,6 +232,43 @@ class CronController extends Controller {
       }
     }
     return $unhealthy;
+  }
+
+  /**
+   * Connect to a docker server API and return docker client object
+   */
+  private function docker_connect($remote_socket)
+  {
+      $client=DockerClientFactory::create([
+        'remote_socket' => $remote_socket,
+        'ssl' => false,
+      ]);
+    try
+    {
+      $docker=Docker::create($client);
+    }
+    catch(\Exception $e)
+    {
+      return false;
+    }
+    return $docker;
+  }
+
+  /**
+   * Get a list of containers from a connected docker
+   */
+  private function containers_list($docker)
+  {
+    if($docker === false) return [];
+    try
+    {
+      $containerList=$docker->containerList();
+    }
+    catch(\Exception $e)
+    {
+      return [];
+    }
+    return $containerList;
   }
 
 }

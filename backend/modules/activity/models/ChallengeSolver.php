@@ -60,7 +60,7 @@ class ChallengeSolver extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Challenge]].
      *
-     * @return \yii\db\ActiveQuery|ChallengeQuery
+     * @return \yii\db\ActiveQuery|\app\modules\gameplay\models\Challenge
      */
     public function getChallenge()
     {
@@ -70,7 +70,7 @@ class ChallengeSolver extends \yii\db\ActiveRecord
     /**
      * Gets query for [[Player]].
      *
-     * @return \yii\db\ActiveQuery|PlayerQuery
+     * @return \yii\db\ActiveQuery|\app\modules\frontend\models\Player
      */
     public function getPlayer()
     {

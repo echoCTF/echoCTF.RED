@@ -10,6 +10,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property int $id
  * @property int $team_id
+ *
+ * @property Team $team
  */
 class TeamRank extends \yii\db\ActiveRecord
 {

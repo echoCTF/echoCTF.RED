@@ -345,7 +345,7 @@ class DefaultController extends Controller
      * Finds the TeamPlayer model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer|array $id
-     * @return Team the loaded model
+     * @return TeamPlayer the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findTPModel($id)

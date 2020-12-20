@@ -13,6 +13,7 @@ use app\modules\gameplay\models\Target;
  * @property string $icon
  * @property string $prefix
  * @property string $suffix
+ * @property string $defaultMessage
  *
  */
 class Stream extends StreamAR
@@ -82,7 +83,7 @@ class Stream extends StreamAR
     if($csolver->challenge->timer===0)
       return sprintf("%s managed to complete the challenge [<code>%s</code>]%s", $this->prefix, Html::a(\app\modules\gameplay\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to complete the challenge [<code>%s</code>] in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($csolver->timer),number_format($csolver->timer / 60), $this->suffix);
+    return sprintf("%s managed to complete the challenge [<code>%s</code>] in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(\app\modules\gameplay\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($csolver->timer),number_format($csolver->timer / 60), $this->suffix);
   }
 
   public function getReportMessage()

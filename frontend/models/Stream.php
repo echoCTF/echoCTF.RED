@@ -12,7 +12,7 @@ use app\modules\game\models\Badge;
  * @property string $icon
  * @property string $prefix
  * @property string $suffix
- *
+ * @property string $defaultMessage
  */
 class Stream extends StreamAR
 {

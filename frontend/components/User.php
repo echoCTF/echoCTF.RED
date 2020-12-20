@@ -18,8 +18,9 @@ use yii\web\ForbiddenHttpException;
 /**
  * User is the class for the `user` application component that manages the user authentication status.
  *
+ * @property bool expired
+ * @property \app\models\Player|null $identity
  */
-
 class User extends UserExtraMethods
 {
     private $_identity = false;
