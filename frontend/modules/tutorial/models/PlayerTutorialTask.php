@@ -3,6 +3,7 @@
 namespace app\modules\tutorial\models;
 
 use Yii;
+use app\models\Player;
 
 /**
  * This is the model class for table "player_tutorial_task".
@@ -36,8 +37,8 @@ class PlayerTutorialTask extends \yii\db\ActiveRecord
             [['player_id', 'tutorial_task_dependency_id', 'points'], 'integer'],
             [['created_at', 'updated_at'], 'safe'],
             [['player_id', 'tutorial_task_dependency_id'], 'unique', 'targetAttribute' => ['player_id', 'tutorial_task_dependency_id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\modules\frontend\models\Player::class, 'targetAttribute' => ['player_id' => 'id']],
-            [['tutorial_task_dependency_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\modules\gameplay\models\TutorialTaskDependency::class, 'targetAttribute' => ['tutorial_task_dependency_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['tutorial_task_dependency_id'], 'exist', 'skipOnError' => true, 'targetClass' => TutorialTaskDependency::class, 'targetAttribute' => ['tutorial_task_dependency_id' => 'id']],
         ];
     }
 
@@ -60,7 +61,7 @@ class PlayerTutorialTask extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(\app\modules\frontend\models\Player::class, ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -68,7 +69,7 @@ class PlayerTutorialTask extends \yii\db\ActiveRecord
      */
     public function getTutorialTaskDependency()
     {
-        return $this->hasOne(\app\modules\gameplay\models\TutorialTaskDependency::class, ['id' => 'tutorial_task_dependency_id']);
+        return $this->hasOne(TutorialTaskDependency::class, ['id' => 'tutorial_task_dependency_id']);
     }
 
     /**
