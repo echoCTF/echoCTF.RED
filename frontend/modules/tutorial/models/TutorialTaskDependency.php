@@ -3,8 +3,7 @@
 namespace app\modules\tutorial\models;
 
 use Yii;
-use app\modules\activity\models\PlayerTutorialTask;
-use app\modules\frontend\models\Player;
+use app\models\Player;
 
 /**
  * This is the model class for table "tutorial_task_dependency".

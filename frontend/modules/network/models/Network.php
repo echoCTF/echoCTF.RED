@@ -100,9 +100,9 @@ class Network extends \yii\db\ActiveRecord
     /**
      * @return int
      */
-    public function getTargetsCount()
+    public function getTargetsCount():int
     {
-        return $this->hasMany(NetworkTarget::class, ['network_id' => 'id'])->count();
+        return (int)$this->hasMany(NetworkTarget::class, ['network_id' => 'id'])->count();
     }
 
     /**
