@@ -135,7 +135,7 @@ class Menu extends MenuBase
    */
   protected function isItemActive($item)
   {
-      if(isset($item['url']) && is_array($item['url']) && isset($item['url'][0]))
+      if($this->urlKeyCheck($item))
       {
           $route=$item['url'][0];
           if($route[0] !== '/' && Yii::$app->controller)
@@ -144,15 +144,7 @@ class Menu extends MenuBase
           }
           $arrayRoute=explode('/', ltrim($route, '/'));
           $arrayThisRoute=explode('/', $this->route);
-          if($arrayRoute[0] !== $arrayThisRoute[0])
-          {
-              return false;
-          }
-          if(isset($arrayRoute[1]) && $arrayRoute[1] !== $arrayThisRoute[1])
-          {
-              return false;
-          }
-          if(isset($arrayRoute[2]) && $arrayRoute[2] !== $arrayThisRoute[2])
+          if($this->arrayRoutes($arrayRoute,$arrayThisRoute)===false)
           {
               return false;
           }
@@ -170,5 +162,25 @@ class Menu extends MenuBase
           return true;
       }
       return false;
+  }
+
+  protected function arrayRoutes($arrayRoute,$arrayThisRoute)
+  {
+    if($arrayRoute[0] !== $arrayThisRoute[0])
+    {
+        return false;
+    }
+    if(isset($arrayRoute[1]) && $arrayRoute[1] !== $arrayThisRoute[1])
+    {
+        return false;
+    }
+    if(isset($arrayRoute[2]) && $arrayRoute[2] !== $arrayThisRoute[2])
+    {
+        return false;
+    }
+  }
+  protected function urlKeyCheck($item)
+  {
+    return isset($item['url']) && is_array($item['url']) && isset($item['url'][0]);
   }
 }
