@@ -23,7 +23,7 @@ class MailAction extends \yii\base\Action
     $event_name=Sysconfig::findOne('event_name')->val;
     // Generate activation URL
     $activationURL=sprintf("%s%s", $baseURL, $player->activkey);
-    $content=$this->renderPartial('_account_activation_email', ['player' => $player, 'activationURL'=>$activationURL, 'event_name'=>$event_name]);
+    $content=$this->controller->renderPartial('_account_activation_email', ['player' => $player, 'activationURL'=>$activationURL, 'event_name'=>$event_name]);
     $player->mail($content, 'echoCTF RED re-sending of account activation URL');
     return $this->controller->goBack(Yii::$app->request->referrer);
   }
