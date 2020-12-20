@@ -16,6 +16,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property string $player_type
  * @property string|null $filename The filename that will be provided to participants
  * @property string $ts
+ * @property bool $timer
  *
  * @property Question[] $questions
  */
