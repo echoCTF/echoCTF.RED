@@ -3,7 +3,11 @@ namespace app\components;
 
 use Yii;
 use yii\filters\AccessControl;
-
+/**
+ * @property bool $eventInactive
+ * @property bool $eventBetweenStartEnd
+ * @property bool $teamsRequired
+ */
 class BaseController extends \yii\web\Controller
 {
     public function behaviors()
