@@ -153,7 +153,7 @@ class Menu extends MenuBase
           {
               foreach(array_splice($item['url'], 1) as $name => $value)
               {
-                  if($value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value))
+                  if($this->valueParamCheck($value,$name))
                   {
                       return false;
                   }
@@ -164,6 +164,10 @@ class Menu extends MenuBase
       return false;
   }
 
+  protected function valueParamCheck($value,$name)
+  {
+    return $value !== null && (!isset($this->params[$name]) || $this->params[$name] != $value);
+  }
   protected function arrayRoutes($arrayRoute,$arrayThisRoute)
   {
     if($arrayRoute[0] !== $arrayThisRoute[0])
