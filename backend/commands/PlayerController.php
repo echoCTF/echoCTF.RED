@@ -129,7 +129,6 @@ class PlayerController extends Controller {
       $this->stdout("Mailing Registered users:\n", Console::BOLD);
     }
     $event_name=Sysconfig::findOne('event_name')->val;
-    \Yii::$app->sys->mailerInit();
     foreach($players as $player)
     {
       // Generate activation URL
