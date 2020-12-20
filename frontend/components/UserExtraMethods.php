@@ -10,6 +10,10 @@ use yii\web\UserEvent;
 use yii\web\Response;
 use yii\web\ForbiddenHttpException;
 
+/**
+ * @property null|int $expire
+ * @property null|int $expireAbsolute
+ */
 class UserExtraMethods extends \yii\web\User
 {
 
