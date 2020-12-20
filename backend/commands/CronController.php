@@ -15,7 +15,10 @@ use app\components\Pf;
 use Docker\Docker;
 use Http\Client\Socket\Exception\ConnectionException;
 use yii\console\Exception as ConsoleException;
-
+/**
+ * @method docker_connect()
+ * @method containers_list()
+ */
 class CronController extends Controller {
 
   /*
