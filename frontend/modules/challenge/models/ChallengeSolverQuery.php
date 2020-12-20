@@ -3,9 +3,9 @@
 namespace app\modules\challenge\models;
 
 /**
- * This is the ActiveQuery class for [[Challenge]].
+ * This is the ActiveQuery class for [[ChallengeSolver]].
  *
- * @see Challenge
+ * @see ChallengeSolver
  */
 class ChallengeSolverQuery extends \yii\db\ActiveQuery
 {
@@ -16,7 +16,7 @@ class ChallengeSolverQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return Challenge[]|array
+     * @return ChallengeSolver[]|array
      */
     public function all($db=null)
     {
@@ -25,7 +25,7 @@ class ChallengeSolverQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return Challenge|array|null
+     * @return ChallengeSolver|array|null
      */
     public function one($db=null)
     {
