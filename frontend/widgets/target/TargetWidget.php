@@ -120,69 +120,72 @@ class TargetWidget extends Widget
       $orderByHeadshotsDESC=ArrayHelper::getColumn($orderByHeadshots, 'id');
 
       $targetProgressProvider=$this->getTargetProgressProvider($tmod,$id,$defaultOrder);
-
       $targetProgressProvider->setSort([
           'sortParam'=>'target-sort',
-          'attributes' => [
-              'id' => [
-                  'asc' => ['id' => SORT_ASC],
-                  'desc' => ['id' => SORT_DESC],
-              ],
-              'name' => [
-                  'asc' => ['name' => SORT_ASC],
-                  'desc' => ['name' => SORT_DESC],
-              ],
-              'ip' => [
-                  'asc' => ['ip' => SORT_ASC],
-                  'desc' => ['ip' => SORT_DESC],
-                  'default' => SORT_ASC
-              ],
-              'rootable' => [
-                  'asc' => ['rootable' => SORT_ASC],
-                  'desc' => ['rootable' => SORT_DESC],
-                  'default' => SORT_ASC
-              ],
-              'difficulty' => [
-                  'asc' => ['difficulty' => SORT_ASC],
-                  'desc' => ['difficulty' => SORT_DESC],
-                  'default' => SORT_ASC
-              ],
-              'total_findings' => [
-                  'asc' => ['total_findings' => SORT_ASC],
-                  'desc' => ['total_findings' => SORT_DESC],
-                  'default' => SORT_ASC
-              ],
-              'total_treasures' => [
-                  'asc' => ['total_treasures' => SORT_ASC],
-                  'desc' => ['total_treasures' => SORT_DESC],
-                  'default' => SORT_ASC
-              ],
-              'headshots' => [
-                  'asc' => [new \yii\db\Expression('FIELD (t.id, '.implode(',', $orderByHeadshotsASC).')')],
-                  'desc' => [new \yii\db\Expression('FIELD (t.id, '.implode(',', $orderByHeadshotsDESC).')')],
-                  'default' => SORT_ASC
-              ],
-              'progress' => [
-                  'asc' =>  ['progress'=>SORT_ASC],
-                  'desc' => ['progress'=>SORT_DESC],
-                  'default' => SORT_ASC
-              ],
-              'scheduled_at' => [
-                  'asc' =>  ['scheduled_at'=>SORT_ASC],
-                  'desc' => ['scheduled_at'=>SORT_DESC],
-                  'default' => SORT_ASC
-              ],
-              'status' => [
-                  'asc' =>  ['status'=>SORT_ASC],
-                  'desc' => ['status'=>SORT_DESC],
-                  'default' => SORT_ASC
-              ],
-
-          ],
+          'attributes' => $this->getOrderAttributes($orderByHeadshotsASC,$orderByHeadshotsDESC),
           'defaultOrder'=>$defaultOrder,
       ]);
 
       return $targetProgressProvider;
     }
+    
+    protected function getOrderAttributes($orderByHeadshotsASC,$orderByHeadshotsDESC)
+    {
+      return [
+          'id' => [
+              'asc' => ['id' => SORT_ASC],
+              'desc' => ['id' => SORT_DESC],
+          ],
+          'name' => [
+              'asc' => ['name' => SORT_ASC],
+              'desc' => ['name' => SORT_DESC],
+          ],
+          'ip' => [
+              'asc' => ['ip' => SORT_ASC],
+              'desc' => ['ip' => SORT_DESC],
+              'default' => SORT_ASC
+          ],
+          'rootable' => [
+              'asc' => ['rootable' => SORT_ASC],
+              'desc' => ['rootable' => SORT_DESC],
+              'default' => SORT_ASC
+          ],
+          'difficulty' => [
+              'asc' => ['difficulty' => SORT_ASC],
+              'desc' => ['difficulty' => SORT_DESC],
+              'default' => SORT_ASC
+          ],
+          'total_findings' => [
+              'asc' => ['total_findings' => SORT_ASC],
+              'desc' => ['total_findings' => SORT_DESC],
+              'default' => SORT_ASC
+          ],
+          'total_treasures' => [
+              'asc' => ['total_treasures' => SORT_ASC],
+              'desc' => ['total_treasures' => SORT_DESC],
+              'default' => SORT_ASC
+          ],
+          'headshots' => [
+              'asc' => [new \yii\db\Expression('FIELD (t.id, '.implode(',', $orderByHeadshotsASC).')')],
+              'desc' => [new \yii\db\Expression('FIELD (t.id, '.implode(',', $orderByHeadshotsDESC).')')],
+              'default' => SORT_ASC
+          ],
+          'progress' => [
+              'asc' =>  ['progress'=>SORT_ASC],
+              'desc' => ['progress'=>SORT_DESC],
+              'default' => SORT_ASC
+          ],
+          'scheduled_at' => [
+              'asc' =>  ['scheduled_at'=>SORT_ASC],
+              'desc' => ['scheduled_at'=>SORT_DESC],
+              'default' => SORT_ASC
+          ],
+          'status' => [
+              'asc' =>  ['status'=>SORT_ASC],
+              'desc' => ['status'=>SORT_DESC],
+              'default' => SORT_ASC
+          ],
 
+      ];
+    }
 }
