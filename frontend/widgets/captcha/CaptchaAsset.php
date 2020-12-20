@@ -5,7 +5,7 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace yii\captcha;
+namespace app\widgets\captcha;
 
 use yii\web\AssetBundle;
 
