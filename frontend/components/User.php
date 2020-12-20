@@ -120,18 +120,6 @@ class User extends \yii\web\User
         }
         $this->_access = [];
     }
-    /**
-     * Regenerates CSRF token
-     *
-     * @since 2.0.14.2
-     */
-    protected function regenerateCsrfToken()
-    {
-        $request = Yii::$app->getRequest();
-        if ($request->enableCsrfCookie || $this->enableSession) {
-            $request->getCsrfToken(true);
-        }
-    }
 
     /**
      * Logs in a user by the given access token.
@@ -141,18 +129,11 @@ class User extends \yii\web\User
      * @param string $token the access token
      * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
      * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
-     * @return IdentityInterface|null the identity associated with the given access token. Null is returned if
+     * @return null the identity associated with the given access token. Null is returned if
      * the access token is invalid or [[login()]] is unsuccessful.
      */
     public function loginByAccessToken($token, $type = null)
     {
-        /* @var $class IdentityInterface */
-        $class = $this->identityClass;
-        $identity = $class::findIdentityByAccessToken($token, $type);
-        if ($identity && $this->login($identity)) {
-            return $identity;
-        }
-
         return null;
     }
 
@@ -265,121 +246,6 @@ class User extends \yii\web\User
     public function setReturnUrl($url)
     {
         Yii::$app->getSession()->set($this->returnUrlParam, $url);
-    }
-
-    /**
-     * Redirects the user browser to the login page.
-     *
-     * Before the redirection, the current URL (if it's not an AJAX url) will be kept as [[returnUrl]] so that
-     * the user browser may be redirected back to the current page after successful login.
-     *
-     * Make sure you set [[loginUrl]] so that the user browser can be redirected to the specified login URL after
-     * calling this method.
-     *
-     * Note that when [[loginUrl]] is set, calling this method will NOT terminate the application execution.
-     *
-     * @param bool $checkAjax whether to check if the request is an AJAX request. When this is true and the request
-     * is an AJAX request, the current URL (for AJAX request) will NOT be set as the return URL.
-     * @param bool $checkAcceptHeader whether to check if the request accepts HTML responses. Defaults to `true`. When this is true and
-     * the request does not accept HTML responses the current URL will not be SET as the return URL. Also instead of
-     * redirecting the user an ForbiddenHttpException is thrown. This parameter is available since version 2.0.8.
-     * @return \yii\web\Response the redirection response if [[loginUrl]] is set
-     * @throws ForbiddenHttpException the "Access Denied" HTTP exception if [[loginUrl]] is not set or a redirect is
-     * not applicable.
-     */
-    public function loginRequired($checkAjax = true, $checkAcceptHeader = true)
-    {
-        $request = Yii::$app->getRequest();
-        $canRedirect = !$checkAcceptHeader || $this->checkRedirectAcceptable();
-        if ($this->needSetReturnUrl($request,$checkAjax,$canRedirect)) {
-            $this->setReturnUrl($request->getAbsoluteUrl());
-        }
-
-        if ($this->loginUrl !== null && $canRedirect) {
-            $loginUrl = (array) $this->loginUrl;
-            if ($loginUrl[0] !== Yii::$app->requestedRoute) {
-                return Yii::$app->getResponse()->redirect($this->loginUrl);
-            }
-        }
-        throw new ForbiddenHttpException(Yii::t('yii', 'Login Required'));
-    }
-    protected function needSetReturnUrl($request,$checkAjax,$canRedirect)
-    {
-      return $this->enableSession && $request->getIsGet()
-              && (!$checkAjax || !$request->getIsAjax()) && $canRedirect;
-    }
-    /**
-     * This method is called before logging in a user.
-     * The default implementation will trigger the [[EVENT_BEFORE_LOGIN]] event.
-     * If you override this method, make sure you call the parent implementation
-     * so that the event is triggered.
-     * @param IdentityInterface $identity the user identity information
-     * @param bool $cookieBased whether the login is cookie-based
-     * @param int $duration number of seconds that the user can remain in logged-in status.
-     * If 0, it means login till the user closes the browser or the session is manually destroyed.
-     * @return bool whether the user should continue to be logged in
-     */
-    protected function beforeLogin($identity, $cookieBased, $duration)
-    {
-        $event = new UserEvent([
-            'identity' => $identity,
-            'cookieBased' => $cookieBased,
-            'duration' => $duration,
-        ]);
-        $this->trigger(self::EVENT_BEFORE_LOGIN, $event);
-
-        return $event->isValid;
-    }
-
-    /**
-     * This method is called after the user is successfully logged in.
-     * The default implementation will trigger the [[EVENT_AFTER_LOGIN]] event.
-     * If you override this method, make sure you call the parent implementation
-     * so that the event is triggered.
-     * @param IdentityInterface $identity the user identity information
-     * @param bool $cookieBased whether the login is cookie-based
-     * @param int $duration number of seconds that the user can remain in logged-in status.
-     * If 0, it means login till the user closes the browser or the session is manually destroyed.
-     */
-    protected function afterLogin($identity, $cookieBased, $duration)
-    {
-        $this->trigger(self::EVENT_AFTER_LOGIN, new UserEvent([
-            'identity' => $identity,
-            'cookieBased' => $cookieBased,
-            'duration' => $duration,
-        ]));
-    }
-
-    /**
-     * This method is invoked when calling [[logout()]] to log out a user.
-     * The default implementation will trigger the [[EVENT_BEFORE_LOGOUT]] event.
-     * If you override this method, make sure you call the parent implementation
-     * so that the event is triggered.
-     * @param IdentityInterface $identity the user identity information
-     * @return bool whether the user should continue to be logged out
-     */
-    protected function beforeLogout($identity)
-    {
-        $event = new UserEvent([
-            'identity' => $identity,
-        ]);
-        $this->trigger(self::EVENT_BEFORE_LOGOUT, $event);
-
-        return $event->isValid;
-    }
-
-    /**
-     * This method is invoked right after a user is logged out via [[logout()]].
-     * The default implementation will trigger the [[EVENT_AFTER_LOGOUT]] event.
-     * If you override this method, make sure you call the parent implementation
-     * so that the event is triggered.
-     * @param IdentityInterface $identity the user identity information
-     */
-    protected function afterLogout($identity)
-    {
-        $this->trigger(self::EVENT_AFTER_LOGOUT, new UserEvent([
-            'identity' => $identity,
-        ]));
     }
 
     /**
