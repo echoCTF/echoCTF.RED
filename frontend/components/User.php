@@ -32,7 +32,7 @@ class User extends UserExtraMethods
      * stored in session and reconstruct the corresponding identity object, if it has not done so before.
      * @param bool $autoRenew whether to automatically renew authentication status if it has not been done so before.
      * This is only useful when [[enableSession]] is true.
-     * @return \app\models\Player|null the identity object associated with the currently logged-in user.
+     * @return \app\models\Player|null|bool the identity object associated with the currently logged-in user.
      * `null` is returned if the user is not logged in (not authenticated).
      * @see login()
      * @see logout()
@@ -65,7 +65,7 @@ class User extends UserExtraMethods
      * Note that this method does not deal with session or cookie. You should usually use [[switchIdentity()]]
      * to change the identity of the current user.
      *
-     * @param IdentityInterface|null $identity the identity object associated with the currently logged user.
+     * @param \app\models\Player|null $identity the identity object associated with the currently logged user.
      * If null, it means the current user will be a guest without any associated identity.
      * @throws InvalidValueException if `$identity` object does not implement [[IdentityInterface]].
      */
@@ -132,7 +132,7 @@ class User extends UserExtraMethods
      * This method is used when [[enableAutoLogin]] is true.
      * It saves [[id]], [[IdentityInterface::getAuthKey()|auth key]], and the duration of cookie-based login
      * information in the cookie.
-     * @param IdentityInterface $identity
+     * @param IdentityInterface|\app\models\Player $identity
      * @param int $duration number of seconds that the user can remain in logged-in status.
      * @see loginByCookie()
      */
