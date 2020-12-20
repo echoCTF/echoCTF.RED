@@ -13,7 +13,7 @@ use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\widgets\InputWidget;
-
+use app\widgets\captcha\CaptchaAsset;
 /**
  * Captcha renders a CAPTCHA image and an input field that takes user-entered verification code.
  *
