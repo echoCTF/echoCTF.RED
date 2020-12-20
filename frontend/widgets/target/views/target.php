@@ -72,8 +72,8 @@ echo GridView::widget([
         'visible'=>!in_array('ip', $hidden_attributes),
         'attribute'=>'ip',
         'label'=>'IP',
-        'headerOptions' => ["style"=>'width: 6vw;', 'class'=>'d-none d-xl-table-cell'],
-        'contentOptions'=> ["style"=>'width: 6vw;', 'class'=>'d-none d-xl-table-cell'],
+        'headerOptions' => ["style"=>'width: 6vw;', 'class'=>'d-none d-lg-table-cell'],
+        'contentOptions'=> ["style"=>'width: 6vw;', 'class'=>'d-none d-lg-table-cell'],
         'value'=>function($model) {return long2ip($model->ip);}
       ],
       [

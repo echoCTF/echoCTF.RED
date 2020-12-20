@@ -12,7 +12,7 @@ $this->_description="The echoCTF dashboard page";
 <div class="dashboard-index">
   <div class="body-content">
     <div class="row">
-        <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
             <?php Card::begin([
                 'header'=>'header-icon',
                 'type'=>'card-stats',
@@ -25,7 +25,7 @@ $this->_description="The echoCTF dashboard page";
                       </div>',
             ]);Card::end();?>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
             <?php Card::begin([
                 'header'=>'header-icon',
                 'type'=>'card-stats',
@@ -38,7 +38,7 @@ $this->_description="The echoCTF dashboard page";
                       </div>',
             ]);Card::end();?>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
             <?php Card::begin([
                 'header'=>'header-icon',
                 'type'=>'card-stats',
@@ -51,7 +51,7 @@ $this->_description="The echoCTF dashboard page";
                       </div>',
             ]);Card::end();?>
         </div>
-        <div class="col-lg-3 col-md-6 col-sm-6">
+        <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
             <?php Card::begin([
                 'type'=>'card-stats',
                 'header'=>'header-icon',
@@ -68,12 +68,12 @@ $this->_description="The echoCTF dashboard page";
 
 
     <div class="row">
-      <div class="col-sm-8">
+      <div class="col-xl-8 col-lg-12 col-sm-12">
       <?php Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
       <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>Yii::$app->user->id,'pageSize'=>8]);?>
       <?php Pjax::end();?>
       </div>
-      <div class="col-sm-4">
+      <div class="col-xl-4 col-sm-12">
 <?php
 Pjax::begin(['id'=>'leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
 echo Leaderboard::widget(['dataProvider'=>null, 'player_id'=>Yii::$app->user->id, 'divID'=>"Leaderboard", 'title'=>'Leaderboard','pageSize'=>10]);
