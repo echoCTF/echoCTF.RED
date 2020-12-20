@@ -149,19 +149,24 @@ class Menu extends MenuBase
               return false;
           }
           unset($item['url']['#']);
-          if(count($item['url']) > 1)
-          {
-              foreach(array_splice($item['url'], 1) as $name => $value)
-              {
-                  if($this->valueParamCheck($value,$name))
-                  {
-                      return false;
-                  }
-              }
-          }
-          return true;
+          return $this->itemUrls($item);
       }
       return false;
+  }
+
+  protected function itemUrls($item)
+  {
+    if(count($item['url']) > 1)
+    {
+        foreach(array_splice($item['url'], 1) as $name => $value)
+        {
+            if($this->valueParamCheck($value,$name))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
   }
 
   protected function valueParamCheck($value,$name)
