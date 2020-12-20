@@ -13,23 +13,8 @@ use app\modules\game\models\Headshot;
 /**
  * Player model
  *
- * @property integer $id
- * @property string $username
- * @property string $fullname
- * @property string $password_hash
- * @property string $password_reset_token
- * @property string $verification_token
- * @property string $email
- * @property string $auth_key
- * @property integer $status
- * @property integer $created_at
- * @property integer $updated_at
- * @property string $password write-only password
- * @property integer $active
+
  *
- * @property Profile $profile
- * @property PlayerScore $playerScore
- * @property PlayerSsl $playerSsl
  * @property bool $visibilityAllowed
  * @property bool $visibilityDenied
  */

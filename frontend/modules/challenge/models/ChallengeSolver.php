@@ -15,8 +15,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property float|null $points
  * @property string $ts
  *
- * @property Challenge $Challenge
- * @property Player $player
+ * @property Challenge[] $challenge
+ * @property Player[] $player
  */
 class ChallengeSolver extends \yii\db\ActiveRecord
 {

@@ -51,7 +51,7 @@ use app\modules\gameplay\models\Treasure;
  * @property Stream[] $streams
  * @property Team[] $teams
  * @property TeamPlayer $teamPlayer
- * @property Team[] $teams0
+ * @property Team[] $team
  * @property Profile[] $profile
  * @property PlayerSsl[] $playerSsl
  */

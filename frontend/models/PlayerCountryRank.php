@@ -10,6 +10,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property int $id
  * @property int $player_id
+ *
+ * @property Player[] $player
  */
 class PlayerCountryRank extends \yii\db\ActiveRecord
 {
@@ -76,7 +78,7 @@ class PlayerCountryRank extends \yii\db\ActiveRecord
   {
     return '/images/avatars/'.$this->player->profile->avatar;
   }
-  
+
   public function getScore()
   {
     return $this->hasOne(PlayerScore::class, ['player_id' => 'player_id']);

@@ -34,7 +34,10 @@ use app\modules\target\models\Writeup;
  * @property boolean $visible
  * @property boolean $approved_avatar
  * @property string $avtr
+ *
  * @property boolean $isMine
+ * @property boolean $visibilityAllowed
+ * @property boolean $visibilityDenied
  *
  * @property Owner $owner
  * @property Score $score

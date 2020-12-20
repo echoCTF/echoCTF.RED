@@ -42,13 +42,16 @@ use app\modules\activity\models\Headshot;
  * @property int $rootable
  * @property int $difficulty
  * @property bool $timer
+ * @property string $avatar
+ *
+ * @property int $memory
  *
  * @property Finding[] $findings
  * @property TargetVariable[] $targetVariables
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
  * @property Headshot[] $headshots
- * @property int $memory
+ * @property Network[] $network
  */
 class Target extends TargetAR
 {

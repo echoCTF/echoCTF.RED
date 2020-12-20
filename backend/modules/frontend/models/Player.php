@@ -18,42 +18,14 @@ use app\modules\gameplay\models\Treasure;
 /**
  * This is the model class for table "player".
  *
- * @property int $id
- * @property string $username
- * @property string $fullname
- * @property string $email
- * @property string $type
- * @property string $password
- * @property string $password_hash
- * @property string $activkey
- * @property string $auth_key
- * @property int $created
- * @property int $active
- * @property int $academic
- * @property int $status
- * @property string $ts
+ * @property string $authKey
  *
- * @property PlayerBadge[] $playerBadges
- * @property Badge[] $badges
- * @property PlayerFinding[] $playerFindings
- * @property Finding[] $findings
- * @property PlayerHint[] $playerHints
- * @property Hint[] $hints
- * @property PlayerIp[] $playerIp
- * @property PlayerIp[] $playerIps
- * @property PlayerMac[] $playerMacs
- * @property PlayerQuestion[] $playerQuestions
- * @property PlayerTreasure[] $playerTreasures
- * @property Treasure[] $treasures
- * @property Report[] $reports
- * @property Sessions[] $sessions
- * @property Sshkey $sshkey
- * @property Stream[] $streams
- * @property Team[] $teams
- * @property TeamPlayer $teamPlayer
- * @property Team[] $teams0
- * @property Profile[] $profile
- * @property PlayerSsl[] $playerSsl
+ * @method ban()
+ * @method saveWithSsl()
+ * @method mail()
+ * @method genPassword()
+ * @method createTeam()
+ *
  */
 class Player extends PlayerAR
 {

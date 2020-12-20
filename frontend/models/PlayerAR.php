@@ -10,7 +10,23 @@ use app\modules\game\models\Headshot;
 /**
  * This is the model class that only holds relations for the table "player".
  *
- * @property string $id
+ * @property integer $id
+ * @property string $username
+ * @property string $fullname
+ * @property string $password_hash
+ * @property string $password_reset_token
+ * @property string $verification_token
+ * @property string $email
+ * @property string $auth_key
+ * @property integer $status
+ * @property integer $created_at
+ * @property integer $updated_at
+ * @property integer $active
+ * @property string $password write-only password
+ *
+ * @property Profile $profile
+ * @property PlayerScore $playerScore
+ * @property PlayerSsl $playerSsl
  */
 class PlayerAR extends ActiveRecord
 {

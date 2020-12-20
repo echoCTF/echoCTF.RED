@@ -3,9 +3,9 @@
 namespace app\modules\gameplay\models;
 
 /**
- * This is the ActiveQuery class for [[TutorialTask]].
+ * This is the ActiveQuery class for [[Target]].
  *
- * @see TutorialTask
+ * @see Target
  */
 class TargetQuery extends \yii\db\ActiveQuery
 {
@@ -37,7 +37,7 @@ class TargetQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return TutorialTask[]|array
+     * @return Target[]|array
      */
     public function all($db=null)
     {
@@ -46,7 +46,7 @@ class TargetQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return TutorialTask|array|null
+     * @return Target|array|null
      */
     public function one($db=null)
     {
