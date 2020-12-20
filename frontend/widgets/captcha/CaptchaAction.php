@@ -267,6 +267,8 @@ class CaptchaAction extends Action
     {
         $image = imagecreatetruecolor($this->width, $this->height);
 
+        if($image===false) return null;
+
         $backColor = imagecolorallocate(
             $image,
             (int) ($this->backColor % 0x1000000 / 0x10000),
@@ -293,7 +295,7 @@ class CaptchaAction extends Action
         $h = $box[1] - $box[5];
         $scale = min(($this->width - $this->padding * 2) / $w, ($this->height - $this->padding * 2) / $h);
         $x = 10;
-        $y = round($this->height * 27 / 40);
+        $y = (int)round($this->height * 27 / 40);
         for ($i = 0; $i < $length; ++$i) {
             $fontSize = (int) (random_int(26, 32) * $scale * 0.8);
             $angle = random_int(-10, 10);
