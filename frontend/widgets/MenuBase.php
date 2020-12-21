@@ -86,4 +86,46 @@ class MenuBase extends \yii\widgets\Menu
     }
     return false;
   }
+
+  protected function getItemLinkTemplate($item)
+  {
+    if(isset($item['items']))
+    {
+        return '<a href="{url}" class="{class}">{icon} {dropdownicon} {label}</a>';
+    }
+    return $this->linkTemplate;
+  }
+  protected function getClassOptions($class,&$options)
+  {
+    if(!empty($class))
+    {
+        if(empty($options['class']))
+        {
+            $options['class']=implode(' ', $class);
+        }
+        else
+        {
+            $options['class'].=' '.implode(' ', $class);
+        }
+    }/*else{
+        $options['class'] = '';
+    }*/
+  }
+
+  protected function getItemClasses($item,&$class,$i,$n)
+  {
+    if($item['active'])
+    {
+        $class[]=$this->activeCssClass;
+    }
+    if($i === 0 && $this->firstItemCssClass !== null)
+    {
+        $class[]=$this->firstItemCssClass;
+    }
+    if($i === $n - 1 && $this->lastItemCssClass !== null)
+    {
+        $class[]=$this->lastItemCssClass;
+    }
+  }
+
 }
