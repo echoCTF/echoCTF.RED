@@ -70,7 +70,7 @@ $this->_description="The echoCTF dashboard page";
     <div class="row">
       <div class="col-xl-8 col-lg-12 col-sm-12">
       <?php Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-      <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>Yii::$app->user->id,'pageSize'=>8]);?>
+      <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>Yii::$app->user->id,'pageSize'=>8,'buttonsTemplate'=>'{tweet}']);?>
       <?php Pjax::end();?>
       </div>
       <div class="col-xl-4 col-sm-12">
