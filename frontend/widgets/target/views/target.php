@@ -188,7 +188,7 @@ echo GridView::widget([
         'class'=> 'app\actions\ActionColumn',
         'visible'=>!in_array('ActionColumn', $hidden_attributes),
         'headerOptions' => ["style"=>'width: 2rem'],
-        'template'=>'{tweet}',
+        'template'=>$buttonsTemplate,
         'buttons' => [
           'spin' => function($url, $model) {
               return Html::a(

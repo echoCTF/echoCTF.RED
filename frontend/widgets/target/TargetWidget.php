@@ -34,6 +34,7 @@ class TargetWidget extends Widget
     public $profile=null;
     public $viewFile='target';
     public $hidden_attributes=[];
+    public $buttonsTemplate="{view} {tweet}";
     public function init()
     {
       if($this->dataProvider === null && $this->player_id === null)
@@ -71,6 +72,7 @@ class TargetWidget extends Widget
           'CATEGORY'=>$this->category,
           'player_id'=>$this->player_id,
           'hidden_attributes'=>$this->hidden_attributes,
+          'buttonsTemplate'=>$this->buttonsTemplate,
         ]);
     }
 
@@ -128,7 +130,7 @@ class TargetWidget extends Widget
 
       return $targetProgressProvider;
     }
-    
+
     protected function getOrderAttributes($orderByHeadshotsASC,$orderByHeadshotsDESC)
     {
       return [
