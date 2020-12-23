@@ -43,7 +43,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
       <h3><code><?=count($profile->owner->challengeSolvers)?></code> Challenges solved</h2>
       <div class="row">
         <?php foreach($profile->owner->challengeSolvers as $cs):?>
-          <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+          <div class="col col-sm-6 col-md-6 col-lg-6 col-xl-3">
             <div class="iconic-card">
                   <?=$cs->challenge->icon?>
                   <p><b><?=Html::a(
@@ -71,7 +71,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     ?> <sub>(ordered by date)</small></sub></h3>
     <div class="row">
       <?php foreach($profile->owner->headshots as $headshot):?>
-      <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+      <div class="col col-sm-6 col-md-6 col-lg-6 col-xl-3">
         <div class="iconic-card">
           <img align="right" src="<?=$headshot->target->thumbnail?>"/>
           <p><b><?=Html::a(
