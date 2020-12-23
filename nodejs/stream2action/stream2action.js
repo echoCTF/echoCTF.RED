@@ -30,7 +30,7 @@ async function do_commands(commands)
   {
     sleeping=2;
   }
-  commands.forEach(function(element) {
+  commands.forEach((element)=>function(element) {
     if(element.ip && element.port)
     {
       var client=new net.Socket();

@@ -506,7 +506,7 @@ JustGage = function(config) {
     }
 
     // var clear
-    alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path = null;
+    //alpha, Ro, Ri, Cx, Cy, Xo, Yo, Xi, Yi, path = null;
   };
 
   // ndl - custom attribute for generating needle path

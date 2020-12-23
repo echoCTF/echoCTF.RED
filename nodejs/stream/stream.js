@@ -15,7 +15,7 @@ var app = require('http').createServer(handler),
   POLLING_INTERVAL = 3000,
   pollingTimer,
   limit_results=0,
-  academic=false;
+  academic=-1;
 
 // var $ = require('jquery');
 // If there is an error connecting to the database
@@ -39,7 +39,7 @@ function handler(req, res) {
   if(query.academic)
         academic=parseInt(query.academic);
   else {
-    academic=false;
+    academic=-1;
   }
 
 //  if (req.url == '/') {
@@ -80,7 +80,7 @@ function handler(req, res) {
 var pollingLoop = function() {
 
   // Doing the database query
-  if(academic===1)
+  if(academic>0)
   {
     var querystr='SELECT * FROM public_stream WHERE academic=1';
   }

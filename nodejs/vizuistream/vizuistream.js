@@ -53,7 +53,7 @@ function handler(req, res) {
     if(!exist) {
       // if the file is not found, return 404
       res.statusCode = 404;
-      res.end(`File ${pathname} not found!`);
+      res.end(`File `+escapeHTML(pathname)+` not found!`);
       return;
     }
 
@@ -64,7 +64,7 @@ function handler(req, res) {
     fs.readFile(pathname, function(err, data){
       if(err){
         res.statusCode = 500;
-        res.end(`Error getting the file: ${err}.`);
+        res.end(`Error getting the file: `+escapeHTML(err));
       } else {
         // if the file is found, set Content-type and send data
         res.setHeader('Content-type', map[ext] || 'text/plain' );
