@@ -75,10 +75,7 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
           </nav>
           <?=Yii::$app->sys->footer_logos?>
           <div class="copyright float-right">
-            &copy;
-            <script>
-              document.write(new Date().getFullYear())
-            </script>, made with <i class="material-icons text-danger">favorite</i> by
+            &copy; <?=date("Y")?>, made with <i class="material-icons text-danger">favorite</i> by
             <a href="https://www.echothrust.com" target="_blank">echothrust</a> with <a href="https://echoctf.com/" target="_blank"><b class="text-white">echo</b><b>CTF</b></a>.
           </div>
         </div>
