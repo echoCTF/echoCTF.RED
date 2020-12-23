@@ -196,7 +196,7 @@
       return $navigation.find(baseItemSelector + ':eq(' + parseInt(obj.currentIndex() - 1) + ')');
     };
     this.show = function(index) {
-      var tabToShow = isNaN(index) ?
+      var tabToShow = Number.isNaN(index) ?
         element.find(baseItemSelector + ' a[href="#' + index + '"]') :
         element.find(baseItemSelector + ':eq(' + index + ') a');
       if (tabToShow.length > 0) {
