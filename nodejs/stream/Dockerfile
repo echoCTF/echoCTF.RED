@@ -1,4 +1,4 @@
-FROM node
+FROM node:15.4-buster-slim
 # Create app directory
 WORKDIR /UI
 
