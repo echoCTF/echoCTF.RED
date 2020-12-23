@@ -1,6 +1,7 @@
 var config = require('./config');
 const url = require('url');
 const path = require('path');
+var jquery = require('jquery');
 var app = require('http').createServer(handler),
   io = require('socket.io').listen(app),
   fs = require('fs'),
