@@ -1,4 +1,4 @@
-FROM node:8.7-wheezy
+FROM node
 # Create app directory
 WORKDIR /UI
 
@@ -10,7 +10,6 @@ COPY stream.js .
 
 RUN npm install
 # If you are building your code for production
-# RUN npm install --only=production
-WORKDIR /
+RUN npm install --only=production
 EXPOSE 8000
 CMD [ "npm", "start" ]
