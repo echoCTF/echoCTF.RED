@@ -349,7 +349,7 @@ window.yii = (function ($) {
          * @returns {string}
          */
         getCurrentUrl: function () {
-            return window.location.href.escapeHTML();
+            return escapeHtml(window.location.href);
         }
     };
 
