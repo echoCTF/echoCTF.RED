@@ -139,7 +139,7 @@ class WriteupController extends Controller
         $model->comment=null;
         foreach($model->target->treasures as $treasure)
         {
-          $string = mb_ereg_replace($treasure->code,md5(Yii::$app->getSecurity()->generateRandomString(32)), $model->content);
+          $string = mb_ereg_replace($treasure->code,'*REDUCTED*', $model->content);
           $model->content=$string;
         }
         if($model->save())
