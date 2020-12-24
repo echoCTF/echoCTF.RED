@@ -30,6 +30,4 @@ These components are are as follows:
  * `contrib` => Various contributed materials
  * `docs` => Documentation folder
  * `frontend` => User interface (what you see at https://echoctf.red/)
- * `nodejs` => Various nodejs scripts for bots and live feeds
  * `schemas` => database schema
- * `themes` => Various theme, images and layout sources
