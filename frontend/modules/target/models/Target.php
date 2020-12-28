@@ -118,6 +118,11 @@ class Target extends TargetAR
       {
         return true;
       }
+      if($this->spinQueue !== null || intval($this->active) !== 1)
+      {
+        return true;// Not active or already queued
+      }
+
       if(Yii::$app->user->identity->profile->last->vpn_local_address === null && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_findings)<1 && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_treasures)<1)
         return true;
 
@@ -126,10 +131,6 @@ class Target extends TargetAR
 
     public function getSpinAllowed()
     {
-      if($this->spinQueue === null && intval($this->active) === 1)
-      {
-        return true;// Not active or already queued
-      }
       if(intval(Yii::$app->user->identity->profile->spins->counter) < intval(Yii::$app->sys->spins_per_day))
       {
         return true;// user is not allowed spins for the day.
