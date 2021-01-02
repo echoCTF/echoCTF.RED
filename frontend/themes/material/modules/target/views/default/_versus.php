@@ -45,7 +45,7 @@ if($target->progress == 100)
             'color'=>'warning',
             'subtitle'=>sprintf("%s, %s%s", ucfirst($target->difficultyText), boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===0 ? '':', Timed'),
             'title'=>sprintf('%s / %s', $target->name, long2ip($target->ip)),
-            'footer'=>sprintf('<div class="stats">%s</div><span>%s</span>', $target->purpose,  $target->spinable ? Html::a(
+            'footer'=>sprintf('<div class="stats">%s</div><span>%s</span>', $target->purpose,  !Yii::$app->user->isGuest && $target->spinable ? Html::a(
               '<i class="fas fa-power-off" style="font-size: 2em; float:left"></i>',
                 Url::to(['/target/default/spin', 'id'=>$target->id]),
                 [
