@@ -501,3 +501,27 @@ details.headshotters:not([open]) summary::after {
 .text-twitter {
   color: #1DA1F2;
 }
+
+
+details > .markdown h1 {
+ font-size: 1.65em;
+}
+
+details > .markdown h2 {
+ font-size: 1.60em;
+}
+details > .markdown h3 {
+  font-size: 1.55em;
+}
+
+details > .markdown h4 {
+  font-size: 1.50em;
+}
+
+details > .markdown h5 {
+  font-size: 1.45em;
+}
+
+details > .markdown h6 {
+  font-size: 1.40em;
+}
