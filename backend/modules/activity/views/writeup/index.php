@@ -24,27 +24,29 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            'player_id',
+            //'player_id',
             [
               'attribute'=>'username',
-              'value'=>'player.username',
+              'contentOptions'=>['class'=>'text-nowrap'],
+              'value'=>function($model){return sprintf("(ID:%d) %s",$model->player->id,$model->player->username);},
             ],
-            'target_id',
+            //'target_id',
             [
               'attribute'=>'fqdn',
-              'value'=>'target.fqdn',
+              'format'=>'html',
+              'contentOptions'=>['class'=>'text-nowrap'],
+              'value'=>function($model){return sprintf("%s (<small>%s</small>)",$model->target->name,$model->target->ipoctet);},
             ],
             [
-              'attribute'=>'ipoctet',
-              'value'=>'target.ipoctet',
+              'attribute'=>'content',
+              'value'=>function($model){return wordwrap(substr($model->content,0,256),80);}
             ],
-            'content',
             'approved:boolean',
             [
               'attribute'=>'status',
               'filter'=>['OK'=>'OK','PENDING'=>'PENDING','REJECTED'=>'REJECTED','NEEDS FIXES'=>'NEEDS FIXES'],
             ],
-            'comment',
+            //'comment',
             'created_at',
             'updated_at',
 
