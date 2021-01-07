@@ -19,6 +19,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property string $ts
  * @property int|null $parent
  *
+ * @property string $maskedCode
+ *
  * @property PlayerQuestion[] $playerQuestions
  * @property Challenge $challenge
  * @property PlayerQuestion $answered
@@ -108,6 +110,18 @@ class Question extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Challenge::class, ['id' => 'challenge_id']);
     }
+
+
+    public function getMaskedCode()
+    {
+      $string=preg_replace("/[a-zA-Z0-9]/",'*',$this->code);
+      if(preg_match("/^ETSCTF/", $this->code)!==0)
+      {
+        return substr_replace($string,'ETSCTF',0,6);
+      }
+      return $string;
+    }
+
 
     public function save($runValidation=true, $attributeNames=null)
     {

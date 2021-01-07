@@ -12,9 +12,10 @@ $this->_description=$this->title
     <?php echo ListView::widget([
         'dataProvider' => $dataProvider,
         'emptyText'=>'<p class="text-info"><b>There are no challenges available at the moment...</b></p>',
+        'options'=>['class'=>'list-view row'],
         'summary'=>false,
         'itemOptions' => [
-          'tag' => false
+          'tag' => false,
         ],
         'itemView' => '_challenge',
     ]);?>

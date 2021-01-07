@@ -70,11 +70,8 @@ class DefaultController extends \app\components\BaseController
      */
     public function actionView(int $id)
     {
-      $model=Challenge::find()->where(['t.id'=>$id])->active()->player_progress(Yii::$app->user->id)->one();
-      if($model===null)
-      {
-          throw new NotFoundHttpException('The requested challenge could not be found.');
-      }
+      $model=$this->findModelProgress($id);
+
       $query=Question::find()->orderBy(['weight'=>SORT_ASC, 'id'=>SORT_ASC]);
       $solvers=ChallengeSolver::find()->where(['challenge_id'=>$model->id])->orderBy(['created_at'=>SORT_ASC, 'player_id'=>SORT_ASC]);
       $dataProvider=new ActiveDataProvider([
@@ -87,13 +84,20 @@ class DefaultController extends \app\components\BaseController
       ]);
 
       $answer=new AnswerForm();
-      if($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id))
+      if(Yii::$app->request->isPost)
       {
-        Yii::$app->session->setFlash('success', sprintf('Accepted answer for question [%s] for %d pts.', $answer->question->name, intval($answer->question->points)));
-        return $this->redirect(Yii::$app->request->referrer);
+        if($answer->load(Yii::$app->request->post()) && $answer->validate() && $answer->give($id))
+        {
+          Yii::$app->session->setFlash('success', sprintf('Accepted answer for question [%s] for %d pts.', $answer->question->name, intval($answer->question->points)));
+          //return $this->redirect(Yii::$app->request->referrer);
+        }
+        else
+        {
+          Yii::$app->session->setFlash('error','Invalid answer...');
+        }
       }
 
-
+      $answer->answer=null;
       return $this->render('view', [
         'answer'=>$answer,
         'model' => $model,
@@ -135,4 +139,22 @@ class DefaultController extends \app\components\BaseController
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    /**
+     * Finds the Challenge model with progress based on its primary key and player id value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Challenge the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModelProgress($id)
+    {
+        if(($model=Challenge::find()->where(['t.id'=>$id])->active()->player_progress(Yii::$app->user->id)->one()) !== null)
+        {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested challenge could not be found.');
+    }
+
 }
