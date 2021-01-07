@@ -8,6 +8,8 @@ use app\widgets\vote\VoteWidget;
 use app\modules\game\models\Headshot;
 use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\modules\target\models\Writeup;
+use yii\helpers\Markdown;
+
 if(date('md') === "0214")
 {
   $headshot_icon='fa-heart';
@@ -37,7 +39,7 @@ if($target->progress == 100)
 }
 ?>
 <div class="row">
-      <div class="col-lg-4 col-md-6 col-sm-6 target-card">
+      <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 target-card">
 <?php Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
@@ -69,8 +71,8 @@ if($target->progress == 100)
         echo "</p>";
         Card::end();?>
       </div>
-      <div class="col-lg-4 col-md-6 col-sm-6">
-        <div  style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
+      <div class="col-xl-4 col-lg-2 col-md-2 col-sm-12">
+        <div style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
           <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
         </div>
         <div class="progress">
@@ -108,7 +110,7 @@ if($target->progress == 100)
         </div>
 <?php endif;?>
       </div>
-      <div class="col-lg-4 col-md-6 col-sm-6">
+      <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12">
         <?php Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
@@ -157,7 +159,7 @@ if($target->progress == 100)
             <h4><i class="fas fa-book"></i> Target Writeups</h4>
             <?php foreach($target->writeups as $writeup):?>
               <p><details><summary><b style="font-size: 1.2em;">Writeup by <?=$writeup->player->username?>, submitted <?=$writeup->created_at?></b> (<code>status:<?=$writeup->status?></code>)</summary>
-                <pre><?=Html::encode($writeup->content)?></pre>
+                <div class="markdown"><?=Markdown::process($writeup->content,'gfm')?></div>
               </details></p>
             <?php endforeach;?>
           <?php endif;?>
