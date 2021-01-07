@@ -115,7 +115,7 @@ class Question extends \yii\db\ActiveRecord
     public function getMaskedCode()
     {
       $string=preg_replace("/[a-zA-Z0-9]/",'*',$this->code);
-      if(strstr($this->code,"ETSCTF")!==false)
+      if(preg_match("/^ETSCTF/", $this->code)!==0)
       {
         return substr_replace($string,'ETSCTF',0,6);
       }
