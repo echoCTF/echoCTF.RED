@@ -219,7 +219,7 @@ $config=[
                 //'profile/hints'=>'profile/hints',
 //                'profile/robohash' => 'profile/robohash',
                 // app/controllers/DashboardController.php
-                //'targets' => 'dashboard/index',
+                'dashboard' => 'dashboard/index',
                 // HELP MODULE
                 'faq' => 'help/faq/index',
                 'help/faq' => 'help/faq/index',
