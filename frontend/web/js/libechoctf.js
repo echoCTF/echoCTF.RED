@@ -1,12 +1,24 @@
-function escapeHtml(unsafe) {
+/* Avoid passive event warnings */
+jQuery.event.special.touchstart = {
+  setup: function( _, ns, handle ) {
+      this.addEventListener("touchstart", handle, { passive: !ns.includes("noPreventDefault") });
+  }
+};
+
+/* Dummy escapeHtml implementation */
+function escapeHtml(unsafe)
+{
     return unsafe
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
- }
-function luminanace(r, g, b) {
+}
+
+/* Calculate luminanace */
+function luminanace(r, g, b)
+{
     var a = [r, g, b].map(function (v) {
         v /= 255;
         return v <= 0.03928
@@ -15,19 +27,22 @@ function luminanace(r, g, b) {
     });
     return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
+
+/*
+ * Generate contrast between two rgb values
+ * contrast([255, 255, 255], [255, 255, 0]); // 1.074 for yellow
+ */
 function contrast(rgb1, rgb2) {
     return (luminanace(rgb1[0], rgb1[1], rgb1[2]) + 0.05)
          / (luminanace(rgb2[0], rgb2[1], rgb2[2]) + 0.05);
 }
-//contrast([255, 255, 255], [255, 255, 0]); // 1.074 for yellow
+
 jQuery( document ).ready(function() {
-  $('#profile-avatar').change(function() {
-    if($(this).val()!="")
-      $('#preview_avatar').attr('src','/images/avatars/'+$(this).val());
-  });
+
   $('#claim-flag').on('pjax:success', function(event) {
           window.location.reload();
   });
+
   /* Fetch Notifications on click without prevent default */
   $('#navbarDropdownMenuLink').on('click',function(){
       /* Only proceeed if we are about to display the notifications */
@@ -37,9 +52,9 @@ jQuery( document ).ready(function() {
       $.get($(this).attr('href'),processNotifications);
   });
 
-  /* Fetch Notifications on click without prevent default */
+  /* Fetch Hints on click without prevent default */
   $('#navbarHintsDropDown').on('click',function(){
-      /* Only proceeed if we are about to display the notifications */
+      /* Only proceeed if we are about to display the Hints */
       if ($(this).attr('aria-expanded') !== "false") return;
       $('#hintsMenu').html('');
       $.get($(this).attr('href'),processHints);

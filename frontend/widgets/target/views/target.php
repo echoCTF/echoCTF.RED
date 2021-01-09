@@ -1,6 +1,5 @@
 <?php
 use yii\grid\GridView;
-use app\components\JustGage;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
