@@ -133,8 +133,8 @@ if($target->progress == 100)
 </div>
   <div class="row">
     <div class="col">
-      <div class="card bg-dark">
-        <div class="card-body table-responsive">
+      <div class="card terminal">
+        <div class="card-body">
           <?php if(count($target->writeups)>0 && PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])===null && !($identity->player_id===Yii::$app->user->id && $target->progress==100)):?>
           <?=Html::a(
             '<i class="fas fa-question-circle" style="font-size: 1.5em;"></i> Writeups available.',
@@ -153,19 +153,22 @@ if($target->progress == 100)
           <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
             <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
           <?php endif;?>
-
-          <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
-            <hr/>
-            <h4><i class="fas fa-book"></i> Target Writeups</h4>
-            <?php foreach($target->writeups as $writeup):?>
-              <p><details><summary><b style="font-size: 1.2em;">Writeup by <?=$writeup->player->username?>, submitted <?=$writeup->created_at?></b> (<code>status:<?=$writeup->status?></code>)</summary>
-                <div class="markdown"><?=Markdown::process($writeup->content,'gfm')?></div>
-              </details></p>
-            <?php endforeach;?>
-          <?php endif;?>
-
         </div>
       </div>
+
+      <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
+      <div class="card terminal">
+        <div class="card-body table-responsive">
+          <h4><i class="fas fa-book"></i> Target Writeups</h4>
+          <?php foreach($target->writeups as $writeup):?>
+            <p><details><summary><b style="font-size: 1.2em;">Writeup by <?=Html::encode($writeup->player->username)?>, submitted <?=$writeup->created_at?></b> (<code>status:<?=$writeup->status?></code>)</summary>
+              <div class="markdown"><?=Markdown::process($writeup->content,'gfm')?></div>
+            </details></p>
+          <?php endforeach;?>
+        </div>
+      </div>
+      <?php endif;?>
+
 
 <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id && (Yii::$app->user->identity->getFindings($target->id)->count()>0 || Yii::$app->user->identity->getTreasures($target->id)->count()>0)):?>
       <div class="card terminal">
@@ -192,7 +195,9 @@ if($target->progress == 100)
     </div>
     <div class="col-lg-4 col-md-6 col-sm-6">
       <div class="card bg-dark headshots">
-        <h4><i class="fas fa-skull"></i> Headshots (older first)</h4>
+        <div class="card-header">
+          <h4><i class="fas fa-skull"></i> Headshots (older first)</h4>
+        </div>
         <div class="card-body table-responsive">
           <?php
           $headshots=[];
