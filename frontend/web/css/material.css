@@ -187,9 +187,6 @@ details summary>b:hover {
   background: rgb(2,0,36);
   background: linear-gradient(60deg, #688816, #94c11f);
 }
-details pre {
-  color: lightgray;
-}
 .TweetThis {
   display: none;
 }
@@ -524,4 +521,9 @@ details > .markdown h5 {
 
 details > .markdown h6 {
   font-size: 1.40em;
+}
+
+
+.markdown pre {
+  color: #212529;
 }
