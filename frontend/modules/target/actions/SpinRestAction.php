@@ -46,7 +46,7 @@ class SpinRestAction extends \yii\rest\ViewAction
     {
       return Yii::$app->getResponse()->redirect(Yii::$app->request->referrer);
     }
-    return Yii::$app->getResponse()->redirect(['/dashboard/index']);
+    return Yii::$app->getResponse()->redirect(['/target/default/index']);
   }
 
   protected function findModelProgres($id)
