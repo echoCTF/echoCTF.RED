@@ -17,7 +17,7 @@ echo GridView::widget([
     'emptyText'=>'<div class="card-body"><b class="text-info">No targets exist for the given criteria...</b></div>',
     'rowOptions'=> function ($model, $key, $index, $grid) {
           return;
-          return ['data-id' => $model->id,'class'=>'clickable-row','data-href'=>Url::to(['/target/default/index', 'id'=>$model->id])];
+          return ['data-id' => $model->id,'class'=>'clickable-row','data-href'=>Url::to(['/target/default/view', 'id'=>$model->id])];
     },
     'pager'=>[
       'class'=>'yii\bootstrap4\LinkPager',
@@ -52,6 +52,8 @@ echo GridView::widget([
       [
         'visible'=>!in_array('name', $hidden_attributes),
         'attribute'=>'name',
+        'headerOptions' => ["style"=>'width: 8vw;'],
+        'contentOptions'=> ["style"=>'width: 8vw;'],
         'format'=>'raw',
         'label'=>'Target',
         'value'=>function($model) {
@@ -63,17 +65,29 @@ echo GridView::widget([
           else if($model->status === 'powerdown')
             $append=sprintf(' <abbr title="Scheduled for powerdown at %s"><i class="fas fa-arrow-alt-circle-down"></i></abbr>', $model->scheduled_at);
 
+          if(Yii::$app->user->identity->getPlayerHintsForTarget($model->id)->count() > 0)
+            $append.=' <sup><abbr title="You have hints on the target"><i class="fas fa-lightbulb text-primary" aria-hidden="true"></i></abbr></sup>';
 
-          return Html::a(Html::encode($model->name), ['/target/default/index', 'id'=>$model->id]).$append;
+          return Html::a(Html::encode($model->name), ['/target/default/view', 'id'=>$model->id]).$append;
         }
       ],
       [
         'visible'=>!in_array('ip', $hidden_attributes),
         'attribute'=>'ip',
         'label'=>'IP',
-        'headerOptions' => ["style"=>'width: 6vw;', 'class'=>'d-none d-lg-table-cell'],
-        'contentOptions'=> ["style"=>'width: 6vw;', 'class'=>'d-none d-lg-table-cell'],
+        'headerOptions' => ["style"=>'width: 2vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
+        'contentOptions'=> ["style"=>'width: 2vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
         'value'=>function($model) {return long2ip($model->ip);}
+      ],
+      [
+        'visible'=>!in_array('writeup', $hidden_attributes),
+        'format'=>'raw',
+        'headerOptions' => ['class' => 'text-center', "style"=>'width: 1rem'],
+        'contentOptions' => ['class' => 'text-center'],
+        'encodeLabel'=>false,
+        'label'=>false,
+        //'label'=>'<abbr title="Target has writeups or not?"><i class="fa fa-question-circle" aria-hidden="true"></i></abbr>',
+        'value'=>function($model) {return intval(count($model->writeups)) === 0 ? '' : '<abbr title="Writeups available"><i class="fas fa-book text-primary" style="font-size: 1.2em;"></i></abbr>';},
       ],
       [
         'visible'=>!in_array('difficulty', $hidden_attributes),
@@ -112,18 +126,8 @@ echo GridView::widget([
             default:
              $icon='fa-battery-full';
           }
-          return sprintf('<abbr title="%s"><i class="fas %s %s" style="font-size: 1.3vw;"></i></abbr>', $abbr, $icon, $bgcolor);
+          return sprintf('<abbr title="%s"><i class="fas %s %s" style="font-size: 1.35vw;"></i></abbr>', $abbr, $icon, $bgcolor);
         },
-      ],
-      [
-        'visible'=>!in_array('writeup', $hidden_attributes),
-        'format'=>'raw',
-        'headerOptions' => ['class' => 'text-center', "style"=>'width: 4rem'],
-        'contentOptions' => ['class' => 'text-center'],
-        'encodeLabel'=>false,
-        'label'=>false,
-        //'label'=>'<abbr title="Target has writeups or not?"><i class="fa fa-question-circle" aria-hidden="true"></i></abbr>',
-        'value'=>function($model) {return intval(count($model->writeups)) === 0 ? '' : '<abbr title="Writeups available"><i class="fa fa-question-circle text-primary" style="font-size: 1.2em;"></i></abbr>';},
       ],
       [
         'visible'=>!in_array('rootable', $hidden_attributes),
@@ -159,7 +163,7 @@ echo GridView::widget([
         'visible'=>!in_array('headshots', $hidden_attributes),
         'format'=>'raw',
         'encodeLabel'=>false,
-        'headerOptions' => ["style"=>'width: 4rem', 'class' => 'text-center'],
+        'headerOptions' => ["style"=>'width: 6rem', 'class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center',],
         'attribute'=>'headshots',
         'label'=>'<abbr title="Number of users who owned all flags and services: Headshots"><i class="fas fa-skull"></i></abbr>',
@@ -167,9 +171,9 @@ echo GridView::widget([
           $msg=sprintf("%d user%s have managed to headshot this target", count($model->headshots), count($model->headshots) > 1 ? 's' : '');
           if($model->total_treasures == $model->player_treasures && $model->player_findings == $model->total_findings)
           {
-            return '<abbr title="'.$msg.'"><i class="fas fa-skull text-primary"></i></abbr>';
+            return '<abbr title="'.$msg.'"><i class="fas fa-skull text-primary"></i></abbr> '.count($model->headshots);;
           }
-          return '<abbr title="'.$msg.'"><i class="fas fa-skull"></i></abbr>';},
+          return '<abbr title="'.$msg.'"><i class="fas fa-skull"></i></abbr> '.count($model->headshots);},
       ],
       [
         'visible'=>!in_array('progress', $hidden_attributes),
@@ -204,7 +208,7 @@ echo GridView::widget([
               );
           },
           'tweet' => function($url, $model) {
-              $url=Url::to(['target/default/index', 'id'=>$model->id], 'https');
+              $url=Url::to(['target/default/view', 'id'=>$model->id], 'https');
 
               if(!Yii::$app->user->isGuest && Yii::$app->user->id === $this->context->player_id)
               {
@@ -239,7 +243,7 @@ echo GridView::widget([
               );
               return Html::a(
                 '<i class="fas fa-eye"></i>',
-                  Url::to(['/target/default/index', 'id'=>$model->id]),
+                  Url::to(['/target/default/view', 'id'=>$model->id]),
                   [
                     'style'=>"font-size: 1.5em;",
                     'rel'=>"tooltip",

@@ -77,7 +77,7 @@ class DefaultController extends Controller
                      },
                      'denyCallback' => function () {
                        \Yii::$app->session->setFlash('info', 'These actions are disabled during the competition');
-                       return  \Yii::$app->getResponse()->redirect(['/dashboard/index']);
+                       return  \Yii::$app->getResponse()->redirect(['/target/default/index']);
                      }
                  ],
                  'disabledRoute'=>[

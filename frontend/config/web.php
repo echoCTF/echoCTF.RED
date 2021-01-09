@@ -196,7 +196,8 @@ $config=[
                 'challenge/<id:\d+>/download' => 'challenge/default/download',
                 // app/modules/target/controllers/TargetController.php
                 'target/<id:\d+>/rate' => 'game/default/rate',
-                'target/<id:\d+>' => 'target/default/index',
+                'targets' => 'target/default/index',
+                'target/<id:\d+>' => 'target/default/view',
                 'target/<id:\d+>/badge' => 'target/default/badge',
                 'target/<id:\d+>/spin'=>'target/default/spin',
                 'target/<id:\d+>/writeups/enable' => 'target/writeup/enable',

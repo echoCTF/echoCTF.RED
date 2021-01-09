@@ -77,7 +77,7 @@ class WriteupController extends \app\components\BaseController
       if($headshot->writeup!==null)
       {
         Yii::$app->session->setFlash('error', 'You have already submitted a writeup for this target.');
-        return $this->redirect(['default/index','id'=>$id]);
+        return $this->redirect(['default/view','id'=>$id]);
       }
 
       $model = new Writeup();
@@ -142,13 +142,13 @@ class WriteupController extends \app\components\BaseController
         if((int)$writeups->count()===0)
         {
           Yii::$app->session->setFlash('error', 'There are no writeups for this target.');
-          return $this->redirect(['default/index','id'=>$id]);
+          return $this->redirect(['default/view','id'=>$id]);
         }
 
         if(PlayerTargetHelp::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$id])!==null)
         {
           Yii::$app->session->setFlash('error', 'You have already enabled writeups for this target.');
-          return $this->redirect(['default/index','id'=>$id]);
+          return $this->redirect(['default/view','id'=>$id]);
         }
 
         $connection=Yii::$app->db;
@@ -168,7 +168,7 @@ class WriteupController extends \app\components\BaseController
           Yii::$app->session->setFlash('error', 'Failed to activate writeups for this target.');
           throw $e;
         }
-        return $this->redirect(['default/index','id'=>$id]);
+        return $this->redirect(['default/view','id'=>$id]);
     }
 
     /**

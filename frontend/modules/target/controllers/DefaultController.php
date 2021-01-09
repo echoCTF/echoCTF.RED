@@ -40,16 +40,16 @@ class DefaultController extends \app\components\BaseController
           return ArrayHelper::merge(parent::behaviors(),[
               'access' => [
                   'class' => AccessControl::class,
-                  'only' => ['index', 'claim', 'spin','versus','badge'],
+                  'only' => ['index','view', 'claim', 'spin','versus','badge'],
                   'rules' => [
                        'eventStartEnd'=>[
-                          'actions' => ['index', 'claim', 'spin','versus'],
+                          'actions' => ['index', 'view','claim', 'spin','versus'],
                       ],
                       'teamsAccess'=>[
                         'actions' => ['index', 'claim', 'spin','versus'],
                       ],
                       'disabledRoute'=>[
-                        'actions' => ['badge', 'index', 'claim', 'spin','versus'],
+                        'actions' => ['badge', 'view', 'index', 'claim', 'spin','versus'],
                       ],
                       [
                           'allow' => true,
@@ -58,7 +58,12 @@ class DefaultController extends \app\components\BaseController
                           'verbs'=>['post'],
                       ],
                       [
-                          'actions'=>['index','versus','badge'],
+                          'actions'=>['index'],
+                          'allow' => true,
+                          'roles'=>['@']
+                      ],
+                      [
+                          'actions'=>['view','versus','badge'],
                           'allow' => true,
                           #'roles'=>['*']
                       ],
@@ -129,7 +134,29 @@ class DefaultController extends \app\components\BaseController
      * Renders a Target model details view
      * @return string
      */
-    public function actionIndex(int $id)
+     public function actionIndex()
+     {
+       $command=Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
+       $command->bindValue(':player_type', 'offense');
+       $totalPoints=$command->queryScalar();
+       $treasureStats=new \stdClass();
+       $treasureStats->total=(int) Treasure::find()->count();
+       $treasureStats->claims=(int) PlayerTreasure::find()->count();
+       $treasureStats->claimed=(int) PlayerTreasure::find()->where(['player_id'=>Yii::$app->user->id])->count();
+       $totalHeadshots=Headshot::find()->count();
+
+       return $this->render('index', [
+           'totalPoints'=>$totalPoints,
+           'treasureStats'=>$treasureStats,
+           'totalHeadshots'=>$totalHeadshots,
+       ]);
+     }
+
+    /**
+     * Renders a Target model details view
+     * @return string
+     */
+    public function actionView(int $id)
     {
       $sum=0;
       $target=$this->findModel($id);
@@ -169,7 +196,7 @@ class DefaultController extends \app\components\BaseController
                 'pageSize' => 10,
             ]]);
 
-      return $this->render('index', [
+      return $this->render('view', [
             'target' => $target,
             'streamProvider'=>$dataProvider,
             'playerPoints'=>$sum,
@@ -177,18 +204,6 @@ class DefaultController extends \app\components\BaseController
         ]);
     }
 
-    /**
-     * Rate the difficulty of the given target
-     */
-/*    public function actionRate(int $id)
-    {
-         $model = Headshot::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$id]);
-         return $this->renderAjax('_rate_target', [
-                  'model' => $model,
-          ]);
-
-    }
-*/
     /**
      * Claims a treasure flag for a target
      * @return string

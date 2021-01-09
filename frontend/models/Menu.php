@@ -16,6 +16,7 @@ class Menu
                 [
                     ['label' => 'Home', 'icon'=>'home', 'url' => ['/site/index'], 'visible'=>Yii::$app->user->isGuest ],
                     ['label' => 'Dashboard', 'icon'=>'dashboard', 'url' => ['/dashboard/index'], 'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('/dashboard/index')],
+                    ['label' => 'Targets', 'icon'=>'dns', 'url' => ['/target/default/index'], 'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('/target/default/index')],
                     ['label' => 'Challenges', 'icon'=>'extension', 'url' => ['/challenge/default/index'], 'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('challenge/default/index'), 'active'=>\Yii::$app->controller->module->id == "challenge"],
                     ['label' => 'Team', 'icon'=>'people', 'url' => ['/team/default/index'], 'visible'=>(!Yii::$app->user->isGuest && array_key_exists('team',Yii::$app->modules) && Yii::$app->sys->teams!==false), 'active'=>\Yii::$app->controller->module->id === "team"],
                     ['label' => 'Networks', 'icon'=>'cloud','url' => ['/network/default/index'],'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('network/default/index'),'active'=>\Yii::$app->controller->module->id=="network"],
