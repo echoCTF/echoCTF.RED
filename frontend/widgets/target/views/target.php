@@ -17,7 +17,7 @@ echo GridView::widget([
     'emptyText'=>'<div class="card-body"><b class="text-info">No targets exist for the given criteria...</b></div>',
     'rowOptions'=> function ($model, $key, $index, $grid) {
           return;
-          return ['data-id' => $model->id,'class'=>'clickable-row','data-href'=>Url::to(['/target/default/index', 'id'=>$model->id])];
+          return ['data-id' => $model->id,'class'=>'clickable-row','data-href'=>Url::to(['/target/default/view', 'id'=>$model->id])];
     },
     'pager'=>[
       'class'=>'yii\bootstrap4\LinkPager',
@@ -64,7 +64,7 @@ echo GridView::widget([
             $append=sprintf(' <abbr title="Scheduled for powerdown at %s"><i class="fas fa-arrow-alt-circle-down"></i></abbr>', $model->scheduled_at);
 
 
-          return Html::a(Html::encode($model->name), ['/target/default/index', 'id'=>$model->id]).$append;
+          return Html::a(Html::encode($model->name), ['/target/default/view', 'id'=>$model->id]).$append;
         }
       ],
       [
@@ -204,7 +204,7 @@ echo GridView::widget([
               );
           },
           'tweet' => function($url, $model) {
-              $url=Url::to(['target/default/index', 'id'=>$model->id], 'https');
+              $url=Url::to(['target/default/view', 'id'=>$model->id], 'https');
 
               if(!Yii::$app->user->isGuest && Yii::$app->user->id === $this->context->player_id)
               {
@@ -239,7 +239,7 @@ echo GridView::widget([
               );
               return Html::a(
                 '<i class="fas fa-eye"></i>',
-                  Url::to(['/target/default/index', 'id'=>$model->id]),
+                  Url::to(['/target/default/view', 'id'=>$model->id]),
                   [
                     'style'=>"font-size: 1.5em;",
                     'rel'=>"tooltip",
