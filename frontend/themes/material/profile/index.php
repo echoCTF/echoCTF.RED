@@ -2,7 +2,6 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ListView;
-use app\components\JustGage;
 use app\widgets\stream\StreamWidget as Stream;
 use app\widgets\target\TargetWidget;
 use yii\widgets\Pjax;
