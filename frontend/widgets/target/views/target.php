@@ -126,7 +126,7 @@ echo GridView::widget([
             default:
              $icon='fa-battery-full';
           }
-          return sprintf('<abbr title="%s"><i class="fas %s %s" style="font-size: 1.3vw;"></i></abbr>', $abbr, $icon, $bgcolor);
+          return sprintf('<abbr title="%s"><i class="fas %s %s" style="font-size: 1.35vw;"></i></abbr>', $abbr, $icon, $bgcolor);
         },
       ],
       [
@@ -163,7 +163,7 @@ echo GridView::widget([
         'visible'=>!in_array('headshots', $hidden_attributes),
         'format'=>'raw',
         'encodeLabel'=>false,
-        'headerOptions' => ["style"=>'width: 4rem', 'class' => 'text-center'],
+        'headerOptions' => ["style"=>'width: 6rem', 'class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center',],
         'attribute'=>'headshots',
         'label'=>'<abbr title="Number of users who owned all flags and services: Headshots"><i class="fas fa-skull"></i></abbr>',
@@ -171,9 +171,9 @@ echo GridView::widget([
           $msg=sprintf("%d user%s have managed to headshot this target", count($model->headshots), count($model->headshots) > 1 ? 's' : '');
           if($model->total_treasures == $model->player_treasures && $model->player_findings == $model->total_findings)
           {
-            return '<abbr title="'.$msg.'"><i class="fas fa-skull text-primary"></i></abbr>';
+            return '<abbr title="'.$msg.'"><i class="fas fa-skull text-primary"></i></abbr> '.count($model->headshots);;
           }
-          return '<abbr title="'.$msg.'"><i class="fas fa-skull"></i></abbr>';},
+          return '<abbr title="'.$msg.'"><i class="fas fa-skull"></i></abbr> '.count($model->headshots);},
       ],
       [
         'visible'=>!in_array('progress', $hidden_attributes),
