@@ -52,6 +52,8 @@ echo GridView::widget([
       [
         'visible'=>!in_array('name', $hidden_attributes),
         'attribute'=>'name',
+        'headerOptions' => ["style"=>'width: 8vw;'],
+        'contentOptions'=> ["style"=>'width: 8vw;'],
         'format'=>'raw',
         'label'=>'Target',
         'value'=>function($model) {
@@ -63,6 +65,8 @@ echo GridView::widget([
           else if($model->status === 'powerdown')
             $append=sprintf(' <abbr title="Scheduled for powerdown at %s"><i class="fas fa-arrow-alt-circle-down"></i></abbr>', $model->scheduled_at);
 
+          if(Yii::$app->user->identity->getPlayerHintsForTarget($model->id)->count() > 0)
+            $append.=' <sup><abbr title="You have hints on the target"><i class="fas fa-lightbulb text-primary" aria-hidden="true"></i></abbr></sup>';
 
           return Html::a(Html::encode($model->name), ['/target/default/view', 'id'=>$model->id]).$append;
         }
@@ -71,9 +75,19 @@ echo GridView::widget([
         'visible'=>!in_array('ip', $hidden_attributes),
         'attribute'=>'ip',
         'label'=>'IP',
-        'headerOptions' => ["style"=>'width: 6vw;', 'class'=>'d-none d-lg-table-cell'],
-        'contentOptions'=> ["style"=>'width: 6vw;', 'class'=>'d-none d-lg-table-cell'],
+        'headerOptions' => ["style"=>'width: 2vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
+        'contentOptions'=> ["style"=>'width: 2vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
         'value'=>function($model) {return long2ip($model->ip);}
+      ],
+      [
+        'visible'=>!in_array('writeup', $hidden_attributes),
+        'format'=>'raw',
+        'headerOptions' => ['class' => 'text-center', "style"=>'width: 1rem'],
+        'contentOptions' => ['class' => 'text-center'],
+        'encodeLabel'=>false,
+        'label'=>false,
+        //'label'=>'<abbr title="Target has writeups or not?"><i class="fa fa-question-circle" aria-hidden="true"></i></abbr>',
+        'value'=>function($model) {return intval(count($model->writeups)) === 0 ? '' : '<abbr title="Writeups available"><i class="fas fa-book text-primary" style="font-size: 1.2em;"></i></abbr>';},
       ],
       [
         'visible'=>!in_array('difficulty', $hidden_attributes),
@@ -114,16 +128,6 @@ echo GridView::widget([
           }
           return sprintf('<abbr title="%s"><i class="fas %s %s" style="font-size: 1.3vw;"></i></abbr>', $abbr, $icon, $bgcolor);
         },
-      ],
-      [
-        'visible'=>!in_array('writeup', $hidden_attributes),
-        'format'=>'raw',
-        'headerOptions' => ['class' => 'text-center', "style"=>'width: 4rem'],
-        'contentOptions' => ['class' => 'text-center'],
-        'encodeLabel'=>false,
-        'label'=>false,
-        //'label'=>'<abbr title="Target has writeups or not?"><i class="fa fa-question-circle" aria-hidden="true"></i></abbr>',
-        'value'=>function($model) {return intval(count($model->writeups)) === 0 ? '' : '<abbr title="Writeups available"><i class="fa fa-question-circle text-primary" style="font-size: 1.2em;"></i></abbr>';},
       ],
       [
         'visible'=>!in_array('rootable', $hidden_attributes),
