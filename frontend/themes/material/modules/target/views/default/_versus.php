@@ -120,7 +120,7 @@ if($target->progress == 100)
             'title'=>$identity->owner->username." / ".$identity->rank->ordinalPlace." Place",
             'footer'=>sprintf('<div class="stats">%s %s</div>', Twitter::widget([
                             'message'=>$twmsg,
-                            /*'url'=>Url::to(['/target/default/index'*,'id'=>$target->id],'https'),*/
+                            /*'url'=>Url::to(['/target/default/view'*,'id'=>$target->id],'https'),*/
                             'linkOptions'=>['class'=>'target-view-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.4em;'],
                         ]), Html::encode($identity->bio)),
         ]);
@@ -151,7 +151,7 @@ if($target->progress == 100)
           )?><br/><?php endif;?>
           <?=$target->description?>
           <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
-            <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-smile-wink'></i> <code>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
+            <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-lightbulb text-success'></i> <code class='text-success'>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
           <?php endif;?>
         </div>
       </div>
