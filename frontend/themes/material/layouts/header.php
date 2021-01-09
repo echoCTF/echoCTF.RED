@@ -58,32 +58,17 @@ use yii\helpers\Url;
                     <?php endif;?>
                   </div>
                 </li>
-              <li class="nav-item dropdown">
-                <a class="nav-link" href="/profile" id="navbarDropdownProfile" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  <i class="fas fa-cogs" style="font-size: 2em;"></i>
+              <li class="nav-item">
+                <a class="nav-link" href="/profile/me" aria-haspopup="false" aria-expanded="false">
+                  <i class="fas fa-user" style="font-size: 2em;"></i>
                   <p class="d-lg-none d-md-block">
-                    Settings
+                    Profile
                   </p>
                 </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownProfile">
-                  <a class="dropdown-item" href="/profile/me">Profile</a>
-                  <a class="dropdown-item" href="/profile/settings">Settings</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="<?=Url::to(['/site/logout'])?>" style="padding: 0;">
-                    <?php
-                    if(!Yii::$app->user->isGuest)
-                    {
-                      echo Html::beginForm(['/site/logout'], 'post', ['id'=>'logout', 'pjax-data'=>"0"]);
-                      echo Html::submitButton(
-                          'Logout ('.Html::encode(Yii::$app->user->identity->username).')',
-                          ['class' => 'btn btn-link logout', 'pjax-data'=>"0", 'id'=>'logoutButton']
-                      );
-                      echo Html::endForm();
-                    }
-                    ?>
-                  </a>
-                </div>
-              </li><!-- // end of account drop down menu -->
+              </li>
+              <li class="nav-item">
+                <?= Html::a('<i class="fas fa-sign-out-alt" style="font-size: 2.2em;"></i><p class="d-lg-none d-md-block">Logout</p>', Url::to(['/site/logout']), ['data-method' => 'POST',"data-pjax"=>"0",'data-confirm'=>"Are you sure you want to logout?", 'class'=>'nav-link']) ?>
+              </li>
             <?php endif;?>
             </ul>
           </div><!-- collapse navbar-collapse justify-content-end -->
