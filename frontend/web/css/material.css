@@ -15,10 +15,6 @@ body {
     padding: 70px 15px 20px;
 }
 
-.footer {
-    height: 60px;
-    padding-top: 20px;
-}
 
 .jumbotron {
     text-align: center;
@@ -531,4 +527,19 @@ details > .markdown h6 {
 #notificationsMenu>a, #hintsMenu>a {
     word-wrap: break-word;
     white-space: normal;
+}
+
+.footer {
+    height: 50px;
+    padding: 0;
+    padding-top: 10px;
+    padding-bottom: 0;
+}
+.footer .copyright {
+  padding: 0 0;
+}
+
+.footer ul li a {
+  padding-top: 0;
+  padding-bottom: 0;
 }
