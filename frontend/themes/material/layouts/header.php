@@ -31,21 +31,31 @@ use yii\helpers\Url;
                 <li class="nav-item"><?=Html::a('<i class="fas fa-user-plus"></i> Signup', ['/site/register'], ['class'=>'nav-link'])?></li>
                 <li class="nav-item"><?=Html::a('<i class="fas fa-sign-in-alt"></i>  Login', ['/site/login'], ['class'=>'nav-link'])?></li>
               <?php else: ?>
-                <li class="nav-item dropdown">
+                <li class="nav-item dropdown" id="Hints">
                   <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false" aria-label="Hints to help you progress further">
                     <?php if(count(Yii::$app->user->identity->pendingHints) > 0):?><i class="fas fa-lightbulb text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingHints)?></span><?php else:?><i class="fas fa-lightbulb" style="font-size: 2em;"></i><?php endif;?>
                     <p class="d-lg-none d-md-block">Hints</p>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHintsDropDown" id="hintsMenu">
+                    <?php if(count(Yii::$app->user->identity->pendingHints) > 0):?>
+                    <?=\app\widgets\HintsWidget::widget();?>
+                    <?php else: ?>
+                      <a href="#" class="dropdown-item" title="nothing here...">nothing here...</a>
+                    <?php endif;?>
                   </div>
                 </li>
 
-                <li class="nav-item dropdown">
-                  <a class="nav-link" href="/profile/notifications" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false"  aria-label="Your notifications">
+                <li class="nav-item dropdown" id="Notifications">
+                  <a class="nav-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false"  aria-label="Your notifications">
                     <?php if(count(Yii::$app->user->identity->pendingNotifications) > 0):?><i class="fas fa-bell text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingNotifications)?></span><?php else:?><i class="fas fa-bell" style="font-size: 2em;"></i><?php endif;?>
                     <p class="d-lg-none d-md-block">Notifications</p>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" id="notificationsMenu">
+                    <?php if(count(Yii::$app->user->identity->pendingNotifications) > 0):?>
+                    <?=\app\widgets\NotificationsWidget::widget();?>
+                    <?php else: ?>
+                    <a href="#" class="dropdown-item" title="nothing here...">nothing here...</a>
+                    <?php endif;?>
                   </div>
                 </li>
               <li class="nav-item dropdown">

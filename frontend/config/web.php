@@ -214,8 +214,8 @@ $config=[
                 'profile/me'=>'profile/me',
                 'profile/ovpn'=>'profile/ovpn',
                 'profile/settings'=>'profile/settings',
-                'profile/notifications'=>'profile/notifications',
-                'profile/hints'=>'profile/hints',
+                //'profile/notifications'=>'profile/notifications',
+                //'profile/hints'=>'profile/hints',
 //                'profile/robohash' => 'profile/robohash',
                 // app/controllers/DashboardController.php
                 'dashboard' => 'dashboard/index',

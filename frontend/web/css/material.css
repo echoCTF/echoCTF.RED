@@ -527,3 +527,8 @@ details > .markdown h6 {
 .markdown pre {
   color: #212529;
 }
+
+#notificationsMenu>a, #hintsMenu>a {
+    word-wrap: break-word;
+    white-space: normal;
+}
