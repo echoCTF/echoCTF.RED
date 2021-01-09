@@ -4,7 +4,7 @@ use app\widgets\Card;
 use app\widgets\target\TargetWidget;
 use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
-$this->_fluid="-fluid";
+//$this->_fluid="-fluid";
 $this->title=Yii::$app->sys->event_name.' Targets';
 $this->_description="The echoCTF dashboard page";
 $hidden_attributes=['id'];
@@ -68,7 +68,7 @@ $hidden_attributes=['id'];
         </div>
 
     </div>
-    <div class="row">
+    <div class="row justify-content-center">
       <div class="col">
       <?php Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
       <?php echo TargetWidget::widget(['dataProvider' => null, 'hidden_attributes'=>$hidden_attributes,'player_id'=>Yii::$app->user->id,'pageSize'=>10,'buttonsTemplate'=>null]);?>
