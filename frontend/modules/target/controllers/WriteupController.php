@@ -114,7 +114,7 @@ class WriteupController extends \app\components\BaseController
     public function actionUpdate(int $id)
     {
         $model = $this->findModel(Yii::$app->user->id, $id);
-        $oldmodel=$model;
+        $oldmodel = $this->findModel(Yii::$app->user->id, $id);
         if ($model->load(Yii::$app->request->post()))
         {
           $oldmodel->status='PENDING';
