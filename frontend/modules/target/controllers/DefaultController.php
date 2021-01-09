@@ -58,7 +58,12 @@ class DefaultController extends \app\components\BaseController
                           'verbs'=>['post'],
                       ],
                       [
-                          'actions'=>['index', 'view','versus','badge'],
+                          'actions'=>['index'],
+                          'allow' => true,
+                          'roles'=>['@']
+                      ],
+                      [
+                          'actions'=>['view','versus','badge'],
                           'allow' => true,
                           #'roles'=>['*']
                       ],
