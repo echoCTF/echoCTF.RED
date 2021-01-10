@@ -24,20 +24,36 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
 ?>
 <div class="profile-index">
   <div class="body-content">
-    <div class="row">
-      <div class="col-xl-8 col-lg-12">
+<?php if(!$profile->isMine):?>
+    <div class="row d-flex justify-content-center">
+      <div class="col-xl-9 d-flex justify-content-center">
+        <?=Html::img(['profile/badge','id'=>$profile->id], ['class'=>'img-fluid'])?>
+      </div>
+    </div>
+    <div class="row d-flex justify-content-center">
+      <div class="col-xl-9 d-flex justify-content-center">
+        <p class="h1">
+        <?php if(trim($profile->twitter)):?><?=Html::a('<i class="fab fa-twitter text-twitter"></i>', "https://twitter.com/".Html::encode($profile->twitter), ['target'=>'_blank','title'=>"Twitter profile"])?><?php endif;?>
+        <?php if(trim($profile->github)):?><?=Html::a('<i class="fab fa-github"></i>', "https://github.com/".Html::encode($profile->github), ['target'=>'_blank','style'=>'color: #808080;','title'=>"Github profile"])?><?php endif;?>
+        <?php if(trim($profile->htb)):?><?=Html::a('<i class="fab fa-codepen text-primary"></i>', "https://www.hackthebox.eu/profile/".Html::encode($profile->htb), ['target'=>'_blank','title'=>"HTB profile"])?><?php endif;?>
+        <?php if(trim($profile->twitch)):?><?=Html::a('<i class="fab fa-twitch text-twitch"></i>', "https://twitch.tv/".Html::encode($profile->twitch), ['target'=>'_blank','title'=>"TwitchTV Channel"])?><?php endif;?>
+        <?php if(trim($profile->youtube)):?><?=Html::a('<i class="fab fa-youtube text-youtube"></i>', "https://youtube.com/channel/".Html::encode($profile->youtube), ['target'=>'_blank','title'=>"Youtube channel"])?><?php endif;?>
+        </p>
+      </div>
+    </div>
+<?php endif;?>
+    <div class="row d-flex justify-content-center">
+      <div class="col-xl-9">
         <?php \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
         <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Pending progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true]);?>
         <?php \yii\widgets\Pjax::end()?>
       </div>
-      <div class="col">
-        <?=$this->render('_card', ['profile'=>$profile]);?>
+<?php if($profile->isMine):?>
+      <div class="col-xl-3">
+      <?=$this->render('_card', ['profile'=>$profile]);?>
       </div><!-- // end profile card col-md-4 -->
+<?php endif;?>
     </div>
-    <?php if((int)Writeup::find()->where(['player_id'=>$profile->player_id])->count()>0):?>
-      <?php /* echo $this->render('_writeups', ['profile'=>$profile,'provider'=>$provider]);*/?>
-    <?php endif;?>
-
     <?php if(count($profile->owner->challengeSolvers)>0):?>
       <h3><code><?=count($profile->owner->challengeSolvers)?></code> Challenges solved</h2>
       <div class="row">
