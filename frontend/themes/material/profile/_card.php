@@ -12,6 +12,7 @@ use app\modules\game\models\Headshot;
     </a>
   </div>
   <div class="card-body">
+    <?php if($profile->isMine):?><p></p><?php endif;?>
     <h6 class="badge badge-secondary">Level <?=$profile->experience->id?> / <?=$profile->experience->name?></h6>
     <h4 class="card-title"><?=Html::encode($profile->owner->username)?></h4>
     <p class="card-description">
@@ -30,12 +31,16 @@ use app\modules\game\models\Headshot;
         ]);?>
     <?php endif;?>
     <ul class="nav flex-column">
-  <?php if(intval(Yii::$app->user->id) === intval($profile->player_id) || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
-          <li class="nav-item text-center"><?=Html::a("<i class='fas fa-user-shield'></i> OpenVPN", ['profile/ovpn'], ['class'=>'btn btn-primary','alt'=>'Download OpenVPN Configuration'])?> <?=Html::a("<i class='fas fa-id-badge'></i> Your badge", ['profile/badge','id'=>$profile->id], ['class'=>'btn btn-success'])?></li>
+  <?php if($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
+          <li class="nav-item text-center">
+              <?=Html::a("<i class='fas fa-user-shield'></i> OpenVPN", ['profile/ovpn'], ['class'=>'btn btn-primary btn-sm','alt'=>'Download OpenVPN Configuration'])?>
+              <?=Html::a("<i class='fas fa-user'></i> Edit", ['profile/settings'], ['class'=>'btn btn-danger btn-sm','alt'=>'Edit profile and account settings'])?>
+              <?=Html::a("<i class='fas fa-id-badge'></i> Badge", ['profile/badge','id'=>$profile->id], ['class'=>'btn btn-success btn-sm'])?>
+          </li>
           <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($profile->spins->counter)?></abbr> / <abbr title="Total Spins"><?=intval($profile->spins->total)?></abbr></span></li>
-  <?php endif;?>
           <li class="nav-item text-left"><strong><i class="fas fa-file-signature"></i> Real name</strong> <span class="pull-right"><?=Html::encode($profile->owner->fullname)?></span></li>
+  <?php endif;?>
           <li class="nav-item text-left"><strong><i class="fas fa-globe"></i> Country</strong> <span class="pull-right"><?=$profile->rCountry->name?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-calendar-check"></i> Joined</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->owner->created))?></span></li>
           <li class="nav-item text-left"><strong><i class="far fa-calendar-alt"></i> Last seen</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->last->on_pui))?></span></li>
