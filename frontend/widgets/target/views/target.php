@@ -82,7 +82,7 @@ echo GridView::widget([
       [
         'visible'=>!in_array('writeup', $hidden_attributes),
         'format'=>'raw',
-        'headerOptions' => ['class' => 'text-center', "style"=>'width: 1rem'],
+        'headerOptions' => ['class' => 'text-center', "style"=>'width: 2rem'],
         'contentOptions' => ['class' => 'text-center'],
         'encodeLabel'=>false,
         'label'=>false,
