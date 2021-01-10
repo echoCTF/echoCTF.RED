@@ -88,6 +88,17 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   'itemOptions' => [
                     'tag' => false
                   ],
+                  'pager'=>[
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
+                  ],
+
                   'itemView' => '_most_headshot',
                   'viewParams'=>[
                     'totalPoints'=>0,
@@ -107,9 +118,21 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   'itemOptions' => [
                     'tag' => false
                   ],
+                  'pager'=>[
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
+                  ],
+
                   'itemView' => '_most_headshot',
                   'viewParams'=>[
                     'totalPoints'=>0,
+
                   ]
               ]);?>
         </div>
@@ -129,6 +152,17 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   'itemOptions' => [
                     'tag' => false
                   ],
+                  'pager'=>[
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
+                  ],
+
                   'itemView' => '_headshot',
                   'viewParams'=>[
                     'totalPoints'=>0,
@@ -145,6 +179,16 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
                   'summary'=>'<div class="card-header card-header-warning"><h4 class="card-title">Fastest solves</h4><p class="card-category">Players with the fastest challenge solves in seconds</p></div>',
+                  'pager'=>[
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
+                  ],
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -173,6 +217,16 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   'itemOptions' => [
                     'tag' => false
                   ],
+                  'pager'=>[
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
+                  ],
                   'itemView' => '_most_headshot',
                   'viewParams'=>[
                     'totalPoints'=>0,
@@ -192,6 +246,16 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   'summary'=>'<div class="card-header card-header-info"><h4 class="card-title">Best average solve times</h4><p class="card-category">Players with best average timer solves in seconds</p></div>',
                   'itemOptions' => [
                     'tag' => false
+                  ],
+                  'pager'=>[
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
                   ],
                   'itemView' => '_most_headshot',
                   'viewParams'=>[
