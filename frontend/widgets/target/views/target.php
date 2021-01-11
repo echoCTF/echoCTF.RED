@@ -65,7 +65,7 @@ echo GridView::widget([
           else if($model->status === 'powerdown')
             $append=sprintf(' <abbr title="Scheduled for powerdown at %s"><i class="fas fa-arrow-alt-circle-down"></i></abbr>', $model->scheduled_at);
 
-          if(Yii::$app->user->identity->getPlayerHintsForTarget($model->id)->count() > 0)
+          if(!Yii::$app->user->isGuest && Yii::$app->user->identity->getPlayerHintsForTarget($model->id)->count() > 0)
             $append.=' <sup><abbr title="You have hints on the target"><i class="fas fa-lightbulb text-primary" aria-hidden="true"></i></abbr></sup>';
 
           return Html::a(Html::encode($model->name), ['/target/default/view', 'id'=>$model->id]).$append;
