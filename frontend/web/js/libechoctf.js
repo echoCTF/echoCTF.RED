@@ -1,9 +1,9 @@
 /* Avoid passive event warnings */
-jQuery.event.special.touchstart = {
-  setup: function( _, ns, handle ) {
-      this.addEventListener("touchstart", handle, { passive: !ns.includes("noPreventDefault") });
-  }
-};
+//jQuery.event.special.touchstart = {
+//  setup: function( _, ns, handle ) {
+//      this.addEventListener("touchstart", handle, { passive: !ns.includes("noPreventDefault") });
+//  }
+//};
 
 /* Dummy escapeHtml implementation */
 function escapeHtml(unsafe)
