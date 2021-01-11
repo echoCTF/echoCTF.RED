@@ -121,11 +121,11 @@ class ChallengeSolverController extends Controller
           ->bindValue(':timer', $model->timer)->query();
           $transaction->commit();
         }
-        catch (\Exception $e)
+        catch (\Throwable $e)
         {
           $transaction->rollBack();
         }
-          return $this->redirect(['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]);
+        return $this->redirect(['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]);
       }
     }
 
