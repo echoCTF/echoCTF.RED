@@ -65,15 +65,17 @@ class ChallengeSolverController extends Controller
      */
     public function actionCreate()
     {
-        $model = new ChallengeSolver();
+      $submit=Yii::$app->request->post('submit');
+      $model=new ChallengeSolver();
+      if($submit[0]==='give') $this->give();
+      elseif($submit[0]==='save' && $model->load(Yii::$app->request->post()) && $model->save())
+      {
+        return $this->redirect(['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]);
+      }
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+      return $this->render('create', [
+        'model' => $model,
+      ]);
     }
 
     /**
@@ -95,6 +97,36 @@ class ChallengeSolverController extends Controller
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Gives a Solve for a challenge on a Player model.
+     * If creation is successful, the browser will be redirected to the 'view' page.
+     * @return mixed
+     */
+    public function give()
+    {
+      $model=new ChallengeSolver();
+      $connection=Yii::$app->db;
+      if($model->load(Yii::$app->request->post()) && $model->validate())
+      {
+        $transaction=$connection->beginTransaction();
+        try {
+          $connection->createCommand('INSERT IGNORE INTO player_question (player_id,question_id) SELECT :player_id,id FROM question WHERE challenge_id=:challenge_id ORDER BY id DESC')
+          ->bindValue(':player_id', $model->player_id)
+          ->bindValue(':challenge_id', $model->challenge_id)->query();
+          $connection->createCommand('UPDATE challenge_solver SET timer=:timer WHERE player_id=:player_id AND challenge_id=:challenge_id')
+          ->bindValue(':player_id', $model->player_id)
+          ->bindValue(':challenge_id', $model->challenge_id)
+          ->bindValue(':timer', $model->timer)->query();
+          $transaction->commit();
+        }
+        catch (\Exception $e)
+        {
+          $transaction->rollBack();
+        }
+          return $this->redirect(['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]);
+      }
     }
 
     /**

@@ -27,15 +27,15 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'player_id',
+            [
+              'attribute'=>'username',
+              'value'=>'player.username'
+            ],
             'challenge_id',
             [
               'attribute'=>'challenge_name',
               'value'=>'challenge.name',
               'headerOptions' => ['style' => 'width:20vw'],
-            ],
-            [
-              'attribute'=>'username',
-              'value'=>'player.username'
             ],
             'timer',
             'rating',
