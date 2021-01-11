@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ListView;
 $this->title=Html::encode(Yii::$app->sys->event_name.' Rules');
 $this->_description='These rules are only in place to keep the platform entertaining and manageable. Please respect the rules and have fun :)';
+$this->_url=\yii\helpers\Url::to(['index'], 'https');
 ?>
 <div class="rule-index">
   <div class="body-content">
