@@ -88,11 +88,6 @@ class ProfileController extends \app\components\BaseController
       if($profile->visible===false)
           return $this->redirect(['/']);
 
-      $image=\app\components\Img::profile($profile);
-
-      if($image==false)
-        return $this->redirect(['/']);
-
       Yii::$app->getResponse()->getHeaders()
           ->set('Pragma', 'public')
           ->set('Expires', '0')
@@ -101,8 +96,19 @@ class ProfileController extends \app\components\BaseController
           ->set('Content-type', 'image/png');
 
       Yii::$app->response->format = Response::FORMAT_RAW;
+      if(file_exists(\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png'))
+      {
+        return file_get_contents(\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png');
+      }
+      $image=\app\components\Img::profile($profile);
+
+      if($image==false)
+        return $this->redirect(['/']);
+
+
       ob_start();
       imagepng($image);
+      imagepng($image,\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png');
       imagedestroy($image);
       return ob_get_clean();
     }
