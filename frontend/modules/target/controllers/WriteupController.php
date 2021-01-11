@@ -44,8 +44,13 @@ class WriteupController extends \app\components\BaseController
                       ],
                       [
                           'allow' => true,
-                          'roles'=>['@']
+                          'actions' => ['view'],
+                          'roles' => ['@'],
                       ],
+                      [
+                          'allow' => false,
+                      ],
+
                   ],
               ],
           ]);
