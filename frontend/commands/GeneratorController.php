@@ -55,6 +55,17 @@ class GeneratorController extends Controller {
       }
     }
 
+    public function actionBadges()
+    {
+      $players=Player::find()->active()->all();
+      foreach($players as $player)
+      {
+        $image=\app\components\Img::profile($player->profile);
+        imagepng($image,\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$player->profile->id.'.png');
+        imagedestroy($image);
+      }
+    }
+
     public function actionUrls($domain)
     {
       $config=include(__DIR__.'/../config/web.php');
