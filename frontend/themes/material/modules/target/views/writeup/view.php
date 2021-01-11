@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 $this->title=Yii::$app->sys->event_name.' Writeup for '.$model->target->name. ' / '.long2ip($model->target->ip). ' #'.$model->target->id;
 $this->_description=$model->target->purpose;
 $this->_image=\yii\helpers\Url::to($model->target->fullLogo, 'https');
-$this->_url=\yii\helpers\Url::to(['index', 'id'=>$model->target->id], 'https');
+$this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->target->id], 'https');
 $this->_fluid='-fluid';
 ?>
 <div class="writeup-view">

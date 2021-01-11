@@ -5,7 +5,7 @@ use app\widgets\stream\StreamWidget as Stream;
 $this->title=Yii::$app->sys->event_name.' Target: '.$target->name. ' / '.long2ip($target->ip). ' #'.$target->id;
 $this->_description=$target->purpose;
 $this->_image=\yii\helpers\Url::to($target->fullLogo, 'https');
-$this->_url=\yii\helpers\Url::to(['index', 'id'=>$target->id], 'https');
+$this->_url=\yii\helpers\Url::to(['view', 'id'=>$target->id], 'https');
 $this->_fluid='-fluid';
 ?>
 

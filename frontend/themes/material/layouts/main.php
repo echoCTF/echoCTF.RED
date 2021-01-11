@@ -5,7 +5,7 @@ use app\assets\MaterialAsset;
 $bundle=MaterialAsset::register($this);
 //$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/ricar2ce/yii2-material-theme/assets');
 $this->registerMetaTag(['name'=>'description', 'content'=>trim($this->_description)], 'description');
-$this->_url=\yii\helpers\Url::to([null],'https');
+//$this->_url=\yii\helpers\Url::to([null],'https');
 
 $this->registerMetaTag($this->og_title, 'og_title');
 $this->registerMetaTag($this->og_site_name, 'og_site_name');
