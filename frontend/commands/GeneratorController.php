@@ -55,13 +55,15 @@ class GeneratorController extends Controller {
       }
     }
 
-    public function actionBadges()
+    public function actionBadges($owner=0)
     {
       $players=Player::find()->active()->all();
       foreach($players as $player)
       {
         $image=\app\components\Img::profile($player->profile);
-        imagepng($image,\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$player->profile->id.'.png');
+        $path=\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$player->profile->id.'.png';
+        imagepng($image,$path);
+        chown($path, $owner);
         imagedestroy($image);
       }
     }
