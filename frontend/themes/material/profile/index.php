@@ -112,7 +112,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
     <?php if($game->badges !== null && $game->badges->received_by($profile->player_id)->count() > 0):?><h3>Badges</h3>
     <div class="row game-badges">
       <?php foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
-      <div class="col col-sm-12 col-md-6 col-lg-6">
+      <div class="col col-xl-4 col-sm-12 col-md-6 col-lg-6">
         <div class="iconic-card">
           <center><?=$badge->pubname?></center>
           <h3><?=$badge->name?></h3>
