@@ -1,11 +1,6 @@
 <?php
 /**
- * Vote widget
- * sample usage:
- *
- *  use app\components\widgets\vote\VoteWidget;
- *  $fakedModel = (object)['title'=> 'A Product', ];
- *  echo VoteWidget::widget(['model' => $fakedModel]);
+ * Challenge Solver widget
  */
 
 namespace app\widgets\solver;
