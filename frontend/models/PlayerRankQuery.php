@@ -12,7 +12,11 @@ class PlayerRankQuery extends \yii\db\ActiveQuery
     public function academic($academic)
     {
       return $this->joinWith('player')->where(['player.academic'=>$academic]);
-        //return $this->andWhere('[[status]]=1');
+    }
+
+    public function active()
+    {
+      return $this->joinWith('player')->where(['player.active'=>1,'player.status'=>10]);
     }
 
     /**
