@@ -11,6 +11,8 @@ use app\modules\activity\models\PlayerTargetHelp;
  */
 class PlayerTargetHelpSearch extends PlayerTargetHelp
 {
+  public $username,$target_name;
+
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,7 @@ class PlayerTargetHelpSearch extends PlayerTargetHelp
     {
         return [
             [['player_id', 'target_id'], 'integer'],
-            [['created_at'], 'safe'],
+            [['created_at','username','target_name'], 'safe'],
         ];
     }
 
@@ -40,7 +42,7 @@ class PlayerTargetHelpSearch extends PlayerTargetHelp
      */
     public function search($params)
     {
-        $query = PlayerTargetHelp::find();
+        $query = PlayerTargetHelp::find()->joinWith(['target','player']);
 
         // add conditions that should always apply here
 
@@ -61,6 +63,23 @@ class PlayerTargetHelpSearch extends PlayerTargetHelp
             'player_id' => $this->player_id,
             'target_id' => $this->target_id,
             'created_at' => $this->created_at,
+        ]);
+        $query->andFilterWhere(['like', 'player.username', $this->username]);
+        $query->andFilterWhere(['like', 'target.name', $this->target_name]);
+        $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'username' => [
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
+                  ],
+                  'target_name' => [
+                      'asc' => ['target.name' => SORT_ASC],
+                      'desc' => ['target.name' => SORT_DESC],
+                  ],
+                ]
+            ),
         ]);
 
         return $dataProvider;

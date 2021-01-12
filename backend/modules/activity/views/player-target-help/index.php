@@ -27,8 +27,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'player_id',
-            'target_id',
+            [
+              'attribute'=>'player_id',
+              'headerOptions' => ['style' => 'width:3vw'],
+            ],
+            [
+              'attribute'=>'username',
+              'value'=>'player.username'
+            ],
+            [
+              'attribute'=>'target_id',
+              'headerOptions' => ['style' => 'width:3vw'],
+            ],
+            [
+              'attribute'=>'target_name',
+              'value'=>'target.name',
+            ],
             'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],
