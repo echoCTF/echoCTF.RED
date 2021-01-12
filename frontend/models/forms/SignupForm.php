@@ -71,6 +71,7 @@ class SignupForm extends Model
         $player->email=$this->email;
         if(\Yii::$app->sys->require_activation===true)
         {
+          $player->active=0;
           $player->generateEmailVerificationToken();
         }
 
