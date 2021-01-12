@@ -20,7 +20,7 @@ class HeadshotSearch extends Headshot
     public function rules()
     {
         return [
-            [['player_id', 'target_id'], 'integer'],
+            [['player_id', 'target_id','timer','first','rating'], 'integer'],
             [['created_at', 'username', 'fqdn', 'ipoctet'], 'safe'],
         ];
     }
@@ -64,6 +64,7 @@ class HeadshotSearch extends Headshot
         $query->andFilterWhere([
             'player_id' => $this->player_id,
             'target_id' => $this->target_id,
+            'first' => $this->first,
             'created_at' => $this->created_at,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
