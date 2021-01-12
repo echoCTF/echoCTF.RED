@@ -19,6 +19,7 @@ use app\modules\gameplay\models\Target;
     <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->orderBy(['username'=>SORT_ASC])->all(), 'id', 'username'), ['prompt'=>'Select player'])->Label('Player')->hint('The player id that the headshot will be given.') ?>
 
     <?= $form->field($model, 'timer')->textInput()->hint('Headshot timer in seconds. Leave empty for random') ?>
+    <?= $form->field($model, 'first')->textInput()->hint('Headshot is first for the target') ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'value'=>'save', 'name'=>'submit[]','id'=>'saveBtn']) ?>
