@@ -98,7 +98,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
                           'aria-label'=>'View target vs player card',
                           'data-pjax' => '0',
                         ]
-                    );?></b></p>
+                    );?></b> <?php if($headshot->first):?><img src="/images/headshot.svg" width="30px" title="First Headshot" alt="First Headshot"><?php endif;?></p>
           <p><b><i class="far fa-calendar-alt text-warning"></i> <?=\Yii::$app->formatter->asDate($headshot->created_at,'long')?></b><br/>
             <?php if($headshot->writeup):?><b><i class="fas fa-book text-secondary"></i> Writeup submitted<?=$headshot->writeup->approved? '': ' ('.$headshot->writeup->status.')'?></b><br/><?php endif;?>
           <i class="fas fa-stopwatch text-danger"></i> <?=\Yii::$app->formatter->asDuration($headshot->timer)?>
