@@ -37,6 +37,7 @@ if($target->progress == 100)
   else
     $twmsg=sprintf('Hey check this out, %s managed to headshot [%s]', $identity->isMine ? "I" : $identity->twitterHandle, $target->name);
 }
+$headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id]);
 ?>
 <div class="row">
       <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 target-card">
@@ -73,13 +74,18 @@ if($target->progress == 100)
       </div>
       <div class="col-xl-4 col-lg-2 col-md-2 col-sm-12">
         <div style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
-          <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
+          <?php if($headshot!==null && !$headshot->first):?>
+            <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
+          <?php else:?>
+            <img src="/images/1stheadshot.svg" style="width: 7vw; min-width: 120px;">
+          <?php endif;?>
         </div>
         <div class="progress">
             <div class="progress-bar <?=$target->progress == 100 ? 'bg-gradual-progress' : 'bg-danger text-dark'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                 <?=$target->progress == 100 ? '#headshot' : number_format($target->progress).'%'?>
             </div>
         </div>
+        <?php if($headshot && $headshot->rating>=0) echo "<center class='text-primary'>headshoter rating: ",$headshot->rated,"</center>";?>
 <?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100):?>
         <div class="row">
           <div class="col">
@@ -90,7 +96,7 @@ if($target->progress == 100)
                         'alt'=>'Submit a writeup for this target'
                     ])?></div>
           <div class="col">
-            <?=VoteWidget::widget(['model'=>Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])]);?>
+            <?=VoteWidget::widget(['model'=>$headshot]);?>
           </div>
 
         </div>
@@ -104,7 +110,7 @@ if($target->progress == 100)
                           'alt'=>'View or update your writeup for this target'
                       ])?></div>
         <div class="col">
-          <?=VoteWidget::widget(['model'=>Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])]);?>
+          <?=VoteWidget::widget(['model'=>$headshot]);?>
         </div>
 
         </div>
@@ -127,7 +133,7 @@ if($target->progress == 100)
         echo "<p class='text-primary '><i class='fas fa-flag-checkered'></i> ", $target->player_treasures, ": Flags found<br/>";
         echo '<i class="fas fa-fire-alt"></i> ', $target->player_findings, ": Service".($target->player_findings > 1 ? 's' : '')." discovered<br/>";
         echo '<i class="fas fa-calculator"></i> ', number_format($playerPoints), " pts<br/>";
-        echo $player_timer;
+        echo $player_timer,"<br/>";
         Card::end();?>
       </div>
 </div>
