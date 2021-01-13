@@ -71,6 +71,7 @@ class HeadshotSearch extends Headshot
         $query->andFilterWhere(['like', 'target.fqdn', $this->fqdn]);
         $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
         $dataProvider->setSort([
+            'defaultOrder' => ['created_at'=>SORT_DESC, 'player_id'=>SORT_ASC,'target_id'=>SORT_ASC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
