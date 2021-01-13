@@ -72,14 +72,14 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
         echo "</p>";
         Card::end();?>
       </div>
-      <div class="col-xl-4 col-lg-2 col-md-2 col-sm-12">
-        <div style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
+      <div class="col-xl-4 col-lg-2 col-md-2 col-sm-12 text-center">
           <?php if($headshot!==null && $headshot->first):?>
-            <img src="/images/1stheadshot.svg" style="width: 7vw; min-width: 120px;">
+            <img src="/images/1stheadshot.svg" class="img-fluid" style="max-height: 200px">
           <?php else:?>
+            <div style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
             <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
+          </div>
           <?php endif;?>
-        </div>
         <div class="progress">
             <div class="progress-bar <?=$target->progress == 100 ? 'bg-gradual-progress' : 'bg-danger text-dark'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
                 <?=$target->progress == 100 ? '#headshot' : number_format($target->progress).'%'?>
