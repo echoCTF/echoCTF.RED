@@ -18,6 +18,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $target_id
  * @property string|null $created_at
  * @property int $timer
+ * @property int $rating
  * @property boolean $first
  *
  * @property Player $player
@@ -75,7 +76,8 @@ class Headshot extends \yii\db\ActiveRecord
     {
         return [
             [['player_id', 'target_id'], 'required'],
-            [['player_id', 'target_id', 'timer'], 'integer'],
+            [['player_id', 'target_id', 'timer','rating'], 'integer'],
+            [['rating'], 'default','value'=>-1],
             [['first'], 'boolean'],
             [['created_at', 'timer'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
