@@ -18,6 +18,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $target_id
  * @property string|null $created_at
  * @property int $timer
+ * @property boolean $first
  *
  * @property Player $player
  * @property Target $target
@@ -36,6 +37,7 @@ class Headshot extends \yii\db\ActiveRecord
                   'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                   'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                   'timer' =>  AttributeTypecastBehavior::TYPE_INTEGER,
+                  'first' =>  AttributeTypecastBehavior::TYPE_BOOLEAN,
               ],
               'typecastAfterValidate' => true,
               'typecastBeforeSave' => true,
@@ -65,6 +67,7 @@ class Headshot extends \yii\db\ActiveRecord
         return [
             [['player_id', 'target_id'], 'required'],
             [['player_id', 'target_id', 'timer'], 'integer'],
+            [['first'], 'boolean'],
             [['created_at', 'timer'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -82,6 +85,7 @@ class Headshot extends \yii\db\ActiveRecord
             'target_id' => Yii::t('app', 'Target ID'),
             'created_at' => Yii::t('app', 'Created At'),
             'timer' => Yii::t('app', 'Timer'),
+            'first' => Yii::t('app', 'First'),
         ];
     }
 
