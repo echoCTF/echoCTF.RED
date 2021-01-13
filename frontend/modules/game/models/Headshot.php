@@ -27,6 +27,15 @@ use yii\behaviors\AttributeTypecastBehavior;
 class Headshot extends \yii\db\ActiveRecord
 {
   public $average=0;
+  public $difficulties=[
+    "beginner",
+    "basic",
+    "intermediate",
+    "advanced",
+    "expert",
+    "guru",
+    "insane",
+  ];
 
   public function behaviors()
   {
@@ -127,4 +136,13 @@ class Headshot extends \yii\db\ActiveRecord
         throw new \LogicException("Saving is disabled for this model.");
     }
 
+    /**
+     * Return rating name instead of number
+     * @return string|null the rating name
+     */
+    public function getRated()
+    {
+      if($this->rating<0) return null;
+      return $this->difficulties[$this->rating];
+    }
 }
