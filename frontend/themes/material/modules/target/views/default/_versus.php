@@ -74,10 +74,10 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
       </div>
       <div class="col-xl-4 col-lg-2 col-md-2 col-sm-12">
         <div style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
-          <?php if($headshot!==null && !$headshot->first):?>
-            <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
-          <?php else:?>
+          <?php if($headshot!==null && $headshot->first):?>
             <img src="/images/1stheadshot.svg" style="width: 7vw; min-width: 120px;">
+          <?php else:?>
+            <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
           <?php endif;?>
         </div>
         <div class="progress">
