@@ -20,6 +20,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $timer
  * @property int $rating
  * @property boolean $first
+ * @property string|null $rated
  *
  * @property Player $player
  * @property Target $target
