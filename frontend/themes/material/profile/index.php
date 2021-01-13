@@ -90,7 +90,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
         <div class="iconic-card">
           <img align="right" src="<?=$headshot->target->thumbnail?>"/>
           <p><b><?=Html::a(
-                      $headshot->target->name.' / '.long2ip($headshot->target->ip) ,
+                      ($headshot->first ? '<small><abbr title="1st headshot">1st</abbr></small> ' : ''). $headshot->target->name.' / '.long2ip($headshot->target->ip),
                         Url::to(['/target/default/versus', 'id'=>$headshot->target_id, 'profile_id'=>$profile->id]),
                         [
                           'style'=>'float: bottom;',
@@ -98,7 +98,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
                           'aria-label'=>'View target vs player card',
                           'data-pjax' => '0',
                         ]
-                    );?></b> <?php if($headshot->first):?><img src="/images/headshot.svg" width="30px" title="First Headshot" alt="First Headshot"><?php endif;?></p>
+                    );?></b></p>
           <p><b><i class="far fa-calendar-alt text-warning"></i> <?=\Yii::$app->formatter->asDate($headshot->created_at,'long')?></b><br/>
             <?php if($headshot->writeup):?><b><i class="fas fa-book text-secondary"></i> Writeup submitted<?=$headshot->writeup->approved? '': ' ('.$headshot->writeup->status.')'?></b><br/><?php endif;?>
           <i class="fas fa-stopwatch text-danger"></i> <?=\Yii::$app->formatter->asDuration($headshot->timer)?>
