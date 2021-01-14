@@ -13,7 +13,7 @@ class m210114_095711_create_tbi_challenge_solver_trigger extends Migration
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
     END IF;
-    IF (SELECT count(*) FROM challenge_solver WHERE target_id=NEW.target_id)=0 THEN
+    IF (SELECT count(*) FROM challenge_solver WHERE challenge_id=NEW.challenge_id)=0 THEN
       SET NEW.first=1;
     END IF;
   END";
