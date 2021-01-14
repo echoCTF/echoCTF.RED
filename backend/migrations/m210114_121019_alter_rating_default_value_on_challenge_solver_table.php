@@ -12,7 +12,8 @@ class m210114_121019_alter_rating_default_value_on_challenge_solver_table extend
      */
     public function safeUp()
     {
-      $this->alterColumn('challenge_solver', 'rating', $this->integer()->defaultValue(-1));
+      $this->alterColumn('challenge_solver', 'rating', $this->smallInteger()->notNull()->defaultValue(-1));
+      $this->update('challenge_solver',['rating'=>-1]);
     }
 
     /**
@@ -20,6 +21,8 @@ class m210114_121019_alter_rating_default_value_on_challenge_solver_table extend
      */
     public function safeDown()
     {
-      $this->alterColumn('challenge_solver', 'rating', $this->integer()->defaultValue(null));
+      $this->alterColumn('challenge_solver', 'rating', $this->integer());
+      $this->update('challenge_solver',['rating'=>null]);
+
     }
 }
