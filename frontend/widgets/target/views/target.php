@@ -21,7 +21,7 @@ echo GridView::widget([
     },
     'pager'=>[
       'class'=>'yii\bootstrap4\LinkPager',
-      'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+      'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link','rel'=>'nofollow'],
       'options'=>['id'=>'target-pager', 'class'=>'align-middle'],
       'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
       'lastPageLabel' => '<i class="fas fa-step-forward"></i>',

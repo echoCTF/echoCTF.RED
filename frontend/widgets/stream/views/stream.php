@@ -8,7 +8,7 @@ echo ListView::widget([
     'pager'=>[
       'class'=>'yii\bootstrap4\LinkPager',
       'options'=>$pagerOptions,
-      'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+      'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link','rel'=>'nofollow'],
       'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
       'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
       'maxButtonCount'=>3,
