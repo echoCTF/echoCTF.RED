@@ -22,12 +22,12 @@ use app\modules\game\models\Headshot;
       <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id], 'https'), ['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
             'message'=>sprintf('Checkout my profile at echoCTF.RED! %s', $profile->braggingRights),
             'url'=>Url::to(['profile/index', 'id'=>$profile->id], 'https'),
-            'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;'],
+            'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;', 'rel'=>'noopener noreferrer nofollow'],
         ]);?>
     <?php else: ?>
       <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id], 'https'), ['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
             'message'=>sprintf('Checkout the profile of %s at echoCTF.RED', $profile->twitterHandle),
-            'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;'],
+            'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;','rel'=>'noopener noreferrer nofollow'],
         ]);?>
     <?php endif;?>
     <ul class="nav flex-column">
@@ -44,11 +44,11 @@ use app\modules\game\models\Headshot;
           <li class="nav-item text-left"><strong><i class="fas fa-globe"></i> Country</strong> <span class="pull-right"><?=$profile->rCountry->name?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-calendar-check"></i> Joined</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->owner->created))?></span></li>
           <li class="nav-item text-left"><strong><i class="far fa-calendar-alt"></i> Last seen</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->last->on_pui))?></span></li>
-          <li class="nav-item text-center" style="font-size: 2.3em"><?php if(trim($profile->twitter)):?><?=Html::a('<i class="fab fa-twitter text-twitter"></i>', "https://twitter.com/".Html::encode($profile->twitter), ['target'=>'_blank','title'=>"Twitter profile"])?><?php endif;?>
-          <?php if(trim($profile->github)):?><?=Html::a('<i class="fab fa-github text-github"></i>', "https://github.com/".Html::encode($profile->github), ['target'=>'_blank','title'=>"Github profile"])?><?php endif;?>
-          <?php if(trim($profile->htb)):?><?=Html::a('<i class="fab fa-codepen text-primary"></i>', "https://www.hackthebox.eu/profile/".Html::encode($profile->htb), ['target'=>'_blank','title'=>"HTB profile"])?><?php endif;?>
-          <?php if(trim($profile->twitch)):?><?=Html::a('<i class="fab fa-twitch text-twitch"></i>', "https://twitch.tv/".Html::encode($profile->twitch), ['target'=>'_blank','title'=>"TwitchTV Channel"])?><?php endif;?>
-          <?php if(trim($profile->youtube)):?><?=Html::a('<i class="fab fa-youtube text-youtube"></i>', "https://youtube.com/channel/".Html::encode($profile->youtube), ['target'=>'_blank','title'=>"Youtube channel"])?><?php endif;?>
+          <li class="nav-item text-center" style="font-size: 2.3em"><?php if(trim($profile->twitter)):?><?=Html::a('<i class="fab fa-twitter text-twitter"></i>', "https://twitter.com/".Html::encode($profile->twitter), ['target'=>'_blank','title'=>"Twitter profile",'rel'=>'noopener noreferrer nofollow'])?><?php endif;?>
+          <?php if(trim($profile->github)):?><?=Html::a('<i class="fab fa-github text-github"></i>', "https://github.com/".Html::encode($profile->github), ['target'=>'_blank','title'=>"Github profile",'rel'=>'noopener noreferrer nofollow'])?><?php endif;?>
+          <?php if(trim($profile->htb)):?><?=Html::a('<i class="fab fa-codepen text-primary"></i>', "https://www.hackthebox.eu/profile/".Html::encode($profile->htb), ['target'=>'_blank','title'=>"HTB profile",'rel'=>'noopener noreferrer nofollow'])?><?php endif;?>
+          <?php if(trim($profile->twitch)):?><?=Html::a('<i class="fab fa-twitch text-twitch"></i>', "https://twitch.tv/".Html::encode($profile->twitch), ['target'=>'_blank','title'=>"TwitchTV Channel",'rel'=>'noopener noreferrer nofollow'])?><?php endif;?>
+          <?php if(trim($profile->youtube)):?><?=Html::a('<i class="fab fa-youtube text-youtube"></i>', "https://youtube.com/channel/".Html::encode($profile->youtube), ['target'=>'_blank','title'=>"Youtube channel",'rel'=>'noopener noreferrer nofollow'])?><?php endif;?>
         </li>
 
       </ul>
