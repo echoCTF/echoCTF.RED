@@ -12,7 +12,7 @@ class m210114_095633_add_first_column_to_challenge_solver_table extends Migratio
      */
     public function safeUp()
     {
-        $this->addColumn('{{%challenge_solver}}', 'first', $this->bollean()->defaultValue(0));
+        $this->addColumn('{{%challenge_solver}}', 'first', $this->boolean()->defaultValue(0));
     }
 
     /**
