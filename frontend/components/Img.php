@@ -58,6 +58,7 @@ class Img extends Component
         imagestring($image, 6, 200, $lineheight*$i++, sprintf("rank.........: %s",$profile->rank->ordinalPlace),$greencolor);
         imagestring($image, 6, 200, $lineheight*$i++, sprintf("level........: %d / %s",$profile->experience->id, $profile->experience->name),$greencolor);
         imagestring($image, 6, 200, $lineheight*$i++, sprintf("flags........: %d", $profile->totalTreasures),$greencolor);
+        imagestring($image, 6, 200, $lineheight*$i++, sprintf("challenges...: %d / %d first",$profile->challengesSolverCount, $profile->firstChallengeSolversCount),$greencolor);
         imagestring($image, 6, 200, $lineheight*$i++, sprintf("headshots....: %d / %d first",$profile->headshotsCount, $profile->firstHeadshotsCount),$greencolor);
         imagedestroy($avatar);
         imagedestroy($cover);
