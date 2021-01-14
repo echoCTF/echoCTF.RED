@@ -222,6 +222,7 @@ $config=[
                 // app/controllers/DashboardController.php
                 'dashboard' => 'dashboard/index',
                 // HELP MODULE
+                'help' => 'help/default/index',
                 'faq' => 'help/faq/index',
                 'help/faq' => 'help/faq/index',
                 'rules' => 'help/rule/index',

@@ -22,9 +22,10 @@ class Menu
                     ['label' => 'Networks', 'icon'=>'cloud','url' => ['/network/default/index'],'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('network/default/index'),'active'=>\Yii::$app->controller->module->id=="network"],
                     ['label' => 'Leaderboards', 'icon'=>'format_list_numbered', 'url' => ['/game/leaderboards/index'], 'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('/game/leaderboards/index')],
                     ['label' => 'Tutorials', 'icon'=>'developer_board','url' => ['/tutorial/default/index'],'visible'=>!Yii::$app->user->isGuest && Yii::$app->DisabledRoute->enabled('tutorial/default/index'),'active'=>\Yii::$app->controller->module->id=="tutorial"],
-                    ['label' => 'Rules','icon'=>'list_alt', 'url' => ['/help/rule/index'], 'visible'=>Yii::$app->DisabledRoute->enabled('help/rule/index')],
-                    ['label' => 'Instructions', 'icon'=>'info', 'url' => ['/help/instruction/index'], 'visible'=>Yii::$app->DisabledRoute->enabled('help/instruction/index')],
-                    ['label' => 'FAQ', 'icon'=>'help', 'url' => ['/help/faq/index'], 'visible'=>Yii::$app->DisabledRoute->enabled('help/faq/index')],
+                    ['label' => 'Help', 'icon'=>'help','url' => ['/help/default/index'],'visible'=>Yii::$app->DisabledRoute->enabled('help/default/inde'),'active'=>\Yii::$app->controller->module->id=="help"],
+//                    ['label' => 'Rules','icon'=>'list_alt', 'url' => ['/help/rule/index'], 'visible'=>Yii::$app->DisabledRoute->enabled('help/rule/index')],
+//                    ['label' => 'Instructions', 'icon'=>'info', 'url' => ['/help/instruction/index'], 'visible'=>Yii::$app->DisabledRoute->enabled('help/instruction/index')],
+//                    ['label' => 'FAQ', 'icon'=>'help', 'url' => ['/help/faq/index'], 'visible'=>Yii::$app->DisabledRoute->enabled('help/faq/index')],
                     ['label' => 'Changelog', 'icon'=>'assignment','url' => ['/site/changelog'], 'visible'=>Yii::$app->DisabledRoute->enabled('site/changelog')],
                 ]
             ]
