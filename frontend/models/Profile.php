@@ -43,6 +43,7 @@ use app\modules\target\models\Writeup;
  * @property Score $score
  * @property Rank $rank
  * @property HeadshotsCount $headshotsCount
+ * @property FirstHeadshotsCount $firstHeadshotsCount
  * @property Experience $experience
  * @property TotalTreasures $totalTreasures
 */
@@ -119,6 +120,9 @@ class Profile extends ProfileAR
 
     public function getHeadshotsCount():int {
       return (int) $this->hasMany(Headshot::class, ['player_id' => 'player_id'])->count();
+    }
+    public function getFirstHeadshotsCount():int {
+      return (int) $this->hasMany(Headshot::class, ['player_id' => 'player_id'])->where(['first'=>1])->count();
     }
 
     public function getIsMine():bool

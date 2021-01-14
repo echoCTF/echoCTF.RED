@@ -20,7 +20,7 @@ class HeadshotSearch extends Headshot
     public function rules()
     {
         return [
-            [['player_id', 'target_id'], 'integer'],
+            [['player_id', 'target_id','timer','first','rating'], 'integer'],
             [['created_at', 'username', 'fqdn', 'ipoctet'], 'safe'],
         ];
     }
@@ -64,12 +64,14 @@ class HeadshotSearch extends Headshot
         $query->andFilterWhere([
             'player_id' => $this->player_id,
             'target_id' => $this->target_id,
+            'first' => $this->first,
             'created_at' => $this->created_at,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $query->andFilterWhere(['like', 'target.fqdn', $this->fqdn]);
         $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
         $dataProvider->setSort([
+            'defaultOrder' => ['created_at'=>SORT_DESC, 'player_id'=>SORT_ASC,'target_id'=>SORT_ASC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
