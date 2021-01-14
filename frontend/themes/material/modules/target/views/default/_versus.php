@@ -110,7 +110,7 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
                           'alt'=>'View or update your writeup for this target'
                       ])?></div>
         <div class="col">
-          <?=VoteWidget::widget(['model'=>$headshot]);?>
+          <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>'/game/default/rate-headshot']);?>
         </div>
 
         </div>
