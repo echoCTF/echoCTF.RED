@@ -39,6 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'timer',
             'rating',
+            'first',
             'created_at:datetime',
 
             ['class' => 'yii\grid\ActionColumn'],

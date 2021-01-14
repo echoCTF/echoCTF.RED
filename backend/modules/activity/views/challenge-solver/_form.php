@@ -23,6 +23,7 @@ use app\modules\gameplay\models\Challenge;
     <?= $form->field($model, 'timer')->textInput() ?>
 
     <?= $form->field($model, 'rating')->textInput() ?>
+    <?= $form->field($model, 'first')->textInput() ?>
 
     <div class="form-group">
       <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'value'=>'save', 'name'=>'submit[]','id'=>'saveBtn']) ?>
