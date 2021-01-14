@@ -95,6 +95,7 @@ class DefaultController extends \app\components\BaseController
         {
           Yii::$app->session->setFlash('error','Invalid answer...');
         }
+        return $this->redirect(['view','id'=>$model->id]);
       }
       $solver=ChallengeSolver::findOne(['challenge_id'=>$id,'player_id'=>Yii::$app->user->id]);
       $answer->answer=null;
