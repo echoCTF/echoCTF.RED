@@ -4,7 +4,7 @@ use app\widgets\Card;
 use app\widgets\target\TargetWidget;
 use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
-$this->_fluid="-fluid";
+//$this->_fluid="-fluid";
 $this->title=Yii::$app->sys->event_name.' Dashboard';
 $this->_description="The echoCTF dashboard page";
 ?>
@@ -18,7 +18,7 @@ $this->_description="The echoCTF dashboard page";
                 'type'=>'card-stats',
                 'icon'=>'<i class="fas fa-flag"></i>',
                 'color'=>'primary',
-                'title'=>number_format($treasureStats->claims) /*sprintf('%d / %d', $treasureStats->claimed, $treasureStats->total)*/,
+                'title'=>number_format($dashboardStats->claims) /*sprintf('%d / %d', $treasureStats->claimed, $treasureStats->total)*/,
                 'subtitle'=>'Flag Claims',
                 'footer'=>'<div class="stats"></div>',
             ]);Card::end();?>
@@ -29,7 +29,7 @@ $this->_description="The echoCTF dashboard page";
                 'type'=>'card-stats',
                 'icon'=>'<i class="fas fa-globe"></i>',
                 'color'=>'danger',
-                'title'=>sprintf('%d', $totalHeadshots),
+                'title'=>sprintf('%d', $dashboardStats->countries),
                 'subtitle'=>'Countries',
                 'footer'=>'<div class="stats"></div>',
             ]);Card::end();?>
@@ -55,6 +55,23 @@ $this->_description="The echoCTF dashboard page";
                 'subtitle'=>'Users',
                 'footer'=>'<div class="stats"></div>',
             ]);Card::end();?>
+        </div>
+
+        <div class="col-md-6">
+          <div class="card card-chart">
+            <div class="card-header card-header-danger">
+              <div class="ct-chart"></div>
+            </div>
+            <div class="card-body">
+              <h4 class="card-title">Completed Tasks</h4>
+              <p class="card-category">Last Campaign Performance</p>
+            </div>
+            <div class="card-footer">
+              <div class="stats">
+                <i class="material-icons">access_time</i> campaign sent 2 days ago
+              </div>
+            </div>
+          </div>
         </div>
     </div>
 
