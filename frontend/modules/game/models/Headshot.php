@@ -48,6 +48,7 @@ class Headshot extends \yii\db\ActiveRecord
                   'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                   'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                   'timer' =>  AttributeTypecastBehavior::TYPE_INTEGER,
+                  'rating'=>  AttributeTypecastBehavior::TYPE_INTEGER,
                   'first' =>  AttributeTypecastBehavior::TYPE_BOOLEAN,
               ],
               'typecastAfterValidate' => true,
