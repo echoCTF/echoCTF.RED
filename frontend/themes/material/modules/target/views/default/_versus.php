@@ -127,7 +127,7 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
             'footer'=>sprintf('<div class="stats">%s %s</div>', Twitter::widget([
                             'message'=>$twmsg,
                             /*'url'=>Url::to(['/target/default/view'*,'id'=>$target->id],'https'),*/
-                            'linkOptions'=>['class'=>'target-view-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.4em;'],
+                            'linkOptions'=>['class'=>'target-view-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.4em;', 'rel'=>'noopener noreferrer nofollow'],
                         ]), Html::encode($identity->bio)),
         ]);
         echo "<p class='text-primary '><i class='fas fa-flag-checkered'></i> ", $target->player_treasures, ": Flags found<br/>";
