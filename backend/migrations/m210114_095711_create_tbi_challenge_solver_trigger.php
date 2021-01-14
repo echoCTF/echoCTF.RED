@@ -3,17 +3,17 @@
 use yii\db\Migration;
 
 /**
- * Class m210112_211428_create_tbi_headshot_trigger
+ * Class m210114_095711_create_tbi_challenge_solver_trigger
  */
-class m210112_211428_create_tbi_headshot_trigger extends Migration
+class m210114_095711_create_tbi_challenge_solver_trigger extends Migration
 {
-  public $DROP_SQL="DROP TRIGGER IF EXISTS {{%tbi_headshot}}";
-  public $CREATE_SQL="CREATE TRIGGER {{%tbi_headshot}} BEFORE INSERT ON {{%headshot}} FOR EACH ROW
+  public $DROP_SQL="DROP TRIGGER IF EXISTS {{%tbi_challenge_solver}}";
+  public $CREATE_SQL="CREATE TRIGGER {{%tbi_challenge_solver}} BEFORE INSERT ON {{%challenge_solver}} FOR EACH ROW
   thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
     END IF;
-    IF (SELECT count(*) FROM headshot WHERE target_id=NEW.target_id)=0 THEN
+    IF (SELECT count(*) FROM challenge_solver WHERE challenge_id=NEW.challenge_id)=0 THEN
       SET NEW.first=1;
     END IF;
   END";

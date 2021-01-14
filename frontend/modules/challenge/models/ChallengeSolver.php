@@ -5,6 +5,7 @@ namespace app\modules\challenge\models;
 use Yii;
 use app\models\Player;
 use yii\behaviors\AttributeTypecastBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "player_question".
@@ -14,6 +15,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int|null $player_id
  * @property float|null $points
  * @property int $timer
+ * @property int|null $rating
+ * @property boolean $first
  * @property string $ts
  *
  * @property Challenge[] $challenge
@@ -29,6 +32,25 @@ class ChallengeSolver extends \yii\db\ActiveRecord
         return 'challenge_solver';
     }
 
+    public function behaviors()
+    {
+        return [
+            'typecast' => [
+                'class' => AttributeTypecastBehavior::class,
+                'attributeTypes' => [
+                    'challenge_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'timer' =>  AttributeTypecastBehavior::TYPE_INTEGER,
+                    'rating' =>  AttributeTypecastBehavior::TYPE_INTEGER,
+                    'first' =>  AttributeTypecastBehavior::TYPE_BOOLEAN,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => true,
+                'typecastAfterFind' => true,
+          ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -38,6 +60,8 @@ class ChallengeSolver extends \yii\db\ActiveRecord
             [['challenge_id','player_id'], 'required'],
             [['challenge_id', 'player_id'], 'integer'],
             [['timer','rating'], 'integer'],
+            [['rating'], 'default','value'=>-1],
+            [['first'], 'boolean'],
             [['crated_at'], 'safe'],
             [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::class, 'targetAttribute' => ['challenge_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],

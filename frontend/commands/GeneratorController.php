@@ -5,6 +5,7 @@ use yii\console\Controller;
 use yii\console\ExitCode;
 use app\modules\target\models\Target;
 use app\models\Player;
+use app\models\Stream;
 
 class GeneratorController extends Controller {
 
@@ -55,7 +56,7 @@ class GeneratorController extends Controller {
       }
     }
 
-    public function actionBadges($owner=0)
+    public function actionAllBadges($owner=0)
     {
       $players=Player::find()->active()->all();
       foreach($players as $player)
@@ -67,6 +68,30 @@ class GeneratorController extends Controller {
         imagedestroy($image);
       }
     }
+
+    public function actionBadges($owner=0)
+    {
+      $streamPlayers=Stream::find()->select(['player_id'])->distinct()->where(['>=','ts',new \yii\db\Expression('NOW() - INTERVAL 26 HOUR')]);
+      foreach($streamPlayers->all() as $item)
+      {
+        echo "Processing user: ",$item->player->username;
+        $avatarPath=\Yii::getAlias('@app/web/images/avatars').'/'.$item->player->profile->id.'.png';
+        if(file_exists($avatarPath))
+        {
+          $image=\app\components\Img::profile($item->player->profile);
+          $path=\Yii::getAlias('@app/web/images/avatars/badges/').$item->player->profile->id.'.png';
+          imagepng($image,$path);
+          chown($path, $owner);
+          imagedestroy($image);
+          echo " badge generated\n";
+        }
+        else
+        {
+          echo " failed avatar [",$avatarPath,"] not found\n";
+        }
+      }
+    }
+
 
     public function actionUrls($domain)
     {

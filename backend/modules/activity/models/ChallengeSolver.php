@@ -14,6 +14,7 @@ use app\modules\frontend\models\Player;
  * @property int|null $timer
  * @property int|null $rating
  * @property string|null $created_at
+ * @property int|null $first
  *
  * @property Challenge $challenge
  * @property Player $player
@@ -35,7 +36,7 @@ class ChallengeSolver extends \yii\db\ActiveRecord
     {
         return [
             [['challenge_id', 'player_id'], 'required'],
-            [['challenge_id', 'player_id', 'timer', 'rating'], 'integer'],
+            [['challenge_id', 'player_id', 'timer', 'rating','first'], 'integer'],
             [['created_at'], 'safe'],
             [['challenge_id', 'player_id'], 'unique', 'targetAttribute' => ['challenge_id', 'player_id']],
             [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::class, 'targetAttribute' => ['challenge_id' => 'id']],
@@ -53,6 +54,7 @@ class ChallengeSolver extends \yii\db\ActiveRecord
             'player_id' => 'Player ID',
             'timer' => 'Timer',
             'rating' => 'Rating',
+            'first' => 'First',
             'created_at' => 'Created At',
         ];
     }

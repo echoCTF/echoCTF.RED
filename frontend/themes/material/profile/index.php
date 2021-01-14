@@ -61,7 +61,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
           <div class="col col-sm-6 col-md-6 col-lg-6 col-xl-3">
             <div class="iconic-card">
                   <?=$cs->challenge->icon?>
-                  <p><b><?=Html::a(
+                  <p><?php if($cs->first):?><img title="1st solver of the challenge" alt="1st solver of the challenge" align="left" src="/images/1sthelmet.svg" class="img-fluid" style="max-width: 30px"/><?php endif;?><b><?=Html::a(
                           $cs->challenge->name,
                             Url::to(['/challenge/default/view', 'id'=>$cs->challenge_id]),
                             [

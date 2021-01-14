@@ -33,6 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'player_id',
             'timer:datetime',
             'rating',
+            'first',
             'created_at',
         ],
     ]) ?>

@@ -18,7 +18,7 @@ class ChallengeSolverSearch extends ChallengeSolver
     public function rules()
     {
         return [
-            [['challenge_id', 'player_id', 'timer', 'rating'], 'integer'],
+            [['challenge_id', 'player_id', 'timer', 'rating','first'], 'integer'],
             [['created_at','username','challenge_name'], 'safe'],
         ];
     }
@@ -63,6 +63,7 @@ class ChallengeSolverSearch extends ChallengeSolver
             'player_id' => $this->player_id,
             'timer' => $this->timer,
             'rating' => $this->rating,
+            'first' => $this->first,
             'created_at' => $this->created_at,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);

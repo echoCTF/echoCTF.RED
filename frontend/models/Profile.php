@@ -8,6 +8,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\game\models\Headshot;
+use app\modules\challenge\models\ChallengeSolver;
 use app\modules\target\models\Target;
 use app\modules\target\models\Writeup;
 
@@ -123,6 +124,13 @@ class Profile extends ProfileAR
     }
     public function getFirstHeadshotsCount():int {
       return (int) $this->hasMany(Headshot::class, ['player_id' => 'player_id'])->where(['first'=>1])->count();
+    }
+    public function getChallengesSolverCount():int {
+      return (int) $this->hasMany(ChallengeSolver::class, ['player_id' => 'player_id'])->count();
+    }
+
+    public function getFirstChallengeSolversCount():int {
+      return (int) $this->hasMany(ChallengeSolver::class, ['player_id' => 'player_id'])->where(['first'=>1])->count();
     }
 
     public function getIsMine():bool

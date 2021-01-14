@@ -194,8 +194,9 @@ $config=[
                 'challenges' => 'challenge/default/index',
                 'challenge/<id:\d+>' => 'challenge/default/view',
                 'challenge/<id:\d+>/download' => 'challenge/default/download',
+                'challenge/<id:\d+>/rate' => 'game/default/rate-solver',
                 // app/modules/target/controllers/TargetController.php
-                'target/<id:\d+>/rate' => 'game/default/rate',
+                'target/<id:\d+>/rate' => 'game/default/rate-headshot',
                 'targets' => 'target/default/index',
                 'target/<id:\d+>' => 'target/default/view',
                 'target/<id:\d+>/badge' => 'target/default/badge',

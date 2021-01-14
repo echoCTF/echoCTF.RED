@@ -15,6 +15,8 @@ use yii\helpers\Html;
 class VoteWidget extends Widget
 {
     public $model;
+    public $id;
+    public $action;
     public $htmlOptions=['class'=>'vote-widget'];
     public $ratings=[
       [ 'id'=>-1, 'name' => "Not rated!", 'icon'=>null],
@@ -36,6 +38,6 @@ class VoteWidget extends Widget
     {
           // Register AssetBundle
         VoteWidgetAsset::register($this->getView());
-        return $this->render('_vote', ['model' => $this->model, 'ratings'=>$this->ratings,'htmlOptions'=>$this->htmlOptions]);
+        return $this->render('_vote', ['model' => $this->model,'id'=>$this->id,'action'=>$this->action, 'ratings'=>$this->ratings,'htmlOptions'=>$this->htmlOptions]);
     }
 }
