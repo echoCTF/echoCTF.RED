@@ -13,7 +13,7 @@ class m210112_211428_create_tbi_headshot_trigger extends Migration
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
     END IF;
-    IF (SELECT count(*) FROM headshot WHERE target_id=NEW.target_id)>0 THEN
+    IF (SELECT count(*) FROM headshot WHERE target_id=NEW.target_id)=0 THEN
       SET NEW.first=1;
     END IF;
   END";
