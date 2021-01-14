@@ -9,6 +9,7 @@ use app\modules\target\models\Treasure;
 use app\modules\game\models\Headshot;
 use app\models\PlayerTreasure;
 use app\models\PlayerScore;
+use app\models\Profile;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -40,19 +41,13 @@ class DashboardController extends \app\components\BaseController
 
     public function actionIndex()
     {
-      $command=Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
-      $command->bindValue(':player_type', 'offense');
-      $totalPoints=$command->queryScalar();
-      $treasureStats=new \stdClass();
-      $treasureStats->total=(int) Treasure::find()->count();
-      $treasureStats->claims=(int) PlayerTreasure::find()->count();
-      $treasureStats->claimed=(int) PlayerTreasure::find()->where(['player_id'=>Yii::$app->user->id])->count();
-      $totalHeadshots=Headshot::find()->count();
+      $dashboardStats=new \stdClass();
+      $dashboardStats->countries=(int) Profile::find()->select(['country'])->distinct()->count();
+      $dashboardStats->claims=(int) PlayerTreasure::find()->count();
 
       return $this->render('index', [
-          'totalPoints'=>$totalPoints,
-          'treasureStats'=>$treasureStats,
-          'totalHeadshots'=>$totalHeadshots,
+          'totalPoints'=>0,
+          'dashboardStats'=>$dashboardStats
       ]);
     }
 
