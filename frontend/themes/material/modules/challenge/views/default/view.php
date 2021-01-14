@@ -7,6 +7,7 @@ use yii\data\ActiveDataProvider;
 use yii\bootstrap\ActiveForm;
 use app\widgets\Twitter;
 use app\widgets\solver\SolverWidget;
+use app\widgets\vote\VoteWidget;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Challenge */
@@ -24,6 +25,9 @@ $first=false;
           <h3><b><?=$model->name.' (ID#'.$model->id.')'?> <?php if($model->completed):?><i class="fas fa-check-double"></i> <?=Twitter::widget(['message'=>'Hey check this out, I completed the challenge '.$model->name]);?><?php else:?><?=Twitter::widget(['message'=>'I currently grinding the challenge '.$model->name]);?><?php endif;?></b></h3>
           <h4><?=Html::encode($model->category);?> / <?=Html::encode($model->difficulty)?> / <?=Html::encode(number_format($model->points));?>pts</h4>
           <?=trim($model->filename) !== '' ? '<h4><b>Challenge file:</b> '.Html::a($model->filename, ['/uploads/'.$model->filename], ['data-pjax'=>"0"]).'</h4>' : ''?>
+          <?php if($model->completed):?>
+          <div class="col-xl-4 col-sm-6"><?=VoteWidget::widget(['model'=>$solver,'id'=>$model->id,'action'=>'/game/default/rate-solver']);?></div>
+          <?php endif;?>
           <p><?=$model->description;?></p>
         </div>
         <div id="accordion">
