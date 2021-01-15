@@ -30,7 +30,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'active')->checkbox()->hint('Whether the player is active or not') ?>
 
-    <?= $form->field($model, 'status')->dropDownList(['0' => 'Disabled', '9' => 'Banned', '10' => 'Enabled'], ['prompt' => 'Choose player status'])->hint('Account status') ?>
+    <?= $form->field($model, 'status')->dropDownList(['0' => 'DELETED', '8'=>'UNVERIFIED', '9' => 'DISABLED', '10' => 'ENABLED'], ['prompt' => 'Choose player status'])->hint('Account status') ?>
 
 
     <div class="form-group">
