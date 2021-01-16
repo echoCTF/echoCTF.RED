@@ -1,3 +1,4 @@
+set ruleset-optimization none
 set optimization aggressive
 set block-policy return
 set limit states 9000000
@@ -24,7 +25,7 @@ match on tun from <offense_activated> tag OFFENSE_REGISTERED
 
 block return quick to { 239.255.255.250, 224/8 }
 block return log
-block quick from <banned>
+block drop in log quick from <banned>
 pass quick from <administrators> label "administrators"
 pass quick from (self) label "selforigin"
 
