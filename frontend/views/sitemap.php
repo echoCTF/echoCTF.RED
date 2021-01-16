@@ -10,17 +10,21 @@
 <?php foreach($targets as $target):?>
    <url>
       <loc><?=$BASEURL?>target/<?=$target->id?></loc>
+      <lastmod><?=$target->ts?></lastmod>
       <changefreq>weekly</changefreq>
    </url>
 <?php endforeach;?>
 <!-- /TARGETS -->
 
 <!-- PROFILES -->
-<?php foreach($profiles as $profile):?>
+<?php foreach($players as $player):?>
+<?php if($player->profile->visibility==="public"):?>
 <url>
-   <loc><?=$BASEURL?>profile/<?=$profile->id?></loc>
+   <loc><?=$BASEURL?>profile/<?=$player->profile->id?></loc>
+   <lastmod><?=$player->profile->updated_at?></lastmod>
    <changefreq>weekly</changefreq>
 </url>
+<?php endif;?>
 <?php endforeach;?>
 <!-- /PROFILES -->
 
