@@ -16,7 +16,7 @@ use app\modules\game\models\Badge;
  */
 class Stream extends StreamAR
 {
-
+  public $twitter=false;
   const MODEL_ICONS=[
     'headshot'=>'<i class="fas fa-skull" style="color: #FF1A00;font-size: 1.5em;" data-toggle="tooltip" title="Target Headshot"></i>',
     'challenge'=>'<i class="fas fa-tasks" style="color: #FF1A00; font-size: 1.5em;" data-toggle="tooltip" title="Challenge Solve"></i>',
@@ -38,6 +38,13 @@ class Stream extends StreamAR
 
   public function getPrefix()
   {
+    if($this->twitter)
+    {
+      if($this->player->profile->isMine)
+        return "I";
+
+      return sprintf("%s", $this->player->profile->twitterHandle);
+    }
     return sprintf("<img src='/images/avatars/%s' class='rounded' width='25px'> <b>%s</b> %s", $this->player->profile->avtr,$this->player->profile->link,$this->icon);
   }
 
@@ -45,6 +52,7 @@ class Stream extends StreamAR
   {
     return $this->pub ? $this->pubtitle : $this->title;
   }
+
 
   public function getFormatted(bool $pub=true)
   {
@@ -62,17 +70,20 @@ class Stream extends StreamAR
 
   public function getBadgeMessage()
   {
-      return sprintf("%s got the badge [<code>%s</code>]%s", $this->prefix, Badge::findOne(['id'=>$this->model_id])->name, $this->suffix);
+    return sprintf("%s got the badge [<code>%s</code>]%s", $this->prefix, Badge::findOne(['id'=>$this->model_id])->name, $this->suffix);
   }
 
 
   public function getHeadshotMessage()
   {
     $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$this->model_id, 'player_id'=>$this->player_id]);
+    $first="";
+    if($headshot->first)
+      $first=" first,";
     if($headshot->target->timer===0 || $headshot->timer===0)
-      return sprintf("%s managed to headshot [<code>%s</code>]%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
+      return sprintf("%s managed to headshot [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to headshot [<code>%s</code>] in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
+    return sprintf("%s managed to headshot [<code>%s</code>]$first in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
   }
 
   public function getChallengeMessage()
