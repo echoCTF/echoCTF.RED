@@ -1,6 +1,10 @@
 Sitemap: https://echoCTF.RED/sitemap.xml
+# 3 day delay
+User-agent: AhrefsBot
+Crawl-Delay: 259200
+# all others 1 day
 User-agent: *
-Crawl-delay: 10
+Crawl-delay: 86400
 # generic
 Disallow: /assets/
 Disallow: /challenge/
