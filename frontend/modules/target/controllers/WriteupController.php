@@ -156,6 +156,15 @@ class WriteupController extends \app\components\BaseController
           return $this->redirect(['default/view','id'=>$id]);
         }
 
+        try {
+          $this->module->checkNetwork($writeups->one()->target);
+        }
+        catch(\Throwable $e)
+        {
+          Yii::$app->session->setFlash('error', 'Failed to activate writeups for this target. You dont have access to this network.');
+          return $this->redirect(['default/view','id'=>$id]);
+        }
+
         $connection=Yii::$app->db;
         $transaction=$connection->beginTransaction();
         try
