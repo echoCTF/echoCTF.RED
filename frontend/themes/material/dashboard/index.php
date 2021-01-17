@@ -7,6 +7,9 @@ use app\widgets\stream\StreamWidget as Stream;
 //$this->_fluid="-fluid";
 $this->title=Yii::$app->sys->event_name.' Dashboard';
 $this->_description="The echoCTF dashboard page";
+$this->registerJsFile('/js/plugins/chartist.min.js',['possition'=>3]);
+$this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['possition'=>3]);
+
 ?>
 
 <div class="dashboard-index">
@@ -114,6 +117,13 @@ $this->_description="The echoCTF dashboard page";
 
     </div>
 
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-img-top ct-chart ct-perfect-fourth"></div>
+        </div>
+      </div>
+    </div>
 
     <div class="row">
       <div class="col">
@@ -126,3 +136,29 @@ $this->_description="The echoCTF dashboard page";
     </div><!-- //row -->
   </div><!-- //body-content -->
 </div>
+<?php
+$this->registerJs(
+    "var data = {
+      labels: [".implode($dayActivity['labels'],",")."],
+      series: [
+        [".implode($dayActivity['playerSeries'],",")."],
+        [".implode($dayActivity['overallSeries'],",")."],
+      ]
+    };
+    new Chartist.Line('.ct-chart', data, {
+  fullWidth: true,
+  height: '400px',
+  chartPadding: {
+    right: 40,
+    top: 10,
+    left: 40
+  }, plugins: [
+        Chartist.plugins.legend({
+            legendNames: ['Overall', 'Yours'],
+        })
+    ]
+
+});
+",
+    4
+);
