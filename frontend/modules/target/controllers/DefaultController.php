@@ -229,7 +229,14 @@ class DefaultController extends \app\components\BaseController
           Yii::$app->session->setFlash('error', sprintf('Flag [<strong>%s</strong>] does not exist!', Html::encode($string)));
           return $this->renderAjax('claim');
         }
-
+        try {
+          $this->module->checkNetwork($treasure->target);
+        }
+        catch(\Throwable $e)
+        {
+          Yii::$app->session->setFlash('error', 'You cannot claim this flag. You dont have access to this network.');
+          return $this->renderAjax('claim');
+        }
         $this->doClaim($treasure);
         return $this->renderAjax('claim');
     }
@@ -302,6 +309,7 @@ class DefaultController extends \app\components\BaseController
 
         throw new NotFoundHttpException('The requested target does not exist.');
     }
+
     protected function findProfile($id)
     {
         if(($model=\app\models\Profile::findOne($id)) !== null)
@@ -311,11 +319,13 @@ class DefaultController extends \app\components\BaseController
 
         throw new NotFoundHttpException('The requested profile does not exist.');
     }
+
     protected function checkVisible($profile)
     {
       if(!$profile->visible)
           return $this->redirect(['/']);
     }
+
     protected function doClaim($treasure)
     {
       $connection=Yii::$app->db;
