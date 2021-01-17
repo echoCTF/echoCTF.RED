@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][]=$this->title;
 
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Generate', ['generate', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
         <?= Html::a('Spin', ['spin', 'id' => $model->id], [
             'class' => 'btn btn-warning',
             'data' => [
@@ -61,6 +62,7 @@ $this->params['breadcrumbs'][]=$this->title;
               'attribute'=>'network.name'
             ],
             'difficulty',
+            'category',
             'required_xp',
             'suggested_xp',
             'timer:boolean',

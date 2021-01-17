@@ -23,7 +23,7 @@ class TargetController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'create', 'update', 'view', 'test'],
+                'only' => ['index', 'create', 'update', 'view', 'generate'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -55,6 +55,20 @@ class TargetController extends Controller
             'dataProvider' => $dataProvider,
         ]);
     }
+
+    /**
+     * Generate a single Target build files.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionGenerate($id)
+    {
+        return $this->render('generate', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
 
     /**
      * Displays a single Target model.
