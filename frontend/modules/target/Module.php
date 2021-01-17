@@ -2,6 +2,9 @@
 
 namespace app\modules\target;
 
+use app\modules\network\models\NetworkPlayer;
+use \yii\web\NotFoundHttpException;
+
 /**
  * target module definition class
  */
@@ -21,4 +24,11 @@ class Module extends \yii\base\Module
 
         // custom initialization code goes here
     }
+
+    public function checkNetwork($target)
+    {
+      if($target->network !== null && NetworkPlayer::findOne($target->network->id,\Yii::$app->user->id) === null)
+        throw new NotFoundHttpException('You dont have access to this network target.');
+    }
+
 }
