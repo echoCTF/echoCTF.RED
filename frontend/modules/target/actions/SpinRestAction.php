@@ -18,7 +18,9 @@ class SpinRestAction extends \yii\rest\ViewAction
     try
     {
       $target=$this->findModelProgres($id);
-      $this->checkNetwork($target);
+      $module = \app\modules\target\Module::getInstance();
+
+      $module->checkNetwork($target);
       $this->checkSpinable($target);
       $playerSpin=Yii::$app->user->identity->profile->spins;
       $SQ=new \app\modules\target\models\SpinQueue;
@@ -57,11 +59,7 @@ class SpinRestAction extends \yii\rest\ViewAction
     }
     throw new NotFoundHttpException('The requested target does not exist.');
   }
-  protected function checkNetwork($target)
-  {
-    if($target->network !== null && NetworkPlayer::findOne($target->network->id,\Yii::$app->user->id) === null)
-      throw new NotFoundHttpException('Not allowed to spin target. You dont have access to this network.');
-  }
+
   protected function checkSpinable($target)
   {
     if($target->spinable !== true)
