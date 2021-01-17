@@ -37,11 +37,7 @@ use yii\helpers\Url;
                     <p class="d-lg-none d-md-block">Hints</p>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHintsDropDown" id="hintsMenu">
-                    <?php if(count(Yii::$app->user->identity->pendingHints) > 0):?>
                     <?=\app\widgets\HintsWidget::widget();?>
-                    <?php else: ?>
-                      <a href="#" class="dropdown-item" title="nothing here...">nothing here...</a>
-                    <?php endif;?>
                   </div>
                 </li>
 
@@ -51,11 +47,7 @@ use yii\helpers\Url;
                     <p class="d-lg-none d-md-block">Notifications</p>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" id="notificationsMenu">
-                    <?php if(count(Yii::$app->user->identity->pendingNotifications) > 0):?>
                     <?=\app\widgets\NotificationsWidget::widget();?>
-                    <?php else: ?>
-                    <a href="#" class="dropdown-item" title="nothing here...">nothing here...</a>
-                    <?php endif;?>
                   </div>
                 </li>
               <li class="nav-item">
