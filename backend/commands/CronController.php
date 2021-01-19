@@ -34,6 +34,7 @@ class CronController extends Controller {
     $this->actionHealthcheck(true);
     $this->actionPowerups();
     $this->actionPowerdowns();
+    $this->actionOndemand();
     $this->actionOfflines();
     $this->actionPf();
   }
@@ -79,14 +80,28 @@ class CronController extends Controller {
         try
         {
           $t->target->spin();
+          if($t->target->ondemand && $t->target->ondemand->state<0)
+          {
+            $t->target->ondemand->state=1;
+            $t->target->ondemand->heartbeat=new \yii\db\Expression('NOW()');
+            $t->target->ondemand->player_id=$t->player_id;
+            $t->target->ondemand->save();
+            $notifTitle=sprintf("Target [%s] powered up", $t->target->name);
+          }
+          else
+          {
+            $notifTitle=sprintf("Target [%s] restart request completed", $t->target->name);
+          }
+
           $notif=new Notification;
           $notif->player_id=$t->player_id;
-          $notif->title=sprintf("Target [%s] restart request completed", $t->target->name);
+          $notif->title=$notifTitle;
           $notif->body=sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>", $t->target->name);
           $notif->archived=0;
           $notif->created_at=new \yii\db\Expression('NOW()');
           $notif->updated_at=new \yii\db\Expression('NOW()');
           $notif->save();
+
           $t->delete();
           echo " OK\n";
         }
@@ -126,6 +141,19 @@ class CronController extends Controller {
     }
   }
 
+  public function actionOndemand()
+  {
+    $targets=\app\modules\gameplay\models\TargetOndemand::find()->where(['state'=>1])->andWhere(['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')]);
+    foreach($targets->all() as $target)
+    {
+      printf("Target %s ", $target->target->fqdn);
+      $target->target->destroy();
+      $target->state=-1;
+      $target->heartbeat=null;
+      $target->save();
+    }
+  }
+
   public function actionOfflines()
   {
     $targets=Target::find()->offline();
@@ -148,6 +176,7 @@ class CronController extends Controller {
       $target->powerdown();
       printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
     }
+
   }
 
   /**
@@ -190,12 +219,18 @@ class CronController extends Controller {
     $targets=Target::find()->where(['active'=>true])->all();
     foreach($targets as $target)
     {
-      if($target->networkTarget === NULL)
-        $ips[]=$target->ipoctet;
-      else {
-        $networks[$target->network->codename][]=$target->ipoctet;
-        $rules[]=Pf::allowToNetwork($target);
-        $rules[]=Pf::allowToClient($target);
+      if($target->ondemand===null || ($target->ondemand && $target->ondemand->state>0))
+      {
+        if($target->networkTarget === NULL)
+        {
+          $ips[]=$target->ipoctet;
+        }
+        else
+        {
+          $networks[$target->network->codename][]=$target->ipoctet;
+          $rules[]=Pf::allowToNetwork($target);
+          $rules[]=Pf::allowToClient($target);
+        }
       }
     }
     Pf::store($base.'/targets.conf',$ips);
