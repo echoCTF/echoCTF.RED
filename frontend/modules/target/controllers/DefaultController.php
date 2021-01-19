@@ -237,6 +237,7 @@ class DefaultController extends \app\components\BaseController
           Yii::$app->session->setFlash('error', 'You cannot claim this flag. You dont have access to this network.');
           return $this->renderAjax('claim');
         }
+
         $this->doClaim($treasure);
         return $this->renderAjax('claim');
     }
@@ -341,6 +342,11 @@ class DefaultController extends \app\components\BaseController
           $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
         }
         $transaction->commit();
+        if($treasure->target->ondemand && $treasure->target->ondemand->state>0)
+        {
+          $treasure->target->ondemand->updateAttributes(['heartbeat' => new \yii\db\Expression('NOW()')]);
+        }
+
         $PT->refresh();
         Yii::$app->session->setFlash('success', sprintf('Flag [%s] claimed for %s points', $treasure->name, number_format($PT->points)));
       }
