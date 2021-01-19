@@ -9,7 +9,6 @@ $this->title=Yii::$app->sys->event_name.' Dashboard';
 $this->_description="The echoCTF dashboard page";
 $this->registerJsFile('/js/plugins/chartist.min.js',['depends' => 'yii\web\JqueryAsset']);
 $this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['depends' => 'yii\web\JqueryAsset']);
-//$this->registerJsFile('/js/plugins/chartist-plugin-pointlabels.js',['depends' => 'yii\web\JqueryAsset']);
 
 ?>
 
@@ -138,57 +137,14 @@ $this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['depends' => 'yii
 </div>
 <?php
 $this->registerJs(
-    "var data = {
+    "dataLastDaysActivityChart = {
       labels: [".implode($dayActivity['labels'],",")."],
       series: [
         [".implode($dayActivity['playerSeries'],",")."],
         [".implode($dayActivity['overallSeries'],",")."],
       ]
     };
-    new Chartist.Line('#LastDaysActivityChart', data, {
-  low: 0,
-  onlyInteger: true,
-  fullWidth: true,
-  height: '200px',
-  chartPadding: {
-    right: 40,
-    top: 10,
-    left: 40
-  }, plugins: [
-        Chartist.plugins.legend({
-            legendNames: ['Overall activity', 'Your activity'],
-        }),
-    ]
-
-});
-",
-    4
-);
-
-$this->registerJs(
-    "var data = {
-      labels: [".implode($dayActivity['labels'],",")."],
-      series: [
-        [".implode($dayActivity['playerSeries'],",")."],
-        [".implode($dayActivity['overallSeries'],",")."],
-      ]
-    };
-    new Chartist.Line('#ActivityChart', data, {
-  low: 0,
-  onlyInteger: true,
-  fullWidth: true,
-  height: '200px',
-  chartPadding: {
-    right: 40,
-    top: 10,
-    left: 40
-  }, plugins: [
-        Chartist.plugins.legend({
-            legendNames: ['Overall activity', 'Your activity'],
-        }),
-    ]
-
-});
+    LastDaysActivityChart.update(dataLastDaysActivityChart);
 ",
     4
 );

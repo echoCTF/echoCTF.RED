@@ -15,6 +15,14 @@
 
  */
 
+var LastDaysActivityChart;
+var dataLastDaysActivityChart = {
+  labels: ['10th','11th','12th','13th','14th','15th','16th','17th','18th','19th'],
+  series: [
+            [0,0,0,0,0,0,0,0,0,0],
+  ]
+};
+
 (function() {
   isWindows = navigator.platform.indexOf('Win') > -1 ? true : false;
 
@@ -83,9 +91,7 @@ $(document).ready(function() {
     }
   });
 
-  setTimeout(function() {
     md.initDashboardPageCharts();
-  }, 500);
 
 });
 
@@ -283,7 +289,35 @@ md = {
     }
   },
 
-  initDashboardPageCharts: function() {},
+  initDashboardPageCharts: function() {
+    if ($('#LastDaysActivityChart').length != 0) {
+          optionsLastDaysActivityChart = {
+            lineSmooth: Chartist.Interpolation.cardinal({
+              tension: 0
+            }),
+            low: 0,
+            high: 200,
+            onlyInteger: true,
+            fullWidth: true,
+            height: '200px',
+            chartPadding: {
+              top: 10,
+              right: 30,
+              bottom: 30,
+              left: 30
+            },
+            plugins: [
+                  Chartist.plugins.legend({
+                      legendNames: ['Overall activity', 'Your activity'],
+                  }),
+              ]
+          }
+
+          LastDaysActivityChart = new Chartist.Line('#LastDaysActivityChart', dataLastDaysActivityChart, optionsLastDaysActivityChart);
+
+          md.startAnimationForLineChart(LastDaysActivityChart);
+        }
+  },
 
   initMinimizeSidebar: function() {
     $('#minimizeSidebar').click(function() {
