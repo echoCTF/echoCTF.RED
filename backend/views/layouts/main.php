@@ -90,6 +90,7 @@ AppAsset::register($this);
               'items'=> [
                 ['label' => 'Networks', 'url' => ['/gameplay/network'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Targets', 'url' => ['/gameplay/target'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
+                ['label' => 'Ondemand', 'url' => ['/gameplay/target-ondemand'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Network Targets', 'url' => ['/gameplay/network-target'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Network Players', 'url' => ['/gameplay/network-player'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Variables', 'url' => ['/gameplay/target-variable'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
