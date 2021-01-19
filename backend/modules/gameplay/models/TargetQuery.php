@@ -21,7 +21,7 @@ class TargetQuery extends \yii\db\ActiveQuery
 
     public function poweredup()
     {
-        return $this->orWhere('id IN (SELECT target_id FROM target_ondemand WHERE status=1)');
+        return $this->andWhere('(id IN (SELECT target_id FROM target_ondemand WHERE state=1) or (SELECT count(*) FROM target_ondemand where target_id=id)=0)');
     }
 
     public function powerup()
