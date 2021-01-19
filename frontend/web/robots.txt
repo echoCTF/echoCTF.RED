@@ -7,11 +7,6 @@ User-agent: *
 Crawl-delay: 86400
 # generic
 Disallow: /assets/
-Disallow: /challenge/
-# challenges
-Disallow: /challenges?
-Disallow: /challenges/
-Disallow: /challenges/?
 # changelog
 Disallow: /changelog
 Disallow: /changelog?
