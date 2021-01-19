@@ -25,6 +25,6 @@ echo Html::dropDownList(
     'rating', //name
     $model->rating,  //select
     ArrayHelper::map($ratings, 'id', 'name'),
-    ['class'=>'form-control selectpicker']
+    ['class'=>'form-control selectpicker','data-style'=> $model->rating>=0 ? "btn-info" : ""]
   );
 echo Html::endForm();
