@@ -21,7 +21,7 @@ class TargetQuery extends \yii\db\ActiveQuery
 
     public function poweredup()
     {
-        return $this->joinWith(['target_ondemand'])->andWhere('target_ondemand.target_id is null or target_ondemand.status=1');
+        return $this->orWhere('id IN (SELECT target_id FROM target_ondemand WHERE status=1)');
     }
 
     public function powerup()
