@@ -543,6 +543,14 @@ details > .markdown h6 {
   padding-top: 0;
   padding-bottom: 0;
 }
+
+.ct-chart {
+  min-height: 200px;
+  min-width: 200px;
+}
+.ct-chart .ct-label {
+  color: white;
+}
 .ct-legend {
     position: relative;
     z-index: 10;
@@ -580,8 +588,8 @@ details > .markdown h6 {
     margin: 0;
 }
 .ct-legend .ct-series-0:before {
-    background-color: #d70206;
-    border-color: #d70206;
+    background-color: #f44336;
+    border-color: #f44336;
 }
 .ct-legend .ct-series-1:before {
     background-color: #00bcd4;
@@ -612,4 +620,8 @@ details > .markdown h6 {
 
 .ct-chart-line-multipleseries .ct-legend li.inactive:before {
     background: transparent;
+}
+
+.ct-chart .ct-grid {
+  stroke: white;
 }
