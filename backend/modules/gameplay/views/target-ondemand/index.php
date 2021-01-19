@@ -28,7 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'target_id',
+            'target.ipoctet',
+            'target.name',
             'player_id',
+            'player.username',
             'state',
             'heartbeat',
             'created_at',
