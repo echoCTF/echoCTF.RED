@@ -11,6 +11,12 @@ $this->_fluid='-fluid';
 
 <div class="target-index">
   <div class="body-content">
+<?php if($target->ondemand && $target->ondemand->state<0 && !Yii::$app->user->isGuest):?>
+  <div><p class="text-danger">This target is currently powered off. Feel free to spin it up</p></div>
+<?php endif;?>
+<?php if($target->ondemand && $target->ondemand->state>0 && !Yii::$app->user->isGuest):?>
+  <div><p class="text-danger">The target will shutdown in <code id="countdown" data="<?=$target->ondemand->expired?>"></code></p></div>
+<?php endif;?>
 <?php if($target->status !== 'online'):?>
     <div><p class="text-warning"><code class="text-warning">Target <?php if ($target->scheduled_at!==null):?>scheduled for<?php endif;?> <b><?=$target->status?></b> <?php if ($target->scheduled_at!==null):?>at <?=$target->scheduled_at?> UTC<?php endif;?></code></p></div>
 <?php endif;?>
@@ -33,3 +39,20 @@ $this->_fluid='-fluid';
         <?php \yii\widgets\Pjax::end();?>
   </div>
 </div>
+<?php
+if($target->ondemand && $target->ondemand->state>0 && !Yii::$app->user->isGuest) $this->registerJs(
+    'var distance = $("#countdown").attr("data");
+    var countdown = setInterval(function() {
+      var minutes = Math.floor((distance % (60 * 60)) / ( 60));
+      var seconds = Math.floor((distance % (60)));
+      if (distance < 0) {
+        clearInterval(countdown);
+        document.getElementById("countdown").innerHTML = "system will shutdown soon!";
+      }
+      else {
+        document.getElementById("countdown").innerHTML = minutes + "m " + seconds + "s ";
+        $("#countdown").attr("data",distance--);
+      }
+    }, 1000);',
+    4
+);
