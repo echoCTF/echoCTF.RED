@@ -22,13 +22,9 @@ use yii\console\Exception as ConsoleException;
 class CronController extends Controller {
 
   /*
-   * Check for targets that need to power up based on their scheduled_at details
-   * or targets that have been changed during the past $interval per $unit
-   * (default is during the last 5 minutes)
-   * @param int $interval.
-   * @param string $unit (MySQL INTERVAL eg MONTH, DAY, HOUR, MINUTE, SECOND).
+   * Perofrm all needed cron operations for the VPN
    */
-  public function actionIndex($interval=5, $unit="MINUTE")
+  public function actionIndex()
   {
     $this->actionSpinQueue();
     $this->actionHealthcheck(true);
@@ -216,21 +212,18 @@ class CronController extends Controller {
   private function active_targets_pf($base="/etc")
   {
     $ips=$networks=$rules=array();
-    $targets=Target::find()->where(['active'=>true])->all();
+    $targets=Target::find()->active()->online()->poweredup()->all();
     foreach($targets as $target)
     {
-      if($target->ondemand===null || ($target->ondemand && $target->ondemand->state>0))
+      if($target->networkTarget === NULL)
       {
-        if($target->networkTarget === NULL)
-        {
-          $ips[]=$target->ipoctet;
-        }
-        else
-        {
-          $networks[$target->network->codename][]=$target->ipoctet;
-          $rules[]=Pf::allowToNetwork($target);
-          $rules[]=Pf::allowToClient($target);
-        }
+        $ips[]=$target->ipoctet;
+      }
+      else
+      {
+        $networks[$target->network->codename][]=$target->ipoctet;
+        $rules[]=Pf::allowToNetwork($target);
+        $rules[]=Pf::allowToClient($target);
       }
     }
     Pf::store($base.'/targets.conf',$ips);
