@@ -7,14 +7,15 @@ use app\widgets\stream\StreamWidget as Stream;
 //$this->_fluid="-fluid";
 $this->title=Yii::$app->sys->event_name.' Dashboard';
 $this->_description="The echoCTF dashboard page";
-$this->registerJsFile('/js/plugins/chartist.min.js',['possition'=>3]);
-$this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['possition'=>3]);
+$this->registerJsFile('/js/plugins/chartist.min.js',['depends' => 'yii\web\JqueryAsset']);
+$this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['depends' => 'yii\web\JqueryAsset']);
+//$this->registerJsFile('/js/plugins/chartist-plugin-pointlabels.js',['depends' => 'yii\web\JqueryAsset']);
 
 ?>
 
 <div class="dashboard-index">
   <div class="body-content">
-    <div class="row">
+    <div class="row justify-content-center">
         <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
             <?php Card::begin([
                 'header'=>'header-icon',
@@ -61,6 +62,21 @@ $this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['possition'=>3]);
                 'footer'=>'<div class="stats"></div>',
             ]);Card::end();?>
         </div>
+      </div>
+
+      <div class="row">
+        <div class="col">
+          <div class="card bg-dark">
+            <div class="card-body">
+                <h3 class="card-title text-center">10 day activity</h3>
+            </div>
+            <div class="card-img-top ct-chart" id="LastDaysActivityChart"></div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="row justify-content-center">
         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
           <?php Card::begin([
               'type'=>'card-stats',
@@ -117,23 +133,7 @@ $this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['possition'=>3]);
 
     </div>
 
-    <div class="row">
-      <div class="col">
-        <div class="card">
-          <div class="card-img-top ct-chart ct-perfect-fourth"></div>
-        </div>
-      </div>
-    </div>
 
-    <div class="row">
-      <div class="col">
-        <?php
-        Pjax::begin(['id'=>'leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-        echo Leaderboard::widget(['dataProvider'=>null, 'player_id'=>Yii::$app->user->id, 'divID'=>"Leaderboard", 'title'=>'Leaderboard','pageSize'=>10]);
-        Pjax::end();
-        ?>
-      </div>
-    </div><!-- //row -->
   </div><!-- //body-content -->
 </div>
 <?php
@@ -145,17 +145,47 @@ $this->registerJs(
         [".implode($dayActivity['overallSeries'],",")."],
       ]
     };
-    new Chartist.Line('.ct-chart', data, {
+    new Chartist.Line('#LastDaysActivityChart', data, {
+  low: 0,
+  onlyInteger: true,
   fullWidth: true,
-  height: '400px',
+  height: '200px',
   chartPadding: {
     right: 40,
     top: 10,
     left: 40
   }, plugins: [
         Chartist.plugins.legend({
-            legendNames: ['Overall', 'Yours'],
-        })
+            legendNames: ['Overall activity', 'Your activity'],
+        }),
+    ]
+
+});
+",
+    4
+);
+
+$this->registerJs(
+    "var data = {
+      labels: [".implode($dayActivity['labels'],",")."],
+      series: [
+        [".implode($dayActivity['playerSeries'],",")."],
+        [".implode($dayActivity['overallSeries'],",")."],
+      ]
+    };
+    new Chartist.Line('#ActivityChart', data, {
+  low: 0,
+  onlyInteger: true,
+  fullWidth: true,
+  height: '200px',
+  chartPadding: {
+    right: 40,
+    top: 10,
+    left: 40
+  }, plugins: [
+        Chartist.plugins.legend({
+            legendNames: ['Overall activity', 'Your activity'],
+        }),
     ]
 
 });
