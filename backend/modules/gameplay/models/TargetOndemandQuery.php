@@ -9,6 +9,11 @@ namespace app\modules\gameplay\models;
  */
 class TargetOndemandQuery extends \yii\db\ActiveQuery
 {
+  public function withExpired()
+  {
+    return $this->select(['*','(60*60)-TIMESTAMPDIFF(SECOND, heartbeat,now()) AS expired']);
+  }
+
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');
