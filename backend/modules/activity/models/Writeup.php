@@ -19,6 +19,7 @@ use app\modules\frontend\models\Player;
  * @property int|null $approved
  * @property string|null $status
  * @property resource|null $comment
+ * @property string|null $formatter
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -44,7 +45,9 @@ class Writeup extends \yii\db\ActiveRecord
             [['player_id', 'target_id'], 'required'],
             [['player_id', 'target_id'], 'integer'],
             [['approved'], 'boolean'],
-            [['content', 'status', 'comment'], 'string'],
+            [['content', 'status', 'comment','formatter'], 'string'],
+            ['formatter','in','range'=>['text','markdown']],
+            ['formatter','default','value'=>'text'],
             ['status','in','range'=>['PENDING','NEEDS FIXES','REJECTED','OK']],
             [['created_at', 'updated_at'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],

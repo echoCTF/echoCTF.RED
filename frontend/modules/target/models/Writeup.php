@@ -17,6 +17,7 @@ use app\models\Player;
  * @property resource|null $content
  * @property int|null $approved
  * @property string|null $status
+ * @property string|null $formatter
  * @property resource|null $comment
  * @property string|null $created_at
  * @property string|null $updated_at
@@ -46,6 +47,7 @@ class Writeup extends \yii\db\ActiveRecord
             [['approved'], 'boolean'],
             [['approved'], 'default','value'=>false],
             [['content', 'status', 'comment'], 'string'],
+            ['formatter', 'default','value'=>'text'],
             ['content', 'default','value'=>null],
             ['status','default','value'=>'PENDING'],
             [['created_at', 'updated_at'], 'safe'],
@@ -123,4 +125,22 @@ class Writeup extends \yii\db\ActiveRecord
     {
         return new WriteupQuery(get_called_class());
     }
+
+    public function getFormatted()
+    {
+      return $this->{$this->formatter};
+    }
+
+
+    public function getText()
+    {
+      return '<pre>'.\yii\helpers\Html::encode($this->content).'</pre>';
+    }
+
+    public function getMarkdown()
+    {
+      return \yii\helpers\Markdown::process($this->content,'gfm');
+
+    }
+
 }
