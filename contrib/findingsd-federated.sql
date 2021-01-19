@@ -73,9 +73,9 @@ CREATE TABLE `network_player` (
 
 DROP TABLE IF EXISTS `target_ondemand`;
 CREATE TABLE `target_ondemand` (
-  `target_id` int(11) NOT NULL PRIMARY KEY,
-  `player_id` int(11) unsigned NOT NULL,
-  `state` tinyint() NOT NULL,
+  `target_id` int(11) NOT NULL,
+  `player_id` int(11) unsigned DEFAULT NULL,
+  `state` tinyint(3) NOT NULL DEFAULT '-1',
   `heartbeat` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
