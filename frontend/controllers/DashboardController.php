@@ -51,7 +51,7 @@ class DashboardController extends \app\components\BaseController
         ->groupBy(new \yii\db\Expression('date(ts)'))
         ->orderBy(new \yii\db\Expression('date(ts)'))
         ->all();
-        //die(var_dump($rows));
+
         foreach($rows as $row)
         {
           $dayActivity['labels'][]="'".$row['dat']."'";
@@ -59,7 +59,6 @@ class DashboardController extends \app\components\BaseController
           $dayActivity['playerSeries'][]=$row['pcnt'];
         }
 
-  //    SELECT date(ts),count(*) FROM stream WHERE ts>=now()-INTERVAL 20 DAY GROUP BY date(ts) ORDER BY date(ts);
       return $this->render('index', [
           'totalPoints'=>0,
           'dashboardStats'=>$dashboardStats,
