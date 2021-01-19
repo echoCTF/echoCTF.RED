@@ -292,9 +292,9 @@ md = {
   initDashboardPageCharts: function() {
     if ($('#LastDaysActivityChart').length != 0) {
           optionsLastDaysActivityChart = {
-            lineSmooth: Chartist.Interpolation.cardinal({
-              tension: 0
-            }),
+            //lineSmooth: Chartist.Interpolation.cardinal({
+            //  tension: 0
+            //}),
             low: 0,
             high: 200,
             onlyInteger: true,
