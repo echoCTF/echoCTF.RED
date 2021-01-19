@@ -169,7 +169,7 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
     <div class="col">
       <div class="card terminal">
         <div class="card-body">
-          <?php if(count($target->writeups)>0 && PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])===null && !($identity->player_id===Yii::$app->user->id && $target->progress==100)):?>
+          <?php if(!Yii::$app->user->isGuest && count($target->writeups)>0 && PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])===null && !($identity->player_id===Yii::$app->user->id && $target->progress==100)):?>
           <?=Html::a(
             '<i class="fas fa-question-circle" style="font-size: 1.5em;"></i> Writeups available.',
               ['/target/writeup/enable', 'id'=>$target->id],
