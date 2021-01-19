@@ -10,6 +10,38 @@ use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\modules\target\models\Writeup;
 use yii\helpers\Markdown;
 
+if($target->ondemand && $target->ondemand->state<0)
+{
+  $spinlink=Html::a(
+    '<i class="fas fa-play" style="font-size: 2em; float:left"></i>',
+      Url::to(['/target/default/spin', 'id'=>$target->id]),
+      [
+        'style'=>"font-size: 1.0em;",
+        'class'=>'text-danger',
+        'title' => 'Start the target',
+        'rel'=>"tooltip",
+        'data-pjax' => '0',
+        'data-method' => 'POST',
+        'aria-label'=>'Start the target',
+      ]
+  );
+
+}
+else
+{
+$spinlink=Html::a(
+  '<i class="fas fa-power-off" style="font-size: 2em; float:left"></i>',
+    Url::to(['/target/default/spin', 'id'=>$target->id]),
+    [
+      'style'=>"font-size: 1.0em;",
+      'title' => 'Request target Restart',
+      'rel'=>"tooltip",
+      'data-pjax' => '0',
+      'data-method' => 'POST',
+      'aria-label'=>'Request target Restart',
+    ]
+);
+}
 if(date('md') === "0214")
 {
   $headshot_icon='fa-heart';
@@ -48,18 +80,7 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
             'color'=>'warning',
             'subtitle'=>sprintf("%s, %s%s", ucfirst($target->difficultyText), boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===0 ? '':', Timed'),
             'title'=>sprintf('%s / %s', $target->name, long2ip($target->ip)),
-            'footer'=>sprintf('<div class="stats">%s</div><span>%s</span>', $target->purpose,  !Yii::$app->user->isGuest && $target->spinable ? Html::a(
-              '<i class="fas fa-power-off" style="font-size: 2em; float:left"></i>',
-                Url::to(['/target/default/spin', 'id'=>$target->id]),
-                [
-                  'style'=>"font-size: 1.0em;",
-                  'title' => 'Request target Restart',
-                  'rel'=>"tooltip",
-                  'data-pjax' => '0',
-                  'data-method' => 'POST',
-                  'aria-label'=>'Request target Restart',
-                ]
-            ):""),
+            'footer'=>sprintf('<div class="stats">%s</div><span>%s</span>', $target->purpose,  !Yii::$app->user->isGuest && $target->spinable ? $spinlink:""),
         ]);
         echo "<p class='text-danger'><i class='fas fa-flag'></i> ", $target->total_treasures, ": Flag".($target->total_treasures > 1 ? 's' : '')."<br/>";
         echo  "<small>(<code class='text-danger'>";
@@ -73,48 +94,55 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
         Card::end();?>
       </div>
       <div class="col-xl-4 col-lg-2 col-md-2 col-sm-12 text-center">
-          <?php if($headshot!==null && $headshot->first):?>
-            <img src="/images/1stheadshot.svg" class="img-fluid" style="max-height: 200px">
-          <?php else:?>
-            <div style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
-            <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
-          </div>
-          <?php endif;?>
+        <?php if($headshot!==null && $headshot->first):?>
+          <img src="/images/1stheadshot.svg" class="img-fluid" style="max-height: 200px">
+        <?php else:?>
+        <div style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
+          <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
+        </div>
+        <?php endif;?>
         <div class="progress">
-            <div class="progress-bar <?=$target->progress == 100 ? 'bg-gradual-progress' : 'bg-danger text-dark'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                <?=$target->progress == 100 ? '#headshot' : number_format($target->progress).'%'?>
-            </div>
+          <div class="progress-bar <?=$target->progress == 100 ? 'bg-gradual-progress' : 'bg-danger text-dark'?>" style="width: <?=$target->progress?>%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+              <?=$target->progress == 100 ? '#headshot' : number_format($target->progress).'%'?>
+          </div>
         </div>
         <?php if($headshot && $headshot->rating>=0) echo "<center class='text-primary'>headshoter rating: ",$headshot->rated,"</center>";?>
-<?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100):?>
+        <?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100):?>
         <div class="row">
           <div class="col">
-          <?=Html::a("<i class='fas fa-book'></i> Submit a writeup",
+          <?=Html::a("<i class='fas fa-book'></i> Submit",
                       ['writeup/submit','id'=>$target->id],
                       [
-                        'class'=>'btn btn-success btn-block',
+                        'title' => 'Submit a writeup for this target',
+                        'rel'=>"tooltip",
+                        'aria-label'=>'Submit a writeup for this target',
+                        'class'=>'btn',
+                        'style'=>'width: 100%',
                         'alt'=>'Submit a writeup for this target'
-                    ])?></div>
-          <div class="col">
-            <?=VoteWidget::widget(['model'=>$headshot]);?>
+                    ])?>
           </div>
-
+          <div class="col">
+            <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>'/game/default/rate-headshot']);?>
+          </div>
         </div>
-<?php elseif(Yii::$app->user->id === $identity->player_id && $target->progress==100):?>
-  <div class="row">
-      <div class="col">
-        <?=Html::a("<i class='fas fa-book'></i> View your writeup",
-                        ['writeup/view','id'=>$target->id],
-                        [
-                          'class'=>'btn btn-success btn-block',
-                          'alt'=>'View or update your writeup for this target'
-                      ])?></div>
-        <div class="col">
-          <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>'/game/default/rate-headshot']);?>
+        <?php elseif(Yii::$app->user->id === $identity->player_id && $target->progress==100):?>
+        <div class="row">
+          <div class="col">
+          <?=Html::a("<i class='fas fa-book'></i> View",
+                      ['writeup/view','id'=>$target->id],
+                      [
+                        'title' => 'View or update your writeup for this target',
+                        'rel'=>"tooltip",
+                        'aria-label'=>'View or update your writeup for this target',
+                        'class'=>'btn btn-info',
+                        'alt'=>'View or update your writeup for this target'
+                    ])?>
+          </div>
+          <div class="col">
+            <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>'/game/default/rate-headshot']);?>
+          </div>
         </div>
-
-        </div>
-<?php endif;?>
+        <?php endif;?>
       </div>
       <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12">
         <?php Card::begin([
