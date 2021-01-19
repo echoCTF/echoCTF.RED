@@ -19,7 +19,7 @@ class TreasureController extends ActiveController
         $treasure->attributes=$post;
         if($treasure->validate() && $treasure->save())
         {
-          $this->doTreasureActions($port,$treasure);
+          $this->doTreasureActions($post,$treasure);
           \Yii::$app->response->statusCode=201;
           $transaction->commit();
           return array('status' => true, 'data'=> "Saved");
