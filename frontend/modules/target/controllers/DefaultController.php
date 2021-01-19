@@ -242,6 +242,7 @@ class DefaultController extends \app\components\BaseController
         return $this->renderAjax('claim');
     }
 
+
     /**
     * Generate and display target badge with dynamic details
     */
@@ -342,11 +343,7 @@ class DefaultController extends \app\components\BaseController
           $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
         }
         $transaction->commit();
-        if($treasure->target->ondemand && $treasure->target->ondemand->state>0)
-        {
-          $treasure->target->ondemand->updateAttributes(['heartbeat' => new \yii\db\Expression('NOW()')]);
-        }
-
+        $this->doOndemand($treasure->target);
         $PT->refresh();
         Yii::$app->session->setFlash('success', sprintf('Flag [%s] claimed for %s points', $treasure->name, number_format($PT->points)));
       }
@@ -360,6 +357,13 @@ class DefaultController extends \app\components\BaseController
       {
         $transaction->rollBack();
         throw $e;
+      }
+    }
+    protected function doOndemand($target)
+    {
+      if($target->ondemand && $target->ondemand->state>0)
+      {
+        $target->ondemand->updateAttributes(['heartbeat' => new \yii\db\Expression('NOW()')]);
       }
     }
 }
