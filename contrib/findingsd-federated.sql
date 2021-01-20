@@ -71,6 +71,16 @@ CREATE TABLE `network_player` (
   KEY `idx-network_player-player_id` (`player_id`)
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/network_player';
 
+DROP TABLE IF EXISTS `target_ondemand`;
+CREATE TABLE `target_ondemand` (
+  `target_id` int(11) NOT NULL,
+  `player_id` int(11) unsigned DEFAULT NULL,
+  `state` tinyint(3) NOT NULL DEFAULT '-1',
+  `heartbeat` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/target_ondemand';
+
 DROP TABLE IF EXISTS `debuglogs`;
 CREATE TABLE debuglogs (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -113,7 +123,9 @@ BEGIN
   IF @debug IS NOT NULL AND @debug=1 THEN
     INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[BEFORE FINDING] TARGET_ID:',ifnull(TARGET_ID,0),' PLAYER_ID:',ifnull(PLAYER_ID,0),' FINDING_ID:',ifnull(FINDING_ID,0),' TEAM_ID:',ifnull(TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
   END IF;
-
+  IF PLAYER_ID IS NOT NULL AND FINDING_ID IS NOT NULL AND FINDING_ID>0 THEN
+    UPDATE target_ondemand SET heartbeat=NOW() WHERE target_id=TARGET_ID AND state>0;
+  END IF;
   IF PLAYER_ID IS NOT NULL AND FINDING_ID IS NOT NULL AND FINDING_ID>0 AND CLAIMED_BEFORE IS NULL THEN
     INSERT IGNORE INTO player_finding (finding_id,player_id) VALUES(FINDING_ID,PLAYER_ID) on duplicate key update finding_id=values(finding_id);
     IF @debug IS NOT NULL AND @debug=1 THEN

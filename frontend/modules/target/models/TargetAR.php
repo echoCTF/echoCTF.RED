@@ -45,6 +45,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
  * @property Headshot[] $headshots
+ * @property Ondemand[] $ondemand
  * @property Writeup[] $writeups
  */
 class TargetAR extends \yii\db\ActiveRecord
@@ -200,6 +201,14 @@ class TargetAR extends \yii\db\ActiveRecord
     public function getWriteups()
     {
       return $this->hasMany(Writeup::class, ['target_id' => 'id'])->approved()->orderBy(['created_at'=>SORT_ASC]);
+    }
+
+    /*
+     * Get Target Ondemand relations of target
+     */
+    public function getOndemand()
+    {
+      return $this->hasOne(Ondemand::class, ['target_id' => 'id'])->withExpired();
     }
 
     /*

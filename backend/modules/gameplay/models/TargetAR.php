@@ -197,4 +197,13 @@ class TargetAR extends \yii\db\ActiveRecord
         return new TargetQuery(get_called_class());
     }
 
+    /*
+     * Get Target Ondemand relations of target
+     */
+    public function getOndemand()
+    {
+      return $this->hasOne(TargetOndemand::class, ['target_id' => 'id'])->withExpired();
+    }
+
+
 }

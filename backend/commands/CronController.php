@@ -22,20 +22,17 @@ use yii\console\Exception as ConsoleException;
 class CronController extends Controller {
 
   /*
-   * Check for targets that need to power up based on their scheduled_at details
-   * or targets that have been changed during the past $interval per $unit
-   * (default is during the last 5 minutes)
-   * @param int $interval.
-   * @param string $unit (MySQL INTERVAL eg MONTH, DAY, HOUR, MINUTE, SECOND).
+   * Perofrm all needed cron operations for the VPN
    */
-  public function actionIndex($interval=5, $unit="MINUTE")
+  public function actionIndex()
   {
     $this->actionSpinQueue();
     $this->actionHealthcheck(true);
     $this->actionPowerups();
     $this->actionPowerdowns();
+    $this->actionOndemand();
     $this->actionOfflines();
-    $this->actionPf();
+    $this->actionPf(true);
   }
 
   /**
@@ -79,14 +76,28 @@ class CronController extends Controller {
         try
         {
           $t->target->spin();
+          if($t->target->ondemand && $t->target->ondemand->state<0)
+          {
+            $t->target->ondemand->state=1;
+            $t->target->ondemand->heartbeat=new \yii\db\Expression('NOW()');
+            $t->target->ondemand->player_id=$t->player_id;
+            $t->target->ondemand->save();
+            $notifTitle=sprintf("Target [%s] powered up", $t->target->name);
+          }
+          else
+          {
+            $notifTitle=sprintf("Target [%s] restart request completed", $t->target->name);
+          }
+
           $notif=new Notification;
           $notif->player_id=$t->player_id;
-          $notif->title=sprintf("Target [%s] restart request completed", $t->target->name);
+          $notif->title=$notifTitle;
           $notif->body=sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>", $t->target->name);
           $notif->archived=0;
           $notif->created_at=new \yii\db\Expression('NOW()');
           $notif->updated_at=new \yii\db\Expression('NOW()');
           $notif->save();
+
           $t->delete();
           echo " OK\n";
         }
@@ -126,6 +137,19 @@ class CronController extends Controller {
     }
   }
 
+  public function actionOndemand()
+  {
+    $targets=\app\modules\gameplay\models\TargetOndemand::find()->where(['state'=>1])->andWhere(['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')]);
+    foreach($targets->all() as $target)
+    {
+      printf("Target %s ", $target->target->fqdn);
+      $target->target->destroy();
+      $target->state=-1;
+      $target->heartbeat=null;
+      $target->save();
+    }
+  }
+
   public function actionOfflines()
   {
     $targets=Target::find()->offline();
@@ -148,6 +172,7 @@ class CronController extends Controller {
       $target->powerdown();
       printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
     }
+
   }
 
   /**
@@ -165,16 +190,18 @@ class CronController extends Controller {
   private function match_findings($load,$base="/etc")
   {
     $networks=$rules=$frules=array();
-    $findings=Finding::find()->joinWith(['target'])->where(['target.active'=>true])->all();
-    foreach($findings as $finding)
+    $targets=Target::find()->active()->online()->poweredup()->all();
+    foreach($targets as $target)
     {
-      if($finding->target->network)
+      foreach($target->findings as $finding)
       {
-        $networks[$finding->target->network->codename]=$finding->target->network;
+        if($target->network)
+        {
+          $networks[$target->network->codename]=$target->network;
+        }
+        $frules[]=$finding->matchRule;
       }
-      $frules[]=$finding->matchRule;
     }
-
     Pf::store($base.'/match-findings-pf.conf',ArrayHelper::merge($frules,$rules));
 
     if($load)
@@ -187,12 +214,15 @@ class CronController extends Controller {
   private function active_targets_pf($base="/etc")
   {
     $ips=$networks=$rules=array();
-    $targets=Target::find()->where(['active'=>true])->all();
+    $targets=Target::find()->active()->online()->poweredup()->all();
     foreach($targets as $target)
     {
       if($target->networkTarget === NULL)
+      {
         $ips[]=$target->ipoctet;
-      else {
+      }
+      else
+      {
         $networks[$target->network->codename][]=$target->ipoctet;
         $rules[]=Pf::allowToNetwork($target);
         $rules[]=Pf::allowToClient($target);
@@ -207,7 +237,7 @@ class CronController extends Controller {
     }
 
     Pf::store("$base/targets_networks.conf",$rules);
-    Pf::load_anchor_file("targets/networks","$base/targets_networks.conf");
+    Pf::load_anchor_file("networks","$base/targets_networks.conf");
   }
 
   /*

@@ -37,11 +37,15 @@ Follow the instructions from [DOCKER-COMPOSE-NOVPN.md](DOCKER-COMPOSE-NOVPN.md)
 * Target view image `@webroot/images/targets/_targetname.png`
 
 #### Adding a new target image
-For each target two files must be created. The first is used by the target listing and target view/vs on the left side. This is a plain "character" logo for the target prefixed with an underscore (`_`) such as
+For each target three files are to be created.
+* `_targetname.png` 220x300px
+* `_targetname-thumbnail.png` 110x150px
+* `targetname.png`
+The first is used by the target listing and target view/vs on the left side. This is a plain "character" logo for the target prefixed with an underscore (`_`) such as
 
 ![barney](../themes/images/targets/_barney.png)
 
-The second includes and one that has a background of the main black logo and the target overlayed such as
+The second includes and one that has a background of the main black logo and the target overlay-ed such as
 
 ![barney](../themes/images/targets/barney.png)
 

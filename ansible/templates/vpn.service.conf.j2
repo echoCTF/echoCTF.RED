@@ -4,8 +4,10 @@ pass quick on egress inet proto udp from <moderators> to (egress:0) port 1194 la
 # Dont allow
 pass quick on egress inet proto udp from !<maintenance> to (egress:0) port 1194 label "OpenVPN"
 
+anchor "networks"
+load anchor "networks" from "/etc/targets_networks.conf"
+
 anchor "targets" on targets {
-  anchor "networks"
   # allow registry clients to have access to the internet
   pass quick inet from <registry_clients> to !(self)
   # allow targets to query the dns server on the targets interface
@@ -18,7 +20,6 @@ anchor "targets" on targets {
   pass from <targets> to <offense_activated>
 }
 
-load anchor "targets/networks" from "/etc/targets_networks.conf"
 
 anchor "offense" on tun {
 	anchor "findings"

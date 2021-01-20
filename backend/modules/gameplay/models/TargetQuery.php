@@ -9,10 +9,20 @@ namespace app\modules\gameplay\models;
  */
 class TargetQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    public function active()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere('[[active]]=1');
+    }
+
+    public function online()
+    {
+        return $this->andWhere('[[status]]="online"');
+    }
+
+    public function poweredup()
+    {
+        return $this->andWhere('(id IN (SELECT target_id FROM target_ondemand WHERE state=1) or (SELECT count(*) FROM target_ondemand where target_id=id)=0)');
+    }
 
     public function powerup()
     {
