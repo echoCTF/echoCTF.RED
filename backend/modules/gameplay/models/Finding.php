@@ -154,4 +154,13 @@ class Finding extends \yii\db\ActiveRecord
       }
       return true;
     }
+    /**
+     * {@inheritdoc}
+     * @return FindingQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new FindingQuery(get_called_class());
+    }
+
 }
