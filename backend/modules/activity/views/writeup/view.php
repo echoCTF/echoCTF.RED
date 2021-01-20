@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'player_id',
             'target_id',
+            'formatter',
             [
               'attribute'=>'content',
               'format'=>'raw',
