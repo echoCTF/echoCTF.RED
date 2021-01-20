@@ -17,7 +17,7 @@
 
 var LastDaysActivityChart;
 var dataLastDaysActivityChart = {
-  labels: ['10th','11th','12th','13th','14th','15th','16th','17th','18th','19th'],
+  labels: ['0th','0th','0th','0th','0th','0th','0th','0th','0th','0th'],
   series: [
             [0,0,0,0,0,0,0,0,0,0],
   ]
