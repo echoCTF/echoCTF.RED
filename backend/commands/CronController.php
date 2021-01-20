@@ -139,14 +139,17 @@ class CronController extends Controller {
 
   public function actionOndemand()
   {
-    $targets=\app\modules\gameplay\models\TargetOndemand::find()->where(['state'=>1])->andWhere(['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')]);
+    $targets=\app\modules\gameplay\models\TargetOndemand::find()
+    ->andWhere(['and',['state'=>1], ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')]])
+    ->orWhere(['state'=>-1]);
     foreach($targets->all() as $target)
     {
-      printf("Target %s ", $target->target->fqdn);
+      printf("Destroying ondemand target %s\n", $target->target->fqdn);
       $target->target->destroy();
       $target->state=-1;
       $target->heartbeat=null;
       $target->save();
+
     }
   }
 
