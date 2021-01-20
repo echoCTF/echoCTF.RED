@@ -32,7 +32,7 @@ class CronController extends Controller {
     $this->actionPowerdowns();
     $this->actionOndemand();
     $this->actionOfflines();
-    $this->actionPf();
+    $this->actionPf(true);
   }
 
   /**
@@ -190,16 +190,18 @@ class CronController extends Controller {
   private function match_findings($load,$base="/etc")
   {
     $networks=$rules=$frules=array();
-    $findings=Finding::find()->joinWith(['target'])->where(['target.active'=>true])->all();
-    foreach($findings as $finding)
+    $targets=Target::find()->active()->online()->poweredup()->all();
+    foreach($targets as $target)
     {
-      if($finding->target->network)
+      foreach($target->findings as $finding)
       {
-        $networks[$finding->target->network->codename]=$finding->target->network;
+        if($target->network)
+        {
+          $networks[$target->network->codename]=$target->network;
+        }
+        $frules[]=$finding->matchRule;
       }
-      $frules[]=$finding->matchRule;
     }
-
     Pf::store($base.'/match-findings-pf.conf',ArrayHelper::merge($frules,$rules));
 
     if($load)
@@ -235,7 +237,7 @@ class CronController extends Controller {
     }
 
     Pf::store("$base/targets_networks.conf",$rules);
-    Pf::load_anchor_file("targets/networks","$base/targets_networks.conf");
+    Pf::load_anchor_file("networks","$base/targets_networks.conf");
   }
 
   /*
