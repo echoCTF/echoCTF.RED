@@ -25,7 +25,7 @@ if [ "$script_type" == "client-connect" ]; then
       echo "[$$] logging in client ${common_name}" >>/tmp/updown.log
       mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -e "CALL VPN_LOGIN(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))"
       if [ -x /sbin/pfctl ]; then
-        for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT codename FROM network WHERE id in (SELECT network_id FROM network_player WHERE player_id='${common_name}') AND codename is not null");do
+        for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT codename FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id='${common_name}'))");do
           /sbin/pfctl -t "${network}_clients" -T add ${ifconfig_pool_remote_ip}
         done
       fi
