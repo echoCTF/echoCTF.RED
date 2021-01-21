@@ -177,13 +177,11 @@ class SiteController extends \app\components\BaseController
         {
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', 'Registration failed.');
-            throw $e;
         }
         catch(\Throwable $e)
         {
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', 'Registration failed.');
-            throw $e;
         }
 
 
