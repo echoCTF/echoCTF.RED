@@ -44,7 +44,7 @@ class SignupForm extends Model
             ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email address has already been taken.'],
             ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => 'This email is banned.'],
             ['email', function($attribute, $params){
-              $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
+              $count = \Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
                   ->bindValue(':email', $this->email)
                   ->queryScalar();
 
@@ -65,7 +65,10 @@ class SignupForm extends Model
      */
     public function signup()
     {
-        if(!$this->validate()) throw new \Exception("Error Processing Request", 1);
+        if(!$this->validate())
+        {
+          throw new \Exception("Error Processing Request", 1);
+        }
         $player=new Player();
         $player->username=$this->username;
         $player->email=$this->email;
