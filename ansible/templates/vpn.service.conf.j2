@@ -4,9 +4,6 @@ pass quick on egress inet proto udp from <moderators> to (egress:0) port 1194 la
 # Dont allow
 pass quick on egress inet proto udp from !<maintenance> to (egress:0) port 1194 label "OpenVPN"
 
-anchor "networks"
-load anchor "networks" from "/etc/targets_networks.conf"
-
 anchor "targets" on targets {
   # allow registry clients to have access to the internet
   pass quick inet from <registry_clients> to !(self)
@@ -34,6 +31,8 @@ anchor "offense" on tun {
 }
 
 load anchor "offense/findings" from "/etc/match-findings-pf.conf"
+anchor "networks"
+load anchor "networks" from "/etc/targets_networks.conf"
 pass quick inet to <targets> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state
 
 pass quick on interconnect from interconnect:network label "interconnect"
