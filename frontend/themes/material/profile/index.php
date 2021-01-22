@@ -66,8 +66,8 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
                             Url::to(['/challenge/default/view', 'id'=>$cs->challenge_id]),
                             [
                               'style'=>'float: bottom;',
-                              'title' => 'View target vs player card',
-                              'aria-label'=>'View target vs player card',
+                              'title' => 'View challenge',
+                              'aria-label'=>'View challenge',
                               'data-pjax' => '0',
                             ]
                         );?></b></p>
