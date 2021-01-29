@@ -12,7 +12,7 @@ $this->_fluid='-fluid';
 <div class="target-index">
   <div class="body-content">
 <?php if($target->ondemand && $target->ondemand->state<0 && !Yii::$app->user->isGuest):?>
-  <div><p class="text-danger">This target is currently powered off. Feel free to spin it up</p></div>
+  <div><p class="text-danger">This target is currently powered off. <sub>Feel free to spin it up after you connect to the VPN.</sub></p></div>
 <?php endif;?>
 <?php if($target->ondemand && $target->ondemand->state>0 && !Yii::$app->user->isGuest):?>
   <div><p class="text-danger">The target will shutdown in <code id="countdown" data="<?=$target->ondemand->expired?>"></code></p></div>
