@@ -521,9 +521,20 @@ details > .markdown h6 {
 
 
 .markdown pre {
+  padding: .2rem .4rem;
   color: #212529;
+  background-color: #212529;
+  border-radius: .2rem;
+  background-color: #212529;
 }
 
+.markdown code {
+  padding: .2rem .4rem;
+  font-size: 87.5%;
+  color: #fff;
+  background-color: #212529;
+  border-radius: .2rem;
+}
 #notificationsMenu>a, #hintsMenu>a {
     word-wrap: break-word;
     white-space: normal;
