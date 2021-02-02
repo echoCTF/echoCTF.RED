@@ -18,7 +18,8 @@ class TargetSearch extends Target
     public function rules()
     {
         return [
-            [['id', 'ip', 'active', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp','headshot'], 'integer'],
+            [['id', 'ip', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp','headshot'], 'integer'],
+            ['active','boolean'],
             [['headshot'],'default','value'=>null ],
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
             [['scheduled_at'], 'datetime'],
@@ -44,7 +45,7 @@ class TargetSearch extends Target
      */
     public function search($params)
     {
-        $query=Target::find()->joinWith('headshots');
+        $query=Target::find()->joinWith(['headshots']);
 
         // add conditions that should always apply here
 
@@ -86,13 +87,18 @@ class TargetSearch extends Target
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'dns', $this->dns])
             ->andFilterWhere(['like', 'parameters', $this->parameters]);
+            ;
 
         if($this->headshot !== null ) $query->having(["=",'count(headshot.player_id)',$this->headshot]);
-        $query->groupBy(['headshot.target_id']);
+        $query->groupBy(['target.id']);
         $dataProvider->setSort([
                 'attributes' => array_merge(
                     $dataProvider->getSort()->attributes,
                     [
+                      'target.id' => [
+                          'asc' => ['target.id' => SORT_ASC],
+                          'desc' => ['target.id' => SORT_DESC],
+                      ],
                       'ipoctet' => [
                           'asc' => ['ip' => SORT_ASC],
                           'desc' => ['ip' => SORT_DESC],
