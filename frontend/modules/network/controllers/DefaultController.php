@@ -51,7 +51,7 @@ class DefaultController extends \app\components\BaseController
     public function actionIndex()
     {
         $dataProvider=new ActiveDataProvider([
-            'query' => Network::find()->active()->orderBy(['name'=>SORT_ASC, 'id'=>SORT_ASC]),
+            'query' => Network::find()->active()->orderBy(['weight'=>SORT_ASC,'name'=>SORT_ASC, 'id'=>SORT_ASC]),
         ]);
 
         return $this->render('index', [
