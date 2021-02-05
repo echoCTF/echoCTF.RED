@@ -3,7 +3,13 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
 use app\modules\game\models\Headshot;
-
+if(array_key_exists('subscription',Yii::$app->modules)!==false)
+{
+  $subscription=Yii::$app->getModule('subscription');
+}
+else {
+  $subscription=new \app\models\DummySubscription;
+}
 ?>
 <div class="card card-profile">
   <div class="card-avatar bg-primary">
@@ -14,6 +20,13 @@ use app\modules\game\models\Headshot;
   <div class="card-body">
     <?php if($profile->isMine):?><p></p><?php endif;?>
     <h6 class="badge badge-secondary">Level <?=$profile->experience->id?> / <?=$profile->experience->name?></h6>
+    <?php if($subscription->exists):?>
+      <?php if($subscription->isActive):?>
+        <h5 class="rounded font-weight-bold badge-success">Expires in <?=$subscription->expires?></h5>
+      <?php else:?>
+        <h5 class="rounded font-weight-bold badge-danger">Your subscription has expired</h5>
+      <?php endif;?>
+    <?php endif;?>
     <h4 class="card-title"><?=Html::encode($profile->owner->username)?></h4>
     <p class="card-description">
       <?=Html::encode($profile->bio)?>
