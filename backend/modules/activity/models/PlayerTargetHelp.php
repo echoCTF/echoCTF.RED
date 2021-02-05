@@ -36,7 +36,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['player_id', 'target_id'], 'required'],
+            //[['player_id', 'target_id'], 'required'],
             [['player_id', 'target_id'], 'integer'],
             [['created_at'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
@@ -54,7 +54,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
                     'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                 ],
-                'typecastAfterValidate' => true,
+                'typecastAfterValidate' => false,
                 'typecastBeforeSave' => true,
                 'typecastAfterFind' => true,
           ],
