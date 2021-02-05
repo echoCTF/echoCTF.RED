@@ -11,7 +11,12 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property int $id
  * @property string $name
+ * @property string $codename
+ * @property string $icon
  * @property string $description
+ * @property boolean $public
+ * @property boolean $active
+ * @property integer $weight
  * @property string $ts
  *
  * @property NetworkPlayer[] $networkPlayers
@@ -41,6 +46,8 @@ class Network extends \yii\db\ActiveRecord
             [['ts'], 'safe'],
             [['name'], 'string', 'max' => 32],
             [['name'], 'unique'],
+            [['weight'],'integer'],
+            [['weight'],'default','value'=>0]
         ];
     }
 

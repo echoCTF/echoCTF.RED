@@ -17,7 +17,7 @@ class NetworkSearch extends Network
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['id','weight'], 'integer'],
             [['public', 'active'], 'boolean'],
             [['name', 'description', 'codename', 'icon', 'ts'], 'safe'],
         ];
@@ -61,6 +61,7 @@ class NetworkSearch extends Network
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'weight' => $this->weight,
             'ts' => $this->ts,
         ]);
 

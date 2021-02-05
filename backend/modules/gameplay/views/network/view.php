@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][]=$this->title;
           'description:ntext',
           'public:boolean',
           'active:boolean',
+          'weight:integer',
           'ts',
         ],
     ]) ?>
