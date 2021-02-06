@@ -20,17 +20,19 @@ else {
   <div class="card-body">
     <?php if($profile->isMine):?><p></p><?php endif;?>
     <h6 class="badge badge-secondary">Level <?=$profile->experience->id?> / <?=$profile->experience->name?></h6>
-    <?php if($subscription->exists):?>
-      <?php if($subscription->isActive):?>
-        <h5 class="rounded font-weight-bold badge-success">Expires in <?=$subscription->expires?></h5>
-      <?php else:?>
-        <h5 class="rounded font-weight-bold badge-danger">Your subscription has expired</h5>
-      <?php endif;?>
-    <?php endif;?>
     <h4 class="card-title"><?=Html::encode($profile->owner->username)?></h4>
     <p class="card-description">
       <?=Html::encode($profile->bio)?>
     </p>
+    <?php if($subscription->exists):?>
+      <?php if($subscription->isActive):?>
+        <h5 class="rounded text-success font-weight-bold"><?=$subscription->product->name?> expires in <?=$subscription->expires?></h5>
+        <?=$subscription->getPortalButton($this)?>
+      <?php else:?>
+        <p class="rounded text-danger font-weight-bold">Your <?=$subscription->product->name?> has expired<br/><?=Html::a('Subscribe',['/subscription/default/index'],['class'=>'btn btn-primary text-dark font-weight-bold']);?></p>
+
+      <?php endif;?>
+    <?php endif;?>
     <?php if($profile->isMine):?>
       <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id], 'https'), ['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
             'message'=>sprintf('Checkout my profile at echoCTF.RED! %s', $profile->braggingRights),
@@ -79,7 +81,7 @@ else {
       <ul class="nav flex-column">
         <li class="nav-header text-left"><h6>Networks Access</h6></li>
         <?php foreach($profile->owner->networks as $network):?>
-          <li class="nav-item text-left"><strong><?=$network->icon?> <?=$network->name?></strong></li>
+          <li class="nav-item text-left"><strong><img class="img" src="<?=$network->icon?>" height="30px"/> <?=$network->name?></strong></li>
         <?php endforeach;?>
       </ul>
 <?php endif;?>
