@@ -2,6 +2,8 @@
 
 namespace app\modules\network;
 
+use app\modules\network\models\NetworkPlayer;
+
 /**
  * network module definition class
  */
@@ -21,4 +23,32 @@ class Module extends \yii\base\Module
 
         // custom initialization code goes here
     }
+
+    public function checkTarget($target)
+    {
+      if($target->network === null)
+        return false;
+
+      if(!$target->network->active)
+        return false;
+
+      if(!$target->network->public && NetworkPlayer::findOne($target->network->id,\Yii::$app->user->id) === null)
+        return false;
+      return true;
+    }
+
+    public function checkNetwork($network)
+    {
+      if($network === null)
+        return false;
+
+      if(!$network->active)
+        return false;
+
+      if(!$network->public && NetworkPlayer::findOne($network->id,\Yii::$app->user->id) === null)
+        return false;
+
+      return true;
+    }
+
 }
