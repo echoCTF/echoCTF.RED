@@ -9,10 +9,18 @@ use app\widgets\target\TargetWidget;
 
 $this->title=Yii::$app->sys->event_name.' Network details ['.Html::encode($model->name).']';
 $this->_fluid="-fluid";
+$module = \app\modules\network\Module::getInstance();
 
 ?>
 <div class="network-view">
   <div class="body-content">
+    <?php if($module->checkNetwork($model)===false):?>
+    <div class="row d-flex justify-content-center">
+      <div class="col-sm-12 col-md-6 col-xl-4 alert alert-danger d-flex justify-content-center" role="alert">
+        <b>You don't have access to this network.</b>
+      </div>
+    </div>
+    <?php endif;?>
     <h3>Details for Network [<code><?=Html::encode($model->name)?></code>]</h3>
     <hr />
     <div class="row">
