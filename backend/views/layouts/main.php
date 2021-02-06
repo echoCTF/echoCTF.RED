@@ -43,9 +43,10 @@ AppAsset::register($this);
             ['label' => '<span class="glyphicon glyphicon-credit-card"></span> Sales', 'url' => ['/sales/default/index'], 'icon' => 'fas fa-money-check-alt','active'=>Yii::$app->controller->module->id=='sales', 'visible'=>array_key_exists('sales',\Yii::$app->modules)!==false && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,
               'items'=>[
                 ['label' => 'Sales Dashboard', 'url' => ['/sales/default/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
-                ['label' => 'Player Customers', 'url' => ['/sales/player-customer/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
-                ['label' => 'Player Subscriptions', 'url' => ['/sales/player-subscription/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
-                ['label' => 'Stripe Webhook', 'url' => ['/sales/stripe-webhook/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
+                ['label' => 'Customers', 'url' => ['/sales/player-customer/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
+                ['label' => 'Subscriptions', 'url' => ['/sales/player-subscription/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
+                ['label' => 'Products', 'url' => ['/sales/product/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
+                ['label' => 'Webhook', 'url' => ['/sales/stripe-webhook/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
               ]
             ],
             ['label' => '<span class="glyphicon glyphicon-stats"></span> Game Activity', 'url' => ['/activity/default/index'], 'visible' => !Yii::$app->user->isGuest,'active'=>Yii::$app->controller->module->id=='activity',
