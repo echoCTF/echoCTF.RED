@@ -15,6 +15,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'player_id')->textInput() ?>
 
     <?= $form->field($model, 'counter')->textInput() ?>
+    <?= $form->field($model, 'perday')->textInput() ?>
 
     <?= $form->field($model, 'total')->textInput() ?>
 

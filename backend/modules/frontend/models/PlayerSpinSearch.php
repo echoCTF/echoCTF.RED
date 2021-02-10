@@ -18,7 +18,7 @@ class PlayerSpinSearch extends PlayerSpin
     public function rules()
     {
         return [
-            [['player_id', 'counter', 'total'], 'integer'],
+            [['player_id', 'counter', 'total','perday'], 'integer'],
             [['updated_at', 'player'], 'safe'],
         ];
     }
@@ -62,6 +62,7 @@ class PlayerSpinSearch extends PlayerSpin
         $query->andFilterWhere([
             'player_spin.player_id' => $this->player_id,
             'player_spin.counter' => $this->counter,
+            'player_spin.perday' => $this->perday,
             'player_spin.total' => $this->total,
             'player_spin.updated_at' => $this->updated_at,
         ]);

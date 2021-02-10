@@ -127,7 +127,8 @@ class Target extends TargetAR
 
     public function getSpinAllowed()
     {
-      if(intval(Yii::$app->user->identity->profile->spins->counter) < intval(Yii::$app->sys->spins_per_day))
+
+      if(intval(Yii::$app->user->identity->profile->spins->counter) < intval(Yii::$app->user->identity->profile->spins->perday))
       {
         return true;// user is not allowed spins for the day.
       }

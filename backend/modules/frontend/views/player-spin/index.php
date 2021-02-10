@@ -37,6 +37,7 @@ $this->params['breadcrumbs'][]=$this->title;
               'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
             'counter',
+            'perday',
             'total',
             'updated_at:date',
             'ts',

@@ -10,6 +10,7 @@ use Yii;
  * @property int $player_id
  * @property int $counter
  * @property int $total
+ * @property int $perday
  * @property string $updated_at
  *
  * @property Player $player
@@ -31,7 +32,7 @@ class PlayerSpin extends \yii\db\ActiveRecord
     {
         return [
             [['player_id'], 'required'],
-            [['player_id', 'counter', 'total'], 'integer'],
+            [['player_id', 'counter', 'total','perday'], 'integer'],
             [['updated_at'], 'safe'],
             [['player_id'], 'unique'],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
