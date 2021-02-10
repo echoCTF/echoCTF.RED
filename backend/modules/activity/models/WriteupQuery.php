@@ -9,10 +9,14 @@ namespace app\modules\activity\models;
  */
 class WriteupQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    //public function active()
+    //{
+    //    return $this->andWhere('[[status]]=1');
+    //}
+    public function byStatus($status)
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere(['status'=>$status]);
+    }
 
     /**
      * {@inheritdoc}
