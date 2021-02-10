@@ -18,7 +18,7 @@ class ChallengeSearch extends Challenge
     {
         return [
             [['id'], 'integer'],
-            [['active','timer'], 'boolean'],
+            [['active','timer','public'], 'boolean'],
             [['name', 'category', 'difficulty', 'description', 'player_type', 'filename'], 'safe'],
         ];
     }
@@ -62,6 +62,7 @@ class ChallengeSearch extends Challenge
         $query->andFilterWhere([
             'challenge.id' => $this->id,
             'challenge.active' => $this->active,
+            'challenge.public' => $this->public,
         ]);
 
         $query->andFilterWhere(['like', 'challenge.name', $this->name])

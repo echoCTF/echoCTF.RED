@@ -28,6 +28,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'id',
             'name',
             'active:boolean',
+            'public:boolean',
             'timer:boolean',
             'category',
             'difficulty',

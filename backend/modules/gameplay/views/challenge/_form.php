@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('The name of the challenge') ?>
 
     <?= $form->field($model, 'active')->checkbox()->hint('Is challenge active?') ?>
-
+    <?= $form->field($model, 'public')->checkbox()->hint('Is challenge public?') ?>
     <?= $form->field($model, 'timer')->checkbox()->hint('Timer for solving the challenge?') ?>
 
     <?= $form->field($model, 'icon')->textInput(['maxlength' => true])->hint('Challenge icon (<code>raw html</code>)') ?>
