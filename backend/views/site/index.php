@@ -11,8 +11,10 @@ use app\modules\frontend\models\Team;
 use app\modules\activity\models\Report;
 use app\modules\activity\models\Stream;
 use app\modules\activity\models\PlayerTreasure;
+use app\modules\activity\models\PlayerTargetHelp;
 use app\modules\activity\models\PlayerFinding;
 use app\modules\activity\models\PlayerQuestion;
+use app\modules\activity\models\Writeup;
 use app\modules\activity\models\PlayerScore;
 /* @var $this yii\web\View */
 //$query = (new \yii\db\Query());
@@ -48,6 +50,8 @@ $this->title='echoCTF mUI';
                 <p>
                   <ul>
                     <li><?= Html::a('Player Score &raquo;', ['/activity/player-score']) ?>: <abbr title="Players with non zero scores"><?=PlayerScore::find()->where(['>', 'points', 0])->count()?></abbr> / <abbr title="Players with zero scores"><?=PlayerScore::find()->where(['points'=>0])->count()?></abbr>
+                    <li><?= Html::a('Activated Help &raquo;', ['/activity/player-target-help']) ?>: <abbr title="Total activated player target writeups"><?=PlayerTargetHelp::find()->count()?></abbr>
+                        / <abbr title="Contributed Writeups"><?=Writeup::find()->count()?></abbr> / <abbr title="Pending Writeups"><?=Writeup::find()->byStatus('pending')->count();?>
                     <li><?= Html::a('Player Treasures &raquo;', ['/activity/player-treasure']) ?>: <abbr title="Total player treasure records"><?=PlayerTreasure::find()->count()?></abbr> / <abbr title="Distinct players on player treasure"><?=(new \yii\db\Query())->from('player_treasure')->select('player_id')->distinct()->count()?></abbr> / <abbr title="Distinct treasure on player treasure"><?=(new \yii\db\Query())->from('player_treasure')->select('treasure_id')->distinct()->count()?></abbr>
                     <li><?= Html::a('Player Findings &raquo;', ['/activity/player-finding']) ?>: <abbr title="Total player finding records"><?=PlayerFinding::find()->count()?></abbr> / <abbr title="Distinct players on player finding"><?=(new \yii\db\Query())->from('player_finding')->select('player_id')->distinct()->count()?></abbr> / <abbr title="Distinct finding on player finding"><?=(new \yii\db\Query())->from('player_finding')->select('finding_id')->distinct()->count()?></abbr>
                     <li><?= Html::a('Player Questions &raquo;', ['/activity/player-question']) ?>: <abbr title="Total player question records"><?=PlayerQuestion::find()->count()?></abbr> / <abbr title="Distinct players on player question"><?=(new \yii\db\Query())->from('player_question')->select('player_id')->distinct()->count()?></abbr> / <abbr title="Distinct question on player question"><?=(new \yii\db\Query())->from('player_question')->select('question_id')->distinct()->count()?></abbr>
