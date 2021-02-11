@@ -172,6 +172,7 @@ class WriteupController extends \app\components\BaseController
           $pth=new PlayerTargetHelp;
           $pth->player_id=Yii::$app->user->id;
           $pth->target_id=$id;
+          $pth->created_at=new \yii\db\Expression('NOW()');
           $pth->save(false);
           $transaction->commit();
           Yii::$app->session->setFlash('success', 'You have successfully activated writeups for this target.');
