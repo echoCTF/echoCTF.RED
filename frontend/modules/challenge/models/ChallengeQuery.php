@@ -19,6 +19,11 @@ class ChallengeQuery extends \yii\db\ActiveQuery
     {
       return $this->andWhere(['t.active'=>1]);
     }
+    public function public()
+    {
+      return $this->andWhere(['t.public'=>1]);
+    }
+
     public function player_progress($player_id)
     {
       $this->alias('t');
