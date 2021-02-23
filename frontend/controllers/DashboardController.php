@@ -51,7 +51,7 @@ class DashboardController extends \app\components\BaseController
         ->groupBy(new \yii\db\Expression('date(ts)'))
         ->orderBy(new \yii\db\Expression('date(ts)'))
         ->all();
-
+        $dayActivity=null;
         foreach($rows as $row)
         {
           $dayActivity['labels'][]="'".$row['dat']."'";

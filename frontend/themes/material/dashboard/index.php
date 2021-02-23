@@ -136,6 +136,7 @@ $this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['depends' => 'yii
   </div><!-- //body-content -->
 </div>
 <?php
+if(!empty($dayActivity))
 $this->registerJs(
     "dataLastDaysActivityChart = {
       labels: [".implode($dayActivity['labels'],",")."],
