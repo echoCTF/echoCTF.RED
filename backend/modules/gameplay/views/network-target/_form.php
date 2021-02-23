@@ -16,7 +16,7 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'network_id')->dropDownList(ArrayHelper::map(app\modules\gameplay\models\Network::find()->all(), 'id', 'name'),
             ['prompt'=>'Select Network'])->Label('Network')->hint('The network this Target will belong') ?>
 
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(app\modules\gameplay\models\Target::find()->all(), 'id', 'name'),
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(app\modules\gameplay\models\Target::find()->orderBy('name')->all(), 'id', 'name'),
                     ['prompt'=>'Select Target'])->Label('Target')->hint('The Target to assign to the network') ?>
 
     <?= $form->field($model, 'weight')->textInput() ?>
