@@ -52,6 +52,7 @@ AppAsset::register($this);
             ],
             ['label' => '<span class="glyphicon glyphicon-stats"></span> Game Activity', 'url' => ['/activity/default/index'], 'visible' => !Yii::$app->user->isGuest,'active'=>Yii::$app->controller->module->id=='activity',
               'items'=> [
+                ['label' => 'Inquiries', 'url' => ['/activity/inquiry/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Sessions', 'url' => ['/activity/session/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Notifications', 'url' => ['/activity/notification/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Player Scores', 'url' => ['/activity/player-score/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
