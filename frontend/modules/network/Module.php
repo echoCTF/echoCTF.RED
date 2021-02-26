@@ -45,7 +45,7 @@ class Module extends \yii\base\Module
       if(!$network->active)
         return false;
 
-      if(!$network->public && NetworkPlayer::findOne($network->id,\Yii::$app->user->id) === null)
+      if(!$network->public && NetworkPlayer::findOne(['network_id'=>$network->id,'player_id'=>\Yii::$app->user->id]) === null)
         return false;
 
       return true;
