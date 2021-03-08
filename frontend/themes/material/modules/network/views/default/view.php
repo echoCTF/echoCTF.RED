@@ -33,7 +33,7 @@ $module = \app\modules\network\Module::getInstance();
       <div class="col-md-4">
         <div class="card card-profile">
           <div class="card-icon bg-primary">
-            <img class="img" src="<?=$model->icon?>" height="50px"/>
+            <img class="img" src="<?=$model->icon?>" height="80vw"/>
           </div>
           <div class="card-body table-responsive">
             <h4 class="card-title"><?=Html::encode($model->name)?></h4>

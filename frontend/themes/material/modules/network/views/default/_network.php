@@ -36,7 +36,7 @@ if(array_key_exists('subscription',Yii::$app->modules)!==false)
 <div class="col col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch">
   <div class="card card-profile">
     <div class="card-icon bg-primary">
-      <img class="img" src="<?=$model->icon?>" height="50px"/>
+      <img class="img" src="<?=$model->icon?>" height="80vw"/>
     </div>
     <div class="card-body table-responsive">
       <h4 class="font-weight-bold"><?=Html::a($model->name ,
