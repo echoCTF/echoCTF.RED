@@ -46,6 +46,7 @@ class StreamController extends Controller
     {
         $searchModel=new StreamSearch();
         $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination->pageSize=100;
 
         return $this->render('index', [
             'searchModel' => $searchModel,
