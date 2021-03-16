@@ -19,10 +19,12 @@ $this->params['breadcrumbs'][]=$this->title;
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php \yii\widgets\Pjax::begin(); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'layout' => "{summary}\n{pager}\n{items}\n{pager}",
         'columns' => [
             'id',
             [
@@ -44,6 +46,7 @@ $this->params['breadcrumbs'][]=$this->title;
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]);?>
+    <?php \yii\widgets\Pjax::end(); ?>
 
 
 </div>
