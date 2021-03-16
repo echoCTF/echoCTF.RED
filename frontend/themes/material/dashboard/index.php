@@ -9,9 +9,8 @@ $this->title=Yii::$app->sys->event_name.' Dashboard';
 $this->_description="The echoCTF dashboard page";
 $this->registerJsFile('/js/plugins/chartist.min.js',['depends' => 'yii\web\JqueryAsset']);
 $this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['depends' => 'yii\web\JqueryAsset']);
-
+$this->_url=\yii\helpers\Url::to([null],'https');
 ?>
-
 <div class="dashboard-index">
   <div class="body-content">
     <div class="row justify-content-center">
@@ -86,7 +85,8 @@ $this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['depends' => 'yii
               'subtitle'=>"Current level: ".Yii::$app->user->identity->profile->experience->name,
               'footer'=>'<div class="stats"></div>',
           ]);
-          $pct=intval((Yii::$app->user->identity->profile->experience->max_points - Yii::$app->user->identity->playerScore->points)/ ((Yii::$app->user->identity->profile->experience->max_points + Yii::$app->user->identity->playerScore->points)/2) * 100);
+          $x=(Yii::$app->user->identity->profile->experience->max_points - Yii::$app->user->identity->playerScore->points);
+          $pct=100-intval(($x/Yii::$app->user->identity->profile->experience->max_points) * 100);
           ?>
           <div class="progress">
             <div class="progress-bar text-dark" role="progressbar" style="width: <?=$pct?>%" aria-valuenow="<?=Yii::$app->user->identity->playerScore->points?>" aria-valuemin="<?=Yii::$app->user->identity->profile->experience->min_points?>" aria-valuemax="<?=Yii::$app->user->identity->profile->experience->max_points?>"><b><?=$pct?>%</b></div>
