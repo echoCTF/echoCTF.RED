@@ -52,14 +52,10 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
           <nav class="float-left">
             <ul>
               <li>
-                <a href="https://www.echothrust.com">
-                  echothrust
-                </a>
+                <a href="https://www.echothrust.com">echothrust</a>
               </li>
               <li>
-                <a href="https://echoctf.com">
-                  echoCTF
-                </a>
+                <a href="https://echoctf.com">echoCTF</a>
               </li>
               <li>
                 <a href="https://github.com/echoCTF/echoCTF.RED">
@@ -70,6 +66,9 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
                 <a href="https://twitter.com/echoCTF">
                   Twitter
                 </a>
+              </li>
+              <li>
+                <?=Html::a('Privacy Policy',['/legal/privacy-policy']);?>
               </li>
             </ul>
           </nav>
