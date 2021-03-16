@@ -6,7 +6,7 @@ use app\widgets\Noti;
   <div class="input-group no-border">
     <?=Html::input('text', 'hash', null, ['class'=>"form-control", 'aria-label'=>'submit an ETSCTF flag', 'placeholder'=>"submit an ETSCTF flag", 'autocomplete'=>"off"]);?>
     <?php echo Html::submitButton('<i class="material-icons flag-claim">flag</i><div class="ripple-container"></div>',
-                      ['class' => 'btn btn-white btn-round btn-just-icon']
+                      ['class' => 'btn btn-white btn-round btn-just-icon','rel'=>'tooltip','title'=>'Claim a flag']
       );?>
   </div>
 <?php
