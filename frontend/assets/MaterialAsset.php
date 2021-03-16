@@ -43,9 +43,9 @@ class MaterialAsset extends AssetBundle
         '/js/core/bootstrap-material-design.min.js?v=0.0.1',
         '/js/plugins/perfect-scrollbar.jquery.min.js?v=0.0.1',
         /* Plugin for the momentJs  */
-//        '/js/plugins/moment.min.js',
+        '/js/plugins/moment.min.js',
         /*  Plugin for Sweet Alert */
-//        '/js/plugins/sweetalert2.js',
+        '/js/plugins/sweetalert2.js',
         /* Forms Validations Plugin */
 //        '/js/plugins/jquery.validate.min.js', // XXX FIXME MOVE TO REGISTER TO appropriate forms
         /* Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard */

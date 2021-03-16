@@ -27,7 +27,15 @@ function luminanace(r, g, b)
     });
     return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
-
+yii.confirm = function (message, okCallback, cancelCallback) {
+    swal({
+        title: message,
+        type: 'warning',
+        showCancelButton: true,
+        closeOnConfirm: true,
+        allowOutsideClick: true
+    }, okCallback);
+};
 /*
  * Generate contrast between two rgb values
  * contrast([255, 255, 255], [255, 255, 0]); // 1.074 for yellow
