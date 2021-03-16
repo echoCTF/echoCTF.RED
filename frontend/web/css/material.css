@@ -495,7 +495,9 @@ details.headshotters:not([open]) summary::after {
   color: #1DA1F2;
 }
 
-
+.text-discord {
+  color:#7289DA!important;
+}
 details > .markdown h1 {
  font-size: 1.65em;
 }
