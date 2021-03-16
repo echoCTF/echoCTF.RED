@@ -124,7 +124,7 @@ AppAsset::register($this);
                 ['label' => 'Tutorial Task Dependencies', 'url' => ['/gameplay/tutorial-task-dependency/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
               ],
             ],
-            ['label' => '<span class="glyphicon glyphicon-cog"></span> Settings', 'url' => ['/settings'], 'visible' => !Yii::$app->user->isGuest,'active'=>Yii::$app->controller->module->id=='sales',
+            ['label' => '<span class="glyphicon glyphicon-cog"></span> Settings', 'url' => ['/settings'], 'visible' => !Yii::$app->user->isGuest,'active'=>Yii::$app->controller->module->id=='settings',
               'items'=> [
                 ['label' => 'Avatar', 'url' => ['/settings/avatar/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Experience', 'url' => ['/settings/experience/index'], 'visible' => !Yii::$app->user->isGuest, ],
