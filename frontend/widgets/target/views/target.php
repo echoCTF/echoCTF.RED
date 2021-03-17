@@ -61,7 +61,7 @@ echo GridView::widget([
           //if($model->network)
           //  $append=" ". $model->network->icon;
           if($model->status === 'powerup')
-            $append=sprintf(' <abbr title="Scheduled for powerup at %s"><i class="fas fa-arrow-alt-circle-up"></i></abbr>', $model->scheduled_at);
+            $append=sprintf(' <abbr title="Scheduled for powerup at %s"><i class="fas fa-arrow-alt-circle-up text-secondary"></i></abbr>', \Yii::$app->formatter->asDatetime($model->scheduled_at,'long'));
           else if($model->status === 'powerdown')
             $append=sprintf(' <abbr title="Scheduled for powerdown at %s"><i class="fas fa-arrow-alt-circle-down"></i></abbr>', $model->scheduled_at);
 
