@@ -11,11 +11,13 @@ use yii\helpers\Url;
         <a href="/" class="simple-text logo-mini">
             <img src="<?=$config::logoMini();?>" class="img-fluid" alt="echoCTF.RED Logo mini">
         </a>
+
         <?php if(!Yii::$app->user->isGuest):?>
           <a href="<?=Url::to(['/profile/me'])?>" class="simple-text logo-normal" style="text-transform:none" title="Profile of <?=Html::encode(Yii::$app->user->identity->username)?>">
             <img src="/images/avatars/<?=Yii::$app->user->identity->profile->avtr;?>" class="img-fluid rounded" style="max-width: 60px; max-height: 60px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"><br/>
             <?=Html::encode(Yii::$app->user->identity->username)?> <small style="font-size: 0.65em">(<code><?=number_format(Yii::$app->user->identity->profile->score->points)?> pts</code>)</small>
           </a>
+          <center class="small clock">Server time: <?=\Yii::$app->formatter->asTime(date('Y-m-d h:i:s'));?></center>
         <?php endif;?>
     </div>
     <div class="sidebar-wrapper">
