@@ -27,15 +27,27 @@ function luminanace(r, g, b)
     });
     return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
 }
+/**
+ * Override the default yii confirm dialog. This function is
+ * called by yii when a confirmation is requested.
+ *
+ * @param string message the message to display
+ * @param string ok callback triggered when confirmation is true
+ * @param string cancelCallback callback triggered when cancelled
+ */
 yii.confirm = function (message, okCallback, cancelCallback) {
-    swal({
-        title: message,
-        type: 'warning',
-        showCancelButton: true,
-        closeOnConfirm: true,
-        allowOutsideClick: true
-    }, okCallback);
-};
+  swal({
+    title: 'Are you sure?',
+    text: message,
+    type: 'warning',
+    showConfirmButton: true,
+    showCancelButton: true,
+  }).then((action) => {
+    if (action.value) {
+      okCallback()
+    }
+  });
+}
 /*
  * Generate contrast between two rgb values
  * contrast([255, 255, 255], [255, 255, 0]); // 1.074 for yellow
@@ -49,4 +61,24 @@ jQuery( document ).ready(function() {
   $('#claim-flag').on('pjax:success', function(event) {
           window.location.reload();
   });
+  //showTime();
 });
+function showTime(){
+
+    var date = new Date();
+    var h = date.getUTCHours(); // 0 - 23
+    var m = date.getUTCMinutes(); // 0 - 59
+    var s = date.getUTCSeconds(); // 0 - 59
+    var session="";
+    h = (h < 10) ? "0" + h : h;
+    m = (m < 10) ? "0" + m : m;
+    s = (s < 10) ? "0" + s : s;
+    session = (h < 12) ? "AM" : "";
+
+    var time = h + ":" + m;
+    document.getElementById("time").innerText = time;
+    document.getElementById("time").textContent = time;
+
+    setTimeout(showTime, 1000);
+
+}
