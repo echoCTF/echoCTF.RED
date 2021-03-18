@@ -638,3 +638,18 @@ details > .markdown h6 {
 .ct-chart .ct-grid {
   stroke: white;
 }
+
+.clock {
+    font-size: 0.7em;
+    font-family: Orbitron;
+}
+
+.blink_me {
+  animation: blinker 0.5s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
