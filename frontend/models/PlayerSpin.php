@@ -57,7 +57,7 @@ class PlayerSpin extends \yii\db\ActiveRecord
     {
         return [
             [['player_id'], 'required'],
-            [['player_id', 'counter', 'total'], 'integer'],
+            [['player_id', 'counter', 'total','perday'], 'integer'],
             [['updated_at', 'ts'], 'safe'],
             [['player_id'], 'unique'],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],

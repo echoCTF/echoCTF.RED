@@ -12,7 +12,7 @@ class PlayerSpinQuery extends \yii\db\ActiveQuery
     public function todays()
     {
       //        'select'=>["t.player_id","t.total","if(DATE(t.updated_at) < DATE(NOW()),0,t.counter) as counter"],
-        return $this->select(['player_id', 'total', "if(DATE(updated_at) < DATE(NOW()),0,counter) as counter", 'updated_at']);
+        return $this->select(['player_id', 'total', 'perday',"if(DATE(updated_at) < DATE(NOW()),0,counter) as counter", 'updated_at']);
     }
 
     /**
