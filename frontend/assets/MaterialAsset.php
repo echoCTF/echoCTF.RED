@@ -32,16 +32,16 @@ class MaterialAsset extends AssetBundle
     ];
 
     public $css=[
-        ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono&display=swap', 'async'=>'async', 'crossorigin'=>"anonymous"],
+        ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap', 'async'=>'async', 'crossorigin'=>"anonymous"],
         ['css/all.min.css?v=0.0.1', 'defer'=>'defer'],
-        'css/material-dashboard.css?v=0.0.1',
-        'css/material.css?v=0.0.4',
+        'css/material-dashboard.css?v=0.0.5',
+        'css/material.css?v=0.0.5',
     ];
 
     public $js=[
         '/js/core/popper.min.js?v=0.0.1',
-        '/js/core/bootstrap-material-design.min.js?v=0.0.1',
-        '/js/plugins/perfect-scrollbar.jquery.min.js?v=0.0.1',
+        '/js/core/bootstrap-material-design.min.js?v=0.0.5',
+        '/js/plugins/perfect-scrollbar.jquery.min.js?v=0.0.5',
         /* Plugin for the momentJs  */
         '/js/plugins/moment.min.js',
         /*  Plugin for Sweet Alert */
@@ -67,11 +67,11 @@ class MaterialAsset extends AssetBundle
         /*  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ */
         //'js/plugins/nouislider.min.js',
         /* Library for adding dinamically elements */
-        '/js/plugins/arrive.min.js?v=0.0.2',
+        '/js/plugins/arrive.min.js?v=0.0.5',
         /* Chartist JS */
         //'js/plugins/chartist.min.js',
         /*  Notifications Plugin    */
-        'js/plugins/bootstrap-notify.min.js?v=0.0.2',
+        'js/plugins/bootstrap-notify.min.js?v=0.0.5',
         /* Control Center for Material Dashboard: parallax effects, scripts for the example pages etc */
         /* Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert */
         //'//cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.min.js',
@@ -79,7 +79,7 @@ class MaterialAsset extends AssetBundle
         // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
         /******/
         //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
-        '/js/material-dashboard.js?v=0.0.4',
+        '/js/material-dashboard.js?v=0.0.5',
         '/js/libechoctf.js?v=0.0.5',
         // 'js/superfish.js'
     ];
