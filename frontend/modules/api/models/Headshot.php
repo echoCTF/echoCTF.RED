@@ -5,19 +5,15 @@ namespace app\modules\api\models;
 use Yii;
 
 /**
- * This is the model class for table "headshot".
+ * This is the model class for table "headshot" for the REST API
  *
- * @property int $player_id
+ * @property int $profile_id
  * @property int $target_id
- * @property string|null $created_at
+ * @property string $target_name
  * @property int $timer
  * @property int $rating
  * @property boolean $first
- * @property string|null $rated
- *
- * @property Player $player
- * @property Target $target
- * @property Writeup $writeup
+ * @property string|null $created_at
  */
 class Headshot extends \app\modules\game\models\Headshot
 {
@@ -41,11 +37,9 @@ class Headshot extends \app\modules\game\models\Headshot
           'created_at'
       ];
   }
+
   public function extraFields()
   {
     return [];
-    //  return ['profile','target'];
   }
-
-
 }
