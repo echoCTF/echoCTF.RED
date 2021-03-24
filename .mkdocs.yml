@@ -37,5 +37,7 @@ pages:
     - Sysconfig Commands: console-commands/Sysconfig.md
     - Target Commands: console-commands/Target.md
     - User Commands: console-commands/User.md
+    - Frontend Generator Commands: console-commands/Generator.md
+  - API: API.md
   - Player Guides:
       - Participants Tutorial: Participants-Tutorial.md
