@@ -29,6 +29,7 @@ use app\modules\activity\models\Headshot;
  * @property int $required_xp
  * @property int $rootable
  * @property int $difficulty
+ * @property string $created_at The date this record was created_at
  *
  * @property Finding[] $findings
  * @property TargetVariable[] $targetVariables
@@ -74,7 +75,7 @@ class TargetAR extends \yii\db\ActiveRecord
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
             [['status'], 'default', 'value'=> 'offline'],
             [['scheduled_at'], 'datetime', 'format'=>'php:Y-m-d H:i:s'],
-
+            [['created_at'], 'datetime', 'format'=>'php:Y-m-d H:i:s'],
         ];
     }
 
@@ -179,6 +180,10 @@ class TargetAR extends \yii\db\ActiveRecord
     {
       if(parent::beforeSave($insert))
       {
+          if($this->created_at===null)
+          {
+            $this->created_at=new \yii\db\Expression('now()');
+          }
           $this->ip=ip2long($this->ipoctet);
           return true;
       }
