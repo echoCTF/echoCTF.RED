@@ -17,6 +17,9 @@ $config=[
         '@appconfig' => realpath(dirname(__FILE__)),
     ],
     'modules' => [
+      'api' => [
+          'class' => 'app\modules\game\Module',
+      ],
       'game' => [
           'class' => 'app\modules\game\Module',
       ],
@@ -251,9 +254,8 @@ $config=[
                 // Network Module
                 'networks' => 'network/default/index',
                 'network/<id:\d+>' => 'network/default/view',
-
-                //['class' => 'yii\rest\UrlRule', 'controller' => 'profile','only'=>['notifications']],
-//                ['class' => 'yii\rest\UrlRule', 'controller' => 'rule'],
+                // API Module
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/headshot'],
             ],
         ],
     ],
