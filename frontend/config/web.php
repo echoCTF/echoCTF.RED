@@ -18,7 +18,7 @@ $config=[
     ],
     'modules' => [
       'api' => [
-          'class' => 'app\modules\game\Module',
+          'class' => 'app\modules\api\Module',
       ],
       'game' => [
           'class' => 'app\modules\game\Module',
