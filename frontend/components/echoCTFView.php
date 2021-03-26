@@ -20,7 +20,13 @@ class echoCTFView extends \yii\web\View
   public function init()
   {
 
-    $this->title=sprintf("%s - %s: %s", \Yii::$app->sys->event_name, ucfirst(\Yii::$app->controller->id), \Yii::$app->controller->action->id);
+    if(!empty(\Yii::$app->controller->id) && !empty(\Yii::$app->controller->action))
+    {
+      $this->title=sprintf("%s - %s: %s", \Yii::$app->sys->event_name, ucfirst(\Yii::$app->controller->id), \Yii::$app->controller->action->id);
+    }
+    else {
+      $this->title=sprintf("%s", \Yii::$app->sys->event_name);
+    }
     if(!\Yii::$app->user->isGuest)
     {
         \Yii::$app->cache->memcache->set("last_seen:".\Yii::$app->user->id, time());
