@@ -17,7 +17,7 @@ NOTE: __This documentation is only temporary and will be replaced by a Swagger.i
     - `rating`: integer The user provided difficulty rating for the target
     - `created_at`: datatime The headshot was achieved
 
-**Example**
+**Sample item**
 ```json
 {
   "profile_id":"177952",
@@ -30,8 +30,27 @@ NOTE: __This documentation is only temporary and will be replaced by a Swagger.i
 }
 ```
 
-Parameters:
+**Parameters:**
+
 * `filter`: filter through `filter[field_name]=field_value` example: `filter[profile_id]=1337`
 * `fields`: selecting fields through `fields=field_name,field_name...` syntax eg `fields=target_name,profile_id` to select only the target name and profile_id
 * `sort`: sorting through sort eg sort=-created_at,profile_id to sort created_at descending and profile_id ascending
 * `per-page`: limiting results per page through per-page eg per-page=100, accepted values in the range of [1...100]
+
+
+**Examples:**
+
+* Simple request
+```
+curl -i -H "Accept:application/json" "https://echoctf.red/api/headshots"
+```
+
+* filter only headshots for player with profile_id=31337
+```
+curl -i -H "Accept:application/json" "https://echoctf.red/api/headshots?filter[profile_id]=31337"
+```
+
+* filter only headshots for player with profile_id=31337 and get only the target names
+```
+curl -i -H "Accept:application/json" "https://echoctf.red/api/headshots?filter[profile_id]=31337&fields=target_name"
+```
