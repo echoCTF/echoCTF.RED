@@ -80,17 +80,21 @@ class HeadshotController extends \yii\rest\ActiveController
           'params' => $requestParams,
       ],
       'sort' => [
-        'defaultOrder' => ['created_at' => SORT_DESC],
         'params' => $requestParams,
       ],
     ]);
     $dataProvider->setSort([
+        'defaultOrder' => ['created_at' => SORT_DESC],
         'attributes' => array_merge(
             $dataProvider->getSort()->attributes,
             [
               'profile_id' => [
                   'asc' => ['profile.id' => SORT_ASC],
                   'desc' => ['profile.id' => SORT_DESC],
+              ],
+              'created_at' => [
+                  'asc' => ['headshot.created_at' => SORT_ASC],
+                  'desc' => ['headshot.created_at' => SORT_DESC],
               ],
               'target_name' => [
                   'asc' => ['target.name' => SORT_ASC],
