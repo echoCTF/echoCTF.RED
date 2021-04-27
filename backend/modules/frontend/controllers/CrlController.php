@@ -67,6 +67,14 @@ class CrlController extends Controller
     }
 
     /**
+     * Truncate Crl Table
+     */
+    public function actionTruncate()
+    {
+      Crl::deleteAll();
+      return $this->redirect(['index']);
+    }
+    /**
      * Creates a new Crl model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
