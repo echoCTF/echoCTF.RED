@@ -26,7 +26,7 @@ $this->title=Yii::$app->sys->event_name.' Signup';
 
                 <?php echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::class, ['options'=>['placeholder'=>'enter captcha code','autocomplete'=>'off']])->label(false) ?>
 
-                <p><small>By signing up you accept the echoCTF.RED <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>
+                <p><small>By signing up you accept the <?=\Yii::$app->sys->{"event_name"}?> <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>
                   and <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>.</small>
                 </p>
                 <div class="form-group">

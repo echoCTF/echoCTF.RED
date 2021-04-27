@@ -28,8 +28,8 @@ use yii\helpers\Url;
             <?php endif;/*END OF FLAG FORM*/?>
             <ul class="navbar-nav">
               <?php if(Yii::$app->user->isGuest):?>
-                <li class="nav-item"><?=Html::a('<i class="fas fa-user-plus"></i> Signup', ['/site/register'], ['class'=>'nav-link','rel'=>'tooltip', 'title'=>"Sign up for an echoCTF.RED account"])?></li>
-                <li class="nav-item"><?=Html::a('<i class="fas fa-sign-in-alt"></i>  Login', ['/site/login'], ['class'=>'nav-link','rel'=>"tooltip", 'title'=>"Login to your echoCTF.RED account"])?></li>
+                <li class="nav-item"><?=Html::a('<i class="fas fa-user-plus"></i> Signup', ['/site/register'], ['class'=>'nav-link','rel'=>'tooltip', 'title'=>"Sign up for an ".\Yii::$app->sys->{"event_name"}." account"])?></li>
+                <li class="nav-item"><?=Html::a('<i class="fas fa-sign-in-alt"></i>  Login', ['/site/login'], ['class'=>'nav-link','rel'=>"tooltip", 'title'=>"Login to your ".\Yii::$app->sys->{"event_name"}." account"])?></li>
               <?php else: ?>
                 <li class="nav-item dropdown" id="Hints">
                   <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false" rel="tooltip" aria-label="Hints to help you progress further" title='Hints to help you progress further'>
