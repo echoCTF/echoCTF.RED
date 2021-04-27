@@ -29,6 +29,7 @@ use app\modules\activity\models\Headshot;
  * @property int $required_xp
  * @property int $rootable
  * @property int $difficulty
+ * @property int $weight
  * @property string $created_at The date this record was created_at
  *
  * @property Finding[] $findings
@@ -64,7 +65,7 @@ class TargetAR extends \yii\db\ActiveRecord
         return [
             [['description'], 'string'],
             [['name', 'fqdn', 'mac'], 'required'],
-            [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp'], 'integer'],
+            [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight'], 'integer'],
             [['ipoctet'], 'ip'],
             [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
             [['image'], 'filter', 'filter'=>'strtolower'],
@@ -103,6 +104,7 @@ class TargetAR extends \yii\db\ActiveRecord
             'suggested_xp'=>'Suggested XP',
             'required_xp'=>'Required XP',
             'timer'=>'Timer',
+            'weight'=>'Weight',
         ];
     }
 

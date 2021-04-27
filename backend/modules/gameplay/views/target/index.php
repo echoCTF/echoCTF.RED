@@ -58,6 +58,7 @@ $this->params['breadcrumbs'][]=$this->title;
             ],
 //            'required_xp',
 //            'suggested_xp',
+            'weight',
             [
               'class' => 'yii\grid\ActionColumn',
               'template' => '{spin} {view} {update} {delete}',

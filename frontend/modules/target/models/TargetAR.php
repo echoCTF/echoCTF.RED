@@ -32,6 +32,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int|null $required_xp
  * @property string $ts
  * @property bool $timer
+ * @property int|null $weight
  *
  * @property Credential[] $credentials
  * @property Finding[] $findings
@@ -83,6 +84,7 @@ class TargetAR extends \yii\db\ActiveRecord
             'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
             'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
             'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
           ],
           'typecastAfterValidate' => true,
           'typecastBeforeSave' => true,
@@ -99,7 +101,7 @@ class TargetAR extends \yii\db\ActiveRecord
       return [
         [['description'], 'string'],
         [['ip'], 'required'],
-        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp'], 'integer'],
+        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight'], 'integer'],
         [['scheduled_at', 'ts'], 'safe'],
         [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
         [['mac'], 'string', 'max' => 30],

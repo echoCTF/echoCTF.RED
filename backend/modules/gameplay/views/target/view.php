@@ -78,6 +78,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'image',
             'dns',
             'parameters',
+            'weight',
             'ts',
             [
               'label'=>'Examples',
