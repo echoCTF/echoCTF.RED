@@ -90,6 +90,7 @@ class ConfigureForm extends Model
             'mail_useFileTransport',
             'online_timeout',
             'spins_per_day',
+            'team_manage_members',
         ];
 
     /**
@@ -162,7 +163,7 @@ class ConfigureForm extends Model
           [['online_timeout'], 'default', 'value'=>900],
           [['spins_per_day'], 'default', 'value'=> 2],
           [['event_start','event_end','registrations_start','registrations_end'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
-          [['dashboard_is_home','mail_useFileTransport', 'event_active', 'teams', 'team_required', 'team_manage_members','require_activation', 'disable_registration', 'player_profile', 'approved_avatar'], 'boolean'],
+          [['dashboard_is_home','mail_useFileTransport', 'event_active', 'teams', 'team_required', 'team_manage_members','require_activation', 'disable_registration', 'player_profile', 'approved_avatar','team_manage_members'], 'boolean'],
 
         ];
     }
@@ -207,6 +208,7 @@ class ConfigureForm extends Model
           'mail_port'=>'Mail Port',
           'online_timeout' => 'Timeout for user online key to expire',
           'spins_per_day'=>'Spins allowed per day',
+          'team_manage_members' => 'Team Manage Members',
         ];
     }
 

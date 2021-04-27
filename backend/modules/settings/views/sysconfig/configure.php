@@ -39,9 +39,10 @@ $this->params['breadcrumbs'][]=$this->title;
         <hr/>
         <h4>Team properties</h4>
         <div class="row form-group">
-          <div class="col-sm-4"><?= $form->field($model, 'teams')->checkbox()->hint('Are teams supported?') ?></div>
-          <div class="col-sm-4"><?= $form->field($model, 'team_required')->checkbox()->hint('Are teams required?') ?></div>
-          <div class="col-sm-4"><?= $form->field($model, 'members_per_team')->textInput(['maxlength'=>true])->hint('How many members are allowed per team (including the team owner)?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'teams')->checkbox()->hint('Are teams supported?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'team_required')->checkbox()->hint('Are teams required?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'team_manage_members')->checkbox()->hint('Allow team members management operations?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'members_per_team')->textInput(['maxlength'=>true])->hint('How many members are allowed per team (including the team owner)?') ?></div>
         </div>
         <hr/>
         <h4>Registration and Player properties</h4>

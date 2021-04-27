@@ -70,7 +70,7 @@ $this->_fluid="-fluid";
               'approved:boolean',
               [
                 'class'=> 'app\actions\ActionColumn',
-                //'visible'=>!$personal,
+                'visible'=>\Yii::$app->sys->{"team_manage_members"}===true,
                 'headerOptions' => ["style"=>'width: 4rem'],
                 'template'=>'{approve} {reject}',
                 'visibleButtons' => [
