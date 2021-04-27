@@ -115,7 +115,7 @@ class PlayerController extends Controller {
   /*
     Mail Users their activation URL
   */
-  public function actionMail($baseURL="https://echoctf.red/index.php?r=site/activate&key=", $active=false, $email=false)
+  public function actionMail($baseURL, $active=false, $email=false)
   {
     // Get innactive players
     if($email !== false)
@@ -132,8 +132,9 @@ class PlayerController extends Controller {
     foreach($players as $player)
     {
       // Generate activation URL
-      $activationURL=sprintf("%s%s", $baseURL, $player->activkey);
-      $MAILCONTENT=$this->renderFile('mail/layouts/activation.php', ['activationURL'=>$activationURL, 'player'=>$player, 'event_name'=>$event_name]);
+      $activationURL=sprintf("%s%s", $baseURL, $player->verification_token);
+      $MAILCONTENT=$this->renderFile('@app/mail/layouts/activation.php', ['activationURL'=>$activationURL, 'player'=>$player, 'event_name'=>$event_name]);
+      $_SERVER['SERVER_NAME']=Sysconfig::findOne('moderator_domain')->val;
       $this->stdout($player->email);
       $numSend=$player->mail($MAILCONTENT,Sysconfig::findOne('event_name')->val.' account activation details');
       $this->stdout($numSend ? " Ok\n" : "Not Ok\n");
@@ -151,7 +152,11 @@ class PlayerController extends Controller {
     {
       $player=new Player;
       $player->academic=intval(boolval($academic));
-      $player->username=trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $username));
+      if($username==='')
+        $player->username=substr(md5($email),0,10);
+      else
+        $player->username=trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $username));
+
       $player->email=trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $email));
       $player->fullname=trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $fullname));
       $player->type=$player_type;
@@ -162,8 +167,14 @@ class PlayerController extends Controller {
 
       $player->active=intval($active);
       $player->status=10;
+      if(!$player->active)
+      {
+        $player->verification_token=Yii::$app->security->generateRandomString().'_'.time();
+        $player->status=9;
+      }
+
       $player->auth_key=Yii::$app->security->generateRandomString();
-      $player->activkey=Yii::$app->security->generateRandomString(20);
+      //$player->activkey=Yii::$app->security->generateRandomString(20);
 
       if(!$player->saveWithSsl())
       {
