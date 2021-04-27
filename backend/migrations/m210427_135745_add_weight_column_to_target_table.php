@@ -12,7 +12,7 @@ class m210427_135745_add_weight_column_to_target_table extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn('{{%target}}', 'weight', $this->integer());
+        $this->addColumn('{{%target}}', 'weight', $this->integer()->notNull()->defaultValue(0));
     }
 
     /**
