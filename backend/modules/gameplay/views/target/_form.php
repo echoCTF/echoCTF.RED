@@ -86,6 +86,12 @@ use yii\bootstrap\ActiveForm;
           <?= $form->field($model, 'image')->textInput(['maxlength' => true])->hint('Image to pull and run') ?>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-6">
+          <?= $form->field($model, 'weight')->textInput(['maxlength' => true])->hint('Enter a number to be used as weight for ordering') ?>
+        </div>
+    </div>
+
     <?= $form->field($model, 'parameters')->textarea(['rows' => 6])->hint('Add extra docker parameters as json object (eg. <code>{"hostConfig":{"Memory":"512"}}</code>)') ?>
 
 
