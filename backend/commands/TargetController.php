@@ -89,11 +89,13 @@ class TargetController extends Controller {
 
 
   /**
-   * Restart targets who are up for more than 24 hours
+   * Restart targets that are running for more than interval minutes
+   * Default value: 24 hours
+   * @param int $interval.
    */
-  public function actionRestart()
+  public function actionRestart($interval=1440, $limit=1)
   {
-    foreach(Target::find()->docker_servers()->all() as $master)
+    foreach(Target::find()->select(['server'])->distinct()->all() as $master)
     {
       if($master->server == null) continue;
       $client=DockerClientFactory::create([
@@ -102,20 +104,23 @@ class TargetController extends Controller {
       ]);
       $docker=Docker::create($client);
       $containers=$docker->containerList();
+      $processed=0;
       foreach($containers as $container)
       {
-        $name=str_replace('/', '', $container->getNames()[0]);
-        $d=Target::findOne(['name'=>$name]);
-        $cstatus=$container->getStatus();
-        if(preg_match('/Up ([0-9]+) hours/', $cstatus, $matches) !== false)
+        if($processed>=$limit)
+          break;
+        $created=$containers[0]->getCreated();
+        if($created<=(time()-intval($interval*60)))
         {
-          $hours=intval(@$matches[1]);
-          if($hours >= 24)
+          $name=str_replace('/', '', $container->getNames()[0]);
+          $d=Target::findOne(['name'=>$name]);
+          if($d)
           {
-            printf("Restarting %s/%s [%s]\n", $master->server, $d->name, $cstatus);
-            return $d->spin();
+            printf("Restarting %s/%s [%s]\n", $master->server, $d->name, \Yii::$app->formatter->asRelativeTime($created));
+            $d->spin();
           }
         }
+        $processed++;
       }
     } // end docker servers
   }
