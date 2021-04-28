@@ -44,7 +44,12 @@ class CronController extends Controller {
 
     foreach($unhealthy as $target)
     {
-      printf("Processing [%s] on docker [%s]\n", $target->name, $target->server);
+      printf("Processing [%s] on docker [%s]", $target->name, $target->server);
+      if($target->healthcheck==0)
+      {
+        printf("... skipping by healthcheck flag\n");
+      }
+      echo "\n";
       if($spin !== false)
       {
         $target->spin();
@@ -249,7 +254,7 @@ class CronController extends Controller {
   private function unhealthy_dockers()
   {
     $unhealthy=[];
-    foreach(Target::find()->docker_servers()->all() as $target)
+    foreach(Target::find()->select(['server'])->distinct()->all() as $target)
     {
       $docker=$this->docker_connect($target->server);
 
