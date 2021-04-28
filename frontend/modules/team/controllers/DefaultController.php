@@ -30,7 +30,18 @@ class DefaultController extends Controller
                 'class' => \yii\filters\AccessControl::class,
                 'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite'],
                 'rules' => [
-
+                  [
+                    'actions'=>['create', 'join', 'update', 'approve', 'reject'],
+                    'allow'=> false,
+                    'roles' => ['@'],
+                    'matchCallback' => function ($rule, $action) {
+                      return (\Yii::$app->sys->{"team_manage_members"}===false);
+                    },
+                    'denyCallback' => function() {
+                      \Yii::$app->session->addFlash('error', 'Team management is disabled at the moment.');
+                      return $this->redirect(['index']);
+                    }
+                  ],
                   [
                     'actions'=> ['create'],
                     'allow'=> false,
