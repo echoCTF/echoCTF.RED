@@ -77,11 +77,18 @@ class Player extends PlayerAR
           ->setSubject($subject)
           ->setTextBody($content)
           ->send();
-        \Yii::$app->session->setFlash('success', "The user has been mailed.");
+        if (Yii::$app instanceof \yii\web\Application)
+          \Yii::$app->session->setFlash('success', "The user has been mailed.");
+        else {
+          echo "The user has been mailed.\n";
+        }
       }
       catch(\Exception $e)
       {
-        \Yii::$app->session->setFlash('notice', "Failed to send mail to user.");
+        if (Yii::$app instanceof \yii\web\Application)
+          \Yii::$app->session->setFlash('notice', "Failed to send mail to user.");
+        else
+          echo "Failed to send mail to user.\n";
         return false;
       }
       return true;
@@ -103,11 +110,11 @@ class Player extends PlayerAR
       if($team_name === false)
         return;
 
-      $team=Team::findOne(['name'=>$team_name]);
+      $team=Team::findOne(['name'=>trim($team_name)]);
       if($team === null)
       {
         $team=new Team();
-        $team->name=$team_name;
+        $team->name=trim($team_name);
         $team->academic=$this->academic;
         $team->token=Yii::$app->security->generateRandomString(20);
         $team->owner_id=$this->id;
@@ -118,10 +125,13 @@ class Player extends PlayerAR
         $ts->points=0;
         $ts->save();
       }
+      if(($tp=TeamPlayer::findOne(['team_id'=>$team->id,'player_id'=>$this->id]))===null)
+      {
+        $tp=new TeamPlayer;
+        $tp->player_id=$this->id;
+        $tp->team_id=$team->id;
+      }
 
-      $tp=new TeamPlayer;
-      $tp->player_id=$this->id;
-      $tp->team_id=$team->id;
       $tp->approved=intval($approved);
       if($team->owner_id===$this->id)
       {
