@@ -25,10 +25,10 @@ class ProfileController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['badge','me', 'index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
+                'only' => ['badge','me', 'index', 'notifications', 'hints', 'ovpn', 'settings'],
                 'rules' => [
                    'eventActive'=>[
-                      'actions' => ['badge','index', 'notifications', 'hints', 'update', 'ovpn', 'settings'],
+                      'actions' => ['badge','index', 'notifications', 'hints', 'ovpn', 'settings'],
                    ],
                    'eventStartEnd'=>[
                      'actions' => ['ovpn'],
@@ -37,11 +37,20 @@ class ProfileController extends \app\components\BaseController
                       'actions' => ['ovpn'],
                    ],
                    'disabledRoute'=>[
-                     'actions' => ['badge', 'me', 'notifications', 'hints', 'update', 'ovpn', 'settings','index'],
+                     'actions' => ['badge', 'me', 'notifications', 'hints', 'ovpn', 'settings','index'],
                    ],
                    [
                      'actions' => ['index','badge'],
                      'allow' => true,
+                   ],
+                   [
+                     'actions' => ['settings'],
+                     'allow' => false,
+                     'verbs' => ['POST'],
+                     'roles'=>['@'],
+                     'matchCallback' => function () {
+                       return !\Yii::$app->request->validateCsrfToken(\Yii::$app->request->getBodyParam(\Yii::$app->request->csrfParam));
+                     },
                    ],
                    [
                      'actions' => ['ovpn','me','settings','notifications','hints'],
@@ -144,6 +153,7 @@ class ProfileController extends \app\components\BaseController
 
     public function actionSettings()
     {
+
       $settingsForm=new \app\models\forms\SettingsForm();
       $profile=Yii::$app->user->identity->profile;
 

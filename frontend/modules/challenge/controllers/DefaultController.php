@@ -40,6 +40,16 @@ class DefaultController extends \app\components\BaseController
                   'actions' => ['index', 'view', 'download'],
               ],
               [
+                'actions' => ['view'],
+                'allow' => false,
+                'verbs' => ['POST'],
+                'roles'=>['@'],
+                'matchCallback' => function () {
+                  return !\Yii::$app->request->validateCsrfToken(\Yii::$app->request->getBodyParam(\Yii::$app->request->csrfParam));
+                },
+              ],
+
+              [
                   'allow' => true,
                   'roles'=>['@']
               ],
