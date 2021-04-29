@@ -74,9 +74,9 @@ class GeneratorController extends Controller {
       }
     }
 
-    public function actionBadges($owner=0)
+    public function actionBadges($owner=0, $interval=1440)
     {
-      $streamPlayers=Stream::find()->select(['player_id'])->distinct()->where(['>=','ts',new \yii\db\Expression('NOW() - INTERVAL 26 HOUR')]);
+      $streamPlayers=Stream::find()->select(['player_id'])->distinct()->where(['>=','ts',new \yii\db\Expression('NOW() - INTERVAL '.$interval.' MINUTE')]);
       foreach($streamPlayers->all() as $item)
       {
         echo "Processing user: ",$item->player->username;
