@@ -7,7 +7,7 @@ $this->_fluid="-fluid";
 ?>
 <div class="team-update">
   <div class="body-content">
-    <h2>Update team [<code><?=$model->name?></code>]</h2>
+    <h2>Update team [<code><?=Html::encode($model->name)?></code>]</h2>
     <hr />
     <div class="card">
       <div class="card-header card-header-primary">
