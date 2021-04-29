@@ -171,7 +171,7 @@ class SettingsForm extends Model
 
       if($this->new_password)
       {
-        $this->_player->password=$this->new_password;
+        $this->_player->password=\Yii::$app->security->generatePasswordHash($this->new_password);
         \Yii::$app->session->addFlash('success','Password changed.');
       }
 
