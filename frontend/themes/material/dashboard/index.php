@@ -104,7 +104,13 @@ $this->_url=\yii\helpers\Url::to([null],'https');
               'subtitle'=>"Targets: ".\app\modules\target\models\Target::find()->active()->count(),
               'footer'=>'<div class="stats"></div>',
           ]);
+          if(intval(\app\modules\target\models\Target::find()->active()->count())!=0)
+          {
             $headshotsPct=intval((Yii::$app->user->identity->profile->headshotsCount/intval(\app\modules\target\models\Target::find()->active()->count()))*100);
+          }
+          else {
+            $headshotsPct=0;
+          }
           ?>
           <div class="progress">
             <div class="progress-bar text-dark" role="progressbar" style="width: <?=$headshotsPct?>%" aria-valuenow="<?=Yii::$app->user->identity->profile->headshotsCount?>" aria-valuemin="0" aria-valuemax="<?=\app\modules\target\models\Target::find()->active()->count()?>"><b><?=$headshotsPct?>%</b></div>
@@ -122,7 +128,11 @@ $this->_url=\yii\helpers\Url::to([null],'https');
               'subtitle'=>"Challenges: ".\app\modules\challenge\models\Challenge::find()->count(),
               'footer'=>'<div class="stats"></div>',
           ]);
+          if(intval(\app\modules\challenge\models\Challenge::find()->count())>0)
             $headshotsPct=intval((Yii::$app->user->identity->profile->challengesSolverCount/intval(\app\modules\challenge\models\Challenge::find()->count()))*100);
+          else {
+            $headshotsPct=0;
+          }
           ?>
           <div class="progress">
             <div class="progress-bar text-dark" role="progressbar" style="width: <?=$headshotsPct?>%" aria-valuenow="<?=Yii::$app->user->identity->profile->headshotsCount?>" aria-valuemin="0" aria-valuemax="<?=\app\modules\target\models\Target::find()->active()->count()?>"><b><?=$headshotsPct?>%</b></div>
