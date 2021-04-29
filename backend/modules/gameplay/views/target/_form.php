@@ -12,11 +12,22 @@ use yii\bootstrap\ActiveForm;
 
     <?php $form=ActiveForm::begin([]);?>
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('Unique short name for the target host. Keep in mind that this name is also been used to select the logo for the target on <code>frontend/web/images/target</code>') ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <?= $form->field($model, 'fqdn')->textInput(['maxlength' => true])->hint('Fully Qualified Domain Name for the target host') ?>
+        </div>
+        <div class="col-md-4">
+          <?= $form->field($model, 'difficulty')->dropDownList([
+            0=>"beginner",
+            1=>"basic",
+            2=>"intermediate",
+            3=>"advanced",
+            4=>"expert",
+            5=>"guru",
+            6=>"insane",
+          ])->hint('The initial difficulty rating for this target (eg. 0=easy)') ?>
         </div>
     </div>
 
@@ -32,10 +43,10 @@ use yii\bootstrap\ActiveForm;
 
     <div class="row">
         <div class="col-md-3">
-          <?= $form->field($model, 'difficulty')->textInput()->hint('The initial difficulty rating for this target (eg. 0=easy)') ?>
+          <?= $form->field($model, 'active')->checkbox()->hint('Whether the target is active or not (if this is not checked, the target will NOT be available to the players)') ?>
         </div>
         <div class="col-md-3">
-          <?= $form->field($model, 'active')->checkbox()->hint('Whether the target is active or not (if this is not checked, the target will NOT be available to the players)') ?>
+          <?= $form->field($model, 'healthcheck')->checkbox()->hint('Whether the target should be checked for health status') ?>
         </div>
         <div class="col-md-3">
           <?= $form->field($model, 'rootable')->checkbox()->hint('Whether the target is rootable or not (checked=rootable)') ?>
