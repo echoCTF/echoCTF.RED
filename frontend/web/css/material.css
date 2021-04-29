@@ -317,6 +317,7 @@ td.td-actions,
 
 .leader-score_title{
     text-align: right;
+    white-space: nowrap;
     width:100%;
 /*    line-height: 1;*/
 }
