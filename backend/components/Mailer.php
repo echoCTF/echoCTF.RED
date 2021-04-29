@@ -5,6 +5,7 @@ class Mailer extends \yii\swiftmailer\Mailer
 {
   public function init()
   {
+    $this->enableSwiftMailerLogging=true;
     parent::init();
 
     $this->useFileTransport=Yii::$app->sys->mail_useFileTransport;
