@@ -18,7 +18,7 @@ class TargetSearch extends Target
     public function rules()
     {
         return [
-            [['id', 'ip', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp','headshot'], 'integer'],
+            [['id', 'ip', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp','headshot','weight'], 'integer'],
             ['active','boolean'],
             [['headshot'],'default','value'=>null ],
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
@@ -71,6 +71,7 @@ class TargetSearch extends Target
             'difficulty' => $this->difficulty,
             'suggested_xp' => $this->suggested_xp,
             'required_xp' => $this->required_xp,
+            'weight' => $this->weight,
             'timer' => $this->timer,
         ]);
 
