@@ -39,7 +39,7 @@ $this->title='echoCTF mUI';
                     <li><?= Html::a('Teams &raquo;', ['/frontend/team']) ?>: <?=Team::find()->count()?>
                     <li><?= Html::a('Targets &raquo;', ['/gameplay/target']) ?>: <?=Target::find()->count()?> / <?=Target::find()->where(['active'=>1])->count()?>
                     <li><?= Html::a('Challenges &raquo;', ['/gameplay/challenge']) ?>: <?=Challenge::find()->count()?>
-                    <li><?= Html::a('Questions &raquo;', ['/gameplay/question']) ?>: <?=Question::find()->count()?>
+                    <li><?= Html::a('Questions &raquo;', ['/gameplay/question']) ?>: <?=Question::find()->count()?> / <?=(int) (new \yii\db\Query())->from('question')->sum('points');?>pts
                     <li><?= Html::a('Findings &raquo;', ['/gameplay/finding']) ?>: <?=Finding::find()->count()?> / <?=(int) (new \yii\db\Query())->from('finding')->sum('points');?>pts
                     <li><?= Html::a('Treasures &raquo;', ['/gameplay/treasure']) ?>: <?=Treasure::find()->count()?> / <?=(int) (new \yii\db\Query())->from('treasure')->sum('points');?>pts
                   </ul>
