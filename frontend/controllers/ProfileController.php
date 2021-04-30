@@ -169,6 +169,7 @@ class ProfileController extends \app\components\BaseController
         }
         $settingsForm->save();
         $settingsForm->reset();
+        return $this->redirect('settings');
       }
 
       return $this->render('settings', [
