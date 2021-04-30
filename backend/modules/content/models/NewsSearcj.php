@@ -4,12 +4,12 @@ namespace app\modules\content\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\content\models\Rule;
+use app\modules\content\models\News;
 
 /**
- * RuleSearch represents the model behind the search form of `app\modules\settings\models\Rule`.
+ * NewsSearcj represents the model behind the search form of `app\modules\content\models\News`.
  */
-class RuleSearch extends Rule
+class NewsSearcj extends News
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class RuleSearch extends Rule
     public function rules()
     {
         return [
-            [['id', 'weight'], 'integer'],
-            [['title', 'player_type', 'message', 'ts'], 'safe'],
+            [['id'], 'integer'],
+            [['title', 'category', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -40,18 +40,17 @@ class RuleSearch extends Rule
      */
     public function search($params)
     {
-        $query=Rule::find();
+        $query = News::find();
 
         // add conditions that should always apply here
 
-        $dataProvider=new ActiveDataProvider([
+        $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if(!$this->validate())
-        {
+        if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -60,13 +59,12 @@ class RuleSearch extends Rule
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'weight' => $this->weight,
-            'ts' => $this->ts,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'player_type', $this->player_type])
-            ->andFilterWhere(['like', 'message', $this->message]);
+            ->andFilterWhere(['like', 'category', $this->category]);
 
         return $dataProvider;
     }

@@ -1,10 +1,10 @@
 <?php
 
-namespace app\modules\settings\models;
+namespace app\modules\content\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\settings\models\Faq;
+use app\modules\content\models\Faq;
 
 /**
  * FaqSearch represents the model behind the search form of `app\modules\settings\models\Faq`.

@@ -14,6 +14,9 @@ $config=[
         '@npm'   => '@vendor/npm-asset',
     ],
     'modules' => [
+        'content' => [
+            'class' => 'app\modules\content\Module',
+        ],
         'servers' => [
             'class' => 'app\modules\servers\Module',
         ],
