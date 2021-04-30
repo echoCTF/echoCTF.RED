@@ -8,7 +8,9 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id) . ' Statuses';
-$this->params['breadcrumbs'][]=$this->title;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
+$this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->id) . ' Statuses';
 ?>
 <div class="target-index">
 

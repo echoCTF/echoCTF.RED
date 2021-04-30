@@ -18,6 +18,8 @@ $this->params['breadcrumbs'][]=$this->title;
         <?= Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Spin All', ['spin', 'id' => 'all'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Pull All', ['pull', 'id' => 'all'], ['class' => 'btn btn-warning']) ?>
+        <?= Html::a('Statistics', ['statistics'], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Container Status', ['status'], ['class' => 'btn btn-info']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
