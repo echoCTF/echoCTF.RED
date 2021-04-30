@@ -44,15 +44,6 @@ class ProfileController extends \app\components\BaseController
                      'allow' => true,
                    ],
                    [
-                     'actions' => ['settings'],
-                     'allow' => false,
-                     'verbs' => ['POST'],
-                     'roles'=>['@'],
-                     'matchCallback' => function () {
-                       return !\Yii::$app->request->validateCsrfToken(\Yii::$app->request->getBodyParam(\Yii::$app->request->csrfParam));
-                     },
-                   ],
-                   [
                      'actions' => ['ovpn','me','settings','notifications','hints'],
                      'allow' => true,
                      'roles'=>['@']
