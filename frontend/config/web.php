@@ -118,7 +118,7 @@ $config=[
         'request' => [
             'csrfParam' => '_csrf-red',
             'enableCsrfValidation' => true,
-            'enableCsrfCookie'=>true,
+            'enableCsrfCookie'=>false,
             'csrfCookie'=>['httpOnly'=>true],
             'cookieValidationKey' => $cookieValidationKey,
             'parsers' => [
@@ -255,7 +255,8 @@ $config=[
                 'networks' => 'network/default/index',
                 'network/<id:\d+>' => 'network/default/view',
                 // API Module
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'api/headshot'],
+                'api/headshots' => 'api/headshot/index',
+                //['class' => 'yii\rest\UrlRule', 'controller' => 'api/headshot'],
             ],
         ],
     ],
