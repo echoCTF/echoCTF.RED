@@ -8,7 +8,10 @@ use app\modules\gameplay\models\TargetSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use Docker\DockerClientFactory;
+use Docker\Docker;
+use Http\Client\Socket\Exception\ConnectionException;
+use yii\data\ArrayDataProvider;
 
 /**
  * TargetController implements the CRUD actions for Target model.
@@ -52,6 +55,20 @@ class TargetController extends Controller
 
         return $this->render('index', [
             'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Lists all Target Statuses.
+     * @return mixed
+     */
+    public function actionStatus()
+    {
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $this->docker_statuses(),
+        ]);
+        return $this->render('status', [
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -246,5 +263,39 @@ class TargetController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    /*
+     * Return an array of docker container statuses or null
+     */
+    private function docker_statuses()
+    {
+      $containers=[];
+      foreach(Target::find()->select(['server'])->distinct()->all() as $target)
+      {
+        if($target->server{0}==='/')
+          $client=DockerClientFactory::create([
+            'ssl' => false,
+          ]);
+        else
+          $client=DockerClientFactory::create([
+            'remote_socket' => $target->server,
+            'ssl' => false,
+          ]);
+
+        try
+        {
+          $docker=Docker::create($client);
+          $tmp=$docker->containerList(['all'=>true]);
+        }
+        catch(\Exception $e)
+        {
+          continue;
+        }
+        $containers=array_merge($containers,$tmp);
+
+      }
+      return $containers;
+    }
+
 
 }
