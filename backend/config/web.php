@@ -14,6 +14,9 @@ $config=[
         '@npm'   => '@vendor/npm-asset',
     ],
     'modules' => [
+        'servers' => [
+            'class' => 'app\modules\servers\Module',
+        ],
         'smartcity' => [
             'class' => 'app\modules\smartcity\Module',
         ],
@@ -72,6 +75,7 @@ $config=[
             'targets' => [
                 [
                     'class' => 'yii\log\FileTarget',
+                    'categories' => ['yii\swiftmailer\Logger::add'],
                     'levels' => ['error', 'warning'],
                 ],
             ],
