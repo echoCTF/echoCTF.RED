@@ -9,7 +9,7 @@ use yii\helpers\Url;
 <div class="sidebar" data-color="<?=$config::sidebarColor()  ?>" data-background-color="<?=$config::sidebarBackgroundColor()  ?>">
     <div class="logo">
         <a href="/" class="simple-text logo-mini" alt="<?=\Yii::$app->sys->{"event_name"}?>">
-            <img src="<?=$config::logoMini();?>" class="img-fluid" title="<?=\Yii::$app->sys->{"event_name"}?> Logo">
+            <img src="<?=$config::logoMini();?>" class="img-fluid rounded" title="<?=\Yii::$app->sys->{"event_name"}?> Logo">
         </a>
 
         <?php if(!Yii::$app->user->isGuest):?>
