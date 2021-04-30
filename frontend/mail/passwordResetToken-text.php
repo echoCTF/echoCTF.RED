@@ -5,7 +5,7 @@
 
 $resetLink=Yii::$app->urlManager->createAbsoluteUrl(['site/reset-password', 'token' => $user->password_reset_token]);
 ?>
-Hello <?= $user->username ?>,
+Hello <?= Html::encode($user->username) ?>,
 
 You (or possibly someone else), just requested a password reset operation
 to be performed on an account associated with this email address.
