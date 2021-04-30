@@ -74,6 +74,26 @@ class TargetController extends Controller
     }
 
     /**
+     * Lists all Target Statistics.
+     * @return mixed
+     */
+    public function actionStatistics()
+    {
+      $stats = Yii::$app->db->createCommand('select name,difficulty,target_started_count(id) as "startedBy",count(distinct t2.player_id) as "solvedBy", FORMAT(target_solved_percentage(id),2) as "solvedPct",min(t2.timer) as "fastestSolve",avg(t2.timer) as "avgSolve" FROM target as t1 left join headshot as t2 on t2.target_id=t1.id group by t1.id')
+            ->queryAll();
+
+      $dataProvider = new ArrayDataProvider([
+          'allModels' => $stats,
+          'sort' => [
+            'attributes' => ['name', 'difficulty', 'startedBy','solvedBy','solvedPct','fastestSolve','avgSolve'],
+          ],
+      ]);
+      return $this->render('stats', [
+          'dataProvider' => $dataProvider,
+      ]);
+    }
+
+    /**
      * Generate a single Target build files.
      * @param integer $id
      * @return mixed
