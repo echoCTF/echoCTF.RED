@@ -1,15 +1,15 @@
 <?php
 
-namespace app\modules\settings\models;
+namespace app\modules\content\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\settings\models\Instruction;
+use app\modules\content\models\Rule;
 
 /**
- * InstructionSearch represents the model behind the search form of `app\modules\settings\models\Instruction`.
+ * RuleSearch represents the model behind the search form of `app\modules\settings\models\Rule`.
  */
-class InstructionSearch extends Instruction
+class RuleSearch extends Rule
 {
     /**
      * {@inheritdoc}
@@ -40,7 +40,7 @@ class InstructionSearch extends Instruction
      */
     public function search($params)
     {
-        $query=Instruction::find();
+        $query=Rule::find();
 
         // add conditions that should always apply here
 

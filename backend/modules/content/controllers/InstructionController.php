@@ -1,49 +1,53 @@
 <?php
 
-namespace app\modules\settings\controllers;
+namespace app\modules\content\controllers;
 
 use Yii;
-use app\modules\settings\models\Faq;
-use app\modules\settings\models\FaqSearch;
+use app\modules\content\models\Instruction;
+use app\modules\content\models\InstructionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * FaqController implements the CRUD actions for Faq model.
+ * InstructionController implements the CRUD actions for Instruction model.
  */
-class FaqController extends Controller
+class InstructionController extends Controller
 {
     /**
      * {@inheritdoc}
      */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                  ],
-              ],
-          ];
-      }
+    public function behaviors()
+    {
+        return [
+          'access' => [
+                'class' => \yii\filters\AccessControl::class,
+                'only' => ['index', 'create', 'update', 'view'],
+                'rules' => [
+                    // allow authenticated users
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    // everything else is denied
+                ],
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
+    }
+
     /**
-     * Lists all Faq models.
+     * Lists all Instruction models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel=new FaqSearch();
+        $searchModel=new InstructionSearch();
         $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -53,7 +57,7 @@ class FaqController extends Controller
     }
 
     /**
-     * Displays a single Faq model.
+     * Displays a single Instruction model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -66,13 +70,13 @@ class FaqController extends Controller
     }
 
     /**
-     * Creates a new Faq model.
+     * Creates a new Instruction model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model=new Faq();
+        $model=new Instruction();
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
@@ -85,7 +89,7 @@ class FaqController extends Controller
     }
 
     /**
-     * Updates an existing Faq model.
+     * Updates an existing Instruction model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -106,7 +110,7 @@ class FaqController extends Controller
     }
 
     /**
-     * Deletes an existing Faq model.
+     * Deletes an existing Instruction model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -120,19 +124,19 @@ class FaqController extends Controller
     }
 
     /**
-     * Finds the Faq model based on its primary key value.
+     * Finds the Instruction model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Faq the loaded model
+     * @return Instruction the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if(($model=Faq::findOne($id)) !== null)
+        if(($model=Instruction::findOne($id)) !== null)
         {
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

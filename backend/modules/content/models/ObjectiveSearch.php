@@ -1,15 +1,15 @@
 <?php
 
-namespace app\modules\settings\models;
+namespace app\modules\content\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\settings\models\Rule;
+use app\modules\content\models\Objective;
 
 /**
- * RuleSearch represents the model behind the search form of `app\modules\settings\models\Rule`.
+ * ObjectiveSearch represents the model behind the search form of `app\modules\settings\models\Objective`.
  */
-class RuleSearch extends Rule
+class ObjectiveSearch extends Objective
 {
     /**
      * {@inheritdoc}
@@ -40,7 +40,7 @@ class RuleSearch extends Rule
      */
     public function search($params)
     {
-        $query=Rule::find();
+        $query=Objective::find();
 
         // add conditions that should always apply here
 

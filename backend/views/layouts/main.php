@@ -40,6 +40,16 @@ AppAsset::register($this);
         'encodeLabels'=>false,
         'items' => [
             ['label' => '<span class="glyphicon glyphicon-home"></span> Home', 'url' => ['/site/index'], 'icon' => 'fa fa-home', ],
+            ['label' => '<span class="glyphicon glyphicon-globe"></span> Content', 'url' => ['/content/default/index'], 'icon' => 'fas fa-money-check-alt','active'=>Yii::$app->controller->module->id=='sales', 'visible'=>!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,
+              'items'=>[
+                ['label' => 'News', 'url' => ['/content/news/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin  ],
+                ['label' => 'FAQ', 'url' => ['/content/faq/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Rules', 'url' => ['/content/rule/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Objectives', 'url' => ['/content/objective/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Instructions', 'url' => ['/content/instruction/index'], 'visible' => !Yii::$app->user->isGuest, ],
+              ]
+            ],
+
             ['label' => '<span class="glyphicon glyphicon-credit-card"></span> Sales', 'url' => ['/sales/default/index'], 'icon' => 'fas fa-money-check-alt','active'=>Yii::$app->controller->module->id=='sales', 'visible'=>array_key_exists('sales',\Yii::$app->modules)!==false && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,
               'items'=>[
                 ['label' => 'Sales Dashboard', 'url' => ['/sales/default/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
@@ -129,10 +139,6 @@ AppAsset::register($this);
                 ['label' => 'Avatar', 'url' => ['/settings/avatar/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Experience', 'url' => ['/settings/experience/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Countries', 'url' => ['/settings/country/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
-                ['label' => 'FAQ', 'url' => ['/settings/faq/index'], 'visible' => !Yii::$app->user->isGuest, ],
-                ['label' => 'Rules', 'url' => ['/settings/rule/index'], 'visible' => !Yii::$app->user->isGuest, ],
-                ['label' => 'Objectives', 'url' => ['/settings/objective/index'], 'visible' => !Yii::$app->user->isGuest, ],
-                ['label' => 'Instructions', 'url' => ['/settings/instruction/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Sysconfigs', 'url' => ['/settings/sysconfig/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Disabled Routes', 'url' => ['/settings/disabled-route/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Users', 'url' => ['/settings/user/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],

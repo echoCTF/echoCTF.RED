@@ -1,18 +1,18 @@
 <?php
 
-namespace app\modules\settings\controllers;
+namespace app\modules\content\controllers;
 
 use Yii;
-use app\modules\settings\models\Instruction;
-use app\modules\settings\models\InstructionSearch;
+use app\modules\content\models\Rule;
+use app\modules\content\models\RuleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * InstructionController implements the CRUD actions for Instruction model.
+ * RuleController implements the CRUD actions for Rule model.
  */
-class InstructionController extends Controller
+class RuleController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -42,12 +42,12 @@ class InstructionController extends Controller
     }
 
     /**
-     * Lists all Instruction models.
+     * Lists all Rule models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel=new InstructionSearch();
+        $searchModel=new RuleSearch();
         $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -57,7 +57,7 @@ class InstructionController extends Controller
     }
 
     /**
-     * Displays a single Instruction model.
+     * Displays a single Rule model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -70,13 +70,13 @@ class InstructionController extends Controller
     }
 
     /**
-     * Creates a new Instruction model.
+     * Creates a new Rule model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model=new Instruction();
+        $model=new Rule();
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
@@ -89,7 +89,7 @@ class InstructionController extends Controller
     }
 
     /**
-     * Updates an existing Instruction model.
+     * Updates an existing Rule model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -110,7 +110,7 @@ class InstructionController extends Controller
     }
 
     /**
-     * Deletes an existing Instruction model.
+     * Deletes an existing Rule model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -124,15 +124,15 @@ class InstructionController extends Controller
     }
 
     /**
-     * Finds the Instruction model based on its primary key value.
+     * Finds the Rule model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Instruction the loaded model
+     * @return Rule the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if(($model=Instruction::findOne($id)) !== null)
+        if(($model=Rule::findOne($id)) !== null)
         {
             return $model;
         }

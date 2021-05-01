@@ -1,53 +1,49 @@
 <?php
 
-namespace app\modules\settings\controllers;
+namespace app\modules\content\controllers;
 
 use Yii;
-use app\modules\settings\models\Rule;
-use app\modules\settings\models\RuleSearch;
+use app\modules\content\models\Faq;
+use app\modules\content\models\FaqSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * RuleController implements the CRUD actions for Rule model.
+ * FaqController implements the CRUD actions for Faq model.
  */
-class RuleController extends Controller
+class FaqController extends Controller
 {
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'create', 'update', 'view'],
-                'rules' => [
-                    // allow authenticated users
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                    // everything else is denied
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
-
+      public function behaviors()
+      {
+          return [
+            'access' => [
+                  'class' => \yii\filters\AccessControl::class,
+                  'rules' => [
+                      [
+                          'allow' => true,
+                          'roles' => ['@'],
+                      ],
+                  ],
+              ],
+              'verbs' => [
+                  'class' => VerbFilter::class,
+                  'actions' => [
+                      'delete' => ['POST'],
+                  ],
+              ],
+          ];
+      }
     /**
-     * Lists all Rule models.
+     * Lists all Faq models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel=new RuleSearch();
+        $searchModel=new FaqSearch();
         $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -57,7 +53,7 @@ class RuleController extends Controller
     }
 
     /**
-     * Displays a single Rule model.
+     * Displays a single Faq model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -70,13 +66,13 @@ class RuleController extends Controller
     }
 
     /**
-     * Creates a new Rule model.
+     * Creates a new Faq model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model=new Rule();
+        $model=new Faq();
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
@@ -89,7 +85,7 @@ class RuleController extends Controller
     }
 
     /**
-     * Updates an existing Rule model.
+     * Updates an existing Faq model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -110,7 +106,7 @@ class RuleController extends Controller
     }
 
     /**
-     * Deletes an existing Rule model.
+     * Deletes an existing Faq model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -124,19 +120,19 @@ class RuleController extends Controller
     }
 
     /**
-     * Finds the Rule model based on its primary key value.
+     * Finds the Faq model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Rule the loaded model
+     * @return Faq the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if(($model=Rule::findOne($id)) !== null)
+        if(($model=Faq::findOne($id)) !== null)
         {
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
     }
 }

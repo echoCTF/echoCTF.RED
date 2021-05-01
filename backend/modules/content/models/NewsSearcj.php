@@ -1,15 +1,15 @@
 <?php
 
-namespace app\modules\settings\models;
+namespace app\modules\content\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\settings\models\Faq;
+use app\modules\content\models\News;
 
 /**
- * FaqSearch represents the model behind the search form of `app\modules\settings\models\Faq`.
+ * NewsSearcj represents the model behind the search form of `app\modules\content\models\News`.
  */
-class FaqSearch extends Faq
+class NewsSearcj extends News
 {
     /**
      * {@inheritdoc}
@@ -17,8 +17,8 @@ class FaqSearch extends Faq
     public function rules()
     {
         return [
-            [['id', 'weight'], 'integer'],
-            [['title', 'body'], 'safe'],
+            [['id'], 'integer'],
+            [['title', 'category', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -40,18 +40,17 @@ class FaqSearch extends Faq
      */
     public function search($params)
     {
-        $query=Faq::find();
+        $query = News::find();
 
         // add conditions that should always apply here
 
-        $dataProvider=new ActiveDataProvider([
+        $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if(!$this->validate())
-        {
+        if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
@@ -60,11 +59,12 @@ class FaqSearch extends Faq
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'weight' => $this->weight,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
-            ->andFilterWhere(['like', 'body', $this->body]);
+            ->andFilterWhere(['like', 'category', $this->category]);
 
         return $dataProvider;
     }
