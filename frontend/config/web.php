@@ -232,6 +232,7 @@ $config=[
                 'help/rules' => 'help/rule/index',
                 'instructions' => 'help/instruction/index',
                 'help/instructions' => 'help/instruction/index',
+                'help/experience' => 'help/experience/index',
                 // app/controllers/LegalController.php
                 'terms_and_conditions'=>'legal/terms-and-conditions',
                 'legal/terms-and-conditions'=>'legal/terms-and-conditions',
