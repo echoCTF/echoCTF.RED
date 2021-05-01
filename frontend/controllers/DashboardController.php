@@ -10,6 +10,7 @@ use app\modules\game\models\Headshot;
 use app\models\PlayerTreasure;
 use app\models\PlayerScore;
 use app\models\Profile;
+use app\models\News;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
@@ -58,10 +59,17 @@ class DashboardController extends \app\components\BaseController
           $dayActivity['overallSeries'][]=$row['cnt'];
           $dayActivity['playerSeries'][]=$row['pcnt'];
         }
+      $query=News::find()->orderBy(['created_at'=>SORT_DESC])->limit(3);
+      $newsProvider=new ActiveDataProvider([
+          'query' => $query,
+          'pagination'=>false,
+          'sort'=> ['defaultOrder' => ['created_at' => SORT_DESC]],
+      ]);
 
       return $this->render('index', [
           'totalPoints'=>0,
           'dashboardStats'=>$dashboardStats,
+          'newsProvider'=>$newsProvider,
           'dayActivity'=>$dayActivity
       ]);
     }

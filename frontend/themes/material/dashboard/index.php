@@ -1,6 +1,7 @@
 <?php
 use yii\widgets\Pjax;
 use app\widgets\Card;
+use yii\widgets\ListView;
 use app\widgets\target\TargetWidget;
 use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
@@ -70,6 +71,20 @@ $this->_url=\yii\helpers\Url::to([null],'https');
             </div>
             <div class="card-img-top ct-chart" id="LastDaysActivityChart"></div>
 
+          </div>
+        </div>
+        <div class="col-lg-4">
+          <div class="card bg-dark">
+            <div class="card-body">
+                <h3 class="card-title text-center text-primary"><i class="fas fa-newspaper"></i> Latest news</h3>
+                <?php
+                echo ListView::widget([
+                    'layout'=>'{items}',
+                    'dataProvider' => $newsProvider,
+                    'itemView' => '_news_item',
+                ]);
+                ?>
+            </div>
           </div>
         </div>
       </div>
