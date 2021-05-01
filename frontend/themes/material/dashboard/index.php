@@ -73,6 +73,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
 
           </div>
         </div>
+        <?php if($newsProvider->getTotalCount()>0):?>
         <div class="col-lg-4">
           <div class="card bg-dark">
             <div class="card-body">
@@ -86,7 +87,8 @@ $this->_url=\yii\helpers\Url::to([null],'https');
                 ?>
             </div>
           </div>
-        </div>
+      </div>
+      <?php endif;?>
       </div>
 
       <div class="row justify-content-center">
