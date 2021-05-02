@@ -49,6 +49,18 @@ use app\components\formatters\Anchor;
       </div>
 <?php endif;?>
 
+<?php if(!Yii::$app->DisabledRoute->disabled('/help/experience/index') && !Yii::$app->user->isGuest):?>
+      <div class="col d-flex align-items-stretch">
+        <div class="card bg-dark">
+          <div class="card-body">
+            <h4 class="card-title"><b><?=Html::a('Experience Levels', ['/help/experience/index'])?></b></h4>
+            <p class="card-text">List of the experience levels for the platform.</p>
+          </div>
+          <div class="card-footer"><?=Html::a("See the Experience Levels", ['/help/experience/index'],['class'=>'btn bg-primary text-dark card-link'])?></div>
+        </div>
+      </div>
+<?php endif;?>
+
     </div>
   </div>
 </div>
