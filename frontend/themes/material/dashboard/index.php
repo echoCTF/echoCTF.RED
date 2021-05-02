@@ -67,7 +67,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
         <div class="col">
           <div class="card bg-dark">
             <div class="card-body">
-                <h3 class="card-title text-center">10 day activity</h3>
+                <h3 class="card-title text-center">10-Day Activity</h3>
             </div>
             <div class="card-img-top ct-chart" id="LastDaysActivityChart"></div>
 
@@ -77,7 +77,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
         <div class="col-lg-4">
           <div class="card bg-dark">
             <div class="card-body">
-                <h3 class="card-title text-center text-danger">Latest news</h3>
+                <h3 class="card-title text-center">Latest News</h3>
                 <?php
                 echo ListView::widget([
                     'layout'=>'{items}',
