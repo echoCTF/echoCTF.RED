@@ -23,7 +23,7 @@ class TargetSearch extends Target
             [['headshot'],'default','value'=>null ],
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
             [['scheduled_at'], 'datetime'],
-            [['timer','name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp','headshot'], 'safe'],
+            [['timer','name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp','headshot','category'], 'safe'],
         ];
     }
 
@@ -76,6 +76,7 @@ class TargetSearch extends Target
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'category', $this->status])
             ->andFilterWhere(['like', 'status', $this->status])
             ->andFilterWhere(['like', 'scheduled_at', $this->scheduled_at])
             ->andFilterWhere(['like', 'INET_NTOA(ip)', $this->ipoctet])
