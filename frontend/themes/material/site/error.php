@@ -7,20 +7,22 @@
 use yii\helpers\Html;
 use app\widgets\Noti;
 
-$this->title=$name;
+$this->title=Yii::$app->sys->event_name .' Error '. $exception->statusCode.': '. nl2br(Html::encode($message));
 ?>
 <div class="site-error">
-
-    <h1><?=Html::encode($this->title) ?></h1>
-
-    <div class="alert alert-danger">
-        <?=nl2br(Html::encode($message)) ?>
-    </div>
-    <p>
-        The above error occurred while the Web server was processing your request.
-    </p>
-    <p>
-        Please contact us if you think this is a server error. Thank you.
-    </p>
+      <div class="row">
+        <div class="col-sm-5">
+          <img src="/images/ohnoes.svg" class="rounded img-fluid" align="right" width="260vw"/>
+        </div>
+        <div class="col">
+          <h1 class="text-danger"><b>Oh noes!!!</b></h1>
+          <h3 class="text-warning">Look what you did...</h3>
+          <h3 class="text-warning">you headshoted the wrong page...</h3>
+          <h3 class="text-light">Error <?=$exception->statusCode?>: <?=nl2br(Html::encode($message)) ?></h3>
+        </div>
+      </div>
+      <center>
+        <?=Html::a('<b><i class="fas fa-backward"></i> Go back</b>',['/site/index'],['class'=>'btn btn-lg btn-primary text-dark'])?>
+      </center>
 
 </div>
