@@ -25,6 +25,7 @@ use app\modules\activity\models\Headshot;
  * @property string $image
  * @property string $dns
  * @property string $parameters
+ * @property string $category
  * @property int $suggested_xp
  * @property int $required_xp
  * @property int $rootable
@@ -68,7 +69,7 @@ class TargetAR extends \yii\db\ActiveRecord
             [['name', 'fqdn', 'mac'], 'required'],
             [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','healthcheck'], 'integer'],
             [['ipoctet'], 'ip'],
-            [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
+            [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters','category'], 'string', 'max' => 255],
             [['image'], 'filter', 'filter'=>'strtolower'],
             [['mac'], 'string', 'max' => 30],
             [['name'], 'unique'],
@@ -106,6 +107,7 @@ class TargetAR extends \yii\db\ActiveRecord
             'required_xp'=>'Required XP',
             'timer'=>'Timer',
             'weight'=>'Weight',
+            'category'=>'Category'
         ];
     }
 
