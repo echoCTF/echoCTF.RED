@@ -65,11 +65,11 @@ class TargetAR extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['description'], 'string'],
+            [['parameters', 'description'], 'string'],
             [['name', 'fqdn', 'mac'], 'required'],
             [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','healthcheck'], 'integer'],
             [['ipoctet'], 'ip'],
-            [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters','category'], 'string', 'max' => 255],
+            [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns','category'], 'string', 'max' => 255],
             [['image'], 'filter', 'filter'=>'strtolower'],
             [['mac'], 'string', 'max' => 30],
             [['name'], 'unique'],
