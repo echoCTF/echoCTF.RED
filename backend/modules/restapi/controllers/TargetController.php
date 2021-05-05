@@ -6,6 +6,17 @@ use yii\rest\ActiveController;
 class TargetController extends ActiveController
 {
     public $modelClass='app\modules\gameplay\models\Target';
+
+    public function actionAddToNetwork($id,$codename)
+    {
+      if(($network=\app\modules\gameplay\modules\Network::findOne(['codename'=>$codename]))!==null)
+      {
+        $nt=new \app\modules\gameplay\modules\NetworkTarget;
+        $nt->network_id=$network->id;
+        $nt->target_id=$id;
+        return $nt->save();
+      }
+    }
     public function actionGetByIp($ip)
     {
       return \app\modules\gameplay\models\Target::find()->andWhere(['ip'=>ip2long($ip)])->one();

@@ -69,6 +69,19 @@
     delegate_to: 127.0.0.1
 
 
+  - name: Add target to network (if set)
+    delegate_to: 127.0.0.1
+#    ignore_errors: true
+    tags:
+      - UI
+    when: target_id is defined and network is defined #and item.hint is defined
+    uri:
+      url: "{{mui.URL}}/index.php?r=restapi/target/add-to-network&id={{target_id}}&codename={{network}}&access-token={{TOKEN}}"
+      validate_certs: false
+      method: GET
+      body_format: json
+      status_code: 201
+
   - name: create variables for target
     delegate_to: 127.0.0.1
 #    ignore_errors: true
