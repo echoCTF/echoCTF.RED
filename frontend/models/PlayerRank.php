@@ -62,6 +62,7 @@ class PlayerRank extends \yii\db\ActiveRecord
         ];
     }
   function getOrdinalPlace() {
+    if($this->id===null) return '?th';
     if(!in_array(($this->id % 100), array(11, 12, 13)))
     {
       switch($this->id % 10) {
