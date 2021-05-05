@@ -32,10 +32,13 @@ use yii\bootstrap\ActiveForm;
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
+          <?= $form->field($model, 'category')->textInput()->hint('Target category eg. web') ?>
+        </div>
+        <div class="col-md-4">
           <?= $form->field($model, 'status')->dropDownList($model->statuses)->hint('The status setting for this target (eg. powerup)') ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <?= $form->field($model, 'scheduled_at')->textInput()->hint('The Date and time associated with status') ?>
         </div>
     </div>
