@@ -188,34 +188,39 @@ class ProfileController extends \app\components\BaseController
     protected function HandleUpload($uploadedAvatar)
     {
       if(!$uploadedAvatar) return false;
-      $src = imagecreatefrompng($uploadedAvatar->tempName);
-      if($src!==false)
-      {
+      try {
+        $src = imagecreatefrompng($uploadedAvatar->tempName);
+        if($src!==false)
+        {
 
-        $old_x = imageSX($src);
-        $old_y = imageSY($src);
-        list($thumb_w,$thumb_h) = $this->ScaledXY($old_x,$old_y);
+          $old_x = imageSX($src);
+          $old_y = imageSY($src);
+          list($thumb_w,$thumb_h) = $this->ScaledXY($old_x,$old_y);
 
-        $avatar=imagescale($src,$thumb_w,$thumb_h);
+          $avatar=imagescale($src,$thumb_w,$thumb_h);
 
-        $image = imagecreatetruecolor(300,300);
-        if(!$image) return false;
+          $image = imagecreatetruecolor(300,300);
+          if(!$image) return false;
 
-        imagealphablending($image, false);
-        $col=imagecolorallocatealpha($image,255,255,255,127);
-        imagefilledrectangle($image,0,0,300, 300,$col);
-        imagealphablending($image,true);
+          imagealphablending($image, false);
+          $col=imagecolorallocatealpha($image,255,255,255,127);
+          imagefilledrectangle($image,0,0,300, 300,$col);
+          imagealphablending($image,true);
 
-        list($dst_x,$dst_y) = $this->DestinationXY($thumb_w,$thumb_h);
-        imagecopyresampled($image, $avatar, $dst_x, $dst_y, /*src_x*/ 0, /*src_y*/ 0, /*dst_w*/ $thumb_w, /*dst_h*/ $thumb_h, /*src_w*/ $thumb_w, /*src_y*/ $thumb_h);
-        imagesavealpha($image, true);
-        imagepng($image,$uploadedAvatar->tempName);
-        imagedestroy($image);
-        imagedestroy($src);
-        imagedestroy($avatar);
-        return true;
+          list($dst_x,$dst_y) = $this->DestinationXY($thumb_w,$thumb_h);
+          imagecopyresampled($image, $avatar, $dst_x, $dst_y, /*src_x*/ 0, /*src_y*/ 0, /*dst_w*/ $thumb_w, /*dst_h*/ $thumb_h, /*src_w*/ $thumb_w, /*src_y*/ $thumb_h);
+          imagesavealpha($image, true);
+          imagepng($image,$uploadedAvatar->tempName);
+          imagedestroy($image);
+          imagedestroy($src);
+          imagedestroy($avatar);
+          return true;
+        }
       }
-      return false;
+      catch(\Exception $e)
+      {
+        return false;        
+      }
     }
 
     protected function DestinationXY($x,$y)
