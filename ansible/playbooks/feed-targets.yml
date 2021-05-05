@@ -76,13 +76,10 @@
       - UI
     when: target_id is defined and network is defined #and item.hint is defined
     uri:
-      url: "{{mui.URL}}/index.php?r=restapi/target/add-to-network&access-token={{TOKEN}}"
+      url: "{{mui.URL}}/index.php?r=restapi/target/add-to-network&id={{target_id}}&codename={{network}}&access-token={{TOKEN}}"
       validate_certs: false
-      method: POST
+      method: GET
       body_format: json
-      body:
-        id: "{{target_id}}"
-        codename: "{{network}}"
       status_code: 201
 
   - name: create variables for target
