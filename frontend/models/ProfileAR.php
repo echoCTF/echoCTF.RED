@@ -163,7 +163,10 @@ class ProfileAR extends \yii\db\ActiveRecord
 
     public function getRank()
     {
-        return $this->hasOne(PlayerRank::class, ['player_id' => 'player_id']);
+        if($this->hasOne(PlayerRank::class, ['player_id' => 'player_id'])->one()!==null)
+          return $this->hasOne(PlayerRank::class, ['player_id' => 'player_id']);
+        else
+          return new PlayerRank;
     }
     public function getCountryRank()
     {
