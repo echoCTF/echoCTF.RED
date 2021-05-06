@@ -69,6 +69,6 @@ class Challenge extends \yii\db\ActiveRecord
      */
     public function getQuestions()
     {
-        return $this->hasMany(Question::class, ['challenge_id' => 'id']);
+        return $this->hasMany(Question::class, ['challenge_id' => 'id'])->orderBy(['weight' => SORT_ASC,'id'=>SORT_ASC]);;
     }
 }
