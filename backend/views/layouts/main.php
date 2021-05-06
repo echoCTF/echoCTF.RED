@@ -63,8 +63,8 @@ AppAsset::register($this);
             ['label' => '<span class="glyphicon glyphicon-stats"></span> Activity', 'url' => ['/activity/default/index'], 'visible' => !Yii::$app->user->isGuest,'active'=>Yii::$app->controller->module->id=='activity',
               'items'=> [
                 ['label' => 'Inquiries', 'url' => ['/activity/inquiry/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
-                ['label' => 'Sessions', 'url' => ['/activity/session/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Notifications', 'url' => ['/activity/notification/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Sessions', 'url' => ['/activity/session/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Player Scores', 'url' => ['/activity/player-score/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Team Scores', 'url' => ['/activity/team-score/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Writeups', 'url' => ['/activity/writeup/index'], 'visible' => !Yii::$app->user->isGuest, ],
@@ -83,6 +83,7 @@ AppAsset::register($this);
                 ['label' => 'Spin History', 'url' => ['/activity/spin-history/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Spin Queue', 'url' => ['/activity/spin-queue/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Player vs Target Progress', 'url' => ['/activity/player-vs-target/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Player vs Challenge Progress', 'url' => ['/activity/player-vs-challenge/index'], 'visible' => !Yii::$app->user->isGuest, ],
               ],
             ],
 
