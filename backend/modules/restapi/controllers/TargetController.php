@@ -9,9 +9,9 @@ class TargetController extends ActiveController
 
     public function actionAddToNetwork($id,$codename)
     {
-      if(($network=\app\modules\gameplay\modules\Network::findOne(['codename'=>$codename]))!==null)
+      if(($network=\app\modules\gameplay\models\Network::findOne(['codename'=>$codename]))!==null)
       {
-        $nt=new \app\modules\gameplay\modules\NetworkTarget;
+        $nt=new \app\modules\gameplay\models\NetworkTarget;
         $nt->network_id=$network->id;
         $nt->target_id=$id;
         return $nt->save();
