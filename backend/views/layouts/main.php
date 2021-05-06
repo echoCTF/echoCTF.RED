@@ -39,8 +39,8 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'encodeLabels'=>false,
         'items' => [
-            ['label' => '<span class="glyphicon glyphicon-home"></span> Home', 'url' => ['/site/index'], 'icon' => 'fa fa-home', ],
-            ['label' => '<span class="glyphicon glyphicon-globe"></span> Content', 'url' => ['/content/default/index'], 'icon' => 'fas fa-money-check-alt','active'=>Yii::$app->controller->module->id=='sales', 'visible'=>!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,
+            //['label' => '<span class="glyphicon glyphicon-home"></span> Home', 'url' => ['/site/index'], 'icon' => 'fa fa-home', ],
+            ['label' => '<span class="glyphicon glyphicon-globe"></span> Content', 'url' => ['/content/default/index'], 'icon' => 'fas fa-money-check-alt','active'=>Yii::$app->controller->module->id=='content', 'visible'=>!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,
               'items'=>[
                 ['label' => 'News', 'url' => ['/content/news/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin  ],
                 ['label' => 'FAQ', 'url' => ['/content/faq/index'], 'visible' => !Yii::$app->user->isGuest, ],
@@ -60,7 +60,7 @@ AppAsset::register($this);
                 ['label' => 'Webhook', 'url' => ['/sales/stripe-webhook/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales',\Yii::$app->modules)!==false, ],
               ]
             ],
-            ['label' => '<span class="glyphicon glyphicon-stats"></span> Game Activity', 'url' => ['/activity/default/index'], 'visible' => !Yii::$app->user->isGuest,'active'=>Yii::$app->controller->module->id=='activity',
+            ['label' => '<span class="glyphicon glyphicon-stats"></span> Activity', 'url' => ['/activity/default/index'], 'visible' => !Yii::$app->user->isGuest,'active'=>Yii::$app->controller->module->id=='activity',
               'items'=> [
                 ['label' => 'Inquiries', 'url' => ['/activity/inquiry/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Sessions', 'url' => ['/activity/session/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
