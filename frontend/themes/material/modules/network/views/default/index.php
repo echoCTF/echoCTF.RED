@@ -8,7 +8,7 @@ $this->_description=$this->title;
 <div class="network-index">
   <div class="body-content">
     <h2><?=Html::encode($this->title)?></h2>
-    Networks consist of multiple targets that are grouped together to represent more complicated installations and setups or simply group a specific type of targets into groups.
+    Networks consist of multiple targets that are grouped together to represent more complicated setups or simply group a specific types of targets together.
     <hr />
     <div class="row">
       <?php echo ListView::widget([
