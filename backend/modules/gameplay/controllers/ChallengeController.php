@@ -5,10 +5,13 @@ namespace app\modules\gameplay\controllers;
 use Yii;
 use app\modules\gameplay\models\Challenge;
 use app\modules\gameplay\models\ChallengeSearch;
+use app\modules\gameplay\models\Question;
+use app\modules\gameplay\models\QuestionSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\data\ActiveDataProvider;
 
 /**
  * ChallengeController implements the CRUD actions for Challenge model.
@@ -63,8 +66,38 @@ class ChallengeController extends Controller
      */
     public function actionView($id)
     {
+        $query=Question::find()->joinWith('challenge');
+
+        $query->select('question.*,(SELECT COUNT(question_id) FROM player_question WHERE question.id=player_question.question_id) as answered');
+        // add conditions that should always apply here
+
+        $dataProvider=new ActiveDataProvider([
+            'query' => $query,
+        ]);
+        $query->andFilterWhere([
+            'question.challenge_id' => $id,
+        ]);
+
+        $dataProvider->setSort([
+            'defaultOrder' => ['weight' => SORT_ASC,'id'=>SORT_ASC],
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'challengename' => [
+                      'asc' => ['challengename' => SORT_ASC],
+                      'desc' => ['challengename' => SORT_DESC],
+                  ],
+                  'answered' => [
+                      'asc' => ['answered' => SORT_ASC],
+                      'desc' => ['answered' => SORT_DESC],
+                  ],
+                ]
+            ),
+        ]);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            'questionProvider'=>$dataProvider,
         ]);
     }
 

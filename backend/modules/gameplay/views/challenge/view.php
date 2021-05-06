@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\grid\GridView;
+use yii\widgets\ListView;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Challenge */
@@ -46,4 +48,9 @@ $this->params['breadcrumbs'][]=$this->title;
         ],
     ]) ?>
 
+    <?=ListView::widget([
+        'summary'=>false,
+        'dataProvider' => $questionProvider,
+        'itemView' => '_question',
+    ]);?>
 </div>
