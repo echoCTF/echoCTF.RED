@@ -26,7 +26,7 @@ $module = \app\modules\network\Module::getInstance();
     <div class="row">
       <div class="col-md-8">
         <?php \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-        <?php echo TargetWidget::widget(['dataProvider' => $networkTargetProvider, 'player_id'=>Yii::$app->user->id, 'profile'=>Yii::$app->user->identity->profile, 'title'=>'Progress', 'category'=>'Network targets', 'personal'=>false]);?>
+        <?php echo TargetWidget::widget(['dataProvider' => $networkTargetProvider, 'player_id'=>Yii::$app->user->id, 'profile'=>Yii::$app->user->identity->profile, 'title'=>'Progress', 'category'=>'Network targets', 'personal'=>false,'hidden_attributes'=>['id']]);?>
         <?php \yii\widgets\Pjax::end()?>
 
       </div>
