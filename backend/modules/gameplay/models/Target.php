@@ -17,6 +17,7 @@ use Docker\API\Exception\ContainerStartNotFoundException;
 use Docker\API\Exception\ContainerStartInternalServerErrorException;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Headshot;
+use Docker\API\Model\AuthConfig;
 
 
 /**
@@ -147,7 +148,16 @@ class Target extends TargetAR
     {
       if($this->server == null) return false;
       $docker=$this->connectAPI();
-      $imageCreateResult=$docker->imageCreate($this->image, ['fromImage'=>$this->image]);
+      $authHeaders=[];
+      if(!empty($this->imageparams))
+      {
+        $registryConfig = new AuthConfig();
+        $decoded=\yii\helpers\Json::decode($this->imageparams, false);
+        $registryConfig->setUsername($decoded->username);
+        $registryConfig->setPassword($decoded->password);
+        $authHeaders=['X-Registry-Auth'=>base64_encode($registryConfig)];
+      }
+      $imageCreateResult=$docker->imageCreate($this->image, ['fromImage'=>$this->image],$authHeaders);
       $imageCreateResult->wait();
       return true;
     }
