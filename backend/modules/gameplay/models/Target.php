@@ -155,13 +155,19 @@ class Target extends TargetAR
         $decoded=\yii\helpers\Json::decode($this->imageparams, false);
 
         if($decoded !== null && property_exists($decoded, 'username'))
+        {
           $registryConfig->setUsername($decoded->username);
+        }
 
         if($decoded !== null && property_exists($decoded, 'password'))
+        {
           $registryConfig->setPassword($decoded->password);
+        }
 
         if($decoded !== null && property_exists($decoded, 'email'))
-          $registryConfig->setPassword($decoded->email);
+        {
+          $registryConfig->setEmail($decoded->email);
+        }
         $authHeaders['X-Registry-Auth']=$registryConfig;
       }
       $imageCreateResult=$docker->imageCreate($this->image, ['fromImage'=>$this->image],$authHeaders);
