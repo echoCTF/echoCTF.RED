@@ -93,11 +93,14 @@ use yii\bootstrap\ActiveForm;
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
           <?= $form->field($model, 'server')->textInput(['maxlength' => true])->hint('Docker host connection string (tcp://1.2.3.4:1234)') ?>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
           <?= $form->field($model, 'image')->textInput(['maxlength' => true])->hint('Image to pull and run') ?>
+        </div>
+        <div class="col-md-4">
+          <?= $form->field($model, 'imageparams')->textarea(['placeholder'=>'{ "username": "jdoe", "password": "secret", "email": "jdoe@acme.com"}'])->hint('Image registry json parameters') ?>
         </div>
     </div>
     <div class="row">

@@ -26,6 +26,7 @@ use app\modules\activity\models\Headshot;
  * @property string $dns
  * @property string $parameters
  * @property string $category
+ * @property string $imageparams
  * @property int $suggested_xp
  * @property int $required_xp
  * @property int $rootable
@@ -65,7 +66,7 @@ class TargetAR extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['parameters', 'description'], 'string'],
+            [['parameters', 'description','imageparams'], 'string'],
             [['name', 'fqdn', 'mac'], 'required'],
             [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','healthcheck'], 'integer'],
             [['ipoctet'], 'ip'],
