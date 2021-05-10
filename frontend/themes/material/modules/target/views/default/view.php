@@ -21,7 +21,7 @@ $this->_fluid='-fluid';
     <div><p class="text-warning"><code class="text-warning">Target <?php if ($target->scheduled_at!==null):?>scheduled for<?php endif;?> <b><?=$target->status?></b> <?php if ($target->scheduled_at!==null):?> <abbr title="<?=\Yii::$app->formatter->asDatetime($target->scheduled_at,'long')?>"><?=\Yii::$app->formatter->asRelativeTime($target->scheduled_at)?></abbr><?php endif;?></code></p></div>
 <?php endif;?>
 <?php if($target->network):?>
-    <div><p class="text-info">Target from: <b><?=$target->network->name?></b></p></div>
+    <div><p class="text-info">Target from: <b><?=Html::a($target->network->name,['/network/default/view','id'=>$target->network->id])?></b></p></div>
 <?php endif;?>
 
     <div class="watermarked img-fluid">
