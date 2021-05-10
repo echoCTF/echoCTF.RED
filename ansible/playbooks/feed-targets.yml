@@ -55,12 +55,13 @@
         net: '{{container.networks[0].name}}'
         server: 'tcp://{{DOCKER}}:2376'
         active: "{{ '0' if (scheduled_at is defined) else '1' }}"
+        imageparams: "{{imageparams|default(omit)}}"
 #        active: '{{active|default("0")}}'
         status: "{{ 'powerup' if (scheduled_at is defined) else 'online' }}"
         dns: "{{container.dns_servers[0]|default('8.8.8.8')}}"
         scheduled_at: "{{ scheduled_at|default(omit) }}"
 #        scheduled_at: "{{scheduled_at| default('%Y-%m-%d 00:00:00' | strftime( ( ansible_date_time.epoch | int ) ) ) }}"
-        image: '{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{hostname | lower}}:{{container.tag|default("latest")}}'
+        image: '{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.image | lower}}:{{container.tag|default("latest")}}'
       status_code: 201
 
   - set_fact:
