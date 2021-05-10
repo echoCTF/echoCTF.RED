@@ -6,7 +6,9 @@
 
 
 
-echoCTF is a pioneer computer security framework, developed by Echothrust Solutions, for running Cyber Ranges and security related competitions such as capture the flag.
+echoCTF is a pioneer computer security framework, developed by
+Echothrust Solutions, for running CyberSecurity exercises and competitions such
+as Capture the Flag.
 
 echoCTF allows building and running capture the flag competitions for network
 penetration testing and security auditing on real IT infrastructure. It is
