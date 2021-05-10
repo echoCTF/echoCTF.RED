@@ -66,7 +66,7 @@ class HeadshotSearch extends Headshot
             'target_id' => $this->target_id,
             'first' => $this->first,
             'rating' => $this->rating,
-            'created_at' => $this->created_at,
+            'headshot.created_at' => $this->created_at,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $query->andFilterWhere(['like', 'target.fqdn', $this->fqdn]);
