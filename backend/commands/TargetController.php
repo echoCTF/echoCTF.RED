@@ -89,11 +89,12 @@ class TargetController extends Controller {
 
 
   /**
-   * Restart targets that are running for more than interval minutes
+   * Restart targets that are running for more than uptime minutes
    * Default value: 24 hours
-   * @param int $interval.
+   * @param int $uptime The container uptime to restart
+   * @param int $limit The number of containers to restart
    */
-  public function actionRestart($interval=1440, $limit=1)
+  public function actionRestart($uptime=1440, $limit=1)
   {
     foreach(Target::find()->select(['server'])->distinct()->all() as $master)
     {
@@ -109,8 +110,8 @@ class TargetController extends Controller {
       {
         if($processed>=$limit)
           break;
-        $created=$containers[0]->getCreated();
-        if($created<=(time()-intval($interval*60)))
+        $created=$container->getCreated();
+        if($created<=(time()-intval($uptime*60)))
         {
           $name=str_replace('/', '', $container->getNames()[0]);
           $d=Target::findOne(['name'=>$name]);
@@ -124,7 +125,4 @@ class TargetController extends Controller {
       }
     } // end docker servers
   }
-
-
-
 }
