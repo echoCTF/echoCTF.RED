@@ -120,6 +120,10 @@ http {
             include fastcgi_params;
             fastcgi_param  SCRIPT_FILENAME  $document_root$fsn;
 
+            # NGiNX allowed duplicate HOST headers to be set, the following is
+            # a workaround for these cases.
+            fastcgi_param  HTTP_HOST "{{item.domain}}";
+
             #PATH_INFO and PATH_TRANSLATED can be omitted, but RFC 3875 specifies them for CGI
             fastcgi_param  PATH_INFO        $fastcgi_path_info;
             fastcgi_param  PATH_TRANSLATED  $document_root$fsn;
