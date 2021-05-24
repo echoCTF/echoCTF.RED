@@ -120,8 +120,8 @@ class TargetController extends Controller {
             printf("Restarting %s/%s [%s]\n", $master->server, $d->name, \Yii::$app->formatter->asRelativeTime($created));
             $d->spin();
           }
+          $processed++;
         }
-        $processed++;
       }
     } // end docker servers
   }
