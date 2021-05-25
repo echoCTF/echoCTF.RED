@@ -117,6 +117,8 @@ $config=[
         ],
         'request' => [
             'csrfParam' => '_csrf-red',
+// Hard code the domain to avoid parsing HTTP_HOST 
+//            'hostInfo'=>'https://echoctf.red',
             'enableCsrfValidation' => true,
             'enableCsrfCookie'=>false,
             'csrfCookie'=>['httpOnly'=>true],
