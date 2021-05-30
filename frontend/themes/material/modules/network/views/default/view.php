@@ -38,7 +38,7 @@ $module = \app\modules\network\Module::getInstance();
           <div class="card-body table-responsive">
             <h4 class="card-title"><?=Html::encode($model->name)?></h4>
             <h6 class="badge badge-primary"><?=$model->targetsCount?> targets</h6>
-            <p style="text-align: justify;"><?=Html::encode($model->description)?></p>
+            <p style="text-align: justify;"><?=$model->description?></p>
           </div>
         </div>
       </div>
