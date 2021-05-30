@@ -175,12 +175,12 @@
       section: mysqld
       option: "{{ item.key }}"
       value: "{{ item.value }}"
-    with_dict:
-      - event_scheduler: "on"
-      - plugin_load_add: "ha_federatedx"
-      - plugin_load_add: "ha_blackhole"
-      - wait_timeout: "2880000"
-      - interactive_timeout: "2880000"
+    with_items:
+      - { event_scheduler: "on" }
+      - { plugin_load_add: "ha_federatedx" }
+      - { plugin_load_add: "ha_blackhole" }
+      - { wait_timeout: "2880000" }
+      - { interactive_timeout: "2880000" }
 
   - name: Configure default services
     command: "rcctl {{item.state}} {{item.name}}"
