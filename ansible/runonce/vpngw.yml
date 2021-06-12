@@ -176,11 +176,16 @@
       option: "{{ item.key }}"
       value: "{{ item.value }}"
     with_items:
-      - { event_scheduler: "on" }
-      - { plugin_load_add: "ha_federatedx" }
-      - { plugin_load_add: "ha_blackhole" }
-      - { wait_timeout: "2880000" }
-      - { interactive_timeout: "2880000" }
+      - { key: "event_scheduler", value: "on" }
+      - { key: "plugin_load_add", value: "ha_federatedx" }
+      - { key: "wait_timeout", value: "2880000" }
+      - { key: "interactive_timeout", value: "2880000" }
+
+  - name: Append ha_blackhole
+    ansible.builtin.lineinfile:
+      path: /etc/my.cnf
+      insertafter: '^plugin_load_add'
+      line: "plugin_load_add = ha_blackhole"
 
   - name: Configure default services
     command: "rcctl {{item.state}} {{item.name}}"
