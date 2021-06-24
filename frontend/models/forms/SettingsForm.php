@@ -95,14 +95,69 @@ class SettingsForm extends Model
           [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
           [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio','youtube','twitch'], 'trim'],
           ['country', 'exist', 'targetClass' => \app\models\Country::class, 'targetAttribute' => ['country' => 'id']],
-          [['avatar','twitter', 'github','youtube','twitch'], 'string', 'max' => 255],
+          [['avatar','youtube','twitch'], 'string', 'max' => 255],
+
+          ['twitter', 'string', 'max' => 15],
+          ['twitter', 'match', 'pattern' => '/^[a-zA-Z0-9_]+$/','message'=>'Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd> and <kbd>_</kbd>'],
+          ['twitter', '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'twitter', 'echoctf']],
+
+          ['twitch', 'string', 'max' => 25],
+          ['twitch', 'match', 'pattern' => '/^[a-zA-Z0-9_]+$/','message'=>'Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd> and <kbd>_</kbd>'],
+          ['twitch', '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'twitter', 'echoctf']],
+
+          ['github', 'string', 'max' => 39],
+          ['github', 'match', 'pattern' => '/^[a-zA-Z0-9_-]+$/','message'=>'Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd>, <kbd>-</kbd> and <kbd>_</kbd>'],
+          ['github', '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['help','about']],
+
+          ['discord', 'string', 'max' => 32],
+          ['discord', 'filter', 'filter' => [$this, 'normalizeDiscord']],
+          ['discord', function ($attribute, $params) {
+                     //returns true / false (preg_replace returns the string with replaced matched regex)
+                     if (strpos($this->{$attribute}, '```') !== false
+                     || strpos($this->{$attribute}, ':') !== false
+                     || strpos($this->{$attribute}, '@') !== false) {
+                          $this->addError($attribute, 'Discord usernames cannot contain any of the following [<kbd>@</kbd>,<kbd>:</kbd>,<kbd>```</kbd>]');
+                     }
+
+                 }
+          ],
+          ['discord', function ($attribute, $params) {
+                     //returns true / false (preg_replace returns the string with replaced matched regex)
+                     if (strpos($this->{$attribute}, '#')===false) {
+
+                          $this->addError($attribute, 'Discord username must include <kbd>#</kbd> and numberical id [eg. <kbd>username#number</kbd>]');
+                     }
+                     if (substr_count($this->{$attribute}, '#')>1) {
+                          $this->addError($attribute, 'Discord username must contain only one hash (#) character.');
+                     }
+                 },
+          ],
+          ['discord', '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['discordtag', 'everyone', 'here']],
+
+          ['youtube', 'string', 'max' => 25],
+          ['youtube', 'match', 'pattern' => '/^[a-zA-Z0-9_-]+$/','message'=>'Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd>, <kbd>-</kbd> and <kbd>_</kbd>'],
+
+          ['htb', 'string', 'max' => 8],
+          ['htb', 'match', 'pattern' => '/^[0-9]+$/','message'=>'Only numberic HTB id is allowed'],
+
           [['country'], 'string', 'max'=>3],
           [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => 'File larger than expected, limit is 500KB'],
           [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
           [['visibility'], 'default', 'value' =>  Yii::$app->sys->profile_visibility!==false ? Yii::$app->sys->profile_visibility : 'ingame'],
         ];
     }
+    public function normalizeDiscord($value) {
+        while($value!=str_replace('  ',' ',$value))
+        {
+          $value=str_replace('  ',' ',$value);
+        }
+        while($value!=str_replace("\xE2\x80\x8B", "", $value))
+        {
+          $value=str_replace("\xE2\x80\x8B", "", $value);
+        }
 
+        return $value;
+    }
     public function init()
     {
       $this->_player=Yii::$app->user->identity;
