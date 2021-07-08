@@ -88,6 +88,7 @@ class TeamController extends Controller
         {
           if($model->load(Yii::$app->request->post()) && $model->save())
           {
+              Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$model->id)->execute();
               $trans->commit();
               return $this->redirect(['view', 'id' => $model->id]);
           }
