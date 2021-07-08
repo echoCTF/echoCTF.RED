@@ -81,7 +81,7 @@
       validate_certs: false
       method: GET
       body_format: json
-      status_code: 201
+      status_code: [201,200]
 
   - name: create variables for target
     delegate_to: 127.0.0.1
