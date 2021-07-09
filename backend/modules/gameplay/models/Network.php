@@ -60,8 +60,8 @@ class Network extends \yii\db\ActiveRecord
                     'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                     'public' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                 ],
-                'typecastAfterValidate' => true,
-                'typecastBeforeSave' => false,
+                'typecastAfterValidate' => false,
+                'typecastBeforeSave' => true,
                 'typecastAfterFind' => true,
             ],
             [

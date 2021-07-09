@@ -50,7 +50,6 @@ class NetworkSearch extends Network
         ]);
 
         $this->load($params);
-
         if(!$this->validate())
         {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -62,10 +61,13 @@ class NetworkSearch extends Network
         $query->andFilterWhere([
             'id' => $this->id,
             'weight' => $this->weight,
+            'active' => $this->active,
+            'public' => $this->public,
             'ts' => $this->ts,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'codename', $this->codename])
             ->andFilterWhere(['like', 'description', $this->description]);
 
         return $dataProvider;

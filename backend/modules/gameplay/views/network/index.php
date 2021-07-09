@@ -8,7 +8,8 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title=Yii::t('app', 'Networks');
-$this->params['breadcrumbs'][]=$this->title;
+$this->params['breadcrumbs'][]=['label' => 'Networks', 'url' => ['index']];
+
 ?>
 <div class="network-index">
 
