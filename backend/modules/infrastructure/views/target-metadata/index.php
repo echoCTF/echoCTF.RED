@@ -8,7 +8,8 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Target Metadatas';
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'Infrastructure', 'url' => ['/infrastructure/default/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Target metadata', 'url' => ['index']];
 ?>
 <div class="target-metadata-index">
 
@@ -26,8 +27,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             'target_id',
+            [
+              'attribute'=>'fqdn',
+              'value'=>'target.fqdn',
+            ],
             'scenario:ntext',
             'instructions:ntext',
             'solution:ntext',
