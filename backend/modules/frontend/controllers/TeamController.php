@@ -88,6 +88,11 @@ class TeamController extends Controller
         {
           if($model->load(Yii::$app->request->post()) && $model->save())
           {
+              $model->refresh();
+              $ts=new \app\modules\activity\models\TeamScore();
+              $ts->team_id=$model->id;
+              $ts->points=0;
+              $ts->save();
               Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$model->id)->execute();
               $trans->commit();
               return $this->redirect(['view', 'id' => $model->id]);
