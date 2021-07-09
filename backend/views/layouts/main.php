@@ -108,7 +108,7 @@ AppAsset::register($this);
                 ['label' => 'Certificate Revocation List', 'url' => ['/frontend/crl/index'], 'visible' => !Yii::$app->user->isGuest, ],
               ],
             ],
-            ['label' => '<span class="glyphicon glyphicon-tasks"></span> Infra', 'url' => ['/infrastructure/default/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,'active'=>Yii::$app->controller->module->id=='infrastructure',
+            ['label' => '<span class="glyphicon glyphicon-tasks"></span> Infrastructure', 'url' => ['/infrastructure/default/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,'active'=>Yii::$app->controller->module->id=='infrastructure',
               'items'=> [
                 ['label' => 'Networks', 'url' => ['/gameplay/network/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Targets', 'url' => ['/gameplay/target/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
