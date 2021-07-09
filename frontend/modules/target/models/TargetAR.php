@@ -188,6 +188,14 @@ class TargetAR extends \yii\db\ActiveRecord
     {
       return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMetadata()
+    {
+        return $this->hasOne(TargetMetadata::class, ['target_id' => 'id']);
+    }
+
 
     /*
      * Get Headshot relations of target
