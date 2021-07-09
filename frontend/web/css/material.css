@@ -654,3 +654,13 @@ details > .markdown h6 {
     opacity: 0;
   }
 }
+
+.rankpos-1 {
+  border: 2px solid #FFD700;
+}
+.rankpos-2 {
+  border: 2px solid #C0C0C0;
+}
+.rankpos-3 {
+  border: 2px solid #cd7f32;
+}

@@ -6,6 +6,8 @@ use Yii;
 use yii\helpers\Html;
 use app\modules\target\models\Target;
 use app\modules\game\models\Badge;
+use app\components\formatters\RankFormatter;
+
 /**
  * This is the model class for table "stream" implementing frontend methods.
  *
@@ -45,7 +47,7 @@ class Stream extends StreamAR
 
       return sprintf("%s", $this->player->profile->twitterHandle);
     }
-    return sprintf("<img src='/images/avatars/%s' class='rounded' width='25px'> <b>%s</b> %s", $this->player->profile->avtr,$this->player->profile->link,$this->icon);
+    return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b> %s", $this->player->profile->avtr,RankFormatter::ordinalPlaceCss($this->player->profile->rank->id),$this->player->profile->link,$this->icon);
   }
 
   public function Title(bool $pub=true)

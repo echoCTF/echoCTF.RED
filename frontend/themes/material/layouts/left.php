@@ -14,7 +14,7 @@ use yii\helpers\Url;
 
         <?php if(!Yii::$app->user->isGuest):?>
           <a href="<?=Url::to(['/profile/me'])?>" class="simple-text logo-normal" style="text-transform:none" title="Profile of <?=Html::encode(Yii::$app->user->identity->username)?>">
-            <img src="/images/avatars/<?=Yii::$app->user->identity->profile->avtr;?>" class="img-fluid rounded" style="max-width: 60px; max-height: 60px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"><br/>
+            <img src="/images/avatars/<?=Yii::$app->user->identity->profile->avtr;?>" class="img-fluid rounded <?=\app\components\formatters\RankFormatter::ordinalPlaceCss(Yii::$app->user->identity->profile->rank->id)?>" style="max-width: 60px; max-height: 60px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"><br/>
             <?=Html::encode(Yii::$app->user->identity->username)?> <small style="font-size: 0.65em">(<code><?=number_format(Yii::$app->user->identity->profile->score->points)?> pts</code>)</small>
           </a>
           <center id="clock" class="small clock text-primary">Server time: <span id="time"><?=date('H:i');?> UTC</span></center>
