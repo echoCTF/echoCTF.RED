@@ -6,7 +6,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\frontend\models\PlayerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][]=$this->title;
+$this->params['breadcrumbs'][]=['label' => 'Players', 'url' => ['index']];
 ?>
 <div class="player-index">
 
