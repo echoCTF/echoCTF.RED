@@ -6,7 +6,8 @@ use yii\helpers\Html;
 /* @var $model app\modules\infrastructure\models\TargetMetadata */
 
 $this->title = 'Update Target Metadata: ' . $model->target_id;
-$this->params['breadcrumbs'][] = ['label' => 'Target Metadatas', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Infrastructure', 'url' => ['/infrastructure/default/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Target metadata', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->target_id, 'url' => ['view', 'id' => $model->target_id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>

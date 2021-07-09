@@ -7,7 +7,8 @@ use yii\widgets\DetailView;
 /* @var $model app\modules\infrastructure\models\TargetMetadata */
 
 $this->title = $model->target_id;
-$this->params['breadcrumbs'][] = ['label' => 'Target Metadatas', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Infrastructure', 'url' => ['/infrastructure/default/index']];
+$this->params['breadcrumbs'][] = ['label' => 'Target metadata', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -30,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'target_id',
+            'target.fqdn',
             'scenario:ntext',
             'instructions:ntext',
             'solution:ntext',
