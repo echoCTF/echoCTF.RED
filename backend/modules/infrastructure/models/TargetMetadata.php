@@ -4,6 +4,9 @@ namespace app\modules\infrastructure\models;
 
 use Yii;
 use app\modules\gameplay\models\Target;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+
 /**
  * This is the model class for table "target_metadata".
  *
@@ -28,6 +31,18 @@ class TargetMetadata extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'target_metadata';
+    }
+
+    public function behaviors()
+    {
+      return [
+          [
+              'class' => TimestampBehavior::class,
+              'createdAtAttribute' => 'created_at',
+              'updatedAtAttribute' => 'updated_at',
+              'value' => new Expression('NOW()'),
+          ],
+      ];
     }
 
     /**
