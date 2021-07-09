@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
+use app\modules\gameplay\models\Target;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\infrastructure\models\TargetMetadata */
@@ -12,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'target_id')->textInput() ?>
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->orderBy(['fqdn'=>SORT_ASC])->all(), 'id', 'fqdn'), ['prompt'=>'Select Target'])->hint('The target for these metadata') ?>
 
     <?= $form->field($model, 'scenario')->textarea(['rows' => 6]) ?>
 
@@ -27,10 +29,6 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'pre_exploitation')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'post_exploitation')->textarea(['rows' => 6]) ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
