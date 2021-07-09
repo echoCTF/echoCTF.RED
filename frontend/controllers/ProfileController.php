@@ -132,13 +132,18 @@ class ProfileController extends \app\components\BaseController
 
     public function actionOvpn()
     {
-      $model=Yii::$app->user->identity->sSL;
-      $content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php', ['model'=>$model]);
-      \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
-      \Yii::$app->response->content=$content;
-      \Yii::$app->response->setDownloadHeaders('echoCTF.ovpn', 'application/octet-stream', false, strlen($content));
-      \Yii::$app->response->send();
-      return;
+
+      if(($model=Yii::$app->user->identity->sSL)!==null)
+      {
+        $content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php', ['model'=>$model]);
+        \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
+        \Yii::$app->response->content=$content;
+        \Yii::$app->response->setDownloadHeaders('echoCTF.ovpn', 'application/octet-stream', false, strlen($content));
+        \Yii::$app->response->send();
+        return;
+      }
+      \Yii::$app->session->addFlash('warning',"No VPN file exists for your profile.");
+      return $this->redirect(['/profile/me']);
 
     }
 
@@ -219,7 +224,7 @@ class ProfileController extends \app\components\BaseController
       }
       catch(\Exception $e)
       {
-        return false;        
+        return false;
       }
     }
 

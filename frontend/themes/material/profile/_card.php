@@ -48,7 +48,7 @@ else {
     <ul class="nav flex-column">
   <?php if($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
           <li class="nav-item text-center">
-              <?=Html::a("<i class='fas fa-user-shield'></i> OpenVPN", ['profile/ovpn'], ['class'=>'btn btn-primary btn-sm','alt'=>'Download OpenVPN Configuration'])?>
+              <?php if(\Yii::$app->user->identity->sSL):?><?=Html::a("<i class='fas fa-user-shield'></i> OpenVPN", ['profile/ovpn'], ['class'=>'btn btn-primary btn-sm','alt'=>'Download OpenVPN Configuration'])?><?php endif;?>
               <?=Html::a("<i class='fas fa-user'></i> Edit", ['profile/settings'], ['class'=>'btn btn-danger btn-sm','alt'=>'Edit profile and account settings'])?>
               <?=Html::a("<i class='fas fa-id-badge'></i> Badge", ['profile/badge','id'=>$profile->id], ['class'=>'btn btn-success btn-sm'])?>
           </li>
