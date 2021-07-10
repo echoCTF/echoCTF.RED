@@ -20,15 +20,15 @@ class Stream extends StreamAR
 {
   public $twitter=false;
   const MODEL_ICONS=[
-    'headshot'=>'<i class="fas fa-skull" style="color: #FF1A00;font-size: 1.5em;" data-toggle="tooltip" title="Target Headshot"></i>',
-    'challenge'=>'<i class="fas fa-tasks" style="color: #FF1A00; font-size: 1.5em;" data-toggle="tooltip" title="Challenge Solve"></i>',
-    'treasure'=>'<i class="fas fa-flag text-danger" style="font-size: 1.5em;" data-toggle="tooltip" title="Target Flag"></i>',
-    'finding'=>'<i class="fas fa-fingerprint" style="color:#FF7400; font-size: 1.5em;" data-toggle="tooltip" title="Target Service"></i>',
-    'question'=>'<i class="fas fa-list-ul text-info" style="font-size: 1.5em;" data-toggle="tooltip" title="Challenge Question"></i>',
+    'headshot'=>'<i class="fas fa-skull" style="color: #FF1A00;font-size: 1.5em;" title="Target Headshot"></i>',
+    'challenge'=>'<i class="fas fa-tasks" style="color: #FF1A00; font-size: 1.5em;" title="Challenge Solve"></i>',
+    'treasure'=>'<i class="fas fa-flag text-danger" style="font-size: 1.5em;" title="Target Flag"></i>',
+    'finding'=>'<i class="fas fa-fingerprint" style="color:#FF7400; font-size: 1.5em;" title="Target Service"></i>',
+    'question'=>'<i class="fas fa-list-ul text-info" style="font-size: 1.5em;" title="Challenge Question"></i>',
     'team_player'=>'<i class="fas fa-users" style="font-size: 1.5em;"></i>',
-    'user'=>'<i class="fas fa-user-ninja " style="color: #4096EE;font-size: 1.5em;" data-toggle="tooltip" title="Player"></i>',
+    'user'=>'<i class="fas fa-user-ninja " style="color: #4096EE;font-size: 1.5em;" title="Player"></i>',
     'report'=>'<i class="fas fa-clipboard-list" style="font-size: 1.5em;"></i>',
-    'badge'=>'<i class="fas fa-trophy" style="color: #C79810;font-size: 1.5em;" data-toggle="tooltip" title="Badge"></i>',
+    'badge'=>'<i class="fas fa-trophy" style="color: #C79810;font-size: 1.5em;" title="Badge"></i>',
   ];
 
   public $ts_ago;
