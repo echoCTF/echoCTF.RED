@@ -13,13 +13,14 @@ use yii\helpers\Markdown;
 if($target->ondemand && $target->ondemand->state<0)
 {
   $spinlink=Html::a(
-    '<i class="fas fa-play" style="font-size: 2em; float:left"></i>',
+    '<i class="fas fa-play"></i>',
       Url::to(['/target/default/spin', 'id'=>$target->id]),
       [
-        'style'=>"font-size: 1.0em;",
+        'style'=>"font-size: 2.0em;",
         'class'=>'text-danger',
         'title' => 'Start the target',
         'rel'=>"tooltip",
+        'data-placement'=>"right",
         'data-pjax' => '0',
         'data-method' => 'POST',
         'aria-label'=>'Start the target',
@@ -30,13 +31,14 @@ if($target->ondemand && $target->ondemand->state<0)
 else
 {
 $spinlink=Html::a(
-  '<i class="fas fa-power-off" style="font-size: 2em; float:left"></i>',
+  '<i class="fas fa-power-off"></i>',
     Url::to(['/target/default/spin', 'id'=>$target->id]),
     [
-      'style'=>"font-size: 1.0em;",
+      'style'=>"font-size: 2.0em;",
       'title' => 'Request target Restart',
       'rel'=>"tooltip",
       'data-pjax' => '0',
+      'data-placement'=>"right",
       'data-method' => 'POST',
       'aria-label'=>'Request target Restart',
     ]
@@ -184,6 +186,10 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
               ]
           )?><br/><?php endif;?>
           <?=$target->description?>
+          <?php if($target->metadata):?>
+            <?php if(!empty($target->metadata->pre_exploitation)):?><b>Pre exploitation</b>: <?=$target->metadata->pre_exploitation?><br/><?php endif;?>
+            <?php if(!empty($target->metadata->post_exploitation)):?><b>Post exploitation</b>: <?=$target->metadata->post_exploitation?><?php endif;?>
+          <?php endif;?>
           <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
             <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-lightbulb text-success'></i> <code class='text-success'>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
           <?php endif;?>

@@ -17,8 +17,8 @@ $config=[
         'content' => [
             'class' => 'app\modules\content\Module',
         ],
-        'servers' => [
-            'class' => 'app\modules\servers\Module',
+        'infrastructure' => [
+            'class' => 'app\modules\infrastructure\Module',
         ],
         'smartcity' => [
             'class' => 'app\modules\smartcity\Module',

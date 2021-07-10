@@ -5,6 +5,7 @@ namespace app\modules\gameplay\models;
 use Yii;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Headshot;
+use app\modules\infrastructure\models\TargetMetadata;
 
 
 /**
@@ -134,6 +135,14 @@ class TargetAR extends \yii\db\ActiveRecord
     public function getNetwork()
     {
         return $this->hasOne(Network::class, ['id' => 'network_id'])->via('networkTarget');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMetadata()
+    {
+        return $this->hasOne(TargetMetadata::class, ['target_id' => 'id']);
     }
 
     /**

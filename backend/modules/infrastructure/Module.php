@@ -1,16 +1,16 @@
 <?php
 
-namespace app\modules\servers;
+namespace app\modules\infrastructure;
 
 /**
- * servers module definition class
+ * infrastructure module definition class
  */
 class Module extends \yii\base\Module
 {
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace='app\modules\servers\controllers';
+    public $controllerNamespace='app\modules\infrastructure\controllers';
 
     /**
      * {@inheritdoc}
