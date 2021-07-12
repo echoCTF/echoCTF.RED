@@ -67,10 +67,13 @@ class GeneratorController extends Controller {
       foreach($players as $player)
       {
         $image=\app\components\Img::profile($player->profile);
-        $path=\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$player->profile->id.'.png';
-        imagepng($image,$path);
-        chown($path, $owner);
-        imagedestroy($image);
+        if($image!==false)
+        {
+          $path=\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$player->profile->id.'.png';
+          imagepng($image,$path);
+          chown($path, $owner);
+          imagedestroy($image);
+        }
       }
     }
 
@@ -84,11 +87,14 @@ class GeneratorController extends Controller {
         if(file_exists($avatarPath))
         {
           $image=\app\components\Img::profile($item->player->profile);
-          $path=\Yii::getAlias('@app/web/images/avatars/badges/').$item->player->profile->id.'.png';
-          imagepng($image,$path);
-          chown($path, $owner);
-          imagedestroy($image);
-          echo " badge generated\n";
+          if($image!==false)
+          {
+            $path=\Yii::getAlias('@app/web/images/avatars/badges/').$item->player->profile->id.'.png';
+            imagepng($image,$path);
+            chown($path, $owner);
+            imagedestroy($image);
+            echo " badge generated\n";
+          }
         }
         else
         {

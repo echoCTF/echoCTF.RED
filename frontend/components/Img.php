@@ -18,7 +18,7 @@ class Img extends Component
           $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profile->avtr));
 
           $image = imagecreatetruecolor(800,220);
-          if($image===false) return false;
+          if($image===false) throw new \yii\base\UserException("Error: Source avatar png not found!");
 
           imagealphablending($image, false);
           $col=imagecolorallocatealpha($image,255,255,255,127);
@@ -47,7 +47,6 @@ class Img extends Component
           imagecopyresampled($image, $cover, 0, 0, 0, 0, 800, 220, 800, 220);
           imagealphablending($image,true);
 
-
           imagealphablending($image, false);
           imagesavealpha($image, true);
 
@@ -62,6 +61,12 @@ class Img extends Component
           imagestring($image, 6, 200, $lineheight*$i++, sprintf("flags........: %d", $profile->totalTreasures),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf("challenges...: %d / %d first",$profile->challengesSolverCount, $profile->firstChallengeSolversCount),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf("headshots....: %d / %d first",$profile->headshotsCount, $profile->firstHeadshotsCount),$greencolor);
+          // Add colored circle around avatar based on rank possition
+//          if($profile->rank && ($profile->rank->id>0 && $profile->rank->id<4))
+          {
+            imageellipse($image, 20, 20, 160, 160, $consolecolor);
+          }
+
           imagedestroy($avatar);
           imagedestroy($cover);
           imagedestroy($src);
