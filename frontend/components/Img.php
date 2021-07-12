@@ -61,12 +61,6 @@ class Img extends Component
           imagestring($image, 6, 200, $lineheight*$i++, sprintf("flags........: %d", $profile->totalTreasures),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf("challenges...: %d / %d first",$profile->challengesSolverCount, $profile->firstChallengeSolversCount),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf("headshots....: %d / %d first",$profile->headshotsCount, $profile->firstHeadshotsCount),$greencolor);
-          // Add colored circle around avatar based on rank possition
-//          if($profile->rank && ($profile->rank->id>0 && $profile->rank->id<4))
-          {
-            imageellipse($image, 20, 20, 160, 160, $consolecolor);
-          }
-
           imagedestroy($avatar);
           imagedestroy($cover);
           imagedestroy($src);
