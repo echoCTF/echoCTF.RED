@@ -5,7 +5,7 @@ use yii\widgets\ListView;
 use app\widgets\target\TargetWidget;
 use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
-//$this->_fluid="-fluid";
+$this->_fluid="-fluid";
 $this->title=Yii::$app->sys->event_name.' Dashboard';
 $this->_description="The echoCTF dashboard page";
 $this->registerJsFile('/js/plugins/chartist.min.js',['depends' => 'yii\web\JqueryAsset']);
