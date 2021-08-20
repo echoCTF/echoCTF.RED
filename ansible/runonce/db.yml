@@ -3,25 +3,33 @@
   hosts: all
   gather_facts: false
   vars_prompt:
+    - name: "myname"
+      prompt: "1/7. What is the desired hostname?"
+      default: "db.hackmex.mx"
+      private: no
+    - name: "interconnect_interface"
+      prompt: "2/7. What is the interconnect interface?"
+      default: "em1"
+      private: no
     - name: "db_ip"
-      prompt: "1/5. What is the IP mysql should bind to?"
+      prompt: "3/7. What is the IP mysql should bind to?"
       default: "10.7.0.253"
       private: no
     - name: "pui_ip"
-      prompt: "2/5. What is the internal participantUI IP?"
+      prompt: "4/7. What is the internal participantUI IP?"
       default: "10.7.0.200"
       private: no
     - name: "mui_ip"
-      prompt: "3/5. What is the internal moderatorUI IP?"
+      prompt: "5/7. What is the internal moderatorUI IP?"
       default: "10.7.0.201"
       private: no
     - name: "vpn_ip"
-      prompt: "4/5. What is the internal VPN IP?"
+      prompt: "6/7. What is the internal VPN IP?"
       default: "10.7.0.254"
       private: no
     - name: "GITHUB_REPO"
-      prompt: "5/5. Provide a github repo to clone?"
-      default: "https://github.com/echoCTF/echoCTF.RED.git"
+      prompt: "7/7. Provide a github repo to clone?"
+      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
       private: no
   vars:
     mysql_users:
@@ -78,12 +86,12 @@
       - curl
       - git
       - mariadb-server
-      - memcached-1.5.18
+      - memcached--
       - libmemcached
       - py3-mysqlclient
       - libtool
-      - autoconf-2.69p2
-      - automake-1.16.2
+      - autoconf-2.69p3
+      - automake-1.16.3
     my_cnf:
       - { init_file:  "/etc/mysql-init.sql"}
       - { bind-address:  "{{db_ip}}" }
@@ -96,15 +104,48 @@
       - { skip-external-locking: 1 }
       - { skip-name-resolve: 1 }
       - { plugin_load_add: "ha_federatedx" }
-      - { plugin_load_add: "ha_blackhole" }
+      - { plugin_load: "ha_blackhole" }
       - { blackhole: "FORCE" }
 
   tasks:
+  - name: Sync date time
+    raw: rdate pool.ntp.org
+
   - name: Install ansible (raw)
     raw: pkg_add ansible py3-mysqlclient
 
   - name: Gather facts
     setup:
+
+  - name: Set hostname
+    hostname:
+      name: "{{myname}}"
+
+  - name: Make hostname permanent (/etc/myname)
+    copy:
+      content: "{{ myname }}\n"
+      dest: /etc/myname
+
+  - name: Create fresh /etc/hosts
+    copy:
+      content: "127.0.0.1 localhost\n{{db_ip}} {{  myname.split('.')[0] | lower }} {{ myname }}\n"
+      dest: /etc/hosts
+
+  - name: Configure interconnect interface for db server
+    lineinfile:
+      path: "/etc/hostname.{{interconnect_interface}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item}}"
+      create: yes
+    with_items:
+      - "inet {{db_ip}} 255.255.255.0 NONE group interconnect"
+      - "up -inet6"
+
+  - name: Bring interface up
+    command: sh /etc/netstart {{interconnect_interface}}
+
 
   - name: Set APP_DIR to /root/sources
     when: ansible_connection != 'local'
@@ -310,9 +351,13 @@
 
   - name: Execute syspatch
     command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
 
   - name: Re-Execute syspatch in case it updated it self on the previous run
     command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
 
   - name: display post install message
     debug: msg="Reboot the system for the changes to take effect"
