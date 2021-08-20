@@ -127,8 +127,8 @@ class Team extends \yii\db\ActiveRecord
 
     public function getValidLogo()
     {
-      if($this->logo===null)
-        return '../../defense.png';
+      if($this->logo===null || trim($this->logo)==='')
+        return '../../team_player.png';
       return $this->logo;
     }
 
