@@ -64,6 +64,7 @@ $config=[
                 'application/json' => 'yii\web\JsonParser',
             ],
             'cookieValidationKey' => $cookieValidationKey,
+            'enableCsrfCookie' => false,
         ],
         'cache' => $cache_config,
         'user' => [
