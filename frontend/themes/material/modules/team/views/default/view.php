@@ -44,7 +44,11 @@ $this->_fluid="-fluid";
         echo GridView::widget([
     //        'id'=>$divID,
             'dataProvider' => $dataProvider,
-            'rowOptions'=>function() { },
+            'rowOptions'=>function($model){
+              if($model->approved !== 1 ){
+                  return ['class' => 'bg-dark text-primary'];
+              }
+            },
             'tableOptions'=>['class'=>'table table-xl'],
             'layout'=>'{summary}{items}',
             'summary'=>'',
