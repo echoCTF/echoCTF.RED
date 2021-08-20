@@ -81,6 +81,7 @@ class TargetAR extends \yii\db\ActiveRecord
             [['status'], 'default', 'value'=> 'offline'],
             [['scheduled_at'], 'datetime', 'format'=>'php:Y-m-d H:i:s'],
             [['created_at'], 'datetime', 'format'=>'php:Y-m-d H:i:s'],
+            [['weight'],'filter', 'filter' => 'intval'],
         ];
     }
 
