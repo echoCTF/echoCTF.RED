@@ -3,25 +3,37 @@
   hosts: all
   gather_facts: false
   vars_prompt:
-    - name: "pui_ip"
-      prompt: "1/5. What is the external (public) IP?"
+    - name: "myname"
+      prompt: "1/8. System hostname?"
+      default: "pui.example.local"
+      private: no
+    - name: "pui_ext_ip"
+      prompt: "2/8. What is the external (public) IP?"
       default: "1.2.3.4"
       private: no
-    - name: "db_server_ip"
-      prompt: "2/5. What is the database server IP?"
+    - name: "db_ip"
+      prompt: "3/8. What is the database server IP?"
       default: "10.7.0.253"
       private: no
     - name: "GITHUB_OAUTH_TOKEN"
-      prompt: "3/5. Provide a github oauth token?"
+      prompt: "4/8. Provide a github oauth token?"
       default: ""
       private: no
     - name: "GITHUB_REPO"
-      prompt: "4/5. Provide a github repo to clone?"
-      default: "https://github.com/echoCTF/echoCTF.RED.git"
+      prompt: "5/8. Provide a github repo to clone?"
+      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
       private: no
     - name: "domain_name"
-      prompt: "5/5. Provide the domain the frontend will run on?"
+      prompt: "6/8. Provide the domain the frontend will run on?"
       default: "pui.example.com"
+      private: no
+    - name: "interconnect_interface"
+      prompt: "7/8. What is the interconnect interface to be used?"
+      default: "em1"
+      private: no
+    - name: "pui_ip"
+      prompt: "8/8. What is the interconnect IP to be used?"
+      default: "10.7.0.200"
       private: no
 
   vars:
@@ -46,9 +58,7 @@
       nginx: 1.14.2
       libc: 96.0
       libutil: 15.0
-      libcrypto: 46.1
-      ICU_MAJOR: 67
-      ICU_MINOR: 1
+      libcrypto: 46.2
     sysctl:
       kern.bufcachepercent: 30
       net.inet.ip.ifq.maxlen: 2560
@@ -77,15 +87,15 @@
       - { name: mysqld, state: "disable" }
       - { name: memcached, state: "disable" }
     packages:
-      - autoconf-2.69p2
-      - automake-1.16.2
+      - autoconf-2.69p3
+      - automake-1.16.3
       - curl
       - git
       - libmemcached
       - libtool
-      - memcached-1.5.18
+      - memcached--
       - nginx
-      - pecl74-memcached-3.1.3p0
+      - pecl74-memcached
       - php-curl%7.4
       - php-gd%7.4
       - php-intl%7.4
@@ -93,11 +103,44 @@
       - php-zip%7.4
       - py3-mysqlclient
   tasks:
+  - name: Sync date time
+    raw: rdate pool.ntp.org
+
   - name: Install ansible (raw)
     raw: pkg_add ansible py3-mysqlclient
 
   - name: Gather facts
     setup:
+
+  - name: Set hostname
+    hostname:
+      name: "{{myname}}"
+
+  - name: Make hostname permanent (/etc/myname)
+    copy:
+      content: "{{ myname }}\n"
+      dest: /etc/myname
+
+  - name: Create fresh /etc/hosts
+    copy:
+      content: "127.0.0.1 localhost\n{{db_ip}} db\n{{pui_ext_ip}} {{  myname.split('.')[0] | lower }} {{ myname }}\n"
+      dest: /etc/hosts
+
+  - name: Configure interconnect interface
+    lineinfile:
+      path: "/etc/hostname.{{interconnect_interface}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item}}"
+      create: yes
+    with_items:
+      - "inet {{pui_ip}} 255.255.255.0 NONE group interconnect"
+      - "up -inet6"
+
+  - name: Bring interface up
+    command: sh /etc/netstart {{interconnect_interface}}
+
 
   - name: Configure PS1 for root and skeleton
     lineinfile:
@@ -202,7 +245,7 @@
       - usr/bin
       - usr/libexec
       - usr/local/lib
-      - usr/local/share/icu/67.1
+      - usr/local/share/icu/68.2
       - usr/lib
 
   - name: "Copy pf conf files"
@@ -225,7 +268,7 @@
     - { cmd: "touch /etc/registry_clients.conf", creates: "/etc/registry_clients.conf" }
     - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
     - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
-
+    - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
 
   - name: Fix CHROOT environment
     file: path=/home/{{item.user}}/{{item.dir}} mode="{{item.mode}}" state=directory
@@ -266,7 +309,7 @@
 
   - name: "Create participant/config/db.php"
     copy:
-      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_server_ip}};dbname=echoCTF', 'username' => 'participantUI', 'password' => 'participantUI', 'charset' => 'utf8','enableSchemaCache' => true, 'schemaCacheDuration' => 60,'schemaCache' => 'cache',];\n"
+      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_ip}};dbname=echoCTF', 'username' => 'participantUI', 'password' => 'participantUI', 'charset' => 'utf8','enableSchemaCache' => true, 'schemaCacheDuration' => 60,'schemaCache' => 'cache',];\n"
       dest: "/home/participantUI/{{domain_name}}/frontend/config/db.php"
       mode: '0444'
     tags:
@@ -274,7 +317,7 @@
 
   - name: "Create participant/config/cache.php"
     copy:
-      content: "<?php  return [ 'class' => 'yii\\caching\\MemCache', 'useMemcached' => true, 'servers' => [['host' => '{{db_server_ip}}','port' => 11211, 'weight' => 60]]];\n"
+      content: "<?php  return [ 'class' => 'yii\\caching\\MemCache', 'useMemcached' => true, 'servers' => [['host' => '{{db_ip}}','port' => 11211, 'weight' => 60]]];\n"
       dest: "/home/participantUI/{{domain_name}}/frontend/config/cache.php"
       mode: '0444'
     tags:
@@ -294,7 +337,7 @@
       src: ../templates/nginx.conf.j2
       dest: /etc/nginx/{{item.user}}.conf
     with_items:
-      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ip}}' }
+      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}' }
     tags:
       - nginx
 
@@ -326,7 +369,7 @@
       - { section: participantui, option: chroot, value: "/home/participantUI" }
       - { section: participantui, option: "php_admin_value[sendmail_path]", value: "/bin/femail -t" }
       - { section: participantui, option: "php_admin_value[session.save_handler]", value: "memcached" }
-      - { section: participantui, option: "php_admin_value[session.save_path]", value: "{{db_server_ip}}:11211" }
+      - { section: participantui, option: "php_admin_value[session.save_path]", value: "{{db_ip}}:11211" }
       - { section: participantui, option: "php_admin_value[session.name]", value: "PUISESSID" }
 
 
@@ -344,7 +387,7 @@
       - { section: PHP, option: "post_max_size", value: "180M" }
       - { section: PHP, option: "upload_max_filesize", value: "120M" }
       - { section: PHP, option: "session.save_handler", value: "memcached"}
-      - { section: PHP, option: "session.save_path", value: "{{db_server_ip}}:11211"}
+      - { section: PHP, option: "session.save_path", value: "{{db_ip}}:11211"}
 
   - name: copy nginx rc.d into participant
     command: cp /etc/rc.d/nginx "/etc/rc.d/{{item}}"
@@ -355,6 +398,7 @@
     command: "{{item}}"
     with_items:
       - mkdir -p /home/participantUI/{{domain_name}}/frontend/web/assets
+      - mkdir -p /home/participantUI/{{domain_name}}/frontend/web/avatars/team
       - chown -R participantUI /home/participantUI/{{domain_name}}/frontend/web/assets
 
   - name: configure participant rc.d
@@ -415,8 +459,12 @@
 
   - name: Execute syspatch
     command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
 
   - name: Re-Execute syspatch in case it updated it self on the previous run
     command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
 
   - debug: msg={{ post_inst.split('\n') }}
