@@ -61,7 +61,7 @@
 #    when: pip is defined
 #
   - name: pip install
-    pip: name="{{item.name}}" version="{{item.version}}" state="{{item.state}}"
+    pip: name="{{item.name}}" version="{{item.version|default(omit)}}" state="{{item.state}}"
     with_items: "{{pip}}"
     when: pip is defined
 
