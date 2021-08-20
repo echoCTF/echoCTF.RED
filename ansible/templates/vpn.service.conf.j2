@@ -35,4 +35,6 @@ anchor "networks"
 load anchor "networks" from "/etc/targets_networks.conf"
 pass quick inet to <targets> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state
 
+pass quick inet proto tcp from <docker_clients> to <docker_servers> port {2376}
+
 pass quick on interconnect from interconnect:network label "interconnect"
