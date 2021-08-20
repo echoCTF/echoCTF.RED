@@ -64,8 +64,12 @@ class GeneratorController extends Controller {
   /**
    * Generate sitemap.xml
    */
-    public function actionSitemap($profiles=false, $baseurl='https://echoctf.red/')
+    public function actionSitemap($profiles=false, $baseurl=null)
     {
+      if($baseurl===null)
+      {
+        $baseurl=sprintf("https://%s/",\Yii::$app->sys->offense_domain);
+      }
       $targets=Target::find()->active()->all();
       if($profiles!==false)
         $players=Player::find()->active()->all();

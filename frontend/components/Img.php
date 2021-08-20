@@ -52,7 +52,7 @@ class Img extends Component
 
           $lineheight=20;
           $i=1;
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("root@echoctf.red:/# ./userinfo --profile %d",$profile->id),$textcolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf("root@%s:/# ./userinfo --profile %d",\Yii::$app->sys->offense_domain,$profile->id),$textcolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf("username.....: %s",$profile->owner->username),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf("joined.......: %s",date("d.m.Y", strtotime($profile->owner->created))),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf("points.......: %s",number_format($profile->owner->playerScore->points)),$greencolor);

@@ -1,16 +1,16 @@
 <?php
 /* @var $this yii\web\View */
-$this->title=Yii::$app->sys->event_name.' Terms and Conditions'
+$this->title=\Yii::$app->sys->event_name.' Terms and Conditions'
 
 ?>
 <div class="terms-and-conditions-index">
   <div class="body-content">
 <h1><?=$this->title?></h1>
-<h2>Welcome to echoCTF RED</h2>
-  <p>These terms and conditions outline the rules and regulations for the use of the echoCTF RED Website created and oprated by Echothrust Solutions.</p> <br />
+<h2>Welcome to <?=\Yii::$app->sys->event_name?></h2>
+  <p>These terms and conditions outline the rules and regulations for the use of the <?=\Yii::$app->sys->event_name?> Website created and oprated by Echothrust Solutions.</p> <br />
   <span style="text-transform: capitalize;"> Echothrust Solutions</span> is located at:<br />
   <address>ELLINIKOU STRATOU 7 ANOIXI, ATHENS <br />14569 - GREECE , Greece<br /></address>
-  <p>By accessing this website we assume you accept these terms and conditions in full. Do not continue to use the echoCTF RED website
+  <p>By accessing this website we assume you accept these terms and conditions in full. Do not continue to use the <?=\Yii::$app->sys->event_name?> website
   if you do not accept all of the terms and conditions stated on this page.</p>
   <p>The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice
   and any or all Agreements: "Client", "You" and "Your" refers to you, the person accessing this website
@@ -22,19 +22,19 @@ $this->title=Yii::$app->sys->event_name.' Terms and Conditions'
   of provision of the Company's stated services/products, in accordance with and subject to, prevailing law
   of Greece. Any use of the above terminology or other words in the singular, plural,
   capitalisation and/or he/she or they, are taken as interchangeable and therefore as referring to same.</p><h2>Cookies</h2>
-  <p>We employ the use of cookies. By using the echoCTF RED website you consent to the use of cookies
+  <p>We employ the use of cookies. By using the <?=\Yii::$app->sys->event_name?> website you consent to the use of cookies
   in accordance with Echothrust Solutions's privacy policy.</p><p>Most of the modern day interactive web sites
   use cookies to enable us to retrieve user details for each visit. Cookies are used in some areas of our site
   to enable the functionality of this area and ease of use for those people visiting. Some of our
   affiliate / advertising partners may also use cookies.</p><h2>License</h2>
   <p>Unless otherwise stated, Echothrust Solutions and/or it's licensors own the intellectual property rights for
   all material on Echothrust Solutions. All intellectual property rights are reserved. You may view and/or print
-  pages from https://echoCTF.red for your own personal use subject to restrictions set in these terms and conditions.</p>
+  pages from https://<?=\Yii::$app->sys->offense_domain?> for your own personal use subject to restrictions set in these terms and conditions.</p>
   <p>You must not:</p>
   <ol>
-    <li>Republish material from https://echoCTF.red</li>
-    <li>Sell, rent or sub-license material from https://echoCTF.red</li>
-    <li>Reproduce, duplicate or copy material from https://echoCTF.red</li>
+    <li>Republish material from https://<?=\Yii::$app->sys->offense_domain?></li>
+    <li>Sell, rent or sub-license material from https://<?=\Yii::$app->sys->offense_domain?></li>
+    <li>Reproduce, duplicate or copy material from https://<?=\Yii::$app->sys->offense_domain?></li>
   </ol>
   <p>Redistribute content from Echothrust Solutions (unless content is specifically made for redistribution).</p>
 <h2>Hyperlinking to our Content</h2>

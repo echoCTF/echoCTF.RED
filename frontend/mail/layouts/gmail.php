@@ -10,7 +10,7 @@ use yii\helpers\Html;
 [{
   "@context": "http://schema.org/",
   "@type": "Organization",
-  "logo": "https://echoctf.red/images/logo.png"
+  "logo": "https://<?=Yii::$app->sys->offense_domain?>/images/logo.png"
 },{
   "@context": "http://schema.org/",
   "@type": "EmailMessage",
@@ -24,7 +24,7 @@ use yii\helpers\Html;
 },{
   "@context": "http://schema.org/",
   "@type": "PromotionCard",
-  "image": "https://echoctf.red/images/logo.png"
+  "image": "https://<?=Yii::$app->sys->offense_domain?>/images/logo.png"
 }]
     </script>
     <meta http-equiv="Content-Type" content="text/html; charset=<?= Yii::$app->charset ?>" />
