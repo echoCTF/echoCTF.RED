@@ -279,7 +279,7 @@ class DefaultController extends \app\components\BaseController
       }
       $lineheight=20;
       $i=3;
-      imagestring($src, 5, 60, $lineheight*$i, sprintf("root@echoctf.red:/#",$target->name),$consolecolor);
+      imagestring($src, 5, 60, $lineheight*$i, sprintf("root@%s:/#",\Yii::$app->sys->offense_domain,$target->name),$consolecolor);
       imagestring($src, 5, 235, $lineheight*$i++, sprintf("./target --stats %s",$target->name),$textcolor);
       imagestring($src, 5, 60, $lineheight*$i++, sprintf("ipv4..........: %s",long2ip($target->ip)),$greencolor);
       imagestring($src, 5, 60, $lineheight*$i++, sprintf("fqdn..........: %s",$target->fqdn),$greencolor);

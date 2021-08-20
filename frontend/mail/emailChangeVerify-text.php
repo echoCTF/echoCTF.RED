@@ -7,7 +7,7 @@ $verifyLink=Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'toke
 ?>
 Hello,
 
-You just requested that this email address be linked to your echoCTF.RED
+You just requested that this email address be linked to your <?=Yii::$app->sys->event_name?>
 account.
 
 To verify that this email is valid follow the link below:
@@ -19,4 +19,4 @@ assistance there.
 
 Best regards,
 
-echoCTF.RED team
+<?=Yii::$app->sys->event_name?> team

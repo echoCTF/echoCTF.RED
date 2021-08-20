@@ -5,7 +5,7 @@
 
 $verifyLink=Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $user->verification_token]);
 ?>
-Hello and welcome to echoCTF.RED
+Hello and welcome to <?=Yii::$app->sys->event_name?>
 
 You (or possibly someone else), just requested that this email address be used
 to create an account on our platform.

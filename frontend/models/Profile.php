@@ -169,7 +169,7 @@ class Profile extends ProfileAR
         }
       }
       else
-        $msg=sprintf("I have just joined echoCTF.RED!");
+        $msg=sprintf("I have just joined %s!",\Yii::$app->sys->event_name);
       return $msg;
     }
 

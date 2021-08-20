@@ -93,9 +93,9 @@ class SignupForm extends Model
     public function attributeLabels()
     {
         return [
-          'terms_and_conditions'=>'I accept the echoCTF RED <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',
-          'mail_optin'=>'<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from echoCTF RED</abbr>',
-          'gdpr'=>'I accept the echoCTF RED <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>',
+          'terms_and_conditions'=>'I accept the '.\Yii::$app->sys->event_name.' <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',
+          'mail_optin'=>'<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from '.\Yii::$app->sys->event_name.'</abbr>',
+          'gdpr'=>'I accept the '.\Yii::$app->sys->event_name.' <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>',
         ];
     }
 
