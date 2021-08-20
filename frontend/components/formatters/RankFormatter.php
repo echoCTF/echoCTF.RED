@@ -18,8 +18,8 @@ class RankFormatter extends \yii\base\Model {
     return $number.'th';
   }
 
-  public static function ordinalPlaceCss(int $number) {
-    if($number===null || $number<1 || $number>3) return null;
+  public static function ordinalPlaceCss($number) {
+    if($number===null || intval($number)<1 || intval($number)>3) return null;
     return 'rankpos-'.$number;
   }
 }
