@@ -26,7 +26,7 @@ class TargetController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'create', 'update', 'view', 'generate'],
+                'only' => ['index','docker-compose', 'create', 'update', 'view', 'generate'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -54,6 +54,16 @@ class TargetController extends Controller
         $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+    public function actionDockerCompose()
+    {
+        $searchModel=new TargetSearch();
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->pagination=false;
+        return $this->renderPartial('docker-compose', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);

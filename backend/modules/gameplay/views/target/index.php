@@ -22,6 +22,7 @@ $this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
         <?= Html::a('Pull All', ['pull', 'id' => 'all'], ['class' => 'btn btn-warning']) ?>
         <?= Html::a('Statistics', ['statistics'], ['class' => 'btn btn-info']) ?>
         <?= Html::a('Container Status', ['status'], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Docker compose', ['docker-compose'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
