@@ -67,8 +67,8 @@ class ChallengeSolverController extends Controller
     {
       $submit=Yii::$app->request->post('submit');
       $model=new ChallengeSolver();
-      if($submit[0]==='give') $this->give();
-      elseif($submit[0]==='save' && $model->load(Yii::$app->request->post()) && $model->save())
+      if($submit && $submit[0]==='give') $this->give();
+      elseif($submit && $submit[0]==='save' && $model->load(Yii::$app->request->post()) && $model->save())
       {
         return $this->redirect(['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]);
       }

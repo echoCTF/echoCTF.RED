@@ -76,8 +76,8 @@ class HeadshotController extends Controller
     {
         $submit=Yii::$app->request->post('submit');
         $model=new Headshot();
-        if($submit[0]==='give') $this->give();
-        elseif($submit[0]==='save' && $model->load(Yii::$app->request->post()) && $model->save())
+        if($submit && $submit[0]==='give') $this->give();
+        elseif($submit && $submit[0]==='save' && $model->load(Yii::$app->request->post()) && $model->save())
         {
             return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
         }
