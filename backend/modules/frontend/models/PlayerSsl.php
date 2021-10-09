@@ -88,7 +88,7 @@ class PlayerSsl extends \yii\db\ActiveRecord
           $CAprivkey=array("file://".$tmpCAprivkey, null);
           file_put_contents($tmpCAprivkey, Yii::$app->sys->{'CA.key'});
           file_put_contents($tmpCAcert, Yii::$app->sys->{'CA.crt'});
-          $x509=openssl_csr_sign($csr, $CAcert, $CAprivkey, 365, array('digest_alg'=>'sha256', 'config'=>Yii::getAlias('@appconfig').'/CA.cnf', 'x509_extensions'=>'usr_cert'), time());
+          $x509=openssl_csr_sign($csr, $CAcert, $CAprivkey, 3650, array('digest_alg'=>'sha256', 'config'=>Yii::getAlias('@appconfig').'/CA.cnf', 'x509_extensions'=>'usr_cert'), time());
           openssl_csr_export($csr, $csrout);
           openssl_x509_export($x509, $certout, false);
           openssl_x509_export($x509, $crtout);
