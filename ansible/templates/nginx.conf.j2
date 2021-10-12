@@ -24,8 +24,11 @@ http {
 	  proxy_temp_path /cache/proxy_temp 1 2;
 
 
+    limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=resetforms:10m rate=10r/m;
 
-	access_log  syslog:server=unix:/dev/log,severity=notice main;
+	  access_log  syslog:server=unix:/dev/log,severity=notice main;
+
     #tcp_nopush           on;
     keepalive_timeout     65;
     gzip                  on;
@@ -100,6 +103,23 @@ http {
 
         set $yii_bootstrap "/index.php";
 
+        # Rate limit /api to 10 requests/sec
+        # This is way too loose
+        location /api {
+            limit_req zone=api;
+            index  index.php;
+            try_files $uri $uri/ /index.php?$args;
+        }
+
+        # Rate limit resend-verification-email to 10 requests per minute
+        # There is no reason why anyone would need more than that for a
+        # legitimate purpose
+        location /resend-verification-email {
+            limit_req zone=resetforms;
+            index  index.php;
+            try_files $uri $uri/ /index.php?$args;
+        }
+
         location / {
                 index  index.html index.php;
                 try_files $uri $uri/ /index.php?$args;
@@ -116,7 +136,7 @@ http {
                 set $yiiargs $query_string;
             }
 
-            fastcgi_pass   127.0.0.1:9001;
+            fastcgi_pass   {{item.fpm}};
             include fastcgi_params;
             fastcgi_param  SCRIPT_FILENAME  $document_root$fsn;
 
