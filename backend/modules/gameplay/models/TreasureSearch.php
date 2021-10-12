@@ -81,9 +81,11 @@ class TreasureSearch extends Treasure
             ->andFilterWhere(['like', 'treasure.effects', $this->effects])
             ->andFilterWhere(['like', 'treasure.code', $this->code]);
 
-        $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
-        $query->orFilterWhere(['like', 'target.name', $this->ipoctet]);
-        $query->orFilterWhere(['like', 'target.id', $this->ipoctet]);
+        $query->andFilterWhere(['OR',
+                                ['like', 'INET_NTOA(target.ip)', $this->ipoctet],
+                                ['like', 'target.name', $this->ipoctet],
+                                ['=', 'target.id', $this->ipoctet]
+                              ]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
