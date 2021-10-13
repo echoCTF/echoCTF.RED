@@ -1,0 +1,21 @@
+---
+#author: [PROFILE ID] # Your profile id. NOT PLAYER ID
+name: "Check my sanity"
+category: Tutorial # Free form
+difficulty: easy # Free form
+player_type: offense # offense or defense
+description: >
+    <p>I am a challenge designed to test your sanity. Check my questions the
+    truth will be revealed.</p>
+
+questions:
+  - {
+       name: "Are you insane?",
+       description: >
+          Time to answer once and for all the ultimate burning question.
+          <i>Are you insane?</i> and the answer to that is
+          <kbd>No i am NOT!</kbd>
+       points: 10,
+       code: "No i am NOT!",
+       weight: 0,
+    }
