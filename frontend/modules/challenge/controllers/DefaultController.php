@@ -64,7 +64,7 @@ class DefaultController extends \app\components\BaseController
     public function actionIndex()
     {
       $dataProvider=new ActiveDataProvider([
-          'query' => Challenge::find()->active()->player_progress(Yii::$app->user->id),
+          'query' => Challenge::find()->active()->player_progress(Yii::$app->user->id)->orderBy([new \yii\db\Expression('FIELD (difficulty,"easy","medium","hard" )')]),
           'pagination' => false,
       ]);
       return $this->render('index', [
