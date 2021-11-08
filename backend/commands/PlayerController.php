@@ -115,7 +115,7 @@ class PlayerController extends Controller {
   /*
     Mail Users their activation URL
   */
-  public function actionMail($baseURL, $active=false, $email=false)
+  public function actionMail($baseURL=null, $active=false, $email=false)
   {
     // Get innactive players
     if($email !== false)
@@ -129,14 +129,23 @@ class PlayerController extends Controller {
       $this->stdout("Mailing Registered users:\n", Console::BOLD);
     }
     $event_name=Sysconfig::findOne('event_name')->val;
+
     foreach($players as $player)
     {
       // Generate activation URL
-      $activationURL=sprintf("%s%s", $baseURL, $player->verification_token);
-      $MAILCONTENT=$this->renderFile('@app/mail/layouts/activation.php', ['activationURL'=>$activationURL, 'player'=>$player, 'event_name'=>$event_name]);
-      $_SERVER['SERVER_NAME']=Sysconfig::findOne('moderator_domain')->val;
+      $activationURL=sprintf("https://%s/verify-email?token=%s",\Yii::$app->sys->offense_domain, $player->verification_token);
+
       $this->stdout($player->email);
-      $numSend=$player->mail($MAILCONTENT,Sysconfig::findOne('event_name')->val.' account activation details');
+      $numSend=Yii::$app
+        ->mailer
+        ->compose(
+                  ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
+                  ['user' => $player,'verifyLink'=>$activationURL]
+        )
+        ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName])
+        ->setTo([$player->email => $player->fullname])
+        ->setSubject(trim(Yii::$app->sys->event_name). ' Account approved')
+        ->send();
       $this->stdout($numSend ? " Ok\n" : "Not Ok\n");
     }
   }
