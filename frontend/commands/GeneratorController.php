@@ -83,9 +83,12 @@ class GeneratorController extends Controller {
     /**
      * Generate participant avatars based on robohash
      */
-      public function actionAvatar()
+      public function actionAvatar($active=true)
       {
-        $players=Player::find()->active()->all();
+        if(boolval($active)===true)
+          $players=Player::find()->active()->all();
+        else
+          $players=Player::find()->all();
         foreach($players as $player)
         {
           $robohash=new \app\models\Robohash($player->profile->id,'set1');
