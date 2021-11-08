@@ -67,7 +67,7 @@ class UserController extends Controller
      * @param string $email user email
      * @param string $password uncrypted password, if skipped random password will be generated.
      */
-    public function actionCreate($name, $email, $password='')
+    public function actionCreate($name, $email, $password='',$admin=true)
     {
         if(empty($password))
         {
@@ -80,6 +80,7 @@ class UserController extends Controller
         $user=new User();
         $user->username=$name;
         $user->email=$email;
+        $user->admin=$admin;
         $user->status=User::STATUS_ACTIVE;
         $user->generateAuthKey();
         $user->setPassword($random);
