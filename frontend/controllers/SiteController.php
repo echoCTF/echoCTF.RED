@@ -81,7 +81,6 @@ class SiteController extends \app\components\BaseController
                     [
                       'actions' => ['changelog'],
                       'allow' => true,
-                      'roles'=>['*']
                     ],
                 ],
             ],
