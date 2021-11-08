@@ -21,3 +21,5 @@ nodejs/**/*
 nodejs
 themes/**/*
 themes
+.git/
+.github/
