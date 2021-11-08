@@ -12,6 +12,13 @@ jobs:
   phpcomposer:
     runs-on: ubuntu-18.04
     steps:
+    - name: Setup PHP with PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.3'
+        extensions: imagick, gd, mysqli, pdo, intl, mbstring
+        tools: composer:v2
+
     - uses: actions/checkout@v2
 
     - name: Configure github token
@@ -32,12 +39,12 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php7.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php7.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
   dockerbuilds:
     needs: [phpcomposer]
@@ -45,6 +52,12 @@ jobs:
     env:
       GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
     steps:
+    - name: Setup PHP with PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.3'
+        extensions: imagick, gd, mysqli, pdo, intl, mbstring
+        tools: composer:v2
     - uses: actions/checkout@v2
 
     - name: Enable experimental docker features
@@ -58,12 +71,12 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php7.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php7.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Build the all-in-one Docker image
       run: docker build --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
