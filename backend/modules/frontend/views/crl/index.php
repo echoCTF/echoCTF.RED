@@ -35,7 +35,13 @@ $this->params['breadcrumbs'][]=$this->title;
             ],
             [
               'attribute'=>'txtcrt',
-              'value'=>function($model) { return explode("\n", $model->txtcrt)[3];}
+              'value'=>function($model) {
+                  $tmparr=explode("\n", $model->txtcrt);
+                  if(is_array($tmparr) && count($tmparr)>=3)
+                    return $tmparr[3];
+                  else
+                    return "<b>".$model->txtcrt."</b>";
+                  }
             ],
             //'csr:ntext',
             //'crt:ntext',
