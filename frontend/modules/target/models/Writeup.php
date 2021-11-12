@@ -42,13 +42,14 @@ class Writeup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['player_id', 'target_id'], 'required'],
+            [['player_id', 'target_id','content'], 'required'],
             [['player_id', 'target_id'], 'integer'],
             [['approved'], 'boolean'],
             [['approved'], 'default','value'=>false],
             [['content', 'status', 'comment'], 'string'],
             ['formatter', 'default','value'=>'text'],
-            ['content', 'default','value'=>null],
+            [['content'], 'filter','filter'=>'trim'],
+            [['content'], 'string','skipOnEmpty'=>false, 'min'=>'20'],
             ['status','default','value'=>'PENDING'],
             [['created_at', 'updated_at'], 'safe'],
 //            [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
