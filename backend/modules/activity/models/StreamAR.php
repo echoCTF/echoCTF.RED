@@ -44,7 +44,7 @@ class StreamAR extends \yii\db\ActiveRecord
           'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
           'points' => AttributeTypecastBehavior::TYPE_FLOAT,
         ],
-        'typecastAfterValidate' => true,
+        'typecastAfterValidate' => false,
         'typecastBeforeSave' => false,
         'typecastAfterFind' => true,
       ],
