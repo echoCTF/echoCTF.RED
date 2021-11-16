@@ -214,16 +214,24 @@ class SslController extends Controller {
   /*
    * Generate CRL based on revoked certificates on the database
    */
-  public function actionGenerateCrl()
+  public function actionGenerateCrl($clean=false)
   {
     $CERTS=Crl::find()->all();
     foreach($CERTS as $cert)
     {
-      $tmpcrt=tempnam('/tmp', 'crt');
-      file_put_contents($tmpcrt, $cert->crt);
-      $cmd=sprintf("openssl ca -revoke %s %s ", $tmpcrt, $this->ssl_params);
-      shell_exec($cmd);
-      unlink($tmpcrt);
+      try
+      {
+        $tmpcrt=tempnam('/tmp', 'crt');
+        file_put_contents($tmpcrt, $cert->crt);
+        $cmd=sprintf("openssl ca -revoke %s %s ", $tmpcrt, $this->ssl_params);
+        shell_exec($cmd);
+        unlink($tmpcrt);
+        if($clean!==false) $cert->delete();
+      }
+      catch(\Exception $e)
+      {
+
+      }
     }
     if(!empty($CERTS)) $this->actionCreateCrl();
     return 0;
