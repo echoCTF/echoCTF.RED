@@ -221,7 +221,7 @@ class CronController extends Controller {
    */
   private function active_targets_pf($base="/etc")
   {
-    $ips=$networks=$rules=array();
+    $ips=$networks=$rules=$rulestoNet=$rulestoClient=[];
     $targets=Target::find()->active()->online()->poweredup()->all();
     foreach($targets as $target)
     {
@@ -232,14 +232,16 @@ class CronController extends Controller {
       else
       {
         $networks[$target->network->codename][]=$target->ipoctet;
-        $rules[]=Pf::allowToNetwork($target);
-        $rules[]=Pf::allowToClient($target);
+        $rulestoNet[]=Pf::allowToNetwork($target);
+        $rulestoClient[]=Pf::allowToClient($target);
       }
     }
 
     Pf::store($base.'/targets.conf',$ips);
     Pf::load_table_file('targets',$base.'/targets.conf');
-
+    $rulestoNet=array_unique($rulestoNet,SORT_STRING);
+    $rulestoClient=array_unique($rulestoClient,SORT_STRING);
+    $rules=array_merge($rulestoNet,$rulestoClient);
     foreach($networks as $key => $val) {
 
       Pf::store($base.'/'.$key.'.conf', $val);
