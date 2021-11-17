@@ -229,7 +229,7 @@ class CronController extends Controller {
       {
         $ips[]=$target->ipoctet;
       }
-      elseif(!isset($networks[$target->network->codename]))
+      else
       {
         $networks[$target->network->codename][]=$target->ipoctet;
         $rules[]=Pf::allowToNetwork($target);
@@ -247,8 +247,8 @@ class CronController extends Controller {
       $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
     }
 
-    Pf::store("$base/targets_networks.conf",$rules);
-    Pf::load_anchor_file("networks","$base/targets_networks.conf");
+    if(Pf::store("$base/targets_networks.conf",$rules))
+      Pf::load_anchor_file("networks","$base/targets_networks.conf");
   }
 
   /*
