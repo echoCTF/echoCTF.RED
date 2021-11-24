@@ -22,4 +22,13 @@ class Sysconfig extends Component
   return $val;
   }
 
+  public function __set($attribute,$value)
+  {
+    if(!(\Yii::$app->cache instanceof \yii\caching\MemCache))
+      throw new \LogicException('Memcache not initialized.');
+
+    $val=Yii::$app->cache->memcache->set($attribute,$value);
+    return $val;
+  }
+
 }
