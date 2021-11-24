@@ -16,13 +16,21 @@ class BaseController extends \yii\web\Controller
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
+                    'adminBypass'=>[
+                      'allow'=> true,
+                      'matchCallback' => function () {
+                        if(!\Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin)
+                          return true;
+                      }
+                    ],
                     'eventActive'=>[
                       'allow' => false,
                       'matchCallback' => function () {
                         return $this->eventInactive;
                       },
                       'denyCallback' => function () {
-                        throw new \yii\web\HttpException(403,'The event is not active.');
+                        Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
+                        return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                       }
                     ],
                     'eventStartEnd'=>[
@@ -32,9 +40,32 @@ class BaseController extends \yii\web\Controller
                        },
                        'denyCallback' => function() {
                          Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
-                         return  \Yii::$app->getResponse()->redirect(['/profile/me']);
+                         return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                        }
                    ],
+
+                   'eventStart'=>[
+                      'allow' => false,
+                      'matchCallback' => function () {
+                        return \Yii::$app->sys->event_start!==false && time()<\Yii::$app->sys->event_start;
+                      },
+                      'denyCallback' => function() {
+                        Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
+                        return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
+                      }
+                  ],
+                  'eventEnd'=>[
+                     'allow' => false,
+                     'matchCallback' => function () {
+                       return \Yii::$app->sys->event_end!==false && time()>\Yii::$app->sys->event_end;
+                     },
+                     'denyCallback' => function() {
+                       Yii::$app->session->setFlash('info', 'This operation is closed after the competition ends');
+                       return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
+                     }
+                 ],
+
+
                    'teamsAccess'=>[
                       'allow' => false,
                       'matchCallback' => function () {
@@ -92,4 +123,20 @@ class BaseController extends \yii\web\Controller
       }
       return false;
     }
+
+    public function beforeAction($action)
+    {
+        if (parent::beforeAction($action))
+        {
+            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !$this->request->validateCsrfToken())
+            {
+                Yii::$app->session->setFlash('notice', Yii::t('yii', 'Unable to verify your data submission.'));
+                return \Yii::$app->getResponse()->goBack(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage]);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
 }
