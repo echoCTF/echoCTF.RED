@@ -61,6 +61,11 @@ $this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
               'attribute' => 'headshot',
               'value' => function ($model) { return count($model->headshots);}
             ],
+            [
+              'label' => 'Points',
+              'attribute' => 'points',
+              'value' => function ($model) { return $model->findingPoints+$model->treasurePoints;}
+            ],
 //            'required_xp',
 //            'suggested_xp',
             'weight',
