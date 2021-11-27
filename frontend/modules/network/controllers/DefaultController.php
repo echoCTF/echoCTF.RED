@@ -81,7 +81,7 @@ class DefaultController extends \app\components\BaseController
      }
      protected function findModel(int $id)
      {
-         if(($model=Network::findOne(['id'=>$id])) !== null && $model->active)
+         if(($model=Network::findOne(['id'=>$id])) !== null && ($model->active || (!\Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin)))
          {
              return $model;
          }
