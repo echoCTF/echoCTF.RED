@@ -20,7 +20,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  */
 class Target extends TargetAR
 {
-  const DEFAULT_LOGO='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mMM+M9QDwAExgHQHiLdYgAAAABJRU5ErkJggg==';
+  const DEFAULT_LOGO='/images/default_target.png';
   public $difficulties=[
     "beginner",
     "basic",
