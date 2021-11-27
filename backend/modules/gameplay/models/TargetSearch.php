@@ -12,6 +12,7 @@ use app\modules\gameplay\models\Target;
 class TargetSearch extends Target
 {
   public $headshot;
+  public $network_name;
     /**
      * {@inheritdoc}
      */
@@ -23,7 +24,7 @@ class TargetSearch extends Target
             [['headshot'],'default','value'=>null ],
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
             [['scheduled_at'], 'datetime'],
-            [['timer','name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp','headshot','category'], 'safe'],
+            [['timer','name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp','headshot','category','network_name'], 'safe'],
         ];
     }
 
@@ -45,7 +46,7 @@ class TargetSearch extends Target
      */
     public function search($params)
     {
-        $query=Target::find()->joinWith(['headshots']);
+        $query=Target::find()->joinWith(['headshots','network']);
 
         // add conditions that should always apply here
 
@@ -88,7 +89,8 @@ class TargetSearch extends Target
             ->andFilterWhere(['like', 'server', $this->server])
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'dns', $this->dns])
-            ->andFilterWhere(['like', 'parameters', $this->parameters]);
+            ->andFilterWhere(['like', 'parameters', $this->parameters])
+            ->andFilterWhere(['like', 'network.name', $this->network_name])
             ;
 
         if($this->headshot !== null ) $query->having(["=",'count(headshot.player_id)',$this->headshot]);
@@ -104,6 +106,10 @@ class TargetSearch extends Target
                       'ipoctet' => [
                           'asc' => ['ip' => SORT_ASC],
                           'desc' => ['ip' => SORT_DESC],
+                      ],
+                      'network_name' => [
+                          'asc' => ['network.name' => SORT_ASC],
+                          'desc' => ['network.name' => SORT_DESC],
                       ],
                       'headshot' => [
                           'asc' => ['COUNT(headshot.player_id)' => SORT_ASC],
