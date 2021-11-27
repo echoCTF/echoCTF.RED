@@ -2,6 +2,7 @@
 
 $params=require __DIR__.'/params.php';
 $db=require __DIR__.'/db.php';
+$cache=require __DIR__.'/cache.php';
 
 $config=[
     'id' => 'basic-console',
@@ -14,9 +15,7 @@ $config=[
         '@tests' => '@app/tests',
     ],
     'components' => [
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
+        'cache' => $cache,
         'log' => [
             'targets' => [
                 [
