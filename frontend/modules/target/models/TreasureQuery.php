@@ -18,6 +18,7 @@ class TreasureQuery extends \yii\db\ActiveQuery
           ['CONCAT("ETSCTF ",code)' => $code],
           ['CONCAT("ETSCTF.",code)' => $code],
           ['CONCAT("ETSCTF-",code)' => $code],
+          ['CONCAT("ETSCTF{",code,"}")' => $code],
         ]);
       }
       public function claimable()
