@@ -37,6 +37,7 @@ $this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
             'server',
             [
               'label'=>'Network',
+              'attribute'=>'network_name',
               'value'=>'network.name'
             ],
   //          [

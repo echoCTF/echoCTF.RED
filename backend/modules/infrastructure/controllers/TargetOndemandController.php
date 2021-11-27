@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\gameplay\controllers;
+namespace app\modules\infrastructure\controllers;
 
 use Yii;
 use app\modules\gameplay\models\TargetOndemand;

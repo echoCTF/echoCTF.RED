@@ -1,18 +1,18 @@
 <?php
 
-namespace app\modules\gameplay\controllers;
+namespace app\modules\infrastructure\controllers;
 
 use Yii;
-use app\modules\gameplay\models\NetworkTarget;
-use app\modules\gameplay\models\NetworkTargetSearch;
+use app\modules\gameplay\models\TargetVolume;
+use app\modules\gameplay\models\TargetVolumeSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * NetworkTargetController implements the CRUD actions for NetworkTarget model.
+ * TargetvolumeController implements the CRUD actions for TargetVolume model.
  */
-class NetworkTargetController extends Controller
+class TargetVolumeController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -39,12 +39,12 @@ class NetworkTargetController extends Controller
       }
 
     /**
-     * Lists all NetworkTarget models.
+     * Lists all TargetVolume models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel=new NetworkTargetSearch();
+        $searchModel=new TargetVolumeSearch();
         $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -54,31 +54,37 @@ class NetworkTargetController extends Controller
     }
 
     /**
-     * Displays a single NetworkTarget model.
-     * @param integer $network_id
+     * Displays a single TargetVolume model.
      * @param integer $target_id
+     * @param string $volume
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($network_id, $target_id)
+    public function actionView($target_id, $volume)
     {
         return $this->render('view', [
-            'model' => $this->findModel($network_id, $target_id),
+            'model' => $this->findModel($target_id, $volume),
         ]);
     }
 
     /**
-     * Creates a new NetworkTarget model.
+     * Creates a new TargetVolume model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model=new NetworkTarget();
+        $model=new TargetVolume();
+        if(\app\modules\gameplay\models\Target::find()->count() == 0)
+        {
+          // If there are no player redirect to create player page
+          Yii::$app->session->setFlash('warning', "No targets found create one first.");
+          return $this->redirect(['/gameplay/target/create']);
+        }
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'network_id' => $model->network_id, 'target_id' => $model->target_id]);
+            return $this->redirect(['view', 'target_id' => $model->target_id, 'volume' => $model->volume]);
         }
 
         return $this->render('create', [
@@ -87,20 +93,20 @@ class NetworkTargetController extends Controller
     }
 
     /**
-     * Updates an existing NetworkTarget model.
+     * Updates an existing TargetVolume model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $network_id
      * @param integer $target_id
+     * @param string $volume
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($network_id, $target_id)
+    public function actionUpdate($target_id, $volume)
     {
-        $model=$this->findModel($network_id, $target_id);
+        $model=$this->findModel($target_id, $volume);
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'network_id' => $model->network_id, 'target_id' => $model->target_id]);
+            return $this->redirect(['view', 'target_id' => $model->target_id, 'volume' => $model->volume]);
         }
 
         return $this->render('update', [
@@ -109,35 +115,35 @@ class NetworkTargetController extends Controller
     }
 
     /**
-     * Deletes an existing NetworkTarget model.
+     * Deletes an existing TargetVolume model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $network_id
      * @param integer $target_id
+     * @param string $volume
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($network_id, $target_id)
+    public function actionDelete($target_id, $volume)
     {
-        $this->findModel($network_id, $target_id)->delete();
+        $this->findModel($target_id, $volume)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the NetworkTarget model based on its primary key value.
+     * Finds the TargetVolume model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $network_id
      * @param integer $target_id
-     * @return NetworkTarget the loaded model
+     * @param string $volume
+     * @return TargetVolume the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($network_id, $target_id)
+    protected function findModel($target_id, $volume)
     {
-        if(($model=NetworkTarget::findOne(['network_id' => $network_id, 'target_id' => $target_id])) !== null)
+        if(($model=TargetVolume::findOne(['target_id' => $target_id, 'volume' => $volume])) !== null)
         {
             return $model;
         }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+        throw new NotFoundHttpException('The requested page does not exist.');
     }
 }

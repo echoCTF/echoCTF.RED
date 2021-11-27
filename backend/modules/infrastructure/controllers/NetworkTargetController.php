@@ -1,18 +1,18 @@
 <?php
 
-namespace app\modules\gameplay\controllers;
+namespace app\modules\infrastructure\controllers;
 
 use Yii;
-use app\modules\gameplay\models\Network;
-use app\modules\gameplay\models\NetworkSearch;
+use app\modules\gameplay\models\NetworkTarget;
+use app\modules\gameplay\models\NetworkTargetSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * NetworkController implements the CRUD actions for Network model.
+ * NetworkTargetController implements the CRUD actions for NetworkTarget model.
  */
-class NetworkController extends Controller
+class NetworkTargetController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -39,12 +39,12 @@ class NetworkController extends Controller
       }
 
     /**
-     * Lists all Network models.
+     * Lists all NetworkTarget models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel=new NetworkSearch();
+        $searchModel=new NetworkTargetSearch();
         $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -54,30 +54,31 @@ class NetworkController extends Controller
     }
 
     /**
-     * Displays a single Network model.
-     * @param integer $id
+     * Displays a single NetworkTarget model.
+     * @param integer $network_id
+     * @param integer $target_id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($network_id, $target_id)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel($network_id, $target_id),
         ]);
     }
 
     /**
-     * Creates a new Network model.
+     * Creates a new NetworkTarget model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model=new Network();
+        $model=new NetworkTarget();
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'network_id' => $model->network_id, 'target_id' => $model->target_id]);
         }
 
         return $this->render('create', [
@@ -86,19 +87,20 @@ class NetworkController extends Controller
     }
 
     /**
-     * Updates an existing Network model.
+     * Updates an existing NetworkTarget model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * @param integer $network_id
+     * @param integer $target_id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($network_id, $target_id)
     {
-        $model=$this->findModel($id);
+        $model=$this->findModel($network_id, $target_id);
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'network_id' => $model->network_id, 'target_id' => $model->target_id]);
         }
 
         return $this->render('update', [
@@ -107,29 +109,31 @@ class NetworkController extends Controller
     }
 
     /**
-     * Deletes an existing Network model.
+     * Deletes an existing NetworkTarget model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param integer $network_id
+     * @param integer $target_id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete($network_id, $target_id)
     {
-        $this->findModel($id)->delete();
+        $this->findModel($network_id, $target_id)->delete();
 
         return $this->redirect(['index']);
     }
 
     /**
-     * Finds the Network model based on its primary key value.
+     * Finds the NetworkTarget model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Network the loaded model
+     * @param integer $network_id
+     * @param integer $target_id
+     * @return NetworkTarget the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
+    protected function findModel($network_id, $target_id)
     {
-        if(($model=Network::findOne($id)) !== null)
+        if(($model=NetworkTarget::findOne(['network_id' => $network_id, 'target_id' => $target_id])) !== null)
         {
             return $model;
         }
