@@ -44,7 +44,7 @@ class CronController extends Controller {
 
     foreach($unhealthy as $target)
     {
-      printf("Processing [%s] on docker [%s]", $target->name, $target->server);
+      printf("Processing unhealthy [%s] on docker [%s]", $target->name, $target->server);
       if($target->healthcheck==0)
       {
         printf("... skipping by healthcheck flag\n");
@@ -270,7 +270,9 @@ class CronController extends Controller {
           {
             $name=str_replace('/', '', $container->getNames()[0]);
             if(($unhealthyTarget=Target::findOne(['name'=>$name])) !== NULL)
+            {
               $unhealthy[$name]=$unhealthyTarget;
+            }
           }
       }
     }
