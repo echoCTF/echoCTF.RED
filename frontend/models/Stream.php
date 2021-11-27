@@ -22,6 +22,7 @@ class Stream extends StreamAR
   const MODEL_ICONS=[
     'headshot'=>'<i class="fas fa-skull" style="color: #FF1A00;font-size: 1.5em;" title="Target Headshot"></i>',
     'challenge'=>'<i class="fas fa-tasks" style="color: #FF1A00; font-size: 1.5em;" title="Challenge Solve"></i>',
+    'solution'=>'<i class="fas fa-tasks" style="color: #FF1AFF; font-size: 1.5em;" title="Speed Programming Solution"></i>',
     'treasure'=>'<i class="fas fa-flag text-danger" style="font-size: 1.5em;" title="Target Flag"></i>',
     'finding'=>'<i class="fas fa-fingerprint" style="color:#FF7400; font-size: 1.5em;" title="Target Service"></i>',
     'question'=>'<i class="fas fa-list-ul text-info" style="font-size: 1.5em;" title="Challenge Question"></i>',
@@ -70,6 +71,10 @@ class Stream extends StreamAR
     return "";
   }
 
+  public function getSolutionMessage()
+  {
+    return sprintf("%s %s%s", $this->prefix, $this->title, $this->suffix);
+  }
   public function getBadgeMessage()
   {
     return sprintf("%s got the badge [<code>%s</code>]%s", $this->prefix, Badge::findOne(['id'=>$this->model_id])->name, $this->suffix);
@@ -82,7 +87,7 @@ class Stream extends StreamAR
     $first="";
     if($headshot->first)
       $first=" first,";
-    if($headshot->target->timer===0 || $headshot->timer===0)
+    if(intval($headshot->target->timer)===0 || intval($headshot->timer)===0)
       return sprintf("%s managed to headshot [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
 
     return sprintf("%s managed to headshot [<code>%s</code>]$first in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
