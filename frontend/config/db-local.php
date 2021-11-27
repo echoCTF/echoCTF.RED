@@ -10,4 +10,7 @@ return [
     'enableSchemaCache' => true,
     'schemaCacheDuration' => 60,
     'schemaCache' => 'cache',
+//    'on afterOpen' => function($event) {
+//        $event->sender->createCommand("SET time_zone='+00:00'")->execute();
+//    },
 ];
