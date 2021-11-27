@@ -16,6 +16,15 @@ class LeaderboardsController extends \app\components\BaseController
         'access' => [
           'class' => AccessControl::class,
           'rules' => [
+              'eventStartEnd'=>[
+                'actions' => [''],
+              ],
+              'eventEnd'=>[
+                'actions' => [''],
+              ],
+              'eventStart'=>[
+                'actions' => [''],
+              ],
               [
                   'allow' => true,
                   'roles'=>['@']

@@ -26,6 +26,18 @@ class DashboardController extends \app\components\BaseController
           'access' => [
               'class' => AccessControl::class,
               'rules' => [
+                'eventActive'=> [
+                  'actions' => [''],
+                ],
+                'eventStartEnd'=>[
+                  'actions' => [''],
+                ],
+                'eventEnd'=>[
+                  'actions' => [''],
+                ],
+                'eventStart'=>[
+                  'actions' => [''],
+                ],
                 [
                     'allow' => true,
                     'roles'=>['@']
