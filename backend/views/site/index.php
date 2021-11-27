@@ -31,13 +31,13 @@ $this->title='echoCTF mUI';
 <?php if(!Yii::$app->user->isGuest): ?>
 
         <div class="row">
-            <div class="col-lg-3">
+            <div class="col-lg-4">
                 <h2>System</h2>
                 <p>
                   <ul>
                     <li><?= Html::a('Players &raquo;', ['/frontend/player']) ?>: <abbr title="Total players"><?=Player::find()->count()?></abbr> / <abbr title="Active players"><?=Player::find()->where(['active'=>1])->count()?></abbr> / <abbr title="Online"><?=Player::find()->having(['>', 'online', 1])->count()?></abbr> / <abbr title="On VPN"><?=Player::find()->having(['>', 'ovpn', 0])->count()?></abbr>
                     <li><?= Html::a('Teams &raquo;', ['/frontend/team']) ?>: <?=Team::find()->count()?>
-                    <li><?= Html::a('Targets &raquo;', ['/gameplay/target']) ?>: <?=Target::find()->count()?> / <?=Target::find()->where(['active'=>1])->count()?>
+                    <li><?= Html::a('Targets &raquo;', ['/infrastructure/target']) ?>: <?=Target::find()->count()?> / <?=Target::find()->where(['active'=>1])->count()?>
                     <li><?= Html::a('Challenges &raquo;', ['/gameplay/challenge']) ?>: <?=Challenge::find()->count()?>
                     <li><?= Html::a('Questions &raquo;', ['/gameplay/question']) ?>: <?=Question::find()->count()?> / <?=(int) (new \yii\db\Query())->from('question')->sum('points');?>pts
                     <li><?= Html::a('Findings &raquo;', ['/gameplay/finding']) ?>: <?=Finding::find()->count()?> / <?=(int) (new \yii\db\Query())->from('finding')->sum('points');?>pts
@@ -45,7 +45,7 @@ $this->title='echoCTF mUI';
                   </ul>
                 </p>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-4">
                 <h2>Activity</h2>
                 <p>
                   <ul>
@@ -58,7 +58,7 @@ $this->title='echoCTF mUI';
                   </ul>
                 </p>
             </div>
-            <div class="col-lg-3">
+            <div class="col-lg-4">
                 <h2>Last entries</h2>
                 <p>
                   <?= Html::ul(ArrayHelper::map(Report::find()->where(['status' => 'pending'])->all(), 'id', function($model) {
@@ -74,13 +74,11 @@ $this->title='echoCTF mUI';
                 </p>
 
             </div>
-            <div class="col-lg-3">
+            <!-- <div class="col-lg-3">
                 <h2>Containers</h2>
                 <p>
-                  <?= Html::ul(ArrayHelper::map(Target::find()->where(['!=', 'image', ''])->all(), 'id', function($model) {
-                          return Html::a($model['name'].' | '.$model['ipoctet'], ['gameplay/target/view', 'id'=>$model['id']]);}), ['encode'=>false]) ?>
                 </p>
-            </div>
+            </div>-->
         </div>
 <?php endif;?>
     </div>
