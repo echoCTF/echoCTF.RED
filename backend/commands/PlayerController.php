@@ -278,6 +278,34 @@ class PlayerController extends Controller {
 
     }
   }
+  
+  /**
+   * Check mails for known spam and disposable hosters.
+   */
+  public function actionCheckSpammy($domains=false)
+  {
+    $skip_domains=[];
+    $players=Player::find()->select(["right(email, length(email)-INSTR(email, '@')) as email"])->distinct();
+    foreach($skip_domains as $d)
+      $players->andWhere(['not like','email', $d]);
+    foreach($players->all() as $p)
+    {
+      $DNS_NS=dns_get_record($p->email, DNS_NS);
+      $DNS_MX=dns_get_record($p->email, DNS_MX);
+      $DNS_A=dns_get_record($p->email, DNS_A);
+      if($DNS_NS===[] && $DNS_MX===[])
+      {
+        echo "Domain[",$p->email,"] has empty MX & NS records, ";
+        $domain = new \overals\whois\Whois($p->email);
+        if ($domain->isAvailable()) {
+            echo "and is available\n";
+        } else {
+            echo "and is registered\n";
+        }
+      }
+    }
+  }
+
 
   public function p($message, array $params=[])
   {
