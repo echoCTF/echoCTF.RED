@@ -2,6 +2,9 @@
 use yii\helpers\Html;
 use app\widgets\Noti;
 use app\assets\MaterialAsset;
+Yii::$app->timeZone=Yii::$app->sys->time_zone ?: 'UTC';
+date_default_timezone_set(Yii::$app->sys->time_zone ?: 'UTC');
+
 $bundle=MaterialAsset::register($this);
 //$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/ricar2ce/yii2-material-theme/assets');
 $this->registerMetaTag(['name'=>'description', 'content'=>trim($this->_description)], 'description');

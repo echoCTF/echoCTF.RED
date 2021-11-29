@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\settings\models\Sysconfig */
@@ -11,16 +12,16 @@ $this->params['breadcrumbs'][]=['label' => 'Sysconfigs', 'url' => ['configure']]
 $this->params['breadcrumbs'][]=$this->title;
 ?>
 <div class="sysconfig-create">
-
     <h1><?= Html::encode($this->title) ?></h1>
 
     <div class="sysconfig-form">
 
         <?php $form=ActiveForm::begin([]);?>
 
-        <h4>Event/CTF Details</h4>
+        <h4>Event/CTF Settings</h4>
         <div class="row form-group">
           <div class="col-sm-4"><?= $form->field($model, 'event_name')->textInput(['maxlength' => true])->input('text', ['placeholder' => "My Awesome CTF"])->hint('Enter your event or site name') ?></div>
+          <div class="col-sm-4"><?= $form->field($model, 'time_zone')->dropDownList(ArrayHelper::map(DateTimeZone::listIdentifiers(), function($model){ return $model;},function($model){ return $model;}))->hint('Enter your timezone') ?></div>
           <div class="col-sm-2"><?= $form->field($model, 'event_active')->checkbox()->hint('Is the site active?') ?></div>
         </div>
         <div class="row form-group">

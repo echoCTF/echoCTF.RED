@@ -17,7 +17,7 @@ use yii\helpers\Url;
             <img src="/images/avatars/<?=Yii::$app->user->identity->profile->avtr;?>" class="img-fluid rounded <?=\app\components\formatters\RankFormatter::ordinalPlaceCss(Yii::$app->user->identity->profile->rank->id)?>" style="max-width: 60px; max-height: 60px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"><br/>
             <?=Html::encode(Yii::$app->user->identity->username)?> <small style="font-size: 0.65em">(<code><?=number_format(Yii::$app->user->identity->profile->score->points)?> pts</code>)</small>
           </a>
-          <center id="clock" class="small clock text-primary">Server time: <span id="time"><?=date('H:i');?> UTC</span></center>
+          <center id="clock" class="small clock text-primary">Server time: <span id="time"><?=date('H:i');?> <small><?=date_default_timezone_get()?></small></span></center>
         <?php endif;?>
     </div>
     <div class="sidebar-wrapper">

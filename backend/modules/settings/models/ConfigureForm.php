@@ -53,6 +53,7 @@ class ConfigureForm extends Model
     public $leaderboard_visible_before_event_start;
     public $leaderboard_visible_after_event_end;
     public $leaderboard_show_zero;
+    public $time_zone;
     public $keys=[
             'twitter_account',
             'twitter_hashtags',
@@ -97,6 +98,7 @@ class ConfigureForm extends Model
             'leaderboard_visible_before_event_start',
             'leaderboard_visible_after_event_end',
             'leaderboard_show_zero',
+            'time_zone',
         ];
 
     /**
@@ -125,6 +127,7 @@ class ConfigureForm extends Model
               'moderator_domain',
               'twitter_account',
               'twitter_hashtags',
+              'time_zone',
             ], 'string'],
             [['offense_registered_tag',
               'defense_registered_tag',
@@ -150,6 +153,7 @@ class ConfigureForm extends Model
               'registrations_end',
               'twitter_account',
               'twitter_hashtags',
+              'time_zone',
             ], 'trim'],
             [['teams',
               'require_activation',
@@ -232,7 +236,8 @@ class ConfigureForm extends Model
           'team_manage_members' => 'Team Manage Members',
           'leaderboard_visible_before_event_start'=>'Leaderboard visible before start',
           'leaderboard_visible_after_event_end'=>'Leaderboard visible after end',
-          'leaderboard_show_zero'=>'Leaderboard show zero points'
+          'leaderboard_show_zero'=>'Leaderboard show zero points',
+          'time_zone'=>'Timezone',
         ];
     }
 
@@ -263,6 +268,10 @@ class ConfigureForm extends Model
         }
         $sysconfig->val=$this->{$id};
         $sysconfig->save();
+        if($id==='time_zone')
+        {
+          Yii::$app->db->createCommand("SET GLOBAL time_zone=(SELECT val FROM sysconfig WHERE id='time_zone')")->execute();
+        }
       }
         return true;
     }
