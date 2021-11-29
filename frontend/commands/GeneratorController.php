@@ -15,50 +15,58 @@ class GeneratorController extends Controller {
    * thumbnail logo. Place the target name and purpose on top of the image.
    * Save generated image based on target name.
    */
-  public function actionTargetSocialImages()
+  public function actionTargetSocialImages($target_id=null)
   {
-    $targets=Target::find()->all();
+    if($target_id===null)
+      $targets=Target::find()->all();
+    else
+      $targets=Target::find()->where(['id'=>$target_id])->all();
+
     $font = \Yii::getAlias("@app/web/fonts/RobotoMono-Regular.ttf");
     foreach($targets as $target)
     {
-      $target_img=imagecreatefrompng(\Yii::getAlias("@app/web/images/targets/_".$target->name."-thumbnail.png"));
-      $background_img=imagecreatefrompng(\Yii::getAlias("@app/web/images/twnew-target.png"));
-      imagealphablending($target_img, true);
-      $width  = imagesx($target_img);
-      $height = imagesy($target_img);
-      imagesavealpha($background_img, true);
-      imagecopy($background_img, $target_img, 930-($width+10),55 , 0, 0, $width, $height);
-      $green = imagecolorallocate($background_img, 148,193,31);
-      $white = imagecolorallocate($target_img, 255, 255, 255);
-      $grey  = imagecolorallocate($target_img, 128, 128, 128);
-      $black = imagecolorallocate($target_img, 0, 0, 0);
-      $fontsize=40;
-      $angle=0;
-      $x=60;
-      $y=220;
+      try {
+        $target_img=imagecreatefrompng(\Yii::getAlias("@app/web/images/targets/_".$target->name."-thumbnail.png"));
+        $background_img=imagecreatefrompng(\Yii::getAlias("@app/web/images/twnew-target.png"));
+        imagealphablending($target_img, true);
+        $width  = imagesx($target_img);
+        $height = imagesy($target_img);
+        imagesavealpha($background_img, true);
+        imagecopy($background_img, $target_img, 930-($width+10),55 , 0, 0, $width, $height);
+        $green = imagecolorallocate($background_img, 148,193,31);
+        $white = imagecolorallocate($target_img, 255, 255, 255);
+        $grey  = imagecolorallocate($target_img, 128, 128, 128);
+        $black = imagecolorallocate($target_img, 0, 0, 0);
+        $fontsize=40;
+        $angle=0;
+        $x=60;
+        $y=220;
 
-      // Make the target name the text to draw
-      $text = $target->name;
-      // Draw text shadow
-      imagefttext($background_img, $fontsize, $angle, $x+2, ($y+2)-130, $grey, $font, $text);
-      // Draw actual text
-      imagefttext($background_img, $fontsize, $angle, $x, $y-130, $green, $font, $text);
+        // Make the target name the text to draw
+        $text = $target->name;
+        // Draw text shadow
+        imagefttext($background_img, $fontsize, $angle, $x+2, ($y+2)-130, $grey, $font, $text);
+        // Draw actual text
+        imagefttext($background_img, $fontsize, $angle, $x, $y-130, $green, $font, $text);
 
-      // Make the target IP the text to draw
-      $text=long2ip($target->ip);
-      imagefttext($background_img, $fontsize-5, $angle, $x+2, ($y+2)-75, $grey, $font, $text);
-      imagefttext($background_img, $fontsize-5, $angle, $x,   $y-75,     $green, $font, $text);
+        // Make the target IP the text to draw
+        $text=long2ip($target->ip);
+        imagefttext($background_img, $fontsize-5, $angle, $x+2, ($y+2)-75, $grey, $font, $text);
+        imagefttext($background_img, $fontsize-5, $angle, $x,   $y-75,     $green, $font, $text);
 
-      $purposes=explode("\n",wordwrap(trim($target->purpose),50));
-      foreach($purposes as $key=>$val)
-      {
-        imagefttext($background_img, 14, $angle, 10+$x+1, 175+($key*20)+1, $black,$font,trim($val));
-        imagefttext($background_img, 14, $angle, 10+$x,   175+($key*20),   $green,$font,trim($val));
+        $purposes=explode("\n",wordwrap(trim($target->purpose),50));
+        foreach($purposes as $key=>$val)
+        {
+          imagefttext($background_img, 14, $angle, 10+$x+1, 175+($key*20)+1, $black,$font,trim($val));
+          imagefttext($background_img, 14, $angle, 10+$x,   175+($key*20),   $green,$font,trim($val));
+        }
+
+        imagepng($background_img, \Yii::getAlias("@app/web/images/targets/".$target->name.".png"));
+        imagedestroy($target_img);
+        imagedestroy($background_img);
+      } catch (\Exception $e) {
+        echo "Failed generation for ",$target->name, ". Error: ",$e->getMessage(),"\n";
       }
-
-      imagepng($background_img, \Yii::getAlias("@app/web/images/targets/".$target->name.".png"));
-      imagedestroy($target_img);
-      imagedestroy($background_img);
     }
   }
   /**
