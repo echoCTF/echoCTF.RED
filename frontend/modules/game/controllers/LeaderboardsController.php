@@ -15,6 +15,7 @@ class LeaderboardsController extends \app\components\BaseController
       return ArrayHelper::merge(parent::behaviors(),[
         'access' => [
           'class' => AccessControl::class,
+          'only' => ['index'],
           'rules' => [
               'eventStartEnd'=>[
                 'actions' => [''],
@@ -25,6 +26,27 @@ class LeaderboardsController extends \app\components\BaseController
               'eventStart'=>[
                 'actions' => [''],
               ],
+              'LeaderboardBeforeStart'=>[
+                 'allow' => false,
+                 'matchCallback' => function () {
+                   return \Yii::$app->sys->event_start!==false && time()<\Yii::$app->sys->event_start && !\Yii::$app->sys->leaderboard_visible_before_event_start;
+                 },
+                 'denyCallback' => function() {
+                   Yii::$app->session->setFlash('info', 'This area is disabled before the start of the competition');
+                   return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
+                 }
+              ],
+              'LeaderboardAfterEnd'=>[
+                 'allow' => false,
+                 'matchCallback' => function () {
+                   return \Yii::$app->sys->event_end!==false && time()>\Yii::$app->sys->event_end && !\Yii::$app->sys->leaderboard_visible_after_event_end;
+                 },
+                 'denyCallback' => function() {
+                   Yii::$app->session->setFlash('info', 'This area is disabled after the competition ends');
+                   return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
+                 }
+              ],
+
               [
                   'allow' => true,
                   'roles'=>['@']
@@ -40,8 +62,16 @@ class LeaderboardsController extends \app\components\BaseController
       $command->bindValue(':player_type', 'offense');
       $totalPoints=$command->queryScalar();
 
+      if(\Yii::$app->sys->leaderboard_show_zero)
+      {
+        $PR=\app\models\PlayerRank::find()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]);
+      }
+      else
+      {
+        $PR=\app\models\PlayerRank::find()->nonZero()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]);
+      }
       $playerDataProvider=new ActiveDataProvider([
-        'query' => \app\models\PlayerRank::find()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
+        'query' => $PR,
         'pagination'=> [
           'pageSizeParam'=>'playerRank-perpage',
           'pageParam'=>'playerRank-page',

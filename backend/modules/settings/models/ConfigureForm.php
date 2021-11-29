@@ -50,6 +50,9 @@ class ConfigureForm extends Model
     public $mail_useFileTransport;
     public $online_timeout;
     public $spins_per_day;
+    public $leaderboard_visible_before_event_start;
+    public $leaderboard_visible_after_event_end;
+    public $leaderboard_show_zero;
     public $keys=[
             'twitter_account',
             'twitter_hashtags',
@@ -91,6 +94,9 @@ class ConfigureForm extends Model
             'online_timeout',
             'spins_per_day',
             'team_manage_members',
+            'leaderboard_visible_before_event_start',
+            'leaderboard_visible_after_event_end',
+            'leaderboard_show_zero',
         ];
 
     /**
@@ -163,7 +169,22 @@ class ConfigureForm extends Model
           [['online_timeout'], 'default', 'value'=>900],
           [['spins_per_day'], 'default', 'value'=> 2],
           [['event_start','event_end','registrations_start','registrations_end'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
-          [['dashboard_is_home','mail_useFileTransport', 'event_active', 'teams', 'team_required', 'team_manage_members','require_activation', 'disable_registration', 'player_profile', 'approved_avatar','team_manage_members'], 'boolean'],
+          [[
+            'dashboard_is_home',
+            'mail_useFileTransport',
+            'event_active',
+            'teams',
+            'team_required',
+            'team_manage_members',
+            'require_activation',
+            'disable_registration',
+            'player_profile',
+            'approved_avatar',
+            'team_manage_members',
+            'leaderboard_visible_before_event_start',
+            'leaderboard_visible_after_event_end',
+            'leaderboard_show_zero',
+          ], 'boolean'],
 
         ];
     }
@@ -209,6 +230,9 @@ class ConfigureForm extends Model
           'online_timeout' => 'Timeout for user online key to expire',
           'spins_per_day'=>'Spins allowed per day',
           'team_manage_members' => 'Team Manage Members',
+          'leaderboard_visible_before_event_start'=>'Leaderboard visible before start',
+          'leaderboard_visible_after_event_end'=>'Leaderboard visible after end',
+          'leaderboard_show_zero'=>'Leaderboard show zero points'
         ];
     }
 

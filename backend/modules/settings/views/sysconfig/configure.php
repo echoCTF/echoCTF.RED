@@ -29,7 +29,13 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'registrations_start')->textInput(['maxlength' => true])->input('text', ['placeholder' => "Y-m-d H:i:s"])->hint('Enter the registration start date and time in UTC') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'registrations_end')->textInput(['maxlength' => true])->input('text', ['placeholder' => "Y-m-d H:i:s"])->hint('Enter the registration end date and time in UTC') ?></div>
         </div>
-
+        <hr/>
+        <h4>Leaderboard Settings</h4>
+        <div class="row form-group">
+          <div class="col-sm-3"><?= $form->field($model, 'leaderboard_visible_before_event_start')->checkbox()->hint('Is the leaderboard going to be visible before the event starts?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'leaderboard_visible_after_event_end')   ->checkbox()->hint('Is the leaderboard going to be visible after the event ends?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'leaderboard_show_zero')   ->checkbox()->hint('Leaderboard show zero points?') ?></div>
+        </div>
         <hr/>
         <h4>Platform website texts</h4>
           <?= $form->field($model, 'footer_logos')->textarea(['rows' => '6'])->hint('Raw html to be placed at the footer of the pUI pages') ?>
