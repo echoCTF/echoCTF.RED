@@ -263,10 +263,10 @@ class PlayerController extends Controller {
       $exp=new \yii\db\Expression('created >= NOW() - INTERVAL '.$interval);
       $players->where($exp);
     }
-    $SFS=new \app\components\StopForumSpam();
     foreach($players->all() as $p)
     {
-      echo "Processing ",$p->email,"\n";
+      $SFS=new \app\components\StopForumSpam();
+      //echo "Processing ",$p->email,"\n";
       $SFS->email=$p->email;
       $result=$SFS->check();
       $retData=json_decode($result)->email;
