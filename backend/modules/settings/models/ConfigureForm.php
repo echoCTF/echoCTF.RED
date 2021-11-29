@@ -54,6 +54,13 @@ class ConfigureForm extends Model
     public $leaderboard_visible_after_event_end;
     public $leaderboard_show_zero;
     public $time_zone;
+
+    public $dn_countryName;
+    public $dn_stateOrProvinceName;
+    public $dn_localityName;
+    public $dn_organizationName;
+    public $dn_organizationalUnitName;
+
     public $keys=[
             'twitter_account',
             'twitter_hashtags',
@@ -99,6 +106,11 @@ class ConfigureForm extends Model
             'leaderboard_visible_after_event_end',
             'leaderboard_show_zero',
             'time_zone',
+            'dn_countryName',
+            'dn_stateOrProvinceName',
+            'dn_localityName',
+            'dn_organizationName',
+            'dn_organizationalUnitName',
         ];
 
     /**
@@ -128,6 +140,11 @@ class ConfigureForm extends Model
               'twitter_account',
               'twitter_hashtags',
               'time_zone',
+              'dn_countryName',
+              'dn_stateOrProvinceName',
+              'dn_localityName',
+              'dn_organizationName',
+              'dn_organizationalUnitName',
             ], 'string'],
             [['offense_registered_tag',
               'defense_registered_tag',
@@ -154,6 +171,11 @@ class ConfigureForm extends Model
               'twitter_account',
               'twitter_hashtags',
               'time_zone',
+              'dn_countryName',
+              'dn_stateOrProvinceName',
+              'dn_localityName',
+              'dn_organizationName',
+              'dn_organizationalUnitName',
             ], 'trim'],
             [['teams',
               'require_activation',
@@ -168,6 +190,11 @@ class ConfigureForm extends Model
               'approved_avatar',
               'team_manage_members'
           ], 'required'],
+          [['dn_countryName'],'default','value'=>\Yii::$app->sys->dn_countryName],
+          [['dn_stateOrProvinceName'],'default','value'=>\Yii::$app->sys->dn_stateOrProvinceName],
+          [['dn_localityName'],'default','value'=>\Yii::$app->sys->dn_localityName],
+          [['dn_organizationName'],'default','value'=>\Yii::$app->sys->dn_organizationName],
+          [['dn_organizationalUnitName'],'default','value'=>\Yii::$app->sys->dn_organizationalUnitName],
           ['profile_visibility','default','value'=>'ingame'],
           [['online_timeout', 'spins_per_day','members_per_team'], 'integer'],
           [['online_timeout'], 'default', 'value'=>900],
@@ -238,6 +265,11 @@ class ConfigureForm extends Model
           'leaderboard_visible_after_event_end'=>'Leaderboard visible after end',
           'leaderboard_show_zero'=>'Leaderboard show zero points',
           'time_zone'=>'Timezone',
+          'dn_countryName'=>'countryName',
+          'dn_stateOrProvinceName'=>'stateOrProvinceName',
+          'dn_localityName'=>'localityName',
+          'dn_organizationName'=>'organizationName',
+          'dn_organizationalUnitName'=>'organizationalUnitName',
         ];
     }
 

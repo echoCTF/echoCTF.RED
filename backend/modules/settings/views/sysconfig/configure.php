@@ -100,7 +100,15 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-4"><?= $form->field($model, 'defense_registered_tag')->textInput(['maxlength' => true])->hint('Defense PF/BRIDGE tag for registered players (DEFENSE_REGISTERED)') ?></div>
         </div>
         <hr/>
-
+        <h4>VPN Certificate Settings</h4>
+        <div class="row form-group">
+          <div class="col-sm-2"><?= $form->field($model, 'dn_countryName')->textInput(['maxlength' => true])->input('text', ['placeholder' => ""])->hint('') ?></div>
+          <div class="col-sm-2"><?= $form->field($model, 'dn_stateOrProvinceName')->textInput(['maxlength' => true])->input('text', ['placeholder' => ""])->hint('') ?></div>
+          <div class="col-sm-2"><?= $form->field($model, 'dn_localityName')->textInput(['maxlength' => true])->input('text', ['placeholder' => ""])->hint('') ?></div>
+          <div class="col-sm-2"><?= $form->field($model, 'dn_organizationName')->textInput(['maxlength' => true])->input('text', ['placeholder' => ""])->hint('') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'dn_organizationalUnitName')->textInput(['maxlength' => true])->input('text', ['placeholder' => ""])->hint('') ?></div>
+        </div>
+        <hr/>
 
 
         <div class="form-group">

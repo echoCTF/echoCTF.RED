@@ -72,6 +72,11 @@ class PlayerSsl extends \yii\db\ActiveRecord
       public function generate() {
           $player=Player::findOne(['id'=>$this->player_id]);
           $params=Yii::$app->params['dn'];
+          $params['countryName']=\Yii::$app->sys->dn_countryName;
+          $params['stateOrProvinceName']=\Yii::$app->sys->dn_stateOrProvinceName;
+          $params['localityName']=\Yii::$app->sys->dn_localityName;
+          $params['organizationName']=\Yii::$app->sys->dn_organizationName;
+          $params['organizationalUnitName']=\Yii::$app->sys->dn_organizationalUnitName;
           $params['commonName']=$this->player_id;
           $params['emailAddress']=$player->email;
 

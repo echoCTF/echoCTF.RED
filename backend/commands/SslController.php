@@ -23,9 +23,15 @@ class SslController extends Controller {
    */
   public function actionCreateCa($fileout=false) {
     $privkey=openssl_pkey_new(Yii::$app->params['pkey_config']);
+    $params=Yii::$app->params['dn'];
+    $params['countryName']=\Yii::$app->sys->dn_countryName;
+    $params['stateOrProvinceName']=\Yii::$app->sys->dn_stateOrProvinceName;
+    $params['localityName']=\Yii::$app->sys->dn_localityName;
+    $params['organizationName']=\Yii::$app->sys->dn_organizationName;
+    $params['organizationalUnitName']=\Yii::$app->sys->dn_organizationalUnitName;
 
     // Generate a certificate signing request
-    $csr=openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'x509_extensions'=>'v3_ca', 'config'=>__DIR__.'/../config/CA.cnf', 'encrypt_key'=>false));
+    $csr=openssl_csr_new($params, $privkey, array('digest_alg' => 'sha256', 'x509_extensions'=>'v3_ca', 'config'=>__DIR__.'/../config/CA.cnf', 'encrypt_key'=>false));
 
     // sign csr
     $x509=openssl_csr_sign($csr, null, $privkey, $days=3650, array('digest_alg' => 'sha256', 'config'=>__DIR__.'/../config/CA.cnf', 'encrypt_key'=>false));
@@ -61,15 +67,21 @@ class SslController extends Controller {
    * Create a server certificate for the OpenVPN server and sign it with our CA
    */
   public function actionCreateCert($commonName="VPN Server", $emailAddress=null, $subjectAltName='IP:0.0.0.0') {
-    Yii::$app->params['dn']['commonName']=$commonName;
-    if($emailAddress !== null) Yii::$app->params['dn']['emailAddress']=$emailAddress;
-    if($subjectAltName !== 'IP:0.0.0.0') Yii::$app->params['dn']['subjectAltName']=$subjectAltName;
+    $params=Yii::$app->params['dn'];
+    $params['countryName']=\Yii::$app->sys->dn_countryName;
+    $params['stateOrProvinceName']=\Yii::$app->sys->dn_stateOrProvinceName;
+    $params['localityName']=\Yii::$app->sys->dn_localityName;
+    $params['organizationName']=\Yii::$app->sys->dn_organizationName;
+    $params['organizationalUnitName']=\Yii::$app->sys->dn_organizationalUnitName;
+    $params['commonName']=$commonName;
+    if($emailAddress !== null) $params['emailAddress']=$emailAddress;
+    if($subjectAltName !== 'IP:0.0.0.0') $params['subjectAltName']=$subjectAltName;
 
     // Generate a new private (and public) key pair
     $privkey=openssl_pkey_new(Yii::$app->params['pkey_config']);
 
     // Generate a certificate signing request
-    $csr=openssl_csr_new(Yii::$app->params['dn'], $privkey, array('digest_alg' => 'sha256', 'config'=>\Yii::getAlias('@appconfig').'/CA.cnf', 'encrypt_key'=>false));
+    $csr=openssl_csr_new($params, $privkey, array('digest_alg' => 'sha256', 'config'=>\Yii::getAlias('@appconfig').'/CA.cnf', 'encrypt_key'=>false));
     $tmpCAcert=tempnam("/tmp", "echoCTF-OVPN-CA.crt");
     $tmpCAprivkey=tempnam("/tmp", "echoCTF-OVPN-CA.key");
     $CAcert="file://".$tmpCAcert;
