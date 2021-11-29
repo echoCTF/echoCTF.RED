@@ -18,7 +18,8 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "docker-php/docker-php": "^2.0",
         "jane-php/jane-php": "^4 <4.3",
-        "miloschuman/yii2-highcharts-widget": "^7.1"
+        "miloschuman/yii2-highcharts-widget": "^7.1",
+        "overals/yii2-whois": "~1.0.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
