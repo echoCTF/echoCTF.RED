@@ -21,6 +21,7 @@ class StopForumSpam extends Component
     $data = array(
         'email' => $this->email,
         'json'=>'',
+        'confidence'=>'',
     );
 
     $data = http_build_query($data);
