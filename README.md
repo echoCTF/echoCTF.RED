@@ -35,8 +35,12 @@ Our main goals for echoCTF include:
 ```sh
 $ git clone https://github.com/echoCTF/echoCTF.RED.git
 $ cd echoCTF.RED
-$ composer update --no-dev --prefer-dist --no-progress --ignore-platform-reqs  -d frontend/
-$ composer update --no-dev --prefer-dist --no-progress --ignore-platform-reqs  -d backend/
+$ composer update --no-dev --prefer-dist --no-progress --ignore-platform-reqs -d frontend/
+$ composer update --no-dev --prefer-dist --no-progress --ignore-platform-reqs -d backend/
+$ docker pull echothrust/echoctf.red-db
+$ docker pull echothrust/echoctf.red-backend
+$ docker pull echothrust/echoctf.red-frontend
+$ docker pull echothrust/echoctf.red-vpn
 $ docker-compose pull
 $ docker-compose up
 ```
