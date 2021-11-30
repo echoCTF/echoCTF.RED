@@ -21,4 +21,13 @@ class Sysconfig extends Component
       return true;
     return $val;
   }
+  public function __set($attribute,$value)
+  {
+    if(($dbSys=dbSys::findOne($attribute)) === null) $dbSys=new dbSys();
+
+    $dbSys->id=$attribute;
+    $dbSys->val=$value;
+    return $dbSys->save();
+  }
+
 }
