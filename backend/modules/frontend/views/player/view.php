@@ -116,6 +116,15 @@ $this->params['breadcrumbs'][]=$this->title;
             'label'=> 'VPN Local IP',
             'value'=>function($model) { return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
           ],
+          [
+            'attribute'=>'signup_ip',
+            'value'=>function($model) {return $model->last->signup_ip === NULL ? null : long2ip($model->last->signup_ip);},
+          ],
+          [
+            'attribute'=>'signin_ip',
+            'value'=>function($model) {return $model->last->signin_ip === NULL ? null : long2ip($model->last->signin_ip);},
+          ],
+
           'playerSpin.counter',
           'playerSpin.total',
           'playerSpin.total',

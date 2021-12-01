@@ -55,7 +55,12 @@ class VerifyEmailForm extends Model
         $this->genAvatar();
         if($player->save())
         {
-          if($oldStatus===Player::STATUS_INACTIVE) $player->trigger(Player::NEW_PLAYER);
+          if($oldStatus===Player::STATUS_INACTIVE)
+          {
+            $player->trigger(Player::NEW_PLAYER);
+            $player->profile->last->signin_ip=ip2long(\Yii::$app->request->userIp);
+            $player->profile->last->save();
+          }
           return $this->_player;
         }
         return null;

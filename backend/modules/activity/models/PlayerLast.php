@@ -15,6 +15,11 @@ use Yii;
  */
 class PlayerLast extends \yii\db\ActiveRecord
 {
+  public $signin_ipoctet;
+  public $signup_ipoctet;
+  public $vpn_remote_address_octet;
+  public $vpn_local_address_octet;
+
     /**
      * {@inheritdoc}
      */
@@ -30,7 +35,9 @@ class PlayerLast extends \yii\db\ActiveRecord
     {
         return [
             [['on_pui', 'on_vpn'], 'safe'],
-            [['vpn_remote_address', 'vpn_local_address'], 'integer'],
+            [['signup_ipoctet','signin_ipoctet','vpn_local_address_octet','vpn_remote_address_octet'], 'ip'],
+
+            [['vpn_remote_address', 'vpn_local_address','signup_ip','signin_ip'], 'integer'],
         ];
     }
 
@@ -45,8 +52,34 @@ class PlayerLast extends \yii\db\ActiveRecord
             'on_vpn' => 'On Vpn',
             'vpn_remote_address' => 'Vpn Remote Address',
             'vpn_local_address' => 'Vpn Local Address',
+            'signin_ip' => 'Signin IP',
+            'signup_ip' => 'Signup IP',
         ];
     }
+    public function afterFind() {
+      parent::afterFind();
+      $this->signin_ipoctet=long2ip($this->signin_ip);
+      $this->signup_ipoctet=long2ip($this->signup_ip);
+      $this->vpn_remote_address_octet=long2ip($this->vpn_remote_address);
+      $this->vpn_local_address_octet=long2ip($this->vpn_local_address);
+    }
+
+    public function beforeSave($insert)
+    {
+      if(parent::beforeSave($insert))
+      {
+        $this->signin_ip=ip2long($this->signin_ipoctet);
+        $this->signup_ip=ip2long($this->signup_ipoctet);
+        $this->vpn_remote_address=ip2long($this->vpn_remote_address_octet);
+        $this->vpn_local_address=ip2long($this->vpn_local_address_octet);
+        return true;
+      }
+      else
+      {
+          return false;
+      }
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

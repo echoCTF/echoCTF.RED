@@ -84,7 +84,8 @@ class SignupForm extends Model
         {
           throw new \Exception("Error Processing Request", 1);
         }
-
+        $player->profile->last->signup_ip=ip2long(\Yii::$app->request->userIp);
+        $player->profile->last->save();
         if(Yii::$app->sys->require_activation===true)
           return $this->sendEmail($player);
         return true;
