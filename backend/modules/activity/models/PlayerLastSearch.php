@@ -19,7 +19,7 @@ class PlayerLastSearch extends PlayerLast
     {
         return [
             [['id'], 'integer'],
-            [['on_pui', 'on_vpn', 'vpn_remote_address', 'vpn_local_address', 'username'], 'safe'],
+            [['on_pui', 'on_vpn', 'vpn_remote_address', 'vpn_local_address', 'signup_ip','signin_ip', 'username'], 'safe'],
         ];
     }
 
@@ -68,6 +68,13 @@ class PlayerLastSearch extends PlayerLast
         $query->orFilterWhere(['like', 'INET_NTOA(player_last.vpn_remote_address)', $this->vpn_remote_address]);
         $query->andFilterWhere(['=', 'player_last.vpn_local_address', $this->vpn_local_address]);
         $query->orFilterWhere(['like', 'INET_NTOA(player_last.vpn_local_address)', $this->vpn_local_address]);
+
+        $query->andFilterWhere(['=', 'player_last.signin_ip', $this->signin_ip]);
+        $query->orFilterWhere(['like', 'INET_NTOA(player_last.signin_ip)', $this->signin_ip]);
+
+        $query->andFilterWhere(['=', 'player_last.signup_ip', $this->signup_ip]);
+        $query->orFilterWhere(['like', 'INET_NTOA(player_last.signup_ip)', $this->signup_ip]);
+
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $dataProvider->setSort([
             'attributes' => array_merge(
