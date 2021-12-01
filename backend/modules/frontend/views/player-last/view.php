@@ -32,8 +32,25 @@ $this->params['breadcrumbs'][]=$this->title;
             'id',
             'on_pui',
             'on_vpn',
-            'vpn_remote_address',
-            'vpn_local_address',
+            [
+              'attribute'=>'vpn_remote_address',
+              'label'=> 'VPN Remote IP',
+              'value'=>function($model) { return long2ip($model->vpn_remote_address) ;}
+            ],
+            [
+              'attribute'=>'vpn_local_address',
+              'label'=> 'VPN Local IP',
+              'value'=>function($model) { return long2ip($model->vpn_local_address) ;}
+            ],
+
+            [
+              'attribute'=>'signup_ip',
+              'value'=>function($model) {return $model->signup_ip === NULL ? null : long2ip($model->signup_ip);},
+            ],
+            [
+              'attribute'=>'signin_ip',
+              'value'=>function($model) {return $model->signin_ip === NULL ? null : long2ip($model->signin_ip);},
+            ],
             'ts',
         ],
     ]) ?>
