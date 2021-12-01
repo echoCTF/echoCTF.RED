@@ -30,7 +30,7 @@ class PlayerLast extends \yii\db\ActiveRecord
     {
         return [
             [['on_pui', 'on_vpn'], 'safe'],
-            [['vpn_remote_address', 'vpn_local_address'], 'integer'],
+            [['vpn_remote_address', 'vpn_local_address','signup_ip','signin_ip'], 'integer'],
         ];
     }
 
@@ -45,6 +45,8 @@ class PlayerLast extends \yii\db\ActiveRecord
             'on_vpn' => 'On Vpn',
             'vpn_remote_address' => 'Vpn Remote Address',
             'vpn_local_address' => 'Vpn Local Address',
+            'signin_ip' => 'Signin IP',
+            'signup_ip' => 'Signup IP',
         ];
     }
     /**
