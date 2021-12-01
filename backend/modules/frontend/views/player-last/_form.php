@@ -16,9 +16,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'on_vpn')->textInput() ?>
 
-    <?= $form->field($model, 'vpn_remote_address')->textInput() ?>
+    <?= $form->field($model, 'vpn_remote_address_octet')->textInput() ?>
 
-    <?= $form->field($model, 'vpn_local_address')->textInput() ?>
+    <?= $form->field($model, 'vpn_local_address_octet')->textInput() ?>
+
+    <?= $form->field($model, 'signin_ipoctet')->textInput() ?>
+
+    <?= $form->field($model, 'signup_ipoctet')->textInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
