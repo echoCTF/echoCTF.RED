@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\activity\controllers;
+namespace app\modules\frontend\controllers;
 
 use Yii;
 use app\modules\activity\models\PlayerLast;

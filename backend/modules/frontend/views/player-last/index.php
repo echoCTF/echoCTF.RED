@@ -41,6 +41,14 @@ $this->params['breadcrumbs'][]=$this->title;
               'attribute'=>'vpn_local_address',
               'value'=>function($model) {return $model->vpn_local_address === null ? null : long2ip($model->vpn_local_address);},
             ],
+            [
+              'attribute'=>'signup_ip',
+              'value'=>function($model) {return $model->signup_ip === NULL ? null : long2ip($model->signup_ip);},
+            ],
+            [
+              'attribute'=>'signin_ip',
+              'value'=>function($model) {return $model->signin_ip === NULL ? null : long2ip($model->signin_ip);},
+            ],
             'ts',
 
             ['class' => 'yii\grid\ActionColumn'],
