@@ -23,6 +23,10 @@ class BaseController extends \yii\web\Controller
                           return true;
                       }
                     ],
+                    'denyByIP'=>[
+                        'allow' => false,
+                        'ips' => explode(',',\Yii::$app->sys->bannedIPs),
+                    ],
                     'eventActive'=>[
                       'allow' => false,
                       'matchCallback' => function () {
