@@ -77,6 +77,10 @@ class SignupForm extends Model
           $player->active=0;
           $player->generateEmailVerificationToken();
         }
+        else
+        {
+          $player->active=1;
+        }
 
         $player->setPassword($this->password);
         $player->generateAuthKey();
