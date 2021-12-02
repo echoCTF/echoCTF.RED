@@ -26,7 +26,12 @@ class TargetController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index','docker-compose', 'create', 'update', 'view', 'generate'],
+                'only' => [
+                    'index','docker-compose','status','statistics','generate',
+                    'view','create','update','delete','delete-filtered',
+                    'pull-filtered','activate-filtered','spin-filtered',
+                    'destroy','spin','pull'
+                  ],
                 'rules' => [
                     [
                         'allow' => true,
@@ -39,6 +44,10 @@ class TargetController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                     'destroy' => ['POST'],
+                    'activate-filtered' => ['POST'],
+                    'pull-filtered' => ['POST'],
+                    'spin-filtered' => ['POST'],
+                    'delete-filtered' => ['POST'],
                 ],
             ],
         ];
@@ -196,6 +205,122 @@ class TargetController extends Controller
 
         return $this->redirect(['index']);
     }
+
+    /**
+     * Deletes Target model matching search criteria.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDeleteFiltered()
+    {
+      $searchModel=new TargetSearch();
+      $query=$searchModel->search(['TargetSearch'=>Yii::$app->request->post()]);
+      $query->pagination=false;
+      if(intval($query->count)===intval(Target::find()->count()))
+      {
+        Yii::$app->session->setFlash('error', 'You have attempted to delete all the records.');
+        return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+        //return $this->redirect(['index']);
+      }
+
+      $trans=Yii::$app->db->beginTransaction();
+      try
+      {
+        $counter=$query->count;
+        foreach($query->getModels() as $q)
+          $q->delete();
+        $trans->commit();
+        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Targets deleted');
+
+      }
+      catch(\Exception $e)
+      {
+        $trans->rollBack();
+        Yii::$app->session->setFlash('error', 'Failed to delete targets');
+      }
+      return $this->redirect(['index']);
+    }
+
+    /**
+     * Pulls Target images for models matching search criteria.
+     * If pull is successful, the browser will be redirected to the 'index' page.
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionPullFiltered()
+    {
+      $searchModel=new TargetSearch();
+      $query=$searchModel->search(['TargetSearch'=>Yii::$app->request->post()]);
+      $query->pagination=false;
+      try
+      {
+        $counter=$query->count;
+        foreach($query->getModels() as $q)
+          $q->pull();
+        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Targets pulled');
+      }
+      catch(\Exception $e)
+      {
+        Yii::$app->session->setFlash('error', 'Failed to pull targets');
+      }
+      return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+    }
+
+    /**
+     * Deletes Target model matching search criteria.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionActivateFiltered()
+    {
+      $searchModel=new TargetSearch();
+      $query=$searchModel->search(['TargetSearch'=>Yii::$app->request->post()]);
+      $query->pagination=false;
+      $trans=Yii::$app->db->beginTransaction();
+      try
+      {
+        $counter=$query->count;
+        foreach($query->getModels() as $q)
+          $q->active=1;
+        $trans->commit();
+        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Targets activated');
+
+      }
+      catch(\Exception $e)
+      {
+        $trans->rollBack();
+        Yii::$app->session->setFlash('error', 'Failed to activate targets');
+      }
+      return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+    }
+
+    /**
+     * Spins Targets for models matching search criteria.
+     * If spin is successful, the browser will be redirected to the 'index' page.
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionSpinFiltered()
+    {
+      $searchModel=new TargetSearch();
+      $query=$searchModel->search(['TargetSearch'=>Yii::$app->request->post()]);
+      $query->pagination=false;
+      try
+      {
+        $counter=$query->count;
+        foreach($query->getModels() as $q)
+          $q->spin();
+        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Targets spinned');
+      }
+      catch(\Exception $e)
+      {
+        Yii::$app->session->setFlash('error', 'Failed to spin targets');
+      }
+      return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+    }
+
 
     /**
      * Destroys the Container of an existing Target model.
