@@ -28,6 +28,7 @@ Not activated by default on current code-base but are going to
 * `twitter_account`: The twitter account to link tweets to
 * `twitter_hashtags`: The twitter hashtags to include in the tweets
 * `default_homepage`: Default page to redirect the users after login
+* `bannedIPS`: Coma seperated list of IPs and IP patterns to be denied access to the interface
 * (optional) `members_per_team`: How many members are allowed per team
 * (optional) `event_start`/`event_end`: When the event starts and stops (timestamp)
 * (optional) `registrations_start`/`registrations_end`: When the registrations starts and stops (timestamp)
