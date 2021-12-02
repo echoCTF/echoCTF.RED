@@ -66,7 +66,7 @@ class DefaultController extends \app\components\BaseController
      {
          $tmod=\app\modules\target\models\Target::find();
          $targetProgressProvider=new ActiveDataProvider([
-             'query' => $tmod->player_progress(Yii::$app->user->id)->forNet($id),
+             'query' => $tmod->player_progress(Yii::$app->user->id)->forNet($id)->orderBy(['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'difficulty' => SORT_ASC,'ip' => SORT_ASC, 'name' => SORT_ASC]),
              'pagination' => [
                  'pageSizeParam'=>'target-perpage',
                  'pageParam'=>'target-page',
