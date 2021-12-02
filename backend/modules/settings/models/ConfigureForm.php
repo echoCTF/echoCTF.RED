@@ -28,7 +28,6 @@ class ConfigureForm extends Model
     public $twitter_hashtags;
     public $registrations_start;
     public $registrations_end;
-    public $footer_logos;
     public $challenge_home;
     public $offense_registered_tag;
     public $defense_registered_tag;
@@ -36,9 +35,6 @@ class ConfigureForm extends Model
     public $defense_domain;
     public $moderator_domain;
     public $vpngw;
-    public $offense_scenario;
-    public $defense_scenario;
-    public $frontpage_scenario;
     public $dashboard_is_home;
     public $default_homepage;
     public $mail_from;
@@ -79,17 +75,13 @@ class ConfigureForm extends Model
             'event_end',
             'registrations_start',
             'registrations_end',
-            'footer_logos',
             'challenge_home',
             'offense_registered_tag',
             'defense_registered_tag',
             'vpngw',
-            'offense_scenario',
-            'defense_scenario',
             'offense_domain',
             'defense_domain',
             'moderator_domain',
-            'frontpage_scenario',
             'dashboard_is_home',
             'default_homepage',
             'mail_from',
@@ -121,11 +113,7 @@ class ConfigureForm extends Model
         return [
             [['offense_registered_tag',
               'defense_registered_tag',
-              'footer_logos',
               'vpngw',
-              'offense_scenario',
-              'defense_scenario',
-              'frontpage_scenario',
               'mail_from',
               'mail_fromName',
               'mail_host',
@@ -148,11 +136,7 @@ class ConfigureForm extends Model
             ], 'string'],
             [['offense_registered_tag',
               'defense_registered_tag',
-              'footer_logos',
               'vpngw',
-              'offense_scenario',
-              'defense_scenario',
-              'frontpage_scenario',
               'mail_from',
               'mail_fromName',
               'mail_host',
@@ -186,7 +170,6 @@ class ConfigureForm extends Model
               'event_active',
               'mail_from',
               'mail_fromName',
-              'frontpage_scenario',
               'approved_avatar',
               'team_manage_members'
           ], 'required'],
@@ -232,7 +215,6 @@ class ConfigureForm extends Model
           'profile_visibility' => 'Player profile visibility',
           'join_team_with_token' => 'Join teams with token',
           'event_name' => 'Event name',
-          'footer_logos' => 'Footer logos',
           'award_points' => 'Award points',
           'offense_home' => 'Offense home',
           'defense_home' => 'Defense home',

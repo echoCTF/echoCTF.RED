@@ -38,12 +38,6 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'leaderboard_show_zero')   ->checkbox()->hint('Leaderboard show zero points?') ?></div>
         </div>
         <hr/>
-        <h4>Platform website texts</h4>
-          <?= $form->field($model, 'footer_logos')->textarea(['rows' => '6'])->hint('Raw html to be placed at the footer of the pUI pages') ?>
-          <?= $form->field($model, 'frontpage_scenario')->textarea()->hint('Raw html to be shown on pUI frontpage for guests') ?>
-          <?= $form->field($model, 'offense_scenario')->textarea()->hint('Raw html to be shown on pUI for offense participants') ?>
-          <?= $form->field($model, 'defense_scenario')->textarea()->hint('Raw html to be shown on pUI for defense participants') ?>
-        <hr/>
         <h4>Team properties</h4>
         <div class="row form-group">
           <div class="col-sm-3"><?= $form->field($model, 'teams')->checkbox()->hint('Are teams supported?') ?></div>

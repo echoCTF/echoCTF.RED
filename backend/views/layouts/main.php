@@ -48,6 +48,10 @@ AppAsset::register($this);
                 ['label' => 'Rules', 'url' => ['/content/rule/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Objectives', 'url' => ['/content/objective/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Instructions', 'url' => ['/content/instruction/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Frontpage Scenario', 'url' => ['/content/default/frontpage-scenario'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Offense Scenario', 'url' => ['/content/default/offense-scenario'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Defense Scenario', 'url' => ['/content/default/defense-scenario'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Footer logos', 'url' => ['/content/default/footer-logos'], 'visible' => !Yii::$app->user->isGuest, ],
               ]
             ],
 
