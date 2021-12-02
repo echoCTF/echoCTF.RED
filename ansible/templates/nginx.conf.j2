@@ -152,11 +152,6 @@ http {
             try_files $uri $uri/ /index.php?$args;
         }
 
-        location /resend-verification-email {
-            limit_req zone=resetformsdouble;
-            index  index.php;
-            try_files $uri $uri/ /index.php?$args;
-        }
         location /reset-password {
             limit_req zone=resetforms;
             index  index.php;
@@ -176,7 +171,7 @@ http {
         location ~ \.php$ {
             fastcgi_split_path_info  ^(.+\.php)(.*)$;
 
-            #let yii catch the calls to unexising PHP files
+            #let yii catch the calls to non-existing PHP files
             set $fsn /$yii_bootstrap;
             set $yiiargs r=$request_uri;
             if (-f $document_root$fastcgi_script_name){
