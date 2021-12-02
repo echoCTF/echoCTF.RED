@@ -7,10 +7,11 @@
 * `teams`: Enable/Disable teams support
 * (optional) `team_required`: Enable/Disable requirement for teams
 * `approved_avatar`: Enable/Disable automatic avatar approval
-
+* `leaderboard_show_zero`: Show zero points on leaderboard
+* `leaderboard_visible_after_event_end`: Show leaderboard after event end
+* `leaderboard_visible_before_event_start`: Show leaderboard before event start
 
 Not activated by default on current code-base but are going to
-
 * _`require_activation`_ Whether it is required for users to activate their accounts
 * _`disable_registration`_ Whether online registrations are allowed
 
