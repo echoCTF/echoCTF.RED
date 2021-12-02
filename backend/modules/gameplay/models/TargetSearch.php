@@ -67,7 +67,7 @@ class TargetSearch extends Target
         $query->andFilterWhere([
             'target.id' => $this->id,
             'ip' => $this->ip,
-            'active' => $this->active,
+            'target.active' => $this->active,
             'rootable' => $this->rootable,
             'difficulty' => $this->difficulty,
             'suggested_xp' => $this->suggested_xp,

@@ -86,6 +86,60 @@ $this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
                       );
                   },
               ],
+              'header' => Html::a(
+                  '<span class="glyphicon glyphicon-ok"></span>',
+                  ['activate-filtered'],
+                  [
+                      'title' => 'Mass activate all filtered targets?',
+                      'data-pjax' => '0',
+                      'data-method' => 'POST',
+                      'data'=>[
+                        'method'=>'post',
+                        'params'=> $searchModel->attributes,
+                        'confirm'=>'Are you sure you want to activate all currently filtered targets?',
+                      ],
+                  ]
+                  ).' '.Html::a(
+                  '<span class="glyphicon glyphicon-off"></span>',
+                  ['spin-filtered'],
+                  [
+                      'title' => 'Mass spin all filtered containers?',
+                      'data-pjax' => '0',
+                      'data-method' => 'POST',
+                      'data'=>[
+                        'method'=>'post',
+                        'params'=> $searchModel->attributes,
+                        'confirm'=>'Are you sure you want to spin all currently filtered targets?',
+                      ],
+                  ]
+              ).' '.Html::a(
+                  '<span class="glyphicon glyphicon-cloud-download"></span>',
+                  ['pull-filtered'],
+                  [
+                      'title' => 'Mass pull target images',
+                      'data-pjax' => '0',
+                      'data-method' => 'POST',
+                      'data'=>[
+                        'method'=>'post',
+                        'params'=> $searchModel->attributes,
+                        'confirm'=>'Are you sure you want to pull all the currently filtered target images?',
+                      ],
+                  ]
+              ).' '.Html::a(
+                  '<span class="glyphicon glyphicon-trash"></span>',
+                  ['delete-filtered'],
+                  [
+                      'title' => 'Mass Delete targets',
+                      'data-pjax' => '0',
+                      'data-method' => 'POST',
+                      'data'=>[
+                        'method'=>'post',
+                        'params'=> $searchModel->attributes,
+                        'confirm'=>'Are you sure you want to delete the currently filtered targets?',
+                      ],
+                  ]
+              ),
+
             ],
         ],
     ]);?>
