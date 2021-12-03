@@ -21,7 +21,7 @@ class UserController extends Controller
     {
         return [
           'access' => [
-                'class' => \yii\filters\AccessControl::class
+                'class' => \yii\filters\AccessControl::class,
                 'rules' => [
                     // allow authenticated users
                     [
