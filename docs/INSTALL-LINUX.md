@@ -29,6 +29,7 @@ service mysql restart
 ```sh
 cd /var/www
 git clone --depth 1 https://github.com/echoCTF/memcached_functions_mysql.git
+git clone --depth 1 https://github.com/echoCTF/MySQL-global-user-variables-UDF.git
 git clone --depth 1 https://github.com/echoCTF/echoCTF.RED.git
 ```
 
@@ -40,6 +41,13 @@ cd /var/www/memcached_functions_mysql
 make
 cp src/.libs/libmemcached_functions_mysql.so /usr/lib/x86_64-linux-gnu/mariadb19/plugin/
 mysql mysql < sql/install_functions.sql
+```
+
+### Build the global user variables UDF
+```sh
+cd MySQL-global-user-variables-UDF
+make DESTDIR=/usr/lib/x86_64-linux-gnu/mariadb19/plugin/ all install
+mysql mysql < global_user_variables.sql
 ```
 
 ### Prepare the database

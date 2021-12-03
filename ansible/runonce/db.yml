@@ -264,6 +264,20 @@
       encoding: utf8
       login_user: "root"
 
+  - name: Clone global variables UDF repo
+    git:
+      repo: 'https://github.com/echoCTF/MySQL-global-user-variables-UDF.git'
+      dest: /root/global_variables_udf
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Make all install on global_variables_udf
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 make DESTDIR=/usr/local/lib/mysql/plugin all install
+    args:
+      chdir: /root/global_variables_udf
+
   - name: Clone memcached_functions_mysql repo
     git:
       repo: 'https://github.com/echoCTF/memcached_functions_mysql.git'
@@ -288,6 +302,7 @@
     args:
       chdir: /root/memcached_functions_mysql
 
+
   - name: Import mysql schema
     mysql_db:
       state: import
@@ -296,6 +311,7 @@
       login_user: "root"
     with_items:
       - ../../memcached_functions_mysql/sql/install_functions.sql
+      - ../../global_variables_udf/global_user_variables.sql
       - echoCTF.sql
       - echoCTF-routines.sql
       - echoCTF-triggers.sql
