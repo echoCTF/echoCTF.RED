@@ -142,7 +142,7 @@ $config=[
           ],
         ],
         'user' => [
-            'class' => '\app\components\User',
+            //'class' => '\app\components\User',
             'identityClass' => '\app\models\Player',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true, /*'sameSite'=>'Lax'*/],
