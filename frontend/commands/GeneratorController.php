@@ -184,10 +184,14 @@ class GeneratorController extends Controller {
           if($image!==false)
           {
             $path=\Yii::getAlias('@app/web/images/avatars/badges/').$item->player->profile->id.'.png';
-            imagepng($image,$path);
-            chown($path, $owner);
-            imagedestroy($image);
-            echo " badge generated\n";
+            try {
+              imagepng($image,$path);
+              chown($path, $owner);
+              imagedestroy($image);
+              echo " badge generated\n";
+            } catch (\Exception $e) {
+              echo " ",$e->getMessage(),"\n";
+            }
           }
         }
         else
