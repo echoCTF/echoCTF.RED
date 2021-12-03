@@ -5,28 +5,21 @@ namespace app\modules\gameplay\controllers;
 use Yii;
 use app\modules\gameplay\models\TutorialTaskDependency;
 use app\modules\gameplay\models\TutorialTaskDependencySearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * TutorialTaskDependencyController implements the CRUD actions for TutorialTaskDependency model.
  */
-class TutorialTaskDependencyController extends Controller
+class TutorialTaskDependencyController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
+  /**
+   * {@inheritdoc}
+   */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

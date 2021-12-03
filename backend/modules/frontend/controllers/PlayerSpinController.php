@@ -5,39 +5,22 @@ namespace app\modules\frontend\controllers;
 use Yii;
 use app\modules\frontend\models\PlayerSpin;
 use app\modules\frontend\models\PlayerSpinSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerSpinController implements the CRUD actions for PlayerSpin model.
  */
-class PlayerSpinController extends Controller
+class PlayerSpinController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                      'reset' => ['POST'],
-                  ],
-              ],
-          ];
-      }
+  /**
+   * {@inheritdoc}
+   */
+    public function behaviors()
+    {
+      return ArrayHelper::merge(parent::behaviors(),[]);
+    }
 
     /**
      * Lists all PlayerSpin models.

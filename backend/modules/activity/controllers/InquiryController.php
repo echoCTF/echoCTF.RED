@@ -5,28 +5,21 @@ namespace app\modules\activity\controllers;
 use Yii;
 use app\modules\activity\models\Inquiry;
 use app\modules\activity\models\InquirySearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * InquiryController implements the CRUD actions for Inquiry model.
  */
-class InquiryController extends Controller
+class InquiryController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

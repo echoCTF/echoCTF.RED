@@ -3,38 +3,23 @@
 namespace app\modules\content\controllers;
 
 use Yii;
-use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\modules\settings\models\Sysconfig;
+use yii\helpers\ArrayHelper;
 
 /**
  * Default controller for the `content` module
  */
-class DefaultController extends Controller
+class DefaultController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                  ],
-              ],
-          ];
-      }
+  /**
+   * {@inheritdoc}
+   */
+    public function behaviors()
+    {
+      return ArrayHelper::merge(parent::behaviors(),[]);
+    }
+
     /**
      * Renders the index view for the module
      * @return string

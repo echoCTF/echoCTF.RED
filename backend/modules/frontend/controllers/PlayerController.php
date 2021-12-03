@@ -9,31 +9,22 @@ use app\modules\frontend\models\TeamPlayer;
 use app\modules\frontend\models\PlayerSsl;
 use app\modules\frontend\models\PlayerSearch;
 use app\modules\settings\models\Sysconfig;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerController implements the CRUD actions for Player model.
  */
-class PlayerController extends Controller
+class PlayerController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
+        return ArrayHelper::merge(parent::behaviors(),[
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -46,7 +37,7 @@ class PlayerController extends Controller
                     'toggle-academic' => ['POST'],
                 ],
             ],
-        ];
+        ]);
     }
     public function actions()
     {

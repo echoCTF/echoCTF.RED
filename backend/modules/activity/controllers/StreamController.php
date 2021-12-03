@@ -5,38 +5,22 @@ namespace app\modules\activity\controllers;
 use Yii;
 use app\modules\activity\models\Stream;
 use app\modules\activity\models\StreamSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * StreamController implements the CRUD actions for Stream model.
  */
-class StreamController extends Controller
+class StreamController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                  ],
-              ],
-          ];
-      }
+    public function behaviors()
+    {
+      return ArrayHelper::merge(parent::behaviors(),[]);
+    }
 
     /**
      * Lists all Stream models.

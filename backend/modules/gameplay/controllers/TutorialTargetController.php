@@ -5,28 +5,21 @@ namespace app\modules\gameplay\controllers;
 use Yii;
 use app\modules\gameplay\models\TutorialTarget;
 use app\modules\gameplay\models\TutorialTargetSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * TutorialTargetController implements the CRUD actions for TutorialTarget model.
  */
-class TutorialTargetController extends Controller
+class TutorialTargetController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
+  /**
+   * {@inheritdoc}
+   */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

@@ -7,37 +7,21 @@ use app\modules\activity\models\PlayerQuestion;
 use app\modules\activity\models\PlayerQuestionSearch;
 use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\Question;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerquestionController implements the CRUD actions for PlayerQuestion model.
  */
-class PlayerQuestionController extends Controller
+class PlayerQuestionController extends \app\components\BaseController
 {
-  /**
-   * {@inheritdoc}
-   */
+    /**
+     * {@inheritdoc}
+     */
     public function behaviors()
     {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

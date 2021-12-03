@@ -8,34 +8,18 @@ use app\modules\frontend\models\CrlSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\helpers\ArrayHelper;
 /**
  * CrlController implements the CRUD actions for Crl model.
  */
-class CrlController extends Controller
+class CrlController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
       public function behaviors()
       {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                  ],
-              ],
-          ];
+        return ArrayHelper::merge(parent::behaviors(),[ ]);
       }
 
     /**

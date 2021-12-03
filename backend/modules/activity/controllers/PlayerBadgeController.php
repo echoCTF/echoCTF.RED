@@ -7,38 +7,22 @@ use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\Badge;
 use app\modules\activity\models\PlayerBadge;
 use app\modules\activity\models\PlayerBadgeSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerbadgeController implements the CRUD actions for PlayerBadge model.
  */
-class PlayerBadgeController extends Controller
+class PlayerBadgeController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                  ],
-              ],
-          ];
-      }
+    public function behaviors()
+    {
+      return ArrayHelper::merge(parent::behaviors(),[]);
+    }
 
     /**
      * Lists all PlayerBadge models.

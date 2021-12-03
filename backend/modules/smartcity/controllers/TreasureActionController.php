@@ -5,38 +5,22 @@ namespace app\modules\smartcity\controllers;
 use Yii;
 use app\modules\smartcity\models\TreasureAction;
 use app\modules\smartcity\models\TreasureActionSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * TreasureActionController implements the CRUD actions for TreasureAction model.
  */
-class TreasureActionController extends Controller
+class TreasureActionController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                  ],
-              ],
-          ];
-      }
+    public function behaviors()
+    {
+      return ArrayHelper::merge(parent::behaviors(),[]);
+    }
 
     /**
      * Lists all TreasureAction models.

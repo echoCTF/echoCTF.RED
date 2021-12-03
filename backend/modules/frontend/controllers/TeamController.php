@@ -5,39 +5,28 @@ namespace app\modules\frontend\controllers;
 use Yii;
 use app\modules\frontend\models\Team;
 use app\modules\frontend\models\TeamSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * TeamController implements the CRUD actions for Team model.
  */
-class TeamController extends Controller
+class TeamController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'create', 'update', 'view'],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
+        return ArrayHelper::merge(parent::behaviors(),[
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST'],
                     'toggle-academic' => ['POST'],
                 ],
             ],
-        ];
+        ]);
     }
 
     /**

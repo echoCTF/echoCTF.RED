@@ -5,38 +5,21 @@ namespace app\modules\gameplay\controllers;
 use Yii;
 use app\modules\gameplay\models\Treasure;
 use app\modules\gameplay\models\TreasureSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * TreasureController implements the CRUD actions for Treasure model.
  */
-class TreasureController extends Controller
+class TreasureController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
+  /**
+   * {@inheritdoc}
+   */
     public function behaviors()
     {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'create', 'update', 'view'],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

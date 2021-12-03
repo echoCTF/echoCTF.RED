@@ -7,38 +7,22 @@ use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\Finding;
 use app\modules\activity\models\PlayerFinding;
 use app\modules\activity\models\PlayerFindingSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerfindingController implements the CRUD actions for PlayerFinding model.
  */
-class PlayerFindingController extends Controller
+class PlayerFindingController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                  ],
-              ],
-          ];
-      }
+    public function behaviors()
+    {
+      return ArrayHelper::merge(parent::behaviors(),[]);
+    }
 
     /**
      * Lists all PlayerFinding models.

@@ -6,29 +6,21 @@ use Yii;
 use app\modules\activity\models\Notification;
 use app\modules\activity\models\Writeup;
 use app\modules\activity\models\WriteupSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * WriteupController implements the CRUD actions for Writeup model.
  */
-class WriteupController extends Controller
+class WriteupController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                    'approve' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

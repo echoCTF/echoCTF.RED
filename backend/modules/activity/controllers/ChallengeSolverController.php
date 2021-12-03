@@ -5,28 +5,21 @@ namespace app\modules\activity\controllers;
 use Yii;
 use app\modules\activity\models\ChallengeSolver;
 use app\modules\activity\models\ChallengeSolverSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * ChallengeSolverController implements the CRUD actions for ChallengeSolver model.
  */
-class ChallengeSolverController extends Controller
+class ChallengeSolverController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

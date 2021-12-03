@@ -5,28 +5,21 @@ namespace app\modules\infrastructure\controllers;
 use Yii;
 use app\modules\infrastructure\models\TargetMetadata;
 use app\modules\infrastructure\models\TargetMetadataSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * TargetMetadataController implements the CRUD actions for TargetMetadata model.
  */
-class TargetMetadataController extends Controller
+class TargetMetadataController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
+  /**
+   * {@inheritdoc}
+   */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

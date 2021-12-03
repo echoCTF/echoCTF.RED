@@ -6,38 +6,22 @@ use Yii;
 use app\modules\frontend\models\Player;
 use app\modules\frontend\models\PlayerSsl;
 use app\modules\frontend\models\PlayerSslSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerSslController implements the CRUD actions for PlayerSsl model.
  */
-class PlayerSslController extends Controller
+class PlayerSslController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                  ],
-              ],
-          ];
-      }
+    public function behaviors()
+    {
+      return ArrayHelper::merge(parent::behaviors(),[]);
+    }
 
     /**
      * Lists all PlayerSsl models.
