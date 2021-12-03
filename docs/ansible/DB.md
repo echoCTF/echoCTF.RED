@@ -50,6 +50,7 @@ ansible-playbook runonce/db.yml --connection=local -i 127.0.0.1,
 * Clone sources repo if remote execution
 * Bootstrap and start mysql
 * Clone configure and install `memcached_functions_mysql` repo
+* Clone configure and install `MySQL-global-user-variables-UDF` repo
 * Create mysql db schema
 * Import mysql schema
 * Copy `mysql-init.sql` for populating memcached at boot

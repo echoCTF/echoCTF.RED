@@ -7,7 +7,7 @@ Note: Although the interfaces are able to run on any system, the VPN server is a
 
 Before we start make sure you have MariaDB, NGiNX or Apache, PHP, php-memcached, composer and memcahed running, this guide will not deal with these.
 
-Also make sure you have installed the following UDF https://github.com/echoCTF/memcached_functions_mysql.git
+Also make sure you have installed the following UDFs https://github.com/echoCTF/memcached_functions_mysql.git & https://github.com/echoCTF/MySQL-global-user-variables-UDF.git
 
 Clone the repository
 ```sh
