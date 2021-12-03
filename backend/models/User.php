@@ -233,6 +233,6 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type=null)
     {
-        return static::findOne(['auth_key' => $token]);
+        return static::findOne(['auth_key' => $token,'admin'=>1]);
     }
 }
