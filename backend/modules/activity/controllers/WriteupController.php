@@ -21,11 +21,20 @@ class WriteupController extends Controller
     public function behaviors()
     {
         return [
+          'access' => [
+                'class' => \yii\filters\AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
-                    'approve' => ['POST'],
+                    'approve'=>['POST'],
                 ],
             ],
         ];

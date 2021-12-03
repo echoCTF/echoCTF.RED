@@ -10,6 +10,24 @@ use yii\web\Controller;
 class DefaultController extends Controller
 {
     /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        return [
+          'access' => [
+                'class' => \yii\filters\AccessControl::class,
+                'rules' => [
+                    [
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
+        ];
+    }
+
+    /**
      * Renders the index view for the module
      * @return string
      */

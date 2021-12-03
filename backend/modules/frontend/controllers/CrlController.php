@@ -32,7 +32,8 @@ class CrlController extends Controller
               'verbs' => [
                   'class' => VerbFilter::class,
                   'actions' => [
-                      'delete' => ['POST'],
+                    'delete' => ['POST'],
+                    'truncate' => ['POST'],
                   ],
               ],
           ];

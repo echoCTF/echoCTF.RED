@@ -14,20 +14,29 @@ use yii\filters\VerbFilter;
  */
 class ChallengeSolverController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function behaviors()
+  {
+      return [
+        'access' => [
+              'class' => \yii\filters\AccessControl::class,
+              'rules' => [
+                  [
+                      'allow' => true,
+                      'roles' => ['@'],
+                  ],
+              ],
+          ],
+          'verbs' => [
+              'class' => VerbFilter::class,
+              'actions' => [
+                  'delete' => ['POST'],
+              ],
+          ],
+      ];
+  }
 
     /**
      * Lists all ChallengeSolver models.

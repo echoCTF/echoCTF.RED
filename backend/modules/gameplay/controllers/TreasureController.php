@@ -22,7 +22,6 @@ class TreasureController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'create', 'update', 'view'],
                 'rules' => [
                     [
                         'allow' => true,

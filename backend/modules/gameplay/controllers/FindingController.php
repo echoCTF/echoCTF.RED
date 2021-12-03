@@ -21,8 +21,7 @@ class FindingController extends Controller
     {
         return [
           'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'create', 'update', 'view'],
+                'class' => \yii\filters\AccessControl::class
                 'rules' => [
                     [
                         'allow' => true,
