@@ -8,7 +8,7 @@ Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
             'icon'=>sprintf('<img src="%s" class="img-fluid" style="max-width: 10rem; max-height: 4rem;" />', $target->logo),
-            'color'=>'rose',
+            'color'=>'warning',
             'subtitle'=>$subtitle,
             'title'=>sprintf('%s / %s', $target->name, long2ip($target->ip)),
             'footer'=>sprintf('<div class="stats">%s</div><span>%s</span>', $target->purpose,  !Yii::$app->user->isGuest && $target->spinable ? $spinlink:""),
