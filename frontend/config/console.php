@@ -15,6 +15,9 @@ $config=[
         '@tests' => '@app/tests',
     ],
     'components' => [
+        'sys'=> [
+          'class' => 'app\components\Sysconfig',
+        ],
         'cache' => $cache,
         'log' => [
             'targets' => [
