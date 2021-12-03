@@ -7,33 +7,23 @@ use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\Target;
 use app\modules\activity\models\PlayerFinding;
 use app\modules\activity\models\PlayerTreasure;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\modules\activity\models\PlayerVsTargetForm;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerbadgeController implements the CRUD actions for PlayerBadge model.
  */
-class PlayerVsTargetController extends Controller
+class PlayerVsTargetController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-          ];
-      }
+    public function behaviors()
+    {
+      return ArrayHelper::merge(parent::behaviors(),[]);
+    }
 
     public function actionIndex()
     {

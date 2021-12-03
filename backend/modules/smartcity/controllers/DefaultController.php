@@ -2,29 +2,19 @@
 
 namespace app\modules\smartcity\controllers;
 
-use yii\web\Controller;
+use yii\helpers\ArrayHelper;
 
 /**
  * Default controller for the `smartcity` module
  */
-class DefaultController extends Controller
+class DefaultController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

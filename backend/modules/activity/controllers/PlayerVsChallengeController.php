@@ -8,38 +8,22 @@ use app\modules\gameplay\models\Challenge;
 use app\modules\gameplay\models\Question;
 use app\modules\activity\models\PlayerQuestion;
 use app\modules\activity\models\ChallengeSolver;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\modules\activity\models\PlayerVsChallengeForm;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerbadgeController implements the CRUD actions for PlayerBadge model.
  */
-class PlayerVsChallengeController extends Controller
+class PlayerVsChallengeController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     public function actionIndex()

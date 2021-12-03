@@ -5,37 +5,21 @@ namespace app\modules\activity\controllers;
 use Yii;
 use app\modules\activity\models\PlayerTargetHelp;
 use app\modules\activity\models\PlayerTargetHelpSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerTargetHelpController implements the CRUD actions for PlayerTargetHelp model.
  */
-class PlayerTargetHelpController extends Controller
+class PlayerTargetHelpController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**

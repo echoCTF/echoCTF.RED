@@ -5,38 +5,28 @@ namespace app\modules\frontend\controllers;
 use Yii;
 use app\modules\frontend\models\Profile;
 use app\modules\frontend\models\ProfileSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * ProfileController implements the CRUD actions for Profile model.
  */
-class ProfileController extends Controller
+class ProfileController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
       public function behaviors()
       {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
+          return ArrayHelper::merge(parent::behaviors(),[
               'verbs' => [
                   'class' => VerbFilter::class,
                   'actions' => [
-                      'delete' => ['POST'],
                       'approve_avatar' => ['POST'],
                   ],
               ],
-          ];
+          ]);
       }
 
     /**

@@ -5,40 +5,25 @@ namespace app\modules\infrastructure\controllers;
 use Yii;
 use app\modules\gameplay\models\Target;
 use app\modules\gameplay\models\TargetSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Docker\DockerClientFactory;
 use Docker\Docker;
 use Http\Client\Socket\Exception\ConnectionException;
 use yii\data\ArrayDataProvider;
+use yii\helpers\ArrayHelper;
 
 /**
  * TargetController implements the CRUD actions for Target model.
  */
-class TargetController extends Controller
+class TargetController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-          'access' => [
-                'class' => \yii\filters\AccessControl::class,
-                'only' => [
-                    'index','docker-compose','status','statistics','generate',
-                    'view','create','update','delete','delete-filtered',
-                    'pull-filtered','activate-filtered','spin-filtered',
-                    'destroy','spin','pull'
-                  ],
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
+        return ArrayHelper::merge(parent::behaviors(),[
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -50,7 +35,7 @@ class TargetController extends Controller
                     'delete-filtered' => ['POST'],
                 ],
             ],
-        ];
+        ]);
     }
 
     /**

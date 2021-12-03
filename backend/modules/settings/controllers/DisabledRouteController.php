@@ -5,38 +5,22 @@ namespace app\modules\settings\controllers;
 use Yii;
 use app\modules\settings\models\DisabledRoute;
 use app\modules\settings\models\DisabledRouteSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * DisabledRouteController implements the CRUD actions for DisabledRoute model.
  */
-class DisabledRouteController extends Controller
+class DisabledRouteController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-      public function behaviors()
-      {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
-              'verbs' => [
-                  'class' => VerbFilter::class,
-                  'actions' => [
-                      'delete' => ['POST'],
-                  ],
-              ],
-          ];
-      }
+  /**
+   * {@inheritdoc}
+   */
+    public function behaviors()
+    {
+      return ArrayHelper::merge(parent::behaviors(),[]);
+    }
 
     /**
      * Lists all DisabledRoute models.

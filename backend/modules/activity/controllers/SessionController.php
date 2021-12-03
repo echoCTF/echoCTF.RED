@@ -5,30 +5,21 @@ namespace app\modules\activity\controllers;
 use Yii;
 use app\modules\activity\models\Sessions;
 use app\modules\activity\models\SessionsSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * SessionController implements the CRUD actions for Sessions model.
  */
-class SessionController extends Controller
+class SessionController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
       public function behaviors()
       {
-          return [
-            'access' => [
-                  'class' => \yii\filters\AccessControl::class,
-                  'rules' => [
-                      [
-                          'allow' => true,
-                          'roles' => ['@'],
-                      ],
-                  ],
-              ],
+          return ArrayHelper::merge(parent::behaviors(),[
               'verbs' => [
                   'class' => VerbFilter::class,
                   'actions' => [
@@ -36,7 +27,7 @@ class SessionController extends Controller
                       'delete-filtered' => ['POST'],
                   ],
               ],
-          ];
+          ]);
       }
 
     /**
