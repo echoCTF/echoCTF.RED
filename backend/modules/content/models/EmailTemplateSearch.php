@@ -18,7 +18,7 @@ class EmailTemplateSearch extends EmailTemplate
     {
         return [
             [['id'], 'integer'],
-            [['name', 'title', 'html', 'txt'], 'safe'],
+            [['name', 'title', 'html', 'txt','created_at','updated_at'], 'safe'],
         ];
     }
 

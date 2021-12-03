@@ -18,6 +18,8 @@ class m211203_230639_create_email_template_table extends Migration
             'title' => $this->string(),
             'html' => $this->text(),
             'txt' => $this->text(),
+            'created_at'=>$this->datetime(),
+            'updated_at'=>$this->datetime(),
         ]);
     }
 
