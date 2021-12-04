@@ -7,7 +7,7 @@ use yii\widgets\ActiveForm;
 /* @var $model app\modules\content\models\EmailTemplate */
 /* @var $form yii\widgets\ActiveForm */
 ?>
-
+<small>These are full PHP/HTML templates. Only one variable is assigned at the moment <kbd>$user</kbd>, which holds the player model.</small>
 <div class="email-template-form">
 
     <?php $form = ActiveForm::begin(); ?>
