@@ -10,6 +10,12 @@ $this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
 $this->params['breadcrumbs'][]=['label' => 'Users', 'url' => ['index']];
 $this->params['breadcrumbs'][]=['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][]='Update';
+yii\bootstrap\Modal::begin([
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+]);
+echo $this->render('help/'.$this->context->action->id);
+yii\bootstrap\Modal::end();
 ?>
 <div class="user-update">
 

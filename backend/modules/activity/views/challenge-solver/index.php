@@ -2,13 +2,19 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\activity\models\ChallengeSolverSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = 'Challenge Solvers';
 $this->params['breadcrumbs'][] = $this->title;
+
+yii\bootstrap\Modal::begin([
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+]);
+echo $this->render('help/'.$this->context->action->id);
+yii\bootstrap\Modal::end();
 ?>
 <div class="challenge-solver-index">
 

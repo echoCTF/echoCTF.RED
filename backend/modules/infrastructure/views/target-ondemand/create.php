@@ -8,6 +8,12 @@ use yii\helpers\Html;
 $this->title = Yii::t('app', 'Create Target Ondemand');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target Ondemands'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+yii\bootstrap\Modal::begin([
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+]);
+echo $this->render('help/'.$this->context->action->id);
+yii\bootstrap\Modal::end();
 ?>
 <div class="target-ondemand-create">
 
