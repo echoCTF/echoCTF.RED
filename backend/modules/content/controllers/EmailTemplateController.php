@@ -5,28 +5,20 @@ namespace app\modules\content\controllers;
 use Yii;
 use app\modules\content\models\EmailTemplate;
 use app\modules\content\models\EmailTemplateSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\helpers\ArrayHelper;
 /**
  * EmailTemplateController implements the CRUD actions for EmailTemplate model.
  */
-class EmailTemplateController extends Controller
+class EmailTemplateController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+     return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**
