@@ -70,7 +70,7 @@ docker exec -it echoctfred_vpn ./backend/yii player/register username email@exam
 The syntax for the commands can be found at [Console-Commands.md](Console-Commands.md)
 
 
-Set the IP or FQDN for the VPN server that participants will have to connect through openvpn.
+Set the IP or FQDN for the VPN server that participants will have to connect through openvpn. This is the IP address of FQDN that the VPN server will be accesible to the participants. This IP or FQDN is also used inside the auto-generated VPN connection pack that the players use to connect to the VPN and access the targets.
 ```sh
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw 172.22.0.4
 # or
