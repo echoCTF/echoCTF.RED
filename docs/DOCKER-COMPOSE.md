@@ -4,12 +4,12 @@ The `docker-compose.yml` builds and starts all the needed applications and targe
 Keep in mind that this may require a lot of memory to run (our tests are
 performed on systems with at least 8GB ram).
 
-The docker containers use the following networks
+The docker containers use the following networks ranges
 
-* `echoctfred_public`: `172.26.0.0/24`
-* `echoctfred_private`: `172.24.0.0/24`
-* `echoctfred_targets`: `10.0.160.0/24`
-* `OpenVPN`: `10.10.0.0/16`
+* `echoctfred_public`: `172.26.0.0/24` (also a docker network)
+* `echoctfred_private`: `172.24.0.0/24` (also a docker network)
+* `echoctfred_targets`: `10.0.160.0/24` (also a docker network)
+* `OpenVPN`: `10.10.0.0/16` (only availabe from with vpn and openvpn)
 
 Furthermore the following ports are mapped on the host server and containers
 
