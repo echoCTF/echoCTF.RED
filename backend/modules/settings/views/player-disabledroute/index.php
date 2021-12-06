@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\modules\settings\models\PlayerDisabledrouteSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Player Disabledroutes');
+$this->title = Yii::t('app', 'Player Disabled routes');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="player-disabledroute-index">
@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Create Player Disabledroute'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Create Player Disabled Route'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -25,12 +25,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'player_id',
             'route',
-
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
