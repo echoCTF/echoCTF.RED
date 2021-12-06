@@ -46,7 +46,7 @@ class BaseController extends \yii\web\Controller
                          Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
                          return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                        }
-                   ],
+                    ],
 
                    'eventStart'=>[
                       'allow' => false,
@@ -57,8 +57,8 @@ class BaseController extends \yii\web\Controller
                         Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
                         return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                       }
-                  ],
-                  'eventEnd'=>[
+                   ],
+                   'eventEnd'=>[
                      'allow' => false,
                      'matchCallback' => function () {
                        return \Yii::$app->sys->event_end!==false && time()>\Yii::$app->sys->event_end;
@@ -67,9 +67,7 @@ class BaseController extends \yii\web\Controller
                        Yii::$app->session->setFlash('info', 'This operation is closed after the competition ends');
                        return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                      }
-                 ],
-
-
+                   ],
                    'teamsAccess'=>[
                       'allow' => false,
                       'matchCallback' => function () {
@@ -85,7 +83,8 @@ class BaseController extends \yii\web\Controller
                          return Yii::$app->DisabledRoute->disabled($action);
                        },
                        'denyCallback' => function() {
-                         throw new \yii\web\HttpException(404,'This area is disabled.');
+                         Yii::$app->session->setFlash('warning', 'This operation is disabled globally or just for you, sorry.');
+                         return  \Yii::$app->getResponse()->redirect(Yii::$app->request->referrer ?:[Yii::$app->sys->default_homepage]);
                        },
                    ],
                 ],

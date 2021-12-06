@@ -40,6 +40,8 @@ class DisabledRoute extends Component
     if((int)\Yii::$app->db->createCommand("SELECT count(*) FROM disabled_route WHERE :route LIKE route OR CONCAT('/',:route) LIKE route")->bindValue(':route', $route)->queryScalar()>0)
       return true;
 
+    if(!\Yii::$app->user->isGuest && (int)\Yii::$app->db->createCommand("SELECT count(*) FROM player_disabledroute WHERE player_id=:player_id and ((:route LIKE route OR CONCAT('/',:route) LIKE route) OR (:pathinfo LIKE route or concat('/',:pathinfo) LIKE route))")->bindValue(':route', $route)->bindValue(':pathinfo',Yii::$app->request->pathInfo)->bindValue(':player_id', \Yii::$app->user->id)->queryScalar()>0)
+      return true;
     return false;
   }
 
