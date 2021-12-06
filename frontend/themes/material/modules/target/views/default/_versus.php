@@ -91,7 +91,7 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
           </div>
         </div>
         <?php if($headshot && $headshot->rating>=0) echo "<center class='text-primary'>headshoter rating: ",$headshot->rated,"</center>";?>
-        <?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100):?>
+        <?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100 && $target->writeup_allowed):?>
         <div class="row">
           <div class="col">
           <?=Html::a("<i class='fas fa-book'></i> Submit",
@@ -111,6 +111,7 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
         </div>
         <?php elseif(Yii::$app->user->id === $identity->player_id && $target->progress==100):?>
         <div class="row">
+          <?php if($target->writeup_allowed):?>
           <div class="col">
           <?=Html::a("<i class='fas fa-book'></i> View",
                       ['writeup/view','id'=>$target->id],
@@ -122,6 +123,7 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
                         'alt'=>'View or update your writeup for this target'
                     ])?>
           </div>
+          <?php endif;?>
           <div class="col">
             <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>'/game/default/rate-headshot']);?>
           </div>

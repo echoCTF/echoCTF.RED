@@ -73,6 +73,14 @@ class WriteupController extends \app\components\BaseController
      */
     public function actionSubmit(int $id)
     {
+      $target=Target::findOne($id);
+      if($target && !$target->writeup_allowed)
+      {
+        Yii::$app->session->setFlash('warning', 'Writeups are not allowed for this target.');
+        return $this->redirect(['default/view','id'=>$id]);
+      }
+
+
       $headshot=Headshot::findOne(['target_id'=>$id,'player_id'=>Yii::$app->user->id]);
       if($headshot===null)
       {

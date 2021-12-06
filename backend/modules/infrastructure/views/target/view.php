@@ -68,6 +68,8 @@ $this->params['breadcrumbs'][]=$this->title;
             'timer:boolean',
             'rootable:boolean',
             'active:boolean',
+            'healthcheck:boolean',
+            'writeup_allowed:boolean',
             'status',
             'scheduled_at',
             'purpose',
