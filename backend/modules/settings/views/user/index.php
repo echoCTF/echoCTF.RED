@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\settings\models\UserSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -13,7 +12,7 @@ yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
 ]);
-echo $this->render('help/'.$this->context->action->id);
+echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
 yii\bootstrap\Modal::end();
 ?>
 <div class="user-index">
