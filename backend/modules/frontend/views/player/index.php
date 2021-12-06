@@ -7,6 +7,12 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
 $this->params['breadcrumbs'][]=['label' => 'Players', 'url' => ['index']];
+yii\bootstrap\Modal::begin([
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+]);
+echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
+yii\bootstrap\Modal::end();
 ?>
 <div class="player-index">
 
