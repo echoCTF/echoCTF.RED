@@ -34,6 +34,7 @@ use app\modules\infrastructure\models\TargetMetadata;
  * @property int $difficulty
  * @property int $weight
  * @property bool $healthcheck
+ * @property bool $writeup_allowed
  * @property string $created_at The date this record was created_at
  *
  * @property Finding[] $findings
@@ -69,7 +70,7 @@ class TargetAR extends \yii\db\ActiveRecord
         return [
             [['parameters', 'description','imageparams'], 'string'],
             [['name', 'fqdn', 'mac'], 'required'],
-            [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','healthcheck'], 'integer'],
+            [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','healthcheck','writeup_allowed'], 'integer'],
             [['ipoctet'], 'ip'],
             [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns','category'], 'string', 'max' => 255],
             [['image'], 'filter', 'filter'=>'strtolower'],
