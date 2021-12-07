@@ -4,6 +4,15 @@ pass quick on egress inet proto udp from <moderators> to (egress:0) port 1194 la
 # Dont allow
 pass quick on egress inet proto udp from !<maintenance> to (egress:0) port 1194 label "OpenVPN"
 
+anchor "targets/*"
+anchor "offense/*"
+anchor "networks/*"
+
+load anchor "targets" on targets from "/etc/targets_anchor.conf"
+load anchor "offense" on tun from "/etc/offense_anchor.conf"
+load anchor "offense/findings" from "/etc/match-findings-pf.conf"
+load anchor "networks" from "/etc/targets_networks.conf"
+
 anchor "targets" on targets {
   # allow registry clients to have access to the internet
   pass quick inet from <registry_clients> to !(self)
@@ -30,9 +39,6 @@ anchor "offense" on tun {
 	pass from <targets> to <offense_activated>
 }
 
-load anchor "offense/findings" from "/etc/match-findings-pf.conf"
-anchor "networks"
-load anchor "networks" from "/etc/targets_networks.conf"
 pass quick inet to <targets> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state
 
 pass quick inet proto tcp from <docker_clients> to <docker_servers> port {2376}
