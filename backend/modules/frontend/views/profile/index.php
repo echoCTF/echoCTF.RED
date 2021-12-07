@@ -57,7 +57,7 @@ yii\bootstrap\Modal::end();
             'approved_avatar:boolean',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{view} {update} {delete} {approve_avatar} {player-view}',
+              'template' => '{view} {update} {delete} {approve_avatar} {player-view} {player-view-full}',
               'buttons' => [
                   'approve_avatar' => function($url, $model) {
                     if(!$model->approved_avatar)
@@ -75,10 +75,21 @@ yii\bootstrap\Modal::end();
                   'player-view' => function($url, $model) {
                     $url =  \yii\helpers\Url::to(['player/view', 'id' => $model->player_id]);
                     return Html::a(
-                        '<span class="glyphicon glyphicon-user"></span>',
+                        '<i class="far fa-user"></i>',
                         $url,
                         [
                           'title' => 'View player',
+                          'data-pjax' => '0',
+                        ]
+                    );
+                  },
+                  'player-view-full' => function($url, $model) {
+                    $url =  \yii\helpers\Url::to(['view-full', 'id' => $model->player_id]);
+                    return Html::a(
+                        '<span class="glyphicon glyphicon-user"></span>',
+                        $url,
+                        [
+                          'title' => 'View full profile',
                           'data-pjax' => '0',
                         ]
                     );

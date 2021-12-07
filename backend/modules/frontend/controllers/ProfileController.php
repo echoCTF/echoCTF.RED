@@ -58,6 +58,19 @@ class ProfileController extends \app\components\BaseController
     }
 
     /**
+     * Displays a full Profile model.
+     * @param string $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionViewFull($id)
+    {
+        return $this->render('view_full', [
+            'model' => $this->findModel($id),
+        ]);
+    }
+
+    /**
      * Creates a new Profile model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
