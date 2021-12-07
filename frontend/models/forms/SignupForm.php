@@ -5,6 +5,7 @@ use Yii;
 use yii\base\Model;
 use app\models\Player;
 use app\models\PlayerSsl;
+use app\models\PlayerRelation;
 use yii\behaviors\AttributeTypecastBehavior;
 
 /**
@@ -90,6 +91,14 @@ class SignupForm extends Model
         }
         $player->profile->last->signup_ip=ip2long(\Yii::$app->request->userIp);
         $player->profile->last->save();
+
+        if(Yii::$app->getSession()->get('referred_by')!==null)
+        {
+          $pr=new PlayerRelation;
+          $pr->player_id=Yii::$app->getSession()->get('referred_by');
+          $pr->referred_id=$player->id;
+          $pr->save();
+        }
         if(Yii::$app->sys->require_activation===true)
           return $this->sendEmail($player);
         return true;

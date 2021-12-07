@@ -25,10 +25,10 @@ class ProfileController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['badge','me', 'index', 'notifications', 'hints', 'ovpn', 'settings'],
+                'only' => ['badge','me', 'index', 'notifications', 'hints', 'ovpn', 'settings','invite'],
                 'rules' => [
                    'eventActive'=>[
-                      'actions' => ['badge','index', 'notifications', 'hints', 'ovpn', 'settings'],
+                      'actions' => ['badge','index', 'notifications', 'hints', 'ovpn', 'settings','invite'],
                    ],
                    'eventStartEnd'=>[
                      'actions' => ['ovpn'],
@@ -37,10 +37,10 @@ class ProfileController extends \app\components\BaseController
                       'actions' => ['ovpn'],
                    ],
                    'disabledRoute'=>[
-                     'actions' => ['badge', 'me', 'notifications', 'hints', 'ovpn', 'settings','index'],
+                     'actions' => ['badge', 'me', 'notifications', 'hints', 'ovpn', 'settings','index','invite'],
                    ],
                    [
-                     'actions' => ['index','badge'],
+                     'actions' => ['index','badge','invite'],
                      'allow' => true,
                    ],
                    [
@@ -129,6 +129,22 @@ class ProfileController extends \app\components\BaseController
           'profileForm'=>null,
         ]);
     }
+
+    public function actionInvite(int $id)
+    {
+        if(intval($id) == intval(Yii::$app->user->id))
+        {
+          return $this->redirect(['/profile/me']);
+        }
+
+        $profile=$this->findModel($id);
+        if(!$profile)
+          return $this->redirect(['/']);
+
+        Yii::$app->getSession()->set('referred_by', $profile->owner->id);
+        return $this->redirect(['/site/register']);
+    }
+
 
     public function actionOvpn()
     {

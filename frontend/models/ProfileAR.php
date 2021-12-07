@@ -192,6 +192,16 @@ class ProfileAR extends \yii\db\ActiveRecord
       return $this->hasMany(Writeup::class, ['player_id' => 'player_id']);
     }
 
+    public function getInvites()
+    {
+      return $this->hasMany(PlayerRelation::class, ['player_id' => 'player_id']);
+    }
+
+    public function getInvitesCount()
+    {
+      return $this->hasMany(PlayerRelation::class, ['player_id' => 'player_id'])->count();
+    }
+
     public function getHeadshots() {
       return $this->hasMany(Target::class, ['id' => 'target_id'])->via('headshotRelation');
     }
