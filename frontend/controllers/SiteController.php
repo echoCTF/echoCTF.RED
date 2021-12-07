@@ -182,10 +182,14 @@ class SiteController extends \app\components\BaseController
             $transaction->rollBack();
             Yii::$app->session->setFlash('error', 'Registration failed.');
         }
-
-
+        $referred=false;
+        if(Yii::$app->getSession()->get('referred_by')!==null && \app\models\Player::findOne(Yii::$app->getSession()->get('referred_by')))
+        {
+          $referred=\app\models\Player::findOne(Yii::$app->getSession()->get('referred_by'));
+        }
         return $this->render('signup', [
             'model' => $model,
+            'referred'=>$referred,
         ]);
     }
 
