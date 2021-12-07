@@ -7,7 +7,7 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\modules\infrastructure\models\TargetMetadataSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Target Metadatas';
+$this->title = 'Targets metadata';
 $this->params['breadcrumbs'][] = ['label' => 'Infrastructure', 'url' => ['/infrastructure/default/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Target metadata', 'url' => ['index']];
 yii\bootstrap\Modal::begin([
@@ -22,7 +22,7 @@ yii\bootstrap\Modal::end();
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Target Metadata', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Target metadata', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
@@ -32,7 +32,6 @@ yii\bootstrap\Modal::end();
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
             'target_id',
             [
               'attribute'=>'fqdn',
