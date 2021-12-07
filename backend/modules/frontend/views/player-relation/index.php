@@ -34,10 +34,15 @@ yii\bootstrap\Modal::end();
             ['class' => 'yii\grid\SerialColumn'],
 
             'player_id',
-            'player',
+            [
+              'attribute'=>'player',
+              'value'=>'player.username',
+            ],
             'referred_id',
-            'referred',
-
+            [
+              'attribute'=>'referred',
+              'value'=>'referred.username',
+            ],
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
