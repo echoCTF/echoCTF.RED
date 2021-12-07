@@ -269,6 +269,9 @@
     - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
     - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
+    - { cmd: "touch /etc/targets_networks.conf", creates: "/etc/targets_networks.conf" }
+    - { cmd: "touch /etc/targets_anchor.conf", creates: "/etc/targets_anchor.conf" }
+    - { cmd: "touch /etc/offense_anchor.conf", creates: "/etc/offense_anchor.conf" }
 
   - name: Fix CHROOT environment
     file: path=/home/{{item.user}}/{{item.dir}} mode="{{item.mode}}" state=directory
