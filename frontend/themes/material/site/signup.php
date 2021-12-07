@@ -15,6 +15,7 @@ $this->title=\Yii::$app->sys->event_name.' Signup';
     <p class="text-primary">Please fill out the following fields to register for an <code style="color: red"><?=\Yii::$app->sys->event_name?></code> account</p>
     <p class="text-warning">All our email communications come from the following address: <small><code class="text-warning"><?=\app\widgets\Obfuscator::widget(['email' => Html::encode(Yii::$app->sys->mail_from)])?></code></small></p>
     <div class="row">
+        <?=$this->render('_referrer_card',['referred'=>$referred]);?>
         <div class="col-lg-5">
             <?php $form=ActiveForm::begin(['id' => 'form-signup']);?>
 
