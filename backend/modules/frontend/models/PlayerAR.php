@@ -278,6 +278,15 @@ class PlayerAR extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getReferred()
+    {
+        return $this->hasMany(PlayerRelation::class, ['player_id' => 'id']);
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getTeam()
     {
         return $this->hasOne(Team::class, ['owner_id' => 'id']);
