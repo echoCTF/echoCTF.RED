@@ -8,7 +8,7 @@ use app\modules\frontend\models\PlayerRelationSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\helpers\ArrayHelper;
 /**
  * PlayerRelationController implements the CRUD actions for PlayerRelation model.
  */
