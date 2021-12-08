@@ -66,7 +66,7 @@ $this->title='echoCTF mUI';
                 </p>
                 <p>
                   <?php if(Player::find()->count() > 0):?>
-                  <?= Html::a(sprintf("Player %d: %s", Player::find()->limit(1)->orderBy('id desc')->one()->id, Player::find()->limit(1)->orderBy('id desc')->one()->username), ['/frontend/player/view', 'id'=>Player::find()->limit(1)->orderBy('id desc')->one()->id]) ?><br/>
+                  <?= Html::a(sprintf("Player %d: %s", Player::find()->limit(1)->orderBy('id desc')->one()->id, Player::find()->limit(1)->orderBy('id desc')->one()->username), ['/frontend/profile/view-full', 'id'=>Player::find()->limit(1)->orderBy('id desc')->one()->profile->id]) ?><br/>
                   <?php endif;?>
                   <?php if(Stream::find()->count() > 0):?>
                   <?= Html::a(sprintf("Stream %d: %s", Stream::find()->limit(1)->orderBy('id desc')->one()->id, Stream::find()->limit(1)->orderBy('id desc')->one()->formatted), ['/activity/stream/view', 'id'=>Stream::find()->limit(1)->orderBy('id desc')->one()->id]) ?>
