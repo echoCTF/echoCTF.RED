@@ -33,6 +33,15 @@ yii\bootstrap\Modal::end();
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'rowOptions' => function ($model, $key, $index, $grid) {
+            // $model is the current data model being rendered
+            // check your condition in the if like `if($model->hasMedicalRecord())` which could be a method of model class which checks for medical records.
+            $model->scenario='validator';
+            if(!$model->validate()) {
+                 return ['class' => 'text-danger','style'=>'font-weight: 800;'];
+            }
+            return [];
+        },
         'columns' => [
             [
               'attribute'=>'id',

@@ -83,6 +83,7 @@ class ProfileAR extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
+            'validator' => ['visibility', 'country', 'uploadedAvatar', 'bio','youtube','twitch', 'discord', 'twitter', 'github', 'htb',],
             self::SCENARIO_ME => ['visibility', 'country', 'uploadedAvatar', 'bio','youtube','twitch', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
             self::SCENARIO_REGISTER => ['username', 'email', 'password'],
             self::SCENARIO_SIGNUP => ['gdpr', 'terms_and_conditions'],
@@ -111,6 +112,48 @@ class ProfileAR extends \yii\db\ActiveRecord
             [['player_id'], 'unique'],
             [['id'], 'unique'],
             [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => 'File larger than expected, limit is 500KB'],
+
+            [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio','youtube','twitch'], 'trim','on'=>'validator'],
+            ['country', 'exist', 'targetClass' => \app\models\Country::class, 'targetAttribute' => ['country' => 'id'],'on'=>'validator'],
+            [['avatar','youtube','twitch'], 'string', 'max' => 255],
+            ['twitter', 'string', 'max' => 15],
+            ['twitter', 'match', 'pattern' => '/^[a-zA-Z0-9_]+$/','message'=>'Invalid characters in Twitter handle, only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd> and <kbd>_</kbd>','on'=>'validator'],
+            ['twitter', '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'twitter', 'echoctf'],'on'=>'validator'],
+            ['twitch', 'string', 'max' => 25,'on'=>'validator'],
+            ['twitch', 'match', 'pattern' => '/^[a-zA-Z0-9_]+$/','message'=>'Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd> and <kbd>_</kbd>','on'=>'validator'],
+            ['twitch', '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'twitter', 'echoctf'],'on'=>'validator'],
+            ['github', 'string', 'max' => 39,'on'=>'validator'],
+            ['github', 'match', 'pattern' => '/^[a-zA-Z0-9_-]+$/','message'=>'Invalid characters in github handle, only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd>, <kbd>-</kbd> and <kbd>_</kbd>','on'=>'validator'],
+            ['github', '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['help','about'],'on'=>'validator'],
+            ['discord', 'string', 'max' => 32,'on'=>'validator'],
+            ['discord', 'filter', 'filter' => [$this, 'normalizeDiscord'],'on'=>'validator'],
+            ['discord', function ($attribute, $params) {
+                       //returns true / false (preg_replace returns the string with replaced matched regex)
+                       if (strpos($this->{$attribute}, '```') !== false
+                       || strpos($this->{$attribute}, ':') !== false
+                       || strpos($this->{$attribute}, '@') !== false) {
+                            $this->addError($attribute, 'Discord usernames cannot contain any of the following [<kbd>@</kbd>,<kbd>:</kbd>,<kbd>```</kbd>]');
+                       }
+
+                   },'on'=>'validator'
+            ],
+            ['discord', function ($attribute, $params) {
+                       //returns true / false (preg_replace returns the string with replaced matched regex)
+                       if (strpos($this->{$attribute}, '#')===false) {
+
+                            $this->addError($attribute, 'Discord username must include <kbd>#</kbd> and numberical id [eg. <kbd>username#number</kbd>]');
+                       }
+                       if (substr_count($this->{$attribute}, '#')>1) {
+                            $this->addError($attribute, 'Discord username must contain only one hash (#) character.');
+                       }
+                   },'on'=>'validator'
+            ],
+            ['discord', '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['discordtag', 'everyone', 'here'],'on'=>'validator'],
+            ['youtube', 'string', 'max' => 25,'on'=>'validator'],
+            ['youtube', 'match', 'pattern' => '/^[a-zA-Z0-9_-]+$/','message'=>'Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd>, <kbd>-</kbd> and <kbd>_</kbd>','on'=>'validator'],
+
+            ['htb', 'string', 'max' => 8,'on'=>'validator'],
+            ['htb', 'match', 'pattern' => '/^[0-9]+$/','message'=>'Only numberic HTB id is allowed','on'=>'validator'],
         ];
     }
 
@@ -204,6 +247,19 @@ class ProfileAR extends \yii\db\ActiveRecord
 
     public function getHeadshots() {
       return $this->hasMany(Target::class, ['id' => 'target_id'])->via('headshotRelation');
+    }
+
+    public function normalizeDiscord($value) {
+        while($value!=str_replace('  ',' ',$value))
+        {
+          $value=str_replace('  ',' ',$value);
+        }
+        while($value!=str_replace("\xE2\x80\x8B", "", $value))
+        {
+          $value=str_replace("\xE2\x80\x8B", "", $value);
+        }
+
+        return $value;
     }
 
 }
