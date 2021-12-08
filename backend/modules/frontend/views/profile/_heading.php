@@ -12,6 +12,7 @@ use yii\helpers\Html;
         <h2 class="media-heading"><?=Html::encode($model->owner->username)?>
           <small> - <?=Html::encode($model->owner->fullname)?></small>
         </h2>
+         <p>ranked <?=$model->owner->rank->ordinalPlace?> with <?=number_format($model->owner->score->points)?> points</p>
         <p class="lead"><?=Html::encode($model->bio)?></p>
         <div class="media-links">
           <ul class="list-inline list-unstyled">

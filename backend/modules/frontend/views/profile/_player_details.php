@@ -7,7 +7,7 @@ use yii\helpers\Html;
     <span class="panel-icon">
       <i class="fas fa-id-card"></i>
     </span>
-    <span class="panel-title"> Player details</span>
+    <span class="panel-title"> Player details (<?=Html::a("profile: ".$model->id,"//".Yii::$app->sys->offense_domain.'/profile/'.$model->id,['target'=>'_blank'])?>)</span>
   </div>
   <div class="panel-body pn">
     <table class="table mbn tc-icon-1 tc-med-2 tc-bold-last">
@@ -16,6 +16,19 @@ use yii\helpers\Html;
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td><span class="fas fa-globe text-warning"></span></td>
+          <td>country</td>
+          <td><?=Html::encode($model->country)?></td>
+        </tr>
+
+        <tr>
+          <td><span class="fas fa-eye-slash text-warning"></span></td>
+          <td>visibility</td>
+          <td><?=$model->visibility?></td>
+        </tr>
+
+
         <tr>
           <td><span class="fas fa-at text-warning"></span></td>
           <td>email</td>
@@ -39,13 +52,6 @@ use yii\helpers\Html;
           <td>status</td>
           <td><?=$model->owner->status==10? '<i class="fas fa-toggle-on text-success"></i>' :'<i class="fas fa-toggle-off text-info"></i>'?></td>
         </tr>
-
-        <tr>
-          <td><i class="fas fa-calendar-day text-warning"></i></span></td>
-          <td>registration</td>
-          <td><?=Html::encode($model->owner->created)?></td>
-        </tr>
-
       </tbody>
     </table>
   </div>
