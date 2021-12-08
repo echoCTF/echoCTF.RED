@@ -112,9 +112,9 @@ class PlayerAR extends \yii\db\ActiveRecord
               if(intval($count)!==0)
                   $this->addError($attribute, 'This email is banned.');
             },'on'=>'validator'],
-            ['activkey', function($attribute, $params){
-              if($this->activkey!==null && $this->active===1 && $this->status=10)
-                $this->addError($attribute, 'Activkey must be empty.');
+            [['activkey','verification_token'], function($attribute, $params){
+              if($this->{$attribute}!==null && $this->active===1 && $this->status=10)
+                $this->addError($attribute, '{attribute} must be empty when player active.');
             },'on'=>'validator'],
 
         ];
