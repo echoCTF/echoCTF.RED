@@ -75,7 +75,7 @@ class CronController extends Controller {
       $query=SpinQueue::find();
       foreach($query->all() as $t)
       {
-        printf("Processing [%s] on docker [%s]", $t->target->name, $t->target->server);
+        printf("Processing queue [%s] on docker [%s]", $t->target->name, $t->target->server);
         printf(" by [%s] on %s", $t->player->username, $t->created_at);
 
         try
