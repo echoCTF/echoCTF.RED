@@ -101,6 +101,18 @@ class PlayerAR extends \yii\db\ActiveRecord
             [['username'], 'unique'],
             [['new_password', 'password'], 'safe'],
 
+            ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => 'This email is banned.', 'when' => function($model, $attribute) {
+                return $model->{$attribute} !== $model->getOldAttribute($attribute);
+            },'on'=>'validator'],
+            ['email', function($attribute, $params){
+              $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
+                  ->bindValue(':email', $this->email)
+                  ->queryScalar();
+
+              if(intval($count)!==0)
+                  $this->addError($attribute, 'This email is banned.');
+            },'on'=>'validator'],
+
         ];
     }
 
