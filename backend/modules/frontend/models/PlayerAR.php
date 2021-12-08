@@ -282,6 +282,13 @@ class PlayerAR extends \yii\db\ActiveRecord
     {
         return $this->hasMany(PlayerRelation::class, ['player_id' => 'id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getChallengeSolvers()
+    {
+        return $this->hasMany(\app\modules\activity\models\ChallengeSolver::class, ['player_id' => 'id']);
+    }
 
 
     /**
@@ -290,6 +297,22 @@ class PlayerAR extends \yii\db\ActiveRecord
     public function getTeam()
     {
         return $this->hasOne(Team::class, ['owner_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getScore()
+    {
+        return $this->hasOne(\app\modules\activity\models\PlayerScore::class, ['player_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRank()
+    {
+        return $this->hasOne(\app\modules\activity\models\PlayerRank::class, ['player_id' => 'id']);
     }
 
     /**
