@@ -44,7 +44,13 @@ use yii\helpers\Html;
         <tr>
           <td><i class="fas fa-address-card text-warning"></i></td>
           <td>active</td>
-          <td><?=$model->owner->active==0? '<i class="fas fa-times text-danger"></i>' :'<i class="fas fa-check text-success"></i>'?></td>
+          <td>
+            <?php if($model->owner->active==0):?>
+              <a href="//<?=Yii::$app->sys->offense_domain?>/verify-email?token=<?=$model->owner->verification_token?>" target="_blank"><i class="fas fa-times text-danger"></i></a>
+            <?php else: ?>
+              <i class="fas fa-check text-success"></i>
+            <?php endif;?>
+          </td>
         </tr>
 
         <tr>
