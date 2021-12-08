@@ -46,22 +46,22 @@ $this->_fluid="-fluid";
     </div>
     <div class="row">
       <div class="col-lg-4">
-        <?=$form->field($model, 'discord',['errorOptions' => ['class'=>'text-danger','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text', ['placeholder' => "DiscordUsername#Number"])->Label('<i class="fab fa-discord"></i> Discord')->hint('Enter your discord user and number') ?>
+        <?=$form->field($model, 'discord',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text', ['placeholder' => "DiscordUsername#Number"])->Label('<i class="fab fa-discord"></i> Discord')->hint('Enter your discord user and number') ?>
       </div>
       <div class="col-lg-4">
-		    <?=$form->field($model, 'twitter',['errorOptions' => ['class'=>'text-danger','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text',['placeholder'=>'TwitterHandle'])->Label('<i class="fab fa-twitter"></i> Twitter')->hint('Your Twitter handle')?>
+		    <?=$form->field($model, 'twitter',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text',['placeholder'=>'TwitterHandle'])->Label('<i class="fab fa-twitter"></i> Twitter')->hint('Your Twitter handle')?>
       </div>
       <div class="col-lg-4">
-        <?=$form->field($model, 'youtube',['errorOptions' => ['class'=>'text-danger','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text', ['placeholder' => "YoutubeChannelID"])->Label('<i class="fab fa-youtube"></i> Youtube')->hint('Enter your Youtube channel ID') ?>
+        <?=$form->field($model, 'youtube',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text', ['placeholder' => "YoutubeChannelID"])->Label('<i class="fab fa-youtube"></i> Youtube')->hint('Enter your Youtube channel ID') ?>
       </div>
       <div class="col-lg-4">
-        <?=$form->field($model, 'twitch',['errorOptions' => ['class'=>'text-danger','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text', ['placeholder' => "TwitchUsername"])->Label('<i class="fab fa-twitch"></i> Twitch')->hint('Enter your Twitch username') ?>
+        <?=$form->field($model, 'twitch',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text', ['placeholder' => "TwitchUsername"])->Label('<i class="fab fa-twitch"></i> Twitch')->hint('Enter your Twitch username') ?>
       </div>
       <div class="col-lg-4">
-    		<?=$form->field($model, 'github',['errorOptions' => ['class'=>'text-danger','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text',['placeholder'=>'username'])->Label('<i class="fab fa-github"></i> Github')->hint('Your Github username') ?>
+    		<?=$form->field($model, 'github',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text',['placeholder'=>'username'])->Label('<i class="fab fa-github"></i> Github')->hint('Your Github username') ?>
       </div>
       <div class="col-lg-4">
-    		<?=$form->field($model, 'htb',['errorOptions' => ['class'=>'text-danger','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text',['placeholder'=>'1234'])->hint('Your HTB profile ID') ?>
+    		<?=$form->field($model, 'htb',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text',['placeholder'=>'1234'])->hint('Your HTB profile ID') ?>
       </div>
     </div>
     <div class="form-group">

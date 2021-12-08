@@ -664,3 +664,12 @@ details > .markdown h6 {
 .rankpos-3 {
   border: 2px solid #CD7F32;
 }
+
+
+.has-error>input, .has-error>label  {
+  color: red;
+  font-weight: bold;
+}
+.text-bold {
+  font-weight: bold;
+}
