@@ -101,7 +101,7 @@ class PlayerAR extends \yii\db\ActiveRecord
             [['username'], 'unique'],
             [['new_password', 'password'], 'safe'],
 
-            ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => 'This email is banned.', 'when' => function($model, $attribute) {
+            ['email', 'unique', 'targetClass' => '\app\modules\frontend\models\BannedPlayer', 'message' => 'This email is banned.', 'when' => function($model, $attribute) {
                 return $model->{$attribute} !== $model->getOldAttribute($attribute);
             },'on'=>'validator'],
             ['email', function($attribute, $params){
@@ -324,7 +324,10 @@ class PlayerAR extends \yii\db\ActiveRecord
      */
     public function getRank()
     {
+      if($this->hasOne(\app\modules\activity\models\PlayerRank::class, ['player_id' => 'id'])->one()!==null)
         return $this->hasOne(\app\modules\activity\models\PlayerRank::class, ['player_id' => 'id']);
+      else
+        return new \app\modules\activity\models\PlayerRank;
     }
 
     /**
