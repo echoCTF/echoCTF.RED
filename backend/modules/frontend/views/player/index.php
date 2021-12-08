@@ -64,28 +64,32 @@ yii\bootstrap\Modal::end();
             //'accesstoken',
             //'activkey',
 
-            [
-              'attribute'=>'on_pui',
-              'value'=>function($model) {if($model->last) return $model->last->on_pui == 0 ? null : $model->last->on_pui;else return null;}
-            ],
-            [
-              'attribute'=>'on_vpn',
-              'value'=>function($model) {if($model->last) return $model->last->on_vpn == 0 ? null : $model->last->on_vpn;else return null;}
-            ],
+//            [
+//              'attribute'=>'on_pui',
+//              'value'=>function($model) {if($model->last) return $model->last->on_pui == 0 ? null : $model->last->on_pui;else return null;}
+//            ],
+//            [
+//              'attribute'=>'on_vpn',
+//              'value'=>function($model) {if($model->last) return $model->last->on_vpn == 0 ? null : $model->last->on_vpn;else return null;}
+//            ],
             [
               'attribute'=>'vpn_local_address',
               'label'=> 'VPN Local IP',
               'value'=>function($model) { return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
             ],
-            'online:boolean',
+//            'online:boolean',
             'active:boolean',
             'academic:boolean',
-            'status',
+            [
+             'attribute' => 'status',
+             'filter'=>array(10=>'Enabled',9=>'Innactive', 8=>"Change",0=>"Deleted",),
+
+            ],
             'created',
             //'ts',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{generate-ssl} {toggle-academic} '.'{view} {update} {delete} {ban} {mail}',
+              'template' => '{player-view-full} {view} {generate-ssl} {toggle-academic} '.'{update} {delete} {ban} {mail}',
               'header' => Html::a(
                   '<span class="glyphicon glyphicon-ban-circle"></span>',
                   ['ban-filtered'],
@@ -172,6 +176,18 @@ yii\bootstrap\Modal::end();
                           ]
                       );
                   },
+                  'player-view-full' => function($url, $model) {
+                    $url =  \yii\helpers\Url::to(['/frontend/profile/view-full', 'id' => $model->profile->id]);
+                    return Html::a(
+                        '<span class="glyphicon glyphicon-user"></span>',
+                        $url,
+                        [
+                          'title' => 'View full profile',
+                          'data-pjax' => '0',
+                        ]
+                    );
+                  },
+
               ],
             ],
         ],
