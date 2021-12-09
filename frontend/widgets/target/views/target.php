@@ -211,7 +211,7 @@ echo GridView::widget([
               );
           },
           'tweet' => function($url, $model) {
-              $url=Url::to(['target/default/view', 'id'=>$model->id], 'https');
+              $url=Url::to(['/target/default/view', 'id'=>$model->id], 'https');
 
               if(!Yii::$app->user->isGuest && Yii::$app->user->id === $this->context->player_id)
               {
