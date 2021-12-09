@@ -135,12 +135,25 @@ class SettingsForm extends Model
       $this->country=$this->_player->profile->country;
       $this->avatar=$this->_player->profile->avatar;
       $this->bio=$this->_player->profile->bio;
-      $this->discord=$this->_player->profile->discord;
-      $this->twitter=$this->_player->profile->twitter;
-      $this->youtube=$this->_player->profile->youtube;
-      $this->twitch=$this->_player->profile->twitch;
-      $this->github=$this->_player->profile->github;
-      $this->htb=$this->_player->profile->htb;
+      $this->_player->profile->scenario='validator';
+
+      if($this->_player->profile->validate('discord'))
+        $this->discord=$this->_player->profile->discord;
+
+      if($this->_player->profile->validate('twitter'))
+        $this->twitter=$this->_player->profile->twitter;
+
+      if($this->_player->profile->validate('youtube'))
+        $this->youtube=$this->_player->profile->youtube;
+
+      if($this->_player->profile->validate('twitch'))
+        $this->twitch=$this->_player->profile->twitch;
+
+      if($this->_player->profile->validate('github'))
+        $this->github=$this->_player->profile->github;
+
+      if($this->_player->profile->validate('htb'))
+        $this->htb=$this->_player->profile->htb;
 
       parent::init();
     }
