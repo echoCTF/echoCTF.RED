@@ -145,7 +145,8 @@ class Profile extends ProfileAR
 
     public function getTwitterHandle()
     {
-      if($this->twitter != "")
+      $this->scenario='validator';
+      if($this->twitter != "" && $this->validate('twitter'))
       {
         return $this->twitter{0} === '@' ? $this->twitter : '@'.$this->twitter;
       }
