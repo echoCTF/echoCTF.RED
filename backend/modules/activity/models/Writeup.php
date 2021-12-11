@@ -9,7 +9,7 @@ use yii\behaviors\AttributeTypecastBehavior;
 use yii\base\NotSupportedException;
 use app\modules\gameplay\models\Target;
 use app\modules\frontend\models\Player;
-
+use yii\helpers\ArrayHelper;
 /**
  * This is the model class for table "writeup".
  *
@@ -95,6 +95,16 @@ class Writeup extends \yii\db\ActiveRecord
             'updated_at' => 'Updated At',
         ];
     }
+
+
+    public function cleanup()
+    {
+      $treasures=ArrayHelper::getColumn($this->target->treasures,'code');
+      $this->content=str_replace($treasures,'*REDUCTED*',$this->content);
+      unset($treasures);
+    }
+
+
 
     /**
      * Gets query for [[Player]].
