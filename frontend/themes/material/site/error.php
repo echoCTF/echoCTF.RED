@@ -17,7 +17,7 @@ $this->title=Yii::$app->sys->event_name .' Error '. $exception->statusCode.': '.
         <div class="col">
           <h1 class="text-danger"><b>Oh noes!!!</b></h1>
           <h3 class="text-warning">Look what you did...</h3>
-          <h3 class="text-warning">you headshoted the wrong page...</h3>
+          <h3 class="text-warning">you headshotted the wrong page...</h3>
           <h3 class="text-light">Error <?=$exception->statusCode?>: <?=nl2br(Html::encode($message)) ?></h3>
         </div>
       </div>
