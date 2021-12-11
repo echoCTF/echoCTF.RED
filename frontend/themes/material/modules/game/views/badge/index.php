@@ -1,14 +1,14 @@
-
-<h1>Completion Certificate</h1>
-<div class="watermarked img-fluid">
-  <img class="card-img-top" src="<?=$headshot->target->logo?>" alt="Card image cap" width="100px">
+<?php
+$this->registerMetaTag(['name'=>'og:type', 'content'=>'game.achievement']);
+$this->registerMetaTag(['name'=>'game:points', 'content'=>'0']);
+$this->registerMetaTag(['name'=>'article:published_time', 'content'=>$headshot->created_at]);
+?>
+<center><img class="img-fluid" style="max-width: 512px;" src="/images/logo.png" alt="echoCTF.RED">
+<div class="card" style="width: 60rem;">
+  <div class="card-body">
+    <h5 class="card-title">Card title</h5>
+    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+    <a href="#" class="btn btn-primary">Go somewhere</a>
+  </div>
 </div>
-<h2><b><?=$headshot->player->username?></b></h2>
-<p class="card-text">  <small>has completed the target</small>
-  <b><?=$headshot->target->name?></b>
-  <?php if($headshot->target->timer):?>
-    in <?=$headshot->timer?> seconds<?php if(array_search($top[0],$headshot->player_id)!==false):?> (best time)<?php endif;?>
-  <?php endif;?>
-</p>
-
-<a href="#" class="btn btn-primary">Go somewhere</a>
+</center>
