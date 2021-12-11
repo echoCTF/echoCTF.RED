@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Writeup */
 
-$this->title = $model->player_id;
+$this->title = "By ".Html::encode($model->player->username). " for ".$model->target->name." / ".$model->target->ipoctet;
 $this->params['breadcrumbs'][] = ['label' => 'Writeups', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -30,7 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'player_id',
+            'player.username',
             'target_id',
+            'target.name',
+            'target.ipoctet',
             'formatter',
             [
               'attribute'=>'content',
