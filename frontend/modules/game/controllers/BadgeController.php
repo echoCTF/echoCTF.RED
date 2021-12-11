@@ -30,11 +30,12 @@ class BadgeController extends \app\components\BaseController
       $profile=\app\models\Profile::findOne($profile_id);
       $headshot=Headshot::findOne(['player_id'=>$profile->player_id,'target_id'=>$target_id]);
       $topH=Headshot::find()->select('player_id')->where(['target_id'=>$target_id])->orderBy(['timer'=>SORT_ASC])->limit(10)->asArray()->all();
-      foreach($topH as $t)
-        $top[]=intval($t['player_id']);
+      if($profile==null || $headshot==null)
+        $this->redirect(['/']);
+
       return $this->render('index',[
         'headshot'=>$headshot,
-        'top'=>$top,
+        'top'=>ArrayHelper::getColumn($topH,'player_id'),
       ]);
     }
 
