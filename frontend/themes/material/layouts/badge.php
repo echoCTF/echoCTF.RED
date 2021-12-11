@@ -6,6 +6,7 @@ date_default_timezone_set(Yii::$app->sys->time_zone ?: 'UTC');
 $bundle=MaterialAsset::register($this);
 
 //$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/ricar2ce/yii2-material-theme/assets');
+$this->registerMetaTag(['name'=>'article:author', 'content'=>'echoCTF']);
 $this->registerMetaTag(['name'=>'description', 'content'=>trim($this->_description)], 'description');
 //$this->_url=\yii\helpers\Url::to([null],'https');
 
@@ -14,6 +15,8 @@ $this->registerMetaTag($this->og_site_name, 'og_site_name');
 $this->registerMetaTag($this->og_description, 'og_description');
 $this->registerMetaTag($this->og_url, 'og_url');
 $this->registerMetaTag($this->og_image, 'og_image');
+$this->registerMetaTag(['name'=>'og:image:width', 'content'=>'1200']);
+$this->registerMetaTag(['name'=>'og:image:height','content'=>'628']);
 
 $this->registerMetaTag($this->twitter_card, 'twitter_card');
 $this->registerMetaTag($this->twitter_site, 'twitter_site');
@@ -45,9 +48,7 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
 <body>
 
 <?php $this->beginBody() ?>
-<article>
       <?=$content?>
-</article>
 <?php $this->endBody() ?>
 </body>
 </html>
