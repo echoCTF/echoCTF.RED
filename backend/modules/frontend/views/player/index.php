@@ -77,7 +77,7 @@ yii\bootstrap\Modal::end();
               'label'=> 'VPN Local IP',
               'value'=>function($model) { return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
             ],
-//            'online:boolean',
+            'online:boolean',
             'active:boolean',
             'academic:boolean',
             [
