@@ -217,6 +217,7 @@ $config=[
                 // app/controllers/ProfileController
                 'profile/<id:\d+>' => 'profile/index',
                 'profile/<id:\d+>/badge' => 'profile/badge',
+                'profile/<id:\d+>/invite' => 'profile/invite',
                 'p/<id:\d+>' => 'profile/index',
                 'p/<id:\d+>/badge' => 'profile/badge',
                 'profile/me'=>'profile/me',
