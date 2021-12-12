@@ -10,7 +10,7 @@ use yii\helpers\ArrayHelper;
 class StopForumSpamValidator extends Validator
 {
     public $url = 'http://api.stopforumspam.org/api';
-    public $message="Spam email detected, sorry!";
+    public $message="SP: Spam email detected, sorry!";
     public $max=80;
 
     public function init()
@@ -72,7 +72,7 @@ class StopForumSpamValidator extends Validator
           $result = curl_exec($ch);
           curl_close($ch);
           $retData=json_decode($result)->email;
-          if(!$redData)
+          if(property_exists($retData,'confidence') && $retData->confidence>$this->max)
             throw \yii\base\UserException('StopForumSpamValidator null');
         }
         catch(\Exception $e)
