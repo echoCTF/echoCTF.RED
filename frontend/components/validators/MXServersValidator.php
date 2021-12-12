@@ -9,12 +9,16 @@ use yii\helpers\ArrayHelper;
 
 class MXServersValidator extends Validator
 {
-    public $range=[];
+    public $range;
     public $message="Sorry but you are using an email server that is banned!";
 
     public function init()
     {
         parent::init();
+        if(!$this->range)
+        {
+          $this->range=ArrayHelper::getColumn(\app\modelscli\BannedMxServer::find()->select('name')->asArray()->all(),'name');
+        }
     }
 
     public function validateValue($value)
