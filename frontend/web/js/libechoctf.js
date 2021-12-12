@@ -58,6 +58,8 @@ function contrast(rgb1, rgb2) {
 }
 
 jQuery( document ).ready(function() {
+  $(".markdown img").addClass("img-fluid");
+  $('.markdown a').attr('target','_blank');
   $('#claim-flag').on('pjax:success', function(event) {
           window.location.reload();
   });

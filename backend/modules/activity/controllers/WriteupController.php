@@ -82,7 +82,7 @@ class WriteupController extends \app\components\BaseController
     {
         $model = $this->findModel($player_id, $target_id);
         $oldmodel=$model->attributes;
-
+        $model->cleanup();
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             if($oldmodel['status'] !== $model->status)
             {

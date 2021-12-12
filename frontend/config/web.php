@@ -217,6 +217,7 @@ $config=[
                 // app/controllers/ProfileController
                 'profile/<id:\d+>' => 'profile/index',
                 'profile/<id:\d+>/badge' => 'profile/badge',
+                'profile/<id:\d+>/invite' => 'profile/invite',
                 'p/<id:\d+>' => 'profile/index',
                 'p/<id:\d+>/badge' => 'profile/badge',
                 'profile/me'=>'profile/me',
@@ -265,6 +266,14 @@ $config=[
         ],
     ],
     'params' => $params,
+    'on afterRequest' => function() {
+      if (!Yii::$app->user->isGuest) {
+        \Yii::$app->cache->memcache->set("last_seen:".\Yii::$app->user->id, time());
+        \Yii::$app->cache->memcache->set("online:".\Yii::$app->user->id, time(), 0, \Yii::$app->sys->online_timeout);
+        \Yii::$app->cache->memcache->set("player_session:".\Yii::$app->user->id, \Yii::$app->session->id, 0, \Yii::$app->sys->online_timeout);
+        return;
+      }
+    },
 ];
 
 /*

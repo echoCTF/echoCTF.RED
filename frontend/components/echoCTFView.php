@@ -27,13 +27,6 @@ class echoCTFView extends \yii\web\View
     else {
       $this->title=sprintf("%s", \Yii::$app->sys->event_name);
     }
-    if(!\Yii::$app->user->isGuest)
-    {
-        \Yii::$app->cache->memcache->set("last_seen:".\Yii::$app->user->id, time());
-        \Yii::$app->cache->memcache->set("online:".\Yii::$app->user->id, time(), 0, \Yii::$app->sys->online_timeout);
-        \Yii::$app->cache->memcache->set("player_session:".\Yii::$app->user->id, \Yii::$app->session->id, 0, \Yii::$app->sys->online_timeout);
-    }
-
     parent::init();
   }
 

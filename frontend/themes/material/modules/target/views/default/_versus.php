@@ -181,7 +181,7 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
       </div>
 
       <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
-      <div class="card terminal">
+      <div class="card terminal writeups">
         <div class="card-body table-responsive">
           <h4><i class="fas fa-book"></i> Target Writeups</h4>
           <?php foreach($target->writeups as $writeup):?>

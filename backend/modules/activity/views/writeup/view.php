@@ -2,11 +2,12 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-
+use yii\helpers\HtmlPurifier;
+use yii\helpers\Markdown;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Writeup */
 
-$this->title = $model->player_id;
+$this->title = "By ".Html::encode($model->player->username). " for ".$model->target->name." / ".$model->target->ipoctet;
 $this->params['breadcrumbs'][] = ['label' => 'Writeups', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -30,12 +31,21 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'player_id',
+            'player.username',
             'target_id',
+            'target.name',
+            'target.ipoctet',
             'formatter',
             [
               'attribute'=>'content',
               'format'=>'raw',
-              'value'=>function($model){ return "<pre>".Html::encode($model->content)."</pre>"; }
+              'contentOptions' => ['class' => $model->approved ? 'bg-primary' : 'bg-danger','style'=>'max-width:100%'],
+              'value'=>function($model){
+                if($model->formatter==='markdown')
+                  return HtmlPurifier::process(Markdown::process($model->content,'gfm-comment'),['Attr.AllowedFrameTargets' => ['_blank']]);
+                else
+                  return "<pre>".Html::encode($model->content)."</pre>"; }
+
             ],
             'approved',
             'status',
