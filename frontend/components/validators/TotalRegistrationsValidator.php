@@ -17,7 +17,7 @@ class TotalRegistrationsValidator extends Validator
     {
         if(!$this->counter)
           $this->counter=\Yii::$app->db
-              ->createCommand('SELECT count(*) FROM player_last WHERE signup_ip=:player_ip)')
+              ->createCommand('SELECT count(*) FROM player_last WHERE signup_ip=:player_ip')
               ->bindValue(':player_ip',ip2long(\Yii::$app->request->userIp))
               ->queryScalar();
         parent::init();
