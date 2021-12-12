@@ -19,6 +19,12 @@ class MXServersValidator extends Validator
 
     public function validateValue($value)
     {
+      // if not email assume value is a domain
+      if (preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches))
+      {
+        $value=$matches['domain'];
+      }
+
       if(!getmxrr($value, $hosts))
       {
         return [$this->message, [
@@ -38,6 +44,11 @@ class MXServersValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
+        // if not email assume value is a domain
+        if (preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches))
+        {
+          $value=$matches['domain'];
+        }
 
         if(!getmxrr($value, $hosts))
         {
