@@ -522,13 +522,14 @@ details > .markdown h6 {
   font-size: 1.40em;
 }
 
-
 .markdown pre {
   padding: .2rem .4rem;
   color: #212529;
   background-color: #212529;
   border-radius: .2rem;
   background-color: #212529;
+  overflow-x:auto;
+  max-width: 720px;
 }
 
 .markdown code {
@@ -537,6 +538,11 @@ details > .markdown h6 {
   color: #fff;
   background-color: #212529;
   border-radius: .2rem;
+  max-width: 80%;
+  overflow-x:auto;
+}
+.markdown img {
+  max-width: 80%;
 }
 #notificationsMenu>a, #hintsMenu>a {
     word-wrap: break-word;
