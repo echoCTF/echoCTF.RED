@@ -52,8 +52,8 @@ class SignupForm extends Model
               if(intval($count)!==0)
                   $this->addError($attribute, 'This email is banned.');
             }],
-            ['username', '\app\components\validators\HourRegistrationValidator', ],
-            ['username', '\app\components\validators\TotalRegistrationsValidator', ],
+            ['username', '\app\components\validators\HourRegistrationValidator', 'client_ip'=>\Yii::$app->request->userIp],
+            ['username', '\app\components\validators\TotalRegistrationsValidator', 'client_ip'=>\Yii::$app->request->userIp],
             ['email', '\app\components\validators\StopForumSpamValidator', ],
             ['email', '\app\components\validators\WhoisValidator', ],
 
