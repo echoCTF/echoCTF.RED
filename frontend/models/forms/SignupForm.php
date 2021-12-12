@@ -52,6 +52,11 @@ class SignupForm extends Model
               if(intval($count)!==0)
                   $this->addError($attribute, 'This email is banned.');
             }],
+            ['username', '\app\components\validators\HourRegistrationValidator', ],
+            ['username', '\app\components\validators\TotalRegistrationsValidator', ],
+            ['email', '\app\components\validators\StopForumSpamValidator', ],
+            ['email', '\app\components\validators\WhoisValidator', ],
+
             ['captcha', 'captcha'],
 
             ['password', 'required'],
@@ -99,6 +104,8 @@ class SignupForm extends Model
           $pr->referred_id=$player->id;
           $pr->save();
         }
+        $counter=intval(\Yii::$app->sys->{'registeredip:'.\Yii::$app->request->userIp});
+        Yii::$app->cache->set('registeredip:'.\Yii::$app->request->userIp,$counter+1,3600);
         if(Yii::$app->sys->require_activation===true)
           return $this->sendEmail($player);
         return true;
