@@ -12,17 +12,25 @@ class TotalRegistrationsValidator extends Validator
     public $max=10;
     public $message="You reached your maximum registrations for this IP!";
     public $counter;
-
+    public $client_ip;
     public function init()
     {
         if(!$this->counter)
           $this->counter=\Yii::$app->db
               ->createCommand('SELECT count(*) FROM player_last WHERE signup_ip=:player_ip')
-              ->bindValue(':player_ip',ip2long(\Yii::$app->request->userIp))
+              ->bindValue(':player_ip',ip2long($this->client_ip))
               ->queryScalar();
         parent::init();
     }
-
+    public function validateValue($value)
+    {
+      if (intval($this->counter)>=$this->max)
+      {
+        return [$this->message, [
+            'username' => $value,
+        ]];
+      }
+    }
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;

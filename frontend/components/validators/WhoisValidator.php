@@ -15,7 +15,29 @@ class WhoisValidator extends Validator
     {
         parent::init();
     }
+    public function validateValue($value)
+    {
+      if (!preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches))
+      {
+        return [$this->message, [
+            'email' => $value,
+        ]];
+      }
+      $domain = new \overals\whois\Whois($matches['domain']);
+      if ($domain->isAvailable())
+      {
+        return [$this->message, [
+            'username' => $value,
+        ]];
+      }
 
+      if ($domain->isAvailable())
+      {
+        return [$this->message, [
+            'username' => $value,
+        ]];
+      }
+    }
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
