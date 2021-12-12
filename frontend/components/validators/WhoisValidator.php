@@ -17,13 +17,12 @@ class WhoisValidator extends Validator
     }
     public function validateValue($value)
     {
-      if (!preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches))
+      // if not email assume value is a domain
+      if (preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches))
       {
-        return [$this->message, [
-            'email' => $value,
-        ]];
+        $value=$matches['domain'];
       }
-      $domain = new \overals\whois\Whois($matches['domain']);
+      $domain = new \overals\whois\Whois($value);
       if ($domain->isAvailable())
       {
         return [$this->message, [
@@ -41,8 +40,9 @@ class WhoisValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        if (!preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches)) {
-          $model->addError($attribute, $this->message);
+        if (preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches))
+        {
+          $value=$matches['domain'];
         }
         $domain = new \overals\whois\Whois($matches['domain']);
         if ($domain->isAvailable())
