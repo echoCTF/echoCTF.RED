@@ -9,6 +9,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use app\modules\activity\models\PlayerVpnHistorySearch;
+use app\modules\activity\models\HeadshotSearch;
+
 /**
  * ProfileController implements the CRUD actions for Profile model.
  */
@@ -144,6 +146,19 @@ class ProfileController extends \app\components\BaseController
                'searchModel' => $searchModel
              ]));
     }
+
+    public function actionHeadshots($id)
+    {
+      $profile=$this->findModel($id);
+      $searchModel=new HeadshotSearch();
+      $searchModel->player_id=$profile->player_id;
+      $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
+      return json_encode($this->renderAjax('_headshots', [
+               'dataProvider' => $dataProvider,
+               'searchModel' => $searchModel
+             ]));
+    }
+
     /**
      * Finds the Profile model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
