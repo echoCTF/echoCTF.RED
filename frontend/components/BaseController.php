@@ -83,7 +83,7 @@ class BaseController extends \yii\web\Controller
                          return Yii::$app->DisabledRoute->disabled($action);
                        },
                        'denyCallback' => function() {
-                         Yii::$app->session->setFlash('warning', 'This operation is disabled globally or just for you, sorry.');
+                         Yii::$app->session->setFlash('warning', 'This action is disabled globally (or just for you), sorry.');
                          return  \Yii::$app->getResponse()->redirect(Yii::$app->request->referrer ?:[Yii::$app->sys->default_homepage]);
                        },
                    ],
