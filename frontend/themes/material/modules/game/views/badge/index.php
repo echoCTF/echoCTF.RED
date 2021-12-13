@@ -1,14 +1,25 @@
 <?php
+use app\widgets\Twitter;
+
 $this->registerMetaTag(['name'=>'og:type', 'content'=>'game.achievement']);
 $this->registerMetaTag(['name'=>'game:points', 'content'=>'0']);
 $this->registerMetaTag(['name'=>'article:published_time', 'content'=>$headshot->created_at]);
+$this->_url=\yii\helpers\Url::to(['/game/badge/headshot', 'target_id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https');
 ?>
-<center><img class="img-fluid" style="max-width: 512px;" src="/images/logo.png" alt="echoCTF.RED">
-<div class="card" style="width: 60rem;">
+<center><img src="<?=$headshot->target->logo?>" width="128px"> <img class="img-fluid" style="max-width: 512px;" src="/images/logo.png" alt="echoCTF.RED">
+
+<div class="card bg-dark" style="width: 60rem;">
   <div class="card-body">
-    <h5 class="card-title">Card title</h5>
-    <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-    <a href="#" class="btn btn-primary">Go somewhere</a>
+    <h3 class="card-title">Target completion</h3>
+    <p class="card-text lead"><b><?=$headshot->player->username?></b> has managed to complete the target <b><?=$headshot->target->name?></b><?php if($headshot->target->timer):?> in <b><?=\Yii::$app->formatter->asDuration($headshot->timer)?></b>.<?php endif;?></p>
   </div>
+
+  <?php echo $this->render('@app/modules/game/views/badge/_share',
+      [
+        'twMessage'=>sprintf('Check this out, I just headshotted %s at %s', $headshot->target->name, \Yii::$app->sys->{"event_name"}),
+        'callbackURL'=>\yii\helpers\Url::to(['versus', 'id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https'),
+        'PRELINK'=>'<a class="btn btn-primary" href="#" onclick="history.back()"><i class="fas fa-reply"></i>&nbsp; Go back</a>'
+      ]);?>
+
 </div>
 </center>
