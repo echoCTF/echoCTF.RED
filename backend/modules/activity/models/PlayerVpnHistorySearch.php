@@ -47,6 +47,7 @@ class PlayerVpnHistorySearch extends PlayerVpnHistory
 
         $dataProvider=new ActiveDataProvider([
             'query' => $query,
+            'sort'=> ['defaultOrder' => ['ts' => SORT_DESC]],
         ]);
 
         $this->load($params);

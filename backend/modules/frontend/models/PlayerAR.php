@@ -288,7 +288,7 @@ class PlayerAR extends \yii\db\ActiveRecord
      */
     public function getStreams()
     {
-        return $this->hasMany(Stream::class, ['player_id' => 'id']);
+        return $this->hasMany(Stream::class, ['player_id' => 'id'])->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]);
     }
 
     /**

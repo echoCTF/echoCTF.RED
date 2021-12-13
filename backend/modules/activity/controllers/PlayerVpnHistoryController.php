@@ -101,7 +101,7 @@ class PlayerVpnHistoryController extends \app\components\BaseController
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
     }
 
     /**
