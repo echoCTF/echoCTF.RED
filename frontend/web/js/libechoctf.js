@@ -63,8 +63,25 @@ jQuery( document ).ready(function() {
   $('#claim-flag').on('pjax:success', function(event) {
           window.location.reload();
   });
+  $(".copy-to-clipboard").click(function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    const el = document.createElement('textarea');
+    el.value = $(this).attr('href');
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    $(this).parent('.dropdown-menu').selectpicker('toggle');
+    return false;
+  })
   //showTime();
 });
+
 function showTime(){
 
     var date = new Date();

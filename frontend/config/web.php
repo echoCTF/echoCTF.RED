@@ -248,6 +248,7 @@ $config=[
                 'tutorials' => 'tutorial/default/index',
                 'tutorial/<id:\d+>' => 'tutorial/default/view',
                 'leaderboards' => 'game/leaderboards/index',
+                'badge/<profile_id:\d+>/headshot/<target_id:\d+>' => 'game/badge/headshot',
                 // Team Module rules
                 'team' => 'team/default/index',
                 'team/create' => 'team/default/create',

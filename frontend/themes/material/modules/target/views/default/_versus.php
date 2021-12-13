@@ -72,6 +72,12 @@ if($target->progress == 100)
     $twmsg=sprintf('Hey check this out, %s managed to headshot [%s]', $identity->isMine ? "I" : $identity->twitterHandle, $target->name);
 }
 $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id]);
+if($headshot)
+{
+  $this->registerMetaTag(['name'=>'og:type', 'content'=>'game.achievement']);
+  $this->registerMetaTag(['name'=>'game:points', 'content'=>'0']);
+  $this->registerMetaTag(['name'=>'article:published_time', 'content'=>$headshot->created_at]);
+}
 ?>
 <div class="row">
       <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 target-card">
@@ -101,9 +107,19 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
                         'rel'=>"tooltip",
                         'aria-label'=>'Submit a writeup for this target',
                         'class'=>'btn',
-                        'style'=>'width: 100%',
+                        //'style'=>'width: 100%',
                         'alt'=>'Submit a writeup for this target'
                     ])?>
+          </div>
+          <div class="col">
+            <?php
+              $this->_description=sprintf('Check this out, I just headshotted %s at %s', $headshot->target->name, \Yii::$app->sys->{"event_name"});
+              $this->_url=\yii\helpers\Url::to(['versus', 'id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https');
+              echo $this->render('@app/modules/game/views/badge/_share',[
+                'twMessage'=>$this->_description,
+                'callbackURL'=>$this->_url,
+                'PRELINK'=>null,
+              ]);?>
           </div>
           <div class="col">
             <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>'/game/default/rate-headshot']);?>

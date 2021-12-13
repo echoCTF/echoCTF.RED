@@ -244,11 +244,11 @@ docker_setup_db() {
 
 	if [ -n "$MYSQL_USER" ] && [ -n "$MYSQL_PASSWORD" ]; then
 		mysql_note "Creating user ${MYSQL_USER}"
-		docker_process_sql --database=mysql <<<"CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD' WITH GRANT OPTION;"
+		docker_process_sql --database=mysql <<<"CREATE USER '$MYSQL_USER'@'%' IDENTIFIED BY '$MYSQL_PASSWORD';"
 
 		if [ -n "$MYSQL_DATABASE" ]; then
 			mysql_note "Giving user ${MYSQL_USER} access to schema ${MYSQL_DATABASE}"
-			docker_process_sql --database=mysql <<<"GRANT ALL ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%' ;"
+			docker_process_sql --database=mysql <<<"GRANT ALL ON \`$MYSQL_DATABASE\`.* TO '$MYSQL_USER'@'%'  WITH GRANT OPTION;"
 		fi
 
 		docker_process_sql --database=mysql <<<"FLUSH PRIVILEGES ;"
