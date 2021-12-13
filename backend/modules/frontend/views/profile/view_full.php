@@ -49,6 +49,12 @@ echo TabsX::widget([
           'options' => ['id' => 'headshots-tab'],
         ],
         [
+          'label' => 'Writeups',
+          'headerOptions' => ['style'=>'font-weight:bold'],
+          'linkOptions'=>['data-url'=>Url::to(['writeups', 'id' => $model->id])],
+          'options' => ['id' => 'writeups-tab'],
+        ],
+        [
           'label' => 'VPN History',
           'headerOptions' => ['style'=>'font-weight:bold'],
           'linkOptions'=>['data-url'=>Url::to(['vpn-history', 'id' => $model->id])],

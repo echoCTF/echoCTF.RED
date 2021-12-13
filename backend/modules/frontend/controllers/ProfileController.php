@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use app\modules\activity\models\PlayerVpnHistorySearch;
 use app\modules\activity\models\HeadshotSearch;
+use app\modules\activity\models\WriteupSearch;
 
 /**
  * ProfileController implements the CRUD actions for Profile model.
@@ -154,6 +155,18 @@ class ProfileController extends \app\components\BaseController
       $searchModel->player_id=$profile->player_id;
       $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
       return json_encode($this->renderAjax('_headshots', [
+               'dataProvider' => $dataProvider,
+               'searchModel' => $searchModel
+             ]));
+    }
+
+    public function actionWriteups($id)
+    {
+      $profile=$this->findModel($id);
+      $searchModel=new WriteupSearch();
+      $searchModel->player_id=$profile->player_id;
+      $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
+      return json_encode($this->renderAjax('_writeups', [
                'dataProvider' => $dataProvider,
                'searchModel' => $searchModel
              ]));
