@@ -106,9 +106,12 @@ $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$ta
                     ])?>
           </div>
           <div class="col">
-            <?php echo $this->render('@app/modules/game/views/badge/_share',[
-                'twMessage'=>sprintf('Check this out, I just headshotted %s at %s', $headshot->target->name, \Yii::$app->sys->{"event_name"}),
-                'callbackURL'=>\yii\helpers\Url::to(['versus', 'id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https'),
+            <?php
+              $this->_description=sprintf('Check this out, I just headshotted %s at %s', $headshot->target->name, \Yii::$app->sys->{"event_name"});
+              $this->_url=\yii\helpers\Url::to(['versus', 'id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https');
+              echo $this->render('@app/modules/game/views/badge/_share',[
+                'twMessage'=>$this->_description,
+                'callbackURL'=>$this->_url,
                 'PRELINK'=>null,
               ]);?>
           </div>
