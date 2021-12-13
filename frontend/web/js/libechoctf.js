@@ -65,6 +65,8 @@ jQuery( document ).ready(function() {
   });
   $(".copy-to-clipboard").click(function(e){
     e.preventDefault();
+    e.stopPropagation();
+
     const el = document.createElement('textarea');
     el.value = $(this).attr('href');
     el.setAttribute('readonly', '');
@@ -74,6 +76,7 @@ jQuery( document ).ready(function() {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
+    $(this).parent('.dropdown-menu').dropdown('toggle');
     return false;
   })
   //showTime();
