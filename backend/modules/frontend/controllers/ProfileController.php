@@ -8,7 +8,7 @@ use app\modules\frontend\models\ProfileSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
-
+use app\modules\activity\models\PlayerVpnHistorySearch;
 /**
  * ProfileController implements the CRUD actions for Profile model.
  */
@@ -133,6 +133,17 @@ class ProfileController extends \app\components\BaseController
         return $this->redirect(['index']);
     }
 
+    public function actionVpnHistory($id)
+    {
+      $profile=$this->findModel($id);
+      $searchModel=new PlayerVpnHistorySearch();
+      $searchModel->player_id=$profile->player_id;
+      $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
+      return json_encode($this->renderAjax('_vpn_history', [
+               'dataProvider' => $dataProvider,
+               'searchModel' => $searchModel
+             ]));
+    }
     /**
      * Finds the Profile model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.

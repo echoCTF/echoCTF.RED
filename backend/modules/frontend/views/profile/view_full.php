@@ -36,16 +36,17 @@ echo TabsX::widget([
     'align' => TabsX::ALIGN_LEFT,
     'items' => [
         [
-            'label' => 'Activity',
-            'content'=>$this->render('_activity_tab',['model'=>$model]),
-            'headerOptions' => ['style'=>'font-weight:bold'],
-            'options' => ['id' => 'stream-tab'],
-            'active'=>true,
+          'label' => 'Activity',
+          'content'=>$this->render('_activity_tab',['model'=>$model]),
+          'headerOptions' => ['style'=>'font-weight:bold'],
+          'options' => ['id' => 'stream-tab'],
+          'active'=>true,
         ],
         [
-            'label' => 'SSL',
-            'headerOptions' => ['style'=>'font-weight:bold'],
-            'options' => ['id' => 'ssl-tab'],
+          'label' => 'VPN History',
+          'headerOptions' => ['style'=>'font-weight:bold'],
+          'linkOptions'=>['data-url'=>Url::to(['vpn-history', 'id' => $model->id])],
+          'options' => ['id' => 'vpn-history-tab'],
         ],
     ],
 ]);
