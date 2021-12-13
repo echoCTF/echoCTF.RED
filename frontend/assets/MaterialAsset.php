@@ -35,7 +35,7 @@ class MaterialAsset extends AssetBundle
         ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap', 'async'=>'async', 'crossorigin'=>"anonymous"],
         ['css/all.min.css?v=0.0.1', 'defer'=>'defer'],
         'css/material-dashboard.css?v=0.0.5',
-        'css/material.css?v=0.0.7',
+        'css/material.css?v=0.0.8',
     ];
 
     public $js=[
@@ -80,7 +80,7 @@ class MaterialAsset extends AssetBundle
         /******/
         //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
         '/js/material-dashboard.js?v=0.0.5',
-        '/js/libechoctf.js?v=0.0.5',
+        '/js/libechoctf.js?v=0.0.6',
         // 'js/superfish.js'
     ];
     public $depends=[
