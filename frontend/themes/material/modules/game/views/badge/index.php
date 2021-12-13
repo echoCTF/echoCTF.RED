@@ -11,7 +11,7 @@ $this->_url=\yii\helpers\Url::to(['/game/badge/headshot', 'target_id'=>$headshot
 <div class="card bg-dark" style="width: 60rem;">
   <div class="card-body">
     <h3 class="card-title">Target completion</h3>
-    <p class="card-text lead"><b><?=$headshot->player->username?></b> has managed to complete the target <b><?=$headshot->target->name?></b><?php if($headshot->target->timer):?> in <b><?=\Yii::$app->formatter->asDuration($headshot->timer)?></b>.<?php endif;?></p>
+    <p class="card-text lead"><b><?=$headshot->player->username?></b> has managed to complete the target <b><?=$headshot->target->name?></b><?php if($headshot->target->timer && $headshot->timer>0):?> in <b><?=\Yii::$app->formatter->asDuration($headshot->timer)?></b>.<?php endif;?></p>
   </div>
 
   <?php echo $this->render('@app/modules/game/views/badge/_share',
