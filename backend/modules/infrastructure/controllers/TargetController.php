@@ -130,7 +130,7 @@ class TargetController extends \app\components\BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionViewLogs($id)
+    public function actionLogs($id)
     {
         $target=$this->findModel($id);
         try {
@@ -148,9 +148,10 @@ class TargetController extends \app\components\BaseController
         }
         catch(\Exception $e)
         {
-          $lines[]='<b>'.$e->getMessage().'</b>';
+          Yii::$app->session->setFlash('error', "Failed to fetch logs. <b>".$e->getMessage().'</b>');
+          return $this->redirect(['view','id'=>$target->id]);
         }
-        return $this->render('view-logs', [
+        return $this->render('logs', [
           'logs' => implode($lines,""),
           'model' => $target,
         ]);
