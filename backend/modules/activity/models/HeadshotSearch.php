@@ -14,6 +14,7 @@ class HeadshotSearch extends Headshot
   public $username;
   public $fqdn;
   public $ipoctet;
+  public $name;
     /**
      * {@inheritdoc}
      */
@@ -21,7 +22,7 @@ class HeadshotSearch extends Headshot
     {
         return [
             [['player_id', 'target_id','timer','first','rating'], 'integer'],
-            [['created_at', 'username', 'fqdn', 'ipoctet'], 'safe'],
+            [['created_at', 'username', 'fqdn', 'ipoctet','name'], 'safe'],
         ];
     }
 
@@ -69,7 +70,7 @@ class HeadshotSearch extends Headshot
             'headshot.created_at' => $this->created_at,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
-        $query->andFilterWhere(['like', 'target.fqdn', $this->fqdn]);
+        $query->andFilterWhere(['like', 'target.name', $this->name]);
         $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
         $dataProvider->setSort([
             'defaultOrder' => ['created_at'=>SORT_DESC, 'player_id'=>SORT_ASC,'target_id'=>SORT_ASC],
@@ -80,9 +81,9 @@ class HeadshotSearch extends Headshot
                       'asc' => ['player.username' => SORT_ASC],
                       'desc' => ['player.username' => SORT_DESC],
                   ],
-                  'fqdn' => [
-                      'asc' => ['target.fqdn' => SORT_ASC],
-                      'desc' => ['target.fqdn' => SORT_DESC],
+                  'name' => [
+                      'asc' => ['target.name' => SORT_ASC],
+                      'desc' => ['target.name' => SORT_DESC],
                   ],
                   'ipoctet' => [
                       'asc' => ['target.ip' => SORT_ASC],
