@@ -24,7 +24,7 @@ use yii\grid\GridView;
 
         [
           'class' => 'yii\grid\ActionColumn',
-          'template' => '{view}{delete}',
+          'template' => '{delete}',
           'urlCreator' => function ($action, $model, $key, $index) {
               return Url::to(['/activity/headshot/'.$action, 'player_id' => $model->player_id,'target_id'=>$model->target_id]);
           }
