@@ -61,7 +61,6 @@ class Target extends TargetAR
     public function spin()
     {
       $targetVariables=null;
-      if($this->server == null) return false;
       $docker=$this->connectAPI();
       $this->destroy();
 
@@ -80,6 +79,12 @@ class Target extends TargetAR
       $containerConfig->setNetworkingConfig($nwc);
       $containerConfig->setHostname($this->fqdn);// target->fqdn
       $containerConfig->setImage($this->image);// target->image
+      $containerConfig->setOpenStdin(true);
+      $containerConfig->setTty(true);
+      $containerConfig->setAttachStdin(true);
+      $containerConfig->setAttachStdout(true);
+      $containerConfig->setAttachStderr(true);
+
       foreach($this->targetVariables as $var)
         $targetVariables[]=sprintf("%s=%s", $var->key, $var->val);
       $containerConfig->setEnv($targetVariables);// target->targetVariables
@@ -88,7 +93,6 @@ class Target extends TargetAR
 
       $this->pull();
       $containerCreateResult=$docker->containerCreate($containerConfig, ['name'=>$this->name]);// target->name
-
       $docker->containerStart($containerCreateResult->getId());
 
       return true;
@@ -179,7 +183,6 @@ class Target extends TargetAR
     {
 //      $targetVariables=null;
 //      $targetVolumes=null;
-      if($this->server == null) return false;
       $docker=$this->connectAPI();
       try
       {
@@ -205,14 +208,16 @@ class Target extends TargetAR
 
   public function connectAPI()
   {
-    if($this->server == null) return false;
 
     try
     {
-      $client=DockerClientFactory::create([
-        'remote_socket' => $this->server, // target->server
-        'ssl' => false,
-      ]);
+      if($this->server == null)
+        $client=DockerClientFactory::create();
+      else
+        $client=DockerClientFactory::create([
+          'remote_socket' => $this->server, // target->server
+          'ssl' => false,
+        ]);
       return Docker::create($client);
     }
     catch(\Exception $e)

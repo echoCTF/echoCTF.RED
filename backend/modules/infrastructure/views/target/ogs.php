@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Target */
 
-$this->title=$model->name;
+$this->title="View logs for ".$model->name."/".$model->ipoctet." running on ".($model->server!="" ?: "localhost");
 $this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
 $this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
 $this->params['breadcrumbs'][]=$this->title;
@@ -17,8 +17,9 @@ $this->params['breadcrumbs'][]=$this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
+        <?= Html::a('View', ['view', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Logs', ['logs', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Logs', ['view-logs', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
         <?= Html::a('Generate', ['generate', 'id' => $model->id], ['class' => 'btn btn-info', 'style'=>'background-color: gray']) ?>
         <?= Html::a('Spin', ['spin', 'id' => $model->id], [
             'class' => 'btn btn-warning',
@@ -51,45 +52,7 @@ $this->params['breadcrumbs'][]=$this->title;
 
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'name',
-            'fqdn',
-            'ipoctet',
-            [
-              'label'=>'Network',
-              'attribute'=>'network.name'
-            ],
-            'difficulty',
-            'category',
-            'required_xp',
-            'suggested_xp',
-            'timer:boolean',
-            'rootable:boolean',
-            'active:boolean',
-            'healthcheck:boolean',
-            'writeup_allowed:boolean',
-            'status',
-            'scheduled_at',
-            'purpose',
-            'description:html',
-            'mac',
-            'net',
-            'server',
-            'image',
-            'dns',
-            'parameters',
-            'weight',
-            'ts',
-            [
-              'label'=>'Examples',
-              'format'=>'raw',
-              'value'=>function($model){ return '<pre>'.sprintf("docker run -itd \\\n--name %s \\\n--dns %s \\\n--hostname %s \\\n--ip %s \\\n--mac-address %s \\\n--network %s \\\n%s", $model->name,$model->dns,$model->fqdn,$model->ipoctet,$model->mac,$model->net,$model->image).'</pre>'; }
-            ],
-
-        ],
-    ]) ?>
-
+<pre>
+<?=Html::encode($logs)?>
+</pre>
 </div>

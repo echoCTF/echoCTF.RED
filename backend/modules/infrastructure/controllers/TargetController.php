@@ -125,6 +125,38 @@ class TargetController extends \app\components\BaseController
     }
 
     /**
+     * Displays a Target container logs.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionLogs($id)
+    {
+        $target=$this->findModel($id);
+        try {
+          $docker=$target->connectAPI();
+          $webSocketStream = $docker->containerAttachWebsocket($target->name, [
+            'stream' => true,
+            'logs'   => true
+          ]);
+          $line="";
+          while($line!==false && $line!==null)
+          {
+            $line=$webSocketStream->read();
+            $lines[]=$line;
+          }
+        }
+        catch(\Exception $e)
+        {
+          Yii::$app->session->setFlash('error', "Failed to fetch logs. <b>".$e->getMessage().'</b>');
+          return $this->redirect(['view','id'=>$target->id]);
+        }
+        return $this->render('logs', [
+          'logs' => implode($lines,""),
+          'model' => $target,
+        ]);
+    }
+    /**
      * Creates a new Target model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
