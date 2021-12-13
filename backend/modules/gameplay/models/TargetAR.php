@@ -69,7 +69,7 @@ class TargetAR extends \yii\db\ActiveRecord
     {
         return [
             [['parameters', 'description','imageparams'], 'string'],
-            [['name', 'fqdn', 'mac'], 'required'],
+            [['name', 'fqdn'], 'required'],
             [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','healthcheck','writeup_allowed'], 'integer'],
             [['ipoctet'], 'ip'],
             [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns','category'], 'string', 'max' => 255],
