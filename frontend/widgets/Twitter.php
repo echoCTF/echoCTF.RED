@@ -32,7 +32,7 @@ class Twitter extends Widget {
     public $related='echoCTF';
     public $linkOptions=['class'=>'TweetThis', 'target'=>'_blank', 'rel'=>"noopener noreferrer nofollow"];
     public $icon='<i class="fab fa-twitter"></i>';
-    public $hashtags='#echoCTF #CTF #Hacking';
+    public $hashtags='echoCTF,CTF,Hacking';
     public $via="echoCTF";
 
     public function init() {
@@ -56,7 +56,7 @@ class Twitter extends Widget {
 
 
 
-        $this->message=sprintf("%s via @%s\n%s", Html::encode(strip_tags($this->message)), $this->via, Html::encode($this->hashtags));
+        $this->message=sprintf("%s via @%s", Html::encode(strip_tags($this->message)), $this->via);
     }
 
     public function run() {
@@ -64,6 +64,7 @@ class Twitter extends Widget {
           'url'=>Html::encode($this->url),
           'text'=>$this->message,
           'related'=>Html::encode($this->related),
+          'hashtags'=>Html::encode($this->hashtags)
         ];
 
         $tweet_query=http_build_query($linkParams);
