@@ -52,6 +52,9 @@ class DiscordValidator extends Validator
         $tag_msg = json_encode('Discord username must include one <kbd>#</kbd> followed by the 4-digit discord-tag [eg. <kbd>username#number</kbd>]', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
 const regex = new RegExp('{$this->pattern}');
+if(value.length==0)
+  return;
+  
 if ($.inArray(value, $range) !== -1) {
     messages.push($range_msg);
     return false;
