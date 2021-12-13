@@ -76,7 +76,7 @@ jQuery( document ).ready(function() {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    $(this).parent('.dropdown-menu').dropdown('toggle');
+    $(this).parent('.dropdown-menu').selectpicker('toggle');
     return false;
   })
   //showTime();
