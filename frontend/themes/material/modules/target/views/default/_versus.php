@@ -72,6 +72,12 @@ if($target->progress == 100)
     $twmsg=sprintf('Hey check this out, %s managed to headshot [%s]', $identity->isMine ? "I" : $identity->twitterHandle, $target->name);
 }
 $headshot=Headshot::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id]);
+if($headshot)
+{
+  $this->registerMetaTag(['name'=>'og:type', 'content'=>'game.achievement']);
+  $this->registerMetaTag(['name'=>'game:points', 'content'=>'0']);
+  $this->registerMetaTag(['name'=>'article:published_time', 'content'=>$headshot->created_at]);
+}
 ?>
 <div class="row">
       <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 target-card">
