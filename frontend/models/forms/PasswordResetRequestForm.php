@@ -43,6 +43,14 @@ class PasswordResetRequestForm extends Model
             'status' => Player::STATUS_ACTIVE,
             'email' => $this->email,
         ]);
+        $password_reset_ip=intval(Yii::$app->cache->memcache->get('password_reset_ip:'.\Yii::$app->request->userIp));
+        $password_reset_email=intval(Yii::$app->cache->memcache->get('password_reset_email:'.$this->email));
+        if($password_reset_ip>=5 || $password_reset_email>=10)
+        {
+          $this->addError('email', 'Too many password reset requests. Please wait and try again.');
+          return false;
+        }
+
         if($player === null)
         {
             return false;
@@ -56,7 +64,10 @@ class PasswordResetRequestForm extends Model
                 return false;
             }
         }
-
+        $password_reset_ip++;
+        $password_reset_email++;
+        Yii::$app->cache->memcache->set('password_reset_ip:'.\Yii::$app->request->userIp,$password_reset_ip, 3600);
+        Yii::$app->cache->memcache->set('password_reset_email:'.$this->email,$password_reset_email, 3600);
         return Yii::$app
             ->mailer
             ->compose(
