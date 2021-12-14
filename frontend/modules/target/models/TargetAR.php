@@ -84,6 +84,9 @@ class TargetAR extends \yii\db\ActiveRecord
             'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
             'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
             'writeup_allowed'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'timer'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'player_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'headshot_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
             'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
           ],
@@ -102,7 +105,7 @@ class TargetAR extends \yii\db\ActiveRecord
       return [
         [['description'], 'string'],
         [['ip'], 'required'],
-        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','writeup_allowed'], 'integer'],
+        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','timer','writeup_allowed','player_spin','headshot_spin'], 'integer'],
         [['scheduled_at', 'ts'], 'safe'],
         [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
         [['mac'], 'string', 'max' => 30],
