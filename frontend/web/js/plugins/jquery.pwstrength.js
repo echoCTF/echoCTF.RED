@@ -1,4 +1,6 @@
 jQuery(document).ready(function () {
+  var worse_passwords = [ '123456', 'password', '12345678', 'qwerty', '123456789', '12345','1234','111111','1234567','dragon','123123','baseball','abc123','football','monkey','letmein','696969','shadow','master','666666','qwertyuiop','123321','mustang','1234567890','michael','654321','pussy','superman','1qaz2wsx','7777777','fuckyou','121212','000000','qazwsx','123qwe','killer','trustno1','jordan','jennifer','zxcvbnm','asdfgh','hunter','buster','soccer','harley','batman','andrew','tigger','sunshine','iloveyou','fuckme','2000','charlie','robert','thomas','hockey','ranger','daniel','starwars','klaster','112233','george','asshole','computer','michelle','jessica','pepper','1111','zxcvbn','555555','11111111','131313','freedom','777777','pass','fuck','maggie','159753','aaaaaa','ginger','princess','joshua','cheese','amanda','summer','love','ashley','6969','nicole','chelsea','biteme','matthew','access','yankees','987654321','dallas','austin','thunder','taylor','matrix' ];
+
     var options = {
         onLoad: function () {
             $('#messages').text('Start typing password');
@@ -7,8 +9,42 @@ jQuery(document).ready(function () {
             $(evt.target).pwstrength("outputErrorList");
         }
     };
-    $(':password').pwstrength(options);
+    var $password=$(':password').pwstrength(options);
+    $password.pwstrength("addRule", "commonWords", function (options, word, score) {
+                    var result = false;
+                    $.each(worse_passwords, function (i, item) {
+                        var re = new RegExp(item, "gi");
+                        if (word.match(re)) {
+                            result = score;
+                        }
+                    });
+                    return result;
+                }, -500, true);
 });
+
+/*
+  jQuery(document).ready(function () {
+      "use strict";
+      var $password = $(':password').pwstrength(),
+          common_words = ["password", "god", "123456"];
+
+      $password.pwstrength("addRule", "notEmail", function (options, word, score) {
+          return word.match(/^([\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+\.)*[\w\!\#$\%\&\'\*\+\-\/\=\?\^\`{\|\}\~]+@((((([a-z0-9]{1}[a-z0-9\-]{0,62}[a-z0-9]{1})|[a-z])\.)+[a-z]{2,6})|(\d{1,3}\.){3}\d{1,3}(\:\d{1,5})?)$/i) && score;
+      }, -100, true);
+
+      $password.pwstrength("addRule", "commonWords", function (options, word, score) {
+          var result = false;
+          $.each(common_words, function (i, item) {
+              var re = new RegExp(item, "gi");
+              if (word.match(re)) {
+                  result = score;
+              }
+          });
+          return result;
+      }, -500, true);
+  });
+
+*/
 
 /*jslint vars: false, browser: true, nomen: true, regexp: true */
 /*global jQuery */
