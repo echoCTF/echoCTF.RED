@@ -745,3 +745,9 @@ div.required label:after {
   border-color: #DDD;
   border-top: 1px solid #FFF;
 }
+
+pre.stderr
+{
+  background: #222;
+  color: white;
+}

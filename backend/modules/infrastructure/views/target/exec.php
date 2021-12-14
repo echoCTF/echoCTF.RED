@@ -2,24 +2,33 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Target */
 
-$this->title=$model->name;
+$this->title="Exec command on ".$model->name."/".$model->ipoctet." running on ".($model->server!="" ?: "localhost");
 $this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
 $this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
 $this->params['breadcrumbs'][]=$this->title;
+yii\bootstrap\Modal::begin([
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span>Target Exec Command Help</h2>',
+    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+]);
+echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
+yii\bootstrap\Modal::end();
+
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="target-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+
     <p>
+        <?= Html::a('View', ['view', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Logs', ['logs', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
-        <?= Html::a('Exec', ['exec', 'id' => $model->id], ['class' => 'btn btn-danger','style'=>'background: black; color: white']) ?>
+        <?= Html::a('Logs', ['view-logs', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
         <?= Html::a('Generate', ['generate', 'id' => $model->id], ['class' => 'btn btn-info', 'style'=>'background-color: gray']) ?>
         <?= Html::a('Spin', ['spin', 'id' => $model->id], [
             'class' => 'btn btn-warning',
@@ -51,46 +60,32 @@ $this->params['breadcrumbs'][]=$this->title;
         ]) ?>
 
     </p>
-
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'name',
-            'fqdn',
-            'ipoctet',
-            [
-              'label'=>'Network',
-              'attribute'=>'network.name'
-            ],
-            'difficulty',
-            'category',
-            'required_xp',
-            'suggested_xp',
-            'timer:boolean',
-            'rootable:boolean',
-            'active:boolean',
-            'healthcheck:boolean',
-            'writeup_allowed:boolean',
-            'status',
-            'scheduled_at',
-            'purpose',
-            'description:html',
-            'mac',
-            'net',
-            'server',
-            'image',
-            'dns',
-            'parameters',
-            'weight',
-            'ts',
-            [
-              'label'=>'Examples',
-              'format'=>'raw',
-              'value'=>function($model){ return '<pre>'.sprintf("docker run -itd \\\n--name %s \\\n--dns %s \\\n--hostname %s \\\n--ip %s \\\n--mac-address %s \\\n--network %s \\\n%s", $model->name,$model->dns,$model->fqdn,$model->ipoctet,$model->mac,$model->net,$model->image).'</pre>'; }
-            ],
-
-        ],
-    ]) ?>
-
+<div class="form">
+<?php $form = ActiveForm::begin(); ?>
+<div class="row">
+  <div class="col-lg-8"><?= $form->field($formModel, 'command',[ 'inputOptions'=>['value'=>'','autocomplete'=>"off", 'class'=>'form-control','aria-required'=>"true"]])->label(false) ?></div>
+  <div class="col"><?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?></div>
+</div>
+<div class="row">
+  <div class="col-lg-1">
+    <?=$form->field($formModel,'tty')->checkbox();?>
+  </div>
+  <div class="col-lg-1">
+    <?=$form->field($formModel,'stdout')->checkbox();?>
+  </div>
+  <div class="col-lg-1">
+    <?=$form->field($formModel,'stderr')->checkbox();?>
+  </div>
+</div>
+<?php ActiveForm::end(); ?>
+</div>
+<pre class="stdout">
+<b><?=Html::encode($formModel->command)."\n";?></b>
+<?=Html::encode($stdout)?>
+</pre>
+<?php if($stderr):?>
+<pre class="stderr">
+<?=Html::encode($stderr)?>
+</pre>
+<?php endif;?>
 </div>
