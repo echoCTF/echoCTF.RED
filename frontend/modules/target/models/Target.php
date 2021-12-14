@@ -114,6 +114,9 @@ class Target extends TargetAR
     }
     public function getSpinDenied()
     {
+      if($this->player_spin===false)
+        return true;
+        
       if($this->spinQueue !== null || intval($this->active) !== 1)
       {
         return true;// Not active or already queued
