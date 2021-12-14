@@ -5,10 +5,13 @@ namespace app\modules\infrastructure\controllers;
 use Yii;
 use app\modules\gameplay\models\Target;
 use app\modules\gameplay\models\TargetSearch;
+use app\modules\infrastructure\models\TargetExecCommandForm;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Docker\DockerClientFactory;
 use Docker\Docker;
+use Docker\API\Model\ContainersIdExecPostBody;
+use Docker\API\Model\ExecIdStartPostBody;
 use Http\Client\Socket\Exception\ConnectionException;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
@@ -156,6 +159,61 @@ class TargetController extends \app\components\BaseController
           'model' => $target,
         ]);
     }
+
+    /**
+     * Executes a command on a running Target container.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionExec($id)
+    {
+        $target=$this->findModel($id);
+        $form=new TargetExecCommandForm();
+        $stdoutText = "";
+        $stderrText = "";
+        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+          try {
+            $docker=$target->connectAPI();
+            $execConfig = new ContainersIdExecPostBody();
+            $execConfig->setTty(false);
+            $execConfig->setAttachStdout(true);
+            $execConfig->setAttachStderr(true);
+
+            $execConfig->setCmd($form->commandArray);
+            $cexec = $docker->containerExec($target->name,$execConfig);
+            $execid = $cexec->getId();
+            $execStartConfig = new ExecIdStartPostBody();
+            $execStartConfig->setDetach(false);
+
+            // Execute the command
+            $stream = $docker->execStart($execid,$execStartConfig);
+
+            // To see the output stream of the 'exec' command
+            $stream->onStdout(function ($stdout) use (&$stdoutText) {
+                $stdoutText .= $stdout;
+            });
+
+            $stream->onStderr(function ($stderr) use (&$stderrText) {
+                $stderrText .= $stderr;
+            });
+
+            $stream->wait();
+          }
+          catch (\Exception $e)
+          {
+            die(var_dump($e->getMessage()));
+          }
+        }
+        return $this->render('exec', [
+          'formModel'=>$form,
+          'stdout'=>$stdoutText,
+          "stderr" => $stderrText,
+          'model' => $target,
+        ]);
+
+    }
+
     /**
      * Creates a new Target model.
      * If creation is successful, the browser will be redirected to the 'view' page.
