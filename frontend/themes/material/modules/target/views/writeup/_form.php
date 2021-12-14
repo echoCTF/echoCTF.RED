@@ -34,12 +34,20 @@ $this->registerJs(
 ?>
 <div class="writeup-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = ActiveForm::begin(['id'=>'writeup-form']); ?>
 
-    <?= $form->field($model, 'content')->textArea(['rows'=>15,'style'=>'font-family: monospace; color: lightgray','wrap'=>"hard"])->label("<b style='font-size: 1.2em'>Content of Writeup</b>")->hint("<p><code class='text-warning'>Write or paste your writeup in plain text format. Markdown format is preferred (although it will not be rendered to you). If you are submitting a video writeup feel free to use the <kbd>&lt;embed&gt;</kbd> code provided to you</code></p><p class='text-danger'><b>Note:</b> Please don't waste our time with non writeup submissions.</p>") ?>
+    <?= $form->field($model, 'content')->textArea(['rows'=>15,'style'=>'font-family: monospace; color: lightgray','wrap'=>"hard"])->label("<b style='font-size: 1.2em'>Content of Writeup</b>")->hint("<p><code class='text-warning'>Write or paste your writeup in plain text format. Markdown format is preferred. If you are submitting a video writeup feel free to use the <kbd>&lt;embed&gt;</kbd> code provided to you</code></p><p class='text-danger'><b>Note:</b> Please don't waste our time with non writeup submissions.</p>") ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Submit', [
+            'class' => 'btn btn-success',
+            'title' => 'Submit your writeup',
+            'data-pjax' => '0',
+            'data'=>[
+              'confirm'=>'Are you sure you want to submit this writeup? Users who submit junk writeups multiple times will get their right to submit new ones revoked!',
+            ],
+
+          ]) ?>
     </div>
 
     <?php ActiveForm::end(); ?>
