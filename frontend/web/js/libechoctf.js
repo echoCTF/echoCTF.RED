@@ -63,6 +63,19 @@ jQuery( document ).ready(function() {
   $('#claim-flag').on('pjax:success', function(event) {
           window.location.reload();
   });
+  if(document.getElementById('signupform-password'))
+  {
+    const capscheck=document.getElementById("signupform-password");
+    capscheck.addEventListener( 'keydown', function( event ) {
+      var caps = event.getModifierState && event.getModifierState( 'CapsLock' );
+      if(caps)
+        $('#form-signup').yiiActiveForm('updateAttribute', 'signupform-password', ['Caps Lock is on!']);
+      else
+        $('#form-signup').yiiActiveForm('updateAttribute', 'signupform-password', '');
+
+    });
+
+  }
   $(".copy-to-clipboard").click(function(e){
     e.preventDefault();
     e.stopPropagation();
