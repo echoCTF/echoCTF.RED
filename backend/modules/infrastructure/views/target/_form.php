@@ -60,6 +60,12 @@ use yii\bootstrap\ActiveForm;
         <div class="col-md-2">
           <?= $form->field($model, 'writeup_allowed')->checkbox()->hint('Whether or not writeups are allowed for the target (checked=allowed)') ?>
         </div>
+        <div class="col-md-2">
+          <?= $form->field($model, 'player_spin')->checkbox()->hint('Allow players to spin targets?') ?>
+        </div>
+        <div class="col-md-2">
+          <?= $form->field($model, 'headshot_spin')->checkbox()->hint('Automatic spin target on headshot?') ?>
+        </div>
 
     </div>
     <div class="row">
