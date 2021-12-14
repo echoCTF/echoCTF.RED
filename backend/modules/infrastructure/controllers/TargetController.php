@@ -175,7 +175,6 @@ class TargetController extends \app\components\BaseController
         if ($form->load(Yii::$app->request->post()) && $form->validate())
         {
           try {
-            $target->server=null;
             $docker=$target->connectAPI();
             $execConfig = new ContainersIdExecPostBody();
             $execConfig->setTty($form->tty);
