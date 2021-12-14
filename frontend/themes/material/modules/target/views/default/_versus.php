@@ -28,7 +28,7 @@ if($target->ondemand && $target->ondemand->state<0)
   );
 
 }
-else
+elseif($target->player_spin===true)
 {
 $spinlink=Html::a(
   '<i class="fas fa-power-off"></i>',
@@ -44,6 +44,7 @@ $spinlink=Html::a(
     ]
 );
 }
+else $spinlink=null;
 if(date('md') === "0214")
 {
   $headshot_icon='fa-heart';
