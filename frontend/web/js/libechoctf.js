@@ -57,44 +57,6 @@ function contrast(rgb1, rgb2) {
          / (luminanace(rgb2[0], rgb2[1], rgb2[2]) + 0.05);
 }
 
-jQuery( document ).ready(function() {
-  $(".markdown img").addClass("img-fluid");
-  $('.markdown a').attr('target','_blank');
-  $('#claim-flag').on('pjax:success', function(event) {
-          window.location.reload();
-  });
-  if(document.getElementById('signupform-password'))
-  {
-    const capscheck=document.getElementById("signupform-password");
-    capscheck.addEventListener( 'keydown', function( event ) {
-      var caps = event.getModifierState && event.getModifierState( 'CapsLock' );
-      if(caps)
-        $('#form-signup').yiiActiveForm('updateAttribute', 'signupform-password', ['Caps Lock is on!']);
-      else
-        $('#form-signup').yiiActiveForm('updateAttribute', 'signupform-password', '');
-
-    });
-
-  }
-  $(".copy-to-clipboard").click(function(e){
-    e.preventDefault();
-    e.stopPropagation();
-
-    const el = document.createElement('textarea');
-    el.value = $(this).attr('href');
-    el.setAttribute('readonly', '');
-    el.style.position = 'absolute';
-    el.style.left = '-9999px';
-    document.body.appendChild(el);
-    el.select();
-    document.execCommand('copy');
-    document.body.removeChild(el);
-    $(this).parent('.dropdown-menu').selectpicker('toggle');
-    return false;
-  })
-  //showTime();
-});
-
 function showTime(){
 
     var date = new Date();
@@ -114,3 +76,67 @@ function showTime(){
     setTimeout(showTime, 1000);
 
 }
+
+jQuery( document ).ready(function() {
+  $(".markdown img").addClass("img-fluid");
+  $('.markdown a').attr('target','_blank');
+  $('#claim-flag').on('pjax:success', function(event) {
+          window.location.reload();
+  });
+
+  if(document.getElementById('signupform-password'))
+  {
+    const capscheck=document.getElementById("signupform-password");
+    capscheck.addEventListener( 'keydown', function( event ) {
+      var caps = event.getModifierState && event.getModifierState( 'CapsLock' );
+      if(caps)
+        $('#form-signup').yiiActiveForm('updateAttribute', 'signupform-password', ['Caps Lock is on!']);
+      else
+        $('#form-signup').yiiActiveForm('updateAttribute', 'signupform-password', '');
+
+    });
+  }
+
+  $(".copy-to-clipboard").click(function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    const el = document.createElement('textarea');
+    el.value = $(this).attr('href');
+    el.setAttribute('readonly', '');
+    el.style.position = 'absolute';
+    el.style.left = '-9999px';
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    $(this).parent('.dropdown-menu').selectpicker('toggle');
+    return false;
+  })
+
+  if(document.getElementById('writeup-content'))
+  {
+    const textarea=document.getElementById("writeup-content");
+    var converter = new showdown.Converter({
+        omitExtraWLInCodeBlocks: true,
+        headerLevelStart: 2,
+        parseImgDimensions: true,
+        ghCodeBlocks: true,
+        simplifiedAutoLink: true,
+        tables: true,
+        tasklists: true,
+        simpleLineBreaks: true,
+        openLinksInNewWindow: true,
+        emoji: true,
+        splitAdjacentBlockquotes: true,
+      });
+    converter.setFlavor('github');
+    textarea.addEventListener( 'keyup', function( event ) {
+      var text      = textarea.value,
+          html      = converter.makeHtml(text);
+      document.getElementById("markdown-preview").innerHTML=html;
+    });
+  }
+
+  //showTime();
+});
