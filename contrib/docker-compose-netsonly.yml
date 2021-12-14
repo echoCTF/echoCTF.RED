@@ -1,0 +1,29 @@
+version: '2'
+services:
+  target1:
+    container_name: echoctfred_target1
+    restart: "always"
+    image: nginx
+    networks:
+      targets:
+        ipv4_address: "10.0.160.253"
+
+
+volumes:
+  data-mysql:
+    driver: local
+  data-openvpn:
+    driver: local
+  data-challenges:
+    driver: local
+
+networks:
+  targets:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+    ipam:
+      driver: default
+      config:
+      - subnet: 10.0.160.1/24
+        gateway: 10.0.160.254
