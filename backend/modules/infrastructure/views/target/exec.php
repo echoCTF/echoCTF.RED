@@ -63,8 +63,19 @@ yii\bootstrap\Modal::end();
 <div class="form">
 <?php $form = ActiveForm::begin(); ?>
 <div class="row">
-<div class="col-lg-8"><?= $form->field($formModel, 'command',[ 'inputOptions'=>['value'=>'','autocomplete'=>"off", 'class'=>'form-control','aria-required'=>"true"]])->label(false) ?></div>
-<div class="col"><?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?></div>
+  <div class="col-lg-8"><?= $form->field($formModel, 'command',[ 'inputOptions'=>['value'=>'','autocomplete'=>"off", 'class'=>'form-control','aria-required'=>"true"]])->label(false) ?></div>
+  <div class="col"><?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?></div>
+</div>
+<div class="row">
+  <div class="col-lg-1">
+    <?=$form->field($formModel,'tty')->checkbox();?>
+  </div>
+  <div class="col-lg-1">
+    <?=$form->field($formModel,'stdout')->checkbox();?>
+  </div>
+  <div class="col-lg-1">
+    <?=$form->field($formModel,'stderr')->checkbox();?>
+  </div>
 </div>
 <?php ActiveForm::end(); ?>
 </div>

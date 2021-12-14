@@ -172,13 +172,15 @@ class TargetController extends \app\components\BaseController
         $form=new TargetExecCommandForm();
         $stdoutText = "";
         $stderrText = "";
-        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
+        if ($form->load(Yii::$app->request->post()) && $form->validate())
+        {
           try {
+            $target->server=null;
             $docker=$target->connectAPI();
             $execConfig = new ContainersIdExecPostBody();
-            $execConfig->setTty(false);
-            $execConfig->setAttachStdout(true);
-            $execConfig->setAttachStderr(true);
+            $execConfig->setTty($form->tty);
+            $execConfig->setAttachStdout($form->stdout);
+            $execConfig->setAttachStderr($form->stderr);
 
             $execConfig->setCmd($form->commandArray);
             $cexec = $docker->containerExec($target->name,$execConfig);
@@ -204,6 +206,10 @@ class TargetController extends \app\components\BaseController
           {
             die(var_dump($e->getMessage()));
           }
+        }
+        else {
+          $form->tty=true;
+          $form->stdout=true;
         }
         return $this->render('exec', [
           'formModel'=>$form,
