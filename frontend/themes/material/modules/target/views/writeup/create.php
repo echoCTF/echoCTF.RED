@@ -10,19 +10,33 @@ $this->_description=$headshot->target->purpose;
 $this->_image=\yii\helpers\Url::to($headshot->target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['index', 'id'=>$headshot->target->id], 'https');
 $this->_fluid='-fluid';
+$this->registerJsFile('@web/js/showdown.min.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::className()
+    ]
+]);
+
 ?>
 <div class="writeup-create">
-  <div class="body-content">
-    <h2><?= Html::encode('Writeup for '.$headshot->target->name. ' / '.long2ip($headshot->target->ip). ' #'.$headshot->target->id) ?></h2>
-    <div class="col">
-      <div class="card bg-dark">
-        <div class="card-body">
-          <h4 class="card-title <?=$model->status==='OK' ? 'text-primary' : 'text-warning'?>">Status: PENDING</h4>
-          <?= $this->render('_form', [
-              'model' => $model,
-          ]) ?>
+  <div class="row">
+    <div class="col-md-6 col-lg-7">
+      <h2><?= Html::encode('Writeup for '.$headshot->target->name. ' / '.long2ip($headshot->target->ip). ' #'.$headshot->target->id) ?></h2>
+      <div class="body-content">
+        <div class="col">
+          <div class="card bg-dark">
+            <div class="card-body">
+              <h4 class="card-title <?=$model->status==='OK' ? 'text-primary' : 'text-warning'?>">Status: PENDING</h4>
+              <?= $this->render('_form', [
+                'model' => $model,
+                ]) ?>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+    </div><!--/col-->
+    <div class="col">
+      <h2>Preview</h2>
+      <div id="markdown-preview" class="markdown" style="zoom: 80%;"></div>
+    </div><!--/col-->
   </div>
 </div>
