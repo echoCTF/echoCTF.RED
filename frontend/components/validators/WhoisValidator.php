@@ -29,13 +29,6 @@ class WhoisValidator extends Validator
             'username' => $value,
         ]];
       }
-
-      if ($domain->isAvailable())
-      {
-        return [$this->message, [
-            'username' => $value,
-        ]];
-      }
     }
     public function validateAttribute($model, $attribute)
     {
