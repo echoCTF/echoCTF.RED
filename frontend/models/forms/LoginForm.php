@@ -50,8 +50,20 @@ class LoginForm extends Model
         if(!$this->hasErrors())
         {
             $player=$this->player;
+            //$failed_logins=Yii::$app->cache->get('failed_login:'.client_ip);
+            $failed_logins_ip=intval(Yii::$app->cache->memcache->get('failed_login_ip:'.\Yii::$app->request->userIp));
+            $failed_logins_username=intval(Yii::$app->cache->memcache->get('failed_login_usename:'.$this->username));
+            if($failed_logins_ip>=5 || $failed_logins_username>=10)
+            {
+              $this->addError($attribute, 'Too many failed log in attempts. Please wait and try again.');
+              return;
+            }
             if(!$player || !$player->validatePassword($this->password))
             {
+                $failed_logins_ip++;
+                $failed_logins_username++;
+                Yii::$app->cache->memcache->set('failed_login_ip:'.\Yii::$app->request->userIp,$failed_logins_ip, 900);
+                Yii::$app->cache->memcache->set('failed_login_username:'.$this->username,$failed_logins_username, 900);
                 $this->addError($attribute, 'Incorrect username or password.');
             }
         }

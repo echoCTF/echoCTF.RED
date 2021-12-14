@@ -8,6 +8,12 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\captcha\Captcha;
 $this->title=\Yii::$app->sys->event_name.' Signup';
+$this->registerJsFile("@web/js/plugins/jquery.pwstrength.js", [
+    'depends' => [
+        \yii\web\JqueryAsset::className()
+    ]
+]);
+
 ?>
 <div class="site-signup">
   <div class="body-content">
