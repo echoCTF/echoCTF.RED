@@ -6,7 +6,7 @@ $db=require __DIR__.'/db.php';
 $config=[
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log','sales'],
     'controllerNamespace' => 'app\commands',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -14,6 +14,9 @@ $config=[
         '@tests' => '@app/tests',
     ],
     'components' => [
+        'sales' => [
+            'class' => 'app\modules\sales\Module',
+        ],
         'sys'=> [
           'class' => 'app\components\Sysconfig',
         ],
