@@ -10,7 +10,7 @@ $config=[
     'name'=>'echoCTF.RED Mycenae',
     'basePath' => dirname(__DIR__),
     'charset' => 'UTF-8',
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log','app\extensions\MemcacheUrlManagerBootstrap'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -117,7 +117,7 @@ $config=[
         ],
         'request' => [
             'csrfParam' => '_csrf-red',
-// Hard code the domain to avoid parsing HTTP_HOST 
+// Hard code the domain to avoid parsing HTTP_HOST
 //            'hostInfo'=>'https://echoctf.red',
             'enableCsrfValidation' => true,
             'enableCsrfCookie'=>false,
