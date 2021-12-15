@@ -8,25 +8,18 @@ use app\modules\settings\models\UrlRouteSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\helpers\ArrayHelper;
 /**
  * UrlRouteController implements the CRUD actions for UrlRoute model.
  */
-class UrlRouteController extends Controller
+class UrlRouteController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**
