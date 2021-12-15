@@ -384,10 +384,23 @@ td.td-actions,
     }
 }
 
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active {
+#form-signup input:-webkit-autofill,
+#form-signup input:-webkit-autofill:hover,
+#form-signup input:-webkit-autofill:focus,
+#form-signup input:-webkit-autofill:active,
+#login-form input:-webkit-autofill,
+#login-form input:-webkit-autofill:hover,
+#login-form input:-webkit-autofill:focus,
+#login-form input:-webkit-autofill:active,
+#request-password-reset-form input:-webkit-autofill,
+#request-password-reset-form input:-webkit-autofill:hover,
+#request-password-reset-form input:-webkit-autofill:focus,
+#request-password-reset-form input:-webkit-autofill:active,
+#resend-verification-email-form input:-webkit-autofill,
+#resend-verification-email-form input:-webkit-autofill:hover,
+#resend-verification-email-form input:-webkit-autofill:focus,
+#resend-verification-email-form input:-webkit-autofill:active
+{
     border-bottom: 1px solid #94c11f;
     -webkit-text-fill-color: lightgray;
     transition: background-color 5000s ease-in-out 0s;
@@ -671,4 +684,17 @@ details > .markdown h6 {
 
 .form-control {
   color: lightgray;
+}
+
+#settings-form input {
+  color: #222;
+}
+
+#settings-form label.control-label {
+  color: #94c11f;
+  font-weight: bold;
+}
+#settings-form div.has-error label.control-label  {
+  color: red;
+  font-weight: bold;
 }
