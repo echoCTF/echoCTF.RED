@@ -1,5 +1,4 @@
 <?php
-
 $params=require __DIR__.'/params.php';
 $db=require __DIR__.'/db.php';
 $cache=require __DIR__.'/cache.php';
@@ -10,7 +9,7 @@ $config=[
     'name'=>'echoCTF.RED Mycenae',
     'basePath' => dirname(__DIR__),
     'charset' => 'UTF-8',
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log','subscription'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
@@ -19,6 +18,9 @@ $config=[
     'modules' => [
       'api' => [
           'class' => 'app\modules\api\Module',
+      ],
+      'subscription' => [
+          'class' => 'app\modules\subscription\Module',
       ],
       'game' => [
           'class' => 'app\modules\game\Module',
@@ -117,7 +119,7 @@ $config=[
         ],
         'request' => [
             'csrfParam' => '_csrf-red',
-// Hard code the domain to avoid parsing HTTP_HOST 
+// Hard code the domain to avoid parsing HTTP_HOST
 //            'hostInfo'=>'https://echoctf.red',
             'enableCsrfValidation' => true,
             'enableCsrfCookie'=>false,
@@ -249,6 +251,7 @@ $config=[
                 'tutorial/<id:\d+>' => 'tutorial/default/view',
                 'leaderboards' => 'game/leaderboards/index',
                 'badge/<profile_id:\d+>/headshot/<target_id:\d+>' => 'game/badge/headshot',
+
                 // Team Module rules
                 'team' => 'team/default/index',
                 'team/create' => 'team/default/create',
@@ -257,12 +260,12 @@ $config=[
                 'team/invite/<token>' => 'team/default/invite',
                 'team/approve/<id:\d+>' => 'team/default/approve',
                 'team/reject/<id:\d+>' => 'team/default/reject',
+
                 // Network Module
                 'networks' => 'network/default/index',
                 'network/<id:\d+>' => 'network/default/view',
                 // API Module
                 'api/headshots' => 'api/headshot/index',
-                //['class' => 'yii\rest\UrlRule', 'controller' => 'api/headshot'],
             ],
         ],
     ],
