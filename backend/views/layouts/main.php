@@ -151,6 +151,7 @@ AppAsset::register($this);
                 ['label' => 'Sysconfigs', 'url' => ['/settings/sysconfig/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Users', 'url' => ['/settings/user/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Configure', 'url' => ['/settings/sysconfig/configure'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
+                ['label' => 'URL Routes', 'url' => ['/settings/url-route/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Disabled Routes', 'url' => ['/settings/disabled-route/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Player Disabled Routes', 'url' => ['/settings/player-disabledroute/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Banned MX Servers', 'url' => ['/settings/banned-mx-server/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
