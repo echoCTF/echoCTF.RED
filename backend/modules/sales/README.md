@@ -13,3 +13,8 @@ https://github.com/stripe/stripe-php
       ],
   ],
 ```
+
+Configuration files under `config/`:
+* `main.php` common configuration parameters for both console and web applications
+* `web.php` web application configuration
+* `console.php` console application configuration
