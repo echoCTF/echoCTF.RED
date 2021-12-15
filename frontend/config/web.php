@@ -9,7 +9,11 @@ $config=[
     'name'=>'echoCTF.RED Mycenae',
     'basePath' => dirname(__DIR__),
     'charset' => 'UTF-8',
-    'bootstrap' => ['log','subscription'],
+    'bootstrap' => [
+      'log',
+      'app\extensions\MemcacheUrlManagerBootstrap',
+      'subscription'
+    ],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
