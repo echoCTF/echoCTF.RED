@@ -8,25 +8,19 @@ use app\modules\settings\models\BannedMxServerSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * BannedMxServerController implements the CRUD actions for BannedMxServer model.
  */
-class BannedMxServerController extends Controller
+class BannedMxServerController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
+  /**
+   * {@inheritdoc}
+   */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**
