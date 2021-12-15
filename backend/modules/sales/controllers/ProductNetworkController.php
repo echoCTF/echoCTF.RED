@@ -8,26 +8,20 @@ use app\modules\sales\models\ProductNetworkSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * ProductNetworkController implements the CRUD actions for ProductNetwork model.
  */
-class ProductNetworkController extends Controller
+class ProductNetworkController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+   public function behaviors()
+   {
+     return ArrayHelper::merge(parent::behaviors(),[]);
+   }
 
     /**
      * Lists all ProductNetwork models.

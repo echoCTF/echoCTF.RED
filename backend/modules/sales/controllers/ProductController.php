@@ -9,26 +9,20 @@ use app\modules\sales\models\ProductNetwork;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * ProductController implements the CRUD actions for Product model.
  */
-class ProductController extends Controller
+class ProductController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+   public function behaviors()
+   {
+     return ArrayHelper::merge(parent::behaviors(),[]);
+   }
 
     /**
      * Gets all Product from Stripe and syncs with current ones.

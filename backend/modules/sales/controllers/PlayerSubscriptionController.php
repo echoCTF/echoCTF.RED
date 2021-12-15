@@ -10,26 +10,20 @@ use app\modules\frontend\models\Player;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerSubscriptionController implements the CRUD actions for PlayerSubscription model.
  */
-class PlayerSubscriptionController extends Controller
+class PlayerSubscriptionController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+   public function behaviors()
+   {
+     return ArrayHelper::merge(parent::behaviors(),[]);
+   }
 
     /**
      * Lists all PlayerSubscription models.

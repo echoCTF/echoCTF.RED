@@ -8,22 +8,20 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\modules\sales\models\PlayerCustomerSearch;
 use app\modules\frontend\models\Player;
+use yii\helpers\ArrayHelper;
+
 /**
  * Default controller for the `sales` module
  */
-class PlayerCustomerController extends Controller
+class PlayerCustomerController extends \app\components\BaseController
 {
-  public function behaviors()
-  {
-      return [
-          'verbs' => [
-              'class' => VerbFilter::className(),
-              'actions' => [
-                  'delete' => ['POST'],
-              ],
-          ],
-      ];
-  }
+  /**
+   * {@inheritdoc}
+   */
+   public function behaviors()
+   {
+     return ArrayHelper::merge(parent::behaviors(),[]);
+   }
 
     /**
      * Renders the index view for the module
