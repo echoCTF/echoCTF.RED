@@ -8,12 +8,15 @@ $config=[
     'id' => 'basic',
     'name'=>'echoCTF mUI',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log','sales'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
     'modules' => [
+        'sales' => [
+            'class' => 'app\modules\sales\Module',
+        ],
         'content' => [
             'class' => 'app\modules\content\Module',
         ],
