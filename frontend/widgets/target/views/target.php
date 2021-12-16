@@ -4,8 +4,8 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
 ?>
-<div class="card">
-  <div class="card-header card-header-primary">
+<div class="card bg-dark">
+  <div class="card-header card-header-danger">
     <h4 class="card-title"><?=$TITLE?></h4>
     <p class="card-category"><?=$CATEGORY?></p>
   </div>
@@ -30,7 +30,7 @@ echo GridView::widget([
       'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
       'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
     ],
-    'tableOptions'=>['class'=>'table table-xl'],
+    'tableOptions'=>['class'=>'table table-xl','style'=>"line-height: 1em;"],
     'layout'=>$layout,
     'summary'=>$summary,
     'columns' => [
@@ -183,11 +183,11 @@ echo GridView::widget([
         'format'=>'raw',
         'encodeLabel'=>false,
         'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell', ],
-        'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
+        'contentOptions' => ['class'=>'text-center d-none d-xl-table-cell'],
         'attribute'=>'progress',
         'label'=>'Progress',
         'value'=>function($model) {
-          return yii\bootstrap4\Progress::widget(['percent' => intval(floor($model->progress)), 'label' => false, 'barOptions' => ['class' => 'bg-gradual-progress']]);
+          return '<center>'.yii\bootstrap4\Progress::widget(['percent' => intval(floor($model->progress)), 'label' => false, 'barOptions' => ['class' => 'bg-gradual-progress'],'options'=>['class'=>'bg-dark','style'=>'border: 1px solid #cccccc; height: 1em; max-width: 18rem;']]).'</center>';
         },
       ],
       [
