@@ -6,6 +6,8 @@ set limit src-nodes 500
 set limit tables 10000
 set limit table-entries 10000000
 set reassemble yes no-df
+set timeout { tcp.closed 30, tcp.closing 300, tcp.finwait 15, tcp.first 60, tcp.opening 15, adaptive.start 20000 }
+
 
 table <administrators> persist counters file "/etc/administrators.conf"
 table <maintenance> persist counters file "/etc/maintenance.conf"
