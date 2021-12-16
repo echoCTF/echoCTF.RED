@@ -5,7 +5,7 @@
   vars_prompt:
     - name: "myname"
       prompt: "1/7. What is the desired hostname?"
-      default: "db.hackmex.mx"
+      default: "db.example.com"
       private: no
     - name: "interconnect_interface"
       prompt: "2/7. What is the interconnect interface?"
