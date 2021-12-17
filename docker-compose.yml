@@ -13,10 +13,10 @@ services:
     volumes:
       - data-mysql:/var/lib/mysql
     environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=root
-      - MYSQL_USER=vpnuser
-      - MYSQL_PASSWORD=vpnuserpass
-      - MYSQL_DATABASE=echoCTF
+      - MARIADB_ALLOW_EMPTY_PASSWORD=root
+      - MARIADB_USER=vpnuser
+      - MARIADB_PASSWORD=vpnuserpass
+      - MARIADB_DATABASE=echoCTF
     networks:
       private:
         ipv4_address: "172.24.0.253"
