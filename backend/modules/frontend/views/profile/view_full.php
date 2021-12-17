@@ -22,6 +22,7 @@ $this->params['breadcrumbs'][]=$this->title;
     <div class="row">
       <div class="col-md-4">
         <?=$this->render('_player_details',['model'=>$model]);?>
+        <?=$this->render('_player_memcache_details',['model'=>$model]);?>
         <?=$this->render('_player_counters_details',['model'=>$model]);?>
         <?=$this->render('_player_date_details',['model'=>$model]);?>
         <?=$this->render('_player_meta_details',['model'=>$model]);?>
