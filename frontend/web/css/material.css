@@ -200,9 +200,16 @@ details summary>b:hover {
 .challenge-view:hover h2 a.TweetThis {
   display: inline;
 }
+
+#target-list {
+  font-family: Orbitron;
+}
+
+/*
 #target-list th>a {
   color: #587a01;
 }
+*/
 #target-list tr:hover a.TweetThis {
   font-size: 1.5em;
   display: inline;
@@ -244,9 +251,8 @@ td.td-actions,
 #target-list td,
 #stream-listing .leader-name
 {
-  font-family: 'Roboto Mono';
   font-size: 1em;
-  letter-spacing: 0em;
+  letter-spacing: 0.1em;
 }
 #target-list td
 {
