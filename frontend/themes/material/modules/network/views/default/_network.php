@@ -14,7 +14,7 @@ if(array_key_exists('subscription',Yii::$app->modules)!==false)
               Url::to(['/subscription/default/index']),
               [
                 'title' => 'Subscribe to access this network',
-                'class'=>'btn btn-danger text-dark font-weight-bold',
+                'class'=>'btn btn-danger text-dark font-weight-bold orbitron',
                 'aria-label'=>'Subscribe to access this network',
                 'data-pjax' => '0',
               ]
@@ -25,7 +25,7 @@ if(array_key_exists('subscription',Yii::$app->modules)!==false)
               Url::to(['/network/default/view','id'=>$model->id]),
               [
                 'title' => 'Go to network',
-                'class'=>'btn btn-primary text-dark font-weight-bold',
+                'class'=>'btn btn-primary text-dark font-weight-bold orbitron',
                 'aria-label'=>'Go to network',
                 'data-pjax' => '0',
               ]
@@ -39,7 +39,7 @@ if(array_key_exists('subscription',Yii::$app->modules)!==false)
       <img class="img" src="<?=$model->icon?>" height="80vw"/>
     </div>
     <div class="card-body table-responsive">
-      <h4 class="font-weight-bold"><?=Html::a($model->name ,
+      <h4 class="orbitron"><?=Html::a($model->name ,
                   Url::to(['/network/default/view', 'id'=>$model->id]),
                   [
                     'style'=>'float: bottom;',
@@ -48,8 +48,8 @@ if(array_key_exists('subscription',Yii::$app->modules)!==false)
                     'data-pjax' => '0',
                   ]
               );?></h4>
-              <h6 class="badge badge-primary"><?=$model->targetsCount?> targets</h6>
-      <p style="text-align: justify;"><?=$model->description?></p>
+              <h6 class="badge badge-primary orbitron"><?=$model->targetsCount?> targets</h6>
+      <p style="text-align: justify;" ><?=$model->description?></p>
   </div>
   <div class="card-footer">
     <p class="small">This network is <?=($model->public ? 'public' : 'private')?></p>
