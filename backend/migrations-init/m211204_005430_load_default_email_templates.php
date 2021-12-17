@@ -20,8 +20,21 @@ class m211204_005430_load_default_email_templates extends Migration
       $dirn=\Yii::getAlias("@app");
       foreach($this->TPL as $base)
       {
-        $txt=file_get_contents("$dirn/../frontend/mail/".$base."-text.php");
-        $html=file_get_contents("$dirn/../frontend/mail/".$base."-html.php");
+        $txt=$html=null;
+        try{
+          $txt=file_get_contents("$dirn/../frontend/mail/".$base."-text.php");
+        }
+        catch(\Exception $e)
+        {
+          printf("Failed to store frontend mail %s\n",$e->getMessage());
+        }
+        try {
+          $html=file_get_contents("$dirn/../frontend/mail/".$base."-html.php");
+        }
+        catch(\Exception $e)
+        {
+          printf("Failed to store frontend mail %s\n",$e->getMessage());
+        }
         $this->insert('email_template',['name'=>$base,'title'=>$base,'txt'=>$txt,'html'=>$html]);
       }
 
