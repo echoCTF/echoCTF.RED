@@ -704,3 +704,8 @@ details > .markdown h6 {
   color: red;
   font-weight: bold;
 }
+
+.orbitron {
+  font-family: Orbitron;
+  letter-spacing: 0.1em;
+}
