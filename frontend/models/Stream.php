@@ -90,7 +90,7 @@ class Stream extends StreamAR
     if(intval($headshot->target->timer)===0 || intval($headshot->timer)===0)
       return sprintf("%s managed to headshot [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to headshot [<code>%s</code>]$first in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
+    return sprintf("%s managed to headshot [<code>%s</code>]$first in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
   }
 
   public function getChallengeMessage()
@@ -99,7 +99,7 @@ class Stream extends StreamAR
     if($csolver->challenge->timer===0)
       return sprintf("%s managed to complete the challenge [<code>%s</code>]%s", $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to complete the challenge [<code>%s</code>] in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($csolver->timer),number_format($csolver->timer / 60), $this->suffix);
+    return sprintf("%s managed to complete the challenge [<code>%s</code>] in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($csolver->timer),number_format($csolver->timer / 60), $this->suffix);
   }
 
   public function getReportMessage()
