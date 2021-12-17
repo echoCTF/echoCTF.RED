@@ -16,6 +16,7 @@ if [ ! -f /etc/openvpn/.configured ]; then
     openssl dhparam -out /etc/openvpn/dh.pem 2048
     openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key
     /var/www/echoCTF.RED/backend/yii migrate --interactive=0
+    /var/www/echoCTF.RED/backend/yii migrate-sales/up --interactive=0
     /var/www/echoCTF.RED/backend/yii init_data --interactive=0
     /var/www/echoCTF.RED/backend/yii ssl/create-ca
     /var/www/echoCTF.RED/backend/yii ssl/get-ca 1
