@@ -151,7 +151,7 @@ if($headshot)
         <?php Card::begin([
             'header'=>'header-icon',
             'type'=>'card-stats',
-            'icon'=>sprintf('<img src="/images/avatars/%s" height="60"/>', $identity->avtr),
+            'icon'=>sprintf('<img class="rounded" src="/images/avatars/%s" height="60"/>', $identity->avtr),
             'color'=>'primary',
             'subtitle'=>'Level '.$identity->experience->id.' / '.$identity->experience->name,
             'title'=>$identity->owner->username." / ".$identity->rank->ordinalPlace." Place",
