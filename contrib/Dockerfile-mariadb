@@ -23,6 +23,11 @@ RUN set -ex; \
   echo "plugin_load_add = ha_federatedx">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
   echo "plugin_load_add = ha_blackhole">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
   echo "blackhole = FORCE">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
+  git clone https://github.com/echoCTF/MySQL-global-user-variables-UDF.git; \
+  cd MySQL-global-user-variables-UDF; \
+  make DESTDIR=/usr/lib/mysql/plugin/ install; \
+  cp global_user_variables.sql /docker-entrypoint-initdb.d/00.sql; \
+  cd .. ; \
   git clone https://github.com/echoCTF/memcached_functions_mysql.git; \
   cd memcached_functions_mysql; \
   ./config/bootstrap; \
@@ -33,7 +38,7 @@ RUN set -ex; \
   mkdir -p /always-initdb.d; \
   echo "/usr/bin/memcached -d -m ${MEMCACHED_MEM} -p 11211 -u mysql -l 0.0.0.0 -o no_modern -P /tmp/memcached.pid" >> /always-initdb.d/00.sh; \
   chmod +x /always-initdb.d/00.sh; \
-  cp sql/install_functions.sql /docker-entrypoint-initdb.d/00.sql; \
+  cat sql/install_functions.sql>> /docker-entrypoint-initdb.d/00.sql; \
   sed -i  -e "s/echoCTF/${MYSQL_DATABASE}/g" /always-initdb.d/99_mysql-init.sql; \
   chmod +x /usr/local/bin/docker-entrypoint.sh; \
   apt-get purge -y build-essential gcc autoconf automake git zip unzip mcrypt libmariadb-dev libtool; \
