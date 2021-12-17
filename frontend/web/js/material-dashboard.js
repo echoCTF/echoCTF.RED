@@ -76,12 +76,12 @@ $(document).ready(function() {
   }
 
   //  Activate the tooltips
-  $('[rel="tooltip"]').tooltip({
-      trigger : 'hover'
-  });
-  $('[data-toggle="tooltip"]').tooltip({
-      trigger : 'hover'
-  });
+  //$('[rel="tooltip"]').tooltip({
+  //    trigger : 'hover',
+  //});
+  //$('[data-toggle="tooltip"]').tooltip({
+  //    trigger : 'hover',
+  //  });
   $('.form-control').on("focus", function() {
     $(this).parent('.input-group').addClass("input-group-focus");
   }).on("blur", function() {
