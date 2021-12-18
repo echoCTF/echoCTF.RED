@@ -329,7 +329,8 @@ docker_setup_db() {
 
 		if [ -n "$MARIADB_DATABASE" ]; then
 			mysql_note "Giving user ${MARIADB_USER} access to schema ${MARIADB_DATABASE}"
-			docker_process_sql --database=mysql <<<"GRANT ALL ON \`${MARIADB_DATABASE//_/\\_}\`.* TO '$MARIADB_USER'@'%' WITH GRANT OPTION;"
+			docker_process_sql --database=mysql <<<"GRANT ALL ON \`${MARIADB_DATABASE//_/\\_}\`.* TO '$MARIADB_USER'@'%';"
+			docker_process_sql --database=mysql <<<"GRANT SUPER ON *.* TO '$MARIADB_USER'@'%';"
 		fi
 	fi
 }
