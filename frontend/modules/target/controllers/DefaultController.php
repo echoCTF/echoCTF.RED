@@ -236,6 +236,7 @@ class DefaultController extends \app\components\BaseController
         }
         elseif($treasure === null)
         {
+          Yii::$app->counters->increment('failed_claims');
           Yii::$app->session->setFlash('error', sprintf('Flag [<strong>%s</strong>] does not exist!', Html::encode($string)));
           return $this->renderAjax('claim');
         }
@@ -248,6 +249,7 @@ class DefaultController extends \app\components\BaseController
           return $this->renderAjax('claim');
         }
 
+        Yii::$app->counters->increment('claims');
         $this->doClaim($treasure);
         return $this->renderAjax('claim');
     }
