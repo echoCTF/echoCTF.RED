@@ -370,7 +370,6 @@ _main() {
 			exec gosu mysql "${BASH_SOURCE[0]}" "$@"
 		fi
 
-		docker_process_init_files /always-initdb.d/*
 
 		# there's no database, so it needs to be initialized
 		if [ -z "$DATABASE_ALREADY_EXISTS" ]; then
@@ -387,6 +386,7 @@ _main() {
 
 			docker_setup_db
 			docker_process_init_files /docker-entrypoint-initdb.d/*
+			docker_process_init_files /always-initdb.d/*
 
 			mysql_note "Stopping temporary server"
 			docker_temp_server_stop
