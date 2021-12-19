@@ -55,7 +55,8 @@ class SignupForm extends Model
             ['username', '\app\components\validators\HourRegistrationValidator', 'client_ip'=>\Yii::$app->request->userIp],
             ['username', '\app\components\validators\TotalRegistrationsValidator', 'client_ip'=>\Yii::$app->request->userIp],
             ['email', '\app\components\validators\StopForumSpamValidator', ],
-            ['email', '\app\components\validators\WhoisValidator', ],
+            //['email', '\app\components\validators\WhoisValidator', ],
+            ['email', '\app\components\validators\MXServersValidator', ],
 
             ['captcha', 'captcha'],
 
