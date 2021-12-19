@@ -8,25 +8,19 @@ use app\modules\activity\models\PlayerCounterNfSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerCounterNfController implements the CRUD actions for PlayerCounterNf model.
  */
-class PlayerCounterNfController extends Controller
+class PlayerCounterNfController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**
