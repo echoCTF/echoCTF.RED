@@ -90,6 +90,7 @@ AppAsset::register($this);
                 ['label' => 'Spin Queue', 'url' => ['/activity/spin-queue/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Player vs Target Progress', 'url' => ['/activity/player-vs-target/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Player vs Challenge Progress', 'url' => ['/activity/player-vs-challenge/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Player Counters NF', 'url' => ['/activity/player-counter-nf/index'], 'visible' => !Yii::$app->user->isGuest, ],
               ],
             ],
 

@@ -136,6 +136,9 @@ $config=[
         'sys'=> [
           'class' => 'app\components\Sysconfig',
         ],
+        'counters'=> [
+          'class' => 'app\components\Counters',
+        ],
         'DisabledRoute'=> [
           'class' => 'app\components\DisabledRoute',
         ],
