@@ -10,7 +10,8 @@ use yii\helpers\ArrayHelper;
 class MXServersValidator extends Validator
 {
     public $range;
-    public $message="Sorry but you are using an email server that is banned!";
+    public $banned_message="Sorry but you are using an email server that is banned!";
+    public $nxmessage="Sorry but you are using a domain that does not exist!";
 
     public function init()
     {
@@ -29,9 +30,9 @@ class MXServersValidator extends Validator
         $value=$matches['domain'];
       }
 
-      if(!getmxrr($value, $hosts))
+      if(getmxrr($value, $hosts)===false)
       {
-        return [$this->message, [
+        return [$this->nxmessage, [
             'domain' => $value,
         ]];
       }
@@ -39,7 +40,7 @@ class MXServersValidator extends Validator
       foreach($this->range as $key)
       {
         if(array_search($key, $hosts)!==false)
-          return [$this->message, [
+          return [$this->banned_message, [
               'domain' => $value,
           ]];
       }
@@ -56,13 +57,13 @@ class MXServersValidator extends Validator
 
         if(!getmxrr($value, $hosts))
         {
-          $model->addError($attribute, $this->message);
+          $model->addError($attribute, $this->nxmessage);
         }
 
         foreach($this->range as $key)
         {
           if(array_search($key, $hosts)!==false)
-            $model->addError($attribute, $this->message);
+            $model->addError($attribute, $this->banned_message);
         }
     }
 }
