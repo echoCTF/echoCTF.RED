@@ -80,6 +80,9 @@ class SettingsForm extends Model
             if(intval($count)!==0)
                 $this->addError($attribute, 'This email is banned.');
           }],
+          ['email', '\app\components\validators\StopForumSpamValidator', ],
+          ['email', '\app\components\validators\MXServersValidator', ],
+
 
           /* username field rules */
           [['username'], 'trim'],
