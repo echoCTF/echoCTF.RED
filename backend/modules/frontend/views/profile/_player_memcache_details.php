@@ -19,7 +19,7 @@ use yii\helpers\Html;
         <tr>
           <td><i class="fas fa-sign-in-alt"></i></td>
           <td>Failed logins</td>
-          <td><?=intval(Yii::$app->cache->memcache->get('failed_login_usename:'.$model->owner->username))?></td>
+          <td><?=intval(Yii::$app->cache->memcache->get('failed_login_username:'.$model->owner->username))?></td>
         </tr>
         <tr>
           <td><i class="fas fa-eye"></i></td>
