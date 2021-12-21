@@ -8,6 +8,16 @@ use kartik\tabs\TabsX;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Profile */
+$js = <<<SCRIPT
+$(function () {
+    $("[data-toggle='tooltip']").tooltip();
+});;
+$(function () {
+    $("[data-toggle='popover']").popover();
+});
+SCRIPT;
+// Register tooltip/popover initialization javascript
+$this->registerJs($js);
 
 $this->title="View Profile for ".Html::encode($model->owner->username)." profile: ".$model->id;
 $this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Profiles'), 'url' => ['index']];
