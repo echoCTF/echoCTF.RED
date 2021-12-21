@@ -28,6 +28,7 @@ class ProfileController extends \app\components\BaseController
                   'class' => VerbFilter::class,
                   'actions' => [
                       'approve_avatar' => ['POST'],
+                      'reset-key' => ['POST'],
                   ],
               ],
           ]);
@@ -183,6 +184,20 @@ class ProfileController extends \app\components\BaseController
                'dataProvider' => $dataProvider,
                'searchModel' => $searchModel
              ]));
+    }
+
+    public function actionResetKey($id)
+    {
+        $model=$this->findModel($id);
+        $key=\Yii::$app->request->post('key');
+        if(strstr('player_session:',$key)!==false)
+        {
+          $val=Yii::$app->cache->memcache->get($key);
+          Yii::$app->cache->memcache->delete('memc.sess.key.'.$val);
+
+        }
+        Yii::$app->cache->memcache->delete($key);
+        return $this->redirect(Yii::$app->request->referrer ?? ['index']);
     }
 
     /**
