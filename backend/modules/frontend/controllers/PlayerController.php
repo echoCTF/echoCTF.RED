@@ -33,8 +33,10 @@ class PlayerController extends \app\components\BaseController
                     'ban-filtered' => ['POST'],
                     'delete-filtered' => ['POST'],
                     'reset-playdata' => ['POST'],
+                    'reset-authkey' => ['POST'],
                     'reset-player-progress' => ['POST'],
                     'toggle-academic' => ['POST'],
+                    'toggle-active' => ['POST'],
                 ],
             ],
         ]);
@@ -178,6 +180,27 @@ class PlayerController extends \app\components\BaseController
         return $this->redirect(['index']);
     }
 
+    /**
+     * Regenerates a player authKey
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionResetAuthkey($id)
+    {
+      $model=$this->findModel($id);
+      $model->auth_key="";
+      if($model->save())
+      {
+        Yii::$app->session->setFlash('success','Player auth_key regenerated');
+      }
+      else
+      {
+        Yii::$app->session->setFlash('error','Failed to reset player auth_key');
+      }
+
+      return $this->redirect(Yii::$app->request->referrer ?? ['index']);
+    }
 
     /**
      * Toggles an existing Player academic flag model.
@@ -208,6 +231,31 @@ class PlayerController extends \app\components\BaseController
       {
         $trans->rollBack();
         Yii::$app->session->setFlash('error', 'Failed to toggle academic flag for player');
+      }
+
+      return $this->redirect(Yii::$app->request->referrer ?? ['index']);
+    }
+
+    /**
+     * Toggles an existing Player academic flag model.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionToggleActive($id)
+    {
+      $trans=Yii::$app->db->beginTransaction();
+      try
+      {
+        $model=$this->findModel($id);
+        $model->updateAttributes(['active' => !$model->active]);
+        $trans->commit();
+        Yii::$app->session->setFlash('success', 'User ['.$model->username.'] active set to '.$model->active);
+      }
+      catch(\Exception $e)
+      {
+        $trans->rollBack();
+        Yii::$app->session->setFlash('error', 'Failed to toggle active flag for player');
       }
 
         return $this->redirect(['index']);
