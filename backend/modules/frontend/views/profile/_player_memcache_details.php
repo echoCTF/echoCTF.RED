@@ -76,7 +76,7 @@ use yii\helpers\Html;
         <tr>
           <td><i class="fas fa-user-shield"></i></td>
           <td>Ovpn</td>
-          <td><?=Html::encode(long2ip(Yii::$app->cache->memcache->get('ovpn:'.$model->player_id)))?> <?= Html::a('<i class="fas fa-eraser"></i>', ['reset-key', 'id' => $model->id], [
+          <td><?=Html::encode(Yii::$app->cache->memcache->get('ovpn:'.$model->player_id))?> <?= Html::a('<i class="fas fa-eraser"></i>', ['reset-key', 'id' => $model->id], [
                 'class' => 'text-danger',
                 'data' => [
                     'confirm' => Yii::t('app', 'Are you sure you want to delete this key?'),
