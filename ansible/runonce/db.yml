@@ -302,7 +302,6 @@
       chdir: /root/memcached_functions_mysql
 
   - name: Load TZ data
-    when: '"db.echoctf" in inventory_hostname'
     shell: mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql mysql
 
   - name: Import mysql schema
