@@ -34,7 +34,7 @@ use yii\helpers\Html;
         <tr>
           <td><i class="fas fa-eye"></i></td>
           <td>Last seen</td>
-          <td><?=Html::encode(Yii::$app->cache->memcache->get('last_seen:'.$model->player_id))?> <?= Html::a('<i class="fas fa-eraser"></i>', ['reset-key', 'id' => $model->id], [
+          <td><?=Html::encode(\Yii::$app->formatter->asDatetime(Yii::$app->cache->memcache->get('last_seen:'.$model->player_id)))?> <?= Html::a('<i class="fas fa-eraser"></i>', ['reset-key', 'id' => $model->id], [
                 'class' => 'text-danger',
                 'title'=>'Delete key',
                 'data-toggle'=>'tooltip',
@@ -48,7 +48,7 @@ use yii\helpers\Html;
         <tr>
           <td><i class="fas fa-plug"></i></td>
           <td>Online</td>
-          <td><?=Html::encode(Yii::$app->cache->memcache->get('online:'.$model->player_id))?> <?= Html::a('<i class="fas fa-eraser"></i>', ['reset-key', 'id' => $model->id], [
+          <td><?=Html::encode(\Yii::$app->formatter->asDatetime(Yii::$app->cache->memcache->get('online:'.$model->player_id)))?> <?= Html::a('<i class="fas fa-eraser"></i>', ['reset-key', 'id' => $model->id], [
                 'class' => 'text-danger',
                 'title'=>'Delete key',
                 'data-toggle'=>'tooltip',
