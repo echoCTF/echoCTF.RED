@@ -108,7 +108,7 @@ if($headshot)
                         'title' => 'Submit a writeup for this target',
                         'rel'=>"tooltip",
                         'aria-label'=>'Submit a writeup for this target',
-                        'class'=>'btn',
+                        'class'=>'btn btn-block',
                         //'style'=>'width: 100%',
                         'alt'=>'Submit a writeup for this target'
                     ])?>
