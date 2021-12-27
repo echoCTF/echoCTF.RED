@@ -110,7 +110,11 @@ jQuery( document ).ready(function() {
     el.select();
     document.execCommand('copy');
     document.body.removeChild(el);
-    $(this).parent('.dropdown-menu').selectpicker('toggle');
+    if($(this).parent('.dropdown-menu') && $(this).parent('.dropdown-menu').selectpicker)
+      $(this).parent('.dropdown-menu').selectpicker('toggle');
+    if($(this).attr('swal-data'))
+      return Swal.fire($(this).attr('swal-data'));
+
     return false;
   })
 

@@ -15,6 +15,6 @@ use app\widgets\Twitter;
           'linkOptions'=>['class'=>'dropdown-item', 'target'=>'_blank', 'rel'=>'noopener noreferrer nofollow'],
       ]);?>
     <a class="dropdown-item" href="https://www.linkedin.com/sharing/share-offsite/?url=<?=urlencode($callbackURL)?>" target="_blank"><i class="fab fa-linkedin" style="font-size: 1.4em;"></i>&nbsp; Linkedin</a>
-    <a class="dropdown-item copy-to-clipboard" href="<?=$callbackURL?>"><i class="fas fa-copy" style="font-size: 1.4em;"></i>&nbsp; Copy URL</a>
+    <a class="dropdown-item copy-to-clipboard" swal-data="Copied to clipboard!" href="<?=$callbackURL?>"><i class="fas fa-copy" style="font-size: 1.4em;"></i>&nbsp; Copy URL</a>
   </div>
 </div>
