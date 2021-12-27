@@ -80,7 +80,7 @@ class MaterialAsset extends AssetBundle
         /******/
         //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
         '/js/material-dashboard.js?v=0.19.0',
-        '/js/libechoctf.js?v=0.19.0',
+        '/js/libechoctf.js?v=0.19.1',
         // 'js/superfish.js'
     ];
     public $depends=[

@@ -78,6 +78,9 @@ function showTime(){
 }
 
 jQuery( document ).ready(function() {
+
+  $(".card-nav-tabs .nav-tabs .nav-item:nth-of-type(1) .nav-link").addClass('active');
+  $(".tab-content .tab-pane:nth-of-type(1)").addClass('active');
   $(".markdown img").addClass("img-fluid");
   $('.markdown a').attr('target','_blank');
   $('#claim-flag').on('pjax:success', function(event) {

@@ -40,7 +40,7 @@ class ProfileController extends \app\components\BaseController
                      'actions' => ['badge', 'me', 'notifications', 'hints', 'ovpn', 'settings','index','invite'],
                    ],
                    [
-                     'actions' => ['index','badge','invite'],
+                     'actions' => ['index','badge'],
                      'allow' => true,
                    ],
                    [
@@ -48,6 +48,21 @@ class ProfileController extends \app\components\BaseController
                      'allow' => true,
                      'roles'=>['@']
                    ],
+                   [
+                     'actions' => ['invite'],
+                     'allow' => true,
+                     'roles'=>['?'],
+                   ],
+                   [
+                     'actions' => ['invite'],
+                     'allow' => false,
+                     'roles'=>['@'],
+                     'denyCallback' => function () {
+                       Yii::$app->session->setFlash('info', 'This area is for unregistered friends only!');
+                       return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
+                     }
+                   ],
+
                 ],
             ],
             [
@@ -115,7 +130,7 @@ class ProfileController extends \app\components\BaseController
 
     public function actionIndex(int $id)
     {
-        if(intval($id) == intval(Yii::$app->user->identity->profile->id))
+        if(!Yii::$app->user->isGuest && intval($id) == intval(Yii::$app->user->identity->profile->id))
           return $this->redirect(['/profile/me']);
 
         $profile=$this->findModel($id);
@@ -132,10 +147,6 @@ class ProfileController extends \app\components\BaseController
 
     public function actionInvite(int $id)
     {
-      if(intval($id) == intval(Yii::$app->user->identity->profile->id))
-        return $this->redirect(['/profile/me']);
-
-
         $profile=$this->findModel($id);
         if(!$profile)
           return $this->redirect(['/']);

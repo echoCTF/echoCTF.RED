@@ -8,7 +8,7 @@ use yii\db\Expression;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\base\NotSupportedException;
 use app\models\Player;
-
+use app\modules\game\models\Headshot;
 /**
  * This is the model class for table "writeup".
  *
@@ -116,6 +116,16 @@ class Writeup extends \yii\db\ActiveRecord
     public function getTarget()
     {
         return $this->hasOne(Target::class, ['id' => 'target_id']);
+    }
+
+    /**
+     * Gets query for [[Headshot]].
+     *
+     * @return \yii\db\ActiveQuery|HeadhostQuery|Headshot
+     */
+    public function getHeadshot()
+    {
+        return $this->hasOne(Headshot::class, ['player_id'=>'player_id','target_id'=>'target_id']);
     }
 
     /**

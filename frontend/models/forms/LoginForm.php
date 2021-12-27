@@ -51,20 +51,20 @@ class LoginForm extends Model
         {
             $player=$this->player;
 
-            $failed_logins_ip=intval(\Yii::$app->cache->memcache->get('failed_login_ip:'.\Yii::$app->request->userIp));
-            $failed_logins_username=(\Yii::$app->cache->memcache->get('failed_login_username:'.$this->username));
+            $failed_login_ip=intval(\Yii::$app->cache->memcache->get('failed_login_ip:'.\Yii::$app->request->userIp));
+            $failed_login_username=intval(\Yii::$app->cache->memcache->get('failed_login_username:'.$this->username));
 
-            if($failed_logins_ip>=5  /* || $failed_logins_username>=10 */ )
+            if($failed_login_ip>=5  /* || $failed_login_username>=10 */ )
             {
-              $this->addError($attribute, 'Too many failed log in attempts. Please wait and try again.');
+              $this->addError($attribute, 'Too many failed log in attempts. Please wait and try again. ['.$failed_login_ip.'/'.$failed_login_username.']');
               return;
             }
             if(!$player || !$player->validatePassword($this->password))
             {
-                $failed_logins_ip++;
-                $failed_logins_username++;
-                \Yii::$app->cache->memcache->set('failed_login_ip:'.\Yii::$app->request->userIp,$failed_logins_ip, 900);
-                \Yii::$app->cache->memcache->set('failed_login_username:'.$this->username,$failed_logins_username, 900);
+                $failed_login_ip++;
+                $failed_login_username++;
+                \Yii::$app->cache->memcache->set('failed_login_ip:'.\Yii::$app->request->userIp,$failed_login_ip, 900);
+                \Yii::$app->cache->memcache->set('failed_login_username:'.$this->username,$failed_login_username, 900);
                 $this->addError($attribute, 'Incorrect username or password.');
             }
         }
