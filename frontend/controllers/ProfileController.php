@@ -115,7 +115,7 @@ class ProfileController extends \app\components\BaseController
 
     public function actionIndex(int $id)
     {
-        if(intval($id) == intval(Yii::$app->user->identity->profile->id))
+        if(!Yii::$app->user->isGuest && intval($id) == intval(Yii::$app->user->identity->profile->id))
           return $this->redirect(['/profile/me']);
 
         $profile=$this->findModel($id);
