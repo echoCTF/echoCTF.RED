@@ -55,19 +55,7 @@ $profile->scenario='validator';
       </div><!-- // end profile card col-md-4 -->
 <?php endif;?>
     </div>
-    <?php if(count($profile->owner->challengeSolvers)>0):?>
-    <?=$this->render('_challenge_solves',['profile'=>$profile]);?>
-    <?php endif;?>
-
-    <?php if($profile->headshotsCount>0):?>
-    <?=$this->render('_headshots',['profile'=>$profile]);?>
-    <?php endif;?>
-
-    <?php if($game->badges !== null && $game->badges->received_by($profile->player_id)->count() > 0):?><h3>Badges</h3>
-    <div class="row game-badges">
-    <?=$this->render('_badges',['game'=>$game,'profile'=>$profile]);?>
-    </div>
-    <?php endif;?>
+    <?=$this->render('_profile_tabs',['profile'=>$profile,'game'=>$game]);?>
 
     <div class="row">
       <div class="col">

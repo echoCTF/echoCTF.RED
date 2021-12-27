@@ -1,3 +1,5 @@
+<h3>Badges</h3>
+<div class="row game-badges">
   <?php foreach($game->badges->received_by($profile->player_id)->all() as $badge):?>
   <div class="col col-xl-4 col-sm-12 col-md-6 col-lg-6">
     <div class="iconic-card">
@@ -11,3 +13,4 @@
     </div>
   </div>
   <?php endforeach;?>
+</div>
