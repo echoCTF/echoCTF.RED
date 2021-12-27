@@ -4,7 +4,7 @@ use app\widgets\Twitter;
 ?>
 <div class="dropdown">
 <?=$PRELINK?>
-  <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  <button class="btn btn-info dropdown-toggle btn-block" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
     <i class="fas fa-share-alt"></i> SHARE
   </button>
   <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
