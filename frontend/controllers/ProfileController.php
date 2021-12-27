@@ -132,7 +132,7 @@ class ProfileController extends \app\components\BaseController
 
     public function actionInvite(int $id)
     {
-      if(intval($id) == intval(Yii::$app->user->identity->profile->id))
+      if(!Yii::$app->user->isGuest)
         return $this->redirect(['/profile/me']);
 
 
