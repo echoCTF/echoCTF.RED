@@ -80,7 +80,7 @@ if($headshot)
   $this->registerMetaTag(['name'=>'article:published_time', 'content'=>$headshot->created_at]);
 }
 ?>
-<div class="row">
+  <div class="row">
       <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 target-card">
         <?=$this->render('_target_card', ['target'=>$target,'spinlink'=>$spinlink]);?>
       </div>
@@ -98,8 +98,9 @@ if($headshot)
           </div>
         </div>
         <?php if($headshot && $headshot->rating>=0) echo "<center class='text-primary'>headshoter rating: ",$headshot->rated,"</center>";?>
-        <?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100 && $target->writeup_allowed):?>
+        <?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100):?>
         <div class="row">
+          <?php if($target->writeup_allowed):?>
           <div class="col">
           <?=Html::a("<i class='fas fa-book'></i> Submit",
                       ['writeup/submit','id'=>$target->id],
@@ -112,6 +113,7 @@ if($headshot)
                         'alt'=>'Submit a writeup for this target'
                     ])?>
           </div>
+          <?php endif;?>
           <div class="col">
             <?php
               $this->_description=sprintf('Check this out, I just headshotted %s at %s', $headshot->target->name, \Yii::$app->sys->{"event_name"});
@@ -128,7 +130,6 @@ if($headshot)
         </div>
         <?php elseif(Yii::$app->user->id === $identity->player_id && $target->progress==100):?>
         <div class="row">
-          <?php if($target->writeup_allowed):?>
           <div class="col">
           <?=Html::a("<i class='fas fa-book'></i> View",
                       ['writeup/view','id'=>$target->id],
@@ -140,7 +141,6 @@ if($headshot)
                         'alt'=>'View or update your writeup for this target'
                     ])?>
           </div>
-          <?php endif;?>
           <div class="col">
             <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>'/game/default/rate-headshot']);?>
           </div>
@@ -167,99 +167,21 @@ if($headshot)
         echo $player_timer,"<br/>";
         Card::end();?>
       </div>
-</div>
+  </div>
   <div class="row">
     <div class="col">
-      <div class="card terminal">
-        <div class="card-body">
-          <?php if(!Yii::$app->user->isGuest && count($target->writeups)>0 && PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])===null && !($identity->player_id===Yii::$app->user->id && $target->progress==100)):?>
-          <?=Html::a(
-            '<i class="fas fa-question-circle" style="font-size: 1.5em;"></i> Writeups available.',
-              ['/target/writeup/enable', 'id'=>$target->id],
-              [
-                'style'=>"font-size: 1.0em;",
-                'title' => 'Request access to writeups',
-                'rel'=>"tooltip",
-                'data-pjax' => '0',
-                'data-method' => 'POST',
-                'data-confirm'=>'Are you sure you want to enable access to writeups for this target? Any remaining flags will have their points reduced by 50%.',
-                'aria-label'=>'Request access to writeups',
-              ]
-          )?><br/><?php endif;?>
-          <?=$target->description?>
-          <?php if($target->metadata):?>
-            <?php if(!empty($target->metadata->pre_exploitation)):?><b>Pre exploitation</b>: <?=$target->metadata->pre_exploitation?><br/><?php endif;?>
-            <?php if(!empty($target->metadata->post_exploitation)):?><b>Post exploitation</b>: <?=$target->metadata->post_exploitation?><?php endif;?>
-          <?php endif;?>
-          <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
-            <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-lightbulb text-success'></i> <code class='text-success'>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
-          <?php endif;?>
-        </div>
-      </div>
+      <?=$this->render('_target_description',['target'=>$target,'identity'=>$identity]);?>
 
       <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
-      <div class="card terminal writeups">
-        <div class="card-body table-responsive">
-          <h4><i class="fas fa-book"></i> Target Writeups</h4>
-          <?php foreach($target->writeups as $writeup):?>
-            <p><details><summary><b style="font-size: 1.2em;">Writeup by <?=Html::encode($writeup->player->username)?>, submitted <?=$writeup->created_at?></b> (<code>status:<?=$writeup->status?></code>)</summary>
-              <div class="markdown"><?=$writeup->formatted?></div>
-            </details></p>
-          <?php endforeach;?>
-        </div>
-      </div>
+      <?=$this->render('_target_writeups',['target'=>$target]);?>
       <?php endif;?>
 
-
-<?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id && (Yii::$app->user->identity->getFindings($target->id)->count()>0 || Yii::$app->user->identity->getTreasures($target->id)->count()>0)):?>
-      <div class="card terminal">
-        <div class="card-body">
-          <pre style="font-size: 0.9em;">
-<?php
-          if(Yii::$app->user->identity->getFindings($target->id)->count()>0) echo '# Discovered services',"\n";
-          foreach(Yii::$app->user->identity->getFindings($target->id)->all() as $finding)
-          {
-            printf("* %s://%s:%d\n",$finding->protocol,long2ip($target->ip),$finding->port);
-          }
-
-          if(Yii::$app->user->identity->getTreasures($target->id)->count()>0) echo "\n",'# Discovered flags',"\n";
-          foreach(Yii::$app->user->identity->getTreasures($target->id)->orderBy(['id' => SORT_DESC])->all() as $treasure)
-          {
-            printf("* (%s/%d pts) %s\n",$treasure->category,$treasure->points,$treasure->location);
-            //if(trim($treasure->solution)!=='') echo $treasure->solution,"\n";
-          }
-?></pre>
-        </div>
-      </div>
-    <?php endif;?>
+      <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id && (Yii::$app->user->identity->getFindings($target->id)->count()>0 || Yii::$app->user->identity->getTreasures($target->id)->count()>0)):?>
+      <?=$this->render('_player_discoveries',['target'=>$target]);?>
+      <?php endif;?>
 
     </div>
     <div class="col-lg-4 col-md-6 col-sm-6">
-      <div class="card bg-dark headshots">
-        <div class="card-header">
-          <h4><i class="fas fa-skull"></i> Headshots (older first)</h4>
-        </div>
-        <div class="card-body table-responsive">
-          <?php
-          $headshots=[];
-          foreach($target->headshots as $hs)
-          {
-            if((int) $hs->player->active === 1)
-              $headshots[]=$hs->player->profile->link;
-          }
-          if(!empty($headshots))
-          {
-            echo "<code>",implode(", ", array_slice($headshots, 0,19)),"</code>";
-            if(count($headshots)>19){
-              echo "<details class=\"headshotters\">";
-              echo "<summary data-open=\"Hide more\" data-close=\"Show more\"></summary>";
-              echo "<code>",implode(", ", array_slice($headshots, 19)),"</code>";
-              echo "</details>";
-            }
-          }
-          else
-            echo '<code>none yet...</code>';?>
-        </div>
-      </div>
+      <?=$this->render('_headshots_card',['target'=>$target]);?>
     </div>
   </div>
