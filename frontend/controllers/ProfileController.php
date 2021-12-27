@@ -40,7 +40,7 @@ class ProfileController extends \app\components\BaseController
                      'actions' => ['badge', 'me', 'notifications', 'hints', 'ovpn', 'settings','index','invite'],
                    ],
                    [
-                     'actions' => ['index','badge','invite'],
+                     'actions' => ['index','badge'],
                      'allow' => true,
                    ],
                    [
@@ -48,6 +48,12 @@ class ProfileController extends \app\components\BaseController
                      'allow' => true,
                      'roles'=>['@']
                    ],
+                   [
+                     'actions' => ['invite'],
+                     'allow' => true,
+                     'roles'=>['?'],
+                   ],
+
                 ],
             ],
             [
@@ -132,10 +138,6 @@ class ProfileController extends \app\components\BaseController
 
     public function actionInvite(int $id)
     {
-      if(!Yii::$app->user->isGuest)
-        return $this->redirect(['/profile/me']);
-
-
         $profile=$this->findModel($id);
         if(!$profile)
           return $this->redirect(['/']);
