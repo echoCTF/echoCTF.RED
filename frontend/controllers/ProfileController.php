@@ -53,6 +53,15 @@ class ProfileController extends \app\components\BaseController
                      'allow' => true,
                      'roles'=>['?'],
                    ],
+                   [
+                     'actions' => ['invite'],
+                     'allow' => false,
+                     'roles'=>['@'],
+                     'denyCallback' => function () {
+                       Yii::$app->session->setFlash('info', 'This area is for unregistered friends only!');
+                       return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
+                     }
+                   ],
 
                 ],
             ],
