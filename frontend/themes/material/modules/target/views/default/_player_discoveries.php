@@ -2,28 +2,45 @@
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 ?>
-<div class="card terminal">
-  <div class="card-body">
-    <pre style="font-size: 0.9em;">
+<div class="card bg-dark">
+  <div class="card-header">
+    <h4><i class="fas fa-chalkboard-teacher"></i> Progress</h4>
+  </div>
+  <div class="card-body table-responsive">
 <?php
-    if(Yii::$app->user->identity->getFindings($target->id)->count()>0) echo '# Discovered services',"\n";
-    foreach(Yii::$app->user->identity->getFindings($target->id)->all() as $finding)
+    if(Yii::$app->user->identity->getFindings($target->id)->count()>0)
     {
-      printf("* %s://%s:%d\n",$finding->protocol,long2ip($target->ip),$finding->port);
-      if($finding->hints!=[])
-      {
-        echo " <i class='fas fa-lightbulb text-success'></i> <code class='text-success'>", implode(', ', ArrayHelper::getColumn($finding->hints, 'title')), "</code>";
-      }
+      echo '# Discovered services';
+      echo Html::ul(Yii::$app->user->identity->getFindings($target->id)->all(), ['item' => function($item, $index) use ($target) {
+          return Html::tag(
+              'li',
+              sprintf("<code>%s://%s:%d</code>",$item->protocol,long2ip($target->ip),$item->port),
+              //['class' => 'post']
+          );
+      }]);
     }
-    if(Yii::$app->user->identity->getTreasures($target->id)->count()>0) echo "\n",'# Discovered flags',"\n";
-    foreach(Yii::$app->user->identity->getTreasures($target->id)->orderBy(['id' => SORT_DESC])->all() as $treasure)
+    if(Yii::$app->user->identity->getTreasures($target->id)->count()>0)
     {
-      printf("* (%s/%d pts) %s\n",$treasure->category,$treasure->points,$treasure->location);
-      if($treasure->hints!=[])
-      {
-        echo " <i class='fas fa-lightbulb text-success'></i> <code class='text-success'>", implode(', ', ArrayHelper::getColumn($treasure->hints, 'title')), "</code>";
-      }
+      echo '# Discovered flags';
+      echo Html::ul(Yii::$app->user->identity->getTreasures($target->id)->orderBy(['id' => SORT_DESC])->all(), ['item' => function($item, $index) use ($target) {
+        return Html::tag(
+            'li',
+            sprintf("<code>(%s/%d pts) %s</code>",$item->category,$item->points,$item->location),
+            //['class' => 'post']
+        );
+      }]);
     }
-?></pre>
+    if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count()>0)
+    {
+      echo '# Hints',"\n";
+      echo Html::ul(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->all(), ['item' => function($item, $index) use ($target) {
+        return Html::tag(
+            'li',
+            '<code>'.$item->hint->title.'</code>',
+            //['class' => 'post']
+        );
+      }]);
+    }
+?>
   </div>
 </div>
