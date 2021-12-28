@@ -212,3 +212,19 @@ purpose: >
 
 description: >
   description for the target
+
+metadata:
+  scenario: >
+    sample scenario
+  instructions: >
+    sample instructions
+  solution: >
+    sample solution
+  pre_credits: >
+    pre exploitation credits
+  post_credits: >
+    post exploitation credits
+  pre_exploitation: >
+    pre exploitation specific references and details
+  post_exploitation: >
+    post exploitation specific references and details
