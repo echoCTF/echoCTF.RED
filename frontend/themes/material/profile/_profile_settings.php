@@ -13,10 +13,10 @@ $this->_fluid="-fluid";
 
 <div class="profile-form">
     <div class="row">
-      <div class="col-lg-5">
+      <div class="col-lg-6">
         <?=$form->field($model, 'visibility')->dropDownList($model->visibilities, ['prompt'=>'Select your profile visibility', 'class'=>'form-control selectpicker', 'data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select the desired visibility setting for your profile')?>
       </div>
-      <div class="col-lg-5">
+      <div class="col-lg-6">
 	      <?=$form->field($model, 'country')->dropDownList(ArrayHelper::map(Country::find()->all(), 'id', 'name'), ['prompt'=>'Select your Country', 'class'=>'form-control selectpicker', 'data-size'=>'5', 'data-style'=>"btn-info"])->hint('Select your country')?>
       </div>
     </div>
