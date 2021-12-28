@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: Configure docker servers for echoCTF
   hosts: all

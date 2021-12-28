@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: Setup an OpenBSD to act as a database server for echoCTF.RED
   hosts: all

@@ -1,3 +1,5 @@
+#!/usr/bin/env ansible-playbook
+---
 - name: Build, tag and push docker-target images
   hosts: targets
   gather_facts: false

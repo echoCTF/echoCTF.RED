@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: "Setup an OpenBSD server for participantUI (frontend)"
   hosts: all

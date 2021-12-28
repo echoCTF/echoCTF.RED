@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: Gather details from inventory and generate sql based DNS zone files
   hosts: all

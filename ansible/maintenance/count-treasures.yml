@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: Count treasures per target based on targets host_vars
   hosts: all

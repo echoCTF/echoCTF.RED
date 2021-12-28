@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: "Setup echoCTF.RED VPN OpenBSD Gateway (standalone)"
   hosts: all

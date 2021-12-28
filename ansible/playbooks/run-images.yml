@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 - name: Run a target container with given specs
   hosts: targets
   gather_facts: false

@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: Update Vultr DNS Records for a domain
   hosts: all

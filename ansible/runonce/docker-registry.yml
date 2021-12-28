@@ -1,3 +1,5 @@
+#!/usr/bin/env ansible-playbook
+--
 - name: "Setup docker registry on an OpenBSD server (standalone)"
   hosts: all
   become_method: doas

@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: Cleanup docker servers from containers and pulled images
   hosts: all
