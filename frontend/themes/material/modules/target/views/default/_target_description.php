@@ -18,10 +18,7 @@ use app\modules\target\models\PlayerTargetHelp as PTH;
         ]
     )?><br/><?php endif;?>
     <?=$target->description?>
-    <?php if($target->metadata):?>
-      <?php if(!empty($target->metadata->pre_exploitation)):?><b>Pre exploitation</b>: <?=$target->metadata->pre_exploitation?><br/><?php endif;?>
-      <?php if(!empty($target->metadata->post_exploitation)):?><b>Post exploitation</b>: <?=$target->metadata->post_exploitation?><?php endif;?>
-    <?php endif;?>
+    <?=$this->render('_target_metadata',['target'=>$target,'identity'=>$identity]);?>
     <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
       <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-lightbulb text-success'></i> <code class='text-success'>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
     <?php endif;?>
