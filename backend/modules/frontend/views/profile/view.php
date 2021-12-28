@@ -38,6 +38,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'country',
             'avatar',
             'approved_avatar:boolean',
+            'pending_progress:boolean',
             'visibility',
             'twitter',
             'github',

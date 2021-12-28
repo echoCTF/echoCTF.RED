@@ -44,11 +44,22 @@ $profile->scenario='validator';
     </div>
 <?php endif;?>
     <div class="row d-flex justify-content-center">
+<?php if($profile->isMine || $profile->pending_progress):?>
       <div class="col-lg-9">
-        <?php \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
-        <?php echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>'Progress', 'category'=>'Pending progress of '.Html::encode($profile->owner->username).' on platform targets.', 'personal'=>true,'hidden_attributes'=>['id']]);?>
-        <?php \yii\widgets\Pjax::end()?>
+        <?php
+        \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);
+        $title_prefix="";
+        if($profile->isMine && $profile->pending_progress===false)
+          $title_prefix='<b><i rel="tooltip" title="Progress will NOT be visible to others" class="fas fa-eye-slash"></i></b> ';
+        else if($profile->isMine)
+          $title_prefix='<b><i rel="tooltip" title="Progress will be visible to others" class="fas fa-eye"></i></i></b> ';
+
+        $category='Pending progress of '.Html::encode($profile->owner->username).' on platform targets.';
+        echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>$title_prefix.'Progress', 'category'=>$category, 'personal'=>true,'hidden_attributes'=>['id']]);
+        \yii\widgets\Pjax::end();
+        ?>
       </div>
+<?php endif;?>
 <?php if($profile->isMine):?>
       <div class="col-xl-3">
       <?=$this->render('_card', ['profile'=>$profile]);?>

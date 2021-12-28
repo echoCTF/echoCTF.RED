@@ -34,16 +34,13 @@ $this->_fluid="-fluid";
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-lg-12">
-      </div>
-    </div>
 
     <div class="row">
       <div class="col-lg-12">
         <?=$form->field($model, 'bio')->textarea(['rows'=>'4']) ?>
       </div>
     </div>
+
     <div class="row">
       <div class="col-lg-4">
         <?=$form->field($model, 'discord',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text', ['placeholder' => "DiscordUsername#Number"])->Label('<i class="fab fa-discord"></i> Discord')->hint('Enter your discord user and number') ?>
@@ -64,6 +61,12 @@ $this->_fluid="-fluid";
     		<?=$form->field($model, 'htb',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text',['placeholder'=>'1234'])->hint('Your HTB profile ID') ?>
       </div>
     </div>
+    <div class="row">
+      <div class="col-lg-12">
+          <?=$form->field($model, 'pending_progress')->checkBox(['label'=>'Show pending target progress?'])->Label('<i class="fas fa-bullhorn"></i> Progress')?>
+      </div>
+    </div>
+
     <div class="form-group">
         <?=Html::submitButton(Yii::t('app', 'Update Profile'), ['class' => 'btn btn-info pull-right']) ?>
     </div>

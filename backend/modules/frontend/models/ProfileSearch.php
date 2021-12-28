@@ -20,7 +20,7 @@ class ProfileSearch extends Profile
         return [
             [['id', 'player_id'], 'integer'],
             [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
-            [['username', 'bio', 'avatar', 'twitter', 'country', 'github', 'created_at', 'updated_at','approved_avatar','discord'], 'safe'],
+            [['username', 'bio', 'avatar', 'twitter', 'country', 'github', 'created_at', 'updated_at','approved_avatar','discord','pending_progress'], 'safe'],
         ];
     }
 

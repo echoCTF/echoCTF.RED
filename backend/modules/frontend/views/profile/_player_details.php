@@ -37,6 +37,11 @@ use yii\helpers\Html;
           <td><?=$model->visibility?></td>
         </tr>
 
+        <tr>
+          <td><span class="fas fa-tasks text-warning"></span></td>
+          <td>pending progress</td>
+          <td><?=$model->pending_progress?></td>
+        </tr>
 
         <tr>
           <td><span class="fas fa-at text-warning"></span></td>
