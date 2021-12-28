@@ -1,4 +1,6 @@
 <?php
+use yii\helpers\Html;
+use yii\helpers\ArrayHelper;
 use app\modules\target\models\PlayerTargetHelp as PTH;
 ?>
 <div class="card terminal">
@@ -19,8 +21,5 @@ use app\modules\target\models\PlayerTargetHelp as PTH;
     )?><br/><?php endif;?>
     <?=$target->description?>
     <?=$this->render('_target_metadata',['target'=>$target,'identity'=>$identity]);?>
-    <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id):?>
-      <?php if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count() > 0) echo "<br/><i class='fas fa-lightbulb text-success'></i> <code class='text-success'>", implode(', ', ArrayHelper::getColumn($identity->owner->getPlayerHintsForTarget($target->id)->all(), 'hint.title')), "</code>";?>
-    <?php endif;?>
   </div>
 </div>
