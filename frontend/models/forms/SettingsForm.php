@@ -51,6 +51,7 @@ class SettingsForm extends Model
     public $discord;
     public $youtube;
     public $visibility;
+    public $pending_progress;
     public $uploadedAvatar;
 
     /**
@@ -61,6 +62,7 @@ class SettingsForm extends Model
         return [
           [['fullname'], 'trim'],
           [['fullname'], 'string', 'max'=>32],
+          [['pending_progress'], 'boolean', 'trueValue' => true, 'falseValue' => false],
 
           /* email field rules */
           [['email'], 'trim'],
@@ -137,6 +139,7 @@ class SettingsForm extends Model
       $this->visibility=$this->_player->profile->visibility;
       $this->country=$this->_player->profile->country;
       $this->avatar=$this->_player->profile->avatar;
+      $this->pending_progress=$this->_player->profile->pending_progress;
       $this->bio=$this->_player->profile->bio;
       $this->_player->profile->scenario='validator';
 
@@ -215,6 +218,7 @@ class SettingsForm extends Model
 
       $this->_player->profile->scenario="me";
       $this->_player->profile->visibility=$this->visibility;
+      $this->_player->profile->pending_progress=$this->pending_progress;
       $this->_player->profile->country=$this->country;
       $this->_player->profile->avatar=$this->avatar;
       $this->_player->profile->bio=$this->bio;
