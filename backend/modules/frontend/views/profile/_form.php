@@ -27,6 +27,7 @@ use app\modules\settings\models\Country;
     <?= $form->field($model, 'bio')->textarea(['rows' => 6]) ?>
 
     <div class="row form-group">
+      <div class="col-sm-2"><?= $form->field($model, 'pending_progress')->checkbox()?></div>
       <div class="col-sm-2"><?= $form->field($model, 'approved_avatar')->checkbox()?></div>
       <div class="col-sm-3"><?= $form->field($model, 'avatar')->textInput(['maxlength' => true]) ?></div>
     </div>
