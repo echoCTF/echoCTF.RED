@@ -33,6 +33,7 @@ use app\modules\target\models\Writeup;
  * @property string $updated_at
  * @property boolean $visible
  * @property boolean $approved_avatar
+ * @property boolean $pending_progress
  * @property string $avtr
  * @property boolean $isMine
  *
@@ -73,6 +74,7 @@ class ProfileAR extends \yii\db\ActiveRecord
                     'terms_and_conditions' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                     'mail_optin' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                     'approved_avatar' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                    'pending_progress' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                 ],
                 'typecastAfterValidate' => true,
                 'typecastBeforeSave' => true,
@@ -84,7 +86,7 @@ class ProfileAR extends \yii\db\ActiveRecord
     {
         return [
             'validator' => ['visibility', 'country', 'uploadedAvatar', 'bio','youtube','twitch', 'discord', 'twitter', 'github', 'htb',],
-            self::SCENARIO_ME => ['visibility', 'country', 'uploadedAvatar', 'bio','youtube','twitch', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr'],
+            self::SCENARIO_ME => ['visibility', 'country', 'uploadedAvatar', 'bio','youtube','twitch', 'discord', 'twitter', 'github', 'htb', 'terms_and_conditions', 'mail_optin', 'gdpr','pending_progress'],
             self::SCENARIO_REGISTER => ['username', 'email', 'password'],
             self::SCENARIO_SIGNUP => ['gdpr', 'terms_and_conditions'],
         ];
@@ -98,7 +100,7 @@ class ProfileAR extends \yii\db\ActiveRecord
             [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio','youtube','twitch'], 'trim'],
             ['country', 'exist', 'targetClass' => Country::class, 'targetAttribute' => ['country' => 'id']],
             [['player_id', 'country', 'avatar', 'visibility'], 'required'],
-            [['terms_and_conditions', 'mail_optin', 'gdpr','approved_avatar'], 'boolean', 'trueValue' => true, 'falseValue' => false],
+            [['terms_and_conditions', 'mail_optin', 'gdpr','approved_avatar','pending_progress'], 'boolean', 'trueValue' => true, 'falseValue' => false],
             [['approved_avatar'], 'default', 'value'=>Yii::$app->sys->approved_avatar],
             [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
             [['visibility'], 'default', 'value' =>  Yii::$app->sys->profile_visibility!==false ? Yii::$app->sys->profile_visibility : 'ingame'],
@@ -152,6 +154,7 @@ class ProfileAR extends \yii\db\ActiveRecord
           'created_at' => 'Created At',
           'updated_at' => 'Updated At',
           'owner.username' => 'Username',
+          'pending_progress' => 'Pending Progress',
         ];
     }
 
