@@ -52,6 +52,7 @@ else {
               <?=Html::a("<i class='fas fa-user'></i> Edit", ['profile/settings'], ['class'=>'btn btn-danger btn-sm','alt'=>'Edit profile and account settings'])?>
               <?=Html::a("<i class='fas fa-id-badge'></i> Badge", ['profile/badge','id'=>$profile->id], ['class'=>'btn btn-success btn-sm'])?>
           </li>
+          <li class="nav-item text-left"><strong><i class="fas fa-users"></i> <?=Html::a("Invites", Url::to(['profile/invite', 'id'=>$profile->id],true),['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!'])?></strong> <span class="pull-right"><?=$profile->invitesCount?></span></li>
           <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($profile->spins->counter)?></abbr> / <abbr title="Total Spins"><?=intval($profile->spins->total)?></abbr></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-file-signature"></i> Real name</strong> <span class="pull-right"><?=Html::encode($profile->owner->fullname)?></span></li>
@@ -59,7 +60,6 @@ else {
           <li class="nav-item text-left"><strong><i class="fas fa-globe"></i> Country</strong> <span class="pull-right"><?=$profile->rCountry->name?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-calendar-check"></i> Joined</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->owner->created))?></span></li>
           <li class="nav-item text-left"><strong><i class="far fa-calendar-alt"></i> Last seen</strong> <span class="pull-right"><?=date("d.m.Y", strtotime($profile->last->on_pui))?></span></li>
-          <li class="nav-item text-left"><strong><i class="fas fa-child"></i> <?=Html::a("Invites", Url::to(['profile/invite', 'id'=>$profile->id],true),['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!'])?></strong> <span class="pull-right"><?=$profile->invitesCount?></span></li>
           <li class="nav-item text-center" style="font-size: 2.3em"><?php if(trim($profile->twitter)):?><?=Html::a('<i class="fab fa-twitter text-twitter"></i>', "https://twitter.com/".Html::encode($profile->twitter), ['target'=>'_blank','title'=>"Twitter profile",'rel'=>'noopener noreferrer nofollow'])?><?php endif;?>
           <?php if(trim($profile->github)):?><?=Html::a('<i class="fab fa-github text-github"></i>', "https://github.com/".Html::encode($profile->github), ['target'=>'_blank','title'=>"Github profile",'rel'=>'noopener noreferrer nofollow'])?><?php endif;?>
           <?php if(trim($profile->htb)):?><?=Html::a('<i class="fab fa-codepen text-primary"></i>', "https://www.hackthebox.eu/profile/".Html::encode($profile->htb), ['target'=>'_blank','title'=>"HTB profile",'rel'=>'noopener noreferrer nofollow'])?><?php endif;?>
