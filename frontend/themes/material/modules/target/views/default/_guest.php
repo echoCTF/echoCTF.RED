@@ -5,22 +5,12 @@ use yii\helpers\Html;
 <section class="section about-section gray-bg" id="about">
   <div class="container">
       <div class="row align-items-center d-flex justify-content-center">
-        <div class="col-lg-1">
-            <img class="img-fluid" style="max-height: 150px" src="<?=$target->logo?>" align="right"/>
-        </div>
-
           <div class="col-lg-6">
               <div class="about-text go-to orbitron">
                   <h3 class="text-primary orbitron"><?=$target->name?></h3>
                   <h4><code class="orbitron"><?=long2ip($target->ip)?></code></h4>
                   <?=$target->purpose?>
-                  <div class="row about-list">
-                      <div class="col-md-6">
-                      </div>
-
-                      <div class="col-md-6">
-                      </div>
-                  </div>
+                  <div class="row about-list"></div>
               </div>
           </div>
       </div>

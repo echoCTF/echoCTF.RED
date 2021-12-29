@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 use yii\widgets\ListView;
 use app\widgets\stream\StreamWidget as Stream;
-$this->title=Yii::$app->sys->event_name.' Target: '.$target->name. ' / '.long2ip($target->ip). ' #'.$target->id;
+$this->title=Yii::$app->sys->event_name.' Target: '.$target->name. ' / '.long2ip($target->ip);
 $this->_description=$target->purpose;
 $this->_image=\yii\helpers\Url::to($target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$target->id], 'https');
@@ -23,6 +23,10 @@ $this->_fluid='-fluid';
 <?php if($target->network):?>
     <div><p class="text-info">Target from: <b><?=Html::a($target->network->name,['/network/default/view','id'=>$target->network->id])?></b></p></div>
 <?php endif;?>
+
+<div class="watermarked img-fluid">
+<img src="<?=$target->logo?>" width="100px"/>
+</div>
 
 <?php
 if(Yii::$app->user->isGuest)
