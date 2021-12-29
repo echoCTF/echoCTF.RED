@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Target */
 
-$this->title="View logs for ".$model->name."/".$model->ipoctet." running on ".($model->server!="" ?: "localhost");
+$this->title="View logs for ".$model->name."/".$model->ipoctet." running on ".($model->server!="" ? $model->server: "localhost");
 $this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
 $this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
 $this->params['breadcrumbs'][]=$this->title;
