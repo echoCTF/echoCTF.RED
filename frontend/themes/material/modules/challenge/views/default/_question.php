@@ -17,7 +17,7 @@ global $first;
         <?php $form=ActiveForm::begin([
             'enableClientValidation' => false,
             //'id' => 'answer-form',
-            'options'=>['autocomplete'=>'off'],
+            'options'=>['autocomplete'=>'off','class'=>'challenge_answer_form'],
             'layout' => 'horizontal',
             'fieldConfig' => [
                 'template' => "<div class='row'><div class='col-xl-9 col-sm-8'>{input}</div><div class='col-xl-3 col-sm-4'>".Html::submitButton('Answer', ['class' => 'btn btn-primary', 'name' => 'answer-button']).'</div></div>',

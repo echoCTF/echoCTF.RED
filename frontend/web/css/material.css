@@ -390,6 +390,10 @@ td.td-actions,
     }
 }
 
+#team-create-form input:-webkit-autofill,
+#team-create-form input:-webkit-autofill:hover,
+#team-create-form input:-webkit-autofill:focus,
+#team-create-form input:-webkit-autofill:active,
 #form-signup input:-webkit-autofill,
 #form-signup input:-webkit-autofill:hover,
 #form-signup input:-webkit-autofill:focus,
@@ -815,4 +819,12 @@ mark {
 }
 .theme-color {
     color: #fc5356;
+}
+
+.challenge_answer_form .form-control::-webkit-input-placeholder,
+.challenge_answer_form input[type=text].form-control
+{
+  color:black;
+  opacity:0.7;
+  font-family: orbitron;
 }
