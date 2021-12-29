@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 use yii\widgets\ListView;
 use app\widgets\stream\StreamWidget as Stream;
-$this->title=Yii::$app->sys->event_name.' Target: '.$target->name. ' / '.long2ip($target->ip). ' #'.$target->id;
+$this->title=Yii::$app->sys->event_name.' Target: '.$target->name. ' / '.long2ip($target->ip);
 $this->_description=$target->purpose;
 $this->_image=\yii\helpers\Url::to($target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$target->id], 'https');
@@ -24,19 +24,23 @@ $this->_fluid='-fluid';
     <div><p class="text-info">Target from: <b><?=Html::a($target->network->name,['/network/default/view','id'=>$target->network->id])?></b></p></div>
 <?php endif;?>
 
-    <div class="watermarked img-fluid">
-    <?=sprintf('<img src="%s" width="100px"/>', $target->logo)?>
-    </div>
-    <?php
-    if(Yii::$app->user->isGuest)
-      echo $this->render('_guest', ['target'=>$target, 'playerPoints'=>$playerPoints]);
-    else
-      echo $this->render('_versus', ['target'=>$target, 'playerPoints'=>$playerPoints, 'identity'=>Yii::$app->user->identity->profile]);
-      ?>
+<div class="watermarked img-fluid">
+<img src="<?=$target->logo?>" width="100px"/>
+</div>
 
-        <?php \yii\widgets\Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);?>
-        <?php echo Stream::widget(['divID'=>'target-activity', 'dataProvider' => $streamProvider, 'pagerID'=>'stream-pager', 'title'=>'Target activity', 'category'=>'Latest activity on the target']);?>
-        <?php \yii\widgets\Pjax::end();?>
+<?php
+if(Yii::$app->user->isGuest)
+  echo $this->render('_guest', ['target'=>$target, 'playerPoints'=>$playerPoints,'streamProvider'=>$streamProvider->getTotalCount()]);
+else
+{
+  echo $this->render('_versus', ['target'=>$target, 'playerPoints'=>$playerPoints, 'identity'=>Yii::$app->user->identity->profile]);
+
+  \yii\widgets\Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
+  echo Stream::widget(['divID'=>'target-activity', 'dataProvider' => $streamProvider, 'pagerID'=>'stream-pager', 'title'=>'Target activity', 'category'=>'Latest activity on the target']);
+  \yii\widgets\Pjax::end();
+}
+?>
+
   </div>
 </div>
 <?php
