@@ -23,7 +23,7 @@ $this->_fluid="-fluid";
           ],
           'itemOptions' => [
               'tag' => 'div',
-              'class'=>"col-md-3",
+              'class'=>"col-md-4 col-lg-3",
           ],
           'summary'=>false,
           'itemView' => '_team_card',
