@@ -28,7 +28,7 @@ class DefaultController extends Controller
         return [
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite'],
+                'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite', 'mine','view'],
                 'rules' => [
                   [
                     'actions'=>['create', 'join', 'update', 'approve', 'reject'],
@@ -101,7 +101,7 @@ class DefaultController extends Controller
                      },
                  ],
                  [
-                   'actions' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite'],
+                   'actions' => ['index', 'mine', 'create', 'join', 'update', 'approve', 'reject', 'invite', 'view'],
                    'allow' => true,
                    'roles' => ['@'],
                  ],
@@ -118,42 +118,79 @@ class DefaultController extends Controller
         ];
     }
 
+    /**
+     * Shows team model.
+     * @return mixed
+     */
+    public function actionView($token)
+    {
+      $model=$this->findModel(['token'=>$token]);
+      $TP=TeamPlayer::find()->where(['team_id'=>$model->id])->orderBy(['ts' => SORT_ASC]);
+      $dataProvider = new ActiveDataProvider([
+          'query' => TeamPlayer::find()->where(['team_id'=>$model->id])->orderBy(['ts' => SORT_ASC]),
+          'sort' =>false,
+          'pagination' => false,
+      ]);
+      $teamPlayers = ArrayHelper::getColumn($TP->all(),'player_id');
 
+      $stream=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
+      ->where(['player_id'=>$teamPlayers])
+      ->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]);
+      $streamProvider=new ActiveDataProvider([
+            'query' => $stream,
+            'pagination' => [
+                'pageSizeParam'=>'stream-perpage',
+                'pageParam'=>'stream-page',
+                'pageSize' => 10,
+            ]
+      ]);
 
+      return $this->render('view',[
+        'team'=>$model,
+        'streamProvider'=>$streamProvider,
+        'dataProvider'=>$dataProvider,
+      ]);
+    }
+    /**
+     * Shows current team membership.
+     * @return mixed
+     */
+    public function actionMine()
+    {
+      if(Yii::$app->user->identity->team===null)
+      {
+        $this->redirect(['index']);
+      }
+      $dataProvider = new ActiveDataProvider([
+          'query' => TeamPlayer::find()->where(['team_id'=>Yii::$app->user->identity->team->id])->orderBy(['ts' => SORT_ASC]),
+          'sort' =>false,
+          'pagination' => false,
+      ]);
+      $teamPlayers = ArrayHelper::getColumn(Yii::$app->user->identity->team->players,'id');
+
+      $stream=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
+      ->where(['player_id'=>$teamPlayers])
+      ->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]);
+      $streamProvider=new ActiveDataProvider([
+            'query' => $stream,
+            'pagination' => [
+                'pageSizeParam'=>'stream-perpage',
+                'pageParam'=>'stream-page',
+                'pageSize' => 10,
+            ]
+      ]);
+      return $this->render('view', [
+          'dataProvider' => $dataProvider,
+          'streamProvider'=>$streamProvider,
+          'team' => Yii::$app->user->identity->team
+      ]);
+    }
     /**
      * Lists all Team models.
      * @return mixed
      */
     public function actionIndex()
     {
-        if(Yii::$app->user->identity->team!==null)
-        {
-
-          $dataProvider = new ActiveDataProvider([
-              'query' => TeamPlayer::find()->where(['team_id'=>Yii::$app->user->identity->team->id])->orderBy(['ts' => SORT_ASC]),
-              'sort' =>false,
-              'pagination' => false,
-          ]);
-          $teamPlayers = ArrayHelper::getColumn(Yii::$app->user->identity->team->players,'id');
-
-          $stream=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
-          ->where(['player_id'=>$teamPlayers])
-          ->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]);
-          $streamProvider=new ActiveDataProvider([
-                'query' => $stream,
-                'pagination' => [
-                    'pageSizeParam'=>'stream-perpage',
-                    'pageParam'=>'stream-page',
-                    'pageSize' => 10,
-                ]
-          ]);
-          return $this->render('view', [
-              'dataProvider' => $dataProvider,
-              'streamProvider'=>$streamProvider,
-              'team' => Yii::$app->user->identity->team
-          ]);
-        }
-
         $dataProvider = new ActiveDataProvider([
             'query' => Team::find()->joinWith(['teamPlayers'])->groupBy(['team.id']), //->andFilterHaving(['<', 'count(player_id)', Yii::$app->sys->members_per_team]),
             'pagination' => false,
