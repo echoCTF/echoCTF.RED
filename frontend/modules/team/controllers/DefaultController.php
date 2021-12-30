@@ -374,7 +374,7 @@ class DefaultController extends Controller
       if(Yii::$app->user->identity->teamLeader->logo!==null)
       {
         $fname=Yii::getAlias(sprintf('@app/web/images/avatars/team/%s.png',Yii::$app->user->identity->teamLeader->id));
-        unlink($fname);
+        @unlink($fname);
       }
       Yii::$app->user->identity->teamLeader->delete();
     }
