@@ -6,7 +6,7 @@ use yii\widgets\ListView;
 use yii\widgets\Pjax;
 use app\widgets\stream\StreamWidget as Stream;
 
-$this->title=Yii::$app->sys->event_name.' Team details ['.Html::encode($team->name).']';
+$this->title=Yii::$app->sys->event_name.' Team details ['.$team->name.']';
 $this->_fluid="-fluid";
 
 ?>
