@@ -20,61 +20,63 @@ $this->_fluid="-fluid";
   <?php endif;?>
     <hr />
     <div class="row">
-      <div class="col-md-8">
+      <div class="col">
         <?php
         Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
         echo Stream::widget(['divID'=>'stream', 'dataProvider' => $streamProvider, 'pagerID'=>'stream-pager','category'=>'Latest activity of team on the platform', 'title'=>'Team Activity Stream']);
         Pjax::end();
         ?>
       </div>
-      <div class="col-md-4">
+      <div class="col-xl-4" style="min-width: 27em;max-width: 40em">
         <div class="card card-profile">
           <div class="card-avatar bg-primary">
               <img class="img" src="/images/avatars/team/<?=$team->validLogo?>" />
           </div>
           <div class="card-body table-responsive">
-            <?php if(Yii::$app->user->identity->teamLeader!==null):?><h4 class="badge"><?=Html::a('Update',['/team/default/update'])?></h4><?php endif;?>
-            <h4 class="card-title"><?=Html::encode($team->name)?></h4>
-            <h6 class="badge badge-primary"><?=$team->rank !== null ? $team->rank->ordinalPlace : 'empty'?> place</h6>
-            <h6 class="badge badge-secondary"><?=$team->score !== null ? number_format($team->score->points) : 0?> points</h6>
-            <p class="card-description">
+            <h4 class="card-title  orbitron"><?=Html::encode($team->name)?></h4>
+            <h6 class="badge badge-primary  orbitron"><?=$team->rank !== null ? $team->rank->ordinalPlace : 'empty'?> place</h6>
+            <h6 class="badge badge-secondary  orbitron"><?=$team->score !== null ? number_format($team->score->points) : 0?> points</h6>
+            <p class="card-description orbitron">
               <?=Html::encode($team->description)?>
             </p>
         <?php
         echo GridView::widget([
-    //        'id'=>$divID,
             'dataProvider' => $dataProvider,
             'rowOptions'=>function($model){
               if($model->approved !== 1 ){
                   return ['class' => 'bg-dark text-primary'];
               }
             },
-            'tableOptions'=>['class'=>'table table-xl'],
-            'layout'=>'{summary}{items}',
+            'tableOptions'=>['class'=>'table orbitron'],
+            'layout'=>'{items}',
             'summary'=>'',
+            'showHeader'=>false,
             'columns' => [
+              [
+                'headerOptions' => ['style'=>'max-width: 35px', ],
+                'label'=>null,
+                'format'=>'raw',
+                'value'=>function($model){
+                  return Html::img('/images/avatars/'.$model->player->profile->avtr,['class'=>'rounded', 'style'=>'max-width: 30px; max-height: 30px;']);
+                }
+              ],
               [
                 'headerOptions' => ['class'=>'d-none d-xl-table-cell', ],
                 'contentOptions' => ['class'=>'d-none d-xl-table-cell'],
                 'attribute'=>'player.username',
                 'format'=>'raw',
                 'value'=>function($model){
-                  if($model->player_id===$model->team->owner_id)
-                    return '<i class="fas fa-user-secret text-danger"></i> '.$model->player->profile->link;
-                  return '<i class="fas fa-user-ninja '. ($model->approved===0 ? "text-info": "text-primary").'"></i> '.$model->player->profile->link;
+                    return $model->player->profile->link;
                 },
                 'label' => 'Member'
               ],
-/*              [
-                'attribute'=>'player.email',
-                'label' => 'Email',
-                'visible' => Yii::$app->user->identity->teamLeader!==null
-              ],*/
               'player.playerScore.points:integer',
               'approved:boolean',
               [
                 'class'=> 'app\actions\ActionColumn',
-                'visible'=>\Yii::$app->sys->{"team_manage_members"}===true,
+                'visible'=>function($model){
+                  return \Yii::$app->sys->{"team_manage_members"}===true && ($team->owner_id===Yii::$app->user->id || $model->player_id!==Yii::$app->user->id );
+                },
                 'headerOptions' => ["style"=>'width: 4rem'],
                 'template'=>'{approve} {reject}',
                 'visibleButtons' => [
@@ -129,7 +131,9 @@ $this->_fluid="-fluid";
           ]
         ]);
         ?>
+          <?php if(Yii::$app->user->identity->teamLeader!==null && $team->owner_id===Yii::$app->user->id):?><?=Html::a('Update',['/team/default/update'],['class'=>'btn btn-primary'])?><?php endif;?>
           </div>
+
         </div>
       </div>
 

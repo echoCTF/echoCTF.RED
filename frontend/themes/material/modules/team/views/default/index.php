@@ -12,7 +12,7 @@ $this->_fluid="-fluid";
     <h2><?=Html::encode($this->title)?></h2>
     Join a team<?php if( Yii::$app->user->identity->team===null):?> or <b><?= Html::a('Create', ['/team/default/create']) ?></b> a new one<?php endif;?>!
     <hr />
-
+    <div class="card-deck d-flex justify-content-center">
     <?php
     $colsCount = 3;
     echo ListView::widget([
@@ -23,7 +23,7 @@ $this->_fluid="-fluid";
           ],
           'itemOptions' => [
               'tag' => 'div',
-              'class'=>"col-md-4 col-lg-3",
+              'class'=>"col d-flex align-items-stretch",
           ],
           'summary'=>false,
           'itemView' => '_team_card',
@@ -44,6 +44,6 @@ $this->_fluid="-fluid";
           echo "</div>";
       }
       ?>
-
+      </div>
   </div>
 </div>

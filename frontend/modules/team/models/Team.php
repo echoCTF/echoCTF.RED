@@ -60,7 +60,8 @@ class Team extends \yii\db\ActiveRecord
             [['academic', 'owner_id'], 'integer'],
             [['academic'], 'boolean'],
             [['name'], 'trim'],
-            [['name'], 'string', 'length' => [3, 255]],
+            [['name'], 'string', 'length' => [3, 32]],
+            [['description'], 'string', 'max' =>250],
             [['token'], 'string', 'max' => 30],
             [['token'], 'default', 'value' => Yii::$app->security->generateRandomString(10)],
             [['name'], 'unique',  'when' => function($model, $attribute) {

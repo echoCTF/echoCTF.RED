@@ -828,3 +828,28 @@ mark {
   opacity:0.7;
   font-family: orbitron;
 }
+
+.team-card h4.card-title,
+.team-card h6.badge,
+.team-members li.nav-item a
+{
+  font-family: Orbitron;
+}
+
+.team-members li.nav-item a {
+  font-size: 1.1em;
+  font-weight: 700;
+  font-family: Orbitron;
+}
+
+.team-members li.pending a {
+  font-size: 1.1em;
+  color: red;
+  font-weight: 700;
+  font-family: Orbitron;
+}
+
+.team-members li.nav-item img {
+  max-width: 40px;
+  max-height: 40px;
+}
