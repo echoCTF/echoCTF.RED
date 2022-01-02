@@ -126,7 +126,7 @@ class TeamplayerController extends \app\components\BaseController
     {
         $model=$this->findModel($id);
         $model->updateAttributes(['approved' => !$model->approved]);
-
+        Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$model->team_id)->execute();
         return $this->redirect(['index']);
     }
 
