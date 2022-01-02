@@ -4,7 +4,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 use yii\widgets\ListView;
 
-$this->title=Yii::$app->sys->event_name.' Invite to team ['.Html::encode($team->name).']';
+$this->title=Yii::$app->sys->event_name.' Invite to team ['.$team->name.']';
 
 ?>
 <div class="team-invite">
