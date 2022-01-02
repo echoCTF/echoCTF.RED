@@ -51,7 +51,7 @@ class DefaultController extends Controller
                     },
                     'denyCallback' => function() {
                       \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
-                      return $this->redirect(['index']);
+                      return $this->redirect(['mine']);
                     }
                   ],
                   [ // Only join when not on team
@@ -63,7 +63,7 @@ class DefaultController extends Controller
                     },
                     'denyCallback' => function () {
                       \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
-                      return $this->redirect(['index']);
+                      return $this->redirect(['mine']);
                     }
                   ],
                   [ // Only allow updates from teamLeaders
@@ -235,13 +235,13 @@ class DefaultController extends Controller
       if($team->academic!==Yii::$app->user->identity->academic)
       {
         Yii::$app->session->setFlash('error', 'The team you tried to join was not on the same academic scope.');
-        return $this->redirect(['index']);
+        return $this->redirect(['view','token'=>$team->token]);
       }
 
       if($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
       {
         Yii::$app->session->setFlash('error', 'The team you are trying to join is full.');
-        return $this->redirect(['index']);
+        return $this->redirect(['view','token'=>$team->token]);
       }
 
       $tp=new TeamPlayer();
@@ -251,12 +251,12 @@ class DefaultController extends Controller
       if($tp->save()===false)
       {
         Yii::$app->session->setFlash('error', 'Failed to join the team, unknown error occurred.');
-        return $this->redirect(['index']);
+        return $this->redirect(['view','token'=>$team->token]);
       }
 
       Yii::$app->session->setFlash('success', 'You joined the team but it is pending approval by the team leader.');
       // XXX Add notification to the team leader
-      return $this->redirect(['index']);
+      return $this->redirect(['view','token'=>$team->token]);
 
     }
 
@@ -269,10 +269,8 @@ class DefaultController extends Controller
      */
     public function actionUpdate()
     {
-
         $team=$this->findModel(Yii::$app->user->identity->teamLeader->id);
         $team->scenario='update';
-
         if($team->load(Yii::$app->request->post()) && $team->validate())
         {
             $team->logo=sprintf('%s.png',$team->id);
@@ -301,36 +299,37 @@ class DefaultController extends Controller
       if(!$tp->save())
       {
         Yii::$app->session->setFlash('error', 'Failed to approve membership.');
-        return $this->redirect(['index']);
+        return $this->redirect(['view','token'=>$tp->team->token]);
       }
       Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$tp->team_id)->execute();
 
       Yii::$app->session->setFlash('success', 'Membership approved.');
-      return $this->redirect(['index']);
+      return $this->redirect(['view','token'=>$tp->team->token]);
 
     }
 
     public function actionReject($id)
     {
       $tp=$this->findTPModel($id);
-
+      $token=$tp->team->token;
       if($tp->player_id!==Yii::$app->user->id && $tp->team_id!==Yii::$app->user->identity->teamLeader->id)
       {
         Yii::$app->session->setFlash('error', 'You have no permission to cancel this membership.');
-        return $this->redirect(['index']);
+        return $this->redirect(['view','token'=>$token]);
       }
 
       if($tp->delete()===false)
       {
         Yii::$app->session->setFlash('error', 'Failed to cancel membership.');
-        return $this->redirect(['index']);
+        return $this->redirect(['view','token'=>$token]);
       }
-
+      $redir=['view','token'=>$token];
       if($tp->player_id===Yii::$app->user->id)
       {
         if(Yii::$app->user->identity->teamLeader)
         {
           $this->delete_with_extras();
+          $redir=['index'];
         }
         Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$tp->team_id)->execute();
         Yii::$app->session->setFlash('success', 'Your membership has been withdrawn.');
@@ -338,7 +337,7 @@ class DefaultController extends Controller
       else {
         Yii::$app->session->setFlash('success', 'Membership has been withdrawn.');
       }
-      return $this->redirect(['index']);
+      return $this->redirect($redir);
     }
 
     public function actionInvite($token)
