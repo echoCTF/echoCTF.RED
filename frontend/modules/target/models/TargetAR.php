@@ -33,6 +33,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property string $ts
  * @property bool $timer
  * @property int|null $weight
+ * @property float|null $player_rating
  *
  * @property Credential[] $credentials
  * @property Finding[] $findings
@@ -57,6 +58,7 @@ class TargetAR extends \yii\db\ActiveRecord
   public $player_treasures;
   public $player_treasure_points;
   public $player_finding_points;
+  public $player_rating;
   public $ipoctet;
   public $progress;
 
@@ -81,6 +83,7 @@ class TargetAR extends \yii\db\ActiveRecord
             'player_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
             'total_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
             'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
+            'player_rating' => AttributeTypecastBehavior::TYPE_FLOAT,
             'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
             'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
             'writeup_allowed'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
