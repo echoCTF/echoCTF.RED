@@ -44,6 +44,82 @@ $ docker-compose up
 
 For more details check [echoCTF.RED@ReadTheDocs](https://echoctfred.rtfd.io).
 
+## Features
+The list of features supported by the platform is really massive, the most
+interesting are as following:
+
+* System settings
+  - Configurable Event name
+  - Configurable Active status
+  - Configurable timezone
+  - Configurable event start / end dates
+  - Configurable registration opening / closing dates
+* Leaderboard settings
+  - Independent Player and Team leaderboards
+  - Configurable visibility before and after event start/end
+  - Support to show/hide 0 point players
+* Team settings
+  - Configurable teams support
+  - Configurable mandatory teams flag
+  - Configurable team management
+  - Configurable number of maximum team members
+* Player and Registration settings
+  - Configurable activation required
+  - Support for global enable/disable registrations
+  - Configurable player profiles
+  - Configurable player avatar approval
+  - Configurable player profile visibility
+  - Configurable default player homepage
+  - Configurable settings and memory key expiration timeout
+  - Configurable global and individual player number of restarts
+* Twitter settings
+  - Configurable tagging accounts (via)
+  - Configurable automatic hashtags
+  - Quick share links on every event on frontend
+* Support for configurable Targets and Challenges
+  - Target support for start/stop/logs/exec/healthchecks
+  - Unlimited flags per targets & challenges
+  - Dynamic target networks
+  - Dynamic target environment variables
+  - Dynamic target volumes
+  - Support for public and private networks
+  - Support for ondemand start of targets
+  - Target documentation and metadata
+  - Multiple question/flag challenges
+  - Dynamic hints
+  - Configurable tracking of solving times for challenges and targets
+  - Support for target and challenge logos
+  - Support for player rating of targets & challenges
+  - Support for player contributed writeups
+* Detailed activity streams
+ - Player overall activity
+ - Player vs Target activity
+ - All platform activity
+ - Team based activity
+* Network activity tracking and visuals
+* REST support
+* Docker API support
+* Help/Rules/FAQ/Instructions sections
+* URLs Management add/edit/delete/disable
+* Separate player and admin interfaces and authentication databases
+* Configurable SSL certificate details
+* Twitter & Linkedin support for publishing achievements
+* Stand-alone applications for activity streaming
+  - Bots for discord and twitter announcements
+  - websocket leaderboards
+  - websocket activity stream visuals
+  - real time network visuals through logstalgia and gource
+  - dynamic post claim flag actions
+* Advanced player and general moderation features
+  - Ban MX servers from registering
+  - Disable per player URLs
+  - Ban player username/email patterns
+* Integrated OpenBSD (PF) firewall features
+* Support for online subscriptions (Stripe integration)
+* Detailed auditing of flags and network activity
+
+**NOTE:** Dynamic firewall support and network tracking of players is not support on the `docker-compose` versions.
+
 ## Disclaimer
 The documents and guides in this repository are only examples and are not meant
 to be used to setup production environments.
