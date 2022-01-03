@@ -158,6 +158,7 @@ class Team extends \yii\db\ActiveRecord
       }
 
       $fname=Yii::getAlias(sprintf('@app/web/images/avatars/team/%s.png',$this->id));
+      $this->updateAttributes(['logo' => $this->id.'.png']);
       return $this->uploadedAvatar->saveAs($fname);
     }
 

@@ -273,13 +273,12 @@ class DefaultController extends Controller
         $team->scenario='update';
         if($team->load(Yii::$app->request->post()) && $team->validate())
         {
-            $team->logo=sprintf('%s.png',$team->id);
             if($team->save())
             {
               $team->uploadedAvatar = UploadedFile::getInstance($team, 'uploadedAvatar');
               $team->saveLogo();
               Yii::$app->session->setFlash('success', 'Your team was updated.');
-              return $this->redirect(['index']);
+              return $this->redirect(['view','token'=>$team->token]);
             }
         }
 
