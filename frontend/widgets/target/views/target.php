@@ -103,7 +103,7 @@ echo GridView::widget([
         'value'=>function($model) {
 
           $bgcolor="";
-          $abbr=ucfirst($model->difficultyText);
+          $abbr="Ours: ".ucfirst($model->difficultyText).", Players: ".ucfirst($model->getDifficultyText(round($model->player_rating)));
           switch($model->difficulty)
           {
             case 0:
