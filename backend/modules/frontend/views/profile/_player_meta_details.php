@@ -19,12 +19,12 @@ use yii\helpers\Html;
         <tr>
           <td><i class="fas fa-server text-warning"></td>
           <td>Remote IP</td>
-          <td><?=Html::encode($model->owner->last->vpn_remote_address)?></td>
+          <td><?=Html::encode(long2ip($model->owner->last->vpn_remote_address))?></td>
         </tr>
         <tr>
           <td><i class="fas fa-network-wired text-info"></i></i></span></td>
           <td>Local IP</td>
-          <td><?=Html::encode($model->owner->last->vpn_local_address)?></td>
+          <td><?=Html::encode(long2ip($model->owner->last->vpn_local_address))?></td>
         </tr>
 
         <tr>
