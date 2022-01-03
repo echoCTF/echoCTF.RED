@@ -75,8 +75,9 @@ $dataProvider=new ArrayDataProvider([
     <div class="row">
       <div class="col"><?= Html::a('View', ['/team/default/view','token' => $model->token],['class'=>'btn btn-info d-block']) ?></div>
       <?php if($model->getTeamPlayers()->count()<Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team):?>
-      <div class="col"><?= Html::a('Join', ['/team/default/join','token' => $model->token],['class'=>'btn btn-primary d-block', 'data-method' => 'POST']) ?></div>
+      <div class="col"><?= Html::a('Join', ['/team/default/join','token' => $model->token],['class'=>'btn btn-primary d-block', 'data-method' => 'POST','data'=>['confirm'=>'You are about to join this team. Your membership will have to be confirmed by the team captain.','method'=>'POST']]) ?></div>
       <?php endif;?>
+
     </div>
     </div>
 </div>

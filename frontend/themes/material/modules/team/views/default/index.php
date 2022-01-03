@@ -7,17 +7,18 @@ $this->title=Yii::$app->sys->event_name.' Teams';
 $this->_fluid="-fluid";
 
 ?>
+
 <div class="team-index">
   <div class="body-content">
     <h2><?=Html::encode($this->title)?></h2>
-    Join a team<?php if( Yii::$app->user->identity->team===null):?> or <b><?= Html::a('Create', ['/team/default/create']) ?></b> a new one<?php endif;?>!
+    Join a team<?php if( Yii::$app->user->identity->team===null):?> or <b><?= Html::a('Create', ['/team/default/create'],['class'=>'btn btn-info btn-sm']) ?></b> a new one<?php endif;?>!
     <hr />
     <div class="card-deck d-flex justify-content-center">
     <?php
     $colsCount = 3;
     echo ListView::widget([
           'dataProvider' => $dataProvider,
-          'emptyText'=>'<p class="text-warning"><b>Oh no, there are no teams... Quick create one :) </b></p>',
+          'emptyText'=>'<p class="text-warning"><b>Oh! no, there are no teams... Quickly create one :)</b></p>',
           'options' => [
               'tag' => false,
           ],

@@ -104,13 +104,18 @@ $this->_fluid="-fluid";
                             'data-pjax' => '0',
                             'data-method' => 'POST',
                             'aria-label'=>'Approve team membership',
+                            'data'=>['confirm'=>'You are about to approve this player membership!']
                           ]
                       );
                   },
                   'reject' => function($url, $model) {
                       $msg='Reject team membership';
+                      $confirm="You are about to remove this player from the team!";
                       if($model->player_id===Yii::$app->user->id && Yii::$app->user->identity->teamLeader===null)
+                      {
+                        $confirm="You are about to leave this team!";
                         $msg="Withdraw your team membership";
+                      }
 
                       return Html::a(
                         '<i class="far fa-trash-alt"></i>',
@@ -123,6 +128,9 @@ $this->_fluid="-fluid";
                             'data-pjax' => '0',
                             'data-method' => 'POST',
                             'aria-label'=>$msg,
+                            'data'=>[
+                              'confirm'=>$confirm
+                            ]
                           ]
                       );
                   },

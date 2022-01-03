@@ -8,7 +8,7 @@ $this->title=Yii::$app->sys->event_name.' Invite to team ['.$team->name.']';
 
 ?>
 <div class="team-invite">
-  <div class="body-content">
+  <div class="body-content text-center">
     <h2>You have been invited to join [<code><?=Html::encode($team->name)?></code>]</h2>
     <hr />
     <div class="row d-flex justify-content-center">
