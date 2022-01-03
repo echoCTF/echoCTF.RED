@@ -61,6 +61,12 @@ class Card extends \yii\base\Widget
     public $footer=false;
 
     /*
+     * boolean HTML encode titles and text
+     * @var string|false $footer
+     */
+    public $encode=true;
+
+    /*
      *
      * FOR THE BODY CONTENT (inside .card-body class div) user can use varies content types Ex.:
      *
@@ -93,6 +99,11 @@ class Card extends \yii\base\Widget
     {
         $content=ob_get_clean();
         $body='';
+        if($this->encode)
+        {
+          $this->title=Html::encode($this->title);
+          $this->subtitle=Html::encode($this->subtitle);
+        }
         if(!empty($content) && $content != null && $content != '')
             $body='<div class="card-body">'.$content.'</div>';
 
@@ -122,8 +133,8 @@ class Card extends \yii\base\Widget
     public function getDefaultHeader()
     {
       return '<div class="card-header">
-                  <h4 class="card-title">'.Html::encode($this->title).'</h4>
-                  <p class="category">'.Html::encode($this->subtitle).'</p>
+                  <h4 class="card-title">'.$this->title.'</h4>
+                  <p class="category">'.$this->subtitle.'</p>
                 </div>';
     }
 
@@ -151,8 +162,8 @@ class Card extends \yii\base\Widget
                   <div class="card-icon">
                     '.$this->icon.'
                   </div>
-                  <p class="card-category">'.Html::encode($this->subtitle).'</p>
-                  <h4 class="card-title">'.Html::encode($this->title).'</h4>
+                  <p class="card-category">'.$this->subtitle.'</p>
+                  <h4 class="card-title">'.$this->title.'</h4>
                 </div>';
     }
 
@@ -163,8 +174,8 @@ class Card extends \yii\base\Widget
     {
       return '<div class="card-header card-header-text card-header-'.$this->color.'">
                   <div class="card-text">
-                      <h4 class="card-title">'.Html::encode($this->title).'</h4>
-                      <p class="category">'.Html::encode($this->subtitle).'</p>
+                      <h4 class="card-title">'.$this->title.'</h4>
+                      <p class="category">'.$this->subtitle.'</p>
                   </div>
                 </div>';
     }

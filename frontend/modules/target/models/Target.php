@@ -68,9 +68,11 @@ class Target extends TargetAR
     /*
      * Get the text representation of the official target difficulty rating
      */
-    public function getDifficultyText()
+    public function getDifficultyText(int $difficulty=null)
     {
-      return $this->difficulties[(int) $this->difficulty];
+      if($difficulty===null)
+        return $this->difficulties[(int) $this->difficulty];
+      return $this->difficulties[(int) $difficulty];
     }
 
     /*
@@ -116,7 +118,7 @@ class Target extends TargetAR
     {
       if($this->player_spin===false)
         return true;
-        
+
       if($this->spinQueue !== null || intval($this->active) !== 1)
       {
         return true;// Not active or already queued
