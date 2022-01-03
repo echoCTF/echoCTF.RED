@@ -213,6 +213,13 @@ class TargetAR extends \yii\db\ActiveRecord
     }
 
     /*
+     * Get Headshot relations of target in reverse ordr
+     */
+    public function getLastHeadshots()
+    {
+      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at'=>SORT_DESC])->limit(50);
+    }
+    /*
      * Get Writeup relations of target
      */
     public function getWriteups()
