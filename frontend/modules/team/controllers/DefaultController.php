@@ -55,7 +55,7 @@ class DefaultController extends Controller
                     }
                   ],
                   [ // Only join when not on team
-                    'actions'=> ['join','invite'],
+                    'actions'=> ['join'],
                     'allow'=> false,
                     'roles' => ['@'],
                     'matchCallback' => function ($rule, $action) {
