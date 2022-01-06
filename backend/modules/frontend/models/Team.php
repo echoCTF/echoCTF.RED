@@ -14,6 +14,8 @@ use Yii;
  * @property resource $logo
  * @property int $owner_id
  * @property string $token
+ * @property int $inviteonly
+ * @property string $recruitment
  *
  * @property Player $owner
  * @property TeamPlayer[] $teamPlayers
@@ -45,9 +47,10 @@ class Team extends \yii\db\ActiveRecord
         return [
             [['name', 'owner_id'], 'required'],
             [['description', 'logo'], 'string'],
-            [['academic', 'owner_id'], 'integer'],
-            [['academic'], 'boolean'],
-            [['name'], 'string', 'max' => 255],
+            [['academic', 'owner_id','inviteonly'], 'integer'],
+            [['academic','inviteonly'], 'boolean'],
+            [['inviteonly'], 'default','value'=>true],
+            [['name','recruitment'], 'string', 'max' => 255],
             [['token'], 'string', 'max' => 30],
             [['token'], 'default', 'value' => substr(Yii::$app->security->generateRandomString(), 0, 30)],
             [['name'], 'unique'],
@@ -69,6 +72,7 @@ class Team extends \yii\db\ActiveRecord
             'logo' => 'Logo',
             'owner_id' => 'Owner ID',
             'token' => 'Token',
+            'inviteonly'=>'Invite only'
         ];
     }
 
