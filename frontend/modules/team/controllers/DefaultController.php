@@ -192,7 +192,7 @@ class DefaultController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Team::find()->joinWith(['teamPlayers'])->groupBy(['team.id'])->orderBy(['name'=>SORT_ASC]), //->andFilterHaving(['<', 'count(player_id)', Yii::$app->sys->members_per_team]),
+            'query' => Team::find()->joinWith(['teamPlayers'])->groupBy(['team.id'])->orderBy(['name'=>SORT_ASC]), 
             'pagination' => false,
         ]);
 
