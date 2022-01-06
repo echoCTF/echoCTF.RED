@@ -28,6 +28,7 @@ $this->_fluid="-fluid";
           ],
           'summary'=>false,
           'itemView' => '_team_card',
+          'viewParams'=>['invite'=>false],
           'beforeItem' => function ($model, $key, $index, $widget) use ($colsCount) {
               if ($index % $colsCount === 0) {
                   return "<div class='row'>";
