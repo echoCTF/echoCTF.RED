@@ -14,7 +14,7 @@ $this->_fluid="-fluid";
   <div class="body-content">
     <h2>Details for Team [<code><?=Html::encode($team->name)?></code>]</h2>
   <?php if($team->getTeamPlayers()->count()<Yii::$app->sys->members_per_team):?>
-    <p>Allow other players to join the team easily by providing them with this link: <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token],'https'),['/team/default/invite','token'=>$team->token]);?></code></p>
+    <p>Allow other players to join the team easily by providing them with this link: <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token],'https'),Url::to(['/team/default/invite','token'=>$team->token],'https'),['class'=>'text-bold copy-to-clipboard','swal-data'=>'Copied to clipboard!']);?></code></p>
   <?php else:?>
     <p class="text-warning">Your team is full, you cannot invite any more members</p>
   <?php endif;?>
@@ -139,7 +139,7 @@ $this->_fluid="-fluid";
           ]
         ]);
         ?>
-          <?php if(Yii::$app->user->identity->teamLeader!==null && $team->owner_id===Yii::$app->user->id):?><?=Html::a('Update',['/team/default/update'],['class'=>'btn btn-primary'])?><?php endif;?>
+          <?php if(Yii::$app->user->identity->teamLeader!==null && $team->owner_id===Yii::$app->user->id):?><?=Html::a('Update',['/team/default/update'],['class'=>'btn btn-primary text-dark text-bold d-block'])?><?php endif;?>
           </div>
 
         </div>
