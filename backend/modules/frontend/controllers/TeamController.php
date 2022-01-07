@@ -5,6 +5,8 @@ namespace app\modules\frontend\controllers;
 use Yii;
 use app\modules\frontend\models\Team;
 use app\modules\frontend\models\TeamSearch;
+use app\modules\frontend\models\TeamPlayer;
+use app\modules\frontend\models\TeamPlayerSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -52,7 +54,13 @@ class TeamController extends \app\components\BaseController
      */
     public function actionView($id)
     {
+        $searchModel=new TeamPlayerSearch();
+        $searchModel->team_id=$id;
+        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
+
         return $this->render('view', [
+            'dataProvider'=>$dataProvider,
+            'searchModel'=>$searchModel,
             'model' => $this->findModel($id),
         ]);
     }
