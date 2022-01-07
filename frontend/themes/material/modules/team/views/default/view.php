@@ -86,7 +86,7 @@ $this->_fluid="-fluid";
                     return false;
                   },
                   'reject' => function($model) {
-                    if((Yii::$app->user->identity->teamLeader!==null /*&& $model->player_id!==Yii::$app->user->id*/) || (Yii::$app->user->identity->teamLeader===null && $model->player_id===Yii::$app->user->id))
+                    if((Yii::$app->user->identity->teamLeader!==null && Yii::$app->user->identity->teamLeader->id===$model->team_id) || ($model->player_id===Yii::$app->user->id))
                       return true;
 
                     return false;
