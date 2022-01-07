@@ -11,14 +11,15 @@ use app\modules\frontend\models\Team;
  */
 class TeamSearch extends Team
 {
+  public $username;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'academic', 'owner_id'], 'integer'],
-            [['name', 'description', 'logo', 'token'], 'safe'],
+            [['id', 'academic', 'owner_id','inviteonly'], 'integer'],
+            [['name', 'description', 'recruitment', 'logo', 'token','username'], 'safe'],
         ];
     }
 
@@ -40,7 +41,7 @@ class TeamSearch extends Team
      */
     public function search($params)
     {
-        $query=Team::find();
+        $query=Team::find()->joinWith(['owner']);
 
         // add conditions that should always apply here
 
@@ -66,9 +67,20 @@ class TeamSearch extends Team
 
         $query->andFilterWhere(['like', 'team.name', $this->name])
             ->andFilterWhere(['like', 'team.description', $this->description])
+            ->andFilterWhere(['like', 'owner.username', $this->username])
             ->andFilterWhere(['like', 'team.logo', $this->logo])
             ->andFilterWhere(['like', 'team.token', $this->token]);
-
+        $dataProvider->setSort([
+          'attributes' => array_merge(
+              $dataProvider->getSort()->attributes,
+              [
+                'username' => [
+                    'asc' => ['player.username' => SORT_ASC],
+                    'desc' => ['player.username' => SORT_DESC],
+                ],
+              ]
+          ),
+        ]);
         return $dataProvider;
     }
 }
