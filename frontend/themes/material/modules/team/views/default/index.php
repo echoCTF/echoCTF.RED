@@ -24,7 +24,7 @@ $this->_fluid="-fluid";
           ],
           'itemOptions' => [
               'tag' => 'div',
-              'class'=>"col d-flex align-items-stretch",
+              'class'=>"col d-flex align-items-stretch flex-column",
           ],
           'summary'=>false,
           'itemView' => '_team_card',
