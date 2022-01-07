@@ -3,6 +3,7 @@
 namespace app\modules\frontend\models;
 
 use Yii;
+use app\modules\activity\models\TeamStream;
 
 /**
  * This is the model class for table "team".
@@ -100,6 +101,19 @@ class Team extends \yii\db\ActiveRecord
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('team_player', ['team_id' => 'id']);
     }
 
+    public function getRank()
+    {
+      if($this->hasOne(\app\modules\activity\models\TeamRank::class, ['id' => 'id'])->one()!==null)
+        return $this->hasOne(\app\modules\activity\models\TeamRank::class, ['id' => 'id']);
+      else
+        return new \app\modules\activity\models\TeamRank;
+    }
+
+    public function getScore()
+    {
+        return $this->hasOne(\app\modules\activity\models\TeamScore::class, ['team_id' => 'id']);
+    }
+
     public static function insertTeam($event)
     {
       Yii::$app->db
@@ -111,4 +125,11 @@ class Team extends \yii\db\ActiveRecord
     }
 
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStreams()
+    {
+        return $this->hasMany(TeamStream::class, ['team_id' => 'id'])->orderBy(['ts'=>SORT_DESC]);
+    }
 }
