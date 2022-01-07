@@ -3,7 +3,8 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-
+use yii\grid\GridView;
+use yii\data\ArrayDataProvider;
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Team */
 
@@ -12,6 +13,7 @@ $this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
 $this->params['breadcrumbs'][]=['label' => 'Teams', 'url' => ['index']];
 $this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
+Yii::$app->user->setReturnUrl(['frontend/team/view','id'=>$model->id]);
 ?>
 <div class="team-view">
 
@@ -28,25 +30,86 @@ $this->params['breadcrumbs'][]=$this->title;
         ]) ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'id',
-            'name',
-            'description:ntext',
-            'academic:boolean',
-            'logo',
-            'owner_id',
-            [
-              'attribute'=>'token',
-              'format'=>'html',
-              'value'=>function($model){
-                $url=Url::to('//'.Yii::$app->sys->offense_domain.'/team/invite/'.$model->token,'https');
-                return Html::a($url,$url);
-              }
-            ],
-            'ts',
-        ],
-    ]) ?>
+    <div class="row">
+      <div class="col-sm-2">
+          <a href="//<?=Yii::$app->sys->offense_domain?>/team/<?=$model->token?>" target="_blank">
+            <img width="140px" class="img-fluid" src="//<?=Yii::$app->sys->offense_domain?>/images/avatars/team/<?=$model->logo?>" alt="<?=Yii::$app->sys->offense_domain?>/images/avatars/<?=$model->logo?>">
+          </a>
+      </div>
+      <div class="col-sm-10">
+           <h2 class="media-heading">(id: <?=$model->id?>) <?=Html::encode($model->name)?>
+            <small> - <?=Html::encode($model->owner->username)?> (owner_id: <?=$model->owner_id?>)</small>
+           </h2>
+           <p style="font-weight: 800">ranked <?=$model->rank->ordinalPlace?> with <?=number_format($model->score->points)?> points</p>
+           <p>
+             <b>invite url: <?=Html::a(Url::to('//'.Yii::$app->sys->offense_domain.'/team/invite/'.$model->token,'https'),Url::to('//'.Yii::$app->sys->offense_domain.'/team/invite/'.$model->token,'https'),['target'=>'_blank']);?></b><br/>
+             <b>description:</b> <?=Html::encode($model->description)?><br/>
+             <b>recruitment:</b> <?=Html::encode($model->recruitment)?><br/>
+             <b>academic:</b> <?=Html::encode($model->academic===0?'nop':'yep')?><br/>
+             <b>inviteonly:</b> <?=Html::encode($model->inviteonly===0?'nop':'yep')?><br/>
+             <b>last update:</b> <?=$model->ts?>
 
+           </p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-md-offset-2">
+        <h4><b>Team Members</b></h4>
+      <?= GridView::widget([
+          'dataProvider' => $dataProvider,
+          'columns' => [
+              [
+                'attribute' => 'player',
+                'label'=>'Player',
+                'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
+              ],
+              'approved:boolean',
+              'ts',
+              [
+                'class' => 'yii\grid\ActionColumn',
+                'urlCreator' => function( $action, $model, $key, $index ){
+                      return Url::to(['teamplayer/'.$action, 'id' => $key]);
+                },
+                'template' => '{toggle-approved} '.'{view} {update} {delete}',
+                'buttons' => [
+                  'toggle-approved' => function($url) {
+                      return Html::a(
+                          '<span class="glyphicon glyphicon-ok"></span>',
+                          $url,
+                          [
+                              'title' => 'Toggle membership approved flag',
+                              'data-pjax' => '0',
+                              'data-method' => 'POST',
+                              'data'=>['confirm'=>'Are you sure you want to toggle the approved flag for this user?']
+
+                          ]
+                      );
+                  },
+                ]
+
+              ],
+          ],
+      ]);?>
+      </div>
+    </div>
+    <div class="col-md-12">
+      <?= GridView::widget([
+          'dataProvider' => new ArrayDataProvider([
+              'allModels'=>$model->streams,
+              'sort' => [
+                  'attributes' => ['model','model_id','points','ts'],
+              ],
+              'pagination' => [
+                  'pageSize' => 20,
+              ],
+          ]),
+          'columns'=>[
+            'model',
+            'model_id',
+            'points',
+            'ts'
+          ],
+        ]);?>
+
+    </div>
 </div>
