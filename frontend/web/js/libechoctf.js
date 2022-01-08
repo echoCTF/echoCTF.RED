@@ -38,12 +38,12 @@ function luminanace(r, g, b)
 yii.confirm = function (message, okCallback, cancelCallback) {
   var title='Are you sure?';
   var swType='warning';
-  if($(this).attr('data-title') !== 'undefined' && $(this).attr('data-title')!== false)
+  if($(this).attr('data-title') !== 'undefined' && $(this).attr('data-title')!== false && $(this).attr('data-swType') !== undefined)
   {
     title=$(this).attr('data-title')+'?';
   }
 
-  if($(this).attr('data-swType') !== 'undefined' && $(this).attr('data-swType')!== false)
+  if($(this).attr('data-swType') !== 'undefined' && $(this).attr('data-swType')!== false && $(this).attr('data-swType') !== undefined)
   {
     swType=$(this).attr('data-swType');
   }
