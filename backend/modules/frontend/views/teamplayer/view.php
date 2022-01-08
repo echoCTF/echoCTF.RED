@@ -11,6 +11,7 @@ $this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
 $this->params['breadcrumbs'][]=['label' => 'Team Players', 'url' => ['index']];
 $this->params['breadcrumbs'][]=$this->title;
 \yii\web\YiiAsset::register($this);
+Yii::$app->getSession()->set('__deleteUrl',['frontend/teamplayer/index'])
 ?>
 <div class="team-player-view">
 
