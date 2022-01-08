@@ -5,6 +5,7 @@ namespace app\modules\team\models;
 use Yii;
 use app\models\Player;
 use yii\web\UploadedFile;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "team".
@@ -16,6 +17,8 @@ use yii\web\UploadedFile;
  * @property string $logo
  * @property int $owner_id
  * @property string $token
+ * @property boolean $inviteonly
+ * @property string $recruitment
  *
  * @property Player $owner
  * @property TeamPlayer[] $teamPlayers
@@ -34,6 +37,22 @@ class Team extends \yii\db\ActiveRecord
     {
         return 'team';
     }
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+          'class' => AttributeTypecastBehavior::class,
+          'attributeTypes' => [
+            'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'inviteonly' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'academic' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          ],
+          'typecastAfterValidate' => true,
+          'typecastBeforeSave' => true,
+          'typecastAfterFind' => true,
+        ],
+      ];
+    }
 
     public function init()
     {
@@ -45,7 +64,7 @@ class Team extends \yii\db\ActiveRecord
     {
         return [
             self::SCENARIO_CREATE => ['name', 'description','token'],
-            self::SCENARIO_UPDATE => ['name', 'description', 'uploadedAvatar'],
+            self::SCENARIO_UPDATE => ['name', 'description', 'uploadedAvatar','inviteonly','recruitment'],
         ];
     }
 
@@ -58,10 +77,10 @@ class Team extends \yii\db\ActiveRecord
             [['name', 'owner_id'], 'required'],
             [['description', 'logo'], 'string'],
             [['academic', 'owner_id'], 'integer'],
-            [['academic'], 'boolean'],
+            [['academic','inviteonly'], 'boolean'],
             [['name'], 'trim'],
             [['name'], 'string', 'length' => [3, 32]],
-            [['description'], 'string', 'max' =>250],
+            [['description','recruitment'], 'string', 'max' =>250],
             [['token'], 'string', 'max' => 30],
             [['token'], 'default', 'value' => Yii::$app->security->generateRandomString(10)],
             [['name'], 'unique',  'when' => function($model, $attribute) {
@@ -86,6 +105,8 @@ class Team extends \yii\db\ActiveRecord
             'logo' => 'Logo',
             'owner_id' => 'Owner ID',
             'token' => 'Token',
+            'inviteonly'=>'Invite Only',
+            'recruitment'=>'Recruitment Text'
         ];
     }
 

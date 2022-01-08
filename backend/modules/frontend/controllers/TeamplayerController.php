@@ -111,9 +111,16 @@ class TeamplayerController extends \app\components\BaseController
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        if(is_array(Yii::$app->getSession()->get('__deleteUrl')))
+        {
+          Yii::$app->getUser()->setReturnUrl(Yii::$app->getSession()->get('__deleteUrl'));
+          unset($_SESSION['__deleteUrl']);
+        }
 
-        return $this->redirect(['index']);
+        if($this->findModel($id)->delete()!==false)
+          Yii::$app->session->setFlash('success', "Team membership deleted.");
+
+        return $this->goBack();
     }
 
     /**
@@ -127,7 +134,7 @@ class TeamplayerController extends \app\components\BaseController
         $model=$this->findModel($id);
         $model->updateAttributes(['approved' => !$model->approved]);
         Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$model->team_id)->execute();
-        return $this->redirect(['index']);
+        return $this->goBack();
     }
 
     /**

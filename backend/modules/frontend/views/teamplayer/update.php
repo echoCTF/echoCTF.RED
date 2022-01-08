@@ -16,6 +16,8 @@ yii\bootstrap\Modal::begin([
 ]);
 echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
 yii\bootstrap\Modal::end();
+Yii::$app->getSession()->set('__deleteUrl',['frontend/teamplayer/index'])
+
 ?>
 <div class="team-player-update">
 

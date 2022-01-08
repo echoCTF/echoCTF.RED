@@ -9,27 +9,37 @@ $this->_fluid="-fluid";
   <div class="body-content">
     <h2>Update team [<code><?=Html::encode($model->name)?></code>]</h2>
     <hr />
-    <div class="card">
+    <div class="card bg-dark">
       <div class="card-header card-header-primary">
         <h4 class="card-title">Team update</h4>
         <p class="card-category">Update your team details</p>
       </div>
       <div class="card-body">
         <?php $form=ActiveForm::begin(['action' => ['update'],'id' => 'team-update-form']);?>
-        <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
-        <?= $form->field($model, 'description')->textArea() ?>
-        <div class="fileinput fileinput-new text-center" data-provides="fileinput">
-          <div class="fileinput-new thumbnail img-circle img-raised">
-            <img src="/images/avatars/team/<?=$model->validLogo?>" rel="nofollow" class="rounded img-thumbnail" alt="Logo of <?=Html::encode($model->name)?>">
+        <div class="row">
+          <div class="col">
+            <div class="fileinput fileinput-new text-center" data-provides="fileinput">
+              <div class="fileinput-new thumbnail img-circle img-raised">
+                <img src="/images/avatars/team/<?=$model->validLogo?>" rel="nofollow" class="rounded img-thumbnail" alt="Logo of <?=Html::encode($model->name)?>">
+              </div>
+              <div class="fileinput-preview fileinput-exists thumbnail img-circle img-raised"></div>
+              <div>
+              <?= $form->field($model, 'uploadedAvatar')->label('Choose a team logo (300x300 PNG)',['class'=>'btn btn-raised btn-round btn-warning btn-file text-dark'])->fileInput() ?>
+              </div>
+            </div>
           </div>
-          <div class="fileinput-preview fileinput-exists thumbnail img-circle img-raised"></div>
-          <div>
-          <?= $form->field($model, 'uploadedAvatar')->label('Choose a team logo (300x300 PNG)',['class'=>'btn btn-raised btn-round btn-warning btn-file'])->fileInput() ?>
+          <div class="col">
+            <div class="row">
+              <div class="col"><?= $form->field($model, 'name')->textInput() ?></div>
+              <div class="col"><?= $form->field($model, 'inviteonly')->checkbox() ?></div>
+            </div>
+            <?= $form->field($model, 'recruitment')->textArea([]) ?>
+            <?= $form->field($model, 'description')->textArea([]) ?>
           </div>
         </div>
 
-        <div class="form-group">
-          <?=Html::submitButton('Update', ['class' => 'btn btn-primary', 'name' => 'update-button']) ?>
+        <div class="form-group text-center">
+          <?=Html::submitButton('Update', ['class' => 'btn btn-primary btn-block text-dark text-bold', 'name' => 'update-button']) ?>
         </div>
         <?php ActiveForm::end();?>
       </div>

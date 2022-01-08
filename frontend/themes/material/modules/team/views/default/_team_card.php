@@ -10,7 +10,7 @@ $dataProvider=new ArrayDataProvider([
     'pagination' => false,
 ]);
 ?>
-<div class="card card-profile team-card">
+<div class="card card-profile team-card<?=$model->inviteonly && !$invite? " bg-dark": ""?>">
   <div class="card-avatar bg-primary">
       <img class="img" src="/images/avatars/team/<?=$model->validLogo?>" />
   </div>
@@ -73,9 +73,11 @@ $dataProvider=new ArrayDataProvider([
   </div>
     <div class="card-footer d-flex justify-content-center align-items-stretch">
     <div class="row">
-      <div class="col"><?= Html::a('View', ['/team/default/view','token' => $model->token],['class'=>'btn btn-info d-block']) ?></div>
-      <?php if($model->getTeamPlayers()->count()<Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team):?>
-      <div class="col"><?= Html::a('Join', ['/team/default/join','token' => $model->token],['class'=>'btn btn-primary d-block', 'data-method' => 'POST','data'=>['confirm'=>'You are about to join this team. Your membership will have to be confirmed by the team captain.','method'=>'POST']]) ?></div>
+      <?php if(!$model->inviteonly || (Yii::$app->user->identity->team && Yii::$app->user->identity->team->id===$model->id)):?>
+      <div class="col"><?= Html::a('View', ['/team/default/view','token' => $model->token],['class'=>'btn text-dark text-bold d-block'.(!$model->inviteonly?' btn-info':' btn-warning')]) ?></div>
+      <?php endif;?>
+      <?php if($model->getTeamPlayers()->count()<Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && ($model->inviteonly || $invite)):?>
+      <div class="col"><?= Html::a('Join', ['/team/default/join','token' => $model->token],['class'=>'btn btn-primary d-block text-dark text-bold', 'data-method' => 'POST','data'=>['confirm'=>'You are about to join this team. Your membership will have to be confirmed by the team captain.','method'=>'POST']]) ?></div>
       <?php endif;?>
 
     </div>

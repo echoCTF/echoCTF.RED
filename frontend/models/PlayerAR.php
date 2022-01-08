@@ -22,6 +22,7 @@ use app\modules\game\models\Headshot;
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $active
+ * @property integer $academic
  * @property string $password write-only password
  *
  * @property Profile $profile

@@ -36,10 +36,22 @@ function luminanace(r, g, b)
  * @param string cancelCallback callback triggered when cancelled
  */
 yii.confirm = function (message, okCallback, cancelCallback) {
+  var title='Are you sure?';
+  var swType='warning';
+  if($(this).attr('data-title') !== 'undefined' && $(this).attr('data-title')!== false && $(this).attr('data-swType') !== undefined)
+  {
+    title=$(this).attr('data-title')+'?';
+  }
+
+  if($(this).attr('data-swType') !== 'undefined' && $(this).attr('data-swType')!== false && $(this).attr('data-swType') !== undefined)
+  {
+    swType=$(this).attr('data-swType');
+  }
+
   swal({
-    title: 'Are you sure?',
+    title: title,
     text: message,
-    type: 'warning',
+    type: swType,
     showConfirmButton: true,
     showCancelButton: true,
   }).then((action) => {

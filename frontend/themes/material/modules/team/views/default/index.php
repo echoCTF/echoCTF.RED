@@ -24,10 +24,11 @@ $this->_fluid="-fluid";
           ],
           'itemOptions' => [
               'tag' => 'div',
-              'class'=>"col d-flex align-items-stretch",
+              'class'=>"col d-flex align-items-stretch flex-column",
           ],
           'summary'=>false,
           'itemView' => '_team_card',
+          'viewParams'=>['invite'=>false],
           'beforeItem' => function ($model, $key, $index, $widget) use ($colsCount) {
               if ($index % $colsCount === 0) {
                   return "<div class='row'>";

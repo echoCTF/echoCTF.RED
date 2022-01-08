@@ -3,6 +3,7 @@
 namespace app\modules\frontend\models;
 
 use Yii;
+use app\modules\activity\models\TeamStream;
 
 /**
  * This is the model class for table "team".
@@ -14,6 +15,8 @@ use Yii;
  * @property resource $logo
  * @property int $owner_id
  * @property string $token
+ * @property int $inviteonly
+ * @property string $recruitment
  *
  * @property Player $owner
  * @property TeamPlayer[] $teamPlayers
@@ -45,9 +48,10 @@ class Team extends \yii\db\ActiveRecord
         return [
             [['name', 'owner_id'], 'required'],
             [['description', 'logo'], 'string'],
-            [['academic', 'owner_id'], 'integer'],
-            [['academic'], 'boolean'],
-            [['name'], 'string', 'max' => 255],
+            [['academic', 'owner_id','inviteonly'], 'integer'],
+            [['academic','inviteonly'], 'boolean'],
+            [['inviteonly'], 'default','value'=>true],
+            [['name','recruitment'], 'string', 'max' => 255],
             [['token'], 'string', 'max' => 30],
             [['token'], 'default', 'value' => substr(Yii::$app->security->generateRandomString(), 0, 30)],
             [['name'], 'unique'],
@@ -69,6 +73,7 @@ class Team extends \yii\db\ActiveRecord
             'logo' => 'Logo',
             'owner_id' => 'Owner ID',
             'token' => 'Token',
+            'inviteonly'=>'Invite only'
         ];
     }
 
@@ -96,6 +101,19 @@ class Team extends \yii\db\ActiveRecord
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('team_player', ['team_id' => 'id']);
     }
 
+    public function getRank()
+    {
+      if($this->hasOne(\app\modules\activity\models\TeamRank::class, ['id' => 'id'])->one()!==null)
+        return $this->hasOne(\app\modules\activity\models\TeamRank::class, ['id' => 'id']);
+      else
+        return new \app\modules\activity\models\TeamRank;
+    }
+
+    public function getScore()
+    {
+        return $this->hasOne(\app\modules\activity\models\TeamScore::class, ['team_id' => 'id']);
+    }
+
     public static function insertTeam($event)
     {
       Yii::$app->db
@@ -107,4 +125,11 @@ class Team extends \yii\db\ActiveRecord
     }
 
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getStreams()
+    {
+        return $this->hasMany(TeamStream::class, ['team_id' => 'id'])->orderBy(['ts'=>SORT_DESC]);
+    }
 }

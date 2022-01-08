@@ -43,6 +43,7 @@ class Player extends PlayerAR implements IdentityInterface
                     'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'status' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'active' =>  AttributeTypecastBehavior::TYPE_INTEGER,
+                    'academic' =>  AttributeTypecastBehavior::TYPE_BOOLEAN,
                 ],
                 'typecastAfterValidate' => true,
                 'typecastBeforeSave' => true,

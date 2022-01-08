@@ -8,7 +8,7 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
-$this->params['breadcrumbs'][]=$this->title;
+$this->params['breadcrumbs'][]=['label' => 'Teams', 'url' => ['index']];
 yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
@@ -30,13 +30,28 @@ yii\bootstrap\Modal::end();
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-
-            'id',
+            [
+              'attribute'=>'logo',
+              'filter'=>false,
+              'format'=>['image',['width'=>'40','height'=>'40']],
+              'value'=>function($model){
+                if($model->logo)
+                  return '//'.Yii::$app->sys->offense_domain.'/images/avatars/team/'.$model->logo;
+              }
+            ],
+            [
+              'attribute'=>'id',
+              'headerOptions' => ['style' => 'width:50px'],
+            ],
             'name',
             'description:ntext',
             'academic:boolean',
-            'logo',
-            'owner.username',
+            'inviteonly:boolean',
+            [
+              'label'=>'Owner',
+              'attribute'=>'username',
+              'value'=>'owner.username'
+            ],
             //'token',
             'ts',
 
