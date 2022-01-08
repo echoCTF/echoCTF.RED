@@ -112,7 +112,10 @@ class TeamplayerController extends \app\components\BaseController
     public function actionDelete($id)
     {
         if(is_array(Yii::$app->getSession()->get('__deleteUrl')))
+        {
           Yii::$app->getUser()->setReturnUrl(Yii::$app->getSession()->get('__deleteUrl'));
+          unset($_SESSION['__deleteUrl']);
+        }
 
         if($this->findModel($id)->delete()!==false)
           Yii::$app->session->setFlash('success', "Team membership deleted.");
