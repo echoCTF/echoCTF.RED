@@ -853,3 +853,7 @@ mark {
   max-width: 40px;
   max-height: 40px;
 }
+.card-challenge .card-body img {
+  max-width: 60px;
+  max-height: 60px;
+}

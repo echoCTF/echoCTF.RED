@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 use app\widgets\Twitter;
 ?>
 <div class="col-xl-4 col-sm-6 d-flex align-items-stretch">
-  <div class="card">
+  <div class="card card-challenge">
     <div class="card-body">
       <?=$model->icon?>
       <h4 class="card-title"><b><?=Html::a($model->name, ['view', 'id'=>$model->id])?>
