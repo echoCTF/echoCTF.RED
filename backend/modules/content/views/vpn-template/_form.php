@@ -13,7 +13,8 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <div class="row">
-      <div class="col-md-6"><?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('A short unique name for this template') ?></div>
+      <div class="col-md-3"><?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('A short unique name for this template') ?></div>
+      <div class="col-md-3"><?= $form->field($model, 'filename')->textInput(['maxlength' => true])->hint('A filename to be used when downloading') ?></div>
       <div class="col-md-6"><?= $form->field($model, 'description')->textInput(['maxlength'=>true])->hint('An (optional) short description for this template') ?></div>
 
     </div>

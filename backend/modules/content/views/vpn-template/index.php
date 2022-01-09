@@ -33,6 +33,7 @@ yii\bootstrap\Modal::end();
         'columns' => [
             'id',
             'name',
+            'filename',
             'active:boolean',
             'visible:boolean',
             'client:boolean',

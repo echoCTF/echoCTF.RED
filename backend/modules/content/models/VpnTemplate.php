@@ -62,7 +62,7 @@ class VpnTemplate extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name'], 'required'],
+            [['name','filename'], 'required'],
             [['client', 'server','active','visible'], 'integer'],
             [['client', 'server','active','visible'], 'boolean'],
             [['client', 'active','visible'], 'default','value'=>true],

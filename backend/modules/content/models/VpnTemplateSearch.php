@@ -18,7 +18,7 @@ class VpnTemplateSearch extends VpnTemplate
     {
         return [
             [['id', 'client', 'server','active','visible'], 'integer'],
-            [['name', 'description', 'content', 'created_at', 'updated_at'], 'safe'],
+            [['name', 'filename', 'description', 'content', 'created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -68,6 +68,7 @@ class VpnTemplateSearch extends VpnTemplate
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'filename', $this->filename])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'content', $this->content]);
 
