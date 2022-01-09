@@ -14,10 +14,10 @@ remote <?php echo Yii::$app->sys->vpngw;?> 1194 udp
 remote <?php echo Yii::$app->sys->vpngw;?> 443 tcp
 
 <key>
-<?php echo $model->playerSsl->privkey;?>
+<?php echo $model->privkey;?>
 </key>
 <cert>
-<?php echo $model->playerSsl->crt;?>
+<?php echo $model->crt;?>
 </cert>
 <ca>
 <?php echo Yii::$app->sys->{'CA.crt'}; ?>

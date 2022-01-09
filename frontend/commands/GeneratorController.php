@@ -9,6 +9,9 @@ use app\models\Stream;
 
 class GeneratorController extends Controller {
 
+  /**
+   * Generate local mail templates from database
+   */
   public function actionEmailTemplates($interval=60)
   {
     $models=\app\modelscli\EmailTemplate::find()->last($interval)->all();
@@ -21,8 +24,8 @@ class GeneratorController extends Controller {
       file_put_contents($html,$model->html);
       file_put_contents($txt,$model->txt);
     }
-
   }
+  
   /**
    * Generate composite target logo used for social media
    * Take a background image (twnew-target.png) and place on top the target

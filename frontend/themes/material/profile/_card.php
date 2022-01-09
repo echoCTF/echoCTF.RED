@@ -3,6 +3,28 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
 use app\modules\game\models\Headshot;
+use yii\bootstrap\ButtonDropdown;
+
+
+/*
+['label' => 'Delete profile', 'url' => ['delete','id'=>$model->id],'linkOptions'=>['data' => [
+    'confirm' => Yii::t('app', 'Are you sure you want to delete this profile?'),
+    'method' => 'post',
+],]],
+*/
+if(\Yii::$app->user->identity->sSL && $profile->isMine)
+  $profile_actions=$profile->vpnItems;
+
+
+$profile_actions['edit']= ['encode'=>false, 'label'=>"<i class='fas fa-user-edit'></i>&nbsp; Edit your profile settings", 'url'=>['profile/settings'], 'linkOptions'=>['alt'=>'Edit profile and account settings']];
+$profile_actions['badge']=['encode'=>false, 'label'=>"<i class='fas fa-id-badge'></i>&nbsp; Your badge URL", 'url'=>Url::to(['profile/badge','id'=>$profile->id],true), 'linkOptions'=>['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!']];
+
+if($profile->isMine)
+{
+  $profile_actions['profileurl']=['encode'=>false, 'label'=>'<i class="fas fa-id-card"></i>&nbsp; Your profile URL','url'=>Url::to(['profile/index', 'id'=>$profile->id], 'https'),'linkOptions'=>['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!']];
+  $profile_actions['inviteurl']=['encode'=>false, 'label'=>'<i class="fas fa-link"></i>&nbsp; Your invite URL','url'=>Url::to(['profile/invite', 'id'=>$profile->id],true),'linkOptions'=>['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!']];
+}
+
 if(array_key_exists('subscription',Yii::$app->modules)!==false)
 {
   $subscription=Yii::$app->getModule('subscription');
@@ -22,7 +44,18 @@ else {
     <h6 class="badge badge-secondary">Level <?=$profile->experience->id?> / <?=$profile->experience->name?></h6>
     <h4 class="card-title"><?=Html::encode($profile->owner->username)?></h4>
     <p class="card-description">
-      <?=Html::encode($profile->bio)?>
+      <?=Html::encode($profile->bio)?><?php if($profile->isMine):?>&nbsp;
+            <?php echo Twitter::widget([
+                  'message'=>sprintf('Checkout my profile at %s! %s', \Yii::$app->sys->{"event_name"}, $profile->braggingRights),
+                  'url'=>Url::to(['profile/index', 'id'=>$profile->id], 'https'),
+                  'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;', 'rel'=>'noopener noreferrer nofollow'],
+              ]);?>
+          <?php else: ?>
+            <?php echo Twitter::widget([
+                  'message'=>sprintf('Checkout the profile of %s at %s', $profile->twitterHandle, \Yii::$app->sys->{"event_name"}),
+                  'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;','rel'=>'noopener noreferrer nofollow'],
+              ]);?>
+          <?php endif;?>
     </p>
     <?php if($subscription->exists):?>
       <?php if($subscription->isActive):?>
@@ -33,26 +66,21 @@ else {
 
       <?php endif;?>
     <?php endif;?>
-    <?php if($profile->isMine):?>
-      <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id], 'https'), ['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
-            'message'=>sprintf('Checkout my profile at %s! %s', \Yii::$app->sys->{"event_name"}, $profile->braggingRights),
-            'url'=>Url::to(['profile/index', 'id'=>$profile->id], 'https'),
-            'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;', 'rel'=>'noopener noreferrer nofollow'],
-        ]);?>
-    <?php else: ?>
-      <?php echo Html::a(Url::to(['profile/index', 'id'=>$profile->id], 'https'), ['profile/index', 'id'=>$profile->id]);?> <?php echo Twitter::widget([
-            'message'=>sprintf('Checkout the profile of %s at %s', $profile->twitterHandle, \Yii::$app->sys->{"event_name"}),
-            'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;','rel'=>'noopener noreferrer nofollow'],
-        ]);?>
+    <?php if($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
+    <?php echo ButtonDropdown::widget([
+                  'label' => '<i class="fas fa-users-cog"></i>&nbsp; Profile Actions',
+                  'containerOptions'=>['class'=>'row d-flex'],
+                  'options'=>['class'=>'btn-primary text-bold btn-block','style'=>'color: black'],
+                  'encodeLabel'=>false,
+                  'dropdown' => [
+                      'items' => $profile_actions,
+                  ],
+              ]);
+    ?>
     <?php endif;?>
     <ul class="nav flex-column">
   <?php if($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
-          <li class="nav-item text-center">
-              <?php if(\Yii::$app->user->identity->sSL):?><?=Html::a("<i class='fas fa-user-shield'></i> OpenVPN", ['profile/ovpn'], ['class'=>'btn btn-primary btn-sm','alt'=>'Download OpenVPN Configuration'])?><?php endif;?>
-              <?=Html::a("<i class='fas fa-user'></i> Edit", ['profile/settings'], ['class'=>'btn btn-danger btn-sm','alt'=>'Edit profile and account settings'])?>
-              <?=Html::a("<i class='fas fa-id-badge'></i> Badge", ['profile/badge','id'=>$profile->id], ['class'=>'btn btn-success btn-sm'])?>
-          </li>
-          <li class="nav-item text-left"><strong><i class="fas fa-users"></i> <?=Html::a("Invites", Url::to(['profile/invite', 'id'=>$profile->id],true),['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!'])?></strong> <span class="pull-right"><?=$profile->invitesCount?></span></li>
+          <li class="nav-item text-left"><strong><i class="fas fa-users"></i> Invites</strong> <span class="pull-right"><?=$profile->invitesCount?></span></li>
           <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($profile->spins->counter)?></abbr> / <abbr title="Total Spins"><?=intval($profile->spins->total)?></abbr></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-file-signature"></i> Real name</strong> <span class="pull-right"><?=Html::encode($profile->owner->fullname)?></span></li>

@@ -156,21 +156,20 @@ class ProfileController extends \app\components\BaseController
     }
 
 
-    public function actionOvpn()
+    public function actionOvpn($id)
     {
 
-      if(($model=Yii::$app->user->identity->sSL)!==null)
+      if(($model=Yii::$app->user->identity->sSL)===null)
       {
-        $content=\Yii::$app->view->renderFile('@app/views/profile/ovpn.php', ['model'=>$model]);
-        \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
-        \Yii::$app->response->content=$content;
-        \Yii::$app->response->setDownloadHeaders('echoCTF.ovpn', 'application/octet-stream', false, strlen($content));
-        \Yii::$app->response->send();
-        return;
+        \Yii::$app->session->addFlash('warning',"No VPN file(s) exist for your profile.");
+        return $this->redirect(['/profile/me']);
       }
-      \Yii::$app->session->addFlash('warning',"No VPN file exists for your profile.");
-      return $this->redirect(['/profile/me']);
-
+      $template=\app\modelscli\VpnTemplate::findOne(['name'=>$id,'active'=>true,'visible'=>true,'client'=>true]);
+      $content=Yii::$app->view->renderPhpContent("?>".$template->content,['model'=>$model]);
+      \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
+      \Yii::$app->response->content=$content;
+      \Yii::$app->response->setDownloadHeaders($template->filename, 'application/octet-stream', false, strlen($content));
+      return \Yii::$app->response->send();
     }
 
     public function actionSettings()
