@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\Query;
 use yii\db\Expression;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -175,5 +176,18 @@ class Profile extends ProfileAR
       return $msg;
     }
 
+    public function getVpnItems()
+    {
+      $items=null;
+      $query = new Query;
+      // compose the query
+      $query->select('id, name')
+          ->from('vpn_template')
+          ->where(['active' => true,'visible'=>true,'client'=>true])
+          ->orderBy(['name'=>SORT_ASC]);
 
+      foreach($query->each() as $item)
+        $items[strtolower($item['name'])]=['encode'=>false, 'label'=>"<i class='fas fa-user-shield'></i>&nbsp; Download ".$item['name'], 'url'=>['profile/ovpn','id'=>$item['name']], 'linkOptions'=>[]];
+      return $items;
+    }
 }
