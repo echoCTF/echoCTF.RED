@@ -19,6 +19,7 @@ class m220109_113851_create_vpn_template_table extends Migration
             'server' => $this->boolean()->notNull()->defaultValue(0),
             'active' => $this->boolean()->notNull()->defaultValue(1),
             'visible' => $this->boolean()->notNull()->defaultValue(1),
+            'filename' => $this->string()->notNull()->defaultValue('echoCTF.ovpn'),
             'description' => $this->text(),
             'content' => $this->text(),
             'created_at' => $this->datetime(),

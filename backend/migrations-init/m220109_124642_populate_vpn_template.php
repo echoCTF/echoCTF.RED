@@ -9,6 +9,7 @@ class m220109_124642_populate_vpn_template extends Migration
 {
    public $initial_template=[
      'name'=> 'echoCTF24.ovpn',
+     'filename'=> 'echoCTF24.ovpn',
      'description' =>'echoCTF.RED OpenVPN v2.4 client configuration',
      //'content' =>file_get_content('/etc/passwd'),
      'active' =>1,
