@@ -36,7 +36,7 @@ class m220102_214745_populate_url_routes extends Migration
       'profile/<id:\d+>/badge' => 'profile/badge',
       'profile/<id:\d+>/invite' => 'profile/invite',
       'profile/me'=>'profile/me',
-      'profile/ovpn'=>'profile/ovpn',
+      'profile/ovpn/<id>'=>'profile/ovpn',
       'profile/settings'=>'profile/settings',
       'help' => 'help/default/index',
       'faq' => 'help/faq/index',
