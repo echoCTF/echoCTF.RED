@@ -67,6 +67,24 @@ class PlayerController extends \app\components\BaseController
         ]);
     }
 
+    public function actionOvpn(int $id)
+    {
+      $model=$this->findModel($id);
+      if($model->playerSsl!==null)
+      {
+        $content=$this->renderPartial('ovpn', ['model'=>$model]);
+        \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
+        \Yii::$app->response->content=$content;
+        \Yii::$app->response->setDownloadHeaders($model->username.'.ovpn', 'application/octet-stream', false, strlen($content));
+        \Yii::$app->response->send();
+        return;
+      }
+      \Yii::$app->session->addFlash('warning',"No VPN file exists for your profile.");
+      return $this->goBack();
+
+    }
+
+
 
     public function actionGraphs()
     {
