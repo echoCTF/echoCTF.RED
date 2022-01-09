@@ -72,7 +72,7 @@ class PlayerController extends \app\components\BaseController
       $model=$this->findModel($id);
       if($model->playerSsl!==null)
       {
-        $content=$this->renderPartial('ovpn', ['model'=>$model]);
+        $content=$this->renderPartial('ovpn', ['model'=>$model->playerSsl]);
         \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
         \Yii::$app->response->content=$content;
         \Yii::$app->response->setDownloadHeaders($model->username.'.ovpn', 'application/octet-stream', false, strlen($content));
