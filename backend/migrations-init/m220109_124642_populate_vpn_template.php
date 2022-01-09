@@ -8,7 +8,7 @@ use yii\db\Migration;
 class m220109_124642_populate_vpn_template extends Migration
 {
    public $initial_template=[
-     'name'=> 'echoCTF24.ovpn',
+     'name'=> 'echoCTF24',
      'filename'=> 'echoCTF24.ovpn',
      'description' =>'echoCTF.RED OpenVPN v2.4 client configuration',
      //'content' =>file_get_content('/etc/passwd'),
@@ -25,7 +25,6 @@ class m220109_124642_populate_vpn_template extends Migration
     {
       $this->initial_template['content']=file_get_contents(Yii::getAlias('@app/modules/frontend/views/player/ovpn.php'));
       $this->upsert('{{%vpn_template}}',$this->initial_template);
-
     }
 
     /**
