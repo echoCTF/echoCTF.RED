@@ -8,6 +8,7 @@ use app\modules\content\models\VpnTemplateSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * VpnTemplateController implements the CRUD actions for VpnTemplate model.
