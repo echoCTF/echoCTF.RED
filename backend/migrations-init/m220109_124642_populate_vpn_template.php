@@ -7,10 +7,11 @@ use yii\db\Migration;
  */
 class m220109_124642_populate_vpn_template extends Migration
 {
-   public $initial_template=[
-     'name'=> 'echoCTF24',
-     'filename'=> 'echoCTF24.ovpn',
-     'description' =>'echoCTF.RED OpenVPN v2.4 client configuration',
+
+   public $template=[
+     'name'=> 'echoCTF',
+     'filename'=> 'echoCTF.ovpn',
+     'description' =>'echoCTF.RED OpenVPN client configuration',
      //'content' =>file_get_content('/etc/passwd'),
      'active' =>1,
      'visible' =>1,
@@ -23,8 +24,8 @@ class m220109_124642_populate_vpn_template extends Migration
      */
     public function safeUp()
     {
-      $this->initial_template['content']=file_get_contents(Yii::getAlias('@app/modules/frontend/views/player/ovpn.php'));
-      $this->upsert('{{%vpn_template}}',$this->initial_template);
+      $this->template['content']=file_get_contents(Yii::getAlias('@app/modules/frontend/views/player/ovpn.php'));
+      $this->upsert('{{%vpn_template}}',$this->template);
     }
 
     /**
@@ -32,7 +33,7 @@ class m220109_124642_populate_vpn_template extends Migration
      */
     public function safeDown()
     {
-      $this->delete('{{%vpn_template}}',$this->initial_template);
+      $this->delete('{{%vpn_template}}',$this->template);
     }
 
     /*
