@@ -14,6 +14,8 @@ use yii\db\Expression;
  * @property string $name
  * @property int $client
  * @property int $server
+ * @property int $active
+ * @property int $visible
  * @property string|null $description
  * @property string|null $content
  * @property string|null $created_at
