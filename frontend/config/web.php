@@ -97,9 +97,11 @@ $config=[
                   ],
               ],
               'yii\bootstrap\BootstrapPluginAsset' => [
+                'sourcePath' => null,
                   'js'=>[]
               ],
               'yii\bootstrap\BootstrapAsset' => [
+                  'sourcePath' => null,
                   'css' => [],
               ],
               'app\assets\MaterialAsset' => [
