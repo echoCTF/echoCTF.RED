@@ -27,14 +27,6 @@ $this->registerCssFile('@web/assets/hljs/styles/a11y-dark.min.css',['depends' =>
 $goback=Url::previous();
 if($goback==='/')
   $goback=['/target/default/view','id'=>$model->target_id];
-$ratings=[
-  [ 'id'=>0, 'name' => "Not rated!", 'icon'=>null],
-  [ 'id'=>1,  'name' => "1 - Ok", 'icon'=>'fa-battery-quarter red-success',],
-  [ 'id'=>2,  'name' => "2 - Nice", 'icon'=>'fa-battery-half text-secondary',],
-  [ 'id'=>3,  'name' => "3 - Good", 'icon'=>'fa-battery-three-quarters text-warning',],
-  [ 'id'=>4,  'name' => "4 - Well written", 'icon'=>'fa-battery-full',],
-  [ 'id'=>5,  'name' => "5 - Excellent", 'icon'=>'fa-battery-full',],
-];
 
 ?>
 <div class="writeup-view">
@@ -44,7 +36,7 @@ $ratings=[
       <div class="col-md-8">
         <div class="card bg-dark">
           <div class="card-header">
-            <div class="row"><h4 class="align-self-center">Your rating:</h4> <div class="col-sm-5"><?=VoteWidget::widget(['model'=>$rating,'id'=>$model->id,'action'=>['/game/default/rate-writeup','target_id'=>$model->target_id,'id'=>$model->id],'ratings'=>$ratings]);?></div></div>
+            <div class="row"><h4 class="align-self-center">Your rating:</h4> <div class="col-sm-5"><?=VoteWidget::widget(['model'=>$rating,'id'=>$model->id,'action'=>['/game/default/rate-writeup','target_id'=>$model->target_id,'id'=>$model->id],'ratings'=>$model->_ratings]);?></div></div>
           </div>
           <div class="card-body">
             <div id="markdown-content" class="markdown">
