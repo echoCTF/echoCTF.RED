@@ -61,6 +61,7 @@ class ChallengeSolver extends \yii\db\ActiveRecord
             [['challenge_id', 'player_id'], 'integer'],
             [['timer','rating'], 'integer'],
             [['rating'], 'default','value'=>-1],
+            ['rating','in','range'=>[-1,0,1,2,3,4,5,6]],
             [['first'], 'boolean'],
             [['crated_at'], 'safe'],
             [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::class, 'targetAttribute' => ['challenge_id' => 'id']],

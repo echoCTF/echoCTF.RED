@@ -80,6 +80,7 @@ class Headshot extends \yii\db\ActiveRecord
             [['player_id', 'target_id'], 'required'],
             [['player_id', 'target_id', 'timer','rating'], 'integer'],
             [['rating'], 'default','value'=>-1],
+            ['rating','in','range'=>[-1,0,1,2,3,4,5,6]],
             [['first'], 'boolean'],
             [['created_at', 'timer'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
