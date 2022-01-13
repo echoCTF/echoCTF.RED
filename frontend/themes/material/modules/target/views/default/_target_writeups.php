@@ -25,7 +25,7 @@ use yii\helpers\Html;
           $item_classes[]='text-bold';
           $item_classes[]='active';
         }
-        echo Html::a($item->player->username.' <span class="badge badge-primary badge-pill">'.count($item->ratings).' votes</span>',['/target/writeup/read','target_id'=>$item->target_id,'id'=>$item->id],['class'=>implode(' ',$item_classes)]);
+        echo Html::a($item->player->username.' <span class="badge badge-primary badge-pill">'.$item->averageRatingName.'</span>',['/target/writeup/read','target_id'=>$item->target_id,'id'=>$item->id],['class'=>implode(' ',$item_classes)]);
       }
       ?>
     </div>
