@@ -26,7 +26,7 @@ $first=false;
           <h4><?=Html::encode($model->category);?> / <?=Html::encode($model->difficulty)?> / <?=Html::encode(number_format($model->points));?>pts</h4>
           <?=trim($model->filename) !== '' ? '<h4><b>Challenge file:</b> '.Html::a($model->filename, ['/uploads/'.$model->filename], ['data-pjax'=>"0"]).'</h4>' : ''?>
           <?php if($model->completed):?>
-          <div class="col-xl-4 col-sm-6"><?=VoteWidget::widget(['model'=>$solver,'id'=>$model->id,'action'=>'/game/default/rate-solver']);?></div>
+          <div class="col-xl-4 col-sm-6"><?=VoteWidget::widget(['model'=>$solver,'id'=>$model->id,'action'=>['/game/default/rate-solver','id'=>$model->id]]);?></div>
           <?php endif;?>
           <p><?=$model->description;?></p>
         </div>

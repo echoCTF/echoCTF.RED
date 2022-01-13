@@ -125,7 +125,7 @@ if($headshot)
               ]);?>
           </div>
           <div class="col">
-            <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>'/game/default/rate-headshot']);?>
+            <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>['/game/default/rate-headshot','id'=>$headshot->target_id]]);?>
           </div>
         </div>
         <?php elseif(Yii::$app->user->id === $identity->player_id && $target->progress==100):?>
@@ -142,7 +142,7 @@ if($headshot)
                     ])?>
           </div>
           <div class="col">
-            <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>'/game/default/rate-headshot']);?>
+            <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>['/game/default/rate-headshot','id'=>$headshot->target_id]]);?>
           </div>
         </div>
         <?php endif;?>
@@ -172,16 +172,17 @@ if($headshot)
     <div class="col">
       <?=$this->render('_target_description',['target'=>$target,'identity'=>$identity]);?>
 
-      <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
-      <?=$this->render('_target_writeups',['target'=>$target]);?>
-      <?php endif;?>
-
       <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id && (Yii::$app->user->identity->getFindings($target->id)->count()>0 || Yii::$app->user->identity->getTreasures($target->id)->count()>0)):?>
       <?=$this->render('_player_discoveries',['target'=>$target]);?>
       <?php endif;?>
 
     </div>
+
     <div class="col-lg-4 col-md-6 col-sm-6">
       <?=$this->render('_headshots_card',['target'=>$target]);?>
+
+      <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
+      <?=$this->render('_target_writeups',['writeups'=>$target->writeups,'active'=>false]);?>
+      <?php endif;?>
     </div>
   </div>
