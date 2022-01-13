@@ -1,13 +1,33 @@
 <?php
 use yii\helpers\Html;
 ?>
-<div class="card terminal writeups">
-  <div class="card-body table-responsive">
-    <h4><i class="fas fa-book"></i> Target Writeups</h4>
-    <?php foreach($target->writeups as $writeup):?>
-      <p><details><summary><b style="font-size: 1.2em;">Writeup by <?=Html::encode($writeup->player->username)?>, submitted <?=$writeup->created_at?></b> (<code>status:<?=$writeup->status?></code>)</summary>
-        <div class="markdown"><?=$writeup->formatted?></div>
-      </details></p>
-    <?php endforeach;?>
+<div class="card bg-dark terminal writeups">
+  <div class="card-header">
+    <h4><i class="fas fa-book"></i> <?=count($writeups)?> <?=count($writeups)>1 ? "Writeups":"Writeup"?> by:</h4>
+  </div>
+  <div class="card-body">
+    <div class="list-group list-group-flush">
+      <?php
+      foreach ($writeups as $item) {
+        $item_classes=[
+          'list-group-item',
+          'list-group-item-action',
+          'd-flex',
+          'justify-content-between',
+          'align-items-center',
+          'text-primary',
+          'orbitron',
+          'rounded'
+        ];
+        if($active===$item->id)
+        {
+          $item_classes[5]='text-dark';
+          $item_classes[]='text-bold';
+          $item_classes[]='active';
+        }
+        echo Html::a($item->player->username.' <span class="badge badge-primary badge-pill">'.count($item->ratings).' votes</span>',['/target/writeup/read','target_id'=>$item->target_id,'id'=>$item->id],['class'=>implode(' ',$item_classes)]);
+      }
+      ?>
+    </div>
   </div>
 </div>
