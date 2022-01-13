@@ -19,11 +19,11 @@ class DefaultController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['rate-solver','rate-headshot'],
+                'only' => ['rate-solver','rate-headshot','rate-writeup'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['rate-solver','rate-headshot'],
+                        'actions' => ['rate-solver','rate-headshot','rate-writeup'],
                         'roles' => ['@'],
                         'verbs'=>['post'],
                     ],
@@ -76,6 +76,44 @@ class DefaultController extends \app\components\BaseController
       {
         $rating=(int)Yii::$app->request->post('rating');
         $solver->updateAttributes(['rating' => $rating]);
+      }
+    }
+
+    /**
+     * Accepts a rating value from a player
+     * @return string
+     */
+    public function actionRateWriteup($target_id,$id)
+    {
+      $writeup=\app\modules\target\models\Writeup::findOne(['id'=>$id]);
+      if($writeup===null)
+      {
+        throw new NotFoundHttpException('No such writeup');
+      }
+      $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$writeup->target_id,'player_id'=>Yii::$app->user->id]);
+      $PTH=\app\modules\target\models\PlayerTargetHelp::findOne(['target_id'=>$writeup->target_id,'player_id'=>Yii::$app->user->id]);
+
+      if($headshot===null && $PTH===null)
+      {
+        throw new NotFoundHttpException('No such writeup');
+      }
+
+      if (($WR=\app\modules\game\models\WriteupRating::findOne(['player_id'=>Yii::$app->user->id, 'writeup_id'=>$id]))===null)
+      {
+        $WR=new \app\modules\game\models\WriteupRating;
+        $WR->writeup_id=$id;
+        $WR->player_id=Yii::$app->user->id;
+      }
+      if(Yii::$app->request->isPost && Yii::$app->request->post('rating')!==null)
+      {
+        $rating=(int)Yii::$app->request->post('rating');
+        if($WR->isNewRecord)
+        {
+          $WR->rating=$rating;
+          $WR->save();
+        }
+        else
+          $WR->updateAttributes(['rating' => $rating]);
       }
     }
 

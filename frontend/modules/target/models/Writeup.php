@@ -9,9 +9,11 @@ use yii\behaviors\AttributeTypecastBehavior;
 use yii\base\NotSupportedException;
 use app\models\Player;
 use app\modules\game\models\Headshot;
+use app\modules\game\models\WriteupRating;
 /**
  * This is the model class for table "writeup".
  *
+ * @property int $id
  * @property int $player_id
  * @property int $target_id
  * @property resource|null $content
@@ -27,6 +29,14 @@ use app\modules\game\models\Headshot;
  */
 class Writeup extends \yii\db\ActiveRecord
 {
+  public $_ratings=[
+    [ 'id'=>0, 'name' => "Not rated!", 'icon'=>null],
+    [ 'id'=>1,  'name' => "1 - Ok", 'icon'=>'fa-battery-quarter red-success',],
+    [ 'id'=>2,  'name' => "2 - Nice", 'icon'=>'fa-battery-half text-secondary',],
+    [ 'id'=>3,  'name' => "3 - Good", 'icon'=>'fa-battery-three-quarters text-warning',],
+    [ 'id'=>4,  'name' => "4 - Well written", 'icon'=>'fa-battery-full',],
+    [ 'id'=>5,  'name' => "5 - Excellent", 'icon'=>'fa-battery-full',],
+  ];
 
     /**
      * {@inheritdoc}
@@ -64,6 +74,7 @@ class Writeup extends \yii\db\ActiveRecord
             'typecast' => [
                 'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'approved' => AttributeTypecastBehavior::TYPE_BOOLEAN,
@@ -126,6 +137,27 @@ class Writeup extends \yii\db\ActiveRecord
     public function getHeadshot()
     {
         return $this->hasOne(Headshot::class, ['player_id'=>'player_id','target_id'=>'target_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRatings()
+    {
+      return $this->hasMany(WriteupRating::class, ['writeup_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAverageRating()
+    {
+      return $item->getRatings()->average('rating');
+    }
+
+    public function getAverageRatingName()
+    {
+      return $this->_ratings[intval($this->getRatings()->average('rating'))]['name'];
     }
 
     /**

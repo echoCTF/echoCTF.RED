@@ -30,7 +30,7 @@ yii\bootstrap\Modal::end();
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            //'player_id',
+            'id',
             [
               'attribute'=>'username',
               'contentOptions'=>['class'=>'text-nowrap'],

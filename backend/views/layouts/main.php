@@ -75,6 +75,7 @@ AppAsset::register($this);
                 ['label' => 'Player Scores', 'url' => ['/activity/player-score/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Team Scores', 'url' => ['/activity/team-score/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Writeups', 'url' => ['/activity/writeup/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Writeup Ratings', 'url' => ['/activity/writeup-rating/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Player Activated Writeups', 'url' => ['/activity/player-target-help/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Reports', 'url' => ['/activity/report/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Stream', 'url' => ['/activity/stream/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],

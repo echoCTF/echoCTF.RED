@@ -1,5 +1,6 @@
 <?php
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ListView;
 use app\widgets\stream\StreamWidget as Stream;
 $this->title=Yii::$app->sys->event_name.' Target: '.$target->name.' vs Player: '.$profile->owner->username;
@@ -8,6 +9,7 @@ $this->_image=\yii\helpers\Url::to($target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['versus', 'id'=>$target->id, 'profile_id'=>$profile->id], 'https');
 
 $this->_fluid='-fluid';
+Url::remember();
 ?>
 
 <div class="target-index">
