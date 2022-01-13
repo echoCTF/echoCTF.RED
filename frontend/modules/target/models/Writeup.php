@@ -9,9 +9,11 @@ use yii\behaviors\AttributeTypecastBehavior;
 use yii\base\NotSupportedException;
 use app\models\Player;
 use app\modules\game\models\Headshot;
+use app\modules\game\models\WriteupRating;
 /**
  * This is the model class for table "writeup".
  *
+ * @property int $id
  * @property int $player_id
  * @property int $target_id
  * @property resource|null $content
@@ -64,6 +66,7 @@ class Writeup extends \yii\db\ActiveRecord
             'typecast' => [
                 'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
+                    'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'approved' => AttributeTypecastBehavior::TYPE_BOOLEAN,
@@ -127,6 +130,15 @@ class Writeup extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Headshot::class, ['player_id'=>'player_id','target_id'=>'target_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRatings()
+    {
+      return $this->hasMany(WriteupRating::class, ['writeup_id' => 'id']);
+    }
+
 
     /**
      * {@inheritdoc}
