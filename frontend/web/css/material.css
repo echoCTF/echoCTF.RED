@@ -511,51 +511,42 @@ details.headshotters:not([open]) summary::after {
 .text-discord {
   color:#7289DA!important;
 }
-details > .markdown h1 {
+.markdown h1 {
  font-size: 1.65em;
 }
 
-details > .markdown h2 {
+.markdown h2 {
  font-size: 1.60em;
 }
-details > .markdown h3 {
+.markdown h3 {
   font-size: 1.55em;
 }
 
-details > .markdown h4 {
+.markdown h4 {
   font-size: 1.50em;
 }
 
-details > .markdown h5 {
+.markdown h5 {
   font-size: 1.45em;
 }
 
-details > .markdown h6 {
+.markdown h6 {
   font-size: 1.40em;
 }
 
 .markdown pre {
   padding: .2rem .4rem;
-  color: #212529;
-  background-color: #212529;
   border-radius: .2rem;
-  background-color: #212529;
-  overflow-x:auto;
-  max-width: 720px;
 }
 
 .markdown code {
   padding: .2rem .4rem;
-  font-size: 87.5%;
-  color: #fff;
-  background-color: #212529;
   border-radius: .2rem;
-  max-width: 80%;
-  overflow-x:auto;
 }
 .markdown img {
   max-width: 80%;
 }
+
 #notificationsMenu>a, #hintsMenu>a {
     word-wrap: break-word;
     white-space: normal;
@@ -856,4 +847,14 @@ mark {
 .card-challenge .card-body img {
   max-width: 60px;
   max-height: 60px;
+}
+
+.writeups .card-body .list-group-item-action
+{
+  padding: 0.3em 1.25rem;
+}
+.writeups .card-body .list-group
+{
+  padding: 0;
+  margin: 0;
 }
