@@ -11,11 +11,13 @@ use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
 use app\modules\game\models\Headshot;
 use app\modules\target\models\Target;
-use app\modules\target\models\PlayerTargetHelp;
+use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\modules\target\models\Writeup;
 use yii\filters\AccessControl;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
+use app\modules\game\models\WriteupRating;
 
 /**
  * Writeup controller for the `target` module
@@ -28,7 +30,7 @@ class WriteupController extends \app\components\BaseController
           return ArrayHelper::merge(parent::behaviors(),[
               'access' => [
                   'class' => AccessControl::class,
-                  'only' => ['enable','submit','view','update'],
+                  'only' => ['enable','submit','view','update','read'],
                   'rules' => [
                       [
                           'allow' => true,
@@ -44,7 +46,7 @@ class WriteupController extends \app\components\BaseController
                       ],
                       [
                           'allow' => true,
-                          'actions' => ['view'],
+                          'actions' => ['view','read'],
                           'roles' => ['@'],
                       ],
                       [
@@ -58,7 +60,7 @@ class WriteupController extends \app\components\BaseController
 
 
     /**
-     * Submit a writeup on a the given target
+     * View your own writeup for a given target
      * @return string
      */
      public function actionView(int $id)
@@ -67,6 +69,33 @@ class WriteupController extends \app\components\BaseController
              'model' => $this->findModel(Yii::$app->user->id, $id),
          ]);
      }
+
+     /**
+      * Read a given writeup for a target
+      * @return string
+      */
+      public function actionRead(int $target_id, int $id)
+      {
+          if(!PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target_id]) && !Headshot::findOne(['target_id'=>$target_id,'player_id'=>Yii::$app->user->id]))
+          {
+            Yii::$app->session->setFlash('error', 'You are not allowed to read writeups for this target.');
+            return $this->redirect(['default/view','id'=>$target_id]);
+          }
+
+          $model=$this->findModelId(['id'=>$id,'target_id'=>$target_id,'approved'=>true]);
+          if (($rating=WriteupRating::findOne(['player_id'=>Yii::$app->user->id, 'writeup_id'=>$id]))===null)
+          {
+            $rating=new WriteupRating;
+            $rating->writeup_id=$id;
+            $rating->player_id=Yii::$app->user->id;
+          }
+
+          return $this->render('read', [
+              'model' => $model,
+              'rating'=> $rating,
+          ]);
+      }
+
     /**
      * Submit a writeup on a the given target
      * @return Response|string
@@ -158,7 +187,7 @@ class WriteupController extends \app\components\BaseController
           return $this->redirect(['default/view','id'=>$id]);
         }
 
-        if(PlayerTargetHelp::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$id])!==null)
+        if(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$id])!==null)
         {
           Yii::$app->session->setFlash('error', 'You have already enabled writeups for this target.');
           return $this->redirect(['default/view','id'=>$id]);
@@ -177,7 +206,7 @@ class WriteupController extends \app\components\BaseController
         $transaction=$connection->beginTransaction();
         try
         {
-          $pth=new PlayerTargetHelp;
+          $pth=new PTH;
           $pth->player_id=Yii::$app->user->id;
           $pth->target_id=$id;
           $pth->created_at=new \yii\db\Expression('NOW()');
@@ -191,7 +220,7 @@ class WriteupController extends \app\components\BaseController
           Yii::$app->session->setFlash('error', 'Failed to activate writeups for this target.');
           throw $e;
         }
-        return $this->redirect(['default/view','id'=>$id]);
+        return $this->redirect(Url::previous());
     }
 
     /**
@@ -211,6 +240,25 @@ class WriteupController extends \app\components\BaseController
 
         throw new NotFoundHttpException('The requested writeup does not exist.');
     }
+
+    /**
+     * Finds the Writeup model based on its id value.
+     * If the model is not found, a 404 HTTP exception will be thrown.
+     * @param integer $id
+     * @return Writeup the loaded model
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    protected function findModelId($id)
+    {
+        if(($model=Writeup::findOne($id)) !== null)
+        {
+            return $model;
+        }
+
+        throw new NotFoundHttpException('The requested writeup does not exist.');
+    }
+
+
     protected function findProfile($id)
     {
         if(($model=\app\models\Profile::findOne($id)) !== null)
