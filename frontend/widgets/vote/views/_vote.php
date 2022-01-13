@@ -20,7 +20,7 @@ $this->registerJs(
     'rating-handler'
 );
 
-echo Html::beginForm([$action, 'id' => $id], 'post', ['enctype' => 'multipart/form-data', 'id'=>'rating']);
+echo Html::beginForm($action, 'post', ['enctype' => 'multipart/form-data', 'id'=>'rating']);
 echo Html::dropDownList(
     'rating', //name
     $model->rating,  //select
