@@ -3,7 +3,7 @@
 # $OpenBSD: rc.template,v 1.12 2018/01/11 19:30:18 rpe Exp $
 
 export GOPATH={{registry.home}}/go
-daemon="$GOPATH/bin/registry"
+daemon="/usr/local/sbin/registry"
 daemon_flags="serve /etc/docker-registry.yml"
 daemon_user="{{registry.user}}"
 export REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY={{registry.storage}}

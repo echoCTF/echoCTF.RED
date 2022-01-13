@@ -1,5 +1,5 @@
 #!/usr/bin/env ansible-playbook
---
+---
 - name: "Setup docker registry on an OpenBSD server (standalone)"
   hosts: all
   become_method: doas
@@ -25,6 +25,7 @@
       default: "5000"
       private: no
   vars:
+    ansible_python_interpreter: /usr/local/bin/python3
     registry:
       user: "{{registry_user}}"
       home: "{{registry_home}}"
@@ -53,9 +54,22 @@
     tags: create_users
 
   - name: Get registry distribution
-    command: go get github.com/docker/distribution/cmd/registry
+    command: git clone https://github.com/distribution/distribution.git
     environment:
       GOPATH: "{{registry.home}}/go"
+
+  - name: Build registry
+    command: go build main.go
+    args:
+      chdir: /root/distribution/cmd/registry
+      creates: /root/distribution/cmd/registry/main
+    environment:
+      GOPATH: "{{registry.home}}/go"
+
+  - name: Install registry binary
+    command: install -u root /root/distribution/cmd/registry/main /usr/local/sbin/registry
+    args:
+      creates: /usr/local/sbin/registry
 
   - name: Prepare registry folder
     command: mkdir -p {{registry.storage}}
@@ -78,6 +92,7 @@
     command: "rcctl {{item.state}} {{item.name}}"
     when: item.state is defined
     with_items: "{{rcctl}}"
+
 
 #  - set_fact:
 #      post_install: |
