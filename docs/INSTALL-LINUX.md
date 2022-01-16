@@ -61,6 +61,8 @@ mysql echoCTF<schemas/echoCTF-events.sql
 cp contrib/mysql-init.sql /etc/mysql/mysql-init.sql
 ```
 
+**NOTE:** If you change the name of the database make sure you also update the file `/etc/mysql/mysql-init.sql` to reflect this change.
+
 ### Copy the sample configuration files and update to reflect your system
 ```sh
 cp backend/config/cache-local.php backend/config/cache.php
