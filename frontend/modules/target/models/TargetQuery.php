@@ -40,7 +40,7 @@ class TargetQuery extends \yii\db\ActiveQuery
         $this->join('LEFT JOIN', 'player_treasure', 'player_treasure.treasure_id=treasure.id and player_treasure.player_id='.$player_id);
         $this->join('LEFT JOIN', 'player_finding', 'player_finding.finding_id=finding.id and player_finding.player_id='.$player_id);
         $this->join('LEFT JOIN', 'headshot', 'headshot.target_id=t.id');
-        $this->andWhere(['>','headshot.rating',-1]);
+        //$this->andWhere(['>','headshot.rating',-1]);
         $this->groupBy('t.id');
         return $this;
       }
