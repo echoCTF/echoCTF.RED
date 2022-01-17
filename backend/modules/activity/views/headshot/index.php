@@ -40,8 +40,8 @@ yii\bootstrap\Modal::end();
             ],
             'target_id',
             [
-              'attribute'=>'fqdn',
-              'value'=>'target.fqdn',
+              'attribute'=>'name',
+              'value'=>'target.name',
             ],
             [
               'attribute'=>'ipoctet',
