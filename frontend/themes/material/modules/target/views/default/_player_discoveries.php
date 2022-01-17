@@ -36,7 +36,7 @@ use yii\helpers\Html;
       echo Html::ul(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->all(), ['item' => function($item, $index) use ($target) {
         return Html::tag(
             'li',
-            '<code>'.$item->hint->title.'</code>',
+            '<code>'.$item->hint->title.'</code>'
             //['class' => 'post']
         );
       }]);
