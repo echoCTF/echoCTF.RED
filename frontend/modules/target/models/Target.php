@@ -72,6 +72,8 @@ class Target extends TargetAR
     {
       if($difficulty===null)
         return $this->difficulties[(int) $this->difficulty];
+      else if($difficulty===-1)
+        return 'unrated';
       return $this->difficulties[(int) $difficulty];
     }
 
