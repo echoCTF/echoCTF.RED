@@ -25,7 +25,7 @@ use yii\helpers\Html;
       echo Html::ul(Yii::$app->user->identity->getTreasures($target->id)->orderBy(['id' => SORT_DESC])->all(), ['item' => function($item, $index) use ($target) {
         return Html::tag(
             'li',
-            sprintf("<code>(%s/%d pts) %s</code>",$item->category,$item->points,$item->location),
+            sprintf("<code>(%s/%d pts) %s</code>",$item->category,$item->points,$item->location)
             //['class' => 'post']
         );
       }]);
