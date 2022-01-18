@@ -13,7 +13,7 @@ class m220118_091135_add_serial_column_to_player_ssl_table extends Migration
     public function safeUp()
     {
         $this->addColumn('{{%player_ssl}}', 'serial', 'BIGINT UNSIGNED NOT NULL UNIQUE AUTO_INCREMENT AFTER player_id');
-        $this->db->createCommand("ALTER TABLE users AUTO_INCREMENT=1600000000")->execute();
+        $this->db->createCommand("ALTER TABLE {{%player_ssl}} AUTO_INCREMENT=1600000000")->execute();
 
     }
 
