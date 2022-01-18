@@ -40,6 +40,7 @@ class m220102_214745_populate_url_routes extends Migration
       'profile/me'=>'profile/me',
       'profile/ovpn/<id>'=>'profile/ovpn',
       'profile/settings'=>'profile/settings',
+      'profile/revoke'=>'profile/revoke',
       'help' => 'help/default/index',
       'faq' => 'help/faq/index',
       'rules' => 'help/rule/index',
