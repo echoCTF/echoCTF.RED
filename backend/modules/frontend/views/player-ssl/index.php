@@ -30,7 +30,7 @@ yii\bootstrap\Modal::end();
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-
+            'serial',
             [
               'attribute' => 'player',
               'label'=>'Player',
@@ -42,7 +42,13 @@ yii\bootstrap\Modal::end();
               'value'=> function($model) {return $model->subjectString;},
             ],
             //'privkey:ntext',
-            'ts',
+            [
+              'attribute'=>'ts',
+              'format'=>'raw',
+              'value'=>function($model){ return sprintf("%s / %s",$model->ts,Yii::$app->formatter->format($model->ts, 'relativeTime'));},
+              'contentOptions' => ['class' => 'small'], // For TD
+
+            ],
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

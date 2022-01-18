@@ -13,6 +13,7 @@ use yii\widgets\ActiveForm;
     <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'player_id')->textInput() ?>
+    <?= $form->field($model, 'serial')->textInput() ?>
 
     <?= $form->field($model, 'subject')->textarea(['rows' => 6]) ?>
 
