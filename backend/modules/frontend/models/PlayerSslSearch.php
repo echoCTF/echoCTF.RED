@@ -18,8 +18,8 @@ class PlayerSslSearch extends PlayerSsl
     public function rules()
     {
         return [
-            [['player_id'], 'integer'],
-            [['subject', 'csr', 'crt', 'txtcrt', 'privkey', 'ts', 'player'], 'safe'],
+            [['player_id','serial'], 'integer'],
+            [['subject', 'csr', 'crt', 'txtcrt', 'privkey', 'ts', 'player','serial'], 'safe'],
         ];
     }
 
@@ -65,6 +65,7 @@ class PlayerSslSearch extends PlayerSsl
         ]);
 
         $query->andFilterWhere(['like', 'player_ssl.subject', $this->subject])
+            ->andFilterWhere(['like', 'player_ssl.serial', $this->serial])
             ->andFilterWhere(['like', 'player_ssl.csr', $this->csr])
             ->andFilterWhere(['like', 'player_ssl.crt', $this->crt])
             ->andFilterWhere(['like', 'player_ssl.txtcrt', $this->txtcrt])
