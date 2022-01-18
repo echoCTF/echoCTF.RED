@@ -25,10 +25,10 @@ class ProfileController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['badge','me', 'index', 'notifications', 'hints', 'ovpn', 'settings','invite'],
+                'only' => ['badge','me', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke'],
                 'rules' => [
                    'eventActive'=>[
-                      'actions' => ['badge','index', 'notifications', 'hints', 'ovpn', 'settings','invite'],
+                      'actions' => ['badge','index', 'notifications', 'hints', 'ovpn', 'settings','invite','revoke'],
                    ],
                    'eventStartEnd'=>[
                      'actions' => ['ovpn'],
@@ -37,14 +37,14 @@ class ProfileController extends \app\components\BaseController
                       'actions' => ['ovpn'],
                    ],
                    'disabledRoute'=>[
-                     'actions' => ['badge', 'me', 'notifications', 'hints', 'ovpn', 'settings','index','invite'],
+                     'actions' => ['badge', 'me', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke'],
                    ],
                    [
                      'actions' => ['index','badge'],
                      'allow' => true,
                    ],
                    [
-                     'actions' => ['ovpn','me','settings','notifications','hints'],
+                     'actions' => ['ovpn','me','settings','notifications','hints','revoke'],
                      'allow' => true,
                      'roles'=>['@']
                    ],
@@ -72,6 +72,7 @@ class ProfileController extends \app\components\BaseController
           'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
+                  'revoke' => ['POST'],
                 ],
             ],
         ]);
@@ -155,6 +156,25 @@ class ProfileController extends \app\components\BaseController
         return $this->redirect(['/site/register']);
     }
 
+    /**
+     * Revoke a VPN certificate
+     */
+    public function actionRevoke()
+    {
+      if(($model=Yii::$app->user->identity->sSL)===null)
+      {
+        \Yii::$app->session->addFlash('warning',"No VPN file(s) exist for your profile.");
+        return $this->redirect(['/profile/me']);
+      }
+      try {
+        $model->generate();
+        $model->save();
+        \Yii::$app->session->addFlash('success',"Your keys have been revoked. Make sure you download your OpenVPN configuration file again.");
+      } catch (\Exception $e) {
+        \Yii::$app->session->addFlash('error',"Failed to revoke your keys.");
+      }
+      return $this->redirect(['/profile/me']);
+    }
 
     public function actionOvpn($id)
     {
