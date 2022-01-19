@@ -45,6 +45,7 @@ class DefaultController extends \app\components\BaseController
 
         return $this->render('sysconfig_content', [
             'model' => $model,
+            'hint'=>'Enter your desired html code to be displayed on the frontpage for guest visitors.'
         ]);
     }
 
@@ -64,6 +65,7 @@ class DefaultController extends \app\components\BaseController
 
         return $this->render('sysconfig_content', [
             'model' => $model,
+            'hint'=>'Enter your desired html code to be displayed on default page of the logged in offense players.'
         ]);
     }
 
@@ -83,6 +85,7 @@ class DefaultController extends \app\components\BaseController
 
         return $this->render('sysconfig_content', [
             'model' => $model,
+            'hint'=>'Enter your desired html code to be displayed on default page of the logged in defense players.'
         ]);
     }
 
@@ -102,6 +105,47 @@ class DefaultController extends \app\components\BaseController
 
         return $this->render('sysconfig_content', [
             'model' => $model,
+            'hint'=>'Enter your desired html code to be displayed on the footer of every page.'
+        ]);
+    }
+
+    /**
+     * Updates CSS content sysconfig key.
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionCssOverride()
+    {
+        $model=Sysconfig::findOneNew('css_override');
+
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
+          Yii::$app->session->setFlash('success', 'CSS overrides content updated');
+        }
+
+        return $this->render('sysconfig_content', [
+            'model' => $model,
+            'hint'=>'Enter CSS files or URLs to be loaded (one per-line). Content starting with <kbd>/* ... */</kbd> will be included as raw CSS code.',
+        ]);
+    }
+
+    /**
+     * Updates JS content sysconfig key.
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionJsOverride()
+    {
+        $model=Sysconfig::findOneNew('js_override');
+
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
+          Yii::$app->session->setFlash('success', 'JS overrides content updated');
+        }
+
+        return $this->render('sysconfig_content', [
+            'model' => $model,
+            'hint'=>'Enter Javascript files or URLs to be loaded (one per-line). Content starting with <kbd>/* ... */</kbd> will be included as raw javascript code.',
         ]);
     }
 
