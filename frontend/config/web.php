@@ -206,8 +206,8 @@ $config=[
     'on afterRequest' => function() {
       if (!Yii::$app->user->isGuest) {
         \Yii::$app->cache->memcache->set("last_seen:".\Yii::$app->user->id, time());
-        \Yii::$app->cache->memcache->set("online:".\Yii::$app->user->id, time(), \Yii::$app->sys->online_timeout);
-        \Yii::$app->cache->memcache->set("player_session:".\Yii::$app->user->id, \Yii::$app->session->id, \Yii::$app->sys->online_timeout);
+        \Yii::$app->cache->memcache->set("online:".\Yii::$app->user->id, time(), intval(\Yii::$app->sys->online_timeout));
+        \Yii::$app->cache->memcache->set("player_session:".\Yii::$app->user->id, \Yii::$app->session->id, intval(\Yii::$app->sys->online_timeout));
         return;
       }
     },
