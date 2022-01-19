@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][]=$this->title;
         'model' => $model,
         'attributes' => [
             'player_id',
+            'serial',
             'subject:ntext',
             'csr:ntext',
             'crt:ntext',
