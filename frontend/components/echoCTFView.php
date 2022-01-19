@@ -28,6 +28,10 @@ class echoCTFView extends \yii\web\View
       $this->title=sprintf("%s", \Yii::$app->sys->event_name);
     }
 
+      $this->registerJsOverrides();
+
+      $this->registerCssOverrides();
+
     parent::init();
     if(!\Yii::$app->user->isGuest && \Yii::$app->user->identity->sSL!==null && \Yii::$app->user->identity->sSL->expires)
       \Yii::$app->getSession()->setFlash('warning', 'Your VPN key is about to expire. Go to your profile and '.\yii\helpers\Html::a('revoke it',['/profile/revoke'],['class'=>'text-dark text-bold','data-method'=>'post']).' to get a new one generated.');
@@ -142,5 +146,54 @@ class echoCTFView extends \yii\web\View
           }
           throw $e;
       }
+  }
+
+  public function registerJsOverrides()
+  {
+    if(\Yii::$app->sys->js_override===false || trim(\Yii::$app->sys->js_override)==="")
+    {
+      return;
+    }
+    // check if first starts with /*
+    if(\Yii::$app->sys->js_override{0} === '/' && \Yii::$app->sys->js_override{1} === '*')
+      $this->registerJs(
+        \Yii::$app->sys->js_override,
+        self::POS_READY,
+        'js-overrides'
+      );
+    $files=explode("\n",\Yii::$app->sys->js_override);
+    foreach($files as $jsfile)
+    {
+      $this->registerJsFile(
+          $jsfile,
+          [
+            'possition' => self::POS_END,
+            'depends' => [\app\assets\MaterialAsset::class]
+          ]
+      );
+    }
+
+  }
+  public function registerCssOverrides()
+  {
+    if(\Yii::$app->sys->css_override===false || trim(\Yii::$app->sys->css_override)==="")
+    {
+      return;
+    }
+
+    // check if first starts with /*
+    if(\Yii::$app->sys->css_override{0} === '/' && \Yii::$app->sys->css_override{1} === '*')
+      $this->registerCss(\Yii::$app->sys->css_override);
+
+    $files=explode("\n",\Yii::$app->sys->css_override);
+    foreach($files as $cssfile)
+    {
+      $this->registerCssFile(
+          $cssfile,
+          ['depends' => [\app\assets\MaterialAsset::class]]
+      );
+    }
+
+
   }
 }
