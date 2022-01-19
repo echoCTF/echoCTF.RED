@@ -15,6 +15,7 @@ $this->params['breadcrumbs'][]=$model->id;
 
     <?= $this->render('_form', [
         'model' => $model,
+        'hint'=>$hint,
     ]) ?>
 
 </div>
