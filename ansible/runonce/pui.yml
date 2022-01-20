@@ -313,7 +313,7 @@
 
   - name: "Create participant/config/db.php"
     copy:
-      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_ip}};dbname=echoCTF', 'username' => 'participantUI', 'password' => 'participantUI', 'charset' => 'utf8','enableSchemaCache' => true, 'schemaCacheDuration' => 60,'schemaCache' => 'cache',];\n"
+      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_ip}};dbname=echoCTF', 'username' => 'participantUI', 'password' => 'participantUI', 'charset' => 'utf8mb4','enableSchemaCache' => true, 'schemaCacheDuration' => 60,'schemaCache' => 'cache',];\n"
       dest: "/home/participantUI/{{domain_name}}/frontend/config/db.php"
       mode: '0444'
     tags:

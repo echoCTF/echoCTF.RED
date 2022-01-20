@@ -251,8 +251,8 @@
     mysql_db:
       state: present
       name: echoCTF
-      collation: utf8_unicode_ci
-      encoding: utf8
+      collation: utf8mb4_unicode_ci
+      encoding: utf8mb4
       login_user: "root"
 
   - name: Clone sources repo
@@ -333,7 +333,7 @@
 
   - name: "Create backend/config/db.php"
     copy:
-      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8',  ];\n"
+      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8mb4',  ];\n"
       dest: "{{APP_DIR}}/backend/config/db.php"
 
   - name: Install composer
