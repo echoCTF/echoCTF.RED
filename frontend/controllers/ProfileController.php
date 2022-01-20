@@ -5,6 +5,7 @@ use Yii;
 use app\models\Profile;
 use yii\data\ActiveDataProvider;
 use \app\modules\target\models\Target;
+use \app\modules\game\models\Headshot;
 use \app\modules\target\models\TargetQuery;
 use yii\helpers\ArrayHelper;
 use yii\filters\AccessControl;
@@ -89,8 +90,20 @@ class ProfileController extends \app\components\BaseController
     public function actionMe()
     {
       $profile=Yii::$app->user->identity->profile;
+      $headshots=Headshot::find()->where(['player_id'=>$profile->player_id])->orderBy(['created_at'=>SORT_ASC]);
+      $dataProvider = new ActiveDataProvider([
+                 'query' => $headshots,
+                 'pagination' => [
+                     'pageSize' => 12,
+                 ],
+                 'sort'=>[
+                   'defaultOrder'=>['created_at'=>SORT_ASC]
+                 ]
+             ]);
+
       return $this->render('index', [
           'profile'=>$profile,
+          'headshots'=>$dataProvider,
           'me'=>true,
       ]);
     }
@@ -137,10 +150,20 @@ class ProfileController extends \app\components\BaseController
         $profile=$this->findModel($id);
         if(!$profile->visible)
           return $this->redirect(['/']);
-
+        $headshots=Headshot::find()->where(['player_id'=>$profile->player_id])->orderBy(['created_at'=>SORT_ASC]);
+        $dataProvider = new ActiveDataProvider([
+                   'query' => $headshots,
+                   'pagination' => [
+                       'pageSize' => 12,
+                   ],
+                   'sort'=>[
+                     'defaultOrder'=>['created_at'=>SORT_ASC]
+                   ]
+               ]);
         return $this->render('index', [
           'me'=>false,
           'profile'=>$profile,
+          'headshots'=>$dataProvider,
           'accountForm'=>null,
           'profileForm'=>null,
         ]);
