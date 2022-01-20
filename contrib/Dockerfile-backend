@@ -38,7 +38,7 @@ RUN set -ex; \
     mv /var/www/html /var/www/html.old; \
     ln -s /var/www/echoCTF.RED/${RED_APP}/web /var/www/html; \
     a2enmod rewrite; \
-    echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8',  ];">${RED_APP}/config/db.php; \
+    echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8mb4',  ];">${RED_APP}/config/db.php; \
     apt-get autoremove -y; \
     rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
 
