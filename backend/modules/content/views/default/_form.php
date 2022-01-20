@@ -12,7 +12,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'val')->textarea(['rows' => '16','style'=>"font-family:monospace;"])->hint('Enter your desired html code to be displayed on the frontpage for guest visitors.') ?>
+    <?= $form->field($model, 'val')->textarea(['rows' => '16','style'=>"font-family:monospace;"])->hint($hint) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
