@@ -44,7 +44,8 @@
 
       <?php if($profile->headshotsCount>0):?>
       <div class="tab-pane" id="headshots">
-      <?=$this->render('_headshots',['profile'=>$profile]);?>
+
+      <?=$this->render('_headshots',['profile'=>$profile,'headshots'=>$headshots]);?>
       </div>
       <?php endif;?>
 

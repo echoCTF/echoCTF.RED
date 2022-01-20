@@ -66,7 +66,7 @@ $profile->scenario='validator';
       </div><!-- // end profile card col-md-4 -->
 <?php endif;?>
     </div>
-    <?=$this->render('_profile_tabs',['profile'=>$profile,'game'=>$game]);?>
+    <?=$this->render('_profile_tabs',['profile'=>$profile,'game'=>$game,'headshots'=>$headshots]);?>
 
     <div class="row">
       <div class="col">
