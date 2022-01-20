@@ -2,12 +2,12 @@
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-SET NAMES utf8 COLLATE 'utf8_unicode_ci';
+SET NAMES utf8mb4 COLLATE 'utf8mb4_unicode_ci';
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 
 DROP TABLE IF EXISTS `findingsd`;
 CREATE TABLE `findingsd` (
@@ -18,7 +18,7 @@ CREATE TABLE `findingsd` (
   srcip BIGINT UNSIGNED default 0,
   dstip BIGINT UNSIGNED default 0,
   dstport INT DEFAULT 0
-) ENGINE=BLACKHOLE DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=BLACKHOLE DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 DROP TABLE IF EXISTS player_finding;
 CREATE TABLE player_finding (
@@ -26,7 +26,7 @@ CREATE TABLE player_finding (
   `finding_id` int(11) NOT NULL,
   `ts` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (player_id,finding_id)
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_finding';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_finding';
 
 DROP TABLE IF EXISTS `player_last`;
 CREATE TABLE `player_last` (
@@ -36,28 +36,28 @@ CREATE TABLE `player_last` (
   `on_vpn` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `vpn_remote_address` int(11) UNSIGNED DEFAULT NULL,
   `vpn_local_address` int(11) UNSIGNED DEFAULT NULL
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_last';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_last';
 
 DROP TABLE IF EXISTS `player`;
 CREATE TABLE `player` (
   `id` int(10) unsigned NOT NULL,
-  `username` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` int(11) DEFAULT '0'
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player';
 
 DROP TABLE IF EXISTS `network`;
 CREATE TABLE `network` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(32) COLLATE utf8_unicode_ci NOT NULL,
-  `description` text COLLATE utf8_unicode_ci,
+  `name` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
   `public` tinyint(1) DEFAULT '1',
   `ts` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `active` tinyint(1) DEFAULT '1',
-  `codename` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `icon` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `codename` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `icon` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/network';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/network';
 
 
 DROP TABLE IF EXISTS `network_player`;
@@ -69,7 +69,7 @@ CREATE TABLE `network_player` (
   PRIMARY KEY (`network_id`,`player_id`),
   KEY `idx-network_player-network_id` (`network_id`),
   KEY `idx-network_player-player_id` (`player_id`)
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/network_player';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/network_player';
 
 DROP TABLE IF EXISTS `target_ondemand`;
 CREATE TABLE `target_ondemand` (
@@ -79,7 +79,7 @@ CREATE TABLE `target_ondemand` (
   `heartbeat` datetime DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/target_ondemand';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/target_ondemand';
 
 DROP TABLE IF EXISTS `debuglogs`;
 CREATE TABLE debuglogs (
