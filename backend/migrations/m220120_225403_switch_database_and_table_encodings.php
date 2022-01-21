@@ -31,7 +31,6 @@ class m220120_225403_switch_database_and_table_encodings extends Migration
       'hint',
       'infrastructure',
       'infrastructure_target',
-      'init_data',
       'inquiry',
       'instruction',
       'level',
