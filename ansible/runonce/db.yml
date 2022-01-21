@@ -95,8 +95,8 @@
     my_cnf:
       - { init_file:  "/etc/mysql-init.sql"}
       - { bind-address:  "{{db_ip}}" }
-      - { character-set-server: utf8 }
-      - { collation-server: utf8_unicode_ci }
+      - { character-set-server: utf8mb4 }
+      - { collation-server: utf8mb4_unicode_ci }
       - { default-storage-engine: innodb }
       - { default-time-zone: "'+00:00'" }
       - { event_scheduler: "ON" }
@@ -260,8 +260,8 @@
     mysql_db:
       state: present
       name: echoCTF
-      collation: utf8_unicode_ci
-      encoding: utf8
+      collation: utf8mb4_unicode_ci
+      encoding: utf8mb4
       login_user: "root"
 
   - name: Clone global variables UDF repo

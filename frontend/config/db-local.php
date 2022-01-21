@@ -4,8 +4,9 @@ return [
     'dsn' => 'mysql:host=localhost;dbname=echoCTF',
     'username' => 'root',
     'password' => '',
-    'charset' => 'utf8',
-
+    'charset' => 'utf8mb4',
+    'enableProfiling'=>true,
+    'enableProfiling'=>true,
     // Schema cache options (for production environment)
     'enableSchemaCache' => true,
     'schemaCacheDuration' => 60,
