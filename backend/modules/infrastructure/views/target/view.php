@@ -72,6 +72,8 @@ $this->params['breadcrumbs'][]=$this->title;
             'active:boolean',
             'healthcheck:boolean',
             'writeup_allowed:boolean',
+            'headshot_spin:boolean',
+            'player_spin:boolean',
             'status',
             'scheduled_at',
             'purpose',
