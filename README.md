@@ -92,10 +92,10 @@ interesting are as following:
   - Support for player rating of targets & challenges
   - Support for player contributed writeups
 * Detailed activity streams
- - Player overall activity
- - Player vs Target activity
- - All platform activity
- - Team based activity
+  - Player overall activity
+  - Player vs Target activity
+  - All platform activity
+  - Team based activity
 * Network activity tracking and visuals
 * REST support
 * Docker API support
