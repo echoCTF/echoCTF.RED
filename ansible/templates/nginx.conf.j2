@@ -23,11 +23,14 @@ http {
 	  fastcgi_temp_path /cache/fastcgi_temp 1 2;
 	  proxy_temp_path /cache/proxy_temp 1 2;
 
-
-    limit_req_zone $binary_remote_addr zone=api:10m rate=10r/s;
-    limit_req_zone $binary_remote_addr zone=resetforms:10m rate=10r/m;
-    limit_req_zone $binary_remote_addr zone=resetformsdouble:10m rate=20r/m;
-    limit_req_zone $binary_remote_addr zone=everypage:10m rate=100r/m;
+    limit_req_zone $binary_remote_addr zone=Api:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=ResendVerificationEmail:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=RequestPasswordReset:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=Register:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=Login:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=Claim:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=ResetPassword:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=VerifyEmail:10m rate=10r/s;
 
 	  access_log  syslog:server=unix:/dev/log,severity=notice main;
 
@@ -39,8 +42,15 @@ http {
     server {
         listen              {{item.ip}}:80;
         server_name         {{item.domain}} {{item.ip}} default _ "";
+
+        location /.well-known/acme-challenge/ {
+            rewrite ^/.well-known/acme-challenge/(.*) /$1 break;
+            root /acme;
+        }
+
         return 302 https://{{item.domain}};
     }
+
 
     server {
         listen                    	{{item.ip}}:443 ssl;
@@ -59,6 +69,12 @@ http {
         add_header X-Frame-Options DENY;
         add_header X-Content-Type-Options nosniff;
         add_header X-XSS-Protection "1; mode=block";
+
+        location /.well-known/acme-challenge/ {
+            rewrite ^/.well-known/acme-challenge/(.*) /$1 break;
+            root /acme;
+        }
+
         return 302 $scheme://{{item.domain}};
     }
 
@@ -89,9 +105,15 @@ http {
         	autoindex on;
         }
 
+        location /.well-known/acme-challenge/ {
+            rewrite ^/.well-known/acme-challenge/(.*) /$1 break;
+            root /acme;
+        }
+
         location ~ /\.ht {
             deny  all;
         }
+
         location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
             try_files $uri =404;
         }
@@ -108,7 +130,7 @@ http {
         # Rate limit /api to 10 requests/sec
         # This is way too loose
         location /api {
-            limit_req zone=api;
+            limit_req zone=Api;
             index  index.php;
             try_files $uri $uri/ /index.php?$args;
         }
@@ -117,7 +139,7 @@ http {
         # There is no reason why anyone would need more than that for a
         # legitimate purpose
         location /resend-verification-email {
-            limit_req zone=resetforms;
+            limit_req zone=ResendVerificationEmail;
             index  index.php;
             try_files $uri $uri/ /index.php?$args;
         }
@@ -126,14 +148,14 @@ http {
         # There is no reason why anyone would need more than that for a
         # legitimate purpose
         location /register {
-            limit_req zone=resetforms;
+            limit_req zone=Register;
             index  index.php;
             try_files $uri $uri/ /index.php?$args;
         }
 
         # Rate limit register to 20 requests per minute
         location /login {
-            limit_req zone=resetformsdouble;
+            limit_req zone=Login;
             index  index.php;
             try_files $uri $uri/ /index.php?$args;
         }
@@ -141,24 +163,24 @@ http {
         # Rate limit claim to 100 requests per minute it loads on
         # almost every page
         location /claim {
-            limit_req zone=everypage;
+            limit_req zone=Claim;
             index  index.php;
             try_files $uri $uri/ /index.php?$args;
         }
 
         location /request-password-reset {
-            limit_req zone=resetformsdouble;
+            limit_req zone=RequestPasswordReset;
             index  index.php;
             try_files $uri $uri/ /index.php?$args;
         }
 
         location /reset-password {
-            limit_req zone=resetforms;
+            limit_req zone=ResetPassword;
             index  index.php;
             try_files $uri $uri/ /index.php?$args;
         }
         location /verify-email {
-            limit_req zone=resetforms;
+            limit_req zone=VerifyEmail;
             index  index.php;
             try_files $uri $uri/ /index.php?$args;
         }
