@@ -47,19 +47,20 @@
       - { name: participantUI, comment: "{{domain_name}} Participants UI", uid: 4000, password: '*' }
     validation_key: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
     versions:
-      PHP: 7.4
-      PHP_MINOR: 9
+      PHP: "7.4"
+      PHP_MINOR: "9"
       PHP_patch_level:
-      AUTOCONF: 2.69
-      AUTOCONFP: p2
-      AUTOMAKE: 1.16.2
+      AUTOCONF: "2.69"
+      AUTOCONFP: "p2"
+      AUTOMAKE: "1.16.2"
       AUTOMAKEP: ""
-      memcached: 1.5.18
-      syslog_ng: 3.12.1p7
-      nginx: 1.14.2
-      libc: 96.0
-      libutil: 15.0
-      libcrypto: 46.2
+      memcached: "1.6.9"
+      syslog_ng: "3.12.1p7"
+      nginx: "1.14.2"
+      libc: "96.1"
+      libutil: "15.1"
+      libcrypto: "47.0"
+      libz: "6.0"
     sysctl:
       kern.bufcachepercent: 30
       net.inet.ip.ifq.maxlen: 2560
@@ -246,7 +247,7 @@
       - usr/bin
       - usr/libexec
       - usr/local/lib
-      - usr/local/share/icu/68.2
+      - usr/local/share/icu/69.1
       - usr/lib
 
   - name: "Copy pf conf files"
@@ -258,21 +259,22 @@
       - { src: '{{playbook_dir}}/../templates/pui.service.conf.j2', dest: '/etc/service.pf.conf' }
 
   - name: Generate pf tables files
-    command: "{{item.cmd}}"
-    args:
-      creates: "{{item.creates|default(omit)}}"
-      chdir: "{{item.chdir|default(omit)}}"
+    copy:
+     content: "{{item.content|default('')}}"
+     dest: "{{item.dest}}"
     with_items:
-    - { cmd: "touch /etc/administrators.conf", creates: "/etc/administrators.conf" }
-    - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
-    - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
-    - { cmd: "touch /etc/registry_clients.conf", creates: "/etc/registry_clients.conf" }
-    - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
-    - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
-    - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
-    - { cmd: "touch /etc/targets_networks.conf", creates: "/etc/targets_networks.conf" }
-    - { cmd: "touch /etc/targets_anchor.conf", creates: "/etc/targets_anchor.conf" }
-    - { cmd: "touch /etc/offense_anchor.conf", creates: "/etc/offense_anchor.conf" }
+    - { dest: "/etc/administrators.conf" }
+    - { dest: "/etc/docker_clients.conf" }
+    - { dest: "/etc/docker_servers.conf" }
+    - { dest: "/etc/maintenance.conf" }
+    - { dest: "/etc/moderators.conf" }
+    - { dest: "/etc/registry_clients.conf" }
+    - { dest: "/etc/registry_servers.conf" }
+    - { dest: "/etc/targets.conf" }
+    - { dest: "/etc/match-findings-pf.conf" }
+    - { dest: "/etc/targets_networks.conf" }
+    - { dest: "/etc/targets_anchor.conf" }
+    - { dest: "/etc/offense_anchor.conf" }
 
   - name: Fix CHROOT environment
     file: path=/home/{{item.user}}/{{item.dir}} mode="{{item.mode}}" state=directory
@@ -295,17 +297,30 @@
     tags:
       - chroot
 
-  - name: Copying needed files to participantUI chroot
-    copy:
-      src: "{{item.src}}"
-      remote_src: yes
-      dest: "/home/participantUI/{{item.src}}"
-      owner: "{{item.owner|default(omit)}}"
-      group: "{{item.group|default(omit)}}"
-      mode: "{{item.mode|default(omit)}}"
+  - name: make chroot dirs
+    shell: mkdir -p /home/participantUI/$(dirname {{item}})
     with_items: "{{CHROOT_ENV}}"
     tags:
       - chroot
+
+  - name: copy chroot files
+    shell: cp -p {{item}} /home/participantUI/$(dirname {{item}})
+    with_items: "{{CHROOT_ENV}}"
+    tags:
+      - chroot
+
+#  - name: Copying needed files to participantUI chroot
+#    copy:
+#      src:  "{{item}}"
+#      mode: "preserve"
+#      remote_src: yes
+#      follow: no
+#      dest: "/home/participantUI/{{item}}"
+#      owner: "root"
+#      group: "wheel"
+#    with_items: "{{CHROOT_ENV}}"
+#    tags:
+#      - chroot
 
   - name: Activate install php modules
     shell: cp /etc/php-{{versions.PHP}}.sample/*.ini /etc/php-{{versions.PHP}}/

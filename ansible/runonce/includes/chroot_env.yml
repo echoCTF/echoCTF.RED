@@ -1,49 +1,49 @@
 ---
 CHROOT_ENV:
-- { src: "/etc/hosts", owner: root, group: wheel, mode: '0644' }
-- { src: "/etc/services", owner: root, group: wheel, mode: '0644' }
-- { src: "/etc/protocols", owner: root, group: wheel, mode: '0644'}
-- { src: "/etc/resolv.conf", owner: root, group: wheel, mode: '0644'}
-- { src: "/etc/ssl/openssl.cnf", owner: root, group: wheel, mode:  '0444'}
-- { src: "/etc/ssl/cert.pem", owner: root, group: wheel, mode: '0444' }
-- { src: "/etc/group", mode: "0644", owner: root, group: wheel }
-- { src: "/etc/passwd", mode: "0644", owner: root, group: wheel }
-- { src: "/etc/localtime", mode: "0444" }
-- { src: "/bin/sh", mode: "0555" , owner: root, group: wheel}
-- { src: "/usr/bin/ssh-keygen", mode: "0555" }
-- { src: "/usr/bin/openssl", mode: "0555" }
-- { src: "/usr/libexec/ld.so", mode: "0444" , owner: root, group: wheel}
-- { src: "/usr/lib/libc.so.{{versions.libc}}",  mode: "0444" , owner: root, group: wheel}
-- { src: "/usr/lib/libutil.so.{{versions.libutil}}", mode: "0444" }
-- { src: "/usr/lib/libcrypto.so.{{versions.libcrypto}}", mode: "0444" }
-- { src: "/usr/lib/libz.so.5.0", mode: "0444" }
-- { src: "/usr/lib/libreadline.so.4.0", mode: "0444" }
-- { src: "/usr/lib/libcurses.so.14.0", mode: "0444" }
-- { src: "/usr/lib/libpthread.so.26.1", mode: "0444" }
-- { src: "/usr/lib/libc++.so.7.0", mode: "0444" }
-- { src: "/usr/lib/libc++abi.so.5.0", mode: "0444" }
-- { src: "/usr/lib/libm.so.10.1", mode: "0444" }
-- { src: "/usr/lib/libssl.so.48.2", mode: "0444" }
-- { src: "/usr/local/share/icu/68.2/icudt68l.dat", mode: "0755" }
-- { src: "/usr/local/lib/libmemcached.so.1.0", mode: "0444" }
-- { src: "/usr/local/lib/libintl.so.7.0", mode: "0444" }
-- { src: "/usr/local/lib/libonig.so.7.1", mode: "0444" }
-- { src: "/usr/local/lib/libiconv.so.7.0", mode: "0444" }
-- { src: "/usr/local/lib/libxml2.so.16.1", mode: "0444" }
-- { src: "/usr/local/lib/liblzma.so.2.1", mode: "0444" }
-- { src: "/usr/local/lib/libsasl2.so.3.1", mode: "0444" }
-- { src: "/usr/local/lib/libmemcachedutil.so.1.0", mode: "0444" }
-- { src: "/usr/local/lib/libcurl.so.26.11", mode: "0444" }
-- { src: "/usr/local/lib/libpng16.so.18.0", mode: "0444" }
-- { src: "/usr/local/lib/libnghttp2.so.0.17", mode: "0444" }
-- { src: "/usr/local/lib/libjpeg.so.70.0", mode: "0444" }
-- { src: "/usr/local/lib/libicuuc.so.19.2", mode: "0444" }
-- { src: "/usr/local/lib/libicuio.so.19.2", mode: "0444" }
-- { src: "/usr/local/lib/libicui18n.so.19.2", mode: "0444" }
-- { src: "/usr/local/lib/libicudata.so.19.2", mode: "0444" }
-- { src: "/usr/X11R6/lib/libxcb.so.4.1", mode: "0444" }
-- { src: "/usr/X11R6/lib/libfreetype.so.30.0", mode: "0444" }
-- { src: "/usr/X11R6/lib/libXpm.so.9.0", mode: "0444" }
-- { src: "/usr/X11R6/lib/libXdmcp.so.11.0", mode: "0444" }
-- { src: "/usr/X11R6/lib/libXau.so.10.0", mode: "0444" }
-- { src: "/usr/X11R6/lib/libX11.so.17.1", mode: "0444" }
+- "/etc/hosts"
+- "/etc/services"
+- "/etc/protocols"
+- "/etc/resolv.conf"
+- "/etc/ssl/openssl.cnf"
+- "/etc/ssl/cert.pem"
+- "/etc/group"
+- "/etc/passwd"
+- "/etc/localtime"
+- "/bin/sh"
+- "/usr/bin/ssh-keygen"
+- "/usr/bin/openssl"
+- "/usr/libexec/ld.so"
+- "/usr/lib/libc.so.*"
+- "/usr/lib/libutil.so.*"
+- "/usr/lib/libcrypto.so.*"
+- "/usr/lib/libz.so.*"
+- "/usr/lib/libreadline.so.*"
+- "/usr/lib/libcurses.so.*"
+- "/usr/lib/libpthread.so.*"
+- "/usr/lib/libc++.so.*"
+- "/usr/lib/libc++abi.so.*"
+- "/usr/lib/libm.so.*"
+- "/usr/lib/libssl.so.*"
+- "/usr/local/share/icu/69.1/icudt*l.dat"
+- "/usr/local/lib/libmemcached.so.*"
+- "/usr/local/lib/libintl.so.*"
+- "/usr/local/lib/libonig.so.*"
+- "/usr/local/lib/libiconv.so.*"
+- "/usr/local/lib/libxml2.so.*"
+- "/usr/local/lib/liblzma.so.*"
+- "/usr/local/lib/libsasl2.so.*"
+- "/usr/local/lib/libmemcachedutil.so.*"
+- "/usr/local/lib/libcurl.so.*"
+- "/usr/local/lib/libpng16.so.*"
+- "/usr/local/lib/libnghttp2.so.*"
+- "/usr/local/lib/libjpeg.so.*"
+- "/usr/local/lib/libicuuc.so.*"
+- "/usr/local/lib/libicuio.so.*"
+- "/usr/local/lib/libicui18n.so.*"
+- "/usr/local/lib/libicudata.so.*"
+- "/usr/X11R6/lib/libxcb.so.*"
+- "/usr/X11R6/lib/libfreetype.so.*"
+- "/usr/X11R6/lib/libXpm.so.*"
+- "/usr/X11R6/lib/libXdmcp.so.*"
+- "/usr/X11R6/lib/libXau.so.*"
+- "/usr/X11R6/lib/libX11.so.*"

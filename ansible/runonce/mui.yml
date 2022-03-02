@@ -230,11 +230,11 @@
       - etc
       - etc/ssl
       - bin
-      - usr/libexec
       - usr/X11R6/lib
       - usr/bin
+      - usr/libexec
       - usr/local/lib
-      - usr/local/share/icu/68.2
+      - usr/local/share/icu/69.1
       - usr/lib
 
   - name: "Copy pf conf files"
@@ -282,14 +282,14 @@
     tags:
       - chroot
 
-  - name: Copying needed files to moderatorUI chroot
-    copy:
-      src: "{{item.src}}"
-      remote_src: yes
-      dest: "/home/moderatorUI/{{item.src}}"
-      owner: "{{item.owner|default(omit)}}"
-      group: "{{item.group|default(omit)}}"
-      mode: "{{item.mode|default(omit)}}"
+  - name: make chroot dirs
+    shell: mkdir -p /home/moderatorUI/$(dirname {{item}})
+    with_items: "{{CHROOT_ENV}}"
+    tags:
+      - chroot
+
+  - name: copy chroot files
+    shell: cp -p {{item}} /home/moderatortUI/$(dirname {{item}})
     with_items: "{{CHROOT_ENV}}"
     tags:
       - chroot
