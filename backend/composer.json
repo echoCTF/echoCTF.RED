@@ -21,7 +21,9 @@
         "miloschuman/yii2-highcharts-widget": "^7.1",
         "overals/yii2-whois": "~1.0.0",
         "kartik-v/yii2-tabs-x": "@dev",
-        "stripe/stripe-php": "^7.107"
+        "stripe/stripe-php": "^7.107",
+        "sleifer/yii2-autocomplete-ajax": "dev-master",
+        "yiisoft/yii2-jui": "^2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
