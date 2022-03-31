@@ -131,6 +131,8 @@ AppAsset::register($this);
                 ['label' => 'Variables', 'url' => ['/infrastructure/target-variable/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Volumes', 'url' => ['/infrastructure/target-volume/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Credential', 'url' => ['/gameplay/credential/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
+                ['label' => 'Servers', 'url' => ['/infrastructure/server/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
+                ['label' => 'Target Instances', 'url' => ['/infrastructure/target-instance/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
               ],
             ],
             ['label' => '<span class="glyphicon glyphicon-flag"></span> Gameplay', 'url' => ['/gameplay'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, 'active'=>Yii::$app->controller->module->id=='gameplay',
