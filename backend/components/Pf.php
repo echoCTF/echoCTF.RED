@@ -25,7 +25,7 @@ class Pf extends Component
    */
   public static function load_table_file($table, $file)
   {
-    passthru(self::PFCTL." -t $table -T replace -f $file",$return_var);
+    @passthru(self::PFCTL." -t $table -T replace -f $file",$return_var);
     return intval($return_var)===0;
   }
 
@@ -37,7 +37,7 @@ class Pf extends Component
    */
   public static function load_anchor_file($anchor, $file)
   {
-    passthru(self::PFCTL." -a $anchor -Fr -f $file",$return_var);
+    @passthru(self::PFCTL." -a $anchor -Fr -f $file",$return_var);
     return intval($return_var)===0;
   }
 
@@ -61,17 +61,21 @@ class Pf extends Component
     return false;
   }
 
-  public static function allowToNetwork($target)
+  public static function allowToNetwork($target,$clients_table=null,$targets_table=null)
   {
-    $clients_table=self::clients_table($target);
-    $targets_table=$target->network->codename;
+    if($clients_table===null)
+      $clients_table=self::clients_table($target);
+    if($targets_table===null)
+      $targets_table=$target->network->codename;
     return sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$clients_table,$targets_table);
   }
 
-  public static function allowToClient($target)
+  public static function allowToClient($target,$clients_table=null,$targets_table=null)
   {
-    $clients_table=self::clients_table($target);
-    $targets_table=$target->network->codename;
+    if($clients_table===null)
+      $clients_table=self::clients_table($target);
+    if($targets_table===null)
+      $targets_table=$target->network->codename;
     return sprintf("pass quick from <%s> to <%s>",$targets_table,$clients_table);
   }
 
@@ -88,4 +92,16 @@ class Pf extends Component
 
   }
 
+  public static function add_table_ip($table,$ip)
+  {
+    @passthru(self::PFCTL." -t $table -T add $ip",$return_var);
+  }
+
+  public static function kill_table($table,$unlink=false)
+  {
+    @passthru(self::PFCTL." -t $table -T kill",$return_var);
+    if($unlink)
+      @unlink('/etc/'.$table.'.conf');
+
+  }
 }
