@@ -94,6 +94,7 @@ class CronController extends Controller
               Pf::add_table_ip($dc->name.'_clients',long2ip($val->player->last->vpn_local_address));
             }
             $val->ipoctet=$dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
+            \Yii::$app->cache->memcache->set("target:".$val->ipoctet, $val->target_id);
             $val->reboot=0;
             $val->save();
 
@@ -108,6 +109,7 @@ class CronController extends Controller
             Pf::kill_table($dc->name,true);
             Pf::kill_table($dc->name.'_clients',true);
             $val->delete();
+            \Yii::$app->cache->memcache->delete("target:".$val->ipoctet);
             break;
           default:
             printf("Error: Unknown action\n");
