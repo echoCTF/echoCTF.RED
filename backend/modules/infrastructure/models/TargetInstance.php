@@ -84,6 +84,13 @@ class TargetInstance extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets name tha the target will have
+     */
+    public function getName()
+    {
+      return sprintf("%s_%d",strtolower($this->target->name),$this->player_id);
+    }
+    /**
      * Gets query for [[Player]].
      *
      * @return \yii\db\ActiveQuery|PlayerQuery
