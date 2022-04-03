@@ -81,6 +81,7 @@ CREATE TABLE `target_ondemand` (
   `updated_at` datetime DEFAULT NULL
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/target_ondemand';
 
+DROP TABLE IF EXISTS `target_instance`;
 CREATE TABLE `target_instance` (
   `player_id` int(11) unsigned NOT NULL,
   `target_id` int(11) NOT NULL,
@@ -88,6 +89,12 @@ CREATE TABLE `target_instance` (
   `reboot` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
   `updated_at` datetime(3) NOT NULL DEFAULT current_timestamp(3)
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/target_instance';
+
+DROP TABLE IF EXISTS `target`;
+CREATE TABLE `target` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255)
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/target_instance';
 
 
