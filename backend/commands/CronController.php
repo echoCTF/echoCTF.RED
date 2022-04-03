@@ -303,6 +303,10 @@ class CronController extends Controller
         $frules[]=$finding->matchRule;
       }
     }
+    $instances=TargetInstance::find()->active();
+    foreach($instances->all() as $ti)
+      foreach($ti->target->findings as $f)
+        $rules[]=$f->getMatchRule('<'.$ti->name.'_clients>','<'.$ti->name.'>');
 
     Pf::store($base.'/match-findings-pf.conf',ArrayHelper::merge($frules,$rules));
 
@@ -336,8 +340,6 @@ class CronController extends Controller
       $networks[$_nname][]=$ti->ipoctet;
       $rulestoNet[]=Pf::allowToNetwork($ti->target,$_nname.'_clients',$_nname);
       $rulestoClient[]=Pf::allowToClient($ti->target,$_nname.'_clients',$_nname);
-      echo Pf::allowToNetwork($ti->target,$_nname.'_clients',$_nname),"\n";
-      echo Pf::allowToClient($ti->target,$_nname.'_clients',$_nname),"\n";
     }
     Pf::store($base.'/targets.conf',$ips);
     Pf::load_table_file('targets',$base.'/targets.conf');
