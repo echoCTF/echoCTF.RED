@@ -56,8 +56,7 @@ class CronController extends Controller
       $dc=new DockerContainer($val->target);
       $dc->targetVolumes=$val->target->targetVolumes;
       $dc->targetVariables=$val->target->targetVariables;
-      // new instance format <server_name>-<player_id>
-      $dc->name=strtolower(sprintf("%s_%d",$val->target->name,$val->player_id));
+      $dc->name=$val->name;
       $dc->server=$val->server->connstr;
       if($val->ip==null)
       {
@@ -336,7 +335,7 @@ class CronController extends Controller
     }
     foreach(TargetInstance::find()->active()->all() as $ti)
     {
-      $_nname=sprintf("%s_%d",$ti->target->name,$ti->player_id);
+      $_nname=$ti->name;
       $networks[$_nname][]=$ti->ipoctet;
       $rulestoNet[]=Pf::allowToNetwork($ti->target,$_nname.'_clients',$_nname);
       $rulestoClient[]=Pf::allowToClient($ti->target,$_nname.'_clients',$_nname);
