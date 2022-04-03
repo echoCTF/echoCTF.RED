@@ -9,6 +9,13 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('app', 'Target Instances');
 $this->params['breadcrumbs'][] = $this->title;
+yii\bootstrap\Modal::begin([
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+]);
+echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
+yii\bootstrap\Modal::end();
+
 ?>
 <div class="target-instance-index">
 
@@ -35,8 +42,14 @@ $this->params['breadcrumbs'][] = $this->title;
               'value'=>function($model){return $model->target_id.': '.$model->target->name;}
             ],
             'server_id',
-            'ip',
-            'reboot',
+            [
+              'attribute'=>'ipoctet',
+              'value'=>'ipoctet',
+            ],
+            [
+              'attribute'=>'reboot',
+              'value'=>'rebootVal',
+            ],
             'created_at',
             'updated_at',
 
