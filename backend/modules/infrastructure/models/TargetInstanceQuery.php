@@ -9,10 +9,15 @@ namespace app\modules\infrastructure\models;
  */
 class TargetInstanceQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    public function active()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere('[[ip]] IS NOT NULL')->andWhere('[[reboot]]!=2');
+    }
+
+    public function pending_action($minutes_ago=60)
+    {
+        return $this->andWhere('[[ip]] IS NULL')->orWhere('[[reboot]]>0')->orWhere(['<','updated_at',new \yii\db\Expression("NOW() - INTERVAL $minutes_ago MINUTE")]);
+    }
 
     /**
      * {@inheritdoc}
