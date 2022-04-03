@@ -25,6 +25,10 @@ use yii\db\Expression;
 class TargetInstance extends \yii\db\ActiveRecord
 {
   public $ipoctet;
+  const ACTION_START=0;
+  const ACTION_RESTART=1;
+  const ACTION_DESTROY=2;
+  const ACTION_EXPIRED=3;
 
 
     /**
