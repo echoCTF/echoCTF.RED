@@ -17,8 +17,8 @@ class TargetInstanceSearch extends TargetInstance
     public function rules()
     {
         return [
-            [['player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['player_id', 'target_id', 'server_id', 'reboot'], 'integer'],
+            [['created_at', 'updated_at','ipoctet'], 'safe'],
         ];
     }
 
@@ -61,11 +61,22 @@ class TargetInstanceSearch extends TargetInstance
             'player_id' => $this->player_id,
             'target_id' => $this->target_id,
             'server_id' => $this->server_id,
-            'ip' => $this->ip,
             'reboot' => $this->reboot,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
+        $query->andFilterWhere(['like', 'INET_NTOA(ip)', $this->ipoctet]);
+        $dataProvider->setSort([
+                'attributes' => array_merge(
+                    $dataProvider->getSort()->attributes,
+                    [
+                      'ipoctet' => [
+                          'asc' => ['ip' => SORT_ASC],
+                          'desc' => ['ip' => SORT_DESC],
+                      ],
+                    ]
+                ),
+            ]);
 
         return $dataProvider;
     }

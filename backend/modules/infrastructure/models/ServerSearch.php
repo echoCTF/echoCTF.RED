@@ -18,7 +18,7 @@ class ServerSearch extends Server
     {
         return [
             [['id', 'ip'], 'integer'],
-            [['name', 'description', 'service', 'connstr','ipoctet','network','provider_id'], 'safe'],
+            [['name', 'description', 'service', 'connstr','ipoctet','network','provider_id','ipoctet'], 'safe'],
         ];
     }
 
@@ -76,18 +76,6 @@ class ServerSearch extends Server
                       'ipoctet' => [
                           'asc' => ['ip' => SORT_ASC],
                           'desc' => ['ip' => SORT_DESC],
-                      ],
-                      'ipoctet' => [
-                          'asc' => ['ip' => SORT_ASC],
-                          'desc' => ['ip' => SORT_DESC],
-                      ],
-                      'network_name' => [
-                          'asc' => ['network.name' => SORT_ASC],
-                          'desc' => ['network.name' => SORT_DESC],
-                      ],
-                      'headshot' => [
-                          'asc' => ['COUNT(headshot.player_id)' => SORT_ASC],
-                          'desc' => ['COUNT(headshot.player_id)' => SORT_DESC],
                       ],
                     ]
                 ),
