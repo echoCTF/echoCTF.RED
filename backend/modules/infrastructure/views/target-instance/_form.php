@@ -26,13 +26,13 @@ use sleifer\autocompleteAjax\AutocompleteAjax;
     <?php else: ?>
     <?= $form->field($model, 'player_id')->hiddenInput(['value'=> $model->player_id])->label(false) ?>
     <?php endif;?>
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'), ['prompt'=>'Select team'])->hint('Choose the team to add the player chosen below') ?>
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'), ['prompt'=>'Select target'])->hint('Choose the target to spawn instance for') ?>
 
-    <?= $form->field($model, 'server_id')->dropDownList(ArrayHelper::map(Server::find()->orderBy(['name'=>SORT_ASC,'ip'=>SORT_ASC])->all(), 'id', 'name'), ['prompt'=>'Select team'])->hint('Choose the team to add the player chosen below') ?>
+    <?= $form->field($model, 'server_id')->dropDownList(ArrayHelper::map(Server::find()->orderBy(['name'=>SORT_ASC,'ip'=>SORT_ASC])->all(), 'id', 'name'), ['prompt'=>'Select Server'])->hint('Choose the server this instance will or has spawned') ?>
 
-    <?= $form->field($model, 'ip')->textInput() ?>
+    <?= $form->field($model, 'ipoctet')->textInput() ?>
 
-    <?= $form->field($model, 'reboot')->checkbox() ?>
+    <?= $form->field($model, 'reboot')->dropDownList(['0'=>'Nop','1'=>'Reboot','2'=>'Destroy']); ?>
 
 
     <div class="form-group">
