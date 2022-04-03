@@ -5,6 +5,8 @@ namespace app\modules\infrastructure\models;
 use Yii;
 use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\Target;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "target_instance".
@@ -22,12 +24,25 @@ use app\modules\gameplay\models\Target;
  */
 class TargetInstance extends \yii\db\ActiveRecord
 {
+  public $ipoctet;
+
+
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
         return 'target_instance';
+    }
+
+    public function behaviors()
+    {
+        return [
+          [
+            'class'=>TimestampBehavior::class,
+            'value' => new Expression('NOW()'),
+          ]
+        ];
     }
 
     /**
@@ -38,7 +53,9 @@ class TargetInstance extends \yii\db\ActiveRecord
         return [
             [['player_id', 'target_id'], 'required'],
             [['player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'integer'],
-            ['reboot','default','value'=>false],
+            [['ipoctet'], 'ip'],
+            ['reboot','default','value'=>0],
+            ['reboot','in','range'=>[0,1,2]],
             [['created_at', 'updated_at'], 'safe'],
             [['player_id'], 'unique'],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
@@ -83,11 +100,63 @@ class TargetInstance extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Target]].
+     *
+     * @return \yii\db\ActiveQuery|TargetQuery
+     */
+    public function getServer()
+    {
+        return $this->hasOne(Server::className(), ['id' => 'server_id']);
+    }
+
+    /**
      * {@inheritdoc}
      * @return TargetInstanceQuery the active query used by this AR class.
      */
     public static function find()
     {
         return new TargetInstanceQuery(get_called_class());
+    }
+
+    public function afterFind() {
+      parent::afterFind();
+      if($this->ip)
+        $this->ipoctet=long2ip($this->ip);
+    }
+
+    public function beforeSave($insert)
+    {
+      if(parent::beforeSave($insert))
+      {
+          if($this->ipoctet)
+            $this->ip=ip2long($this->ipoctet);
+          else $this->ip=null;
+          return true;
+      }
+      else
+      {
+          return false;
+      }
+    }
+
+    public function getRebootVal()
+    {
+      if($this->reboot===0 && $this->ip===null)
+      {
+        return "Start";
+      }
+      elseif($this->reboot===0)
+      {
+        return "Do nothing";
+      }
+      elseif($this->reboot===1)
+      {
+        return "Restart";
+      }
+      elseif($this->reboot===2)
+      {
+        return "Destroy";
+      }
+
     }
 }
