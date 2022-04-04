@@ -14,12 +14,12 @@ class m220403_223259_create_tau_target_instance_trigger extends Migration
       LEAVE thisBegin;
     END IF;
     IF NEW.ip IS NOT NULL AND OLD.ip IS NULL THEN
-      DO memc_set(CONCAT('target:',INET_NTOA(NEW.ip)),NEW.target_id);
+      DO memc_set(CONCAT('target:',NEW.ip),NEW.target_id);
     ELSEIF (NEW.ip IS NULL OR NEW.ip = '') and OLD.ip IS NOT NULL THEN
-        DO memc_delete(CONCAT('target:',INET_NTOA(OLD.ip)));
+        DO memc_delete(CONCAT('target:',OLD.ip));
     ELSEIF NEW.ip!=OLD.ip THEN
-      DO memc_delete(CONCAT('target:',INET_NTOA(OLD.ip)));
-      DO memc_set(CONCAT('target:',INET_NTOA(NEW.ip)),NEW.target_id);
+      DO memc_delete(CONCAT('target:',OLD.ip));
+      DO memc_set(CONCAT('target:',NEW.ip),NEW.target_id);
     END IF;
   END";
 

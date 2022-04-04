@@ -13,7 +13,9 @@ class m220403_223247_create_tad_target_instance_trigger extends Migration
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
     END IF;
-     DO memc_delete(CONCAT('target:',INET_NTOA(OLD.ip)));
+    IF OLD.ip IS NOT NULL THEN
+      DO memc_delete(CONCAT('target:',OLD.ip));
+    END IF;
   END";
 
   public function up()
