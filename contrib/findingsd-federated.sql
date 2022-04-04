@@ -95,7 +95,7 @@ DROP TABLE IF EXISTS `target`;
 CREATE TABLE `target` (
   `id` int(11) NOT NULL,
   `name` varchar(255)
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/target_instance';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/target';
 
 
 DROP TABLE IF EXISTS `debuglogs`;
