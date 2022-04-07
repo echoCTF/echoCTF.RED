@@ -27,6 +27,8 @@ class m220102_214745_populate_url_routes extends Migration
       'target/<id:\d+>' => 'target/default/view',
       'target/<id:\d+>/badge' => 'target/default/badge',
       'target/<id:\d+>/spin'=>'target/default/spin',
+      'target/<id:\d+>/spawn'=>'target/default/spawn',
+      'target/<id:\d+>/shut'=>'target/default/shut',
       'target/<target_id:\d+>/writeup/read/<id:\d+>' => 'target/writeup/read',
       'target/<target_id:\d+>/writeup/rate/<id:\d+>' => 'game/default/rate-writeup',
       'target/<id:\d+>/writeups/enable' => 'target/writeup/enable',
