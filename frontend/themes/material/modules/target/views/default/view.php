@@ -13,11 +13,22 @@ Url::remember();
 
 <div class="target-index">
   <div class="body-content">
-<?php if($target->ondemand && $target->ondemand->state<0 && !Yii::$app->user->isGuest):?>
-  <div><p class="text-danger">This target is currently powered off. <sub>Feel free to spin it up after you connect to the VPN.</sub></p></div>
-<?php endif;?>
-<?php if($target->ondemand && $target->ondemand->state>0 && !Yii::$app->user->isGuest):?>
-  <div><p class="text-danger">The target will shutdown in <code id="countdown" data="<?=$target->ondemand->expired?>"></code></p></div>
+<?php if(!Yii::$app->user->isGuest):?>
+  <?php if(Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$target->id):?>
+    <div>
+      <?php if(Yii::$app->user->identity->instance->reboot===0 && Yii::$app->user->identity->instance->ip===null):?>
+        <p class="text-warning">Your private instance is being powered up.</p>
+      <?php elseif(Yii::$app->user->identity->instance->reboot===2):?>
+        <p class="text-danger">Your private instance is scheduled to be powered off.</p>
+      <?php else:?>
+        <p class="text-info">Your private instance is up and running.</p>
+      <?php endif;?>
+    </div>
+  <?php elseif($target->ondemand && $target->ondemand->state<0):?>
+    <div><p class="text-info">This target is currently powered off. <em>Connect to the VPN to be allowed to power the system up.</em></p></div>
+  <?php elseif($target->ondemand && $target->ondemand->state>0):?>
+    <div><p class="text-danger">The target will shutdown in <code id="countdown" data="<?=$target->ondemand->expired?>"></code></p></div>
+  <?php endif;?>
 <?php endif;?>
 <?php if($target->status !== 'online'):?>
     <div><p class="text-warning"><code class="text-warning">Target <?php if ($target->scheduled_at!==null):?>scheduled for<?php endif;?> <b><?=$target->status?></b> <?php if ($target->scheduled_at!==null):?> <abbr title="<?=\Yii::$app->formatter->asDatetime($target->scheduled_at,'long')?>"><?=\Yii::$app->formatter->asRelativeTime($target->scheduled_at)?></abbr><?php endif;?></code></p></div>
