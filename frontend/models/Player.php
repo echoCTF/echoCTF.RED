@@ -17,6 +17,7 @@ use app\modules\game\models\Headshot;
  *
  * @property bool $visibilityAllowed
  * @property bool $visibilityDenied
+ * @property bool $isVip
  */
 class Player extends PlayerAR implements IdentityInterface
 {
@@ -225,6 +226,19 @@ class Player extends PlayerAR implements IdentityInterface
       $admin_ids=\Yii::$app->params['admin_ids'];
       return !(array_search(intval($this->id), $admin_ids) === false);// error is here
     }
+
+  /**
+   * Check if the user is considered a VIP
+   *
+   * @return bool
+   */
+  public function getIsVip():bool
+  {
+    if($this->isAdmin || $this->subscription!==null)
+      return true;
+    return false;
+  }
+
 
     public static function find()
     {
