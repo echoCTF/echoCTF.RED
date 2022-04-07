@@ -96,7 +96,7 @@ class Target extends TargetAR
      */
     public function getCountHeadshots()
     {
-      return $this->headshots->count();
+      return $this->getHeadshots()->count();
     }
 
     public function getFormattedExtras()
