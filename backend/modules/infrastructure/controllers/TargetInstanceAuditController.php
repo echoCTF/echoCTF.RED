@@ -13,7 +13,7 @@ use yii\helpers\ArrayHelper;
 /**
  * TargetInstanceAuditController implements the CRUD actions for TargetInstanceAudit model.
  */
-class TargetInstanceAuditController extends Controller
+class TargetInstanceAuditController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}

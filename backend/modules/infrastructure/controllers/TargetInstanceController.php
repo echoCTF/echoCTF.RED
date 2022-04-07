@@ -10,7 +10,6 @@ use app\modules\infrastructure\models\DockerContainer;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
 /**
  * TargetInstanceController implements the CRUD actions for TargetInstance model.
  */
@@ -21,7 +20,17 @@ class TargetInstanceController extends \app\components\BaseController
      */
     public function behaviors()
     {
-      return ArrayHelper::merge(parent::behaviors(),[]);
+        return ArrayHelper::merge(parent::behaviors(),[
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                    'create' => ['POST'],
+                    'destroy' => ['POST'],
+                    'restart' => ['POST'],
+                ],
+            ],
+        ]);
     }
 
     /**
