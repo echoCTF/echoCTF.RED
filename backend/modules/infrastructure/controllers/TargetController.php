@@ -30,12 +30,8 @@ class TargetController extends \app\components\BaseController
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
-                    'delete' => ['POST'],
                     'destroy' => ['POST'],
-                    'activate-filtered' => ['POST'],
-                    'pull-filtered' => ['POST'],
-                    'spin-filtered' => ['POST'],
-                    'delete-filtered' => ['POST'],
+                    'restart' => ['POST'],
                 ],
             ],
         ]);
