@@ -9,6 +9,7 @@ The following commands currently exist on the backend:
 - [Sysconfig Commands](console-commands/Sysconfig.md)
 - [Target Commands](console-commands/Target.md)
 - [User Commands](console-commands/User.md)
+- [Cron Commands](console-commands/Cron.md)
 
 The following commands exist on the frontend:
 - [Generator Commands](console-commands/Generator.md)
