@@ -16,6 +16,7 @@ class m220403_223247_create_tad_target_instance_trigger extends Migration
     IF OLD.ip IS NOT NULL THEN
       DO memc_delete(CONCAT('target:',OLD.ip));
     END IF;
+    INSERT DELAYED INTO {{%target_instance_audit}} (op,player_id,target_id,server_id,ip,reboot,ts) VALUES ('d',OLD.player_id,OLD.target_id,OLD.server_id,OLD.ip,OLD.reboot,NOW());
   END";
 
   public function up()

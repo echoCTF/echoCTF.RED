@@ -21,6 +21,7 @@ class m220403_223259_create_tau_target_instance_trigger extends Migration
       DO memc_delete(CONCAT('target:',OLD.ip));
       DO memc_set(CONCAT('target:',NEW.ip),NEW.target_id);
     END IF;
+    INSERT DELAYED INTO {{%target_instance_audit}} (op,player_id,target_id,server_id,ip,reboot,ts) VALUES ('u',NEW.player_id,NEW.target_id,NEW.server_id,NEW.ip,NEW.reboot,NOW());
   END";
 
   public function up()
