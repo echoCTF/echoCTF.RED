@@ -6,6 +6,7 @@ use Yii;
 use yii\base\NotSupportedException;
 use yii\db\ActiveRecord;
 use app\modules\game\models\Headshot;
+use app\modules\target\models\TargetInstance;
 
 /**
  * This is the model class that only holds relations for the table "player".
@@ -28,6 +29,8 @@ use app\modules\game\models\Headshot;
  * @property Profile $profile
  * @property PlayerScore $playerScore
  * @property PlayerSsl $playerSsl
+ * @property TargetInstance $instance
+ * @property Subscription $subscription
  */
 class PlayerAR extends ActiveRecord
 {
@@ -219,6 +222,7 @@ class PlayerAR extends ActiveRecord
   {
     return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkPlayer');
   }
+
   /**
    * @return \yii\db\ActiveQuery
    */
@@ -226,6 +230,23 @@ class PlayerAR extends ActiveRecord
   {
       return $this->hasOne(Profile::class, ['player_id' => 'id']);
   }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getInstance()
+  {
+      return $this->hasOne(TargetInstance::class, ['player_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getSubscription()
+  {
+      return $this->hasOne(\app\modules\subscription\models\PlayerSubscription::class, ['player_id' => 'id']);
+  }
+
   public function getPlayerScore()
   {
       return $this->hasOne(PlayerScore::class, ['player_id' => 'id']);
