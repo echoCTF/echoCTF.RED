@@ -22,6 +22,13 @@ class SpinRestAction extends \yii\rest\ViewAction
 
       $module->checkNetwork($target);
       $this->checkSpinable($target);
+      if(Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$target->id)
+      {
+
+        Yii::$app->user->identity->instance->updateAttributes(['reboot'=>1]);
+        Yii::$app->session->setFlash('success', sprintf('Target instance [%s] scheduled for restart. You will receive a notification when the operation is completed.', $target->name));
+        return $this->redirectTo();
+      }
       $playerSpin=Yii::$app->user->identity->profile->spins;
       $SQ=new \app\modules\target\models\SpinQueue;
       $SQ->player_id=(int) \Yii::$app->user->id;
@@ -29,7 +36,7 @@ class SpinRestAction extends \yii\rest\ViewAction
       $playerSpin->counter=intval($playerSpin->counter) + 1;
       $playerSpin->total=intval($playerSpin->total) + 1;
       if($SQ->save() !== false && $playerSpin->save() !== false)
-        Yii::$app->session->setFlash('success', sprintf('Target [%s] queued for restart. You will receive a notification when the operation is completed.', $target->fqdn));
+        Yii::$app->session->setFlash('success', sprintf('Target [%s] queued for restart. You will receive a notification when the operation is completed.', $target->name));
       else
         throw new NotFoundHttpException('Failed to queue target for restart.');
 
@@ -44,6 +51,7 @@ class SpinRestAction extends \yii\rest\ViewAction
 
   protected function redirectTo()
   {
+    
     if(Yii::$app->request->referrer)
     {
       return Yii::$app->getResponse()->redirect(Yii::$app->request->referrer);
