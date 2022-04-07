@@ -53,7 +53,34 @@ yii\bootstrap\Modal::end();
             'created_at',
             'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+              'class' => 'yii\grid\ActionColumn',
+              'template' => '{restart} {destroy} {view} {update} {delete}',
+              'buttons' => [
+                'restart' => function($url) {
+                  return Html::a(
+                      '<span class="glyphicon glyphicon-refresh"></span>',
+                      $url,
+                      [
+                        'title' => 'Restart instance',
+                        'data-pjax' => '0',
+                        'data-method' => 'POST',
+                      ]
+                  );
+                },
+                'destroy' => function($url) {
+                  return Html::a(
+                      '<span class="glyphicon glyphicon-off"></span>',
+                      $url,
+                      [
+                        'title' => 'Spin container',
+                        'data-pjax' => '0',
+                        'data-method' => 'POST',
+                      ]
+                  );
+                },
+              ],
+            ],
         ],
     ]); ?>
 

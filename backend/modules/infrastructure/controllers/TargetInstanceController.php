@@ -6,6 +6,7 @@ use Yii;
 use yii\helpers\ArrayHelper;
 use app\modules\infrastructure\models\TargetInstance;
 use app\modules\infrastructure\models\TargetInstanceSearch;
+use app\modules\infrastructure\models\DockerContainer;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -87,6 +88,78 @@ class TargetInstanceController extends \app\components\BaseController
         return $this->render('update', [
             'model' => $model,
         ]);
+    }
+
+    /**
+     * Start a Target Instance .
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionRestart($id)
+    {
+        try 
+        {
+            $val=$this->findModel($id);
+            $dc=new DockerContainer($val->target);
+            $dc->targetVolumes=$val->target->targetVolumes;
+            $dc->targetVariables=$val->target->targetVariables;
+            $dc->name=$val->name;
+            $dc->server=$val->server->connstr;
+            try 
+            {
+                $dc->destroy();
+            } 
+            catch (\Exception $e) { }
+            $dc->pull();
+            $dc->spin();
+            $val->ipoctet=$dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
+            $val->reboot=0;
+            $val->save();
+        }
+        catch (\Exception $e)
+        {
+            if(method_exists($e,'getErrorResponse'))
+                echo $e->getErrorResponse()->getMessage(),"\n";
+            else
+                echo $e->getMessage(),"\n";
+        }
+
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Destroy a Target Instance .
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDestroy($id)
+    {
+        try
+        {
+            $val=$this->findModel($id);
+            $dc=new DockerContainer($val->target);
+            $dc->targetVolumes=$val->target->targetVolumes;
+            $dc->targetVariables=$val->target->targetVariables;
+            $dc->name=$val->name;
+            $dc->server=$val->server->connstr;
+            try 
+            {
+                $dc->destroy();
+            } 
+            catch (\Exception $e) { }
+            $val->delete();
+        }
+        catch (\Exception $e)
+        {
+          if(method_exists($e,'getErrorResponse'))
+            echo $e->getErrorResponse()->getMessage(),"\n";
+          else
+            echo $e->getMessage(),"\n";
+        }
+  
+        return $this->redirect(['index']);
     }
 
     /**
