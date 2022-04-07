@@ -35,20 +35,35 @@ class CronController extends Controller
   public function actionIndex()
   {
     $this->actionSpinQueue();
-    $this->actionHealthcheck(true);
-    $this->actionPowerups();
-    $this->actionPowerdowns();
     $this->actionOndemand();
-    $this->actionOfflines();
-    $this->actionInstances();
     $this->actionPf(true);
   }
 
+  public function actionPowerOperations()
+  {
+    if(file_exists("/tmp/cron-poweroperations.lock"))
+    {
+      echo "Instances: /tmp/cron-poweroperations.lock exists, skipping execution\n";
+      return;
+    }
+    touch("/tmp/cron-poweroperations.lock");
+    $this->actionPowerups();
+    $this->actionPowerdowns();
+    $this->actionOfflines();
+    @unlink("/tmp/cron-poweroperation.lock");
+
+  }
   /**
    * Process player private instances
    */
   public function actionInstances()
   {
+    if(file_exists("/tmp/cron-instances.lock"))
+    {
+      echo "Instances: /tmp/cron-instances.lock exists, skipping execution\n";
+      return;
+    }
+    touch("/tmp/cron-instances.lock");
     $action=SELF::ACTION_EXPIRED;
     $t=TargetInstance::find()->pending_action();
     foreach($t->all() as $val)
@@ -121,6 +136,7 @@ class CronController extends Controller
         else
           echo $e->getMessage(),"\n";
       }
+      @unlink("/tmp/cron-instances.lock");
     }
   }
 
@@ -129,6 +145,13 @@ class CronController extends Controller
    */
   public function actionHealthcheck($spin=false)
   {
+    if(file_exists("/tmp/cron-healthcheck.lock"))
+    {
+      echo "Instances: /tmp/cron-healthcheck.lock exists, skipping execution\n";
+      return;
+    }
+    touch("/tmp/cron-healthcheck.lock");
+
     $unhealthy=$this->unhealthy_dockers();
 
     foreach($unhealthy as $target)
@@ -150,6 +173,7 @@ class CronController extends Controller
         $sh->save();
       }
     }
+    @unlink("/tmp/cron-healthcheck.lock");
   }
 
   /**
@@ -374,6 +398,9 @@ class CronController extends Controller
             if(($unhealthyTarget=Target::findOne(['name'=>$name])) !== NULL)
             {
               $unhealthy[$name]=$unhealthyTarget;
+            }
+            else {
+              echo "Unhealthy container  [$name => {$target->server}] not on our list!!!";
             }
           }
       }
