@@ -32,13 +32,17 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'name'], 'required'],
-            [['description', 'metadata','htmlOptions','perks','interval'], 'string'],
+            [['id', 'name','price_id'], 'required'],
+            [['description', 'metadata','htmlOptions','perks','interval','price_id'], 'string'],
             [['weight','interval_count'],'integer'],
             [['active', 'livemode'], 'boolean'],
             [['created_at', 'updated_at'], 'safe'],
             [['id','shortcode'], 'string', 'max' => 40],
-            [['name'], 'string', 'max' => 255],
+            [['name','price_id'], 'string', 'max' => 255],
+            [['currency'],'default','value'=>'eur'],
+            [['weight'],'default','value'=>0],
+            [['interval_count'],'default','value'=>'12'],
+        
             [['id'], 'unique'],
         ];
     }
@@ -66,7 +70,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductNetworks()
     {
-        return $this->hasMany(ProductNetwork::className(), ['id' => 'product_id']);
+        return $this->hasMany(ProductNetwork::class, ['id' => 'product_id']);
     }
 
     /**
