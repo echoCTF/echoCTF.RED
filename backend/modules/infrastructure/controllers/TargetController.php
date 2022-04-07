@@ -155,7 +155,7 @@ class TargetController extends \app\components\BaseController
           return $this->redirect(['view','id'=>$target->id]);
         }
         return $this->render('logs', [
-          'logs' => implode($lines,""),
+          'logs' => implode("",$lines),
           'model' => $target,
         ]);
     }
@@ -507,7 +507,7 @@ class TargetController extends \app\components\BaseController
       $containers=[];
       foreach(Target::find()->select(['server'])->distinct()->all() as $target)
       {
-        if($target->server{0}==='/')
+        if($target->server[0]==='/')
           $client=DockerClientFactory::create([
             'ssl' => false,
           ]);
