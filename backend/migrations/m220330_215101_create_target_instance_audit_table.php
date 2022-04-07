@@ -25,8 +25,8 @@ class m220330_215101_create_target_instance_audit_table extends Migration
             'ip' => $this->integer()->unsigned()->defaultValue(0),
             'reboot' => 'tinyint unsigned not null default 0',
             'ts' => 'TIMESTAMP NOT NULL ON UPDATE CURRENT_TIMESTAMP',
-        ],'ENGINE=RocksDB');
-
+        ]/* Disable this since its only available on 10.2.5,'ENGINE=RocksDB'*/);
+        // 
         // creates index for column `player_id`
         $this->createIndex(
             '{{%idx-target_instance_audit-player_id}}',
