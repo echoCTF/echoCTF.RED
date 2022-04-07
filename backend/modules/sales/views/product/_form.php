@@ -13,6 +13,8 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'price_id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'currency')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'active')->checkbox() ?>
 
