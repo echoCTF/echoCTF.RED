@@ -2,7 +2,7 @@
 
 namespace app\modules\subscription;
 use yii\base\BootstrapInterface;
-
+use yii\helpers\ArrayHelper;
 /**
  * challenge module definition class
  */
