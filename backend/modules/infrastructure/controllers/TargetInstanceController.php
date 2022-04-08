@@ -25,7 +25,6 @@ class TargetInstanceController extends \app\components\BaseController
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
-                    'create' => ['POST'],
                     'destroy' => ['POST'],
                     'restart' => ['POST'],
                 ],
