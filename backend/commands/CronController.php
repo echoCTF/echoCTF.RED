@@ -281,7 +281,7 @@ class CronController extends Controller
     {
       printf("Target %s ", $target->fqdn);
       printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
-      $target->powerdown();
+      $requirePF=$target->powerdown();
       printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
     }
   }
@@ -293,7 +293,7 @@ class CronController extends Controller
     {
       printf("Target %s ", $target->fqdn);
       printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
-      $target->powerdown();
+      $requirePF=$target->powerdown();
       printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
     }
 
