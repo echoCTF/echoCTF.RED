@@ -19,6 +19,12 @@ yii\bootstrap\Modal::end();
 <div class="target-instance-audit-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
+    <p>
+        <?= Html::a(Yii::t('app', 'Delete all records'), ['truncate'], ['class' => 'btn btn-danger',                          'data-pjax' => '0',
+                          'data-confirm'=>'Are you sure you want to delete all the audit records?',
+                          'data-method' => 'POST',
+]) ?>
+    </p>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -34,7 +40,7 @@ yii\bootstrap\Modal::end();
             'ip',
             'reboot',
             'ts',
-        ],
+        ]
     ]); ?>
 
 
