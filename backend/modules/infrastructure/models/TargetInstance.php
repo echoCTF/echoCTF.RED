@@ -6,6 +6,7 @@ use Yii;
 use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\Target;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeTypecastBehavior;
 use yii\db\Expression;
 
 /**
@@ -42,7 +43,16 @@ class TargetInstance extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-          [
+          'typecast' => [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'reboot' => AttributeTypecastBehavior::TYPE_INTEGER,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => false,
+            'typecastAfterFind' => true,
+          ],
+          'timestamp'=>[
             'class'=>TimestampBehavior::class,
             'value' => new Expression('NOW()'),
           ]
@@ -150,6 +160,42 @@ class TargetInstance extends \yii\db\ActiveRecord
       }
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+      parent::afterSave($insert, $changedAttributes);
+      if($insert)
+      {
+        return;
+      }
+      if($this->ip!==null && array_key_exists('ip',$changedAttributes) && $changedAttributes['ip']===null)
+      {
+        $this->notify('started');
+      }
+      elseif($this->reboot===0 && $changedAttributes['reboot']===1)
+      {
+        $this->notify('restarted');
+      }
+    }
+
+    /**
+    * Send notif after model deletion
+    */
+    public function afterDelete()
+    {
+        $this->notify('destroyed');
+        parent::afterDelete();
+    }
+    public function notify($what)
+    {
+      $n=new \app\modules\activity\models\Notification;
+      $n->player_id=$this->player_id;
+      $n->title=sprintf("Your instance for target [%s] got %s.",$this->target->name,$what);
+      $n->body=$n->title;
+      $n->archived=0;
+      $n->created_at=new \yii\db\Expression('NOW()');
+      $n->updated_at=new \yii\db\Expression('NOW()');
+      $n->save();
+    }
     public function getRebootVal()
     {
       if($this->reboot===0 && $this->ip===null)
@@ -170,4 +216,5 @@ class TargetInstance extends \yii\db\ActiveRecord
       }
 
     }
-}
+
+  }
