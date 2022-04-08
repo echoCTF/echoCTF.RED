@@ -234,7 +234,7 @@ class Player extends PlayerAR implements IdentityInterface
    */
   public function getIsVip():bool
   {
-    if($this->isAdmin || $this->subscription!==null)
+    if($this->isAdmin || $this->subscription!==null && $this->subscription->active>0)
       return true;
     return false;
   }
