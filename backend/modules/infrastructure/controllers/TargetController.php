@@ -246,7 +246,7 @@ class TargetController extends \app\components\BaseController
         $model=$this->findModel($id);
         $modelOrig=$this->findModel($id);
         $msg="Server updated succesfully";
-        if($model->load(Yii::$app->request->post()))
+        if($model->load(Yii::$app->request->post()) && $model->validate())
         {
 
           // if the target has changed server destroy from old one
@@ -260,7 +260,7 @@ class TargetController extends \app\components\BaseController
             Yii::$app->session->setFlash('success', $msg);
             return $this->redirect(['view', 'id' => $model->id]);
           }
-          Yii::$app->session->setFlash('error', 'Server failed to be updated ['.implode(", ", $model->getErrors()).']');
+          Yii::$app->session->setFlash('error', 'Server failed to be updated ['.implode(", ", $model->errors).']');
         }
 
         return $this->render('update', [
