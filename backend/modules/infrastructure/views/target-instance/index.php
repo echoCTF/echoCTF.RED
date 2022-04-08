@@ -64,6 +64,7 @@ yii\bootstrap\Modal::end();
                       [
                         'title' => 'Restart instance',
                         'data-pjax' => '0',
+                        'data-confirm'=>'You are about to start/restart this instance. Are you sure?',
                         'data-method' => 'POST',
                       ]
                   );
@@ -73,8 +74,9 @@ yii\bootstrap\Modal::end();
                       '<span class="glyphicon glyphicon-off"></span>',
                       $url,
                       [
-                        'title' => 'Spin container',
+                        'title' => 'Destroy container',
                         'data-pjax' => '0',
+                        'data-confirm'=>'You are about to destroy this instance. Are you sure?',
                         'data-method' => 'POST',
                       ]
                   );
