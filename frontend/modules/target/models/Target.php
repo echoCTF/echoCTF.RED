@@ -128,6 +128,9 @@ class Target extends TargetAR
 
       if(Yii::$app->user->identity->profile->last->vpn_local_address === null && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_findings)<1 && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_treasures)<1)
         return true;
+      
+      if($this->status!=='online')
+        return true;
 
       return false;
     }
