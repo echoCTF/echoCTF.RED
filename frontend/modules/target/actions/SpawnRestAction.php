@@ -4,6 +4,7 @@ namespace app\modules\target\actions;
 use Yii;
 use yii\data\ActiveDataProvider;
 use app\modules\target\models\TargetInstance;
+use app\modules\target\models\Target;
 use yii\web\NotFoundHttpException;
 use yii\base\UserException;
 use yii\helpers\Url;
@@ -14,6 +15,7 @@ class SpawnRestAction extends \yii\rest\ViewAction
 
   public function run($id)
   {
+
     \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
     $goback=Url::previous();
     if($goback==='/')
@@ -21,6 +23,11 @@ class SpawnRestAction extends \yii\rest\ViewAction
 
     try
     {
+      $target=$this->findTarget($id);
+      if($target->status!=='online')
+      {
+        throw new UserException('Target did not start, target is not online yet!');
+      }
       $ti=TargetInstance::findOne(Yii::$app->user->id);
       // Check if user has already a started instance
       if($ti!==null)
@@ -58,5 +65,14 @@ class SpawnRestAction extends \yii\rest\ViewAction
     return Yii::$app->controller->redirect($goback);
   }
 
+  private function findTarget($id)
+  {
+    if(($model=Target::findOne($id))!==NULL)
+    {
+      return $model;
+    }
 
+    throw new NotFoundHttpException('The requested target does not exist.');
+
+  }
 }
