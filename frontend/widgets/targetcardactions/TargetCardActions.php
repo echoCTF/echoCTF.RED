@@ -43,7 +43,7 @@ class TargetCardActions extends Widget
     {
         if($this->identity->player_id===intval(Yii::$app->user->id))
         {
-                        
+
             $this->prep_instance_actions();
             $this->prep_ondemand_actions();
         }
@@ -64,6 +64,9 @@ class TargetCardActions extends Widget
     }
     public function prep_instance_actions()
     {
+        // If the target is pending powerup then dont show any actions
+        if($this->model->status!=='online')
+            return;
 
         if(!Yii::$app->user->identity->isVip)
         {
@@ -87,7 +90,7 @@ class TargetCardActions extends Widget
                     'options'=>['style'=>'white-space: nowrap;'],
                     'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>'You are about to spawn a private instance of this target. Once booted, this instance will only be accessible by you and its IP will become visible here.'])
                 ];
-        }     
+        }
         elseif($this->target_instance->target_id!==$this->model->id)
         {
             $this->target_actions[]=[
@@ -100,8 +103,8 @@ class TargetCardActions extends Widget
         elseif($this->target_instance->target_id===$this->model->id && $this->target_instance->reboot<2)
         {
             $this->target_actions[]=[
-                'label' => '<b><i class="fas fa-sync"></i>&nbsp; Restart your instance</b>', 
-                'url' => Url::to(['/target/default/spin', 'id'=>$this->model->id]), 
+                'label' => '<b><i class="fas fa-sync"></i>&nbsp; Restart your instance</b>',
+                'url' => Url::to(['/target/default/spin', 'id'=>$this->model->id]),
                 'options'=>['style'=>'white-space: nowrap;'],
                 'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>'You are about to restart your instance. You will receive a notification once the operation is complete.'])
             ];
@@ -120,8 +123,8 @@ class TargetCardActions extends Widget
         if($this->model->ondemand && $this->model->ondemand->state<0 && $this->model->spinable)
         {
             $this->target_actions[]=[
-                    'label' => '<b><i class="fas fa-plug"></i>&nbsp; Power up this target</b>', 
-                    'url' => Url::to(['/target/default/spin', 'id'=>$this->model->id]), 
+                    'label' => '<b><i class="fas fa-plug"></i>&nbsp; Power up this target</b>',
+                    'url' => Url::to(['/target/default/spin', 'id'=>$this->model->id]),
                     'options'=>['style'=>'white-space: nowrap;'],
                     'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>'You are about to power up this target. Once booted, everyone will be able to access it.'])
                 ];
@@ -129,7 +132,7 @@ class TargetCardActions extends Widget
         elseif($this->model->player_spin===true && $this->model->spinable)
         {
             $this->target_actions[]=[
-                    'label' => '<b><i class="fas fa-sync"></i>&nbsp; Restart target</b>', 
+                    'label' => '<b><i class="fas fa-sync"></i>&nbsp; Restart target</b>',
                     'url' => Url::to(['/target/default/spin', 'id'=>$this->model->id]),
                     'options'=>['style'=>'white-space: nowrap;'],
                     'linkOptions'=>$this->linkOptions,
