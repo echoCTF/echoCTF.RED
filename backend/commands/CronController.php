@@ -43,14 +43,14 @@ class CronController extends Controller
   {
     if(file_exists("/tmp/cron-poweroperations.lock"))
     {
-      echo "Instances: /tmp/cron-poweroperations.lock exists, skipping execution\n";
+      echo "PowerOperations: /tmp/cron-poweroperations.lock exists, skipping execution\n";
       return;
     }
     touch("/tmp/cron-poweroperations.lock");
     $this->actionPowerups();
     $this->actionPowerdowns();
     $this->actionOfflines();
-    @unlink("/tmp/cron-poweroperation.lock");
+    @unlink("/tmp/cron-poweroperations.lock");
 
   }
   /**
@@ -136,8 +136,8 @@ class CronController extends Controller
         else
           echo $e->getMessage(),"\n";
       }
-      @unlink("/tmp/cron-instances.lock");
     }
+    @unlink("/tmp/cron-instances.lock");
   }
 
   /**
@@ -147,7 +147,7 @@ class CronController extends Controller
   {
     if(file_exists("/tmp/cron-healthcheck.lock"))
     {
-      echo "Instances: /tmp/cron-healthcheck.lock exists, skipping execution\n";
+      echo "Healthcheck: /tmp/cron-healthcheck.lock exists, skipping execution\n";
       return;
     }
     touch("/tmp/cron-healthcheck.lock");
