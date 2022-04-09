@@ -16,7 +16,7 @@ class TargetInstanceQuery extends \yii\db\ActiveQuery
 
     public function pending_action($minutes_ago=60)
     {
-        return $this->andWhere('[[ip]] IS NULL')->orWhere('[[reboot]]>0')->orWhere(['<','updated_at',new \yii\db\Expression("NOW() - INTERVAL $minutes_ago MINUTE")]);
+        return $this->andWhere('[[ip]] IS NULL')->orWhere(['>','reboot',0])->orWhere(['<','updated_at',new \yii\db\Expression("NOW() - INTERVAL $minutes_ago MINUTE")]);
     }
 
     /**
