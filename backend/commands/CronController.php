@@ -34,9 +34,16 @@ class CronController extends Controller
    */
   public function actionIndex()
   {
+    if(file_exists("/tmp/cron-index.lock"))
+    {
+      echo "CronIndex: /tmp/cron-index.lock exists, skipping execution\n";
+      return;
+    }
+    touch("/tmp/cron-index.lock");
     $this->actionSpinQueue();
     $this->actionOndemand();
     $this->actionPf(true);
+    @unlink("/tmp/cron-index.lock");
   }
 
   public function actionPowerOperations()
