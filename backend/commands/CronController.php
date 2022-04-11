@@ -36,7 +36,7 @@ class CronController extends Controller
   {
     if(file_exists("/tmp/cron-index.lock"))
     {
-      echo "CronIndex: /tmp/cron-index.lock exists, skipping execution\n";
+      echo date("Y-m-d H:i:s ")."CronIndex: /tmp/cron-index.lock exists, skipping execution\n";
       return;
     }
     touch("/tmp/cron-index.lock");
@@ -50,7 +50,7 @@ class CronController extends Controller
   {
     if(file_exists("/tmp/cron-poweroperations.lock"))
     {
-      echo "PowerOperations: /tmp/cron-poweroperations.lock exists, skipping execution\n";
+      echo date("Y-m-d H:i:s ")."PowerOperations: /tmp/cron-poweroperations.lock exists, skipping execution\n";
       return;
     }
     touch("/tmp/cron-poweroperations.lock");
@@ -67,7 +67,7 @@ class CronController extends Controller
   {
     if(file_exists("/tmp/cron-instances.lock"))
     {
-      echo "Instances: /tmp/cron-instances.lock exists, skipping execution\n";
+      echo date("Y-m-d H:i:s ")."Instances: /tmp/cron-instances.lock exists, skipping execution\n";
       return;
     }
     touch("/tmp/cron-instances.lock");
@@ -82,21 +82,21 @@ class CronController extends Controller
       $dc->server=$val->server->connstr;
       if($val->ip==null)
       {
-        echo "Starting";
+        echo date("Y-m-d H:i:s ")."Starting";
         $action=SELF::ACTION_START;
       }
       else if($val->reboot===1)
       {
-        echo "Restarting";
+        echo date("Y-m-d H:i:s ")."Restarting";
         $action=SELF::ACTION_RESTART;
       }
       else if($val->reboot===2)
       {
-        echo "Destroying";
+        echo date("Y-m-d H:i:s ")."Destroying";
         $action=SELF::ACTION_DESTROY;
       }
       else {
-        echo "Expiring";
+        echo date("Y-m-d H:i:s ")."Expiring";
       }
       printf(" %s for %s (%s)\n",$val->target->name,$val->player->username,$dc->name);
       try {
@@ -154,7 +154,7 @@ class CronController extends Controller
   {
     if(file_exists("/tmp/cron-healthcheck.lock"))
     {
-      echo "Healthcheck: /tmp/cron-healthcheck.lock exists, skipping execution\n";
+      echo date("Y-m-d H:i:s ")."Healthcheck: /tmp/cron-healthcheck.lock exists, skipping execution\n";
       return;
     }
     touch("/tmp/cron-healthcheck.lock");
@@ -407,7 +407,7 @@ class CronController extends Controller
               $unhealthy[$name]=$unhealthyTarget;
             }
             else {
-              echo "Unhealthy container  [$name => {$target->server}] not on our list!!!";
+              echo date("Y-m-d H:i:s ")."Unhealthy container  [$name => {$target->server}] not on our list!!!";
             }
           }
       }
