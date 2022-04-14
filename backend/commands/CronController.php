@@ -265,7 +265,14 @@ class CronController extends Controller
   public function actionOndemand()
   {
     $targets=\app\modules\gameplay\models\TargetOndemand::find()
-    ->andWhere(['and',['state'=>1], ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')]])
+    ->andWhere(
+      ['and',
+        ['state'=>1], 
+        ['OR',
+          ['IS','heartbeat',new \yii\db\Expression('NULL')],
+          ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
+        ]
+      ])
     ->orWhere(['state'=>-1]);
     foreach($targets->all() as $target)
     {
