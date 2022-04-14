@@ -4,7 +4,7 @@ site_description: A framework for developing, deploying, running and maintain CT
 repo_url: https://github.com/echoCTF/echoCTF.RED
 theme: readthedocs
 
-pages:
+nav:
   - Home: index.md
   - Architecture: ARCHITECTURE.md
   - Sizing: Infrastructure-Sizing.md
