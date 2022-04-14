@@ -17,8 +17,8 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
     public function rules()
     {
         return [
-            [['id', 'player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'integer'],
-            [['op', 'ts'], 'safe'],
+            [['id', ], 'integer'],
+            [['op', 'ts','ipoctet','player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'safe'],
         ];
     }
 
@@ -40,8 +40,7 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
      */
     public function search($params)
     {
-        $query = TargetInstanceAudit::find();
-
+        $query = TargetInstanceAudit::find()->joinWith(['target','player','server']);
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
@@ -59,15 +58,32 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'player_id' => $this->player_id,
-            'target_id' => $this->target_id,
-            'server_id' => $this->server_id,
-            'ip' => $this->ip,
             'reboot' => $this->reboot,
+            'op'=>$this->op,
             'ts' => $this->ts,
         ]);
-
-        $query->andFilterWhere(['like', 'op', $this->op]);
+        
+        $query->andFilterWhere([
+            'OR',
+            ['like', 'INET_NTOA(ip)', $this->ipoctet],
+            ['LIKE','target.name',$this->target_id],
+            ['target_id'=>$this->target_id],
+            ['LIKE','player.username',$this->player_id],
+            ['player_id'=>$this->player_id],
+            ['LIKE','server.name',$this->player_id],
+            ['server_id'=>$this->server_id],
+        ]);
+        $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'ipoctet' => [
+                      'asc' => ['ip' => SORT_ASC],
+                      'desc' => ['ip' => SORT_DESC],
+                  ],
+                ]
+            ),
+        ]);
 
         return $dataProvider;
     }

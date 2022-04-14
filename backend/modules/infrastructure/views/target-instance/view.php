@@ -37,8 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
               'label'=>'target',
               'value'=>$model->target_id.': '.$model->target->name
             ],
-            'server_id',
-            'ip',
+            [
+              'label'=>'server',
+              'value'=>$model->server_id.': '.$model->server->name
+            ],
+            'ipoctet',
             'reboot',
             'created_at',
             'updated_at',

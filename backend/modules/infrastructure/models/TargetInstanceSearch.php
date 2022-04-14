@@ -5,6 +5,8 @@ namespace app\modules\infrastructure\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\infrastructure\models\TargetInstance;
+use yii\behaviors\AttributeTypecastBehavior;
+use yii\db\Expression;
 
 /**
  * TargetInstanceSearch represents the model behind the search form of `app\modules\infrastructure\models\TargetInstance`.
@@ -14,11 +16,23 @@ class TargetInstanceSearch extends TargetInstance
     /**
      * {@inheritdoc}
      */
+    public function behaviors()
+    {
+        return [
+          'typecast' => [
+            'class' => AttributeTypecastBehavior::class,
+            'typecastAfterValidate' => false,
+            'typecastBeforeSave' => false,
+            'typecastAfterFind' => false,
+          ],
+        ];
+    }
+
     public function rules()
     {
         return [
-            [['player_id', 'target_id', 'server_id', 'reboot'], 'integer'],
-            [['created_at', 'updated_at','ipoctet'], 'safe'],
+            [[ 'reboot'], 'integer'],
+            [['created_at', 'updated_at','ipoctet', 'player_id', 'target_id', 'server_id',], 'safe'],
         ];
     }
 
@@ -40,7 +54,7 @@ class TargetInstanceSearch extends TargetInstance
      */
     public function search($params)
     {
-        $query = TargetInstance::find();
+        $query = TargetInstance::find()->joinWith(['target','player','server']);
 
         // add conditions that should always apply here
 
@@ -58,14 +72,21 @@ class TargetInstanceSearch extends TargetInstance
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'player_id' => $this->player_id,
-            'target_id' => $this->target_id,
-            'server_id' => $this->server_id,
             'reboot' => $this->reboot,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
-        $query->andFilterWhere(['like', 'INET_NTOA(ip)', $this->ipoctet]);
+        $query->andFilterWhere([
+            'OR',
+            ['like', 'INET_NTOA(target_instance.ip)', $this->ipoctet],
+            ['LIKE','target.name',$this->target_id],
+            ['target_id'=>$this->target_id],
+            ['LIKE','player.username',$this->player_id],
+            ['player_id'=>$this->player_id],
+            ['LIKE','server.name',$this->player_id],
+            ['server_id'=>$this->server_id],
+        ]);
+
         $dataProvider->setSort([
                 'attributes' => array_merge(
                     $dataProvider->getSort()->attributes,

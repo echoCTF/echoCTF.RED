@@ -48,8 +48,8 @@ class TargetInstance extends \yii\db\ActiveRecord
             'attributeTypes' => [
                 'reboot' => AttributeTypecastBehavior::TYPE_INTEGER,
             ],
-            'typecastAfterValidate' => true,
-            'typecastBeforeSave' => false,
+            'typecastAfterValidate' => false,
+            'typecastBeforeSave' => true,
             'typecastAfterFind' => true,
           ],
           'timestamp'=>[
@@ -72,8 +72,8 @@ class TargetInstance extends \yii\db\ActiveRecord
             ['reboot','in','range'=>[0,1,2]],
             [['created_at', 'updated_at'], 'safe'],
             [['player_id'], 'unique'],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -107,7 +107,7 @@ class TargetInstance extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -117,7 +117,7 @@ class TargetInstance extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 
     /**
@@ -127,7 +127,7 @@ class TargetInstance extends \yii\db\ActiveRecord
      */
     public function getServer()
     {
-        return $this->hasOne(Server::className(), ['id' => 'server_id']);
+        return $this->hasOne(Server::class, ['id' => 'server_id']);
     }
 
     /**
