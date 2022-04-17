@@ -1,13 +1,12 @@
-user                      {{item.user}};
-worker_processes          5;
-worker_rlimit_nofile	1024;
-error_log  syslog:server=unix:/dev/log,severity=notice;
-pid                       logs/{{item.domain}}-nginx.pid;
+user {{item.user}};
+worker_processes 5;
+worker_rlimit_nofile 1024;
+error_log syslog:server=unix:/dev/log,severity=notice;
+pid logs/{{item.domain}}-nginx.pid;
 
 events {
-    worker_connections    1024;
+    worker_connections 1024;
 }
-
 
 http {
     include               mime.types;
@@ -18,10 +17,10 @@ http {
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
     client_body_temp_path /cache/client_body_temp 1 2;
-	  scgi_temp_path /cache/scgi_temp 1 2;
-	  uwsgi_temp_path /cache/uwsgi_temp 1 2;
-	  fastcgi_temp_path /cache/fastcgi_temp 1 2;
-	  proxy_temp_path /cache/proxy_temp 1 2;
+    scgi_temp_path /cache/scgi_temp 1 2;
+    uwsgi_temp_path /cache/uwsgi_temp 1 2;
+    fastcgi_temp_path /cache/fastcgi_temp 1 2;
+    proxy_temp_path /cache/proxy_temp 1 2;
 
     limit_req_zone $binary_remote_addr zone=Api:1m rate=10r/s;
     limit_req_zone $binary_remote_addr zone=ResendVerificationEmail:1m rate=10r/s;
@@ -32,7 +31,7 @@ http {
     limit_req_zone $binary_remote_addr zone=ResetPassword:1m rate=10r/s;
     limit_req_zone $binary_remote_addr zone=VerifyEmail:10m rate=10r/s;
 
-	  access_log  syslog:server=unix:/dev/log,severity=notice main;
+    access_log  syslog:server=unix:/dev/log,severity=notice main;
 
     #tcp_nopush           on;
     keepalive_timeout     65;
@@ -51,15 +50,15 @@ http {
         return 302 https://{{item.domain}};
     }
 
-
     server {
-        listen                    	{{item.ip}}:443 ssl;
-        server_name         		    default {{item.ip}} _ "";
-        ssl_prefer_server_ciphers 	on;
-        ssl_session_timeout       	5m;
+        listen                      {{item.ip}}:443 ssl;
+        server_name                 default {{item.ip}} _ "";
+        ssl_prefer_server_ciphers   on;
+        ssl_session_timeout         5m;
 
         ssl_certificate           /etc/nginx/{{item.domain}}-server.crt;
         ssl_certificate_key       /etc/nginx/{{item.domain}}-server.key;
+        ssl_dhparam               /etc/ssl/private/dhparam.pem;
 
         ssl_ciphers               'AES256+EECDH:AES256+EDH:!aNULL';
         ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
@@ -75,14 +74,13 @@ http {
             root /acme;
         }
 
-        return 302 $scheme://{{item.domain}};
+        return 302 https://{{item.domain}};
     }
 
     server {
         listen                    {{item.ip}}:443 ssl;
-        server_name               {{item.domain}} www.{{item.domain}};
+        server_name               {{item.domain}};
         root                      {{item.root}};
-#        ssl                       on;
         ssl_prefer_server_ciphers on;
         ssl_session_timeout       5m;
 
@@ -94,15 +92,35 @@ http {
         ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
         ssl_session_cache         builtin:1000  shared:SSL:10m;
 
-        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains";
-        add_header X-Content-Type-Options nosniff;
-        add_header X-XSS-Protection "1; mode=block";
-        add_header X-Frame-Options DENY;
-        error_page          404               /404.html;
-        error_page          500 502 503 504   /50x.html;
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header X-Frame-Options DENY always;
 
-        location /contrib {
-        	autoindex on;
+        error_page  403 404 405       /index.php?r=$request_uri;
+        error_page  500 502           /index.php?r=$request_uri;
+        error_page  418               @maintenance;
+        error_page  503               @maintenance;
+        error_page  504               @maintenance;
+
+        # this is needed for proper matching of regexp
+        merge_slashes on;
+        # this ensures our urls are cleaned of multiple slashes
+        rewrite (.*)//(.*) $1/$2 permanent;
+
+        location @maintenance {
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /dt.html break;
+                internal;
+        }
+
+        # disable direct access to dt.html
+        location = /dt.html {
+            return 418;
+        }
+
+        location /contrib/ {
+            autoindex on;
         }
 
         location /.well-known/acme-challenge/ {
@@ -111,89 +129,100 @@ http {
         }
 
         location ~ /\.ht {
-            deny  all;
+            return 404;
         }
 
+        # avoid processing of calls to non-existing static files by yii
         location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
             try_files $uri =404;
         }
 
         location ~* \.(?:ico|css|js|gif|jpe?g|png|xml|svg|txt|zip|tgz|exe)$ {
-            access_log        off;
+            access_log off;
             log_not_found off;
             expires 1M;
             add_header Cache-Control "public";
+            add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+            add_header X-Content-Type-Options nosniff always;
+            add_header X-XSS-Protection "1; mode=block" always;
+            add_header X-Frame-Options DENY always;
         }
 
         set $yii_bootstrap "/index.php";
 
         # Rate limit /api to 10 requests/sec
         # This is way too loose
-        location /api {
+        location /api/ {
             limit_req zone=Api;
             index  index.php;
-            try_files $uri $uri/ /index.php?$args;
+            try_files $uri $uri/ /index.php$is_args$args;
         }
 
         # Rate limit resend-verification-email to 10 requests per minute
         # There is no reason why anyone would need more than that for a
         # legitimate purpose
-        location /resend-verification-email {
+        location /resend-verification-email/ {
             limit_req zone=ResendVerificationEmail;
             index  index.php;
-            try_files $uri $uri/ /index.php?$args;
+            try_files $uri $uri/ /index.php$is_args$args;
         }
 
         # Rate limit register to 10 requests per minute
         # There is no reason why anyone would need more than that for a
         # legitimate purpose
-        location /register {
+        location /register/ {
             limit_req zone=Register;
             index  index.php;
-            try_files $uri $uri/ /index.php?$args;
+            try_files $uri $uri/ /index.php$is_args$args;
         }
 
         # Rate limit register to 20 requests per minute
-        location /login {
+        location /login/ {
             limit_req zone=Login;
             index  index.php;
-            try_files $uri $uri/ /index.php?$args;
+            try_files $uri $uri/ /index.php$is_args$args;
         }
 
         # Rate limit claim to 100 requests per minute it loads on
         # almost every page
-        location /claim {
+        location /claim/ {
             limit_req zone=Claim;
             index  index.php;
-            try_files $uri $uri/ /index.php?$args;
+            try_files $uri $uri/ /index.php$is_args$args;
         }
 
-        location /request-password-reset {
+        location /request-password-reset/ {
             limit_req zone=RequestPasswordReset;
             index  index.php;
-            try_files $uri $uri/ /index.php?$args;
+            try_files $uri $uri/ /index.php$is_args$args;
         }
 
-        location /reset-password {
+        location /reset-password/ {
             limit_req zone=ResetPassword;
             index  index.php;
-            try_files $uri $uri/ /index.php?$args;
+            try_files $uri $uri/ /index.php$is_args$args;
         }
-        location /verify-email {
+        location /verify-email/ {
             limit_req zone=VerifyEmail;
             index  index.php;
-            try_files $uri $uri/ /index.php?$args;
+            try_files $uri $uri/ /index.php$is_args$args;
         }
 
         location / {
-                index  index.html index.php;
-                try_files $uri $uri/ /index.php?$args;
+            index  index.html index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
         }
 
+        # return 404 for direct access to php files
         location ~ \.php$ {
-            fastcgi_split_path_info  ^(.+\.php)(.*)$;
+          return 404;
+        }
 
-            #let yii catch the calls to non-existing PHP files
+        location = /index.php {
+            try_files $uri =404;
+            fastcgi_split_path_info ^(.+\.php)(.*)$;
+
+            # let yii catch the calls to non-existing PHP files
             set $fsn /$yii_bootstrap;
             set $yiiargs r=$request_uri;
             if (-f $document_root$fastcgi_script_name){
@@ -201,17 +230,17 @@ http {
                 set $yiiargs $query_string;
             }
 
-            fastcgi_pass   {{item.fpm}};
+            fastcgi_pass {{item.fpm}};
             include fastcgi_params;
-            fastcgi_param  SCRIPT_FILENAME  $document_root$fsn;
+            fastcgi_param SCRIPT_FILENAME  $document_root$fsn;
 
             # NGiNX allowed duplicate HOST headers to be set, the following is
             # a workaround for these cases.
-            fastcgi_param  HTTP_HOST "{{item.domain}}";
+            fastcgi_param HTTP_HOST "{{item.domain}}";
 
             #PATH_INFO and PATH_TRANSLATED can be omitted, but RFC 3875 specifies them for CGI
-            fastcgi_param  PATH_INFO        $fastcgi_path_info;
-            fastcgi_param  PATH_TRANSLATED  $document_root$fsn;
+            fastcgi_param PATH_INFO        $fastcgi_path_info;
+            fastcgi_param PATH_TRANSLATED  $document_root$fsn;
             fastcgi_param QUERY_STRING $yiiargs;
         }
 
