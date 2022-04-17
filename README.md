@@ -42,7 +42,18 @@ $ docker pull echothrust/echoctf.red-vpn:latest
 $ docker-compose up
 ```
 
-For more details check [echoCTF.RED@ReadTheDocs](https://echoctfred.rtfd.io).
+For more details check the [echoCTF.RED@ReadTheDocs](https://echoctfred.rtfd.io) :notebook_with_decorative_cover:
+
+## Screenshots :eyes::candy:
+
+**Guest player target view**\
+<img title="Guest user target view" src="docs/screenshots/target-guest-view.png" width="400px" />
+
+**Admin page target solving stats**\
+<img title="Admin page target statistics" src="docs/screenshots/target-averages.png" width="400px" />
+
+**Admin page target update**\
+<img title="Admin page target update form" src="docs/screenshots/target-update-form.png" width="400px" />
 
 ## Features
 The list of features supported by the platform is really massive, the most
