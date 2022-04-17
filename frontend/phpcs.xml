@@ -5,5 +5,14 @@
     <exclude-pattern>**.js</exclude-pattern>
     <exclude-pattern>**.css</exclude-pattern>
     <exclude-pattern>**.md</exclude-pattern>
-    <rule ref="PSR2" />
+    <arg name="extensions" value="php" />
+<!--     <arg name="report" value="summary"/> -->
+    <arg name="colors"/>
+    <arg value="sp"/>
+    <ini name="memory_limit" value="64M"/>
+    <rule ref="Security" />
+    <rule ref="Generic.Commenting.Todo.CommentFound">
+      <message>Please review this TODO comment: %s</message>
+      <severity>3</severity>
+    </rule>
 </ruleset>
