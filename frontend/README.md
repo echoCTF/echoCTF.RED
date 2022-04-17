@@ -72,3 +72,12 @@ echoCTF.RED/frontend is based on Yii 2 Basic Project Template.
 
 ### REQUIREMENTS
 The minimum requirement by this project template that your Web server supports PHP 7.0.
+
+### Security Checking
+Install the needed composer packages and run phpcs
+```
+composer global require "squizlabs/php_codesniffer=*"
+composer global require pheromone/phpcs-security-audit
+composer global require dealerdirect/phpcodesniffer-composer-installer
+phpcs  --standard=Security .
+```
