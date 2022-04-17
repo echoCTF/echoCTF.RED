@@ -35,6 +35,9 @@ Not activated by default on current code-base but are going to
 * (optional) `registrations_start`/`registrations_end`: When the registrations starts and stops (timestamp)
 * `profile_visibility`: Set the default player profile visibility (users can still change settings)
 * (optional) `discord_invite_url`: discord server invite url on show on left sidebar
+* (optional) `admin_ids`: Comma seperated list of admin player IDs
+* (optional) `admin_player:<PLAYER_ID>`: Set a specific player ID as admin
+
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
