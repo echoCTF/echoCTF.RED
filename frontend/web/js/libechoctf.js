@@ -38,6 +38,7 @@ function luminanace(r, g, b)
 yii.confirm = function (message, okCallback, cancelCallback) {
   var title='Are you sure?';
   var swType='warning';
+  var showCancelButton=true;
   if($(this).attr('data-title') !== 'undefined' && $(this).attr('data-title')!== false && $(this).attr('data-title') !== undefined)
   {
     title=$(this).attr('data-title')+'?';
@@ -47,13 +48,17 @@ yii.confirm = function (message, okCallback, cancelCallback) {
   {
     swType=$(this).attr('data-swType');
   }
+  if($(this).attr('data-showCancelButton') !== 'undefined' && $(this).attr('data-showCancelButton')!== false && $(this).attr('data-showCancelButton') !== undefined && $(this).attr('data-showCancelButton') == 'false' )
+  {
+    showCancelButton=false;
+  }
 
   swal({
     title: title,
     text: message,
     type: swType,
     showConfirmButton: true,
-    showCancelButton: true,
+    showCancelButton: showCancelButton,
   }).then((action) => {
     if (action.value) {
       okCallback()

@@ -18,7 +18,7 @@ use Docker\API\Exception\ContainerStartInternalServerErrorException;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Headshot;
 use Docker\API\Model\AuthConfig;
-
+use app\modules\infrastructure\models\DockerInstance;
 
 /**
  * This is the model class for table "target".
@@ -58,6 +58,9 @@ class Target extends TargetAR
 {
     private $container;
 
+    /**
+     * Spin the target up
+     */
     public function spin()
     {
       $targetVariables=null;
@@ -69,7 +72,7 @@ class Target extends TargetAR
       $containerConfig=new ContainersCreatePostBody();
       $endpointSettings=new EndpointSettings();
       $endpointIPAMConfig=new EndpointIPAMConfig();
-      $endpointIPAMConfig->setIPv4Address($this->ipoctet);// target->ipoctet
+      $endpointIPAMConfig->setIPv4Address($this->ipoctet);
       $endpointSettings->setIPAMConfig($endpointIPAMConfig);
 
       $nwc=new ContainersCreatePostBodyNetworkingConfig();
@@ -77,8 +80,8 @@ class Target extends TargetAR
         $this->net => $endpointSettings
       ]));
       $containerConfig->setNetworkingConfig($nwc);
-      $containerConfig->setHostname($this->fqdn);// target->fqdn
-      $containerConfig->setImage($this->image);// target->image
+      $containerConfig->setHostname($this->fqdn);
+      $containerConfig->setImage($this->image);
       $containerConfig->setOpenStdin(true);
       $containerConfig->setTty(true);
       $containerConfig->setAttachStdin(true);
@@ -87,47 +90,48 @@ class Target extends TargetAR
 
       foreach($this->targetVariables as $var)
         $targetVariables[]=sprintf("%s=%s", $var->key, $var->val);
-      $containerConfig->setEnv($targetVariables);// target->targetVariables
-      //$containerConfig->setMacAddress($this->mac); // target->mac
+      $containerConfig->setEnv($targetVariables);
       $containerConfig->setHostConfig($hostConfig);
 
       $this->pull();
-      $containerCreateResult=$docker->containerCreate($containerConfig, ['name'=>$this->name]);// target->name
+      $containerCreateResult=$docker->containerCreate($containerConfig, ['name'=>$this->name]);
       $docker->containerStart($containerCreateResult->getId());
 
       return true;
     }
 
+    /**
+     * Prepare hostConfig docker property
+     */
     public function hostConfig()
     {
-//      $targetVariables=null;
       $targetVolumes=null;
       $restartPolicy=new RestartPolicy();
       $restartPolicy->setName('always');
       $hostConfig=new HostConfig();
       if($this->memory !== null)
-        $hostConfig->setMemory($this->memory);// Set memory limit to 512MB
+        $hostConfig->setMemory($this->memory);
 
-      $hostConfig->setNetworkMode($this->net);// target->net
-      $hostConfig->setDns([$this->dns]);// target->dns
+      $hostConfig->setNetworkMode($this->net);
+      $hostConfig->setDns([$this->dns]);
       foreach($this->targetVolumes as $var)
         $targetVolumes[]=sprintf("%s:%s", $var->volume, $var->bind);
-      $hostConfig->setBinds($targetVolumes);// target->targetVolumes
+      $hostConfig->setBinds($targetVolumes);
 
       $hostConfig->setRestartPolicy($restartPolicy);
       return $hostConfig;
     }
 
+    /**
+     * @container method
+     * Connect to the given docker and return a docker ContainerManager
+     * @returns Docker\Docker\ContainerManager|int
+     */
     public function getContainer()
     {
       try
       {
-        $client=DockerClientFactory::create([
-          'remote_socket' => $this->server,
-          'ssl' => false,
-        ]);
-        $docker=Docker::create($client);
-
+        $docker=$this->connectAPI();
         if($docker->systemPing())
           $this->container=$docker->getContainerManager()->find($this->name);
       }
@@ -148,6 +152,9 @@ class Target extends TargetAR
       return (int) (new \yii\db\Query())->from('treasure')->where(['target_id'=>$this->id])->sum('points');
     }
 
+    /**
+     * Instruct the docker server to pull the image
+     */
     public function pull()
     {
       if($this->server == null) return false;
@@ -179,10 +186,11 @@ class Target extends TargetAR
       return true;
     }
 
+    /**
+     * Destroy the remote container
+     */
     public function destroy()
     {
-//      $targetVariables=null;
-//      $targetVolumes=null;
       $docker=$this->connectAPI();
       try
       {
@@ -195,6 +203,9 @@ class Target extends TargetAR
       return true;
     }
 
+  /**
+   * Destroy the remote container
+   */
   public function getMemory()
   {
     if($this->parameters !== NULL)
@@ -206,18 +217,21 @@ class Target extends TargetAR
     return null;
   }
 
-  public function connectAPI()
+  public function connectAPI($params=null)
   {
+
+    if($params===null)
+    {
+      if($this->server!==null)
+      {
+        $params['remote_socket']=$this->server;
+        $params['ssl']=false;
+      }
+    }
 
     try
     {
-      if($this->server == null)
-        $client=DockerClientFactory::create();
-      else
-        $client=DockerClientFactory::create([
-          'remote_socket' => $this->server, // target->server
-          'ssl' => false,
-        ]);
+      $client=DockerClientFactory::create($params);
       return Docker::create($client);
     }
     catch(\Exception $e)
@@ -227,6 +241,9 @@ class Target extends TargetAR
 
   }
 
+  /**
+  * Perform powerdown of a target
+  */
   public function powerdown()
   {
     if($this->destroy())
@@ -243,4 +260,5 @@ class Target extends TargetAR
   {
 
   }
+
 }

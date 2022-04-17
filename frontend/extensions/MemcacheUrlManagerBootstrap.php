@@ -10,11 +10,7 @@ use yii\helpers\ArrayHelper;
  */
 class MemcacheUrlManagerBootstrap implements BootstrapInterface
 {
-    public function init()
-    {
-      parent::init();
-    }
-    /**
+  /**
      * @param \yii\base\Application $oApplication
      */
     public function bootstrap($oApplication)

@@ -31,7 +31,7 @@ if($goback==='/')
 ?>
 <div class="writeup-view">
   <div class="body-content">
-    <h2>Writeup for <?=Html::a($model->target->name. ' / '.long2ip($model->target->ip). ' #'.$model->target->id,$goback)?> by <?=$model->player->profile->link?></h2>
+    <h2>Writeup for <?=Html::a($model->target->name. ' / '.long2ip($model->target->ip),$goback)?> by <?=$model->player->profile->link?></h2>
     <div class="row">
       <div class="col-md-8">
         <div class="card bg-dark">
@@ -46,7 +46,7 @@ if($goback==='/')
         </div>
       </div><!--//col-->
       <div class="col-md-4">
-        <?=$this->render('../default/_target_card',['target'=>$model->target,'spinlink'=>null]);?>
+        <?=$this->render('../default/_target_card',['target'=>$model->target,'identity'=>Yii::$app->user->identity->profile]);?>
         <?=$this->render('../default/_target_writeups',['writeups'=>$model->target->writeups,'active'=>$model->id]);?>
       </div>
     </div>

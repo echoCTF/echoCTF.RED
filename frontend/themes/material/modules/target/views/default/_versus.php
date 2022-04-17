@@ -10,41 +10,9 @@ use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\modules\target\models\Writeup;
 use yii\helpers\Markdown;
 
-if($target->ondemand && $target->ondemand->state<0)
-{
-  $spinlink=Html::a(
-    '<i class="fas fa-play"></i>',
-      Url::to(['/target/default/spin', 'id'=>$target->id]),
-      [
-        'style'=>"font-size: 2.0em;",
-        'class'=>'text-danger',
-        'title' => 'Start the target',
-        'rel'=>"tooltip",
-        'data-placement'=>"right",
-        'data-pjax' => '0',
-        'data-method' => 'POST',
-        'aria-label'=>'Start the target',
-      ]
-  );
+$spinlink=null;
+$target_actions=null;
 
-}
-elseif($target->player_spin===true)
-{
-$spinlink=Html::a(
-  '<i class="fas fa-power-off"></i>',
-    Url::to(['/target/default/spin', 'id'=>$target->id]),
-    [
-      'style'=>"font-size: 2.0em;",
-      'title' => 'Request target Restart',
-      'rel'=>"tooltip",
-      'data-pjax' => '0',
-      'data-placement'=>"right",
-      'data-method' => 'POST',
-      'aria-label'=>'Request target Restart',
-    ]
-);
-}
-else $spinlink=null;
 if(date('md') === "0214")
 {
   $headshot_icon='fa-heart';
@@ -82,7 +50,7 @@ if($headshot)
 ?>
   <div class="row">
       <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 target-card">
-        <?=$this->render('_target_card', ['target'=>$target,'spinlink'=>$spinlink]);?>
+        <?=$this->render('_target_card', ['target'=>$target,'spinlink'=>$spinlink,'target_actions'=>$target_actions,'identity'=>$identity]);?>
       </div>
       <div class="col-xl-4 col-lg-2 col-md-2 col-sm-12 text-center">
         <?php if($headshot!==null && $headshot->first):?>

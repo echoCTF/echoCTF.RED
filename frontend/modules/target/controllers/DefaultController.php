@@ -32,6 +32,8 @@ class DefaultController extends \app\components\BaseController
       {
         $actions=parent::actions();
         $actions['spin']['class']='app\modules\target\actions\SpinRestAction';
+        $actions['spawn']['class']='app\modules\target\actions\SpawnRestAction';
+        $actions['shut']['class']='app\modules\target\actions\ShutRestAction';
         return $actions;
       }
 
@@ -40,20 +42,20 @@ class DefaultController extends \app\components\BaseController
           return ArrayHelper::merge(parent::behaviors(),[
               'access' => [
                   'class' => AccessControl::class,
-                  'only' => ['index','view', 'claim', 'spin','versus','badge'],
+                  'only' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus', 'badge'],
                   'rules' => [
                        'eventStartEnd'=>[
-                          'actions' => ['index', 'view','claim', 'spin','versus'],
+                          'actions' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus'],
                       ],
                       'teamsAccess'=>[
-                        'actions' => ['index', 'claim', 'spin','versus'],
+                        'actions' => ['index', 'claim', 'spin', 'spawn', 'shut', 'versus'],
                       ],
                       'disabledRoute'=>[
-                        'actions' => ['badge', 'view', 'index', 'claim', 'spin','versus'],
+                        'actions' => ['badge', 'view', 'index', 'claim', 'spin', 'spawn', 'shut', 'versus'],
                       ],
                       [
                           'allow' => true,
-                          'actions' => ['claim', 'spin'],
+                          'actions' => ['claim', 'spin', 'spawn', 'shut'],
                           'roles' => ['@'],
                           'verbs'=>['post'],
                       ],
@@ -63,7 +65,7 @@ class DefaultController extends \app\components\BaseController
                           'roles'=>['@']
                       ],
                       [
-                        'actions' => ['claim','spin'],
+                        'actions' => ['claim', 'spin', 'spawn', 'shut'],
                         'allow' => false,
                         'verbs' => ['POST'],
                         'roles'=>['@'],
@@ -371,6 +373,7 @@ class DefaultController extends \app\components\BaseController
         throw $e;
       }
     }
+    
     protected function doOndemand($target)
     {
       if($target->ondemand && $target->ondemand->state>0)

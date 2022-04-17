@@ -35,9 +35,9 @@ anchor "offense" on tun {
 	pass from <targets> to <offense_activated>
 }
 #load anchor "offense" from "/etc/offense_anchor.conf"
-load anchor "offense/findings" from "/etc/match-findings-pf.conf"
-anchor "networks/*"
+anchor "networks"
 load anchor "networks" from "/etc/targets_networks.conf"
+load anchor "offense/findings" from "/etc/match-findings-pf.conf"
 
 pass quick inet to <targets> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state
 

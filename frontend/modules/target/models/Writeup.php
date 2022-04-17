@@ -177,7 +177,7 @@ class Writeup extends \yii\db\ActiveRecord
 
     public function getText()
     {
-      return '<pre>'.\yii\helpers\Html::encode($this->content).'</pre>';
+      return '<pre style="color: #bdbdbd">'.\yii\helpers\Html::encode($this->content).'</pre>';
     }
 
     public function getMarkdown()

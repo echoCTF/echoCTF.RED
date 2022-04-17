@@ -15,24 +15,136 @@ use app\components\Pf;
 use Docker\Docker;
 use Http\Client\Socket\Exception\ConnectionException;
 use yii\console\Exception as ConsoleException;
+use app\modules\infrastructure\models\DockerContainer;
+use app\modules\infrastructure\models\TargetInstance;
+
 /**
  * @method docker_connect()
  * @method containers_list()
  */
-class CronController extends Controller {
+class CronController extends Controller
+{
+  const ACTION_START=0;
+  const ACTION_RESTART=1;
+  const ACTION_DESTROY=2;
+  const ACTION_EXPIRED=3;
 
   /*
    * Perofrm all needed cron operations for the VPN
    */
   public function actionIndex()
   {
+    if(file_exists("/tmp/cron-index.lock"))
+    {
+      echo date("Y-m-d H:i:s ")."CronIndex: /tmp/cron-index.lock exists, skipping execution\n";
+      return;
+    }
+    touch("/tmp/cron-index.lock");
     $this->actionSpinQueue();
-    $this->actionHealthcheck(true);
+    $this->actionOndemand();
+    $this->actionPf(true);
+    @unlink("/tmp/cron-index.lock");
+  }
+
+  public function actionPowerOperations()
+  {
+    if(file_exists("/tmp/cron-poweroperations.lock"))
+    {
+      echo date("Y-m-d H:i:s ")."PowerOperations: /tmp/cron-poweroperations.lock exists, skipping execution\n";
+      return;
+    }
+    touch("/tmp/cron-poweroperations.lock");
     $this->actionPowerups();
     $this->actionPowerdowns();
-    $this->actionOndemand();
     $this->actionOfflines();
-    $this->actionPf(true);
+    @unlink("/tmp/cron-poweroperations.lock");
+
+  }
+  /**
+   * Process player private instances
+   */
+  public function actionInstances()
+  {
+    if(file_exists("/tmp/cron-instances.lock"))
+    {
+      echo date("Y-m-d H:i:s ")."Instances: /tmp/cron-instances.lock exists, skipping execution\n";
+      return;
+    }
+    touch("/tmp/cron-instances.lock");
+    $action=SELF::ACTION_EXPIRED;
+    $t=TargetInstance::find()->pending_action();
+    foreach($t->all() as $val)
+    {
+      $dc=new DockerContainer($val->target);
+      $dc->targetVolumes=$val->target->targetVolumes;
+      $dc->targetVariables=$val->target->targetVariables;
+      $dc->name=$val->name;
+      $dc->server=$val->server->connstr;
+      if($val->ip==null)
+      {
+        echo date("Y-m-d H:i:s ")."Starting";
+        $action=SELF::ACTION_START;
+      }
+      else if($val->reboot===1)
+      {
+        echo date("Y-m-d H:i:s ")."Restarting";
+        $action=SELF::ACTION_RESTART;
+      }
+      else if($val->reboot===2)
+      {
+        echo date("Y-m-d H:i:s ")."Destroying";
+        $action=SELF::ACTION_DESTROY;
+      }
+      else {
+        echo date("Y-m-d H:i:s ")."Expiring";
+      }
+      printf(" %s for %s (%s)\n",$val->target->name,$val->player->username,$dc->name);
+      try {
+        switch($action)
+        {
+          case SELF::ACTION_START:
+          case SELF::ACTION_RESTART:
+            try {
+              $dc->destroy();
+            } catch (\Exception $e) {
+
+            }
+            $dc->pull();
+            $dc->spin();
+            if($val->player->last->vpn_local_address!==null)
+            {
+              Pf::add_table_ip($dc->name.'_clients',long2ip($val->player->last->vpn_local_address));
+            }
+            $val->ipoctet=$dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
+            $val->reboot=0;
+            $val->save();
+
+            break;
+          case SELF::ACTION_EXPIRED:
+          case SELF::ACTION_DESTROY:
+            try {
+              $dc->destroy();
+            } catch (\Exception $e) {
+
+            }
+            Pf::kill_table($dc->name,true);
+            Pf::kill_table($dc->name.'_clients',true);
+            $val->delete();
+            break;
+          default:
+            printf("Error: Unknown action\n");
+        }
+
+      }
+      catch (\Exception $e)
+      {
+        if(method_exists($e,'getErrorResponse'))
+          echo $e->getErrorResponse()->getMessage(),"\n";
+        else
+          echo $e->getMessage(),"\n";
+      }
+    }
+    @unlink("/tmp/cron-instances.lock");
   }
 
   /**
@@ -40,6 +152,13 @@ class CronController extends Controller {
    */
   public function actionHealthcheck($spin=false)
   {
+    if(file_exists("/tmp/cron-healthcheck.lock"))
+    {
+      echo date("Y-m-d H:i:s ")."Healthcheck: /tmp/cron-healthcheck.lock exists, skipping execution\n";
+      return;
+    }
+    touch("/tmp/cron-healthcheck.lock");
+
     $unhealthy=$this->unhealthy_dockers();
 
     foreach($unhealthy as $target)
@@ -61,6 +180,7 @@ class CronController extends Controller {
         $sh->save();
       }
     }
+    @unlink("/tmp/cron-healthcheck.lock");
   }
 
   /**
@@ -145,15 +265,25 @@ class CronController extends Controller {
   public function actionOndemand()
   {
     $targets=\app\modules\gameplay\models\TargetOndemand::find()
-    ->andWhere(['and',['state'=>1], ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')]])
+    ->andWhere(
+      ['and',
+        ['state'=>1], 
+        ['OR',
+          ['IS','heartbeat',new \yii\db\Expression('NULL')],
+          ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
+        ]
+      ])
     ->orWhere(['state'=>-1]);
     foreach($targets->all() as $target)
     {
-      printf("Destroying ondemand target %s\n", $target->target->fqdn);
-      $target->target->destroy();
-      $target->state=-1;
-      $target->heartbeat=null;
-      $target->save();
+      if($target->state>-1)
+      {
+        printf("Destroying ondemand target %s\n", $target->target->fqdn);
+        $target->target->destroy();
+        $target->state=-1;
+        $target->heartbeat=null;
+        $target->save();
+      }
 
     }
   }
@@ -165,7 +295,7 @@ class CronController extends Controller {
     {
       printf("Target %s ", $target->fqdn);
       printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
-      $target->powerdown();
+      $requirePF=$target->powerdown();
       printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
     }
   }
@@ -177,7 +307,7 @@ class CronController extends Controller {
     {
       printf("Target %s ", $target->fqdn);
       printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
-      $target->powerdown();
+      $requirePF=$target->powerdown();
       printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
     }
 
@@ -210,6 +340,11 @@ class CronController extends Controller {
         $frules[]=$finding->matchRule;
       }
     }
+    $instances=TargetInstance::find()->active();
+    foreach($instances->all() as $ti)
+      foreach($ti->target->findings as $f)
+        $rules[]=$f->getMatchRule('<'.$ti->name.'_clients>','<'.$ti->name.'>');
+
     Pf::store($base.'/match-findings-pf.conf',ArrayHelper::merge($frules,$rules));
 
     if($load)
@@ -222,7 +357,7 @@ class CronController extends Controller {
   private function active_targets_pf($base="/etc")
   {
     $ips=$networks=$rules=$rulestoNet=$rulestoClient=[];
-    $targets=Target::find()->active()->online()->poweredup()->all();
+    $targets=Target::find()->active()->online()->poweredup()->orderBy(['ip'=>SORT_ASC])->all();
     foreach($targets as $target)
     {
       if($target->networkTarget === NULL)
@@ -236,14 +371,19 @@ class CronController extends Controller {
         $rulestoClient[]=Pf::allowToClient($target);
       }
     }
-
+    foreach(TargetInstance::find()->active()->all() as $ti)
+    {
+      $_nname=$ti->name;
+      $networks[$_nname][]=$ti->ipoctet;
+      $rulestoNet[]=Pf::allowToNetwork($ti->target,$_nname.'_clients',$_nname);
+      $rulestoClient[]=Pf::allowToClient($ti->target,$_nname.'_clients',$_nname);
+    }
     Pf::store($base.'/targets.conf',$ips);
     Pf::load_table_file('targets',$base.'/targets.conf');
     $rulestoNet=array_unique($rulestoNet,SORT_STRING);
     $rulestoClient=array_unique($rulestoClient,SORT_STRING);
     $rules=array_merge($rulestoNet,$rulestoClient);
     foreach($networks as $key => $val) {
-
       Pf::store($base.'/'.$key.'.conf', $val);
       Pf::load_table_file($key,$base.'/'.$key.'.conf');
       $rules[]=sprintf("pass inet proto udp from <%s> to (targets:0) port 53",$key);
@@ -272,6 +412,9 @@ class CronController extends Controller {
             if(($unhealthyTarget=Target::findOne(['name'=>$name])) !== NULL)
             {
               $unhealthy[$name]=$unhealthyTarget;
+            }
+            else {
+              echo date("Y-m-d H:i:s ")."Unhealthy container  [$name => {$target->server}] not on our list!!!";
             }
           }
       }

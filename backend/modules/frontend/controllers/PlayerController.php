@@ -25,6 +25,10 @@ class PlayerController extends \app\components\BaseController
     public function behaviors()
     {
         return ArrayHelper::merge(parent::behaviors(),[
+            'rules'=>[
+              'class' => 'yii\filters\AjaxFilter',
+              'only' => ['ajax-search']
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
@@ -367,6 +371,23 @@ class PlayerController extends \app\components\BaseController
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-
+    public function actionAjaxSearch($term)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $results=[];
+        if (Yii::$app->request->isAjax) {
+            $tmpres=Player::find()
+                    ->select(['id','username','email'])
+                    ->where(['id'=>$term])
+                    ->orWhere(['like','username',$term])
+                    ->all();
+            foreach($tmpres as $res)
+              $results[]=[
+                'id'=>$res->id,
+                'label'=>sprintf("(id: %d / pid: %d) %s <%s>",$res->id,$res->profile->id,$res->username,$res->email),
+              ];
+        }
+        return $results;
+    }
 
 }

@@ -116,7 +116,7 @@ a.desc:after {
 /* Add seperator class for plain text (used in Login or Register menu link) */
 .navbar-nav > li > .sep {
   color: #9d9d9d;
-  padding-top: 15px;￼
+  padding-top: 15px;
   position: relative;
   display: block;
   padding: 10px 15px;
@@ -262,10 +262,12 @@ td.td-actions,
 .pull-right {
     float: right;
 }
+/*
 .Leaderboard{
-  /*padding-top: 30px;
-/*  max-width: 1400px;*/
+  padding-top: 30px;
+  max-width: 1400px;
 }
+*/
 
 .LeaderHeader{
     padding: 30px 400px;
@@ -294,16 +296,19 @@ td.td-actions,
     width: 100%;
 }
 
+/*
 .leader-name {
-    /*margin-left: 10px;*/
-    /* line-height: 1;*/
-    /*font-size: 1.1em;*/
+    margin-left: 10px;
+    line-height: 1;
+    font-size: 1.1em;
 }
+*/
 
+/*
 .leader-place {
-  /* font-size: 1.1em; */
+  font-size: 1.1em;
 }
-
+*/
 .leader-ava {
     /*padding: 4px;*/
     margin-right: 16px;
@@ -415,6 +420,7 @@ td.td-actions,
     -webkit-text-fill-color: lightgray;
     transition: background-color 5000s ease-in-out 0s;
     -webkit-box-shadow: 0 0 0 30px #222 inset !important;
+    box-shadow: 0 0 0 30px #222 inset !important;
 }
 
 .has-success [class*=' bmd-label'], .has-success [class^=bmd-label] {
@@ -857,4 +863,7 @@ mark {
 {
   padding: 0;
   margin: 0;
+}
+.card-footer span {
+  white-space:nowrap;
 }

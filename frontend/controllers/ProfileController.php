@@ -26,7 +26,7 @@ class ProfileController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['badge','me', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke'],
+                'only' => ['badge', 'index', 'invite', 'me', 'ovpn', 'revoke', 'settings', 'notifications', 'hints'],
                 'rules' => [
                    'eventActive'=>[
                       'actions' => ['badge','index', 'notifications', 'hints', 'ovpn', 'settings','invite','revoke'],

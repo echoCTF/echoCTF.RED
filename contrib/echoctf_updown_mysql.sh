@@ -28,6 +28,9 @@ if [ "$script_type" == "client-connect" ]; then
         for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT codename FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id='${common_name}'))");do
           /sbin/pfctl -t "${network}_clients" -T add ${ifconfig_pool_remote_ip}
         done
+        for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT LOWER(CONCAT(t2.name,'_',player_id)) AS net FROM target_instance as t1 LEFT JOIN target as t2 on t1.target_id=t2.id WHERE player_id=${common_name}");do
+          /sbin/pfctl -t "${network}_clients" -T add ${ifconfig_pool_remote_ip}
+        done
       fi
       echo "[$$] client ${common_name} logged in successfully">>/tmp/updown.log
     else
@@ -38,6 +41,9 @@ elif [ "$script_type" == "client-disconnect" ]; then
   mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" -e "CALL VPN_LOGOUT(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))" echoCTF
   if [ -x /sbin/pfctl ]; then
     for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT codename FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id='${common_name}'))");do
+      /sbin/pfctl -t "${network}_clients" -T delete ${ifconfig_pool_remote_ip}
+    done
+    for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT LOWER(CONCAT(t2.name,'_',player_id)) AS net FROM target_instance as t1 LEFT JOIN target as t2 on t1.target_id=t2.id WHERE player_id=${common_name}");do
       /sbin/pfctl -t "${network}_clients" -T delete ${ifconfig_pool_remote_ip}
     done
   fi

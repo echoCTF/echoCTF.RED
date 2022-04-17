@@ -3,14 +3,39 @@
 
 ## Index
 Performs all of the following operations
+* `actionSpinQueue`
+* `actionOndemand`
+* `actionPf`
+
+## PowerOperations
+Performs the following operations
 * `actionPowerups`
 * `actionPowerdowns`
 * `actionOfflines`
-* `actionPf`
-* `target/healthcheck 1`
+
+## Instances
+Processes target instances with pending actions. This includes instances that are scheduled to be started (spawn), restarted or destroyed:
+
+Usage: `./yii cron/instances`
+
+## Healthcheck
+Checks the healthstatus of running containers and (optionaly) restart them if found unhealthy.
+
+Usage: 
+```shell
+./yii cron/healthcheck
+# or to request restarting of unhealthy containers
+./yii cron/healthcheck 1
+```
+
+## SpinQueue
+Process the target spin queue and restart listed targets.
+
+Usage: `./yii cron/spin-queue`
+
 
 ## Powerups
-Check for targets that have scheduled to power up
+Check for targets that have been scheduled to power up and process them
 
 
 Usage: `./yii cron/powerups`
@@ -22,13 +47,20 @@ Check for targets that have scheduled to power down
 
 Usage: `./yii cron/powerdowns`
 
+
+## Ondemand
+Process ondemand targets that are scheduled for start/destroy
+
+Usage: `./yii cron/ondemand`
+
+
 ## Offlines
 Check for targets that have scheduled to go offline
 
-
 Usage: `./yii cron/offlines`
 
+
 ## Update target related PF settings
-Update PF `/etc/targets.conf` and `/etc/match-findings-pf.conf`
+Update PF `/etc/targets.conf`, `/etc/match-findings-pf.conf` among other things. This action syncs the firewall ruleset with the decisions of the database (eg private instances, private networks, target access etc)
 
 Usage: `./yii target/pf [load]`
