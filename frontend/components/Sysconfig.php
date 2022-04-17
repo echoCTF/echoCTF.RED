@@ -11,6 +11,7 @@ class Sysconfig extends Component
   public $keyCache;
   private $prefetchKeys=[
       'sysconfig:teams',
+      'sysconfig:admin_ids',
       'sysconfig:team_required',
       'sysconfig:members_per_team',
       'sysconfig:team_manage_members',
