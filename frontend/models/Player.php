@@ -220,6 +220,15 @@ class Player extends PlayerAR implements IdentityInterface
         return $this->hasMany(Headshot::class, ['player_id' => 'id'])->count();
     }
 
+    public function getOnVPN():bool
+    {
+      return Yii::$app->cache->memcache->get('ovpn:'.$this->id)!==false;
+    }
+
+    public function getVpnIP()
+    {
+      return long2ip(Yii::$app->cache->memcache->get('ovpn:'.$this->id));
+    }
 
     public function getIsAdmin():bool
     {
