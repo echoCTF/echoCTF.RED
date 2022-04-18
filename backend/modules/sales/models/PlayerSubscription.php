@@ -64,7 +64,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -74,7 +74,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['price_id' => 'price_id']);
+        return $this->hasOne(Product::class, ['price_id' => 'price_id']);
     }
 
     /**

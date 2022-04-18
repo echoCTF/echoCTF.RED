@@ -34,8 +34,8 @@ class ProductNetwork extends \yii\db\ActiveRecord
             [['network_id'], 'integer'],
             [['product_id'], 'string', 'max' => 40],
             [['product_id', 'network_id'], 'unique', 'targetAttribute' => ['product_id', 'network_id']],
-            [['network_id'], 'exist', 'skipOnError' => true, 'targetClass' => Network::className(), 'targetAttribute' => ['network_id' => 'id']],
-            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::className(), 'targetAttribute' => ['product_id' => 'id']],
+            [['network_id'], 'exist', 'skipOnError' => true, 'targetClass' => Network::class, 'targetAttribute' => ['network_id' => 'id']],
+            [['product_id'], 'exist', 'skipOnError' => true, 'targetClass' => Product::class, 'targetAttribute' => ['product_id' => 'id']],
         ];
     }
 
@@ -57,7 +57,7 @@ class ProductNetwork extends \yii\db\ActiveRecord
      */
     public function getNetwork()
     {
-        return $this->hasOne(Network::className(), ['id' => 'network_id']);
+        return $this->hasOne(Network::class, ['id' => 'network_id']);
     }
 
     /**
@@ -67,7 +67,7 @@ class ProductNetwork extends \yii\db\ActiveRecord
      */
     public function getProduct()
     {
-        return $this->hasOne(Product::className(), ['id' => 'product_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id']);
     }
 
     /**
