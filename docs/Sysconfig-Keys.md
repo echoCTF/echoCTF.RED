@@ -27,17 +27,18 @@ Not activated by default on current code-base but are going to
 * `footer_logos`: HTML code to display logos for the event on the footer of the page. (PENDING)
 * `site_description`: Text to be displayed on meta description and social media tags about the site
 * `twitter_account`: The twitter account to link tweets to
-* `twitter_hashtags`: The twitter hashtags to include in the tweets
+* `twitter_hashtags`: The twitter coma seperated hashtags for tweets
 * `default_homepage`: Default page to redirect the users after login
 * `bannedIPS`: Coma seperated list of IPs and IP patterns to be denied access to the interface
-* (optional) `members_per_team`: How many members are allowed per team
-* (optional) `event_start`/`event_end`: When the event starts and stops (timestamp)
-* (optional) `registrations_start`/`registrations_end`: When the registrations starts and stops (timestamp)
+* `members_per_team` (optional): How many members are allowed per team
+* `event_start`/`event_end` (optional): When the event starts and stops (timestamp)
+* `registrations_start`/`registrations_end` (optional): When the registrations starts and stops (timestamp)
 * `profile_visibility`: Set the default player profile visibility (users can still change settings)
-* (optional) `discord_invite_url`: discord server invite url on show on left sidebar
-* (optional) `admin_ids`: Comma seperated list of admin player IDs
-* (optional) `admin_player:<PLAYER_ID>`: Set a specific player ID as admin
-
+* `discord_invite_url` (optional): discord server invite url on show on left sidebar
+* `admin_ids` (optional): Comma seperated list of admin player IDs
+* `admin_player:<PLAYER_ID>` (optional): Set a specific player ID as admin
+* `target_new_days`: How many days is target considered as `new` on the frontend after creation
+* `target_updated_days`: How many days the target is considered as `updated` on the frontend after update
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
