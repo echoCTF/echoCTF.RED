@@ -56,8 +56,8 @@ class WriteupRating extends \yii\db\ActiveRecord
             ['rating','in','range'=>[1,2,3,4,5]],
             [['created_at', 'updated_at'], 'safe'],
             [['writeup_id', 'player_id'], 'unique', 'targetAttribute' => ['writeup_id', 'player_id']],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
-            [['writeup_id'], 'exist', 'skipOnError' => true, 'targetClass' => Writeup::className(), 'targetAttribute' => ['writeup_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
+            [['writeup_id'], 'exist', 'skipOnError' => true, 'targetClass' => Writeup::class, 'targetAttribute' => ['writeup_id' => 'id']],
         ];
     }
 
@@ -83,7 +83,7 @@ class WriteupRating extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
@@ -93,7 +93,7 @@ class WriteupRating extends \yii\db\ActiveRecord
      */
     public function getWriteup()
     {
-        return $this->hasOne(Writeup::className(), ['id' => 'writeup_id']);
+        return $this->hasOne(Writeup::class, ['id' => 'writeup_id']);
     }
 
     /**
