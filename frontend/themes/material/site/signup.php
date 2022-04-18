@@ -10,7 +10,7 @@ use yii\captcha\Captcha;
 $this->title=\Yii::$app->sys->event_name.' Signup';
 $this->registerJsFile("@web/js/plugins/jquery.pwstrength.js", [
     'depends' => [
-        \yii\web\JqueryAsset::className()
+        \yii\web\JqueryAsset::class
     ]
 ]);
 

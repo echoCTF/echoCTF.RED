@@ -12,7 +12,7 @@ $this->_url=\yii\helpers\Url::to(['index', 'id'=>$headshot->target->id], 'https'
 $this->_fluid='-fluid';
 $this->registerJsFile('@web/js/showdown.min.js',[
     'depends' => [
-        \yii\web\JqueryAsset::className()
+        \yii\web\JqueryAsset::class
     ]
 ]);
 

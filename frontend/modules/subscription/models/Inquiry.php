@@ -42,7 +42,7 @@ class Inquiry extends \yii\db\ActiveRecord
             [['serialized', 'body'], 'string'],
             [['updated_at', 'created_at'], 'safe'],
             [['category', 'name', 'email'], 'string', 'max' => 255],
-            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::className(), 'targetAttribute' => ['player_id' => 'id']],
+            [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
 
@@ -72,7 +72,7 @@ class Inquiry extends \yii\db\ActiveRecord
      */
     public function getPlayer()
     {
-        return $this->hasOne(Player::className(), ['id' => 'player_id']);
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**

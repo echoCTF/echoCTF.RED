@@ -41,7 +41,7 @@ class TargetMetadata extends \yii\db\ActiveRecord
         return [
             [['scenario', 'instructions', 'solution', 'pre_credits', 'post_credits', 'pre_exploitation', 'post_exploitation'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::className(), 'targetAttribute' => ['target_id' => 'id']],
+            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
         ];
     }
 
@@ -71,7 +71,7 @@ class TargetMetadata extends \yii\db\ActiveRecord
      */
     public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'target_id']);
+        return $this->hasOne(Target::class, ['id' => 'target_id']);
     }
 
     /**
