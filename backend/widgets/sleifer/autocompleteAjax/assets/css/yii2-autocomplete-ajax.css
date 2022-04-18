@@ -1,0 +1,39 @@
+.ui-autocomplete {
+    border-radius: 0;
+    background: #F5F5F5;
+}
+.ui-menu .ui-menu-item a {
+    border-radius: 0;
+    padding: 6px 10px;
+    border: none !important;
+    border-bottom: 1px solid #D2D2D2 !important;
+}
+.ui-menu .ui-menu-item a:hover {
+    cursor: pointer;
+}
+.ui-menu .ui-menu-item:last-child a {
+    border-bottom: 1px solid #F5F5F5 !important;
+}
+.ui-menu .ui-menu-item a.ui-state-focus, .ui-menu .ui-menu-item a.ui-state-active {
+    background: #A0A0A0;
+    color: white;
+    margin: 0;
+    border: none !important;
+    border-bottom: 1px solid #A0A0A0 !important;
+}
+
+.loading {    
+    background-color: #ffffff;
+    background-image: url("../images/load.gif");
+    background-size: 25px 25px;
+    background-position:right center;
+    background-repeat: no-repeat;
+}
+
+.autocomplete-image-load img {
+    width: 100%;
+}
+.ui-autocomplete {
+	max-height: 500px;
+	overflow-y: auto;
+}

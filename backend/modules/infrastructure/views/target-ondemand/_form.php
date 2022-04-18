@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\modules\gameplay\models\Target;
+use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\TargetOndemand */
@@ -14,9 +15,19 @@ use app\modules\gameplay\models\Target;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->orderBy(['name'=>SORT_ASC])->all(), 'id','name'), ['prompt'=>'Select the target'])->Label('Target') ?>
+    <?= $form->field($model, 'target_id')->widget(AutocompleteAjax::class, [
+        'id'=>'targetAjax',
+        'multiple' => false,
+        'url' => ['/infrastructure/target/ajax-search'],
+        'options' => ['placeholder' => 'Find target by name or ip.']
+    ]) ?>
 
-    <?= $form->field($model, 'player_id')->textInput() ?>
+    <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
+        'id'=>'playerAjax',
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search'],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ]) ?>
 
     <?= $form->field($model, 'state')->dropDownList([
       '-1' => 'Powered Off',

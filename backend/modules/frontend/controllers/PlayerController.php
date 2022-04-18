@@ -371,21 +371,26 @@ class PlayerController extends \app\components\BaseController
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionAjaxSearch($term)
+    public function actionAjaxSearch($term,$load=false)
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $results=[];
-        if (Yii::$app->request->isAjax) {
-            $tmpres=Player::find()
-                    ->select(['id','username','email'])
-                    ->where(['id'=>$term])
-                    ->orWhere(['like','username',$term])
-                    ->all();
-            foreach($tmpres as $res)
-              $results[]=[
-                'id'=>$res->id,
-                'label'=>sprintf("(id: %d / pid: %d) %s <%s>",$res->id,$res->profile->id,$res->username,$res->email),
-              ];
+        if (Yii::$app->request->isAjax) 
+        {
+          $pq=Player::find()->select(['id','username','email'])->where(['=','id',$term]);
+          if($load===false)
+          {
+            $pq->orWhere(['like','username',$term]);
+          }
+          $results=array_values(ArrayHelper::map($pq->all(),'id',
+            function($model){ 
+              return [
+                'id'=>$model->id,
+                'label'=>sprintf("(id: %d / pid: %d) %s <%s>",$model->id,$model->profile->id,$model->username,$model->email),
+              ]; 
+            }
+          ));
+
         }
         return $results;
     }
