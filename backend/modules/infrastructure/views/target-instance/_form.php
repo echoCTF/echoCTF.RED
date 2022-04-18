@@ -17,7 +17,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::classname(), [
+    <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
         'multiple' => false,
         'url' => ['/frontend/player/ajax-search'],
         'options' => ['placeholder' => 'Find player by email, username, id or profile.']

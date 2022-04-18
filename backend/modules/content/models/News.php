@@ -30,7 +30,7 @@ class News extends \yii\db\ActiveRecord
     {
       return [
           [
-              'class' => TimestampBehavior::className(),
+              'class' => TimestampBehavior::class,
               'createdAtAttribute' => 'created_at',
               'updatedAtAttribute' => 'updated_at',
               'value' => new Expression('NOW()'),

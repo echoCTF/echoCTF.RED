@@ -55,7 +55,7 @@ class Network extends \yii\db\ActiveRecord
     {
         return [
           'typecast' => [
-                'class' => AttributeTypecastBehavior::className(),
+                'class' => AttributeTypecastBehavior::class,
                 'attributeTypes' => [
                     'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                     'public' => AttributeTypecastBehavior::TYPE_BOOLEAN,
