@@ -46,6 +46,12 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'members_per_team')->textInput(['maxlength'=>true])->hint('How many members are allowed per team (including the team owner)?') ?></div>
         </div>
         <hr/>
+        <h4>Targets and Challenges properties</h4>
+        <div class="row form-group">
+          <div class="col-sm-6"><?= $form->field($model, 'target_days_new')->textInput()->hint('How many days are targets considered new?') ?></div>
+          <div class="col-sm-6"><?= $form->field($model, 'target_days_updated')->textInput()->hint('How many days are targets considered updated?') ?></div>
+        </div>
+
         <h4>Registration and Player properties</h4>
         <div class="row form-group">
           <div class="col-sm-3"><?= $form->field($model, 'require_activation')->checkbox()->hint('Do players need to activate their account?') ?></div>
@@ -53,6 +59,8 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'player_profile')->checkbox()->hint('Are player profiles active?') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'approved_avatar')->checkbox()->hint('Are player profile avatars approved?') ?></div>
         </div>
+
+
         <div class="row form-group">
           <div class="col-sm-3"><?= $form->field($model, 'profile_visibility')->textInput()->hint('Choose default profile visibility (<code>ingame, public, private</code>)') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'default_homepage')->textInput()->hint('Default homepage for logged in users (eg. /dashboard)') ?></div>
