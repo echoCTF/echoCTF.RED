@@ -13,12 +13,12 @@ use yii\helpers\Url;
         </a>
 
         <?php if(!Yii::$app->user->isGuest):?>
-          <a href="<?=Url::to(['/profile/me'])?>" class="simple-text logo-normal" style="text-transform:none" title="Profile of <?=Html::encode(Yii::$app->user->identity->username)?>">           
+          <a href="<?=Url::to(['/profile/me'])?>" class="simple-text logo-normal" style="text-transform:none" title="Profile of <?=Html::encode(Yii::$app->user->identity->username)?><?= Yii::$app->user->identity->onVPN ? "\nVPN IP: ".Yii::$app->user->identity->vpnIP : "" ?>">
             <?php if(Yii::$app->user->identity->isVip):?>
                 <span class="badge badge-danger" style="position: absolute; bottom: 32%; left: 57%">VIP</span>
             <?php endif;?>
             <img style="width: 75px; height: 75px" src="/images/avatars/<?=Yii::$app->user->identity->profile->avtr;?>?<?=time()?>" class="img-fluid rounded <?php if(Yii::$app->user->identity->isVip):?>border-danger<?php endif;?> <?=\app\components\formatters\RankFormatter::ordinalPlaceCss(Yii::$app->user->identity->profile->rank->id)?>" style="max-width: 60px; max-height: 60px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"><br/>
-            <?=Html::encode(Yii::$app->user->identity->username)?> <small style="font-size: 0.65em">(<code><?=number_format(Yii::$app->user->identity->profile->score->points)?> pts</code>)</small>
+            <i class="fas fa-shield-alt <?= Yii::$app->user->identity->onVPN ? "text-primary" : "text-danger"?>" style="font-size: 0.75em"></i> <?=Html::encode(Yii::$app->user->identity->username)?> <small style="font-size: 0.65em">(<code><?=number_format(Yii::$app->user->identity->profile->score->points)?> pts</code>)</small>
           </a>
           <center id="clock" class="small clock text-primary">Server time: <span id="time"><?=date('H:i');?> <small><?=date_default_timezone_get()?></small></span></center>
         <?php endif;?>
