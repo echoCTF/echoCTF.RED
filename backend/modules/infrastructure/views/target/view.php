@@ -85,6 +85,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'dns',
             'parameters',
             'weight',
+            'created_at',
             'ts',
             [
               'label'=>'Examples',
