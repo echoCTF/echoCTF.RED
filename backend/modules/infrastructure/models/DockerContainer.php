@@ -33,6 +33,7 @@ class DockerContainer extends Model
   public $ssl;
   public $parameters;
   public $imageparams;
+  public $timeout=2000;
 
   private $container;
   private $client;
@@ -55,6 +56,7 @@ class DockerContainer extends Model
 
     $params['remote_socket']=$this->server;
     $params['ssl']=$this->ssl;
+    $params['timeout']=$this->timeout;
 
     $this->client=DockerClientFactory::create($params);
     $this->docker=Docker::create($this->client);
