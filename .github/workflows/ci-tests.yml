@@ -22,7 +22,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Check if packagist is up and if not use a mirror...
-      run: nc -N -w1 asset-packagist.org 443 && composer config -g repos.packagist composer https://packagist.fi
+      run: nc -N -w1 asset-packagist.org 443 || composer config -g repos.packagist composer https://packagist.fi
 
 
     - name: Configure github token
