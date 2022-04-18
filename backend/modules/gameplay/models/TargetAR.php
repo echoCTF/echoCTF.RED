@@ -195,19 +195,19 @@ class TargetAR extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-      if(parent::beforeSave($insert))
+      if(!parent::beforeSave($insert))
       {
-          if($this->created_at===null)
-          {
-            $this->created_at=new \yii\db\Expression('now()');
-          }
-          $this->ip=ip2long($this->ipoctet);
-          return true;
+        return false;
       }
-      else
+
+      if($insert && $this->created_at===null)
       {
-          return false;
+          $this->created_at=new \yii\db\Expression('now()');
       }
+
+      $this->ip=ip2long($this->ipoctet);
+
+      return true;
     }
 
     /**

@@ -67,10 +67,15 @@ echo GridView::widget([
 
           if(!Yii::$app->user->isGuest && Yii::$app->user->identity->getPlayerHintsForTarget($model->id)->count() > 0)
             $append.=' <sup><abbr title="You have hints on the target"><i class="fas fa-lightbulb text-primary" aria-hidden="true"></i></abbr></sup>';
-          if($model->created_at!==NULL && strtotime($model->created_at) >= strtotime('-10 days'))
+          if($model->created_at!==NULL && strtotime($model->created_at) >= strtotime('-'.intval(Yii::$app->sys->target_days_new).' days'))
           {
-            $append.=' <small class="text-danger">new</small>';
+            $append.=' <sup><small class="text-danger">new</small></sup>';
           }
+          elseif(strtotime($model->ts) >= strtotime('-'.intval(Yii::$app->sys->target_days_updated).' days'))
+          {
+            $append.=' <sup><small class="text-danger">updated</small></sup>';
+          }
+
           return Html::a(Html::encode($model->name), ['/target/default/view', 'id'=>$model->id]).$append;
         }
       ],

@@ -50,6 +50,8 @@ class ConfigureForm extends Model
     public $leaderboard_visible_after_event_end;
     public $leaderboard_show_zero;
     public $time_zone;
+    public $target_days_new;
+    public $target_days_updated;
 
     public $dn_countryName;
     public $dn_stateOrProvinceName;
@@ -58,6 +60,8 @@ class ConfigureForm extends Model
     public $dn_organizationalUnitName;
 
     public $keys=[
+            'target_days_updated',
+            'target_days_new',
             'twitter_account',
             'twitter_hashtags',
             'teams',
@@ -171,7 +175,9 @@ class ConfigureForm extends Model
               'mail_from',
               'mail_fromName',
               'approved_avatar',
-              'team_manage_members'
+              'team_manage_members',
+              'target_days_new',
+              'target_days_updated',
           ], 'required'],
           [['dn_countryName'],'default','value'=>\Yii::$app->sys->dn_countryName],
           [['dn_stateOrProvinceName'],'default','value'=>\Yii::$app->sys->dn_stateOrProvinceName],
@@ -179,7 +185,7 @@ class ConfigureForm extends Model
           [['dn_organizationName'],'default','value'=>\Yii::$app->sys->dn_organizationName],
           [['dn_organizationalUnitName'],'default','value'=>\Yii::$app->sys->dn_organizationalUnitName],
           ['profile_visibility','default','value'=>'ingame'],
-          [['online_timeout', 'spins_per_day','members_per_team'], 'integer'],
+          [['online_timeout', 'spins_per_day','members_per_team','target_days_new','target_days_updated'], 'integer'],
           [['online_timeout'], 'default', 'value'=>900],
           [['spins_per_day'], 'default', 'value'=> 2],
           [['event_start','event_end','registrations_start','registrations_end'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
@@ -252,6 +258,8 @@ class ConfigureForm extends Model
           'dn_localityName'=>'localityName',
           'dn_organizationName'=>'organizationName',
           'dn_organizationalUnitName'=>'organizationalUnitName',
+          'target_days_new'=>'Target days is new',
+          'target_days_updated'=>'Target days is updated',
         ];
     }
 
