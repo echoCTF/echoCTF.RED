@@ -57,6 +57,7 @@ $config=[
       ],
         'session' => [
           'class' => 'yii\web\DbSession',
+          'timeout'=>3600 * 1,
           'sessionTable' => 'muisess',
         ],
         'formatter' => [

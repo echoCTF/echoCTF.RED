@@ -147,8 +147,9 @@ $config=[
         'cache' => $cache,
         'session'=>[
           'name' => 'red',
+          'timeout'=>3600 * 12,
           'cookieParams'=>[
-            //'sameSite'=> 'Lax',
+            'sameSite'=> 'Strict',
             'httpOnly'=>true
           ],
         ],
