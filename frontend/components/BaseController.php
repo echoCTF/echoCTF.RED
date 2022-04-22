@@ -141,7 +141,7 @@ class BaseController extends \yii\web\Controller
           \Yii::error(var_export($this->request->getMethod(), true));
           \Yii::error(var_export($_SESSION, true));  
         }
-        Yii::$app->session->setFlash('error', Yii::t('yii', 'Unable to verify your CSRF token, please try again.'));
+        Yii::$app->session->setFlash('error', Yii::t('yii', 'Unable to verify your submission CSRF token, please try again.'));
         $this->goBack(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage]);
         return false;
       }
