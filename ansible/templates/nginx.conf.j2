@@ -12,7 +12,7 @@ http {
     include               mime.types;
     default_type          application/octet-stream;
     index                 /index.php;
-    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+    log_format  main  '$remote_addr "$request" '
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
@@ -96,19 +96,38 @@ http {
         add_header X-Content-Type-Options nosniff always;
         add_header X-XSS-Protection "1; mode=block" always;
         add_header X-Frame-Options DENY always;
+        error_page 400 401 402 403 404 405 406 407 408 409 @errorphp;
+        error_page 410 411 412 413 414 415 416 417 418 419 @errorphp;
+        error_page 420 421 422 423 424 425 426 427 428 @errorphp;
+        error_page 429 /429.html;
+        error_page 430 431 432 433 434 435 436 437 438 439 @errorphp;
+        error_page 440 441 442 443 444 445 446 447 448 449 @errorphp;
+        error_page 450 451 452 453 454 455 456 457 458 459 @errorphp;
+        error_page 460 461 462 463 464 465 466 467 468 469 @errorphp;
+        error_page 470 471 472 473 474 475 476 477 478 479 @errorphp;
+        error_page 480 481 482 483 484 485 486 487 488 489 @errorphp;
+        error_page 490 491 492 493 494 495 496 497 498 @errorphp;
+        error_page 502 503 @maintenance;
+        # php errors
+        error_page 500 /500.html;
+        # not implemented
+        error_page 501 /501.html;
+        # Gateway timeout
+        error_page 504 /504.html;
+        # version not supported
+        error_page 505 /505.html;
 
-        error_page  403 404 405       /index.php?r=$request_uri;
-        error_page  500 502           /index.php?r=$request_uri;
-        error_page  418               @maintenance;
-        error_page  503               @maintenance;
-        error_page  504               @maintenance;
-
-        # this is needed for proper matching of regexp
-        merge_slashes on;
+        # 499 is only allowed to be used by nginx
+        # this is needed for redirect to work
+        merge_slashes off;
         # this ensures our urls are cleaned of multiple slashes
         rewrite (.*)//(.*) $1/$2 permanent;
 
         location @maintenance {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
                 add_header Retry-After 600 always;
                 rewrite ^(.*)$ /dt.html break;
                 internal;
@@ -116,11 +135,30 @@ http {
 
         # disable direct access to dt.html
         location = /dt.html {
-            return 418;
+            return 404;
+        }
+        location = /429.html {
+            return 404;
+        }
+
+        location = /500.html {
+            return 404;
+        }
+        location = /501.html {
+            return 404;
+        }
+        location = /504.html {
+            return 404;
+        }
+        location = /505.html {
+            return 404;
+        }
+        location ~ /\.ht {
+            return 404;
         }
 
         location /contrib/ {
-            autoindex on;
+        	autoindex on;
         }
 
         location /.well-known/acme-challenge/ {
@@ -128,16 +166,9 @@ http {
             root /acme;
         }
 
-        location ~ /\.ht {
-            return 404;
-        }
-
         # avoid processing of calls to non-existing static files by yii
-        location ~ \.(js|css|png|jpg|gif|swf|ico|pdf|mov|fla|zip|rar)$ {
+        location ~* \.(?:ico|css|woff2|exe|fla|gif|jpe?g|jpg|js|mov|pdf|png|rar|svg|swf|tgz|txt|xml|zip)$ {
             try_files $uri =404;
-        }
-
-        location ~* \.(?:ico|css|js|gif|jpe?g|png|xml|svg|txt|zip|tgz|exe)$ {
             access_log off;
             log_not_found off;
             expires 1M;
@@ -153,6 +184,8 @@ http {
         # Rate limit /api to 10 requests/sec
         # This is way too loose
         location /api/ {
+            limit_req_status 429;
+            limit_conn_status 429;
             limit_req zone=Api;
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
@@ -162,6 +195,8 @@ http {
         # There is no reason why anyone would need more than that for a
         # legitimate purpose
         location /resend-verification-email/ {
+            limit_req_status 429;
+            limit_conn_status 429;
             limit_req zone=ResendVerificationEmail;
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
@@ -171,6 +206,8 @@ http {
         # There is no reason why anyone would need more than that for a
         # legitimate purpose
         location /register/ {
+            limit_req_status 429;
+            limit_conn_status 429;
             limit_req zone=Register;
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
@@ -178,6 +215,8 @@ http {
 
         # Rate limit register to 20 requests per minute
         location /login/ {
+            limit_req_status 429;
+            limit_conn_status 429;
             limit_req zone=Login;
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
@@ -186,23 +225,31 @@ http {
         # Rate limit claim to 100 requests per minute it loads on
         # almost every page
         location /claim/ {
+            limit_req_status 429;
+            limit_conn_status 429;
             limit_req zone=Claim;
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
         }
 
         location /request-password-reset/ {
+            limit_req_status 429;
+            limit_conn_status 429;
             limit_req zone=RequestPasswordReset;
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
         }
 
         location /reset-password/ {
+            limit_req_status 429;
+            limit_conn_status 429;
             limit_req zone=ResetPassword;
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
         }
         location /verify-email/ {
+            limit_req_status 429;
+            limit_conn_status 429;
             limit_req zone=VerifyEmail;
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
@@ -242,6 +289,34 @@ http {
             fastcgi_param PATH_INFO        $fastcgi_path_info;
             fastcgi_param PATH_TRANSLATED  $document_root$fsn;
             fastcgi_param QUERY_STRING $yiiargs;
+            fastcgi_intercept_errors on;
+        }
+
+        location @errorphp {
+            internal;
+            fastcgi_split_path_info ^(.+\.php)(.*)$;
+
+            # let yii catch the calls to non-existing PHP files
+            set $fsn /$yii_bootstrap;
+            set $yiiargs r=$request_uri;
+            if (-f $document_root$fastcgi_script_name){
+                set $fsn $fastcgi_script_name;
+                set $yiiargs $query_string;
+            }
+
+            fastcgi_pass {{item.fpm}};
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME  $document_root$fsn;
+
+            # NGiNX allowed duplicate HOST headers to be set, the following is
+            # a workaround for these cases.
+            fastcgi_param HTTP_HOST "{{item.domain}}";
+
+            #PATH_INFO and PATH_TRANSLATED can be omitted, but RFC 3875 specifies them for CGI
+            fastcgi_param PATH_INFO        $fastcgi_path_info;
+            fastcgi_param PATH_TRANSLATED  $document_root$fsn;
+            fastcgi_param QUERY_STRING $yiiargs;
+            fastcgi_intercept_errors off;
         }
 
     }
