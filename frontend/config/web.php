@@ -205,12 +205,14 @@ $config=[
     ],
     'params' => $params,
     'on afterRequest' => function() {
-      if (!Yii::$app->user->isGuest) {
-        \Yii::$app->cache->memcache->set("last_seen:".\Yii::$app->user->id, time());
-        \Yii::$app->cache->memcache->set("online:".\Yii::$app->user->id, time(), intval(\Yii::$app->sys->online_timeout));
-        \Yii::$app->cache->memcache->set("player_session:".\Yii::$app->user->id, \Yii::$app->session->id, intval(\Yii::$app->sys->online_timeout));
-        return;
-      }
+      try {
+        if (!Yii::$app->user->isGuest) {
+          \Yii::$app->cache->memcache->set("last_seen:".\Yii::$app->user->id, time());
+          \Yii::$app->cache->memcache->set("online:".\Yii::$app->user->id, time(), intval(\Yii::$app->sys->online_timeout));
+          \Yii::$app->cache->memcache->set("player_session:".\Yii::$app->user->id, \Yii::$app->session->id, intval(\Yii::$app->sys->online_timeout));
+          return;
+        }
+      } catch (\Exception $e) { }
     },
 ];
 
