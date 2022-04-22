@@ -405,8 +405,10 @@
       - { section: PHP, option: "error_reporting", value: "E_NONE" }
       - { section: PHP, option: "post_max_size", value: "180M" }
       - { section: PHP, option: "upload_max_filesize", value: "120M" }
-      - { section: PHP, option: "session.save_handler", value: "memcached"}
-      - { section: PHP, option: "session.save_path", value: "{{db_ip}}:11211"}
+      - { section: Session, option: "session.save_handler", value: "memcached"}
+      - { section: Session, option: "session.save_path", value: "{{db_ip}}:11211"}
+      - { section: Session, option: "session.gc_maxlifetime", value: "43200" }
+      - { section: Session, option: "session.use_strict_mode", value: "1" }
 
   - name: copy nginx rc.d into participant
     command: cp /etc/rc.d/nginx "/etc/rc.d/{{item}}"
