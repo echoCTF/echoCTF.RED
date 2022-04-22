@@ -154,8 +154,8 @@ class echoCTFView extends \yii\web\View
     {
       return;
     }
-    // check if first starts with /*
-    if(\Yii::$app->sys->js_override{0} === '/' && \Yii::$app->sys->js_override{1} === '*')
+    // check if string starts with /*
+    if(\Yii::$app->sys->js_override[0] === '/' && \Yii::$app->sys->js_override[1] === '*')
       $this->registerJs(
         \Yii::$app->sys->js_override,
         self::POS_READY,
@@ -182,7 +182,7 @@ class echoCTFView extends \yii\web\View
     }
 
     // check if first starts with /*
-    if(\Yii::$app->sys->css_override{0} === '/' && \Yii::$app->sys->css_override{1} === '*')
+    if(\Yii::$app->sys->css_override[0] === '/' && \Yii::$app->sys->css_override[1] === '*')
       $this->registerCss(\Yii::$app->sys->css_override);
 
     $files=explode("\n",\Yii::$app->sys->css_override);
