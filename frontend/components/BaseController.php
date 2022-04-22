@@ -129,17 +129,22 @@ class BaseController extends \yii\web\Controller
 
     public function beforeAction($action)
     {
-        if (parent::beforeAction($action))
+      if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !$this->request->validateCsrfToken())
+      {
+        if(!\Yii::$app->user->isGuest)
         {
-            if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !$this->request->validateCsrfToken())
-            {
-                Yii::$app->session->setFlash('notice', Yii::t('yii', 'Unable to verify your data submission.'));
-                return \Yii::$app->getResponse()->goBack(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage]);
-            }
-
-            return true;
+          \Yii::error("CSRF-FAIL");
+          \Yii::error(var_export($this->enableCsrfValidation, true));
+          \Yii::error(var_export(Yii::$app->getErrorHandler()->exception, true));
+          \Yii::error(var_export($this->request->validateCsrfToken(), true));
+          \Yii::error(var_export($this->request->getCsrfToken(), true));
+          \Yii::error(var_export($this->request->getMethod(), true));
+          \Yii::error(var_export($_SESSION, true));  
         }
+        Yii::$app->session->setFlash('error', Yii::t('yii', 'Unable to verify your CSRF token, please try again.'));
+        $this->goBack(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage]);
         return false;
+      }
+      return parent::beforeAction($action);
     }
-
 }
