@@ -109,13 +109,13 @@ http {
         error_page 490 491 492 493 494 495 496 497 498 @errorphp;
         error_page 502 503 @maintenance;
         # php errors
-        error_page 500 /500.html;
+        error_page 500 @error500;
         # not implemented
-        error_page 501 /501.html;
+        error_page 501 @error501;
         # Gateway timeout
-        error_page 504 /504.html;
+        error_page 504 @error504;
         # version not supported
-        error_page 505 /505.html;
+        error_page 505 @error505;
 
         # 499 is only allowed to be used by nginx
         # this is needed for redirect to work
@@ -130,6 +130,42 @@ http {
                 add_header X-Frame-Options DENY always;
                 add_header Retry-After 600 always;
                 rewrite ^(.*)$ /dt.html break;
+                internal;
+        }
+        location @error500 {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /500.html break;
+                internal;
+        }
+        location @error501 {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /501.html break;
+                internal;
+        }
+        location @error504 {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /504.html break;
+                internal;
+        }
+        location @error505 {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /505.html break;
                 internal;
         }
 
