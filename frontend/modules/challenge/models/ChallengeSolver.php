@@ -19,7 +19,7 @@ use yii\db\Expression;
  * @property boolean $first
  * @property string $ts
  *
- * @property Challenge[] $challenge
+ * @property Challenge $challenge
  * @property Player[] $player
  */
 class ChallengeSolver extends \yii\db\ActiveRecord
