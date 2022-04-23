@@ -109,7 +109,9 @@ class Stream extends StreamAR
 
   public function getQuestionMessage()
   {
-    return sprintf("%s Answered the question of <b>%s</b> [%s] %s", $this->prefix, \app\modules\challenge\models\Question::findOne($this->model_id)->challenge->name,\app\modules\challenge\models\Question::findOne($this->model_id)->name, $this->suffix);
+    $qq=\app\modules\challenge\models\Question::find()->select(['question.id','question.name','challenge_id','challenge.name as challenge_name'])->joinWith('challenge')->where(['question.id'=>$this->model_id])->createCommand()->rawSql;
+    $q=\app\modules\challenge\models\Question::findBySql($qq)->one();
+    return sprintf("%s Answered the question of <b>%s</b> [%s] %s", $this->prefix, $q->challenge_name,$q->name, $this->suffix);
   }
 
   public function getFindingMessage()
