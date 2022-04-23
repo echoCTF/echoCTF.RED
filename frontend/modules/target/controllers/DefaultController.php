@@ -150,17 +150,21 @@ class DefaultController extends \app\components\BaseController
      {
        $command=Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
        $command->bindValue(':player_type', 'offense');
-       $totalPoints=$command->queryScalar();
-       $treasureStats=new \stdClass();
-       $treasureStats->total=(int) Treasure::find()->count();
-       $treasureStats->claims=(int) PlayerTreasure::find()->count();
-       $treasureStats->claimed=(int) PlayerTreasure::find()->where(['player_id'=>Yii::$app->user->id])->count();
-       $totalHeadshots=Headshot::find()->count();
+
+       $pageStats=new \stdClass();
+       $pageStats->totalPoints=($command->queryScalar());
+       $pageStats->totalTreasures=(int) Treasure::find()->count();
+       $pageStats->totalFindings=(int) Finding::find()->count();
+
+       $pageStats->totalClaims=(int) PlayerTreasure::find()->count();
+       $pageStats->ownClaims=(int) PlayerTreasure::find()->where(['player_id'=>Yii::$app->user->id])->count();
+       $pageStats->ownFinds=(int) PlayerFinding::find()->where(['player_id'=>Yii::$app->user->id])->count();
+       $pageStats->totalHeadshots=Headshot::find()->count();
+       $pageStats->ownHeadshots=Headshot::find()->where(['player_id'=>Yii::$app->user->id])->count();
+    
 
        return $this->render('index', [
-           'totalPoints'=>$totalPoints,
-           'treasureStats'=>$treasureStats,
-           'totalHeadshots'=>$totalHeadshots,
+           'pageStats'=>$pageStats,
        ]);
      }
 
