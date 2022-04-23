@@ -34,12 +34,13 @@ class TargetQuery extends \yii\db\ActiveQuery
       public function player_progress($player_id=0)
       {
         $this->alias('t');
-        $this->select(['t.*, count(distinct treasure.id) as total_treasures, count(distinct finding.id) as total_findings,count(distinct player_treasure.treasure_id) as player_treasures,count(distinct player_finding.finding_id) as player_findings, (((count(distinct player_treasure.treasure_id)+count(distinct player_finding.finding_id))*100)/(count(distinct finding.id)+count(distinct treasure.id))) as progress, avg(headshot.rating) as player_rating']);
+        $this->select(['t.id, t.name,t.status,t.ip,difficulty, rootable,scheduled_at,t.ts, count(distinct treasure.id) as total_treasures, count(distinct finding.id) as total_findings,count(distinct player_treasure.treasure_id) as player_treasures,count(distinct player_finding.finding_id) as player_findings, (((count(distinct player_treasure.treasure_id)+count(distinct player_finding.finding_id))*100)/(count(distinct finding.id)+count(distinct treasure.id))) as progress, avg(headshot.rating) as player_rating,count(distinct headshot.player_id) as total_headshots, count(distinct writeup.id) as total_writeups,count(distinct (case when writeup.approved=1 then writeup.id end)) as approved_writeups']);
         $this->join('LEFT JOIN', 'treasure', 'treasure.target_id=t.id');
         $this->join('LEFT JOIN', 'finding', 'finding.target_id=t.id');
         $this->join('LEFT JOIN', 'player_treasure', 'player_treasure.treasure_id=treasure.id and player_treasure.player_id='.$player_id);
         $this->join('LEFT JOIN', 'player_finding', 'player_finding.finding_id=finding.id and player_finding.player_id='.$player_id);
         $this->join('LEFT JOIN', 'headshot', 'headshot.target_id=t.id');
+        $this->join('LEFT JOIN', 'writeup', 'writeup.target_id=t.id');
         //$this->andWhere(['>','headshot.rating',-1]);
         $this->groupBy('t.id');
         return $this;
