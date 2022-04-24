@@ -19,10 +19,10 @@ $hidden_attributes=['id'];
                 'type'=>'card-stats',
                 'icon'=>'<i class="fa fa-flag"></i>',
                 'color'=>'primary',
-                'title'=>\app\modules\target\models\Treasure::find()->count(),
+                'title'=>$pageStats->totalTreasures,
                 'subtitle'=>'Flags',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons text-danger">flag</i>'.$treasureStats->claimed.' claimed by you
+                        <i class="material-icons text-danger">flag</i>'.$pageStats->ownClaims.' claimed by you
                       </div>',
             ]);Card::end();?>
         </div>
@@ -32,10 +32,10 @@ $hidden_attributes=['id'];
                 'type'=>'card-stats',
                 'icon'=>'<i class="fas fa-fingerprint"></i>',
                 'color'=>'warning',
-                'title'=>\app\modules\target\models\Finding::find()->count(),
+                'title'=>$pageStats->totalFindings,
                 'subtitle'=>'Services',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons text-danger">track_changes</i> '.count(Yii::$app->user->identity->playerFindings).' services found by you
+                        <i class="material-icons text-danger">track_changes</i> '.$pageStats->ownFinds.' services found by you
                       </div>',
             ]);Card::end();?>
         </div>
@@ -45,10 +45,10 @@ $hidden_attributes=['id'];
                 'type'=>'card-stats',
                 'icon'=>'<i class="fa fa-skull"></i>',
                 'color'=>'danger',
-                'title'=>sprintf('%d', $totalHeadshots),
+                'title'=>$pageStats->totalHeadshots,
                 'subtitle'=>'Headshots',
                 'footer'=>'<div class="stats">
-                        <i class="material-icons text-danger">memory</i> '.count(Yii::$app->user->identity->headshots).' headshots by you
+                        <i class="material-icons text-danger">memory</i> '.$pageStats->ownHeadshots.' headshots by you
                       </div>',
             ]);Card::end();?>
         </div>
@@ -59,7 +59,7 @@ $hidden_attributes=['id'];
                 'type'=>'card-stats',
                 'icon'=>'<i class="fas fa-medal"></i>',
                 'color'=>'info',
-                'title'=>number_format($totalPoints),
+                'title'=>number_format($pageStats->totalPoints),
                 'subtitle'=>'Points',
                 'footer'=>'<div class="stats">
                         <i class="material-icons text-danger">format_list_numbered</i> '.number_format(Yii::$app->user->identity->playerScore->points).' yours

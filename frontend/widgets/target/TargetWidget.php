@@ -35,6 +35,7 @@ class TargetWidget extends Widget
     public $viewFile='target';
     public $hidden_attributes=[];
     public $buttonsTemplate="{view} {tweet}";
+    
     public function init()
     {
       if($this->dataProvider === null && $this->player_id === null)
@@ -113,7 +114,7 @@ class TargetWidget extends Widget
 
       foreach($tmod->all() as $model)
       {
-        $orderByHeadshots[]=(object) ['id'=>$model->id, 'ip'=>$model->ip, 'headshots'=>count($model->headshots)];
+        $orderByHeadshots[]=(object) ['id'=>$model->id, 'ip'=>$model->ip, 'headshots'=>$model->total_headshots];
       }
 
       ArrayHelper::multisort($orderByHeadshots, ['headshots', 'ip'], [SORT_ASC, SORT_ASC]);
@@ -168,8 +169,8 @@ class TargetWidget extends Widget
               'default' => SORT_ASC
           ],
           'headshots' => [
-              'asc' => [new \yii\db\Expression('FIELD (t.id, '.implode(',', $orderByHeadshotsASC).')')],
-              'desc' => [new \yii\db\Expression('FIELD (t.id, '.implode(',', $orderByHeadshotsDESC).')')],
+              'asc' => ['total_headshots'=>SORT_ASC],
+              'desc' => ['total_headshots'=>SORT_DESC],
               'default' => SORT_ASC
           ],
           'progress' => [

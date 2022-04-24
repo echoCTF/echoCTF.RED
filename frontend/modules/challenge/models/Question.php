@@ -27,6 +27,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  */
 class Question extends \yii\db\ActiveRecord
 {
+    public $challenge_name;
     /**
      * {@inheritdoc}
      */

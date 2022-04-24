@@ -251,6 +251,12 @@ class PlayerAR extends ActiveRecord
   {
       return $this->hasOne(PlayerScore::class, ['player_id' => 'id']);
   }
+
+  public function getPlayerRank()
+  {
+      return $this->hasOne(PlayerRank::class, ['player_id' => 'id']);
+  }
+
   public function getSSL()
   {
     return $this->hasOne(PlayerSsl::class, ['player_id' => 'id']);

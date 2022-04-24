@@ -54,6 +54,9 @@ class TargetAR extends \yii\db\ActiveRecord
 {
   public $total_treasures;
   public $total_findings;
+  public $total_headshots;
+  public $total_writeups;
+  public $approved_writeups;
   public $player_findings;
   public $player_treasures;
   public $player_treasure_points;
@@ -81,6 +84,9 @@ class TargetAR extends \yii\db\ActiveRecord
             'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
             'player_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
             'player_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'total_headshots' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'total_writeups' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'approved_writeups' => AttributeTypecastBehavior::TYPE_INTEGER,
             'total_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
             'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
             'player_rating' => AttributeTypecastBehavior::TYPE_FLOAT,

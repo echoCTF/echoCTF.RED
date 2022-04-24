@@ -6,11 +6,14 @@ return [
     'password' => '',
     'charset' => 'utf8mb4',
     'enableProfiling'=>true,
-    'enableProfiling'=>true,
+    'enableParamLogging'=>true,
     // Schema cache options (for production environment)
     'enableSchemaCache' => true,
-    'schemaCacheDuration' => 60,
+    'schemaCacheDuration' => 3600*24,
     'schemaCache' => 'cache',
+    'enableQueryCache' => true,
+    'queryCache'=>'qcache',
+    'queryCacheDuration'=>60,    
 //    'on afterOpen' => function($event) {
 //        $event->sender->createCommand("SET time_zone='+00:00'")->execute();
 //    },

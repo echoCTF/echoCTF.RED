@@ -95,7 +95,7 @@ echo GridView::widget([
         'encodeLabel'=>false,
         'label'=>false,
         //'label'=>'<abbr title="Target has writeups or not?"><i class="fa fa-question-circle" aria-hidden="true"></i></abbr>',
-        'value'=>function($model) {return intval(count($model->writeups)) === 0 ? '' : '<abbr title="Writeups available"><i class="fas fa-book text-primary" style="font-size: 1.2em;"></i></abbr>';},
+        'value'=>function($model) {return $model->approved_writeups === 0 ? '' : '<abbr title="Writeups available"><i class="fas fa-book text-primary" style="font-size: 1.2em;"></i></abbr>';},
       ],
       [
         'visible'=>!in_array('difficulty', $hidden_attributes),
@@ -176,12 +176,12 @@ echo GridView::widget([
         'attribute'=>'headshots',
         'label'=>'<abbr title="Number of users who owned all flags and services: Headshots"><i class="fas fa-skull"></i></abbr>',
         'value'=>function($model) {
-          $msg=sprintf("%d user%s have managed to headshot this target", count($model->headshots), count($model->headshots) > 1 ? 's' : '');
+          $msg=sprintf("%d user%s have managed to headshot this target", $model->total_headshots, $model->total_headshots > 1 ? 's' : '');
           if($model->total_treasures == $model->player_treasures && $model->player_findings == $model->total_findings)
           {
-            return '<abbr title="'.$msg.'"><i class="fas fa-skull text-primary"></i></abbr> '.count($model->headshots);;
+            return '<abbr title="'.$msg.'"><i class="fas fa-skull text-primary"></i></abbr> '.$model->total_headshots;
           }
-          return '<abbr title="'.$msg.'"><i class="fas fa-skull"></i></abbr> '.count($model->headshots);},
+          return '<abbr title="'.$msg.'"><i class="fas fa-skull"></i></abbr> '.$model->total_headshots;},
       ],
       [
         'visible'=>!in_array('progress', $hidden_attributes),
