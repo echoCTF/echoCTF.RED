@@ -32,7 +32,7 @@ else {
 }
 ?>
 <div class="card card-profile">
-  
+
   <div class="card-avatar bg-primary">
     <a href="<?=$profile->linkTo?>">
       <img class="img" src="/images/avatars/<?=$profile->avtr?>"/>
@@ -79,6 +79,7 @@ else {
     <?php endif;?>
     <ul class="nav flex-column">
   <?php if($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
+          <li class="nav-item text-left"><strong><i class="fas fa-users"></i> Failed logins</strong> <span class="pull-right"><?=$profile->metric('failed_login')?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-users"></i> Invites</strong> <span class="pull-right"><?=$profile->invitesCount?></span></li>
           <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?=$profile->visibilities[$profile->visibility]?></span></li>
           <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?=intval($profile->spins->counter)?></abbr> / <abbr title="Total Spins"><?=intval($profile->spins->total)?></abbr></span></li>

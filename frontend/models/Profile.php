@@ -190,4 +190,12 @@ class Profile extends ProfileAR
         $items[strtolower($item['name'])]=['encode'=>false, 'label'=>"<i class='fas fa-user-shield'></i>&nbsp; Download ".$item['name'], 'url'=>['profile/ovpn','id'=>$item['name']], 'linkOptions'=>[]];
       return $items;
     }
+
+    public function metric($key)
+    {
+      return intval(Yii::$app->db->createCommand("SELECT counter FROM player_counter_nf WHERE player_id=:id AND metric=:metric")
+      ->bindValue(':id',$this->player_id,\PDO::PARAM_INT)
+      ->bindValue(':metric',$key)
+      ->queryScalar());
+    }
 }

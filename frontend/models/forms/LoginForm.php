@@ -52,19 +52,24 @@ class LoginForm extends Model
             $player=$this->player;
 
             $failed_login_ip=intval(\Yii::$app->cache->memcache->get('failed_login_ip:'.\Yii::$app->request->userIp));
-            $failed_login_username=intval(\Yii::$app->cache->memcache->get('failed_login_username:'.$this->username));
+            $failed_login_username=intval(\Yii::$app->cache->memcache->get('failed_login_username:'.$player->username));
 
             if($failed_login_ip>=5  /* || $failed_login_username>=10 */ )
             {
-              $this->addError($attribute, 'Too many failed log in attempts. Please wait and try again. ['.$failed_login_ip.'/'.$failed_login_username.']');
+              $this->addError($attribute, 'Too many failed log in attempts. Please wait ~5 minutes and try again. ['.$failed_login_ip.'/'.$failed_login_username.']');
               return;
             }
             if(!$player || !$player->validatePassword($this->password))
             {
                 $failed_login_ip++;
                 $failed_login_username++;
-                \Yii::$app->cache->memcache->set('failed_login_ip:'.\Yii::$app->request->userIp,$failed_login_ip, 900);
-                \Yii::$app->cache->memcache->set('failed_login_username:'.$this->username,$failed_login_username, 900);
+                \Yii::$app->cache->memcache->set('failed_login_ip:'.\Yii::$app->request->userIp,$failed_login_ip, 300);
+                \Yii::$app->cache->memcache->set('failed_login_username:'.$player->username,$failed_login_username, 300);
+                Yii::$app->db->createCommand('INSERT DELAYED INTO player_counter_nf values (:id,:metric,:counter) ON DUPLICATE KEY UPDATE counter=counter+values(counter)')
+                ->bindValue(':id',$player->id)
+                ->bindValue(':metric','failed_login')
+                ->bindValue(':counter',1)
+                ->execute();
                 $this->addError($attribute, 'Incorrect username or password.');
             }
         }
