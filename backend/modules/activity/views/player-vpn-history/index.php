@@ -21,7 +21,14 @@ yii\bootstrap\Modal::end();
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a(Yii::t('app', 'Truncate Player Vpn History'), ['truncate'], ['class' => 'btn btn-success']) ?>
+    <?= Html::a(Yii::t('app', 'Truncate VPN History'), ['truncate'], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => Yii::t('app', 'Are you sure you want to truncate the VPN history?'),
+                'method' => 'post',
+            ],
+        ]) ?>
+
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
