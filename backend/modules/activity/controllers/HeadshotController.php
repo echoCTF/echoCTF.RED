@@ -82,10 +82,14 @@ class HeadshotController extends \app\components\BaseController
       $model=new Headshot();
       if($model->load(Yii::$app->request->post()) && $model->validate())
       {
+          if(intval($model->timer)===0)
+          {
+              $model->timer=random_int(240,10240);
+          }
           Yii::$app->db->createCommand('CALL give_headshot(:player_id,:target_id,:timer)')
             ->bindValue(':player_id', $model->player_id)
             ->bindValue(':target_id', $model->target_id)
-            ->bindValue(':timer', $model->timer)
+            ->bindValue(':timer', intval($model->timer))
             ->query();
           return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
       }
