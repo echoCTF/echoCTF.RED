@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\modules\frontend\models\Player;
 use app\modules\settings\models\Country;
+use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Profile */
@@ -18,8 +19,13 @@ use app\modules\settings\models\Country;
     <div class="row form-group">
     <div class="col-sm-2"><?= $form->field($model, 'id')->textInput(['maxlength' => true])->hint('The profile id used for the player url.') ?></div>
 
-    <div class="col-sm-4"><?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(), 'id', function($model) {
-        return $model['id'].' '.$model['username'].'/'.$model['email'];}), ['prompt'=>'Select player'])->Label('Player')->hint('Choose the player on which you want to associate this profile with.') ?></div>
+    <div class="col-sm-4">
+      <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search'],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+        ])->hint('The player that this profile will belong to.');  ?>
+    </div>
     <div class="col-sm-3"><?= $form->field($model, 'country')->dropDownList(ArrayHelper::map(Country::find()->all(),'id','name'),['prompt'=>'Select country']) ?></div>
     <div class="col-sm-3"><?= $form->field($model, 'visibility')->dropDownList($model->visibilities)->hint('Player profile visibility') ?></div>
 
