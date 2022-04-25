@@ -371,13 +371,17 @@ class PlayerController extends \app\components\BaseController
         throw new NotFoundHttpException('The requested page does not exist.');
     }
 
-    public function actionAjaxSearch($term,$load=false)
+    public function actionAjaxSearch($term,$load=false,$active=null,$status=null)
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $results=[];
         if (Yii::$app->request->isAjax)
         {
           $pq=Player::find()->select(['id','username','email','status'])->where(['=','id',$term]);
+          if($active!==null && $status!==null)
+          {
+            $pq->andWhere(['status'=>$status,'active'=>$active]);
+          }
           if($load===false)
           {
             $pq->orWhere(['like','username',$term]);
