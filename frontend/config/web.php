@@ -189,7 +189,18 @@ $config=[
                     'levels' => ['error'],
                     'except' => ['yii\web\HttpException:404'],
                 ],
+//                [
+//                  'class' => 'yii\log\FileTarget',
+//                  'logFile' => '@runtime/logs/profile.log',
+//                  'logVars' => [],
+//                  'levels' => ['profile'],
+//                  'categories' => ['yii\db\Command::query'],
+//                  'prefix' => function($message) {
+//                      return '';
+//                  }
+//                ]
             ],
+
         ],
         'db' => $db,
         'urlManager' => [
