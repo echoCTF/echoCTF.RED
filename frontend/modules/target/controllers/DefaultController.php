@@ -97,7 +97,7 @@ class DefaultController extends \app\components\BaseController
         $profile=$this->findProfile($profile_id);
         $this->checkVisible($profile);
 
-        $target=Target::find()->where(['t.id'=>$id])->player_progress($profile->player_id)->one();
+        $target=Target::find()->where(['t.id'=>$id])->forView($profile->player_id)->one();
         $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>$profile->player_id, 'finding.target_id'=>$id])->all();
         $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>$profile->player_id, 'treasure.target_id'=>$id])->all();
         foreach($PF as $pf)
@@ -161,7 +161,7 @@ class DefaultController extends \app\components\BaseController
        $pageStats->ownFinds=(int) PlayerFinding::find()->where(['player_id'=>Yii::$app->user->id])->count();
        $pageStats->totalHeadshots=Headshot::find()->count();
        $pageStats->ownHeadshots=Headshot::find()->where(['player_id'=>Yii::$app->user->id])->count();
-    
+
 
        return $this->render('index', [
            'pageStats'=>$pageStats,
@@ -178,7 +178,8 @@ class DefaultController extends \app\components\BaseController
       $target=$this->findModel($id);
       if(!Yii::$app->user->isGuest)
       {
-        $target=Target::find()->where(['t.id'=>$id])->player_progress((int) Yii::$app->user->id)->one();
+//        $target=Target::find()->where(['t.id'=>$id])->player_progress((int) Yii::$app->user->id)->one();
+        $target=Target::find()->where(['t.id'=>$id])->forView((int) Yii::$app->user->id)->one();
         $PF=PlayerFinding::find()->select("sum(player_finding.points) as points")->joinWith(['finding'])->where(['player_id'=>Yii::$app->user->id, 'finding.target_id'=>$id])->one();
         $PT=PlayerTreasure::find()->select("sum(player_treasure.points) as points")->joinWith(['treasure'])->where(['player_id'=>Yii::$app->user->id, 'treasure.target_id'=>$id])->one();
         $sum=$PF->points+$PT->points;
@@ -377,7 +378,7 @@ class DefaultController extends \app\components\BaseController
         throw $e;
       }
     }
-    
+
     protected function doOndemand($target)
     {
       if($target->ondemand && $target->ondemand->state>0)
