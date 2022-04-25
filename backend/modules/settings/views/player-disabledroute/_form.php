@@ -12,7 +12,11 @@ use app\modules\frontend\models\Player;
 <div class="player-disabledroute-form">
 
     <?php $form = ActiveForm::begin(); ?>
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->where(['active'=>1,'status'=>10])->orderBy(['username'=>SORT_ASC])->all(), 'id', 'username'), ['prompt'=>'Select the player'])->Label('Player') ?>
+    <?= $form->field($model, 'player_id')->widget(\app\widgets\sleifer\autocompleteAjax\AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search','active'=>1,'status'=>10],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that this entry will belong to.');  ?>
 
     <?= $form->field($model, 'route')->textInput(['maxlength' => true]) ?>
 
