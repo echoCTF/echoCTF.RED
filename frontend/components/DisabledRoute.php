@@ -29,6 +29,8 @@ class DisabledRoute extends Component
    */
   public static function disabled($action):bool
   {
+    $disabled_routes=Yii::$app->sys->disabled_routes;
+    $player_disabled_routes=Yii::$app->sys->player_disabled_routes;
     if(is_object($action))
     {
       $route=self::RequestedRoute($action);
@@ -37,11 +39,15 @@ class DisabledRoute extends Component
     {
       $route=$action;
     }
-    if((int)\Yii::$app->db->createCommand("SELECT count(*) FROM disabled_route WHERE :route LIKE route OR CONCAT('/',:route) LIKE route")->bindValue(':route', $route)->queryScalar()>0)
+    if($disabled_routes!==false && $disabled_routes!='' && self::match($route,$disabled_routes))
+    {
       return true;
+    }
+    if($disabled_routes!==false && $player_disabled_routes!='' && self::match($route,$player_disabled_routes,true))
+    {
+      return true;
+    }
 
-    if(!\Yii::$app->user->isGuest && (int)\Yii::$app->db->createCommand("SELECT count(*) FROM player_disabledroute WHERE player_id=:player_id and ((:route LIKE route OR CONCAT('/',:route) LIKE route) OR (:pathinfo LIKE route or concat('/',:pathinfo) LIKE route))")->bindValue(':route', $route)->bindValue(':pathinfo',Yii::$app->request->pathInfo)->bindValue(':player_id', \Yii::$app->user->id)->queryScalar()>0)
-      return true;
     return false;
   }
 
@@ -63,6 +69,43 @@ class DisabledRoute extends Component
       return $action->controller->module->module->requestedRoute;
 
     return $action->controller->id.'/'.$action->id;
+  }
+
+  public static function match($against,$disabled_routes,bool $with_player=false):bool
+  {
+    // make sure we start with /
+    if($against[0]!=='/')
+      $against="/$against";
+
+    foreach(json_decode($disabled_routes,true) as $r)
+    {
+      $route=$r['route'];
+      if($route[0]!=='/' && $route[0]!=='%')
+        $route="/$route";
+
+      if($with_player===true && Yii::$app->user->isGuest && intval($r['player_id'])!==Yii::$app->user->id)
+      {
+        /*
+         * go back if the record refers to player
+         * specific disabled route and we're not currently that player
+         */
+        continue;
+      }
+
+      if($route[0]==='%' && str_ends_with($against,substr($route, 1))) // must end with this
+      {
+        return true;
+      }
+      else if($route[-1]==='%' && str_starts_with($against,substr($route, 0,-1))) // must start with this
+      {
+        return true;
+      }
+      else if($route===$against)
+      {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

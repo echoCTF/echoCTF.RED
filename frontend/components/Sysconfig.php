@@ -10,6 +10,8 @@ class Sysconfig extends Component
 {
   public $keyCache;
   private $prefetchKeys=[
+      'sysconfig:disabled_routes',
+      'sysconfig:player_disabled_routes',
       'sysconfig:teams',
       'sysconfig:admin_ids',
       'sysconfig:team_required',
