@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\modules\frontend\models\Player;
+use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Inquiry */
@@ -14,7 +15,11 @@ use app\modules\frontend\models\Player;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->orderBy(['username'=>SORT_ASC])->all(), 'id', 'username'), ['prompt'=>'Select player'])->Label('Player')->hint('The player id that the inquiry came from.') ?>
+    <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search'],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that the inquiry belongs.');  ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('Name provided by the user') ?>
 

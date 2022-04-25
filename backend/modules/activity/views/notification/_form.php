@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\modules\frontend\models\Player;
+use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Notification */
@@ -14,7 +15,11 @@ use app\modules\frontend\models\Player;
 
     <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->where(['active' => 1])->orderBy('username')->all(), 'id', function($model) { return Html::encode($model->username);},function($model) { return ucfirst(mb_substr($model->username,0,1));}), ['prompt'=>'All', 'value'=>'0'])->Label('Player')->hint('Choose the Player to create score entry')?>
+    <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search'],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that we will send the notification.');  ?>
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 

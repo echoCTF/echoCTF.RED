@@ -14,7 +14,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'op')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'player_id')->textInput() ?>
+    <?= $form->field($model, 'player_id')->widget(\app\widgets\sleifer\autocompleteAjax\AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search','active'=>1,'status'=>10],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that this entry will belong to.');  ?>
 
     <?= $form->field($model, 'target_id')->textInput() ?>
 

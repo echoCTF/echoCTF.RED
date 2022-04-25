@@ -16,8 +16,11 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'network_id')->dropDownList(ArrayHelper::map(app\modules\gameplay\models\Network::find()->all(), 'id', 'name'),
             ['prompt'=>'Select Network'])->Label('Network')->hint('The network this Player will belong') ?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(app\modules\frontend\models\Player::find()->all(), 'id', 'username'),
-                    ['prompt'=>'Select Player'])->Label('Player')->hint('The Player to assign to the network') ?>
+    <?= $form->field($model, 'player_id')->widget(\app\widgets\sleifer\autocompleteAjax\AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search','active'=>1,'status'=>10],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that this entry will belong to.');  ?>
 
     <?= $form->field($model, 'created_at')->textInput() ?>
 

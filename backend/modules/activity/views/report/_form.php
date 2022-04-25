@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\modules\frontend\models\Player;
+use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Report */
@@ -15,7 +16,11 @@ use app\modules\frontend\models\Player;
     <?php $form=ActiveForm::begin();?>
     <?= $form->field($model, 'title')->textInput(['maxlength' => true])->hint('Filled in by the player: The title of the Report') ?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->with('teams0')->all(), 'id', function($model) { return '['.$model->username.']: '.$model->email;},function($model) { return $model->teams0 ? $model->teams0->name : '-NO TEAM-';}), ['prompt'=>'Select the target'])->Label('Player')->hint('The id of the player which commited this report') ?>
+    <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search'],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that the report will belong to.');  ?>
 
     <?= $form->field($model, 'body')->textarea(['rows' => 6])->hint('Filled in by the player: The body of the report, including full details') ?>
 
