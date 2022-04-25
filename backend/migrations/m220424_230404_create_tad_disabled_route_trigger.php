@@ -29,4 +29,3 @@ class m220424_230404_create_tad_disabled_route_trigger extends Migration
       $this->db->createCommand($this->DROP_SQL)->execute();
     }
 }
-  

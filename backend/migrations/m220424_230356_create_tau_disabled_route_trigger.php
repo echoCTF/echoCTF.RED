@@ -29,4 +29,3 @@ class m220424_230356_create_tau_disabled_route_trigger extends Migration
       $this->db->createCommand($this->DROP_SQL)->execute();
     }
 }
-  
