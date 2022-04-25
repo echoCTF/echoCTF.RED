@@ -235,6 +235,7 @@ class CronController extends Controller
     }
     catch(\Exception $e)
     {
+        echo "Failed to process SpinQueue: [{$e->getMessage()}]\n";
         $transaction->rollBack();
         throw $e;
     }
@@ -267,13 +268,12 @@ class CronController extends Controller
     $targets=\app\modules\gameplay\models\TargetOndemand::find()
     ->andWhere(
       ['and',
-        ['state'=>1], 
+        ['state'=>1],
         ['OR',
           ['IS','heartbeat',new \yii\db\Expression('NULL')],
           ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
         ]
-      ])
-    ->orWhere(['state'=>-1]);
+      ])->orWhere(['state'=>-1]);
     foreach($targets->all() as $target)
     {
       if($target->state>-1)
@@ -437,6 +437,7 @@ class CronController extends Controller
     }
     catch(\Exception $e)
     {
+      echo "Failed to connect to docker server {$remote_socket}: [{$e->getMessage()}]\n";
       return false;
     }
     return $docker;
@@ -454,6 +455,7 @@ class CronController extends Controller
     }
     catch(\Exception $e)
     {
+      echo "Failed to get container list: [{$e->getMessage()}]\n";
       return [];
     }
     return $containerList;
