@@ -5,6 +5,7 @@ use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\Treasure;
+use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\PlayerTreasure */
@@ -15,7 +16,11 @@ use app\modules\gameplay\models\Treasure;
 
     <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(), 'id', 'username'), ['prompt'=>'Select player'])->Label('Player')->hint('The player you want to give this hint') ?>
+    <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search'],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that the treasure will be given.');  ?>
 
     <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->all(), 'id', 'name', 'target.fqdn'), ['prompt'=>'Select treasure']) ?>
 

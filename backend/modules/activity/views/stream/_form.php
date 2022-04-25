@@ -4,6 +4,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\ArrayHelper;
 use app\modules\frontend\models\Player;
+use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Stream */
@@ -13,7 +14,11 @@ use app\modules\frontend\models\Player;
 <div class="stream-form">
 
     <?php $form=ActiveForm::begin();?>
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Player::find()->all(), 'id', function($model) { return '['.$model->username.']: '.$model->email;}), ['prompt'=>'Select the player'])->Label('Player')->hint('The id of the player that this entry will appear from') ?>
+    <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search'],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that the stream entry will belong to.');  ?>
 
 
     <?= $form->field($model, 'model')->textInput(['maxlength' => true]) ?>

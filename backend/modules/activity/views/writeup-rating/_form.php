@@ -6,6 +6,7 @@ use yii\helpers\ArrayHelper;
 use app\modules\frontend\models\Player;
 use app\modules\activity\models\Writeup;
 use app\modules\activity\models\Headshot;
+use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\WriteupRating */
@@ -18,7 +19,11 @@ use app\modules\activity\models\Headshot;
 
     <?= $form->field($model, 'writeup_id')->dropDownList(ArrayHelper::map(Writeup::find()->orderBy(['created_at'=>SORT_ASC])->all(), 'id', 'target.name','player.username'), ['prompt'=>'Select writeup'])->hint('The writeup to be rated.') ?>
 
-    <?= $form->field($model, 'player_id')->dropDownList(ArrayHelper::map(Headshot::find()->joinWith(['player'])->orderBy(['player.username'=>'asc'])->all(), 'player_id', function($model) { return Html::encode($model->player->username).': '.$model->player_id;}), ['prompt'=>'Select the player'])->Label('Player')->hint('The id of the player that this badge will be given') ?>
+    <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/frontend/player/ajax-search'],
+        'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that the rating will be belong to.');  ?>
 
     <?= $form->field($model, 'rating')->textInput() ?>
 
