@@ -84,6 +84,10 @@ class SysconfigController extends \app\components\BaseController
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
             Yii::$app->session->setFlash('success', '<code>'.$model->id.'</code> updated.');
+            if($id!==$model->id)
+            {
+                return $this->redirect(['update','id'=>$model->id]);
+            }
         }
 
         return $this->render('update', [
