@@ -75,11 +75,5 @@ $hidden_attributes=['id'];
       <?php Pjax::end();?>
       </div>
     </div><!-- //row -->
-      <?php
-      Pjax::begin(['id'=>'stream-listing','enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
-      echo Stream::widget(['divID'=>'stream', 'dataProvider' => null, 'pagerID'=>'stream-pager']);
-      Pjax::end();
-      ?>
-
   </div><!-- //body-content -->
 </div>
