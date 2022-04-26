@@ -45,15 +45,23 @@ $ docker-compose up
 For more details check the [echoCTF.RED@ReadTheDocs](https://echoctfred.rtfd.io) :notebook_with_decorative_cover:
 
 ## Screenshots :eyes::candy:
-
-**Guest player target view**\
-<img title="Guest user target view" src="docs/screenshots/target-guest-view.png" width="400px" />
-
-**Admin page target solving stats**\
-<img title="Admin page target statistics" src="docs/screenshots/target-averages.png" width="400px" />
-
-**Admin page target update**\
+<table>
+  <tr>
+    <td>
+      <center>
 <img title="Admin page target update form" src="docs/screenshots/target-update-form.png" width="400px" />
+Admin page target update
+</center>
+    </td>
+    <td><center>
+      <img title="Guest user target view" src="docs/screenshots/target-guest-view.png" width="400px" /> Guest player target view</center>
+    </td>
+    <td><center>
+      <img title="Admin page target statistics" src="docs/screenshots/target-averages.png" width="400px" />
+       Admin page target solving stats</center>
+    </td>
+  </tr>
+</table>
 
 ## Features
 The list of features supported by the platform is really massive, the most
