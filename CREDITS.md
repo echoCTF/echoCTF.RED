@@ -3,5 +3,5 @@ We would like to thank the following people for their contributions, support and
 * @HitmanAlharbi for numerous contributions and support
 * @harperaa for suggestions on, and testing of our documentation
 
-Original Project
-* @gadamo, @pkotsiop
+Original project could not have been made possible without the help and contributions of the following
+* @gadamo, @pkotsiop, @akorovesi
