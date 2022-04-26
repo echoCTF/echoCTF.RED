@@ -91,6 +91,12 @@ $this->_url=\yii\helpers\Url::to([null],'https');
       <?php endif;?>
       </div>
 
+<?php
+  Pjax::begin(['id'=>'stream-listing','enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
+  echo Stream::widget(['divID'=>'stream', 'dataProvider' => null, 'pagerID'=>'stream-pager']);
+  Pjax::end();
+?>
+
       <div class="row justify-content-center">
         <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
           <?php Card::begin([
