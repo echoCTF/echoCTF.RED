@@ -868,10 +868,16 @@ mark {
   white-space:nowrap;
 }
 
-.card.terminal>.card-body>.lead>kbd {
+.card.terminal>.card-body>.lead kbd {
   font-size: 80%;
-  padding: 0.1em 0.1em;
+  padding: 0.1em 0.3em;
 }
-.leader-name kbd {
+
+.leader-name kbd, .leader-name code,  .leader-name code a  {
+  font-weight: 600;
   font-family: orbitron;
+  color: #9dd50b;
+  background-color: inherit;
+  box-shadow: none;
+  padding: 0;
 }
