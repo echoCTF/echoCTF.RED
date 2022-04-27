@@ -227,7 +227,7 @@ class Player extends PlayerAR implements IdentityInterface
 
     public function getVpnIP()
     {
-      return long2ip(Yii::$app->cache->memcache->get('ovpn:'.$this->id));
+      return Yii::$app->cache->memcache->get('ovpn:'.$this->id);
     }
 
     public function getIsAdmin():bool
