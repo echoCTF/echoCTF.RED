@@ -75,7 +75,8 @@ class DefaultController extends \app\components\BaseController
       if(Yii::$app->request->isPost && Yii::$app->request->post('rating')!==null)
       {
         $rating=(int)Yii::$app->request->post('rating');
-        $solver->updateAttributes(['rating' => $rating]);
+        if($rating>-1 && $rating<=6)
+          $solver->updateAttributes(['rating' => $rating]);
       }
     }
 
