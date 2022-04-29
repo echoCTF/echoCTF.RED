@@ -108,13 +108,18 @@ class DefaultController extends \app\components\BaseController
       if(Yii::$app->request->isPost && Yii::$app->request->post('rating')!==null)
       {
         $rating=(int)Yii::$app->request->post('rating');
-        if($WR->isNewRecord)
+        if ($rating>-1 && $rating<=5)
         {
-          $WR->rating=$rating;
-          $WR->save();
+          if($WR->isNewRecord)
+          {
+            $WR->rating=$rating;
+            $WR->save();
+          }
+          else
+          {
+            $WR->updateAttributes(['rating' => $rating]);
+          }
         }
-        else
-          $WR->updateAttributes(['rating' => $rating]);
       }
     }
 
