@@ -57,7 +57,8 @@ class DefaultController extends \app\components\BaseController
       if(Yii::$app->request->isPost && Yii::$app->request->post('rating')!==null)
       {
         $rating=(int)Yii::$app->request->post('rating');
-        $headshot->updateAttributes(['rating' => $rating]);
+        if($rating>-1 && $rating<=6)
+          $headshot->updateAttributes(['rating' => $rating]);
       }
     }
 
@@ -108,7 +109,7 @@ class DefaultController extends \app\components\BaseController
       if(Yii::$app->request->isPost && Yii::$app->request->post('rating')!==null)
       {
         $rating=(int)Yii::$app->request->post('rating');
-        if ($rating>-1 && $rating<=5)
+        if ($rating>0 && $rating<=5)
         {
           if($WR->isNewRecord)
           {
