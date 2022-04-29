@@ -57,7 +57,7 @@ class InquiryForm extends Model
       $inq->email=$this->email;
       $inq->name=$this->name;
       $inq->body=$this->body;
-      $inq->serialized=json_serialize($this);
+      $inq->serialized=json_encode($this);
       $inq->updated_at=new \yii\db\Expression('NOW()');
       $inq->created_at=new \yii\db\Expression('NOW()');
       $inq->save();
