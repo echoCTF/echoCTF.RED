@@ -29,6 +29,8 @@ use app\modules\game\models\WriteupRating;
  */
 class Writeup extends \yii\db\ActiveRecord
 {
+  const SCENARIO_SUBMIT = 'submit';
+
   public $_ratings=[
     [ 'id'=>0, 'name' => "Not rated!", 'icon'=>null],
     [ 'id'=>1,  'name' => "1 - Ok", 'icon'=>'fa-battery-quarter red-success',],
@@ -44,6 +46,13 @@ class Writeup extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'writeup';
+    }
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_SUBMIT => ['player_id', 'target_id','approved','status','content'],
+        ];
     }
 
     /**

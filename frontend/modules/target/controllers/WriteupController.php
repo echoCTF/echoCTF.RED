@@ -122,7 +122,7 @@ class WriteupController extends \app\components\BaseController
         return $this->redirect(['default/view','id'=>$id]);
       }
 
-      $model = new Writeup();
+      $model = new Writeup(['scenario'=>Writeup::SCENARIO_SUBMIT]);
       if ($model->load(Yii::$app->request->post())) {
           $model->player_id=Yii::$app->user->id;
           $model->target_id=$id;
@@ -157,6 +157,7 @@ class WriteupController extends \app\components\BaseController
     {
         $model = $this->findModel(Yii::$app->user->id, $id);
         $oldmodel = $this->findModel(Yii::$app->user->id, $id);
+        $oldmodel->scenario=Writeup::SCENARIO_SUBMIT;
         if ($model->load(Yii::$app->request->post()))
         {
           $oldmodel->status='PENDING';
