@@ -25,7 +25,7 @@ Url::remember();
       <?php endif;?>
     </div>
   <?php elseif($target->ondemand && $target->ondemand->state<0):?>
-    <div><p class="text-info">This target is currently powered off. <em>Connect to the VPN to be allowed to power the system up.</em></p></div>
+    <div><p class="text-info">This target is currently powered off. <?php if(Yii::$app->user->identity->profile->last->vpn_local_address===null):?><em>Connect to the VPN to be allowed to power the system up.</em><?php endif;?></p></div>
   <?php elseif($target->ondemand && $target->ondemand->state>0):?>
     <div><p class="text-danger">The target will shutdown in <code id="countdown" data="<?=$target->ondemand->expired?>"></code></p></div>
   <?php endif;?>
