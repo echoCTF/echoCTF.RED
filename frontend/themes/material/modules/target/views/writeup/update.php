@@ -10,6 +10,11 @@ $this->_description=$model->target->purpose;
 $this->_image=\yii\helpers\Url::to($model->target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['index', 'id'=>$model->target->id], 'https');
 $this->_fluid='-fluid';
+$this->registerJsFile('@web/js/showdown.min.js',[
+  'depends' => [
+    \yii\web\JqueryAsset::class
+]
+]);
 ?>
 <div class="writeup-update">
   <div class="body-content">
