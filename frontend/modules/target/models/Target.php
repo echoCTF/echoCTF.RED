@@ -119,16 +119,19 @@ class Target extends TargetAR
     public function getSpinDenied()
     {
       if($this->player_spin===false)
-        return true;
-
-      if($this->spinQueue !== null || intval($this->active) !== 1)
       {
-        return true;// Not active or already queued
+        return true;
+      }
+
+      // Not active or already queued
+      if($this->spinQueue !== null || $this->active === false)
+      {
+        return true;
       }
 
       if(Yii::$app->user->identity->profile->last->vpn_local_address === null && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_findings)<1 && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_treasures)<1)
         return true;
-      
+
       if($this->status!=='online')
         return true;
 
