@@ -41,6 +41,7 @@ $ docker pull echothrust/echoctf.red-frontend:latest
 $ docker pull echothrust/echoctf.red-vpn:latest
 $ docker-compose up
 ```
+_NOTE_: The following ports will be binded localy `1194/udp`, `8080/tcp`, `8082/tcp`, `3306/tcp`, `11211/tcp`. If any of these ports are already in use the applications will fail to start.
 
 For more details check the [echoCTF.RED@ReadTheDocs](https://echoctfred.rtfd.io) :notebook_with_decorative_cover:
 
