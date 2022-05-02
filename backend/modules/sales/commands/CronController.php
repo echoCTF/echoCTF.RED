@@ -19,7 +19,7 @@ class CronController extends Controller
      */
     public function actionIndex()
     {
-      $playerSubs=PlayerSubscription::find()->where(['active'=>1])->andWhere(['<','ending',new \yii\db\Expression('NOW()-INTERVAL 4 HOUR')]);
+      $playerSubs=PlayerSubscription::find()->active()->andWhere(['<','ending',new \yii\db\Expression('NOW()-INTERVAL 4 HOUR')]);
       foreach($playerSubs->all() as $rec)
       {
         $transaction = \Yii::$app->db->beginTransaction();
@@ -55,7 +55,7 @@ class CronController extends Controller
     protected function determineVpn($player_ip)
     {
       $network=($player_ip & ip2long('255.255.0.0'));
-      $creds=Yii::$app->controller->module->params['vpn_ranges'];
+      $creds=\Yii::$app->controller->module->params['vpn_ranges'];
       if(array_key_exists(long2ip($network),$creds)!==false)
       {
         return $creds[long2ip($network)];
