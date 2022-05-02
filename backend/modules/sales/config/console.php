@@ -5,7 +5,8 @@ return [
         'class' => 'yii\console\controllers\MigrateController',
         'migrationNamespaces' => ['app\modules\sales\migrations'],
         'migrationTable' => 'migration_sales',
-        'migrationPath' => null,
+        'migrationPath' => '@app/modules/sales/migrations',
+        //'migrationPath' => null,
     ],
   ]
 ];
