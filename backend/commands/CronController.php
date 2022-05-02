@@ -323,7 +323,7 @@ class CronController extends Controller
   }
 
   /*
-   * Geneate match rules for target findings and load them
+   * Generate match rules for target findings and load them
    */
   private function match_findings($load,$base="/etc")
   {
