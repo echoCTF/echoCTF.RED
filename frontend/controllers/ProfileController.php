@@ -208,11 +208,17 @@ class ProfileController extends \app\components\BaseController
         return $this->redirect(['/profile/me']);
       }
       $template=\app\modelscli\VpnTemplate::findOne(['name'=>$id,'active'=>true,'visible'=>true,'client'=>true]);
-      $content=Yii::$app->view->renderPhpContent("?>".$template->content,['model'=>$model]);
-      \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
-      \Yii::$app->response->content=$content;
-      \Yii::$app->response->setDownloadHeaders($template->filename, 'application/octet-stream', false, strlen($content));
-      return \Yii::$app->response->send();
+      if($template!==null)
+      {
+        $content=Yii::$app->view->renderPhpContent("?>".$template->content,['model'=>$model]);
+        \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
+        \Yii::$app->response->content=$content;
+        \Yii::$app->response->setDownloadHeaders($template->filename, 'application/octet-stream', false, strlen($content));
+        return \Yii::$app->response->send();
+      }
+      \Yii::$app->session->addFlash('error',"No such OpenVPN profile exists.");
+      return $this->redirect(['/profile/me']);
+
     }
 
     public function actionSettings()
