@@ -4,6 +4,9 @@ namespace app\modules\sales\models;
 
 use Yii;
 use app\modules\frontend\models\Player;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+
 /**
  * This is the model class for table "player_subscription".
  *
@@ -25,6 +28,18 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'player_subscription';
+    }
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => 'updated_at',
+                'value' => new Expression('NOW()'),
+            ],
+        ];
     }
 
     /**
