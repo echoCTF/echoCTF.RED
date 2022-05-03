@@ -202,7 +202,7 @@ class CaptchaAction extends Action
         if ($valid || $session[$name] > $this->testLimit && $this->testLimit > 0) {
             $this->getVerifyCode(true);
         }
-        if(!$valid)
+        if(!$valid && $this->autoRegenerate)
         {
             $this->getVerifyCode(true);
         }
