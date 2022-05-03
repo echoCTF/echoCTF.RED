@@ -39,6 +39,11 @@ use yii\web\Response;
 class CaptchaAction extends Action
 {
     /**
+     * Automaticaly regenerate the captcha on every post
+     */
+    public $autoRegenerate = true;
+
+    /**
      * The name of the GET parameter indicating whether the CAPTCHA image should be regenerated.
      */
     const REFRESH_GET_VAR = 'refresh';
@@ -123,7 +128,8 @@ class CaptchaAction extends Action
      */
     public function run()
     {
-        if (Yii::$app->request->getQueryParam(self::REFRESH_GET_VAR) !== null) {
+        if (Yii::$app->request->getQueryParam(self::REFRESH_GET_VAR) !== null)
+        {
             // AJAX request for regenerating code
             $code = $this->getVerifyCode(true);
             Yii::$app->response->format = Response::FORMAT_JSON;
@@ -195,7 +201,10 @@ class CaptchaAction extends Action
         if ($valid || $session[$name] > $this->testLimit && $this->testLimit > 0) {
             $this->getVerifyCode(true);
         }
-
+        if(!$valid && $this->autoRegenerate)
+        {
+            $this->getVerifyCode(true);
+        }
         return $valid;
     }
 
