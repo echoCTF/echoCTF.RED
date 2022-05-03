@@ -50,6 +50,26 @@ class DefaultController extends \app\components\BaseController
     }
 
     /**
+     * Updates Writeup Rules sysconfig key.
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionWriteupRules()
+    {
+        $model=Sysconfig::findOneNew('writeup_rules');
+
+        if($model->load(Yii::$app->request->post()) && $model->save())
+        {
+          Yii::$app->session->setFlash('success', 'Writeup rules updated');
+        }
+
+        return $this->render('sysconfig_content', [
+            'model' => $model,
+            'hint'=>'Enter your desired html code to be displayed as writeup instructions.'
+        ]);
+    }
+
+    /**
      * Updates offense scenario content sysconfig key.
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found

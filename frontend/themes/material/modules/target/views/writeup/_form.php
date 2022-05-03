@@ -26,8 +26,7 @@ $this->registerJs(
         this.selectionStart =
         this.selectionEnd = start + 4;
       }
-    });'
-,
+    });',
     yii\web\View::POS_READY,
     'textarea-tab-handler'
 );
@@ -36,7 +35,7 @@ $this->registerJs(
 
     <?php $form = ActiveForm::begin(['id'=>'writeup-form']); ?>
 
-    <?= $form->field($model, 'content')->textArea(['rows'=>15,'style'=>'font-family: monospace; color: lightgray','wrap'=>"hard"])->label("<b style='font-size: 1.2em'>Content of Writeup</b>")->hint("<p><code class='text-warning'>Write or paste your writeup in plain text format. Markdown format is preferred. If you are submitting a video writeup feel free to use the <kbd>&lt;embed&gt;</kbd> code provided to you</code></p><p class='text-danger'><b>Note:</b> Please don't waste our time with non writeup submissions.</p>") ?>
+    <?= $form->field($model, 'content')->textArea(['rows'=>15,'style'=>'font-family: monospace; color: lightgray','wrap'=>"hard"])->label("<b style='font-size: 1.2em'>Content of Writeup</b>")->hint(\Yii::$app->sys->writeup_rules) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Submit', [
