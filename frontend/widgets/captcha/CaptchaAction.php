@@ -128,7 +128,6 @@ class CaptchaAction extends Action
      */
     public function run()
     {
-
         if (Yii::$app->request->getQueryParam(self::REFRESH_GET_VAR) !== null)
         {
             // AJAX request for regenerating code
