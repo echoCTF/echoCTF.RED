@@ -1,8 +1,10 @@
 # Allow moderators to access the service even when in maintenance
 pass quick on egress inet proto udp from <moderators> to (egress:0) port 1194 label "OpenVPN"
+pass quick on egress inet proto tcp from <moderators> to (egress:0) port 443 label "OpenVPN443"
 
 # Dont allow
 pass quick on egress inet proto udp from !<maintenance> to (egress:0) port 1194 label "OpenVPN"
+pass quick on egress inet proto tcp from !<maintenance> to (egress:0) port 443 label "OpenVPN443"
 
 
 
