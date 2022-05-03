@@ -30,7 +30,7 @@ DELIMITER //
 DROP TRIGGER IF EXISTS tbi_tcpdump_bh//
 CREATE TRIGGER tbi_tcpdump_bh BEFORE INSERT ON findingsd FOR EACH ROW
 BEGIN
-  DECLARE PLAYER_ID, FINDING_ID, TARGET_ID, TEAM_ID, CLAIMED_BEFORE, mac_auth, trust_user_ip,teams INT(11) DEFAULT NULL;
+  DECLARE _PLAYER_ID, _FINDING_ID, _TARGET_ID, _TEAM_ID, CLAIMED_BEFORE, mac_auth, trust_user_ip,teams INT(11) DEFAULT NULL;
   DECLARE userMAC VARCHAR(32) DEFAULT NULL;
 
   IF (select memc_server_count()<1) THEN
@@ -40,37 +40,37 @@ BEGIN
   SELECT memc_get('sysconfig:mac_auth') INTO mac_auth;
   SELECT memc_get('sysconfig:teams') INTO teams;
 
-  SELECT memc_get(CONCAT('target:',NEW.dstip)) INTO TARGET_ID;
-  IF TARGET_ID IS NOT NULL THEN
-    SELECT memc_get(CONCAT('finding:',NEW.proto,':',ifnull(NEW.dstport,0), ':', TARGET_ID )) INTO FINDING_ID;
+  SELECT memc_get(CONCAT('target:',NEW.dstip)) INTO _TARGET_ID;
+  IF _TARGET_ID IS NOT NULL THEN
+    SELECT memc_get(CONCAT('finding:',NEW.proto,':',ifnull(NEW.dstport,0), ':', _TARGET_ID )) INTO _FINDING_ID;
   END IF;
 
 
   IF mac_auth IS NOT NULL AND mac_auth=1 THEN
     SELECT memc_get(CONCAT('arpdat:',NEW.srcip)) INTO userMAC;
-    SELECT memc_get(CONCAT('player_mac:',userMAC)) INTO PLAYER_ID;
+    SELECT memc_get(CONCAT('player_mac:',userMAC)) INTO _PLAYER_ID;
   ELSE
-    SELECT memc_get(CONCAT('ovpn:',INET_NTOA(NEW.srcip))) INTO PLAYER_ID;
+    SELECT memc_get(CONCAT('ovpn:',INET_NTOA(NEW.srcip))) INTO _PLAYER_ID;
   END IF;
 
   IF teams IS NOT NULL AND teams=1 THEN
-    SELECT memc_get(CONCAT('team_player:',PLAYER_ID)) INTO TEAM_ID;
-    SELECT memc_get(CONCAT('team_finding:',TEAM_ID, ':', FINDING_ID)) INTO CLAIMED_BEFORE;
+    SELECT memc_get(CONCAT('team_player:',_PLAYER_ID)) INTO _TEAM_ID;
+    SELECT memc_get(CONCAT('team_finding:',_TEAM_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
   ELSE
-    SELECT memc_get(CONCAT('player_finding:',PLAYER_ID, ':', FINDING_ID)) INTO CLAIMED_BEFORE;
+    SELECT memc_get(CONCAT('player_finding:',_PLAYER_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
   END IF;
   IF @debug IS NOT NULL AND @debug=1 THEN
-    INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[BEFORE FINDING] TARGET_ID:',ifnull(TARGET_ID,0),' PLAYER_ID:',ifnull(PLAYER_ID,0),' FINDING_ID:',ifnull(FINDING_ID,0),' TEAM_ID:',ifnull(TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
+    INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[BEFORE FINDING] _TARGET_ID:',ifnull(_TARGET_ID,0),' _PLAYER_ID:',ifnull(_PLAYER_ID,0),' _FINDING_ID:',ifnull(_FINDING_ID,0),' _TEAM_ID:',ifnull(_TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
   END IF;
 
-  IF PLAYER_ID IS NOT NULL AND FINDING_ID IS NOT NULL AND FINDING_ID>0 THEN
-    UPDATE target_ondemand SET heartbeat=NOW() WHERE target_id=TARGET_ID AND state>0;
+  IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 THEN
+    UPDATE target_ondemand SET heartbeat=NOW() WHERE target_id=_TARGET_ID AND state>0;
   END IF;
 
-  IF PLAYER_ID IS NOT NULL AND FINDING_ID IS NOT NULL AND FINDING_ID>0 AND CLAIMED_BEFORE IS NULL THEN
-    INSERT IGNORE INTO player_finding (finding_id,player_id) VALUES(FINDING_ID,PLAYER_ID) on duplicate key update finding_id=values(finding_id);
+  IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 AND CLAIMED_BEFORE IS NULL THEN
+    INSERT IGNORE INTO player_finding (finding_id,player_id) VALUES(_FINDING_ID,_PLAYER_ID) on duplicate key update finding_id=values(finding_id);
     IF @debug IS NOT NULL AND @debug=1 THEN
-      INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[AFTER FINDING] TARGET_ID:',ifnull(TARGET_ID,0),' PLAYER_ID:',ifnull(PLAYER_ID,0),' FINDING_ID:',ifnull(FINDING_ID,0),' TEAM_ID:',ifnull(TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
+      INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[AFTER FINDING] _TARGET_ID:',ifnull(_TARGET_ID,0),' _PLAYER_ID:',ifnull(_PLAYER_ID,0),' _FINDING_ID:',ifnull(_FINDING_ID,0),' _TEAM_ID:',ifnull(_TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
     END IF;
   END IF; /* END count target_mem */
 END
