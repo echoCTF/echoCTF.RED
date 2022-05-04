@@ -1,12 +1,9 @@
+<?php
+$this->title='Infrastructure Module';
+?>
 <div class="infrastructure-default-index">
-    <h1><?= $this->context->action->uniqueId ?></h1>
+    <h1>Infrastructure Module</h1>
     <p>
-        This is the view content for action "<?= $this->context->action->id ?>".
-        The action belongs to the controller "<?= get_class($this->context) ?>"
-        in the "<?= $this->context->module->id ?>" module.
-    </p>
-    <p>
-        You may customize this page by editing the following file:<br>
-        <code><?= __FILE__ ?></code>
+        Handle network infrastructure such as targets, docker servers, dynamic instances etc.
     </p>
 </div>
