@@ -881,3 +881,9 @@ mark {
   box-shadow: none;
   padding: 0;
 }
+
+.target-thumbnail {
+  height: 25px;
+  max-height: 25px;
+  max-width: 25px;
+}
