@@ -7,13 +7,13 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\smartcity\models\InfrastructureSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title='Infrastructures';
+$this->title='Infrastructure Elements';
 $this->params['breadcrumbs'][]=$this->title;
 yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
 ]);
-echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
+echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');
 yii\bootstrap\Modal::end();
 ?>
 <div class="infrastructure-index">

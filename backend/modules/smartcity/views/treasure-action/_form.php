@@ -17,7 +17,7 @@ use app\modules\gameplay\models\Treasure;
     <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->all(), 'id', 'name', 'target.fqdn'),
             ['prompt'=>'Select Treasure'])->Label('Treasure')->hint('The treasure this action will fire upon') ?>
 
-    <?= $form->field($model, 'ipoctet')->textInput() ?>
+    <?= $form->field($model, 'ipoctet')->textInput()->Label('IP') ?>
 
     <?= $form->field($model, 'port')->textInput() ?>
 
