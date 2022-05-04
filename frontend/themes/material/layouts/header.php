@@ -51,7 +51,7 @@ use yii\helpers\Url;
                   </div>
                 </li>
               <li class="nav-item">
-                <a class="nav-link" href="/profile/me" aria-haspopup="false" aria-expanded="false" data-toggle="tooltip" title="Go to your profile">
+                <a class="nav-link" href="/profile/me" aria-haspopup="false" aria-expanded="false" data-toggle="tooltip" aria-label="Go to your profile" title="Go to your profile">
                   <i class="fas fa-user" style="font-size: 2em;"></i>
                   <p class="d-lg-none d-md-block">
                     Profile
@@ -59,7 +59,7 @@ use yii\helpers\Url;
                 </a>
               </li>
               <li class="nav-item">
-                <?= Html::a('<i class="fas fa-sign-out-alt" style="font-size: 2.2em;"></i><p class="d-lg-none d-md-block">Logout</p>', Url::to(['/site/logout']), ['data-method' => 'POST',"data-pjax"=>"0",'data-toggle'=>'tooltip','title'=>'Logout', 'data-confirm'=>"Are you sure you want to logout?", 'class'=>'nav-link']) ?>
+                <?= Html::a('<i class="fas fa-sign-out-alt" style="font-size: 2.2em;"></i><p class="d-lg-none d-md-block">Logout</p>', Url::to(['/site/logout']), ['data-method' => 'POST',"data-pjax"=>"0",'data-toggle'=>'tooltip','title'=>'Logout', 'aria-label'=>'Logout','data-confirm'=>"Are you sure you want to logout?", 'class'=>'nav-link']) ?>
               </li>
             <?php endif;?>
             </ul>
