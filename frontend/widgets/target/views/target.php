@@ -40,7 +40,7 @@ echo GridView::widget([
         'headerOptions' => ['class' => 'text-center', "style"=>'width: 1.5em'],
         'format'=>'raw',
         'value'=>function($model) {
-        return sprintf('<img src="%s" alt="%s" class="rounded" style="height: 25px; max-height: 25px; max-width: 25px">', $model->logo, $model->fqdn);
+        return sprintf('<img src="%s" alt="%s" class="target-thumbnail rounded">', $model->thumbnail, $model->fqdn);
         }
       ],
       [
@@ -192,7 +192,7 @@ echo GridView::widget([
         'attribute'=>'progress',
         'label'=>'Progress',
         'value'=>function($model) {
-          return '<center>'.yii\bootstrap4\Progress::widget(['percent' => intval(floor($model->progress)), 'label' => false, 'barOptions' => ['class' => 'bg-gradual-progress'],'options'=>['class'=>'bg-dark','style'=>'border: 1px solid #cccccc; height: 1em; max-width: 18rem;']]).'</center>';
+          return '<center>'.yii\bootstrap4\Progress::widget(['percent' => intval(floor($model->progress)), 'label' => false, 'barOptions' => ['class' => 'bg-gradual-progress','aria-label'=>"Progress on target: {$model->progress}%"],'options'=>['class'=>'bg-dark','style'=>'border: 1px solid #cccccc; height: 1em; max-width: 18rem;']]).'</center>';
         },
       ],
       [
