@@ -15,7 +15,7 @@ yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span>Target Exec Command Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
 ]);
-echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
+echo yii\helpers\Markdown::process($this->render('help/exec.md'), 'gfm');
 yii\bootstrap\Modal::end();
 
 \yii\web\YiiAsset::register($this);

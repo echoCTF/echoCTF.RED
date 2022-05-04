@@ -8,14 +8,14 @@ use yii\helpers\Html;
 $this->title=Yii::t('app', 'Update Experience: {name}', [
     'name' => $model->name,
 ]);
-$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Experiences'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Experience Levels'), 'url' => ['index']];
 $this->params['breadcrumbs'][]=['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][]=Yii::t('app', 'Update');
 yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
 ]);
-echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
+echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');
 yii\bootstrap\Modal::end();
 ?>
 <div class="experience-update">
