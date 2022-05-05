@@ -210,6 +210,24 @@ class TargetAR extends \yii\db\ActiveRecord
       return true;
     }
 
+    public function afterSave($insert, $changedAttributes)
+    {
+        if(!$this->isNewRecord)
+        {
+            if(array_key_exists('name',$changedAttributes))
+            {
+                Yii::$app->db->createCommand('UPDATE finding SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt',[':search'=>$changedAttributes['name'],':replace'=>$this->name,':tgt'=>$this->id])->execute();
+                Yii::$app->db->createCommand('UPDATE treasure SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt',[':search'=>$changedAttributes['name'],':replace'=>$this->name,':tgt'=>$this->id])->execute();
+            }
+            if(array_key_exists('ip',$changedAttributes))
+            {
+                Yii::$app->db->createCommand('UPDATE finding SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt',[':search'=>long2ip($changedAttributes['ip']),':replace'=>$this->ipoctet,':tgt'=>$this->id])->execute();
+                Yii::$app->db->createCommand('UPDATE treasure SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt',[':search'=>long2ip($changedAttributes['ip']),':replace'=>$this->ipoctet,':tgt'=>$this->id])->execute();
+            }
+        }
+        parent::afterSave($insert,$changedAttributes);
+    }
+
     /**
      * {@inheritdoc}
      * @return TargetQuery the active query used by this AR class.
