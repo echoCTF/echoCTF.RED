@@ -11,6 +11,10 @@ use app\modules\gameplay\models\TargetOndemand;
  */
 class TargetOndemandSearch extends TargetOndemand
 {
+    public $name;
+    public $username;
+    public $ipoctet;
+
     /**
      * {@inheritdoc}
      */
@@ -18,7 +22,7 @@ class TargetOndemandSearch extends TargetOndemand
     {
         return [
             [['target_id', 'player_id', 'state'], 'integer'],
-            [['heartbeat', 'created_at', 'updated_at'], 'safe'],
+            [['heartbeat', 'created_at', 'updated_at','name','ipoctet','username'], 'safe'],
         ];
     }
 
@@ -40,7 +44,7 @@ class TargetOndemandSearch extends TargetOndemand
      */
     public function search($params)
     {
-        $query = TargetOndemand::find();
+        $query = TargetOndemand::find()->joinWith(['target','player']);
 
         // add conditions that should always apply here
 
@@ -64,6 +68,29 @@ class TargetOndemandSearch extends TargetOndemand
             'heartbeat' => $this->heartbeat,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+        ]);
+        $query->andFilterWhere(['like', 'target.name', $this->name]);
+        $query->andFilterWhere(['like', 'player.username', $this->username]);
+        $query->andFilterWhere(['like','INET_NTOA(target.ip)',$this->ipoctet]);
+        $dataProvider->setSort([
+            'defaultOrder' => ['name'=>SORT_ASC,'created_at'=>SORT_DESC],
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                    'username' => [
+                        'asc' => ['player.username' => SORT_ASC],
+                        'desc' => ['player.username' => SORT_DESC],
+                    ],
+                    'name' => [
+                        'asc' => ['target.name' => SORT_ASC],
+                        'desc' => ['target.name' => SORT_DESC],
+                    ],
+                    'ipoctet' => [
+                        'asc' => ['target.ip' => SORT_ASC],
+                        'desc' => ['target.ip' => SORT_DESC],
+                    ],
+                ]
+            ),
         ]);
 
         return $dataProvider;

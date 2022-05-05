@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\modules\gameplay\models\TargetOndemand */
 
 $this->title = Yii::t('app', 'Create Target Ondemand');
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target Ondemands'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target Ondemand'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
