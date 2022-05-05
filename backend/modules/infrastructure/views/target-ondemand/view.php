@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\modules\gameplay\models\TargetOndemand */
 
 $this->title = $model->target_id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target Ondemands'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target Ondemand'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
