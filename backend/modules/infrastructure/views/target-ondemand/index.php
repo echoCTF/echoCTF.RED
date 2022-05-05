@@ -7,8 +7,8 @@ use yii\widgets\Pjax;
 /* @var $searchModel app\modules\gameplay\models\TargetOndemandSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = Yii::t('app', 'Target Ondemands');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = Yii::t('app', 'Target Ondemand');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target Ondemand'), 'url' => ['index']];
 yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
@@ -31,13 +31,23 @@ yii\bootstrap\Modal::end();
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'target_id',
-            'target.ipoctet',
-            'target.name',
+            [
+                'label'=>'IP',
+                'attribute'=>'ipoctet',
+                'value'=>'target.ipoctet',
+            ],
+            [
+                'label'=>'Target',
+                'attribute'=>'name',
+                'value'=>'target.name',
+            ],
             'player_id',
-            'player.username',
+            [
+                'label'=>'Username',
+                'attribute'=>'username',
+                'value'=>'player.username',
+            ],
             'state',
             'heartbeat',
             'created_at',
