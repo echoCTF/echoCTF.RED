@@ -3,7 +3,7 @@
 namespace app\modules\activity\models;
 
 use Yii;
-
+use app\modules\frontend\models\Player;
 /**
  * This is the model class for table "player_score_monthly".
  *
@@ -46,6 +46,11 @@ class PlayerScoreMonthly extends \yii\db\ActiveRecord
             'dated_at' => Yii::t('app', 'Dated At'),
             'ts' => Yii::t('app', 'Ts'),
         ];
+    }
+
+    public function getPlayer()
+    {
+      return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
