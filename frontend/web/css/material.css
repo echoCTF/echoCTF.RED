@@ -210,7 +210,9 @@ details summary>b:hover {
 #target-list {
   font-family: Orbitron;
 }
-
+#target-list th {
+  font-size: 1.1em;
+}
 /*
 #target-list th>a {
   color: #587a01;
