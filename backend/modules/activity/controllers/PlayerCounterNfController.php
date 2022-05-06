@@ -44,10 +44,10 @@ class PlayerCounterNfController extends \app\components\BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView($player_id,$metric)
     {
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $this->findModel(['player_id'=>$player_id,'metric'=>$metric]),
         ]);
     }
 
@@ -76,12 +76,12 @@ class PlayerCounterNfController extends \app\components\BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($player_id,$metric)
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel(['player_id'=>$player_id,'metric'=>$metric]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->player_id]);
+            return $this->redirect(['view', 'id' => $model->player_id,'metric'=>$model->metric]);
         }
 
         return $this->render('update', [
