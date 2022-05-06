@@ -6,6 +6,7 @@ use Yii;
 class RankFormatter extends \yii\base\Model {
 
   public static function ordinalPlace($number) {
+
     if(!in_array(($number % 100), array(11, 12, 13)))
     {
       switch($number % 10) {
@@ -22,4 +23,14 @@ class RankFormatter extends \yii\base\Model {
     if($number===null || intval($number)<1 || intval($number)>3) return null;
     return 'rankpos-'.$number;
   }
+
+  public static function ordinalPlaceByPagination($dataProvider,$index)
+  {
+    $pagination = $dataProvider->getPagination();
+    if ($pagination !== false) {
+        return $pagination->getOffset() + $index + 1;
+    }
+    return $index + 1;
+  }
+
 }
