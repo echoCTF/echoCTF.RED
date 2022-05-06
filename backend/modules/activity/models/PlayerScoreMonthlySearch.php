@@ -61,9 +61,10 @@ class PlayerScoreMonthlySearch extends PlayerScoreMonthly
         $query->andFilterWhere([
             'player_id' => $this->player_id,
             'points' => $this->points,
-            'dated_at' => $this->dated_at,
             'ts' => $this->ts,
-        ])->andFilterWhere(['like','player.username',$this->username]);
+        ])
+        ->andFilterWhere(['like','player.username',$this->username])
+        ->andFilterWhere(['like', 'dated_at', $this->dated_at]);
         $dataProvider->setSort([
             'defaultOrder' => ['dated_at'=>SORT_DESC,'player_id'=>SORT_ASC, 'points'=>SORT_ASC],
             'attributes' => array_merge(
