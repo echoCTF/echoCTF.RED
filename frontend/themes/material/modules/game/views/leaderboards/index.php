@@ -272,8 +272,40 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ]
               ]);Pjax::end();?>
         </div>
-
-
+      </div>
+      <div class="row">
+      <div class="col-md-6">
+              <?php
+              Pjax::begin(['id'=>'playerCountry','enablePushState'=>false, 'linkSelector'=>'#player-country-leaderboard-pager a', 'formSelector'=>false]);
+              echo ListView::widget([
+                  'id'=>'playerCountry',
+                  'dataProvider' => $playerCountryDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">No country ranks exist at the moment...</b></div>',
+                  'pager'=>[
+                    'options'=>['id'=>'player-country-leaderboard-pager'],
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
+                  ],
+                  'options'=>['class'=>'card'],
+                  'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Countries by Players</h4><p class="card-category">Top countries by players</p></div>',
+                  'itemOptions' => [
+                    'tag' => false
+                  ],
+                  'itemView' => '_country',
+                  'viewParams'=>[
+                    'dataProvider'=>$playerCountryDataProvider,
+                    'totalPoints'=>$totalPoints,
+                  ]
+              ]);
+              Pjax::end();?>
+        </div>
       </div>
     </div>
 </div>

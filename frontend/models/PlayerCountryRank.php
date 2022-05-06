@@ -15,6 +15,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  */
 class PlayerCountryRank extends \yii\db\ActiveRecord
 {
+  public $name;
+  public $counter;
     /**
      * {@inheritdoc}
      */
@@ -77,6 +79,10 @@ class PlayerCountryRank extends \yii\db\ActiveRecord
   public function getAvatar()
   {
     return '/images/avatars/'.$this->player->profile->avatar;
+  }
+  public function getCountryObj()
+  {
+    return $this->hasOne(Country::class, ['id' => 'country']);
   }
 
   public function getScore()

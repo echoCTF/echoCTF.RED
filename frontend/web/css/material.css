@@ -162,6 +162,11 @@ details summary>b:hover {
   line-height: 1.2em;
 }
 
+.scoreboard-index .pagination {
+  font-weight: 400;
+  font-family: orbitron;
+}
+
 .watermarked {
   height: 105px;
   /*width: 1200px;*/
@@ -325,6 +330,14 @@ td.td-actions,
 .leader-score svg{
     display: block;
     margin-right: 4px;
+}
+
+.scoreboard-index .leader-place {
+  font-family: orbitron;
+  padding-right: 10px;
+}
+.scoreboard-index .leader-score_title {
+  font-family: orbitron;
 }
 
 .leader-score_title{
@@ -874,6 +887,12 @@ mark {
   padding: 0.1em 0.3em;
 }
 
+.scoreboard-index .leader-name {
+  font-family: orbitron;
+  white-space: nowrap;
+  letter-spacing: .1rem;
+}
+
 .leader-name kbd, .leader-name code,  .leader-name code a  {
   font-weight: 600;
   font-family: orbitron;
@@ -881,6 +900,7 @@ mark {
   background-color: inherit;
   box-shadow: none;
   padding: 0;
+  white-space: nowrap;
 }
 
 .target-thumbnail {
