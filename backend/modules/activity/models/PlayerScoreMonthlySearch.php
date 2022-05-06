@@ -11,6 +11,7 @@ use app\modules\activity\models\PlayerScoreMonthly;
  */
 class PlayerScoreMonthlySearch extends PlayerScoreMonthly
 {
+    public $username;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +19,7 @@ class PlayerScoreMonthlySearch extends PlayerScoreMonthly
     {
         return [
             [['player_id', 'points'], 'integer'],
-            [['dated_at', 'ts'], 'safe'],
+            [['dated_at', 'ts', 'username'], 'safe'],
         ];
     }
 
@@ -40,7 +41,7 @@ class PlayerScoreMonthlySearch extends PlayerScoreMonthly
      */
     public function search($params)
     {
-        $query = PlayerScoreMonthly::find();
+        $query = PlayerScoreMonthly::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
@@ -62,6 +63,18 @@ class PlayerScoreMonthlySearch extends PlayerScoreMonthly
             'points' => $this->points,
             'dated_at' => $this->dated_at,
             'ts' => $this->ts,
+        ])->andFilterWhere(['like','player.username',$this->username]);
+        $dataProvider->setSort([
+            'defaultOrder' => ['dated_at'=>SORT_DESC,'player_id'=>SORT_ASC, 'points'=>SORT_ASC],
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'username' => [
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
+                  ],
+                ]
+            ),
         ]);
 
         return $dataProvider;
