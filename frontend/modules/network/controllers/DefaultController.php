@@ -66,13 +66,34 @@ class DefaultController extends \app\components\BaseController
      {
          $tmod=\app\modules\target\models\Target::find();
          $targetProgressProvider=new ActiveDataProvider([
-             'query' => $tmod->player_progress(Yii::$app->user->id)->forNet($id)->orderBy(['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'difficulty' => SORT_ASC,'ip' => SORT_ASC, 'name' => SORT_ASC]),
+             'query' => $tmod->forNet($id)->player_progress(Yii::$app->user->id),
+             'sort'=> [
+                'defaultOrder' => ['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'difficulty' => SORT_ASC,'ip' => SORT_ASC, 'name' => SORT_ASC]
+             ],
              'pagination' => [
                  'pageSizeParam'=>'target-perpage',
                  'pageParam'=>'target-page',
              ]
-
          ]);
+         $targetProgressProvider->setSort([
+            'attributes' => array_merge(
+                $targetProgressProvider->getSort()->attributes,
+                [
+                  'total_findings' => [
+                      'asc' => ['total_findings' => SORT_ASC],
+                      'desc' => ['total_findings' => SORT_DESC],
+                  ],
+                  'total_treasures' => [
+                    'asc' => ['total_treasures' => SORT_ASC],
+                    'desc' => ['total_treasures' => SORT_DESC],
+                  ],
+                  'headshots' => [
+                    'asc' => ['total_headshots' => SORT_ASC],
+                    'desc' => ['total_headshots' => SORT_DESC],
+                  ],
+                ]
+            ),
+        ]);
 
          return $this->render('view', [
              'networkTargetProvider'=>$targetProgressProvider,
