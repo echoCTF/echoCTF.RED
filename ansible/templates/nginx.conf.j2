@@ -36,6 +36,31 @@ http {
     #tcp_nopush           on;
     keepalive_timeout     65;
     gzip                  on;
+    gzip_static on;
+    gzip_proxied        expired no-cache no-store private auth;
+    gzip_disable        "MSIE [1-6]\.";
+    gzip_vary           on;
+    gzip_http_version 1.0;
+    gzip_comp_level 2;
+    gzip_min_length 1100;
+    gzip_buffers     4 8k;
+    gzip_proxied any;
+    gzip_types
+        # text/html is always compressed by HttpGzipModule
+        text/css
+        text/javascript
+        text/xml
+        text/plain
+        text/x-component
+        application/javascript
+        application/json
+        application/xml
+        application/rss+xml
+        font/truetype
+        font/opentype
+        application/vnd.ms-fontobject
+        image/svg+xml;
+
     server_tokens         off;
 
     server {
@@ -171,26 +196,26 @@ http {
 
         # disable direct access to dt.html
         location = /dt.html {
-            return 404;
+            rewrite ^(.*)$ @errorphp last;
         }
         location = /429.html {
-            return 404;
+            rewrite ^(.*)$ @errorphp last;
         }
 
         location = /500.html {
-            return 404;
+            rewrite ^(.*)$ @errorphp last;
         }
         location = /501.html {
-            return 404;
+            rewrite ^(.*)$ @errorphp last;
         }
         location = /504.html {
-            return 404;
+            rewrite ^(.*)$ @errorphp last;
         }
         location = /505.html {
-            return 404;
+            rewrite ^(.*)$ @errorphp last;
         }
         location ~ /\.ht {
-            return 404;
+            rewrite ^(.*)$ @errorphp last;
         }
 
         location /contrib/ {
@@ -219,7 +244,7 @@ http {
 
         # Rate limit /api to 10 requests/sec
         # This is way too loose
-        location /api/ {
+        location /api {
             limit_req_status 429;
             limit_conn_status 429;
             limit_req zone=Api;
@@ -230,7 +255,7 @@ http {
         # Rate limit resend-verification-email to 10 requests per minute
         # There is no reason why anyone would need more than that for a
         # legitimate purpose
-        location /resend-verification-email/ {
+        location /resend-verification-email {
             limit_req_status 429;
             limit_conn_status 429;
             limit_req zone=ResendVerificationEmail;
@@ -241,7 +266,7 @@ http {
         # Rate limit register to 10 requests per minute
         # There is no reason why anyone would need more than that for a
         # legitimate purpose
-        location /register/ {
+        location /register {
             limit_req_status 429;
             limit_conn_status 429;
             limit_req zone=Register;
@@ -250,7 +275,7 @@ http {
         }
 
         # Rate limit register to 20 requests per minute
-        location /login/ {
+        location /login {
             limit_req_status 429;
             limit_conn_status 429;
             limit_req zone=Login;
@@ -260,7 +285,7 @@ http {
 
         # Rate limit claim to 100 requests per minute it loads on
         # almost every page
-        location /claim/ {
+        location /claim {
             limit_req_status 429;
             limit_conn_status 429;
             limit_req zone=Claim;
@@ -268,7 +293,7 @@ http {
             try_files $uri $uri/ /index.php$is_args$args;
         }
 
-        location /request-password-reset/ {
+        location /request-password-reset {
             limit_req_status 429;
             limit_conn_status 429;
             limit_req zone=RequestPasswordReset;
@@ -276,14 +301,14 @@ http {
             try_files $uri $uri/ /index.php$is_args$args;
         }
 
-        location /reset-password/ {
+        location /reset-password {
             limit_req_status 429;
             limit_conn_status 429;
             limit_req zone=ResetPassword;
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
         }
-        location /verify-email/ {
+        location /verify-email {
             limit_req_status 429;
             limit_conn_status 429;
             limit_req zone=VerifyEmail;
@@ -298,7 +323,7 @@ http {
 
         # return 404 for direct access to php files
         location ~ \.php$ {
-          return 404;
+          rewrite ^(.*)$ @errorphp last;
         }
 
         location = /index.php {
