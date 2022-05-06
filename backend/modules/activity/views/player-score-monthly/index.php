@@ -25,9 +25,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'player_id',
+            [
+                'attribute'=>'username',
+                'value'=>'player.username'
+            ],
             'points',
             'dated_at',
             'ts',
