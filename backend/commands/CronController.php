@@ -72,78 +72,85 @@ class CronController extends Controller
     }
     touch("/tmp/cron-instances.lock");
     $action=SELF::ACTION_EXPIRED;
-    $t=TargetInstance::find()->pending_action();
-    foreach($t->all() as $val)
-    {
-      $dc=new DockerContainer($val->target);
-      $dc->targetVolumes=$val->target->targetVolumes;
-      $dc->targetVariables=$val->target->targetVariables;
-      $dc->name=$val->name;
-      $dc->server=$val->server->connstr;
-      if($val->ip==null)
+    try {
+      $t=TargetInstance::find()->pending_action();
+      foreach($t->all() as $val)
       {
-        echo date("Y-m-d H:i:s ")."Starting";
-        $action=SELF::ACTION_START;
-      }
-      else if($val->reboot===1)
-      {
-        echo date("Y-m-d H:i:s ")."Restarting";
-        $action=SELF::ACTION_RESTART;
-      }
-      else if($val->reboot===2)
-      {
-        echo date("Y-m-d H:i:s ")."Destroying";
-        $action=SELF::ACTION_DESTROY;
-      }
-      else {
-        echo date("Y-m-d H:i:s ")."Expiring";
-      }
-      printf(" %s for %s (%s)\n",$val->target->name,$val->player->username,$dc->name);
-      try {
-        switch($action)
+        $dc=new DockerContainer($val->target);
+        $dc->targetVolumes=$val->target->targetVolumes;
+        $dc->targetVariables=$val->target->targetVariables;
+        $dc->name=$val->name;
+        $dc->server=$val->server->connstr;
+        if($val->ip==null)
         {
-          case SELF::ACTION_START:
-          case SELF::ACTION_RESTART:
-            try {
-              $dc->destroy();
-            } catch (\Exception $e) {
-
-            }
-            $dc->pull();
-            $dc->spin();
-            if($val->player->last->vpn_local_address!==null)
-            {
-              Pf::add_table_ip($dc->name.'_clients',long2ip($val->player->last->vpn_local_address));
-            }
-            $val->ipoctet=$dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
-            $val->reboot=0;
-            $val->save();
-
-            break;
-          case SELF::ACTION_EXPIRED:
-          case SELF::ACTION_DESTROY:
-            try {
-              $dc->destroy();
-            } catch (\Exception $e) {
-
-            }
-            Pf::kill_table($dc->name,true);
-            Pf::kill_table($dc->name.'_clients',true);
-            $val->delete();
-            break;
-          default:
-            printf("Error: Unknown action\n");
+          echo date("Y-m-d H:i:s ")."Starting";
+          $action=SELF::ACTION_START;
         }
+        else if($val->reboot===1)
+        {
+          echo date("Y-m-d H:i:s ")."Restarting";
+          $action=SELF::ACTION_RESTART;
+        }
+        else if($val->reboot===2)
+        {
+          echo date("Y-m-d H:i:s ")."Destroying";
+          $action=SELF::ACTION_DESTROY;
+        }
+        else {
+          echo date("Y-m-d H:i:s ")."Expiring";
+        }
+        printf(" %s for %s (%s)\n",$val->target->name,$val->player->username,$dc->name);
+        try {
+          switch($action)
+          {
+            case SELF::ACTION_START:
+            case SELF::ACTION_RESTART:
+              try {
+                $dc->destroy();
+              } catch (\Exception $e) {
 
-      }
-      catch (\Exception $e)
-      {
-        if(method_exists($e,'getErrorResponse'))
-          echo $e->getErrorResponse()->getMessage(),"\n";
-        else
-          echo $e->getMessage(),"\n";
+              }
+              $dc->pull();
+              $dc->spin();
+              if($val->player->last->vpn_local_address!==null)
+              {
+                Pf::add_table_ip($dc->name.'_clients',long2ip($val->player->last->vpn_local_address));
+              }
+              $val->ipoctet=$dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
+              $val->reboot=0;
+              $val->save();
+
+              break;
+            case SELF::ACTION_EXPIRED:
+            case SELF::ACTION_DESTROY:
+              try {
+                $dc->destroy();
+              } catch (\Exception $e) {
+
+              }
+              Pf::kill_table($dc->name,true);
+              Pf::kill_table($dc->name.'_clients',true);
+              $val->delete();
+              break;
+            default:
+              printf("Error: Unknown action\n");
+          }
+
+        }
+        catch (\Exception $e)
+        {
+          if(method_exists($e,'getErrorResponse'))
+            echo $e->getErrorResponse()->getMessage(),"\n";
+          else
+            echo $e->getMessage(),"\n";
+        }
       }
     }
+    catch (\Exception $e)
+    {
+      echo "Instances:",$e->getMessage();
+    }
+
     @unlink("/tmp/cron-instances.lock");
   }
 
@@ -158,27 +165,33 @@ class CronController extends Controller
       return;
     }
     touch("/tmp/cron-healthcheck.lock");
-
-    $unhealthy=$this->unhealthy_dockers();
-
-    foreach($unhealthy as $target)
+    try
     {
-      printf("Processing unhealthy [%s] on docker [%s]", $target->name, $target->server);
-      if($target->healthcheck==0)
+      $unhealthy=$this->unhealthy_dockers();
+
+      foreach($unhealthy as $target)
       {
-        printf("... skipping by healthcheck flag\n");
+        printf("Processing unhealthy [%s] on docker [%s]", $target->name, $target->server);
+        if($target->healthcheck==0)
+        {
+          printf("... skipping by healthcheck flag\n");
+        }
+        echo "\n";
+        if($spin !== false)
+        {
+          $target->spin();
+          $sh=new SpinHistory;
+          $sh->target_id=$target->id;
+          $sh->created_at=new \yii\db\Expression('NOW()');
+          $sh->updated_at=new \yii\db\Expression('NOW()');
+          $sh->player_id=1;
+          $sh->save();
+        }
       }
-      echo "\n";
-      if($spin !== false)
-      {
-        $target->spin();
-        $sh=new SpinHistory;
-        $sh->target_id=$target->id;
-        $sh->created_at=new \yii\db\Expression('NOW()');
-        $sh->updated_at=new \yii\db\Expression('NOW()');
-        $sh->player_id=1;
-        $sh->save();
-      }
+    }
+    catch(\Exception $e)
+    {
+      echo "Healthcheck:", $e->getMessage(),"\n";
     }
     @unlink("/tmp/cron-healthcheck.lock");
   }
@@ -189,9 +202,9 @@ class CronController extends Controller
   public function actionSpinQueue()
   {
 
-    $transaction=\Yii::$app->db->beginTransaction();
     try
     {
+      $transaction=\Yii::$app->db->beginTransaction();
       $query=SpinQueue::find();
       foreach($query->all() as $t)
       {
@@ -250,67 +263,90 @@ class CronController extends Controller
 
   public function actionPowerups()
   {
-    $targets=Target::find()->powerup();
-    foreach($targets->all() as $target)
+    try {
+      $targets=Target::find()->powerup();
+      foreach($targets->all() as $target)
+      {
+        printf("Target %s ", $target->fqdn);
+        $target->pull();
+        printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $target->spin() ? "success" : "fail");
+        $target->status='online';
+        $target->scheduled_at=null;
+        $target->active=1;
+        $target->save();
+      }
+    }
+    catch (\Exception $e)
     {
-      printf("Target %s ", $target->fqdn);
-      $target->pull();
-      printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $target->spin() ? "success" : "fail");
-      $target->status='online';
-      $target->scheduled_at=null;
-      $target->active=1;
-      $target->save();
+      echo "Powerups:", $e->getMessage(),"\n";
     }
   }
 
   public function actionOndemand()
   {
-    $targets=\app\modules\gameplay\models\TargetOndemand::find()
-    ->andWhere(
-      ['and',
-        ['state'=>1],
-        ['OR',
-          ['IS','heartbeat',new \yii\db\Expression('NULL')],
-          ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
-        ]
-      ])->orWhere(['state'=>-1]);
-    foreach($targets->all() as $target)
+    try
     {
-      if($target->state>-1)
+      $targets=\app\modules\gameplay\models\TargetOndemand::find()
+      ->andWhere(
+        ['and',
+          ['state'=>1],
+          ['OR',
+            ['IS','heartbeat',new \yii\db\Expression('NULL')],
+            ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
+          ]
+        ])->orWhere(['state'=>-1]);
+      foreach($targets->all() as $target)
       {
-        printf("Destroying ondemand target %s\n", $target->target->fqdn);
-        $target->target->destroy();
-        $target->state=-1;
-        $target->heartbeat=null;
-        $target->save();
+        if($target->state>-1)
+        {
+          printf("Destroying ondemand target %s\n", $target->target->fqdn);
+          $target->target->destroy();
+          $target->state=-1;
+          $target->heartbeat=null;
+          $target->save();
+        }
       }
-
+    }
+    catch (\Exception $e)
+    {
+      echo "OnDemand:", $e->getMessage(),"\n";
     }
   }
 
   public function actionOfflines()
   {
-    $targets=Target::find()->offline();
-    foreach($targets->all() as $target)
+    try {
+      $targets=Target::find()->offline();
+      foreach($targets->all() as $target)
+      {
+        printf("Target %s ", $target->fqdn);
+        printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
+        $requirePF=$target->powerdown();
+        printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
+      }
+    }
+    catch (\Exception $e)
     {
-      printf("Target %s ", $target->fqdn);
-      printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
-      $requirePF=$target->powerdown();
-      printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
+      echo "Offlines:",$e->getMessage(),"\n";
     }
   }
 
   public function actionPowerdowns()
   {
-    $targets=Target::find()->powerdown();
-    foreach($targets->all() as $target)
-    {
-      printf("Target %s ", $target->fqdn);
-      printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
-      $requirePF=$target->powerdown();
-      printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
+    try{
+      $targets=Target::find()->powerdown();
+      foreach($targets->all() as $target)
+      {
+        printf("Target %s ", $target->fqdn);
+        printf("scheduled for [%s] at [%s]", $target->status, $target->scheduled_at);
+        $requirePF=$target->powerdown();
+        printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
+      }
     }
-
+    catch (\Exception $e)
+    {
+      echo "Powerdowns:",$e->getMessage(),"\n";
+    }
   }
 
   /**
@@ -318,8 +354,14 @@ class CronController extends Controller
    */
   public function actionPf($load=false,$base="/etc")
   {
-    $this->active_targets_pf($base);
-    $this->match_findings($load,$base);
+    try {
+      $this->active_targets_pf($base);
+      $this->match_findings($load,$base);
+    }
+    catch (\Exception $e)
+    {
+      echo "PF:",$e->getMessage(),"\n";
+    }
   }
 
   /*
@@ -430,6 +472,7 @@ class CronController extends Controller
       $client=DockerClientFactory::create([
         'remote_socket' => $remote_socket,
         'ssl' => false,
+        'timeout'=>5000,
       ]);
     try
     {
