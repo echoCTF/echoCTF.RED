@@ -226,6 +226,7 @@ class Target extends TargetAR
       {
         $params['remote_socket']=$this->server;
         $params['ssl']=false;
+        $params['timeout']=5000;
       }
     }
 
