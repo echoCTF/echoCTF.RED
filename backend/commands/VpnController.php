@@ -22,7 +22,7 @@ class VpnController extends Controller
 {
 
   /**
-   * Logout a specific player.
+   * Logout a specific player from the database (no OpenVPN sessions are touched)
    * @param string $player player: id or username.
    */
   public function actionLogout($player)
@@ -38,7 +38,7 @@ class VpnController extends Controller
   }
 
   /**
-   * Kill a specific player session from OpenVPN
+   * Kill a specific player session from OpenVPN.
    * @param string $player player: id or username.
    */
   public function actionKill($player)
@@ -49,8 +49,8 @@ class VpnController extends Controller
     {
       throw new ConsoleException(Yii::t('app', 'Player not found with id or username of [{values}]', ['values' => $player]));
     }
-    printf("Killing %d with last local IP [%s]\n",$pM->id,$pM->last->vpn_local_address);
-    OpenVPN::kill($pM->id,ip2long($pM->last->vpn_local_address));
+    printf("Killing %d with last local IP [%s]\n",$pM->id,$pM->last->vpn_local_address_octet);
+    OpenVPN::kill($pM->id,$pM->last->vpn_local_address);
   }
 
 }
