@@ -32,7 +32,7 @@ class VpnController extends Controller
       throw new ConsoleException(Yii::t('app', 'Player not found with id or username of [{values}]', ['values' => $player]));
     }
 
-    $result=Yii::$app->db->createCommand("SELECT memc_get('ovpn::player') AS ovpn_status",[':player'=>$pM->id])->queryScalar();
+    $result=Yii::$app->db->createCommand("SELECT memc_get('ovpn:{$pM->id}') AS ovpn_status")->queryScalar();
     printf("Player %s %s\n",$pM->username,$result ?? "is offline");
   }
 
