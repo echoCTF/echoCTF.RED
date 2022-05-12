@@ -1,6 +1,10 @@
 <?php
 Yii::setAlias('@appconfig', realpath(dirname(__FILE__)));
 return [
+    'vpn_ranges'=>[
+      '10.43.0.0'=>['127.0.0.1',11196,'myovpnadminpass'],
+      '10.10.0.0'=>['127.0.0.1',11195,'myovpnadminpass'],
+    ],
     'adminEmail' => 'info@echothrust.com',
     'senderEmail' => 'noreply@echothrust.com',
     'senderName' => 'Echothrust mailer',
