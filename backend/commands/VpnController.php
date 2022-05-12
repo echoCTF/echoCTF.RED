@@ -53,4 +53,40 @@ class VpnController extends Controller
     OpenVPN::kill($pM->id,intval($pM->last->vpn_local_address));
   }
 
+  /**
+   * Logout a specific player from the database (no OpenVPN sessions are touched)
+   * @param string $player player: id or username.
+   */
+  public function actionLogout($player)
+  {
+
+    $pM=Player::find()->where(['username'=>$player])->orWhere(['id'=>$player])->one();
+    if($pM===NULL)
+    {
+      throw new ConsoleException(Yii::t('app', 'Player not found with id or username of [{values}]', ['values' => $player]));
+    }
+    printf("Logging out %d\n",$pM->id);
+    OpenVPN::logout($pM->id);
+  }
+
+  /**
+   * Killall kill all connections from OpenVPN (takes a long time).
+   */
+  public function actionKillall()
+  {
+
+    foreach(Player::find()->where(['status'=>10])->all() as $pM)
+    {
+      printf("Logging out %d\n",$pM->id);
+      OpenVPN::logout($pM->id);
+    }
+  }
+  /**
+   * Logoutall stall connections from OpenVPN.
+   */
+  public function actionLogoutall()
+  {
+    Yii::$app->db->createCommand("UPDATE player_last SET vpn_local_address=NULL, vpn_remote_address=NULL")->execute();
+  }
+
 }
