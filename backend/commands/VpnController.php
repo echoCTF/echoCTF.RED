@@ -50,7 +50,7 @@ class VpnController extends Controller
       throw new ConsoleException(Yii::t('app', 'Player not found with id or username of [{values}]', ['values' => $player]));
     }
     printf("Killing %d with last local IP [%s]\n",$pM->id,$pM->last->vpn_local_address_octet);
-    OpenVPN::kill($pM->id,$pM->last->vpn_local_address);
+    OpenVPN::kill($pM->id,intval($pM->last->vpn_local_address));
   }
 
 }
