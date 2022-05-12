@@ -1,8 +1,7 @@
 <?php
 /**
  * @author Pantelis Roditis <proditis@echothrust.com>
- * @copyright 2019
- * @since 0.1
+ * @copyright 2022
  */
 
 namespace app\commands;
@@ -20,6 +19,22 @@ use app\components\OpenVPN;
  */
 class VpnController extends Controller
 {
+
+  /**
+   * IsOnline check
+   * @param $string $player player: id or username to check
+   */
+  public function actionIsOnline($player)
+  {
+    $pM=Player::find()->where(['username'=>$player])->orWhere(['id'=>$player])->one();
+    if($pM===NULL)
+    {
+      throw new ConsoleException(Yii::t('app', 'Player not found with id or username of [{values}]', ['values' => $player]));
+    }
+
+    $result=Yii::$app->db->createCommand("SELECT memc_get('ovpn::player') AS ovpn_status",[':player'=>$pM->id])->queryScalar();
+    printf("Player %s %s\n",$pM->username,$result ?? "is offline");
+  }
 
   /**
    * Logout a specific player from the database (no OpenVPN sessions are touched)
@@ -51,22 +66,6 @@ class VpnController extends Controller
     }
     printf("Killing %d with last local IP [%s]\n",$pM->id,$pM->last->vpn_local_address_octet);
     OpenVPN::kill($pM->id,intval($pM->last->vpn_local_address));
-  }
-
-  /**
-   * Logout a specific player from the database (no OpenVPN sessions are touched)
-   * @param string $player player: id or username.
-   */
-  public function actionLogout($player)
-  {
-
-    $pM=Player::find()->where(['username'=>$player])->orWhere(['id'=>$player])->one();
-    if($pM===NULL)
-    {
-      throw new ConsoleException(Yii::t('app', 'Player not found with id or username of [{values}]', ['values' => $player]));
-    }
-    printf("Logging out %d\n",$pM->id);
-    OpenVPN::logout($pM->id);
   }
 
   /**
