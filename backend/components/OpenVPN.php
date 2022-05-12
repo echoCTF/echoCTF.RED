@@ -24,7 +24,7 @@ class OpenVPN extends Component
    * Logout player
    * @param integer $id player id
    */
-  static public function logout($id)
+  static public function logout(int $id)
   {
     Yii::$app->db->createCommand("UPDATE player_last SET vpn_local_address=NULL, vpn_remote_address=NULL WHERE id=:player",[':player'=>$id])->execute();
   }
@@ -33,7 +33,7 @@ class OpenVPN extends Component
    * @param integer $player_id The ID of the player
    * @param integer|null $player_ip The current VPN IP of the player (if connected)
    */
-  static public function kill($player_id,$player_ip)
+  static public function kill(int $player_id,int $player_ip)
   {
     try
     {
@@ -67,7 +67,7 @@ class OpenVPN extends Component
    * @param integer|null $player_ip IP of the player currently
    * @return array [IP,PORT,PASSWORD]
    */
-  static public function determineServer($player_ip)
+  static public function determineServer(int $player_ip):array
   {
     $network=($player_ip & ip2long('255.255.0.0'));
     $creds=\Yii::$app->params['vpn_ranges'];
