@@ -88,4 +88,37 @@ class VpnController extends Controller
     Yii::$app->db->createCommand("UPDATE player_last SET vpn_local_address=NULL, vpn_remote_address=NULL")->execute();
   }
 
+  /**
+   * Load configuration from filesystem
+   */
+  public function actionLoad($filepath)
+  {
+    $file=basename($filepath);
+    try{
+      $contents=file_get_contents($filepath);
+      Yii::$app->db->createCommand("UPDATE openvpn SET conf=:config WHERE name=:filename",[':config'=>$contents,':filename'=>$file])->execute();
+    }
+    catch (\Exception $e)
+    {
+      printf("Error: ",$e->getMessage());
+    }
+
+  }
+  /**
+   * Save configuration to filesystem
+   */
+  public function actionSave($filepath)
+  {
+    try{
+      $file=basename($filepath);
+      $contents=Yii::$app->db->createCommand("SELECT conf FROM openvpn WHERE name=:filename",[':filename'=>$file])->queryScalar();
+      file_put_contents($filepath,$contents);
+    }
+    catch (\Exception $e)
+    {
+      printf("Error: ",$e->getMessage());
+    }
+
+  }
+
 }
