@@ -10,4 +10,6 @@ The fields include:
 * Mgmt IP: The IP that this openvpn will listen for administrative connections
 * Mgmt Port: The port for the openvpn administrative service
 * Mgmt Passwd: The password to authenticate to this service
+* Status log: The full path to the OpenVPN status log file
+* Conf: The configuration file contents
 * Created at/Updated at: Creation and last modification dates

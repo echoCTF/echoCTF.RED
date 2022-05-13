@@ -37,6 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'management_ip_octet',
             'management_port',
             'management_passwd',
+            'status_log:codeblock',
             'conf:codeblock',
             'created_at',
             'updated_at',

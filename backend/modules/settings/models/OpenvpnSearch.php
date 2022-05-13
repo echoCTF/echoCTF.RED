@@ -18,7 +18,7 @@ class OpenvpnSearch extends Openvpn
     {
         return [
             [['id', 'net', 'mask', 'management_ip', 'management_port'], 'integer'],
-            [['provider_id', 'name', 'management_passwd', 'conf', 'created_at', 'updated_at','management_ip_octet','net_octet','mask_octet'], 'safe'],
+            [['provider_id','status_log', 'name', 'management_passwd', 'conf', 'created_at', 'updated_at','management_ip_octet','net_octet','mask_octet'], 'safe'],
         ];
     }
 
@@ -67,6 +67,7 @@ class OpenvpnSearch extends Openvpn
         $query->andFilterWhere(['like', 'provider_id', $this->provider_id])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'management_passwd', $this->management_passwd])
+            ->andFilterWhere(['like', 'status_log', $this->status_log])
             ->andFilterWhere(['like', 'conf', $this->conf]);
 
         $query->andFilterHaving(['like', 'net_octet', $this->net_octet])

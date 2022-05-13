@@ -21,6 +21,7 @@ class m220513_002645_create_openvpn_table extends Migration
             'management_ip' => $this->integer()->unsigned(), // 127.0.0.1
             'management_port' => $this->smallInteger()->unsigned(), // 11195
             'management_passwd' => $this->string(), // mypass
+            'status_log'=>$this->string(), // eg /var/log/openvpn-status.log
             'conf' => $this->text(),
             'updated_at' => $this->timestamp(),
             'created_at' => $this->timestamp(),

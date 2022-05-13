@@ -26,6 +26,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'management_passwd')->textInput(['maxlength' => true,'placeholder'=>'vpnpass'])->hint("Password required to connect (if any)") ?>
 
+    <?= $form->field($model, 'status_log')->textInput(['maxlength' => true,'placeholder'=>'/var/log/openvpn-status.log'])->hint("The location of the special OpenVPN status log file") ?>
+
     <?= $form->field($model, 'conf')->textarea(['rows' => 6,"class"=>"form-control",'style'=>'font-family: monospace'])->hint("Paste the configuration file contents.") ?>
 
     <div class="form-group">
