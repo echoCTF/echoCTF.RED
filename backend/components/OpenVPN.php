@@ -37,15 +37,15 @@ class OpenVPN extends Component
   {
     try
     {
-      list($vpnip,$vpnport,$pass) = self::determineServer($player_ip);
-      $fp = fsockopen($vpnip, $vpnport, $errno, $errstr, 30);
+      $creds = self::determineServer($player_ip);
+      $fp = fsockopen($creds->management_ip_octet, $creds->management_port, $errno, $errstr, 30);
       if (!$fp)
       {
-        throw new \Exception("Error connecting to $vpnip:$vpnport $errstr ($errno)");
+        throw new \Exception("Error connecting to {$creds->managemet_ip_octet}:{$creds->management_port} $errstr ($errno)");
       }
       else
       {
-        echo "connected to $vpnip\n";
+        echo "connected to {$creds->managemet_ip_octet}\n";
         fwrite($fp, "$pass\n");
         usleep(250000);
         fwrite($fp, "kill ${player_id}\n");
@@ -69,12 +69,7 @@ class OpenVPN extends Component
    */
   static public function determineServer(int $player_ip):array
   {
-    $network=($player_ip & ip2long('255.255.0.0'));
-    $creds=\Yii::$app->params['vpn_ranges'];
-    if(array_key_exists(long2ip($network),$creds)!==false)
-    {
-      return $creds[long2ip($network)];
-    }
-    throw new \Exception("Error, failed to determine the VPN server");
+    $creds=\app\modules\settings\models\Openvpn::find()->where(['net'=>new \yii\db\Expression(':player_ip & mask',[':player_ip'=>$player_ip])])->one();
+    return $creds;
   }
 }
