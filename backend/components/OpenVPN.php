@@ -67,9 +67,8 @@ class OpenVPN extends Component
    * @param integer|null $player_ip IP of the player currently
    * @return array [IP,PORT,PASSWORD]
    */
-  static public function determineServer(int $player_ip):array
+  static public function determineServer(int $player_ip):\app\modules\settings\models\Openvpn
   {
-    $creds=\app\modules\settings\models\Openvpn::find()->where(['net'=>new \yii\db\Expression(':player_ip & mask',[':player_ip'=>$player_ip])])->one();
-    return $creds;
+    return \app\modules\settings\models\Openvpn::find()->where(['net'=>new \yii\db\Expression(':player_ip & mask',[':player_ip'=>$player_ip])])->one();
   }
 }
