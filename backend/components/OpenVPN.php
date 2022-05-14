@@ -1,6 +1,7 @@
 <?php
 namespace app\components;
 
+use stdClass;
 use Yii;
 
 use yii\base\Component;
@@ -37,7 +38,7 @@ class OpenVPN extends Component
   {
     try
     {
-      $creds = self::determineServer($player_ip);
+      $creds = self::determineServerByAddr($player_ip);
       $fp = fsockopen($creds->management_ip_octet, $creds->management_port, $errno, $errstr, 30);
       if (!$fp)
       {
@@ -67,8 +68,42 @@ class OpenVPN extends Component
    * @param integer|null $player_ip IP of the player currently
    * @return array [IP,PORT,PASSWORD]
    */
-  static public function determineServer(int $player_ip)
+  static public function determineServerByAddr(int $player_ip)
   {
     return \app\modules\settings\models\Openvpn::find()->where(['net'=>new \yii\db\Expression(':player_ip & mask',[':player_ip'=>$player_ip])])->one();
+  }
+
+  static public function parseStatus(string $location)
+  {
+    $statusLines=explode("\n",file_get_contents($location));
+    if(count($statusLines))
+      return new stdClass;
+    $status=new stdClass;
+    $status->updated_at=$statusLines[1];
+    for($i=3;$i<count($statusLines);$i++)
+    {
+      if($statusLines[$i]==='ROUTING TABLE')
+        break;
+      $line=explode(',',$statusLines[$i]);
+      $lineObj=new stdClass;
+      $lineObj->player_id=intval($line[0]);
+      $lineObj->remote_ip_port=$line[1];
+      $lineObj->bytes_received=intval($line[2]);
+      $lineObj->bytes_send=intval($line[3]);
+      $status->client_list[]=$lineObj;
+    }
+    $i+=2;
+    for(;$i<count($statusLines);$i++)
+    {
+      if($statusLines[$i]==='GLOBAL STATS')
+        break;
+      $line=explode(',',$statusLines[$i]);
+      $lineObj=new stdClass;
+      $lineObj->local_address=$line[0];
+      $lineObj->player_id=intval($line[1]);
+      $lineObj->remote_address=$line[2];
+      $status->routing_table[]=$lineObj;
+    }
+    return $status;
   }
 }
