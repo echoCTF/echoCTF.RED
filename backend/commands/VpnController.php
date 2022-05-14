@@ -118,7 +118,30 @@ class VpnController extends Controller
     {
       printf("Error: ",$e->getMessage());
     }
-
   }
 
+  /**
+   * Display openvpn status enriched with database details
+   */
+  public function actionStatus($provider_id=null)
+  {
+    $q=\app\modules\settings\models\Openvpn::find()->select('status_log')->andFilterWhere(['LIKE','provider_id',$provider_id]);
+    $status['routing_table']=[];
+    $status['client_list']=[];
+    foreach($q->all() as $entry)
+    {
+      $parsed=OpenVPN::parseStatus($entry->status_log);
+      if(property_exists($parsed,'routing_table') && count($parsed->routing_table)>0)
+        $status['routing_table']=\yii\helpers\ArrayHelper::merge($status['routing_table'],$parsed->routing_table);
+      if(property_exists($parsed,'client_list') && count($parsed->client_list)>0)
+        $status['client_list']=\yii\helpers\ArrayHelper::merge($status['client_list'],$parsed->client_list);
+      unset($entry);
+    }
+    $this->stdout(  sprintf("%-5s %-10s %-10s %-18s %-10s %-10s\n", 'ID', 'Username','Local IP','Remote IP', 'Received', 'Send'), Console::BOLD);
+    foreach($status['client_list'] as $entry)
+    {
+      $p=\app\modules\frontend\models\Player::findOne($entry->player_id);
+      $this->stdout(sprintf("%-5s %-10s %-10s %-18s %-10s %-10s\n", $entry->player_id,$p->username,$p->playerLast->vpn_local_address_octet,$entry->remote_ip_port,$entry->bytes_received,$entry->bytes_send));
+    }
+  }
 }
