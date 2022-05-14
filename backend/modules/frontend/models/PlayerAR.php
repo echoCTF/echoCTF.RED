@@ -199,6 +199,14 @@ class PlayerAR extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getPlayerLast()
+    {
+        return $this->hasOne(\app\modules\activity\models\PlayerLast::class, ['id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getPlayerIps()
     {
         return $this->hasMany(PlayerIp::class, ['player_id' => 'id']);
