@@ -18,29 +18,10 @@ class TargetQuery extends \yii\db\ActiveQuery
       {
         return $this->andWhere(['active' => 1]);
       }
-      public function forWidgets()
-      {
-        return $this->select(['t.id,t.ip,t.difficulty,t.rootable, count(distinct treasure.id) as total_treasures, count(distinct finding.id) as total_findings,count(distinct player_treasure.treasure_id) as player_treasures,count(distinct player_finding.finding_id) as player_findings, (((count(distinct player_treasure.treasure_id)+count(distinct player_finding.finding_id))*100)/(count(distinct finding.id)+count(distinct treasure.id))) as progress']);
-      }
+
       public function not_in_network()
       {
-        return $this->andWhere(['on_network'=>1]);
-//        return $this->andWhere('t.id not in (select target_id from network_target)');
-      }
-      public function forListing($player_id)
-      {
-        $this->alias('t');
-        $this->select(['t.id, t.name,t.status,t.ip,difficulty, rootable,scheduled_at,t.ts, count(distinct treasure.id) as total_treasures, count(distinct finding.id) as total_findings,count(distinct player_treasure.treasure_id) as player_treasures,count(distinct player_finding.finding_id) as player_findings, (((count(distinct player_treasure.treasure_id)+count(distinct player_finding.finding_id))*100)/(count(distinct finding.id)+count(distinct treasure.id))) as progress, avg(headshot.rating) as player_rating,count(distinct headshot.player_id) as total_headshots, count(distinct writeup.id) as total_writeups,count(distinct (case when writeup.approved=1 then writeup.id end)) as approved_writeups']);
-        $this->join('LEFT JOIN', 'treasure', 'treasure.target_id=t.id');
-        $this->join('LEFT JOIN', 'finding', 'finding.target_id=t.id');
-        $this->join('LEFT JOIN', 'player_treasure', 'player_treasure.treasure_id=treasure.id and player_treasure.player_id='.$player_id);
-        $this->join('LEFT JOIN', 'player_finding', 'player_finding.finding_id=finding.id and player_finding.player_id='.$player_id);
-        $this->join('LEFT JOIN', 'headshot', 'headshot.target_id=t.id');
-        $this->join('LEFT JOIN', 'writeup', 'writeup.target_id=t.id');
-        //$this->andWhere(['>','headshot.rating',-1]);
-        $this->groupBy('t.id');
-        return $this;
-
+        return $this->andWhere(['on_network'=>0]);
       }
 
       public function forView($player_id)
@@ -53,39 +34,22 @@ class TargetQuery extends \yii\db\ActiveQuery
         $this->join('LEFT JOIN', 'player_finding', 'player_finding.finding_id=finding.id and player_finding.player_id='.intval($player_id));
         $this->join('LEFT JOIN', 'headshot', 'headshot.target_id=t.id');
         $this->join('LEFT JOIN', 'writeup', 'writeup.target_id=t.id');
-        //$this->andWhere(['>','headshot.rating',-1]);
         $this->groupBy('t.id');
         return $this;
       }
-      //public function player_progress($player_id=0)
-      //{
-      //  $this->alias('t');
-      //  $this->select(['t.id, t.name,t.status,t.active, t.ip,difficulty, rootable,scheduled_at,t.ts, count(distinct treasure.id) as total_treasures, count(distinct finding.id) as total_findings,count(distinct player_treasure.treasure_id) as player_treasures,count(distinct player_finding.finding_id) as player_findings, (((count(distinct player_treasure.treasure_id)+count(distinct player_finding.finding_id))*100)/(count(distinct finding.id)+count(distinct treasure.id))) as progress, avg(CASE WHEN headshot.rating > -1 THEN headshot.rating END) as player_rating,count(distinct headshot.player_id) as total_headshots, count(distinct writeup.id) as total_writeups,count(distinct (case when writeup.approved=1 then writeup.id end)) as approved_writeups']);
-      //  $this->join('LEFT JOIN', 'treasure', 'treasure.target_id=t.id');
-      //  $this->join('LEFT JOIN', 'finding', 'finding.target_id=t.id');
-      //  $this->join('LEFT JOIN', 'player_treasure', 'player_treasure.treasure_id=treasure.id and player_treasure.player_id='.intval($player_id));
-      //  $this->join('LEFT JOIN', 'player_finding', 'player_finding.finding_id=finding.id and player_finding.player_id='.intval($player_id));
-      //  $this->join('LEFT JOIN', 'headshot', 'headshot.target_id=t.id');
-      //  $this->join('LEFT JOIN', 'writeup', 'writeup.target_id=t.id');
-      //  //$this->andWhere(['>','headshot.rating',-1]);
-      //  $this->groupBy('t.id');
-      //  //die(var_dump($this->createCommand()->rawSql));
-      //  return $this;
-      //}
 
       public function player_progress($player_id=0)
       {
         $this->alias('t');
         $this->select(['t.id', 't.name', 't.status', 't.active', 't.ip', 't.difficulty', 'rootable','t.scheduled_at','t.ts']);
+        $this->addSelect(['on_ondemand','ondemand_state']);
         $this->addSelect('total_treasures, total_findings,count(distinct player_treasure.treasure_id) as player_treasures,count(distinct player_finding.finding_id) as player_findings, (((count(distinct player_treasure.treasure_id)+count(distinct player_finding.finding_id))*100)/(count(distinct finding.id)+count(distinct treasure.id))) as progress, player_rating, total_headshots, total_writeups, approved_writeups');
         $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
         $this->join('LEFT JOIN', 'treasure', 'treasure.target_id=t.id');
         $this->join('LEFT JOIN', 'finding', 'finding.target_id=t.id');
         $this->join('LEFT JOIN', 'player_treasure', 'player_treasure.treasure_id=treasure.id and player_treasure.player_id='.intval($player_id));
         $this->join('LEFT JOIN', 'player_finding', 'player_finding.finding_id=finding.id and player_finding.player_id='.intval($player_id));
-        //$this->andWhere(['>','headshot.rating',-1]);
         $this->groupBy('t.id');
-//        die(var_dump($this->createCommand()->rawSql));
         return $this;
       }
 
