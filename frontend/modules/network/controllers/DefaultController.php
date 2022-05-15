@@ -79,18 +79,22 @@ class DefaultController extends \app\components\BaseController
             'attributes' => array_merge(
                 $targetProgressProvider->getSort()->attributes,
                 [
-                  'total_findings' => [
-                      'asc' => ['total_findings' => SORT_ASC],
-                      'desc' => ['total_findings' => SORT_DESC],
-                  ],
-                  'total_treasures' => [
-                    'asc' => ['total_treasures' => SORT_ASC],
-                    'desc' => ['total_treasures' => SORT_DESC],
-                  ],
-                  'headshots' => [
-                    'asc' => ['total_headshots' => SORT_ASC],
-                    'desc' => ['total_headshots' => SORT_DESC],
-                  ],
+                    'headshots' => [
+                      'asc' => ['total_headshots'=>SORT_ASC],
+                      'desc' => ['total_headshots'=>SORT_DESC],
+                    ],
+                    'total_findings' => [
+                      'asc' => ['total_findings'=>SORT_ASC],
+                      'desc' => ['total_findings'=>SORT_DESC],
+                    ],
+                    'total_treasures' => [
+                      'asc' => ['total_treasures'=>SORT_ASC],
+                      'desc' => ['total_treasures'=>SORT_DESC],
+                    ],
+                    'progress'=>[
+                      'asc'=>['(player_points/total_points)*100'=>SORT_ASC],
+                      'desc'=>['(player_points/total_points)*100'=>SORT_DESC],
+                    ]
                 ]
             ),
         ]);
