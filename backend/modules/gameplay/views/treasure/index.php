@@ -61,7 +61,8 @@ yii\bootstrap\Modal::end();
 
             [
               'attribute'=>'code',
-              'value'=>function($model) {return substr($model->code, 0, 15);},
+              'format'=>'raw',
+              'value'=>function($model) {return '<abbr title="'.Html::encode($model->code).'">'.substr($model->code, 0, 15).'</abbr>';},
             ],
 
             [
