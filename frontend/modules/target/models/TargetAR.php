@@ -64,6 +64,8 @@ class TargetAR extends \yii\db\ActiveRecord
   public $player_rating;
   public $ipoctet;
   public $progress;
+  public $on_ondemand;
+  public $ondemand_state;
 
     /**
      * {@inheritdoc}
@@ -98,6 +100,8 @@ class TargetAR extends \yii\db\ActiveRecord
             'headshot_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
             'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'on_ondemand' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'ondemand_state' => AttributeTypecastBehavior::TYPE_INTEGER,
           ],
           'typecastAfterValidate' => true,
           'typecastBeforeSave' => true,
