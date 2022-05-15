@@ -131,6 +131,10 @@ class TargetWidget extends Widget
                 'asc' => ['total_treasures'=>SORT_ASC],
                 'desc' => ['total_treasures'=>SORT_DESC],
               ],
+              'progress'=>[
+                'asc'=>['(player_points/total_points)*100'=>SORT_ASC],
+                'desc'=>['(player_points/total_points)*100'=>SORT_DESC],
+              ]
             ]
           )
       ]);
