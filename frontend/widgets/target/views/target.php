@@ -85,7 +85,8 @@ echo GridView::widget([
         'label'=>'IP',
         'headerOptions' => ["style"=>'width: 2vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
         'contentOptions'=> ["style"=>'width: 2vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
-        'value'=>function($model) {return long2ip($model->ip);}
+        'format'=>'raw',
+        'value'=>function($model) { if($model->on_ondemand && $model->ondemand_state===-1) return '<abbr title="System is powered down">0.0.0.0</abbr>'; else return long2ip($model->ip);}
       ],
       [
         'visible'=>!in_array('writeup', $hidden_attributes),
