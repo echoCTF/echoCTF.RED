@@ -24,7 +24,8 @@ class TargetQuery extends \yii\db\ActiveQuery
       }
       public function not_in_network()
       {
-        return $this->andWhere('t.id not in (select target_id from network_target)');
+        return $this->andWhere(['on_network'=>1]);
+//        return $this->andWhere('t.id not in (select target_id from network_target)');
       }
       public function forListing($player_id)
       {
