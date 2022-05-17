@@ -76,7 +76,7 @@ class OpenVPN extends Component
   static public function parseStatus(string $location)
   {
     $statusLines=explode("\n",file_get_contents($location));
-    if(count($statusLines))
+    if(count($statusLines)==0)
       return new stdClass;
     $status=new stdClass;
     $status->updated_at=$statusLines[1];
