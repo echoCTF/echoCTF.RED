@@ -35,7 +35,7 @@ class TargetWidget extends Widget
     public $viewFile='target';
     public $hidden_attributes=[];
     public $buttonsTemplate="{view} {tweet}";
-    
+
     public function init()
     {
       if($this->dataProvider === null && $this->player_id === null)
@@ -112,21 +112,31 @@ class TargetWidget extends Widget
       $tmod=\app\modules\target\models\Target::find();
       if(intval($tmod->count()) === 0) return null;
 
-      foreach($tmod->all() as $model)
-      {
-        $orderByHeadshots[]=(object) ['id'=>$model->id, 'ip'=>$model->ip, 'headshots'=>$model->total_headshots];
-      }
-
-      ArrayHelper::multisort($orderByHeadshots, ['headshots', 'ip'], [SORT_ASC, SORT_ASC]);
-      $orderByHeadshotsASC=ArrayHelper::getColumn($orderByHeadshots, 'id');
-      ArrayHelper::multisort($orderByHeadshots, ['headshots', 'ip'], [SORT_DESC, SORT_ASC]);
-      $orderByHeadshotsDESC=ArrayHelper::getColumn($orderByHeadshots, 'id');
-
       $targetProgressProvider=$this->getTargetProgressProvider($tmod,$id,$defaultOrder);
       $targetProgressProvider->setSort([
           'sortParam'=>'target-sort',
-          'attributes' => $this->getOrderAttributes($orderByHeadshotsASC,$orderByHeadshotsDESC),
           'defaultOrder'=>$defaultOrder,
+          'attributes'=> array_merge(
+            $targetProgressProvider->getSort()->attributes,
+            [
+              'headshots' => [
+                'asc' => ['total_headshots'=>SORT_ASC],
+                'desc' => ['total_headshots'=>SORT_DESC],
+              ],
+              'total_findings' => [
+                'asc' => ['total_findings'=>SORT_ASC],
+                'desc' => ['total_findings'=>SORT_DESC],
+              ],
+              'total_treasures' => [
+                'asc' => ['total_treasures'=>SORT_ASC],
+                'desc' => ['total_treasures'=>SORT_DESC],
+              ],
+              'progress'=>[
+                'asc'=>['(player_points/total_points)*100'=>SORT_ASC],
+                'desc'=>['(player_points/total_points)*100'=>SORT_DESC],
+              ]
+            ]
+          )
       ]);
 
       return $targetProgressProvider;
