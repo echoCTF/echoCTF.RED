@@ -12,7 +12,6 @@ use Yii;
  * @property string $subject
  * @property string $csr
  * @property string $crt
- * @property string $txtcrt
  * @property string $privkey
  * @property string $ts
  */
@@ -33,7 +32,7 @@ class Crl extends \yii\db\ActiveRecord
     {
         return [
             [['player_id'], 'integer'],
-            [['csr', 'crt', 'txtcrt', 'privkey'], 'string'],
+            [['csr', 'crt', 'privkey'], 'string'],
             [['ts'], 'safe'],
             [['subject'], 'string', 'max' => 255],
         ];
@@ -50,7 +49,6 @@ class Crl extends \yii\db\ActiveRecord
             'subject' => 'Subject',
             'csr' => 'Csr',
             'crt' => 'Crt',
-            'txtcrt' => 'Txtcrt',
             'privkey' => 'Privkey',
             'ts' => 'Ts',
         ];

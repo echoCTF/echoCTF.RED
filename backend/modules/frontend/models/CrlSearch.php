@@ -18,7 +18,7 @@ class CrlSearch extends Crl
     {
         return [
             [['id', 'player_id'], 'integer'],
-            [['subject', 'csr', 'crt', 'txtcrt', 'privkey', 'ts'], 'safe'],
+            [['subject', 'csr', 'crt', 'privkey', 'ts'], 'safe'],
         ];
     }
 
@@ -67,7 +67,6 @@ class CrlSearch extends Crl
         $query->andFilterWhere(['like', 'crl.subject', $this->subject])
             ->andFilterWhere(['like', 'crl.csr', $this->csr])
             ->andFilterWhere(['like', 'crl.crt', $this->crt])
-            ->andFilterWhere(['like', 'crl.txtcrt', $this->txtcrt])
             ->andFilterWhere(['like', 'crl.privkey', $this->privkey]);
 
         return $dataProvider;

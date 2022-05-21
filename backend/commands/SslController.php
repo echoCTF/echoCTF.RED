@@ -134,7 +134,6 @@ class SslController extends Controller {
     if((bool) $fileout)
     {
       file_put_contents($player->username.".csr", $playerSsl->csr);
-      file_put_contents($player->username.".txt.crt", $playerSsl->txtcrt);
       file_put_contents($player->username.".crt", $playerSsl->crt);
       file_put_contents($player->username.".key", $playerSsl->privkey);
     }
@@ -159,7 +158,6 @@ class SslController extends Controller {
       if((bool) $fileout)
       {
         file_put_contents($player->username.".csr", $playerSsl->csr);
-        file_put_contents($player->username.".txt.crt", $playerSsl->txtcrt);
         file_put_contents($player->username.".crt", $playerSsl->crt);
         file_put_contents($player->username.".key", $playerSsl->privkey);
       }

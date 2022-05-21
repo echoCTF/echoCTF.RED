@@ -14,7 +14,6 @@ use yii\db\Expression;
  * @property string $subject
  * @property string $csr
  * @property string $crt
- * @property string $txtcrt
  * @property string $privkey
  * @property string $ts
  *
@@ -48,9 +47,9 @@ class PlayerSsl extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['player_id', 'subject', 'csr', 'crt', 'txtcrt', 'privkey'], 'required'],
+            [['player_id', 'subject', 'csr', 'crt', 'privkey'], 'required'],
             [['player_id','serial'], 'integer'],
-            [['subject', 'csr', 'crt', 'txtcrt', 'privkey'], 'string'],
+            [['subject', 'csr', 'crt', 'privkey'], 'string'],
             [['ts'], 'safe'],
             [['player_id'], 'unique'],
             [['serial'], 'unique'],
@@ -68,7 +67,6 @@ class PlayerSsl extends \yii\db\ActiveRecord
             'subject' => 'Subject',
             'csr' => 'Csr',
             'crt' => 'Crt',
-            'txtcrt' => 'Txtcrt',
             'privkey' => 'Privkey',
             'ts' => 'Ts',
         ];
@@ -122,7 +120,6 @@ class PlayerSsl extends \yii\db\ActiveRecord
           $this->serial=$serial;
           $this->csr=$csrout;
           $this->crt=$crtout;
-          $this->txtcrt=$certout;
           $this->privkey=$pkeyout;
           if(!$this->isNewRecord)
             $this->touch('ts');

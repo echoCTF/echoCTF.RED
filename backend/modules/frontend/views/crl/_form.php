@@ -25,8 +25,6 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
     <?= $form->field($model, 'crt')->textarea(['rows' => 6]) ?>
 
-    <?= $form->field($model, 'txtcrt')->textarea(['rows' => 6]) ?>
-
     <?= $form->field($model, 'privkey')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'ts')->textInput() ?>

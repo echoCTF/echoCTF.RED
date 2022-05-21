@@ -34,7 +34,6 @@ $this->params['breadcrumbs'][]=$this->title;
             'subject',
             'csr:ntext',
             'crt:ntext',
-            'txtcrt:ntext',
             'privkey:ntext',
             'ts',
         ],
