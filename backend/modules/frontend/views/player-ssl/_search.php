@@ -23,8 +23,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'crt') ?>
 
-    <?= $form->field($model, 'txtcrt') ?>
-
     <?php // echo $form->field($model, 'privkey') ?>
 
     <?php // echo $form->field($model, 'ts') ?>
