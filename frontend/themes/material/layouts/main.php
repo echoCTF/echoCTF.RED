@@ -36,6 +36,8 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
     <link rel="preload" as="style" href="/css/all.min.css">
     <link rel="preload" as="style" href="/css/material-dashboard.css">
     <link rel="preload" as="style" href="/css/material.css">
+    <link rel="preload" as="font" href="/webfonts/fa-solid-900.woff2">
+    <link rel="preload" as="font" href="/webfonts/fa-brands-400.woff2">
     <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap" crossorigin="anonymous">
     <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="/css/all.min.css">
     <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="/css/material-dashboard.css">
