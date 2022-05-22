@@ -43,9 +43,9 @@ class MaterialAsset extends AssetBundle
         '/js/core/bootstrap-material-design.min.js?v=0.20.0',
         '/js/plugins/perfect-scrollbar.jquery.min.js?v=0.20.0',
         /* Plugin for the momentJs  */
-        '/js/plugins/moment.min.js',
+        ['/js/plugins/moment.min.js','defer'=>'defer'],
         /*  Plugin for Sweet Alert */
-        '/js/plugins/sweetalert2.js',
+        ['/js/plugins/sweetalert2.js','defer'=>'defer'],
         /* Forms Validations Plugin */
 //        '/js/plugins/jquery.validate.min.js', // XXX FIXME MOVE TO REGISTER TO appropriate forms
         /* Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard */
@@ -67,11 +67,11 @@ class MaterialAsset extends AssetBundle
         /*  Plugin for the Sliders, full documentation here: http://refreshless.com/nouislider/ */
         //'js/plugins/nouislider.min.js',
         /* Library for adding dinamically elements */
-        '/js/plugins/arrive.min.js?v=0.20.0',
+        '/js/plugins/arrive.min.js',
         /* Chartist JS */
         //'js/plugins/chartist.min.js',
         /*  Notifications Plugin    */
-        'js/plugins/bootstrap-notify.min.js?v=0.20.0',
+        ['js/plugins/bootstrap-notify.min.js','defer'=>'defer'],
         /* Control Center for Material Dashboard: parallax effects, scripts for the example pages etc */
         /* Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert */
         //'//cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.min.js',
@@ -80,7 +80,7 @@ class MaterialAsset extends AssetBundle
         /******/
         //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
         '/js/material-dashboard.js?v=0.20.0',
-        '/js/libechoctf.js?v=0.19.1',
+        ['/js/libechoctf.js?v=0.19.1','defer'=>'defer'],
         // 'js/superfish.js'
     ];
     public $depends=[
