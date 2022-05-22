@@ -31,22 +31,22 @@ $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
     <meta charset="<?=Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1, shrink-to-fit=1' name='viewport' />
-    <link rel="preconnect" href="//fonts.gstatic.com" crossorigin="anonymous">
+    <link rel="preconnect" href="//fonts.googleapis.com" crossorigin="anonymous">
     <link rel="preload" as="style" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap" crossorigin="anonymous">
-    <link rel="preload" as="style" href="/css/all.min.css" crossorigin="anonymous">
-    <link rel="preload" as="style" href="/css/material-dashboard.css" crossorigin="anonymous">
-    <link rel="preload" as="style" href="/css/material.css" crossorigin="anonymous">
-    <link rel="preload" as="font" href="/webfonts/fa-solid-900.woff2" crossorigin="anonymous">
-    <link rel="preload" as="font" href="/webfonts/fa-brands-400.woff2" crossorigin="anonymous">
+    <link rel="preload" as="style" href="/css/all.min.css" crossorigin>
+    <link rel="preload" as="style" href="/css/material-dashboard.css" crossorigin>
+    <link rel="preload" as="style" href="/css/material.css" crossorigin>
+    <link rel="preload" as="font" href="/webfonts/fa-solid-900.woff2" crossorigin>
+    <link rel="preload" as="font" href="/webfonts/fa-brands-400.woff2" crossorigin>
     <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap" crossorigin="anonymous">
-    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="/css/all.min.css">
-    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="/css/material-dashboard.css">
-    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="/css/material.css">
+    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="/css/all.min.css" crossorigin>
+    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="/css/material-dashboard.css" crossorigin>
+    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="/css/material.css" crossorigin>
     <noscript>
       <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap" crossorigin="anonymous">
-      <link rel="stylesheet" href="/css/all.min.css">
-      <link rel="stylesheet" href="/css/material-dashboard.css">
-      <link rel="stylesheet" href="/css/material.css">
+      <link rel="stylesheet" href="/css/all.min.css" crossorigin>
+      <link rel="stylesheet" href="/css/material-dashboard.css" crossorigin>
+      <link rel="stylesheet" href="/css/material.css" crossorigin>
     </noscript>
     <link rel="apple-touch-icon" href="/images/apple-touch-icon.png"/>
     <link rel="canonical" href="<?=$this->og_url['content']?>" />
