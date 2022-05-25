@@ -47,7 +47,8 @@ class OpenVPN extends Component
       else
       {
         echo "connected to {$creds->management_ip_octet}\n";
-        fwrite($fp, "$pass\n");
+        fwrite($fp, "$creds->management_passwd\n");
+        echo "send {$creds->management_ip_octet}\n";
         usleep(250000);
         fwrite($fp, "kill ${player_id}\n");
         usleep(250000);
