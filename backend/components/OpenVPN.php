@@ -42,11 +42,11 @@ class OpenVPN extends Component
       $fp = fsockopen($creds->management_ip_octet, $creds->management_port, $errno, $errstr, 30);
       if (!$fp)
       {
-        throw new \Exception("Error connecting to {$creds->managemet_ip_octet}:{$creds->management_port} $errstr ($errno)");
+        throw new \Exception("Error connecting to {$creds->management_ip_octet}:{$creds->management_port} $errstr ($errno)");
       }
       else
       {
-        echo "connected to {$creds->managemet_ip_octet}\n";
+        echo "connected to {$creds->management_ip_octet}\n";
         fwrite($fp, "$pass\n");
         usleep(250000);
         fwrite($fp, "kill ${player_id}\n");
