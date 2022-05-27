@@ -906,7 +906,6 @@ mark {
 }
 
 .target-thumbnail {
-  height: 25px;
-  max-height: 25px;
-  max-width: 25px;
+  max-height: 40px;
+  max-width: 40px;
 }

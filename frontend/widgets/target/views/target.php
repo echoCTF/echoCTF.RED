@@ -36,11 +36,11 @@ echo GridView::widget([
     'columns' => [
       [
         'label'=>'',
-        'contentOptions' => ['class' => 'text-center'],
-        'headerOptions' => ['class' => 'text-center', "style"=>'width: 1.5em'],
+        'contentOptions' => ['class' => 'text-center', "style"=>'height: 70px'],
+        'headerOptions' => ['class' => 'text-center', "style"=>'width: 3em'],
         'format'=>'raw',
         'value'=>function($model) {
-        return sprintf('<img src="%s" alt="%s" width="25" height="25" class="target-thumbnail rounded">', $model->thumbnail, $model->fqdn);
+        return sprintf('<img src="%s" alt="%s" class="target-thumbnail rounded">', $model->thumbnail, $model->fqdn);
         }
       ],
       [
@@ -52,7 +52,7 @@ echo GridView::widget([
       [
         'visible'=>!in_array('name', $hidden_attributes),
         'attribute'=>'name',
-        'headerOptions' => ["style"=>'width: 8vw;'],
+        'headerOptions' => ["style"=>'width: 10vw;'],
         'contentOptions'=> ["style"=>'width: 8vw;'],
         'format'=>'raw',
         'label'=>'Target',
@@ -83,8 +83,8 @@ echo GridView::widget([
         'visible'=>!in_array('ip', $hidden_attributes),
         'attribute'=>'ip',
         'label'=>'IP',
-        'headerOptions' => ["style"=>'width: 2vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
-        'contentOptions'=> ["style"=>'width: 2vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
+        'headerOptions' => ["style"=>'width: 4vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
+        'contentOptions'=> ["style"=>'width: 6vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
         'format'=>'raw',
         'value'=>function($model) { if($model->on_ondemand && $model->ondemand_state===-1) return '<abbr title="System is powered down">0.0.0.0</abbr>'; else return long2ip($model->ip);}
       ],
