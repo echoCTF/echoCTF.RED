@@ -9,6 +9,12 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('app', 'Network Target Schedules');
 $this->params['breadcrumbs'][] = $this->title;
+yii\bootstrap\Modal::begin([
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+]);
+echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');
+yii\bootstrap\Modal::end();
 ?>
 <div class="network-target-schedule-index">
 
@@ -28,8 +34,14 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'target_id',
-            'network_id',
+            [
+                'attribute'=>'target_name',
+                'value'=>'target.name',
+            ],
+            [
+                'attribute'=>'network_name',
+                'value'=>'network.name',
+            ],
             'migration_date',
             'created_at',
             //'updated_at',

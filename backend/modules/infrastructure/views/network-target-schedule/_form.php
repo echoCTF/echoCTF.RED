@@ -16,14 +16,15 @@ use yii\widgets\ActiveForm;
         'multiple' => false,
         'url' => ['/infrastructure/target/ajax-search'],
         'options' => ['placeholder' => 'Find target by name or id']
-    ]) ?>
+    ])->label('Target') ?>
     <?= $form->field($model, 'network_id')->widget(app\widgets\sleifer\autocompleteAjax\AutocompleteAjax::class, [
         'multiple' => false,
         'url' => ['/infrastructure/network/ajax-search'],
         'options' => ['placeholder' => 'Find network by name, codename or id ']
-    ]) ?>
+    ])->label('Network')->hint('Network that the target will be placed under on the given datetime') ?>
 
-    <?= $form->field($model, 'migration_date')->textInput() ?>
+        <?php if($model->migration_date===null) $model->migration_date=date('Y-m-d H:i:s');?>
+    <?= $form->field($model, 'migration_date')->textInput(['placeholder'=>'YYYY-MM-DD HH:MM:SS'])->hint("Date and Time of the migration to the network") ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

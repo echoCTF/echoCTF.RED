@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\infrastructure\models\NetworkTargetSchedule */
 
-$this->title = $model->id;
+$this->title = Yii::t('app',"Scheduled migration of {target}",['target'=>$model->target->name]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Network Target Schedules'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -30,8 +30,14 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'target_id',
-            'network_id',
+            [
+                'label'=>'Target',
+                'attribute'=>'target.name'
+            ],
+            [
+                'label'=>'Network',
+                'attribute'=>'network.name',
+            ],
             'migration_date',
             'created_at',
             'updated_at',
