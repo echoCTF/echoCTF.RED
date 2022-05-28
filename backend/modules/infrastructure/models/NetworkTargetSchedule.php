@@ -5,6 +5,9 @@ namespace app\modules\infrastructure\models;
 use Yii;
 use app\modules\gameplay\models\Network;
 use app\modules\gameplay\models\Target;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+
 /**
  * This is the model class for table "network_target_schedule".
  *
@@ -28,17 +31,35 @@ class NetworkTargetSchedule extends \yii\db\ActiveRecord
         return 'network_target_schedule';
     }
 
+    public function behaviors()
+    {
+      return [
+        [
+          'class' => TimestampBehavior::class,
+          'createdAtAttribute' => 'created_at',
+          'updatedAtAttribute' => 'updated_at',
+          'value' => new Expression('NOW()'),
+        ],
+      ];
+    }
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['target_id', 'network_id', 'migration_date', 'created_at'], 'required'],
+            [['target_id', 'migration_date'], 'required'],
             [['target_id', 'network_id'], 'integer'],
+            [['migration_date'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
             [['migration_date', 'created_at', 'updated_at'], 'safe'],
+            ['network_id',  'required', 'when'=>function ($model) {
+                if($model->target->network===null && ($model->network_id==="" || $model->network_id===null))
+                    $this->addError('network_id', 'The network cannot be empty when the target does not belong to a network already.');
+            }],
             [['network_id'], 'exist', 'skipOnError' => true, 'targetClass' => Network::class, 'targetAttribute' => ['network_id' => 'id']],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
+
         ];
     }
 
