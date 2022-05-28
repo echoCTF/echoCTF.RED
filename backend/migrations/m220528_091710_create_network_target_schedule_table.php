@@ -19,7 +19,7 @@ class m220528_091710_create_network_target_schedule_table extends Migration
         $this->createTable('{{%network_target_schedule}}', [
             'id' => $this->primaryKey(),
             'target_id' => $this->integer()->notNull(),
-            'network_id' => $this->integer()->notNull(),
+            'network_id' => $this->integer(),
             'migration_date' => $this->dateTime()->notNull(),
             'created_at' => $this->dateTime()->notNull(),
             'updated_at' => $this->timestamp()->notNull(),
@@ -56,6 +56,7 @@ class m220528_091710_create_network_target_schedule_table extends Migration
             'network_id',
             '{{%network}}',
             'id',
+            'SET NULL',
             'CASCADE'
         );
     }
