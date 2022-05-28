@@ -19,7 +19,12 @@ class NetworkController extends \app\components\BaseController
    */
     public function behaviors()
     {
-      return ArrayHelper::merge(parent::behaviors(),[]);
+      return ArrayHelper::merge(parent::behaviors(),[
+        'rules'=>[
+            'class' => 'yii\filters\AjaxFilter',
+            'only' => ['ajax-search']
+          ],
+      ]);
     }
 
     /**
@@ -102,6 +107,38 @@ class NetworkController extends \app\components\BaseController
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Perform an ajax search for a network
+     */
+    public function actionAjaxSearch($term,$load=false)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $results=[];
+        if (Yii::$app->request->isAjax)
+        {
+          $pq=Network::find()->select(['id','name','codename']);
+          if($load===false)
+          {
+            $pq->where(['like','name',$term.'%',false]);
+            $pq->orWhere(['LIKE','codename',$term.'%',false]);
+          }
+          else
+          {
+            $pq->where(['=','id',$term]);
+          }
+          $results=array_values(ArrayHelper::map($pq->all(),'id',
+            function($model){
+              return [
+                'id'=>$model->id,
+                'label'=>sprintf("(id: %d / %s) %s",$model->id,$model->codename,$model->name),
+              ];
+            }
+          ));
+
+        }
+        return $results;
     }
 
     /**
