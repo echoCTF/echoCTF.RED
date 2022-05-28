@@ -11,6 +11,8 @@ use app\modules\infrastructure\models\NetworkTargetSchedule;
  */
 class NetworkTargetScheduleSearch extends NetworkTargetSchedule
 {
+    public $network_name;
+    public $target_name;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,7 @@ class NetworkTargetScheduleSearch extends NetworkTargetSchedule
     {
         return [
             [['id', 'target_id', 'network_id'], 'integer'],
-            [['migration_date', 'created_at', 'updated_at'], 'safe'],
+            [['migration_date', 'created_at', 'updated_at','network_name','target_name'], 'safe'],
         ];
     }
 
@@ -40,7 +42,7 @@ class NetworkTargetScheduleSearch extends NetworkTargetSchedule
      */
     public function search($params)
     {
-        $query = NetworkTargetSchedule::find();
+        $query = NetworkTargetSchedule::find()->joinWith(['target','network']);
 
         // add conditions that should always apply here
 
@@ -58,12 +60,31 @@ class NetworkTargetScheduleSearch extends NetworkTargetSchedule
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'target_id' => $this->target_id,
-            'network_id' => $this->network_id,
-            'migration_date' => $this->migration_date,
+            'network_target_schedule.id' => $this->id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+        ]);
+        $query->andFilterWhere([
+            'OR',
+            ['like','target.name',$this->target_name],
+            ['like','network.name',$this->network_name],
+            ['like','migration_date', $this->migration_date],
+
+        ]);
+    $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'target_name' => [
+                      'asc' => ['target.name' => SORT_ASC],
+                      'desc' => ['target.name' => SORT_DESC],
+                  ],
+                  'network_name' => [
+                    'asc' => ['network.name' => SORT_ASC],
+                    'desc' => ['network.name' => SORT_DESC],
+                ],
+              ]
+            ),
         ]);
 
         return $dataProvider;
