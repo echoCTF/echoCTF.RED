@@ -8,25 +8,19 @@ use app\modules\infrastructure\models\NetworkTargetScheduleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * NetworkTargetScheduleController implements the CRUD actions for NetworkTargetSchedule model.
  */
-class NetworkTargetScheduleController extends Controller
+class NetworkTargetScheduleController extends  \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+        return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**
