@@ -9,10 +9,10 @@ namespace app\modules\infrastructure\models;
  */
 class NetworkTargetScheduleQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
+    public function queue()
     {
-        return $this->andWhere('[[status]]=1');
-    }*/
+        return $this->andWhere('migration_date <= NOW()');
+    }
 
     /**
      * {@inheritdoc}
