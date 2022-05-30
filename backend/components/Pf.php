@@ -96,6 +96,10 @@ class Pf extends Component
   {
     @passthru(self::PFCTL." -t $table -T add $ip",$return_var);
   }
+  public static function del_table_ip($table,$ip)
+  {
+    @passthru(self::PFCTL." -t $table -T delete $ip",$return_var);
+  }
 
   public static function kill_table($table,$unlink=false)
   {
