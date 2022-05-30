@@ -130,6 +130,7 @@ AppAsset::register($this);
                 ['label' => 'Target metadata', 'url' => ['/infrastructure/target-metadata/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Target Instances', 'url' => ['/infrastructure/target-instance/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Network Targets', 'url' => ['/infrastructure/network-target/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
+                ['label' => 'Network Target Schedule', 'url' => ['/infrastructure/network-target-schedule/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Network Players', 'url' => ['/infrastructure/network-player/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Variables', 'url' => ['/infrastructure/target-variable/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Volumes', 'url' => ['/infrastructure/target-volume/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],

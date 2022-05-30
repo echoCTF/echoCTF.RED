@@ -13,7 +13,7 @@ class m220515_124231_create_tad_network_target_trigger extends Migration
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
     END IF;
-    UPDATE target_state SET on_network=(select 1 from network_target where target_id=OLD.target_id) WHERE id=OLD.target_id;
+    UPDATE target_state SET on_network=ifnull((select 1 from network_target where target_id=OLD.target_id),0) WHERE id=OLD.target_id;
     END";
 
     public function up()

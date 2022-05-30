@@ -17,7 +17,8 @@ use Http\Client\Socket\Exception\ConnectionException;
 use yii\console\Exception as ConsoleException;
 use app\modules\infrastructure\models\DockerContainer;
 use app\modules\infrastructure\models\TargetInstance;
-
+use app\modules\infrastructure\models\NetworkTargetSchedule as NTS;
+use app\modules\gameplay\models\NetworkTarget;
 /**
  * @method docker_connect()
  * @method containers_list()
@@ -40,10 +41,68 @@ class CronController extends Controller
       return;
     }
     touch("/tmp/cron-index.lock");
-    $this->actionSpinQueue();
-    $this->actionOndemand();
-    $this->actionPf(true);
+    try {
+      $this->actionTargetNetMigration();
+      $this->actionSpinQueue();
+      $this->actionOndemand();
+      $this->actionPf(true);
+    }
+    catch(\Exception $e)
+    {
+      echo "cron/index: ".$e->getMessage(),"\n";
+    }
     @unlink("/tmp/cron-index.lock");
+  }
+
+  public function actionTargetNetMigration()
+  {
+    if(file_exists("/tmp/cron-targetnetmigration.lock"))
+    {
+      echo date("Y-m-d H:i:s ")."PowerOperations: /tmp/cron-targetnetmigration.lock exists, skipping execution\n";
+      return;
+    }
+    touch("/tmp/cron-targetnetmigration.lock");
+    try {
+      // Get schedules that need to be processed
+      $q=NTS::find()->queue();
+      foreach($q->all() as $entry)
+      {
+        printf("Processing target: %s\n",$entry->target->name);
+
+        // target scheduled to be removed from a network
+        if($entry->network_id===null && $entry->target->network!==null)
+        {
+          printf("Removing from network %s\n",$entry->target->network->name);
+          // remove target from old pf table
+          // the rules and other pf entries will be synced
+          Pf::del_table_ip($entry->target->network->codename,$entry->target->ipoctet);
+          $entry->target->networkTarget->delete();
+          $entry->delete();
+        }
+        elseif($entry->network_id!==null)
+        {
+          printf("Moving to network %s\n",$entry->network->name);
+          if($entry->target->network===null)
+          {
+            $NT=new NetworkTarget;
+          }
+          else
+          {
+            Pf::del_table_ip($entry->target->network->codename,$entry->target->ipoctet);
+            $NT=$entry->target->networkTarget;
+          }
+          $NT->target_id=$entry->target_id;
+          $NT->network_id=$entry->network_id;
+          if($NT->save())
+            $entry->delete();
+        }
+      }
+    }
+    catch (\Exception $e)
+    {
+      echo "cron/target-net-migration: ",$e->getMessage(),"\n";
+    }
+    @unlink("/tmp/cron-targetnetmigration.lock");
   }
 
   public function actionPowerOperations()
