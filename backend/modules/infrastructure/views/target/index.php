@@ -100,7 +100,7 @@ yii\bootstrap\Modal::end();
                       'data-method' => 'POST',
                       'data'=>[
                         'method'=>'post',
-                        'params'=> $searchModel->attributes,
+                        'params'=> @\Yii::$app->request->queryParams['TargetSearch'],
                         'confirm'=>'Are you sure you want to activate all currently filtered targets?',
                       ],
                   ]
@@ -113,7 +113,7 @@ yii\bootstrap\Modal::end();
                       'data-method' => 'POST',
                       'data'=>[
                         'method'=>'post',
-                        'params'=> $searchModel->attributes,
+                        'params'=> @\Yii::$app->request->queryParams['TargetSearch'],
                         'confirm'=>'Are you sure you want to spin all currently filtered targets?',
                       ],
                   ]
@@ -126,7 +126,7 @@ yii\bootstrap\Modal::end();
                       'data-method' => 'POST',
                       'data'=>[
                         'method'=>'post',
-                        'params'=> $searchModel->attributes,
+                        'params'=> @\Yii::$app->request->queryParams['TargetSearch'],
                         'confirm'=>'Are you sure you want to pull all the currently filtered target images?',
                       ],
                   ]
@@ -139,7 +139,7 @@ yii\bootstrap\Modal::end();
                       'data-method' => 'POST',
                       'data'=>[
                         'method'=>'post',
-                        'params'=> $searchModel->attributes,
+                        'params'=> @\Yii::$app->request->queryParams['TargetSearch'],
                         'confirm'=>'Are you sure you want to delete the currently filtered targets?',
                       ],
                   ]
