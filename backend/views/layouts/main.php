@@ -30,6 +30,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     NavBar::begin([
+        //'brandImage' => "/images/echoCTF logo white.png",
         'brandLabel' => '<img src="/images/echoCTF logo white.png" class="pull-left" style="padding-right: 3px;" width="120" alt="'.Yii::$app->name.'"/>',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
@@ -198,6 +199,7 @@ AppAsset::register($this);
 <footer class="footer">
     <div class="container">
         <p class="pull-left">&copy; <?= Html::a('Echothrust Solutions', 'https://www.echothrust.com/') ?> <?= date('Y') ?></p>
+        <p class="pull-right"><small><?=date('Y/m/d H:i');?></small></p>
     </div>
 </footer>
 
