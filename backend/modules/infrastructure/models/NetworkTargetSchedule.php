@@ -54,8 +54,8 @@ class NetworkTargetSchedule extends \yii\db\ActiveRecord
             [['migration_date'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
             [['migration_date', 'created_at', 'updated_at'], 'safe'],
             ['network_id',  'required', 'when'=>function ($model) {
-                if($model->target->network===null && ($model->network_id==="" || $model->network_id===null))
-                    $this->addError('network_id', 'The network cannot be empty when the target does not belong to a network already.');
+                if($model->target && $model->target->network && $model->target->network_id===$model->network_id)
+                    $this->addError('network_id', 'The target is already on the network you are trying to schedule');
             }],
             [['network_id'], 'exist', 'skipOnError' => true, 'targetClass' => Network::class, 'targetAttribute' => ['network_id' => 'id']],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
