@@ -45,15 +45,18 @@ class TargetController extends Controller {
     }
     foreach($query->all() as $t)
     {
-      echo "Restarting: ", $t->fqdn, " / ", $t->ipoctet;
-      try
+      if($t->ondemand===null or $t->ondemand->state===1)
       {
-        $t->spin();
-        echo " OK\n";
-      }
-      catch(\Exception $ce)
-      {
-          printf(" NOT OK (%s)\n", $ce->getMessage());
+        echo "Restarting: ", $t->fqdn, " / ", $t->ipoctet;
+        try
+        {
+          $t->spin();
+          echo " OK\n";
+        }
+        catch(\Exception $ce)
+        {
+            printf(" NOT OK (%s)\n", $ce->getMessage());
+        }
       }
     }
   }
