@@ -29,7 +29,7 @@ class TargetQuery extends \yii\db\ActiveQuery
         $this->alias('t');
         $this->select(['t.*']);
         $this->addSelect(['on_ondemand','ondemand_state','timer_avg']);
-        $this->addSelect('total_treasures, total_findings, player_treasures, player_findings, ((player_treasures+player_findings)/(total_treasures+total_findings))*100 as progress, player_rating, total_headshots, total_writeups, approved_writeups');
+        $this->addSelect('total_treasures, total_findings, player_treasures, player_findings, ((player_treasures+player_findings)/(total_treasures+total_findings))*100 as progress, player_rating, total_headshots, total_writeups, approved_writeups,player_points');
         $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
         $this->join('LEFT JOIN','target_player_state','target_player_state.id=t.id AND target_player_state.player_id='.intval($player_id));
         return $this;
@@ -40,7 +40,7 @@ class TargetQuery extends \yii\db\ActiveQuery
         $this->alias('t');
         $this->select(['t.id', 't.name', 't.status', 't.active', 't.ip', 't.difficulty', 'rootable','t.scheduled_at','t.ts']);
         $this->addSelect(['on_ondemand','ondemand_state']);
-        $this->addSelect('total_treasures, total_findings, player_treasures, player_findings, ((player_treasures+player_findings)/(total_treasures+total_findings))*100 as progress, player_rating, total_headshots, total_writeups, approved_writeups');
+        $this->addSelect('total_treasures, total_findings, player_treasures, player_findings, ((player_treasures+player_findings)/(total_treasures+total_findings))*100 as progress, player_rating, total_headshots, total_writeups, approved_writeups,player_points');
         $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
         $this->join('LEFT JOIN','target_player_state','target_player_state.id=t.id AND target_player_state.player_id='.intval($player_id));
         return $this;

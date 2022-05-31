@@ -28,12 +28,14 @@ class Module extends \yii\base\Module
     public function checkNetwork($target)
     {
       if($target->network === null)
+      {
         return;
+      }
 
       if(!$target->network->active)
         throw new NotFoundHttpException('You dont have access to this network target.');
 
-      if(!$target->network->public && NetworkPlayer::findOne($target->network->id,\Yii::$app->user->id) === null)
+      if(!$target->network->public && NetworkPlayer::findOne(['network_id'=>$target->network->id,'player_id'=>\Yii::$app->user->id]) === null)
         throw new NotFoundHttpException('You dont have access to this network target.');
     }
 

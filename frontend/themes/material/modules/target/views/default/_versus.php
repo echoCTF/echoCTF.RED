@@ -65,8 +65,9 @@ if($headshot)
               <?=$target->progress == 100 ? '#headshot' : number_format($target->progress).'%'?>
           </div>
         </div>
-        <?php if($headshot && $headshot->rating>=0) echo "<center class='text-primary'>headshoter rating: ",$headshot->rated,"</center>";?>
-        <?php if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100):?>
+        <?php
+        if($headshot && $headshot->rating>=0) { echo "<center class='text-primary'>headshoter rating: ",$headshot->rated,"</center>";}
+        if(Yii::$app->user->id === $identity->player_id && Writeup::findOne(['player_id'=>$identity->player_id, 'target_id'=>$target->id])===null && $target->progress==100):?>
         <div class="row">
           <?php if($target->writeup_allowed):?>
           <div class="col">
@@ -77,7 +78,6 @@ if($headshot)
                         'rel'=>"tooltip",
                         'aria-label'=>'Submit a writeup for this target',
                         'class'=>'btn btn-block',
-                        //'style'=>'width: 100%',
                         'alt'=>'Submit a writeup for this target'
                     ])?>
           </div>
@@ -108,6 +108,16 @@ if($headshot)
                         'class'=>'btn btn-info',
                         'alt'=>'View or update your writeup for this target'
                     ])?>
+          </div>
+          <div class="col">
+            <?php
+              $this->_description=sprintf('Check this out, I just headshotted %s at %s', $headshot->target->name, \Yii::$app->sys->{"event_name"});
+              $this->_url=\yii\helpers\Url::to(['versus', 'id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https');
+              echo $this->render('@app/modules/game/views/badge/_share',[
+                'twMessage'=>$this->_description,
+                'callbackURL'=>$this->_url,
+                'PRELINK'=>null,
+              ]);?>
           </div>
           <div class="col">
             <?=VoteWidget::widget(['model'=>$headshot,'id'=>$headshot->target_id,'action'=>['/game/default/rate-headshot','id'=>$headshot->target_id]]);?>

@@ -61,6 +61,7 @@ class TargetAR extends \yii\db\ActiveRecord
   public $player_treasures;
   public $player_treasure_points;
   public $player_finding_points;
+  public $player_points;
   public $player_rating;
   public $ipoctet;
   public $progress;
@@ -86,6 +87,7 @@ class TargetAR extends \yii\db\ActiveRecord
             'id' => AttributeTypecastBehavior::TYPE_INTEGER,
             'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
             'player_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
+            'player_points' => AttributeTypecastBehavior::TYPE_INTEGER,
             'player_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
             'total_headshots' => AttributeTypecastBehavior::TYPE_INTEGER,
             'total_writeups' => AttributeTypecastBehavior::TYPE_INTEGER,
@@ -105,6 +107,7 @@ class TargetAR extends \yii\db\ActiveRecord
             'ondemand_state' => AttributeTypecastBehavior::TYPE_INTEGER,
             'timer_avg'=> AttributeTypecastBehavior::TYPE_INTEGER,
           ],
+          'skipOnNull'=>false,
           'typecastAfterValidate' => true,
           'typecastBeforeSave' => true,
           'typecastAfterFind' => true,
