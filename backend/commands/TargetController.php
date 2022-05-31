@@ -45,7 +45,7 @@ class TargetController extends Controller {
     }
     foreach($query->all() as $t)
     {
-      if($t->ondemand===null or $t->ondemand->state===1)
+      if($t->ondemand===null || $t->ondemand->state===1 || $target!==false )
       {
         echo "Restarting: ", $t->fqdn, " / ", $t->ipoctet;
         try
