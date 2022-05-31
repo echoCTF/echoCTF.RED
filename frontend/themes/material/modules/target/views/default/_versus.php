@@ -78,7 +78,6 @@ if($headshot)
                         'rel'=>"tooltip",
                         'aria-label'=>'Submit a writeup for this target',
                         'class'=>'btn btn-block',
-                        //'style'=>'width: 100%',
                         'alt'=>'Submit a writeup for this target'
                     ])?>
           </div>
