@@ -97,13 +97,9 @@ class DefaultController extends \app\components\BaseController
         $profile=$this->findProfile($profile_id);
         $this->checkVisible($profile);
 
-        $target=Target::find()->where(['t.id'=>$id])->forView($profile->player_id)->one();
+        $target=Target::find()->forView($profile->player_id)->where(['t.id'=>$id])->one();
         $PF=PlayerFinding::find()->joinWith(['finding'])->where(['player_id'=>$profile->player_id, 'finding.target_id'=>$id])->all();
         $PT=PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id'=>$profile->player_id, 'treasure.target_id'=>$id])->all();
-        foreach($PF as $pf)
-          $sum+=$pf->finding->points;
-        foreach($PT as $pt)
-          $sum+=$pt->treasure->points;
         $treasures=$findings=[];
         foreach($target->treasures as $treasure)
           $treasures[]=$treasure->id;
@@ -136,7 +132,7 @@ class DefaultController extends \app\components\BaseController
               'profile'=>$profile,
               'target' => $target,
               'streamProvider'=>$dataProvider,
-              'playerPoints'=>$sum,
+              'playerPoints'=>$target->player_points,
               'headshotsProvider'=>$headshotsProvider
           ]);
 
@@ -178,11 +174,7 @@ class DefaultController extends \app\components\BaseController
       $target=$this->findModel($id);
       if(!Yii::$app->user->isGuest)
       {
-//        $target=Target::find()->where(['t.id'=>$id])->player_progress((int) Yii::$app->user->id)->one();
-        $target=Target::find()->where(['t.id'=>$id])->forView((int) Yii::$app->user->id)->one();
-        $PF=PlayerFinding::find()->select("sum(player_finding.points) as points")->joinWith(['finding'])->where(['player_id'=>Yii::$app->user->id, 'finding.target_id'=>$id])->one();
-        $PT=PlayerTreasure::find()->select("sum(player_treasure.points) as points")->joinWith(['treasure'])->where(['player_id'=>Yii::$app->user->id, 'treasure.target_id'=>$id])->one();
-        $sum=$PF->points+$PT->points;
+        $target=Target::find()->forView((int) Yii::$app->user->id)->where(['t.id'=>$id])->one();
       }
       $treasures=$findings=[];
       foreach($target->treasures as $treasure)
@@ -216,7 +208,7 @@ class DefaultController extends \app\components\BaseController
       return $this->render('view', [
             'target' => $target,
             'streamProvider'=>$dataProvider,
-            'playerPoints'=>$sum,
+            'playerPoints'=>$target->player_points,
             'headshotsProvider'=>$headshotsProvider
         ]);
     }
@@ -329,6 +321,16 @@ class DefaultController extends \app\components\BaseController
         }
 
         throw new NotFoundHttpException('The requested target does not exist.');
+    }
+
+    protected function findModelView($id,$player_id=null)
+    {
+      if(($model=\app\modules\target\models\Target::find()->where(['t.id'=>$id])->forView($player_id ?? (int) Yii::$app->user->id)->one()) !== null)
+      {
+          return $model;
+      }
+
+      throw new NotFoundHttpException('The requested target does not exist.');
     }
 
     protected function findProfile($id)
