@@ -38,7 +38,7 @@ class TargetQuery extends \yii\db\ActiveQuery
       public function player_progress($player_id=0)
       {
         $this->alias('t');
-        $this->select(['t.id', 't.name', 't.status', 't.active', 't.ip', 't.difficulty', 'rootable','t.scheduled_at','t.ts']);
+        $this->select(['t.id', 't.name', 't.status', 't.active', 't.ip', 't.difficulty', 'rootable','t.scheduled_at','t.ts','t.player_spin']);
         $this->addSelect(['on_ondemand','ondemand_state']);
         $this->addSelect('total_treasures, total_findings, player_treasures, player_findings, ((player_treasures+player_findings)/(total_treasures+total_findings))*100 as progress, player_rating, total_headshots, total_writeups, approved_writeups,player_points');
         $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
