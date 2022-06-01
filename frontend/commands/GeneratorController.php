@@ -25,7 +25,7 @@ class GeneratorController extends Controller {
       file_put_contents($txt,$model->txt);
     }
   }
-  
+
   /**
    * Generate composite target logo used for social media
    * Take a background image (twnew-target.png) and place on top the target

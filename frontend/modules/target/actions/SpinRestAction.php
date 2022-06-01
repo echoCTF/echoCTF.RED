@@ -51,7 +51,6 @@ class SpinRestAction extends \yii\rest\ViewAction
 
   protected function redirectTo()
   {
-    
     if(Yii::$app->request->referrer)
     {
       return Yii::$app->getResponse()->redirect(Yii::$app->request->referrer);
