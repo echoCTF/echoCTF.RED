@@ -54,6 +54,32 @@ class DefaultController extends \app\components\BaseController
                         'actions' => ['badge', 'view', 'index', 'claim', 'spin', 'spawn', 'shut', 'versus'],
                       ],
                       [
+                        'actions' => ['spawn', 'shut'],
+                        'allow' => false,
+                        'verbs' => ['POST'],
+                        'roles'=>['@'],
+                        'matchCallback' => function () {
+                          if(array_key_exists('subscription',Yii::$app->modules)!==false)
+                          {
+                            $subscription=Yii::$app->getModule('subscription');
+                            if(!$subscription->exists || !$subscription->isActive)
+                              return true;
+                          }
+                          return false;
+                        },
+                        'denyCallback' =>  function () {
+                          if(array_key_exists('subscription',Yii::$app->modules)!==false)
+                          {
+                            $subscription=Yii::$app->getModule('subscription');
+                            if(!$subscription->exists)
+                              Yii::$app->session->setFlash('warning', 'You need a subscription to perform this action.');
+                            elseif(!$subscription->isActive)
+                              Yii::$app->session->setFlash('warning', 'Your subscription has expired. Please renew your subscription to be able to spawn and shut private instances.');
+                          }
+                          return  \Yii::$app->getResponse()->redirect(Yii::$app->request->referrer ?:[Yii::$app->sys->default_homepage]);
+                        }
+                      ],
+                      [
                           'allow' => true,
                           'actions' => ['claim', 'spin', 'spawn', 'shut'],
                           'roles' => ['@'],
@@ -73,7 +99,6 @@ class DefaultController extends \app\components\BaseController
                           return !\Yii::$app->request->validateCsrfToken(\Yii::$app->request->getBodyParam(\Yii::$app->request->csrfParam));
                         },
                       ],
-
                       [
                           'actions'=>['view','versus','badge'],
                           'allow' => true,
