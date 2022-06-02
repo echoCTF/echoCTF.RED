@@ -57,13 +57,16 @@ class Module extends \yii\base\Module implements BootstrapInterface
       }
       $expiration =  new \DateTime($model->ending);
       $current =  new \DateTime(date("Y-m-d H:i:s"));
+
       $interval = $expiration->diff($current)->days;
+      if($interval===0)
+        return $expiration->diff($current)->format('%H:%I:%S');
       return $interval.' day'.($interval>0 ? 's' : '');
     }
 
     public function getIsActive()
     {
-      if(intval(\app\modules\subscription\models\PlayerSubscription::find()->me()->active()->count())>0)
+      if(intval(\app\modules\subscription\models\PlayerSubscription::find()->me()->active()->notExpired()->count())>0)
       {
         return true;
       }
