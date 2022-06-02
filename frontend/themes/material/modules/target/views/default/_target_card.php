@@ -6,6 +6,8 @@ use app\widgets\targetcardactions\TargetCardActions;
 use app\modules\game\models\Headshot;
 
 $target_ip=long2ip($target->ip);
+if($target->on_ondemand && $target->ondemand_state===-1)
+  $target_ip="0.0.0.0";
 
 if(!Yii::$app->user->isGuest && Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$target->id && Yii::$app->user->identity->instance->player_id===$identity->player_id)
 {
