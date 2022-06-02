@@ -18,6 +18,11 @@ class PlayerSubscriptionQuery extends \yii\db\ActiveQuery
         return $this->andWhere('[[active]]=1');
     }
 
+    public function notExpired()
+    {
+        return $this->andWhere('[[ending]]>=NOW()');
+    }
+
     /**
      * {@inheritdoc}
      * @return PlayerSubscription[]|array
