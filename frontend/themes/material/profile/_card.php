@@ -61,7 +61,7 @@ else {
         <h5 class="rounded text-success font-weight-bold"><?=$subscription->product->name?> expires in <?=$subscription->expires?></h5>
         <?=$subscription->getPortalButton($this)?>
       <?php else:?>
-        <p class="rounded text-danger font-weight-bold">Your <?=$subscription->product->name?> has expired<br/><?=Html::a('Subscribe',['/subscription/default/index'],['class'=>'btn btn-primary text-dark font-weight-bold']);?></p>
+        <p class="rounded text-danger font-weight-bold">Your <?=$subscription->product->name?> has expired<br/><?=Html::a('Subscribe',['/subscription/default/index'],['class'=>'btn btn-primary text-dark font-weight-bold col-md-12']);?></p>
 
       <?php endif;?>
     <?php endif;?>
