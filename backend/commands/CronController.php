@@ -76,25 +76,49 @@ class CronController extends Controller
           // remove target from old pf table
           // the rules and other pf entries will be synced
           Pf::del_table_ip($entry->target->network->codename,$entry->target->ipoctet);
-          $entry->target->networkTarget->delete();
-          $entry->delete();
+          // short lived transactions
+          $transaction = \Yii::$app->db->beginTransaction();
+          try
+          {
+            $entry->trigger($entry::EVENT_TARGET_MIGRATE);
+            $entry->target->networkTarget->delete();
+            if($entry->delete()===false)
+              throw new \Exception('Failed to delete migration for '.$entry->target->name);
+            $transaction->commit();
+          }
+          catch(\Exception $e)
+          {
+            echo "Error: ",$e->getMessage();
+            $transaction->rollBack();
+          }
         }
         elseif($entry->network_id!==null)
         {
           printf("Moving to network %s\n",$entry->network->name);
-          if($entry->target->network===null)
+          $transaction = \Yii::$app->db->beginTransaction();
+          try
           {
-            $NT=new NetworkTarget;
+            if($entry->target->network===null)
+            {
+              $NT=new NetworkTarget;
+            }
+            else
+            {
+              Pf::del_table_ip($entry->target->network->codename,$entry->target->ipoctet);
+              $NT=$entry->target->networkTarget;
+            }
+            $NT->target_id=$entry->target_id;
+            $NT->network_id=$entry->network_id;
+            $entry->trigger($entry::EVENT_TARGET_MIGRATE);
+            if($NT->save()===false || $entry->delete()===false)
+              throw new \Exception('Failed migrate target ['.$entry->target->name.'] to network ',$entry->network->name);
+            $transaction->commit();
           }
-          else
+          catch (\Exception $e)
           {
-            Pf::del_table_ip($entry->target->network->codename,$entry->target->ipoctet);
-            $NT=$entry->target->networkTarget;
+            $transaction->rollBack();
           }
-          $NT->target_id=$entry->target_id;
-          $NT->network_id=$entry->network_id;
-          if($NT->save())
-            $entry->delete();
+
         }
       }
     }
