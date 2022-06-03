@@ -54,13 +54,13 @@ class TargetAR extends \yii\db\ActiveRecord
     'powerdown'=>'powerdown',
     'maintenance'=>'maintenance'];
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function tableName()
-  {
-    return 'target';
-  }
+    /**
+     * {@inheritdoc}
+     */
+    public static function tableName()
+    {
+        return 'target';
+    }
 
     /**
      * {@inheritdoc}
