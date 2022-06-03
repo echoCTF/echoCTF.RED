@@ -14,7 +14,9 @@ class TargetController extends ActiveController
         $nt=new \app\modules\gameplay\models\NetworkTarget;
         $nt->network_id=$network->id;
         $nt->target_id=$id;
-        return $nt->save();
+        if(!$nt->save())
+          return false;
+        return $nt->target->trigger($nt->target::EVENT_NEW_TARGET_ANNOUNCEMENT);
       }
     }
     public function actionGetByIp($ip)
