@@ -1,13 +1,12 @@
 <?php
 
-namespace app\modules\infrastructure\models;
+namespace app\modules\network\models;
 
 use Yii;
-use app\modules\gameplay\models\Network;
-use app\modules\gameplay\models\Target;
+use app\modules\target\models\Target;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
-use \yii\helpers\Html as H;
+
 /**
  * This is the model class for table "network_target_schedule".
  *
@@ -21,16 +20,8 @@ use \yii\helpers\Html as H;
  * @property Network $network
  * @property Target $target
  */
-class NetworkTargetSchedule extends \yii\db\ActiveRecord
+class NetworkTargetSchedule extends \app\models\ActiveRecordReadOnly
 {
-    const EVENT_TARGET_MIGRATE="event_target_migrate";
-
-    public function init()
-    {
-        $this->on(self::EVENT_TARGET_MIGRATE, [$this, 'addNews']);
-        parent::init();
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -114,22 +105,4 @@ class NetworkTargetSchedule extends \yii\db\ActiveRecord
     {
         return new NetworkTargetScheduleQuery(get_called_class());
     }
-
-  public function addNews()
-  {
-    $news=new \app\modules\content\models\News;
-    $news->title=sprintf("Target %s migrated",$this->target->name);
-    $news->category=H::img("/images/news/category/target-migration.svg",['width'=>'25px']);
-    if($this->network_id===null)
-    {
-      $news->body=sprintf("Just a heads up, the target [%s], is now available on the general targets listing.",H::a($this->target->name,'/target/'.$this->target_id));
-    }
-    else
-    {
-      $news->body=sprintf("Just a heads up, the target [%s], got migrated to a new network [%s].",H::a($this->target->name,'/target/'.$this->target_id),H::a($this->network->name,'/network/'.$this->network_id));
-    }
-
-    if($news->save()===false)
-      throw new \Exception('Failed to create news entry.');
-  }
 }

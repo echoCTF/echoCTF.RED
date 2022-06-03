@@ -21,5 +21,6 @@ use app\modules\target\models\PlayerTargetHelp as PTH;
     )?><br/><?php endif;?>
     <?=$target->description?>
     <?=$this->render('_target_metadata',['target'=>$target,'identity'=>$identity]);?>
+    <?=$this->render('_target_migration_schedule',['scheduled'=>$target->scheduled,'network'=>$target->network]);?>
   </div>
 </div>

@@ -19,6 +19,7 @@ use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Headshot;
 use Docker\API\Model\AuthConfig;
 use app\modules\infrastructure\models\DockerInstance;
+use \yii\helpers\Html as H;
 
 /**
  * This is the model class for table "target".
@@ -57,6 +58,16 @@ use app\modules\infrastructure\models\DockerInstance;
 class Target extends TargetAR
 {
     private $container;
+
+    const EVENT_NEW_TARGET_ANNOUNCEMENT="event_new_target_announcement";
+
+    public function init()
+    {
+        $this->on(self::EVENT_NEW_TARGET_ANNOUNCEMENT, [$this, 'addNews']);
+        parent::init();
+    }
+
+
 
     /**
      * Spin the target up
@@ -260,6 +271,24 @@ class Target extends TargetAR
   public function powerup()
   {
 
+  }
+
+  public function addNews()
+  {
+    $news=new \app\modules\content\models\News;
+    $news->title=sprintf("New target %s online",$this->name);
+    $news->category=H::img("/images/news/category/new-target.svg",['width'=>'25px']);
+    if($this->network===null)
+    {
+      $news->body=sprintf("Just a heads up, new target [%s], is now available.",H::a($this->name,'/target/'.$this->id));
+    }
+    else
+    {
+      $news->body=sprintf("Just a heads up, the target [%s], is now available on [%s].",H::a($this->name,'/target/'.$this->id),H::a($this->network->name,'/network/'.$this->network->id));
+    }
+
+    if($news->save()===false)
+      throw new \Exception('Failed to create news entry.');
   }
 
 }

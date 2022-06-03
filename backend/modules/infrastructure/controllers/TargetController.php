@@ -536,7 +536,7 @@ class TargetController extends \app\components\BaseController
     {
         \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
         $results=[];
-        if (Yii::$app->request->isAjax) 
+        if (Yii::$app->request->isAjax)
         {
           $pq=Target::find()->select(['id','name','ip']);
           if($load===false)
@@ -549,11 +549,11 @@ class TargetController extends \app\components\BaseController
             $pq->where(['=','id',$term]);
           }
           $results=array_values(ArrayHelper::map($pq->all(),'id',
-            function($model){ 
+            function($model){
               return [
                 'id'=>$model->id,
-                'label'=>sprintf("(id: %d / %s) %s",$model->id,$model->ipoctet,$model->name),
-              ]; 
+                'label'=>sprintf("(id: %d / %s) %s%s",$model->id,$model->ipoctet,$model->name,($model->network!==null?" [{$model->network->name}]":"")),
+              ];
             }
           ));
 
