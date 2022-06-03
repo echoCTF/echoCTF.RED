@@ -156,6 +156,16 @@ class CronController extends Controller
     touch("/tmp/cron-instances.lock");
     $action=SELF::ACTION_EXPIRED;
     try {
+      // Get powered instances
+      $t=TargetInstance::find()->active();
+      foreach($t->all() as $instance)
+      {
+        if($instance->player->last->vpn_local_address!==null)
+        {
+          $instance->updateAttributes(['updated_at' => new \yii\db\Expression('NOW()')]);
+        }
+      }
+
       $t=TargetInstance::find()->pending_action();
       foreach($t->all() as $val)
       {
