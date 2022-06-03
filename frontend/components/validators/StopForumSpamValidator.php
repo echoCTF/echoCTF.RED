@@ -73,7 +73,7 @@ class StopForumSpamValidator extends Validator
           curl_close($ch);
           $retData=json_decode($result)->email;
           if(property_exists($retData,'confidence') && $retData->confidence>$this->max)
-            throw \yii\base\UserException('StopForumSpamValidator null');
+            throw new \yii\base\UserException('StopForumSpamValidator null');
         }
         catch(\Exception $e)
         {
