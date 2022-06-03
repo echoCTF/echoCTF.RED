@@ -50,7 +50,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property Ondemand[] $ondemand
  * @property Writeup[] $writeups
  */
-class TargetAR extends \yii\db\ActiveRecord
+class TargetAR extends \app\models\ActiveRecordReadOnly
 {
   public $total_treasures;
   public $total_findings;
@@ -263,9 +263,17 @@ class TargetAR extends \yii\db\ActiveRecord
       return new TargetQuery(get_called_class());
     }
 
-    public function save($runValidation=true, $attributeNames=null)
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMigrationSchedule()
     {
-      throw new \LogicException("Saving is disabled for this model.");
+      return $this->hasMany(\app\modules\network\models\NetworkTargetSchedule::class, ['target_id' => 'id']);
+    }
+
+    public function getScheduled()
+    {
+      return $this->hasOne(\app\modules\network\models\NetworkTargetSchedule::class, ['target_id' => 'id'])->pending()->limit(1);
     }
 
 }
