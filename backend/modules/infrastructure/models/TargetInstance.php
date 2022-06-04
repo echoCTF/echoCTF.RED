@@ -171,7 +171,7 @@ class TargetInstance extends \yii\db\ActiveRecord
       {
         $this->notify('started');
       }
-      elseif($this->reboot===0 && $changedAttributes['reboot']===1)
+      elseif($this->reboot===0 && @$changedAttributes['reboot']===1)
       {
         $this->notify('restarted');
       }
