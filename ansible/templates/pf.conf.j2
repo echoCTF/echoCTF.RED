@@ -19,6 +19,7 @@ table <registry_servers> persist counters file "/etc/registry_servers.conf"
 table <targets> persist counters file "/etc/targets.conf"
 table <offense_activated> persist counters { 10.10.0.0/16 }
 table <offense_network> persist counters { 10.10.0.0/16 }
+table <heartbeat> persist counters
 table <banned> persist counters
 
 set skip on lo
