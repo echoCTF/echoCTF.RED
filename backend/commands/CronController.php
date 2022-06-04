@@ -378,6 +378,22 @@ class CronController extends Controller
 
   public function actionOndemand($host="/var/run/memcached/memcached.sock",$port=0)
   {
+    try{
+      $demands=\app\modules\gameplay\models\TargetOndemand::find()->andWhere(['state'=>1]);
+      $memcache = new \Memcached();
+      $memcache->addServer($host,$port);
+      foreach($demands->all() as $ondemand)
+      {
+        $val=$memcache->get('target_heartbeat:'.$ondemand->target->ipoctet);
+        if($val!==false)
+          $ondemand->updateAttributes(['heartbeat'=>new \yii\db\Expression('NOW()')]);
+      }
+
+    }
+    catch (\Exception $e)
+    {
+
+    }
     try
     {
       $demands=\app\modules\gameplay\models\TargetOndemand::find()
@@ -389,26 +405,15 @@ class CronController extends Controller
             ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
           ]
         ]);
-      $memcache = new \Memcached();
-      $memcache->addServer($host,$port);
 
       foreach($demands->all() as $ondemand)
       {
-
-        $val=$memcache->get('target_heartbeat:'.$ondemand->target->ipoctet);
-        if($val===false)
-        {
-          printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
-          $ondemand->target->destroy();
-          $ondemand->state=-1;
-          $ondemand->heartbeat=null;
-          Pf::del_table_ip('heartbeat',$ondemand->target->ipoctet);
-          $ondemand->save();
-        }
-        else
-        {
-          $ondemand->updateAttributes(['heartbeat'=>new \yii\db\Expression('NOW()')]);
-        }
+        printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
+        $ondemand->target->destroy();
+        $ondemand->state=-1;
+        $ondemand->heartbeat=null;
+        Pf::del_table_ip('heartbeat',$ondemand->target->ipoctet);
+        $ondemand->save();
       }
     }
     catch (\Exception $e)
