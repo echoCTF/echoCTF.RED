@@ -376,7 +376,7 @@ class CronController extends Controller
     }
   }
 
-  public function actionOndemand($sock="/var/run/memcached/memcached.sock")
+  public function actionOndemand($host="/var/run/memcached/memcached.sock",$port=0)
   {
     try
     {
@@ -390,12 +390,12 @@ class CronController extends Controller
           ]
         ]);
       $memcache = new \Memcached();
-      $memcache->addServer($sock,0);
+      $memcache->addServer($host,$port);
 
       foreach($demands->all() as $ondemand)
       {
 
-        $val=$memcache->get('target_heartbeat:'.$ondemand->target_id);
+        $val=$memcache->get('target_heartbeat:'.$ondemand->target->ipoctet);
         if($val===false)
         {
           printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
