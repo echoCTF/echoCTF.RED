@@ -313,6 +313,7 @@ class CronController extends Controller
             $t->target->ondemand->heartbeat=new \yii\db\Expression('NOW()');
             $t->target->ondemand->player_id=$t->player_id;
             $t->target->ondemand->save();
+            Pf::add_table_ip('heartbeat',$t->target->ipoctet);
             $notifTitle=sprintf("Target [%s] powered up", $t->target->name);
           }
           else
@@ -375,11 +376,11 @@ class CronController extends Controller
     }
   }
 
-  public function actionOndemand()
+  public function actionOndemand($sock="/var/run/memcached/memcached.sock")
   {
     try
     {
-      $targets=\app\modules\gameplay\models\TargetOndemand::find()
+      $demands=\app\modules\gameplay\models\TargetOndemand::find()
       ->andWhere(
         ['and',
           ['state'=>1],
@@ -387,16 +388,26 @@ class CronController extends Controller
             ['IS','heartbeat',new \yii\db\Expression('NULL')],
             ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
           ]
-        ])->orWhere(['state'=>-1]);
-      foreach($targets->all() as $target)
+        ]);
+      $memcache = new \Memcached();
+      $memcache->addServer($sock,0);
+
+      foreach($demands->all() as $ondemand)
       {
-        if($target->state>-1)
+
+        $val=$memcache->get('target_heartbeat:'.$ondemand->target_id);
+        if($val===false)
         {
-          printf("Destroying ondemand target %s\n", $target->target->fqdn);
-          $target->target->destroy();
-          $target->state=-1;
-          $target->heartbeat=null;
-          $target->save();
+          printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
+          $ondemand->target->destroy();
+          $ondemand->state=-1;
+          $ondemand->heartbeat=null;
+          Pf::del_table_ip('heartbeat',$ondemand->target->ipoctet);
+          $ondemand->save();
+        }
+        else
+        {
+          $ondemand->updateAttributes(['heartbeat'=>new \yii\db\Expression('NOW()')]);
         }
       }
     }
