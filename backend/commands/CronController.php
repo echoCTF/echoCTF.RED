@@ -156,6 +156,16 @@ class CronController extends Controller
     touch("/tmp/cron-instances.lock");
     $action=SELF::ACTION_EXPIRED;
     try {
+      // Get powered instances
+      $t=TargetInstance::find()->active();
+      foreach($t->all() as $instance)
+      {
+        if($instance->player->last->vpn_local_address!==null)
+        {
+          $instance->updateAttributes(['updated_at' => new \yii\db\Expression('NOW()')]);
+        }
+      }
+
       $t=TargetInstance::find()->pending_action();
       foreach($t->all() as $val)
       {
@@ -303,6 +313,7 @@ class CronController extends Controller
             $t->target->ondemand->heartbeat=new \yii\db\Expression('NOW()');
             $t->target->ondemand->player_id=$t->player_id;
             $t->target->ondemand->save();
+            Pf::add_table_ip('heartbeat',$t->target->ipoctet);
             $notifTitle=sprintf("Target [%s] powered up", $t->target->name);
           }
           else
@@ -365,11 +376,27 @@ class CronController extends Controller
     }
   }
 
-  public function actionOndemand()
+  public function actionOndemand($host="/var/run/memcached/memcached.sock",$port=0)
   {
+    try{
+      $demands=\app\modules\gameplay\models\TargetOndemand::find()->andWhere(['state'=>1]);
+      $memcache = new \Memcached();
+      $memcache->addServer($host,$port);
+      foreach($demands->all() as $ondemand)
+      {
+        $val=$memcache->get('target_heartbeat:'.$ondemand->target->ipoctet);
+        if($val!==false)
+          $ondemand->updateAttributes(['heartbeat'=>new \yii\db\Expression('NOW()')]);
+      }
+
+    }
+    catch (\Exception $e)
+    {
+
+    }
     try
     {
-      $targets=\app\modules\gameplay\models\TargetOndemand::find()
+      $demands=\app\modules\gameplay\models\TargetOndemand::find()
       ->andWhere(
         ['and',
           ['state'=>1],
@@ -377,17 +404,16 @@ class CronController extends Controller
             ['IS','heartbeat',new \yii\db\Expression('NULL')],
             ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
           ]
-        ])->orWhere(['state'=>-1]);
-      foreach($targets->all() as $target)
+        ]);
+
+      foreach($demands->all() as $ondemand)
       {
-        if($target->state>-1)
-        {
-          printf("Destroying ondemand target %s\n", $target->target->fqdn);
-          $target->target->destroy();
-          $target->state=-1;
-          $target->heartbeat=null;
-          $target->save();
-        }
+        printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
+        $ondemand->target->destroy();
+        $ondemand->state=-1;
+        $ondemand->heartbeat=null;
+        Pf::del_table_ip('heartbeat',$ondemand->target->ipoctet);
+        $ondemand->save();
       }
     }
     catch (\Exception $e)

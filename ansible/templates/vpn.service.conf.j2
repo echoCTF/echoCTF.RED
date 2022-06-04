@@ -35,6 +35,7 @@ anchor "offense" on tun {
 	block quick from <targets> to 10.10.0.1
   # Allow targets to connect back to offense activated
 	pass from <targets> to <offense_activated>
+  match log (all to pflog2) inet from <offense_activated> to <heartbeat>
 }
 #load anchor "offense" from "/etc/offense_anchor.conf"
 anchor "networks"

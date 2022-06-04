@@ -140,11 +140,11 @@ BEGIN
   IF @debug IS NOT NULL AND @debug=1 THEN
     INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[BEFORE FINDING] _TARGET_ID:',ifnull(_TARGET_ID,0),' _PLAYER_ID:',ifnull(_PLAYER_ID,0),' _FINDING_ID:',ifnull(_FINDING_ID,0),' _TEAM_ID:',ifnull(_TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
   END IF;
-  IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 AND memc_get(CONCAT('target_ondemand_heartbeat:',_TARGET_ID)) IS NULL THEN
-    -- we set it before the insert to reduce the number of queries
-    DO memc_set(CONCAT('target_ondemand_heartbeat:',_TARGET_ID),UNIX_TIMESTAMP(now()),60);
-    UPDATE target_ondemand SET heartbeat=NOW() WHERE target_id=_TARGET_ID AND state>0;
-  END IF;
+--  IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 AND memc_get(CONCAT('target_ondemand_heartbeat:',_TARGET_ID)) IS NULL THEN
+--    -- we set it before the insert to reduce the number of queries
+--    DO memc_set(CONCAT('target_ondemand_heartbeat:',_TARGET_ID),UNIX_TIMESTAMP(now()),60);
+--    UPDATE target_ondemand SET heartbeat=NOW() WHERE target_id=_TARGET_ID AND state>0;
+--  END IF;
   IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 AND CLAIMED_BEFORE IS NULL THEN
     -- we set it before the insert to reduce the number of queries
     DO memc_set(CONCAT('player_finding:',_PLAYER_ID, ':', _FINDING_ID),now());
