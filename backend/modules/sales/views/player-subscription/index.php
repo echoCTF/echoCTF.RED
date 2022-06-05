@@ -29,15 +29,19 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'player_id',
             [
+              'attribute'=>'username',
+              'value'=>'player.username'
+            ],
+            [
               'attribute'=>'subscription_id',
               'format'=>'raw',
               'value'=>function($model){ return '<small>'.substr($model->subscription_id,0,25).'</small>';}
             ],
-            [
-              'attribute'=>'session_id',
-              'format'=>'raw',
-              'value'=>function($model){ return '<small>'.substr($model->session_id,0,25).'</small>';}
-            ],
+  //          [
+  //            'attribute'=>'session_id',
+  //            'format'=>'raw',
+  //            'value'=>function($model){ return '<small>'.substr($model->session_id,0,25).'</small>';}
+  //          ],
             [
               'attribute'=>'price_id',
               'format'=>'raw',
@@ -46,8 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'active:boolean',
             'starting',
             'ending',
-            'created_at',
-            'updated_at',
+//            'created_at',
+//            'updated_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

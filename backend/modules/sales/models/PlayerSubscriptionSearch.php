@@ -11,6 +11,8 @@ use app\modules\sales\models\PlayerSubscription;
  */
 class PlayerSubscriptionSearch extends PlayerSubscription
 {
+    public $username;
+
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,7 @@ class PlayerSubscriptionSearch extends PlayerSubscription
     {
         return [
             [['player_id', 'active'], 'integer'],
-            [['subscription_id', 'session_id', 'price_id', 'created_at', 'updated_at','starting','ending'], 'safe'],
+            [['subscription_id', 'session_id', 'price_id', 'created_at', 'updated_at','starting','ending','username'], 'safe'],
         ];
     }
 
@@ -40,7 +42,7 @@ class PlayerSubscriptionSearch extends PlayerSubscription
      */
     public function search($params)
     {
-        $query = PlayerSubscription::find();
+        $query = PlayerSubscription::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
@@ -66,8 +68,20 @@ class PlayerSubscriptionSearch extends PlayerSubscription
 
         $query->andFilterWhere(['like', 'subscription_id', $this->subscription_id])
             ->andFilterWhere(['like', 'session_id', $this->session_id])
+            ->andFilterWhere(['like', 'player.username', $this->username])
             ->andFilterWhere(['like', 'price_id', $this->price_id]);
 
+        $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                    'username' => [
+                        'asc' => ['player.username' => SORT_ASC],
+                        'desc' => ['player.ip' => SORT_DESC],
+                    ],
+                ]
+            ),
+        ]);
         return $dataProvider;
     }
 }
