@@ -123,17 +123,18 @@ class Finding extends \yii\db\ActiveRecord
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('user_finding', ['finding_id' => 'id']);
     }
 
-    public function getMatchRule($source=null,$destination=null)
+    public function getMatchRule($source=null,$destination=null,$pflog_min=1,$pflog_max=1)
     {
 
+      $pflogif=random_int($pflog_min,$pflog_max);
       if($destination===null)
       {
         $destination=$this->target->ipoctet;
       }
       if($this->protocol === 'icmp')
-        $trule=sprintf('match log (to pflog1) inet proto %s%%s to %s tagged %s icmp-type echoreq label "$dstaddr:$dstport"', $this->protocol, $destination,trim(\app\modules\settings\models\Sysconfig::findOne('offense_registered_tag')->val));
+        $trule=sprintf('match log (to pflog%d) inet proto %s%%s to %s tagged %s icmp-type echoreq label "$dstaddr:$dstport"', $pflogif,$this->protocol, $destination,trim(\app\modules\settings\models\Sysconfig::findOne('offense_registered_tag')->val));
       else
-        $trule=sprintf('match log (to pflog1) inet proto %s%%s to %s port %d tagged %s label "$dstaddr:$dstport"', $this->protocol, $destination,$this->port, trim(\app\modules\settings\models\Sysconfig::findOne('offense_registered_tag')->val));
+        $trule=sprintf('match log (to pflog%d) inet proto %s%%s to %s port %d tagged %s label "$dstaddr:$dstport"', $pflogif,$this->protocol, $destination,$this->port, trim(\app\modules\settings\models\Sysconfig::findOne('offense_registered_tag')->val));
 
       if($source!==null)
         $rule=sprintf($trule,' from '.$source);
