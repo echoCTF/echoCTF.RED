@@ -478,6 +478,10 @@ class CronController extends Controller
    */
   private function match_findings($load,$base="/etc")
   {
+    $pflogmin=intval(\Yii::$app->sys->pflog_min);
+    $pflogmax=intval(\Yii::$app->sys->pflog_max);
+    if($pflogmin===0)
+      $pflogmin=$pflogmax=1;
     $networks=$rules=$frules=array();
     $targets=Target::find()->active()->online()->poweredup()->all();
     foreach($targets as $target)
@@ -494,7 +498,7 @@ class CronController extends Controller
     $instances=TargetInstance::find()->active();
     foreach($instances->all() as $ti)
       foreach($ti->target->findings as $f)
-        $rules[]=$f->getMatchRule('<'.$ti->name.'_clients>','<'.$ti->name.'>');
+        $rules[]=$f->getMatchRule('<'.$ti->name.'_clients>','<'.$ti->name.'>',$pflogmin,$pflogmax);
 
     Pf::store($base.'/match-findings-pf.conf',ArrayHelper::merge($frules,$rules));
 
