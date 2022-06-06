@@ -152,6 +152,14 @@ class Treasure extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getLocationRedacted()
+    {
+        return str_replace($this->code,"*REDACTED*",$this->location);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
 //    public function getTreasureActions()
 //    {
 //        return $this->hasMany(TreasureAction::class, ['treasure_id' => 'id']);
