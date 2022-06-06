@@ -33,9 +33,15 @@ yii\bootstrap\Modal::end();
             ['class' => 'yii\grid\SerialColumn'],
 
             'network_id',
-            'network.name',
+            [
+                'attribute'=>'network_name',
+                'value'=>'network.name'
+            ],
             'target_id',
-            'target.name',
+            [
+               'attribute'=>'target_name',
+               'value'=>'target.name'
+            ],
             'weight',
             'created_at',
             'updated_at',
