@@ -71,7 +71,7 @@ class NetworkTargetScheduleSearch extends NetworkTargetSchedule
             ['like','migration_date', $this->migration_date],
 
         ]);
-    $dataProvider->setSort([
+        $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
