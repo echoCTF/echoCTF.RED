@@ -133,10 +133,10 @@ BEGIN
 
   IF teams IS NOT NULL AND teams=1 THEN
     SELECT memc_get(CONCAT('team_player:',_PLAYER_ID)) INTO _TEAM_ID;
-    SELECT memc_get(CONCAT('team_finding:',_TEAM_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
-  ELSE
-    SELECT memc_get(CONCAT('player_finding:',_PLAYER_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
+--    SELECT memc_get(CONCAT('team_finding:',_TEAM_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
   END IF;
+  SELECT memc_get(CONCAT('player_finding:',_PLAYER_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
+
   IF @debug IS NOT NULL AND @debug=1 THEN
     INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[BEFORE FINDING] _TARGET_ID:',ifnull(_TARGET_ID,0),' _PLAYER_ID:',ifnull(_PLAYER_ID,0),' _FINDING_ID:',ifnull(_FINDING_ID,0),' _TEAM_ID:',ifnull(_TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
   END IF;
