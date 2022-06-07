@@ -19,7 +19,7 @@ use yii\helpers\Url;
                       ]
                   );?></b></p>
                     <p><b><i class="fas fa-list-ul text-info"></i> <?=count($cs->challenge->questions)?> Questions / <?=$cs->challenge->difficulty?></b><br /><b><i class="far fa-calendar-alt text-warning"></i> <?=\Yii::$app->formatter->asDate($cs->created_at,'long')?></b><br/>
-                    <i class="fas fa-stopwatch text-danger"></i> <?=\Yii::$app->formatter->asDuration($cs->timer)?></p>
+                    <?php if($cs->timer>0):?><i class="fas fa-stopwatch text-danger"></i> <?=\Yii::$app->formatter->asDuration($cs->timer)?><?php endif;?></p>
       </div>
     </div>
   <?php endforeach;?>

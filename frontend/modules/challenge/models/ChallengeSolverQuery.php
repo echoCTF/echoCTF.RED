@@ -11,7 +11,7 @@ class ChallengeSolverQuery extends \yii\db\ActiveQuery
 {
     public function timed()
     {
-        return $this->joinWith(['challenge'])->andWhere(['challenge.timer'=>1]);
+        return $this->joinWith(['challenge'])->andWhere(['challenge.timer'=>1])->andWhere(['>','challenge_solver.timer',0]);
     }
 
     /**
