@@ -27,15 +27,16 @@ anchor "targets" on targets {
 anchor "offense/*"
 anchor "offense" on tun {
 	anchor "findings"
-	anchor "allowed" from <offense_network> to (tun) {
+	anchor "allowed" from <offense_network> to (offense) {
 		# allow ping on connected players interface for troubleshooting
-		pass in inet proto icmp
+		pass in on tun0 inet proto icmp from <offense_network> to tun0
+		pass in on tun1 inet proto icmp from <offense_network> to tun1
 	}
   # block targets from connecting to the VPN interface
 	block quick from <targets> to 10.10.0.1
   # Allow targets to connect back to offense activated
 	pass from <targets> to <offense_activated>
-  match log (all to pflog2) inet from <offense_activated> to <heartbeat>
+  match log (to pflog2) inet from <offense_activated> to <heartbeat>
 }
 #load anchor "offense" from "/etc/offense_anchor.conf"
 anchor "networks"
