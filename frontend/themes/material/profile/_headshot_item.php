@@ -17,7 +17,7 @@ use yii\helpers\Url;
                   ]
               );?></b></p>
     <p><b><i class="far fa-calendar-alt text-warning"></i> <?=\Yii::$app->formatter->asDate($model->created_at,'long')?></b><br/>
-    <i class="fas fa-stopwatch text-danger"></i> <?=\Yii::$app->formatter->asDuration($model->timer)?>
+    <?php if($model->timer>0):?><i class="fas fa-stopwatch text-danger"></i> <?=\Yii::$app->formatter->asDuration($model->timer)?><?php endif;?>
     </p>
   </div>
 </div>

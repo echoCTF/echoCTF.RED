@@ -3,10 +3,10 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\ListView;
 ?>
-<h3><code><?=$profile->headshotsCount?></code> Headshots / <small>Average time: <?php
+<h3><code><?=$profile->headshotsCount?></code> Headshots <?php
 $hs=\app\modules\game\models\Headshot::find()->timed()->player_avg_time($profile->player_id)->one();
 if($hs && $hs->average > 0)
-  echo number_format($hs->average / 60), " minutes";
+  echo "/ <small>Average time: ",number_format($hs->average / 60), " minutes";
 ?> <sub>(ordered by date)</small></sub></h3>
 <?php
 \yii\widgets\Pjax::begin(['id'=>'headshotslist', 'enablePushState'=>false, 'linkSelector'=>'#headshots-pager a', 'formSelector'=>false]);
