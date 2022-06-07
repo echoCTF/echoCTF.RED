@@ -7,7 +7,7 @@ use yii\helpers\Html;
     <span class="panel-icon">
       <i class="fas fa-id-card"></i>
     </span>
-    <span class="panel-title"> Player details (<?=Html::a("profile: ".$model->id,"//".Yii::$app->sys->offense_domain.'/profile/'.$model->id,['target'=>'_blank'])?>)  <?= Html::a('<i class="fas fa-sign-out-alt"></i>', ['/frontend/player/reset-authkey', 'id' => $model->player_id], [
+    <span class="panel-title"><small><?=$model->player_id?></small> Player details (<?=Html::a("profile: ".$model->id,"//".Yii::$app->sys->offense_domain.'/profile/'.$model->id,['target'=>'_blank'])?>)  <?= Html::a('<i class="fas fa-sign-out-alt"></i>', ['/frontend/player/reset-authkey', 'id' => $model->player_id], [
           'class' => 'text-danger',
           'title'=>'Reset player auth_key (force logout)',
           'data-toggle'=>'tooltip',
