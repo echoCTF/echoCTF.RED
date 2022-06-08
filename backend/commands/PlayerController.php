@@ -7,6 +7,7 @@
 
 namespace app\commands;
 
+use app\modules\activity\models\PlayerVpnHistory;
 use Yii;
 use yii\console\Exception as ConsoleException;
 use yii\helpers\Console;
@@ -18,6 +19,8 @@ use app\modules\frontend\models\Team;
 use app\modules\frontend\models\TeamPlayer;
 use app\modules\frontend\models\PlayerIp;
 use app\modules\frontend\models\PlayerSsl;
+use yii\helpers\ArrayHelper;
+
 /**
  * Manages users.
  *
@@ -278,7 +281,7 @@ class PlayerController extends Controller {
 
     }
   }
-  
+
   /**
    * Check mails for known spam and disposable hosters.
    */
@@ -288,20 +291,42 @@ class PlayerController extends Controller {
     $players=Player::find()->select(["right(email, length(email)-INSTR(email, '@')) as email"])->distinct();
     foreach($skip_domains as $d)
       $players->andWhere(['not like','email', $d]);
+      echo "Found ",$players->count()," distinct domains.\n";
     foreach($players->all() as $p)
     {
+      try{
       $DNS_NS=dns_get_record($p->email, DNS_NS);
       $DNS_MX=dns_get_record($p->email, DNS_MX);
       $DNS_A=dns_get_record($p->email, DNS_A);
+      }
+      catch(\Exception $e)
+      {
+        echo "Failed to resolve [",$p->email,"]",$e->getMessage(),"\n";
+      }
       if($DNS_NS===[] && $DNS_MX===[])
       {
-        echo "Domain[",$p->email,"] has empty MX & NS records, ";
-        $domain = new \overals\whois\Whois($p->email);
-        if ($domain->isAvailable()) {
-            echo "and is available\n";
-        } else {
-            echo "and is registered\n";
-        }
+        echo "Domain[",$p->email,"] has empty MX & NS records\n";
+      }
+    }
+  }
+
+  /**
+   * Check users with duplicate IP
+   */
+  public function actionCheckDupips($skip_uids=false)
+  {
+    $playerIPs=PlayerVpnHistory::find()->select(["player_id","vpn_remote_address"])->groupBy(['vpn_remote_address'])->distinct();
+    if($skip_uids!==false)
+      $playerIPs->andWhere(['NOT IN','player_id',explode(",",$skip_uids)]);
+
+    foreach($playerIPs->all() as $pip)
+    {
+      $sameIPusers=PlayerVpnHistory::find()->where(['vpn_remote_address'=>$pip->vpn_remote_address])->groupBy(['player_id']);
+      if($skip_uids!==false)
+        $sameIPusers->andWhere(['NOT IN','player_id',explode(",",$skip_uids)]);
+      if(intval($sameIPusers->count())>1)
+      {
+        echo long2ip($pip->vpn_remote_address&ip2long("255.255.0.0"))," => ",trim(implode(", ",ArrayHelper::getColumn($sameIPusers->all(),'player.username'))),"\n";
       }
     }
   }
