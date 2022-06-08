@@ -73,7 +73,7 @@ class TargetOndemandSearch extends TargetOndemand
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $query->andFilterWhere(['like','INET_NTOA(target.ip)',$this->ipoctet]);
         $dataProvider->setSort([
-            'defaultOrder' => ['name'=>SORT_ASC,'created_at'=>SORT_DESC],
+            'defaultOrder' => ['state'=>SORT_DESC,'name'=>SORT_ASC,'created_at'=>SORT_DESC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
