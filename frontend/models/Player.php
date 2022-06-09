@@ -177,12 +177,12 @@ class Player extends PlayerAR implements IdentityInterface
      */
     public function generatePasswordResetToken()
     {
-        $this->password_reset_token=Yii::$app->security->generateRandomString().'_'.time();
+        $this->password_reset_token=str_replace('_','-',Yii::$app->security->generateRandomString().'-'.time());
     }
 
     public function generateEmailVerificationToken()
     {
-        $this->verification_token=Yii::$app->security->generateRandomString().'_'.time();
+        $this->verification_token=str_replace('_','-',Yii::$app->security->generateRandomString().'-'.time());
     }
 
     /**
