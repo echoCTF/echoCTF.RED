@@ -29,7 +29,7 @@ anchor "offense" on tun {
 	anchor "findings"
 	anchor "allowed" from <offense_network> to (offense) {
 		# allow ping on connected players interface for troubleshooting
-		pass in on (tun) inet proto icmp from <offense_network> to (tun)
+		pass in on tun inet proto icmp from <offense_network> to (offense)
 	}
   # block targets from connecting to the VPN interface
 	block quick from <targets> to 10.10.0.1
