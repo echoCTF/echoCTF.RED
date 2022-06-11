@@ -84,7 +84,7 @@ if($headshot)
           <?php endif;?>
           <div class="col">
             <?php
-              $this->_description=sprintf('Check this out, I just headshotted %s at %s', $headshot->target->name, \Yii::$app->sys->{"event_name"});
+              $this->_description=sprintf('Check this out, I just headshotted %s', $headshot->target->name);
               $this->_url=\yii\helpers\Url::to(['versus', 'id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https');
               echo $this->render('@app/modules/game/views/badge/_share',[
                 'twMessage'=>$this->_description,
@@ -111,7 +111,7 @@ if($headshot)
           </div>
           <div class="col">
             <?php
-              $this->_description=sprintf('Check this out, I just headshotted %s at %s', $headshot->target->name, \Yii::$app->sys->{"event_name"});
+              $this->_description=sprintf('Check this out, I just headshotted %s', $headshot->target->name);
               $this->_url=\yii\helpers\Url::to(['versus', 'id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https');
               echo $this->render('@app/modules/game/views/badge/_share',[
                 'twMessage'=>$this->_description,
