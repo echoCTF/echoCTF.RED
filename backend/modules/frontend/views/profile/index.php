@@ -30,11 +30,9 @@ yii\bootstrap\Modal::end();
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'rowOptions' => function ($model, $key, $index, $grid) {
-            // $model is the current data model being rendered
-            // check your condition in the if like `if($model->hasMedicalRecord())` which could be a method of model class which checks for medical records.
             $model->scenario='validator';
             if(!$model->validate()) {
-                 return ['class' => 'text-danger','style'=>'font-weight: 800;'];
+                 return ['style'=>'font-weight: 300; background: #ffcccb'];
             }
             return [];
         },
@@ -66,7 +64,7 @@ yii\bootstrap\Modal::end();
             'approved_avatar:boolean',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{view} {update} {delete} {approve_avatar} {player-view} {player-view-full}',
+              'template' => '{view} {update} {delete} {approve_avatar} {clear-validation} {player-view} {player-view-full}',
               'buttons' => [
                   'approve_avatar' => function($url, $model) {
                     if(!$model->approved_avatar)
@@ -78,6 +76,20 @@ yii\bootstrap\Modal::end();
                           'data-pjax' => '0',
                           'data-method' => 'POST',
                           'data'=>['confirm'=>"Are you sure you want to approve the user avatar?"]
+                        ]
+                    );
+                  },
+                  'clear-validation' => function($url, $model) {
+                    $model->scenario='validator';
+                    if(!$model->validate())
+                    return Html::a(
+                        '<span class="glyphicon glyphicon-ok-circle"></span>',
+                        $url,
+                        [
+                          'title' => 'Clear failed validation fields',
+                          'data-pjax' => '0',
+                          'data-method' => 'POST',
+                          'data'=>['confirm'=>"Are you sure you want to clear the fields that fail validation?"]
                         ]
                     );
                   },
