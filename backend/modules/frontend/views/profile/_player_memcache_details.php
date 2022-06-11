@@ -61,6 +61,20 @@ use yii\helpers\Html;
         </tr>
         <tr>
           <td><i class="fas fa-id-card-alt"></i></td>
+          <td>Frontend IP</td>
+          <td><?=Html::encode(Yii::$app->cache->memcache->get('player_frontend_ip:'.$model->player_id))?> <?= Html::a('<i class="fas fa-eraser"></i>', ['reset-key', 'id' => $model->id], [
+                'class' => 'text-danger',
+                'title'=>'Delete key',
+                'data-toggle'=>'tooltip',
+                'data' => [
+                    'confirm' => Yii::t('app', 'Are you sure you want to delete this key?'),
+                    'params'=>['key'=>'player_frontend_ip:'.$model->player_id],
+                    'method' => 'post',
+                ],
+            ]) ?></td>
+        </tr>
+        <tr>
+          <td><i class="fas fa-id-card-alt"></i></td>
           <td>Session</td>
           <td><?=Html::encode(Yii::$app->cache->memcache->get('player_session:'.$model->player_id))?> <?= Html::a('<i class="fas fa-eraser"></i>', ['reset-key', 'id' => $model->id], [
                 'class' => 'text-danger',
