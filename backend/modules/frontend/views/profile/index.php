@@ -64,9 +64,9 @@ yii\bootstrap\Modal::end();
             'approved_avatar:boolean',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{view} {update} {delete} {approve_avatar} {clear-validation} {player-view} {player-view-full}',
+              'template' => '{view} {update} {delete} {approve-avatar} {clear-validation} {player-view} {player-view-full}',
               'buttons' => [
-                  'approve_avatar' => function($url, $model) {
+                  'approve-avatar' => function($url, $model) {
                     if(!$model->approved_avatar)
                     return Html::a(
                         '<span class="glyphicon glyphicon-file"></span>',
