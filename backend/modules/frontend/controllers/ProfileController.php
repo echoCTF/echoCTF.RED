@@ -27,7 +27,8 @@ class ProfileController extends \app\components\BaseController
               'verbs' => [
                   'class' => VerbFilter::class,
                   'actions' => [
-                      'approve_avatar' => ['POST'],
+                      'approve-avatar' => ['POST'],
+                      'clear-validation' => ['POST'],
                       'reset-key' => ['POST'],
                   ],
               ],
@@ -130,7 +131,40 @@ class ProfileController extends \app\components\BaseController
     }
 
 
-    public function actionApprove_avatar($id)
+    /**
+     * Clear fields that fail validation
+     * @param mixed $id
+     * @return \yii\web\Response
+     */
+    public function actionClearValidation($id)
+    {
+        $fields=['twitter','youtube','htb','discord','github'];
+        $model=$this->findModel($id);
+        $model->scenario='validator';
+        $model->validate();
+        foreach($model->getErrors() as $attribute => $errors)
+        {
+            if($attribute==='twitter' && $model->twitter[0]==='@')
+            {
+                $model->twitter=str_replace('@','',$model->twitter);
+            }
+            elseif(array_search($attribute,$fields)!==false)
+            {
+                $model->$attribute=null;
+            }
+            else
+                Yii::$app->session->setFlash('error', "Failing attribute not on the list ".$attribute);
+        }
+        $model->save();
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Approve the avatar of a given profile id
+     * @param mixed $id
+     * @return \yii\web\Response
+     */
+    public function actionApproveAvatar($id)
     {
         $model=$this->findModel($id);
         $model->approved_avatar=true;
