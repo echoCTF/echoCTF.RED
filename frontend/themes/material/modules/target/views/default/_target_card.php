@@ -4,7 +4,6 @@ use yii\helpers\Url;
 use app\widgets\Card;
 use app\widgets\targetcardactions\TargetCardActions;
 use app\modules\game\models\Headshot;
-
 $target_ip=long2ip($target->ip);
 if($target->on_ondemand && $target->ondemand_state===-1)
   $target_ip="0.0.0.0";
@@ -13,7 +12,7 @@ if(!Yii::$app->user->isGuest && Yii::$app->user->identity->instance !== NULL && 
 {
   $target_ip='<b class="text-danger">'.long2ip(Yii::$app->user->identity->instance->ip).'</b>';
 }
-$subtitleARR=[$target->category,'<abbr title="Player rating: '.ucfirst($target->getDifficultyText($target->player_rating)).'">'.ucfirst($target->difficultyText).'</abbr>',boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===0 ? null:'Timed'];
+$subtitleARR=[$target->category,'<abbr title="Player rating: '.ucfirst($target->getDifficultyText($target->player_rating)).'">'.ucfirst($target->difficultyText).'</abbr>',boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===false ? null:'Timed'];
 $subtitle=implode(", ",array_filter($subtitleARR));
 Card::begin([
             'header'=>'header-icon',
@@ -30,7 +29,7 @@ echo  "<small>(<code class='text-danger'>";
 echo $target->treasureCategoriesFormatted;
 echo "</code>)</small><br/>";
 echo "<i class='fas fa-fire'></i> ", $target->total_findings, ": Service".($target->total_findings > 1 ? 's' : '')."<br/><i class='fas fa-calculator'></i> ", number_format($target->points), " pts";
-if($target->timer!==0)
+if($target->timer!==false)
   echo '<br/><i class="fas fa-stopwatch"></i> Avg. headshot: '.number_format($target->timer_avg / 60).' minutes';
 echo "</p>";
 Card::end();?>
