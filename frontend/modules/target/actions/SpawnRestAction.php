@@ -20,10 +20,14 @@ class SpawnRestAction extends \yii\rest\ViewAction
     $goback=Url::previous();
     if($goback==='/')
       $goback=['/target/default/view','id'=>$id];
-
     try
     {
       $target=$this->findTarget($id);
+      if($this->actionAllowedFor($target->id))
+      {
+        throw new UserException('Target not allowed to spawn private instances!');
+      }
+
       if($target->status!=='online')
       {
         throw new UserException('Target did not start, target is not online yet!');
@@ -63,6 +67,13 @@ class SpawnRestAction extends \yii\rest\ViewAction
     }
 
     return Yii::$app->controller->redirect($goback);
+  }
+
+  protected function actionAllowedFor($id)
+  {
+      $model=$this->findTarget($id);
+      $action=sprintf('/target/%d/spawn',$model->id);
+      return Yii::$app->DisabledRoute->disabled($action);
   }
 
   private function findTarget($id)
