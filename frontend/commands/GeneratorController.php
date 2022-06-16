@@ -47,7 +47,7 @@ class GeneratorController extends Controller {
       $routes=\yii\helpers\Json::decode(\Yii::$app->sys->disabled_routes);
       foreach($routes as $entry)
       {
-        $lines[]=sprintf("  'route'=>'%s',",$entry['route']);
+        $lines[]=sprintf("  ['route'=>'%s'],",$entry['route']);
       }
       $content=sprintf("<?php\nreturn [\n%s\n];", implode("\n",$lines));
       $dirn=\Yii::getAlias("@app/config");
