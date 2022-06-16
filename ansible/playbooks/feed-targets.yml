@@ -105,6 +105,23 @@
         post_exploitation: "{{metadata.post_exploitation|default('')}}"
       status_code: [201, 200]
 
+  - name: create Network Target Schedule
+    delegate_to: 127.0.0.1
+#    ignore_errors: true
+    tags:
+      - UI
+    when: target_id is defined and NetworkTargetSchedule is defined
+    uri:
+      url: "{{mui.URL}}/index.php?r=restapi/network-target-schedule/create&access-token={{TOKEN}}"
+      validate_certs: false
+      method: POST
+      body_format: json
+      body:
+        target_id: "{{target_id}}"
+        network_id: "{{NetworkTargetSchedule.network_id|default('')}}"
+        migration_date: "{{NetworkTargetSchedule.migration_date}}"
+      status_code: [201, 200]
+
   - name: create variables for target
     delegate_to: 127.0.0.1
 #    ignore_errors: true

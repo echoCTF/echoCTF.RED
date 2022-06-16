@@ -7,6 +7,7 @@ fqdn: example.echocity-f.com
 rootable: 0 # 1 for yes
 difficulty: 0
 #scheduled_at: "YYYY-mm-dd HH:MM:SS"
+# network: name
 container:
   name: "{{hostname}}"
   hostname: "{{fqdn}}"
@@ -25,6 +26,13 @@ container:
   networks:
     - { name: echoctfred_targets, ipv4_address: "{{ansible_host}}" }
   volumes: []
+
+#NetworkTargetSchedule:
+#  network_id: "" # for moving target outside of a network
+#  migration_date: "YYYY-mm-dd HH:MM:SS"
+
+# Make target ondemand
+#TargetOndemand: true
 
 ETSCTF_ROOT_FLAG: "ETSCTF_ROOT_FLAG"
 ETSCTF_ENV_FLAG: "ETSCTF_ENV_FLAG"
