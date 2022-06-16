@@ -23,14 +23,52 @@ class DisabledRoute extends Component
   }
 
   /**
+   * Get the disabled_routes depending on memcached availability
+   * @return string
+   */
+  public static function disabled_routes()
+  {
+    if(Yii::$app->sys->disabled_routes!==false && Yii::$app->sys->disabled_routes!==null)
+    {
+      return Yii::$app->sys->disabled_routes;
+    }
+    $lrfile=\Yii::getAlias("@app/config/disabled-routes.php");
+    if(file_exists($lrfile))
+    {
+      $dr=include $lrfile;
+      return json_encode($dr,JSON_UNESCAPED_SLASHES);
+    }
+  }
+
+  /**
+   * Get the player_disabled_routes depending on memcached availability
+   * @return string
+   */
+  public static function player_disabled_routes()
+  {
+    if(Yii::$app->sys->player_disabled_routes!==false && Yii::$app->sys->player_disabled_routes!==null)
+    {
+      return Yii::$app->sys->player_disabled_routes;
+    }
+    $lrfile=\Yii::getAlias("@app/config/player_disabled-routes.php");
+    if(file_exists($lrfile))
+    {
+      $dr=include $lrfile;
+      return json_encode($dr,JSON_UNESCAPED_SLASHES);
+    }
+  }
+
+  /**
    * Check if current action is disabled
    * @param string|object $action
    * @return bool
    */
   public static function disabled($action):bool
   {
-    $disabled_routes=Yii::$app->sys->disabled_routes;
-    $player_disabled_routes=Yii::$app->sys->player_disabled_routes;
+
+    $disabled_routes=self::disabled_routes();
+    $player_disabled_routes=self::player_disabled_routes();
+
     if(is_object($action))
     {
       $route=self::RequestedRoute($action);

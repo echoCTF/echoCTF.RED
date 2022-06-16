@@ -24,5 +24,14 @@ class MemcacheUrlManagerBootstrap implements BootstrapInterface
           $oApplication->getUrlManager()->addRules($routes, false);
         }
       }
+      else // for some reason we failed to load the routes from memcached
+      {
+        $lrfile=\Yii::getAlias("@app/config/routes.php");
+        if(file_exists($lrfile))
+        {
+          $localroutes=include $lrfile;
+          $oApplication->getUrlManager()->addRules($localroutes, false);
+        }
+      }
     }
 }

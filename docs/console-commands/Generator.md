@@ -39,3 +39,25 @@ Generate all available registered URL routes on the system for easier testing of
 Usage: `./frontend/yii generator/urls domain`
 
 * `domain` A domain to use by default to prefix the generated urls
+
+## routes($outfile="routes.php")
+Generate a local file with the URL routes for when the memcache becomes unavailable.
+
+Usage: `./frontend/yii generator/routes outfile`
+
+* `outfile` A file to store the routes into, defaults to `config/routes.php`
+
+
+## disabled-routes($outfile="disabled-routes.php")
+Generate a local file with the disabled URL routes for when the memcache becomes unavailable.
+
+Usage: `./frontend/yii generator/disabled-routes outfile`
+
+* `outfile` A file to store the routes into, defaults to `config/disabled-routes.php`
+
+## player-disabled-routes($outfile="disabled-routes.php")
+Generate a local file with the player specific disabled URL routes for when the memcache becomes unavailable.
+
+Usage: `./frontend/yii generator/player-disabled-routes outfile`
+
+* `outfile` A file to store the routes into, defaults to `config/player-disabled-routes.php`

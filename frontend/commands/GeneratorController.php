@@ -10,6 +10,85 @@ use app\models\Stream;
 class GeneratorController extends Controller {
 
   /**
+   * Create a local file with the url routes from memcached
+   */
+  public function actionRoutes($outfile="routes.php")
+  {
+    if(\Yii::$app->sys->routes===false || \Yii::$app->sys->routes===null)
+      return;
+    try
+    {
+      $routes[]=['source'=>'', 'destination' => 'site/index'];
+      $routes[]=['source'=>'/','destination' => 'site/index'];
+      $routes=\yii\helpers\ArrayHelper::merge($routes,\yii\helpers\Json::decode(\Yii::$app->sys->routes));
+      foreach($routes as $entry)
+      {
+        $lines[]=sprintf("  '%s' => '%s',",$entry['source'],$entry['destination']);
+      }
+      $content=sprintf("<?php\nreturn [\n%s\n];", implode("\n",$lines));
+      $dirn=\Yii::getAlias("@app/config");
+      file_put_contents("{$dirn}/{$outfile}",$content);
+    }
+    catch (\Exception $e)
+    {
+      echo "Failed to generate {$outfile}\n",$e->getMessage(),"\n";
+    }
+  }
+
+  /**
+   * Create a local file with the disabled routes from memcached
+   */
+  public function actionDisabledRoutes($outfile="disabled-routes.php")
+  {
+    if(\Yii::$app->sys->disabled_routes===false || \Yii::$app->sys->disabled_routes===null)
+      return;
+    try
+    {
+      $routes=\yii\helpers\Json::decode(\Yii::$app->sys->disabled_routes);
+      foreach($routes as $entry)
+      {
+        $lines[]=sprintf("  ['route'=>'%s'],",$entry['route']);
+      }
+      $content=sprintf("<?php\nreturn [\n%s\n];", implode("\n",$lines));
+      $dirn=\Yii::getAlias("@app/config");
+      file_put_contents("{$dirn}/{$outfile}",$content);
+    }
+    catch (\Exception $e)
+    {
+      echo "Failed to generate {$outfile}\n",$e->getMessage(),"\n";
+    }
+  }
+
+  /**
+   * Create a local file with the player disabled routes from memcached
+   */
+  public function actionPlayerDisabledRoutes($outfile="player-disabled-routes.php")
+  {
+    if(\Yii::$app->sys->player_disabled_routes===false || \Yii::$app->sys->player_disabled_routes===null)
+      return;
+
+    try
+    {
+      $routes=\yii\helpers\Json::decode(\Yii::$app->sys->player_disabled_routes);
+      foreach($routes as $entry)
+      {
+        $lines[]=sprintf("  'route'=>'%s',",$entry['route']);
+      }
+      $content=sprintf("<?php\nreturn [\n%s\n];", implode("\n",$lines));
+      $dirn=\Yii::getAlias("@app/config");
+      file_put_contents("{$dirn}/{$outfile}",$content);
+    }
+    catch (\yii\base\InvalidArgumentException $e)
+    {
+      echo "JSON::decode failure: ".$e->getMessage(),"\n";
+    }
+    catch (\Exception $e)
+    {
+      echo "Failed to generate $outfile\n",$e->getMessage(),"\n";
+    }
+  }
+
+  /**
    * Generate local mail templates from database
    */
   public function actionEmailTemplates($interval=60)
