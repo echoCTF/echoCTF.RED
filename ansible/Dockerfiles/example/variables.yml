@@ -31,6 +31,9 @@ container:
 #  network_id: "" # for moving target outside of a network
 #  migration_date: "YYYY-mm-dd HH:MM:SS"
 
+# Make target ondemand
+#TargetOndemand: true
+
 ETSCTF_ROOT_FLAG: "ETSCTF_ROOT_FLAG"
 ETSCTF_ENV_FLAG: "ETSCTF_ENV_FLAG"
 ETSCTF_SHADOW_FLAG: "ETSCTF_SHADOW_FLAG"
