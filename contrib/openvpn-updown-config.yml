@@ -16,4 +16,4 @@ mysql:
   database: "{{db.name}}"
 
 memcache:
-  host: "{{memcache.host}}"
+  host: "{{memc.host}}"
