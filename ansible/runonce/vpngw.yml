@@ -54,6 +54,7 @@
       - php-pdo_mysql%7.4
       - php-zip%7.4
       - py3-mysqlclient
+      - go
   vars_prompt:
     - name: "myname"
       prompt: "1/18. System hostname?"
@@ -403,6 +404,7 @@
       - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
 
 
+## XXX FIXME: REPLACE WITH echoctf/openvpn-updown
 
   - name: Create echoctf_updown_mysql.sh
     template:
