@@ -95,7 +95,6 @@ echo GridView::widget([
         'contentOptions' => ['class' => 'text-center'],
         'encodeLabel'=>false,
         'label'=>false,
-        //'label'=>'<abbr title="Target has writeups or not?"><i class="fa fa-question-circle" aria-hidden="true"></i></abbr>',
         'value'=>function($model) {return $model->approved_writeups === 0 ? '' : '<abbr title="Writeups are available for this target."><i class="fas fa-book text-primary" style="font-size: 1.2em;"></i></abbr>';},
       ],
       [
