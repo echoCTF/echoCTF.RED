@@ -86,7 +86,7 @@ echo GridView::widget([
         'headerOptions' => ["style"=>'width: 4vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
         'contentOptions'=> ["style"=>'width: 6vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
         'format'=>'raw',
-        'value'=>function($model) { if($model->on_ondemand && $model->ondemand_state===-1) return '<abbr title="System is powered down">0.0.0.0</abbr>'; else return long2ip($model->ip);}
+        'value'=>function($model) { if($model->on_ondemand && $model->ondemand_state===-1) return '<abbr title="System currently powered down. Go to the target page to power it up.">0.0.0.0</abbr>'; else return long2ip($model->ip);}
       ],
       [
         'visible'=>!in_array('writeup', $hidden_attributes),
@@ -96,7 +96,7 @@ echo GridView::widget([
         'encodeLabel'=>false,
         'label'=>false,
         //'label'=>'<abbr title="Target has writeups or not?"><i class="fa fa-question-circle" aria-hidden="true"></i></abbr>',
-        'value'=>function($model) {return $model->approved_writeups === 0 ? '' : '<abbr title="Writeups available"><i class="fas fa-book text-primary" style="font-size: 1.2em;"></i></abbr>';},
+        'value'=>function($model) {return $model->approved_writeups === 0 ? '' : '<abbr title="Writeups are available for this target."><i class="fas fa-book text-primary" style="font-size: 1.2em;"></i></abbr>';},
       ],
       [
         'visible'=>!in_array('difficulty', $hidden_attributes),
