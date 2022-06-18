@@ -54,6 +54,7 @@
       - php-pdo_mysql%7.4
       - php-zip%7.4
       - py3-mysqlclient
+      - go
   vars_prompt:
     - name: "myname"
       prompt: "1/18. System hostname?"
@@ -403,8 +404,21 @@
       - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
 
 
+  - name: Create openvpn-updown config on chroot
+    template:
+      src:  "{{playbook_dir}}/../../contrib/openvpn-updown-config.yml"
+      dest: /var/openvpn/chrootjail/etc/config.yml
+    vars:
+      memc:
+        host: "{{db_host}}:11211"
+      db:
+        name: "{{db_name}}"
+        host: "tcp(127.0.0.1:3306)"
+        user: "root"
+        pass: ""
 
-  - name: Create echoctf_updown_mysql.sh
+  ## XXX FIXME: REPLACE WITH echoctf/openvpn-updown
+  - name: Create echoctf_updown_mysql.sh (will be replaced)
     template:
       src:  "{{playbook_dir}}/../../contrib/echoctf_updown_mysql.sh"
       dest: /etc/openvpn/echoctf_updown_mysql.sh

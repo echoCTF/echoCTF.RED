@@ -1,0 +1,19 @@
+loglevel: info
+logfile: /tmp/updown.log
+pfctl:
+  enable: true
+  path: "/sbin/pfctl"
+  suffix: "_clients"
+
+mysql:
+  host: "{{db.host}}"
+# Refer to the DSN connection string
+# https://github.com/go-sql-driver/mysql#dsn-data-source-name
+# host: "tcp(127.0.0.1:3306)"
+# properties: "param1=value1&...&paramN=valueN"
+  username: "{{db.user}}"
+  password: "{{db.pass}}"
+  database: "{{db.name}}"
+
+memcache:
+  host: "{{memc.host}}"
