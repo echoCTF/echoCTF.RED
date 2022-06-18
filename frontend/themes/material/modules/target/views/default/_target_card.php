@@ -27,7 +27,7 @@ Card::begin([
             'icon'=>sprintf('<img src="%s" class="img-fluid" style="max-width: 10rem; max-height: 4rem;" />', $target->logo),
             'color'=>'warning',
             'subtitle'=>$subtitle,
-            'title'=>sprintf('%s / %s', $target->name, $private ? Html::tag('b',$target_ip,["class"=>'text-danger']): $target_ip),
+            'title'=>sprintf('%s / %s', $target->name, $private ? Html::tag('b',$target_ip,["class"=>'text-danger','data-toggle'=>'tooltip','title'=>"The IP of your private instance."]): $target_ip),
             'footer'=>sprintf('<div class="stats">%s</div><span>%s</span>', $target->purpose, TargetCardActions::widget(['model'=>$target,'identity'=>$identity]) ),
         ]);
 echo "<p class='text-danger'><i class='fas fa-flag'></i> ", $target->total_treasures, ": Flag".($target->total_treasures > 1 ? 's' : '')." ";
