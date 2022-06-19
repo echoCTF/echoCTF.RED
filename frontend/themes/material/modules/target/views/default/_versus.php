@@ -57,7 +57,7 @@ if($headshot)
           <img src="/images/1stheadshot.svg" class="img-fluid" style="max-height: 200px">
         <?php else:?>
         <div style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
-          <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
+          <span class="<?=$target->progress == 100 ? "vscomplete" : "vsincomplete"?>"></span>
         </div>
         <?php endif;?>
         <div class="progress">
