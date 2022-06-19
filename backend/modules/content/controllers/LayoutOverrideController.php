@@ -12,21 +12,14 @@ use yii\filters\VerbFilter;
 /**
  * LayoutOverrideController implements the CRUD actions for LayoutOverride model.
  */
-class LayoutOverrideController extends Controller
+class DefaultController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['POST'],
-                ],
-            ],
-        ];
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
 
     /**
