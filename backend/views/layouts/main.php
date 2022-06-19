@@ -57,6 +57,7 @@ AppAsset::register($this);
                 ['label' => 'Footer logos', 'url' => ['/content/default/footer-logos'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'CSS Override', 'url' => ['/content/default/css-override'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'JS Override', 'url' => ['/content/default/js-override'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Layout Override', 'url' => ['/content/layout-override/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'VPN Templates', 'url' => ['/content/vpn-template/index'], 'visible' => !Yii::$app->user->isGuest, ],
               ]
             ],
