@@ -9,25 +9,9 @@ use app\modules\game\models\Headshot;
 use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\modules\target\models\Writeup;
 use yii\helpers\Markdown;
-
+$this->loadLayoutOverrides=true;
 $spinlink=null;
 $target_actions=null;
-
-if(date('md') === "0214")
-{
-  $headshot_icon='fa-heart';
-  $noheadshot_icon='fa-heartbeat';
-}
-elseif(date('md')==="1014")
-{
-  $headshot_icon='fa-birthday-cake';
-  $noheadshot_icon='fa-candy-cane';
-}
-else
-{
-  $headshot_icon='fa-skull-crossbones';
-  $noheadshot_icon='fa-not-equal';
-}
 $player_timer='';
 $twmsg=sprintf('Hey check this out, %s have found %d out of %d services and %d out of %d flags on [%s]', $identity->isMine ? "I" : $identity->twitterHandle, $target->player_findings, $target->total_findings, $target->player_treasures, $target->total_treasures, $target->name);
 if($target->progress == 100)
@@ -57,7 +41,7 @@ if($headshot)
           <img src="/images/1stheadshot.svg" class="img-fluid" style="max-height: 200px">
         <?php else:?>
         <div style="line-height: 1.5; font-size: 7vw; vertical-align: bottom; text-align: center;" class="<?=$target->progress == 100 ? 'text-primary' : 'text-danger'?>">
-          <i class="fa <?=$target->progress == 100 ? $headshot_icon : $noheadshot_icon?>"></i>
+          <span class="<?=$target->progress == 100 ? "vscomplete" : "vsincomplete"?>"></span>
         </div>
         <?php endif;?>
         <div class="progress">

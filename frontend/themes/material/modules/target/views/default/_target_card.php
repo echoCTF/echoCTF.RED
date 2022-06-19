@@ -4,7 +4,8 @@ use yii\helpers\Url;
 use app\widgets\Card;
 use app\widgets\targetcardactions\TargetCardActions;
 use app\modules\game\models\Headshot;
-$target_ip=long2ip($target->ip);
+$display_ip=$target_ip=long2ip($target->ip);
+
 if($target->on_ondemand && $target->ondemand_state===-1)
 {
   $target_ip="0.0.0.0";

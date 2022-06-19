@@ -7,6 +7,7 @@ namespace app\components;
  */
 class echoCTFView extends \yii\web\View
 {
+  public $loadLayoutOverrides=false;
   public $_title;
   public $_url;
   public $_fluid;
@@ -28,10 +29,11 @@ class echoCTFView extends \yii\web\View
       $this->title=sprintf("%s", \Yii::$app->sys->event_name);
     }
 
-      $this->registerJsOverrides();
+    $this->registerJsOverrides();
+    $this->registerCssOverrides();
 
-      $this->registerCssOverrides();
-
+    if($this->loadLayoutOverrides!==false)
+      $this->registerLayoutOverrides();
     parent::init();
     if(!\Yii::$app->user->isGuest && \Yii::$app->user->identity->sSL!==null && \Yii::$app->user->identity->sSL->expires)
       \Yii::$app->getSession()->setFlash('warning', 'Your VPN key is about to expire. Go to your profile and '.\yii\helpers\Html::a('revoke it',['/profile/revoke'],['class'=>'text-dark text-bold','data-method'=>'post']).' to get a new one generated.');
@@ -174,6 +176,7 @@ class echoCTFView extends \yii\web\View
     }
 
   }
+
   public function registerCssOverrides()
   {
     if(\Yii::$app->sys->css_override===false || trim(\Yii::$app->sys->css_override)==="")
@@ -193,7 +196,25 @@ class echoCTFView extends \yii\web\View
           ['depends' => [\app\assets\MaterialAsset::class]]
       );
     }
-
-
   }
+
+  public function registerLayoutOverrides()
+  {
+    $qcmd=\Yii::$app->db->createCommand("SELECT css,js FROM layout_override WHERE (player_id=:player_id or player_id IS NULL) AND ((NOW() BETWEEN valid_from AND valid_until) OR (repeating=1 AND NOW() BETWEEN DATE_FORMAT(valid_from,CONCAT(YEAR(NOW()),'-%m-%d')) AND DATE_FORMAT(valid_until,CONCAT(YEAR(NOW()),'-%m-%d'))))")->bindValue(':player_id',\Yii::$app->user->id,\PDO::PARAM_INT);
+    $records=$qcmd->queryAll();
+
+    foreach($records as $rec)
+    {
+      if($rec['js']!==null)
+      {
+        $this->registerJs($rec['js'],self::POS_READY);
+      }
+
+      if($rec['css']!==null)
+      {
+        $this->registerCss($rec['css']);
+      }
+    }
+  }
+
 }
