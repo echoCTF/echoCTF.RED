@@ -58,7 +58,7 @@ class CronController extends Controller
   {
     if(file_exists("/tmp/cron-targetnetmigration.lock"))
     {
-      echo date("Y-m-d H:i:s ")."PowerOperations: /tmp/cron-targetnetmigration.lock exists, skipping execution\n";
+      echo date("Y-m-d H:i:s ")."TargetNetMigrations: /tmp/cron-targetnetmigration.lock exists, skipping execution\n";
       return;
     }
     touch("/tmp/cron-targetnetmigration.lock");
@@ -362,12 +362,18 @@ class CronController extends Controller
       foreach($targets->all() as $target)
       {
         printf("Target %s ", $target->fqdn);
-        $target->pull();
-        printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $target->spin() ? "success" : "fail");
-        $target->status='online';
-        $target->scheduled_at=null;
-        $target->active=1;
-        $target->save();
+        try {
+          printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $target->spin() ? "success" : "fail");
+          $target->pull();
+          $target->status='online';
+          $target->scheduled_at=null;
+          $target->active=1;
+          $target->save();
+        }
+        catch (\Exception $e)
+        {
+          echo "fail. ",$e->getMessage(),"\n";
+        }
       }
     }
     catch (\Exception $e)
