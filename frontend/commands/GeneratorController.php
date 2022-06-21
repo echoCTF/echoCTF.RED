@@ -111,7 +111,7 @@ class GeneratorController extends Controller {
    * thumbnail logo. Place the target name and purpose on top of the image.
    * Save generated image based on target name.
    */
-  public function actionTargetSocialImages($target_id=null)
+  public function actionTargetSocialImages($target_id=null,$pending=true)
   {
     if($target_id===null)
       $targets=Target::find()->all();
@@ -121,7 +121,10 @@ class GeneratorController extends Controller {
     $font = \Yii::getAlias("@app/web/fonts/RobotoMono-Regular.ttf");
     foreach($targets as $target)
     {
-      try {
+      if($pending===true && file_exists(\Yii::getAlias("@app/web/images/targets/".$target->name.".png"))===true)
+        continue;
+      try
+      {
         $target_img=imagecreatefrompng(\Yii::getAlias("@app/web/images/targets/_".$target->name."-thumbnail.png"));
         $background_img=imagecreatefrompng(\Yii::getAlias("@app/web/images/twnew-target.png"));
         imagealphablending($target_img, true);
@@ -163,7 +166,7 @@ class GeneratorController extends Controller {
       } catch (\Exception $e) {
         echo "Failed generation for ",$target->name, ". Error: ",$e->getMessage(),"\n";
       }
-    }
+  }
   }
   /**
    * Generate sitemap.xml
