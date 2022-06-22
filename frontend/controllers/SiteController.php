@@ -250,7 +250,7 @@ class SiteController extends \app\components\BaseController
             }
             else
             {
-              Yii::$app->session->setFlash('notice', 'New password saved but failed to auto sign-in.');
+              Yii::$app->session->setFlash('warning', 'New password saved but failed to auto sign-in.');
             }
 
             return $this->goHome();
