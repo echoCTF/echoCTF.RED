@@ -27,7 +27,7 @@ class SiteController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'changelog', 'register', 'request-password-reset', 'verify-email', 'resend-verification-email', 'changelog', 'captcha'],
+                'only' => ['login','logout', 'changelog', 'register', 'request-password-reset', 'verify-email', 'resend-verification-email', 'changelog', 'captcha'],
                 'rules' => [
                     'eventActive'=>[
                       'actions' => ['register', 'verify-email', 'resend-verification-email'],
@@ -38,9 +38,13 @@ class SiteController extends \app\components\BaseController
                         'roles' => ['@'],
                     ],
                     [
-                        'actions' => ['register','login'],
+                        'actions' => ['register','login','verify-email', 'resend-verification-email','request-password-reset', 'index','captcha'],
                         'allow' => false,
                         'roles' => ['@'],
+                        'denyCallback' => function ($rule, $action) {
+                            \Yii::$app->session->setFlash('warning', 'Only guests can access this area.');
+                            return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage],303);
+                          },
                     ],
                     'teamsAccess'=>[
                        'actions' => ['index'],
@@ -74,7 +78,7 @@ class SiteController extends \app\components\BaseController
                         },
                     ],
                     [
-                      'actions' => ['index','register','verify-email', 'resend-verification-email','captcha', 'request-password-reset',],
+                      'actions' => ['login','index','register','verify-email', 'resend-verification-email','captcha', 'request-password-reset',],
                       'allow' => true,
                       'roles'=>['?']
                     ],
@@ -246,7 +250,7 @@ class SiteController extends \app\components\BaseController
             }
             else
             {
-              Yii::$app->session->setFlash('notice', 'New password saved but failed to signin.');
+              Yii::$app->session->setFlash('warning', 'New password saved but failed to auto sign-in.');
             }
 
             return $this->goHome();
