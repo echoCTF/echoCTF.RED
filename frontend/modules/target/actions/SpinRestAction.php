@@ -17,18 +17,21 @@ class SpinRestAction extends \yii\rest\ViewAction
     \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
     try
     {
-      $target=$this->findModelProgres($id);
+      $target=$this->findModelProgress($id);
       $module = \app\modules\target\Module::getInstance();
 
       $module->checkNetwork($target);
       $this->checkSpinable($target);
       if(Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$target->id)
       {
-
         Yii::$app->user->identity->instance->updateAttributes(['reboot'=>1]);
         Yii::$app->session->setFlash('success', sprintf('Target instance [%s] scheduled for restart. You will receive a notification when the operation is completed.', $target->name));
         return $this->redirectTo();
       }
+      $msg="Target [%s] queued for restart. You will receive a notification when the operation is completed.";
+      if($target->ondemand && $target->ondemand->state===-1)
+        $msg="Target [%s] queued to power-up. You will receive a notification when the operation is completed.";
+
       $playerSpin=Yii::$app->user->identity->profile->spins;
       $SQ=new \app\modules\target\models\SpinQueue;
       $SQ->player_id=(int) \Yii::$app->user->id;
@@ -36,7 +39,7 @@ class SpinRestAction extends \yii\rest\ViewAction
       $playerSpin->counter=intval($playerSpin->counter) + 1;
       $playerSpin->total=intval($playerSpin->total) + 1;
       if($SQ->save() !== false && $playerSpin->save() !== false)
-        Yii::$app->session->setFlash('success', sprintf('Target [%s] queued for restart. You will receive a notification when the operation is completed.', $target->name));
+        Yii::$app->session->setFlash('success', sprintf($msg, $target->name));
       else
         throw new NotFoundHttpException('Failed to queue target for restart.');
 
@@ -58,9 +61,9 @@ class SpinRestAction extends \yii\rest\ViewAction
     return Yii::$app->getResponse()->redirect(['/target/default/index']);
   }
 
-  protected function findModelProgres($id)
+  protected function findModelProgress($id)
   {
-    if(($model=Target::find()->where(['t.id'=>$id])->player_progress(\Yii::$app->user->id)->one()) !== null)
+    if(($model=Target::find()->player_progress(\Yii::$app->user->id)->where(['t.id'=>$id])->one()) !== null)
     {
         return $model;
     }

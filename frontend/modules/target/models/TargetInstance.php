@@ -7,6 +7,7 @@ use app\models\Player;
 use app\modules\target\models\Target;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "target_instance".
@@ -42,10 +43,15 @@ class TargetInstance extends \yii\db\ActiveRecord
     public function behaviors()
     {
         return [
-          [
-            'class'=>TimestampBehavior::class,
-            'value' => new Expression('NOW()'),
-          ]
+          'typecast' => [
+                'class' => AttributeTypecastBehavior::class,
+                'attributeTypes' => [
+                    'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
+                ],
+                'typecastAfterValidate' => true,
+                'typecastBeforeSave' => false,
+                'typecastAfterFind' => true,
+          ],
         ];
     }
 
@@ -160,5 +166,5 @@ class TargetInstance extends \yii\db\ActiveRecord
       }
     }
 
-    
+
 }
