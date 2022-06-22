@@ -78,7 +78,7 @@ class SiteController extends \app\components\BaseController
                         },
                     ],
                     [
-                      'actions' => ['index','register','verify-email', 'resend-verification-email','captcha', 'request-password-reset',],
+                      'actions' => ['login','index','register','verify-email', 'resend-verification-email','captcha', 'request-password-reset',],
                       'allow' => true,
                       'roles'=>['?']
                     ],
@@ -250,7 +250,7 @@ class SiteController extends \app\components\BaseController
             }
             else
             {
-              Yii::$app->session->setFlash('notice', 'New password saved but failed to signin.');
+              Yii::$app->session->setFlash('notice', 'New password saved but failed to auto sign-in.');
             }
 
             return $this->goHome();
