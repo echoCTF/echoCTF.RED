@@ -78,6 +78,7 @@ Perform the needed migrations and initialize needed application data
 ```sh
 docker exec -it echoctfred_backend ./backend/yii migrate --interactive=0
 docker exec -it echoctfred_backend ./backend/yii init_data --interactive=0
+docker exec -it echoctfred_backend ./backend/yii migrate-sales --interactive=0
 ```
 
 

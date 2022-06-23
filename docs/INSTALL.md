@@ -52,6 +52,8 @@ cd ..
 * Install the needed migrations
 ```
 ./backend/yii migrate --interactive=0
+./backend/yii init_data --interactive=0
+./backend/yii migrate-sales --interactive=0
 ```
 
 * The migrations for the live platform at https://echoCTF.RED are stored here. You don't need to run this as it will most likely fail.
@@ -126,7 +128,7 @@ For Apache it could be the following:
             # Allow from all
         </Directory>
     </VirtualHost>
-```    
+```
 
 For nginx:
 ```nginx

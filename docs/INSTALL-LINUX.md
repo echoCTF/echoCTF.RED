@@ -98,6 +98,7 @@ composer install --no-dev --prefer-dist --no-progress --no-suggest
 cd /var/www/echoCTF.RED
 ./backend/yii migrate --interactive=0
 ./backend/yii init_data --interactive=0
+./backend/yii migrate-sales --interactive=0
 ```
 
 ### Create an admin user for the backend.
