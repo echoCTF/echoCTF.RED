@@ -109,7 +109,7 @@ class BaseController extends \yii\web\Controller
 
     protected function getTeamsRequired()
     {
-      if(\Yii::$app->sys->team_required===false)
+      if(\Yii::$app->sys->team_required===false || \Yii::$app->user->isGuest)
       {
          return false;
       }
@@ -139,7 +139,7 @@ class BaseController extends \yii\web\Controller
           \Yii::error(var_export($this->request->validateCsrfToken(), true));
           \Yii::error(var_export($this->request->getCsrfToken(), true));
           \Yii::error(var_export($this->request->getMethod(), true));
-          \Yii::error(var_export($_SESSION, true));  
+          \Yii::error(var_export($_SESSION, true));
         }
         Yii::$app->session->setFlash('error', Yii::t('yii', 'Unable to verify your submission CSRF token, please try again.'));
         $this->goBack(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage]);
