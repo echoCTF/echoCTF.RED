@@ -8,11 +8,12 @@ use app\modules\content\models\LayoutOverrideSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * LayoutOverrideController implements the CRUD actions for LayoutOverride model.
  */
-class DefaultController extends \app\components\BaseController
+class LayoutOverrideController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
