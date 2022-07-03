@@ -107,9 +107,9 @@ class SysconfigController extends \app\components\BaseController
       $model=new ConfigureForm();
       if($model->load(Yii::$app->request->post()) && $model->save())
       {
+        Yii::$app->session->setFlash('success','Configuration saved');
         return $this->redirect(['configure']);
       }
-
       return $this->render('configure', [
           'model' => $model,
       ]);
