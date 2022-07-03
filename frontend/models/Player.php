@@ -273,8 +273,8 @@ class Player extends PlayerAR implements IdentityInterface
         {
             return false;
         }
-
-        $timestamp=(int) substr($token, strrpos($token, '_') + 1);
+        return true;
+        $timestamp=(int) substr($token, strrpos($token, '') + 1);
         return $timestamp + $expire >= time();
     }
     /**
