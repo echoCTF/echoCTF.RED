@@ -61,7 +61,11 @@ $this->params['breadcrumbs'][]=$this->title;
               'format'=>'raw',
               'value'=>function($model){if(!empty($model->verification_token)) return Html::a($model->verification_token,'//'.Yii::$app->sys->offense_domain.'/verify-email?token='.$model->verification_token,['target'=>'_blank']);}
             ],
-            'password_reset_token',
+            [
+              'attribute'=>'password_reset_token',
+              'format'=>'raw',
+              'value'=>function($model){if(!empty($model->password_reset_token)) return Html::a($model->password_reset_token,'//'.Yii::$app->sys->offense_domain.'/reset-password?token='.$model->password_reset_token,['target'=>'_blank']);}
+            ],
             'created',
             'ts',
         ],
