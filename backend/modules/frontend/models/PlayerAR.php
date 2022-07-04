@@ -88,6 +88,8 @@ class PlayerAR extends \yii\db\ActiveRecord
     {
         return [
             [['username', 'type', 'status'], 'required'],
+            [['verification_token','password_reset_token'], 'string'],
+            [['verification_token','password_reset_token'], 'default','value'=>null],
             [['type'], 'string'],
             [['active', 'status'], 'integer'],
             [['academic'], 'boolean'],
