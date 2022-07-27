@@ -130,6 +130,7 @@ AppAsset::register($this);
                 ['label' => 'Targets', 'url' => ['/infrastructure/target/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Ondemand', 'url' => ['/infrastructure/target-ondemand/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Target metadata', 'url' => ['/infrastructure/target-metadata/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
+                ['label' => 'Target State', 'url' => ['/infrastructure/target-state/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Target Instances', 'url' => ['/infrastructure/target-instance/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Network Targets', 'url' => ['/infrastructure/network-target/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
                 ['label' => 'Network Target Schedule', 'url' => ['/infrastructure/network-target-schedule/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
