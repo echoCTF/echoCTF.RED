@@ -419,8 +419,9 @@
     command: "{{item}}"
     with_items:
       - mkdir -p /home/participantUI/{{domain_name}}/frontend/web/assets
-      - mkdir -p /home/participantUI/{{domain_name}}/frontend/web/avatars/team
+      - mkdir -p /home/participantUI/{{domain_name}}/frontend/web/images/avatars/team
       - chown -R participantUI /home/participantUI/{{domain_name}}/frontend/web/assets
+      - chown -R participantUI /home/participantUI/{{domain_name}}/frontend/web/images/avatars/
 
   - name: configure participant rc.d
     command: rcctl {{item}}
