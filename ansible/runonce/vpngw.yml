@@ -277,15 +277,32 @@
   - name: Clone memcached udf repo
     git:
       repo: 'https://github.com/echoCTF/memcached_functions_mysql.git'
-      dest: /tmp/memcached_functions_mysql
+      dest: /usr/src/memcached_functions_mysql
       clone: yes
       force: yes
       depth: 1
 
+  - name: Clone heartbeatd repo
+    git:
+      repo: 'https://github.com/echoCTF/heartbeatd.git'
+      dest: /usr/src/heartbeatd
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Clone openvpn-updown repo
+    git:
+      repo: 'https://github.com/echoCTF/openvpn-updown.git'
+      dest: /usr/src/openvpn-updown
+      clone: yes
+      force: yes
+      depth: 1
+
+
   - name: Clone findingsd repo
     git:
       repo: 'https://github.com/echoCTF/findingsd.git'
-      dest: /tmp/findingsd
+      dest: /usr/src/findingsd
       clone: yes
       force: yes
       depth: 1
@@ -293,17 +310,31 @@
   - name: Bootstrap memcached udf
     shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 ./config/bootstrap
     args:
-      chdir: /tmp/memcached_functions_mysql
+      chdir: /usr/src/memcached_functions_mysql
 
   - name: Configure memcached udf
     shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
     args:
-      chdir: /tmp/memcached_functions_mysql
+      chdir: /usr/src/memcached_functions_mysql
+
+  - name: make install heartbeatd
+    shell:
+    args:
+      chdir: /usr/src/heartbeatd
+    with_items:
+      - "make"
+      - "install -c -s -o root -g bin -m 555 heartbeatd /usr/local/sbin/heartbeatd"
+      - "install -c -o root -g wheel -m 555 heartbeatd.rc /etc/rc.d/heartbeatd"
+
+  - name: make install openvpn-updown
+    shell: GOOS=openbsd CGO_ENABLED=0 go build -a -ldflags '-s -w -extldflags "-static"' -gcflags=-G=3 -o /etc/openvpn/openvpn-updown /usr/src/openvpn-updown
+    args:
+      chdir: /usr/src/openvpn-updown
 
   - name: make install memcached udf
     shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 make all install
     args:
-      chdir: /tmp/memcached_functions_mysql
+      chdir: /usr/src/memcached_functions_mysql
 
   - name: Create temporary findingsd-federated.sql
     template:
@@ -313,7 +344,7 @@
   - name: Build findingsd
     shell: "{{item}}"
     args:
-      chdir: /tmp/findingsd
+      chdir: /usr/src/findingsd
     with_items:
       - "make"
       - "install -c -s -o root -g bin -m 555 findingsd /usr/local/sbin/findingsd"
@@ -366,6 +397,7 @@
       content: "up\n"
       dest: "{{item}}"
     with_items:
+      - /etc/hostname.pflog2
       - /etc/hostname.pflog1
       - /etc/hostname.pflog0
 
@@ -404,18 +436,6 @@
       - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
 
 
-  - name: Create openvpn-updown config on chroot
-    template:
-      src:  "{{playbook_dir}}/../../contrib/openvpn-updown-config.yml"
-      dest: /var/openvpn/chrootjail/etc/config.yml
-    vars:
-      memc:
-        host: "{{db_host}}:11211"
-      db:
-        name: "{{db_name}}"
-        host: "tcp(127.0.0.1:3306)"
-        user: "root"
-        pass: ""
 
   ## XXX FIXME: REPLACE WITH echoctf/openvpn-updown
   - name: Create echoctf_updown_mysql.sh (will be replaced)
@@ -511,8 +531,22 @@
       target: "{{item}}"
       login_user: "root"
     with_items:
-      - "/tmp/memcached_functions_mysql/sql/install_functions.sql"
+      - "/usr/src/memcached_functions_mysql/sql/install_functions.sql"
       - "/tmp/findingsd.sql"
+
+#  - name: Create openvpn-updown config on chroot
+#    template:
+#      src:  "{{playbook_dir}}/../../contrib/openvpn-updown-config.yml"
+#      dest: /var/openvpn/chrootjail/etc/config.yml
+#    vars:
+#      memc:
+#        host: "{{db_host}}:11211"
+#      db:
+#        name: "{{db_name}}"
+#        host: "tcp(127.0.0.1:3306)"
+#        user: "root"
+#        pass: ""
+
 
   - name: Set rc scripts order
     raw: rcctl order mysqld findingsd openvpn
