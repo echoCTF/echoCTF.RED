@@ -45,6 +45,7 @@ $this->params['breadcrumbs'][]=$this->title;
                               'confirm' => Yii::t('app', 'Are you sure you want to delete this profile?'),
                               'method' => 'post',
                           ],]],
+                          ['label' => 'View player', 'url' => ['player/view','id'=>$model->player_id]],
                           ['label' => 'Update player', 'url' => ['player/update','id'=>$model->player_id]],
                           ['label' => 'Delete player', 'url' => ['player/update','id'=>$model->player_id],'linkOptions'=>['data' => [
                               'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
@@ -59,7 +60,8 @@ $this->params['breadcrumbs'][]=$this->title;
                                 'method' => 'post',
                             ],
                           ]],
-
+                          ['label' => 'Activation URL', 'url' => "//".Yii::$app->sys->offense_domain.'/verify-email?token='.$model->owner->verification_token,'linkOptions'=>['target'=>'_blank'],'visible'=>$model->owner->verification_token!=null],
+                          ['label' => 'Password Reset URL', 'url' => "//".Yii::$app->sys->offense_domain.'/reset-password?token='.$model->owner->password_reset_token,'linkOptions'=>['target'=>'_blank'],'visible'=>$model->owner->password_reset_token!=null],
                       ],
                   ]);
               ?>
