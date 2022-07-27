@@ -10,6 +10,7 @@
 * `leaderboard_show_zero`: Show zero points on leaderboard
 * `leaderboard_visible_after_event_end`: Show leaderboard after event end
 * `leaderboard_visible_before_event_start`: Show leaderboard before event start
+* `all_players_vip`: Allow all players to have VIP features enabled
 
 Not activated by default on current code-base but are going to
 * _`require_activation`_ Whether it is required for users to activate their accounts
