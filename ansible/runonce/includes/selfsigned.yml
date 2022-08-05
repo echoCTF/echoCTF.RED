@@ -1,0 +1,7 @@
+---
+- name: Generate server self-signed cert
+  command: "{{item}}"
+  with_items:
+    - "openssl genrsa -out /etc/nginx/{{domain_name}}-server.key 4096"
+    - 'openssl req -new -key /etc/nginx/{{domain_name}}-server.key -out /etc/nginx/{{domain_name}}-server.csr -subj "/C=GR/ST=echoCTF/CN={{domain_name}}"'
+    - 'openssl x509 -sha256 -req -days 365 -in /etc/nginx/{{domain_name}}-server.csr -signkey /etc/nginx/{{domain_name}}-server.key -out /etc/nginx/{{domain_name}}-server.crt'
