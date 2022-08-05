@@ -31,6 +31,7 @@
     rcctl:
       - { name: check_quotas, state: "disable" }
       - { name: cron, state: "disable" }
+      - { name: resolvd, state: "disable" }
       - { name: ntpd, state: "enable" }
       - { name: pflogd, state: "disable" }
       - { name: slaacd, state: "disable" }
@@ -55,6 +56,8 @@
       - php-zip%7.4
       - py3-mysqlclient
       - go
+      - p5-Net-Pcap
+      - p5-NetPacket
   vars_prompt:
     - name: "myname"
       prompt: "1/18. System hostname?"
@@ -318,7 +321,7 @@
       chdir: /usr/src/memcached_functions_mysql
 
   - name: make install heartbeatd
-    shell:
+    shell: "{{item}}"
     args:
       chdir: /usr/src/heartbeatd
     with_items:
