@@ -256,6 +256,8 @@
     - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
     - { cmd: "touch /etc/registry_clients.conf", creates: "/etc/registry_clients.conf" }
     - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
+    - { cmd: "touch /etc/docker_clients.conf", creates: "/etc/docker_clients.conf" }
+    - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
     - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
     - { cmd: "touch /etc/targets_networks.conf", creates: "/etc/targets_networks.conf" }
     - { cmd: "touch /etc/targets_anchor.conf", creates: "/etc/targets_anchor.conf" }
@@ -289,7 +291,7 @@
       - chroot
 
   - name: copy chroot files
-    shell: cp -p {{item}} /home/moderatortUI/$(dirname {{item}})
+    shell: cp -p {{item}} /home/moderatorUI/$(dirname {{item}})
     with_items: "{{CHROOT_ENV}}"
     tags:
       - chroot
@@ -405,6 +407,7 @@
   - name: Generate DH params file for nginx
     command: openssl dhparam -out /etc/ssl/private/dhparam.pem 2048
 
+  - ansible.builtin.include: includes/selfsigned.yml
 
   - name: Fix needed permissions
     file:
