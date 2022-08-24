@@ -86,6 +86,9 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'mail_port')->textInput(['maxlength' => true])->hint('Mail port (eg. 25)') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'mail_username')->textInput(['maxlength' => true])->hint('Mail server username') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'mail_password')->textInput(['maxlength' => true])->hint('Mail server password') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'mail_encryption')->textInput(['maxlength' => true])->hint('Mail server encryption (ssl,tls,none)') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'mail_verify_peer')->checkbox()->hint('Verify peer sertificate?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'mail_verify_peer_name')->checkbox()->hint('Verify peer name from certificate?') ?></div>
         </div>
         <hr/>
 
