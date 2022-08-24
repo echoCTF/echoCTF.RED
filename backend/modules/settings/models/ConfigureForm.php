@@ -43,6 +43,9 @@ class ConfigureForm extends Model
     public $mail_port;
     public $mail_username;
     public $mail_password;
+    public $mail_encryption;
+    public $mail_verify_peer;
+    public $mail_verify_peer_name;
     public $mail_useFileTransport;
     public $online_timeout;
     public $spins_per_day;
@@ -95,6 +98,9 @@ class ConfigureForm extends Model
             'mail_username',
             'mail_password',
             'mail_useFileTransport',
+            'mail_encryption',
+            'mail_verify_peer',
+            'mail_verify_peer_name',
             'online_timeout',
             'spins_per_day',
             'team_manage_members',
@@ -124,6 +130,9 @@ class ConfigureForm extends Model
               'mail_port',
               'mail_username',
               'mail_password',
+              'mail_encryption',
+              'mail_verify_peer',
+              'mail_verify_peer_name',
               'profile_visibility',
               'default_homepage',
               'offense_domain',
@@ -147,6 +156,7 @@ class ConfigureForm extends Model
               'mail_port',
               'mail_username',
               'mail_password',
+              'mail_encryption',
               'profile_visibility',
               'default_homepage',
               'offense_domain',
@@ -192,6 +202,8 @@ class ConfigureForm extends Model
           [[
             'dashboard_is_home',
             'mail_useFileTransport',
+            'mail_verify_peer',
+            'mail_verify_peer_name',
             'event_active',
             'teams',
             'team_required',
@@ -246,6 +258,9 @@ class ConfigureForm extends Model
           'mail_fromName'=>'Mail From Name',
           'mail_host'=>'Mail Host',
           'mail_port'=>'Mail Port',
+          'mail_encryption'=>'Mail encryption',
+          'mail_verify_peer' => 'Mail verify peer',
+          'mail_verify_peer_name' => 'Mail verify peer name',
           'online_timeout' => 'Timeout for user online key to expire',
           'spins_per_day'=>'Spins allowed per day',
           'team_manage_members' => 'Team Manage Members',
