@@ -8,7 +8,8 @@ class Mailer extends \yii\swiftmailer\Mailer
     parent::init();
 
     $this->useFileTransport=Yii::$app->sys->mail_useFileTransport;
-
+    $this->enableSwiftMailerLogging=true;
+    
     if(Yii::$app->sys->mail_host !== false)
     {
       $this->transport->setHost(Yii::$app->sys->mail_host);
