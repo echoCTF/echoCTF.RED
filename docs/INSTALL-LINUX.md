@@ -17,6 +17,7 @@ php-curl php-memcached
 ### Enable event scheduler on the database
 ```sh
 echo -e "[mysqld]\nevent_scheduler=on\n" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf
+echo "plugin_load_add = ha_blackhole" >>/etc/mysql/mariadb.conf.d/50-mysqld.cnf
 ```
 
 ### Start the services
