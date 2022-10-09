@@ -28,18 +28,24 @@ class ProfileController extends \app\components\BaseController
                 'class' => AccessControl::class,
                 'only' => ['badge', 'index', 'invite', 'me', 'ovpn', 'revoke', 'settings', 'notifications', 'hints'],
                 'rules' => [
-                   'eventActive'=>[
-                      'actions' => ['badge','index', 'notifications', 'hints', 'ovpn', 'settings','invite','revoke'],
-                   ],
-                   'eventStartEnd'=>[
-                     'actions' => ['ovpn'],
-                   ],
-                   'teamsAccess'=>[
+                  'eventActive'=>[
+                    'actions' => ['badge','index', 'notifications', 'hints', 'ovpn', 'settings','invite','revoke'],
+                  ],
+                  'eventStartEnd'=>[
+                    'actions' => [''],
+                  ],
+                  'eventStart'=>[
+                    'actions' => ['ovpn','revoke'],
+                  ],
+                  'eventEnd'=>[
+                    'actions' => ['ovpn','revoke'],
+                  ],
+                  'teamsAccess'=>[
                       'actions' => ['ovpn'],
-                   ],
-                   'disabledRoute'=>[
-                     'actions' => ['badge', 'me', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke'],
-                   ],
+                  ],
+                  'disabledRoute'=>[
+                    'actions' => ['badge', 'me', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke'],
+                  ],
                    [
                      'actions' => ['index','badge'],
                      'allow' => true,
@@ -59,7 +65,7 @@ class ProfileController extends \app\components\BaseController
                      'allow' => false,
                      'roles'=>['@'],
                      'denyCallback' => function () {
-                       Yii::$app->session->setFlash('info', 'This area is for unregistered friends only!');
+                       Yii::$app->session->setFlash('info', 'This area is for guests only!');
                        return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                      }
                    ],
@@ -70,11 +76,11 @@ class ProfileController extends \app\components\BaseController
               'class' => 'yii\filters\AjaxFilter',
               'only' => ['notifications', 'hints']
             ],
-          'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                  'revoke' => ['POST'],
-                ],
+            'verbs' => [
+              'class' => VerbFilter::class,
+              'actions' => [
+                'revoke' => ['POST'],
+              ],
             ],
         ]);
     }
@@ -176,7 +182,7 @@ class ProfileController extends \app\components\BaseController
           return $this->redirect(['/']);
 
         Yii::$app->getSession()->set('referred_by', $profile->owner->id);
-        return $this->redirect(['/site/register']);
+        return $this->redirect(['/register']);
     }
 
     /**
