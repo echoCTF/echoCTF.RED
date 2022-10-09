@@ -15,6 +15,11 @@ class PlayerQuery extends \yii\db\ActiveQuery
         return $this->andWhere(['active' => 1, 'status'=>10]);
       }
 
+      public function academic($academic)
+      {
+        return $this->andWhere(['academic'=>$academic]);
+      }
+
       public function with_score()
       {
         $this->joinWith(['playerScore']);
