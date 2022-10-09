@@ -132,7 +132,7 @@ class GeneratorController extends Controller {
    */
   public function actionTargetSocialImages($target_id=null,$pending=true)
   {
-    if($target_id===null)
+    if($target_id===null || intval($target_id)==0)
       $targets=Target::find()->all();
     else
       $targets=Target::find()->where(['id'=>$target_id])->all();
@@ -209,53 +209,53 @@ class GeneratorController extends Controller {
     /**
      * Generate participant avatars based on robohash
      */
-      public function actionAvatar($active=true,$atomic=true)
+    public function actionAvatar($active=true,$atomic=true)
+    {
+      if(!$atomic)
       {
-        if(!$atomic)
+        echo "Starting transaction\n";
+        $transaction = \Yii::$app->db->beginTransaction();
+      }
+      try
+      {
+        if(boolval($active)===true)
+          $players=Player::find()->active()->all();
+        else
+          $players=Player::find()->all();
+        foreach($players as $player)
         {
-          echo "Starting transaction\n";
-          $transaction = \Yii::$app->db->beginTransaction();
-        }
-        try
-        {
-          if(boolval($active)===true)
-            $players=Player::find()->active()->all();
-          else
-            $players=Player::find()->all();
-          foreach($players as $player)
+          $dst_img=\Yii::getAlias('@app/web/images/avatars/'.$player->profile->id.'.png');
+          if($player->profile->avatar === 'default.png' || !$player->profile->avatar || !file_exists($dst_img))
           {
-            $dst_img=\Yii::getAlias('@app/web/images/avatars/'.$player->profile->id.'.png');
-            if($player->profile->avatar === 'default.png' || !$player->profile->avatar || !file_exists($dst_img))
+            echo "Generating ".$player->username." profile avatar image.\n";
+            $robohash=new \app\models\Robohash($player->profile->id,'set1');
+            $image=$robohash->generate_image();
+            if(get_resource_type($image)=== 'gd')
             {
-              echo "Generating ".$player->username." profile avatar image.\n";
-              $robohash=new \app\models\Robohash($player->profile->id,'set1');
-              $image=$robohash->generate_image();
-              if(get_resource_type($image)=== 'gd')
-              {
-                imagepng($image,$dst_img);
-                imagedestroy($image);
-                $player->profile->avatar=$player->profile->id.'.png';
-                $player->profile->save(false);
-              }
+              imagepng($image,$dst_img);
+              imagedestroy($image);
+              $player->profile->avatar=$player->profile->id.'.png';
+              $player->profile->save(false);
             }
           }
-          if(!$atomic)
-          {
-            echo "Commiting transaction\n";
-            $transaction->commit();
-          }
         }
-        catch (\Exception $e)
+        if(!$atomic)
         {
-          if(!$atomic)
-            $transaction->rollBack();
-          throw $e;
-        } catch (\Throwable $e) {
-          if(!$atomic)
-            $transaction->rollBack();
-          throw $e;
+          echo "Commiting transaction\n";
+          $transaction->commit();
         }
       }
+      catch (\Exception $e)
+      {
+        if(!$atomic)
+          $transaction->rollBack();
+        throw $e;
+      } catch (\Throwable $e) {
+        if(!$atomic)
+          $transaction->rollBack();
+        throw $e;
+      }
+    }
 
     /**
     * Generate participant avatars based on robohash
