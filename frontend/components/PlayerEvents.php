@@ -27,7 +27,6 @@ class PlayerEvents extends Model
     $n->save();
   }
 
-
   public static function addStream($event)
   {
     $s=new \app\models\Stream;
