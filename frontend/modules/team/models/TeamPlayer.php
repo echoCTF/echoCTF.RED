@@ -85,4 +85,35 @@ class TeamPlayer extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
+    private function sendNotification($id,$msg="")
+    {
+        $n=new \app\models\Notification;
+        $n->player_id=$id;
+        $n->archived=0;
+        $n->body=$n->title=$msg;
+        return $n->save();
+    }
+
+    public function notifyJoinOwner()
+    {
+      $msg=sprintf('Hi there, [%s] just joined your team. Go to your team page and approve the player.',$this->player->username);
+      return $this->sendNotification($this->team->owner_id,$msg);
+    }
+    public function notifyPartOwner()
+    {
+      $msg=sprintf('Hi there, [%s] just left your team.',$this->player->username);
+      return $this->sendNotification($this->team->owner_id,$msg);
+    }
+
+    public function notifyRejectPlayer()
+    {
+      $msg='Hi there, your team membership got rejected. Find another team to join.';
+      return $this->sendNotification($this->player_id,$msg);
+    }
+    public function notifyApprovePlayer()
+    {
+      $msg='Hi there, your team membership got approved.';
+      return $this->sendNotification($this->player_id,$msg);
+    }
+
 }
