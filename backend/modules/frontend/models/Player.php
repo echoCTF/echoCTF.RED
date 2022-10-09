@@ -54,7 +54,9 @@ class Player extends PlayerAR
     public function saveWithSsl()
     {
       if(!$this->save())
+      {
         return false;
+      }
 
       $playerSsl=new PlayerSsl();
       $playerSsl->player_id=$this->id;
@@ -140,6 +142,31 @@ class Player extends PlayerAR
 
       if(!$tp->save())
         printf("Error saving team player\n");
+  }
+  public function getAcademicLong()
+  {
+      switch($this->academic)
+      {
+        case 0:
+          return "government";
+        case 1:
+          return "education";
+        default:
+          return "professional";
+      }
+  }
+
+  public function getAcademicShort()
+  {
+    switch($this->academic)
+    {
+      case 0:
+        return "gov";
+      case 1:
+        return "edu";
+      default:
+        return "pro";
+    }
   }
 
 }
