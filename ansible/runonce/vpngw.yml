@@ -265,6 +265,7 @@
       collation: utf8mb4_unicode_ci
       encoding: utf8mb4
       login_user: "root"
+      login_unix_socket: "/var/run/mysql/mysql.sock"
 
   - name: Clone sources repo
     when: ansible_connection != 'local'
@@ -533,6 +534,7 @@
       name: echoCTF
       target: "{{item}}"
       login_user: "root"
+      login_unix_socket: "/var/run/mysql/mysql.sock"
     with_items:
       - "/usr/src/memcached_functions_mysql/sql/install_functions.sql"
       - "/tmp/findingsd.sql"
