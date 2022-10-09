@@ -53,8 +53,8 @@ class SpawnRestAction extends \yii\rest\ViewAction
       $ti=new TargetInstance;
       $ti->player_id=Yii::$app->user->id;
       $ti->target_id=$id;
-      // pick a random server to use
-      $ti->server_id=intval(Yii::$app->db->createCommand('SELECT id FROM server ORDER BY RAND() LIMIT 1')->queryScalar());
+      // pick the least used server currently
+      $ti->server_id=intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id) limit 1')->queryScalar());
       if($ti->save()!==false)
         Yii::$app->session->setFlash('success', sprintf('Spawning new instance for [%s]. You will receive a notification when the instance is up.', $ti->target->name));
       else
