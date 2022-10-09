@@ -61,7 +61,6 @@ class Sysconfig extends \yii\db\ActiveRecord
         }
     }
     public function beforeSave($insert){
-        parent::beforeSave($insert);
         switch($this->id){
             case "event_start":
             case "event_end":
