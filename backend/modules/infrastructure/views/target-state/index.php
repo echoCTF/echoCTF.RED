@@ -8,7 +8,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'Target States');
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target States'), 'url' => ['index']];
 ?>
 <div class="target-state-index">
 
@@ -28,6 +28,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
+            [
+                'attribute'=>'target_name',
+                'value'=>'target.name'
+            ],
             'total_headshots',
             'total_findings',
             'total_treasures',

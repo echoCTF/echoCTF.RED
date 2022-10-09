@@ -110,6 +110,7 @@ class SysconfigController extends \app\components\BaseController
         Yii::$app->session->setFlash('success','Configuration saved');
         return $this->redirect(['configure']);
       }
+
       return $this->render('configure', [
           'model' => $model,
       ]);
