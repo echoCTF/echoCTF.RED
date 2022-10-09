@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\modules\gameplay\models\Target;
+use yii\helpers\ArrayHelper;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\infrastructure\models\TargetState */
@@ -12,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'id')->textInput() ?>
+    <?= $form->field($model, 'id')->dropDownList(ArrayHelper::map(Target::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'), ['prompt'=>'Select target'])->hint('Choose the target to spawn instance for') ?>
 
     <?= $form->field($model, 'total_headshots')->textInput() ?>
 
