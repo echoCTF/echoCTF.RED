@@ -130,11 +130,11 @@ class DisabledRoute extends Component
         continue;
       }
 
-      if($route[0]==='%' && str_ends_with($against,substr($route, 1))) // must end with this
+      if($route[0]==='%' && endsWith($against,substr($route, 1))) // must end with this
       {
         return true;
       }
-      else if($route[-1]==='%' && str_starts_with($against,substr($route, 0,-1))) // must start with this
+      else if($route[-1]==='%' && startsWith($against,substr($route, 0,-1))) // must start with this
       {
         return true;
       }
@@ -146,4 +146,21 @@ class DisabledRoute extends Component
     return false;
   }
 
+}
+function startsWith( $haystack, $needle ): bool {
+  if(function_exists('str_starts_with')){
+    return str_starts_with($haystack,$needle);
+  }
+  $length = strlen( $needle );
+  return substr( $haystack, 0, $length ) === $needle;
+}
+function endsWith( $haystack, $needle ) {
+  if(function_exists('str_ends_with')){
+    return str_ends_with($haystack,$needle);
+  }
+  $length = strlen( $needle );
+  if( !$length ) {
+      return true;
+  }
+  return substr( $haystack, -$length ) === $needle;
 }
