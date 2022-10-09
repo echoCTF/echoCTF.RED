@@ -120,7 +120,7 @@ class DefaultController extends \app\components\BaseController
       }
       catch(\Exception $e)
       {
-        $this->redirect(['/subscription/default/index']);
+        return $this->redirect(['/subscription/default/index']);
       }
     }
 
