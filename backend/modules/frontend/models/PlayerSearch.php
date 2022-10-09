@@ -5,6 +5,9 @@ namespace app\modules\frontend\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\frontend\models\Player;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * PlayerSearch represents the model behind the search form of `app\modules\frontend\models\Player`.
@@ -12,7 +15,29 @@ use app\modules\frontend\models\Player;
 class PlayerSearch extends Player
 {
   public $on_pui, $on_vpn, $vpn_local_address;
-    /**
+  public function behaviors()
+  {
+    return [
+      'typecast' => [
+          'class' => AttributeTypecastBehavior::class,
+          'attributeTypes' => [
+              'academic' => AttributeTypecastBehavior::TYPE_INTEGER,
+              'active' => AttributeTypecastBehavior::TYPE_INTEGER,
+              'status' => AttributeTypecastBehavior::TYPE_INTEGER,
+          ],
+          'typecastAfterValidate' => false,
+          'typecastBeforeSave' => true,
+          'typecastAfterFind' => true,
+      ],
+      [
+          'class' => TimestampBehavior::class,
+          'createdAtAttribute' => 'created',
+          'updatedAtAttribute' => 'ts',
+          'value' => new Expression('NOW()'),
+      ],
+    ];
+  }
+  /**
      * {@inheritdoc}
      */
     public function rules()
