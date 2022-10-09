@@ -45,14 +45,6 @@ yii\bootstrap\Modal::end();
               'attribute'=>'network_name',
               'value'=>'network.name'
             ],
-  //          [
-  //              'label'=>'Finding pts',
-  //              'value'=>'findingPoints'
-  //          ],
-  //          [
-  //              'label'=>'Treasure pts',
-  //              'value'=>'treasurePoints'
-  //          ],
             [
               'attribute'=>'status',
               'filter'=>$searchModel->statuses,
@@ -69,11 +61,9 @@ yii\bootstrap\Modal::end();
             ],
             [
               'label' => 'Points',
-              'attribute' => 'points',
+              'attribute' => 'pts',
               'value' => function ($model) { return $model->findingPoints+$model->treasurePoints;}
             ],
-//            'required_xp',
-//            'suggested_xp',
             'weight',
             [
               'class' => 'yii\grid\ActionColumn',
