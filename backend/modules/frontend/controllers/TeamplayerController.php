@@ -120,7 +120,7 @@ class TeamplayerController extends \app\components\BaseController
         if($this->findModel($id)->delete()!==false)
           Yii::$app->session->setFlash('success', "Team membership deleted.");
 
-        return $this->goBack();
+        return $this->redirect(Yii::$app->request->referrer ?? ['frontend/teamplayer/index']);
     }
 
     /**
@@ -133,8 +133,8 @@ class TeamplayerController extends \app\components\BaseController
     {
         $model=$this->findModel($id);
         $model->updateAttributes(['approved' => !$model->approved]);
-        Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$model->team_id)->execute();
-        return $this->goBack();
+        $t=Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$model->team_id)->execute();
+        return $this->redirect(Yii::$app->request->referrer ?? ['frontend/teamplayer/index']);
     }
 
     /**
