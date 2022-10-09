@@ -11,13 +11,14 @@ use app\modules\infrastructure\models\TargetState;
  */
 class TargetStateSearch extends TargetState
 {
+    public $target_name;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'total_headshots', 'total_findings', 'total_treasures', 'player_rating', 'timer_avg', 'total_writeups', 'approved_writeups', 'finding_points', 'treasure_points', 'total_points', 'on_network', 'on_ondemand', 'ondemand_state'], 'integer'],
+            [['id', 'target_name','total_headshots', 'total_findings', 'total_treasures', 'player_rating', 'timer_avg', 'total_writeups', 'approved_writeups', 'finding_points', 'treasure_points', 'total_points', 'on_network', 'on_ondemand', 'ondemand_state'], 'integer'],
         ];
     }
 
@@ -39,7 +40,7 @@ class TargetStateSearch extends TargetState
      */
     public function search($params)
     {
-        $query = TargetState::find();
+        $query = TargetState::find()->joinWith(['target']);
 
         // add conditions that should always apply here
 
@@ -71,6 +72,19 @@ class TargetStateSearch extends TargetState
             'on_network' => $this->on_network,
             'on_ondemand' => $this->on_ondemand,
             'ondemand_state' => $this->ondemand_state,
+        ]);
+        $query->andFilterWhere(['LIKE','target_name',$this->target_name]);
+        $dataProvider->setSort([
+            'defaultOrder' => ['id'=>SORT_ASC],
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'target_name' => [
+                      'asc' => ['target.name' => SORT_ASC],
+                      'desc' => ['target.name' => SORT_DESC],
+                  ],
+                ]
+            ),
         ]);
 
         return $dataProvider;
