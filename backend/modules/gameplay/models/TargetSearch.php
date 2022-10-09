@@ -13,18 +13,19 @@ class TargetSearch extends Target
 {
   public $headshot;
   public $network_name;
+  public $pts;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'ip', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp','headshot','weight'], 'integer'],
+            [['id', 'ip', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp','headshot','weight','pts'], 'integer'],
             ['active','boolean'],
             [['headshot'],'default','value'=>null ],
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
             [['scheduled_at'], 'datetime'],
-            [['timer','name', 'fqdn', 'purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp','headshot','category','network_name'], 'safe'],
+            [['timer','name', 'fqdn', 'pts','purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp','headshot','category','network_name'], 'safe'],
         ];
     }
 
@@ -47,6 +48,7 @@ class TargetSearch extends Target
     public function search($params)
     {
         $query=Target::find()->joinWith(['headshots','network']);
+        $query->addSelect('target.*,(select sum(points) from finding where target_id=target.id) + (select sum(points) from treasure where target_id=target.id) as pts');
 
         // add conditions that should always apply here
 
@@ -92,7 +94,8 @@ class TargetSearch extends Target
             ->andFilterWhere(['like', 'parameters', $this->parameters])
             ->andFilterWhere(['like', 'network.name', $this->network_name])
             ;
-
+        if($this->pts)
+            $query->andHaving(['pts'=>$this->pts]);
         if($this->headshot !== null ) $query->having(["=",'count(headshot.player_id)',$this->headshot]);
         $query->groupBy(['target.id']);
         $dataProvider->setSort([
@@ -115,7 +118,11 @@ class TargetSearch extends Target
                           'asc' => ['COUNT(headshot.player_id)' => SORT_ASC],
                           'desc' => ['COUNT(headshot.player_id)' => SORT_DESC],
                       ],
-                    ]
+                      'pts' => [
+                        'asc' => ['pts' => SORT_ASC],
+                        'desc' => ['pts' => SORT_DESC],
+                    ],
+                  ]
                 ),
             ]);
 
