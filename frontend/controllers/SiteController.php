@@ -24,11 +24,33 @@ class SiteController extends \app\components\BaseController
      */
     public function behaviors()
     {
-        return ArrayHelper::merge(parent::behaviors(),[
+        $parent=parent::behaviors();
+        unset($parent['access']['rules']['teamsAccess']);
+        return ArrayHelper::merge($parent,[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['login','logout', 'changelog', 'register', 'request-password-reset', 'verify-email', 'resend-verification-email', 'changelog', 'captcha'],
+                'only' => ['index','login','logout',  'register', 'request-password-reset', 'verify-email', 'resend-verification-email',  'captcha'],
                 'rules' => [
+                    'indexAuth'=>[
+                        'actions'=>['index'],
+                        'allow'=>false,
+                        'roles'=>['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->sys->default_homepage!==false && Yii::$app->sys->default_homepage!=="";
+                        },
+                        'denyCallback' => function ($rule, $action) {
+                            return \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage],303);
+                        },
+                    ],
+                    'eventStartEnd'=>[
+                        'actions' => [  'register',  ],
+                    ],
+                    'eventStart'=>[
+                        'actions' => [  'register', ],
+                    ],
+                    'eventEnd'=>[
+                        'actions' => [  'register', 'request-password-reset', 'verify-email', 'resend-verification-email', ],
+                    ],
                     'eventActive'=>[
                       'actions' => ['register', 'verify-email', 'resend-verification-email'],
                     ],
@@ -37,8 +59,8 @@ class SiteController extends \app\components\BaseController
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                    [
-                        'actions' => ['register','login','verify-email', 'resend-verification-email','request-password-reset', 'index','captcha'],
+                    'denyAuthAccessToGuest'=>[
+                        'actions' => ['register','login','verify-email', 'resend-verification-email','request-password-reset', 'captcha'],
                         'allow' => false,
                         'roles' => ['@'],
                         'denyCallback' => function ($rule, $action) {
@@ -46,11 +68,7 @@ class SiteController extends \app\components\BaseController
                             return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage],303);
                           },
                     ],
-                    'teamsAccess'=>[
-                       'actions' => ['index'],
-                       'roles' => ['@'],
-                    ],
-                    [
+                    'checkDisabledRegs'=>[
                         'actions' => ['register'],
                         'allow' => false,
                         'matchCallback' => function ($rule, $action) {
@@ -61,24 +79,36 @@ class SiteController extends \app\components\BaseController
                           return  \Yii::$app->getResponse()->redirect(['/site/login']);
                         },
                     ],
-                    [
-                        'actions' => ['register', 'verify-email', 'resend-verification-email'],
+                    'registrationsStart'=>[
+                        'actions' => ['register','request-password-reset', 'captcha'],
                         'allow' => false,
                         'roles' => ['?'],
                         'matchCallback' => function ($rule, $action) {
-                          return Yii::$app->sys->registrations_start!==false && (time()<=Yii::$app->sys->registrations_start || time()>=Yii::$app->sys->registrations_end);
+                          return Yii::$app->sys->registrations_start!==false && time()<=Yii::$app->sys->registrations_start;
                         },
                         'denyCallback' => function ($rule, $action) {
                           if(time()<(int)Yii::$app->sys->registrations_start)
-                            Yii::$app->session->setFlash('info', 'Registrations havent started yet.');
-                          else
-                            Yii::$app->session->setFlash('info', 'Registrations are closed.');
+                            Yii::$app->session->setFlash('info', "Registrations haven't started yet.");
                           return  \Yii::$app->getResponse()->redirect(['/site/login']);
 
                         },
                     ],
-                    [
-                      'actions' => ['login','index','register','verify-email', 'resend-verification-email','captcha', 'request-password-reset',],
+                    'registrationsEnd'=>[
+                        'actions' => ['register', 'captcha',],
+                        'allow' => false,
+                        'roles' => ['?'],
+                        'matchCallback' => function ($rule, $action) {
+                          return Yii::$app->sys->registrations_end!==false && time()>=Yii::$app->sys->registrations_end;
+                        },
+                        'denyCallback' => function ($rule, $action) {
+                        if(time()<(int)Yii::$app->sys->registrations_start)
+                            Yii::$app->session->setFlash('info', 'Registrations are no longer accepted ended.');
+                          return  \Yii::$app->getResponse()->redirect(['/site/login']);
+
+                        },
+                    ],
+                    'allowGuestUsers'=>[
+                      'actions' => ['login','index','register','verify-email','resend-verification-email', 'request-password-reset','captcha', ],
                       'allow' => true,
                       'roles'=>['?']
                     ],
@@ -124,7 +154,10 @@ class SiteController extends \app\components\BaseController
     public function actionIndex()
     {
       if(!Yii::$app->user->isGuest && Yii::$app->sys->default_homepage!==false && Yii::$app->sys->default_homepage!=="")
-          $this->redirect([Yii::$app->sys->default_homepage]);
+      {
+        return $this->redirect([Yii::$app->sys->default_homepage]);
+      }
+
       return $this->render('index');
     }
 
@@ -253,7 +286,7 @@ class SiteController extends \app\components\BaseController
               Yii::$app->session->setFlash('warning', 'New password saved but failed to auto sign-in.');
             }
 
-            return $this->goHome();
+            return $this->redirect(['/']);
         }
 
         return $this->render('resetPassword', [
