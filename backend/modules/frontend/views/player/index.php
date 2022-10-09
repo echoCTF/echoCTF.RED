@@ -55,23 +55,6 @@ yii\bootstrap\Modal::end();
 
             'username',
             'email:email',
-/*            [
-              'attribute'=>'type',
-              'filter'=>['offense'=>'Offense', 'defense'=>'Defense','both'=>'Both'],
-            ],*/
-            //'password',
-            //'authkey',
-            //'accesstoken',
-            //'activkey',
-
-//            [
-//              'attribute'=>'on_pui',
-//              'value'=>function($model) {if($model->last) return $model->last->on_pui == 0 ? null : $model->last->on_pui;else return null;}
-//            ],
-//            [
-//              'attribute'=>'on_vpn',
-//              'value'=>function($model) {if($model->last) return $model->last->on_vpn == 0 ? null : $model->last->on_vpn;else return null;}
-//            ],
             [
               'attribute'=>'vpn_local_address',
               'label'=> 'VPN Local IP',
@@ -79,7 +62,11 @@ yii\bootstrap\Modal::end();
             ],
             'online:boolean',
             'active:boolean',
-            'academic:boolean',
+            [
+                'attribute'=>'academic',
+                'value'=>'academicShort',
+                'filter'=>[0=>'Gov',1=>'Edu', 2=>"Pro"],
+            ],
             [
              'attribute' => 'status',
              'filter'=>array(10=>'Enabled',9=>'Innactive', 8=>"Change",0=>"Deleted",),
@@ -89,7 +76,7 @@ yii\bootstrap\Modal::end();
             //'ts',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{player-view-full} {view} {generate-ssl} {toggle-academic} '.'{update} {delete} {ban} {mail}',
+              'template' => '{player-view-full} {view} {generate-ssl} '.'{update} {delete} {ban} {mail}',
               'header' => Html::a(
                   '<span class="glyphicon glyphicon-ban-circle"></span>',
                   ['ban-filtered'],

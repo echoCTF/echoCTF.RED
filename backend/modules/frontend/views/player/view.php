@@ -46,7 +46,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'username',
             'fullname',
             'email:email',
-            'academic:boolean',
+            'academicLong',
             'active:boolean',
             'status',
             'type',
