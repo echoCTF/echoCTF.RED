@@ -12,6 +12,25 @@ class GeneratorController extends Controller {
   /**
    * Create a local file with the url routes from memcached
    */
+  public function actionSysconfig($outfile="sysconfig.php")
+  {
+    $records=\Yii::$app->db->createCommand('select id,val from sysconfig')->queryAll();
+    $line['sysconfig:admin_ids']="\t'sysconfig:admin_ids' => '',";
+    $line['sysconfig:player_disabled_routes']="\t'sysconfig:player_disabled_routes' => '',";
+    $line['sysconfig:site_description']="\t'sysconfig:site_description' => '',";
+    $line['sysconfig:discord_invite']="\t'sysconfig:discord_invite' => '',";
+    $line['sysconfig:css_override']="\t'sysconfig:css_override' => null,";
+    $line['sysconfig:bannedIPs']="\t'sysconfig:bannedIPs' => '',";
+
+    foreach($records as $rec)
+      $line['sysconfig:'.$rec['id']]=sprintf("\t'sysconfig:%s' => \"%s\",",$rec['id'],addslashes($rec['val']));
+
+    printf("<?php\nreturn [\n%s\n];\n",implode("\n",$line));
+  }
+
+  /**
+   * Create a local file with the url routes from memcached
+   */
   public function actionRoutes($outfile="routes.php")
   {
     if(\Yii::$app->sys->routes===false || \Yii::$app->sys->routes===null)
