@@ -17,6 +17,9 @@ class LeaderboardsController extends \app\components\BaseController
           'class' => AccessControl::class,
           'only' => ['index'],
           'rules' => [
+              'teamsAccess'=>[
+                'actions' => [''],
+              ],
               'eventStartEnd'=>[
                 'actions' => [''],
               ],
@@ -58,17 +61,25 @@ class LeaderboardsController extends \app\components\BaseController
 
     public function actionIndex()
     {
+      if(Yii::$app->user->isGuest) {
+        $academic=0;
+      }
+      else
+      {
+        $academic=Yii::$app->user->identity->academic;
+      }
+
       $command=\Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
       $command->bindValue(':player_type', 'offense');
       $totalPoints=$command->queryScalar();
 
       if(\Yii::$app->sys->leaderboard_show_zero)
       {
-        $PR=\app\models\PlayerRank::find()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]);
+        $PR=\app\models\PlayerRank::find()->academic($academic)->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]);
       }
       else
       {
-        $PR=\app\models\PlayerRank::find()->nonZero()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]);
+        $PR=\app\models\PlayerRank::find()->academic($academic)->nonZero()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]);
       }
       $playerDataProvider=new ActiveDataProvider([
         'query' => $PR,
@@ -80,7 +91,7 @@ class LeaderboardsController extends \app\components\BaseController
       ]);
 
       $headshotDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\game\models\Headshot::find()->timed()->orderBy(['timer'=>SORT_ASC,'created_at'=>SORT_ASC]),
+        'query' => \app\modules\game\models\Headshot::find()->academic($academic)->timed()->orderBy(['timer'=>SORT_ASC,'created_at'=>SORT_ASC]),
         'pagination'=> [
           'pageSizeParam'=>'headshotTimed-perpage',
           'pageParam'=>'headshotTimed-page',
@@ -89,7 +100,7 @@ class LeaderboardsController extends \app\components\BaseController
       ]);
 
       $solversDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\challenge\models\ChallengeSolver::find()->timed()->orderBy(['challenge_solver.timer'=>SORT_ASC,'challenge_solver.created_at'=>SORT_ASC]),
+        'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->timed()->orderBy(['challenge_solver.timer'=>SORT_ASC,'challenge_solver.created_at'=>SORT_ASC]),
         'pagination'=> [
           'pageSizeParam'=>'solverTimed-perpage',
           'pageParam'=>'solverTimed-page',
@@ -98,7 +109,7 @@ class LeaderboardsController extends \app\components\BaseController
       ]);
 
       $mostSolvesDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\challenge\models\ChallengeSolver::find()->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer'=>SORT_DESC,'created_at'=>SORT_ASC]),
+        'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer'=>SORT_DESC,'created_at'=>SORT_ASC]),
         'pagination'=> [
           'pageSizeParam'=>'solverMost-perpage',
           'pageParam'=>'solverMost-page',
@@ -108,7 +119,7 @@ class LeaderboardsController extends \app\components\BaseController
 
 
       $AvgSolvesDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\challenge\models\ChallengeSolver::find()->timed()->select(['challenge_solver.player_id,avg(challenge_solver.timer) as timer'])->groupBy(['player_id'])->orderBy(['timer'=>SORT_ASC,'player_id'=>SORT_ASC]),
+        'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->timed()->select(['challenge_solver.player_id,avg(challenge_solver.timer) as timer'])->groupBy(['player_id'])->orderBy(['timer'=>SORT_ASC,'player_id'=>SORT_ASC]),
         'pagination'=> [
           'pageSizeParam'=>'solverAvg-perpage',
           'pageParam'=>'solverAvg-page',
@@ -117,7 +128,7 @@ class LeaderboardsController extends \app\components\BaseController
       ]);
 
       $AvgHeadshotDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\game\models\Headshot::find()->select(['headshot.player_id,avg(headshot.timer) as timer'])->timed()->groupBy(['player_id'])->having('count(distinct target_id)>1')->orderBy(['timer'=>SORT_ASC,'player_id'=>SORT_ASC]),
+        'query' => \app\modules\game\models\Headshot::find()->academic($academic)->select(['headshot.player_id,avg(headshot.timer) as timer'])->timed()->groupBy(['player_id'])->having('count(distinct target_id)>1')->orderBy(['timer'=>SORT_ASC,'player_id'=>SORT_ASC]),
         'pagination'=> [
           'pageSizeParam'=>'headshotAvg-perpage',
           'pageParam'=>'headshotAvg-page',
@@ -127,7 +138,7 @@ class LeaderboardsController extends \app\components\BaseController
 
 
       $mostHeadshotsDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\game\models\Headshot::find()->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer'=>SORT_DESC,'created_at'=>SORT_ASC]),
+        'query' => \app\modules\game\models\Headshot::find()->academic($academic)->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer'=>SORT_DESC,'created_at'=>SORT_ASC]),
         'pagination'=> [
           'pageSizeParam'=>'headshotMost-perpage',
           'pageParam'=>'headshotMost-page',
@@ -135,7 +146,7 @@ class LeaderboardsController extends \app\components\BaseController
         ]
       ]);
       $teamDataProvider=new ActiveDataProvider([
-        'query' => \app\modules\team\models\TeamRank::find()->orderBy(['id'=>SORT_ASC, 'team_id'=>SORT_ASC]),
+        'query' => \app\modules\team\models\TeamRank::find()->academic($academic)->orderBy(['id'=>SORT_ASC, 'team_id'=>SORT_ASC]),
         'pagination'=> [
           'pageSizeParam'=>'teamRank-perpage',
           'pageParam'=>'teamRank-page',
