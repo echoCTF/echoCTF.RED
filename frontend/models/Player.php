@@ -44,7 +44,7 @@ class Player extends PlayerAR implements IdentityInterface
                     'id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'status' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'active' =>  AttributeTypecastBehavior::TYPE_INTEGER,
-                    'academic' =>  AttributeTypecastBehavior::TYPE_BOOLEAN,
+                    'academic' =>  AttributeTypecastBehavior::TYPE_INTEGER,
                 ],
                 'typecastAfterValidate' => true,
                 'typecastBeforeSave' => true,
@@ -91,7 +91,7 @@ class Player extends PlayerAR implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username, 'active'=>1,'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -102,7 +102,7 @@ class Player extends PlayerAR implements IdentityInterface
      */
     public static function findByEmail($email)
     {
-        return static::findOne(['email' => $email, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['email' => $email, 'active'=>1,'status' => self::STATUS_ACTIVE]);
     }
 
     /**
@@ -139,7 +139,7 @@ class Player extends PlayerAR implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return $this->getAuthKey() === $authKey;
+        return $this->getAuthKey() === $authKey && $this->status===self::STATUS_ACTIVE && $this->active===1;
     }
 
     /**
@@ -269,12 +269,12 @@ class Player extends PlayerAR implements IdentityInterface
      */
     public static function isPasswordResetTokenValid($token, $expire = 86400): bool
     {
-        if(empty($token))
+        if(empty($token) || trim($token)==="")
         {
             return false;
         }
         return true;
-        $timestamp=(int) substr($token, strrpos($token, '') + 1);
+        $timestamp=(int) substr($token, strrpos($token, '_') + 1);
         return $timestamp + $expire >= time();
     }
     /**
@@ -330,4 +330,43 @@ class Player extends PlayerAR implements IdentityInterface
         return false;
       return $profile;
     }
+
+    public function getAcademicWord()
+    {
+      switch($this->academic)
+      {
+        case 0:
+          return ".gov";
+        case 1:
+          return ".edu";
+        default:
+          return ".pro";
+      }
+    }
+
+    public function getAcademicShort()
+    {
+      switch($this->academic)
+      {
+        case 0:
+          return ".gov";
+        case 1:
+          return ".edu";
+        default:
+          return ".pro";
+      }
+    }
+    public function getAcademicIcon()
+    {
+      switch($this->academic)
+      {
+        case 0:
+          return "government.svg";
+        case 1:
+          return "education.svg";
+        default:
+          return "professional.svg";
+      }
+    }
+
 }
