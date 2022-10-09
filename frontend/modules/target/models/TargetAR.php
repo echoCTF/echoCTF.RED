@@ -232,7 +232,11 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getLastHeadshots()
     {
-      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at'=>SORT_DESC])->limit(50);
+      if(Yii::$app->user->isGuest)
+        $academic=1;
+      else
+        $academic=Yii::$app->user->identity->academic;
+      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->academic($academic)->orderBy(['created_at'=>SORT_DESC])->limit(50);
     }
     /*
      * Get Writeup relations of target
