@@ -1,4 +1,4 @@
-USE information_schema;
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 DELIMITER ;;
 IF (SELECT count(*) FROM information_schema.tables WHERE table_schema = 'echoCTF' AND table_name = 'devnull' LIMIT 1)>0 THEN
   CALL echoCTF.init_mysql();
