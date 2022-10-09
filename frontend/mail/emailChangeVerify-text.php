@@ -2,12 +2,12 @@
 
 /* @var $this yii\web\View */
 /* @var $user common\models\User */
-
+use yii\helpers\Html;
 $verifyLink=\Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $user->verification_token]);
 ?>
 Hello,
 
-You just requested that this email address be linked to your <?=\Yii::$app->sys->event_name?>
+You just requested that this email address be linked to your <?=Html::encode(\Yii::$app->sys->event_name)?>
 account.
 
 To verify that this email is valid follow the link below:
@@ -19,4 +19,4 @@ assistance there.
 
 Best regards,
 
-<?=\Yii::$app->sys->event_name?> team
+<?=Html::encode(\Yii::$app->sys->event_name)?> team

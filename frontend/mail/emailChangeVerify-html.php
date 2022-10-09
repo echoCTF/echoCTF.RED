@@ -9,7 +9,7 @@ $verifyLink=\Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'tok
 <div class="verify-email">
     <h3>Hello,</h3>
 
-    <p>You just requested that this email address be linked to your <?=Html::encode(Yii::$app->sys->event_name)?> account.</p>
+    <p>You just requested that this email address be linked to your <?=Html::encode(\Yii::$app->sys->event_name)?> account.</p>
 
     <p>To verify that this email is valid follow the link below:</p>
 
@@ -17,6 +17,6 @@ $verifyLink=\Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'tok
 
     <p>If you have any difficulties, feel free to join our discord server and ask for assistance there.</p>
 
-    <p>Best regards,<br/><?=\Yii::$app->sys->event_name?> team</p>
+    <p>Best regards,<br/><?=Html::encode(\Yii::$app->sys->event_name)?> team</p>
 
 </div>
