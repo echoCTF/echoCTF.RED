@@ -17,6 +17,7 @@ use Http\Client\Socket\Exception\ConnectionException;
 use yii\console\Exception as ConsoleException;
 use app\modules\infrastructure\models\DockerContainer;
 use app\modules\infrastructure\models\TargetInstance;
+use app\modules\infrastructure\models\TargetInstanceAudit;
 use app\modules\infrastructure\models\NetworkTargetSchedule as NTS;
 use app\modules\gameplay\models\NetworkTarget;
 /**
@@ -143,10 +144,47 @@ class CronController extends Controller
     @unlink("/tmp/cron-poweroperations.lock");
 
   }
+
+  public function actionInstancePf($before=60)
+  {
+    $action=SELF::ACTION_START;
+    $t=TargetInstanceAudit::find()->where("op in ('i','d') and ts>(now() - INTERVAL $before SECOND)")->orderBy(['id'=>SORT_DESC]);
+    foreach($t->all() as $val)
+    {
+      if($val->op=='i')
+      {
+        echo date("Y-m-d H:i:s ")."Starting ",$val->target->name,'_',$val->player_id,"\n";
+        $action=SELF::ACTION_START;
+      }
+      else if($val->op==='d')
+      {
+        echo date("Y-m-d H:i:s ")."Destroying ",$val->target->name,'_',$val->player_id,"\n";
+        $action=SELF::ACTION_DESTROY;
+      }
+      switch($action)
+      {
+        case SELF::ACTION_START:
+        case SELF::ACTION_RESTART:
+          if($val->player->last->vpn_local_address!==null)
+          {
+            Pf::add_table_ip($val->target->name.'_'.$val->player_id.'_clients',long2ip($val->player->last->vpn_local_address),true);
+            Pf::add_table_ip($val->target->name.'_'.$val->player_id,long2ip($val->ip),true);
+          }
+          break;
+        case SELF::ACTION_EXPIRED:
+        case SELF::ACTION_DESTROY:
+          Pf::kill_table($val->target->name.'_'.$val->player_id,true);
+          Pf::kill_table($val->target->name.'_'.$val->player_id.'_clients',true);
+          break;
+        default:
+          printf("Error: Unknown action\n");
+      }
+    }
+  }
   /**
    * Process player private instances
    */
-  public function actionInstances()
+  public function actionInstances($pfonly=false)
   {
     if(file_exists("/tmp/cron-instances.lock"))
     {
@@ -160,13 +198,13 @@ class CronController extends Controller
       $t=TargetInstance::find()->active();
       foreach($t->all() as $instance)
       {
-        if($instance->player->last->vpn_local_address!==null)
+        if($instance->player->last->vpn_local_address!==null && $pfonly===false)
         {
           $instance->updateAttributes(['updated_at' => new \yii\db\Expression('NOW()')]);
         }
       }
 
-      $t=TargetInstance::find()->pending_action();
+      $t=TargetInstance::find()->pending_action(40);
       foreach($t->all() as $val)
       {
         $dc=new DockerContainer($val->target);
@@ -198,32 +236,40 @@ class CronController extends Controller
           {
             case SELF::ACTION_START:
             case SELF::ACTION_RESTART:
-              try {
-                $dc->destroy();
-              } catch (\Exception $e) {
+              if($pfonly===false)
+              {
+                try {
+                  $dc->destroy();
+                } catch (\Exception $e) {
 
+                }
+                $dc->pull();
+                $dc->spin();
               }
-              $dc->pull();
-              $dc->spin();
               if($val->player->last->vpn_local_address!==null)
               {
-                Pf::add_table_ip($dc->name.'_clients',long2ip($val->player->last->vpn_local_address));
+                Pf::add_table_ip($dc->name.'_clients',long2ip($val->player->last->vpn_local_address),true);
               }
               $val->ipoctet=$dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
               $val->reboot=0;
-              $val->save();
+              if($pfonly===false)
+                $val->save();
 
               break;
             case SELF::ACTION_EXPIRED:
             case SELF::ACTION_DESTROY:
-              try {
-                $dc->destroy();
-              } catch (\Exception $e) {
+              if($pfonly===false)
+              {
+                try {
+                  $dc->destroy();
+                } catch (\Exception $e) {
 
+                }
               }
               Pf::kill_table($dc->name,true);
               Pf::kill_table($dc->name.'_clients',true);
-              $val->delete();
+              if($pfonly===false)
+                $val->delete();
               break;
             default:
               printf("Error: Unknown action\n");
