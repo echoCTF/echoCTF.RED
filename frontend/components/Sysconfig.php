@@ -63,8 +63,13 @@ class Sysconfig extends Component
     if(!(\Yii::$app->cache instanceof \yii\caching\MemCache))
       throw new \LogicException('Memcache not initialized.');
 
-    if(\Yii::$app->cache->memcache instanceof \MemCache)
-      $this->keyCache=Yii::$app->cache->memcache->get($this->prefetchKeys);
+    if(file_exists(Yii::getAlias('@app/config/sysconfig.php')))
+    {
+      $this->keyCache=require Yii::getAlias('@app/config/sysconfig.php');
+    }
+
+    //if(\Yii::$app->cache->memcache instanceof \MemCache)
+    //  $this->keyCache=Yii::$app->cache->memcache->get($this->prefetchKeys);
   }
   public function __get($attribute)
   {
