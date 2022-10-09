@@ -172,6 +172,8 @@ class PlayerController extends Controller {
       $player->email=trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $email));
       $player->fullname=trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $fullname));
       $player->type=$player_type;
+      if($password==="")
+        $password=false;
       $password=$player->genPassword($password);
 
       $player->password_hash=Yii::$app->security->generatePasswordHash($password);
@@ -181,7 +183,7 @@ class PlayerController extends Controller {
       $player->status=10;
       if(!$player->active)
       {
-        $player->verification_token=Yii::$app->security->generateRandomString().'_'.time();
+        $player->verification_token=str_replace('_','-',Yii::$app->security->generateRandomString().'-'.(time()));
         $player->status=9;
       }
 
