@@ -54,7 +54,7 @@ use yii\helpers\Html;
         <div class="col-lg-6">
           <div class="orbitron">
             <center><h3 class="h3 orbitron">Wanna give it a try?</h3>
-              <?php echo Html::a('Signup',['/site/register'],['class' => 'btn btn-info btn-lg']);?></center>
+              <?php echo Html::a('Signup',['/register'],['class' => 'btn btn-info btn-lg']);?></center>
           </div>
         </div>
       </div>
