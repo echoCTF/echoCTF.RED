@@ -16,18 +16,19 @@ class BaseController extends \yii\web\Controller
             'access' => [
                 'class' => AccessControl::class,
                 'rules' => [
-                    'adminBypass'=>[
-                      'allow'=> true,
-                      'matchCallback' => function () {
-                        if(!\Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin)
-                          return true;
-                      }
-                    ],
-                    'denyByIP'=>[
-                        'allow' => false,
-                        'ips' => explode(',',\Yii::$app->sys->bannedIPs),
-                    ],
-                    'eventActive'=>[
+                  'adminBypass'=>[
+                    'allow'=> true,
+                    'matchCallback' => function () {
+                      if(!\Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin)
+                        return true;
+                    }
+                  ],
+
+                  'denyByIP'=>[
+                    'allow' => false,
+                    'ips' => explode(',',\Yii::$app->sys->bannedIPs),
+                  ],
+                  'eventActive'=>[
                       'allow' => false,
                       'matchCallback' => function () {
                         return $this->eventInactive;
@@ -36,8 +37,8 @@ class BaseController extends \yii\web\Controller
                         Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
                         return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                       }
-                    ],
-                    'eventStartEnd'=>[
+                  ],
+                  'eventStartEnd'=>[
                        'allow' => false,
                        'matchCallback' => function () {
                          return $this->eventBetweenStartEnd;
@@ -46,9 +47,9 @@ class BaseController extends \yii\web\Controller
                          Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
                          return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                        }
-                    ],
+                  ],
 
-                   'eventStart'=>[
+                  'eventStart'=>[
                       'allow' => false,
                       'matchCallback' => function () {
                         return \Yii::$app->sys->event_start!==false && time()<\Yii::$app->sys->event_start;
@@ -57,8 +58,8 @@ class BaseController extends \yii\web\Controller
                         Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
                         return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                       }
-                   ],
-                   'eventEnd'=>[
+                  ],
+                  'eventEnd'=>[
                      'allow' => false,
                      'matchCallback' => function () {
                        return \Yii::$app->sys->event_end!==false && time()>\Yii::$app->sys->event_end;
@@ -67,8 +68,8 @@ class BaseController extends \yii\web\Controller
                        Yii::$app->session->setFlash('info', 'This operation is closed after the competition ends');
                        return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                      }
-                   ],
-                   'teamsAccess'=>[
+                  ],
+                  'teamsAccess'=>[
                       'allow' => false,
                       'matchCallback' => function () {
                         return $this->teamsRequired;
@@ -76,8 +77,8 @@ class BaseController extends \yii\web\Controller
                       'denyCallback' => function() {
                         return  \Yii::$app->getResponse()->redirect(['/team/default/index']);
                       }
-                   ],
-                   'disabledRoute'=>[
+                  ],
+                  'disabledRoute'=>[
                        'allow' => false,
                        'matchCallback' => function ($rule, $action) {
                          return Yii::$app->DisabledRoute->disabled($action);
@@ -86,7 +87,7 @@ class BaseController extends \yii\web\Controller
                          Yii::$app->session->setFlash('warning', 'This action is disabled globally (or just for you), sorry.');
                          return  \Yii::$app->getResponse()->redirect(Yii::$app->request->referrer ?:[Yii::$app->sys->default_homepage]);
                        },
-                   ],
+                  ],
                 ],
             ],
         ];
