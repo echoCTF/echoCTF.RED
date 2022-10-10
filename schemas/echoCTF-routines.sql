@@ -297,5 +297,5 @@ BEGIN
     call populate_memcache();
     call calculate_ranks();
     call calculate_country_rank();
---    call calculate_team_ranks();
+    call calculate_team_ranks();
 END ;;
