@@ -46,7 +46,7 @@ class StreamWidget extends Widget
       $model=\app\models\Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago')->joinWith(['player']);
       if(\Yii::$app->user->isGuest)
       {
-        $model->andWhere(['academic'=>1]);
+        $model->andWhere(['academic'=>0]);
       }
       else
       {
