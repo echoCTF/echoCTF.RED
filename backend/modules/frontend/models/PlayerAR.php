@@ -103,6 +103,7 @@ class PlayerAR extends \yii\db\ActiveRecord
             [['type'], 'string'],
             [['active', 'status'], 'integer'],
             [['academic'], 'integer'],
+            [['academic'], 'default','value'=>0],
             [['email'], 'filter', 'filter'=>'strtolower'],
             [['activkey'], 'string', 'max' => 32],
             [['auth_key'], 'string', 'max' => 32],
