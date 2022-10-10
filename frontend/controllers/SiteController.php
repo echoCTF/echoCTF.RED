@@ -29,7 +29,7 @@ class SiteController extends \app\components\BaseController
         return ArrayHelper::merge($parent,[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index','login','logout',  'register', 'request-password-reset', 'verify-email', 'resend-verification-email',  'captcha'],
+                'only' => ['index','login','logout', 'changelog', 'register', 'request-password-reset', 'verify-email', 'resend-verification-email',  'captcha'],
                 'rules' => [
                     'indexAuth'=>[
                         'actions'=>['index'],
