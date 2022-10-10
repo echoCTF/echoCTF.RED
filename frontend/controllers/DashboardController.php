@@ -61,7 +61,7 @@ class DashboardController extends \app\components\BaseController
       $dashboardStats->countries=(int) Profile::find()->select(['country'])->distinct()->count();
       $dashboardStats->claims=(int) PlayerTreasure::find()->where(['player.academic'=>Yii::$app->user->identity->academic])->joinWith(['player'])->count();
       $rows = (new \yii\db\Query())
-        ->select(['TIMESTAMPDIFF(HOUR, ts, now()) as dat', 'count(*) as cnt','sum(if(player_id in ('.Yii::$app->user->id.'),1,0)) as pcnt'])
+->select(['date_format(ts,"%D") as dat', 'count(*) as cnt','sum(if(player_id in ('.Yii::$app->user->id.'),1,0)) as pcnt'])
         ->from('stream')
         ->where(['>=','ts', new \yii\db\Expression('now()-interval 48 HOUR')])
         ->groupBy(new \yii\db\Expression('date(ts)'))
