@@ -66,7 +66,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
     public function getIsActive()
     {
-      return true;
       if(intval(\app\modules\subscription\models\PlayerSubscription::find()->me()->active()->notExpired()->count())>0)
       {
         return true;
