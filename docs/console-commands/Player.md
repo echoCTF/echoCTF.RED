@@ -54,3 +54,15 @@ Check users that registered the past 20 hours
 ```sh
 ./backend/yii player/check-stopforumspam "20 hour"
 ```
+
+## Generate activation keys for players
+
+Usage: `./backend/yii player/generate-activ-keys [filter]`
+
+Accepted filter values include one of `all`, `active`, `inactive`
+
+## Generate authentication keys for players
+
+Usage: `./backend/yii player/generate-auth-keys [filter]`
+
+Accepted filter values include one of `all`, `active`, `inactive`
