@@ -248,7 +248,7 @@ class CronController extends Controller
               }
               if($val->player->last->vpn_local_address!==null)
               {
-                Pf::add_table_ip($dc->name.'_clients',long2ip($val->player->last->vpn_local_address),true);
+                Pf::add_table_ip($dc->name.'_clients',long2ip($val->player->last->vpn_local_address)/*,true*/);
               }
               $val->ipoctet=$dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
               $val->reboot=0;
