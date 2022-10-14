@@ -78,7 +78,7 @@ class Team extends \yii\db\ActiveRecord
             [['description', 'logo'], 'string'],
             [['academic', 'owner_id'], 'integer'],
             [['inviteonly'], 'boolean'],
-            [['inviteonly'], 'default','value'=>1],
+            [['inviteonly'], 'default','value'=>true],
             [['name'], 'trim'],
             [['name'], 'string', 'length' => [3, 32]],
             [['description','recruitment'], 'string', 'max' =>250],
