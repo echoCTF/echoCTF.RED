@@ -18,6 +18,7 @@ $dataProvider=new ArrayDataProvider([
   <div class="card-body">
     <h4 class="card-title"><?=Html::encode($model->name)?></h4>
     <h6 class="badge badge-secondary"><?=$model->score !== null ? number_format($model->score->points) : 0?> points</h6>
+    <?php if($model->inviteonly):?><h5 class="badge badge-primary">invite only</h5><?php endif;?>
 
     <p class="card-description">
       <?=Html::encode($model->description)?>
@@ -73,10 +74,10 @@ $dataProvider=new ArrayDataProvider([
   </div>
     <div class="card-footer d-flex justify-content-center align-items-stretch">
     <div class="row">
-      <?php if(!$model->inviteonly || (Yii::$app->user->identity->team && Yii::$app->user->identity->team->id===$model->id)):?>
+      <?php if(Yii::$app->user->identity->team && Yii::$app->user->identity->team->id===$model->id):?>
       <div class="col"><?= Html::a('View', ['/team/default/view','token' => $model->token],['class'=>'btn text-dark text-bold d-block'.(!$model->inviteonly?' btn-info':' btn-warning')]) ?></div>
       <?php endif;?>
-      <?php if($model->getTeamPlayers()->count()<Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && ($model->inviteonly || $invite)):?>
+      <?php if($model->getTeamPlayers()->count()<Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && (!$model->inviteonly || $invite)):?>
       <div class="col"><?= Html::a('Join', ['/team/default/join','token' => $model->token],['class'=>'btn btn-primary d-block text-dark text-bold', 'data-method' => 'POST','data'=>['confirm'=>'You are about to join this team. Your membership will have to be confirmed by the team captain.','method'=>'POST']]) ?></div>
       <?php endif;?>
 
