@@ -33,7 +33,11 @@ Yii::$app->user->setReturnUrl(['frontend/team/view','id'=>$model->id]);
     <div class="row">
       <div class="col-sm-2">
           <a href="//<?=Yii::$app->sys->offense_domain?>/team/<?=$model->token?>" target="_blank">
+          <?php if($model->logo):?>
             <img width="140px" class="img-fluid" src="//<?=Yii::$app->sys->offense_domain?>/images/avatars/team/<?=$model->logo?>" alt="<?=Yii::$app->sys->offense_domain?>/images/avatars/<?=$model->logo?>">
+          <?php else: ?>
+            <img width="140px" class="img-fluid" src="//<?=Yii::$app->sys->offense_domain?>/images/team_player.png" alt="<?=Yii::$app->sys->offense_domain?>/images/avatars/<?=$model->logo?>">
+          <?php endif;?>
           </a>
       </div>
       <div class="col-sm-10">
@@ -45,7 +49,7 @@ Yii::$app->user->setReturnUrl(['frontend/team/view','id'=>$model->id]);
              <b>invite url: <?=Html::a(Url::to('//'.Yii::$app->sys->offense_domain.'/team/invite/'.$model->token,'https'),Url::to('//'.Yii::$app->sys->offense_domain.'/team/invite/'.$model->token,'https'),['target'=>'_blank']);?></b><br/>
              <b>description:</b> <?=Html::encode($model->description)?><br/>
              <b>recruitment:</b> <?=Html::encode($model->recruitment)?><br/>
-             <b>academic:</b> <?=Html::encode($model->academic===0?'nop':'yep')?><br/>
+             <b>academic:</b> <?=Html::encode($model->academicLong)?><br/>
              <b>inviteonly:</b> <?=Html::encode($model->inviteonly===0?'nop':'yep')?><br/>
              <b>last update:</b> <?=$model->ts?>
 

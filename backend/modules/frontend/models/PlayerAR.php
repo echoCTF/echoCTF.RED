@@ -14,6 +14,7 @@ use app\modules\activity\models\Stream;
 use app\modules\gameplay\models\Hint;
 use app\modules\gameplay\models\Finding;
 use app\modules\gameplay\models\Treasure;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "player".
@@ -73,12 +74,23 @@ class PlayerAR extends \yii\db\ActiveRecord
     public function behaviors()
     {
       return [
-          [
-              'class' => TimestampBehavior::class,
-              'createdAtAttribute' => 'created',
-              'updatedAtAttribute' => 'ts',
-              'value' => new Expression('NOW()'),
-          ],
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'academic' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'active' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'status' => AttributeTypecastBehavior::TYPE_INTEGER,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => true,
+            'typecastAfterFind' => true,
+        ],
+        [
+            'class' => TimestampBehavior::class,
+            'createdAtAttribute' => 'created',
+            'updatedAtAttribute' => 'ts',
+            'value' => new Expression('NOW()'),
+        ],
       ];
     }
     /**
@@ -88,17 +100,17 @@ class PlayerAR extends \yii\db\ActiveRecord
     {
         return [
             [['username', 'type', 'status'], 'required'],
-            [['verification_token','password_reset_token'], 'string'],
-            [['verification_token','password_reset_token'], 'default','value'=>null],
             [['type'], 'string'],
             [['active', 'status'], 'integer'],
-            [['academic'], 'boolean'],
+            [['academic'], 'integer'],
+            [['academic'], 'default','value'=>0],
             [['email'], 'filter', 'filter'=>'strtolower'],
             [['activkey'], 'string', 'max' => 32],
             [['auth_key'], 'string', 'max' => 32],
             [['type'], 'default', 'value' => 'offense'],
             [['status'], 'default', 'value' => self::STATUS_ACTIVE],
             [['activkey'], 'default', 'value' => Yii::$app->security->generateRandomString().'_'.time(), 'on' => 'create'],
+            [['verification_token'], 'default', 'value' => str_replace('_','-',Yii::$app->security->generateRandomString().'-'.time()), 'on' => 'create'],
             [['username', 'fullname', 'email', 'new_password', 'activkey'], 'string', 'max' => 255],
             [['username'], 'unique'],
             [['new_password', 'password'], 'safe'],
@@ -372,7 +384,24 @@ class PlayerAR extends \yii\db\ActiveRecord
         $this->password_hash=Yii::$app->security->generatePasswordHash($this->new_password);
         $this->password=Yii::$app->security->generatePasswordHash($this->new_password);
       }
-
+      if(!$this->isNewRecord && array_key_exists('academic',$this->dirtyAttributes)===true)
+      {
+        if($this->team!==null)
+        {
+            $this->team->academic=$this->academic; // change team group and remove members
+            $this->team->save();
+            TeamPlayer::deleteAll(['AND',
+                ['team_id'=>$this->team->id],
+                ['!=','player_id',$this->id],
+            ]);
+            Yii::$app->session->setFlash("warning","The team owned by the user changed category also. Any members got kicked out.");
+        }
+        elseif($this->teamPlayer!==null && intval($this->teamPlayer->team->academic)!=$this->academic)
+        {
+            $this->teamPlayer->delete();
+            Yii::$app->session->setFlash("warning","The player got removed from the team");
+        }
+      }
       return parent::beforeSave($insert);
     }
 

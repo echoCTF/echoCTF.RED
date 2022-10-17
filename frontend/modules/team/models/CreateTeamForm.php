@@ -34,9 +34,8 @@ class CreateTeamForm extends Model
           [['name','description'], 'trim'],
           ['name', 'required'],
           ['name', 'unique', 'targetClass' => 'app\modules\team\models\Team', 'message' => 'A team with this name already exists.'],
-          ['name', 'string', 'min' => 3, 'max' => 255],
+          [['name'], 'string', 'length' => [3, 32]],
           [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => 'File larger than expected, limit is 500KB'],
-
       ];
     }
 
@@ -64,10 +63,12 @@ class CreateTeamForm extends Model
           $tp->team_id=$team->id;
           $tp->player_id=Yii::$app->user->id;
           $tp->approved=1;
-          $tp->save();
+          if($tp->save())
+          {
+            $transaction->commit();
+            return true;
+          }
         }
-        $transaction->commit();
-        return true;
       }
       catch (\Exception $e)
       {

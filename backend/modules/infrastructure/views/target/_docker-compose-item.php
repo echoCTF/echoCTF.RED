@@ -1,4 +1,5 @@
   <?=$model->name?>:
+    hostname: <?=$model->name."\n"?>
     container_name: <?=strtolower(str_replace(' ','',trim(Yii::$app->sys->event_name)))?>_<?=$model->name."\n"?>
     restart: "always"
     image: <?=$model->image."\n"?>

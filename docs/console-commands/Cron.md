@@ -16,12 +16,21 @@ Performs the following operations
 ## Instances
 Processes target instances with pending actions. This includes instances that are scheduled to be started (spawn), restarted or destroyed:
 
-Usage: `./yii cron/instances`
+Providing any argument causes the action to process only PF related operations for the instance.
+
+Usage: `./yii cron/instances [pfonly]`
+
+## InstancePf
+Process instance specific packet filter rules. This allows syncing of packet filter rules in setups with multiple VPN servers.
+
+Provide a value for actions on instances that got modified during the last `N` seconds
+
+Usage: `./yii cron/instance-pf [seconds]`
 
 ## Healthcheck
 Checks the healthstatus of running containers and (optionaly) restart them if found unhealthy.
 
-Usage: 
+Usage:
 ```shell
 ./yii cron/healthcheck
 # or to request restarting of unhealthy containers

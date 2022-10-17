@@ -41,13 +41,12 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
     public function getExists()
     {
-      if(\app\modules\subscription\models\PlayerSubscription::findOne(\Yii::$app->user->id)!==null || \Yii::$app->sys->all_players_vip!==false)
+      if(\app\modules\subscription\models\PlayerSubscription::findOne(\Yii::$app->user->id)!==null || \Yii::$app->sys->all_players_vip===true)
       {
         return true;
       }
       return false;
     }
-
     public function getExpires()
     {
 

@@ -31,8 +31,9 @@ class Leaderboard extends Widget
     {
       if($this->player_id !== null)
       {
+        $academic=\app\models\Player::findOne($this->player_id)->academic;
         $this->dataProvider=new ActiveDataProvider([
-          'query' => PlayerRank::find()->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
+          'query' => PlayerRank::find()->academic($academic)->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
           'pagination' => [
               'pageSizeParam'=>'score-perpage',
               'pageParam'=>'score-page',

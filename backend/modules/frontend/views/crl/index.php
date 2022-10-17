@@ -22,7 +22,13 @@ yii\bootstrap\Modal::end();
 
     <p>
         <?= Html::a(Yii::t('app', 'Create Crl'), ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Yii::t('app', 'Delete All'), ['truncate'], ['class' => 'btn btn-danger']) ?>
+        <?= Html::a(Yii::t('app', 'Delete All'), ['truncate'], [
+            'class' => 'btn btn-warning',
+            'data' => [
+                'confirm' => 'Are you sure you want to truncate the CRL?',
+                'method' => 'post',
+            ],
+        ]) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

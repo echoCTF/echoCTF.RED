@@ -20,16 +20,16 @@ use yii\behaviors\AttributeTypecastBehavior;
  */
 class Target extends TargetAR
 {
-  const DEFAULT_LOGO='/images/default_target.png';
-  public $difficulties=[
-    "beginner",
-    "basic",
-    "intermediate",
-    "advanced",
-    "expert",
-    "guru",
-    "insane",
-  ];
+    const DEFAULT_LOGO='/images/default_target.png';
+    public $difficulties=[
+      "beginner",
+      "basic",
+      "intermediate",
+      "advanced",
+      "expert",
+      "guru",
+      "insane",
+    ];
     public function getTreasureCategories()
     {
       $categories=[];
@@ -128,7 +128,7 @@ class Target extends TargetAR
       {
         return true;
       }
-
+// dont check for progress
       if(Yii::$app->user->identity->profile->last->vpn_local_address === null && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_findings)<1 && intval(self::find()->player_progress(Yii::$app->user->id)->where(['t.id'=>$this->id])->one()->player_treasures)<1)
         return true;
 

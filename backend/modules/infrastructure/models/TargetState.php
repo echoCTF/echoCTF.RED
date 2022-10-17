@@ -22,7 +22,7 @@ use app\modules\gameplay\models\Target;
  * @property int $on_ondemand
  * @property int $ondemand_state
  *
- * @property Target $id0
+ * @property Target $target
  */
 class TargetState extends \yii\db\ActiveRecord
 {
@@ -75,9 +75,9 @@ class TargetState extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|TargetQuery
      */
-    public function getId0()
+    public function getTarget()
     {
-        return $this->hasOne(Target::className(), ['id' => 'id']);
+        return $this->hasOne(Target::class, ['id' => 'id']);
     }
 
     /**

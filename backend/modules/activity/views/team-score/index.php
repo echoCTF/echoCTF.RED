@@ -33,11 +33,19 @@ yii\bootstrap\Modal::end();
             ['class' => 'yii\grid\SerialColumn'],
             'team_id',
             [
-              'attribute' => 'team.name',
+              'attribute' => 'team_name',
+              'value' => 'team.name',
               'label'=>'Team',
               //'value'=> function($model) {return sprintf("id:%d %s", $model->team_id, $model->team->name);},
             ],
+            [
+                'attribute' => 'team_academic',
+                'label'=>'Academic',
+                'value'=>'team.academicShort',
+                'filter'=>[0=>'Gov',1=>'Edu', 2=>"Pro"],
+            ],
             'points',
+            'ts',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

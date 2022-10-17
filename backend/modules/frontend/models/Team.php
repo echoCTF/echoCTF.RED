@@ -49,7 +49,7 @@ class Team extends \yii\db\ActiveRecord
             [['name', 'owner_id'], 'required'],
             [['description', 'logo'], 'string'],
             [['academic', 'owner_id','inviteonly'], 'integer'],
-            [['academic','inviteonly'], 'boolean'],
+            [['inviteonly'], 'boolean'],
             [['inviteonly'], 'default','value'=>true],
             [['name','recruitment'], 'string', 'max' => 255],
             [['token'], 'string', 'max' => 30],
@@ -124,6 +124,40 @@ class Team extends \yii\db\ActiveRecord
       ->execute();
     }
 
+    public function getAcademicLong()
+    {
+        switch($this->academic)
+        {
+          case 0:
+            return "government";
+          case 1:
+            return "education";
+          default:
+            return "professional";
+        }
+    }
+
+    public function getAcademicShort()
+    {
+      switch($this->academic)
+      {
+        case 0:
+          return "gov";
+        case 1:
+          return "edu";
+        default:
+          return "pro";
+      }
+    }
+    public function getUcademicLong()
+    {
+        return ucfirst($this->academicLong);
+    }
+
+    public function getUcacademicShort()
+    {
+        return ucfirst($this->academicShort);
+    }
 
     /**
      * @return \yii\db\ActiveQuery

@@ -18,18 +18,31 @@ use yii\web\UploadedFile;
 /**
  * TeamController implements the CRUD actions for Team model.
  */
-class DefaultController extends Controller
+class DefaultController extends \app\components\BaseController
 {
     /**
      * {@inheritdoc}
      */
     public function behaviors()
     {
-        return [
+      $parent=parent::behaviors();
+        return ArrayHelper::merge($parent,[
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
                 'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite', 'mine','view'],
                 'rules' => [
+                  'teamsAccess'=>[
+                    'actions'=>[''],
+                  ],
+                  'eventStartEnd'=>[
+                    'actions' => [''],
+                  ],
+                  'eventStart'=>[
+                    'actions' => [''],
+                  ],
+                  'eventEnd'=>[
+                    'actions' => ['join','update','approve','reject','create'],
+                  ],
                   [
                     'actions'=>['create', 'join', 'update', 'approve', 'reject'],
                     'allow'=> false,
@@ -51,7 +64,7 @@ class DefaultController extends Controller
                     },
                     'denyCallback' => function() {
                       \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
-                      return $this->redirect(['mine']);
+                      return $this->redirect(['/team/mine']);
                     }
                   ],
                   [ // Only join when not on team
@@ -63,7 +76,7 @@ class DefaultController extends Controller
                     },
                     'denyCallback' => function () {
                       \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
-                      return $this->redirect(['mine']);
+                      return $this->redirect(['/team/mine']);
                     }
                   ],
                   [ // Only allow updates from teamLeaders
@@ -75,10 +88,9 @@ class DefaultController extends Controller
                     },
                     'denyCallback' => function () {
                       \Yii::$app->session->setFlash('error', 'You are not the leader of any teams.');
-                      return $this->redirect(['index']);
+                      return $this->redirect(['/team/mine']);
                     }
                   ],
-
                   [
                      'actions' => ['reject'],
                      'allow' => false,
@@ -88,7 +100,7 @@ class DefaultController extends Controller
                      },
                      'denyCallback' => function () {
                        \Yii::$app->session->setFlash('info', 'These actions are disabled during the competition');
-                       return  \Yii::$app->getResponse()->redirect(['/target/default/index']);
+                       return  \Yii::$app->getResponse()->redirect(['/team/mine']);
                      }
                  ],
                  'disabledRoute'=>[
@@ -115,7 +127,7 @@ class DefaultController extends Controller
                     'join' => ['POST'],
                 ],
             ],
-        ];
+        ]);
     }
 
     /**
@@ -157,9 +169,9 @@ class DefaultController extends Controller
      */
     public function actionMine()
     {
-      if(Yii::$app->user->identity->team===null)
+      if(Yii::$app->user->identity->team===null || Yii::$app->user->identity->teamPlayer===null)
       {
-        $this->redirect(['index']);
+        return $this->redirect(['index']);
       }
       $dataProvider = new ActiveDataProvider([
           'query' => TeamPlayer::find()->where(['team_id'=>Yii::$app->user->identity->team->id])->orderBy(['ts' => SORT_ASC]),
@@ -192,7 +204,7 @@ class DefaultController extends Controller
     public function actionIndex()
     {
         $dataProvider = new ActiveDataProvider([
-            'query' => Team::find()->joinWith(['teamPlayers'])->groupBy(['team.id'])->orderBy(['name'=>SORT_ASC]), 
+            'query' => Team::find()->byAcademic(Yii::$app->user->identity->academic)->joinWith(['teamPlayers'])->groupBy(['team.id'])->orderBy(['name'=>SORT_ASC]),
             'pagination' => false,
         ]);
 
@@ -212,9 +224,12 @@ class DefaultController extends Controller
       if($model->load(Yii::$app->request->post()) && $model->create())
       {
         Yii::$app->user->identity->refresh();
-        Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',Yii::$app->user->identity->teamLeader->id)->execute();
-        Yii::$app->session->setFlash('success', 'Your team has been created.');
-        return $this->redirect(['update']);
+        if(Yii::$app->user->identity->teamLeader!==null)
+        {
+          Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',Yii::$app->user->identity->teamLeader->id)->execute();
+          Yii::$app->session->setFlash('success', 'Your team has been created.');
+          return $this->redirect(['update']);
+        }
       }
       return $this->render('create', [
           'model' => $model,
@@ -254,8 +269,8 @@ class DefaultController extends Controller
         return $this->redirect(['view','token'=>$team->token]);
       }
 
+      $tp->notifyJoinOwner();
       Yii::$app->session->setFlash('success', 'You joined the team but it is pending approval by the team leader.');
-      // XXX Add notification to the team leader
       return $this->redirect(['view','token'=>$team->token]);
 
     }
@@ -301,7 +316,7 @@ class DefaultController extends Controller
         return $this->redirect(['view','token'=>$tp->team->token]);
       }
       Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$tp->team_id)->execute();
-
+      $tp->notifyApprovePlayer();
       Yii::$app->session->setFlash('success', 'Membership approved.');
       return $this->redirect(['view','token'=>$tp->team->token]);
 
@@ -335,6 +350,14 @@ class DefaultController extends Controller
       }
       else {
         Yii::$app->session->setFlash('success', 'Membership has been withdrawn.');
+      }
+      if(Yii::$app->user->identity->teamLeader)
+      {
+        $tp->notifyRejectPlayer();
+      }
+      else
+      {
+        $tp->notifyPartOwner();
       }
       return $this->redirect($redir);
     }

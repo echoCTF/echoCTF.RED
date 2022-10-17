@@ -9,9 +9,14 @@ namespace app\modules\challenge\models;
  */
 class ChallengeSolverQuery extends \yii\db\ActiveQuery
 {
+    public function academic($academic)
+    {
+      return $this->joinWith('player')->andWhere(['player.academic'=>$academic]);
+    }
+
     public function timed()
     {
-        return $this->joinWith(['challenge'])->andWhere(['challenge.timer'=>1])->andWhere(['>','challenge_solver.timer',0]);
+      return $this->joinWith(['challenge'])->andWhere(['challenge.timer'=>1])->andWhere(['>','challenge_solver.timer',0]);
     }
 
     /**

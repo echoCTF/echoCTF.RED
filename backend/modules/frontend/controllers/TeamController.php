@@ -149,8 +149,7 @@ class TeamController extends \app\components\BaseController
     {
         $model=$this->findModel($id);
         $model->updateAttributes(['academic' => !$model->academic]);
-
-        return $this->redirect(['index']);
+        return $this->redirect(Yii::$app->request->referrer ?? ['frontend/teamplayer/index']);
     }
 
     /**

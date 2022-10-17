@@ -45,7 +45,7 @@ class Team extends \yii\db\ActiveRecord
           'attributeTypes' => [
             'id' => AttributeTypecastBehavior::TYPE_INTEGER,
             'inviteonly' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'academic' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'academic' => AttributeTypecastBehavior::TYPE_INTEGER,
           ],
           'typecastAfterValidate' => true,
           'typecastBeforeSave' => true,
@@ -63,7 +63,7 @@ class Team extends \yii\db\ActiveRecord
     public function scenarios()
     {
         return [
-            self::SCENARIO_CREATE => ['name', 'description','token'],
+            self::SCENARIO_CREATE => ['name', 'description','token','academic'],
             self::SCENARIO_UPDATE => ['name', 'description', 'uploadedAvatar','inviteonly','recruitment'],
         ];
     }
@@ -77,7 +77,8 @@ class Team extends \yii\db\ActiveRecord
             [['name', 'owner_id'], 'required'],
             [['description', 'logo'], 'string'],
             [['academic', 'owner_id'], 'integer'],
-            [['academic','inviteonly'], 'boolean'],
+            [['inviteonly'], 'boolean'],
+            [['inviteonly'], 'default','value'=>true],
             [['name'], 'trim'],
             [['name'], 'string', 'length' => [3, 32]],
             [['description','recruitment'], 'string', 'max' =>250],
@@ -252,5 +253,31 @@ class Team extends \yii\db\ActiveRecord
         $thumb_h    =   300;
       }
       return [$thumb_w, $thumb_h];
+    }
+
+    public function getAcademicShort()
+    {
+      switch($this->academic)
+      {
+        case 0:
+          return 'gov';
+        case 1:
+          return 'edu';
+        default:
+          return 'pro';
+      }
+    }
+
+    public function getAcademicWord()
+    {
+      switch($this->academic)
+      {
+        case 0:
+          return 'government';
+        case 1:
+          return 'education';
+        default:
+          return 'professional';
+      }
     }
 }

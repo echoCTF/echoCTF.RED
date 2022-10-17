@@ -63,3 +63,8 @@ Usage: `./backend/yii ssl/gen-player-certs <email> [fileout]`
 Generate certificates for all players
 
 Usage: `./backend/yii ssl/gen-all-player-certs [fileout]`
+
+## Load Certification Authority
+Load the CA required files from the local filesystem.
+
+Usage: `./backend/yii ssl/load-ca`

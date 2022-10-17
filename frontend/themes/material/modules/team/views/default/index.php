@@ -11,7 +11,7 @@ $this->_fluid="-fluid";
 <div class="team-index">
   <div class="body-content">
     <h2><?=Html::encode($this->title)?></h2>
-    Join a team<?php if( Yii::$app->user->identity->team===null):?> or <b><?= Html::a('Create', ['/team/default/create'],['class'=>'btn btn-info btn-sm']) ?></b> a new one<?php endif;?>!
+    <?php if( Yii::$app->user->identity->team===null):?>Join a team or <b><?= Html::a('Create', ['/team/default/create'],['class'=>'btn btn-info btn-sm']) ?></b> a new one!<?php endif;?>
     <hr />
     <div class="card-deck d-flex justify-content-center">
     <?php

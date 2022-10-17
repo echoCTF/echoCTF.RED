@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => true])->hint('The username of the player') ?>
 
-    <?= $form->field($model, 'academic')->checkbox()->hint('Whether the player is academic or not') ?>
+    <?= $form->field($model, 'academic')->dropDownList(['0' => 'Gov', '1' => 'Edu','2'=>'Pro'])->hint('Whether the player is gov, edu or pro') ?>
 
     <?= $form->field($model, 'fullname')->textInput(['maxlength' => true])->hint('The fullname of the player') ?>
 
@@ -24,15 +24,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'new_password')->textInput(['maxlength' => true])->hint('Choose a password for the player') ?>
 
+    <?= $form->field($model, 'activkey')->textInput(['maxlength' => true])->hint('The activation key, generated automatically by the application. TODO') ?>
+
     <?= $form->field($model, 'auth_key')->textInput(['maxlength' => true])->hint('The authentication key used for cookie validation. Generated automatically by the application if empty.') ?>
+
     <?= $form->field($model, 'active')->checkbox()->hint('Whether the player is active or not') ?>
 
     <?= $form->field($model, 'status')->dropDownList(['0' => 'DELETED', '8'=>'UNVERIFIED', '9' => 'DISABLED', '10' => 'ENABLED'], ['prompt' => 'Choose player status'])->hint('Account status') ?>
-
-    <?= $form->field($model, 'activkey')->textInput(['maxlength' => true])->hint('The activation key, generated automatically by the application. TODO') ?>
-    <?= $form->field($model, 'verification_token')->textInput(['maxlength' => true])->hint('The email verification token for the user. This should be empty in most cases.') ?>
-    <?= $form->field($model, 'password_reset_token')->textInput(['maxlength' => true])->hint('The password reset token. Should have value only when a user has requested it.') ?>
-
 
 
     <div class="form-group">

@@ -1,6 +1,8 @@
 --
 -- Dumping routines for database 'echoCTF_dev'
 --
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 DELIMITER ;;
 
 DROP FUNCTION IF EXISTS `NTOHS` ;;
@@ -246,7 +248,7 @@ DROP PROCEDURE IF EXISTS calculate_country_rank;;
 CREATE PROCEDURE calculate_country_rank ()
 BEGIN
   DECLARE done INT DEFAULT FALSE;
-  DECLARE ccode VARCHAR(3);
+  DECLARE ccode VARCHAR(3) COLLATE utf8mb4_unicode_ci;
   DECLARE cur1 CURSOR FOR SELECT DISTINCT country FROM profile;
   DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
   CREATE TEMPORARY TABLE country_ranking (id int primary key AUTO_INCREMENT,player_id int) ENGINE=MEMORY;
@@ -289,7 +291,11 @@ END ;;
 DROP PROCEDURE IF EXISTS init_mysql;;
 CREATE PROCEDURE init_mysql ()
 BEGIN
-  call populate_memcache();
-  call calculate_ranks();
-  call calculate_country_rank();
+    IF (SELECT val FROM sysconfig WHERE id='time_zone') IS NOT NULL THEN
+      SET GLOBAL time_zone=(SELECT val FROM sysconfig WHERE id='time_zone');
+    END IF;
+    call populate_memcache();
+    call calculate_ranks();
+    call calculate_country_rank();
+    call calculate_team_ranks();
 END ;;

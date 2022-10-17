@@ -81,4 +81,8 @@ class VerifyEmailForm extends Model
         $this->_player->profile->save(false);
       }
     }
+    public function getPlayer()
+    {
+      return $this->_player;
+    }
 }

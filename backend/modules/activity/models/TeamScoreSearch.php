@@ -11,7 +11,8 @@ use app\modules\activity\models\TeamScore;
  */
 class TeamScoreSearch extends TeamScore
 {
-  public $team;
+  public $team_name;
+  public $team_academic;
     /**
      * {@inheritdoc}
      */
@@ -19,7 +20,7 @@ class TeamScoreSearch extends TeamScore
     {
         return [
             [['team_id', 'points'], 'integer'],
-            [['team'], 'safe'],
+            [['team_name','team_academic'], 'safe'],
         ];
     }
 
@@ -62,10 +63,11 @@ class TeamScoreSearch extends TeamScore
         $query->andFilterWhere([
             'team_score.team_id' => $this->team_id,
             'team_score.points' => $this->points,
+            'team.academic' => $this->team_academic,
         ]);
-        $query->andFilterWhere(['like', 'team.name', $this->team]);
+        $query->andFilterWhere(['like', 'team.name', $this->team_name]);
         $dataProvider->setSort([
-            'defaultOrder' => ['points'=>SORT_DESC, 'team_id'=>SORT_ASC],
+            'defaultOrder' => ['points'=>SORT_DESC, 'ts'=>SORT_ASC,'team_id'=>SORT_ASC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
@@ -73,11 +75,15 @@ class TeamScoreSearch extends TeamScore
                     'asc' => ['points'=>SORT_ASC, 'team_id'=>SORT_ASC],
                     'desc' => ['points'=>SORT_DESC, 'team_id'=>SORT_ASC],
                   ],
-                  'team' => [
-                      'asc' => ['team_id' => SORT_ASC],
-                      'desc' => ['team_id' => SORT_DESC],
+                  'team_name' => [
+                      'asc' => ['team.name' => SORT_ASC],
+                      'desc' => ['team.name' => SORT_DESC],
                   ],
-                ]
+                  'team_acedemic' => [
+                    'asc' => ['team.academic' => SORT_ASC],
+                    'desc' => ['team.academic' => SORT_DESC],
+                ],
+              ]
             ),
         ]);
 

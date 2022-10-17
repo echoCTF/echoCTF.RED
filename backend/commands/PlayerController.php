@@ -58,7 +58,7 @@ class PlayerController extends Controller {
   /**
    * Regenerate player activkeys
    */
-    public function actionGenerateTokens($filter='all')
+    public function actionGenerateActivKeys($filter='all')
     {
         $filters=['all', 'active', 'inactive'];
         if(!in_array($filter, $filters))
@@ -88,6 +88,38 @@ class PlayerController extends Controller {
         }
     }
 
+  /**
+   * Regenerate player auth keys
+   */
+  public function actionGenerateAuthKeys($filter='all')
+  {
+      $filters=['all', 'active', 'inactive'];
+      if(!in_array($filter, $filters))
+      {
+          throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
+      }
+
+      $players=Player::find();
+      switch($filter) {
+          case 'active':
+             $players->where(['active' => 1]);
+              break;
+
+          case 'inactive':
+             $players->where(['active' => 0]);
+              break;
+
+      }
+
+      foreach($players->all() as $player)
+      {
+      $player->auth_key=Yii::$app->security->generateRandomString();
+      if(!$player->save())
+      {
+        throw new ConsoleException('Failed to save player:'.$player->username.'. '.implode(', ', $player->getErrors()));
+      }
+      }
+  }
 
   /**
    * @param Player[] $players
@@ -163,7 +195,7 @@ class PlayerController extends Controller {
     try
     {
       $player=new Player;
-      $player->academic=intval(boolval($academic));
+      $player->academic=intval($academic);
       if($username==='')
         $player->username=substr(md5($email),0,10);
       else
@@ -197,7 +229,6 @@ class PlayerController extends Controller {
       }
 
       $player->createTeam($team_name,$approved);
-
       $trans->commit();
     }
     catch(\Exception $e)

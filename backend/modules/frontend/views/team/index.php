@@ -37,6 +37,7 @@ yii\bootstrap\Modal::end();
               'value'=>function($model){
                 if($model->logo)
                   return '//'.Yii::$app->sys->offense_domain.'/images/avatars/team/'.$model->logo;
+                return '//'.Yii::$app->sys->offense_domain.'/images/team_player.png';
               }
             ],
             [
@@ -45,12 +46,17 @@ yii\bootstrap\Modal::end();
             ],
             'name',
             'description:ntext',
-            'academic:boolean',
+            [
+              'attribute'=>'academic',
+              'value'=>'ucacademicShort',
+              'filter'=>[0=>'Gov',1=>'Edu', 2=>"Pro"],
+            ],
             'inviteonly:boolean',
             [
               'label'=>'Owner',
               'attribute'=>'username',
-              'value'=>'owner.username'
+              'format'=>'html',
+              'value'=>function($model){ return Html::a($model->owner->username,['profile/view-full','id'=>$model->owner->profile->id]);}
             ],
             //'token',
             'ts',

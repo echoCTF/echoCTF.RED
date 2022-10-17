@@ -92,9 +92,12 @@ class Pf extends Component
 
   }
 
-  public static function add_table_ip($table,$ip)
+  public static function add_table_ip($table,$ip,$replace=false)
   {
-    @passthru(self::PFCTL." -t $table -T add $ip",$return_var);
+    if($replace)
+      @passthru(self::PFCTL." -t $table -T replace $ip",$return_var);
+    else
+      @passthru(self::PFCTL." -t $table -T add $ip",$return_var);
   }
   public static function del_table_ip($table,$ip)
   {

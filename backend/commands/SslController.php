@@ -161,9 +161,28 @@ class SslController extends Controller {
         file_put_contents($player->username.".crt", $playerSsl->crt);
         file_put_contents($player->username.".key", $playerSsl->privkey);
       }
+      sleep(1);
     }
   }
 
+  /*
+   * Get CA cert files
+   */
+  public function actionLoadCa()
+  {
+    $ocrt=Sysconfig::findOne('CA.crt');
+    $okey=Sysconfig::findOne('CA.key');
+    $ocsr=Sysconfig::findOne('CA.csr');
+    $otxtcrt=Sysconfig::findOne('CA.txt.crt');
+    $ocsr->val=file_get_contents("echoCTF-OVPN-CA.csr");
+    $ocrt->val=file_get_contents("echoCTF-OVPN-CA.crt");
+    $otxtcrt->val=file_get_contents("echoCTF-OVPN-CA.txt.crt");
+    $okey->val=file_get_contents("echoCTF-OVPN-CA.key");
+    $ocsr->save();
+    $ocrt->save();
+    $otxtcrt->save();
+    $okey->save();
+  }
   /*
    * Get CA cert files
    */

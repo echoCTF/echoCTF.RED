@@ -43,14 +43,22 @@ class StreamWidget extends Widget
 
     private function configureDataProvider()
     {
-      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago');
+      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago')->joinWith(['player']);
+      if(\Yii::$app->user->isGuest)
+      {
+        $model->andWhere(['academic'=>0]);
+      }
+      else
+      {
+        $model->andWhere(['academic'=>\Yii::$app->user->identity->academic]);
+      }
+
       if($this->player_id !== null)
       {
         $model=\app\models\Stream::find()
-          ->select('stream.*,TS_AGO(stream.ts) as ts_ago')
+          ->select('stream.*,TS_AGO(stream.ts) as ts_ago')->joinWith(['player'])
           ->where(['player_id'=>$this->player_id]);
       }
-      $model->joinWith(['player']);
       $this->dataProvider=new ActiveDataProvider([
           'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
           'pagination' => [

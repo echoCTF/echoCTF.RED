@@ -11,11 +11,11 @@ class PlayerRankQuery extends \yii\db\ActiveQuery
 {
     public function academic($academic)
     {
-      return $this->joinWith('player')->where(['player.academic'=>$academic]);
+      return $this->joinWith('player')->andWhere(['player.academic'=>$academic]);
     }
     public function nonZero()
     {
-      return $this->joinWith('score')->where(['>','player_score.points',0]);
+      return $this->joinWith('score')->andWhere(['>','player_score.points',0]);
     }
 
     public function active()
