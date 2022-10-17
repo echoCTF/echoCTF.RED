@@ -1,4 +1,4 @@
-FROM buildpack-deps:buster-curl
+FROM buildpack-deps:bullseye-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED Administration interface (backend)"
 ARG VPNUSER=vpnuser
@@ -14,12 +14,14 @@ ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /var/www/echoCTF.RED
 COPY ${RED_APP} ./${RED_APP}/
+ADD https://getcomposer.org/download/latest-stable/composer.phar /usr/local/bin/composer
 
 RUN set -ex; \
     apt-get update; \
-    apt-get install --no-install-recommends -y git zip unzip mariadb-client mcrypt apache2 \
+    apt-get install --no-install-recommends -y git zip unzip mariadb-client mcrypt apache2 tini \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached \
-    composer vim; \
+    vim; \
+    chmod a+x /usr/local/bin/composer; \
     cp ${RED_APP}/config/cache-local.php ${RED_APP}/config/cache.php; \
     cp ${RED_APP}/config/validationKey-local.php ${RED_APP}/config/validationKey.php; \
     cp ${RED_APP}/config/db-sample.php ${RED_APP}/config/db.php; \
@@ -29,6 +31,7 @@ RUN set -ex; \
     chown www-data ${RED_APP}/web/assets; \
     chown www-data ${RED_APP}/runtime; \
     cd ${RED_APP}; \
+    composer validate; \
 #    [ -z "${GITHUB_OAUTH_TOKEN}" ] || git config --global url."https://".insteadOf "git://" ; \
 #    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
 #    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config --global github-protocols https; \
@@ -49,3 +52,4 @@ VOLUME /var/www/echoCTF.RED/${RED_APP}/web/uploads
 
 WORKDIR /var/www/echoCTF.RED
 CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
+ENTRYPOINT ["tini", "--"]

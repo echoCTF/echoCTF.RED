@@ -1,4 +1,4 @@
-FROM buildpack-deps:buster-curl
+FROM buildpack-deps:bullseye-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED Participants interface (frontend)"
 ARG VPNUSER=vpnuser
@@ -13,19 +13,21 @@ ARG GITHUB_OAUTH_TOKEN
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
     && apt-get update \
-    && apt-get install --no-install-recommends -y git zip unzip \
+    && apt-get install --no-install-recommends -y git zip unzip tini \
     mariadb-client mcrypt apache2 \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached \
-    composer vim
+    vim
 
 WORKDIR /var/www/echoCTF.RED
 COPY ${RED_APP} ./${RED_APP}/
 COPY contrib/html-rewrite.conf /etc/apache2/sites-enabled/html-rewrite.conf
+ADD https://getcomposer.org/download/latest-stable/composer.phar /usr/local/bin/composer
 
 RUN set -ex; \
     cp ${RED_APP}/config/memcached-local.php ${RED_APP}/config/cache.php; \
     cp ${RED_APP}/config/validationKey-local.php ${RED_APP}/config/validationKey.php; \
     cp ${RED_APP}/config/db-local.php ${RED_APP}/config/db.php; \
+    chmod a+x /usr/local/bin/composer; \
     sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" ${RED_APP}/config/cache.php; \
     echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8mb4',  ];">${RED_APP}/config/db.php; \
     mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime ${RED_APP}/web/images/avatars/team; \
@@ -43,11 +45,12 @@ RUN set -ex; \
     a2enmod rewrite; \
     rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
 
-ADD contrib/entrypoint.sh /
-RUN chmod 0700 /entrypoint.sh
+#ADD contrib/entrypoint.sh /
+#RUN chmod 0700 /entrypoint.sh
 
 EXPOSE 80/tcp
 
 VOLUME /var/www/echoCTF.RED/${RED_APP}/web/uploads
 WORKDIR /var/www/echoCTF.RED
 CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
+ENTRYPOINT ["tini", "--"]

@@ -1,4 +1,4 @@
-FROM buildpack-deps:buster-curl
+FROM buildpack-deps:bullseye-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED vpn server"
 ARG VPNUSER=vpnuser
@@ -15,14 +15,15 @@ WORKDIR /var/www/echoCTF.RED
 COPY ${RED_APP} ./${RED_APP}/
 COPY contrib ./contrib/
 COPY contrib/entrypoint-vpn.sh /entrypoint.sh
-
+ADD https://getcomposer.org/download/latest-stable/composer.phar /usr/local/bin/composer
 
 RUN set -ex \
     && apt-get update \
-    && apt-get install --no-install-recommends -y procps git zip unzip mariadb-client \
+    && apt-get install --no-install-recommends -y procps git zip unzip mariadb-client tini \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
-    composer openvpn netcat-openbsd; \
+    openvpn netcat-openbsd; \
     cd /var/www/echoCTF.RED/${RED_APP}; \
+    chmod a+x /usr/local/bin/composer; \
     git config --global url."https://".insteadOf "git://" ; \
 #    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
 #    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config --global github-protocols https; \
@@ -32,10 +33,9 @@ RUN set -ex \
     touch /var/log/openvpn/openvpn.log; \
     rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
 
-
+RUN cd /var/www/echoCTF.RED/${RED_APP} && composer validate
 EXPOSE 1194/udp
 VOLUME /etc/openvpn
 WORKDIR /var/www/echoCTF.RED
-
 CMD ["tail -3f /var/log/openvpn/openvpn.log"]
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["tini","--", "/entrypoint.sh"]
