@@ -1,4 +1,4 @@
-FROM buildpack-deps:buster-curl
+FROM buildpack-deps:bullseye-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED all in one"
 ARG VPNUSER=vpnuser
@@ -8,7 +8,7 @@ ARG GITHUB_OAUTH_TOKEN
 ENV DEBIAN_FRONTEND noninteractive
 RUN set -ex \
     && apt-get update \
-    && apt-get install --no-install-recommends -y build-essential gcc \
+    && apt-get install --no-install-recommends -y build-essential gcc tini \
     autoconf automake git zip unzip \
     mariadb-server mariadb-client mcrypt memcached apache2 \
     libmemcached-dev libtool libmariadbclient-dev \
@@ -77,4 +77,4 @@ EXPOSE 11211/tcp
 
 WORKDIR /var/www/echoCTF.RED
 CMD ["tail -f /var/log/apache2/error.log"]
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["tini", "--", "/entrypoint.sh"]

@@ -18,7 +18,7 @@ COPY contrib/entrypoint-mariadb.sh /usr/local/bin/docker-entrypoint.sh
 WORKDIR /
 RUN set -ex; \
   apt-get update; \
-  apt-get install -y build-essential gcc autoconf automake git zip unzip mcrypt memcached libmariadb-dev libmemcached-dev libtool; \
+  apt-get install -y build-essential gcc autoconf automake git zip unzip mcrypt memcached libmariadb-dev tini libmemcached-dev libtool; \
   echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
   echo "plugin_load_add = ha_federatedx">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
   echo "plugin_load_add = ha_blackhole">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
@@ -47,3 +47,4 @@ RUN set -ex; \
 
 EXPOSE 3306/tcp
 EXPOSE 11211/tcp
+ENTRYPOINT ["tini","--", "/usr/local/bin/docker-entrypoint.sh"]
