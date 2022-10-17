@@ -13,7 +13,7 @@ https://github.com/stripe/stripe-php
   'subscription' => [
       'class' => 'app\modules\subscription\Module',
   ],
-...  
+...
 ```
 
 5. add the urlManager rules (aliases can be whatever)
