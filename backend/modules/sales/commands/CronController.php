@@ -45,6 +45,8 @@ class CronController extends Controller
           if($rec->player->last->vpn_local_address!==null)
           {
             // TODO: Pf::kill tables from networks and instances that this user had
+            // Pf::kill_table($val->target->name.'_'.$val->player_id,true);
+            // Pf::kill_table($val->target->name.'_'.$val->player_id.'_clients',true);
           }
           $transaction->commit();
         }
