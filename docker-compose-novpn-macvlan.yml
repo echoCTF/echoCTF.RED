@@ -27,7 +27,7 @@ services:
       dockerfile: contrib/Dockerfile-backend
       args:
       - RED_APP=backend
-      - MYSQL_HOST=db
+      - MYSQL_HOST=172.24.0.253
       - MYSQL_USER=vpnuser
       - MYSQL_PASSWORD=vpnuserpass
       - MYSQL_DATABASE=echoCTF
@@ -53,7 +53,7 @@ services:
       dockerfile: contrib/Dockerfile-frontend
       args:
       - RED_APP=frontend
-      - MYSQL_HOST=db
+      - MYSQL_HOST=172.24.0.253
       - MYSQL_USER=vpnuser
       - MYSQL_PASSWORD=vpnuserpass
       - MYSQL_DATABASE=echoCTF
