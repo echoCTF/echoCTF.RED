@@ -11,7 +11,7 @@ RUN set -ex \
     && apt-get install --no-install-recommends -y build-essential gcc tini \
     autoconf automake git zip unzip \
     mariadb-server mariadb-client mcrypt memcached apache2 \
-    libmemcached-dev libtool libmariadbclient-dev \
+    libmemcached-dev libtool libmariadb-dev \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
     composer vim openvpn
 
@@ -26,14 +26,14 @@ RUN set -ex; \
     echo "plugin_load_add = ha_blackhole">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
     echo "blackhole = FORCE">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
     sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/memcached.conf; \
-    service mysql start; \
+    service mariadb start; \
     cp /var/www/echoCTF.RED/contrib/apache2-red.conf /etc/apache2/sites-enabled/echoCTF.RED.conf; \
     git clone https://github.com/echoCTF/memcached_functions_mysql.git; \
     cd memcached_functions_mysql; \
     ./config/bootstrap; \
     ./configure --with-mysql=/usr/bin/mariadb_config; \
     make ; \
-    cp src/.libs/libmemcached_functions_mysql.so /usr/lib/x86_64-linux-gnu/mariadb19/plugin/; \
+    cp src/.libs/libmemcached_functions_mysql.so /usr/lib/mysql/plugin/; \
     mysql mysql < sql/install_functions.sql; \
     cd /var/www/echoCTF.RED; \
     mysqladmin create echoCTF; \
@@ -57,11 +57,11 @@ RUN set -ex; \
     ./backend/yii migrate --interactive=0; \
     ./backend/yii init_data --interactive=0; \
     a2enmod rewrite; \
-    mysql -e "update user set plugin='mysql_native_password' where user='root'" mysql; \
-    mysql -e "GRANT ALL PRIVILEGES ON echoCTF.* TO '$VPNUSER'@'%' IDENTIFIED BY '$VPNUSERPASS'" mysql;\
+    mysql -e "CREATE USER '$VPNUSER'@'%' IDENTIFIED BY '$VPNUSERPASS'" mysql;\
+    mysql -e "GRANT ALL PRIVILEGES ON echoCTF.* TO '$VPNUSER'@'%'" mysql;\
     echo "init_file=/etc/mysql/mysql-init.sql" >>/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
     echo "CALL echoCTF.init_mysql();"  >/etc/mysql/mysql-init.sql; \
-    service mysql stop; \
+    service mariadb stop; \
     rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
 
 
