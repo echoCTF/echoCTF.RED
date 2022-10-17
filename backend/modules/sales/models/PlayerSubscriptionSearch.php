@@ -61,7 +61,7 @@ class PlayerSubscriptionSearch extends PlayerSubscription
         // grid filtering conditions
         $query->andFilterWhere([
             'player_id' => $this->player_id,
-            'active' => $this->active,
+            'player_subscription.active' => $this->active,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

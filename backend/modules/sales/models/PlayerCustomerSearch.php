@@ -61,4 +61,34 @@ class PlayerCustomerSearch extends Player
         return $dataProvider;
     }
 
+    /**
+     * Fetch stripe customers and update their stripe_customer_id based on emails
+     */
+    public static function FetchStripe()
+    {
+      $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
+      $stripe_customers=$stripe->customers->all([]);
+      foreach($stripe_customers->data as $customer)
+      {
+        if(isset($customer->metadata->player_id))
+        {
+          $filter=$customer->metadata->player_id;
+        }
+        else
+        {
+          $filter=['email'=>$customer->email];
+        }
+        $player=Player::findOne($filter);
+
+        if($player!==null)
+        {
+          $player->updateAttributes(['stripe_customer_id'=>$customer->id]);
+          if(\Yii::$app instanceof \yii\console\Application)
+            printf("Imported customer_id: %s for user %s with email %s\n",$player->stripe_customer_id,$player->username,$player->email);
+          else
+            \Yii::$app->session->addFlash('success', sprintf('Imported customer_id: <b>%s</b> for user <b>%s</b> with email <b>%s</b>',$player->stripe_customer_id,$player->username,$player->email));
+        }
+      }
+    }
+
 }
