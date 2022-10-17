@@ -11,7 +11,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
 
       <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
         <h1 class="display-4 text-primary">Subscription completed</h1>
-        <p class="lead">Your echoCTF.RED Subscription is now completed. You will receive a notification informing you about your its activation shortly.</p>
+        <p class="lead">Your echoCTF.RED subscription purchase is now completed. You will receive a notification informing you about your its activation shortly.</p>
       </div>
       <div class="container">
           <div class="row d-flex justify-content-center">
