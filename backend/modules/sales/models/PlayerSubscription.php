@@ -4,6 +4,7 @@ namespace app\modules\sales\models;
 
 use Yii;
 use app\modules\frontend\models\Player;
+use app\modules\gameplay\models\NetworkPlayer;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 
@@ -34,10 +35,10 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     {
         return [
             [
-                'class' => TimestampBehavior::class,
-                'createdAtAttribute' => 'created_at',
-                'updatedAtAttribute' => 'updated_at',
-                'value' => new Expression('NOW()'),
+              'class' => TimestampBehavior::class,
+              'createdAtAttribute' => 'created_at',
+              'updatedAtAttribute' => 'updated_at',
+              'value' => new Expression('NOW()'),
             ],
         ];
     }
@@ -48,11 +49,14 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['player_id'], 'required'],
-            [['player_id', 'active'], 'integer'],
-            [['created_at', 'updated_at','starting','ending'], 'safe'],
-            [['subscription_id', 'session_id', 'price_id'], 'string', 'max' => 255],
-            [['player_id'], 'unique'],
+          [['starting'],'default', 'value' => \Yii::$app->formatter->asDatetime(new \DateTime('NOW'),'php:Y-m-d H:i:s')],
+          [['ending'],'default', 'value' => \Yii::$app->formatter->asDatetime(new \DateTime('NOW + 10 day'),'php:Y-m-d H:i:s')],
+          [['player_id'], 'required'],
+          [['player_id', 'active'], 'integer'],
+          [['ending','starting'],'datetime', 'format' => 'php:Y-m-d H:i:s'],
+          [['subscription_id', 'session_id', 'price_id'], 'string', 'max' => 255],
+          [['player_id'], 'unique'],
+          [['created_at', 'updated_at'], 'safe'],
         ];
     }
 
@@ -169,5 +173,46 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           }
         }
       }
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+      $metadata=json_decode($this->product->metadata);
+      if(isset($metadata->spins) && intval($metadata->spins)>0)
+      {
+        $this->player->playerSpin->updateAttributes(['perday'=>intval($metadata->spins),'counter'=>0]);
+      }
+      else {
+        $this->player->playerSpin->updateAttributes(['counter'=>0]);
+      }
+
+      if(isset($metadata->badge_ids))
+      {
+        $badge_ids=explode(',',$metadata->badge_ids);
+        foreach($badge_ids as $bid)
+        {
+          \Yii::$app->db->createCommand('INSERT IGNORE INTO player_badge (player_id,badge_id) VALUES (:player_id,:badge_id)')
+            ->bindValue(':player_id',$this->player_id)
+            ->bindValue(':badge_id', $bid )
+            ->execute();
+        }
+      }
+
+      if(isset($metadata->network_ids))
+      {
+        foreach(explode(',',$metadata->network_ids) as $val)
+        {
+          if(NetworkPlayer::findOne(['network_id'=>$val,'player_id'=>$this->player_id])===null)
+          {
+            $np=new NetworkPlayer;
+            $np->player_id=$this->player_id;
+            $np->network_id=$val;
+            $np->created_at=new \yii\db\Expression('NOW()');
+            $np->updated_at=new \yii\db\Expression('NOW()');
+            $np->save();
+          }
+        }
+      }
+        return parent::afterSave($insert, $changedAttributes);
     }
 }
