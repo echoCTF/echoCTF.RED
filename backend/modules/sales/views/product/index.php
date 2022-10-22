@@ -38,8 +38,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Products'), 'url' =>
             'price_id',
             [
               'attribute'=>'unit_amount',
-              'format'=>'currency',
-              'value'=>function($model){return $model->unit_amount/100;}
+              'format'=>'raw',
+              'value'=>function($model){return Yii::$app->formatter->asCurrency($model->unit_amount/100,$model->currency);}
             ],
             'weight:integer',
             //'created_at',
