@@ -129,6 +129,9 @@ class DefaultController extends \app\components\BaseController
     }
 
 
+    /**
+     * Returns a checkout session id for a given sessionID
+     */
     public function actionCheckoutSession($sessionId)
     {
       \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
@@ -137,6 +140,9 @@ class DefaultController extends \app\components\BaseController
       return $checkout_session->id;
     }
 
+    /**
+     * Generate customer portal stripe url
+     */
     public function actionCustomerPortal()
     {
       \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
