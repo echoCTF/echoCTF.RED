@@ -25,11 +25,11 @@ class DefaultController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index','success','checkout-session','redirect-customer-portal','customer-portal','create-checkout-session','webhook','inquiry'],
+                'only' => ['index','success','checkout-session','redirect-customer-portal','customer-portal','create-checkout-session','webhook','inquiry', 'cancel-subscription'],
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['create-checkout-session','customer-portal','redirect-customer-portal'],
+                        'actions' => ['create-checkout-session','customer-portal','redirect-customer-portal', 'cancel-subscription'],
                         'roles' => ['@'],
                         'verbs'=>['post'],
                     ],
@@ -49,14 +49,14 @@ class DefaultController extends \app\components\BaseController
                         '3.130.192.231',
                         '13.235.14.237',
                         '13.235.122.149',
+                        '18.211.135.69',
                         '35.154.171.200',
                         '52.15.183.38',
+                        '54.88.130.119',
+                        '54.88.130.237',
                         '54.187.174.169',
                         '54.187.205.235',
                         '54.187.216.72',
-                        '54.241.31.99',
-                        '54.241.31.102',
-                        '54.241.34.107',
                         '127.0.0.1',
                       ],
                     ]
@@ -91,14 +91,12 @@ class DefaultController extends \app\components\BaseController
     {
         $mine=PlayerSubscription::findOne(\Yii::$app->user->id);
         $products=Product::find()->active()->orderBy(['weight'=>SORT_ASC,'name'=>SORT_ASC]);
-        //if($mine && $mine->active)
-        //{
-        //  return $this->redirect(['/site/index']);
-        //}
+
         $dataProvider=new ActiveDataProvider([
             'query' => $products,
             'pagination' => false,
         ]);
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'mine'=>$mine,
@@ -114,8 +112,14 @@ class DefaultController extends \app\components\BaseController
       {
         \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
         $success_session = \Stripe\Checkout\Session::retrieve($session_id);
+        $ps=PlayerSubscription::findOne(['player_id'=>\Yii::$app->user->id,'subscription_id'=>$success_session->subscription]);
+        if(!$ps)
+        {
+          return $this->redirect(['/subscription/default/index']);
+        }
         return $this->render('success',[
-          'success_session'=>$success_session
+          'success_session'=>$success_session,
+          'mine'=>$ps
         ]);
       }
       catch(\Exception $e)
@@ -156,6 +160,7 @@ class DefaultController extends \app\components\BaseController
       }
 
     }
+
     /**
      * Action to redirect the user to its own customer portal, without
      * revealing any stripe related ID's
@@ -182,6 +187,7 @@ class DefaultController extends \app\components\BaseController
       return ['url'=>$session->url];
 
     }
+
     /**
      * Create a stripe checkout session when a player clicks
      * the "sign up" button
@@ -231,6 +237,38 @@ class DefaultController extends \app\components\BaseController
       return ['sessionId' => $checkout_session['id']];
     }
 
+    /**
+     * Update a player subscription to be canceled at the end of its period.
+     * https://stripe.com/docs/billing/subscriptions/cancel#reactivating-canceled-subscriptions
+     */
+    public function actionCancelSubscription()
+    {
+      \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
+      $model=\app\modules\subscription\models\PlayerSubscription::findOne(\Yii::$app->user->id);
+      if($model!==null && $model->active)
+      {
+        try {
+          \Stripe\Subscription::update(
+            $model->subscription_id,
+            [
+              'cancel_at_period_end' => true,
+            ]
+          );
+          Yii::$app->session->setFlash('info', 'Your subscription will be canceled at the end of the current billing period.');
+
+        }
+        catch (\Exception $e)
+        {
+          Yii::$app->session->setFlash('error', 'There was an error canceling your subscription! Please contact our support.');
+        }
+      }
+      else
+      {
+        Yii::$app->session->setFlash('warning', "You don't currently have an active subscription!");
+      }
+      return $this->redirect(['/subscription/default/index']);
+    }
+
     public function actionInquiry()
     {
         $model = new InquiryForm();
@@ -249,4 +287,5 @@ class DefaultController extends \app\components\BaseController
             ]);
         }
     }
+
 }
