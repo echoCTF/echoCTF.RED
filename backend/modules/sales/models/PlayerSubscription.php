@@ -142,6 +142,18 @@ class PlayerSubscription extends \yii\db\ActiveRecord
             ->bindValue(':product_id',$ps->product->id)
             ->execute();
             $metadata=json_decode($ps->product->metadata);
+            if(isset($metadata->badge_ids))
+            {
+              $badge_ids=explode(',',$metadata->badge_ids);
+              foreach($badge_ids as $bid)
+              {
+                \Yii::$app->db->createCommand('INSERT IGNORE INTO player_badge (player_id,badge_id) VALUES (:player_id,:badge_id)')
+                 ->bindValue(':player_id',$player->id)
+                 ->bindValue(':badge_id', $bid )
+                 ->execute();
+              }
+            }
+
             if(isset($metadata->spins) && intval($metadata->spins)>0)
             {
               $player->playerSpin->updateAttributes(['perday'=>intval($metadata->spins),'counter'=>0]);
