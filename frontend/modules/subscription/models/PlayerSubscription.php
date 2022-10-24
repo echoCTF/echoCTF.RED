@@ -125,7 +125,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
 
     public function beforeSave($insert)
     {
-      $curr = self::findByPk($this->id);
+      $curr = self::findOne($this->player_id);
       if ($this->isNewRecord || ($curr->active!=$this->active && $this->active==1))
       {
         $notif=new Notification;
