@@ -25,7 +25,7 @@ class DefaultController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index','success','checkout-session','redirect-customer-portal','customer-portal','create-checkout-session','webhook','inquiry', 'cancel-subscription'],
+                'only' => ['index','success', 'redirect-customer-portal','customer-portal','create-checkout-session','webhook','inquiry', 'cancel-subscription'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -35,7 +35,7 @@ class DefaultController extends \app\components\BaseController
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['index','create-checkout-session','success','checkout-session','inquiry'],
+                        'actions' => ['index','create-checkout-session','success', 'inquiry'],
                         'roles' => ['@'],
                     ],
                     [
@@ -128,18 +128,6 @@ class DefaultController extends \app\components\BaseController
       }
     }
 
-
-    /**
-     * Returns a checkout session id for a given sessionID
-     */
-    public function actionCheckoutSession($sessionId)
-    {
-      \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
-      \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
-      $checkout_session = \Stripe\Checkout\Session::retrieve($sessionId);
-      return $checkout_session->id;
-    }
-
     /**
      * Generate customer portal stripe url
      */
@@ -175,12 +163,11 @@ class DefaultController extends \app\components\BaseController
     public function actionRedirectCustomerPortal()
     {
       \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
-
-      \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
-
       $return_url = \yii\helpers\Url::toRoute('/profile/me',true);
       try
       {
+        \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
+
         $session = \Stripe\BillingPortal\Session::create([
           'customer' => Yii::$app->user->identity->stripe_customer_id,
           'return_url' => $return_url,
@@ -191,7 +178,6 @@ class DefaultController extends \app\components\BaseController
         return ['url'=>$return_url];
       }
       return ['url'=>$session->url];
-
     }
 
     /**
@@ -202,9 +188,8 @@ class DefaultController extends \app\components\BaseController
     {
       \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
       $priceId=Yii::$app->request->post('priceId',null);
-      \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
       try {
-        $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
+        \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
         $cid=Customer::getCustomerId();
         $product=Product::findOne(['price_id'=>$priceId]);
         if($product===null)
@@ -214,7 +199,7 @@ class DefaultController extends \app\components\BaseController
 
         $mode='subscription';
         $line_items=[[
-          'price' => $priceId,
+          'price' => $product->price_id,
           'quantity' => 1,
         ]];
 
@@ -225,10 +210,11 @@ class DefaultController extends \app\components\BaseController
           'mode' => $mode,
           'line_items' => $line_items,
           'customer'=>$cid,
-          //'receipt_email'=>Yii::$app->user->identity->email,
           'metadata'=> ['player_id'=>Yii::$app->user->id,'profile_id'=>Yii::$app->user->identity->profile->id]
         ]);
-      } catch (\Exception $e) {
+      }
+      catch (\Exception $e)
+      {
         \Yii::$app->response->statusCode=418;
         if(empty($cid))
           \Yii::$app->response->statusCode=403;
@@ -249,11 +235,13 @@ class DefaultController extends \app\components\BaseController
      */
     public function actionCancelSubscription()
     {
-      \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
       $model=\app\modules\subscription\models\PlayerSubscription::findOne(\Yii::$app->user->id);
       if($model!==null && $model->active)
       {
-        try {
+        try
+        {
+          \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
+
           \Stripe\Subscription::update(
             $model->subscription_id,
             [
