@@ -1,7 +1,7 @@
 <div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
     <div class="pricingTable rounded <?=$model->htmlOptions('class')?>">
         <div class="pricingTable-header">
-            <h3 class="title"><?=$model->htmlOptions('title')?></h3>
+            <h3 class="title"><img src="/images/<?=$model->shortcode?>.svg" width="50px"> <?=$model->htmlOptions('title')?></h3>
         </div>
         <div class="price-value">
             <span class="amount">€<?=$model->unit_amount/100?></span>
