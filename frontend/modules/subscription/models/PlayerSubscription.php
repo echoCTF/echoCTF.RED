@@ -121,14 +121,23 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           }
         }
       }
-      $notif=new Notification;
-      $notif->player_id=$this->player_id;
-      $notif->title='Your subscription has been activated';
-      $notif->body='Your subscription has been activated';
-      $notif->archived=0;
-      $notif->save();
     }
 
+    public function beforeSave($insert)
+    {
+      $curr = self::findOne($this->player_id);
+      if ($this->isNewRecord || ($curr->active!=$this->active && $this->active==1))
+      {
+        $notif=new Notification;
+        $notif->player_id=$this->player_id;
+        $notif->title='Your subscription has been activated';
+        $notif->body='Your subscription has been activated';
+        $notif->archived=0;
+        $notif->save();
+      }
+
+      return parent::beforeSave($insert);
+    }
     /**
      * {@inheritdoc}
      * @return PlayerSubscriptionQuery the active query used by this AR class.

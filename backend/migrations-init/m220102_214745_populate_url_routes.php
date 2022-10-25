@@ -75,12 +75,13 @@ class m220102_214745_populate_url_routes extends Migration
       'api/headshots' => 'api/headshot/index',
       'subscriptions' => 'subscription/default/index',
       'subscription/success'=>'subscription/default/success',
-      'subscription/default/create-checkout-session'=>'subscription/default/create-checkout-session',
-      'subscription/default/checkout-session'=>'subscription/default/checkout-session',
-      'subscription/default/customer-portal'=>'subscription/default/customer-portal',
-      'subscription/default/redirect-customer-portal'=>'subscription/default/redirect-customer-portal',
-      'subscription/default/webhook'=>'subscription/default/webhook',
-      'subscription/default/inquiry'=>'subscription/default/inquiry',
+      'subscription/create-checkout-session'=>'subscription/default/create-checkout-session',
+      'subscription/checkout-session'=>'subscription/default/checkout-session',
+      'subscription/customer-portal'=>'subscription/default/customer-portal',
+      'subscription/redirect-customer-portal'=>'subscription/default/redirect-customer-portal',
+      'subscription/cancel'=>'subscription/default/cancel-subscription',
+      'subscription/webhook'=>'subscription/default/webhook',
+      'subscription/inquiry'=>'subscription/default/inquiry',
     ];
     /**
      * {@inheritdoc}

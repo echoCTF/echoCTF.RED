@@ -104,8 +104,8 @@ class Subscription extends \yii\base\Model
         $ps->cancel();
         $notif=new Notification;
         $notif->player_id=$player->id;
-        $notif->title='Your subscription has been canceled';
-        $notif->body='Your subscription has been canceled';
+        $notif->title='Your subscription has expired';
+        $notif->body='Your subscription has expired';
         $notif->archived=0;
         if($notif->save() && $ps->save())
         {

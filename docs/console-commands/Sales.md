@@ -1,0 +1,12 @@
+# Sales commands
+Commands related to the paying features of the platform.
+
+## ExpireSubscriptions
+Find subscriptions that have expired for more than 4 hours and cause expirations.
+
+Usage: `./backend/yii sales/expire-subscriptions`
+
+## ImportStripe
+Import Stripe details (subscriptions, customers, products).
+
+Usage: `./backend/yii sales/import-stripe`

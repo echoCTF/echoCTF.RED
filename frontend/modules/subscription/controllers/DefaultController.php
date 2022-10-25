@@ -25,17 +25,28 @@ class DefaultController extends \app\components\BaseController
         return ArrayHelper::merge(parent::behaviors(),[
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index','success','checkout-session','redirect-customer-portal','customer-portal','create-checkout-session','webhook','inquiry'],
+                'only' => ['index','success', 'redirect-customer-portal','customer-portal','create-checkout-session','webhook','inquiry', 'cancel-subscription'],
                 'rules' => [
                     [
+                      'allow' => false,
+                      'actions'=>['success', 'redirect-customer-portal','customer-portal','create-checkout-session', 'cancel-subscription'],
+                      'matchCallback' => function () {
+                        return \Yii::$app->sys->subscriptions_emergency_suspend==true;
+                      },
+                      'denyCallback' => function () {
+                        Yii::$app->session->setFlash('info', 'This area is temporarily disabled, please try again in a couple of hours.');
+                        return  \Yii::$app->getResponse()->redirect(['/subscription/default/index']);
+                      }
+                    ],
+                    [
                         'allow' => true,
-                        'actions' => ['create-checkout-session','customer-portal','redirect-customer-portal'],
+                        'actions' => ['create-checkout-session','customer-portal','redirect-customer-portal', 'cancel-subscription'],
                         'roles' => ['@'],
                         'verbs'=>['post'],
                     ],
                     [
                         'allow' => true,
-                        'actions' => ['index','create-checkout-session','success','checkout-session','inquiry'],
+                        'actions' => ['index','create-checkout-session','success', 'inquiry'],
                         'roles' => ['@'],
                     ],
                     [
@@ -49,14 +60,14 @@ class DefaultController extends \app\components\BaseController
                         '3.130.192.231',
                         '13.235.14.237',
                         '13.235.122.149',
+                        '18.211.135.69',
                         '35.154.171.200',
                         '52.15.183.38',
+                        '54.88.130.119',
+                        '54.88.130.237',
                         '54.187.174.169',
                         '54.187.205.235',
                         '54.187.216.72',
-                        '54.241.31.99',
-                        '54.241.31.102',
-                        '54.241.34.107',
                         '127.0.0.1',
                       ],
                     ]
@@ -91,14 +102,12 @@ class DefaultController extends \app\components\BaseController
     {
         $mine=PlayerSubscription::findOne(\Yii::$app->user->id);
         $products=Product::find()->active()->orderBy(['weight'=>SORT_ASC,'name'=>SORT_ASC]);
-        //if($mine && $mine->active)
-        //{
-        //  return $this->redirect(['/site/index']);
-        //}
+
         $dataProvider=new ActiveDataProvider([
             'query' => $products,
             'pagination' => false,
         ]);
+
         return $this->render('index', [
             'dataProvider' => $dataProvider,
             'mine'=>$mine,
@@ -114,8 +123,14 @@ class DefaultController extends \app\components\BaseController
       {
         \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
         $success_session = \Stripe\Checkout\Session::retrieve($session_id);
+        $ps=PlayerSubscription::findOne(['player_id'=>\Yii::$app->user->id,'subscription_id'=>$success_session->subscription]);
+        if(!$ps)
+        {
+          return $this->redirect(['/subscription/default/index']);
+        }
         return $this->render('success',[
-          'success_session'=>$success_session
+          'success_session'=>$success_session,
+          'mine'=>$ps
         ]);
       }
       catch(\Exception $e)
@@ -124,15 +139,9 @@ class DefaultController extends \app\components\BaseController
       }
     }
 
-
-    public function actionCheckoutSession($sessionId)
-    {
-      \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
-      \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
-      $checkout_session = \Stripe\Checkout\Session::retrieve($sessionId);
-      return $checkout_session->id;
-    }
-
+    /**
+     * Generate customer portal stripe url
+     */
     public function actionCustomerPortal()
     {
       \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
@@ -156,6 +165,7 @@ class DefaultController extends \app\components\BaseController
       }
 
     }
+
     /**
      * Action to redirect the user to its own customer portal, without
      * revealing any stripe related ID's
@@ -164,12 +174,11 @@ class DefaultController extends \app\components\BaseController
     public function actionRedirectCustomerPortal()
     {
       \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
-
-      \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
-
       $return_url = \yii\helpers\Url::toRoute('/profile/me',true);
       try
       {
+        \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
+
         $session = \Stripe\BillingPortal\Session::create([
           'customer' => Yii::$app->user->identity->stripe_customer_id,
           'return_url' => $return_url,
@@ -180,8 +189,8 @@ class DefaultController extends \app\components\BaseController
         return ['url'=>$return_url];
       }
       return ['url'=>$session->url];
-
     }
+
     /**
      * Create a stripe checkout session when a player clicks
      * the "sign up" button
@@ -190,9 +199,8 @@ class DefaultController extends \app\components\BaseController
     {
       \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
       $priceId=Yii::$app->request->post('priceId',null);
-      \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
       try {
-        $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
+        \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
         $cid=Customer::getCustomerId();
         $product=Product::findOne(['price_id'=>$priceId]);
         if($product===null)
@@ -202,7 +210,7 @@ class DefaultController extends \app\components\BaseController
 
         $mode='subscription';
         $line_items=[[
-          'price' => $priceId,
+          'price' => $product->price_id,
           'quantity' => 1,
         ]];
 
@@ -213,10 +221,11 @@ class DefaultController extends \app\components\BaseController
           'mode' => $mode,
           'line_items' => $line_items,
           'customer'=>$cid,
-          //'receipt_email'=>Yii::$app->user->identity->email,
           'metadata'=> ['player_id'=>Yii::$app->user->id,'profile_id'=>Yii::$app->user->identity->profile->id]
         ]);
-      } catch (\Exception $e) {
+      }
+      catch (\Exception $e)
+      {
         \Yii::$app->response->statusCode=418;
         if(empty($cid))
           \Yii::$app->response->statusCode=403;
@@ -229,6 +238,40 @@ class DefaultController extends \app\components\BaseController
         ];
       }
       return ['sessionId' => $checkout_session['id']];
+    }
+
+    /**
+     * Update a player subscription to be canceled at the end of its period.
+     * https://stripe.com/docs/billing/subscriptions/cancel#reactivating-canceled-subscriptions
+     */
+    public function actionCancelSubscription()
+    {
+      $model=\app\modules\subscription\models\PlayerSubscription::findOne(\Yii::$app->user->id);
+      if($model!==null && $model->active)
+      {
+        try
+        {
+          \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
+
+          \Stripe\Subscription::update(
+            $model->subscription_id,
+            [
+              'cancel_at_period_end' => true,
+            ]
+          );
+          Yii::$app->session->setFlash('info', 'Your subscription will be canceled at the end of the current billing period.');
+
+        }
+        catch (\Exception $e)
+        {
+          Yii::$app->session->setFlash('error', 'There was an error canceling your subscription! Please contact our support.');
+        }
+      }
+      else
+      {
+        Yii::$app->session->setFlash('warning', "You don't currently have an active subscription!");
+      }
+      return $this->redirect(['/subscription/default/index']);
     }
 
     public function actionInquiry()
@@ -249,4 +292,5 @@ class DefaultController extends \app\components\BaseController
             ]);
         }
     }
+
 }

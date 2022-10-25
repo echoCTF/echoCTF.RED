@@ -16,13 +16,21 @@ $this->registerCss(file_get_contents(__DIR__."/pricing.css"));
 
       <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
         <h1 class="display-4 text-primary">Level up your game</h1>
-        <p class="lead">Subscriptions help us to keep the platform alive and allows us to focus on developing content.</br>Pick your subscription type and start hacking.</p>
+        <p class="lead">Subscriptions help us to keep the platform running and allows us to focus on developing new content.</br>
+        Pick your subscription type and start hacking.</p>
       </div>
 <?php
-if($mine && $mine->active)
-  echo $this->render('_update', ['mine' => $mine,]);
+if(Yii::$app->sys->subscriptions_emergency_suspend===true)
+{
+  echo $this->render('_suspended');
+}
 else
-  echo $this->render('_create',['mine'=>$mine,'dataProvider'=>$dataProvider]);
+{
+  if($mine && $mine->active && $mine->subscription_id!=='sub_vip')
+    echo $this->render('_update', [ 'mine' => $mine, ]);
+  else
+    echo $this->render('_create', [ 'mine' => $mine, 'dataProvider' => $dataProvider]);
+}
 ?>
     </div>
 </div>

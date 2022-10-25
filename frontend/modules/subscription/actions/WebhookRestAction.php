@@ -69,7 +69,10 @@ class WebhookRestAction extends \yii\rest\Action
             $ps->created_at=new \yii\db\Expression("NOW()");
           }
           else
+          {
             $ps->cancel();
+          }
+
           $ps->subscription_id=$object->id;
           $si=$object->items->data[0];
           $starting=$object->current_period_start;
@@ -91,36 +94,6 @@ class WebhookRestAction extends \yii\rest\Action
           return [ 'error' => $e->getMessage() ];
         }
         break;
-
-//      case 'checkout.session.completed':
-//        $transaction=\Yii::$app->db->beginTransaction();
-//        try {
-//          Subscription::sessionCompleted($object);
-//          $transaction->commit();
-//        }
-//        catch(\Exception $e)
-//        {
-//          $transaction->rollBack();
-//          \Yii::$app->response->statusCode=403;
-//          Yii::error($e);
-//          return [ 'error' => $e->getMessage() ];
-//        }
-//        break;
-
-//      case 'invoice.paid':
-//        $transaction=\Yii::$app->db->beginTransaction();
-//        try {
-//          Subscription::invoicePaid($object);
-//          $transaction->commit();
-//        }
-//        catch(\Exception $e)
-//        {
-//          $transaction->rollBack();
-//          \Yii::$app->response->statusCode=403;
-//          Yii::error($e);
-//          return [ 'error' => $e->getMessage() ];
-//        }
-//        break;
       /**
        * When a customer is deleted also remove the corresponding id from player
        * (stripe_customer_id)

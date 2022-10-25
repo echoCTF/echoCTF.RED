@@ -4,23 +4,24 @@ use \yii\helpers\Html;
 use \yii\helpers\Url;
 $subscription=Yii::$app->getModule('subscription');
 ?>
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-center row">
   <div class="alert col-md-6" role="alert">
     <h4>You currently have an active <em class="active"><?=$mine->product->name?></em> subscription</h4>
-<?php if($mine->product->shortcode==='basicSubscription'):?>
-  <p>
-    If you wish to gain access to all the networks you will have to update your
-    current subscription. Click on the button below to go to your Stripe
-    subscription portal and update your subscription.
-  </p>
-<?php else:?>
-  <p>
-    If you wish to modify or cancel your subscription, click on the button
-    below to go to your Stripe subscription portal.
-  </p>
-<?php endif;?>
-    <p>
-    <?=$subscription->getPortalButton($this)?>
-    </p>
+    <p>You can modify your current subscription or update your billing details by clicking the <b class="text-info" style="font-weight: 800">Manage Billing</b> button.</p>
+    <p>Alternatively, if you wish to cancel your subscription at the end of the current billing period, click the <b class="text-danger" style="font-weight: 800">Cancel Subscription</b> button.</p>
+    <div class="row">
+      <div class="col-md">
+        <?=$subscription->getPortalButton($this)?>
+      </div>
+      <div class="col-md">
+        <?=Html::a('Cancel subscription',['/subscription/default/cancel-subscription'],[
+            'class'=>'btn btn-block btn-danger font-weight-bold',
+            'data' => [
+              'method' => 'post',
+            ],
+          ]);?>
+      </div>
+
+    </div>
   </div>
 </div>

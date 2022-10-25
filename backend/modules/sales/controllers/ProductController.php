@@ -30,73 +30,7 @@ class ProductController extends \app\components\BaseController
      */
     public function actionFetchStripe()
     {
-      $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-      $products=$stripe->products->all(['active'=>true]);
-      foreach($products->data as $stripeProduct)
-      {
-        $product=Product::findOne($stripeProduct->id);
-
-        if($product===null)
-        {
-          $product=new Product();
-          $product->id=$stripeProduct->id;
-          $product->created_at=new \yii\db\Expression('NOW()');
-        }
-        $product->active=$stripeProduct->active;
-        $product->name=$stripeProduct->name;
-        $product->description=$stripeProduct->description;
-        $product->livemode=$stripeProduct->livemode;
-        $prices=$stripe->prices->all(['product'=>$product->id]);
-        $price=$prices->data[0];
-
-        if(isset($price->recurring) && $price->recurring->interval)
-          $product->interval=$price->recurring->interval;
-        else
-          $product->interval='day';
-
-        if(isset($price->recurring) && $price->recurring->interval_count)
-          $product->interval_count=$price->recurring->interval_count;
-        else
-          $product->interval_count=1;
-
-        $product->price_id=$price->id;
-        $product->currency=$price->currency;
-        $product->metadata=json_encode($stripeProduct->metadata);
-        $product->unit_amount=$price->unit_amount;
-        $product->updated_at=new \yii\db\Expression('NOW()');
-        if($stripeProduct->metadata->htmlOptions)
-          $product->htmlOptions=trim($stripeProduct->metadata->htmlOptions);
-
-        if($stripeProduct->metadata->shortcode)
-          $product->shortcode=trim($stripeProduct->metadata->shortcode);
-
-        if($stripeProduct->metadata->perks)
-          $product->perks=trim($stripeProduct->metadata->perks);
-
-        if($stripeProduct->metadata->weight)
-          $product->weight=intval(trim($stripeProduct->metadata->weight));
-
-        if(!$product->save())
-        {
-          die(var_dump($product));
-          \Yii::$app->session->addFlash('error', sprintf('Failed to save product: %s, %s',$stripeProduct->id,$stripeProduct->name));
-        }
-        else
-          \Yii::$app->session->addFlash('success', sprintf('Imported product: %s, %s',$stripeProduct->id,$stripeProduct->name));
-        if(!empty($stripeProduct->metadata->network_ids))
-        {
-          foreach(explode(',',$stripeProduct->metadata->network_ids) as $nid)
-          {
-            if(ProductNetwork::findOne(['product_id'=>$product->id, 'network_id'=>$nid])===null)
-            {
-              $pn=new ProductNetwork;
-              $pn->product_id=$product->id;
-              $pn->network_id=$nid;
-              $pn->save();
-            }
-          }
-        }
-      }
+      Product::FetchStripe();
       return $this->redirect(['index']);
 
     }

@@ -24,12 +24,11 @@ use yii\widgets\ListView;
             'icon'=>'<i class="fas fa-flag"></i>',
             'color'=>'rose',
             'title'=>'On premises CTF or Hackathon?',
-            //'subtitle'=>'On Premise CTF',
             'footer'=>Html::mailto('Contact us','info@echothrust.com',[
               'class'=>'h4 font-weight-bold btn btn-outline-danger btn-block'
             ]),
         ]);?>
-      Want to run or host your own CTF, Hackathon or Cybersecurity excersises?
+      Want to run or host your own CTF, Hackathon or Cybersecurity exercises?
       <?php \app\widgets\Card::end();?>
 
     </div>

@@ -8,6 +8,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use app\modules\sales\models\PlayerCustomerSearch;
 use app\modules\frontend\models\Player;
+use app\modules\sales\models\PlayerSubscription;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -56,28 +57,8 @@ class PlayerCustomerController extends \app\components\BaseController
      */
     public function actionFetchStripe()
     {
-      $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-      $stripe_customers=$stripe->customers->all([]);
-      foreach($stripe_customers->data as $customer)
-      {
-        if(isset($customer->metadata->player_id))
-        {
-          $player=Player::findOne($customer->metadata->player_id);
-        }
-        else
-        {
-          $player=Player::findOne(['email'=>$customer->email]);
-        }
-
-        if($player!==null)
-        {
-          $player->updateAttributes(['stripe_customer_id'=>$customer->id]);
-          \Yii::$app->session->addFlash('success', sprintf('Imported customer_id: <b>%s</b> for user <b>%s</b> with email <b>%s</b>',$player->stripe_customer_id,$player->username,$player->email));
-
-        }
-      }
+      PlayerSubscription::FetchStripe();
       return $this->redirect(['index']);
-
     }
 
     /**
