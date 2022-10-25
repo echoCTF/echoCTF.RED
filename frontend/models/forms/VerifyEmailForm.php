@@ -53,7 +53,7 @@ class VerifyEmailForm extends Model
         $player->status=Player::STATUS_ACTIVE;
         $player->active=1;
         $this->genAvatar();
-        if($player->save())
+        if($player->saveWithSsl())
         {
           if($oldStatus===Player::STATUS_INACTIVE)
           {
