@@ -20,10 +20,17 @@ $this->registerCss(file_get_contents(__DIR__."/pricing.css"));
         Pick your subscription type and start hacking.</p>
       </div>
 <?php
-if($mine && $mine->active && $mine->subscription_id!=='sub_vip')
-  echo $this->render('_update', [ 'mine' => $mine, ]);
+if(Yii::$app->sys->subscriptions_emergency_suspend===true)
+{
+  echo $this->render('_suspended');
+}
 else
-  echo $this->render('_create', [ 'mine' => $mine, 'dataProvider' => $dataProvider]);
+{
+  if($mine && $mine->active && $mine->subscription_id!=='sub_vip')
+    echo $this->render('_update', [ 'mine' => $mine, ]);
+  else
+    echo $this->render('_create', [ 'mine' => $mine, 'dataProvider' => $dataProvider]);
+}
 ?>
     </div>
 </div>
