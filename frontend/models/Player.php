@@ -298,17 +298,22 @@ class Player extends PlayerAR implements IdentityInterface
 
     public function saveWithSsl($validation=true)
     {
+
       if(!$this->save($validation))
         return false;
 
-      $playerSsl=new PlayerSsl();
-      $playerSsl->player_id=$this->id;
-      $playerSsl->generate();
-      if($playerSsl->save())
+      if($this->active==1 && $this->status==10 && $this->sSL===null)
       {
-        return $playerSsl->refresh();
+        $playerSsl=new PlayerSsl();
+        $playerSsl->player_id=$this->id;
+        $playerSsl->generate();
+        if($playerSsl->save())
+        {
+          return $playerSsl->refresh();
+        }
+        return false;
       }
-      return false;
+      return true;
     }
 
     public function saveNewPlayer($validation=true)
