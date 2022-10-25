@@ -28,6 +28,17 @@ class DefaultController extends \app\components\BaseController
                 'only' => ['index','success', 'redirect-customer-portal','customer-portal','create-checkout-session','webhook','inquiry', 'cancel-subscription'],
                 'rules' => [
                     [
+                      'allow' => false,
+                      'actions'=>['success', 'redirect-customer-portal','customer-portal','create-checkout-session', 'cancel-subscription'],
+                      'matchCallback' => function () {
+                        return \Yii::$app->sys->subscriptions_emergency_suspend==true;
+                      },
+                      'denyCallback' => function () {
+                        Yii::$app->session->setFlash('info', 'This area is temporarily disabled, please try again in a couple of hours.');
+                        return  \Yii::$app->getResponse()->redirect(['/subscription/default/index']);
+                      }
+                    ],
+                    [
                         'allow' => true,
                         'actions' => ['create-checkout-session','customer-portal','redirect-customer-portal', 'cancel-subscription'],
                         'roles' => ['@'],
