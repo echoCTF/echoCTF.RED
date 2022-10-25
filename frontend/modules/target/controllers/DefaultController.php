@@ -54,19 +54,42 @@ class DefaultController extends \app\components\BaseController
                         'actions' => ['badge', 'view', 'index', 'claim', 'spin', 'spawn', 'shut', 'versus'],
                       ],
                       [
+                        'actions' => ['spawn', 'shut','spin'],
+                        'allow' => false,
+                        'roles'=>['@'],
+                        'matchCallback' => function () {
+                            $id=intval(Yii::$app->request->get('id'));
+                            if($id>0 && ($model=Target::findOne($id))!==null)
+                            {
+                              $network=Yii::$app->getModule('network');
+                              if(!$network->checkTarget($model))
+                                return true;
+                              return false;
+                            }
+                            return false;
+                        },
+                        'denyCallback' =>  function () {
+                          Yii::$app->session->setFlash('warning', "You need don't have access to the network for this target.");
+                          return  \Yii::$app->getResponse()->redirect(Yii::$app->request->referrer ?:[Yii::$app->sys->default_homepage]);
+                        }
+                      ],
+                      [
                         'actions' => ['spawn', 'shut'],
                         'allow' => false,
                         'verbs' => ['POST'],
                         'roles'=>['@'],
                         'matchCallback' => function () {
-                          if(array_key_exists('subscription',Yii::$app->modules)!==false)
-                          {
-                            $subscription=Yii::$app->getModule('subscription');
-                            if(!$subscription->exists || !$subscription->isActive)
-                              return true;
-                          }
-                          return false;
-                        },
+                            // If subscriptions are loaded
+                            if(array_key_exists('subscription',Yii::$app->modules)!==false)
+                            {
+                              $subscription=Yii::$app->getModule('subscription');
+                              // user is not subscriber or has inactive subscription (deny)
+                              if(!$subscription->exists || !$subscription->isActive)
+                                return true;
+                            }
+
+                            return false;
+                          },
                         'denyCallback' =>  function () {
                           if(array_key_exists('subscription',Yii::$app->modules)!==false)
                           {
