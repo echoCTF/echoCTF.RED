@@ -130,7 +130,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           $ps->updated_at=new \yii\db\Expression('NOW()');
           $ps->price_id=$stripe_subscription->items->data[0]->plan->id;
           $ps->active=intval($stripe_subscription->items->data[0]->plan->active);
-          if(!$ps->save())
+          if(!$ps->save(false))
           {
             if(\Yii::$app instanceof \yii\console\Application)
               printf("Failed to save subscription: %s\n",$stripe_subscription->id);
@@ -140,32 +140,6 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           else
           {
             $ps->refresh();
-            $sql="INSERT IGNORE INTO network_player (network_id,player_id,created_at,updated_at) SELECT network_id,:player_id,now(),now() FROM product_network WHERE product_id=:product_id";
-            \Yii::$app->db->createCommand($sql)
-            ->bindValue(':player_id',$player->id)
-            ->bindValue(':product_id',$ps->product->id)
-            ->execute();
-            $metadata=json_decode($ps->product->metadata);
-            if(isset($metadata->badge_ids))
-            {
-              $badge_ids=explode(',',$metadata->badge_ids);
-              foreach($badge_ids as $bid)
-              {
-                \Yii::$app->db->createCommand('INSERT IGNORE INTO player_badge (player_id,badge_id) VALUES (:player_id,:badge_id)')
-                 ->bindValue(':player_id',$player->id)
-                 ->bindValue(':badge_id', $bid )
-                 ->execute();
-              }
-            }
-
-            if(isset($metadata->spins) && intval($metadata->spins)>0)
-            {
-              $player->playerSpin->updateAttributes(['perday'=>intval($metadata->spins),'counter'=>0]);
-            }
-            else
-            {
-              $player->playerSpin->updateAttributes(['counter'=>0]);
-            }
             if(\Yii::$app instanceof \yii\console\Application)
               printf("Imported subscription: %s for player %s\n",$stripe_subscription->id,$player->username);
             else
@@ -213,6 +187,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           }
         }
       }
-        return parent::afterSave($insert, $changedAttributes);
+
+      return parent::afterSave($insert, $changedAttributes);
     }
 }
