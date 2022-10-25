@@ -18,9 +18,11 @@ class TargetCardActions extends Widget
         'data-pjax' => '0',
         'data-method' => 'POST',
       ];
+    public $Network;
     public function init()
     {
         parent::init();
+        $this->Network=Yii::$app->getModule('network');
     }
 
     public function run()
@@ -65,7 +67,7 @@ class TargetCardActions extends Widget
     public function prep_instance_actions()
     {
         // If the target is pending powerup then dont show any actions
-        if($this->model->status!=='online')
+        if($this->model->status!=='online' || !$this->Network->checkTarget($this->model))
             return;
 
         if(!Yii::$app->user->identity->isVip)
