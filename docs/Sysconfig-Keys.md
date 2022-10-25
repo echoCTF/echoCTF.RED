@@ -62,3 +62,9 @@ Not activated by default on current code-base but are going to
 ## Application specific
 * `platform_codename`
 * `platform_version`
+
+## Subscriptions Specific
+* `subscriptions_emergency_suspend` Temporary suspend subscriptions
+* `stripe_apiKey` Stripe API key
+* `stripe_publicApiKey` Stripe public API Key
+* `stripe_webhookSecret` Stripe webhook secret
