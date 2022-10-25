@@ -276,15 +276,25 @@ class Target extends TargetAR
   public function addNews()
   {
     $news=new \app\modules\content\models\News;
-    $news->title=sprintf("New target %s online",$this->name);
+    $news->title=sprintf("New target %s added",$this->name);
     $news->category=H::img("/images/news/category/new-target.svg",['width'=>'25px']);
-    if($this->network===null)
+    $body=sprintf("Just a heads up, new target [%s]",H::a($this->name,'/target/'.$this->id));
+    if($this->network!==null)
     {
-      $news->body=sprintf("Just a heads up, new target [%s], is now available.",H::a($this->name,'/target/'.$this->id));
+      $news->body=sprintf("%s, got added in the [%s]",$body,H::a($this->network->name,'/network/'.$this->network->id));
     }
     else
     {
-      $news->body=sprintf("Just a heads up, the target [%s], is now available on [%s].",H::a($this->name,'/target/'.$this->id),H::a($this->network->name,'/network/'.$this->network->id));
+      $news->body=sprintf("%s, got added",$body);
+    }
+
+    if($this->scheduled_at && $this->status=='powerup')
+    {
+      $news->body.=sprintf(" and will become available at %s.",$this->scheduled_at);
+    }
+    elseif($this->status=='online')
+    {
+      $news->body.=sprintf(" and is now available.");
     }
 
     if($news->save()===false)
