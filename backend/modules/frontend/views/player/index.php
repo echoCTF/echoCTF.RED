@@ -65,7 +65,7 @@ yii\bootstrap\Modal::end();
             [
                 'attribute'=>'academic',
                 'value'=>'academicShort',
-                'filter'=>[0=>'Gov',1=>'Edu', 2=>"Pro"],
+                'filter'=>[0=>Yii::$app->sys->academic_0short,1=>Yii::$app->sys->academic_1short, 2=>Yii::$app->sys->academic_2short],
             ],
             [
              'attribute' => 'status',
