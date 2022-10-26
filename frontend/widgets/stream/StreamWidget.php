@@ -60,7 +60,7 @@ class StreamWidget extends Widget
           ->where(['player_id'=>$this->player_id]);
       }
       $this->dataProvider=new ActiveDataProvider([
-          'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
+          'query' => $model->orderBy(['stream.ts'=>SORT_DESC, 'stream.id'=>SORT_DESC]),
           'pagination' => [
               'pageSizeParam'=>'stream-perpage',
               'pageParam'=>'stream-page',

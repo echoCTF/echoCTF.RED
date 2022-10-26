@@ -153,14 +153,14 @@ class DefaultController extends \app\components\BaseController
           $treasures[]=$treasure->id;
         foreach($target->findings as $finding)
           $findings[]=$finding->id;
-        $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
+        $model=\app\models\Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago')
         ->where(['model_id'=>$findings, 'model'=>'finding'])
         ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
         ->orWhere(['model_id'=>$id, 'model'=>'headshot'])
         ->andWhere(['player_id'=>$profile->player_id])
         ;
         $dataProvider=new ActiveDataProvider([
-              'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
+              'query' => $model->orderBy(['stream.ts'=>SORT_DESC, 'stream.id'=>SORT_DESC]),
               'pagination' => [
                   'pageSizeParam'=>'stream-perpage',
                   'pageParam'=>'stream-page',
@@ -229,7 +229,7 @@ class DefaultController extends \app\components\BaseController
         $treasures[]=$treasure->id;
       foreach($target->findings as $finding)
         $findings[]=$finding->id;
-      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')->joinWith(['player'])
+      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago')->joinWith(['player'])
       ->where(['model_id'=>$findings, 'model'=>'finding'])
       ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
       ->orWhere(['model_id'=>$id, 'model'=>'headshot']);
@@ -243,7 +243,7 @@ class DefaultController extends \app\components\BaseController
       }
 
       $dataProvider=new ActiveDataProvider([
-            'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
+            'query' => $model->orderBy(['stream.ts'=>SORT_DESC, 'stream.id'=>SORT_DESC]),
             'pagination' => [
                 'pageSizeParam'=>'stream-perpage',
                 'pageParam'=>'stream-page',
