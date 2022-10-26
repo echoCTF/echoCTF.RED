@@ -145,28 +145,12 @@ class Player extends PlayerAR
   }
   public function getAcademicLong()
   {
-      switch($this->academic)
-      {
-        case 0:
-          return "government";
-        case 1:
-          return "education";
-        default:
-          return "professional";
-      }
+    return Yii::$app->sys->{"academic_".$this->academic};
   }
 
   public function getAcademicShort()
   {
-    switch($this->academic)
-    {
-      case 0:
-        return "gov";
-      case 1:
-        return "edu";
-      default:
-        return "pro";
-    }
+    return Yii::$app->sys->{"academic_".$this->academic."short"};
   }
 
 }

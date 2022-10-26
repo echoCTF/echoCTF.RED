@@ -68,3 +68,15 @@ Not activated by default on current code-base but are going to
 * `stripe_apiKey` Stripe API key
 * `stripe_publicApiKey` Stripe public API Key
 * `stripe_webhookSecret` Stripe webhook secret
+
+## Player Specific
+* `academic_N` Name for academic value `N`
+*	`academic_Nshort` Short name for academic value `N`
+
+example:
+```
+backend/yii sysconfig/set academic_0 "SuperSite.com"
+backend/yii sysconfig/set academic_1 "AnotherSite.com"
+backend/yii sysconfig/set academic_0short "supersite"
+backend/yii sysconfig/set academic_1short "anothersite"
+```
