@@ -229,13 +229,21 @@ class DefaultController extends \app\components\BaseController
         $treasures[]=$treasure->id;
       foreach($target->findings as $finding)
         $findings[]=$finding->id;
-      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
+      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')->joinWith(['player'])
       ->where(['model_id'=>$findings, 'model'=>'finding'])
       ->orWhere(['model_id'=>$treasures, 'model'=>'treasure'])
-      ->orWhere(['model_id'=>$id, 'model'=>'headshot'])
-      ->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]);
+      ->orWhere(['model_id'=>$id, 'model'=>'headshot']);
+      if(\Yii::$app->user->isGuest)
+      {
+        $model->andWhere(['academic'=>0]);
+      }
+      else
+      {
+        $model->andWhere(['academic'=>\Yii::$app->user->identity->academic]);
+      }
+
       $dataProvider=new ActiveDataProvider([
-            'query' => $model,
+            'query' => $model->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]),
             'pagination' => [
                 'pageSizeParam'=>'stream-perpage',
                 'pageParam'=>'stream-page',
