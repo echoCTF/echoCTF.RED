@@ -43,21 +43,22 @@ class StreamWidget extends Widget
 
     private function configureDataProvider()
     {
-      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago')->joinWith(['player']);
-      if(\Yii::$app->user->isGuest)
+      $model=\app\models\Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago');
+      if(\Yii::$app->sys->academic_grouping!==false)
       {
-        $model->andWhere(['academic'=>0]);
-      }
-      else
-      {
-        $model->andWhere(['academic'=>\Yii::$app->user->identity->academic]);
+        if(\Yii::$app->user->isGuest)
+        {
+          $model=$model->joinWith(['player'])->andWhere(['academic'=>0]);
+        }
+        else
+        {
+          $model=$model->joinWith(['player'])->andWhere(['academic'=>\Yii::$app->user->identity->academic]);
+        }
       }
 
       if($this->player_id !== null)
       {
-        $model=\app\models\Stream::find()
-          ->select('stream.*,TS_AGO(stream.ts) as ts_ago')->joinWith(['player'])
-          ->where(['player_id'=>$this->player_id]);
+        $model=$model->where(['player_id'=>$this->player_id]);
       }
       $this->dataProvider=new ActiveDataProvider([
           'query' => $model->orderBy(['stream.ts'=>SORT_DESC, 'stream.id'=>SORT_DESC]),
@@ -68,6 +69,7 @@ class StreamWidget extends Widget
           ]
         ]);
     }
+
     public function run()
     {
         StreamWidgetAsset::register($this->getView());

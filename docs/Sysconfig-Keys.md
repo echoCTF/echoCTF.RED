@@ -72,7 +72,7 @@ Not activated by default on current code-base but are going to
 ## Player Specific
 * `academic_N` Name for academic value `N`
 *	`academic_Nshort` Short name for academic value `N`
-
+* `acdemic_grouping` Enable/Disable support for academic grouping
 example:
 ```
 backend/yii sysconfig/set academic_0 "SuperSite.com"
