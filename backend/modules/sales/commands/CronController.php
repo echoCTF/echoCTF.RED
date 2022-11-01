@@ -20,7 +20,7 @@ class CronController extends Controller
      */
     public function actionExpireSubscriptions()
     {
-      $playerSubs=PlayerSubscription::find()->active()->andWhere(['<','ending',new \yii\db\Expression('NOW()-INTERVAL 4 HOUR')]);
+      $playerSubs=PlayerSubscription::find()->active()->expired();
       foreach($playerSubs->all() as $rec)
       {
         $transaction = \Yii::$app->db->beginTransaction();
