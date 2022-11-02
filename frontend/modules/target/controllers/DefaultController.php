@@ -62,14 +62,14 @@ class DefaultController extends \app\components\BaseController
                             if($id>0 && ($model=Target::findOne($id))!==null)
                             {
                               $network=Yii::$app->getModule('network');
-                              if(!$network->checkTarget($model))
+                              if($model->network && !$network->checkTarget($model))
                                 return true;
                               return false;
                             }
                             return false;
                         },
                         'denyCallback' =>  function () {
-                          Yii::$app->session->setFlash('warning', "You need don't have access to the network for this target.");
+                          Yii::$app->session->setFlash('warning', "You don't have access to the network for this target.");
                           return  \Yii::$app->getResponse()->redirect(Yii::$app->request->referrer ?:[Yii::$app->sys->default_homepage]);
                         }
                       ],
