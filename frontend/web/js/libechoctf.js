@@ -16,6 +16,13 @@ function escapeHtml(unsafe)
          .replace(/'/g, "&#039;");
 }
 
+//
+function isFileImage(file) {
+  const acceptedImageTypes = ['image/png'];
+
+  return file && acceptedImageTypes.includes(file['type'])
+}
+
 /* Calculate luminanace */
 function luminanace(r, g, b)
 {
