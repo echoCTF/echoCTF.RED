@@ -44,13 +44,13 @@ class AnswerForm extends Model
       $this->_question=Question::find()->where(['challenge_id'=>$challenge_id, 'code'=>$this->answer])->one();
       if(!($this->_question instanceof Question))
       {
-        $this->addError('answer', 'Invalid answer');
+        $this->addError('answer', \Yii::t('app','Invalid answer'));
         return false;
       }
 
       if($this->_question->answered !== null)
       {
-        $this->addError('answer', 'You have already answered this question.');
+        $this->addError('answer', \Yii::t('app','You have already answered this question.'));
         return false;
       }
 
@@ -65,7 +65,7 @@ class AnswerForm extends Model
       }
       else
       {
-        $this->addError('answer', 'Failed to save the given answer. Contact the administrators if the problem persists.');
+        $this->addError('answer', \Yii::t('app','Failed to save the given answer. Contact the administrators if the problem persists.'));
         return false;
       }
     }

@@ -26,7 +26,7 @@ class ExperienceController extends Controller
                       return Yii::$app->DisabledRoute->disabled($action);
                     },
                     'denyCallback' => function() {
-                      throw new \yii\web\HttpException(404,'This area is disabled.');
+                      throw new \yii\web\HttpException(404,\Yii::t('app','This area is disabled.'));
                     },
                 ],
                 [
