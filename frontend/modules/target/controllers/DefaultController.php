@@ -69,7 +69,7 @@ class DefaultController extends \app\components\BaseController
                             return false;
                         },
                         'denyCallback' =>  function () {
-                          Yii::$app->session->setFlash('warning', "You don't have access to the network for this target.");
+                          Yii::$app->session->setFlash('warning', \Yii::t('app',"You don't have access to the network for this target."));
                           return  \Yii::$app->getResponse()->redirect(Yii::$app->request->referrer ?:[Yii::$app->sys->default_homepage]);
                         }
                       ],
@@ -95,9 +95,9 @@ class DefaultController extends \app\components\BaseController
                           {
                             $subscription=Yii::$app->getModule('subscription');
                             if(!$subscription->exists)
-                              Yii::$app->session->setFlash('warning', 'You need a subscription to perform this action.');
+                              Yii::$app->session->setFlash('warning', \Yii::t('app','You need a subscription to perform this action.'));
                             elseif(!$subscription->isActive)
-                              Yii::$app->session->setFlash('warning', 'Your subscription has expired. Please renew your subscription to be able to spawn and shut private instances.');
+                              Yii::$app->session->setFlash('warning', \Yii::t('app','Your subscription has expired. Please renew your subscription to be able to spawn and shut private instances.'));
                           }
                           return  \Yii::$app->getResponse()->redirect(Yii::$app->request->referrer ?:[Yii::$app->sys->default_homepage]);
                         }
@@ -286,13 +286,13 @@ class DefaultController extends \app\components\BaseController
 
         if($treasure !== null && Treasure::find()->byCode($string)->claimable()->notBy((int) Yii::$app->user->id)->one() === null)
         {
-          Yii::$app->session->setFlash('warning', sprintf('Flag [%s] claimed before', $treasure->name, $treasure->target->name));
+          Yii::$app->session->setFlash('warning', sprintf(\Yii::t('app','Flag [%s] claimed before'), $treasure->name, $treasure->target->name));
           return $this->renderAjax('claim');
         }
         elseif($treasure === null)
         {
           Yii::$app->counters->increment('failed_claims');
-          Yii::$app->session->setFlash('error', sprintf('Flag [<strong>%s</strong>] does not exist!', Html::encode($string)));
+          Yii::$app->session->setFlash('error', sprintf(\Yii::t('app','Flag [<strong>%s</strong>] does not exist!'), Html::encode($string)));
           return $this->renderAjax('claim');
         }
         try {
@@ -300,7 +300,7 @@ class DefaultController extends \app\components\BaseController
         }
         catch(\Throwable $e)
         {
-          Yii::$app->session->setFlash('error', 'You cannot claim this flag. You dont have access to this network.');
+          Yii::$app->session->setFlash('error', \Yii::t('app',"You cannot claim this flag. You don't have access to this network."));
           return $this->renderAjax('claim');
         }
 
@@ -376,7 +376,7 @@ class DefaultController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested target does not exist.');
+        throw new NotFoundHttpException(\Yii::t('app','The requested target does not exist.'));
     }
 
     protected function findModelView($id,$player_id=null)
@@ -386,7 +386,7 @@ class DefaultController extends \app\components\BaseController
           return $model;
       }
 
-      throw new NotFoundHttpException('The requested target does not exist.');
+      throw new NotFoundHttpException(\Yii::t('app','The requested target does not exist.'));
     }
 
     protected function findProfile($id)
@@ -396,7 +396,7 @@ class DefaultController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested profile does not exist.');
+        throw new NotFoundHttpException(\Yii::t('app','The requested profile does not exist.'));
     }
 
     protected function checkVisible($profile)
@@ -422,12 +422,12 @@ class DefaultController extends \app\components\BaseController
         $transaction->commit();
         $this->doOndemand($treasure->target);
         $PT->refresh();
-        Yii::$app->session->setFlash('success', sprintf('Flag [%s] claimed for %s points', $treasure->name, number_format($PT->points)));
+        Yii::$app->session->setFlash('success', sprintf(\Yii::t('app','Flag [%s] claimed for %s points'), $treasure->name, number_format($PT->points)));
       }
       catch(\Exception $e)
       {
         $transaction->rollBack();
-        Yii::$app->session->setFlash('error', 'Flag failed');
+        Yii::$app->session->setFlash('error', \Yii::t('app','Flag failed'));
         throw $e;
       }
       catch(\Throwable $e)

@@ -33,9 +33,9 @@ class CreateTeamForm extends Model
       return [
           [['name','description'], 'trim'],
           ['name', 'required'],
-          ['name', 'unique', 'targetClass' => 'app\modules\team\models\Team', 'message' => 'A team with this name already exists.'],
+          ['name', 'unique', 'targetClass' => 'app\modules\team\models\Team', 'message' => \Yii::t('app','A team with this name already exists.')],
           [['name'], 'string', 'length' => [3, 32]],
-          [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => 'File larger than expected, limit is 500KB'],
+          [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => \Yii::t('app','File larger than expected, limit is {sizeLimit}',['sizeLimit'=>'500KB'])],
       ];
     }
 

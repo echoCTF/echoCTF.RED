@@ -78,7 +78,7 @@ class WriteupController extends \app\components\BaseController
       {
           if(!PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target_id]) && !Headshot::findOne(['target_id'=>$target_id,'player_id'=>Yii::$app->user->id]))
           {
-            Yii::$app->session->setFlash('error', 'You are not allowed to read writeups for this target.');
+            Yii::$app->session->setFlash('error', \Yii::t('app','You are not allowed to read writeups for this target.'));
             return $this->redirect(['default/view','id'=>$target_id]);
           }
 
@@ -105,7 +105,7 @@ class WriteupController extends \app\components\BaseController
       $target=Target::findOne($id);
       if($target && !$target->writeup_allowed)
       {
-        Yii::$app->session->setFlash('warning', 'Writeups are not allowed for this target.');
+        Yii::$app->session->setFlash('warning', \Yii::t('app','Writeups are not allowed for this target.'));
         return $this->redirect(['default/view','id'=>$id]);
       }
 
@@ -113,12 +113,12 @@ class WriteupController extends \app\components\BaseController
       $headshot=Headshot::findOne(['target_id'=>$id,'player_id'=>Yii::$app->user->id]);
       if($headshot===null)
       {
-        throw new NotFoundHttpException('You dont have a headshot for the given target.');
+        throw new NotFoundHttpException(\Yii::t('app','You dont have a headshot for the given target.'));
       }
 
       if($headshot->writeup!==null)
       {
-        Yii::$app->session->setFlash('error', 'You have already submitted a writeup for this target.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','You have already submitted a writeup for this target.'));
         return $this->redirect(['default/view','id'=>$id]);
       }
 
@@ -130,10 +130,10 @@ class WriteupController extends \app\components\BaseController
           $model->status='PENDING';
           if($model->save())
           {
-            Yii::$app->session->setFlash('success', 'Thank you for your submittion. Your writeup has been saved. A member of our staff will review and approve or reject.');
+            Yii::$app->session->setFlash('success', \Yii::t('app','Thank you for your submission. Your writeup has been saved. A member of our staff will review and approve or reject.'));
             return $this->redirect(['view', 'id' => $id]);
           }
-          Yii::$app->session->setFlash('error', 'Failed to save writeup, something went wrong.');
+          Yii::$app->session->setFlash('error', \Yii::t('app','Failed to save writeup, something went wrong.'));
       }
 
       return $this->render('create', [
@@ -164,10 +164,10 @@ class WriteupController extends \app\components\BaseController
           $oldmodel->content=$model->content;
           if($oldmodel->save())
           {
-            Yii::$app->session->setFlash('success', 'The writeup has been updated.');
+            Yii::$app->session->setFlash('success', \Yii::t('app','The writeup has been updated.'));
             return $this->redirect(['view', 'id' => $id]);
           }
-          Yii::$app->session->setFlash('error', 'Failed to update writeup, something went wrong.');
+          Yii::$app->session->setFlash('error', \Yii::t('app','Failed to update writeup, something went wrong.'));
         }
 
         return $this->render('update', [
@@ -184,13 +184,13 @@ class WriteupController extends \app\components\BaseController
         $writeups=Writeup::find()->where(['target_id'=>$id]);
         if((int)$writeups->count()===0)
         {
-          Yii::$app->session->setFlash('error', 'There are no writeups for this target.');
+          Yii::$app->session->setFlash('error', \Yii::t('app','There are no writeups for this target.'));
           return $this->redirect(['default/view','id'=>$id]);
         }
 
         if(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$id])!==null)
         {
-          Yii::$app->session->setFlash('error', 'You have already enabled writeups for this target.');
+          Yii::$app->session->setFlash('error', \Yii::t('app','You have already enabled writeups for this target.'));
           return $this->redirect(['default/view','id'=>$id]);
         }
 
@@ -199,7 +199,7 @@ class WriteupController extends \app\components\BaseController
         }
         catch(\Throwable $e)
         {
-          Yii::$app->session->setFlash('error', 'Failed to activate writeups for this target. You dont have access to this network.');
+          Yii::$app->session->setFlash('error', \Yii::t('app',"Failed to activate writeups for this target. You don't have access to this network."));
           return $this->redirect(['default/view','id'=>$id]);
         }
 
@@ -213,12 +213,12 @@ class WriteupController extends \app\components\BaseController
           $pth->created_at=new \yii\db\Expression('NOW()');
           $pth->save(false);
           $transaction->commit();
-          Yii::$app->session->setFlash('success', 'You have successfully activated writeups for this target.');
+          Yii::$app->session->setFlash('success', \Yii::t('app','You have successfully activated writeups for this target.'));
         }
         catch(\Exception $e)
         {
           $transaction->rollBack();
-          Yii::$app->session->setFlash('error', 'Failed to activate writeups for this target.');
+          Yii::$app->session->setFlash('error', \Yii::t('app','Failed to activate writeups for this target.'));
           throw $e;
         }
         return $this->redirect(Url::previous());
@@ -239,7 +239,7 @@ class WriteupController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested writeup does not exist.');
+        throw new NotFoundHttpException(\Yii::t('app','The requested writeup does not exist.'));
     }
 
     /**
@@ -256,7 +256,7 @@ class WriteupController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested writeup does not exist.');
+        throw new NotFoundHttpException(\Yii::t('app','The requested writeup does not exist.'));
     }
 
 
@@ -267,7 +267,7 @@ class WriteupController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested profile does not exist.');
+        throw new NotFoundHttpException(\Yii::t('app','The requested profile does not exist.'));
     }
 
 }

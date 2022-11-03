@@ -51,7 +51,7 @@ class DefaultController extends \app\components\BaseController
                       return (\Yii::$app->sys->{"team_manage_members"}===false);
                     },
                     'denyCallback' => function() {
-                      \Yii::$app->session->addFlash('error', 'Team management is disabled at the moment.');
+                      \Yii::$app->session->addFlash('error', \Yii::t('app','Team management is disabled at the moment.'));
                       return $this->redirect(['index']);
                     }
                   ],
@@ -63,7 +63,7 @@ class DefaultController extends \app\components\BaseController
                       return (\Yii::$app->user->identity->teamLeader!==null || \Yii::$app->user->identity->team!==null);
                     },
                     'denyCallback' => function() {
-                      \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
+                      \Yii::$app->session->setFlash('error', \Yii::t('app','You are already a member of a team.'));
                       return $this->redirect(['/team/mine']);
                     }
                   ],
@@ -75,7 +75,7 @@ class DefaultController extends \app\components\BaseController
                       return \Yii::$app->user->identity->team!==null;
                     },
                     'denyCallback' => function () {
-                      \Yii::$app->session->setFlash('error', 'You are already a member of a team.');
+                      \Yii::$app->session->setFlash('error', \Yii::t('app','You are already a member of a team.'));
                       return $this->redirect(['/team/mine']);
                     }
                   ],
@@ -87,7 +87,7 @@ class DefaultController extends \app\components\BaseController
                       return \Yii::$app->user->identity->teamLeader===null;
                     },
                     'denyCallback' => function () {
-                      \Yii::$app->session->setFlash('error', 'You are not the leader of any teams.');
+                      \Yii::$app->session->setFlash('error', \Yii::t('app','You are not the leader of any teams.'));
                       return $this->redirect(['/team/mine']);
                     }
                   ],
@@ -99,7 +99,7 @@ class DefaultController extends \app\components\BaseController
                          return \Yii::$app->sys->event_start!==false && (time()>=\Yii::$app->sys->event_start && time()<=\Yii::$app->sys->event_end);
                      },
                      'denyCallback' => function () {
-                       \Yii::$app->session->setFlash('info', 'These actions are disabled during the competition');
+                       \Yii::$app->session->setFlash('info', \Yii::t('app','These actions are disabled during the competition'));
                        return  \Yii::$app->getResponse()->redirect(['/team/mine']);
                      }
                  ],
@@ -109,7 +109,7 @@ class DefaultController extends \app\components\BaseController
                        return \Yii::$app->DisabledRoute->disabled($action);
                      },
                      'denyCallback' => function () {
-                       throw new \yii\web\HttpException(404,'This area is disabled.');
+                       throw new \yii\web\HttpException(404,('This area is disabled.'));
                      },
                  ],
                  [
@@ -227,7 +227,7 @@ class DefaultController extends \app\components\BaseController
         if(Yii::$app->user->identity->teamLeader!==null)
         {
           Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',Yii::$app->user->identity->teamLeader->id)->execute();
-          Yii::$app->session->setFlash('success', 'Your team has been created.');
+          Yii::$app->session->setFlash('success', \Yii::t('app','Your team has been created.'));
           return $this->redirect(['update']);
         }
       }
@@ -249,13 +249,13 @@ class DefaultController extends \app\components\BaseController
 
       if($team->academic!==Yii::$app->user->identity->academic)
       {
-        Yii::$app->session->setFlash('error', 'The team you tried to join was not on the same academic scope.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','The team you tried to join was not on the same academic scope.'));
         return $this->redirect(['view','token'=>$team->token]);
       }
 
       if($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
       {
-        Yii::$app->session->setFlash('error', 'The team you are trying to join is full.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','The team you are trying to join is full.'));
         return $this->redirect(['view','token'=>$team->token]);
       }
 
@@ -265,12 +265,12 @@ class DefaultController extends \app\components\BaseController
       $tp->approved=0;
       if($tp->save()===false)
       {
-        Yii::$app->session->setFlash('error', 'Failed to join the team, unknown error occurred.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','Failed to join the team, unknown error occurred.'));
         return $this->redirect(['view','token'=>$team->token]);
       }
 
       $tp->notifyJoinOwner();
-      Yii::$app->session->setFlash('success', 'You joined the team but it is pending approval by the team leader.');
+      Yii::$app->session->setFlash('success', \Yii::t('app','You joined the team but it is pending approval by the team leader.'));
       return $this->redirect(['view','token'=>$team->token]);
 
     }
@@ -292,7 +292,7 @@ class DefaultController extends \app\components\BaseController
             {
               $team->uploadedAvatar = UploadedFile::getInstance($team, 'uploadedAvatar');
               $team->saveLogo();
-              Yii::$app->session->setFlash('success', 'Your team was updated.');
+              Yii::$app->session->setFlash('success', \Yii::t('app','Your team was updated.'));
               return $this->redirect(['view','token'=>$team->token]);
             }
         }
@@ -306,18 +306,18 @@ class DefaultController extends \app\components\BaseController
 
       if($tp->team_id!==Yii::$app->user->identity->teamLeader->id)
       {
-        Yii::$app->session->setFlash('error', 'You have no permission to approve this membership.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','You have no permission to approve this membership.'));
         return $this->redirect(['index']);
       }
       $tp->approved=1;
       if(!$tp->save())
       {
-        Yii::$app->session->setFlash('error', 'Failed to approve membership.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','Failed to approve membership.'));
         return $this->redirect(['view','token'=>$tp->team->token]);
       }
       Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$tp->team_id)->execute();
       $tp->notifyApprovePlayer();
-      Yii::$app->session->setFlash('success', 'Membership approved.');
+      Yii::$app->session->setFlash('success', \Yii::t('app','Membership approved.'));
       return $this->redirect(['view','token'=>$tp->team->token]);
 
     }
@@ -328,13 +328,13 @@ class DefaultController extends \app\components\BaseController
       $token=$tp->team->token;
       if($tp->player_id!==Yii::$app->user->id && $tp->team_id!==Yii::$app->user->identity->teamLeader->id)
       {
-        Yii::$app->session->setFlash('error', 'You have no permission to cancel this membership.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','You have no permission to cancel this membership.'));
         return $this->redirect(['view','token'=>$token]);
       }
 
       if($tp->delete()===false)
       {
-        Yii::$app->session->setFlash('error', 'Failed to cancel membership.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','Failed to cancel membership.'));
         return $this->redirect(['view','token'=>$token]);
       }
       $redir=['view','token'=>$token];
@@ -346,10 +346,10 @@ class DefaultController extends \app\components\BaseController
           $redir=['index'];
         }
         Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$tp->team_id)->execute();
-        Yii::$app->session->setFlash('success', 'Your membership has been withdrawn.');
+        Yii::$app->session->setFlash('success', \Yii::t('app','Your membership has been withdrawn.'));
       }
       else {
-        Yii::$app->session->setFlash('success', 'Membership has been withdrawn.');
+        Yii::$app->session->setFlash('success', \Yii::t('app','Membership has been withdrawn.'));
       }
       if(Yii::$app->user->identity->teamLeader)
       {
@@ -368,13 +368,13 @@ class DefaultController extends \app\components\BaseController
 
       if($team->academic!==Yii::$app->user->identity->academic)
       {
-        Yii::$app->session->setFlash('error', 'The team you are trying to access is not of the same academic type.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','The team you are trying to access is not of the same academic type.'));
         return $this->redirect(['index']);
       }
 
       if($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
       {
-        Yii::$app->session->setFlash('error', 'The team you are trying to join is full.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','The team you are trying to join is full.'));
         return $this->redirect(['index']);
       }
 
@@ -386,7 +386,7 @@ class DefaultController extends \app\components\BaseController
         $tp->approved=0;
         if($tp->save())
         {
-          Yii::$app->session->setFlash('error', 'Failed to add you as member of this team.');
+          Yii::$app->session->setFlash('error', \Yii::t('app','Failed to add you as member of this team.'));
           return $this->redirect(['index']);
         }
       }
@@ -407,7 +407,7 @@ class DefaultController extends \app\components\BaseController
         {
             return $model;
         }
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(\Yii::t('app','The requested page does not exist.'));
     }
 
     /**
@@ -423,7 +423,7 @@ class DefaultController extends \app\components\BaseController
         {
             return $model;
         }
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(\Yii::t('app','The requested page does not exist.'));
     }
 
 

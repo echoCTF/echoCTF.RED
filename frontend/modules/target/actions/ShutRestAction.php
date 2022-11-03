@@ -21,7 +21,7 @@ class ShutRestAction extends \yii\rest\ViewAction
       $target=$this->findTarget($id);
       if($target->status!=='online')
       {
-        throw new UserException('Target cant be shutdown, target is not online yet!');
+        throw new UserException(\Yii::t('app',"Target can't be shutdown, target is not online yet!"));
       }
       $ti=TargetInstance::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$id]);
       // Check if the instance exists
@@ -29,11 +29,11 @@ class ShutRestAction extends \yii\rest\ViewAction
       {
         $ti->reboot=2;
         $ti->save();
-        Yii::$app->session->setFlash('success', sprintf('Scheduling shutdown for instance [%s]. You will receive a notification when the instance is shut.', $ti->target->name));
+        Yii::$app->session->setFlash('success', sprintf(\Yii::t('app','Scheduling shutdown for instance [%s]. You will receive a notification when the instance is shut.'), $ti->target->name));
       }
       else
       {
-        Yii::$app->session->setFlash('warning', sprintf('You do not have an instance of [%s] running.', $target->name));
+        Yii::$app->session->setFlash('warning', sprintf(\Yii::t('app','You do not have an instance of [%s] running.'), $target->name));
       }
 
     }
@@ -56,7 +56,7 @@ class ShutRestAction extends \yii\rest\ViewAction
       return $model;
     }
 
-    throw new NotFoundHttpException('The requested target does not exist.');
+    throw new NotFoundHttpException(\Yii::t('app','The requested target does not exist.'));
 
   }
 
