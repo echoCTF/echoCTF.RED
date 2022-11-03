@@ -6,6 +6,8 @@ $cookieValidationKey=require __DIR__.'/validationKey.php';
 
 $config=[
     'id' => 'pui2',
+    //'language' => 'el-GR',
+    'sourceLanguage' => 'en-US',
     'name'=>'echoCTF.RED Mycenae',
     'basePath' => dirname(__DIR__),
     'charset' => 'UTF-8',
@@ -49,6 +51,27 @@ $config=[
       ],
     ],
     'components' => [
+      'i18n' => [
+        'translations' => [
+          'yii' => [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'sourceLanguage' => 'en-US',
+            'basePath' => '@app/messages',
+            'fileMap' => [
+              'yii' => 'yii.php',
+            ]
+          ],
+          'app*' => [
+              'class' => 'yii\i18n\PhpMessageSource',
+              'basePath' => '@app/messages',
+              'sourceLanguage' => 'en-US',
+              'fileMap' => [
+                  'app' => 'app.php',
+                  'app/error' => 'error.php',
+              ],
+          ],
+        ],
+      ],
       'assetManager' => [
           'bundles' => [
               'yii\captcha\CaptchaAsset' => [
