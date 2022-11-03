@@ -130,8 +130,8 @@ class PlayerSubscription extends \yii\db\ActiveRecord
       {
         $notif=new Notification;
         $notif->player_id=$this->player_id;
-        $notif->title='Your subscription has been activated';
-        $notif->body='Your subscription has been activated';
+        $notif->title=\Yii::t('app','Your subscription has been activated');
+        $notif->body=\Yii::t('app','Your subscription has been activated');
         $notif->archived=0;
         $notif->save();
       }
