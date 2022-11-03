@@ -7,7 +7,7 @@ use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
 $this->_fluid="-fluid";
 $this->title=Yii::$app->sys->event_name.' Dashboard';
-$this->_description="The echoCTF dashboard page";
+$this->_description=\Yii::t('app',"The echoCTF dashboard page");
 $this->registerJsFile('/js/plugins/chartist.min.js',['depends' => 'yii\web\JqueryAsset']);
 $this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['depends' => 'yii\web\JqueryAsset']);
 $this->_url=\yii\helpers\Url::to([null],'https');
@@ -22,7 +22,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
                 'icon'=>'<i class="fas fa-flag"></i>',
                 'color'=>'primary',
                 'title'=>number_format($dashboardStats->claims) /*sprintf('%d / %d', $treasureStats->claimed, $treasureStats->total)*/,
-                'subtitle'=>'Flag Claims',
+                'subtitle'=>\Yii::t('app','Flag Claims'),
                 'footer'=>'<div class="stats"></div>',
             ]);Card::end();?>
         </div>
@@ -33,7 +33,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
                 'icon'=>'<i class="fas fa-chart-line"></i>',
                 'color'=>'primary',
                 'title'=>number_format(\app\models\Stream::find()->count()),
-                'subtitle'=>'Activities',
+                'subtitle'=>\Yii::t('app','Activities'),
                 'footer'=>'<div class="stats"></div>',
             ]);Card::end();?>
         </div>
@@ -45,7 +45,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
                 'icon'=>'<i class="fas fa-globe"></i>',
                 'color'=>'danger',
                 'title'=>sprintf('%d', $dashboardStats->countries),
-                'subtitle'=>'Countries',
+                'subtitle'=>\Yii::t('app','Countries'),
                 'footer'=>'<div class="stats"></div>',
             ]);Card::end();?>
         </div>
@@ -57,7 +57,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
                 'icon'=>'<i class="fas fa-user-secret"></i>',
                 'color'=>'info',
                 'title'=>\app\models\Player::find()->active()->count(),
-                'subtitle'=>'Users',
+                'subtitle'=>\Yii::t('app','Users'),
                 'footer'=>'<div class="stats"></div>',
             ]);Card::end();?>
         </div>
@@ -67,7 +67,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
         <div class="col">
           <div class="card bg-dark">
             <div class="card-body">
-                <h3 class="card-title text-center">10-Day Activity</h3>
+                <h3 class="card-title text-center"><?=\Yii::t('app','10-Day Activity')?></h3>
             </div>
             <div class="card-img-top ct-chart" id="LastDaysActivityChart"></div>
 
@@ -77,7 +77,7 @@ $this->_url=\yii\helpers\Url::to([null],'https');
         <div class="col-lg-4">
           <div class="card bg-dark">
             <div class="card-body">
-                <h3 class="card-title text-center">Latest News</h3>
+                <h3 class="card-title text-center"><?=\Yii::t('app','Latest News')?></h3>
                 <?php
                 echo ListView::widget([
                     'layout'=>'{items}',
@@ -104,8 +104,8 @@ $this->_url=\yii\helpers\Url::to([null],'https');
               'header'=>'header-icon',
               'icon'=>'<i class="fas fa-level-up-alt"></i>',
               'color'=>'warning',
-              'title'=>"Progress",
-              'subtitle'=>"Current level: ".Yii::$app->user->identity->profile->experience->name,
+              'title'=>\Yii::t('app',"Progress"),
+              'subtitle'=>\Yii::t('app',"Current level: ").Yii::$app->user->identity->profile->experience->name,
               'footer'=>'<div class="stats"></div>',
           ]);
           $x=(Yii::$app->user->identity->profile->experience->max_points - Yii::$app->user->identity->playerScore->points);
@@ -123,8 +123,8 @@ $this->_url=\yii\helpers\Url::to([null],'https');
               'header'=>'header-icon',
               'icon'=>'<img src="/images/headshot.svg" class="img-fluid" style="max-height: 60px;"/>',
               'color'=>'danger',
-              'title'=>"Completed: ".Yii::$app->user->identity->profile->HeadshotsCount,
-              'subtitle'=>"Targets: ".\app\modules\target\models\Target::find()->active()->count(),
+              'title'=>\Yii::t('app',"Completed: ").Yii::$app->user->identity->profile->HeadshotsCount,
+              'subtitle'=>\Yii::t('app',"Targets: ").\app\modules\target\models\Target::find()->active()->count(),
               'footer'=>'<div class="stats"></div>',
           ]);
           if(intval(\app\modules\target\models\Target::find()->active()->count())!=0)
@@ -147,8 +147,8 @@ $this->_url=\yii\helpers\Url::to([null],'https');
               'header'=>'header-icon',
               'icon'=>'<i class="fas fa-clipboard-list"></i>',
               'color'=>'warning',
-              'title'=>"Completed: ".Yii::$app->user->identity->profile->challengesSolverCount,
-              'subtitle'=>"Challenges: ".\app\modules\challenge\models\Challenge::find()->count(),
+              'title'=>\Yii::t('app',"Completed: ").Yii::$app->user->identity->profile->challengesSolverCount,
+              'subtitle'=>\Yii::t('app',"Challenges: ").\app\modules\challenge\models\Challenge::find()->count(),
               'footer'=>'<div class="stats"></div>',
           ]);
           if(intval(\app\modules\challenge\models\Challenge::find()->count())>0)
