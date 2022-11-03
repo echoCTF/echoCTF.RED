@@ -61,7 +61,7 @@ class DefaultController extends \app\components\BaseController
       $model=Tutorial::find()->where(['id'=>$id])->one();
       if($model===null)
       {
-          throw new NotFoundHttpException('The requested tutorial could not be found.');
+          throw new NotFoundHttpException(\Yii::t('app','The requested tutorial could not be found.'));
       }
       $query=TutorialTask::find()->orderBy(['weight'=>SORT_ASC, 'id'=>SORT_ASC]);
       $dataProvider=new ActiveDataProvider([
@@ -89,6 +89,6 @@ class DefaultController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(\Yii::t('app','The requested page does not exist.'));
     }
 }
