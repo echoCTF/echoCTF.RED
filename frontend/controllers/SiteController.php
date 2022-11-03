@@ -272,7 +272,8 @@ class SiteController extends \app\components\BaseController
         }
         catch(InvalidArgumentException $e)
         {
-            throw new BadRequestHttpException($e->getMessage());
+            Yii::$app->session->setFlash('warning', 'Password reset token not found! If you have changed your password already try to sign-in.');
+            return $this->redirect(['/site/login']);
         }
 
         if($model->load(Yii::$app->request->post()) && $model->validate() && $model->resetPassword())
@@ -309,7 +310,8 @@ class SiteController extends \app\components\BaseController
         }
         catch(InvalidArgumentException $e)
         {
-            throw new BadRequestHttpException($e->getMessage());
+            Yii::$app->session->setFlash('warning', 'Verification token not found! Try to login if you have verified your email already.');
+            return $this->redirect(['/site/login']);
         }
         $post=Yii::$app->request->post('VerifyEmailForm');
         $value=ArrayHelper::getValue($post, 'token');
@@ -336,8 +338,8 @@ class SiteController extends \app\components\BaseController
           $transaction->rollBack();
         }
 
-        Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
-        return $this->goHome();
+        Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify an account with the provided token.');
+        return $this->redirect(['/']);
     }
 
     /**

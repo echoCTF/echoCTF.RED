@@ -132,7 +132,7 @@ class BaseController extends \yii\web\Controller
     {
       if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !$this->request->validateCsrfToken())
       {
-        if(!\Yii::$app->user->isGuest)
+        if(defined('YII_DEBUG') && !\Yii::$app->user->isGuest)
         {
           \Yii::error("CSRF-FAIL");
           \Yii::error(var_export($this->enableCsrfValidation, true));
@@ -143,8 +143,7 @@ class BaseController extends \yii\web\Controller
           \Yii::error(var_export($_SESSION, true));
         }
         Yii::$app->session->setFlash('error', Yii::t('yii', 'Unable to verify your submission CSRF token, please try again.'));
-        $this->goBack(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage]);
-        return false;
+        return $this->redirect(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage]);
       }
       return parent::beforeAction($action);
     }
