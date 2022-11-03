@@ -64,7 +64,7 @@ class SiteController extends \app\components\BaseController
                         'allow' => false,
                         'roles' => ['@'],
                         'denyCallback' => function ($rule, $action) {
-                            \Yii::$app->session->setFlash('warning', 'Only guests can access this area.');
+                            \Yii::$app->session->setFlash('warning', \Yii::t('app','Only guests can access this area.'));
                             return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage],303);
                           },
                     ],
@@ -75,7 +75,7 @@ class SiteController extends \app\components\BaseController
                           return Yii::$app->sys->disable_registration===true;
                         },
                         'denyCallback' => function ($rule, $action) {
-                          Yii::$app->session->setFlash('info', 'Registrations are disabled on this competition');
+                          Yii::$app->session->setFlash('info', \Yii::t('app','Registrations are disabled on this competition'));
                           return  \Yii::$app->getResponse()->redirect(['/site/login']);
                         },
                     ],
@@ -88,7 +88,7 @@ class SiteController extends \app\components\BaseController
                         },
                         'denyCallback' => function ($rule, $action) {
                           if(time()<(int)Yii::$app->sys->registrations_start)
-                            Yii::$app->session->setFlash('info', "Registrations haven't started yet.");
+                            Yii::$app->session->setFlash('info', \Yii::t('app',"Registrations haven't started yet."));
                           return  \Yii::$app->getResponse()->redirect(['/site/login']);
 
                         },
@@ -102,7 +102,7 @@ class SiteController extends \app\components\BaseController
                         },
                         'denyCallback' => function ($rule, $action) {
                         if(time()<(int)Yii::$app->sys->registrations_start)
-                            Yii::$app->session->setFlash('info', 'Registrations are no longer accepted ended.');
+                            Yii::$app->session->setFlash('info', \Yii::t('app','Registrations are no longer accepted ended.'));
                           return  \Yii::$app->getResponse()->redirect(['/site/login']);
 
                         },
@@ -201,10 +201,10 @@ class SiteController extends \app\components\BaseController
           {
               $model->signup();
               $transaction->commit();
-              Yii::$app->session->setFlash('success', 'Thank you for registering. Your account is activated feel free to login.');
+              Yii::$app->session->setFlash('success', \Yii::t('app','Thank you for registering. Your account is activated feel free to login.'));
               if(Yii::$app->sys->require_activation===true)
               {
-                Yii::$app->session->setFlash('success', 'Thank you for registering. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>');
+                Yii::$app->session->setFlash('success', \Yii::t('app','Thank you for registering. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>'));
               }
               return $this->goHome();
           }
@@ -212,12 +212,12 @@ class SiteController extends \app\components\BaseController
         catch(\Exception $e)
         {
             $transaction->rollBack();
-            Yii::$app->session->setFlash('error', 'Registration failed.');
+            Yii::$app->session->setFlash('error', \Yii::t('app','Registration failed.'));
         }
         catch(\Throwable $e)
         {
             $transaction->rollBack();
-            Yii::$app->session->setFlash('error', 'Registration failed.');
+            Yii::$app->session->setFlash('error', \Yii::t('app','Registration failed.'));
         }
         $referred=false;
         if(Yii::$app->getSession()->get('referred_by')!==null && \app\models\Player::findOne(Yii::$app->getSession()->get('referred_by')))
@@ -242,13 +242,13 @@ class SiteController extends \app\components\BaseController
         {
             if($model->sendEmail())
             {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions. Keep in mind that the token will expire after 24 hours.');
+                Yii::$app->session->setFlash('success', \Yii::t('app','Check your email for further instructions. Keep in mind that the token will expire after 24 hours.'));
 
                 return $this->goHome();
             }
             else
             {
-                Yii::$app->session->setFlash('error', 'Sorry, we are unable to reset the password for the provided email address.');
+                Yii::$app->session->setFlash('error', \Yii::t('app','Sorry, we are unable to reset the password for the provided email address.'));
             }
         }
 
@@ -272,7 +272,7 @@ class SiteController extends \app\components\BaseController
         }
         catch(InvalidArgumentException $e)
         {
-            Yii::$app->session->setFlash('warning', 'Password reset token not found! If you have changed your password already try to sign-in.');
+            Yii::$app->session->setFlash('warning', \Yii::t('app','Password reset token not found! If you have changed your password already try to sign-in.'));
             return $this->redirect(['/site/login']);
         }
 
@@ -280,11 +280,11 @@ class SiteController extends \app\components\BaseController
         {
             if(Yii::$app->user->login($model->player))
             {
-              Yii::$app->session->setFlash('success', 'New password saved.');
+              Yii::$app->session->setFlash('success', \Yii::t('app','New password saved.'));
             }
             else
             {
-              Yii::$app->session->setFlash('warning', 'New password saved but failed to auto sign-in.');
+              Yii::$app->session->setFlash('warning', Yii::t('app','New password saved but failed to auto sign-in.'));
             }
 
             return $this->redirect(['/']);
@@ -310,7 +310,7 @@ class SiteController extends \app\components\BaseController
         }
         catch(InvalidArgumentException $e)
         {
-            Yii::$app->session->setFlash('warning', 'Verification token not found! Try to login if you have verified your email already.');
+            Yii::$app->session->setFlash('warning', \Yii::t('app','Verification token not found! Try to login if you have verified your email already.'));
             return $this->redirect(['/site/login']);
         }
         $post=Yii::$app->request->post('VerifyEmailForm');
@@ -328,7 +328,7 @@ class SiteController extends \app\components\BaseController
               if(Yii::$app->user->login($user))
               {
                   $transaction->commit();
-                  Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
+                  Yii::$app->session->setFlash('success', \Yii::t('app','Your email has been confirmed!'));
                   return $this->redirect(['/profile/me']);
               }
           }
@@ -338,7 +338,7 @@ class SiteController extends \app\components\BaseController
           $transaction->rollBack();
         }
 
-        Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify an account with the provided token.');
+        Yii::$app->session->setFlash('error', \Yii::t('app','Sorry, we are unable to verify an account with the provided token.'));
         return $this->redirect(['/']);
     }
 
@@ -354,10 +354,10 @@ class SiteController extends \app\components\BaseController
         {
             if($model->sendEmail())
             {
-                Yii::$app->session->setFlash('success', 'Check your email for further instructions.');
+                Yii::$app->session->setFlash('success', \Yii::t('app','Check your email for further instructions.'));
                 return $this->goHome();
             }
-            Yii::$app->session->setFlash('error', 'Sorry, we are unable to resend verification email for the provided email address.');
+            Yii::$app->session->setFlash('error', \Yii::t('app','Sorry, we are unable to resend verification email for the provided address.'));
         }
 
         return $this->render('resendVerificationEmail', [

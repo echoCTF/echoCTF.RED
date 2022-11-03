@@ -65,7 +65,7 @@ class ProfileController extends \app\components\BaseController
                      'allow' => false,
                      'roles'=>['@'],
                      'denyCallback' => function () {
-                       Yii::$app->session->setFlash('info', 'This area is for guests only!');
+                       Yii::$app->session->setFlash('info', \Yii::t('app','This area is for guests only!'));
                        return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                      }
                    ],
@@ -192,15 +192,15 @@ class ProfileController extends \app\components\BaseController
     {
       if(($model=Yii::$app->user->identity->sSL)===null)
       {
-        \Yii::$app->session->addFlash('warning',"No VPN file(s) exist for your profile.");
+        \Yii::$app->session->addFlash('warning',\Yii::t('app',"No VPN file(s) exist for your profile."));
         return $this->redirect(['/profile/me']);
       }
       try {
         $model->generate();
         $model->save();
-        \Yii::$app->session->addFlash('success',"Your keys have been revoked. Make sure you download your OpenVPN configuration file again.");
+        \Yii::$app->session->addFlash('success',\Yii::t('app',"Your keys have been revoked. Make sure you download your OpenVPN configuration file again."));
       } catch (\Exception $e) {
-        \Yii::$app->session->addFlash('error',"Failed to revoke your keys.");
+        \Yii::$app->session->addFlash('error',\Yii::t('app',"Failed to revoke your keys."));
       }
       return $this->redirect(['/profile/me']);
     }
@@ -210,7 +210,7 @@ class ProfileController extends \app\components\BaseController
 
       if(($model=Yii::$app->user->identity->sSL)===null)
       {
-        \Yii::$app->session->addFlash('warning',"No VPN file(s) exist for your profile.");
+        \Yii::$app->session->addFlash('warning',\Yii::t('app',"No VPN file(s) exist for your profile."));
         return $this->redirect(['/profile/me']);
       }
       $template=\app\modelscli\VpnTemplate::findOne(['name'=>$id,'active'=>true,'visible'=>true,'client'=>true]);
@@ -222,7 +222,7 @@ class ProfileController extends \app\components\BaseController
         \Yii::$app->response->setDownloadHeaders($template->filename, 'application/octet-stream', false, strlen($content));
         return \Yii::$app->response->send();
       }
-      \Yii::$app->session->addFlash('error',"No such OpenVPN profile exists.");
+      \Yii::$app->session->addFlash('error',\Yii::t('app',"No such OpenVPN profile exists."));
       return $this->redirect(['/profile/me']);
 
     }
@@ -264,7 +264,7 @@ class ProfileController extends \app\components\BaseController
       $model=Profile::findOne($id);
       if($model === null || $model->owner->active!==1)
       {
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(\Yii::t('app','The requested page does not exist.'));
       }
 
       return $model;
