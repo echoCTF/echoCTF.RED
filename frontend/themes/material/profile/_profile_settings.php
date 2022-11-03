@@ -24,7 +24,7 @@ $this->_fluid="-fluid";
       <div class="col-md-12">
         <div class="fileinput fileinput-new text-center" data-provides="fileinput">
           <div class="fileinput-new thumbnail img-circle img-raised">
-         	  <img src="/images/avatars/<?=$model->avatar?>?<?=time()?>" rel="nofollow" class="rounded img-thumbnail" alt="Avatar of <?=Html::encode($model->username)?>">
+         	  <img id="avatarPreview" src="/images/avatars/<?=$model->avatar?>?<?=time()?>" rel="nofollow" class="rounded img-thumbnail" alt="Avatar of <?=Html::encode($model->username)?>">
           </div>
           <div class="fileinput-preview fileinput-exists thumbnail img-circle img-raised"></div>
           <div>
@@ -33,7 +33,25 @@ $this->_fluid="-fluid";
         </div>
       </div>
     </div>
-
+<?php
+$this->registerJs(
+  "
+  document.getElementById('settingsform-uploadedavatar').addEventListener(
+    'change',
+    function(event){
+      const [file] = document.getElementById('settingsform-uploadedavatar').files
+      if (file && isFileImage(file)) {
+        document.getElementById('avatarPreview').style='max-width: 300px; max-height: 300px;';
+        document.getElementById('avatarPreview').src=URL.createObjectURL(file);
+      }
+    },
+    false
+  );
+  ",
+  \yii\web\View::POS_READY,
+  'img-preview-handler'
+);
+?>
 
     <div class="row">
       <div class="col-lg-12">

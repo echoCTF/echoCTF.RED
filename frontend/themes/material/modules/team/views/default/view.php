@@ -30,7 +30,7 @@ $this->_fluid="-fluid";
       <div class="col-xl-4" style="min-width: 27em;max-width: 40em">
         <div class="card card-profile">
           <div class="card-avatar bg-primary">
-              <img class="img" src="/images/avatars/team/<?=$team->validLogo?>" />
+              <img class="img" src="/images/avatars/team/<?=$team->validLogo?>?<?=\Yii::$app->formatter->asTimestamp($team->ts)?>" />
           </div>
           <div class="card-body table-responsive">
             <h4 class="card-title  orbitron"><?=Html::encode($team->name)?></h4>
