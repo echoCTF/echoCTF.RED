@@ -29,7 +29,7 @@ class LoginForm extends Model
     {
         return [
             // username and password are both required
-            [['username'], 'required','message' => 'Please provide your username or email.'],
+            [['username'], 'required','message' => \Yii::t('app','Please provide your username or email.')],
             [['password'], 'required'],
             // rememberMe must be a boolean value
             ['rememberMe', 'boolean'],
@@ -59,7 +59,7 @@ class LoginForm extends Model
 
             if($failed_login_ip>=5  /* || $failed_login_username>=10 */ )
             {
-              $this->addError($attribute, 'Too many failed log in attempts. Please wait ~5 minutes and try again. ['.$failed_login_ip.'/'.$failed_login_username.']');
+              $this->addError($attribute, \Yii::t('app','Too many failed login attempts. Please wait ~5 minutes and try again. [{failed_login_ip}/{failed_login_username]',['failed_login_ip'=>$failed_login_ip,'failed_login_username'=>$failed_login_username]));
               return;
             }
             if(!$player || !$player->validatePassword($this->password))
@@ -76,7 +76,7 @@ class LoginForm extends Model
                     ->bindValue(':counter',1)
                     ->execute();
                 }
-                $this->addError($attribute, 'Incorrect username or password.');
+                $this->addError($attribute, \Yii::t('app','Incorrect username or password.'));
             }
         }
     }
