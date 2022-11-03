@@ -65,6 +65,7 @@ Not activated by default on current code-base but are going to
 
 ## Subscriptions Specific
 * `subscriptions_emergency_suspend` Temporary suspend subscriptions
+* `subscriptions_menu_show` Show subscriptions left side menu item to logged in users
 * `stripe_apiKey` Stripe API key
 * `stripe_publicApiKey` Stripe public API Key
 * `stripe_webhookSecret` Stripe webhook secret
