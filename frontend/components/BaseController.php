@@ -44,7 +44,7 @@ class BaseController extends \yii\web\Controller
                          return $this->eventBetweenStartEnd;
                        },
                        'denyCallback' => function() {
-                         Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
+                         Yii::$app->session->setFlash('info', \Yii::t('app','This area is disabled until the competition starts'));
                          return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                        }
                   ],
@@ -55,7 +55,7 @@ class BaseController extends \yii\web\Controller
                         return \Yii::$app->sys->event_start!==false && time()<\Yii::$app->sys->event_start;
                       },
                       'denyCallback' => function() {
-                        Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
+                        Yii::$app->session->setFlash('info', \Yii::t('app','This area is disabled until the competition starts'));
                         return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                       }
                   ],
@@ -65,7 +65,7 @@ class BaseController extends \yii\web\Controller
                        return \Yii::$app->sys->event_end!==false && time()>\Yii::$app->sys->event_end;
                      },
                      'denyCallback' => function() {
-                       Yii::$app->session->setFlash('info', 'This operation is closed after the competition ends');
+                       Yii::$app->session->setFlash('info', \Yii::t('app','This operation is closed after the competition ends'));
                        return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                      }
                   ],
@@ -84,7 +84,7 @@ class BaseController extends \yii\web\Controller
                          return Yii::$app->DisabledRoute->disabled($action);
                        },
                        'denyCallback' => function() {
-                         Yii::$app->session->setFlash('warning', 'This action is disabled globally (or just for you), sorry.');
+                         Yii::$app->session->setFlash('warning', \Yii::t('app','This action is disabled globally (or just for you), sorry.'));
                          return  \Yii::$app->getResponse()->redirect(Yii::$app->request->referrer ?:[Yii::$app->sys->default_homepage]);
                        },
                   ],
@@ -117,12 +117,12 @@ class BaseController extends \yii\web\Controller
 
       if(\Yii::$app->user->identity->teamPlayer===null)
       {
-        \Yii::$app->session->setFlash('warning', 'You need to join a team before being able to access this area.');
+        \Yii::$app->session->setFlash('warning', \Yii::t('app','You need to join a team before being able to access this area.'));
         return true;
       }
       if(\Yii::$app->user->identity->teamPlayer->approved!==1)
       {
-        \Yii::$app->session->setFlash('warning', 'You need to have your team membership approved before being able to access this area.');
+        \Yii::$app->session->setFlash('warning', \Yii::t('app','You need to have your team membership approved before being able to access this area.'));
         return true;
       }
       return false;
@@ -142,7 +142,7 @@ class BaseController extends \yii\web\Controller
           \Yii::error(var_export($this->request->getMethod(), true));
           \Yii::error(var_export($_SESSION, true));
         }
-        Yii::$app->session->setFlash('error', Yii::t('yii', 'Unable to verify your submission CSRF token, please try again.'));
+        Yii::$app->session->setFlash('error', Yii::t('yii', \Yii::t('app','Unable to verify your submission CSRF token, please try again.')));
         return $this->redirect(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage]);
       }
       return parent::beforeAction($action);

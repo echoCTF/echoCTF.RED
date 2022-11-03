@@ -23,7 +23,7 @@ class PlayerEvents extends Model
     $n=new \app\models\Notification;
     $n->player_id=$event->sender->id;
     $n->archived=0;
-    $n->body=$n->title='Hi there, dont forget to read the Instructions';
+    $n->body=$n->title=\Yii::t('app',"Hi there, don't forget to read the Instructions");
     $n->save();
   }
 
@@ -32,7 +32,7 @@ class PlayerEvents extends Model
     $s=new \app\models\Stream;
     $s->player_id=$event->sender->id;
     $s->points=0;
-    $s->message=$s->pubmessage=$s->pubtitle=$s->title='Joined the platform';
+    $s->message=$s->pubmessage=$s->pubtitle=$s->title=\Yii::t('app','Joined the platform');
     $s->model='user';
     $s->model_id=$event->sender->id;
     $s->save();

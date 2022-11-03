@@ -15,12 +15,13 @@ class DiscordValidator extends Validator
     public $pattern='^[a-zA-Z0-9_# ]+$';
     public $range_msg="Value administratively prohibited.";
     public $len_msg="Value must be between 2 and 32 characters long.";
-    public $pattern_msg="Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd> and <kbd>_</kbd>";
+    public $pattern_msg;
 
     public function init()
     {
         parent::init();
-        $this->message = 'Invalid value on input.';
+        $this->pattern_msg=\Yii::t('app',"Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd> and <kbd>_</kbd>");
+        $this->message = \Yii::t('app','Invalid value on input.');
     }
 
     public function validateAttribute($model, $attribute)
@@ -39,7 +40,7 @@ class DiscordValidator extends Validator
             $model->addError($attribute, $this->range_msg);
         }
         if (strpos($value, '#')===false || substr_count($value, '#')>1) {
-             $model->addError($attribute, 'Discord username must include one <kbd>#</kbd> followed by the 4-digit discord-tag [eg. <kbd>username#number</kbd>]');
+             $model->addError($attribute, \Yii::t('app','Discord username must include one <kbd>#</kbd> followed by the 4-digit discord-tag [eg. <kbd>username#number</kbd>]'));
         }
     }
 
@@ -49,12 +50,12 @@ class DiscordValidator extends Validator
         $range_msg = json_encode($this->range_msg, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $pattern_msg = json_encode($this->pattern_msg, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         $len_msg = json_encode($this->len_msg, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        $tag_msg = json_encode('Discord username must include one <kbd>#</kbd> followed by the 4-digit discord-tag [eg. <kbd>username#number</kbd>]', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        $tag_msg = json_encode(\Yii::t('app','Discord username must include one <kbd>#</kbd> followed by the 4-digit discord-tag [eg. <kbd>username#number</kbd>]'), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
 const regex = new RegExp('{$this->pattern}');
 if(value.length==0)
   return;
-  
+
 if ($.inArray(value, $range) !== -1) {
     messages.push($range_msg);
     return false;
