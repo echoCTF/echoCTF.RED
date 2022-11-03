@@ -29,7 +29,7 @@ class TargetVariable extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['target_id', 'key', 'val'], 'required'],
+            [['target_id', 'key'], 'required'],
             [['target_id'], 'integer'],
             [['key', 'val'], 'string', 'max' => 255],
             [['target_id', 'key'], 'unique', 'targetAttribute' => ['target_id', 'key']],
