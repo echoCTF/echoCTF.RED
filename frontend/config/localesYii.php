@@ -15,7 +15,7 @@ return [
     'help' => false,
     'silentExitOnException' => false,
 //    'sourcePath' => __DIR__. DIRECTORY_SEPARATOR .'..',
-    'sourcePath' => '@app',
+    'sourcePath' => '@yii',
     'messagePath' => '@app/messages',
     'languages' => [
         'el',
