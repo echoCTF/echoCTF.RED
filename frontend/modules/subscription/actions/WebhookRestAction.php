@@ -57,7 +57,11 @@ class WebhookRestAction extends \yii\rest\Action
       // message received when subscription created, renewed or canceled
       case 'customer.subscription.updated':
         $player=Player::findOne(['stripe_customer_id'=>$object->customer]);
-        if($player===null) return ['success'=>'No such customer exists on the platform.'];
+        if($player===null)
+        {
+          \Yii::$app->response->statusCode=400;
+          return ['error'=>'No such customer exists on the platform.'];
+        }
         $ps=PlayerSubscription::find()->where(['player_id'=>$player->id])->one();
         $transaction=\Yii::$app->db->beginTransaction();
         try
@@ -118,6 +122,7 @@ class WebhookRestAction extends \yii\rest\Action
         catch(\Stripe\Exception\InvalidRequestException $e)
         {
           $transaction->rollBack();
+          \Yii::$app->response->statusCode=403;
           return [ 'error' => $e->getMessage() ];
 
         }
