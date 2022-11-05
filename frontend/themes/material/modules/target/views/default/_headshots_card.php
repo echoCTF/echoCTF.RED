@@ -1,6 +1,7 @@
 <div class="card bg-dark headshots">
   <div class="card-header">
-    <h4><i class="fas fa-skull"></i> <?=count($target->headshots)>0 ? count($target->headshots)." " : ""?>Headshots (newer first)</h4>
+    <h4><i class="fas fa-skull"></i> <?=\Yii::t('app','{headshots,plural,=0{No headshots yet} =1{# Headshot} other{# Headshots (newer first)}}',['headshots'=>count($target->headshots)])?>
+    </h4>
   </div>
   <div class="card-body table-responsive">
     <?php
@@ -21,6 +22,6 @@
       }
     }
     else
-      echo '<code>none yet...</code>';?>
+      echo '<code>'.\Yii::t('app','no one yet...').'</code>';?>
   </div>
 </div>

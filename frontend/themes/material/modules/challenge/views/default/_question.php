@@ -20,12 +20,11 @@ global $first;
             'options'=>['autocomplete'=>'off','class'=>'challenge_answer_form'],
             'layout' => 'horizontal',
             'fieldConfig' => [
-                'template' => "<div class='row'><div class='col-xl-9 col-sm-8'>{input}</div><div class='col-xl-3 col-sm-4'>".Html::submitButton('Answer', ['class' => 'btn btn-primary', 'name' => 'answer-button']).'</div></div>',
+                'template' => "<div class='row'><div class='col-xl-9 col-sm-8'>{input}</div><div class='col-xl-3 col-sm-4'>".Html::submitButton(\Yii::t('app','Answer'), ['class' => 'btn btn-primary', 'name' => 'answer-button']).'</div></div>',
                 //'labelOptions' => ['class' => 'control-label col-lg-2'],
             ],
             ]);?>
           <?=$form->field($answer, 'answer')->textInput(['placeholder'=>$model->maskedCode,'autofocus' => false, 'autocomplete'=>'off', 'style'=>"width: 100%;margin: 0; padding: 0; border: 0;",'id'=>'question'.$model->id])->label(false) ?>
-          <!--<?=Html::submitButton('Answer', ['class' => 'btn btn-primary', 'name' => 'answer-button'])?>-->
           <?php ActiveForm::end();?>
       <?php endif;?>
     </div>

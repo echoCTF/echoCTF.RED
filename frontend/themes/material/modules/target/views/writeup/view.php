@@ -5,7 +5,7 @@ use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Writeup */
-$this->title=Yii::$app->sys->event_name.' Writeup for '.$model->target->name. ' / '.long2ip($model->target->ip). ' #'.$model->target->id;
+$this->title=\Yii::t('app','{event_name} Writeup for {target_name} / {ipaddress} #{target_id}',['event_name'=>Yii::$app->sys->event_name,'target_name'=>$model->target->name,'ipaddress'=>long2ip($model->target->ip),'target_id'=>$model->target->id]);
 $this->_description=$model->target->purpose;
 $this->_image=\yii\helpers\Url::to($model->target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->target->id], 'https');

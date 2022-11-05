@@ -55,7 +55,7 @@ echo GridView::widget([
         'headerOptions' => ["style"=>'width: 10vw;'],
         'contentOptions'=> ["style"=>'width: 8vw;'],
         'format'=>'raw',
-        'label'=>'Target',
+        'label'=>\Yii::t('app','Target'),
         'value'=>function($model) {
           $append="";
           //if($model->network)
@@ -102,13 +102,13 @@ echo GridView::widget([
         'attribute'=>'difficulty',
         'format'=>'raw',
         'encodeLabel'=>false,
-        'label'=>'<abbr title="Difficulty rating"><i class="fa fa-battery-full" aria-hidden="true"></i></abbr>',
+        'label'=>'<abbr title="'.\Yii::t('app','Difficulty rating').'"><i class="fa fa-battery-full" aria-hidden="true"></i></abbr>',
         'contentOptions' => ['class' => 'd-none d-xl-table-cell text-center',],
         'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell',"style"=>'width: 2em'],
         'value'=>function($model) {
 
           $bgcolor="";
-          $abbr="Ours: ".ucfirst($model->difficultyText).", Players: ".ucfirst($model->getDifficultyText(round($model->player_rating)));
+          $abbr=Yii::t('app','Ours: {ourRating}, Players: {playersRating}',['ourRating'=>ucfirst($model->difficultyText),'playersRating'=>ucfirst($model->getDifficultyText(round($model->player_rating)))]);
           switch($model->difficulty)
           {
             case 0:
@@ -153,7 +153,7 @@ echo GridView::widget([
         'encodeLabel'=>false,
         'headerOptions' => ["style"=>'width: 4rem', 'class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
-        'label'=>'<abbr title="Services"><i class="fa fa-fingerprint" aria-hidden="true"></i></abbr>',
+        'label'=>'<abbr title="'.\Yii::t('app','Services').'"><i class="fa fa-fingerprint" aria-hidden="true"></i></abbr>',
         'attribute'=>'total_findings',
         'value'=>function($model) { return sprintf('<i class="fas fa-fingerprint"></i> %d<small>/%d</small>', $model->total_findings, $model->player_findings);},
       ],
@@ -163,7 +163,7 @@ echo GridView::widget([
         'encodeLabel'=>false,
         'headerOptions' => ["style"=>'width: 4rem', 'class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
-        'label'=>'<abbr title="Flags"><i class="fa fa-flag" aria-hidden="true"></i></abbr>',
+        'label'=>'<abbr title="'.\Yii::t('app','Flags').'"><i class="fa fa-flag" aria-hidden="true"></i></abbr>',
         'attribute'=>'total_treasures',
         'value'=>function($model) { return sprintf('<i class="fas fa-flag"></i> %d<small>/%d</small>', $model->total_treasures, $model->player_treasures);},
       ],
@@ -190,7 +190,7 @@ echo GridView::widget([
         'headerOptions' => ['class'=>'text-center d-none d-xl-table-cell', ],
         'contentOptions' => ['class'=>'text-center d-none d-xl-table-cell'],
         'attribute'=>'progress',
-        'label'=>'Progress',
+        'label'=>\Yii::t('app','Progress'),
         'value'=>function($model) {
           return '<center>'.yii\bootstrap4\Progress::widget(['percent' => intval(floor($model->progress)), 'label' => false, 'barOptions' => ['class' => 'bg-gradual-progress','aria-label'=>"Progress on target: {$model->progress}%"],'options'=>['class'=>'bg-dark','style'=>'border: 1px solid #cccccc; height: 1em; max-width: 18rem;']]).'</center>';
         },
@@ -223,7 +223,7 @@ echo GridView::widget([
                 if($model->total_treasures === $model->player_treasures && $model->total_findings === $model->player_findings)
                   return Twitter::widget(['message'=>\Yii::t('app','Hey check this out, I headshotted ').strip_tags($model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer"]]);
                 elseif($model->player_treasures !== 0 || $model->player_findings !== 0)
-                  return Twitter::widget(['message'=>sprintf('Hey check this out, i have found %d out of %d flags and %d out of %d services on %s', $model->player_treasures, $model->total_treasures, $model->player_findings, $model->total_findings, $model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer"]]);
+                  return Twitter::widget(['message'=>sprintf(\Yii::t('app','Hey check this out, i have found %d out of %d flags and %d out of %d services on %s'), $model->player_treasures, $model->total_treasures, $model->player_findings, $model->total_findings, $model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer"]]);
 
               }
               if($this->context->profile !== null)

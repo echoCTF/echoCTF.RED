@@ -13,7 +13,7 @@ use yii\helpers\Html;
           <h6 class="badge badge-secondary">Level <?=$referred->profile->experience->id?> / <?=$referred->profile->experience->name?></h6>
           <h4 class="card-title"><?=Html::encode($referred->profile->owner->username)?></h4>
           <p class="card-description">
-            Hi and Welcome. <?=Html::encode($referred->username);?> invites to you join our platform.
+            <?=\Yii::t('app','Hi and Welcome. {username} invites to you join the fun and hack some systems together.',['username'=>Html::encode($referred->username)])?>
           </p>
         </div>
       </div>

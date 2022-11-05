@@ -58,17 +58,17 @@ if($headshot)
           <?=Html::a("<i class='fas fa-book'></i> Submit",
                       ['writeup/submit','id'=>$target->id],
                       [
-                        'title' => 'Submit a writeup for this target',
+                        'title' => \Yii::t('app','Submit a writeup for this target'),
                         'rel'=>"tooltip",
-                        'aria-label'=>'Submit a writeup for this target',
+                        'aria-label'=>\Yii::t('app','Submit a writeup for this target'),
                         'class'=>'btn btn-block',
-                        'alt'=>'Submit a writeup for this target'
+                        'alt'=>\Yii::t('app','Submit a writeup for this target')
                     ])?>
           </div>
           <?php endif;?>
           <div class="col">
             <?php
-              $this->_description=sprintf('Check this out, I just headshotted %s', $headshot->target->name);
+              $this->_description=\Yii::t('app','Check this out, I just headshotted {target_name}', ['target_name'=>$headshot->target->name]);
               $this->_url=\yii\helpers\Url::to(['versus', 'id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https');
               echo $this->render('@app/modules/game/views/badge/_share',[
                 'twMessage'=>$this->_description,
@@ -86,16 +86,16 @@ if($headshot)
           <?=Html::a("<i class='fas fa-book'></i> View",
                       ['writeup/view','id'=>$target->id],
                       [
-                        'title' => 'View or update your writeup for this target',
+                        'title' => \Yii::t('app','View or update your writeup for this target'),
                         'rel'=>"tooltip",
-                        'aria-label'=>'View or update your writeup for this target',
+                        'aria-label'=>\Yii::t('app','View or update your writeup for this target'),
                         'class'=>'btn btn-info',
-                        'alt'=>'View or update your writeup for this target'
+                        'alt'=>\Yii::t('app','View or update your writeup for this target')
                     ])?>
           </div>
           <div class="col">
             <?php
-              $this->_description=sprintf('Check this out, I just headshotted %s', $headshot->target->name);
+              $this->_description=\Yii::t('app','Check this out, I just headshotted {target_name}', ['target_name'=>$headshot->target->name]);
               $this->_url=\yii\helpers\Url::to(['versus', 'id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https');
               echo $this->render('@app/modules/game/views/badge/_share',[
                 'twMessage'=>$this->_description,

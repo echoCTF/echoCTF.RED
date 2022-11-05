@@ -28,8 +28,11 @@ class StreamWidget extends Widget
     public $pagerOptions=['class'=>'d-flex align-items-end justify-content-between', 'id'=>'stream-pager'];
     public $layout='{summary}<div class="card-body">{items}</div><div class="card-footer">{pager}</div>';
     public $player_id=null;
+
     public function init()
     {
+      $this->title=\Yii::t('app',"Activity Stream");
+      $this->category=\Yii::t('app',"Latest activity on the platform");
       if($this->pagerID === null)
       {
         unset($this->pagerOptions['id']);
@@ -38,6 +41,7 @@ class StreamWidget extends Widget
         $this->configureDataProvider();
 
       $this->summary=\Yii::t('app', $this->summary, ['TITLE' => $this->title, 'CATEGORY'=>$this->category]);
+
       parent::init();
     }
 

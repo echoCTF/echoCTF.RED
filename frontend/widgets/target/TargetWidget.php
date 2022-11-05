@@ -38,6 +38,8 @@ class TargetWidget extends Widget
 
     public function init()
     {
+      $this->title=\Yii::t('app',"Target list");
+      $this->category=\Yii::t('app',"List of currently available targets");
       if($this->dataProvider === null && $this->player_id === null)
       {
         return false;

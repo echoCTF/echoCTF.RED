@@ -7,7 +7,7 @@ use app\widgets\vote\VoteWidget;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Writeup */
-$this->title=Yii::$app->sys->event_name.' '.'Writeup for '.$model->target->name. ' / '.long2ip($model->target->ip). ' #'.$model->target->id.' by '.$model->player->username;
+$this->title=\Yii::t('app','{event_name} Writeup for {target_name} / {ipaddress} #{target_id} by {username}',['event_name'=>Yii::$app->sys->event_name,'target_name'=>$model->target->name,'ipaddress'=>long2ip($model->target->ip),'target_id'=>$model->target->id,'username'=>$model->player->username]);
 $this->_description=$model->target->purpose;
 $this->_image=\yii\helpers\Url::to($model->target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->target->id], 'https');
@@ -31,12 +31,12 @@ if($goback==='/')
 ?>
 <div class="writeup-view">
   <div class="body-content">
-    <h2>Writeup for <?=Html::a($model->target->name. ' / '.long2ip($model->target->ip),$goback)?> by <?=$model->player->profile->link?></h2>
+    <h2><?=\Yii::t('app','Writeup for {target_name} by {username}',['target_name'=>Html::a($model->target->name. ' / '.long2ip($model->target->ip),$goback),'ipaddress'=>long2ip($model->target->ip),'username'=>$model->player->profile->link]);?></h2>
     <div class="row">
       <div class="col-md-8">
         <div class="card bg-dark">
           <div class="card-header">
-            <div class="row"><h4 class="align-self-center">Your rating:</h4> <div class="col-sm-5"><?=VoteWidget::widget(['model'=>$rating,'id'=>$model->id,'action'=>['/game/default/rate-writeup','target_id'=>$model->target_id,'id'=>$model->id],'ratings'=>$model->_ratings]);?></div></div>
+            <div class="row"><h4 class="align-self-center"><?=\Yii::t('app','Your rating:')?></h4> <div class="col-sm-5"><?=VoteWidget::widget(['model'=>$rating,'id'=>$model->id,'action'=>['/game/default/rate-writeup','target_id'=>$model->target_id,'id'=>$model->id],'ratings'=>$model->_ratings]);?></div></div>
           </div>
           <div class="card-body">
             <div id="markdown-content" class="markdown">

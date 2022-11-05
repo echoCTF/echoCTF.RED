@@ -5,8 +5,8 @@ use app\widgets\target\TargetWidget;
 use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
 $this->_fluid="-fluid";
-$this->title=Yii::$app->sys->event_name.' Targets';
-$this->_description="The echoCTF dashboard page";
+$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Targets');
+$this->_description=\Yii::t('app',"The echoCTF dashboard page");
 $hidden_attributes=['id'];
 ?>
 
@@ -20,9 +20,9 @@ $hidden_attributes=['id'];
                 'icon'=>'<i class="fa fa-flag"></i>',
                 'color'=>'primary',
                 'title'=>$pageStats->totalTreasures,
-                'subtitle'=>'Flags',
+                'subtitle'=>\Yii::t('app','Flags'),
                 'footer'=>'<div class="stats">
-                        <i class="material-icons text-danger">flag</i>'.$pageStats->ownClaims.' claimed by you
+                        <i class="material-icons text-danger">flag</i>'.$pageStats->ownClaims.' '.\Yii::t('app','claimed by you').'
                       </div>',
             ]);Card::end();?>
         </div>
@@ -33,9 +33,9 @@ $hidden_attributes=['id'];
                 'icon'=>'<i class="fas fa-fingerprint"></i>',
                 'color'=>'warning',
                 'title'=>$pageStats->totalFindings,
-                'subtitle'=>'Services',
+                'subtitle'=>\Yii::t('app','Services'),
                 'footer'=>'<div class="stats">
-                        <i class="material-icons text-danger">track_changes</i> '.$pageStats->ownFinds.' services found by you
+                        <i class="material-icons text-danger">track_changes</i> '.$pageStats->ownFinds.' '.\Yii::t('app','services found by you').'
                       </div>',
             ]);Card::end();?>
         </div>
@@ -46,9 +46,9 @@ $hidden_attributes=['id'];
                 'icon'=>'<i class="fa fa-skull"></i>',
                 'color'=>'danger',
                 'title'=>$pageStats->totalHeadshots,
-                'subtitle'=>'Headshots',
+                'subtitle'=>\Yii::t('app','Headshots'),
                 'footer'=>'<div class="stats">
-                        <i class="material-icons text-danger">memory</i> '.$pageStats->ownHeadshots.' headshots by you
+                        <i class="material-icons text-danger">memory</i> '.$pageStats->ownHeadshots.' '.\Yii::t('app','headshots by you').'
                       </div>',
             ]);Card::end();?>
         </div>
@@ -60,9 +60,9 @@ $hidden_attributes=['id'];
                 'icon'=>'<i class="fas fa-medal"></i>',
                 'color'=>'info',
                 'title'=>number_format($pageStats->totalPoints),
-                'subtitle'=>'Points',
+                'subtitle'=>\Yii::t('app','Points'),
                 'footer'=>'<div class="stats">
-                        <i class="material-icons text-danger">format_list_numbered</i> '.number_format(Yii::$app->user->identity->playerScore->points).' yours
+                        <i class="material-icons text-danger">format_list_numbered</i> '.number_format(Yii::$app->user->identity->playerScore->points).' '.\Yii::t('app','yours').'
                       </div>',
             ]);Card::end();?>
         </div>

@@ -80,9 +80,9 @@ class CreateTeamForm extends Model
     public function attributeLabels()
     {
         return [
-          'name'=>'A name for your team',
-          'description'=>'A short description for your team',
-          'avatar'=>'An image to be used as team avatar',
+          'name'=>\Yii::t('app','A name for your team'),
+          'description'=>\Yii::t('app','A short description for your team'),
+          'avatar'=>\Yii::t('app','An image to be used as team avatar'),
         ];
     }
 

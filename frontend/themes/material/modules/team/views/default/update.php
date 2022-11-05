@@ -1,18 +1,18 @@
 <?php
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-$this->title=Yii::$app->sys->event_name.' Update team details ['.$model->name.']';
+$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Update team details').' ['.$model->name.']';
 $this->_fluid="-fluid";
 
 ?>
 <div class="team-update">
   <div class="body-content">
-    <h2>Update team [<code><?=Html::encode($model->name)?></code>]</h2>
+    <h2><?=\Yii::t('app','Update team')?> [<code><?=Html::encode($model->name)?></code>]</h2>
     <hr />
     <div class="card bg-dark">
       <div class="card-header card-header-primary">
-        <h4 class="card-title">Team update</h4>
-        <p class="card-category">Update your team details</p>
+        <h4 class="card-title"><?=\Yii::t('app','Team update')?></h4>
+        <p class="card-category"><?=\Yii::t('app','Update your team details')?></p>
       </div>
       <div class="card-body">
         <?php $form=ActiveForm::begin(['action' => ['update'],'id' => 'team-update-form']);?>
@@ -24,7 +24,7 @@ $this->_fluid="-fluid";
               </div>
               <div class="fileinput-preview fileinput-exists thumbnail img-circle img-raised"></div>
               <div>
-              <?= $form->field($model, 'uploadedAvatar')->label('Choose a team logo (300x300 PNG)',['class'=>'btn btn-raised btn-round btn-warning btn-file text-dark'])->fileInput() ?>
+              <?= $form->field($model, 'uploadedAvatar')->label(\Yii::t('app','Choose a team logo (300x300 PNG)'),['class'=>'btn btn-raised btn-round btn-warning btn-file text-dark'])->fileInput() ?>
               </div>
             </div>
           </div>
@@ -59,7 +59,7 @@ $this->registerJs(
         </div>
 
         <div class="form-group text-center">
-          <?=Html::submitButton('Update', ['class' => 'btn btn-primary btn-block text-dark text-bold', 'name' => 'update-button']) ?>
+          <?=Html::submitButton(\Yii::t('app','Update'), ['class' => 'btn btn-primary btn-block text-dark text-bold', 'name' => 'update-button']) ?>
         </div>
         <?php ActiveForm::end();?>
       </div>

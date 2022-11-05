@@ -33,11 +33,11 @@ class Writeup extends \yii\db\ActiveRecord
 
   public $_ratings=[
     [ 'id'=>0, 'name' => "Not rated!", 'icon'=>null],
-    [ 'id'=>1,  'name' => "1 - Ok", 'icon'=>'fa-battery-quarter red-success',],
-    [ 'id'=>2,  'name' => "2 - Nice", 'icon'=>'fa-battery-half text-secondary',],
-    [ 'id'=>3,  'name' => "3 - Good", 'icon'=>'fa-battery-three-quarters text-warning',],
-    [ 'id'=>4,  'name' => "4 - Well written", 'icon'=>'fa-battery-full',],
-    [ 'id'=>5,  'name' => "5 - Excellent", 'icon'=>'fa-battery-full',],
+    [ 'id'=>1, 'name' => "1 - Ok", 'icon'=>'fa-battery-quarter red-success',],
+    [ 'id'=>2, 'name' => "2 - Nice", 'icon'=>'fa-battery-half text-secondary',],
+    [ 'id'=>3, 'name' => "3 - Good", 'icon'=>'fa-battery-three-quarters text-warning',],
+    [ 'id'=>4, 'name' => "4 - Well written", 'icon'=>'fa-battery-full',],
+    [ 'id'=>5, 'name' => "5 - Excellent", 'icon'=>'fa-battery-full',],
   ];
 
     /**

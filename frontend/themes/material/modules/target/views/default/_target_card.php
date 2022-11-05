@@ -9,16 +9,16 @@ $display_ip=$target_ip=long2ip($target->ip);
 if($target->on_ondemand && $target->ondemand_state===-1)
 {
   $target_ip="0.0.0.0";
-  $display_ip=Html::tag('b',$target_ip,['data-toggle'=>'tooltip','title'=>"The IP will be visible once the system is powered up."]);
+  $display_ip=Html::tag('b',$target_ip,['data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP will be visible once the system is powered up.")]);
 }
 
 if(!Yii::$app->user->isGuest && Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$target->id && Yii::$app->user->identity->instance->player_id===$identity->player_id)
 {
   $target_ip=long2ip(Yii::$app->user->identity->instance->ip);
-  $display_ip=Html::tag('b',$target_ip,["class"=>'text-danger','data-toggle'=>'tooltip','title'=>"The IP of your private instance."]);
+  $display_ip=Html::tag('b',$target_ip,["class"=>'text-danger','data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance.")]);
 }
 
-$this->title=Yii::$app->sys->event_name.' Target: '.$target->name. ' / '.$target_ip;
+$this->title=\Yii::t('app','{event_name} Target: {target_name} / {ipaddress}',['target_name'=>$target->name,'ipaddress'=>$target_ip,'event_name'=>\Yii::$app->sys->event_name]);
 
 
 $subtitleARR=[$target->category,'<abbr title="Player rating: '.ucfirst($target->getDifficultyText($target->player_rating)).'">'.ucfirst($target->difficultyText).'</abbr>',boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===false ? null:'Timed'];

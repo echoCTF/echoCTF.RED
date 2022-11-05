@@ -13,12 +13,9 @@ $this->title = 'Contact';
 <div class="site-contact">
   <section class="mb-4">
     <!--Section heading-->
-    <h2 class="h1-responsive font-weight-bold text-center my-4">Contact us</h2>
+    <h2 class="h1-responsive font-weight-bold text-center my-4"><?=\Yii::t('app','Get in touch')?></h2>
     <!--Section description-->
-    <p class="text-center w-responsive mx-auto mb-5">Interested in running your own CTF, hosting a cyber security excersise or provide hands on training to your engineers?
-      Then you are on the right place, we have delivered noumerous succesfull events throughout the years. Let us do the same for you!</p>
-
-
+    <p class="text-center w-responsive mx-auto mb-5"><?=\Yii::t('app','Interested in running your own CTF, hosting a cyber security exercise or provide hands on training to your engineers? Then you are on the right place, we have delivered numerous successful events throughout the years. Let us do the same for you!')?></p>
     <div class="row">
       <div class="col-sm-6">
         <!--Grid column-->
