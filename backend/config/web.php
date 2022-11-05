@@ -43,6 +43,22 @@ $config=[
         ],
     ],
     'components' => [
+      'i18n' => [
+        'translations' => [
+            'yii' => [
+            'class' => 'yii\i18n\PhpMessageSource',
+            ],
+            'app*' => [
+                'class' => 'yii\i18n\PhpMessageSource',
+                'basePath' => '@app/messages',
+                'sourceLanguage' => 'en-US',
+                'fileMap' => [
+                    'app' => 'app.php',
+                    'app/error' => 'error.php',
+                ],
+            ],
+        ],
+      ],
       'sys'=> [
         'class' => 'app\components\Sysconfig',
       ],
