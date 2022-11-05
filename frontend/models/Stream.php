@@ -44,7 +44,7 @@ class Stream extends StreamAR
     if($this->twitter)
     {
       if($this->player->profile->isMine)
-        return "I";
+        return \Yii::t('app',"I");
 
       return sprintf("%s", $this->player->profile->twitterHandle);
     }
@@ -67,7 +67,7 @@ class Stream extends StreamAR
   public function getSuffix()
   {
     if($this->points != 0)
-      return sprintf(" for %d points", $this->points);
+      return sprintf(\Yii::t('app'," for %d points"), $this->points);
     return "";
   }
 
@@ -88,9 +88,9 @@ class Stream extends StreamAR
     if($headshot->first)
       $first=" first,";
     if(intval($headshot->target->timer)===0 || intval($headshot->timer)===0)
-      return sprintf("%s managed to headshot [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
+      return sprintf(\Yii::t('app',"%s managed to headshot")." [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to headshot [<code>%s</code>]$first in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
+    return sprintf(\Yii::t('app',"%s managed to headshot")." [<code>%s</code>]$first in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
   }
 
   public function getChallengeMessage()
