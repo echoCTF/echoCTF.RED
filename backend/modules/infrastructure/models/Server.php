@@ -49,7 +49,7 @@ class Server extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'name' => Yii::t('app', 'Name'),
-            'ip' => Yii::t('app', 'Ip'),
+            'ip' => Yii::t('app', 'IP'),
             'ipoctet' => Yii::t('app', 'IP'),
             'description' => Yii::t('app', 'Description'),
             'service' => Yii::t('app', 'Service'),

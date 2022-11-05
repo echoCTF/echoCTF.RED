@@ -70,7 +70,7 @@ class TargetInstanceAudit extends \yii\db\ActiveRecord
             'player_id' => Yii::t('app', 'Player ID'),
             'target_id' => Yii::t('app', 'Target ID'),
             'server_id' => Yii::t('app', 'Server ID'),
-            'ip' => Yii::t('app', 'Ip'),
+            'ip' => Yii::t('app', 'IP'),
             'reboot' => Yii::t('app', 'Reboot'),
             'ts' => Yii::t('app', 'Ts'),
         ];
@@ -106,7 +106,7 @@ class TargetInstanceAudit extends \yii\db\ActiveRecord
         return $this->hasOne(Server::class, ['id' => 'server_id']);
     }
 
-    
+
     /**
      * {@inheritdoc}
      * @return TargetInstanceAuditQuery the active query used by this AR class.
@@ -116,7 +116,7 @@ class TargetInstanceAudit extends \yii\db\ActiveRecord
         return new TargetInstanceAuditQuery(get_called_class());
     }
 
-    public function afterFind() 
+    public function afterFind()
     {
         parent::afterFind();
         if($this->ip)
