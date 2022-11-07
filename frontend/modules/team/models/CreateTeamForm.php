@@ -33,9 +33,9 @@ class CreateTeamForm extends Model
       return [
           [['name','description'], 'trim'],
           ['name', 'required'],
-          ['name', 'unique', 'targetClass' => 'app\modules\team\models\Team', 'message' => 'A team with this name already exists.'],
+          ['name', 'unique', 'targetClass' => 'app\modules\team\models\Team', 'message' => \Yii::t('app','A team with this name already exists.')],
           [['name'], 'string', 'length' => [3, 32]],
-          [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => 'File larger than expected, limit is 500KB'],
+          [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => \Yii::t('app','File larger than expected, limit is {sizeLimit}',['sizeLimit'=>'500KB'])],
       ];
     }
 
@@ -80,9 +80,9 @@ class CreateTeamForm extends Model
     public function attributeLabels()
     {
         return [
-          'name'=>'A name for your team',
-          'description'=>'A short description for your team',
-          'avatar'=>'An image to be used as team avatar',
+          'name'=>\Yii::t('app','A name for your team'),
+          'description'=>\Yii::t('app','A short description for your team'),
+          'avatar'=>\Yii::t('app','An image to be used as team avatar'),
         ];
     }
 

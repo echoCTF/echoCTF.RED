@@ -89,7 +89,7 @@ class Customer extends \yii\base\Model
       try
       {
         $stripe_customer = $stripe->customers->retrieve(Yii::$app->user->identity->stripe_customer_id,[]);
-        if($stripe_customer->deleted) throw new \Exception('Deleted stripe customer');
+        if($stripe_customer->deleted) throw new \Exception(\Yii::t('app','Deleted stripe customer'));
       }
       catch (\Exception $e)
       {

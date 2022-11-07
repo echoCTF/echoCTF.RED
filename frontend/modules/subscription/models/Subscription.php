@@ -29,7 +29,7 @@ class Subscription extends \yii\base\Model
     {
         return [
             [['subscription_id','name','metadata'], 'string'],
-            ['player_id', 'exists', 'targetClass' => '\app\models\Player', 'message' => 'This player does not exist.'],
+            ['player_id', 'exists', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This player does not exist.')],
             [['player_id'],'safe']
         ];
     }
@@ -61,7 +61,7 @@ class Subscription extends \yii\base\Model
               'updated_at' => new \yii\db\Expression('NOW()'),
       ])<1)
       {
-        throw new \yii\base\UserException('Failed to save session.completed!');
+        throw new \yii\base\UserException(\Yii::t('yii','Failed to save session.completed!'));
       }
     }
 
@@ -111,7 +111,7 @@ class Subscription extends \yii\base\Model
         {
           return true;
         }
-        throw new \yii\base\UserException('Failed to cancel player subscription');
+        throw new \yii\base\UserException(\Yii::t('app','Failed to cancel player subscription'));
       }
     }
 

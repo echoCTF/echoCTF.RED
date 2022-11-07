@@ -10,23 +10,23 @@ if(array_key_exists('subscription',Yii::$app->modules)!==false)
   $module = \app\modules\network\Module::getInstance();
   if($module->checkNetwork($model)===false)
   {
-    $subscribe="<p>".Html::a('Subscribe',
+    $subscribe="<p>".Html::a(\Yii::t('app','Subscribe'),
               Url::to(['/subscription/default/index']),
               [
-                'title' => 'Subscribe to access this network',
+                'title' => \Yii::t('app','Subscribe to access this network'),
                 'class'=>'btn btn-danger text-dark font-weight-bold orbitron',
-                'aria-label'=>'Subscribe to access this network',
+                'aria-label'=>\Yii::t('app','Subscribe to access this network'),
                 'data-pjax' => '0',
               ]
           )."</p>";
   }
   else {
-    $subscribe="<p>".Html::a('Go to Network',
+    $subscribe="<p>".Html::a(\Yii::t('app','Go to Network'),
               Url::to(['/network/default/view','id'=>$model->id]),
               [
-                'title' => 'Go to network',
+                'title' => \Yii::t('app','Go to network'),
                 'class'=>'btn btn-primary text-dark font-weight-bold orbitron',
-                'aria-label'=>'Go to network',
+                'aria-label'=>\Yii::t('app','Go to network'),
                 'data-pjax' => '0',
               ]
           )."</p>";
@@ -43,16 +43,16 @@ if(array_key_exists('subscription',Yii::$app->modules)!==false)
                   Url::to(['/network/default/view', 'id'=>$model->id]),
                   [
                     'style'=>'float: bottom;',
-                    'title' => 'View Network details',
-                    'aria-label'=>'View network details',
+                    'title' => \Yii::t('app','View Network details'),
+                    'aria-label'=>\Yii::t('app','View network details'),
                     'data-pjax' => '0',
                   ]
               );?></h4>
-              <h6 class="badge badge-primary orbitron"><?=$model->targetsCount?> targets</h6>
+              <h6 class="badge badge-primary orbitron"><?=\Yii::t('app','{targetsCount,plural,=0{no targets} =1{# target} other{# targets}}',['targetsCount'=>$model->targetsCount])?></h6>
       <p style="text-align: justify;" ><?=$model->description?></p>
   </div>
   <div class="card-footer">
-    <p class="small">This network is <?=($model->public ? 'public' : 'private')?></p>
+    <p class="small"><?=\Yii::t('app','This network is {pub_or_priv}',['pub_or_priv'=>($model->public ? \Yii::t('app','public') : \Yii::t('app','private'))])?></p>
     <?=$subscribe?>
   </div>
  </div>

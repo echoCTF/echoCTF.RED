@@ -32,7 +32,7 @@ use yii\helpers\Url;
                 <li class="nav-item"><?=Html::a('<i class="fas fa-sign-in-alt"></i>  Login', ['/site/login'], ['class'=>'nav-link','rel'=>"tooltip", 'title'=>"Login to your ".\Yii::$app->sys->{"event_name"}." account"])?></li>
               <?php else: ?>
                 <li class="nav-item dropdown" id="Hints">
-                  <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false" rel="tooltip" aria-label="Hints to help you progress further" title='Hints to help you progress further'>
+                  <a class="nav-link" href="/profile/hints" id="navbarHintsDropDown" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false" rel="tooltip" aria-label="<?=\Yii::t('app','Hints to help you progress further')?>" title="<?=\Yii::t('app','Hints to help you progress further')?>">
                     <?php if(count(Yii::$app->user->identity->pendingHints) > 0):?><i class="fas fa-lightbulb text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingHints)?></span><?php else:?><i class="fas fa-lightbulb" style="font-size: 2em;"></i><?php endif;?>
                     <p class="d-lg-none d-md-block">Hints</p>
                   </a>
@@ -42,24 +42,24 @@ use yii\helpers\Url;
                 </li>
 
                 <li class="nav-item dropdown" id="Notifications">
-                  <a class="nav-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false" rel="tooltip"  aria-label="Your notifications" title="Your notifications">
+                  <a class="nav-link" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" data-pjax="" aria-expanded="false" rel="tooltip"  aria-label="<?=\Yii::t('app','Your notifications')?>" title="<?=\Yii::t('app','Your notifications')?>">
                     <?php if(count(Yii::$app->user->identity->pendingNotifications) > 0):?><i class="fas fa-bell text-primary" style="font-size: 2em;"></i><span class="notification"><?=count(Yii::$app->user->identity->pendingNotifications)?></span><?php else:?><i class="fas fa-bell" style="font-size: 2em;"></i><?php endif;?>
-                    <p class="d-lg-none d-md-block">Notifications</p>
+                    <p class="d-lg-none d-md-block"><?=\Yii::t('app','Notifications')?></p>
                   </a>
                   <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" id="notificationsMenu">
                     <?=\app\widgets\NotificationsWidget::widget();?>
                   </div>
                 </li>
               <li class="nav-item">
-                <a class="nav-link" href="/profile/me" aria-haspopup="false" aria-expanded="false" data-toggle="tooltip" aria-label="Go to your profile" title="Go to your profile">
+                <a class="nav-link" href="/profile/me" aria-haspopup="false" aria-expanded="false" data-toggle="tooltip" aria-label="<?=\Yii::t('app','Go to your profile')?>" title="<?=\Yii::t('app','Go to your profile')?>">
                   <i class="fas fa-user" style="font-size: 2em;"></i>
                   <p class="d-lg-none d-md-block">
-                    Profile
+                    <?=\Yii::t('app','Profile')?>
                   </p>
                 </a>
               </li>
               <li class="nav-item">
-                <?= Html::a('<i class="fas fa-sign-out-alt" style="font-size: 2.2em;"></i><p class="d-lg-none d-md-block">Logout</p>', Url::to(['/site/logout']), ['data-method' => 'POST',"data-pjax"=>"0",'data-toggle'=>'tooltip','title'=>'Logout', 'aria-label'=>'Logout','data-confirm'=>"Are you sure you want to logout?", 'class'=>'nav-link']) ?>
+                <?= Html::a('<i class="fas fa-sign-out-alt" style="font-size: 2.2em;"></i><p class="d-lg-none d-md-block">'.\Yii::t('app','Logout').'</p>', Url::to(['/site/logout']), ['data-method' => 'POST',"data-pjax"=>"0",'data-toggle'=>'tooltip','title'=>\Yii::t('app','Logout'), 'aria-label'=>'Logout','data-confirm'=>\Yii::t('app',"Are you sure you want to logout?"), 'class'=>'nav-link']) ?>
               </li>
             <?php endif;?>
             </ul>

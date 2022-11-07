@@ -31,7 +31,7 @@ class Module extends \yii\base\Module
               return false;
             },
             'denyCallback' => function() {
-              throw new NotFoundHttpException('Team module is disabled.');
+              throw new NotFoundHttpException(\Yii::t('app','Team module is disabled.'));
             }
           ],
           [

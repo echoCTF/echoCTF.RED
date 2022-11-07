@@ -34,7 +34,7 @@ else
     .addEventListener("click", function(evt) {
       evt.preventDefault();
       createCheckoutSession("'.$model->price_id.'").then(function(data) {
-        Swal.fire("","You will be redirected to Stripe to complete your payment").then((result) => {
+        Swal.fire("","'.\Yii::t('app','You will be redirected to Stripe to complete your payment').'").then((result) => {
           if(data)
             stripe.redirectToCheckout({ sessionId: data.sessionId }).then(handleResult);
           });

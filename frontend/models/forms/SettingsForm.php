@@ -68,10 +68,10 @@ class SettingsForm extends Model
           [['email'], 'trim'],
           [['email'], 'string', 'max'=>255],
           [['email'], 'email'],
-          ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email has already been taken.', 'when' => function($model, $attribute) {
+          ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This email has already been taken.'), 'when' => function($model, $attribute) {
               return $model->{$attribute} !== $model->_player->{$attribute};
           }],
-          ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => 'This email is banned.', 'when' => function($model, $attribute) {
+          ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => \Yii::t('app','This email is banned.'), 'when' => function($model, $attribute) {
               return $model->{$attribute} !== $model->_player->{$attribute};
           }],
           ['email', function($attribute, $params){
@@ -80,7 +80,7 @@ class SettingsForm extends Model
                 ->queryScalar();
 
             if(intval($count)!==0)
-                $this->addError($attribute, 'This email is banned.');
+                $this->addError($attribute, \Yii::t('app','This email is banned.'));
           }],
           ['email', '\app\components\validators\StopForumSpamValidator', ],
           ['email', '\app\components\validators\MXServersValidator', ],
@@ -89,10 +89,10 @@ class SettingsForm extends Model
           /* username field rules */
           [['username'], 'trim'],
           [['username'], 'string', 'max'=>32],
-          [['username'], 'match', 'not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>'Invalid characters in username.'],
+          [['username'], 'match', 'not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>\Yii::t('app','Invalid characters in username.')],
           [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'administrator', 'echoctf', 'root', 'support']],
-          [['username'], 'required', 'message' => 'Please choose a username.'],
-          ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This username has already been taken.', 'when' => function($model, $attribute) {
+          [['username'], 'required', 'message' => \Yii::t('app','Please choose a username.')],
+          ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This username has already been taken.'), 'when' => function($model, $attribute) {
               return $model->{$attribute} !== $model->_player->{$attribute};
           }],
           [['new_password', ], 'string', 'max'=>255],
@@ -113,7 +113,7 @@ class SettingsForm extends Model
           ['htb', 'match', 'pattern' => '/^[0-9]+$/','message'=>'Only numberic HTB id is allowed'],
 
           [['country'], 'string', 'max'=>3],
-          [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => 'File larger than expected, limit is 500KB'],
+          [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png','maxSize' =>  512000, 'tooBig' => \Yii::t('app','File larger than expected, limit is {sizeLimit}',['sizeLimit'=>'500KB'])],
           [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
           [['visibility'], 'default', 'value' =>  Yii::$app->sys->profile_visibility!==false ? Yii::$app->sys->profile_visibility : 'ingame'],
         ];
@@ -193,7 +193,7 @@ class SettingsForm extends Model
             )
             ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
             ->setTo([$this->player->email => $this->player->fullname])
-            ->setSubject('Verify your email for '.trim(Yii::$app->sys->event_name))
+            ->setSubject(\Yii::t('app','Verify your email for {event_name}',['event_name'=>trim(Yii::$app->sys->event_name)]))
             ->send();
     }
 
@@ -207,13 +207,13 @@ class SettingsForm extends Model
         $this->_player->generateEmailVerificationToken();
         $this->_player->status=Player::STATUS_UNVERIFIED;
         $this->sendEmail();
-        \Yii::$app->session->addFlash('info','You will receive an email to verify your new email address.');
+        \Yii::$app->session->addFlash('info',\Yii::t('app','You will receive an email to verify your new email address.'));
       }
 
       if($this->new_password)
       {
         $this->_player->password=\Yii::$app->security->generatePasswordHash($this->new_password);
-        \Yii::$app->session->addFlash('success','Password changed.');
+        \Yii::$app->session->addFlash('success',\Yii::t('app','Password changed.'));
       }
 
       $this->_player->profile->scenario="me";
@@ -230,7 +230,7 @@ class SettingsForm extends Model
       $this->_player->profile->htb=$this->htb;
       if($this->_player->save() && $this->_player->profile->save())
       {
-        \Yii::$app->session->addFlash('success','Profile update successful.');
+        \Yii::$app->session->addFlash('success',\Yii::t('app','Profile update successful.'));
       }
 
     }

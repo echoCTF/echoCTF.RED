@@ -11,7 +11,7 @@ use app\widgets\vote\VoteWidget;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Challenge */
-$this->title=Html::encode(Yii::$app->sys->event_name.' Challenges / (ID#'.$model->id.') '.$model->name);
+$this->title=Html::encode(Yii::$app->sys->event_name.' '.\Yii::t('app','Challenges').' / (ID#'.$model->id.') '.$model->name);
 $this->_description=\yii\helpers\StringHelper::truncateWords(strip_tags($model->description), 15);
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->id], 'https');
 global $first;
@@ -22,9 +22,9 @@ $first=false;
     <div class="row">
       <div class="col-lg-8 col-md-8 col-sm-12">
         <div class="well">
-          <h3><b><?=$model->name.' (ID#'.$model->id.')'?> <?php if($model->completed):?><i class="fas fa-check-double"></i> <?=Twitter::widget(['message'=>'Hey check this out, I completed the challenge '.$model->name]);?><?php else:?><?=Twitter::widget(['message'=>'I currently grinding the challenge '.$model->name]);?><?php endif;?></b></h3>
+          <h3><b><?=$model->name.' (ID#'.$model->id.')'?> <?php if($model->completed):?><i class="fas fa-check-double"></i> <?=Twitter::widget(['message'=>\Yii::t('app','Hey check this out, I completed the challenge ').$model->name]);?><?php else:?><?=Twitter::widget(['message'=>\Yii::t('app','I currently grinding the challenge ').$model->name]);?><?php endif;?></b></h3>
           <h4><?=Html::encode($model->category);?> / <?=Html::encode($model->difficulty)?> / <?=Html::encode(number_format($model->points));?>pts</h4>
-          <?=trim($model->filename) !== '' ? '<h4><b>Challenge file:</b> '.Html::a($model->filename, ['/uploads/'.$model->filename], ['data-pjax'=>"0"]).'</h4>' : ''?>
+          <?=trim($model->filename) !== '' ? '<h4><b>'.\Yii::t('app','Challenge file:').'</b> '.Html::a($model->filename, ['/uploads/'.$model->filename], ['data-pjax'=>"0"]).'</h4>' : ''?>
           <?php if($model->completed):?>
           <div class="col-xl-4 col-sm-6"><?=VoteWidget::widget(['model'=>$solver,'id'=>$model->id,'action'=>['/game/default/rate-solver','id'=>$model->id]]);?></div>
           <?php endif;?>

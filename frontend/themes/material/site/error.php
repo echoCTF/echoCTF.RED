@@ -15,14 +15,14 @@ $this->title=Yii::$app->sys->event_name .' Error '. $exception->statusCode.': '.
           <img src="/images/ohnoes.svg" class="rounded img-fluid" align="right" width="260vw"/>
         </div>
         <div class="col">
-          <h1 class="text-danger"><b>Oh noes!!!</b></h1>
-          <h3 class="text-warning">Look what you did...</h3>
-          <h3 class="text-warning">you headshotted the wrong page...</h3>
+          <h1 class="text-danger"><b><?=\Yii::t('app','Oh noes!!!')?></b></h1>
+          <h3 class="text-warning"><?=\Yii::t('app','Look what you did...')?></h3>
+          <h3 class="text-warning"><?=\Yii::t('app','you headshotted the wrong page...')?></h3>
           <h3 class="text-light">Error <?=$exception->statusCode?>: <?=nl2br(Html::encode($message)) ?></h3>
         </div>
       </div>
       <center>
-        <?=Html::a('<b><i class="fas fa-backward"></i> Go back</b>',['/site/index'],['class'=>'btn btn-lg btn-primary text-dark'])?>
+        <?=Html::a('<b><i class="fas fa-backward"></i> '.\Yii::t('app','Go back').'</b>',['/site/index'],['class'=>'btn btn-lg btn-primary text-dark'])?>
       </center>
 
 </div>

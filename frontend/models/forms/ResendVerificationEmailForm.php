@@ -28,7 +28,7 @@ class ResendVerificationEmailForm extends Model
             ['email', 'exist',
                 'targetClass' => '\app\models\Player',
                 'filter' => ['status' => Player::STATUS_INACTIVE],
-                'message' => 'There is no user with this email address.'
+                'message' => \Yii::t('app','There is no user with this email address.')
             ],
         ];
     }
@@ -44,7 +44,7 @@ class ResendVerificationEmailForm extends Model
         $verification_resend_email=intval(Yii::$app->cache->memcache->get('verification_resend_usename:'.$this->email));
         if($verification_resend_ip>=5 || $verification_resend_email>=10)
         {
-          $this->addError('email', 'Too many resend verficiation email attempts. Please wait and try again.');
+          $this->addError('email', \Yii::t('app','Too many resend verification attempts. Please wait and try again.'));
           return false;
         }
 
@@ -64,7 +64,7 @@ class ResendVerificationEmailForm extends Model
             )
             ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
             ->setTo([$player->email => $player->fullname])
-            ->setSubject('Account registration for '.trim(Yii::$app->sys->event_name))
+            ->setSubject(\Yii::t('app','Account registration for {event_name}', ['event_name'=>trim(Yii::$app->sys->event_name)]))
             ->send();
     }
 }

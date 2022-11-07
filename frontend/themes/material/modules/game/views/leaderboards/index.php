@@ -6,14 +6,14 @@ use yii\widgets\ListView;
 use yii\helpers\Html;
 $this->_fluid="-fluid";
 
-$this->title=Yii::$app->sys->event_name.' Leaderboards' ;
+$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Leaderboards');
 $this->_description=$this->title;
 $this->_url=\yii\helpers\Url::to(['index'], 'https');
 
 ?>
 <div class="scoreboard-index">
   <div class="body-content">
-    <h3>Platform <code>most</code> rankings</h3>
+    <h3><?=\Yii::t('app','Platform <code>most</code> rankings')?></h3>
     <div class="row">
         <div class="col">
               <?php
@@ -21,7 +21,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'playerScore',
                   'dataProvider' => $playerDataProvider,
-                  'emptyText'=>'<div class="card-body"><b class="text-info">No player ranks exist at the moment...</b></div>',
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No player ranks exist at the moment...').'</b></div>',
                   'pager'=>[
                     'options'=>['id'=>'player-leaderboard-pager'],
                     'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
@@ -35,7 +35,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Player points</h4><p class="card-category">Individual player scores</p></div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Player points').'</h4><p class="card-category">'.\Yii::t('app','Individual player scores').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -66,7 +66,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Team points</h4><p class="card-category">Team scores</p></div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Team points').'</h4><p class="card-category">'.\Yii::t('app','Team scores').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -85,10 +85,10 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'mostHeadshots',
                   'dataProvider' => $mostHeadshotsDataProvider,
-                  'emptyText'=>'<div class="card-body"><b class="text-info">No headshots exist at the moment...</b></div>',
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No headshots exist at the moment...').'</b></div>',
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Most headshots</h4><p class="card-category">Players with most headshots</p></div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Most headshots').'</h4><p class="card-category">'.\Yii::t('app','Players with most headshots').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -115,11 +115,11 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               Pjax::begin(['id'=>'mostSolves','enablePushState'=>false, 'linkSelector'=>'#mostSolves-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'mostSolves',
-                  'emptyText'=>'<div class="card-body"><b class="text-info">No challenge solves exist at the moment...</b></div>',
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No challenge solves exist at the moment...').'</b></div>',
                   'dataProvider' => $mostSolvesDataProvider,
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Most challenges solved</h4><p class="card-category">Players with most challenges solved</p></div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Most challenges solved').'</h4><p class="card-category">'.\Yii::t('app','Players with most challenges solved').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -142,7 +142,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               ]);Pjax::end();?>
         </div>
       </div>
-      <h3>Platform <code>fastest</code> ranking</h3>
+      <h3><?=\Yii::t('app','Platform <code>fastest</code> ranking')?></h3>
       <div class="row">
         <div class="col">
               <?php
@@ -150,10 +150,10 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'headshotTimers',
                   'dataProvider' => $headshotDataProvider,
-                  'emptyText'=>'<div class="card-body"><b class="text-info">No headshots exist at the moment...</b></div>',
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No headshots exist at the moment...').'</b></div>',
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-warning"><h4 class="card-title">Fastest headshots</h4><p class="card-category">Players with fastest headshots in seconds</p></div>',
+                  'summary'=>'<div class="card-header card-header-warning"><h4 class="card-title">'.\Yii::t('app','Fastest headshots').'</h4><p class="card-category">'.\Yii::t('app','Players with fastest headshots in seconds').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -181,10 +181,10 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'fastestSolvers',
                   'dataProvider' => $solversDataProvider,
-                  'emptyText'=>'<div class="card-body"><b class="text-info">No challenge solves exist at the moment...</b></div>',
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No challenge solves exist at the moment...').'</b></div>',
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-warning"><h4 class="card-title">Fastest solves</h4><p class="card-category">Players with the fastest challenge solves in seconds</p></div>',
+                  'summary'=>'<div class="card-header card-header-warning"><h4 class="card-title">'.\Yii::t('app','Fastest solves').'</h4><p class="card-category">'.\Yii::t('app','Players with the fastest challenge solves in seconds').'</p></div>',
                   'pager'=>[
                     'options'=>['id'=>'solvers-leaderboard-pager'],
                     'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
@@ -207,7 +207,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
         </div>
 
       </div>
-      <h3>Platform <code>averages</code> rankings</h3>
+      <h3><?=\Yii::t('app','Platform <code>averages</code> rankings')?></h3>
       <div class="row">
 
 
@@ -217,10 +217,10 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'AvgHeadshotTimers',
                   'dataProvider' => $AvgHeadshotDataProvider,
-                  'emptyText'=>'<div class="card-body"><b class="text-info">No headshots exist at the moment...</b></div>',
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No headshots exist at the moment...').'</b></div>',
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-info"><h4 class="card-title">Best average headshots times</h4><p class="card-category">Players with best average headshots in seconds</p></div>',
+                  'summary'=>'<div class="card-header card-header-info"><h4 class="card-title">'.\Yii::t('app','Best average headshots times').'</h4><p class="card-category">'.\Yii::t('app','Players with best average headshots in seconds').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -248,10 +248,10 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'AvgSolvesTimers',
                   'dataProvider' => $AvgSolvesDataProvider,
-                  'emptyText'=>'<div class="card-body"><b class="text-info">No challenge solves exist at the moment...</b></div>',
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No challenge solves exist at the moment...').'</b></div>',
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-info"><h4 class="card-title">Best average solve times</h4><p class="card-category">Players with best average timer solves in seconds</p></div>',
+                  'summary'=>'<div class="card-header card-header-info"><h4 class="card-title">'.\Yii::t('app','Best average solve times').'</h4><p class="card-category">'.\Yii::t('app','Players with best average timer solves in seconds').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -280,7 +280,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               echo ListView::widget([
                   'id'=>'playerCountry',
                   'dataProvider' => $playerCountryDataProvider,
-                  'emptyText'=>'<div class="card-body"><b class="text-info">No country ranks exist at the moment...</b></div>',
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No country ranks exist at the moment...').'</b></div>',
                   'pager'=>[
                     'options'=>['id'=>'player-country-leaderboard-pager'],
                     'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
@@ -294,7 +294,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">Countries by Players</h4><p class="card-category">Top countries by players</p></div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Countries by Players').'</h4><p class="card-category">'.\Yii::t('app','Top countries by players').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],

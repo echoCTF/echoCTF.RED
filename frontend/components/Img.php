@@ -18,7 +18,7 @@ class Img extends Component
           $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s',$profile->avtr));
 
           $image = imagecreatetruecolor(800,220);
-          if($image===false) throw new \yii\base\UserException("Error: Source avatar png not found!");
+          if($image===false) throw new \yii\base\UserException(\Yii::t('app',"Error: Source avatar png not found!"));
 
           imagealphablending($image, false);
           $col=imagecolorallocatealpha($image,255,255,255,127);
@@ -31,18 +31,18 @@ class Img extends Component
           imagealphablending($image,true);
           $src = imagecreatefrompng($fname);
           if($src===false)
-            throw new \yii\base\UserException('Error processing image file!');
+            throw new \yii\base\UserException(\Yii::t('app','Error processing image file!'));
           $x=160;
           $avatar=imagescale($src,$x);
           if($avatar===false)
-            throw new \yii\base\UserException('Error in image scale!');
+            throw new \yii\base\UserException(\Yii::t('app','Error in image scale!'));
 
           imagecopyresampled($image, $avatar, /*dst_x*/ 20, /*dst_y*/ 20, /*src_x*/ 0, /*src_y*/ 0, /*dst_w*/ $x, /*dst_h*/ $x, /*src_w*/ $x, /*src_y*/ $x);
           imagealphablending($image,true);
 
           $cover = imagecreatefrompng(Yii::getAlias('@app/web/images/badge.tpl.png'));
           if($cover===false)
-            throw new \yii\base\UserException('Error processing cover image file!');
+            throw new \yii\base\UserException(\Yii::t('app','Error processing cover image file!'));
 
           imagecopyresampled($image, $cover, 0, 0, 0, 0, 800, 220, 800, 220);
           imagealphablending($image,true);
@@ -52,15 +52,15 @@ class Img extends Component
 
           $lineheight=20;
           $i=1;
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("root@%s:/# ./userinfo --profile %d",\Yii::$app->sys->offense_domain,$profile->id),$textcolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("username.....: %s",$profile->owner->username),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("joined.......: %s",date("d.m.Y", strtotime($profile->owner->created))),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("points.......: %s",number_format($profile->owner->playerScore->points)),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("rank.........: %s",$profile->rank->ordinalPlace),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("level........: %d / %s",$profile->experience->id, $profile->experience->name),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("flags........: %d", $profile->totalTreasures),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("challenges...: %d / %d first",$profile->challengesSolverCount, $profile->firstChallengeSolversCount),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf("headshots....: %d / %d first",$profile->headshotsCount, $profile->firstHeadshotsCount),$greencolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"root@%s:/# ./userinfo --profile %d"),\Yii::$app->sys->offense_domain,$profile->id),$textcolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"username.....: %s"),$profile->owner->username),$greencolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"joined.......: %s"),date("d.m.Y", strtotime($profile->owner->created))),$greencolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"points.......: %s"),number_format($profile->owner->playerScore->points)),$greencolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"rank.........: %s"),$profile->rank->ordinalPlace),$greencolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"level........: %d / %s"),$profile->experience->id, $profile->experience->name),$greencolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"flags........: %d"), $profile->totalTreasures),$greencolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"challenges...: %d / %d first"),$profile->challengesSolverCount, $profile->firstChallengeSolversCount),$greencolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"headshots....: %d / %d first"),$profile->headshotsCount, $profile->firstHeadshotsCount),$greencolor);
           imagedestroy($avatar);
           imagedestroy($cover);
           imagedestroy($src);

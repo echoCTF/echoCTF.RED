@@ -6,6 +6,8 @@ $cache=require __DIR__.'/cache.php';
 
 $config=[
     'id' => 'basic-console',
+//    'language' => 'el-GR',
+    'sourceLanguage' => 'en-US',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'controllerNamespace' => 'app\commands',
@@ -15,6 +17,22 @@ $config=[
         '@tests' => '@app/tests',
     ],
     'components' => [
+        'i18n' => [
+          'translations' => [
+              'yii' => [
+              'class' => 'yii\i18n\PhpMessageSource',
+              ],
+              'app*' => [
+                  'class' => 'yii\i18n\PhpMessageSource',
+                  'basePath' => '@app/messages',
+                  'sourceLanguage' => 'en-US',
+                  'fileMap' => [
+                      'app' => 'app.php',
+                      'app/error' => 'error.php',
+                  ],
+              ],
+          ],
+        ],
         'sys'=> [
           'class' => 'app\components\Sysconfig',
         ],

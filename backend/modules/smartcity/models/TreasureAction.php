@@ -51,7 +51,7 @@ class TreasureAction extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'treasure_id' => 'Treasure ID',
-            'ip' => 'Ip',
+            'ip' => 'IP',
             'port' => 'Port',
             'command' => 'Command',
             'weight' => 'Weight',

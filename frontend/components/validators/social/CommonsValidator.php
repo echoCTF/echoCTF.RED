@@ -14,12 +14,13 @@ class CommonsValidator extends Validator
     public $pattern='^[a-zA-Z0-9_]+$';
     public $range_msg="Value administratively prohibited.";
     public $len_msg="Value too long.";
-    public $pattern_msg="Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd> and <kbd>_</kbd>";
+    public $pattern_msg;
 
     public function init()
     {
         parent::init();
-        $this->message = 'Invalid value on input.';
+        $this->pattern_msg=\Yii::t('app',"Invalid characters only <kbd>a-z</kbd>, <kbd>A-Z</kbd>, <kbd>0-9</kbd> and <kbd>_</kbd>");
+        $this->message = \Yii::t('app','Invalid value on input.');
     }
 
     public function validateAttribute($model, $attribute)

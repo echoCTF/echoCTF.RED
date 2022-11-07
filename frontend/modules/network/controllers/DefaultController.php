@@ -109,7 +109,7 @@ class DefaultController extends \app\components\BaseController
              return $model;
          }
 
-         throw new NotFoundHttpException('The requested network does not exist.');
+         throw new NotFoundHttpException(\Yii::t('app','The requested network does not exist.'));
      }
 
 }

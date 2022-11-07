@@ -18,7 +18,7 @@ $provider = new ActiveDataProvider([
 ]);
 $game=Yii::$app->getModule('game');
 $this->_fluid="-fluid";
-$this->title=Yii::$app->sys->event_name.' Profile of: '.Html::encode($profile->owner->username);
+$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Profile of:').' '.Html::encode($profile->owner->username);
 $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
 $profile->scenario='validator';
 $this->_description=$this->title;
@@ -73,14 +73,14 @@ $this->_description=$this->title;
       <div class="col">
         <?php
         Pjax::begin(['id'=>'global-leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#leaderboard-pager a', 'formSelector'=>false]);
-        echo Leaderboard::widget(['divID'=>"Leaderboard", 'player_id'=>$profile->player_id, 'pageSize'=>8, 'title'=>'Global Leaderboard', 'category'=>'Listing current player page on a global scale. <small>Updated every 10 minutes</small>']);
+        echo Leaderboard::widget(['divID'=>"Leaderboard", 'player_id'=>$profile->player_id, 'pageSize'=>8, 'title'=>\Yii::t('app','Global Leaderboard'), 'category'=>\Yii::t('app','Listing current player page on a global scale. <small>Updated every 10 minutes</small>')]);
         Pjax::end();
         ?>
       </div>
       <div class="col">
         <?php
         Pjax::begin(['id'=>'country-leaderboard-listing', 'enablePushState'=>false, 'linkSelector'=>'#country-leaderboard-pager a', 'formSelector'=>false]);
-        echo Leaderboard::widget(['divID'=>"CountryLeaderboard", 'country'=>$profile->country,'player_id'=>$profile->player_id, 'pageSize'=>8, 'title'=>'Leaderboard for '.$profile->fullCountry->name, 'category'=>'Listing current player page for '.$profile->fullCountry->name.'. <small>Updated every 10 minutes</small>','pagerID'=>'country-leaderboard-pager']);
+        echo Leaderboard::widget(['divID'=>"CountryLeaderboard", 'country'=>$profile->country,'player_id'=>$profile->player_id, 'pageSize'=>8, 'title'=>\Yii::t('app','Leaderboard for {country_name}',['country_name'=>$profile->fullCountry->name]), 'category'=>\Yii::t('app','Listing current player page for {country_name}. <small>Updated every 10 minutes</small>',['country_name'=>$profile->fullCountry->name]),'pagerID'=>'country-leaderboard-pager']);
         Pjax::end();
         ?>
       </div>

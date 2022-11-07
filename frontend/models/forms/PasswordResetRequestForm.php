@@ -26,7 +26,7 @@ class PasswordResetRequestForm extends Model
             ['email', 'exist',
                 'targetClass' => '\app\models\Player',
                 'filter' => ['status' => Player::STATUS_ACTIVE],
-                'message' => 'There is no user with this email address.'
+                'message' => \Yii::t('app','There is no user with this email address.')
             ],
         ];
     }
@@ -47,7 +47,7 @@ class PasswordResetRequestForm extends Model
         $password_reset_email=intval(Yii::$app->cache->memcache->get('password_reset_email:'.$this->email));
         if($password_reset_ip>=5 || $password_reset_email>=10)
         {
-          $this->addError('email', 'Too many password reset requests. Please wait and try again.');
+          $this->addError('email', \Yii::t('app','Too many password reset requests. Please wait and try again later.'));
           return false;
         }
 
@@ -76,7 +76,7 @@ class PasswordResetRequestForm extends Model
             )
             ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
             ->setTo([$player->email => $player->fullname])
-            ->setSubject('Password reset request for '.trim(Yii::$app->sys->event_name))
+            ->setSubject(\Yii::t('app','Password reset request for {event_name}',['event_name'=>trim(Yii::$app->sys->event_name)]))
             ->send();
     }
 }

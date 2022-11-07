@@ -76,9 +76,9 @@ class TargetCardActions extends Widget
             unset($linkOptions['data-method']);
             $linkOptions['data-swType']='success';
             $linkOptions['data-showCancelButton']="false";
-            $linkOptions['data-confirm']='You have requested to spawn a new instance of this target but you currently dont have an active subscription. Subscribe to activate this feature.';
+            $linkOptions['data-confirm']=\Yii::t('app','You have requested to spawn a new instance of this target but you currently dont have an active subscription. Subscribe to activate this feature.');
             $this->target_actions[]=[
-                'label' => '<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance <small class="text-danger">(vip only)</small></b>',
+                'label' => \Yii::t('app','<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance <small class="text-danger">(vip only)</small></b>'),
                 'url' => Url::to(['/subscription/default/index']),
                 'options'=>['style'=>'white-space: nowrap;'],
                 'linkOptions'=>$linkOptions
@@ -87,34 +87,34 @@ class TargetCardActions extends Widget
         elseif($this->target_instance === NULL)
         {
             $this->target_actions[]=[
-                    'label' => '<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>',
+                    'label' => \Yii::t('app','<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>'),
                     'url' => Url::to(['/target/default/spawn', 'id'=>$this->model->id]),
                     'options'=>['style'=>'white-space: nowrap;'],
-                    'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>'You are about to spawn a private instance of this target. Once booted, this instance will only be accessible by you and its IP will become visible here.'])
+                    'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>\Yii::t('app','You are about to spawn a private instance of this target. Once booted, this instance will only be accessible by you and its IP will become visible here.')])
                 ];
         }
         elseif($this->target_instance->target_id!==$this->model->id)
         {
             $this->target_actions[]=[
-                'label' => '<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance <small>(vip only)</small></b>',
+                'label' => \Yii::t('app','<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance <small>(vip only)</small></b>'),
                 'url' => Url::to(['/target/default/spawn', 'id'=>$this->model->id]),
                 'options'=>['style'=>'white-space: nowrap;'],
-                'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>'You are about to spawn a private instance of this target. However, you already have one instance running for '.$this->target_instance->target->name.'. Do you want to schedule the existing instance to be destroyed in order to be able to spawn a new one?'])
+                'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>\Yii::t('app','You are about to spawn a private instance of this target. However, you already have one instance running for '.$this->target_instance->target->name.'. Do you want to schedule the existing instance to be destroyed in order to be able to spawn a new one?')])
             ];
         }
         elseif($this->target_instance->target_id===$this->model->id && $this->target_instance->reboot<2)
         {
             $this->target_actions[]=[
-                'label' => '<b><i class="fas fa-sync"></i>&nbsp; Restart your instance</b>',
+                'label' => \Yii::t('app','<b><i class="fas fa-sync"></i>&nbsp; Restart your instance</b>'),
                 'url' => Url::to(['/target/default/spin', 'id'=>$this->model->id]),
                 'options'=>['style'=>'white-space: nowrap;'],
-                'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>'You are about to restart your instance. You will receive a notification once the operation is complete.'])
+                'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>\Yii::t('app','You are about to restart your instance. You will receive a notification once the operation is complete.')])
             ];
             $this->target_actions[]=[
-                    'label' => '<b><i class="fas fa-power-off"></i>&nbsp; Shut your instance <small>(vip only)</small></b>',
+                    'label' => \Yii::t('app','<b><i class="fas fa-power-off"></i>&nbsp; Shut your instance <small>(vip only)</small></b>'),
                     'url' => Url::to(['/target/default/shut', 'id'=>$this->model->id]),
                     'options'=>['style'=>'white-space: nowrap;'],
-                    'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>'You are about to shutdown your private instance of this target. This process takes up to a minute to complete. You will get a notification once it is completed.'])
+                    'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>\Yii::t('app','You are about to shutdown your private instance of this target. This process takes up to a minute to complete. You will get a notification once it is completed.')])
                 ];
         }
     }
@@ -125,16 +125,16 @@ class TargetCardActions extends Widget
         if($this->model->ondemand && $this->model->ondemand->state<0 && $this->model->spinable)
         {
             $this->target_actions[]=[
-                    'label' => '<b><i class="fas fa-plug"></i>&nbsp; Power up this target</b>',
+                    'label' => \Yii::t('app','<b><i class="fas fa-plug"></i>&nbsp; Power up this target</b>'),
                     'url' => Url::to(['/target/default/spin', 'id'=>$this->model->id]),
                     'options'=>['style'=>'white-space: nowrap;'],
-                    'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>'You are about to power up this target. Once booted, everyone will be able to access it.'])
+                    'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>\Yii::t('app','You are about to power up this target. Once booted, everyone will be able to access it.')])
                 ];
         }
         elseif($this->model->player_spin===true && $this->model->spinable)
         {
             $this->target_actions[]=[
-                    'label' => '<b><i class="fas fa-sync"></i>&nbsp; Restart target</b>',
+                    'label' => \Yii::t('app','<b><i class="fas fa-sync"></i>&nbsp; Restart target</b>'),
                     'url' => Url::to(['/target/default/spin', 'id'=>$this->model->id]),
                     'options'=>['style'=>'white-space: nowrap;'],
                     'linkOptions'=>$this->linkOptions,

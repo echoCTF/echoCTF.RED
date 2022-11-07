@@ -97,7 +97,7 @@ class TargetAR extends \yii\db\ActiveRecord
             'fqdn' => 'Fqdn',
             'purpose' => 'Purpose',
             'description' => 'Description',
-            'ip' => 'Ip',
+            'ip' => 'IP',
             'mac' => 'Mac',
             'active' => 'Active',
             'net' => 'Net',

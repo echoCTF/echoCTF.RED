@@ -6,24 +6,24 @@ use yii\widgets\ListView;
 use yii\widgets\Pjax;
 use app\widgets\stream\StreamWidget as Stream;
 
-$this->title=Yii::$app->sys->event_name.' Team details ['.$team->name.']';
+$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Team details for').' ['.$team->name.']';
 $this->_fluid="-fluid";
 
 ?>
 <div class="team-view">
   <div class="body-content">
-    <h2>Details for Team [<code><?=Html::encode($team->name)?></code>]</h2>
+    <h2><?=\Yii::t('app','Details for team')?> [<code><?=Html::encode($team->name)?></code>]</h2>
   <?php if($team->getTeamPlayers()->count()<Yii::$app->sys->members_per_team):?>
-    <p>Allow other players to join the team easily by providing them with this link: <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token],'https'),Url::to(['/team/default/invite','token'=>$team->token],'https'),['class'=>'text-bold copy-to-clipboard','swal-data'=>'Copied to clipboard!']);?></code></p>
+    <p><?=\Yii::t('app','Allow other players to join the team easily by providing them with this link:')?> <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token],'https'),Url::to(['/team/default/invite','token'=>$team->token],'https'),['class'=>'text-bold copy-to-clipboard','swal-data'=>'Copied to clipboard!']);?></code></p>
   <?php else:?>
-    <p class="text-warning">Your team is full, you cannot invite any more members</p>
+    <p class="text-warning"><?=\Yii::t('app','Your team is full, you cannot invite any more members')?></p>
   <?php endif;?>
     <hr />
     <div class="row">
       <div class="col">
         <?php
         Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
-        echo Stream::widget(['divID'=>'stream', 'dataProvider' => $streamProvider, 'pagerID'=>'stream-pager','category'=>'Latest activity of team on the platform', 'title'=>'Team Activity Stream']);
+        echo Stream::widget(['divID'=>'stream', 'dataProvider' => $streamProvider, 'pagerID'=>'stream-pager','category'=>\Yii::t('app','Latest activity of team on the platform'), 'title'=>\Yii::t('app','Team Activity Stream')]);
         Pjax::end();
         ?>
       </div>
@@ -68,7 +68,7 @@ $this->_fluid="-fluid";
                 'value'=>function($model){
                     return $model->player->profile->link;
                 },
-                'label' => 'Member'
+                'label' => \Yii::t('app','Member')
               ],
               'player.playerScore.points:integer',
               'approved:boolean',
@@ -99,22 +99,22 @@ $this->_fluid="-fluid";
                           Url::to(['/team/default/approve', 'id'=>$model->id]),
                           [
                             'style'=>"font-size: 1.5em;",
-                            'title' => 'Approve team membership',
+                            'title' => \Yii::t('app','Approve team membership'),
                             'rel'=>"tooltip",
                             'data-pjax' => '0',
                             'data-method' => 'POST',
-                            'aria-label'=>'Approve team membership',
-                            'data'=>['confirm'=>'You are about to approve this player membership!']
+                            'aria-label'=>\Yii::t('app','Approve team membership'),
+                            'data'=>['confirm'=>\Yii::t('app','You are about to approve this player membership!')]
                           ]
                       );
                   },
                   'reject' => function($url, $model) {
-                      $msg='Reject team membership';
-                      $confirm="You are about to remove this player from the team!";
+                      $msg=\Yii::t('app','Reject team membership');
+                      $confirm=\Yii::t('app',"You are about to remove this player from the team!");
                       if($model->player_id===Yii::$app->user->id && Yii::$app->user->identity->teamLeader===null)
                       {
-                        $confirm="You are about to leave this team!";
-                        $msg="Withdraw your team membership";
+                        $confirm=\Yii::t('app',"You are about to leave this team!");
+                        $msg=\Yii::t('app',"Withdraw your team membership");
                       }
 
                       return Html::a(
@@ -139,7 +139,7 @@ $this->_fluid="-fluid";
           ]
         ]);
         ?>
-          <?php if(Yii::$app->user->identity->teamLeader!==null && $team->owner_id===Yii::$app->user->id):?><?=Html::a('Update',['/team/default/update'],['class'=>'btn btn-primary text-dark text-bold d-block'])?><?php endif;?>
+          <?php if(Yii::$app->user->identity->teamLeader!==null && $team->owner_id===Yii::$app->user->id):?><?=Html::a(\Yii::t('app','Update'),['/team/default/update'],['class'=>'btn btn-primary text-dark text-bold d-block'])?><?php endif;?>
           </div>
 
         </div>

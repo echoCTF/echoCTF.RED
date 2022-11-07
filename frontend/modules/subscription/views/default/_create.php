@@ -6,7 +6,7 @@ use yii\widgets\ListView;
 <div class="container">
   <?php echo ListView::widget([
       'dataProvider' => $dataProvider,
-      'emptyText'=>'<p class="text-info"><b>There are no subscriptions available at the moment...</b></p>',
+      'emptyText'=>'<p class="text-info"><b>'.\Yii::t('app','There are no subscriptions available at the moment...').'</b></p>',
       'options'=>['class'=>'list-view row d-flex justify-content-center'],
       'summary'=>false,
       'itemOptions' => [
@@ -23,12 +23,12 @@ use yii\widgets\ListView;
             'type'=>'card-stats',
             'icon'=>'<i class="fas fa-flag"></i>',
             'color'=>'rose',
-            'title'=>'On premises CTF or Hackathon?',
-            'footer'=>Html::mailto('Contact us','info@echothrust.com',[
+            'title'=>\Yii::t('app','On premises CTF or Hackathon?'),
+            'footer'=>Html::mailto(\Yii::t('app','Contact us'),'info@echothrust.com',[
               'class'=>'h4 font-weight-bold btn btn-outline-danger btn-block'
             ]),
         ]);?>
-      Want to run or host your own CTF, Hackathon or Cybersecurity exercises?
+      <?=\Yii::t('app','Want to run or host your own CTF, Hackathon or Cybersecurity exercises?')?>
       <?php \app\widgets\Card::end();?>
 
     </div>
@@ -55,8 +55,8 @@ var createCheckoutSession = function(priceId) {
     return result.json();
   }).catch(function(error) {
     Swal.fire(
-      "Oooops!",
-      "We cannot process your request at this time. <br/>Try again later or contact the support!<br/><small>[ "+error+" ]</small>",
+      "'.\Yii::t('app','Oooops!').'",
+      "'.\Yii::t('app','We cannot process your request at this time. <br/>Try again later or contact the support!').'<br/><small>[ "+error+" ]</small>",
       "warning"
     );
     return false;

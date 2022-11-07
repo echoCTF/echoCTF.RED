@@ -77,7 +77,7 @@ class User extends UserExtraMethods
         } elseif ($identity === null) {
             $this->_identity = null;
         } else {
-            throw new InvalidValueException('The identity object must implement IdentityInterface.');
+            throw new InvalidValueException(\Yii::t('yii','The identity object must implement IdentityInterface.'));
         }
         $this->_access = [];
     }

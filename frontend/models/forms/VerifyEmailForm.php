@@ -31,12 +31,12 @@ class VerifyEmailForm extends Model
     {
         if(empty($token) || !is_string($token))
         {
-            throw new InvalidArgumentException('Verify email token cannot be blank.');
+            throw new InvalidArgumentException(\Yii::t('app','Verify email token cannot be blank.'));
         }
         $this->_player=Player::findByVerificationToken($token);
         if(!$this->_player)
         {
-            throw new InvalidArgumentException('Wrong verify email token.');
+            throw new InvalidArgumentException(\Yii::t('app','Wrong verify email token.'));
         }
         parent::__construct($config);
     }

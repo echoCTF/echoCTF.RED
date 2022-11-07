@@ -118,15 +118,15 @@ class NetworkTargetSchedule extends \yii\db\ActiveRecord
   public function addNews()
   {
     $news=new \app\modules\content\models\News;
-    $news->title=sprintf("Target %s migrated",$this->target->name);
+    $news->title=sprintf(\Yii::t('app',"Target %s migrated"),$this->target->name);
     $news->category=H::img("/images/news/category/target-migration.svg",['width'=>'25px']);
     if($this->network_id===null)
     {
-      $news->body=sprintf("Just a heads up, the target [%s], is now available on the general targets listing.",H::a($this->target->name,'/target/'.$this->target_id));
+      $news->body=sprintf(\Yii::t('app',"Just a heads up, the target [%s], is now available on the general targets listing."),H::a($this->target->name,'/target/'.$this->target_id));
     }
     else
     {
-      $news->body=sprintf("Just a heads up, the target [%s], got migrated to a new network [%s].",H::a($this->target->name,'/target/'.$this->target_id),H::a($this->network->name,'/network/'.$this->network_id));
+      $news->body=sprintf(\Yii::t('app',"Just a heads up, the target [%s], got migrated to a new network [%s]."),H::a($this->target->name,'/target/'.$this->target_id),H::a($this->network->name,'/network/'.$this->network_id));
     }
 
     if($news->save()===false)

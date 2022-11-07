@@ -35,7 +35,7 @@ class LeaderboardsController extends \app\components\BaseController
                    return \Yii::$app->sys->event_start!==false && time()<\Yii::$app->sys->event_start && !\Yii::$app->sys->leaderboard_visible_before_event_start;
                  },
                  'denyCallback' => function() {
-                   Yii::$app->session->setFlash('info', 'This area is disabled before the start of the competition');
+                   Yii::$app->session->setFlash('info', \Yii::t('app','This area is disabled before the start of the competition'));
                    return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                  }
               ],
@@ -45,7 +45,7 @@ class LeaderboardsController extends \app\components\BaseController
                    return \Yii::$app->sys->event_end!==false && time()>\Yii::$app->sys->event_end && !\Yii::$app->sys->leaderboard_visible_after_event_end;
                  },
                  'denyCallback' => function() {
-                   Yii::$app->session->setFlash('info', 'This area is disabled after the competition ends');
+                   Yii::$app->session->setFlash('info', \Yii::t('app','This area is disabled after the competition ends'));
                    return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
                  }
               ],

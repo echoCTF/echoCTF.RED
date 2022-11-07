@@ -286,6 +286,10 @@ class GeneratorController extends Controller {
           chown($path, $owner);
           imagedestroy($image);
         }
+        else
+        {
+          printf("Player [%s] error in badge generation.",$player->username);
+        }
       }
     }
 

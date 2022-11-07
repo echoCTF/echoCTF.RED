@@ -25,12 +25,12 @@ class SpawnRestAction extends \yii\rest\ViewAction
       $target=$this->findTarget($id);
       if($this->actionAllowedFor($target->id))
       {
-        throw new UserException('Target not allowed to spawn private instances!');
+        throw new UserException(\Yii::t('app','Target not allowed to spawn private instances!'));
       }
 
       if($target->status!=='online')
       {
-        throw new UserException('Target did not start, target is not online yet!');
+        throw new UserException(\Yii::t('app','Target did not start, target is not online yet!'));
       }
       $ti=TargetInstance::findOne(Yii::$app->user->id);
       // Check if user has already a started instance
@@ -38,13 +38,13 @@ class SpawnRestAction extends \yii\rest\ViewAction
       {
         if($ti->target_id!=$id)
         {
-          Yii::$app->session->setFlash('warning', sprintf('Scheduling shutdown for old [%s] instance. You will receive a notification when the instance is shut.', $ti->target->name));
+          Yii::$app->session->setFlash('warning', sprintf(\Yii::t('app','Scheduling shutdown for old [%s] instance. You will receive a notification when the instance is shut.'), $ti->target->name));
           $ti->reboot=2;
           $ti->save();
         }
         else
         {
-          Yii::$app->session->setFlash('info', sprintf('You already have an instance of [%s] running.', $ti->target->name));
+          Yii::$app->session->setFlash('info', sprintf(\Yii::t('app','You already have an instance of [%s] running.'), $ti->target->name));
         }
 
         return Yii::$app->controller->redirect($goback);
@@ -56,9 +56,9 @@ class SpawnRestAction extends \yii\rest\ViewAction
       // pick the least used server currently
       $ti->server_id=intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id) limit 1')->queryScalar());
       if($ti->save()!==false)
-        Yii::$app->session->setFlash('success', sprintf('Spawning new instance for [%s]. You will receive a notification when the instance is up.', $ti->target->name));
+        Yii::$app->session->setFlash('success', sprintf(\Yii::t('app','Spawning new instance for [%s]. You will receive a notification when the instance is up.'), $ti->target->name));
       else
-        throw new UserException('Failed to spawn new target instance for you.');
+        throw new UserException(\Yii::t('app','Failed to spawn new target instance for you.'));
 
     }
     catch(\Exception $e)
@@ -83,7 +83,7 @@ class SpawnRestAction extends \yii\rest\ViewAction
       return $model;
     }
 
-    throw new NotFoundHttpException('The requested target does not exist.');
+    throw new NotFoundHttpException(\Yii::t('app','The requested target does not exist.'));
 
   }
 }

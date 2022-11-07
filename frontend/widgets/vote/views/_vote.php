@@ -24,7 +24,7 @@ echo Html::beginForm($action, 'post', ['enctype' => 'multipart/form-data', 'id'=
 echo Html::dropDownList(
     'rating', //name
     $model->rating,  //select
-    ArrayHelper::map($ratings, 'id', 'name'),
+    ArrayHelper::map($ratings, 'id', function($model){return \Yii::t('app',$model['name']);}),
     ['class'=>'btn-block input-group-btn selectpicker','data-style'=> $model->rating>=0 ? "btn-info" : ""]
   );
 echo Html::endForm();

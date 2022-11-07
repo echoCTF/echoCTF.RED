@@ -4,13 +4,13 @@ use yii\helpers\Html;
 ?>
 <div class="card bg-dark">
   <div class="card-header">
-    <h4><i class="fas fa-chalkboard-teacher"></i> Progress</h4>
+    <h4><i class="fas fa-chalkboard-teacher"></i> <?=\Yii::t('app','Progress')?></h4>
   </div>
   <div class="card-body table-responsive">
 <?php
     if(Yii::$app->user->identity->getFindings($target->id)->count()>0)
     {
-      echo '# Discovered services';
+      echo \Yii::t('app','# Discovered services');
       echo Html::ul(Yii::$app->user->identity->getFindings($target->id)->all(), ['item' => function($item, $index) use ($target) {
           return Html::tag(
               'li',
@@ -21,7 +21,7 @@ use yii\helpers\Html;
     }
     if(Yii::$app->user->identity->getTreasures($target->id)->count()>0)
     {
-      echo '# Discovered flags';
+      echo \Yii::t('app','# Discovered flags');
       echo Html::ul(Yii::$app->user->identity->getTreasures($target->id)->orderBy(['id' => SORT_DESC])->all(), ['item' => function($item, $index) use ($target) {
         return Html::tag(
             'li',
@@ -32,7 +32,7 @@ use yii\helpers\Html;
     }
     if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count()>0)
     {
-      echo '# Hints',"\n";
+      echo \Yii::t('app','# Hints'),"\n";
       echo Html::ul(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->all(), ['item' => function($item, $index) use ($target) {
         return Html::tag(
             'li',

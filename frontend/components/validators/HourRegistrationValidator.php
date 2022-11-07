@@ -10,11 +10,12 @@ use yii\helpers\ArrayHelper;
 class HourRegistrationValidator extends Validator
 {
     public $max=3;
-    public $message="You reached your maximum registrations for this hour!";
+    public $message;
     public $counter;
     public $client_ip;
     public function init()
     {
+        $this->message=\Yii::t('app',"You reached your maximum registrations for this hour!");
         if(!$this->counter)
           $this->counter=intval(\Yii::$app->sys->{'registeredip:'.$this->client_ip});
         parent::init();

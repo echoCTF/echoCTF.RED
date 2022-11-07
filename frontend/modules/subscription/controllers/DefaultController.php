@@ -34,7 +34,7 @@ class DefaultController extends \app\components\BaseController
                         return \Yii::$app->sys->subscriptions_emergency_suspend==true;
                       },
                       'denyCallback' => function () {
-                        Yii::$app->session->setFlash('info', 'This area is temporarily disabled, please try again in a couple of hours.');
+                        Yii::$app->session->setFlash('info', \Yii::t('app','This area is temporarily disabled, please try again in a couple of hours.'));
                         return  \Yii::$app->getResponse()->redirect(['/subscription/default/index']);
                       }
                     ],
@@ -205,7 +205,7 @@ class DefaultController extends \app\components\BaseController
         $product=Product::findOne(['price_id'=>$priceId]);
         if($product===null)
         {
-          throw new \Exception('No such price exist');
+          throw new \Exception(\Yii::t('app','No such price exist'));
         }
 
         $mode='subscription';
@@ -259,17 +259,17 @@ class DefaultController extends \app\components\BaseController
               'cancel_at_period_end' => true,
             ]
           );
-          Yii::$app->session->setFlash('info', 'Your subscription will be canceled at the end of the current billing period.');
+          Yii::$app->session->setFlash('info', \Yii::t('app','Your subscription will be canceled at the end of the current billing period.'));
 
         }
         catch (\Exception $e)
         {
-          Yii::$app->session->setFlash('error', 'There was an error canceling your subscription! Please contact our support.');
+          Yii::$app->session->setFlash('error', \Yii::t('app','There was an error canceling your subscription! Please contact our support.'));
         }
       }
       else
       {
-        Yii::$app->session->setFlash('warning', "You don't currently have an active subscription!");
+        Yii::$app->session->setFlash('warning', \Yii::t('app',"You don't currently have an active subscription!"));
       }
       return $this->redirect(['/subscription/default/index']);
     }
@@ -279,9 +279,9 @@ class DefaultController extends \app\components\BaseController
         $model = new InquiryForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             if ($model->sendInquiry()) {
-                Yii::$app->session->setFlash('success', 'Thank you for contacting us. We will respond to you as soon as possible.');
+                Yii::$app->session->setFlash('success', \Yii::t('app','Thank you for contacting us. We will respond to you as soon as possible.'));
             } else {
-                Yii::$app->session->setFlash('error', 'There was an error sending email.');
+                Yii::$app->session->setFlash('error', \Yii::t('app','There was an error sending email.'));
             }
 
             return $this->refresh();

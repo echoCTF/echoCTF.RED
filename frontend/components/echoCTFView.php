@@ -12,7 +12,7 @@ class echoCTFView extends \yii\web\View
   public $_url;
   public $_fluid;
   public $_image;
-  public $_description="An online platform to train your offensive and defensive IT security skills.";
+  public $_description;
   public $_image_width="1200";
   public $_image_height="628";
   public $_card='summary_large_image';
@@ -20,7 +20,7 @@ class echoCTFView extends \yii\web\View
 
   public function init()
   {
-
+    $this->_description=\Yii::t('app',"An online platform to train your offensive and defensive IT security skills.");
     if(!empty(\Yii::$app->controller->id) && !empty(\Yii::$app->controller->action))
     {
       $this->title=sprintf("%s - %s: %s", \Yii::$app->sys->event_name, ucfirst(\Yii::$app->controller->id), \Yii::$app->controller->action->id);
@@ -36,7 +36,7 @@ class echoCTFView extends \yii\web\View
       $this->registerLayoutOverrides();
     parent::init();
     if(!\Yii::$app->user->isGuest && \Yii::$app->user->identity->sSL!==null && \Yii::$app->user->identity->sSL->expires)
-      \Yii::$app->getSession()->setFlash('warning', 'Your VPN key is about to expire. Go to your profile and '.\yii\helpers\Html::a('revoke it',['/profile/revoke'],['class'=>'text-dark text-bold','data-method'=>'post']).' to get a new one generated.');
+      \Yii::$app->getSession()->setFlash('warning', \Yii::t('app','Your VPN key is about to expire. Go to your profile and {revokeURL} to get a new one.',['revokeURL'=>\yii\helpers\Html::a(\Yii::t('app','revoke it'),['/profile/revoke'],['class'=>'text-dark text-bold','data-method'=>'post'])]));
   }
 
   public function getTwitterHandle()

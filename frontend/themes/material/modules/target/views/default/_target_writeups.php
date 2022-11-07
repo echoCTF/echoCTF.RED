@@ -3,7 +3,7 @@ use yii\helpers\Html;
 ?>
 <div class="card bg-dark terminal writeups">
   <div class="card-header">
-    <h4><i class="fas fa-book"></i> <?=count($writeups)?> <?=count($writeups)>1 ? "Writeups":"Writeup"?> by:</h4>
+    <h4><i class="fas fa-book"></i> <?=\Yii::t('app','{writeups,plural,=0{No writeups yet} =1{# Writeup by:} other{# Writeups by:}}',['writeups'=>count($writeups)])?></h4>
   </div>
   <div class="card-body">
     <div class="list-group list-group-flush">
@@ -25,7 +25,7 @@ use yii\helpers\Html;
           $item_classes[]='text-bold';
           $item_classes[]='active';
         }
-        echo Html::a($item->player->username.' <span class="badge badge-primary badge-pill">'.$item->averageRatingName.'</span>',['/target/writeup/read','target_id'=>$item->target_id,'id'=>$item->id],['class'=>implode(' ',$item_classes)]);
+        echo Html::a($item->player->username.' <span class="badge badge-primary badge-pill">'.\Yii::t('app',$item->averageRatingName).'</span>',['/target/writeup/read','target_id'=>$item->target_id,'id'=>$item->id],['class'=>implode(' ',$item_classes)]);
       }
       ?>
     </div>

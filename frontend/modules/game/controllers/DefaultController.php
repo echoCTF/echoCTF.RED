@@ -52,7 +52,7 @@ class DefaultController extends \app\components\BaseController
       $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$id,'player_id'=>Yii::$app->user->id]);
       if($headshot===null)
       {
-        throw new NotFoundHttpException('You dont have a headshot for the given target.');
+        throw new NotFoundHttpException(\Yii::t('app',"You don't have a headshot for the given target."));
       }
       if(Yii::$app->request->isPost && Yii::$app->request->post('rating')!==null)
       {
@@ -71,7 +71,7 @@ class DefaultController extends \app\components\BaseController
       $solver=\app\modules\challenge\models\ChallengeSolver::findOne(['challenge_id'=>$id,'player_id'=>Yii::$app->user->id]);
       if($solver===null)
       {
-        throw new NotFoundHttpException('You have not solved this challenge.');
+        throw new NotFoundHttpException(\Yii::t('app','You have not solved this challenge.'));
       }
       if(Yii::$app->request->isPost && Yii::$app->request->post('rating')!==null)
       {
@@ -90,14 +90,14 @@ class DefaultController extends \app\components\BaseController
       $writeup=\app\modules\target\models\Writeup::findOne(['id'=>$id]);
       if($writeup===null)
       {
-        throw new NotFoundHttpException('No such writeup');
+        throw new NotFoundHttpException(\Yii::t('app','No such writeup exist.'));
       }
       $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$writeup->target_id,'player_id'=>Yii::$app->user->id]);
       $PTH=\app\modules\target\models\PlayerTargetHelp::findOne(['target_id'=>$writeup->target_id,'player_id'=>Yii::$app->user->id]);
 
       if($headshot===null && $PTH===null)
       {
-        throw new NotFoundHttpException('No such writeup');
+        throw new NotFoundHttpException(\Yii::t('app','No such writeup exist.'));
       }
 
       if (($WR=\app\modules\game\models\WriteupRating::findOne(['player_id'=>Yii::$app->user->id, 'writeup_id'=>$id]))===null)

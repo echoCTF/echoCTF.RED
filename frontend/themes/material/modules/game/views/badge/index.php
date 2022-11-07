@@ -10,13 +10,13 @@ $this->_url=\yii\helpers\Url::to(['/game/badge/headshot', 'target_id'=>$headshot
 
 <div class="card bg-dark" style="width: 60rem;">
   <div class="card-body">
-    <h3 class="card-title">Target completion</h3>
-    <p class="card-text lead"><code><?=$headshot->player->username?></code> has managed to complete the target <code><?=$headshot->target->name?></code><?php if($headshot->target->timer && $headshot->timer>0):?> in <b><?=\Yii::$app->formatter->asDuration($headshot->timer)?></b>.<?php endif;?></p>
+    <h3 class="card-title"><?=\Yii::t('app','Target completion')?></h3>
+    <p class="card-text lead"><code><?=$headshot->player->username?></code> <?=\Yii::t('app','has managed to complete the target')?> <code><?=$headshot->target->name?></code><?php if($headshot->target->timer && $headshot->timer>0):?> in <b><?=\Yii::$app->formatter->asDuration($headshot->timer)?></b>.<?php endif;?></p>
   </div>
 
   <?php echo $this->render('@app/modules/game/views/badge/_share',
       [
-        'twMessage'=>sprintf('Check this out, I just headshotted %s at %s', $headshot->target->name, \Yii::$app->sys->{"event_name"}),
+        'twMessage'=>sprintf(\Yii::t('app','Check this out, I just headshotted %s at %s'), $headshot->target->name, \Yii::$app->sys->{"event_name"}),
         'callbackURL'=>\yii\helpers\Url::to(['/game/badge/headshot', 'target_id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https'),
         'PRELINK'=>'<a class="btn btn-primary" href="#" onclick="history.back()"><i class="fas fa-reply"></i>&nbsp; Go back</a>'
       ]);?>

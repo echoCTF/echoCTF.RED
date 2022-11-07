@@ -44,7 +44,7 @@ class Stream extends StreamAR
     if($this->twitter)
     {
       if($this->player->profile->isMine)
-        return "I";
+        return \Yii::t('app',"I");
 
       return sprintf("%s", $this->player->profile->twitterHandle);
     }
@@ -67,7 +67,7 @@ class Stream extends StreamAR
   public function getSuffix()
   {
     if($this->points != 0)
-      return sprintf(" for %d points", $this->points);
+      return sprintf(\Yii::t('app'," for %d points"), $this->points);
     return "";
   }
 
@@ -77,7 +77,7 @@ class Stream extends StreamAR
   }
   public function getBadgeMessage()
   {
-    return sprintf("%s got the badge [<code>%s</code>]%s", $this->prefix, Badge::findOne(['id'=>$this->model_id])->name, $this->suffix);
+    return sprintf(\Yii::t('app',"%s got the badge [<code>%s</code>]%s"), $this->prefix, Badge::findOne(['id'=>$this->model_id])->name, $this->suffix);
   }
 
 
@@ -88,30 +88,30 @@ class Stream extends StreamAR
     if($headshot->first)
       $first=" first,";
     if(intval($headshot->target->timer)===0 || intval($headshot->timer)===0)
-      return sprintf("%s managed to headshot [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
+      return sprintf(\Yii::t('app',"%s managed to headshot")." [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to headshot [<code>%s</code>]$first in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
+    return sprintf(\Yii::t('app',"%s managed to headshot")." [<code>%s</code>]$first in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
   }
 
   public function getChallengeMessage()
   {
     $csolver=\app\modules\challenge\models\ChallengeSolver::findOne(['challenge_id'=>$this->model_id, 'player_id'=>$this->player_id]);
     if($csolver->challenge->timer===0)
-      return sprintf("%s managed to complete the challenge [<code>%s</code>]%s", $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), $this->suffix);
+      return sprintf(\Yii::t('app',"%s managed to complete the challenge [<code>%s</code>]%s"), $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to complete the challenge [<code>%s</code>] in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($csolver->timer),number_format($csolver->timer / 60), $this->suffix);
+    return sprintf(\Yii::t('app',"%s managed to complete the challenge [<code>%s</code>] in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s"), $this->prefix, Html::a(\app\modules\challenge\models\Challenge::findOne(['id'=>$this->model_id])->name, ['/challenge/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($csolver->timer),number_format($csolver->timer / 60), $this->suffix);
   }
 
   public function getReportMessage()
   {
-    return sprintf("%s Reported <b>%s</b>%s", $this->prefix, $this->Title($this->pub), $this->suffix);
+    return sprintf(\Yii::t('app',"%s Reported <b>%s</b>%s"), $this->prefix, $this->Title($this->pub), $this->suffix);
   }
 
   public function getQuestionMessage()
   {
     $qq=\app\modules\challenge\models\Question::find()->select(['question.id','question.name','challenge_id','challenge.name as challenge_name'])->joinWith('challenge')->where(['question.id'=>$this->model_id])->createCommand()->rawSql;
     $q=\app\modules\challenge\models\Question::findBySql($qq)->one();
-    return sprintf("%s Answered the question of <b>%s</b> [%s] %s", $this->prefix, $q->challenge_name,$q->name, $this->suffix);
+    return sprintf(\Yii::t('app',"%s Answered the question of <b>%s</b> [%s] %s"), $this->prefix, $q->challenge_name,$q->name, $this->suffix);
   }
 
   public function getFindingMessage()
