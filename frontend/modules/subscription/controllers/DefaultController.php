@@ -68,6 +68,7 @@ class DefaultController extends \app\components\BaseController
                         '54.187.174.169',
                         '54.187.205.235',
                         '54.187.216.72',
+                        '127.0.0.1',
                       ],
                     ]
                 ],
