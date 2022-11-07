@@ -17,10 +17,10 @@
  * NOTE: this file must be saved in UTF-8 encoding.
  */
 return [
-    'Failed to save session.completed!' => '',
-    'The identity object must implement IdentityInterface.' => '',
     'Are you sure you want to delete this item?' => '',
     'Delete' => '',
+    'Failed to save session.completed!' => '',
+    'The identity object must implement IdentityInterface.' => '',
     'The verification code is incorrect.' => '',
     'Update' => '',
     'View' => '',

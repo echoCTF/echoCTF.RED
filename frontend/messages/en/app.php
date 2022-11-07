@@ -523,13 +523,7 @@ return [
     '{points,plural,=0{0 points} =1{# point} other{# points}}' => '',
     '{targetsCount,plural,=0{no targets} =1{# target} other{# targets}}' => '',
     '{writeups,plural,=0{No writeups yet} =1{# Writeup by:} other{# Writeups by:}}' => '',
-    'Headshots (newer first)' => '',
     'Interested in running your own CTF, hosting a cyber security exercise or provide hands on training to your engineers?
       Then you are on the right place, we have delivered numerous successful events throughout the years. Let us do the same for you!' => '',
     'Unable to verify your submission CSRF token, please try again.' => '',
-    'Writeup' => '',
-    'Writeups' => '',
-    '{event_name} Writeup for {target_name} / {ipaddress} #mode' => '',
-    '{points,plural,=0{0 points} =1{# point} other{# points}' => '',
-    '{points,plural,=0{} =1{# point} other{# points}' => '',
 ];

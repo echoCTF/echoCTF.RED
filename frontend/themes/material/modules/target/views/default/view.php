@@ -69,7 +69,7 @@ if($target->ondemand && $target->ondemand->state>0 && !Yii::$app->user->isGuest)
         document.getElementById("tcountdown").innerHTML = "'.\Yii::t('app','system will shutdown soon!').'";
       }
       else {
-        document.getElementById("tcountdown").innerHTML = "'.\Yii::t('app','minutes + "m " + seconds + "s "').'";
+        document.getElementById("tcountdown").innerHTML = '.\Yii::t('app','minutes + "m " + seconds + "s "').';
         $("#tcountdown").attr("data",distance--);
       }
     }, 1000);',
