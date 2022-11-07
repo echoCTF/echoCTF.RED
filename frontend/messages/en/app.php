@@ -350,6 +350,7 @@ return [
     'Thank you for registering. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>' => '',
     'Thank you for registering. Your account is activated feel free to login.' => '',
     'Thank you for your submission. Your writeup has been saved. A member of our staff will review and approve or reject.' => '',
+    'The IP of your private instance will become visible once its powered up.' => '',
     'The IP of your private instance.' => '',
     'The IP will be visible once the system is powered up.' => '',
     'The echoCTF dashboard page' => '',
@@ -523,7 +524,5 @@ return [
     '{points,plural,=0{0 points} =1{# point} other{# points}}' => '',
     '{targetsCount,plural,=0{no targets} =1{# target} other{# targets}}' => '',
     '{writeups,plural,=0{No writeups yet} =1{# Writeup by:} other{# Writeups by:}}' => '',
-    'Interested in running your own CTF, hosting a cyber security exercise or provide hands on training to your engineers?
-      Then you are on the right place, we have delivered numerous successful events throughout the years. Let us do the same for you!' => '',
     'Unable to verify your submission CSRF token, please try again.' => '',
 ];
