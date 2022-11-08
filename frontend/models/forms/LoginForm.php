@@ -69,7 +69,7 @@ class LoginForm extends Model
                 \Yii::$app->cache->memcache->set('failed_login_ip:'.\Yii::$app->request->userIp,$failed_login_ip, \Yii::$app->sys->failed_login_ip_timeout);
                 if($player!==null)
                 {
-                    \Yii::$app->cache->memcache->set('failed_login_username:'.$player->username,$failed_login_username, 300);
+                    \Yii::$app->cache->memcache->set('failed_login_username:'.$player->username,$failed_login_username, \Yii::$app->sys->failed_login_username_timeout);
                     Yii::$app->db->createCommand('INSERT DELAYED INTO player_counter_nf values (:id,:metric,:counter) ON DUPLICATE KEY UPDATE counter=counter+values(counter)')
                     ->bindValue(':id',$player->id)
                     ->bindValue(':metric','failed_login')

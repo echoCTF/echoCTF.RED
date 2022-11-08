@@ -97,6 +97,7 @@ backend/yii sysconfig/set academic_1short "anothersite"
 * `failed_login_ip` A number of failed logins are allowed per IP. `0` Disables the check completely
 * `failed_login_ip_timeout` timeout of failed login ip counter expires
 * `failed_login_username` A number of failed logins are allowed per username. `0` Disables the check completely
+* `failed_login_username_timeout` the timeout for the failed login_username counter.
 * `username_length_min` min length for a username
 * `username_length_max` max length for a username
 * `verification_resend_ip_timeout` the timeout for the verification resend_ip counter
