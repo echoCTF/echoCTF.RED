@@ -28,10 +28,11 @@ class TemplateController extends Controller
     public function actionEmails()
     {
        $templates=\app\modules\content\models\EmailTemplate::find();
-       foreach($templates as $tmpl)
+       $baseDir=\Yii::getAlias('@app/mail/');
+       foreach($templates->all() as $tmpl)
        {
-            file_put_contents($tmpl->name.'-html.php',$tmpl->html);
-            file_put_contents($tmpl->name.'-text.php',$tmpl->text);
+            file_put_contents($baseDir.$tmpl->name.'-html.php',$tmpl->html);
+            file_put_contents($baseDir.$tmpl->name.'-text.php',$tmpl->txt);
        }
 
     }
