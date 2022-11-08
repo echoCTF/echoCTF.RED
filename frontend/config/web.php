@@ -182,21 +182,8 @@ $config=[
         ],
         'mailer' => [
             'class' => 'app\components\Mailer',
-//            'useFileTransport' => defined(YII_ENV_DEV),
-//            'viewPath' => '@app/mail/layouts',
             'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'host' => 'smtp-relay.gmail.com',
-//                'username' => 'username',
-//                'password' => 'password',
-//                'port' => '25',
-//                'encryption' => 'none',
-//                'streamOptions' => [
-//                  'ssl' => [
-//                      'verify_peer' => false,
-//                      'verify_peer_name' => false,
-//                  ],
-//                ],
+                'dsn'=>'native://default',
             ],
         ],
         'log' => [
