@@ -45,7 +45,7 @@ class PasswordResetRequestForm extends Model
         ]);
         $password_reset_ip=intval(Yii::$app->cache->memcache->get('password_reset_ip:'.\Yii::$app->request->userIp));
         $password_reset_email=intval(Yii::$app->cache->memcache->get('password_reset_email:'.$this->email));
-        if($password_reset_ip>=5 || $password_reset_email>=10)
+        if((Yii::$app->sys->password_reset_ip!==false && $password_reset_ip>=intval(Yii::$app->sys->password_reset_ip)) || (Yii::$app->sys->password_reset_email!==false && $password_reset_email>=intval(Yii::$app->sys->password_reset_email)))
         {
           $this->addError('email', \Yii::t('app','Too many password reset requests. Please wait and try again later.'));
           return false;
@@ -66,8 +66,8 @@ class PasswordResetRequestForm extends Model
         }
         $password_reset_ip++;
         $password_reset_email++;
-        Yii::$app->cache->memcache->set('password_reset_ip:'.\Yii::$app->request->userIp,$password_reset_ip, 3600);
-        Yii::$app->cache->memcache->set('password_reset_email:'.$this->email,$password_reset_email, 3600);
+        Yii::$app->cache->memcache->set('password_reset_ip:'.\Yii::$app->request->userIp,$password_reset_ip, \Yii::$app->sys->password_reset_ip_timeout);
+        Yii::$app->cache->memcache->set('password_reset_email:'.$this->email,$password_reset_email, \Yii::$app->sys->password_reset_email_timeout);
         $message=Yii::$app
         ->mailer
         ->compose(
