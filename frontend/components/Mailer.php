@@ -1,7 +1,7 @@
 <?php
 namespace app\components;
 use Yii;
-class Mailer extends \yii\swiftmailer\Mailer
+class Mailer extends \yii\symfonymailer\Mailer
 {
   public function init()
   {
@@ -9,30 +9,33 @@ class Mailer extends \yii\swiftmailer\Mailer
 
     $this->useFileTransport=Yii::$app->sys->mail_useFileTransport;
 
+    $config['scheme']='smtp';
+    $config['local_domain']=\Yii::$app->sys->moderator_domain;
     if(Yii::$app->sys->mail_host !== false)
     {
-      $this->transport->setHost(Yii::$app->sys->mail_host);
+      $config['host']=Yii::$app->sys->mail_host;
     }
 
     if(Yii::$app->sys->mail_port !== false)
     {
-      $this->transport->setPort(Yii::$app->sys->mail_port);
+      $config['port']=Yii::$app->sys->mail_port;
     }
 
     if(Yii::$app->sys->mail_username !== false)
     {
-      $this->transport->setUserName(Yii::$app->sys->mail_username);
+      $config['username']=Yii::$app->sys->mail_username;
     }
 
     if(Yii::$app->sys->mail_password !== false)
     {
-      $this->transport->setPassword(Yii::$app->sys->mail_password);
+      $config['password']=Yii::$app->sys->mail_password;
     }
 
-    if(Yii::$app->sys->mail_encryption !== false)
+    if(Yii::$app->sys->mail_encryption !== false && trim(Yii::$app->sys->mail_encryption)!='')
     {
-      $this->transport->setEncryption(Yii::$app->sys->mail_encryption);
+      $config['scheme']=Yii::$app->sys->mail_encryption;
     }
+
     if(Yii::$app->sys->mail_verify_peer !== false)
     {
       $this->ssl['verify_peer']=Yii::$app->sys->mail_verify_peer;
@@ -41,6 +44,6 @@ class Mailer extends \yii\swiftmailer\Mailer
     {
       $this->ssl['verify_peer_name']=Yii::$app->sys->mail_verify_peer_name;
     }
-
+    $this->setTransport($config);
   }
 }
