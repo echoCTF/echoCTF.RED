@@ -45,18 +45,18 @@ $config=[
     'components' => [
       'i18n' => [
         'translations' => [
-            'yii' => [
+          'yii' => [
             'class' => 'yii\i18n\PhpMessageSource',
+          ],
+          'app*' => [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'basePath' => '@app/messages',
+            'sourceLanguage' => 'en-US',
+            'fileMap' => [
+                'app' => 'app.php',
+                'app/error' => 'error.php',
             ],
-            'app*' => [
-                'class' => 'yii\i18n\PhpMessageSource',
-                'basePath' => '@app/messages',
-                'sourceLanguage' => 'en-US',
-                'fileMap' => [
-                    'app' => 'app.php',
-                    'app/error' => 'error.php',
-                ],
-            ],
+          ],
         ],
       ],
       'sys'=> [
@@ -64,59 +64,56 @@ $config=[
       ],
       'mailer' => [
         'class' => 'app\components\Mailer',
-        'useFileTransport' => false,
-        'viewPath' => '@app/mail/layouts',
         'transport' => [
-            'class' => 'Swift_SmtpTransport',
-            'port' => '25',
+            'dsn'=>'native://default',
         ],
       ],
-        'session' => [
-          'class' => 'yii\web\DbSession',
-          'timeout'=>3600 * 1,
-          'sessionTable' => 'muisess',
+      'session' => [
+        'class' => 'yii\web\DbSession',
+        'timeout'=>3600 * 1,
+        'sessionTable' => 'muisess',
+      ],
+      'formatter' => [
+          'class' => 'app\models\AppFormatter',
+      ],
+      'request' => [
+          'parsers' => [
+              'application/json' => 'yii\web\JsonParser',
+          ],
+          'cookieValidationKey' => $cookieValidationKey,
+          'enableCsrfCookie' => false,
+      ],
+      'cache' => $cache_config,
+      'user' => [
+          'identityClass' => 'app\models\User',
+          'enableAutoLogin' => true,
+      ],
+      'errorHandler' => [
+          'errorAction' => 'site/error',
+      ],
+      'log' => [
+          'traceLevel' => YII_DEBUG ? 3 : 0,
+          'targets' => [
+              [
+                  'class' => 'yii\log\FileTarget',
+                  'categories' => ['yii\swiftmailer\Logger::add'],
+                  'levels' => ['error', 'warning'],
+              ],
+          ],
+      ],
+      'db' => $db,
+      'urlManager' => [
+        /*'enablePrettyUrl' => true,
+        'showScriptName' => false,*/
+        'rules' => [
+          ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\target']],
+          ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\targetvariable']],
+          ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\finding']],
+          ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\treasure']],
+          ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\hint']],
+          ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\syncfiles']],
         ],
-        'formatter' => [
-            'class' => 'app\models\AppFormatter',
-        ],
-        'request' => [
-            'parsers' => [
-                'application/json' => 'yii\web\JsonParser',
-            ],
-            'cookieValidationKey' => $cookieValidationKey,
-            'enableCsrfCookie' => false,
-        ],
-        'cache' => $cache_config,
-        'user' => [
-            'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
-        ],
-        'errorHandler' => [
-            'errorAction' => 'site/error',
-        ],
-        'log' => [
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'categories' => ['yii\swiftmailer\Logger::add'],
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
-        'db' => $db,
-        'urlManager' => [
-            /*'enablePrettyUrl' => true,
-            'showScriptName' => false,*/
-            'rules' => [
-              ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\target']],
-              ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\targetvariable']],
-              ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\finding']],
-              ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\treasure']],
-              ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\hint']],
-              ['class' => 'yii\rest\UrlRule', 'controller' => ['app\modules\restapi\controllers\syncfiles']],
-            ],
-        ],
+      ],
     ],
     'params' => $params,
 ];

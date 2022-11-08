@@ -14,68 +14,46 @@ $config=[
         '@tests' => '@app/tests',
     ],
     'components' => [
-        'i18n' => [
-          'translations' => [
-            'yii' => [
-              'class' => 'yii\i18n\PhpMessageSource',
+      'i18n' => [
+        'translations' => [
+          'yii' => [
+            'class' => 'yii\i18n\PhpMessageSource',
+          ],
+          'app*' => [
+            'class' => 'yii\i18n\PhpMessageSource',
+            'basePath' => '@app/messages',
+            'sourceLanguage' => 'en-US',
+            'fileMap' => [
+              'app' => 'app.php',
+              'app/error' => 'error.php',
             ],
-            'app*' => [
-              'class' => 'yii\i18n\PhpMessageSource',
-              'basePath' => '@app/messages',
-              'sourceLanguage' => 'en-US',
-              'fileMap' => [
-                'app' => 'app.php',
-                'app/error' => 'error.php',
+          ],
+        ],
+      ],
+      'sales' => [
+          'class' => 'app\modules\sales\Module',
+      ],
+      'sys'=> [
+        'class' => 'app\components\Sysconfig',
+      ],
+      'mailer' => [
+        'class' => 'app\components\Mailer',
+        'transport' => [
+          'dsn'=>'native://default',
+        ],
+      ],
+      'cache' => [
+          'class' => 'yii\caching\FileCache',
+      ],
+      'log' => [
+          'targets' => [
+              [
+                  'class' => 'yii\log\FileTarget',
+                  'levels' => ['error', 'warning'],
               ],
-            ],
           ],
-        ],
-        'sales' => [
-            'class' => 'app\modules\sales\Module',
-        ],
-        'sys'=> [
-          'class' => 'app\components\Sysconfig',
-        ],
-        'mailer' => [
-          'class' => 'app\components\Mailer',
-          'useFileTransport' => false,
-//          'viewPath' => '@app/mail/layouts',
-          'transport' => [
-              'class' => 'Swift_SmtpTransport',
-              'port' => '25',
-          ],
-        ],
-//        'mailer' => [
-//          'class' => 'yii\swiftmailer\Mailer',
-//          'useFileTransport' => true,
-//          'viewPath' => '@app/mail/layouts',
-//          'transport' => [
-//              'class' => 'Swift_SmtpTransport',
-//              'host' => 'smtp.gmail.com',
-//              'username' => 'username',
-//              'password' => 'password',
-//              'port' => '587',
-//              'encryption' => 'tls',
-//              'streamOptions' => [
-//                'ssl' => [
-//                    'verify_peer' => false,
-//                    'verify_peer_name' => false,
-//                ],
-//              ],
-//          ],
-//        ],
-        'cache' => [
-            'class' => 'yii\caching\FileCache',
-        ],
-        'log' => [
-            'targets' => [
-                [
-                    'class' => 'yii\log\FileTarget',
-                    'levels' => ['error', 'warning'],
-                ],
-            ],
-        ],
-        'db' => $db,
+      ],
+      'db' => $db,
     ],
     'params' => $params,
     'controllerMap' => [
