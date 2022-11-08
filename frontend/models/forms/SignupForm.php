@@ -34,7 +34,7 @@ class SignupForm extends Model
             ['username', 'trim'],
             ['username', 'required'],
             ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This username has already been taken.')],
-            ['username', 'string', 'min' => 5, 'max' => 32],
+            ['username', 'string', 'min' => intval(Yii::$app->sys->username_length_min), 'max' => intval(Yii::$app->sys->username_length_max)],
             [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'administrator', 'echoctf', 'root', 'support']],
             [['username'], 'match', 'not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>\Yii::t('app','Invalid characters in username.')],
 
@@ -52,11 +52,11 @@ class SignupForm extends Model
               if(intval($count)!==0)
                   $this->addError($attribute, \Yii::t('app','This email is banned.'));
             }],
-            ['username', '\app\components\validators\HourRegistrationValidator', 'client_ip'=>\Yii::$app->request->userIp],
-            ['username', '\app\components\validators\TotalRegistrationsValidator', 'client_ip'=>\Yii::$app->request->userIp],
-            ['email', '\app\components\validators\StopForumSpamValidator', ],
+            ['username', '\app\components\validators\HourRegistrationValidator',    'client_ip'=>\Yii::$app->request->userIp, 'max'=>Yii::$app->sys->signup_HourRegistrationValidator,'when' => function($model) { return Yii::$app->sys->signup_HourRegistrationValidator!==false;}],
+            ['username', '\app\components\validators\TotalRegistrationsValidator',  'client_ip'=>\Yii::$app->request->userIp, 'max'=>Yii::$app->sys->signup_TotalRegistrationsValidator,'when' => function($model) { return Yii::$app->sys->signup_TotalRegistrationsValidator!==false;}],
+            ['email',    '\app\components\validators\StopForumSpamValidator',       'max'=>Yii::$app->sys->signup_StopForumSpamValidator,'when' => function($model) { return Yii::$app->sys->signup_StopForumSpamValidator!==false;}],
+            ['email',   '\app\components\validators\MXServersValidator',            'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false;}],
             //['email', '\app\components\validators\WhoisValidator', ],
-            ['email', '\app\components\validators\MXServersValidator', ],
 
             ['captcha', 'captcha'],
 
@@ -105,8 +105,8 @@ class SignupForm extends Model
           $pr->referred_id=$player->id;
           $pr->save();
         }
-        $counter=intval(\Yii::$app->sys->{'registeredip:'.\Yii::$app->request->userIp});
-        Yii::$app->cache->set('registeredip:'.\Yii::$app->request->userIp,$counter+1,3600);
+        $counter=intval(\Yii::$app->cache->memcache->get('registeredip:'.\Yii::$app->request->userIp));
+        Yii::$app->cache->memcache->set('registeredip:'.\Yii::$app->request->userIp,$counter+1,3600);
         if(Yii::$app->sys->require_activation===true)
           return $this->sendEmail($player);
         return true;

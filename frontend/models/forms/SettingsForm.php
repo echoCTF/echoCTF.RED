@@ -82,13 +82,13 @@ class SettingsForm extends Model
             if(intval($count)!==0)
                 $this->addError($attribute, \Yii::t('app','This email is banned.'));
           }],
-          ['email', '\app\components\validators\StopForumSpamValidator', ],
-          ['email', '\app\components\validators\MXServersValidator', ],
+          ['email', '\app\components\validators\StopForumSpamValidator', 'max'=>intval(Yii::$app->sys->signup_StopForumSpamValidator),'when' => function($model) { return Yii::$app->sys->signup_StopForumSpamValidator!==false;}],
+          ['email', '\app\components\validators\MXServersValidator', 'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false;}],
 
 
           /* username field rules */
           [['username'], 'trim'],
-          [['username'], 'string', 'max'=>32],
+          [['username'], 'string', 'min' => intval(Yii::$app->sys->username_length_min), 'max' => intval(Yii::$app->sys->username_length_max)],
           [['username'], 'match', 'not'=>true, 'pattern'=>'/[^a-zA-Z0-9]/', 'message'=>\Yii::t('app','Invalid characters in username.')],
           [['username'], '\app\components\validators\LowerRangeValidator', 'not'=>true, 'range'=>['admin', 'administrator', 'echoctf', 'root', 'support']],
           [['username'], 'required', 'message' => \Yii::t('app','Please choose a username.')],

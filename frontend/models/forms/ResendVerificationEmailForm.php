@@ -42,7 +42,7 @@ class ResendVerificationEmailForm extends Model
     {
         $verification_resend_ip=intval(Yii::$app->cache->memcache->get('verification_resend_ip:'.\Yii::$app->request->userIp));
         $verification_resend_email=intval(Yii::$app->cache->memcache->get('verification_resend_usename:'.$this->email));
-        if($verification_resend_ip>=5 || $verification_resend_email>=10)
+        if((Yii::$app->sys->verification_resend_ip!==false && $verification_resend_ip>=intval(\Yii::$app->sys->verification_resend_ip)) || (Yii::$app->sys->verification_resend_email!==false && $verification_resend_email>=Yii::$app->sys->verification_resend_email))
         {
           $this->addError('email', \Yii::t('app','Too many resend verification attempts. Please wait and try again.'));
           return false;
@@ -54,8 +54,8 @@ class ResendVerificationEmailForm extends Model
         }
         $verification_resend_ip++;
         $verification_resend_email++;
-        Yii::$app->cache->memcache->set('verification_resend_ip:'.\Yii::$app->request->userIp,$verification_resend_ip, 3600);
-        Yii::$app->cache->memcache->set('verification_resend_email:'.$this->email,$verification_resend_email, 3600);
+        Yii::$app->cache->memcache->set('verification_resend_ip:'.\Yii::$app->request->userIp,$verification_resend_ip, Yii::$app->sys->verification_resend_ip_timeout);
+        Yii::$app->cache->memcache->set('verification_resend_email:'.$this->email,$verification_resend_email, Yii::$app->sys->verification_resend_email_timeout);
         return Yii::$app
             ->mailer
             ->compose(

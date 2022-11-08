@@ -81,3 +81,24 @@ backend/yii sysconfig/set academic_1 "AnotherSite.com"
 backend/yii sysconfig/set academic_0short "supersite"
 backend/yii sysconfig/set academic_1short "anothersite"
 ```
+
+
+## Validator Configuration Keys
+* `verification_resend_ip` A number of attempts an IP will stop being able to request verification resend email. `0` disables the verification completely
+* `verification_resend_ip_timeout` the timeout for the verification resend_ip counter
+* `verification_resend_email` A number of attempts a verification resend email can be requested per email. `0` disables the verification completely
+* `verification_resend_email_timeout` the timeout for the verification resend_email counter
+* `password_reset_ip` A number of attempts an IP will stop being able to request password resets. `0` disables teh verification completely
+* `password_reset_ip_timeout` The timeout for the reset_ip counter
+* `password_reset_email` A number of attempts a password reset email can be requested per email. `0` disables the verification completely
+* `password_reset_email_timeout` The timeout for the reset_email counter
+* `signup_TotalRegistrationsValidator` Number of total registrations allowed per single IP overall on the platform. `0` Disables the check completely
+* `signup_HourRegistrationValidator` Number of total registrations per IP allowed. `0` Disables the check completely
+* `signup_StopForumSpamValidator` Percentage of confidence required before we mark an email offensive from StopForumSpam (eg `80`). `0` Disables the check completely
+* `signup_MXServersValidator` Enable/Disable validating `MX` and `IN A` DNS records for given domains. `0` Disables the check completely
+* `failed_login_ip` A number of failed logins are allowed per IP. `0` Disables the check completely
+* `failed_login_ip_timeout` timeout of failed login ip counter expires
+* `failed_login_username` A number of failed logins are allowed per username. `0` Disables the check completely
+* `failed_login_username_timeout` the timeout for the failed login_username counter.
+* `username_length_min` min length for a username
+* `username_length_max` max length for a username

@@ -17,7 +17,7 @@ class HourRegistrationValidator extends Validator
     {
         $this->message=\Yii::t('app',"You reached your maximum registrations for this hour!");
         if(!$this->counter)
-          $this->counter=intval(\Yii::$app->sys->{'registeredip:'.$this->client_ip});
+          $this->counter=intval(\Yii::$app->cache->memcache->get('registeredip:'.$this->client_ip));
         parent::init();
     }
     public function validateValue($value)
