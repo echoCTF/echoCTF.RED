@@ -105,8 +105,8 @@ class SignupForm extends Model
           $pr->referred_id=$player->id;
           $pr->save();
         }
-        $counter=intval(\Yii::$app->cache->get('registeredip:'.\Yii::$app->request->userIp));
-        Yii::$app->cache->set('registeredip:'.\Yii::$app->request->userIp,$counter+1,3600);
+        $counter=intval(\Yii::$app->cache->memcache->get('registeredip:'.\Yii::$app->request->userIp));
+        Yii::$app->cache->memcache->set('registeredip:'.\Yii::$app->request->userIp,$counter+1,3600);
         if(Yii::$app->sys->require_activation===true)
           return $this->sendEmail($player);
         return true;
