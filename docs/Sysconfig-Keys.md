@@ -81,3 +81,14 @@ backend/yii sysconfig/set academic_1 "AnotherSite.com"
 backend/yii sysconfig/set academic_0short "supersite"
 backend/yii sysconfig/set academic_1short "anothersite"
 ```
+
+
+## Validator Configuration Keys
+* `verification_resend_ip` A number of attempts an IP will stop being able to request verification resend email. `0` disables the verification completely
+* `verification_resend_email` A number of attempts a verification resend email can be requested per email. `0` disables the verification completely
+* `password_reset_ip` A number of attempts an IP will stop being able to request password resets. `0` disables teh verification completely
+* `password_reset_email` A number of attempts a password reset email can be requested per email. `0` disables the verification completely
+* `signup_TotalRegistrationsValidator` Number of total registrations allowed per single IP overall on the platform. `0` Disables the check completely
+* `signup_HourRegistrationValidator` Number of total registrations per IP allowed. `0` Disables the check completely
+* `signup_StopForumSpamValidator` Percentage of confidence required before we mark an email offensive from StopForumSpam (eg `80`). `0` Disables the check completely
+* `signup_MXServersValidator` Enable/Disable validating `MX` and `IN A` DNS records for given domains
