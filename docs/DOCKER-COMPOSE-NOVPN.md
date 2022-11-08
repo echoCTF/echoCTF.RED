@@ -79,32 +79,21 @@ Perform the needed migrations and initialize needed application data
 docker exec -it echoctfred_backend ./backend/yii migrate --interactive=0
 docker exec -it echoctfred_backend ./backend/yii init_data --interactive=0
 docker exec -it echoctfred_backend ./backend/yii migrate-sales --interactive=0
+docker exec -it echoctfred_backend ./backend/yii template/emails
 ```
 
-
-Set the mail related system configuration keys by running the following commands from `echoctfred_backend`
-
-```sh
-docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_from dontreply@example.red
-docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_fromName	"Mail From Name"
-docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_host smtp.host.com
-docker exec -it echoctfred_backend ./backend/yii sysconfig/set mail_port 25
-```
-
-
-Create SSL certificates to be used for new users
-```sh
-docker exec -it echoctfred_backend ./backend/yii ssl/create-ca
-docker exec -it echoctfred_backend ./backend/yii ssl/create-cert
-```
-
-
-Create a backend user and a frontend user by executing the following commands
+Create a backend user
 ```sh
 # backend user
 docker exec -it echoctfred_backend ./backend/yii user/create username email password
-# frontend player
-docker exec -it echoctfred_backend ./backend/yii player/register "username" "email" "fullname" "password" offense 1
+```
+
+Login to the backend and go to Settings=>Configure to complete your system configuration. Once you are done configuring the system you can continue with the following steps.
+
+Create SSL certificates to be used for new players (REQUIRES CONFIGURED SYSTEM)
+```sh
+docker exec -it echoctfred_backend ./backend/yii ssl/create-ca
+docker exec -it echoctfred_backend ./backend/yii ssl/create-cert
 ```
 
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png" alt="docker-compose-novpn-topology" height="400px"/></center>

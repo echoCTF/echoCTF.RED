@@ -37,16 +37,8 @@ cp frontend/config/db-local.php frontend/config/db.php
 
 Install required composer files
 ```sh
-cd backend
-composer install --no-dev --prefer-dist --no-progress --no-suggest
-cd ../frontend
-composer install --no-dev --prefer-dist --no-progress --no-suggest
-cd ..
-```
-
-* Import the initial data (countries, avatars, experience etc)
-```
-./backend/yii init_data --interactive=0
+composer install --no-dev --prefer-dist --no-progress --no-suggest -d backend/
+composer install --no-dev --prefer-dist --no-progress --no-suggest -d frontend/
 ```
 
 * Install the needed migrations
@@ -54,9 +46,10 @@ cd ..
 ./backend/yii migrate --interactive=0
 ./backend/yii init_data --interactive=0
 ./backend/yii migrate-sales --interactive=0
+./backend/yii template/emails --interactive=0
 ```
 
-* The migrations for the live platform at https://echoCTF.RED are stored here. You don't need to run this as it will most likely fail.
+* The migrations for the live platform at https://echoCTF.RED are stored here. You don't need to run this as it will most likely fail, however you can use it to store your own modifications so that you can always apply them on future updates.
 ```
 ./echoCTF.RED/backend/yii migrate-red --interactive=0
 ```
