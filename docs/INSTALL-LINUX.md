@@ -9,7 +9,7 @@ The guide assumes Debian 10 (buster).
 ```sh
 apt-get update
 apt-get install build-essential gcc git mariadb-server mariadb-client mcrypt \
-memcached libmemcached-dev apache2 libtool libmariadbclient-dev autoconf \
+memcached libmemcached-dev apache2 libtool libmariadb-dev autoconf \
 automake php composer php-gd php-mbstring php-mysqli php-dom php-intl \
 php-curl php-memcached
 ```
@@ -88,10 +88,8 @@ chown www-data backend/runtime frontend/runtime
 
 ### Install composer files
 ```sh
-cd backend
-composer install --no-dev --prefer-dist --no-progress --no-suggest
-cd ../frontend
-composer install --no-dev --prefer-dist --no-progress --no-suggest
+composer install --no-dev --prefer-dist --no-progress --no-suggest -d backend
+composer install --no-dev --prefer-dist --no-progress --no-suggest -d frontend
 ```
 
 ### Run migrations and import initial data
@@ -100,9 +98,10 @@ cd /var/www/echoCTF.RED
 ./backend/yii migrate --interactive=0
 ./backend/yii init_data --interactive=0
 ./backend/yii migrate-sales --interactive=0
+./backend/yii template/mails
 ```
 
-### Create an admin user for the backend.
+### Create an admin user for the backend
 ```sh
 ./backend/yii user/create username email password
 ```
