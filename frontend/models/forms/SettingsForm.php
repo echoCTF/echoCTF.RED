@@ -82,7 +82,7 @@ class SettingsForm extends Model
             if(intval($count)!==0)
                 $this->addError($attribute, \Yii::t('app','This email is banned.'));
           }],
-          ['email', '\app\components\validators\StopForumSpamValidator', 'max'=>Yii::$app->sys->signup_StopForumSpamValidator,'when' => function($model) { return Yii::$app->sys->signup_StopForumSpamValidator!==false;}],
+          ['email', '\app\components\validators\StopForumSpamValidator', 'max'=>intval(Yii::$app->sys->signup_StopForumSpamValidator),'when' => function($model) { return Yii::$app->sys->signup_StopForumSpamValidator!==false;}],
           ['email', '\app\components\validators\MXServersValidator', 'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false;}],
 
 
