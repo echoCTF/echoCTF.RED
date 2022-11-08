@@ -101,4 +101,4 @@ backend/yii sysconfig/set academic_1short "anothersite"
 * `username_length_min` min length for a username
 * `username_length_max` max length for a username
 * `verification_resend_ip_timeout` the timeout for the verification resend_ip counter
-* `verification_resend_usename_timeout` the timeout for the verification resend_username counter
+* `verification_resend_email_timeout` the timeout for the verification resend_email counter
