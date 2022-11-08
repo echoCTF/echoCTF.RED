@@ -6,8 +6,12 @@
 /* @var $exception Exception */
 use yii\helpers\Html;
 use app\widgets\Noti;
+if(property_exists($exception,'statusCode'))
+  $error=\Yii::t('app','Error {statusCode}: ',['event_name'=>Yii::$app->sys->event_name,'statusCode'=>$exception->statusCode]). nl2br(Html::encode($message));
+else
+  $error=\Yii::t('app','Error: ',['event_name'=>Yii::$app->sys->event_name]). nl2br(Html::encode($message));
 
-$this->title=Yii::$app->sys->event_name .' Error '. $exception->statusCode.': '. nl2br(Html::encode($message));
+$this->title=Yii::$app->sys->event_name.' '.$error;
 ?>
 <div class="site-error">
       <div class="row">
@@ -17,8 +21,7 @@ $this->title=Yii::$app->sys->event_name .' Error '. $exception->statusCode.': '.
         <div class="col">
           <h1 class="text-danger"><b><?=\Yii::t('app','Oh noes!!!')?></b></h1>
           <h3 class="text-warning"><?=\Yii::t('app','Look what you did...')?></h3>
-          <h3 class="text-warning"><?=\Yii::t('app','you headshotted the wrong page...')?></h3>
-          <h3 class="text-light">Error <?=$exception->statusCode?>: <?=nl2br(Html::encode($message)) ?></h3>
+          <h3 class="text-light"><?=$error?></h3>
         </div>
       </div>
       <center>
