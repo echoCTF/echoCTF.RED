@@ -68,15 +68,17 @@ class PasswordResetRequestForm extends Model
         $password_reset_email++;
         Yii::$app->cache->memcache->set('password_reset_ip:'.\Yii::$app->request->userIp,$password_reset_ip, 3600);
         Yii::$app->cache->memcache->set('password_reset_email:'.$this->email,$password_reset_email, 3600);
-        return Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
-                ['user' => $player]
-            )
-            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
-            ->setTo([$player->email => $player->fullname])
-            ->setSubject(\Yii::t('app','Password reset request for {event_name}',['event_name'=>trim(Yii::$app->sys->event_name)]))
-            ->send();
+        $message=Yii::$app
+        ->mailer
+        ->compose(
+            ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
+            ['user' => $player]
+        )
+        ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
+        ->setTo([$player->email => $player->fullname])
+        ->setSubject(\Yii::t('app','Password reset request for {event_name}',['event_name'=>trim(Yii::$app->sys->event_name)]));
+        $message->addHeader('X-tag', 'password-reset');
+        $message->addHeader('X-Metadata-Requestor-IP', \Yii::$app->request->userIp);
+        return $message->send();
     }
 }
