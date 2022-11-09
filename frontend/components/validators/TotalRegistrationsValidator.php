@@ -24,7 +24,7 @@ class TotalRegistrationsValidator extends Validator
     }
     public function validateValue($value)
     {
-      if (intval($this->counter)>=$this->max)
+      if (\Yii::$app->sys->signup_TotalRegistrationsValidator!==false && intval($this->counter)>=$this->max)
       {
         return [$this->message, [
             'username' => $value,
@@ -34,7 +34,7 @@ class TotalRegistrationsValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        if (intval($this->counter)>=$this->max)
+        if (\Yii::$app->sys->signup_TotalRegistrationsValidator!==false && intval($this->counter)>=$this->max)
         {
             $model->addError($attribute, $this->message);
         }
@@ -42,6 +42,8 @@ class TotalRegistrationsValidator extends Validator
 
     public function clientValidateAttribute($model, $attribute, $view)
     {
+      if(\Yii::$app->sys->signup_TotalRegistrationsValidator!==false)
+      {
         $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
         return <<<JS
 if ({$this->counter}>={$this->max}) {
@@ -49,5 +51,6 @@ if ({$this->counter}>={$this->max}) {
     return false;
 }
 JS;
+      }
     }
 }
