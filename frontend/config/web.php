@@ -124,7 +124,7 @@ $config=[
               ],
               'app\assets\MaterialAsset' => [
                   'siteTitle' => '',
-                  'logoMini' => '/images/logo-red-small.png',
+                  'logoMini' => '/images/logo-small.png',
                   'sidebarColor' => 'echoctf',
                   'sidebarBackgroundColor' => 'black',
               ],

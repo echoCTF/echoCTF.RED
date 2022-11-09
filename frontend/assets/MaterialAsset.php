@@ -18,7 +18,7 @@ use yii\web\AssetBundle;
 class MaterialAsset extends AssetBundle
 {
     public $siteTitle='echoCTF.RED';
-    public $logoMini='/images/logo-red-small.png';
+    public $logoMini='/images/logo-small.png';
     public $sidebarColor='';
     public $sidebarBackgroundColor='black';
     public $sidebarBackgroundImage='';
