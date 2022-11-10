@@ -19,6 +19,8 @@ class StopForumSpamValidator extends Validator
     }
     public function validateValue($value)
     {
+      if(\Yii::$app->sys->signup_StopForumSpamValidator===false)
+        return;
       $data = array(
           'email' => $value,
           'json'=>'',
@@ -51,6 +53,8 @@ class StopForumSpamValidator extends Validator
     }
     public function validateAttribute($model, $attribute)
     {
+      if(\Yii::$app->sys->signup_StopForumSpamValidator===false)
+        return;
         $value = $model->$attribute;
         $data = array(
             'email' => $value,

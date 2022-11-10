@@ -22,7 +22,7 @@ class HourRegistrationValidator extends Validator
     }
     public function validateValue($value)
     {
-      if (intval($this->counter)>=$this->max)
+      if (\Yii::$app->sys->signup_HourRegistrationValidator!==false && intval($this->counter)>=$this->max)
       {
         return [$this->message, [
             'signup_ip' => $value,
@@ -33,7 +33,7 @@ class HourRegistrationValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        if (intval($this->counter)>=$this->max)
+        if(\Yii::$app->sys->signup_HourRegistrationValidator!==false && intval($this->counter)>=$this->max)
         {
             $model->addError($attribute, $this->message);
         }
@@ -41,12 +41,16 @@ class HourRegistrationValidator extends Validator
 
     public function clientValidateAttribute($model, $attribute, $view)
     {
-        $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        return <<<JS
+        if(\Yii::$app->sys->signup_HourRegistrationValidator!==false)
+        {
+            $message = json_encode($this->message, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            return <<<JS
 if ({$this->counter}>={$this->max}) {
     messages.push($message);
     return false;
 }
 JS;
+
+        }
     }
 }
