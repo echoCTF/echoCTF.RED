@@ -10,7 +10,7 @@ class Mailer extends \yii\symfonymailer\Mailer
     $this->useFileTransport=Yii::$app->sys->mail_useFileTransport;
 
     $config['scheme']='smtp';
-    $config['local_domain']=\Yii::$app->sys->frontend_domain;
+    $config['options']['local_domain']=\Yii::$app->sys->offense_domain;
     if(Yii::$app->sys->mail_host !== false)
     {
       $config['host']=Yii::$app->sys->mail_host;
