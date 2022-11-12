@@ -166,11 +166,12 @@ class echoCTFView extends \yii\web\View
       );
     }
 
-    $files=explode("\n",\Yii::$app->sys->js_override);
+    $files=explode("\n",trim(\Yii::$app->sys->js_override));
     foreach($files as $jsfile)
     {
+      if(trim($jsfile)!="")
       $this->registerJsFile(
-          $jsfile,
+          trim($jsfile),
           [
             'possition' => self::POS_END,
             'depends' => [\app\assets\MaterialAsset::class]
@@ -194,11 +195,12 @@ class echoCTFView extends \yii\web\View
     }
 
 
-    $files=explode("\n",\Yii::$app->sys->css_override);
+    $files=explode("\n",trim(\Yii::$app->sys->css_override));
     foreach($files as $cssfile)
     {
+      if(trim($cssfile)!="")
       $this->registerCssFile(
-          $cssfile,
+          trim($cssfile),
           ['depends' => [\app\assets\MaterialAsset::class]]
       );
     }
