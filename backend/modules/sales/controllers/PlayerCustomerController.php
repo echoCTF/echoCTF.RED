@@ -57,7 +57,7 @@ class PlayerCustomerController extends \app\components\BaseController
      */
     public function actionFetchStripe()
     {
-      PlayerSubscription::FetchStripe();
+      PlayerCustomerSearch::FetchStripe();
       return $this->redirect(['index']);
     }
 

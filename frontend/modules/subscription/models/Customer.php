@@ -57,8 +57,7 @@ class Customer extends \yii\base\Model
         'name' => Yii::$app->user->identity->fullname,
         'metadata'=> ['player_id'=>Yii::$app->user->id,'profile_id'=>Yii::$app->user->identity->profile->id,'twitter'=>Yii::$app->user->identity->profile->twitter]
       ]);
-      Yii::$app->user->identity->stripe_customer_id=$stripe_customer->id;
-      Yii::$app->user->identity->updateAttributes(['stripe_customer_id']);
+      Yii::$app->user->identity->updateAttributes(['stripe_customer_id'=>$stripe_customer->id]);
       return $stripe_customer;
     }
 
@@ -86,22 +85,26 @@ class Customer extends \yii\base\Model
     public static function existsOnStripe()
     {
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
+      $stripe_customer=null;
       try
       {
-        $stripe_customer = $stripe->customers->retrieve(Yii::$app->user->identity->stripe_customer_id,[]);
-        if($stripe_customer->deleted) throw new \Exception(\Yii::t('app','Deleted stripe customer'));
+        if(Yii::$app->user->identity->stripe_customer_id!="")
+          $stripe_customer = $stripe->customers->retrieve(Yii::$app->user->identity->stripe_customer_id,[]);
+        else
+        {
+          $scus = $stripe->customers->all(['email'=>Yii::$app->user->identity->email,'limit'=>1]);
+          if(count($scus->data)>0)
+            $stripe_customer = $scus->data[0];
+        }
+        if($stripe_customer!=null && $stripe_customer->deleted) throw new \Exception(\Yii::t('app','Deleted stripe customer'));
       }
       catch (\Exception $e)
       {
-        try {
-          $scus = $stripe->customers->all(['email'=>Yii::$app->user->identity->email,'limit'=>1]);
-          $stripe_customer = $scus->data[0];
-        }
-        catch (\Exception $e) {
+        if(Yii::$app->user->identity->stripe_customer_id!="")
           Yii::$app->user->identity->updateAttributes(['stripe_customer_id'=>null]);
-          return false;
-        }
+        return false;
       }
+      if($stripe_customer==null) return false;
       Yii::$app->user->identity->updateAttributes(['stripe_customer_id'=>$stripe_customer->id]);
       return true;
     }
