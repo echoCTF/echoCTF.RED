@@ -7,7 +7,7 @@ use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
 $this->_fluid="-fluid";
 $this->title=Yii::$app->sys->event_name.' Dashboard';
-$this->_description=\Yii::t('app',"The echoCTF dashboard page");
+$this->_description=\Yii::t('app',"The dashboard page");
 $this->registerJsFile('/js/plugins/chartist.min.js',['depends' => 'yii\web\JqueryAsset']);
 $this->registerJsFile('/js/plugins/chartist-plugin-legend.js',['depends' => 'yii\web\JqueryAsset']);
 $this->_url=\yii\helpers\Url::to([null],'https');
