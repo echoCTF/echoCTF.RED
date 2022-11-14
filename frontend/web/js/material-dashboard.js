@@ -300,7 +300,7 @@ md = {
             //  tension: 0
             //}),
             low: 0,
-            high: 200,
+            high: maxHeight,
             onlyInteger: true,
             fullWidth: true,
             height: '200px',
