@@ -5,9 +5,21 @@ use yii\widgets\DetailView;
 use app\widgets\Twitter;
 use app\widgets\Card;
 $subscribe=null;
+$module = \app\modules\network\Module::getInstance();
+if($module->checkNetwork($model)!==false)
+{
+  $subscribe="<p>".Html::a(\Yii::t('app','Go to Network'),
+      Url::to(['/network/default/view','id'=>$model->id]),
+      [
+        'title' => \Yii::t('app','Go to network'),
+        'class'=>'btn btn-primary text-dark font-weight-bold orbitron',
+        'aria-label'=>\Yii::t('app','Go to network'),
+        'data-pjax' => '0',
+      ]
+  )."</p>";
+}
 if(array_key_exists('subscription',Yii::$app->modules)!==false)
 {
-  $module = \app\modules\network\Module::getInstance();
   if($module->checkNetwork($model)===false)
   {
     $subscribe="<p>".Html::a(\Yii::t('app','Subscribe'),
@@ -16,17 +28,6 @@ if(array_key_exists('subscription',Yii::$app->modules)!==false)
                 'title' => \Yii::t('app','Subscribe to access this network'),
                 'class'=>'btn btn-danger text-dark font-weight-bold orbitron',
                 'aria-label'=>\Yii::t('app','Subscribe to access this network'),
-                'data-pjax' => '0',
-              ]
-          )."</p>";
-  }
-  else {
-    $subscribe="<p>".Html::a(\Yii::t('app','Go to Network'),
-              Url::to(['/network/default/view','id'=>$model->id]),
-              [
-                'title' => \Yii::t('app','Go to network'),
-                'class'=>'btn btn-primary text-dark font-weight-bold orbitron',
-                'aria-label'=>\Yii::t('app','Go to network'),
                 'data-pjax' => '0',
               ]
           )."</p>";
