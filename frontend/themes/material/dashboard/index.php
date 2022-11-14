@@ -171,7 +171,11 @@ $this->_url=\yii\helpers\Url::to([null],'https');
 <?php
 if(!empty($dayActivity))
 {
-  $this->registerJs("maxHeight=".max($dayActivity['overallSeries'])."+10;",1);
+  if(intval(max($dayActivity['overallSeries']))>0)
+    $this->registerJs("maxHigh=".max($dayActivity['overallSeries'])."+10;",1);
+  else
+    $this->registerJs("maxHigh=20;",1);
+
   $this->registerJs(
       "dataLastDaysActivityChart = {
         labels: [".implode($dayActivity['labels'],",")."],
