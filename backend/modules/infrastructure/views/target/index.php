@@ -51,9 +51,22 @@ yii\bootstrap\Modal::end();
             ],
             'scheduled_at:dateTime',
             'rootable:boolean',
+            'instance_allowed:boolean',
             'active:boolean',
             'timer:boolean',
-            'difficulty',
+            [
+              'attribute'=>'difficulty',
+              'filter'=>[
+                0=>"beginner",
+                1=>"basic",
+                2=>"intermediate",
+                3=>"advanced",
+                4=>"expert",
+                5=>"guru",
+                6=>"insane",
+              ],
+            ],
+
             [
               'label' => 'Headshots',
               'attribute' => 'headshot',

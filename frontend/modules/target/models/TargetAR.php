@@ -32,6 +32,10 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int|null $required_xp
  * @property string $ts
  * @property bool $timer
+ * @property bool $instance_allowed
+ * @property bool $writeup_allowed
+ * @property bool $headshot_spin
+ * @property bool $healthcheck
  * @property int|null $weight
  * @property float|null $player_rating
  *
@@ -101,6 +105,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
             'timer'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'player_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'headshot_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'instance_allowed'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
             'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
             'on_ondemand' => AttributeTypecastBehavior::TYPE_BOOLEAN,
@@ -123,7 +128,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
       return [
         [['description'], 'string'],
         [['ip'], 'required'],
-        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','timer','writeup_allowed','player_spin','headshot_spin'], 'integer'],
+        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','timer','writeup_allowed','player_spin','headshot_spin','instance_allowed'], 'integer'],
         [['scheduled_at', 'ts'], 'safe'],
         [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
         [['mac'], 'string', 'max' => 30],

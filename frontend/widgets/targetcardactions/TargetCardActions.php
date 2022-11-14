@@ -69,6 +69,8 @@ class TargetCardActions extends Widget
         // If the target is pending powerup then dont show any actions
         if($this->model->status!=='online' || ($this->model->network && !$this->Network->checkTarget($this->model)))
             return;
+        if(!$this->model->instance_allowed)
+            return;
 
         if(!Yii::$app->user->identity->isVip)
         {
