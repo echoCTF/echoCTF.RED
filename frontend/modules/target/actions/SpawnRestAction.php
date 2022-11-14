@@ -73,7 +73,7 @@ class SpawnRestAction extends \yii\rest\ViewAction
   {
       $model=$this->findTarget($id);
       $action=sprintf('/target/%d/spawn',$model->id);
-      return Yii::$app->DisabledRoute->disabled($action);
+      return $model->instance_allowed && Yii::$app->DisabledRoute->disabled($action);
   }
 
   private function findTarget($id)
