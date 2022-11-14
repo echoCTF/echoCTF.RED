@@ -18,7 +18,6 @@
       net.inet.ip.forwarding: 1
       net.inet.ip.mforwarding: 1
       kern.bufcachepercent: 30
-#      net.inet.ip.ifq.maxlen: 2560
       net.inet.ip.maxqueue: 2048
       kern.somaxconn: 2048
       net.bpf.bufsize: 2097152
@@ -30,7 +29,7 @@
       kern.maxfiles: 104060
     rcctl:
       - { name: check_quotas, state: "disable" }
-      - { name: cron, state: "disable" }
+      - { name: cron, state: "enable" }
       - { name: resolvd, state: "disable" }
       - { name: ntpd, state: "enable" }
       - { name: pflogd, state: "disable" }
@@ -41,10 +40,11 @@
       - { name: mysqld, state: "enable"}
     packages:
       - autoconf-2.69p3
-      - automake-1.16.3
+      - automake%1.16
       - curl
       - git
       - libmemcached
+      - memcached
       - libtool
       - mariadb-server
       - openvpn--
@@ -169,8 +169,6 @@
 
   - name: Bring interface up
     command: sh /etc/netstart {{interconnect_interface}}
-
-
 
   - name: Set APP_DIR to /root/sources
     when: ansible_connection != 'local'
@@ -331,7 +329,7 @@
       - "install -c -o root -g wheel -m 555 heartbeatd.rc /etc/rc.d/heartbeatd"
 
   - name: make install openvpn-updown
-    shell: GOOS=openbsd CGO_ENABLED=0 go build -a -ldflags '-s -w -extldflags "-static"' -gcflags=-G=3 -o /etc/openvpn/openvpn-updown /usr/src/openvpn-updown
+    shell: GOOS=openbsd CGO_ENABLED=0 go build -a -ldflags '-s -w -extldflags "-static"' -o /etc/openvpn/openvpn-updown /usr/src/openvpn-updown
     args:
       chdir: /usr/src/openvpn-updown
 
@@ -552,6 +550,17 @@
 #        user: "root"
 #        pass: ""
 
+  - name: enable memcached
+    command: "rcctl enable {{item}}"
+    with_items:
+      - memcached
+      - heartbeatd
+
+  - name: set memcached flags
+    command: rcctl set memcached flags -s /var/run/memcached/memcached.sock -u _memcached -a 0666
+
+  - name: set heartbeatd flags
+    command: rcctl set heartbeatd flags -s /var/run/memcached/memcached.sock -u _memcached -l pflog2
 
   - name: Set rc scripts order
     raw: rcctl order mysqld findingsd openvpn
