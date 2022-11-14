@@ -62,6 +62,8 @@ class Treasure extends \yii\db\ActiveRecord
             [['description', 'category', 'pubdescription', 'player_type', 'effects','location','suggestion','solution'], 'string'],
             [['points'], 'number'],
             [['weight'], 'default','value'=>0],
+            [['effects'], 'default','value'=>'player'],
+            [['player_type'], 'default','value'=>'offense'],
             [['appears', 'target_id','weight'], 'integer'],
             [['name', 'pubname', 'hint'], 'string', 'max' => 255],
             [['csum', 'code'], 'string', 'max' => 128],
