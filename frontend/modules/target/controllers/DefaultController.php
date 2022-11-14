@@ -123,9 +123,17 @@ class DefaultController extends \app\components\BaseController
                         },
                       ],
                       [
+                        'actions'=>['view','versus','badge'],
+                        'allow' => true,
+                        'roles'=>['@']
+                    ],
+                    [
                           'actions'=>['view','versus','badge'],
                           'allow' => true,
-                          #'roles'=>['*']
+                          'matchCallback' => function () {
+                            return \Yii::$app->sys->target_guest_view_deny===false;
+                          },
+                          'roles'=>['?']
                       ],
                   ],
               ],
