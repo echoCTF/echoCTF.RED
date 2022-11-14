@@ -170,15 +170,18 @@ $this->_url=\yii\helpers\Url::to([null],'https');
 </div>
 <?php
 if(!empty($dayActivity))
-$this->registerJs(
-    "dataLastDaysActivityChart = {
-      labels: [".implode($dayActivity['labels'],",")."],
-      series: [
-        [".implode($dayActivity['playerSeries'],",")."],
-        [".implode($dayActivity['overallSeries'],",")."],
-      ]
-    };
-    LastDaysActivityChart.update(dataLastDaysActivityChart);
-",
-    4
-);
+{
+  $this->registerJs("maxHeight=".max($dayActivity['overallSeries'])."+10;",1);
+  $this->registerJs(
+      "dataLastDaysActivityChart = {
+        labels: [".implode($dayActivity['labels'],",")."],
+        series: [
+          [".implode($dayActivity['playerSeries'],",")."],
+          [".implode($dayActivity['overallSeries'],",")."],
+        ]
+      };
+      LastDaysActivityChart.update(dataLastDaysActivityChart);
+  ",
+      4
+  );
+}
