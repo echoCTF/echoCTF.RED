@@ -126,7 +126,7 @@ if($headshot)
         echo "<p class='text-primary '><i class='fas fa-flag-checkered'></i> ", $target->player_treasures, ": Flags found<br/>";
         echo '<i class="fas fa-fire-alt"></i> ', $target->player_findings, ": Service".($target->player_findings > 1 ? 's' : '')." discovered<br/>";
         echo '<i class="fas fa-calculator"></i> ', number_format($playerPoints), " pts<br/>";
-        echo $player_timer,"<br/>";
+        echo $player_timer,"<br/></p>";
         Card::end();?>
       </div>
   </div>
