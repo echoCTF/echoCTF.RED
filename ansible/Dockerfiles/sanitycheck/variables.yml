@@ -1,0 +1,56 @@
+---
+hostname: sanitycheck
+fqdn: sanitycheck
+rootable: 0
+difficulty: 0
+timer: 0
+healthcheck: 0
+writeup_allowed: 0
+headshot_spin: 0
+instance_allowed: 0
+TargetOndemand: false
+container:
+  name: "{{hostname}}"
+  hostname: "{{fqdn}}"
+  build: "sanitycheck"
+  image: "sanitycheck"
+  state: "started"
+  tag: v0.1
+  mac_address: "{{mac}}"
+  purge_networks: "yes"
+  dns_servers:
+    - "10.0.0.254"
+  networks:
+    - { name: AAnet, ipv4_address: "{{ansible_host}}" }
+  volumes: []
+
+
+ETSCTF_FINDINGS:
+  - {
+      name: "Discovered to the web service of {{hostname}}",
+      pubname: "Discovered to the web service of {{hostname}}",
+      points: 0,
+      stock: -1,
+      protocol: "tcp",
+      port: 80
+    }
+
+ETSCTF_TREASURES:
+  - { #0
+      name: "Got checked for sanity and passed on <b><code>{{hostname}}</code></b>",
+      pubname: "Got checked for sanity and passed on <b><code>{{hostname}}</code></b>",
+      points: 1,
+      player_type: offense,
+      stock: -1,
+      category: "app",
+      location: "http://{{hostname}}/index.html",
+      code: "SanityCheck",
+      fullpath: "/usr/share/nginx/html/index.html",
+      content: "<h1>Welcome here is a flag ETSCTF_SanityCheck</h1>"
+    }
+
+purpose: >
+  Check your sanity with this sanitycheck
+
+description: |
+  <p class="lead">Simple system to verify that you can connect to the VPN and have access to the target systems.</p>
