@@ -51,10 +51,15 @@ make DESTDIR=/usr/lib/x86_64-linux-gnu/mariadb19/plugin/ all install
 mysql mysql < global_user_variables.sql
 ```
 
+### Import the database timezones information
+```sh
+mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql mysql
+```
+
 ### Prepare the database
 ```sh
 cd /var/www/echoCTF.RED
-mysqladmin create echoCTF
+mysql -e "CREATE DATABASE echoCTF CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
 mysql echoCTF<schemas/echoCTF.sql
 mysql echoCTF<schemas/echoCTF-routines.sql
 mysql echoCTF<schemas/echoCTF-triggers.sql

@@ -18,7 +18,7 @@ cd echoCTF.RED
 
 Create a database and import schema
 ```sh
-mysqladmin create echoCTF
+mysql -e "CREATE DATABASE echoCTF CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
 mysql echoCTF<./schemas/echoCTF.sql
 mysql echoCTF<./schemas/echoCTF-routines.sql
 mysql echoCTF<./schemas/echoCTF-triggers.sql

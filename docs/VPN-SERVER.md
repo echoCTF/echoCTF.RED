@@ -163,7 +163,7 @@ sed -e 's#{{db_host}}#172.24.0.253#g' \
 -e 's#{{db_user}}#vpnuser#g' \
 -e 's#{{db_pass}}#vpnuserpass#g' \
 -e 's#{{db_name}}#echoCTF#g' contrib/findingsd-federated.sql > /tmp/findingsd.sql
-mysqladmin create echoCTF
+mysql -e "CREATE DATABASE echoCTF CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
 mysql echoCTF < /tmp/findingsd.sql
 ```
 
@@ -212,6 +212,8 @@ echo "00" > /etc/openvpn/crl/number
 echo "OPENVPN_ADMIN_PASSWORD">/etc/openvpn/private/mgmt.pwd
 ./backend/yii migrate --interactive=0
 ./backend/yii init_data --interactive=0
+./backend/yii migrate-sales --interactive=0
+./backend/yii template/emails --interactive=0
 ./backend/yii ssl/get-ca 1
 ./backend/yii ssl/create-cert "VPN Server"
 mv echoCTF-OVPN-CA.crt /etc/openvpn/private/echoCTF-OVPN-CA.crt
