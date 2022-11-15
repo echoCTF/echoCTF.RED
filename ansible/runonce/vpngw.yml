@@ -473,6 +473,7 @@
       creates: "{{item.creates|default(omit)}}"
       chdir: "{{item.chdir|default(omit)}}"
     with_items:
+    - { cmd: "ln -s {{APP_DIR}}/backend/yii /usr/local/bin/backend"}
     - { cmd: "openssl dhparam -out /etc/openvpn/dh.pem 2048", creates: "/etc/openvpn/dh.pem" }
     - { cmd: "openvpn --genkey secret /etc/openvpn/private/vpn-ta.key", creates: "/etc/openvpn/private/vpn-ta.key" }
     - { cmd: "{{APP_DIR}}/backend/yii migrate --interactive=0" }
@@ -496,6 +497,7 @@
     - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
     - { cmd: "{{APP_DIR}}/backend/yii cron/pf" }
+    - { cmd: "mkdir -p /var/log/cron" }
 
   - name: "Create targets network interface hostname.{{targets_if}}"
     copy:
@@ -520,10 +522,14 @@
       special_time: "{{item.special_time|default(omit)}}"
       job: "{{item.job}}"
     with_items:
-      - { name: "target/healthcheck", minute: "*/2",  job: "{{APP_DIR}}/backend/yii target/healthcheck 1" }
-      - { name: "target/cron", minute: "*/4",  job: "{{APP_DIR}}/backend/yii target/cron" }
-      - { name: "restart targets with 24h uptime or more", minute: "*/10",  job: "{{APP_DIR}}/backend/yii target/restart" }
-      - { name: "Generate CRL", special_time: "daily",  job: "{{APP_DIR}}/backend/yii ssl/generate-crl" }
+      - { name: "Generate CRL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-generate-crl" }
+      - { name: "Expire sales", minute: "*/2",  job: "{{APP_DIR}}/backend/yii sales/expire-subscriptions" }
+      - { name: "Cron Index", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/cron-index" }
+      - { name: "Power Operations", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/powerops" }
+      - { name: "Private Instances", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/instances" }
+      - { name: "restart targets with 24h uptime or more", minute: "*/5",  job: "{{APP_DIR}}/backend/bin/target-restart" }
+      - { name: "Healthcheck", minute: "*/10",  job: "{{APP_DIR}}/backend/bin/healthcheck" }
+
 
   - name: Import echoCTF mysql schemas
     ignore_errors: true
