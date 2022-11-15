@@ -84,13 +84,16 @@ class Stream extends StreamAR
   public function getHeadshotMessage()
   {
     $headshot=\app\modules\game\models\Headshot::findOne(['target_id'=>$this->model_id, 'player_id'=>$this->player_id]);
+    $fmt=\Yii::t('app',"%s managed to headshot");
     $first="";
     if($headshot->first)
-      $first=" first,";
+      $first=" first";
     if(intval($headshot->target->timer)===0 || intval($headshot->timer)===0)
-      return sprintf(\Yii::t('app',"%s managed to headshot")." [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
+    {
+      return sprintf("$fmt [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), $this->suffix);
+    }
 
-    return sprintf(\Yii::t('app',"%s managed to headshot")." [<code>%s</code>]$first in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
+    return sprintf("$fmt [<code>%s</code>]$first, in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id'=>$this->model_id])->name, ['/target/default/view', 'id'=>$this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
   }
 
   public function getChallengeMessage()
