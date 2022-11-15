@@ -1,0 +1,73 @@
+---
+- name: Update container with gameplay data
+  hosts: 127.0.0.1
+  connection: local
+  gather_facts: true
+  serial: 1
+  vars:
+  tasks:
+  - include_vars: /tmp/variables.yml
+
+  - name: Display Default IPv4
+    debug:
+      var: ansible_default_ipv4
+
+  - name: users based on details
+    user:
+      name: "{{item.username}}"
+      shell: "{{item.shell|default('/bin/bash')}}"
+      comment: "{{item.gecos}}"
+      uid: "{{item.uid|default('1000')}}"
+      group: "{{item.group|default('nobody')}}"
+      password: "{{item.password}}"
+      state: present
+      update_password: always
+    with_items: "{{DETAILS}}"
+    when: DETAILS is defined and item.module is defined and item.module=='user'
+
+
+  - name: "Create flags on local filesystem"
+    when: item.path is defined
+    with_items: "{{ETSCTF_TREASURES}}"
+    file:
+      path: "{{item.path}}{{item.code}}"
+      state: touch
+
+
+  - name: "Create flag with content on local filesystem to be used as volumes"
+    when: item.fullpath is defined
+    with_items: "{{ETSCTF_TREASURES}}"
+    lineinfile:
+      create: yes
+      dest: "{{item.fullpath}}"
+      line: '{{item.content}}'
+
+  - name: Replace ETSCTF placeholders
+    when: item.replace is defined
+    with_items: "{{ETSCTF_TREASURES}}"
+    replace:
+      dest: '{{item.file}}'
+      regexp: '{{item.replace}}'
+      replace: 'ETSCTF_{{item.code}}'
+      backup: no
+
+
+  - name: BUILD_COMMANDS.replace
+    when: BUILD_COMMANDS is defined and BUILD_COMMANDS.replace is defined
+    with_items: "{{BUILD_COMMANDS.replace}}"
+    replace:
+      dest: '{{item.file}}'
+      regexp: '{{item.pattern}}'
+      replace: '{{item.value}}'
+      backup: no
+
+  - name: BUILD_COMMANDS.exec
+    when: BUILD_COMMANDS is defined and BUILD_COMMANDS.exec is defined
+    with_items: "{{BUILD_COMMANDS.exec}}"
+    raw: "{{item.cmd}}"
+
+  - name: Create Decoy flags
+    when: ETSCTF_DECOY is defined
+    debug:
+      var: ETSCTF_DECOY
+    with_sequence: start=1 end={{ ETSCTF_DECOY.number }}

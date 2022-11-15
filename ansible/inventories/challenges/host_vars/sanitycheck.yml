@@ -9,13 +9,11 @@ description: >
     truth will be revealed.</p>
 
 questions:
-  - {
-       name: "Are you insane?",
-       description: >
-          Time to answer once and for all the ultimate burning question.
-          <i>Are you insane?</i> and the answer to that is
-          <kbd>No i am NOT!</kbd>
-       points: 10,
-       code: "No i am NOT!",
-       weight: 0,
-    }
+  - name: "Are you insane?",
+    description: >
+      Time to answer once and for all the ultimate burning question.
+      <i>Are you insane?</i> and the answer to that is
+      <kbd>No i am NOT!</kbd>
+   points: 10,
+   code: "No i am NOT!",
+   weight: 0,
