@@ -162,6 +162,7 @@ jQuery( document ).ready(function() {
         splitAdjacentBlockquotes: true,
       });
     converter.setFlavor('github');
+    document.getElementById("markdown-preview").innerHTML=converter.makeHtml(textarea.value);
     textarea.addEventListener( 'keyup', function( event ) {
       var text      = textarea.value,
           html      = converter.makeHtml(text);
