@@ -158,7 +158,8 @@ class WriteupController extends \app\components\BaseController
         $model = $this->findModel(Yii::$app->user->id, $id);
         $oldmodel = $this->findModel(Yii::$app->user->id, $id);
         $oldmodel->scenario=Writeup::SCENARIO_SUBMIT;
-        if ($model->load(Yii::$app->request->post()))
+        $model->scenario=Writeup::SCENARIO_SUBMIT;
+        if ($model->load(Yii::$app->request->post()) && $model->content!==$oldmodel->content )
         {
           $oldmodel->status='PENDING';
           $oldmodel->content=$model->content;
