@@ -17,17 +17,23 @@ $this->registerJsFile('@web/js/showdown.min.js',[
 ]);
 ?>
 <div class="writeup-update">
-  <div class="body-content">
-    <h2><?= Html::encode('Writeup for '.$model->target->name. ' / '.long2ip($model->target->ip). ' #'.$model->target->id) ?></h2>
-    <div class="col">
-      <div class="card bg-dark">
-        <div class="card-body">
-          <h4 class="card-title <?=$model->status==='OK' ? 'text-primary' : 'text-warning'?>">Status: <?=$model->status?></h4>
-          <?= $this->render('_form', [
-              'model' => $model,
-          ]) ?>
+  <div class="row">
+    <div class="col-md-6 col-lg-7 body-content">
+      <h2><?= Html::encode('Writeup for '.$model->target->name. ' / '.long2ip($model->target->ip). ' #'.$model->target->id) ?></h2>
+      <div class="col">
+        <div class="card bg-dark">
+          <div class="card-body">
+            <h4 class="card-title <?=$model->status==='OK' ? 'text-primary' : 'text-warning'?>">Status: <?=$model->status?></h4>
+            <?= $this->render('_form', [
+                'model' => $model,
+            ]) ?>
+          </div>
         </div>
       </div>
     </div>
+    <div class="col-md-6 col-lg-5">
+      <h2>Preview</h2>
+      <div id="markdown-preview" class="markdown" style="zoom: 80%;"></div>
+    </div><!--/col-->
   </div>
 </div>

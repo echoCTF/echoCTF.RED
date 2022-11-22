@@ -34,7 +34,7 @@ $this->registerJsFile('@web/js/showdown.min.js',[
         </div>
       </div>
     </div><!--/col-->
-    <div class="col">
+    <div class="col-md-6 col-lg-5">
       <h2>Preview</h2>
       <div id="markdown-preview" class="markdown" style="zoom: 80%;"></div>
     </div><!--/col-->
