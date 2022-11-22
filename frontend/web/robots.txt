@@ -1,4 +1,4 @@
-Sitemap: https://echoCTF.RED/sitemap.xml
+#Sitemap: https://echoCTF.RED/sitemap.xml
 # 3 day delay
 User-agent: AhrefsBot
 Crawl-Delay: 259200
