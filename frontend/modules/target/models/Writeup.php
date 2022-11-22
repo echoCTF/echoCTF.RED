@@ -65,8 +65,8 @@ class Writeup extends \yii\db\ActiveRecord
             [['player_id', 'target_id'], 'integer'],
             [['approved'], 'boolean'],
             [['approved'], 'default','value'=>false],
-            [['content', 'status', 'comment'], 'string'],
             ['formatter', 'default','value'=>'text'],
+            [['status', 'comment'], 'string'],
             [['content'], 'filter','filter'=>'trim'],
             [['content'], 'string','skipOnEmpty'=>false, 'min'=>'20'],
             ['status','default','value'=>'PENDING'],
@@ -161,7 +161,7 @@ class Writeup extends \yii\db\ActiveRecord
      */
     public function getAverageRating()
     {
-      return $item->getRatings()->average('rating');
+      return $this->getRatings()->average('rating');
     }
 
     public function getAverageRatingName()
