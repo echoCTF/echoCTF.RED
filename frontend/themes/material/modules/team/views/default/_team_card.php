@@ -9,6 +9,7 @@ $dataProvider=new ArrayDataProvider([
     'sort' =>false,
     'pagination' => false,
 ]);
+
 ?>
 <div class="card card-profile team-card<?=$model->inviteonly && !$invite? " bg-dark": ""?>">
   <div class="card-avatar bg-primary">
