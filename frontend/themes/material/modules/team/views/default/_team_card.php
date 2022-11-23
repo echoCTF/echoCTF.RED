@@ -9,6 +9,7 @@ $dataProvider=new ArrayDataProvider([
     'sort' =>false,
     'pagination' => false,
 ]);
+
 ?>
 <div class="card card-profile team-card<?=$model->inviteonly && !$invite? " bg-dark": ""?>">
   <div class="card-avatar bg-primary">
@@ -17,7 +18,7 @@ $dataProvider=new ArrayDataProvider([
 
   <div class="card-body">
     <h4 class="card-title"><?=Html::encode($model->name)?></h4>
-    <h6 class="badge badge-secondary"><?=\Yii::t('app','{points,plural,=0{0 points} =1{# point} other{# points}}',['points'=>$model->score !== null ? number_format($model->score->points) : 0])?></h6>
+    <h6 class="badge badge-secondary"><?=\Yii::t('app','{points,plural,=0{0 points} =1{# point} other{# points}}',['points'=>$model->score !== null ? $model->score->points : 0])?></h6>
     <?php if($model->inviteonly):?><h5 class="badge badge-primary"><?=\Yii::t('app','invite only')?></h5><?php endif;?>
 
     <p class="card-description">
