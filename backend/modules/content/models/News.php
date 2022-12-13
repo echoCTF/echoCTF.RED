@@ -5,6 +5,7 @@ namespace app\modules\content\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use app\components\WebhookTrigger as Webhook;
 
 /**
  * This is the model class for table "news".
@@ -65,6 +66,17 @@ class News extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * Post a message to a discord webhook
+     */
+    public function toDiscord()
+    {
+      $data["avatar_url"]=sprintf("https://%s/images/appicon.png",Yii::$app->sys->offense_domain);
+      $data['username']='echoCTF.RED';
+      $data['content']=$this->body;
+      $client = new Webhook(['url' => Yii::$app->sys->discord_news_webhook,'data'=>json_encode($data)]);
+      return $client->run();
+    }
     /**
      * {@inheritdoc}
      * @return NewsQuery the active query used by this AR class.
