@@ -49,14 +49,20 @@
         fqdn: '{{fqdn}}'
         purpose: '{{purpose}}'
         rootable: "{{rootable|default('0')}}"
+        healthcheck: "{{healthcheck|default('1')}}"
+        category: "{{category|default('')}}"
+        timer: "{{timer|default('1')}}"
+        player_spin: "{{player_spin|default('1')}}"
+        headshot_spin: "{{headshot_spin|default('1')}}"
+        writeup_allowed: "{{writeup_allowed|default('1')}}"
         description: '{{description}}'
         ipoctet: '{{ansible_host}}'
         difficulty: "{{difficulty|default('0')}}"
         mac: '{{mac}}'
         net: '{{container.networks[0].name}}'
         server: 'tcp://{{DOCKER}}:2376'
-        active: "{{ '0' if (scheduled_at is defined) else '1' }}"
         imageparams: "{{imageparams|default(omit)}}"
+        active: "{{ '0' if (scheduled_at is defined) else '1' }}"
 #        active: '{{active|default("0")}}'
         status: "{{ 'powerup' if (scheduled_at is defined) else 'online' }}"
         dns: "{{container.dns_servers[0]|default('8.8.8.8')}}"
@@ -65,6 +71,7 @@
         image: '{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.image | lower}}:{{container.tag|default("latest")}}'
       status_code: 201
 
+# Add network if defined
   - set_fact:
       target_id: "{{newtarget.json.id}}"
     when: container is defined and newtarget is defined and newtarget.json is defined and newtarget.json.id is defined
@@ -72,10 +79,9 @@
 
   - name: Add target to network (if set)
     delegate_to: 127.0.0.1
-#    ignore_errors: true
     tags:
       - UI
-    when: target_id is defined and network is defined #and item.hint is defined
+    when: target_id is defined and network is defined
     uri:
       url: "{{mui.URL}}/index.php?r=restapi/target/add-to-network&id={{target_id}}&codename={{network}}&access-token={{TOKEN}}"
       validate_certs: false
@@ -105,6 +111,22 @@
         post_exploitation: "{{metadata.post_exploitation|default('')}}"
       status_code: [201, 200]
 
+  - name: create Target Ondemand
+    delegate_to: 127.0.0.1
+#    ignore_errors: true
+    tags:
+      - UI
+    when: target_id is defined and TargetOndemand is defined
+    uri:
+      url: "{{mui.URL}}/index.php?r=restapi/target-ondemand/create&access-token={{TOKEN}}"
+      validate_certs: false
+      method: POST
+      body_format: json
+      body:
+        target_id: "{{target_id}}"
+        player_id: ""
+      status_code: [201, 200]
+
   - name: create Network Target Schedule
     delegate_to: 127.0.0.1
 #    ignore_errors: true
@@ -118,9 +140,10 @@
       body_format: json
       body:
         target_id: "{{target_id}}"
-        network_id: "{{NetworkTargetSchedule.network_id|default('')}}"
-        migration_date: "{{NetworkTargetSchedule.migration_date}}"
+        network_id: "{{item.network_id|default('')}}"
+        migration_date: "{{item.migration_date}}"
       status_code: [201, 200]
+    with_items: "{{NetworkTargetSchedule}}"
 
   - name: create variables for target
     delegate_to: 127.0.0.1
