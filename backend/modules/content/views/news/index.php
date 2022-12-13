@@ -4,7 +4,7 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
 /* @var $this yii\web\View */
-/* @var $searchModel app\modules\content\models\NewsSearcj */
+/* @var $searchModel app\modules\content\models\NewsSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'News');
@@ -39,7 +39,21 @@ yii\bootstrap\Modal::end();
             'created_at',
             'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+              'class' => 'yii\grid\ActionColumn',
+              'template' => '{view} {update} {delete} {discord}', // <-- your custom action's name
+              'buttons' => [
+                'discord' => function($url, $model) {
+                  return Html::a('<img src="/images/discord_clyde_purple.svg" width="18px">', ['discord', 'id' => $model->id], [
+                      'class' => '',
+                      'data' => [
+                          'confirm' => 'Are you absolutely sure you want to send this news to the webhook?',
+                          'method' => 'post',
+                        ],
+                  ]);
+                },
+              ]
+            ],
         ],
     ]); ?>
 
