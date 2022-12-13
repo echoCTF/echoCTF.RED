@@ -428,11 +428,19 @@
 
   - name: Create php symlink without version
     file:
-      src: /usr/local/bin/php-{{versions.PHP}}
-      dest: /usr/local/bin/php
+      src: "{{item.src}}"
+      dest: "{{item.dst}}"
       owner: root
       group: wheel
       state: link
+    with_items:
+      - { src: "/usr/local/bin/php-{{versions.PHP}}", dst: "/usr/local/bin/php" }
+      - { src: "/home/moderatorUI/{{domain_name}}/backend/bin/cron-index", dst: "/usr/local/bin/cron-index" }
+      - { src: "/home/moderatorUI/{{domain_name}}/backend/bin/ssl-generate-crl", dst: "/usr/local/bin/ssl-generate-crl" }
+      - { src: "/home/moderatorUI/{{domain_name}}/backend/bin/healthcheck", dst: "/usr/local/bin/healthcheck" }
+      - { src: "/home/moderatorUI/{{domain_name}}/backend/bin/powerops", dst: "/usr/local/bin/powerops" }
+      - { src: "/home/moderatorUI/{{domain_name}}/backend/bin/instances", dst: "/usr/local/bin/instances" }
+      - { src: "/home/moderatorUI/{{domain_name}}/backend/bin/target-restart", dst: "/usr/local/bin/target-restart" }
 
   - name: "configure git to fetch from https:// instead of git://"
     raw: git config --global url."https://".insteadOf "git://"
