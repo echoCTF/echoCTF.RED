@@ -20,7 +20,8 @@ use app\modules\activity\models\Headshot;
 use Docker\API\Model\AuthConfig;
 use app\modules\infrastructure\models\DockerInstance;
 use \yii\helpers\Html as H;
-
+use app\components\WebhookTrigger as Webhook;
+use yii\helpers\Url;
 /**
  * This is the model class for table "target".
  *
@@ -53,7 +54,7 @@ use \yii\helpers\Html as H;
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
  * @property Headshot[] $headshots
- * @property Network[] $network
+ * @property Network $network
  */
 class Target extends TargetAR
 {
@@ -279,22 +280,37 @@ class Target extends TargetAR
     $news->title=sprintf(\Yii::t('app',"New target %s added"),$this->name);
     $news->category=H::img("/images/news/category/new-target.svg",['width'=>'25px']);
     $body=sprintf(\Yii::t('app',"Just a heads up, new target [%s]"),H::a($this->name,'/target/'.$this->id));
+    $bodyPlain=sprintf(\Yii::t('app',"Hey everyone, just a heads up, new target [**%s**] => https://%s/target/%d"),$this->name,Yii::$app->sys->offense_domain,$this->id);
     if($this->network!==null)
     {
+      $bodyPlain=sprintf(\Yii::t('app',"%s got added to the [**%s**]"),$bodyPlain,$this->network->name);
       $news->body=sprintf(\Yii::t('app',"%s, got added in the [%s]"),$body,H::a($this->network->name,'/network/'.$this->network->id));
     }
     else
     {
+      $bodyPlain=sprintf(\Yii::t('app',"%s, got added"),$bodyPlain);
       $news->body=sprintf(\Yii::t('app',"%s, got added"),$body);
     }
 
     if($this->scheduled_at && $this->status=='powerup')
     {
+      $bodyPlain.=sprintf(\Yii::t('app'," and will become available at %s."),$this->scheduled_at);
       $news->body.=sprintf(\Yii::t('app'," and will become available at %s."),$this->scheduled_at);
     }
     elseif($this->status=='online')
     {
+      $bodyPlain.=sprintf(\Yii::t('app'," and is now available."));
       $news->body.=sprintf(\Yii::t('app'," and is now available."));
+    }
+
+    if(Yii::$app->sys->discord_news_webhook!==false)
+    {
+      $bodyPlain.="\n\nWe hope you enjoy and as always Happy Hacking :heart:";
+      $data["avatar_url"]=sprintf("https://%s/images/appicon.png",Yii::$app->sys->offense_domain);
+      $data['username']='echoCTF.RED';
+      $data['content']=$bodyPlain;
+      $client = new Webhook(['url' => Yii::$app->sys->discord_news_webhook,'data'=>json_encode($data)]);
+      $client->run();
     }
 
     if($news->save()===false)

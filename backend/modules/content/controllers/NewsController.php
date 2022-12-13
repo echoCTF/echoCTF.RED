@@ -4,7 +4,7 @@ namespace app\modules\content\controllers;
 
 use Yii;
 use app\modules\content\models\News;
-use app\modules\content\models\NewsSearcj;
+use app\modules\content\models\NewsSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -19,7 +19,14 @@ class NewsController extends \app\components\BaseController
    */
     public function behaviors()
     {
-      return ArrayHelper::merge(parent::behaviors(),[]);
+        return ArrayHelper::merge(parent::behaviors(),[
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'discord' => ['POST'],
+                ],
+            ],
+        ]);
     }
 
     /**
@@ -28,7 +35,7 @@ class NewsController extends \app\components\BaseController
      */
     public function actionIndex()
     {
-        $searchModel = new NewsSearcj();
+        $searchModel = new NewsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -100,6 +107,25 @@ class NewsController extends \app\components\BaseController
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Posts an existing News model to discord webhook
+     * Upon submission (successful or not), the browser will be redirected to the 'index' page and display an appropriate messages.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDiscord($id)
+    {
+      try {
+        $result=$this->findModel($id)->toDiscord();
+        Yii::$app->session->setFlash('success','News item got send to the discord news webhook');
+      }
+      catch (\Exception $e) {
+        Yii::$app->session->setFlash('error','Failed to send news item to discord webhook');
+      }
+      return $this->redirect(['index']);
     }
 
     /**
