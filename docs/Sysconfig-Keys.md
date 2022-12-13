@@ -42,6 +42,7 @@ Not activated by default on current code-base but are going to
 * `admin_player:<PLAYER_ID>` (optional): Set a specific player ID as admin
 * `target_new_days`: How many days is target considered as `new` on the frontend after creation
 * `target_updated_days`: How many days the target is considered as `updated` on the frontend after update
+* `discord_news_webhook`: A discord webhook url to send news and announcements to
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
