@@ -133,11 +133,14 @@ class NetworkTargetSchedule extends \yii\db\ActiveRecord
       $bodyPlain=sprintf(\Yii::t('app',"Just a heads up, the target [%s] => https://%s/target/%d, got migrated to a new network [%s]."),$this->target->name,Yii::$app->sys->offense_domain,$this->target_id,$this->network->name);
       $news->body=sprintf(\Yii::t('app',"Just a heads up, the target [%s], got migrated to a new network [%s]."),H::a($this->target->name,'/target/'.$this->target_id),H::a($this->network->name,'/network/'.$this->network_id));
     }
-    $data["avatar_url"]=sprintf("https://%s/images/appicon.png",Yii::$app->sys->offense_domain);
-    $data['username']='echoCTF.RED';
-    $data['content']=$bodyPlain;
-    $client = new Webhook(['url' => Yii::$app->sys->discord_news_webhook,'data'=>json_encode($data)]);
-    $client->run();
+    if(Yii::$app->sys->discord_news_webhook!==false)
+    {
+      $data["avatar_url"]=sprintf("https://%s/images/appicon.png",Yii::$app->sys->offense_domain);
+      $data['username']='echoCTF.RED';
+      $data['content']=$bodyPlain;
+      $client = new Webhook(['url' => Yii::$app->sys->discord_news_webhook,'data'=>json_encode($data)]);
+      $client->run();
+    }
 
     if($news->save()===false)
       throw new \Exception('Failed to create news entry.');
