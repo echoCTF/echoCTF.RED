@@ -7,9 +7,9 @@ use yii\data\ActiveDataProvider;
 use app\modules\content\models\News;
 
 /**
- * NewsSearcj represents the model behind the search form of `app\modules\content\models\News`.
+ * NewsSearch represents the model behind the search form of `app\modules\content\models\News`.
  */
-class NewsSearcj extends News
+class NewsSearch extends News
 {
     /**
      * {@inheritdoc}
@@ -65,6 +65,8 @@ class NewsSearcj extends News
 
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'category', $this->category]);
+
+        $dataProvider->setSort(['defaultOrder' => ['id'=>SORT_DESC],]);
 
         return $dataProvider;
     }
