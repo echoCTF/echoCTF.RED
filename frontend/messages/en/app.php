@@ -355,6 +355,7 @@ return [
     'The IP of your private instance will become visible once its powered up.' => '',
     'The IP of your private instance.' => '',
     'The IP will be visible once the system is powered up.' => '',
+    'The dashboard page' => '',
     'The echoCTF dashboard page' => '',
     'The experience levels and their point ranges.' => '',
     'The requested challenge could not be found.' => '',
