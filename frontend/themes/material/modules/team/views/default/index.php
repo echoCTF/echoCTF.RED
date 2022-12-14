@@ -1,51 +1,38 @@
 <?php
+
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\ListView;
 
-$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Teams');
+$this->title=Yii::$app->sys->event_name . ' ' . \Yii::t('app', 'Teams');
 $this->_fluid="-fluid";
 
 ?>
 
 <div class="team-index">
   <div class="body-content">
-    <h2><?=Html::encode($this->title)?></h2>
-    <?php if( Yii::$app->user->identity->team===null):?><?=\Yii::t('app','Join a team or <b>{createLink}</b> a new one!',['createLink'=>Html::a(\Yii::t('app','Create'), ['/team/default/create'],['class'=>'btn btn-info btn-sm'])])?><?php endif;?>
+    <h2><?= Html::encode($this->title) ?></h2>
+    <?php if (Yii::$app->user->identity->team === null) : ?><?= \Yii::t('app', 'Join a team or <b>{createLink}</b> a new one!', ['createLink' => Html::a(\Yii::t('app', 'Create'), ['/team/default/create'], ['class' => 'btn btn-info btn-sm'])]) ?><?php endif; ?>
     <hr />
-    <div class="card-deck d-flex justify-content-center">
-    <?php
-    $colsCount = 3;
-    echo ListView::widget([
-          'dataProvider' => $dataProvider,
-          'emptyText'=>'<p class="text-warning"><b>'.\Yii::t('app','Oh! no, there are no teams... Quickly create one :)').'</b></p>',
-          'options' => [
-              'tag' => false,
-          ],
-          'itemOptions' => [
-              'tag' => 'div',
-              'class'=>"col d-flex align-items-stretch flex-column",
-          ],
-          'summary'=>false,
-          'itemView' => '_team_card',
-          'viewParams'=>['invite'=>false],
-          'beforeItem' => function ($model, $key, $index, $widget) use ($colsCount) {
-              if ($index % $colsCount === 0) {
-                  return "<div class='row'>";
-              }
-          },
-          'afterItem' => function ($model, $key, $index, $widget) use ($colsCount) {
-              $content = '';
-              if (($index > 0) && ($index % $colsCount === $colsCount - 1)) {
-                  $content .= "</div>";
-              }
-              return $content;
-          },
+    <div class="row">
+      <?php
+      $colsCount = 3;
+      echo ListView::widget([
+        'dataProvider' => $dataProvider,
+        'emptyText' => '<p class="text-warning"><b>' . \Yii::t('app', 'Oh! no, there are no teams... Quickly create one :)') . '</b></p>',
+        'options' => [
+          'tag' => false,
+        ],
+        'itemOptions' => [
+          'tag' => 'div',
+          'class' => "col col-md-4 col-lg col-xl d-flex justify-content-center align-items-stretch",
+          'style'=>'min-width: 25rem'
+        ],
+        'summary' => false,
+        'itemView' => '_team_card',
+        'viewParams' => ['invite' => false],
       ]);
-      if ($dataProvider->count % $colsCount !== 0) {
-          echo "</div>";
-      }
       ?>
-      </div>
+    </div>
   </div>
 </div>
