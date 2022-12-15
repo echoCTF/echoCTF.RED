@@ -67,7 +67,15 @@ class Sysconfig extends Component
     {
       $this->keyCache=require Yii::getAlias('@app/config/sysconfig.php');
     }
-
+    $raw=Yii::$app->cache->memcache->get('sysconfig_json');
+    $decoded=json_decode($raw);
+    if(json_last_error()===JSON_ERROR_NONE)
+    {
+      foreach($decoded as $obj)
+      {
+        $this->keyCache['sysconfig:'.$obj->id]=$obj->val;
+      }
+    }
     //if(\Yii::$app->cache->memcache instanceof \MemCache)
     //  $this->keyCache=Yii::$app->cache->memcache->get($this->prefetchKeys);
   }
