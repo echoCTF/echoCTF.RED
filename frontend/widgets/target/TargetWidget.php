@@ -125,6 +125,10 @@ class TargetWidget extends Widget
                 'asc' => ['total_headshots'=>SORT_ASC],
                 'desc' => ['total_headshots'=>SORT_DESC],
               ],
+              'difficulty' => [
+                'asc' => ['average_rating'=>SORT_ASC],
+                'desc' => ['average_rating'=>SORT_DESC],
+              ],
               'total_findings' => [
                 'asc' => ['total_findings'=>SORT_ASC],
                 'desc' => ['total_findings'=>SORT_DESC],
