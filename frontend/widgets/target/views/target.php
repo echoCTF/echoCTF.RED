@@ -127,6 +127,8 @@ echo GridView::widget([
               $icon='fa-battery-full';
               break;
             case 5:
+              $icon='fa-user-ninja';
+              break;
             default:
               $icon='fa-user-astronaut';
         }
