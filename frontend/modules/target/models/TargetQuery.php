@@ -34,6 +34,13 @@ class TargetQuery extends \yii\db\ActiveQuery
     return $this->andWhere(['on_network' => 0]);
   }
 
+  public function withAvgRating(){
+    $this->alias('t');
+    $this->select(['t.*']);
+    $this->addSelect([new \yii\db\Expression('if(player_rating>=0,round((player_rating+difficulty)/2),difficulty) as average_rating')]);
+    $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
+    return $this;
+  }
   public function forView($player_id)
   {
     $this->alias('t');
