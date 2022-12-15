@@ -232,6 +232,10 @@ class DefaultController extends \app\components\BaseController
       {
         $target=Target::find()->forView((int) Yii::$app->user->id)->where(['t.id'=>$id])->one();
       }
+      else
+      {
+        $target=Target::find()->withAvgRating()->where(['t.id'=>$id])->one();
+      }
       $treasures=$findings=[];
       foreach($target->treasures as $treasure)
         $treasures[]=$treasure->id;
