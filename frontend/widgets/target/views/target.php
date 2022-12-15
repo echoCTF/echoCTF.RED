@@ -107,9 +107,9 @@ echo GridView::widget([
         'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell',"style"=>'width: 2em'],
         'value'=>function($model) {
 
-          $abbr=Yii::t('app','Ours: {ourRating}, Players: {playersRating}',['ourRating'=>ucfirst($model->difficultyText),'playersRating'=>ucfirst($model->getDifficultyText(round($model->player_rating)))]);
-          $bgcolor="text-difficulty-".$model->difficultyText;
-          switch($model->difficulty)
+          $abbr=Yii::t('app','{avgRating}',['avgRating'=>ucfirst($model->getDifficultyText($model->average_rating))]);
+          $bgcolor="text-difficulty-".$model->getDifficultyText($model->average_rating);
+          switch($model->average_rating)
           {
             case 0:
               $icon='fa-battery-empty';
@@ -132,15 +132,15 @@ echo GridView::widget([
             default:
               $icon='fa-user-astronaut';
         }
-          return sprintf('<abbr title="%s"><i class="fas %s %s" style="font-size: 1.35vw;"></i></abbr>', $abbr, $icon, $bgcolor);
+          return sprintf('<abbr title="%s"><i class="fas %s %s"></i></abbr>', $abbr, $icon, $bgcolor);
         },
       ],
       [
         'visible'=>!in_array('rootable', $hidden_attributes),
         'attribute'=>'rootable',
         'format'=>'raw',
-        'headerOptions' => ['class' => 'text-center', "style"=>'width: 4rem; font-size: 1.6em;'],
-        'contentOptions' => ['class' => 'text-center',  "style"=>'font-size: 1.6em;'],
+        'headerOptions' => ['class' => 'text-center', "style"=>'width: 4rem;'],
+        'contentOptions' => ['class' => 'text-center',],
         'encodeLabel'=>false,
         'label'=>'<abbr title="'.\Yii::t('app','Target rootable or not?').'"><i class="fa fa-hashtag" aria-hidden="true"></i></abbr>',
         'value'=>function($model) {return intval($model->rootable) == 0 ? '' : '<abbr title="Rootable"><i class="fa fa-hashtag"></i></abbr>';},
