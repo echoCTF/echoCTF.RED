@@ -1,6 +1,10 @@
 <?php
 use app\modules\game\models\Headshot;
 use yii\helpers\Html;
+$this->title=\Yii::t('app','{event_name} Target: {target_name}',['event_name'=>Yii::$app->sys->event_name,'target_name'=>$target->name,'ipaddress'=>long2ip($target->ip)]);
+$difficulty=$target->getDifficultyText($target->average_rating);
+$subtitleARR=[$target->category,ucfirst($target->getDifficultyText($target->average_rating)),boolval($target->rootable) ? \Yii::t('app',"rootable") : \Yii::t('app',"non rootable")];
+$subtitle=implode(", ",array_filter($subtitleARR));
 ?>
 <section class="section about-section gray-bg" id="about">
   <div class="container">
@@ -8,7 +12,7 @@ use yii\helpers\Html;
           <div class="col-lg-6">
               <div class="about-text go-to orbitron">
                   <h3 class="text-primary orbitron"><?=$target->name?></h3>
-                  <h4><code class="orbitron"><?=long2ip($target->ip)?></code></h4>
+                  <h4><code class="orbitron"><?=$subtitle?></code></h4>
                   <?=$target->purpose?>
                   <div class="row about-list"></div>
               </div>
@@ -16,13 +20,13 @@ use yii\helpers\Html;
       </div>
       <div class="counter orbitron">
           <div class="row">
-              <div class="col-lg-3">
+              <div class="col-sm-6 col-lg-3">
                   <div class="count-data text-center">
                       <h6 class="count orbitron h2 text-success" data-to="<?=$target->points?>" data-speed="<?=$target->points?>"><?=$target->points?></h6>
                       <p class="m-0px font-w-600"><i class="fas fa-calculator"></i> <?=\Yii::t('app','Points')?></p>
                   </div>
               </div>
-              <div class="col-lg-3">
+              <div class="col-sm-6 col-lg-3">
                   <div class="count-data text-center">
                     <?php
                     $avg=Headshot::find()->where(['target_id'=>$target->id])->average('timer');
@@ -32,7 +36,7 @@ use yii\helpers\Html;
                   </div>
               </div>
 
-              <div class="col-lg-3">
+              <div class="col-sm-6 col-lg-3">
                   <div class="count-data text-center">
                     <?php
                     $counter=Headshot::find()->where(['target_id'=>$target->id])->min('timer');
@@ -41,7 +45,7 @@ use yii\helpers\Html;
                       <p class="m-0px font-w-600"><i class="fas fa-stopwatch"></i> <?=\Yii::t('app','Best time')?></p>
                   </div>
               </div>
-              <div class="col-lg-3">
+              <div class="col-sm-6 col-lg-3">
                   <div class="count-data text-center">
                       <h6 class="count h2 orbitron text-danger" data-to="<?=count($target->headshots)?>" data-speed="<?=count($target->headshots)?>"><?=count($target->headshots)?></h6>
                       <p class="m-0px font-w-600"><i class="fas fa-skull-crossbones"></i> <?=\Yii::t('app','Headshots')?></p>
