@@ -12,6 +12,8 @@
 * `leaderboard_visible_before_event_start`: Show leaderboard before event start
 * `all_players_vip`: Allow all players to have VIP features enabled
 * `target_guest_view_deny`: Deny guests to target/view and target/versus
+* `target_hide_inactive`: Hide inactive targets from the frontend listings. This includes upcoming powerups
+
 
 Not activated by default on current code-base but are going to
 * _`require_activation`_ Whether it is required for users to activate their accounts
