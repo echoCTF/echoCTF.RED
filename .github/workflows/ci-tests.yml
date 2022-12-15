@@ -10,7 +10,7 @@ on:
 
 jobs:
   phpcomposer:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
@@ -52,7 +52,7 @@ jobs:
 
   dockerbuilds:
     needs: [phpcomposer]
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     env:
       GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
     steps:
