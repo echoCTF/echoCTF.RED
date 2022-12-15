@@ -1,6 +1,7 @@
 <?php
 use app\modules\game\models\Headshot;
 use yii\helpers\Html;
+$this->title=\Yii::t('app','{event_name} Target: {target_name}',['event_name'=>Yii::$app->sys->event_name,'target_name'=>$target->name,'ipaddress'=>long2ip($target->ip)]);
 $difficulty=$target->getDifficultyText($target->average_rating);
 ?>
 <section class="section about-section gray-bg" id="about">
