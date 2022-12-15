@@ -18,7 +18,7 @@
         "ruskid/yii2-ip-behavior": "dev-master",
         "overals/yii2-whois": "~1.0.0",
         "stripe/stripe-php": "^7.107",
-        "yiisoft/yii2-symfonymailer": "^2.0"
+        "yiisoft/yii2-symfonymailer": "^3.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
