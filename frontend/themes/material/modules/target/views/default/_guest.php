@@ -3,6 +3,8 @@ use app\modules\game\models\Headshot;
 use yii\helpers\Html;
 $this->title=\Yii::t('app','{event_name} Target: {target_name}',['event_name'=>Yii::$app->sys->event_name,'target_name'=>$target->name,'ipaddress'=>long2ip($target->ip)]);
 $difficulty=$target->getDifficultyText($target->average_rating);
+$subtitleARR=[$target->category,ucfirst($target->getDifficultyText($target->average_rating)),boolval($target->rootable) ? \Yii::t('app',"rootable") : \Yii::t('app',"non rootable")];
+$subtitle=implode(", ",array_filter($subtitleARR));
 ?>
 <section class="section about-section gray-bg" id="about">
   <div class="container">
@@ -10,7 +12,7 @@ $difficulty=$target->getDifficultyText($target->average_rating);
           <div class="col-lg-6">
               <div class="about-text go-to orbitron">
                   <h3 class="text-primary orbitron"><?=$target->name?></h3>
-                  <h4><code class="orbitron"><?=$difficulty?></code></h4>
+                  <h4><code class="orbitron"><?=$subtitle?></code></h4>
                   <?=$target->purpose?>
                   <div class="row about-list"></div>
               </div>
