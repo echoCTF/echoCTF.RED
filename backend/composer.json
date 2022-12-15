@@ -26,7 +26,7 @@
         "cebe/markdown": "~1.2.0",
         "bower-asset/yii2-pjax": "2.0.7.1",
         "ezyang/htmlpurifier": "^4.14",
-        "yiisoft/yii2-symfonymailer": "^2.0"
+        "yiisoft/yii2-symfonymailer": "^3.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
