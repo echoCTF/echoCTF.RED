@@ -24,7 +24,7 @@ if(!Yii::$app->user->isGuest && Yii::$app->user->identity->instance !== NULL && 
 $this->title=\Yii::t('app','{event_name} Target: {target_name} / {ipaddress}',['target_name'=>$target->name,'ipaddress'=>$target_ip,'event_name'=>\Yii::$app->sys->event_name]);
 
 
-$subtitleARR=[$target->category,'<abbr title="Player rating: '.ucfirst($target->getDifficultyText($target->player_rating)).'">'.ucfirst($target->difficultyText).'</abbr>',boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===false ? null:'Timed'];
+$subtitleARR=[$target->category,ucfirst($target->getDifficultyText($target->average_rating)),boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===false ? null:'Timed'];
 $subtitle=implode(", ",array_filter($subtitleARR));
 Card::begin([
             'header'=>'header-icon',
