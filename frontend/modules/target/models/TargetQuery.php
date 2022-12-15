@@ -41,6 +41,7 @@ class TargetQuery extends \yii\db\ActiveQuery
     $this->addSelect(['INET_NTOA(t.ip) as ipoctet']);
     $this->addSelect(['on_ondemand', 'ondemand_state', 'timer_avg']);
     $this->addSelect('total_treasures, total_findings, player_treasures, player_findings, ((player_treasures+player_findings)/(total_treasures+total_findings))*100 as progress, player_rating, total_headshots, total_writeups, approved_writeups,player_points');
+    $this->addSelect([new \yii\db\Expression('if(player_rating>=0,round((player_rating+difficulty)/2),difficulty) as average_rating')]);
     $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
     $this->join('LEFT JOIN', 'target_player_state', 'target_player_state.id=t.id AND target_player_state.player_id=' . intval($player_id));
     return $this;
