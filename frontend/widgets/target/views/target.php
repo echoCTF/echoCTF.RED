@@ -107,7 +107,7 @@ echo GridView::widget([
         'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell',"style"=>'width: 2em'],
         'value'=>function($model) {
 
-          $abbr=Yii::t('app','{avgRating}',['avgRating'=>ucfirst($model->getDifficultyText($model->average_rating))]);
+          $abbr=\Yii::t('app',ucfirst($model->getDifficultyText($model->average_rating)));
           $bgcolor="text-difficulty-".$model->getDifficultyText($model->average_rating);
           switch($model->average_rating)
           {
