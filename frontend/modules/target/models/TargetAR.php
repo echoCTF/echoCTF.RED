@@ -67,6 +67,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
   public $player_finding_points;
   public $player_points;
   public $player_rating;
+  public $average_rating;
   public $ipoctet;
   public $progress;
   public $on_ondemand;
@@ -99,6 +100,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
             'total_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
             'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
             'player_rating' => AttributeTypecastBehavior::TYPE_FLOAT,
+            'average_rating' => AttributeTypecastBehavior::TYPE_INTEGER,
             'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
             'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
             'writeup_allowed'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
