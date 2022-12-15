@@ -107,33 +107,29 @@ echo GridView::widget([
         'headerOptions' => ['class' => 'text-center d-none d-xl-table-cell',"style"=>'width: 2em'],
         'value'=>function($model) {
 
-          $bgcolor="";
           $abbr=Yii::t('app','Ours: {ourRating}, Players: {playersRating}',['ourRating'=>ucfirst($model->difficultyText),'playersRating'=>ucfirst($model->getDifficultyText(round($model->player_rating)))]);
+          $bgcolor="text-difficulty-".$model->difficultyText;
           switch($model->difficulty)
           {
             case 0:
-             $icon='fa-battery-empty';
-              $bgcolor="text-gray";
+              $icon='fa-battery-empty';
               break;
             case 1:
-             $icon='fa-battery-quarter';
-              $bgcolor='red-success';
+              $icon='fa-battery-quarter';
               break;
             case 2:
               $icon='fa-battery-half';
-              $bgcolor="text-secondary";
               break;
             case 3:
-             $icon='fa-battery-three-quarters';
-              $bgcolor="text-warning";
+              $icon='fa-battery-three-quarters';
               break;
             case 4:
-             $bgcolor="text-danger";
               $icon='fa-battery-full';
               break;
+            case 5:
             default:
-             $icon='fa-battery-full';
-          }
+              $icon='fa-user-astronaut';
+        }
           return sprintf('<abbr title="%s"><i class="fas %s %s" style="font-size: 1.35vw;"></i></abbr>', $abbr, $icon, $bgcolor);
         },
       ],
@@ -141,8 +137,8 @@ echo GridView::widget([
         'visible'=>!in_array('rootable', $hidden_attributes),
         'attribute'=>'rootable',
         'format'=>'raw',
-        'headerOptions' => ['class' => 'text-center', "style"=>'width: 4rem'],
-        'contentOptions' => ['class' => 'text-center'],
+        'headerOptions' => ['class' => 'text-center', "style"=>'width: 4rem; font-size: 1.6em;'],
+        'contentOptions' => ['class' => 'text-center',  "style"=>'font-size: 1.6em;'],
         'encodeLabel'=>false,
         'label'=>'<abbr title="'.\Yii::t('app','Target rootable or not?').'"><i class="fa fa-hashtag" aria-hidden="true"></i></abbr>',
         'value'=>function($model) {return intval($model->rootable) == 0 ? '' : '<abbr title="Rootable"><i class="fa fa-hashtag"></i></abbr>';},
