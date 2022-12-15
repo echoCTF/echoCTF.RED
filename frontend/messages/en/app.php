@@ -527,4 +527,11 @@ return [
     '{targetsCount,plural,=0{no targets} =1{# target} other{# targets}}' => '',
     '{writeups,plural,=0{No writeups yet} =1{# Writeup by:} other{# Writeups by:}}' => '',
     'Unable to verify your submission CSRF token, please try again.' => '',
+    "beginner"=>'',
+    "basic"=>'',
+    "intermediate"=>'',
+    "advanced"=>'',
+    "expert"=>'',
+    "guru"=>'',
+    "insane"=>'',
 ];
