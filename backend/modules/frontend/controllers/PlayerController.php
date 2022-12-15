@@ -74,18 +74,19 @@ class PlayerController extends \app\components\BaseController
     public function actionOvpn(int $id)
     {
       $model=$this->findModel($id);
-      if($model->playerSsl!==null)
+      if($model->playerSsl===null)
       {
-        $content=$this->renderPartial('ovpn', ['model'=>$model->playerSsl]);
-        \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
-        \Yii::$app->response->content=$content;
-        \Yii::$app->response->setDownloadHeaders($model->username.'.ovpn', 'application/octet-stream', false, strlen($content));
-        \Yii::$app->response->send();
-        return;
+        \Yii::$app->session->addFlash('warning',\Yii::t('app',"No SSL record exists for this player."));
+        return $this->goBack();
       }
-      \Yii::$app->session->addFlash('warning',"No VPN file exists for your profile.");
+      // bring the first available VPN client template
+      $template=\app\modelscli\VpnTemplate::findOne(['active'=>true,'visible'=>true,'client'=>true]);
+      $content=$this->renderPhpContent("?>".$template->content,['model'=>$model->playerSsl]);
+      \Yii::$app->response->format=\yii\web\Response::FORMAT_RAW;
+      \Yii::$app->response->content=$content;
+      \Yii::$app->response->setDownloadHeaders($model->username.'.ovpn', 'application/octet-stream', false, strlen($content));
+      \Yii::$app->response->send();
       return $this->goBack();
-
     }
 
 
