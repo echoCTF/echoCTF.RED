@@ -125,12 +125,12 @@ class NetworkTargetSchedule extends \yii\db\ActiveRecord
     $news->category=H::img("/images/news/category/target-migration.svg",['width'=>'25px']);
     if($this->network_id===null)
     {
-      $bodyPlain=sprintf(\Yii::t('app',"Just a heads up, the target [%s] => https://%s/target/%d, is now available on the general targets listing."),$this->target->name,Yii::$app->sys->offense_domain,$this->target_id);
+      $bodyPlain=sprintf(\Yii::t('app',"Hi @everyone, just a heads up, the target [**%s**] => https://%s/target/%d is now available for you to headshot in the general targets listing.\n\nHave fun and Happy Hacking :heart:"),$this->target->name,Yii::$app->sys->offense_domain,$this->target_id);
       $news->body=sprintf(\Yii::t('app',"Just a heads up, the target [%s], is now available on the general targets listing."),H::a($this->target->name,'/target/'.$this->target_id));
     }
     else
     {
-      $bodyPlain=sprintf(\Yii::t('app',"Just a heads up, the target [%s] => https://%s/target/%d, got migrated to a new network [%s]."),$this->target->name,Yii::$app->sys->offense_domain,$this->target_id,$this->network->name);
+      $bodyPlain=sprintf(\Yii::t('app',"Hi @everyone, just a heads up, the target [**%s**] => https://%s/target/%d got migrated to the network [**%s**] and its ready for you to headshot.\n\nHave fun and Happy Hacking :heart:"),$this->target->name,Yii::$app->sys->offense_domain,$this->target_id,$this->network->name);
       $news->body=sprintf(\Yii::t('app',"Just a heads up, the target [%s], got migrated to a new network [%s]."),H::a($this->target->name,'/target/'.$this->target_id),H::a($this->network->name,'/network/'.$this->network_id));
     }
     if(Yii::$app->sys->discord_news_webhook!==false)
