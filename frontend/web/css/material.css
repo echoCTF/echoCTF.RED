@@ -914,10 +914,10 @@ mark {
 .vscomplete::before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f714";  }
 .vsincomplete::before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f53e";  }
 
-.text-difficulty-beginner     { color:#ff9d93; }
-.text-difficulty-basic        { color:#df7679; }
-.text-difficulty-intermediate { color:#e26470; }
-.text-difficulty-advanced     { color:#db4254; }
-.text-difficulty-expert       { color:#da1932; }
-.text-difficulty-guru         { color:#c00000; }
-.text-difficulty-insane       { color:#790103; }
+.text-difficulty-beginner     { color:#94c11f; }
+.text-difficulty-basic        { color:#ACB334; }
+.text-difficulty-intermediate { color:#FAB733; }
+.text-difficulty-advanced     { color:#FF8E15; }
+.text-difficulty-expert       { color:#FF4E11; }
+.text-difficulty-guru         { color:#FF0D0D; }
+.text-difficulty-insane       { color:#ff0000; }
