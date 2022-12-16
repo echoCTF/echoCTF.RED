@@ -62,6 +62,10 @@ Admin page target update
        Admin page target solving stats</center>
     </td>
   </tr>
+  <tr>
+  <td colspan="2"><img src="https://user-images.githubusercontent.com/4373752/208010729-fd75b7a5-0f12-4aec-b30f-f7169d1eddbd.png" title="Detailed view of Target Network" /></td>
+  <td><img src="docs/screenshots/networks-listing.png" title="Target Networks listing" /></td>
+  </tr>
 </table>
 
 ## Features

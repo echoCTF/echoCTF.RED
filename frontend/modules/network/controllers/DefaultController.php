@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
+
 /**
  * DefaultController implements the CRUD actions for Network model.
  */
@@ -21,95 +22,122 @@ class DefaultController extends \app\components\BaseController
    */
   public function behaviors()
   {
-      return ArrayHelper::merge(parent::behaviors(),[
-        'access' => [
-          'class' => AccessControl::class,
-          'only' => ['index', 'view', 'subscribe'],
-          'rules' => [
-              'eventStartEnd'=>[
-                 'actions' => ['index', 'view', 'subscribe'],
-              ],
-              'teamsAccess'=>[
-                 'actions' => ['index', 'view', 'subscribe'],
-              ],
-              'disabledRoute'=>[
-                  'actions' => ['index', 'view', 'subscribe'],
-              ],
-              [
-                  'allow' => true,
-                  'roles'=>['@']
-              ],
+    return ArrayHelper::merge(parent::behaviors(), [
+      'access' => [
+        'class' => AccessControl::class,
+        'only' => ['index', 'view','subscribe'],
+        'rules' => [
+          'eventStartEnd' => [
+            'actions' => ['index', 'view', 'subscribe'],
           ],
-      ]]);
+          'teamsAccess' => [
+            'actions' => ['index', 'view', 'subscribe'],
+          ],
+          'disabledRoute' => [
+            'actions' => ['index', 'view', 'subscribe'],
+          ],
+          [
+            'actions' => ['view'],
+            'allow' => true,
+            'roles'=>['?'],
+            'matchCallback'=>function($rule,$action){
+              return Yii::$app->sys->network_view_guest;
+            }
+          ],
+          [
+            'actions' => ['index','view', 'subscribe'],
+            'allow' => true,
+            'roles' => ['@']
+          ],
+        ],
+      ]
+    ]);
   }
 
 
-    /**
-     * Lists all Network models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $dataProvider=new ActiveDataProvider([
-            'query' => Network::find()->active()->orderBy(['weight'=>SORT_ASC,'name'=>SORT_ASC, 'id'=>SORT_ASC]),
-        ]);
+  /**
+   * Lists all Network models.
+   * @return mixed
+   */
+  public function actionIndex()
+  {
+    $dataProvider = new ActiveDataProvider([
+      'query' => Network::find()->active()->orderBy(['weight' => SORT_ASC, 'name' => SORT_ASC, 'id' => SORT_ASC]),
+    ]);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+    return $this->render('index', [
+      'dataProvider' => $dataProvider,
+    ]);
+  }
+  /**
+   * View Network model by id.
+   * @return mixed
+   */
+  public function actionView(int $id)
+  {
+    try {
+      $this->findModel($id);
+    } catch (\Exception $e) {
+      return $this->redirect(['/']);
     }
-    /**
-     * View Network model by id.
-     * @return mixed
-     */
-     public function actionView(int $id)
-     {
-         $tmod=\app\modules\target\models\Target::find();
-         $targetProgressProvider=new ActiveDataProvider([
-             'query' => $tmod->forNet($id)->player_progress(Yii::$app->user->id),
-             'pagination' => [
-                 'pageSizeParam'=>'target-perpage',
-                 'pageParam'=>'target-page',
-             ]
-         ]);
-         $targetProgressProvider->setSort([
-            'defaultOrder' => ['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'difficulty' => SORT_ASC,'ip' => SORT_ASC, 'name' => SORT_ASC],
-            'attributes' => array_merge(
-                $targetProgressProvider->getSort()->attributes,
-                [
-                    'headshots' => [
-                      'asc' => ['total_headshots'=>SORT_ASC],
-                      'desc' => ['total_headshots'=>SORT_DESC],
-                    ],
-                    'total_findings' => [
-                      'asc' => ['total_findings'=>SORT_ASC],
-                      'desc' => ['total_findings'=>SORT_DESC],
-                    ],
-                    'total_treasures' => [
-                      'asc' => ['total_treasures'=>SORT_ASC],
-                      'desc' => ['total_treasures'=>SORT_DESC],
-                    ],
-                    'progress'=>[
-                      'asc'=>['(player_points/total_points)*100'=>SORT_ASC],
-                      'desc'=>['(player_points/total_points)*100'=>SORT_DESC],
-                    ]
-                ]
-            ),
-        ]);
+    $tmod = \app\modules\target\models\Target::find();
+    if (Yii::$app->user->isGuest)
+      $query = $tmod->forNet($id)->addState();
+    else
+      $query = $tmod->forNet($id)->player_progress(Yii::$app->user->id);
 
-         return $this->render('view', [
-             'networkTargetProvider'=>$targetProgressProvider,
-             'model' => $this->findModel($id),
-         ]);
-     }
-     protected function findModel(int $id)
-     {
-         if(($model=Network::findOne(['id'=>$id])) !== null && ($model->active || (!\Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin)))
-         {
-             return $model;
-         }
+    $targetProgressProvider = new ActiveDataProvider([
+      'query' => $query,
+      'pagination' => [
+        'pageSizeParam' => 'target-perpage',
+        'pageParam' => 'target-page',
+      ]
+    ]);
+    $targetProgressProvider->setSort([
+      'defaultOrder' => ['status' => SORT_DESC, 'scheduled_at' => SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC],
+      'attributes' => [
+        'scheduled_at' => [
+          'asc' =>  ['scheduled_at' => SORT_ASC],
+          'desc' => ['scheduled_at' => SORT_DESC],
+        ],
+        'name' => [
+          'asc' => ['name' => SORT_ASC],
+          'desc' => ['name' => SORT_DESC],
+        ],
+        'status' => [
+          'asc' => ['status' => SORT_ASC],
+          'desc' => ['status' => SORT_DESC],
+        ],
+        'headshots' => [
+          'asc' => ['total_headshots' => SORT_ASC],
+          'desc' => ['total_headshots' => SORT_DESC],
+        ],
+        'total_findings' => [
+          'asc' => ['total_findings' => SORT_ASC],
+          'desc' => ['total_findings' => SORT_DESC],
+        ],
+        'total_treasures' => [
+          'asc' => ['total_treasures' => SORT_ASC],
+          'desc' => ['total_treasures' => SORT_DESC],
+        ],
+        'difficulty' => [
+          'asc' => ['average_rating' => SORT_ASC],
+          'desc' => ['average_rating' => SORT_DESC],
+        ]
+      ],
+    ]);
 
-         throw new NotFoundHttpException(\Yii::t('app','The requested network does not exist.'));
-     }
+    return $this->render('view', [
+      'networkTargetProvider' => $targetProgressProvider,
+      'model' => $this->findModel($id),
+    ]);
+  }
+  protected function findModel(int $id)
+  {
+    if (($model = Network::findOne(['id' => $id])) !== null && ($model->active || (!\Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin))) {
+      return $model;
+    }
 
+    throw new NotFoundHttpException(\Yii::t('app', 'The requested network does not exist.'));
+  }
 }

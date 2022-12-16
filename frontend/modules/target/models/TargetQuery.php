@@ -8,6 +8,7 @@ class TargetQuery extends \yii\db\ActiveQuery
 {
   public function init()
   {
+    $this->alias('t');
     if (Yii::$app->sys->target_hide_inactive === true) {
       $this->andOnCondition('active = :target_hide_inactive', [':target_hide_inactive' => 1]);
     }
@@ -19,6 +20,13 @@ class TargetQuery extends \yii\db\ActiveQuery
     return $this->join('LEFT JOIN', 'network_target', 'network_target.target_id=t.id')->andWhere(['network_target.network_id' => $network_id]);
   }
 
+  public function addState(){
+    $this->addSelect(['t.*']);
+    $this->addSelect('total_treasures, total_findings, player_rating, total_headshots, total_writeups, approved_writeups');
+    $this->addSelect([new \yii\db\Expression('if(player_rating>=0,round((player_rating+difficulty)/2),difficulty) as average_rating')]);
+    $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
+    return $this;
+  }
   public function timed()
   {
     return $this->andWhere(['timer' => 1]);
@@ -41,6 +49,7 @@ class TargetQuery extends \yii\db\ActiveQuery
     $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
     return $this;
   }
+
   public function forView($player_id)
   {
     $this->alias('t');
