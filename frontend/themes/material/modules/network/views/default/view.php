@@ -19,7 +19,7 @@ $module = \app\modules\network\Module::getInstance();
 ?>
 <div class="network-view">
   <div class="body-content">
-    <?php if ($module->checkNetwork($model) === false) : ?>
+    <?php if ($module->checkNetwork($model) === false && !Yii::$app->user->isGuest) : ?>
       <div class="row d-flex justify-content-center">
         <div class="col-sm-12 col-md-6 col-xl-4 alert alert-danger d-flex justify-content-center" role="alert">
           <b><?= \Yii::t('app', "You don't have access to this network.") ?></b>
