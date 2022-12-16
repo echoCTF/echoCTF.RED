@@ -39,9 +39,13 @@ class DefaultController extends \app\components\BaseController
           [
             'actions' => ['view'],
             'allow' => true,
+            'roles'=>['?'],
+            'matchCallback'=>function($rule,$action){
+              return Yii::$app->sys->network_view_guest;
+            }
           ],
           [
-            'actions' => ['index', 'subscribe'],
+            'actions' => ['index','view', 'subscribe'],
             'allow' => true,
             'roles' => ['@']
           ],
