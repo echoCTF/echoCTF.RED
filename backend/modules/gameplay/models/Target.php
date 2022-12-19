@@ -276,11 +276,12 @@ class Target extends TargetAR
 
   public function addNews()
   {
+    if($this->network!==null && ($this->network->announce===false || $this->network->active===false)) return ;
     $news=new \app\modules\content\models\News;
     $news->title=sprintf(\Yii::t('app',"New target %s added"),$this->name);
     $news->category=H::img("/images/news/category/new-target.svg",['width'=>'25px']);
     $body=sprintf(\Yii::t('app',"Just a heads up, new target [%s]"),H::a($this->name,'/target/'.$this->id));
-    $bodyPlain=sprintf(\Yii::t('app',"Hey everyone, just a heads up, new target [**%s**] => https://%s/target/%d"),$this->name,Yii::$app->sys->offense_domain,$this->id);
+    $bodyPlain=sprintf(\Yii::t('app',"Hey @everyone, just a heads up, new target [**%s**] => https://%s/target/%d"),$this->name,Yii::$app->sys->offense_domain,$this->id);
     if($this->network!==null)
     {
       $bodyPlain=sprintf(\Yii::t('app',"%s got added to the [**%s**]"),$bodyPlain,$this->network->name);
