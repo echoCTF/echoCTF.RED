@@ -120,6 +120,8 @@ class NetworkTargetSchedule extends \yii\db\ActiveRecord
 
   public function addNews()
   {
+    if($this->network!==null && ($this->network->announce===false || $this->network->active===false)) return;
+
     $news=new \app\modules\content\models\News;
     $news->title=sprintf(\Yii::t('app',"Target %s migrated"),$this->target->name);
     $news->category=H::img("/images/news/category/target-migration.svg",['width'=>'25px']);
@@ -130,7 +132,12 @@ class NetworkTargetSchedule extends \yii\db\ActiveRecord
     }
     else
     {
-      $bodyPlain=sprintf(\Yii::t('app',"Hi @everyone, just a heads up, the target [**%s**] => https://%s/target/%d got migrated to the network [**%s**] and its ready for you to headshot.\n\nHave fun and Happy Hacking :heart:"),$this->target->name,Yii::$app->sys->offense_domain,$this->target_id,$this->network->name);
+      if($this->target->status=='online')
+        $bodyPlain=sprintf(\Yii::t('app',"Hi @everyone, just a heads up, the target [**%s**] => https://%s/target/%d got migrated to the [**%s**] and its ready for you to headshot.\n\nHave fun and Happy Hacking :heart:"),$this->target->name,Yii::$app->sys->offense_domain,$this->target_id,$this->network->name);
+      else if($this->target->scheduled_at && $this->target->status=='powerup')
+        $bodyPlain=sprintf(\Yii::t('app',"Hi @everyone, just a heads up, the target [**%s**] => https://%s/target/%d got migrated to the [**%s**] and will become available at %s.\n\nHave fun and Happy Hacking :heart:"),$this->target->name,Yii::$app->sys->offense_domain,$this->target_id,$this->network->name,$this->target->scheduled_at);
+
+
       $news->body=sprintf(\Yii::t('app',"Just a heads up, the target [%s], got migrated to a new network [%s]."),H::a($this->target->name,'/target/'.$this->target_id),H::a($this->network->name,'/network/'.$this->network_id));
     }
     if(Yii::$app->sys->discord_news_webhook!==false)

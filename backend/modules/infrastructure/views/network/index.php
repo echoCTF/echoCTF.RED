@@ -39,6 +39,7 @@ yii\bootstrap\Modal::end();
             'description:ntext',
             'public:boolean',
             'active:boolean',
+            'announce:boolean',
             'icon',
             'weight:integer',
             'ts',

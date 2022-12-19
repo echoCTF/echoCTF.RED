@@ -18,6 +18,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'weight')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'public')->checkbox() ?>
     <?= $form->field($model, 'active')->checkbox() ?>
+    <?= $form->field($model, 'announce')->checkbox() ?>
     <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
 
     <?= $form->field($model, 'ts')->textInput() ?>
