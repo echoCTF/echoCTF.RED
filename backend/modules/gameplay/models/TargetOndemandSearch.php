@@ -23,6 +23,7 @@ class TargetOndemandSearch extends TargetOndemand
         return [
             [['target_id', 'player_id', 'state'], 'integer'],
             [['heartbeat', 'created_at', 'updated_at','name','ipoctet','username'], 'safe'],
+            [['name','username','ipoctet'],'trim'],
         ];
     }
 
