@@ -9,7 +9,7 @@ use yii\helpers\Url;
   <div class="iconic-card bg-dark">
     <img align="right" class="img-fluid" src="<?=$writeup->target->thumbnail?>"/>
     <p><?php if($writeup->headshot && $writeup->headshot->first):?><img title="1st headshot on the target" alt="1st headshot on the target" align="left" src="/images/1sthelmet.svg" class="img-fluid" style="max-width: 30px"/><?php endif;?><b><?=Html::a(
-                 $writeup->target->name.' / '.long2ip($writeup->target->ip),
+                 $writeup->target->name,
                   Url::to(['/target/default/versus', 'id'=>$writeup->target_id, 'profile_id'=>$profile->id]),
                   [
                     'style'=>'float: bottom;',

@@ -1,7 +1,7 @@
 <?php
 use app\modules\game\models\Headshot;
 use yii\helpers\Html;
-$this->title=\Yii::t('app','{event_name} Target: {target_name}',['event_name'=>Yii::$app->sys->event_name,'target_name'=>$target->name,'ipaddress'=>long2ip($target->ip)]);
+$this->title=\Yii::t('app','{event_name} Target: {target_name}',['event_name'=>Yii::$app->sys->event_name,'target_name'=>$target->name]);
 $difficulty=$target->getDifficultyText($target->average_rating);
 $subtitleARR=[$target->category,ucfirst($target->getDifficultyText($target->average_rating)),boolval($target->rootable) ? \Yii::t('app',"rootable") : \Yii::t('app',"non rootable")];
 $subtitle=implode(", ",array_filter($subtitleARR));
