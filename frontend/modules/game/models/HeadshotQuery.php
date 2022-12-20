@@ -12,7 +12,7 @@ class HeadshotQuery extends \yii\db\ActiveQuery
 
     public function timed()
     {
-        return $this->joinWith(['target'])->andWhere(['target.timer'=>1])->andWhere(['>','headshot.timer',0]);
+        return $this->joinWith(['target'])->andWhere(['t.timer'=>1])->andWhere(['>','headshot.timer',0]);
     }
 
     public function target_avg_time($target_id)
