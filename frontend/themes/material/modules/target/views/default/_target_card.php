@@ -19,10 +19,9 @@ if(!Yii::$app->user->isGuest && Yii::$app->user->identity->instance !== NULL && 
     $display_ip=Html::tag('b',$target_ip,["class"=>'text-danger','data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance will become visible once its powered up.")]);
   else
     $display_ip=Html::tag('b',$target_ip,["class"=>'text-danger','data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance.")]);
+
+  $this->title=\Yii::t('app','{event_name} Target: {target_name} / {ipaddress}',['target_name'=>$target->name,'ipaddress'=>$target_ip,'event_name'=>\Yii::$app->sys->event_name]);
 }
-
-$this->title=\Yii::t('app','{event_name} Target: {target_name} / {ipaddress}',['target_name'=>$target->name,'ipaddress'=>$target_ip,'event_name'=>\Yii::$app->sys->event_name]);
-
 
 $subtitleARR=[$target->category,ucfirst($target->getDifficultyText($target->average_rating)),boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===false ? null:'Timed'];
 $subtitle=implode(", ",array_filter($subtitleARR));
