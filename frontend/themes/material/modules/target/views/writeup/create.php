@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Writeup */
 
-$this->title=Yii::$app->sys->event_name.' Writeup for '.$headshot->target->name. ' / '.long2ip($headshot->target->ip). ' #'.$headshot->target->id;
+$this->title=Yii::$app->sys->event_name.' Writeup for '.$headshot->target->name. ' #'.$headshot->target->id;
 $this->_description=$headshot->target->purpose;
 $this->_image=\yii\helpers\Url::to($headshot->target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['index', 'id'=>$headshot->target->id], 'https');
@@ -20,7 +20,7 @@ $this->registerJsFile('@web/js/showdown.min.js',[
 <div class="writeup-create">
   <div class="row">
     <div class="col-md-6 col-lg-7">
-      <h2><?= Html::encode('Writeup for '.$headshot->target->name. ' / '.long2ip($headshot->target->ip). ' #'.$headshot->target->id) ?></h2>
+      <h2><?= Html::encode('Writeup for '.$headshot->target->name. ' #'.$headshot->target->id) ?></h2>
       <div class="body-content">
         <div class="col">
           <div class="card bg-dark">

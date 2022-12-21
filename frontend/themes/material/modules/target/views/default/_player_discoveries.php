@@ -14,7 +14,7 @@ use yii\helpers\Html;
       echo Html::ul(Yii::$app->user->identity->getFindings($target->id)->all(), ['item' => function($item, $index) use ($target) {
           return Html::tag(
               'li',
-              sprintf("<code>%s://%s:%d</code>",$item->protocol,long2ip($target->ip),$item->port)
+              sprintf("<code>%s://%s:%d</code>",$item->protocol,$target->IpOrName,$item->port)
               //['class' => 'post']
           );
       }]);

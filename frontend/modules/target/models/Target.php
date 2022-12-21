@@ -30,6 +30,7 @@ class Target extends TargetAR
       "guru",
       "insane",
     ];
+
     public function getTreasureCategories()
     {
       $categories=[];
@@ -186,7 +187,7 @@ class Target extends TargetAR
       return self::DEFAULT_LOGO;
     }
     /**
-     * Get thumbnail image for target to be used by <img> and related tags
+     * Get the displayable IP for the target
      */
     public function getDisplayIp()
     {
@@ -203,6 +204,22 @@ class Target extends TargetAR
       elseif($this->on_ondemand && $this->ondemand_state===-1)
       {
         return \yii\helpers\Html::tag('abbr','0.0.0.0',['style'=>'padding-top: 10px; padding-bottom: 10px','data-toggle'=>'tooltip','title'=>Yii::t('app',"System currently powered down. Go to the target page to power it up.")]);
+      }
+      return $this->ipoctet;
+    }
+
+    /**
+     * Return the current IP or hostname if system not powered
+     */
+    public function getIpOrName():string
+    {
+      if(Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$this->id)
+      {
+        return long2ip(Yii::$app->user->identity->instance->ip);
+      }
+      elseif($this->on_ondemand && $this->ondemand_state===-1)
+      {
+        return $this->name;
       }
       return $this->ipoctet;
     }

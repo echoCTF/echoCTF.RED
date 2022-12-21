@@ -11,7 +11,7 @@ class HeadshotQuery extends \yii\db\ActiveQuery
 {
     public function rest()
     {
-        return $this->select(['headshot.*','profile.id as profile_id','target.name as target_name'])->joinWith(['target','profile'])->andWhere(['profile.visibility'=>'public']);
+        return $this->select(['headshot.*','profile.id as profile_id','t.name as target_name'])->joinWith(['target','profile'])->andWhere(['profile.visibility'=>'public']);
     }
 
     /**
