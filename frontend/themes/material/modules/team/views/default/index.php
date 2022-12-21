@@ -12,7 +12,11 @@ $this->_fluid="-fluid";
 <div class="team-index">
   <div class="body-content">
     <h2><?= Html::encode($this->title) ?></h2>
-    <?php if (Yii::$app->user->identity->team === null) : ?><?= \Yii::t('app', 'Join a team or <b>{createLink}</b> a new one!', ['createLink' => Html::a(\Yii::t('app', 'Create'), ['/team/default/create'], ['class' => 'btn btn-info btn-sm'])]) ?><?php endif; ?>
+    <?php if (Yii::$app->user->identity->team === null) : ?>
+      <?= \Yii::t('app', 'Join a team or <b>{createLink}</b> a new one!', ['createLink' => Html::a(\Yii::t('app', 'Create'), ['/team/default/create'], ['class' => 'btn btn-info btn-sm'])]) ?>
+    <?php else: ?>
+      <?= Html::a('Go to your Team', ['/team/default/view', 'token' => Yii::$app->user->identity->team->token], ['class' => 'btn block text-dark text-bold orbitron' . (!Yii::$app->user->identity->team->inviteonly ? ' btn-info' : ' btn-warning')]) ?>
+    <?php endif; ?>
     <hr />
     <div class="row">
       <?php
@@ -20,14 +24,14 @@ $this->_fluid="-fluid";
       echo ListView::widget([
         'dataProvider' => $dataProvider,
         'emptyText' => '<p class="text-warning"><b>' . \Yii::t('app', 'Oh! no, there are no teams... Quickly create one :)') . '</b></p>',
-        'options' => [
-          'tag' => false,
-        ],
-        'itemOptions' => [
-          'tag' => 'div',
-          'class' => "col col-md-4 col-lg col-xl d-flex justify-content-center align-items-stretch",
-          'style'=>'min-width: 25rem'
-        ],
+        'options' => [ 'tag' => false,],
+        'itemOptions' => [ 'tag' => false ],
+//        'itemOptions' => [
+//          'tag' => 'div',
+//          'class'=>" col col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch",
+//          //'class' => "col col-md-4 col-lg-4 col-xl-3 d-flex justify-content-center align-items-stretch",
+//          'style'=>'min-width: 25rem'
+//        ],
         'summary' => false,
         'itemView' => '_team_card',
         'viewParams' => ['invite' => false],

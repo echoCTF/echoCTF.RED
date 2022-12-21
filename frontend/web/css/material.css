@@ -36,7 +36,7 @@ a.asc:after, a.desc:after {
     position: relative;
     top: 1px;
     display: inline-block;
-    font-family: 'Font Awesome 5 Free';
+    font-family: 'Font Awesome 6 Free';
     font-weight: 100;
     font-style: normal;
     font-weight: normal;
@@ -45,13 +45,13 @@ a.asc:after, a.desc:after {
 }
 
 a.asc:after {
-  font-family: "Font Awesome 5 Free";
+  font-family: "Font Awesome 6 Free";
   font-weight: 900;
   content: "\f15d";
 }
 
 a.desc:after {
-  font-family: "Font Awesome 5 Free";
+  font-family: "Font Awesome 6 Free";
   font-weight: 900;
   content: "\f881";
 }
@@ -911,8 +911,8 @@ mark {
   max-width: 40px;
 }
 
-.vscomplete::before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f714";  }
-.vsincomplete::before { font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f53e";  }
+.vscomplete::before { font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f714";  }
+.vsincomplete::before { font-family: "Font Awesome 6 Free"; font-weight: 900; content: "\f53e";  }
 
 .text-difficulty-beginner     { color:#dadada; font-size: 1.25vw; }
 .text-difficulty-basic        { color:#ACB334; font-size: 1.25vw; }
