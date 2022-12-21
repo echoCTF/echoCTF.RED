@@ -49,7 +49,7 @@ class HeadshotController extends \yii\rest\ActiveController
         'searchModel' => '\app\modules\api\models\HeadshotSearch',
         'attributeMap' => [
             'profile_id' => 'profile.id',
-            'target_name' => 'target.name',
+            'target_name' => 't.name',
             'created_at' => 'headshot.created_at',
             'timer' => 'headshot.timer'
         ]
