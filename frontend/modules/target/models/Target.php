@@ -208,6 +208,9 @@ class Target extends TargetAR
       return $this->ipoctet;
     }
 
+    /**
+     * Return the current IP or hostname if system not powered
+     */
     public function getIpOrName():string
     {
       if(Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$this->id)
