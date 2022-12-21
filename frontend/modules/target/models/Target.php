@@ -203,7 +203,20 @@ class Target extends TargetAR
       }
       elseif($this->on_ondemand && $this->ondemand_state===-1)
       {
-        return \yii\helpers\Html::tag('abbr',$this->name,['style'=>'padding-top: 10px; padding-bottom: 10px','data-toggle'=>'tooltip','title'=>Yii::t('app',"System currently powered down. Go to the target page to power it up.")]);
+        return \yii\helpers\Html::tag('abbr','0.0.0.0',['style'=>'padding-top: 10px; padding-bottom: 10px','data-toggle'=>'tooltip','title'=>Yii::t('app',"System currently powered down. Go to the target page to power it up.")]);
+      }
+      return $this->ipoctet;
+    }
+
+    public function getIpOrName():string
+    {
+      if(Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$this->id)
+      {
+        return long2ip(Yii::$app->user->identity->instance->ip);
+      }
+      elseif($this->on_ondemand && $this->ondemand_state===-1)
+      {
+        return $this->name;
       }
       return $this->ipoctet;
     }
