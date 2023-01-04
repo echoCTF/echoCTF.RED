@@ -20,7 +20,7 @@ jobs:
       run: nc -N -w1 asset-packagist.org 443 || composer config -g repos.packagist composer https://packagist.fi
 
     - name: Configure github token
-      run: composer config -g github-oauth.github.com "${{ secrets.GITHUBOAUTHTOKEN }}"
+      run: composer config -g github-oauth.github.com "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Validate frontend composer.json and composer.lock
       run: |
