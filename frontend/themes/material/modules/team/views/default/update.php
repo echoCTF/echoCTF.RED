@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 $this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Update team details').' ['.$model->name.']';
 $this->_fluid="-fluid";
+$this->loadLayoutOverrides=true;
 
 ?>
 <div class="team-update">

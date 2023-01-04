@@ -7,7 +7,7 @@ $this->title=\Yii::t('app','{event_name} Target: {target_name} vs Player: {usern
 $this->_description=$target->purpose;
 $this->_image=\yii\helpers\Url::to($target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['versus', 'id'=>$target->id, 'profile_id'=>$profile->id], 'https');
-
+$this->loadLayoutOverrides=true;
 $this->_fluid='-fluid';
 Url::remember();
 ?>

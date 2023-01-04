@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\ListView;
 use yii\widgets\Pjax;
 use app\widgets\stream\StreamWidget as Stream;
+$this->loadLayoutOverrides=true;
 
 $this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Team details for').' ['.$team->name.']';
 $this->_fluid="-fluid";

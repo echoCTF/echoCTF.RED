@@ -10,6 +10,7 @@ $this->_description=$model->target->purpose;
 $this->_image=\yii\helpers\Url::to($model->target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->target->id], 'https');
 $this->_fluid='-fluid';
+$this->loadLayoutOverrides=true;
 ?>
 <div class="writeup-view">
   <div class="body-content">

@@ -1,6 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
+$this->loadLayoutOverrides=true;
 
 $this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Create Team');
 
