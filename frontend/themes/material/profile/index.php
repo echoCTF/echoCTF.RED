@@ -9,6 +9,7 @@ use app\widgets\leaderboard\Leaderboard;
 use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\modules\target\models\Writeup;
 use yii\data\ActiveDataProvider;
+$this->loadLayoutOverrides=true;
 $query = Writeup::find()->where(['player_id'=>$profile->player_id]);
 $provider = new ActiveDataProvider([
     'query' => $query,

@@ -3,6 +3,7 @@ use yii\helpers\Html;
 use yii\widgets\ListView;
 $this->title=Html::encode(Yii::$app->sys->event_name.' '.\Yii::t('app','Networks'));
 $this->_description=$this->title;
+$this->loadLayoutOverrides=true;
 
 ?>
 <div class="network-index">

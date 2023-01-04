@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\ListView;
+$this->loadLayoutOverrides=true;
 
 $this->title = Yii::$app->sys->event_name . ' ' . \Yii::t('app', 'Teams');
 $this->_fluid = "-fluid";

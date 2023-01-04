@@ -7,7 +7,7 @@ use yii\widgets\ListView;
 use yii\widgets\Pjax;
 use app\widgets\stream\StreamWidget as Stream;
 use app\widgets\target\TargetWidget;
-
+$this->loadLayoutOverrides=true;
 $this->title = Yii::$app->sys->event_name . ' ' . \Yii::t('app', 'Network details') . ' [' . Html::encode($model->name) . ']';
 $this->_description = Html::encode(strip_tags($model->description));
 //$this->_image=\yii\helpers\Url::to($target->fullLogo, 'https');
