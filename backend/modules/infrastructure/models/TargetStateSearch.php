@@ -18,7 +18,8 @@ class TargetStateSearch extends TargetState
     public function rules()
     {
         return [
-            [['id', 'target_name','total_headshots', 'total_findings', 'total_treasures', 'player_rating', 'timer_avg', 'total_writeups', 'approved_writeups', 'finding_points', 'treasure_points', 'total_points', 'on_network', 'on_ondemand', 'ondemand_state'], 'integer'],
+            [['id', 'total_headshots', 'total_findings', 'total_treasures', 'player_rating', 'timer_avg', 'total_writeups', 'approved_writeups', 'finding_points', 'treasure_points', 'total_points', 'on_network', 'on_ondemand', 'ondemand_state'], 'integer'],
+            [['target_name'],'safe']
         ];
     }
 
@@ -58,7 +59,7 @@ class TargetStateSearch extends TargetState
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'target_state.id' => $this->id,
             'total_headshots' => $this->total_headshots,
             'total_findings' => $this->total_findings,
             'total_treasures' => $this->total_treasures,
@@ -73,7 +74,7 @@ class TargetStateSearch extends TargetState
             'on_ondemand' => $this->on_ondemand,
             'ondemand_state' => $this->ondemand_state,
         ]);
-        $query->andFilterWhere(['LIKE','target_name',$this->target_name]);
+        $query->andFilterWhere(['LIKE','target.name',$this->target_name]);
         $dataProvider->setSort([
             'defaultOrder' => ['id'=>SORT_ASC],
             'attributes' => array_merge(
