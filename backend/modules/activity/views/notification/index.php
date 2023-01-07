@@ -38,6 +38,7 @@ yii\bootstrap\Modal::end();
               'label'=>'Player',
               'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
             ],
+            'category',
             'title',
             'body:ntext',
             'archived',

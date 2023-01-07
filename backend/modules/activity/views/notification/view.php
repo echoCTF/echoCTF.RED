@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][]=$this->title;
         'attributes' => [
             'id',
             'player_id',
+            'category',
             'title',
             'body:ntext',
             'archived',

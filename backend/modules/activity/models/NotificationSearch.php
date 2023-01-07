@@ -19,7 +19,7 @@ class NotificationSearch extends Notification
     {
         return [
             [['id', 'player_id', 'archived'], 'integer'],
-            [['title', 'body', 'created_at', 'updated_at'], 'safe'],
+            [['title', 'body', 'created_at', 'updated_at','category'], 'safe'],
             [['player'], 'safe'],
         ];
     }
@@ -63,6 +63,7 @@ class NotificationSearch extends Notification
         $query->andFilterWhere([
             'notification.id' => $this->id,
             'notification.player_id' => $this->player_id,
+            'notification.category' => $this->category,
             'notification.archived' => $this->archived,
             'notification.created_at' => $this->created_at,
             'notification.updated_at' => $this->updated_at,
