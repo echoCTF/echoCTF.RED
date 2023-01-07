@@ -80,4 +80,20 @@ class Notification extends \yii\db\ActiveRecord
   {
     return $this->hasOne(Player::class, ['id' => 'player_id']);
   }
+  public static function supportedCategories(): array
+  {
+    return [
+      'info'=>'info',
+      'danger'=>'danger',
+      'success'=>'success',
+      'warning'=>'warning',
+      'rose'=>'rose',
+      'primary'=>'primary',
+      'swal:info'=>'swal:info',
+      'swal:error'=>'swal:error',
+      'swal:danger'=>'swal:danger',
+      'swal:success'=>'swal:success',
+      'swal:warning'=>'swal:warning',
+    ];
+  }
 }
