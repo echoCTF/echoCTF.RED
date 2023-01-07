@@ -9,8 +9,6 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Notification */
 /* @var $form yii\widgets\ActiveForm */
-$checkboxTemplate = "{label}\n{input}\n{hint}\n{error}";
-
 ?>
 
 <div class="notification-form">
@@ -28,7 +26,7 @@ $checkboxTemplate = "{label}\n{input}\n{hint}\n{error}";
     <?= $form->field($model, 'category')->dropDownList($model->supportedCategories())->hint('Choose the notification type. <code>swal:</code> prefixed notifications invoke a modal popup.') ?>
     </div>
     <div class="col-md-2">
-    <?= $form->field($model, 'archived',['template'=>$checkboxTemplate])->checkBox(['label'=>false])->label('Archived')->hint('Should the notification be archived? (default: no)') ?>
+    <?= $form->field($model, 'archived')->checkBox(['label'=>false])->label('Archived')->hint('Should the notification be archived? (default: no)') ?>
     </div>
   </div>
   <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
