@@ -19,7 +19,7 @@ class NotificationQuery extends \yii\db\ActiveQuery
     }
     public function forAjax()
     {
-        return $this->select(['id', 'title', 'body', 'created_at', 'archived']);
+        return $this->select(['id', 'title', 'category', 'body', 'created_at', 'archived']);
     }
 
     /**

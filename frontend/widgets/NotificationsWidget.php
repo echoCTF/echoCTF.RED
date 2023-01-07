@@ -28,7 +28,15 @@ class NotificationsWidget extends Widget
       {
         if(intval($n->archived) === 0)
         {
-          $js = '$.notify({"id":"w'.$n->id.'","message":"'.$n->title.'","icon":"done"},{"timer":"4000","type":"success","offset":{"y":"40","x":"20"}});';
+          $category=self::extractCategory($n->category);
+          if(substr($n->category,0,4)==='swal')
+          {
+            $js = sprintf('swal.fire({ title: "%s", text: "%s", type: "%s", showConfirmButton: true});',$n->title,$n->body,$category);
+          }
+          else
+          {
+            $js = sprintf('$.notify({"id":"notifw%d","message":"%s","icon":"done"},{"timer":"4000","type":"%s","offset":{"y":"40","x":"20"}});',$n->id,$n->title,$category);
+          }
           $view->registerJs($js, $view::POS_READY);
           $n->touch('updated_at');
           $n->updateAttributes(['archived' => 1,'updated_at']);
@@ -39,5 +47,22 @@ class NotificationsWidget extends Widget
         $links[]=Html::a('nothing here...','#',['class' => "dropdown-item"]);
 
       return implode($links);
+    }
+
+    // extract category for notification or swal
+    public static function extractCategory(string $inCategory): string
+    {
+      // 'info', 'danger', 'success', 'warning', 'rose', 'primary'
+      switch($inCategory) {
+        case 'private':
+          return 'rose';
+        case 'error':
+          return 'danger';
+          break;
+        default:
+          if(substr($inCategory,0,4)==='swal')
+            return str_replace("swal:",'',$inCategory);
+          return $inCategory;
+      }
     }
 }

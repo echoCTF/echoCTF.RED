@@ -19,7 +19,7 @@ class NotificationSearch extends Notification
     {
         return [
             [['id', 'player_id', 'archived'], 'integer'],
-            [['title', 'body', 'created_at', 'updated_at'], 'safe'],
+            [['title', 'body', 'created_at', 'updated_at','category'], 'safe'],
             [['player'], 'safe'],
         ];
     }
@@ -71,6 +71,7 @@ class NotificationSearch extends Notification
         $query->andFilterWhere(['like', 'notification.title', $this->title])
             ->andFilterWhere(['like', 'notification.body', $this->body]);
         $query->andFilterWhere(['like', 'player.username', $this->player]);
+        $query->andFilterWhere(['like', 'notification.category', $this->category]);
             $dataProvider->setSort([
                 'attributes' => array_merge(
                     $dataProvider->getSort()->attributes,

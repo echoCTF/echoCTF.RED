@@ -172,3 +172,12 @@ jQuery( document ).ready(function() {
 
   //showTime();
 });
+
+$('#Notifications, #Hints').on('hide.bs.dropdown', function() {
+  const curId=$(this).attr('id')
+  // on close remove the pill
+  $('#'+curId+'>a>span').remove();
+  // remove the text-primary
+  const el = document.querySelector('#'+curId+'>a>i');
+  el.classList.remove("text-primary");
+})

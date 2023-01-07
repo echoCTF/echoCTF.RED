@@ -99,6 +99,7 @@ $(document).ready(function() {
 
 });
 
+// Mobile view toggler
 $(document).on('click', '.navbar-toggler', function() {
   $toggle = $(this);
 
@@ -180,26 +181,10 @@ md = {
 
   showNotification: function(from, align) {
     type = ['', 'info', 'danger', 'success', 'warning', 'rose', 'primary'];
-
-    color = Math.floor((Math.random() * 6) + 1);
-
-    $.notify({
-      icon: "add_alert",
-      message: "Welcome to <b>Material Dashboard Pro</b> - a beautiful admin panel for every web developer."
-
-    }, {
-      type: type[color],
-      timer: 3000,
-      placement: {
-        from: from,
-        align: align
-      }
-    });
   },
 
   initDocumentationCharts: function() {
   },
-
 
   initFormExtendedDatetimepickers: function() {
     $('.datetimepicker').datetimepicker({
@@ -232,8 +217,7 @@ md = {
     });
 
     $('.timepicker').datetimepicker({
-      //          format: 'H:mm',    // use this format if you want the 24hours timepicker
-      format: 'h:mm A', //use this format if you want the 12hours timpiecker with AM/PM toggle
+      format: 'H:mm',
       icons: {
         time: "fa fa-clock-o",
         date: "fa fa-calendar",
@@ -249,31 +233,6 @@ md = {
     });
   },
 
-
-  initSliders: function() {
-    // Sliders for demo purpose
-    var slider = document.getElementById('sliderRegular');
-
-    noUiSlider.create(slider, {
-      start: 40,
-      connect: [true, false],
-      range: {
-        min: 0,
-        max: 100
-      }
-    });
-
-    var slider2 = document.getElementById('sliderDouble');
-
-    noUiSlider.create(slider2, {
-      start: [20, 60],
-      connect: true,
-      range: {
-        min: 0,
-        max: 100
-      }
-    });
-  },
 
   initSidebarsCheck: function() {
     if ($(window).width() <= 991) {
