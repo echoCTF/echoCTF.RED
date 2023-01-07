@@ -46,8 +46,6 @@ class MaterialAsset extends AssetBundle
         ['/js/plugins/moment.min.js','defer'=>'defer'],
         /*  Plugin for Sweet Alert */
         ['/js/plugins/sweetalert2.js','defer'=>'defer'],
-        /* Forms Validations Plugin */
-//        '/js/plugins/jquery.validate.min.js', // XXX FIXME MOVE TO REGISTER TO appropriate forms
         /* Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard */
         //'js/plugins/jquery.bootstrap-wizard.js',
         /*  Plugin for Select, full documentation here: http://silviomoreto.github.io/bootstrap-select */
@@ -79,19 +77,15 @@ class MaterialAsset extends AssetBundle
         // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
         /******/
         //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
-        '/js/material-dashboard.js?v=0.20.0',
-        ['/js/libechoctf.js?v=0.20.2','defer'=>'defer'],
+        '/js/material-dashboard.js?v=0.20.3',
+        ['/js/libechoctf.js?v=0.20.3','defer'=>'defer'],
         // 'js/superfish.js'
     ];
+
     public $depends=[
         'yii\web\YiiAsset',
         'yii\web\JqueryAsset',
-        // 'yii\bootstrap\BootstrapAsset',
-        // 'yii\bootstrap\BootstrapPluginAsset',
-        //'yidas\yii\fontawesome\FontawesomeAsset',
-        //'yii\materialicons\AssetBundle'
     ];
-
 
     public function init()
     {
