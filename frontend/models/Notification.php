@@ -64,6 +64,7 @@ class Notification extends \yii\db\ActiveRecord
             [['body'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['title'], 'string', 'max' => 255],
+            [['category'], 'string', 'max' => 20],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
