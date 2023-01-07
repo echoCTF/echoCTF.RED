@@ -12,7 +12,7 @@ class m230107_123003_add_category_column_to_notification_table extends Migration
      */
     public function safeUp()
     {
-        $this->addColumn('{{%notification}}', 'category', $this->string(10)->notNull()->defaultValue('success')->after('player_id'));
+        $this->addColumn('{{%notification}}', 'category', $this->string(20)->notNull()->defaultValue('success')->after('player_id'));
     }
 
     /**
