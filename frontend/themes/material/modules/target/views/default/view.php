@@ -28,6 +28,23 @@ Url::remember();
     <div><p class="text-info"><?=\Yii::t('app','This target is currently powered off.')?> <?php if(Yii::$app->user->identity->profile->last->vpn_local_address===null):?><em><?=\Yii::t('app','Connect to the VPN to be allowed to power the system up.')?></em><?php endif;?></p></div>
   <?php elseif($target->ondemand && $target->ondemand->state>0):?>
     <div><p class="text-danger"><?=\Yii::t('app','The target will shutdown in')?> <code id="tcountdown" data="<?=$target->ondemand->expired?>"></code></p></div>
+    <?php $this->registerJs(
+    'var distance = $("#tcountdown").attr("data");
+    var tcountdown = setInterval(function() {
+      var minutes = Math.floor((distance % (60 * 60)) / ( 60));
+      var seconds = Math.floor((distance % (60)));
+      if (distance < 0) {
+        clearInterval(tcountdown);
+        document.getElementById("tcountdown").innerHTML = "'.\Yii::t('app','system will shutdown soon!').'";
+      }
+      else {
+        document.getElementById("tcountdown").innerHTML = '.\Yii::t('app','minutes + "m " + seconds + "s "').';
+        $("#tcountdown").attr("data",distance--);
+      }
+      }, 1000);',
+    4
+    );?>
+
   <?php endif;?>
 <?php endif;?>
 <?php if($target->status !== 'online'):?>
@@ -58,20 +75,3 @@ else
 
   </div>
 </div>
-<?php
-if($target->ondemand && $target->ondemand->state>0 && !Yii::$app->user->isGuest) $this->registerJs(
-    'var distance = $("#tcountdown").attr("data");
-    var tcountdown = setInterval(function() {
-      var minutes = Math.floor((distance % (60 * 60)) / ( 60));
-      var seconds = Math.floor((distance % (60)));
-      if (distance < 0) {
-        clearInterval(tcountdown);
-        document.getElementById("tcountdown").innerHTML = "'.\Yii::t('app','system will shutdown soon!').'";
-      }
-      else {
-        document.getElementById("tcountdown").innerHTML = '.\Yii::t('app','minutes + "m " + seconds + "s "').';
-        $("#tcountdown").attr("data",distance--);
-      }
-    }, 1000);',
-    4
-);
