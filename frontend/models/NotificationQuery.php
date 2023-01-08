@@ -9,10 +9,16 @@ namespace app\models;
  */
 class NotificationQuery extends \yii\db\ActiveQuery
 {
+    public function my()
+    {
+       return $this->andWhere('[[player_id]]=:player_id',[':player_id'=>\Yii::$app->user->id]);
+    }
+
     public function pending()
     {
         return $this->andWhere('[[archived]]=0');
     }
+
     public function forPlayer($player_id)
     {
         return $this->andWhere(['player_id'=>$player_id]);
