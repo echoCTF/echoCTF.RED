@@ -19,6 +19,5 @@ class Module extends \yii\base\Module
     {
       parent::init();
       \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-      //\Yii::$app->errorHandler->errorAction = 'api/default/error';
     }
 }
