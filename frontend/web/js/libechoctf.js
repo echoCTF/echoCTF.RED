@@ -1,9 +1,11 @@
-/* Avoid passive event warnings */
-//jQuery.event.special.touchstart = {
-//  setup: function( _, ns, handle ) {
-//      this.addEventListener("touchstart", handle, { passive: !ns.includes("noPreventDefault") });
-//  }
-//};
+// Extend with ifexists for checking existing elements
+$.fn.extend({
+  'ifexists': function (callback) {
+      if (this.length > 0) {
+          return callback($(this));
+      }
+  }
+});
 
 /* Dummy escapeHtml implementation */
 function escapeHtml(unsafe)
@@ -188,6 +190,8 @@ function clearDropdownCounters(curId){
 
 
 var notifTimeout;
+var intervalTimeout=5000
+
 function apiNotifications(){
   notifTimeout=setInterval(function () {
     var request = new XMLHttpRequest();
@@ -223,16 +227,19 @@ function apiNotifications(){
   }, 5000);
 }
 
-$(window).blur(function() {
-  clearTimeout(notifTimeout);
-}).focus(apiNotifications);
-
-$.fn.extend({
-  'ifexists': function (callback) {
-      if (this.length > 0) {
-          return callback($(this));
+$(document).ready(function(){
+  $('#Notifications, #Hints').ifexists(function(elem) {
+    document.addEventListener('visibilitychange', function(e) {
+      if (document.visibilityState === 'hidden') {
+        clearTimeout(notifTimeout);
       }
-  }
-});
-
-$('#Notifications, #Hints').ifexists(function(elem) { apiNotifications(); })
+      else
+      {
+        // clear any existing ones
+        clearTimeout(notifTimeout);
+        $('#Notifications, #Hints').ifexists(function(elem) { apiNotifications(); })
+      }
+    });
+    apiNotifications();
+  })
+})
