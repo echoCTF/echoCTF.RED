@@ -226,4 +226,12 @@ $(window).blur(function() {
   clearTimeout(notifTimeout);
 }).focus(apiNotifications);
 
-apiNotifications();
+$.fn.extend({
+  'ifexists': function (callback) {
+      if (this.length > 0) {
+          return callback($(this));
+      }
+  }
+});
+
+$('#Notifications, #Hints').ifexists(function(elem) { apiNotifications(); })
