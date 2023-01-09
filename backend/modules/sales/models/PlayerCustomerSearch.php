@@ -5,6 +5,7 @@ namespace app\modules\sales\models;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\frontend\models\Player;
+use yii\helpers\Html;
 
 /**
  * PlayerSearch represents the model behind the search form of `app\modules\frontend\models\Player`.
@@ -86,7 +87,7 @@ class PlayerCustomerSearch extends Player
           if(\Yii::$app instanceof \yii\console\Application)
             printf("Imported customer_id: %s for user %s with email %s\n",$player->stripe_customer_id,$player->username,$player->email);
           else
-            \Yii::$app->session->addFlash('success', sprintf('Imported customer_id: <b>%s</b> for user <b>%s</b> with email <b>%s</b>',$player->stripe_customer_id,$player->username,$player->email));
+            \Yii::$app->session->addFlash('success', sprintf('Imported customer_id: <b>%s</b> for user <b>%s</b> with email <b>%s</b>',Html::encode($player->stripe_customer_id),Html::encode($player->username,$player->email)));
         }
       }
     }

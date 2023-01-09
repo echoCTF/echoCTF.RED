@@ -10,6 +10,7 @@ use app\modules\frontend\models\TeamPlayerSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * TeamController implements the CRUD actions for Team model.
@@ -98,7 +99,7 @@ class TeamController extends \app\components\BaseController
         catch (\Exception $e)
         {
           $trans->rollBack();
-          \Yii::$app->getSession()->setFlash('error', 'Failed to create team. '.$e->getMessage());
+          \Yii::$app->getSession()->setFlash('error', 'Failed to create team. '.Html::encode($e->getMessage()));
         }
         return $this->render('create', [
             'model' => $model,

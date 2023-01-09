@@ -8,6 +8,7 @@ use app\modules\activity\models\SessionsSearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * SessionController implements the CRUD actions for Sessions model.

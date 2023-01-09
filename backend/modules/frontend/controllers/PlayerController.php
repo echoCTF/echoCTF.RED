@@ -13,6 +13,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * PlayerController implements the CRUD actions for Player model.
@@ -157,7 +158,7 @@ class PlayerController extends \app\components\BaseController
       catch(\Exception $e)
       {
         $trans->rollBack();
-        \Yii::$app->getSession()->setFlash('error', 'Failed to create player. '.$e->getMessage());
+        \Yii::$app->getSession()->setFlash('error', 'Failed to create player. '.Html::encode($e->getMessage()));
       }
       return $this->render('create', [
           'model' => $model,
@@ -197,7 +198,7 @@ class PlayerController extends \app\components\BaseController
     {
 
         if(($model=Player::findOne($id)) !== null && $model->delete() !== false)
-          Yii::$app->session->setFlash('success', sprintf('Player [%s] deleted.', $model->username));
+          Yii::$app->session->setFlash('success', sprintf('Player [%s] deleted.', Html::encode($model->username)));
         else
           Yii::$app->session->setFlash('error', 'Player deletion failed.');
         return $this->redirect(['index']);
@@ -248,7 +249,7 @@ class PlayerController extends \app\components\BaseController
           $model->team->delete();
         }
         $trans->commit();
-        Yii::$app->session->setFlash('success', 'User ['.$model->username.'] academic set to '.$model->academic);
+        Yii::$app->session->setFlash('success', 'User ['.Html::encode($model->username).'] academic set to '.Html::encode($model->academic));
       }
       catch(\Exception $e)
       {
@@ -273,7 +274,7 @@ class PlayerController extends \app\components\BaseController
         $model=$this->findModel($id);
         $model->updateAttributes(['active' => !$model->active]);
         $trans->commit();
-        Yii::$app->session->setFlash('success', 'User ['.$model->username.'] active set to '.$model->active);
+        Yii::$app->session->setFlash('success', 'User ['.Html::encode($model->username).'] active set to '.Html::encode($model->active));
       }
       catch(\Exception $e)
       {

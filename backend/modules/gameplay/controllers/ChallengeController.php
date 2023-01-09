@@ -12,6 +12,7 @@ use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use yii\data\ActiveDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * ChallengeController implements the CRUD actions for Challenge model.
@@ -100,11 +101,11 @@ class ChallengeController extends \app\components\BaseController
             {
               if($model->file)
                 $model->file->saveAs('uploads/'.$model->id);
-              Yii::$app->session->setFlash('success', 'Challenge ['.$model->name.'] created.');
+              Yii::$app->session->setFlash('success', 'Challenge ['.Html::encode($model->name).'] created.');
             }
             catch(\Exception $e)
             {
-              Yii::$app->session->setFlash('error', 'Failed to create challenge ['.$model->name.']');
+              Yii::$app->session->setFlash('error', 'Failed to create challenge ['.Html::encode($model->name).']');
             }
             return $this->redirect(['view', 'id' => $model->id]);
         }
