@@ -73,6 +73,7 @@ class m220102_214745_populate_url_routes extends Migration
       'networks' => 'network/default/index',
       'network/<id:\d+>' => 'network/default/view',
       'api/headshots' => 'api/headshot/index',
+      'api/notification' => 'api/notification/index',
       'subscriptions' => 'subscription/default/index',
       'subscription/success'=>'subscription/default/success',
       'subscription/create-checkout-session'=>'subscription/default/create-checkout-session',
