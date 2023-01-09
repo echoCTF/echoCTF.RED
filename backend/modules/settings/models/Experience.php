@@ -34,6 +34,8 @@ class Experience extends \yii\db\ActiveRecord
             [['description'], 'string'],
             [['min_points', 'max_points'], 'integer'],
             [['name', 'icon'], 'string', 'max' => 255],
+            [['min_points','max_points'], 'compare', 'compareValue' => 0, 'operator' => '>='],
+            [['min_points','max_points'], 'compare', 'compareValue' => 2147483647, 'operator' => '<='],
             [['category'], 'string', 'max' => 32],
         ];
     }
