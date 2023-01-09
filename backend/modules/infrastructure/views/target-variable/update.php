@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][]=['label' => 'Target Variables', 'url' => ['index'
 $this->params['breadcrumbs'][]=['label' => $model->target_id, 'url' => ['view', 'target_id' => $model->target_id, 'key' => $model->key]];
 $this->params['breadcrumbs'][]='Update';
 yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');

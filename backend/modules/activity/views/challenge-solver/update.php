@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Challenge Solvers', 'url' => ['ind
 $this->params['breadcrumbs'][] = ['label' => $model->challenge_id, 'url' => ['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]];
 $this->params['breadcrumbs'][] = 'Update';
 yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');

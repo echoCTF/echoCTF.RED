@@ -10,7 +10,7 @@ $this->params['breadcrumbs'][]=['label' => 'Disabled Routes', 'url' => ['index']
 $this->params['breadcrumbs'][]=['label' => $model->route, 'url' => ['view', 'id' => $model->route]];
 $this->params['breadcrumbs'][]='Update';
 yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');

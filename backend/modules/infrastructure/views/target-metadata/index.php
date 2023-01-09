@@ -11,7 +11,7 @@ $this->title = 'Targets metadata';
 $this->params['breadcrumbs'][] = ['label' => 'Infrastructure', 'url' => ['/infrastructure/default/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Target metadata', 'url' => ['index']];
 yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.$this->title.' Help</h2>',
+    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');
