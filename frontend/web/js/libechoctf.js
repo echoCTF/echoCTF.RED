@@ -175,9 +175,55 @@ jQuery( document ).ready(function() {
 
 $('#Notifications, #Hints').on('hide.bs.dropdown', function() {
   const curId=$(this).attr('id')
-  // on close remove the pill
+  clearDropdownCounters(curId)
+})
+
+function clearDropdownCounters(curId){
+// on close remove the pill
   $('#'+curId+'>a>span').remove();
   // remove the text-primary
   const el = document.querySelector('#'+curId+'>a>i');
   el.classList.remove("text-primary");
-})
+}
+
+
+var notifTimeout;
+function apiNotifications(){
+  notifTimeout=setInterval(function () {
+    var request = new XMLHttpRequest();
+    request.open("GET", "/api/notification");
+    request.send();
+
+    request.onreadystatechange = function () {
+      if (this.readyState == 4 && this.status == 200) {
+          jsonObj=JSON.parse(this.responseText)['items'];
+          for(i=0;i<jsonObj.length;i++)
+          {
+            const record=jsonObj[i];
+            if(record.category.startsWith('swal'))
+            {
+              console.log('swal:'+record.category)
+              swal.fire({ title: record.title, text: record.body, type: record.category.replace('swal:',''), showConfirmButton: true});
+            }
+            else {
+              $.notify({
+                id:"notifw"+record.id,
+                message:record.title,
+                icon:"done"
+              },{
+                timer:"4000",
+                type:record.category,
+                })
+            }
+          }
+          if(jsonObj.length>0) clearDropdownCounters('Notifications')
+      }
+    }
+  }, 3000);
+}
+
+$(window).blur(function() {
+  clearTimeout(notifTimeout);
+}).focus(apiNotifications);
+
+apiNotifications();
