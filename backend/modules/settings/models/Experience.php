@@ -36,6 +36,8 @@ class Experience extends \yii\db\ActiveRecord
             [['name', 'icon'], 'string', 'max' => 255],
             [['min_points','max_points'], 'compare', 'compareValue' => 0, 'operator' => '>='],
             [['min_points','max_points'], 'compare', 'compareValue' => 2147483647, 'operator' => '<='],
+            [['min_points'], 'compare', 'compareAttribute' => 'max_points', 'operator' => '<='],
+            [['min_points','max_points'], 'checkOverlap'],
             [['category'], 'string', 'max' => 32],
         ];
     }
@@ -54,5 +56,12 @@ class Experience extends \yii\db\ActiveRecord
             'min_points' => 'Min Points',
             'max_points' => 'Max Points',
         ];
+    }
+
+    public function checkOverlap($attribute, $params)
+    {
+        $conflicts=intval(self::find()->where($this->{$attribute}.' BETWEEN min_points AND max_points')->andWhere(['!=','id',$this->id])->count());
+        if($conflicts>0)
+            $this->addError($attribute, Yii::t('app', '{attribute} value {value} overlaps with another record.',['attribute'=>$attribute,'value'=>$this->{$attribute}]));
     }
 }
