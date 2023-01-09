@@ -18,20 +18,28 @@ class NotificationController extends \yii\rest\ActiveController
   public function behaviors()
   {
     return ArrayHelper::merge(parent::behaviors(), [
+      'content'=>[
+        'class' => yii\filters\ContentNegotiator::class,
+        'formats' => [
+          'application/json' => \yii\web\Response::FORMAT_JSON,
+        ],
+      ],
       'access' => [
         'class' => AccessControl::class,
         'rules' => [
           [
             'allow' => true,
-            'roles' => ['@']
+            'roles' => ['@'],
+            'matchCallback'=> function() {
+              if(!Yii::$app->request->isAjax)
+                return false;
+              return true;
+            }
           ],
         ],
-      ],
-      [
-        'class' => 'yii\filters\ContentNegotiator',
-        'formats' => [
-          'application/json' => \yii\web\Response::FORMAT_JSON,
-        ],
+        'denyCallback' => function () {
+          return \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
+        }
       ],
     ]);
   }
@@ -39,7 +47,6 @@ class NotificationController extends \yii\rest\ActiveController
   public function actions()
   {
     $actions = parent::actions();
-
     // disable the "delete", "create", "view","update" actions
     unset($actions['delete'], $actions['create'], $actions['view'], $actions['update']);
     $actions['index']['prepareDataProvider'] = [$this, 'prepareDataProvider'];
