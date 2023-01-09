@@ -192,6 +192,7 @@ function apiNotifications(){
   notifTimeout=setInterval(function () {
     var request = new XMLHttpRequest();
     request.open("GET", "/api/notification");
+    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
     request.send();
 
     request.onreadystatechange = function () {
@@ -219,7 +220,7 @@ function apiNotifications(){
           if(jsonObj.length>0) clearDropdownCounters('Notifications')
       }
     }
-  }, 3000);
+  }, 5000);
 }
 
 $(window).blur(function() {
