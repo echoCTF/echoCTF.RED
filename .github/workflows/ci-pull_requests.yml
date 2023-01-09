@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Check if packagist is up and if not use a mirror...
       run: nc -N -w1 asset-packagist.org 443 || composer config -g repos.packagist composer https://packagist.fi
