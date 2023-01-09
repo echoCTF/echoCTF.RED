@@ -1,9 +1,11 @@
-/* Avoid passive event warnings */
-//jQuery.event.special.touchstart = {
-//  setup: function( _, ns, handle ) {
-//      this.addEventListener("touchstart", handle, { passive: !ns.includes("noPreventDefault") });
-//  }
-//};
+// Extend with ifexists for checking existing elements
+$.fn.extend({
+  'ifexists': function (callback) {
+      if (this.length > 0) {
+          return callback($(this));
+      }
+  }
+});
 
 /* Dummy escapeHtml implementation */
 function escapeHtml(unsafe)
@@ -186,12 +188,14 @@ function clearDropdownCounters(curId){
   el.classList.remove("text-primary");
 }
 
-
 var notifTimeout;
+var intervalTimeout=5000
+
 function apiNotifications(){
   notifTimeout=setInterval(function () {
     var request = new XMLHttpRequest();
     request.open("GET", "/api/notification");
+    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
     request.send();
 
     request.onreadystatechange = function () {
@@ -219,11 +223,22 @@ function apiNotifications(){
           if(jsonObj.length>0) clearDropdownCounters('Notifications')
       }
     }
-  }, 3000);
+  }, intervalTimeout);
 }
 
-$(window).blur(function() {
-  clearTimeout(notifTimeout);
-}).focus(apiNotifications);
-
-apiNotifications();
+$(document).ready(function(){
+  $('#Notifications, #Hints').ifexists(function(elem) {
+    document.addEventListener('visibilitychange', function(e) {
+      if (document.visibilityState === 'hidden') {
+        clearTimeout(notifTimeout);
+      }
+      else
+      {
+        // clear any existing ones
+        clearTimeout(notifTimeout);
+        $('#Notifications, #Hints').ifexists(function(elem) { apiNotifications(); })
+      }
+    });
+    apiNotifications();
+  })
+})
