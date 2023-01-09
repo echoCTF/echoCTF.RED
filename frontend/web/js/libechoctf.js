@@ -188,7 +188,6 @@ function clearDropdownCounters(curId){
   el.classList.remove("text-primary");
 }
 
-
 var notifTimeout;
 var intervalTimeout=5000
 
@@ -224,7 +223,7 @@ function apiNotifications(){
           if(jsonObj.length>0) clearDropdownCounters('Notifications')
       }
     }
-  }, 5000);
+  }, intervalTimeout);
 }
 
 $(document).ready(function(){
