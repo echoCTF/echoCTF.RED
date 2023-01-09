@@ -7,6 +7,7 @@ use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\NetworkPlayer;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "player_subscription".
@@ -135,7 +136,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
             if(\Yii::$app instanceof \yii\console\Application)
               printf("Failed to save subscription: %s\n",$stripe_subscription->id);
             else
-              \Yii::$app->session->addFlash('error', sprintf('Failed to save subscription: %s',$stripe_subscription->id));
+              \Yii::$app->session->addFlash('error', sprintf('Failed to save subscription: %s',Html::encode($stripe_subscription->id)));
           }
           else
           {
@@ -143,7 +144,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
             if(\Yii::$app instanceof \yii\console\Application)
               printf("Imported subscription: %s for player %s\n",$stripe_subscription->id,$player->username);
             else
-              \Yii::$app->session->addFlash('success', sprintf('Imported subscription: %s for player %s',$stripe_subscription->id,$player->username));
+              \Yii::$app->session->addFlash('success', sprintf('Imported subscription: %s for player %s',Html::encode($stripe_subscription->id),Html::encode($player->username)));
           }
         }
       }

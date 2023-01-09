@@ -9,6 +9,7 @@ use app\modules\frontend\models\Player;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * NotificationController implements the CRUD actions for Notification model.
@@ -73,7 +74,7 @@ class NotificationController extends \app\components\BaseController
             $notif->load(Yii::$app->request->post());
             $notif->player_id = $player->id;
             if (!$notif->save()) {
-              \Yii::$app->getSession()->addFlash('error', $notif->getErrorSummary(true));
+              \Yii::$app->getSession()->addFlash('error', Html::errorSummary($notif));
               $err = true;
             }
           }
@@ -84,12 +85,12 @@ class NotificationController extends \app\components\BaseController
           }
         } catch (\Exception $e) {
           $transaction->rollBack();
-          \Yii::$app->getSession()->addFlash('error', $e->getMessage());
+          \Yii::$app->getSession()->addFlash('error', Html::encode($e->getMessage()));
         }
       } else if ($model->save()) {
         return $this->redirect(['view', 'id' => $model->id]);
       } else {
-        \Yii::$app->getSession()->addFlash('error', $model->getErrorSummary(true));
+        \Yii::$app->getSession()->addFlash('error', Html::errorSummary($model));
       }
     }
     return $this->render('create', [

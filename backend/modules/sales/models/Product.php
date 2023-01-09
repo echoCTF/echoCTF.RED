@@ -3,6 +3,7 @@
 namespace app\modules\sales\models;
 
 use Yii;
+use yii\helpers\Html;
 
 /**
  * This is the model class for table "product".
@@ -138,14 +139,14 @@ class Product extends \yii\db\ActiveRecord
           if(\Yii::$app instanceof \yii\console\Application)
             printf("Failed to save product: %s, %s\n",$stripeProduct->id,$stripeProduct->name);
           else
-            \Yii::$app->session->addFlash('error', sprintf('Failed to save product: %s, %s',$stripeProduct->id,$stripeProduct->name));
+            \Yii::$app->session->addFlash('error', sprintf('Failed to save product: %s, %s',Html::encode($stripeProduct->id),Html::encode($stripeProduct->name)));
         }
         else
         {
           if(\Yii::$app instanceof \yii\console\Application)
             printf("Imported product: %s, %s\n",$stripeProduct->id,$stripeProduct->name);
           else
-            \Yii::$app->session->addFlash('success', sprintf('Imported product: %s, %s',$stripeProduct->id,$stripeProduct->name));
+            \Yii::$app->session->addFlash('success', sprintf('Imported product: %s, %s',Html::encode($stripeProduct->id),Html::encode($stripeProduct->name)));
         }
         if(!empty($stripeProduct->metadata->network_ids))
         {

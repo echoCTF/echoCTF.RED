@@ -11,6 +11,7 @@ use app\modules\frontend\models\PlayerSearch;
 use app\modules\settings\models\Sysconfig;
 use app\modules\frontend\models\ImportPlayerForm;
 use yii\web\UploadedFile;
+use yii\helpers\Html;
 
 class ImportAction extends \yii\base\Action
 {
@@ -40,7 +41,7 @@ class ImportAction extends \yii\base\Action
               catch(\Exception $e)
               {
                 $trans->rollBack();
-                Yii::$app->session->setFlash('error', 'Failed to import file, '.$e->getMessage());
+                Yii::$app->session->setFlash('error', 'Failed to import file, '.Html::encode($e->getMessage()));
               }
           }
       }

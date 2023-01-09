@@ -9,6 +9,7 @@ use app\modules\frontend\models\TeamPlayer;
 use app\modules\frontend\models\PlayerSsl;
 use app\modules\frontend\models\PlayerSearch;
 use app\modules\settings\models\Sysconfig;
+use yii\helpers\Html;
 
 class MailAction extends \yii\base\Action
 {
@@ -23,7 +24,7 @@ class MailAction extends \yii\base\Action
     $player=$this->controller->findModel($id);
     if($player->status==10)
     {
-      \Yii::$app->getSession()->setFlash('warning', 'Player already active skiping mail.');
+      \Yii::$app->getSession()->setFlash('warning', 'Player already active skipping mail.');
       return $this->controller->goBack(Yii::$app->request->referrer);
     }
     elseif($player->status==9)
@@ -45,7 +46,7 @@ class MailAction extends \yii\base\Action
         }
         catch(\Exception $e)
         {
-          \Yii::$app->getSession()->setFlash('error', 'Failed to mail player. '.$e->getMessage());
+          \Yii::$app->getSession()->setFlash('error', 'Failed to mail player. '.Html::encode($e->getMessage()));
         }
     }
     elseif($player->status==0)
@@ -67,7 +68,7 @@ class MailAction extends \yii\base\Action
         }
         catch(\Exception $e)
         {
-          \Yii::$app->getSession()->setFlash('error', 'Failed to mail rejection to player. '.$e->getMessage());
+          \Yii::$app->getSession()->setFlash('error', 'Failed to mail rejection to player. '.Html::encode($e->getMessage()));
         }
 
     }

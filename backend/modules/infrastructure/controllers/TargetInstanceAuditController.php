@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * TargetInstanceAuditController implements the CRUD actions for TargetInstanceAudit model.
@@ -61,7 +62,7 @@ class TargetInstanceAuditController extends \app\components\BaseController
         }
         catch(\Exception $e)
         {
-            Yii::$app->session->setFlash('error', "Failed to delete audit records. <b>".$e->getMessage().'</b>');
+            Yii::$app->session->setFlash('error', "Failed to delete audit records. <b>".Html::encode($e->getMessage()).'</b>');
         }
         return $this->redirect(['index']);
     }

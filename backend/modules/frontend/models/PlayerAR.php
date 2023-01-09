@@ -99,17 +99,18 @@ class PlayerAR extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['username', 'type', 'status'], 'required'],
+            [['username', 'type', 'status','email'], 'required'],
             [['type'], 'string'],
             [['active', 'status'], 'integer'],
             [['academic'], 'integer'],
             [['academic'], 'default','value'=>0],
+            [['password_hash'], 'default', 'value'=>""],
             [['email'], 'filter', 'filter'=>'strtolower'],
-            [['activkey'], 'string', 'max' => 32],
+            [['activkey'], 'string', 'max' => 43],
             [['auth_key'], 'string', 'max' => 32],
             [['type'], 'default', 'value' => 'offense'],
             [['status'], 'default', 'value' => self::STATUS_ACTIVE],
-            [['activkey'], 'default', 'value' => Yii::$app->security->generateRandomString().'_'.time(), 'on' => 'create'],
+            [['activkey'], 'default', 'value' => Yii::$app->security->generateRandomString().'-'.time(), 'on' => 'create'],
             [['verification_token'], 'default', 'value' => str_replace('_','-',Yii::$app->security->generateRandomString().'-'.time()), 'on' => 'create'],
             [['username', 'fullname', 'email', 'new_password', 'activkey'], 'string', 'max' => 255],
             [['username'], 'unique'],
@@ -442,6 +443,5 @@ class PlayerAR extends \yii\db\ActiveRecord
     {
         return $this->auth_key;
     }
-
 
 }

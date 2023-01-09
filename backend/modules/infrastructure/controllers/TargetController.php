@@ -15,6 +15,7 @@ use Docker\API\Model\ExecIdStartPostBody;
 use Http\Client\Socket\Exception\ConnectionException;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * TargetController implements the CRUD actions for Target model.
@@ -151,7 +152,7 @@ class TargetController extends \app\components\BaseController
         }
         catch(\Exception $e)
         {
-          Yii::$app->session->setFlash('error', "Failed to fetch logs. <b>".$e->getMessage().'</b>');
+          Yii::$app->session->setFlash('error', "Failed to fetch logs. <b>".Html::encode($e->getMessage()).'</b>');
           return $this->redirect(['view','id'=>$target->id]);
         }
         return $this->render('logs', [
@@ -249,7 +250,7 @@ class TargetController extends \app\components\BaseController
     {
         $model=$this->findModel($id);
         $modelOrig=$this->findModel($id);
-        $msg="Server updated succesfully";
+        $msg="Server updated successfully";
         if($model->load(Yii::$app->request->post()) && $model->validate())
         {
 
@@ -257,14 +258,14 @@ class TargetController extends \app\components\BaseController
           if($modelOrig->server != $model->server || array_key_exists('destroy', Yii::$app->request->post()))
           {
             $modelOrig->destroy();
-            $msg="Server destroyed and updated succesfully";
+            $msg="Server destroyed and updated successfully";
           }
           if($model->save())
           {
             Yii::$app->session->setFlash('success', $msg);
             return $this->redirect(['view', 'id' => $model->id]);
           }
-          Yii::$app->session->setFlash('error', 'Server failed to be updated ['.implode(", ", $model->errors).']');
+          Yii::$app->session->setFlash('error', 'Server failed to be updated ['.Html::encode(implode(", ", $model->errors)).']');
         }
 
         return $this->render('update', [
@@ -413,9 +414,9 @@ class TargetController extends \app\components\BaseController
     {
       $model=$this->findModel($id);
         if($model->destroy())
-          Yii::$app->session->setFlash('success', 'Container destroyed from docker server [<code>'.$model->server.'</code>]');
+          Yii::$app->session->setFlash('success', 'Container destroyed from docker server [<code>'.Html::encode($model->server).'</code>]');
         else
-          Yii::$app->session->setFlash('error', 'Failed to destroy container from docker server [<code>'.$model->server.'</code>]');
+          Yii::$app->session->setFlash('error', 'Failed to destroy container from docker server [<code>'.Html::encode($model->server).'</code>]');
 
         return $this->goBack(Yii::$app->request->referrer);
     }
@@ -436,17 +437,17 @@ class TargetController extends \app\components\BaseController
           $models=Target::find()->all();
           foreach($models as $model)
             $model->spin();
-          \Yii::$app->getSession()->setFlash('success', 'Containers succesfuly restarted');
+          \Yii::$app->getSession()->setFlash('success', 'Containers successfully restarted');
         }
         else
         {
           $this->findModel($id)->spin();
-          \Yii::$app->getSession()->setFlash('success', 'Container succesfuly restarted');
+          \Yii::$app->getSession()->setFlash('success', 'Container successfully restarted');
         }
       }
       catch(\Exception $e)
       {
-        \Yii::$app->getSession()->setFlash('error', 'Failed to restart container. '.$e->getMessage());
+        \Yii::$app->getSession()->setFlash('error', 'Failed to restart container. '.Html::encode($e->getMessage()));
       }
       return $this->goBack(Yii::$app->request->referrer);
     }
@@ -465,14 +466,14 @@ class TargetController extends \app\components\BaseController
           $models=Target::find()->all();
           foreach($models as $model)
             $model->pull();
-          \Yii::$app->getSession()->setFlash('success', 'Images pulled succesfuly');
+          \Yii::$app->getSession()->setFlash('success', 'Images pulled successfully');
           return $this->redirect(['index']);
 
         }
         else
         {
           if($this->findModel($id)->pull())
-            \Yii::$app->getSession()->setFlash('success', 'Image succesfuly pulled');
+            \Yii::$app->getSession()->setFlash('success', 'Image successfully pulled');
           else
           {
             \Yii::$app->getSession()->setFlash('error', 'Failed to pull container image');
