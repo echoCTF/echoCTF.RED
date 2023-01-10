@@ -28,12 +28,18 @@ class LegalController extends \app\components\BaseController
 
     public function actionPrivacyPolicy()
     {
-        return $this->render('privacy-policy');
+        $content=\app\modelscli\Pages::findOne(2);
+        if ($content===null)
+            return $this->redirect('/');
+        return $this->render('privacy-policy',['content'=>$content]);
     }
 
     public function actionTermsAndConditions()
     {
-        return $this->render('terms-and-conditions');
+        $content=\app\modelscli\Pages::findOne(1);
+        if ($content===null)
+            return $this->redirect('/');
+        return $this->render('terms-and-conditions',['content'=>$content]);
     }
 
 }
