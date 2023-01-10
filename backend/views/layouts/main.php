@@ -59,6 +59,7 @@ AppAsset::register($this);
                 ['label' => 'JS Override', 'url' => ['/content/default/js-override'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Layout Override', 'url' => ['/content/layout-override/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'VPN Templates', 'url' => ['/content/vpn-template/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Pages', 'url' => ['/content/pages/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin  ],
               ]
             ],
 
