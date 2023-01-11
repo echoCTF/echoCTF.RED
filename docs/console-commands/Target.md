@@ -47,3 +47,19 @@ hours. Good to clean zombie processes and other potential junk that may be
 running on a target from attack attempts.
 
 Usage: `./yii target/restart`
+
+## Destroy Instances
+Destroy private instances of a target.
+
+usage `./yii target/destroy-instances [target_id] [dopf]`
+
+If `target_id` is provided then the specific target instances will be destroyed.
+If `dopf` is provided then the operations will also include PF cleanups
+
+## Destroy Ondemand
+Destroy ondemand powered up targets.
+
+usage `./yii target/destroy-ondemand [target_id] [dopf]`
+
+If `target_id` is provided then the specific target will be destroyed.
+If `dopf` is provided then the operations will also include PF cleanups.
