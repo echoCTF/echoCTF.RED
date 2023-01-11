@@ -8,6 +8,14 @@ use app\modules\gameplay\models\Target;
 use yii\behaviors\TimestampBehavior;
 use yii\behaviors\AttributeTypecastBehavior;
 use yii\db\Expression;
+use Docker\Docker;
+use Docker\DockerClientFactory;
+use Docker\API\Model\RestartPolicy;
+use Docker\API\Model\HostConfig;
+use Docker\API\Model\ContainersCreatePostBodyNetworkingConfig;
+use Docker\API\Model\ContainersCreatePostBody;
+use Docker\API\Model\EndpointSettings;
+use Docker\API\Model\EndpointIPAMConfig;
 
 /**
  * This is the model class for table "target_instance".
@@ -185,6 +193,7 @@ class TargetInstance extends \yii\db\ActiveRecord
         $this->notify('destroyed');
         parent::afterDelete();
     }
+
     public function notify($what)
     {
       $n=new \app\modules\activity\models\Notification;
@@ -196,6 +205,7 @@ class TargetInstance extends \yii\db\ActiveRecord
       $n->updated_at=new \yii\db\Expression('NOW()');
       $n->save();
     }
+
     public function getRebootVal()
     {
       if($this->reboot===0 && $this->ip===null)
@@ -217,4 +227,26 @@ class TargetInstance extends \yii\db\ActiveRecord
 
     }
 
+    public function connectAPI($params=null)
+    {
+      if($params===null)
+      {
+        if($this->server!==null)
+        {
+          $params['remote_socket']=$this->server->connstr;
+          $params['ssl']=false;
+          $params['timeout']=5000;
+        }
+      }
+      try
+      {
+        $client=DockerClientFactory::create($params);
+        return Docker::create($client);
+      }
+      catch(\Exception $e)
+      {
+        return false;
+      }
+
+    }
   }
