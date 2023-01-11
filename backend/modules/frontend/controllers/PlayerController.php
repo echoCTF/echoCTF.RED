@@ -14,6 +14,7 @@ use yii\filters\VerbFilter;
 use yii\web\UploadedFile;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\data\ActiveDataProvider;
 
 /**
  * PlayerController implements the CRUD actions for Player model.
@@ -68,6 +69,34 @@ class PlayerController extends \app\components\BaseController
 
         return $this->render('index', [
             'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Lists all Profile models that fail validation.
+     * @return mixed
+     */
+    public function actionFailValidation()
+    {
+        $_ids=[];
+        $allRecords=Player::find()->all();
+        foreach($allRecords as $p)
+        {
+            $p->scenario='validator';
+            if(!$p->validate())
+            {
+                $_ids[]=$p->id;
+            }
+        }
+        $query=Player::find();
+
+        $dataProvider=new ActiveDataProvider([
+            'query' => $query,
+        ]);
+        $query->where(['in', 'id',$_ids]);
+
+        return $this->render('fail-validation', [
             'dataProvider' => $dataProvider,
         ]);
     }

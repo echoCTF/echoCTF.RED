@@ -12,6 +12,7 @@ use app\modules\activity\models\PlayerVpnHistorySearch;
 use app\modules\activity\models\HeadshotSearch;
 use app\modules\activity\models\WriteupSearch;
 use app\modules\activity\models\ChallengeSolverSearch;
+use yii\data\ActiveDataProvider;
 
 /**
  * ProfileController implements the CRUD actions for Profile model.
@@ -29,6 +30,7 @@ class ProfileController extends \app\components\BaseController
                   'actions' => [
                       'approve-avatar' => ['POST'],
                       'clear-validation' => ['POST'],
+                      'clear-all-validation' => ['POST'],
                       'reset-key' => ['POST'],
                   ],
               ],
@@ -46,6 +48,35 @@ class ProfileController extends \app\components\BaseController
 
         return $this->render('index', [
             'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * Lists all Profile models that fail validation.
+     * @return mixed
+     */
+    public function actionFailValidation()
+    {
+        $profile_ids=[];
+        $allRecords=Profile::find()->all();
+        foreach($allRecords as $p)
+        {
+            $p->scenario='validator';
+            if(!$p->validate())
+            {
+                $profile_ids[]=$p->id;
+            }
+        }
+        $query=Profile::find()->joinWith(['owner']);
+
+        $dataProvider=new ActiveDataProvider([
+            'query' => $query,
+        ]);
+        $query->where(['in', 'profile.id',$profile_ids]);
+        $searchModel=new ProfileSearch();
+
+        return $this->render('fail-validation', [
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -156,7 +187,39 @@ class ProfileController extends \app\components\BaseController
                 Yii::$app->session->setFlash('error', "Failing attribute not on the list ".$attribute);
         }
         $model->save();
-        return $this->redirect(['index']);
+        return $this->goBack((
+            !empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null
+        ));
+    }
+
+    public function actionClearAllValidation()
+    {
+      $fields=['twitter','youtube','htb','discord','github'];
+      $allRecords=Profile::find()->all();
+      foreach($allRecords as $model)
+      {
+        $model->scenario='validator';
+        if(!$model->validate())
+        {
+          foreach($model->getErrors() as $attribute => $errors)
+          {
+            if($attribute==='twitter' && $model->twitter[0]==='@')
+            {
+              $model->twitter=str_replace('@','',$model->twitter);
+            }
+            elseif(array_search($attribute,$fields)!==false)
+            {
+              $model->$attribute=null;
+            }
+            else
+              Yii::$app->session->setFlash('error', "Failing attribute not on the list ".$attribute);
+          }
+          $model->save();
+        }
+      }
+      return $this->goBack((
+          !empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null
+      ));
     }
 
     /**
