@@ -40,11 +40,12 @@ yii\bootstrap\Modal::end();
             [
               'attribute'=>'fqdn',
               'format'=>'html',
-              'contentOptions'=>['class'=>'text-nowrap'],
+              'contentOptions'=>['class'=>'text-nowrap','style'=>'min-width: 16em; max-width: 16em'],
               'value'=>function($model){return sprintf("%s (<small>%s</small>)",$model->target->name,$model->target->ipoctet);},
             ],
             [
               'attribute'=>'content',
+              'contentOptions'=>['class'=>'wordwrap', 'style'=>'min-width: 30em; max-width: 30em'],
               'value'=>function($model){return wordwrap(substr($model->content,0,256),80);}
             ],
             'approved:boolean',
