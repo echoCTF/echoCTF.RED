@@ -156,4 +156,34 @@ class TargetController extends Controller {
         }
       }
     }
+    public function actionDestroyOndemand($dopf=false)
+    {
+      try
+      {
+        $demands=\app\modules\gameplay\models\TargetOndemand::find()
+        ->andWhere(
+          ['and',
+            ['state'=>1],
+            ['OR',
+              ['IS','heartbeat',new \yii\db\Expression('NULL')],
+              ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
+            ]
+          ]);
+
+        foreach($demands->all() as $ondemand)
+        {
+          printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
+          try { $ondemand->target->destroy(); } catch (\Exception $e) { }
+          $ondemand->state=-1;
+          $ondemand->heartbeat=null;
+          if($dopf!==false)
+            Pf::del_table_ip('heartbeat',$ondemand->target->ipoctet);
+          $ondemand->save();
+        }
+      }
+      catch (\Exception $e)
+      {
+        echo "OnDemand:", $e->getMessage(),"\n";
+      }
+    }
 }
