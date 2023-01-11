@@ -20,6 +20,7 @@ use app\modules\frontend\models\TeamPlayer;
 use app\modules\frontend\models\PlayerIp;
 use app\modules\frontend\models\PlayerSsl;
 use yii\helpers\ArrayHelper;
+use yii\console\widgets\Table;
 
 /**
  * Manages users.
@@ -364,11 +365,75 @@ class PlayerController extends Controller {
     }
   }
 
+  public function actionFailValidation($delete=false)
+  {
+    $allRecords=Player::find()->all();
+    foreach($allRecords as $p)
+    {
+        $p->scenario='validator';
+        if(!$p->validate('email'))
+        {
+          echo Table::widget([
+            'headers' =>['Error for ID: '.$p->id, 'Description'],
+            'rows' => $this->getErrorRows($p),
+          ]);
+          if($delete!==false)
+          {
+            $p->delete();
+            echo $p->id," Deleted\n";
+          }
+        }
+    }
+  }
 
+  public function actionFailValidationProfiles($fix=false)
+  {
+    $allRecords=Profile::find()->all();
+    $fields=['twitter','youtube','htb','discord','github'];
+    foreach($allRecords as $p)
+    {
+        $p->scenario='validator';
+        if(!$p->validate())
+        {
+          echo Table::widget([
+            'headers' =>['Error for ID: '.$p->id, 'Description'],
+            'rows' => $this->getErrorRows($p),
+          ]);
+          if($fix!==false)
+          {
+            foreach($p->getErrors() as $attribute => $errors)
+            {
+                if($attribute==='twitter' && $p->twitter[0]==='@')
+                {
+                    $p->twitter=str_replace('@','',$p->twitter);
+                }
+                elseif(array_search($attribute,$fields)!==false)
+                {
+                    $p->$attribute=null;
+                }
+                else
+                    printf("Failing attribute not on the list %a",$attribute);
+            }
+            $p->save();
+            echo $p->id," fixed\n";
+          }
+        }
+    }
+  }
   public function p($message, array $params=[])
   {
       $this->stdout(Yii::t('app', $message, $params).PHP_EOL);
   }
 
+  private function getErrorRows($model)
+  {
+    $errors=$model->getErrors();
+    $errorows=null;
+    foreach($errors as $field => $errstrs)
+    {
+      $errorows[]=[$model->{$field}, implode($errstrs," ")];
+    }
+    return $errorows;
+  }
 
 }

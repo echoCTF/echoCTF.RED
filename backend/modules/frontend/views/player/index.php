@@ -21,6 +21,13 @@ yii\bootstrap\Modal::end();
     <p>
         <?= Html::a('Create Player', ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a('Import Players', ['import'], ['class' => 'btn btn-info']) ?>
+        <?= Html::a(Yii::t('app', 'Fail Validate'), ['fail-validation'], [
+            'class' => 'btn',
+            'style'=>'background: #4d246f; color: white;',
+            'data' => [
+                'confirm' => Yii::t('app', 'This operation validates all the user details are you sure?'),
+            ],
+        ]) ?>
         <?= Html::a('Reset All player data', ['reset-playdata'], ['class' => 'btn btn-danger', 'data' => ['confirm' => 'Are you sure you want to delete all player data?', 'method' => 'post', ]]) ?>
         <?= Html::a('Reset All player progress', ['reset-player-progress'], ['class' => 'btn btn-warning', 'data' => ['confirm' => 'Are you sure you want to delete all player progress?', 'method' => 'post', ]]) ?>
     </p>
