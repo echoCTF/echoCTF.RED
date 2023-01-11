@@ -2,19 +2,14 @@
 namespace app\commands;
 
 use yii\console\Controller;
-use yii\console\ExitCode;
 use yii\helpers\ArrayHelper;
 use Docker\DockerClientFactory;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Notification;
 use app\modules\activity\models\SpinHistory;
 use app\modules\gameplay\models\Target;
-use app\modules\gameplay\models\Finding;
-use app\modules\settings\models\Sysconfig;
 use app\components\Pf;
 use Docker\Docker;
-use Http\Client\Socket\Exception\ConnectionException;
-use yii\console\Exception as ConsoleException;
 use app\modules\infrastructure\models\DockerContainer;
 use app\modules\infrastructure\models\TargetInstance;
 use app\modules\infrastructure\models\TargetInstanceAudit;
@@ -181,6 +176,7 @@ class CronController extends Controller
       }
     }
   }
+
   /**
    * Process player private instances
    */

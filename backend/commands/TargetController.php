@@ -2,19 +2,12 @@
 namespace app\commands;
 
 use yii\console\Controller;
-use yii\console\ExitCode;
-use yii\helpers\ArrayHelper;
 use Docker\DockerClientFactory;
-use app\modules\activity\models\SpinQueue;
-use app\modules\activity\models\Notification;
-use app\modules\activity\models\SpinHistory;
 use app\modules\gameplay\models\Target;
-use app\modules\gameplay\models\Finding;
-use app\modules\settings\models\Sysconfig;
-use app\components\Pf;
 use Docker\Docker;
-use Http\Client\Socket\Exception\ConnectionException;
-use yii\console\Exception as ConsoleException;
+use app\modules\infrastructure\models\TargetInstance;
+use app\modules\infrastructure\models\DockerContainer;
+use app\components\Pf;
 
 class TargetController extends Controller {
 
@@ -128,4 +121,76 @@ class TargetController extends Controller {
       }
     } // end docker servers
   }
+  public function actionDestroyInstances($id=false,$dopf=false)
+  {
+      $t=TargetInstance::find();
+      if(boolval($id)!==false)
+        $t->where(['=','target_id',$id]);
+      foreach($t->all() as $val)
+      {
+        $dc=new DockerContainer($val->target);
+        $dc->name=$val->name;
+        $dc->server=$val->server->connstr;
+        printf(" %s for %s (%s)\n",$val->target->name,$val->player->username,$dc->name);
+        try {
+          if($val->ip!==null)
+          {
+            // ignore errors of destroy
+            try { $dc->destroy(); } catch (\Error $e) { }
+          }
+          if($dopf!==false)
+          {
+            Pf::kill_table($dc->name,true);
+            Pf::kill_table($dc->name.'_clients',true);
+          }
+          $val->delete();
+        }
+        catch (\Exception $e)
+        {
+          die(var_dump($e));
+          if(method_exists($e,'getErrorResponse'))
+            echo $e->getErrorResponse()->getMessage(),"\n";
+          else
+            echo $e->getMessage(),"\n";
+
+        }
+      }
+    }
+    public function actionDestroyOndemand($id=false,$dopf=false)
+    {
+      try
+      {
+        $demands=\app\modules\gameplay\models\TargetOndemand::find();
+        if(boolval($id)!==false)
+        {
+          $demands->where(['target_id'=>$id]);
+        }
+        else
+        {
+          $demands->andWhere(
+          ['and',
+            ['state'=>1],
+            ['OR',
+              ['IS','heartbeat',new \yii\db\Expression('NULL')],
+              ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
+            ]
+          ]);
+        }
+
+        foreach($demands->all() as $ondemand)
+        {
+          printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
+          try { $ondemand->target->destroy(); } catch (\Exception $e) { }
+          $ondemand->state=-1;
+          $ondemand->heartbeat=null;
+          if($dopf!==false)
+            Pf::del_table_ip('heartbeat',$ondemand->target->ipoctet);
+          $ondemand->save();
+        }
+      }
+      catch (\Exception $e)
+      {
+        echo "OnDemand:", $e->getMessage(),"\n";
+      }
+    }
 }
