@@ -156,12 +156,18 @@ class TargetController extends Controller {
         }
       }
     }
-    public function actionDestroyOndemand($dopf=false)
+    public function actionDestroyOndemand($id=false,$dopf=false)
     {
       try
       {
-        $demands=\app\modules\gameplay\models\TargetOndemand::find()
-        ->andWhere(
+        $demands=\app\modules\gameplay\models\TargetOndemand::find();
+        if($id!==false)
+        {
+          $demands->where(['target_id'=>$id]);
+        }
+        else
+        {
+          $demands->andWhere(
           ['and',
             ['state'=>1],
             ['OR',
@@ -169,6 +175,7 @@ class TargetController extends Controller {
               ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
             ]
           ]);
+        }
 
         foreach($demands->all() as $ondemand)
         {
