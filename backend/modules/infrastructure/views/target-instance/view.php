@@ -7,6 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\modules\infrastructure\models\TargetInstance */
 
 $this->title = "Instance for player: ".$model->player_id;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target Instances'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -17,6 +18,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->player_id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Logs', ['logs', 'id' => $model->player_id], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Exec', ['exec', 'id' => $model->player_id], ['class' => 'btn btn-danger','style'=>'background: black; color: white']) ?>
         <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->player_id], [
             'class' => 'btn btn-danger',
             'data' => [

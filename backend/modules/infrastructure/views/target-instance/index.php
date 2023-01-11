@@ -10,6 +10,7 @@ use app\modules\infrastructure\models\Server;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'Target Instances');
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
 $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
