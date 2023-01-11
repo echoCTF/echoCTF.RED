@@ -161,7 +161,7 @@ class TargetController extends Controller {
       try
       {
         $demands=\app\modules\gameplay\models\TargetOndemand::find();
-        if($id!==false)
+        if(boolval($id)!==false)
         {
           $demands->where(['target_id'=>$id]);
         }
