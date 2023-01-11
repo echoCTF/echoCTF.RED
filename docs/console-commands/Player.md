@@ -66,3 +66,15 @@ Accepted filter values include one of `all`, `active`, `inactive`
 Usage: `./backend/yii player/generate-auth-keys [filter]`
 
 Accepted filter values include one of `all`, `active`, `inactive`
+
+## Validate Player emails based on latest rules
+
+Usage: `./backend/yii player/fail-validation [delete]`
+
+If `delete` is set to any value the players that fail validation get deleted
+
+## Validate Player Profiles based on latest rules
+
+Usage: `./backend/yii player/fail-validation-profiles [fix]`
+
+If `fix` is set to any value the player profiles that fail validation get fixed
