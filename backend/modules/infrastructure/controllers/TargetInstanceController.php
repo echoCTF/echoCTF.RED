@@ -7,9 +7,16 @@ use yii\helpers\ArrayHelper;
 use app\modules\infrastructure\models\TargetInstance;
 use app\modules\infrastructure\models\TargetInstanceSearch;
 use app\modules\infrastructure\models\DockerContainer;
+use app\modules\infrastructure\models\TargetExecCommandForm;
+use Docker\API\Model\ContainersIdExecPostBody;
+use Docker\API\Model\ExecIdStartPostBody;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
+use yii\base\UserException;
+
+
 /**
  * TargetInstanceController implements the CRUD actions for TargetInstance model.
  */
@@ -30,6 +37,105 @@ class TargetInstanceController extends \app\components\BaseController
                 ],
             ],
         ]);
+    }
+
+    /**
+     * Displays a Target container logs.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionLogs($id)
+    {
+        $target=$this->findModel($id);
+        try {
+          $docker=$target->connectAPI();
+          if($docker===false)
+            throw new UserException('Failed to connect to the docker API');
+
+
+          $webSocketStream = $docker->containerAttachWebsocket($target->name, [
+            'stream' => true,
+            'logs'   => true
+          ]);
+          $line="";
+          while($line!==false && $line!==null)
+          {
+            $line=$webSocketStream->read();
+            $lines[]=$line;
+          }
+        }
+        catch(\Exception $e)
+        {
+          Yii::$app->session->setFlash('error', "Failed to fetch logs. <b>".Html::encode($e->getMessage()).'</b>');
+          return $this->redirect(['view','id'=>$target->player_id]);
+        }
+        return $this->render('logs', [
+          'logs' => implode("",$lines),
+          'model' => $target,
+        ]);
+    }
+
+    /**
+     * Executes a command on a running Target container.
+     * @param integer $player_id
+     * @param integer $target_id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionExec($id)
+    {
+        $target=$this->findModel($id);
+        $form=new TargetExecCommandForm();
+        $stdoutText = "";
+        $stderrText = "";
+        if ($form->load(Yii::$app->request->post()) && $form->validate())
+        {
+          try {
+            $docker=$target->connectAPI();
+            if($docker===false)
+                throw new UserException("Failed to connect to docker API");
+            $execConfig = new ContainersIdExecPostBody();
+            $execConfig->setTty($form->tty);
+            $execConfig->setAttachStdout($form->stdout);
+            $execConfig->setAttachStderr($form->stderr);
+
+            $execConfig->setCmd($form->commandArray);
+            $cexec = $docker->containerExec($target->name,$execConfig);
+            $execid = $cexec->getId();
+            $execStartConfig = new ExecIdStartPostBody();
+            $execStartConfig->setDetach(false);
+
+            // Execute the command
+            $stream = $docker->execStart($execid,$execStartConfig);
+
+            // To see the output stream of the 'exec' command
+            $stream->onStdout(function ($stdout) use (&$stdoutText) {
+                $stdoutText .= $stdout;
+            });
+
+            $stream->onStderr(function ($stderr) use (&$stderrText) {
+                $stderrText .= $stderr;
+            });
+
+            $stream->wait();
+          }
+          catch (\Exception $e)
+          {
+            Yii::$app->session->setFlash('error', "Failed to execute command. <b>".Html::encode($e->getMessage()).'</b>');
+          }
+        }
+        else {
+          $form->tty=true;
+          $form->stdout=true;
+        }
+        return $this->render('exec', [
+          'formModel'=>$form,
+          'stdout'=>$stdoutText,
+          "stderr" => $stderrText,
+          'model' => $target,
+        ]);
+
     }
 
     /**
@@ -106,7 +212,7 @@ class TargetInstanceController extends \app\components\BaseController
      */
     public function actionRestart($id)
     {
-        try 
+        try
         {
             $val=$this->findModel($id);
             $dc=new DockerContainer($val->target);
@@ -114,10 +220,10 @@ class TargetInstanceController extends \app\components\BaseController
             $dc->targetVariables=$val->target->targetVariables;
             $dc->name=$val->name;
             $dc->server=$val->server->connstr;
-            try 
+            try
             {
                 $dc->destroy();
-            } 
+            }
             catch (\Exception $e) { }
             $dc->pull();
             $dc->spin();
@@ -152,10 +258,10 @@ class TargetInstanceController extends \app\components\BaseController
             $dc->targetVariables=$val->target->targetVariables;
             $dc->name=$val->name;
             $dc->server=$val->server->connstr;
-            try 
+            try
             {
                 $dc->destroy();
-            } 
+            }
             catch (\Exception $e) { }
             $val->delete();
         }
@@ -166,7 +272,7 @@ class TargetInstanceController extends \app\components\BaseController
           else
             echo $e->getMessage(),"\n";
         }
-  
+
         return $this->redirect(['index']);
     }
 

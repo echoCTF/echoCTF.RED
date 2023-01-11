@@ -7,6 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\modules\infrastructure\models\TargetInstance */
 
 $this->title = "Instance for player: ".$model->player_id;
+$this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target Instances'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -17,10 +18,27 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->player_id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->player_id], [
+        <?= Html::a('Logs', ['logs', 'id' => $model->player_id], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Exec', ['exec', 'id' => $model->player_id], ['class' => 'btn btn-danger','style'=>'background: black; color: white']) ?>
+        <?= Html::a('Logs', ['logs', 'id' => $model->player_id], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Restart', ['restart', 'id' => $model->player_id], [
+            'class' => 'btn btn-warning',
+            'data' => [
+                'confirm' => 'Are you sure you want to restart the host?',
+                'method' => 'post',
+            ],
+        ]) ?>
+                <?= Html::a('Delete', ['delete', 'id' => $model->player_id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
+        <?= Html::a('Destroy', ['destroy', 'id' => $model->player_id], [
+            'class' => 'btn btn-info',
+            'data' => [
+                'confirm' => 'Are you sure you want to destroy the container for this item?',
                 'method' => 'post',
             ],
         ]) ?>

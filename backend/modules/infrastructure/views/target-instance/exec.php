@@ -7,10 +7,10 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\modules\gameplay\models\Target */
 
-$this->title="Exec command on ".$model->name."/".$model->ipoctet." running on ".($model->server!="" ? $model->server : "localhost");
+$this->title="Exec command on ".$model->name."/".$model->ipoctet." running on ".($model->server ? $model->server->name : "localhost");
 $this->params['breadcrumbs'][]=ucfirst(Yii::$app->controller->module->id);
-$this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
-$this->params['breadcrumbs'][]=$this->title;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Target Instances'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span>Target Exec Command Help</h2>',
     'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
@@ -26,32 +26,24 @@ yii\bootstrap\Modal::end();
 
 
     <p>
-        <?= Html::a('View', ['view', 'id' => $model->id], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Logs', ['logs', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
-        <?= Html::a('Generate', ['generate', 'id' => $model->id], ['class' => 'btn btn-info', 'style'=>'background-color: gray']) ?>
-        <?= Html::a('Spin', ['spin', 'id' => $model->id], [
+        <?= Html::a('View', ['view', 'id' => $model->player_id], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Update', ['update', 'id' => $model->player_id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Logs', ['logs', 'id' => $model->player_id], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Restart', ['restart', 'id' => $model->player_id], [
             'class' => 'btn btn-warning',
             'data' => [
                 'confirm' => 'Are you sure you want to restart the host?',
                 'method' => 'post',
             ],
         ]) ?>
-        <?= Html::a('Pull', ['pull', 'id' => $model->id], [
-            'class' => 'btn btn-success',
-            'data' => [
-                'method' => 'post',
-            ],
-        ]) ?>
-
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+                <?= Html::a('Delete', ['delete', 'id' => $model->player_id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
                 'method' => 'post',
             ],
         ]) ?>
-        <?= Html::a('Destroy', ['destroy', 'id' => $model->id], [
+        <?= Html::a('Destroy', ['destroy', 'id' => $model->player_id], [
             'class' => 'btn btn-info',
             'data' => [
                 'confirm' => 'Are you sure you want to destroy the container for this item?',
