@@ -7,7 +7,8 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\frontend\models\ProfileSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title=Yii::t('app', 'Profiles');
+$this->title=Yii::t('app', 'Failed validation Profiles');
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Profiles'), 'url' => ['index']];
 $this->params['breadcrumbs'][]=$this->title;
 yii\bootstrap\Modal::begin([
     'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
@@ -21,11 +22,13 @@ yii\bootstrap\Modal::end();
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
+        <?= Html::a(Yii::t('app', 'Profiles'), ['index'], ['class' => 'btn btn-info']) ?>
         <?= Html::a(Yii::t('app', 'Create Profile'), ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a(Yii::t('app', 'Fail Validate'), ['fail-validation'], [
-            'class' => 'btn btn-warning',
+        <?= Html::a(Yii::t('app', 'Clear All Fail Validate'), ['clear-all-validation'], [
+            'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => Yii::t('app', 'This operation validates all the user profiles are you sure?'),
+                'confirm' => Yii::t('app', 'Are you sure you want to clear all the validation failures?'),
+                'method' => 'post',
             ],
         ]) ?>
     </p>
@@ -34,14 +37,7 @@ yii\bootstrap\Modal::end();
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'rowOptions' => function ($model, $key, $index, $grid) {
-            $model->scenario='validator';
-            if(!$model->validate()) {
-                 return ['style'=>'font-weight: 300; background: #ffcccb'];
-            }
-            return [];
-        },
+        'filterModel' => false,
         'columns' => [
             'id',
             'player_id',
@@ -52,39 +48,13 @@ yii\bootstrap\Modal::end();
             ],
             'bio:ntext',
             'country',
-            [
-              'attribute'=>'visibility',
-              'filter'=>$searchModel->visibilities
-            ],
             'twitter',
             'github',
             'discord',
-//            'terms_and_conditions:boolean',
-//            'mail_optin:boolean',
-//            'gdpr:boolean',
-            [
-              'attribute'=>'avatar',
-              'format'=>'html',
-              'value'=>function($data) { return Html::img('https://'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data['avatar'],['width' => '50px']);}
-            ],
-            'approved_avatar:boolean',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{view} {update} {delete} {approve-avatar} {clear-validation} {player-view} {player-view-full}',
+              'template' => '{view} {update} {delete} {clear-validation} {player-view} {player-view-full}',
               'buttons' => [
-                  'approve-avatar' => function($url, $model) {
-                    if(!$model->approved_avatar)
-                    return Html::a(
-                        '<span class="glyphicon glyphicon-file"></span>',
-                        $url,
-                        [
-                          'title' => 'Approve avatar for the user',
-                          'data-pjax' => '0',
-                          'data-method' => 'POST',
-                          'data'=>['confirm'=>"Are you sure you want to approve the user avatar?"]
-                        ]
-                    );
-                  },
                   'clear-validation' => function($url, $model) {
                     $model->scenario='validator';
                     if(!$model->validate())
