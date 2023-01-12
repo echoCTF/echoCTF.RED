@@ -1,10 +1,13 @@
 <?php
 
+use yii\widgets\Pjax;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 ?>
+<?php Pjax::begin(['id' => 'writeupsPJ','enablePushState'=>false,'enableReplaceState'=>false,]);?>
 <?= GridView::widget([
+    'id'=>'writeups',
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
@@ -48,4 +51,5 @@ use yii\grid\GridView;
           ],
         ],
     ],
-]); ?>
+]);
+Pjax::end();

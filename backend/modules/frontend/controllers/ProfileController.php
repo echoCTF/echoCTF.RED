@@ -13,7 +13,7 @@ use app\modules\activity\models\HeadshotSearch;
 use app\modules\activity\models\WriteupSearch;
 use app\modules\activity\models\ChallengeSolverSearch;
 use yii\data\ActiveDataProvider;
-
+use yii\helpers\Json;
 /**
  * ProfileController implements the CRUD actions for Profile model.
  */
@@ -241,10 +241,10 @@ class ProfileController extends \app\components\BaseController
       $searchModel=new PlayerVpnHistorySearch();
       $searchModel->player_id=$profile->player_id;
       $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
-      return json_encode($this->renderAjax('_vpn_history', [
+      return Json::encode(trim($this->renderAjax('_vpn_history', [
                'dataProvider' => $dataProvider,
                'searchModel' => $searchModel
-             ]));
+             ])));
     }
 
     public function actionHeadshots($id)
@@ -253,10 +253,10 @@ class ProfileController extends \app\components\BaseController
       $searchModel=new HeadshotSearch();
       $searchModel->player_id=$profile->player_id;
       $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
-      return json_encode($this->renderAjax('_headshots', [
+      return Json::encode(trim($this->renderAjax('_headshots', [
                'dataProvider' => $dataProvider,
                'searchModel' => $searchModel
-             ]));
+             ])));
     }
 
     public function actionWriteups($id)
@@ -265,10 +265,10 @@ class ProfileController extends \app\components\BaseController
       $searchModel=new WriteupSearch();
       $searchModel->player_id=$profile->player_id;
       $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
-      return json_encode($this->renderAjax('_writeups', [
+      return Json::encode(trim($this->renderAjax('_writeups', [
                'dataProvider' => $dataProvider,
                'searchModel' => $searchModel
-             ]));
+             ])));
     }
 
     public function actionSolves($id)
@@ -277,10 +277,10 @@ class ProfileController extends \app\components\BaseController
       $searchModel=new ChallengeSolverSearch();
       $searchModel->player_id=$profile->player_id;
       $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
-      return json_encode($this->renderAjax('_solves', [
+      return Json::encode(trim($this->renderAjax('_solves', [
                'dataProvider' => $dataProvider,
                'searchModel' => $searchModel
-             ]));
+             ])));
     }
 
     public function actionResetKey($id)
