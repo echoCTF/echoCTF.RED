@@ -10,7 +10,6 @@ use yii\grid\GridView;
     'id'=>'heasthots',
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
-    //'filterUrl' => ['frontend/profile/headshots','id' => $searchModel->player_id, '#' => 'headshot-tab'],
     'columns' => [
         'target_id',
         [
