@@ -31,8 +31,8 @@ class MigrationController extends Controller
         foreach($disabled_events as $row)
         {
             $evname=$row['EVENT_NAME'];
-            echo "Found disabled event ${evname}, setting to ENABLE\n";
-            Yii::$app->db->createCommand("ALTER EVENT ${evname} ENABLE")->execute();
+            echo "Found disabled event ",$evname,", setting to ENABLE\n";
+            Yii::$app->db->createCommand("ALTER EVENT $evname ENABLE")->execute();
         }
     }
     public function actionStop()
@@ -43,9 +43,12 @@ class MigrationController extends Controller
         foreach($disabled_events as $row)
         {
             $evname=$row['EVENT_NAME'];
-            echo "Found disabled event ${evname}, setting to ENABLE\n";
-            Yii::$app->db->createCommand("ALTER EVENT ${evname} ENABLE")->execute();
+            echo "Found disabled event ",$evname,", setting to ENABLE\n";
+            Yii::$app->db->createCommand("ALTER EVENT $evname ENABLE")->execute();
         }
+        echo "Enable Triggers";
+        Yii::$app->db->createCommand("SET @TRIGGER_CHECKS=TRUE")->execute();
+
     }
 
 }
