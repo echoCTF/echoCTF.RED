@@ -431,7 +431,7 @@ class PlayerController extends Controller {
     $errorows=null;
     foreach($errors as $field => $errstrs)
     {
-      $errorows[]=[$model->{$field}, implode($errstrs," ")];
+      $errorows[]=[$model->{$field}, implode(" ",$errstrs)];
     }
     return $errorows;
   }
