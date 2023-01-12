@@ -1,12 +1,16 @@
 <?php
 
+use yii\widgets\Pjax;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\GridView;
 ?>
+<?php Pjax::begin(['id' => 'headshotsPJ','enablePushState'=>false,'enableReplaceState'=>false,]);?>
 <?= GridView::widget([
+    'id'=>'heasthots',
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
+    //'filterUrl' => ['frontend/profile/headshots','id' => $searchModel->player_id, '#' => 'headshot-tab'],
     'columns' => [
         'target_id',
         [
@@ -31,3 +35,4 @@ use yii\grid\GridView;
         ],
     ],
 ]);
+Pjax::end();
