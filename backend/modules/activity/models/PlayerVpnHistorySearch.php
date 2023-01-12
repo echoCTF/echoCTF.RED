@@ -65,10 +65,14 @@ class PlayerVpnHistorySearch extends PlayerVpnHistory
             'player_vpn_history.player_id' => $this->player_id,
             'player_vpn_history.ts' => $this->ts,
         ]);
-        $query->andFilterWhere(['=', 'vpn_remote_address', $this->vpn_remote_address]);
-        $query->orFilterWhere(['like', 'INET_NTOA(vpn_remote_address)', $this->vpn_remote_address]);
-        $query->andFilterWhere(['=', 'vpn_local_address', $this->vpn_local_address]);
-        $query->orFilterWhere(['like', 'INET_NTOA(vpn_local_address)', $this->vpn_local_address]);
+        $query->andFilterWhere(['or',
+            ['=', 'vpn_remote_address', $this->vpn_remote_address],
+            ['like', 'INET_NTOA(vpn_remote_address)', $this->vpn_remote_address]
+        ]);
+        $query->andFilterWhere(['or',
+            ['=', 'vpn_local_address', $this->vpn_local_address],
+            ['like', 'INET_NTOA(vpn_local_address)', $this->vpn_local_address]
+        ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $dataProvider->setSort([
             'attributes' => array_merge(
