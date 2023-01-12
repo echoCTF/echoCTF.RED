@@ -65,13 +65,13 @@ class WriteupSearch extends Writeup
             'player_id' => $this->player_id,
             'target_id' => $this->target_id,
             'approved' => $this->approved,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'content', $this->content])
-            ->andFilterWhere(['like', 'writeup.status', $this->status])
-            ->andFilterWhere(['like', 'comment', $this->comment]);
+        $query->andFilterWhere(['like', 'writeup.created_at', $this->created_at])
+              ->andFilterWhere(['like', 'writeup.updated_at', $this->updated_at])
+              ->andFilterWhere(['like', 'content', $this->content])
+              ->andFilterWhere(['like', 'writeup.status', $this->status])
+              ->andFilterWhere(['like', 'comment', $this->comment]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $query->andFilterWhere(['like', 'target.fqdn', $this->fqdn]);
         $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
