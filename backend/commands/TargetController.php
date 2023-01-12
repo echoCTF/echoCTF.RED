@@ -138,16 +138,17 @@ class TargetController extends Controller {
             // ignore errors of destroy
             try { $dc->destroy(); } catch (\Error $e) { }
           }
-          if($dopf!==false)
-          {
-            Pf::kill_table($dc->name,true);
-            Pf::kill_table($dc->name.'_clients',true);
-          }
+          try{
+            if($dopf!==false)
+            {
+              Pf::kill_table($dc->name,true);
+              Pf::kill_table($dc->name.'_clients',true);
+            }
+          } catch (\Exception $e) {}
           $val->delete();
         }
         catch (\Exception $e)
         {
-          die(var_dump($e));
           if(method_exists($e,'getErrorResponse'))
             echo $e->getErrorResponse()->getMessage(),"\n";
           else
