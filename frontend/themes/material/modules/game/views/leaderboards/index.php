@@ -46,6 +46,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               ]);
               Pjax::end();?>
         </div>
+<?php if(\Yii::$app->sys->monthly_leaderboards!==false):?>
         <div class="col">
               <?php
               Pjax::begin(['id'=>'playerMonthlyScore','enablePushState'=>false, 'linkSelector'=>'#player-monthly-leaderboard-pager a', 'formSelector'=>false]);
@@ -77,6 +78,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               ]);
               Pjax::end();?>
         </div>
+<?php endif;?>
         <div class="col">
               <?php
               Pjax::begin(['id'=>'teamScore','enablePushState'=>false, 'linkSelector'=>'#team-leaderboard-pager a', 'formSelector'=>false]);
