@@ -65,6 +65,7 @@ yii\bootstrap\Modal::end();
                 5=>"guru",
                 6=>"insane",
               ],
+              'value'=>'difficultyString'
             ],
 
             [

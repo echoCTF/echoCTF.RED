@@ -58,6 +58,15 @@ use yii\helpers\Url;
  */
 class Target extends TargetAR
 {
+    private $difficulties=[
+      0=>"beginner",
+      1=>"basic",
+      2=>"intermediate",
+      3=>"advanced",
+      4=>"expert",
+      5=>"guru",
+      6=>"insane"
+    ];
     private $container;
 
     const EVENT_NEW_TARGET_ANNOUNCEMENT="event_new_target_announcement";
@@ -318,4 +327,8 @@ class Target extends TargetAR
       throw new \Exception('Failed to create news entry.');
   }
 
+  public function getDifficultyString()
+  {
+    return $this->difficulties[$this->difficulty];
+  }
 }

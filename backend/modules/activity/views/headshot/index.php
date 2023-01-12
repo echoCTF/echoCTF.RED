@@ -49,7 +49,11 @@ yii\bootstrap\Modal::end();
             ],
             'timer',
             'first',
-            'rating',
+            [
+              'attribute'=>'rating',
+              'filter'=>$searchModel->ratings,
+              'value'=>'ratingString'
+            ],
             'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],

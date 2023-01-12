@@ -14,7 +14,7 @@
 * `target_guest_view_deny`: Deny guests to target/view and target/versus
 * `target_hide_inactive`: Hide inactive targets from the frontend listings. This includes upcoming powerups
 * `network_view_guest`: Allow networks to be viewed by guests
-
+* `monthly_leaderboards`: Enable monthly player related leaderboards
 
 Not activated by default on current code-base but are going to
 * _`require_activation`_ Whether it is required for users to activate their accounts

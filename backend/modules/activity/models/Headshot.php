@@ -18,6 +18,17 @@ use app\modules\gameplay\models\Target;
  */
 class Headshot extends \yii\db\ActiveRecord
 {
+    private $ratings=[
+        -1=>"unrated",
+        0=>"beginner",
+        1=>"basic",
+        2=>"intermediate",
+        3=>"advanced",
+        4=>"expert",
+        5=>"guru",
+        6=>"insane"
+      ];
+
     /**
      * {@inheritdoc}
      */
@@ -78,4 +89,15 @@ class Headshot extends \yii\db\ActiveRecord
     {
         return new HeadshotQuery(get_called_class());
     }
+
+    public function getRatingString()
+    {
+      return $this->ratings[$this->rating];
+    }
+
+    public function getRatings()
+    {
+      return $this->ratings;
+    }
+
 }

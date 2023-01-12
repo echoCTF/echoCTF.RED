@@ -46,6 +46,39 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               ]);
               Pjax::end();?>
         </div>
+<?php if(\Yii::$app->sys->monthly_leaderboards!==false):?>
+        <div class="col">
+              <?php
+              Pjax::begin(['id'=>'playerMonthlyScore','enablePushState'=>false, 'linkSelector'=>'#player-monthly-leaderboard-pager a', 'formSelector'=>false]);
+              echo ListView::widget([
+                  'id'=>'playerMonthlyScore',
+                  'dataProvider' => $playerMonthlyDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No monthly player ranks exist at the moment...').'</b></div>',
+                  'pager'=>[
+                    'options'=>['id'=>'player-monthly-leaderboard-pager'],
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
+                  ],
+                  'options'=>['class'=>'card'],
+                  'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Monthly Player points').'</h4><p class="card-category">'.\Yii::t('app','Individual player scores ranking for this month').'</p></div>',
+                  'itemOptions' => [
+                    'tag' => false
+                  ],
+                  'itemView' => '_ordinal_score',
+                  'viewParams'=>[
+                    'totalPoints'=>$totalPoints,
+                  ]
+              ]);
+              Pjax::end();?>
+        </div>
+<?php endif;?>
         <div class="col">
               <?php
               Pjax::begin(['id'=>'teamScore','enablePushState'=>false, 'linkSelector'=>'#team-leaderboard-pager a', 'formSelector'=>false]);
