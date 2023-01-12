@@ -7,6 +7,7 @@ use yii\console\widgets\Table;
 use yii\helpers\Console;
 use app\modules\target\models\Target;
 use app\models\Player;
+use app\modules\team\models\Team;
 use app\models\Profile;
 use app\models\Stream;
 class ValidatorController extends Controller {
@@ -20,6 +21,9 @@ class ValidatorController extends Controller {
       'rows' => [
           ['validator/player', 'Validate player details'],
           ['validator/profile', 'Validate profile details'],
+          ['validator/player-avatars', 'Validate player avatars and optionally remove stalled images'],
+          ['validator/team-avatars', 'Validate team avatars and optionally remove stalled images'],
+          ['validator/test-registration', 'Validate registration test'],
       ],
     ]);
     return ExitCode::OK;
@@ -82,13 +86,42 @@ class ValidatorController extends Controller {
     }
   }
 
+  public function actionPlayerAvatars($remove=false)
+  {
+    $base=\Yii::getAlias('@app/web/images/avatars');
+    foreach(glob("$base/[0-9]*.png") as $path)
+    {
+      $id=intval(basename(basename($path),'.png'));
+      if(Profile::findOne($id)===null && $remove!==false)
+      {
+        echo "deleting $path\n";
+        unlink($path);
+        @unlink(sprintf("%s/badges/%d.png",$base,$id));
+      }
+    }
+  }
+
+  public function actionTeamAvatars($remove=false)
+  {
+    $base=\Yii::getAlias('@app/web/images/avatars/team');
+    foreach(glob("$base/[0-9]*.png") as $path)
+    {
+      $id=intval(basename(basename($path),'.png'));
+      if(Team::findOne($id)===null && $remove!==false)
+      {
+        echo "deleting $path\n";
+        unlink($path);
+      }
+    }
+  }
+
   private function getErrorRows($model)
   {
     $errors=$model->getErrors();
     $errorows=null;
     foreach($errors as $field => $errstrs)
     {
-      $errorows[]=[$model->{$field}, implode($errstrs," ")];
+      $errorows[]=[$model->{$field}, implode(" ",$errstrs)];
     }
     return $errorows;
   }
