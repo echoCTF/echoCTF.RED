@@ -18,8 +18,8 @@ class WriteupRatingSearch extends WriteupRating
     public function rules()
     {
         return [
-            [['id', 'writeup_id', 'player_id', 'rating'], 'integer'],
-            [['created_at', 'updated_at','username'], 'safe'],
+            [['id', 'writeup_id', 'player_id'], 'integer'],
+            [['created_at', 'updated_at','username','rating'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class WriteupRatingSearch extends WriteupRating
      */
     public function search($params)
     {
-        $query = WriteupRating::find();
+        $query = WriteupRating::find()->joinWith(['player', 'writeup']);
 
         // add conditions that should always apply here
 
@@ -51,20 +51,14 @@ class WriteupRatingSearch extends WriteupRating
 
         $this->load($params);
 
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
-        }
-
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'writeup_rating.id' => $this->id,
             'writeup_id' => $this->writeup_id,
-            'player_id' => $this->player_id,
-            'rating' => $this->rating,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'writeup_rating.player_id' => $this->player_id,
+            'writeup_rating.rating' => $this->rating,
+            'writeup_rating.created_at' => $this->created_at,
+            'writeup_rating.updated_at' => $this->updated_at,
         ]);
         $query->andFilterWhere(['like','player.username',$this->username]);
         $dataProvider->setSort([
