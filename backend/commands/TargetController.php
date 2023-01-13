@@ -136,7 +136,7 @@ class TargetController extends Controller {
           if($val->ip!==null)
           {
             // ignore errors of destroy
-            try { $dc->destroy(); } catch (\Error $e) { }
+            try { $dc->destroy(); } catch (\Exception $e) { }
           }
           try{
             if($dopf!==false)
