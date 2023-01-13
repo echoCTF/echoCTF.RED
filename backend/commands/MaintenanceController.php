@@ -72,9 +72,9 @@ class MaintenanceController extends Controller
     Yii::$app->db->createCommand()->truncateTable('spin_history')->execute();
   }
 
-  public function actionPurgeOldNotifications()
+  public function actionPurgeOldNotifications($days=40)
   {
-    Yii::$app->db->createCommand("DELETE FROM `notification` WHERE created_at < NOW()-INTERVAL 40 DAY")->execute();
+    Yii::$app->db->createCommand("DELETE FROM `notification` WHERE created_at < NOW()-INTERVAL $days DAY")->execute();
   }
 
 }
