@@ -13,9 +13,6 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'price_id')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'currency')->textInput(['maxlength' => true]) ?>
-
     <?= $form->field($model, 'active')->checkbox() ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
@@ -28,8 +25,6 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'metadata')->textarea(['rows' => 1]) ?>
 
-    <?= $form->field($model, 'interval')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'interval_count')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'htmlOptions')->textarea(['rows' => 1,'placeholder' => '{"title":"Pro","class":"green"}'])->hint('Enter htmlOptions in json format eg. <code>{"title":"Pro","class":"green"}</code>') ?>
     <?= $form->field($model, 'perks')->textarea(['rows' => 8]) ?>
     <?= $form->field($model, 'created_at')->textInput() ?>
