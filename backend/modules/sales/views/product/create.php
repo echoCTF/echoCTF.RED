@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\modules\sales\models\Product */
 
 $this->title = Yii::t('app', 'Create Product');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['/sales/default/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Products'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

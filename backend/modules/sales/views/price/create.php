@@ -3,14 +3,14 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\sales\models\PlayerSubscription */
+/* @var $model app\modules\sales\models\Price */
 
-$this->title = Yii::t('app', 'Create Player Subscription');
+$this->title = Yii::t('app', 'Create Price');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['/sales/default/index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Player Subscriptions'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Prices'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="player-subscription-create">
+<div class="price-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

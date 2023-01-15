@@ -18,7 +18,7 @@ class ProductSearch extends Product
     {
         return [
             [['id', 'name', 'description', 'metadata', 'price_id', 'currency', 'created_at', 'updated_at','shortcode','htmlOptions'], 'safe'],
-            [['active', 'livemode', 'unit_amount','weight'], 'integer'],
+            [['active', 'livemode', 'weight'], 'integer'],
         ];
     }
 
@@ -40,7 +40,7 @@ class ProductSearch extends Product
      */
     public function search($params)
     {
-        $query = Product::find();
+        $query = Product::find()->joinWith(['prices']);
 
         // add conditions that should always apply here
 
@@ -52,8 +52,6 @@ class ProductSearch extends Product
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
@@ -62,7 +60,6 @@ class ProductSearch extends Product
             'active' => $this->active,
             'livemode' => $this->livemode,
             'weight' => $this->weight,
-            'unit_amount' => $this->unit_amount,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
@@ -72,9 +69,7 @@ class ProductSearch extends Product
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'metadata', $this->metadata])
-            ->andFilterWhere(['like', 'htmlOptions', $this->htmlOptions])
-            ->andFilterWhere(['like', 'price_id', $this->price_id])
-            ->andFilterWhere(['like', 'currency', $this->currency]);
+            ->andFilterWhere(['like', 'htmlOptions', $this->htmlOptions]);
 
         return $dataProvider;
     }

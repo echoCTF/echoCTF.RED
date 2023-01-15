@@ -7,6 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\modules\sales\models\Product */
 
 $this->title = $model->name;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['/sales/default/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Products'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -38,11 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'livemode',
             'metadata:ntext',
             'perks:ntext',
-            'price_id',
-            'currency',
-            'unit_amount',
-            'interval',
-            'interval_count',
             'weight',
             'created_at',
             'updated_at',

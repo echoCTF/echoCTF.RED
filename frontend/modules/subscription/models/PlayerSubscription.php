@@ -59,10 +59,27 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
+
+    /**
+     * Gets query for [[Product]].
+     *
+     * @return \yii\db\ActiveQuery|ProductQuery
+     */
     public function getProduct()
     {
-        return $this->hasOne(Product::class, ['price_id' => 'price_id']);
+        return $this->hasOne(Product::class, ['id' => 'product_id'])->via('price');
     }
+
+    /**
+     * Gets query for [[Price]].
+     *
+     * @return \yii\db\ActiveQuery|PriceQuery
+     */
+    public function getPrice()
+    {
+        return $this->hasOne(Price::class, ['id' => 'price_id']);
+    }
+
 
     public function cancel()
     {

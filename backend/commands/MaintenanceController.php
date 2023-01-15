@@ -45,7 +45,7 @@ class MaintenanceController extends Controller
       echo "Found disabled event ", $evname, ", setting to ENABLE\n";
       Yii::$app->db->createCommand("ALTER EVENT $evname ENABLE")->execute();
     }
-    echo "Enable Triggers";
+    echo "Enable Triggers\n";
     Yii::$app->db->createCommand("SET @TRIGGER_CHECKS=TRUE")->execute();
   }
 

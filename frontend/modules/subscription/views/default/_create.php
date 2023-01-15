@@ -4,7 +4,8 @@ use \yii\helpers\Html;
 use yii\widgets\ListView;
 ?>
 <div class="container">
-  <?php echo ListView::widget([
+<?php
+echo ListView::widget([
       'dataProvider' => $dataProvider,
       'emptyText'=>'<p class="text-info"><b>'.\Yii::t('app','There are no subscriptions available at the moment...').'</b></p>',
       'options'=>['class'=>'list-view row d-flex justify-content-center'],

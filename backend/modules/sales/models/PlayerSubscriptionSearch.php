@@ -12,6 +12,7 @@ use app\modules\sales\models\PlayerSubscription;
 class PlayerSubscriptionSearch extends PlayerSubscription
 {
     public $username;
+    public $product_name;
 
     /**
      * {@inheritdoc}
@@ -20,7 +21,7 @@ class PlayerSubscriptionSearch extends PlayerSubscription
     {
         return [
             [['player_id', 'active'], 'integer'],
-            [['subscription_id', 'session_id', 'price_id', 'created_at', 'updated_at','starting','ending','username'], 'safe'],
+            [['subscription_id', 'session_id', 'price_id', 'created_at', 'updated_at','starting','ending','username','product_name'], 'safe'],
         ];
     }
 
@@ -42,7 +43,7 @@ class PlayerSubscriptionSearch extends PlayerSubscription
      */
     public function search($params)
     {
-        $query = PlayerSubscription::find()->joinWith(['player']);
+        $query = PlayerSubscription::find()->joinWith(['player','product']);
 
         // add conditions that should always apply here
 
@@ -69,7 +70,8 @@ class PlayerSubscriptionSearch extends PlayerSubscription
         $query->andFilterWhere(['like', 'subscription_id', $this->subscription_id])
             ->andFilterWhere(['like', 'session_id', $this->session_id])
             ->andFilterWhere(['like', 'player.username', $this->username])
-            ->andFilterWhere(['like', 'price_id', $this->price_id]);
+            ->andFilterWhere(['like', 'price_id', $this->price_id])
+            ->andFilterWhere(['like', 'product.name', $this->product_name]);
 
         $dataProvider->setSort([
             'attributes' => array_merge(
@@ -77,7 +79,11 @@ class PlayerSubscriptionSearch extends PlayerSubscription
                 [
                     'username' => [
                         'asc' => ['player.username' => SORT_ASC],
-                        'desc' => ['player.ip' => SORT_DESC],
+                        'desc' => ['player.username' => SORT_DESC],
+                    ],
+                    'product_name' => [
+                        'asc' => ['product.name' => SORT_ASC],
+                        'desc' => ['product.name' => SORT_DESC],
                     ],
                 ]
             ),

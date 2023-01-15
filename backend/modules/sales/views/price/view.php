@@ -4,15 +4,16 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model app\modules\sales\models\PlayerCustomer */
+/* @var $model app\modules\sales\models\Price */
 
 $this->title = $model->id;
+
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['/sales/default/index']];
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Player Customers'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Prices'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="player-customer-view">
+<div class="price-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,12 +31,23 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-          'id',
-          'username',
-          'fullname',
-          'email',
-          'stripe_customer_id',
-          'created',
+            'id',
+            'active',
+            'name',
+            'shortcode',
+            'htmlOptions:ntext',
+            'description:ntext',
+            'livemode',
+            'metadata:ntext',
+            'perks:ntext',
+            'price_id',
+            'currency',
+            'unit_amount',
+            'interval',
+            'interval_count',
+            'weight',
+            'created_at',
+            'updated_at',
         ],
     ]) ?>
 

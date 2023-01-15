@@ -33,16 +33,14 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id', 'name','price_id'], 'required'],
-            [['description', 'metadata','htmlOptions','perks','interval','price_id'], 'string'],
-            [['weight','interval_count'],'integer'],
+            [['id', 'name'], 'required'],
+            [['description', 'metadata','htmlOptions','perks'], 'string'],
+            [['weight'],'integer'],
             [['active', 'livemode'], 'boolean'],
             [['created_at', 'updated_at'], 'safe'],
             [['id','shortcode'], 'string', 'max' => 40],
-            [['name','price_id'], 'string', 'max' => 255],
-            [['currency'],'default','value'=>'eur'],
+            [['name'], 'string', 'max' => 255],
             [['weight'],'default','value'=>0],
-            [['interval_count'],'default','value'=>'12'],
             [['id'], 'unique'],
         ];
     }
@@ -71,6 +69,16 @@ class Product extends \yii\db\ActiveRecord
     public function getProductNetworks()
     {
         return $this->hasMany(ProductNetwork::class, ['id' => 'product_id']);
+    }
+
+    /**
+     * Gets query for [[Price]].
+     *
+     * @return \yii\db\ActiveQuery|PriceQuery
+     */
+    public function getPrices()
+    {
+        return $this->hasMany(Price::class, ['product_id' => 'id']);
     }
 
     /**
@@ -105,22 +113,45 @@ class Product extends \yii\db\ActiveRecord
         $product->description=$stripeProduct->description;
         $product->livemode=$stripeProduct->livemode;
         $prices=$stripe->prices->all(['product'=>$product->id]);
-        $price=$prices->data[0];
+        foreach($prices as $p)
+        {
+          if(!$p->active) continue;
+          if(($price=Price::findOne($p->id))===null)
+          {
+            $price=new Price();
+            $price->id=$p->id;
+          }
+          $price->active=$p->active;
+          $price->currency=$p->currency;
+          $price->metadata=json_encode($p->metadata);
+          $price->nickname=$p->nickname;
+          $price->product_id=$p->product;
+          $price->ptype=$p->type;
+          $price->unit_amount=$p->unit_amount;
+          if(isset($p->recurring) && $p->recurring->interval)
+          {
+            $price->recurring_interval=$p->recurring->interval;
+          }
+          else
+          {
+            $price->recurring_interval='day';
+          }
 
-        if(isset($price->recurring) && $price->recurring->interval)
-          $product->interval=$price->recurring->interval;
-        else
-          $product->interval='day';
+          if(isset($p->recurring) && $p->recurring->interval_count)
+          {
+            $price->interval_count=$p->recurring->interval_count;
+          }
+          else
+          {
+            $price->interval_count=1;
+          }
+          if(!$price->save())
+          {
+            \Yii::$app->session->addFlash('error', sprintf('Failed to save price: %s for %s',Html::encode($price->id),Html::encode($stripeProduct->name)));
+          }
+        }
 
-        if(isset($price->recurring) && $price->recurring->interval_count)
-          $product->interval_count=$price->recurring->interval_count;
-        else
-          $product->interval_count=1;
-
-        $product->price_id=$price->id;
-        $product->currency=$price->currency;
         $product->metadata=json_encode($stripeProduct->metadata);
-        $product->unit_amount=$price->unit_amount;
         $product->updated_at=new \yii\db\Expression('NOW()');
         if($stripeProduct->metadata->htmlOptions)
           $product->htmlOptions=trim($stripeProduct->metadata->htmlOptions);
