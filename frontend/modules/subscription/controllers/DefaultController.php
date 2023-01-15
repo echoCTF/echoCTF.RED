@@ -2,17 +2,14 @@
 namespace app\modules\subscription\controllers;
 
 use Yii;
-use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
-use yii\web\NotFoundHttpException;
 use yii\data\ActiveDataProvider;
 
 use \app\modules\subscription\models\PlayerSubscription;
 use \app\modules\subscription\models\Customer;
 use \app\modules\subscription\models\Product;
-use \app\modules\subscription\models\Subscription;
-
+use \app\modules\subscription\models\Price;
 use \app\modules\subscription\models\InquiryForm;
 /**
  * Default controller for the `subscription` module
@@ -202,7 +199,7 @@ class DefaultController extends \app\components\BaseController
       try {
         \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
         $cid=Customer::getCustomerId();
-        $product=Product::findOne(['price_id'=>$priceId]);
+        $product=Price::findOne(['id'=>$priceId])->product;
         if($product===null)
         {
           throw new \Exception(\Yii::t('app','No such price exist'));
@@ -210,13 +207,14 @@ class DefaultController extends \app\components\BaseController
 
         $mode='subscription';
         $line_items=[[
-          'price' => $product->price_id,
+          'price' => $priceId,
           'quantity' => 1,
         ]];
 
         $checkout_session = \Stripe\Checkout\Session::create([
           'success_url' => \yii\helpers\Url::toRoute('/subscription/default/success',true).'?session_id={CHECKOUT_SESSION_ID}',
           'cancel_url' => \yii\helpers\Url::toRoute('/subscription/default/index',true),
+          'allow_promotion_codes'=>true,
           'payment_method_types' => ['card'],
           'mode' => $mode,
           'line_items' => $line_items,
@@ -226,7 +224,7 @@ class DefaultController extends \app\components\BaseController
       }
       catch (\Exception $e)
       {
-        \Yii::$app->response->statusCode=418;
+        \Yii::$app->response->statusCode=403;
         if(empty($cid))
           \Yii::$app->response->statusCode=403;
         Yii::error($e->getMessage());

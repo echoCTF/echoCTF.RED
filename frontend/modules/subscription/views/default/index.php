@@ -1,8 +1,5 @@
 <?php
 /* @var $this yii\web\View */
-use \yii\helpers\Html;
-use yii\widgets\ListView;
-
 $this->title=Yii::$app->sys->event_name ." ".\Yii::t('app',"Subscriptions");
 $this->_url=\yii\helpers\Url::to([null],'https');
 $this->registerJsFile("https://js.stripe.com/v3/",['position'=>1]);

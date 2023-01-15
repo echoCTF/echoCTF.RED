@@ -69,6 +69,20 @@ class Product extends \yii\db\ActiveRecord
     {
         return new ProductQuery(get_called_class());
     }
+    /**
+     * Gets query for [[Price]].
+     *
+     * @return \yii\db\ActiveQuery|PriceQuery
+     */
+    public function getPrices()
+    {
+        return $this->hasMany(Price::class, ['product_id' => 'id']);
+    }
+
+    public function inPrices($price_id)
+    {
+        return $this->hasMany(Price::class, ['product_id' => 'id'])->where(['price_id'=>$price_id]);
+    }
 
     public function htmlOptions($key)
     {
