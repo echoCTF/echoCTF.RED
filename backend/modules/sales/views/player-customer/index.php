@@ -8,6 +8,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'Player Customers');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['/sales/default/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="player-customer-index">
@@ -28,7 +29,15 @@ $this->params['breadcrumbs'][] = $this->title;
             'username',
             'fullname',
             'email',
-            'stripe_customer_id',
+            [
+                'attribute'=>'stripe_customer_id',
+                'format'=>'raw',
+                'value'=>function($model){
+                    if($model->stripe_customer_id)
+                        return Html::a($model->stripe_customer_id,"https://dashboard.stripe.com/customers/".$model->stripe_customer_id,['target'=>'_blank']);
+                    return "";
+                }
+            ],
             'created',
             ['class' => 'yii\grid\ActionColumn'],
         ],

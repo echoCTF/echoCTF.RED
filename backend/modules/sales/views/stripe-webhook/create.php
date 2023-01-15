@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $model app\modules\sales\models\StripeWebhook */
 
 $this->title = Yii::t('app', 'Create Stripe Webhook');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['/sales/default/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Stripe Webhooks'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
