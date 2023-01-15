@@ -8,6 +8,7 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title = Yii::t('app', 'Products');
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['/sales/default/index']];
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Products'), 'url' => ['index']];
 ?>
 <div class="product-index">
@@ -25,25 +26,25 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Products'), 'url' =>
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            'id',
+            [
+              'attribute'=>'id',
+              'format'=>'raw',
+              'value'=>function($model){
+                if($model->id=='prod_vip')
+                  return "<small><abbr title='VIP Product'>prod_vip</abbr></small>";
+                elseif($model->id!='')
+                      return '<small>'.Html::a($model->id,"https://dashboard.stripe.com/products/".$model->id,['target'=>'_blank']).'</small>';
+                return "";
+              }
+            ],
             'name',
             'shortcode',
-            //'description:ntext',
             'active:boolean',
-            //'livemode:boolean',
-            //'htmlOptions:ntext',
-            //[
-            //    'attribute'=>'metadata',
-            //],
-            'price_id',
             [
-              'attribute'=>'unit_amount',
-              'format'=>'raw',
-              'value'=>function($model){return Yii::$app->formatter->asCurrency($model->unit_amount/100,$model->currency);}
+              'label'=>'prices',
+              'value'=>function($model){ return count($model->prices);},
             ],
             'weight:integer',
-            //'created_at',
-            //'updated_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
