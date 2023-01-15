@@ -57,6 +57,7 @@ class PlayerCustomerSearch extends Player
         $query->andFilterWhere(['like', 'username', $this->username])
             ->andFilterWhere(['like', 'fullname', $this->fullname])
             ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like','stripe_customer_id',$this->stripe_customer_id])
             ->andFilterWhere(['like', 'created', $this->created]);
 
         return $dataProvider;
