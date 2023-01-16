@@ -16,7 +16,7 @@
         "yiisoft/yii2": "~2.0.14",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "docker-php/docker-php": "^2.0",
-        "jane-php/jane-php": "^4 <4.3",
+        "jane-php/jane-php": "^4.5.4",
         "miloschuman/yii2-highcharts-widget": "^7.1",
         "overals/yii2-whois": "~1.0.0",
         "kartik-v/yii2-tabs-x": "@dev",
