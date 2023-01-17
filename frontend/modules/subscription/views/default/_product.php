@@ -9,24 +9,17 @@
     <div class="row">
       <?php foreach ($model->prices as $price) : ?>
         <?php if ($price->active) : ?>
-          <?php if ($mine && $model->inPrice($mine->price_id) !== null && $mine->active) : ?>
-            <div class="col"><?= yii\bootstrap\Button::widget([
-                                'label' => intval($price->unit_amount / 100) . ' ' . $price->recurring_interval,
-                                'options' => ['class' => 'btn-lg btn-danger', 'id' => 'mySub'],
-                              ]); ?></div>
-          <?php else : ?>
             <div class="col"><?= yii\bootstrap\Button::widget([
                                 'label' => "€" . intval($price->unit_amount / 100) . '/' . $price->recurring_interval,
                                 'options' => ['class' => 'btn '.$model->htmlOptions('class').' text-dark text-bold', 'id' => $model->shortcode . '_' . $price->recurring_interval],
                               ]); ?></div>
-          <?php endif; ?>
         <?php endif; ?>
       <?php endforeach; ?>
     </div>
   </div>
 </div>
 <?php
-if ($mine && $model->inPrice($mine->price_id) !== null && $mine->active)
+if ($mine && $model->inPrices($mine->price_id) !== null && $mine->active)
   $this->registerJs('document
     .getElementById("mySub")
     .addEventListener("click", function(evt) {
