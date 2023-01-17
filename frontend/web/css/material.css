@@ -533,6 +533,42 @@ details.headshotters:not([open]) summary::after {
 .text-discord {
   color:#7289DA!important;
 }
+.bg-discord {
+  background:#7289DA!important;
+}
+
+.card .card-header-discord .card-icon {
+  background: linear-gradient(60deg,#8494ce,#7289DA);
+}
+
+.btn.btn-outline-discord {
+  color: #7289DA;
+  background-color: transparent;
+  border-color: #7289DA;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.text-stripe {
+  color:#5433FF!important;
+}
+
+.bg-stripe {
+  background:#5433FF!important;
+}
+
+.card .card-header-stripe .card-icon {
+  background: linear-gradient(60deg,#4379FF,#5433FF);
+}
+
+.btn.btn-outline-stripe {
+  color: #5433FF;
+  background-color: transparent;
+  border-color: #5433FF;
+  border-style: solid;
+  border-width: 1px;
+}
+
 .markdown h1 {
  font-size: 1.65em;
 }
