@@ -84,11 +84,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
       return $model->product;
     }
 
-    public function getPortalButton($view)
+    public function getPortalButton($view,$button='<button class="btn btn-block btn-info font-weight-bold">Manage Billing</button>')
     {
-      $form='<form id="manage-billing-form">
-        <button class="btn btn-block btn-info font-weight-bold">Manage Billing</button>
-      </form>';
+      $form='<form id="manage-billing-form">'.$button.'</form>';
       $view->registerJs('const manageBillingForm = document.querySelector("#manage-billing-form");
           manageBillingForm.addEventListener("submit", function(e) {
             e.preventDefault();
@@ -112,4 +110,29 @@ class Module extends \yii\base\Module implements BootstrapInterface
       ');
       return $form;
     }
+    public static function getPortalLink($view,$link)
+    {
+      $view->registerJs('$("#stripePortal").on("click", function(e) {
+            e.preventDefault();
+            fetch("'.\yii\helpers\Url::to(['/subscription/default/redirect-customer-portal']).'", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                "'.\Yii::$app->request->csrfParam.'": "'.\Yii::$app->request->csrfToken.'"
+              }),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                window.location.href = data.url;
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          });
+      ');
+      return $link;
+    }
+
 }
