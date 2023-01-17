@@ -98,7 +98,7 @@ class DefaultController extends \app\components\BaseController
     public function actionIndex()
     {
         $mine=PlayerSubscription::findOne(\Yii::$app->user->id);
-        $products=Product::find()->active()->orderBy(['weight'=>SORT_ASC,'name'=>SORT_ASC]);
+        $products=Product::find()->purchasable()->ordered();
 
         $dataProvider=new ActiveDataProvider([
             'query' => $products,

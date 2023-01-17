@@ -14,6 +14,20 @@ class ProductQuery extends \yii\db\ActiveQuery
         return $this->andWhere('[[active]]=1');
     }
 
+    public function hasPrice()
+    {
+        return $this->andWhere('id in (SELECT DISTINCT product_id FROM price)');
+    }
+
+    public function purchasable()
+    {
+        return $this->active()->hasPrice();
+    }
+
+    public function ordered()
+    {
+        return $this->orderBy(['weight'=>SORT_ASC,'name'=>SORT_ASC]);
+    }
     /**
      * {@inheritdoc}
      * @return Product[]|array

@@ -93,17 +93,14 @@
     text-shadow: 4px 4px 1px rgba(0, 0, 0, 0.2);
     box-shadow: 0 4px 0 rgba(0, 0, 0, 0.15);
 }
-.pricingTable.green .pricingTable-header{
-    background: #54A445;
-}
-
-.pricingTable.green .pricingTable-signup a{ background: linear-gradient(#54A445, #54A445); }
+.pricingTable.green .pricingTable-header{ background: linear-gradient(#54A445, #61B136); }
+.pricingTable.green .pricingTable-signup a{ background: linear-gradient(#54A445, #61B136); }
 .pricingTable.green .pricing-content li:before{ background: #54A445; }
 
-.pricingTable.blue .pricingTable-header{ background: #00bcd4; }
+.pricingTable.blue .pricingTable-header{ background: linear-gradient(#0d98ba, #00bcd4); }
 .pricingTable.blue .pricingTable-signup a{ background: linear-gradient(#00bcd4, #00bcd4); }
-
 .pricingTable.blue .pricing-content li:before{ background: #00bcd4; }
+
 
 
 .pricingTable .pricing-content li.disable:before{ background: #ED1925; }
@@ -112,8 +109,8 @@
 }
 
 .btn.green {
-    background: #54A445;
+    background: linear-gradient(#54A445, #61B136);;
 }
 .btn.blue {
-    background: #00bcd4;
+    background: linear-gradient(#00bcd4, #00bcd4);
 }
