@@ -72,12 +72,15 @@ class LeaderboardsController extends \app\components\BaseController
     $command = \Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
     $command->bindValue(':player_type', 'offense');
     $totalPoints = $command->queryScalar();
+    $total_targets=intval(\app\modules\target\models\Target::find()->active()->count());
+    $total_challenges=intval(\app\modules\challenge\models\Challenge::find()->alias('t')->active()->count());
 
     if (\Yii::$app->sys->leaderboard_show_zero) {
       $PR = \app\models\PlayerRank::find()->academic($academic)->orderBy(['id' => SORT_ASC, 'player_id' => SORT_ASC]);
     } else {
       $PR = \app\models\PlayerRank::find()->academic($academic)->nonZero()->orderBy(['id' => SORT_ASC, 'player_id' => SORT_ASC]);
     }
+
     $playerDataProvider = new ActiveDataProvider([
       'query' => $PR,
       'pagination' => [
@@ -114,6 +117,14 @@ class LeaderboardsController extends \app\components\BaseController
       ]
     ]);
 
+    $mostWriteupsDataProvider = new ActiveDataProvider([
+      'query' => \app\modules\target\models\Writeup::find()->totals(),
+      'pagination' => [
+        'pageSizeParam' => 'writeupsMost-perpage',
+        'pageParam' => 'writeupsMost-page',
+        'pageSize' => 10
+      ]
+    ]);
 
     $AvgSolvesDataProvider = new ActiveDataProvider([
       'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->timed()->select(['challenge_solver.player_id,avg(challenge_solver.timer) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_ASC, 'player_id' => SORT_ASC]),
@@ -170,6 +181,9 @@ class LeaderboardsController extends \app\components\BaseController
       ]
     ]);
     return $this->render('index', [
+      'total_targets'=>$total_targets,
+      'total_challenges'=>$total_challenges,
+      'mostWriteupsDataProvider'=>$mostWriteupsDataProvider,
       'playerMonthlyDataProvider'=>$playerMonthlyDataProvider,
       'teamDataProvider' => $teamDataProvider,
       'playerCountryDataProvider' => $playerCountryDataProvider,

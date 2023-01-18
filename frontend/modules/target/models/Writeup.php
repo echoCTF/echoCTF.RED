@@ -30,7 +30,7 @@ use app\modules\game\models\WriteupRating;
 class Writeup extends \yii\db\ActiveRecord
 {
   const SCENARIO_SUBMIT = 'submit';
-
+  public $cnt;
   public $_ratings=[
     [ 'id'=>0, 'name' => "Not rated!", 'icon'=>null],
     [ 'id'=>1, 'name' => "1 - Ok", 'icon'=>'fa-battery-quarter red-success',],
