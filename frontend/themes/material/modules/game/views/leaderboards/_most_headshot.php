@@ -10,6 +10,13 @@ use app\components\formatters\RankFormatter;
       <div class="leader-name" style="width: 100%"><?=$model->player->profile->link?></div>
       <div class="leader-score_title" style="width: 100%"><?=number_format($model->timer);?></div>
     </div>
-    <div class="leader-bar"><div style="width: 0%" class="bar"></div></div>
+    <div class="leader-bar">
+      <?php if(intval($totalPoints) === 0):?>
+      <div style="width: 0%" class="bar"></div>
+      <?php else: ?>
+      <div style="width: <?=round($model->timer / $totalPoints * 100)?>%" class="bar"></div>
+      <?php endif;?>
+    </div>
+
     <div class="border"></div>
 </div>
