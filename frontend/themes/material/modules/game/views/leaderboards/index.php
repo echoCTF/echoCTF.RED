@@ -35,7 +35,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Player points').'</h4><p class="card-category">'.\Yii::t('app','Individual player scores').'</p></div>',
+                  'summary'=>'<div class="card-header card-header-score"><h4 class="card-title">'.\Yii::t('app','Player points').'</h4><p class="card-category">'.\Yii::t('app','Individual player scores').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -67,7 +67,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Monthly Player points').'</h4><p class="card-category">'.\Yii::t('app','Individual player scores ranking for this month').'</p></div>',
+                  'summary'=>'<div class="card-header card-header-score"><h4 class="card-title">'.\Yii::t('app','Monthly Player points').'</h4><p class="card-category">'.\Yii::t('app','Individual player scores ranking for this month').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -99,7 +99,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Team points').'</h4><p class="card-category">'.\Yii::t('app','Team scores').'</p></div>',
+                  'summary'=>'<div class="card-header card-header-score"><h4 class="card-title">'.\Yii::t('app','Team points').'</h4><p class="card-category">'.\Yii::t('app','Team scores').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -121,7 +121,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No headshots exist at the moment...').'</b></div>',
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Most headshots').'</h4><p class="card-category">'.\Yii::t('app','Players with most headshots').'</p></div>',
+                  'summary'=>'<div class="card-header card-header-most"><h4 class="card-title">'.\Yii::t('app','Most headshots').'</h4><p class="card-category">'.\Yii::t('app','Players with most headshots').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -153,7 +153,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No writeups exist at the moment...').'</b></div>',
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Most Writeups').'</h4><p class="card-category">'.\Yii::t('app','Players with most writeups submitted').'</p></div>',
+                  'summary'=>'<div class="card-header card-header-most"><h4 class="card-title">'.\Yii::t('app','Most Writeups').'</h4><p class="card-category">'.\Yii::t('app','Players with most writeups submitted').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -184,7 +184,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   'dataProvider' => $mostSolvesDataProvider,
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Most challenges solved').'</h4><p class="card-category">'.\Yii::t('app','Players with most challenges solved').'</p></div>',
+                  'summary'=>'<div class="card-header card-header-most"><h4 class="card-title">'.\Yii::t('app','Most challenges solved').'</h4><p class="card-category">'.\Yii::t('app','Players with most challenges solved').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -359,7 +359,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ],
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Countries by Players').'</h4><p class="card-category">'.\Yii::t('app','Top countries by players').'</p></div>',
+                  'summary'=>'<div class="card-header card-header-country"><h4 class="card-title">'.\Yii::t('app','Countries by Players').'</h4><p class="card-category">'.\Yii::t('app','Countries with most players registered').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
