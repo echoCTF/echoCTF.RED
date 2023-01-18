@@ -30,7 +30,7 @@ Card::begin([
             'type'=>'card-stats',
             'encode'=>false,
             'icon'=>sprintf('<img src="%s" class="img-fluid" style="max-width: 10rem; max-height: 4rem;" />', $target->logo),
-            'color'=>'warning',
+            'color'=>'target',
             'subtitle'=>$subtitle,
             'title'=>sprintf('%s / %s', $target->name, $display_ip),
             'footer'=>sprintf('<div class="stats">%s</div><span>%s</span>', $target->purpose, TargetCardActions::widget(['model'=>$target,'identity'=>$identity]) ),
