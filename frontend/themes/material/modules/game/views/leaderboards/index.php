@@ -149,11 +149,11 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
 
               echo ListView::widget([
                   'id'=>'mostWriteups',
-                  'dataProvider' => $writeupDataProvider,
+                  'dataProvider' => $mostWriteupsDataProvider,
                   'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No writeups exist at the moment...').'</b></div>',
                   'options'=>['class'=>'card'],
                   'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
-                  'summary'=>'<div class="card-header card-header-most"><h4 class="card-title">'.\Yii::t('app','Most Writeups').'</h4><p class="card-category">'.\Yii::t('app','Players with most writeups submitted').'</p></div>',
+                  'summary'=>'<div class="card-header card-header-most"><h4 class="card-title">'.\Yii::t('app','Most writeups').'</h4><p class="card-category">'.\Yii::t('app','Players with most writeups').'</p></div>',
                   'itemOptions' => [
                     'tag' => false
                   ],
@@ -175,6 +175,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ]
               ]);Pjax::end();?>
         </div>
+
         <div class="col">
               <?php
               Pjax::begin(['id'=>'mostSolves','enablePushState'=>false, 'linkSelector'=>'#mostSolves-leaderboard-pager a', 'formSelector'=>false]);

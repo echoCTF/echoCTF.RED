@@ -80,6 +80,7 @@ class LeaderboardsController extends \app\components\BaseController
     } else {
       $PR = \app\models\PlayerRank::find()->academic($academic)->nonZero()->orderBy(['id' => SORT_ASC, 'player_id' => SORT_ASC]);
     }
+
     $playerDataProvider = new ActiveDataProvider([
       'query' => $PR,
       'pagination' => [
@@ -98,15 +99,6 @@ class LeaderboardsController extends \app\components\BaseController
       ]
     ]);
 
-    $writeupDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\target\models\Writeup::find()->totals(),
-      'pagination' => [
-        'pageSizeParam' => 'mostWriteups-perpage',
-        'pageParam' => 'mostWriteups-perpage',
-        'pageSize' => 10
-      ]
-    ]);
-
     $solversDataProvider = new ActiveDataProvider([
       'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->timed()->orderBy(['challenge_solver.timer' => SORT_ASC, 'challenge_solver.created_at' => SORT_ASC]),
       'pagination' => [
@@ -121,6 +113,15 @@ class LeaderboardsController extends \app\components\BaseController
       'pagination' => [
         'pageSizeParam' => 'solverMost-perpage',
         'pageParam' => 'solverMost-page',
+        'pageSize' => 10
+      ]
+    ]);
+
+    $mostWriteupsDataProvider = new ActiveDataProvider([
+      'query' => \app\modules\target\models\Writeup::find()->totals(),
+      'pagination' => [
+        'pageSizeParam' => 'writeupsMost-perpage',
+        'pageParam' => 'writeupsMost-page',
         'pageSize' => 10
       ]
     ]);
@@ -182,7 +183,7 @@ class LeaderboardsController extends \app\components\BaseController
     return $this->render('index', [
       'total_targets'=>$total_targets,
       'total_challenges'=>$total_challenges,
-      'writeupDataProvider'=>$writeupDataProvider,
+      'mostWriteupsDataProvider'=>$mostWriteupsDataProvider,
       'playerMonthlyDataProvider'=>$playerMonthlyDataProvider,
       'teamDataProvider' => $teamDataProvider,
       'playerCountryDataProvider' => $playerCountryDataProvider,
