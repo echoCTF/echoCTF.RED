@@ -10,3 +10,8 @@ Usage: `./backend/yii sales/expire-subscriptions`
 Import Stripe details (subscriptions, customers, products).
 
 Usage: `./backend/yii sales/import-stripe`
+
+## StripeImportProducts
+Import Stripe products and their prices.
+
+Usage: `./backend/yii sales/stripe-import-products`
