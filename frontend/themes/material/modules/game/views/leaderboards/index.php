@@ -139,7 +139,39 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
 
                   'itemView' => '_most_headshot',
                   'viewParams'=>[
-                    'totalPoints'=>0,
+                    'totalPoints'=>$total_targets,
+                  ]
+              ]);Pjax::end();?>
+        </div>
+        <div class="col">
+              <?php
+              Pjax::begin(['id'=>'mostWriteups','enablePushState'=>false, 'linkSelector'=>'#mostWriteups-leaderboard-pager a', 'formSelector'=>false]);
+
+              echo ListView::widget([
+                  'id'=>'mostWriteups',
+                  'dataProvider' => $writeupDataProvider,
+                  'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No writeups exist at the moment...').'</b></div>',
+                  'options'=>['class'=>'card'],
+                  'layout'=>'{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer">{pager}</div>',
+                  'summary'=>'<div class="card-header card-header-danger"><h4 class="card-title">'.\Yii::t('app','Most Writeups').'</h4><p class="card-category">'.\Yii::t('app','Players with most writeups submitted').'</p></div>',
+                  'itemOptions' => [
+                    'tag' => false
+                  ],
+                  'pager'=>[
+                    'options'=>['id'=>'mostWriteups-leaderboard-pager'],
+                    'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                    'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                    'maxButtonCount'=>3,
+                    'linkOptions'=>['class' => ['page-link'], 'aria-label'=>'Pager link'],
+                    'disableCurrentPageButton'=>true,
+                    'prevPageLabel'=>'<i class="fas fa-chevron-left"></i>',
+                    'nextPageLabel'=>'<i class="fas fa-chevron-right"></i>',
+                    'class'=>'yii\bootstrap4\LinkPager',
+                  ],
+
+                  'itemView' => '_most_writeup',
+                  'viewParams'=>[
+                    'totalPoints'=>$total_targets,
                   ]
               ]);Pjax::end();?>
         </div>
@@ -170,7 +202,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
 
                   'itemView' => '_most_headshot',
                   'viewParams'=>[
-                    'totalPoints'=>0,
+                    'totalPoints'=>$total_challenges,
                   ]
               ]);Pjax::end();?>
         </div>
