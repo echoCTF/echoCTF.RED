@@ -42,6 +42,7 @@ class Price extends \yii\db\ActiveRecord
             [['recurring_interval'],'default','value'=>'month'],
             [['interval_count'],'default','value'=>1],
             [['currency'],'default','value'=>'eur'],
+            [['metadata'],'default','value'=>'[]'],
             [['ptype'],'default','value'=>'recurring'],
             [['active'],'default','value'=>false],
         ];
