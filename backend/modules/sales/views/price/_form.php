@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\sales\models\Price */
@@ -13,6 +14,13 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'product_id')->widget(AutocompleteAjax::class, [
+        'multiple' => false,
+        'url' => ['/sales/product/ajax-search'],
+        'options' => ['placeholder' => 'Find product by name or id.']
+    ]) ?>
+
+
     <?= $form->field($model, 'active')->checkbox() ?>
     <?= $form->field($model, 'currency')->textInput(['maxlength' => true]) ?>
 
