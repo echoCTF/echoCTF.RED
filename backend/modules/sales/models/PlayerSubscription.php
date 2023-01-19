@@ -162,7 +162,8 @@ class PlayerSubscription extends \yii\db\ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-      $metadata=json_decode($this->product->metadata);
+      if($this->product)
+        $metadata=json_decode($this->product->metadata);
       if(isset($metadata->spins) && intval($metadata->spins)>0)
       {
         $this->player->playerSpin->updateAttributes(['perday'=>intval($metadata->spins),'counter'=>0]);

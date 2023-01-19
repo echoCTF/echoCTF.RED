@@ -168,14 +168,7 @@ class TargetController extends Controller {
         }
         else
         {
-          $demands->andWhere(
-          ['and',
-            ['state'=>1],
-            ['OR',
-              ['IS','heartbeat',new \yii\db\Expression('NULL')],
-              ['<=','heartbeat',new \yii\db\Expression('NOW() - INTERVAL 1 HOUR')],
-            ]
-          ]);
+          $demands->andWhere(['state'=>1]);
         }
 
         foreach($demands->all() as $ondemand)

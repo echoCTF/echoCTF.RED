@@ -115,6 +115,34 @@ class ProductController extends \app\components\BaseController
         return $this->redirect(['index']);
     }
 
+    public function actionAjaxSearch($term,$load=false,$active=null)
+    {
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+        $results=[];
+        if (Yii::$app->request->isAjax)
+        {
+          $pq=Product::find()->select(['id','name','shortcode','active'])->where(['=','id',$term]);
+          if($active!==null)
+          {
+            $pq->andWhere(['active'=>$active]);
+          }
+          if($load===false)
+          {
+            $pq->orWhere(['like','id',$term]);
+          }
+          $results=array_values(ArrayHelper::map($pq->all(),'id',
+            function($model){
+              return [
+                'id'=>$model->id,
+                'label'=>sprintf("(id: %s/%s) %s",$model->id,$model->shortcode,$model->name),
+              ];
+            }
+          ));
+
+        }
+        return $results;
+    }
+
     /**
      * Finds the Product model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
