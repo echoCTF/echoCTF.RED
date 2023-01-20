@@ -54,7 +54,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Prices'), 'url' => [
               'format'=>'raw',
               'contentOptions'=>['style'=>'white-space: nowrap;'],
               'value'=>function($model){
-                if($model->product_id!=='prod_vip')
                   return sprintf('<small><abbr title="%s">%s</abbr></small>',$model->product_id,$model->product->name);
               }
             ],
