@@ -83,38 +83,45 @@ $this->params['breadcrumbs'][] = $this->title;
           echo TabsX::widget([
             'position' => TabsX::POS_ABOVE,
             'align' => TabsX::ALIGN_LEFT,
+            'encodeLabels'=>false,
             'pluginOptions' => [
               'enableCache' => false,
               'cacheTimeout' => 10000
             ],
             'items' => [
               [
-                'label' => 'Activity',
+                'label' => '<abbr title="Activity Stream"><i class="fas fa-file-contract"></i></abbr>',
                 'content' => $this->render('_activity_tab', ['model' => $model]),
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'options' => ['id' => 'stream-tab'],
                 'active' => true,
               ],
               [
-                'label' => 'Headshots',
+                'label' => '<abbr title="Headshots"><i class="fas fa-skull-crossbones"></i></abbr>',
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'linkOptions' => ['data-url' => Url::to(['headshots', 'id' => $model->id])],
                 'options' => ['id' => 'headshots-tab'],
               ],
               [
-                'label' => 'Writeups',
+                'label' => '<abbr title="Submitted Writeups"><i class="fas fa-book-dead"></i></abbr>',
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'linkOptions' => ['data-url' => Url::to(['writeups', 'id' => $model->id])],
                 'options' => ['id' => 'writeups-tab'],
               ],
               [
-                'label' => 'Solves',
+                'label' => '<abbr title="Activated Writeups"><i class="fas fa-notes-medical"></i></abbr>',
+                'headerOptions' => ['style' => 'font-weight:bold'],
+                'linkOptions' => ['data-url' => Url::to(['activated-writeups', 'id' => $model->id])],
+                'options' => ['id' => 'activated-writeups-tab'],
+              ],
+              [
+                'label' => '<abbr title="Challenge Solves"><i class="fas fa-tasks"></i></abbr>',
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'linkOptions' => ['data-url' => Url::to(['solves', 'id' => $model->id])],
                 'options' => ['id' => 'solves-tab'],
               ],
               [
-                'label' => 'VPN History',
+                'label' => '<abbr title="VPN History"><i class="fas fa-history"></i></abbr>',
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'linkOptions' => ['data-url' => Url::to(['vpn-history', 'id' => $model->id])],
                 'options' => ['id' => 'vpn-history-tab'],
