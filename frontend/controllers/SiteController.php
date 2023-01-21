@@ -217,6 +217,7 @@ class SiteController extends \app\components\BaseController
         catch(\Throwable $e)
         {
             $transaction->rollBack();
+            Yii::error($e->getMessage());
             Yii::$app->session->setFlash('error', \Yii::t('app','Registration failed.'));
         }
         $referred=false;
