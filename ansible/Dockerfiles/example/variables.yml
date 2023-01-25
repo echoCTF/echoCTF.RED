@@ -200,6 +200,22 @@ ETSCTF_TREASURES:
 #   type: {{ 2 | random }}
 #   number: 1024
 
+#templates:
+#  - src: "/source.file"
+#    dest: "/out.file"
+#    owner: "0"
+#    group: "0"
+#    mode: "0644"
+
+#RAW_CONFS:
+#  "/etc/sudoers":
+#    uid: 0
+#    gid: 0
+#    mode: "0440"
+#    content: |
+#      root    ALL=(ALL:ALL) ALL
+#      %sudo   ALL=(ALL:ALL) ALL
+
 # These commands are executed at build time by ansible
 BUILD_COMMANDS:
 #  exec:
