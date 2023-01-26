@@ -1,36 +1,36 @@
 ---
-ansible_host: 10.0.160.3
-DOCKER: 172.24.0.1
-mac: "02:42:0a:00:a0:03"
 hostname: example
 fqdn: example.echocity-f.com
-rootable: 0 # 1 for yes
-difficulty: 0
-#scheduled_at: "YYYY-mm-dd HH:MM:SS"
-# network: name
+rootable: 1 # 0 for no
+difficulty: 3 # 0-6
+player_spin: 1 # allow player spins
+headshot_spin: 1 # Spin target on headshot
+writeup_allowed: 1 # Allow writeups
 container:
   name: "{{hostname}}"
   hostname: "{{fqdn}}"
-  build: "example" # The current folder name
-  image: "example" # The current folder name
+  build: "example"
+  image: "example"
   state: "started"
-  mac_address: "{{mac}}"
+  mac_address: "{{mac|default(omit)}}"
   purge_networks: "yes"
-#  tag: "v0.1"
-#  buildargs:
-#   var_name: var_value
+  tag: "v0.1"
   env:
     ETSCTF_FLAG: "ETSCTF_{{ETSCTF_ENV_FLAG}}"
+    ENVFLAG_HASH: "{{envhash}}"
   dns_servers:
-    - "8.8.8.8"
+    - "10.0.0.254"
   networks:
     - { name: echoctfred_targets, ipv4_address: "{{ansible_host}}" }
   volumes: []
 
+CVE: []
+#scheduled_at: "2022-12-31 18:59:59"
 #NetworkTargetSchedule:
-#  network_id: "" # for moving target outside of a network
-#  migration_date: "YYYY-mm-dd HH:MM:SS"
-
+#    - network_id: "4"
+#      migration_date: "{{ '%Y-%m-%d %H:%M:01' | strftime( ( (scheduled_at|to_datetime).strftime('%s') | int ) + ( 86400 * ( 25 + rootable +  difficulty) )  ) }}"
+#    - network_id: "1"
+#      migration_date: "2022-12-31 18:00:00"
 # Make target ondemand
 #TargetOndemand: true
 
