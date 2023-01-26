@@ -15,6 +15,13 @@
     debug:
       var: ansible_default_ipv4
 
+  - name: Ensure groups exist
+    group:
+      name: "{{item.group}}"
+      gid: "{{item.uid|default(omit)}}"
+      state: present
+    with_items: "{{DETAILS}}"
+
   - name: users based on details
     user:
       name: "{{item.username}}"
