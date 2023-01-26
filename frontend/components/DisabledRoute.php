@@ -121,7 +121,7 @@ class DisabledRoute extends Component
       if($route[0]!=='/' && $route[0]!=='%')
         $route="/$route";
 
-      if($with_player===true && Yii::$app->user->isGuest && intval($r['player_id'])!==Yii::$app->user->id)
+      if($with_player===true && !Yii::$app->user->isGuest && intval($r['player_id'])!==Yii::$app->user->id)
       {
         /*
          * go back if the record refers to player
