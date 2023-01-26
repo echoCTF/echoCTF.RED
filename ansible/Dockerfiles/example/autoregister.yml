@@ -43,7 +43,7 @@
     lineinfile:
       create: yes
       dest: "{{item.fullpath}}"
-      line: '{{item.content}}'
+      line: '{{item.content|default("ETSCTF_"+item.code)}}'
 
   - name: Replace ETSCTF placeholders
     when: item.replace is defined
@@ -69,8 +69,27 @@
     with_items: "{{BUILD_COMMANDS.exec}}"
     raw: "{{item.cmd}}"
 
+  - name: Copy raw configs
+    when: RAW_CONFS is defined
+    copy:
+      content: "{{item.value.content}}\n"
+      dest: "{{item.key}}"
+      mode: "{{item.mode|default(omit)}}"
+    with_dict: "{{RAW_CONFS}}"
+
+
   - name: Create Decoy flags
     when: ETSCTF_DECOY is defined
     debug:
       var: ETSCTF_DECOY
     with_sequence: start=1 end={{ ETSCTF_DECOY.number }}
+
+  - name: Parse defined templates
+    when: templates is defined
+    template:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+      owner: "{{item.owner}}"
+      group: "{{item.group}}"
+      mode: "{{item.mode}}"
+    with_items: "{{templates}}"

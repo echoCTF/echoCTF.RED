@@ -1,15 +1,17 @@
 # METADATA
-FROM buildpack-deps:stretch-curl
+FROM buildpack-deps:bullseye-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
-LABEL description="Base debian-stretch image"
+LABEL description="Base debian-bullseye image"
 
 #####################
 # ENV AND BUILD ARGS
 #####################
 ENV DEBIAN_FRONTEND noninteractive
+ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini-amd64 /sbin/tini
 
 # PACKAGE INSTALLATIONS
 RUN set -ex \
+    && chmod +x /sbin/tini \
     && apt-get update \
     && apt-get install --no-install-recommends -y ansible apt-transport-https \
     build-essential bzip2 ca-certificates curl dirmngr dnsutils gcc git gzip \
@@ -51,4 +53,5 @@ HEALTHCHECK --interval=12s --timeout=12s --start-period=30s CMD /usr/local/sbin/
 # RUNTIME
 WORKDIR /
 CMD ["bash"]
-ENTRYPOINT ["/entrypoint.sh"]
+#ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["tini","--", "/entrypoint.sh"]
