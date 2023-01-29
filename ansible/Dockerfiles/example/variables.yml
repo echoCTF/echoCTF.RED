@@ -85,6 +85,7 @@ ETSCTF_TREASURES:
       points: 1300,
       player_type: offense,
       stock: -1,
+      location: "/etc/shadow",
       code: "{{ETSCTF_SHADOW_FLAG}}",
     }
   - { #3
@@ -94,6 +95,7 @@ ETSCTF_TREASURES:
       points: 1300,
       player_type: offense,
       stock: -1,
+      location: "/etc/passwd",
       code: "{{ETSCTF_PASSWD_FLAG}}",
     }
 #  - { #4

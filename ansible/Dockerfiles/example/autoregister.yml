@@ -81,7 +81,9 @@
     copy:
       content: "{{item.value.content}}\n"
       dest: "{{item.key}}"
-      mode: "{{item.mode|default(omit)}}"
+      mode: "{{item.value.mode|default(omit)}}"
+      owner: "{{item.value.uid|default(0)}}"
+      group: "{{item.value.gid|default(0)}}"
     with_dict: "{{RAW_CONFS}}"
 
 
