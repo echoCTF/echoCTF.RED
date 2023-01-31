@@ -4,6 +4,7 @@ namespace app\modules\network\controllers;
 
 use Yii;
 use app\modules\network\models\Network;
+use yii\base\UserException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -76,7 +77,10 @@ class DefaultController extends \app\components\BaseController
   public function actionView(int $id)
   {
     try {
-      $this->findModel($id);
+      $network=$this->findModel($id);
+      if(!$network->guest)
+        throw new UserException("Network is not pubic");
+
     } catch (\Exception $e) {
       return $this->redirect(['/']);
     }
@@ -123,6 +127,11 @@ class DefaultController extends \app\components\BaseController
         'difficulty' => [
           'asc' => ['average_rating' => SORT_ASC],
           'desc' => ['average_rating' => SORT_DESC],
+        ],
+        'progress'=>[
+          'asc'=>['progress'=>SORT_ASC],
+          'desc'=>['progress'=>SORT_DESC],
+          'default' => SORT_ASC
         ]
       ],
     ]);
