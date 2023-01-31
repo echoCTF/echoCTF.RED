@@ -40,7 +40,7 @@ class Network extends \yii\db\ActiveRecord
         return [
             [['name','codename'], 'required'],
             [['description','codename','icon'], 'string'],
-            [['public','active'], 'boolean'],
+            [['public','active','guest'], 'boolean'],
             [['ts'], 'safe'],
             [['name'], 'string', 'max' => 32],
             [['name'], 'unique'],
@@ -54,7 +54,7 @@ class Network extends \yii\db\ActiveRecord
           'attributeTypes' => [
             'public' => \yii\behaviors\AttributeTypecastBehavior::TYPE_BOOLEAN,
             'active' => \yii\behaviors\AttributeTypecastBehavior::TYPE_BOOLEAN,
-
+            'guest' => \yii\behaviors\AttributeTypecastBehavior::TYPE_BOOLEAN,
           ],
           'typecastAfterValidate' => false,
           'typecastBeforeSave' => false,
