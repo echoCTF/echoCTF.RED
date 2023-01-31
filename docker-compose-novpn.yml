@@ -8,9 +8,9 @@ services:
       dockerfile: contrib/Dockerfile-mariadb
     restart: "always"
     command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake"]
-    ports:
-      - 3306:3306
-      - 11211:11211
+#    ports:
+#      - 3306:3306
+#      - 11211:11211
     volumes:
       - data-mysql:/var/lib/mysql
     environment:
@@ -38,8 +38,8 @@ services:
     volumes:
       - data-challenges:/var/www/echoCTF.RED/backend/web/uploads
 #      - ./themes/images:/var/www/echoCTF.RED/backend/web/images
-    ports:
-      - 8082:80
+#    ports:
+#      - 8082:80
     links:
       - db:db
     networks:
@@ -66,8 +66,8 @@ services:
 #      - ./themes/images:/var/www/echoCTF.RED/frontend/web/images
     links:
       - db:db
-    ports:
-      - 8080:80
+#    ports:
+#      - 8080:80
     networks:
       private:
         ipv4_address: "172.24.0.3"
