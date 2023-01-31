@@ -10,7 +10,7 @@ use app\widgets\target\TargetWidget;
 $this->loadLayoutOverrides=true;
 $this->title = Yii::$app->sys->event_name . ' ' . \Yii::t('app', 'Network details') . ' [' . Html::encode($model->name) . ']';
 $this->_description = Html::encode(strip_tags($model->description));
-//$this->_image=\yii\helpers\Url::to($target->fullLogo, 'https');
+$this->_image=\yii\helpers\Url::to($model->icon, 'https');
 $this->_url = \yii\helpers\Url::to(['view', 'id' => $model->id], 'https');
 
 $this->_fluid = "-fluid";
