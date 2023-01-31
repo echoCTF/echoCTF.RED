@@ -38,6 +38,7 @@ yii\bootstrap\Modal::end();
             'name:text',
             'description:ntext',
             'public:boolean',
+            'guest:boolean',
             'active:boolean',
             'announce:boolean',
             'icon',

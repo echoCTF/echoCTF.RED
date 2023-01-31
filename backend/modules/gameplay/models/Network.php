@@ -15,6 +15,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property string $icon
  * @property string $description
  * @property boolean $public
+ * @property boolean $guest
  * @property boolean $active
  * @property integer $announce
  * @property integer $weight
@@ -43,7 +44,7 @@ class Network extends \yii\db\ActiveRecord
         return [
             [['name','codename'], 'required'],
             [['description','codename','icon'], 'string'],
-            [['public','active','announce'], 'boolean'],
+            [['public','active','announce','guest'], 'boolean'],
             [['ts'], 'safe'],
             [['name'], 'string', 'max' => 32],
             [['name'], 'unique'],
@@ -61,6 +62,7 @@ class Network extends \yii\db\ActiveRecord
                     'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                     'announce' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                     'public' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+                    'guest' => AttributeTypecastBehavior::TYPE_BOOLEAN,
                 ],
                 'typecastAfterValidate' => false,
                 'typecastBeforeSave' => true,
@@ -83,6 +85,13 @@ class Network extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'description' => 'Description',
+            'codename' => 'Codename',
+            'icon' => 'Icon',
+            'public' => 'Public',
+            'guest' => 'Guest',
+            'active' => 'Active',
+            'announce' => 'Announce',
+            'weight' => 'Weight',
             'ts' => 'Ts',
         ];
     }
