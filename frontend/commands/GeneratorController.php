@@ -288,7 +288,7 @@ class GeneratorController extends Controller {
         }
         else
         {
-          printf("Player [%s] error in badge generation.",$player->username);
+          printf("Player [%s] error in badge generation.\n",$player->username);
         }
       }
     }
