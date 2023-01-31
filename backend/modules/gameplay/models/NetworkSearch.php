@@ -18,7 +18,7 @@ class NetworkSearch extends Network
     {
         return [
             [['id','weight'], 'integer'],
-            [['public', 'active','announce'], 'boolean'],
+            [['public', 'active','announce','guest'], 'boolean'],
             [['name', 'description', 'codename', 'icon', 'ts'], 'safe'],
         ];
     }
@@ -64,6 +64,7 @@ class NetworkSearch extends Network
             'active' => $this->active,
             'announce' => $this->announce,
             'public' => $this->public,
+            'guest' => $this->guest,
             'ts' => $this->ts,
         ]);
 
