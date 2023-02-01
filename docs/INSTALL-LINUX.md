@@ -81,7 +81,8 @@ cp frontend/config/db-local.php frontend/config/db.php
 
 **NOTE:** If you keep the default db.php on the applications, update the mysql authentication plugin to allow root access
 ```sh
-mysql -e "ALTER USER root@localhost IDENTIFIED VIA mysql_native_password; SET PASSWORD = PASSWORD('')" mysql
+mysql -e "ALTER USER root@localhost IDENTIFIED VIA mysql_native_password" mysql
+mysql -e "SET PASSWORD = PASSWORD('')" mysql
 ```
 
 For older versions of MariaDB < 10.4.3, you can try the following instead
