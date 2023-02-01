@@ -338,9 +338,9 @@ md = {
       $nav_content = $(nav_content);
       $nav_content.insertBefore($sidebar_nav);
 
-      if($('nav').find('.navbar-form').get(0)!==undefined)
+      if($('nav').find('.navbar-form').get(1)!==undefined)
       {
-        navbar_form = $('nav').find('.navbar-form').get(0).outerHTML;
+        navbar_form = $('nav').find('.navbar-form').get(1).outerHTML;
         $navbar_form = $(navbar_form);
         $navbar_form.insertBefore($nav_content);
       }
