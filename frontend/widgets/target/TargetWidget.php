@@ -11,10 +11,8 @@
 namespace app\widgets\target;
 
 use yii\base\Widget;
-use yii\widgets\ListView;
-use yii\helpers\Html;
-use yii\helpers\ArrayHelper;
 use yii\data\ActiveDataProvider;
+use app\modules\target\models\Target;
 
 class TargetWidget extends Widget
 {
@@ -48,7 +46,6 @@ class TargetWidget extends Widget
       {
         $this->dataProvider=$this->initTargetProvider($this->player_id);
       }
-
       if($this->pagerID === null)
       {
         unset($this->pagerOptions['id']);
@@ -59,7 +56,7 @@ class TargetWidget extends Widget
 
     public function run()
     {
-      $tmod=\app\modules\target\models\Target::find();
+      $tmod=Target::find();
       if(intval($tmod->count()) === 0) return false;
 
         TargetWidgetAsset::register($this->getView());
@@ -111,7 +108,8 @@ class TargetWidget extends Widget
     }
     protected function initTargetProvider($id)
     {
-      $tmod=\app\modules\target\models\Target::find();
+      $tmod=Target::find();
+
       if(intval($tmod->count()) === 0) return null;
 
       $targetProgressProvider=$this->getTargetProgressProvider($tmod,$id,$defaultOrder);
