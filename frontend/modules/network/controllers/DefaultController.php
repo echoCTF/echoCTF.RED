@@ -86,7 +86,9 @@ class DefaultController extends \app\components\BaseController
     }
     $tmod = \app\modules\target\models\Target::find();
     if (Yii::$app->user->isGuest)
-      $query = $tmod->forNet($id)->addState();
+    {
+      $query = $tmod->forNet($id)->addState()->orderBy(['status' => SORT_DESC, 'scheduled_at' => SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC]);
+    }
     else
       $query = $tmod->forNet($id)->player_progress(Yii::$app->user->id);
 
@@ -97,6 +99,10 @@ class DefaultController extends \app\components\BaseController
         'pageParam' => 'target-page',
       ]
     ]);
+    if(Yii::$app->user->isGuest){
+      $targetProgressProvider->setSort(false);
+    }
+    else
     $targetProgressProvider->setSort([
       'defaultOrder' => ['status' => SORT_DESC, 'scheduled_at' => SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC],
       'attributes' => [
