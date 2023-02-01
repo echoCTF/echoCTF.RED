@@ -79,7 +79,12 @@ cp frontend/config/validationKey-local.php frontend/config/validationKey.php
 cp frontend/config/db-local.php frontend/config/db.php
 ```
 
-NOTE: If you keep the default db.php on the applications, update the mysql authentication plugin to allow root access
+**NOTE:** If you keep the default db.php on the applications, update the mysql authentication plugin to allow root access
+```sh
+mysql -e "ALTER USER root@localhost IDENTIFIED VIA mysql_native_password; SET PASSWORD = PASSWORD('')" mysql
+```
+
+If that didn't work, you must likely have MariaDB < 10.4.3, try this one instead
 ```sh
 mysql -e "update user set plugin='mysql_native_password' where user='root'" mysql
 ```
@@ -129,7 +134,7 @@ Once this is done create your certification authority keys the create-ca command
 Note that in order to allow registrations from the web interface you need to
 also set the following sysconfig keys
 ```sh
-./backend/yii sysconfig/set mail_fromName	"Mail From Name"
+./backend/yii sysconfig/set mail_fromName "Mail From Name"
 ./backend/yii sysconfig/set mail_host smtp.host.com
 ./backend/yii sysconfig/set mail_port 25
 ```
