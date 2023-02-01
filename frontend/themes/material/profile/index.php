@@ -49,7 +49,7 @@ $this->_description=$this->title;
 <?php if($profile->isMine || $profile->pending_progress):?>
       <div class="col-lg-9">
         <?php
-        \yii\widgets\Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);
+        \yii\widgets\Pjax::begin(['id'=>'target-listing-pjax', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);
         $title_prefix="";
         if($profile->isMine && $profile->pending_progress===false)
           $title_prefix='<b><i rel="tooltip" title="Progress will NOT be visible to others" class="fas fa-eye-slash"></i></b> ';
