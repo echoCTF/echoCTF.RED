@@ -972,3 +972,11 @@ mark {
 .card .card-header-guru         .card-icon { background: linear-gradient(45deg,#ff0000,60%,#FF0D0D); min-width: 6rem; max-width: 6rem; min-height: 6rem;max-height: 6rem; text-align: center; }
 .card .card-header-insane       .card-icon { background: linear-gradient(45deg,#910000,60%,#ff0000); min-width: 6rem; max-width: 6rem; min-height: 6rem;max-height: 6rem; text-align: center; }
 */
+.bootstrap-autocomplete.dropdown-menu  a.dropdown-item {
+  color:#222222;
+  cursor: pointer;
+}
+.bootstrap-autocomplete.dropdown-menu  a.dropdown-item:hover {
+  font-weight: 800;
+  cursor: pointer;
+}
