@@ -61,6 +61,18 @@ use app\components\formatters\Anchor;
       </div>
 <?php endif;?>
 
+<?php if(!Yii::$app->DisabledRoute->disabled('/help/credits/index')):?>
+      <div class="col d-flex align-items-stretch">
+        <div class="card bg-dark">
+          <div class="card-body">
+            <h4 class="card-title"><b><?=Html::a(\Yii::t('app','Platform Credits'), ['/help/credits/index'])?></b></h4>
+            <p class="card-text"><?=\Yii::t('app',"Credit where credit's due.")?></p>
+          </div>
+          <div class="card-footer"><?=Html::a(\Yii::t('app',"Credits"), ['/help/credits/index'],['class'=>'btn bg-primary text-bold text-dark card-link'])?></div>
+        </div>
+      </div>
+<?php endif;?>
+
     </div>
   </div>
 </div>

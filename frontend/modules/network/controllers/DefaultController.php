@@ -78,7 +78,7 @@ class DefaultController extends \app\components\BaseController
   {
     try {
       $network=$this->findModel($id);
-      if(!$network->guest)
+      if(Yii::$app->user->isGuest && !$network->guest)
         throw new UserException("Network is not pubic");
 
     } catch (\Exception $e) {

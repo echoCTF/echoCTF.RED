@@ -1,0 +1,70 @@
+
+.credits-text {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  color: #94bc1c;
+  perspective: 400px;
+  text-align: justify;
+  z-index: 0;
+}
+
+.rollingText {
+  width: 70%;
+  position: relative;
+  transform-origin: 50% 100%;
+  height: 90%;
+  /* rollingText & rollingText speed */
+  animation: rollingText 80s ease-out;
+}
+
+.rollingText > .title {
+  text-align: center;
+}
+.rollingText > .title p {
+  color: #c3c3c3;
+  font-size: 240%;
+  line-height: 110%;
+  margin: 0 0 30px;
+}
+
+.rollingText > .title h1 {
+  font-size: 400%;
+  color: white;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+}
+
+@keyframes rollingText {
+  0% {
+      top: 0;
+      transform: rotateX(10deg)  translateZ(0);
+  }
+  100% {
+      top: -6000px;
+      transform: rotateX(25deg) translateZ(-1400px);
+    }
+}
+
+.list-view {
+  text-align: center;
+}
+.list-view h1 {
+  font-family: 'Orbitron' !important;
+  font-size: 300%;
+  font-weight: 600;
+  letter-spacing: 6px;
+  line-height: 100%;
+}
+.list-view p {
+  font-family: 'Orbitron' !important;
+  color: #cecece;
+  font-size: 200%;
+  font-weight: 400;
+  letter-spacing: 6px;
+  line-height: 110%;
+}
+
+[data-animation-pause]:checked ~ .rollingText {
+  animation: none !important;
+}
