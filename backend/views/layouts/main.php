@@ -48,6 +48,7 @@ AppAsset::register($this);
                 ['label' => 'FAQ', 'url' => ['/content/faq/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Rules', 'url' => ['/content/rule/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Objectives', 'url' => ['/content/objective/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                ['label' => 'Credits', 'url' => ['/content/credits/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Instructions', 'url' => ['/content/instruction/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Writeup rules', 'url' => ['/content/default/writeup-rules'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Email Templates', 'url' => ['/content/email-template/index'], 'visible' => !Yii::$app->user->isGuest, ],
