@@ -84,7 +84,7 @@ cp frontend/config/db-local.php frontend/config/db.php
 mysql -e "ALTER USER root@localhost IDENTIFIED VIA mysql_native_password; SET PASSWORD = PASSWORD('')" mysql
 ```
 
-If that didn't work, you must likely have MariaDB < 10.4.3, try this one instead
+For older versions of MariaDB < 10.4.3, you can try the following instead
 ```sh
 mysql -e "update user set plugin='mysql_native_password' where user='root'" mysql
 ```
