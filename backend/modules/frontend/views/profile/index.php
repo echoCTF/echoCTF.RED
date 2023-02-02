@@ -23,7 +23,8 @@ yii\bootstrap\Modal::end();
     <p>
         <?= Html::a(Yii::t('app', 'Create Profile'), ['create'], ['class' => 'btn btn-success']) ?>
         <?= Html::a(Yii::t('app', 'Fail Validate'), ['fail-validation'], [
-            'class' => 'btn btn-warning',
+            'class' => 'btn',
+            'style'=>'background: #4d246f; color: white;',
             'data' => [
                 'confirm' => Yii::t('app', 'This operation validates all the user profiles are you sure?'),
             ],
