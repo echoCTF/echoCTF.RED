@@ -183,6 +183,13 @@ class WriteupController extends \app\components\BaseController
     public function actionEnable(int $id)
     {
         $writeups=Writeup::find()->where(['target_id'=>$id]);
+        $player_headshots=intval(Headshot::find()->where(['player_id'=>Yii::$app->user->id])->count());
+        $player_writeups=intval(PTH::find()->where(['player_id'=>Yii::$app->user->id])->count());
+        if($player_writeups>=($player_headshots+2))
+        {
+          Yii::$app->session->setFlash('error', \Yii::t('app','You have activated too many writeups, headshot some of the targets first.'));
+          return $this->redirect(['default/view','id'=>$id]);
+        }
         if((int)$writeups->count()===0)
         {
           Yii::$app->session->setFlash('error', \Yii::t('app','There are no writeups for this target.'));
