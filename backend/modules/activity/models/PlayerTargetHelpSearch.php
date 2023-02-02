@@ -60,11 +60,11 @@ class PlayerTargetHelpSearch extends PlayerTargetHelp
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'player_id' => $this->player_id,
-            'target_id' => $this->target_id,
-            'created_at' => $this->created_at,
+            'player_target_help.player_id' => $this->player_id,
+            'player_target_help.target_id' => $this->target_id,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
+        $query->andFilterWhere(['like', 'player_target_help.created_at', $this->created_at]);
         $query->andFilterWhere(['like', 'target.name', $this->target_name]);
         $dataProvider->setSort([
             'attributes' => array_merge(
@@ -78,7 +78,11 @@ class PlayerTargetHelpSearch extends PlayerTargetHelp
                       'asc' => ['target.name' => SORT_ASC],
                       'desc' => ['target.name' => SORT_DESC],
                   ],
-                ]
+                  'created_at' => [
+                    'asc' =>  ['player_target_help.created_at' => SORT_ASC],
+                    'desc' => ['player_target_help.created_at' => SORT_DESC],
+                ],
+              ]
             ),
         ]);
 

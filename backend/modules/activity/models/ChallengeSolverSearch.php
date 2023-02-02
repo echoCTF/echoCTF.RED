@@ -64,8 +64,8 @@ class ChallengeSolverSearch extends ChallengeSolver
             'timer' => $this->timer,
             'rating' => $this->rating,
             'first' => $this->first,
-            'created_at' => $this->created_at,
         ]);
+        $query->andFilterWhere(['like', 'challenge_solver.created_at', $this->created_at]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $query->andFilterWhere(['like', 'challenge.name', $this->challenge_name]);
         $dataProvider->setSort([

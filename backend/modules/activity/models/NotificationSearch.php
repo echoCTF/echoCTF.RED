@@ -64,9 +64,9 @@ class NotificationSearch extends Notification
             'notification.id' => $this->id,
             'notification.player_id' => $this->player_id,
             'notification.archived' => $this->archived,
-            'notification.created_at' => $this->created_at,
-            'notification.updated_at' => $this->updated_at,
         ]);
+        $query->andFilterWhere(['like', 'notification.created_at', $this->created_at]);
+        $query->andFilterWhere(['like', 'notification.updated_at', $this->updated_at]);
 
         $query->andFilterWhere(['like', 'notification.title', $this->title])
             ->andFilterWhere(['like', 'notification.body', $this->body]);

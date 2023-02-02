@@ -14,7 +14,7 @@ class PlayerFindingSearch extends PlayerFinding
     public $player;
     public $finding;
     public $target_id;
-    
+
     /**
      * {@inheritdoc}
      */
@@ -66,7 +66,6 @@ class PlayerFindingSearch extends PlayerFinding
             'player_finding.finding_id' => $this->finding_id,
             'player_finding.points' => $this->points,
             'finding.target_id'=>$this->target_id,
-            'player_finding.ts' => $this->ts,
         ]);
 
         $query->andFilterWhere(['like', 'player_finding.ts', $this->ts]);
