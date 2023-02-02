@@ -25,7 +25,22 @@ use yii\helpers\Html;
           $item_classes[]='text-bold';
           $item_classes[]='active';
         }
-        echo Html::a($item->player->username.' <span class="badge badge-primary badge-pill">'.\Yii::t('app',$item->averageRatingName).'</span>',['/target/writeup/read','target_id'=>$item->target_id,'id'=>$item->id],['class'=>implode(' ',$item_classes)]);
+        if($writeups_activated)
+          echo Html::a($item->player->username.' <span class="badge badge-primary badge-pill">'.\Yii::t('app',$item->averageRatingName).'</span>',['/target/writeup/read','target_id'=>$item->target_id,'id'=>$item->id],['class'=>implode(' ',$item_classes)]);
+        else
+          echo Html::a(
+            $item->player->username.' <span class="badge badge-primary badge-pill">'.\Yii::t('app',$item->averageRatingName).'</span>',
+            //'<i class="fas fa-question-circle" style="font-size: 1.5em;"></i> '.\Yii::t('app','Writeups available.'),
+            ['/target/writeup/enable', 'id'=>$item->target_id],
+            [
+              'class'=>implode(' ',$item_classes),
+              'title' => \Yii::t('app','Request access to writeups'),
+              'data-pjax' => '0',
+              'data-method' => 'POST',
+              'data-confirm'=>\Yii::t('app','Are you sure you want to enable access to writeups for this target? Any remaining flags will have their points reduced by 50%.'),
+              'aria-label'=>\Yii::t('app','Request access to writeups'),
+            ]
+            );
       }
       ?>
     </div>
