@@ -47,7 +47,7 @@ if($goback==='/')
       </div><!--//col-->
       <div class="col-md-4">
         <?=$this->render('../default/_target_card',['target'=>$model->target,'identity'=>Yii::$app->user->identity->profile]);?>
-        <?=$this->render('../default/_target_writeups',['writeups'=>$model->target->writeups,'active'=>$model->id]);?>
+        <?=$this->render('../default/_target_writeups',['writeups'=>$model->target->writeups,'active'=>$model->id, 'writeups_activated'=>true]);?>
       </div>
     </div>
   </div>
