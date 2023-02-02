@@ -56,8 +56,23 @@ yii\bootstrap\Modal::end();
               'value'=>function($model) {return $model->signin_ip === NULL ? null : long2ip($model->signin_ip);},
             ],
             'ts',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+              'class' => 'yii\grid\ActionColumn',
+              'template' => '{player-view-full} {view} {update} {delete}',
+              'buttons' => [
+                'player-view-full' => function($url, $model) {
+                  $url =  \yii\helpers\Url::to(['/frontend/profile/view-full', 'id' => $model->player->profile->id]);
+                  return Html::a(
+                      '<span class="glyphicon glyphicon-user"></span>',
+                      $url,
+                      [
+                        'title' => 'View full profile',
+                        'data-pjax' => '0',
+                      ]
+                  );
+                },
+              ]
+            ]
         ],
     ]);?>
 

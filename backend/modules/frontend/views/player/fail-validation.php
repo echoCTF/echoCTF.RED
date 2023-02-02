@@ -47,7 +47,40 @@ yii\bootstrap\Modal::end();
             ],
 
             'username',
-            'email:email',
+            [
+                'attribute'=>'email',
+                'format'=>'raw',
+                'value' => function($model) {
+                    $model->scenario='validator';
+                    if(!$model->validate('email'))
+                    {
+                        return Html::tag('b',$model->email);
+                    }
+                    return $model->email;
+                }
+
+            ],
+            [
+                'attribute'=>'verification_token',
+                'format'=>'raw',
+                'value' => function($model) {
+                    $model->scenario='validator';
+                    if(!$model->validate('verification_token'))
+                    {
+                        return Html::a('Clear',['/frontend/player/clear-verification-token','id'=>$model->id],[
+                            'class' => 'btn text-center',
+                            'style'=>'background: #4d246f; color: white;',
+                            'data' => [
+                                'confirm' => Yii::t('app', 'Are you sure you want to clear the verification token of this player?'),
+                                'method' => 'post',
+                            ],
+                        ]);
+                    }
+                    return null;
+                },
+                'contentOptions'=>['style'=>'text-align: center'],
+
+            ],
             [
               'attribute'=>'vpn_local_address',
               'label'=> 'VPN Local IP',
@@ -62,14 +95,14 @@ yii\bootstrap\Modal::end();
             ],
             [
              'attribute' => 'status',
-             'filter'=>array(10=>'Enabled',9=>'Innactive', 8=>"Change",0=>"Deleted",),
+             'filter'=>[10=>'Enabled',9=>'Innactive', 8=>"Change",0=>"Deleted"],
 
             ],
             'created',
             //'ts',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{player-view-full} {view} '.'{delete}',
+              'template' => '{player-view-full} {set-deleted} {view} {delete}',
               'buttons' => [
                   'delete' => function($url, $model) {
                       return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->id], [
@@ -80,7 +113,16 @@ yii\bootstrap\Modal::end();
                           ],
                       ]);
                   },
-                  'player-view-full' => function($url, $model) {
+                  'set-deleted' => function($url, $model) {
+                    return Html::a('<span class="glyphicon glyphicon-ban-circle"></span>', ['set-deleted', 'id' => $model->id], [
+                        'class' => '',
+                        'data' => [
+                            'confirm' => 'Are you absolutely sure you want to set status to deleted for ['.Html::encode($model->username).'] ?',
+                            'method' => 'post',
+                        ],
+                    ]);
+                },
+                'player-view-full' => function($url, $model) {
                     $url =  \yii\helpers\Url::to(['/frontend/profile/view-full', 'id' => $model->profile->id]);
                     return Html::a(
                         '<span class="glyphicon glyphicon-user"></span>',
