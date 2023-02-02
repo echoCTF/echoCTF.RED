@@ -262,7 +262,24 @@ class ProfileController extends \app\components\BaseController
     $searchModel->player_id = $profile->player_id;
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     $dataProvider->setSort([
-      'defaultOrder' => ['created_at' => SORT_DESC]
+      'defaultOrder' => ['created_at' => SORT_DESC,'target_id'=>SORT_ASC],
+      'attributes' => array_merge(
+        $dataProvider->getSort()->attributes,
+        [
+          'username' => [
+              'asc' => ['player.username' => SORT_ASC],
+              'desc' => ['player.username' => SORT_DESC],
+          ],
+          'target_name' => [
+              'asc' => ['target.name' => SORT_ASC],
+              'desc' => ['target.name' => SORT_DESC],
+          ],
+          'created_at' => [
+            'asc' =>  ['player_target_help.created_at' => SORT_ASC],
+            'desc' => ['player_target_help.created_at' => SORT_DESC],
+        ],
+      ]
+    ),
     ]);
     return Json::encode(trim($this->renderAjax('_activated_writeups', [
       'dataProvider' => $dataProvider,
