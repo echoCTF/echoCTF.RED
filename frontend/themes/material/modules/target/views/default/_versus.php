@@ -145,8 +145,8 @@ if($headshot)
     <div class="col-lg-4 col-md-6 col-sm-6">
       <?=$this->render('_headshots_card',['target'=>$target]);?>
 
-      <?php if(count($target->writeups)>0 && (PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))):?>
-      <?=$this->render('_target_writeups',['writeups'=>$target->writeups,'active'=>false]);?>
+      <?php if(count($target->writeups)>0):?>
+      <?=$this->render('_target_writeups',['writeups'=>$target->writeups,'active'=>false,'writeups_activated'=>(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))]);?>
       <?php endif;?>
     </div>
   </div>
