@@ -17,7 +17,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
     <div class="row">
         <div class="col">
               <?php
-              Pjax::begin(['id'=>'playerScore','enablePushState'=>false, 'linkSelector'=>'#player-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'playerScore-pjax','enablePushState'=>false, 'linkSelector'=>'#player-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'playerScore',
                   'dataProvider' => $playerDataProvider,
@@ -49,7 +49,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
 <?php if(\Yii::$app->sys->monthly_leaderboards!==false):?>
         <div class="col">
               <?php
-              Pjax::begin(['id'=>'playerMonthlyScore','enablePushState'=>false, 'linkSelector'=>'#player-monthly-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'playerMonthlyScore-pjax','enablePushState'=>false, 'linkSelector'=>'#player-monthly-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'playerMonthlyScore',
                   'dataProvider' => $playerMonthlyDataProvider,
@@ -81,7 +81,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
 <?php endif;?>
         <div class="col">
               <?php
-              Pjax::begin(['id'=>'teamScore','enablePushState'=>false, 'linkSelector'=>'#team-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'teamScore-pjax','enablePushState'=>false, 'linkSelector'=>'#team-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'teamScore',
                   'dataProvider' => $teamDataProvider,
@@ -113,7 +113,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
       <div class="row">
         <div class="col">
               <?php
-              Pjax::begin(['id'=>'mostHeadshots','enablePushState'=>false, 'linkSelector'=>'#mostHeadshots-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'mostHeadshots-pjax','enablePushState'=>false, 'linkSelector'=>'#mostHeadshots-leaderboard-pager a', 'formSelector'=>false]);
 
               echo ListView::widget([
                   'id'=>'mostHeadshots',
@@ -145,7 +145,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
         </div>
         <div class="col">
               <?php
-              Pjax::begin(['id'=>'mostWriteups','enablePushState'=>false, 'linkSelector'=>'#mostWriteups-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'mostWriteups-pjax','enablePushState'=>false, 'linkSelector'=>'#mostWriteups-leaderboard-pager a', 'formSelector'=>false]);
 
               echo ListView::widget([
                   'id'=>'mostWriteups',
@@ -178,7 +178,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
 
         <div class="col">
               <?php
-              Pjax::begin(['id'=>'mostSolves','enablePushState'=>false, 'linkSelector'=>'#mostSolves-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'mostSolves-pjax','enablePushState'=>false, 'linkSelector'=>'#mostSolves-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'mostSolves',
                   'emptyText'=>'<div class="card-body"><b class="text-info">'.\Yii::t('app','No challenge solves exist at the moment...').'</b></div>',
@@ -212,7 +212,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
       <div class="row">
         <div class="col">
               <?php
-              Pjax::begin(['id'=>'headshotTimers','enablePushState'=>false, 'linkSelector'=>'#headshotTimer-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'headshotTimers-pjax','enablePushState'=>false, 'linkSelector'=>'#headshotTimer-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'headshotTimers',
                   'dataProvider' => $headshotDataProvider,
@@ -243,7 +243,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
         </div>
         <div class="col">
               <?php
-              Pjax::begin(['id'=>'fastestSolvers','enablePushState'=>false, 'linkSelector'=>'#solvers-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'fastestSolvers-pjax','enablePushState'=>false, 'linkSelector'=>'#solvers-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'fastestSolvers',
                   'dataProvider' => $solversDataProvider,
@@ -279,7 +279,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
 
         <div class="col">
               <?php
-              Pjax::begin(['id'=>'AvgHeadshotTimers','enablePushState'=>false, 'linkSelector'=>'#avgheadshotTimer-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'AvgHeadshotTimers-pjax','enablePushState'=>false, 'linkSelector'=>'#avgheadshotTimer-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'AvgHeadshotTimers',
                   'dataProvider' => $AvgHeadshotDataProvider,
@@ -310,7 +310,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
 
         <div class="col-md-6">
               <?php
-              Pjax::begin(['id'=>'AvgSolvesTimers','enablePushState'=>false, 'linkSelector'=>'#avgsolvesTimer-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'AvgSolvesTimers-pjax','enablePushState'=>false, 'linkSelector'=>'#avgsolvesTimer-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'AvgSolvesTimers',
                   'dataProvider' => $AvgSolvesDataProvider,
@@ -342,7 +342,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
       <div class="row">
       <div class="col-md-6">
               <?php
-              Pjax::begin(['id'=>'playerCountry','enablePushState'=>false, 'linkSelector'=>'#player-country-leaderboard-pager a', 'formSelector'=>false]);
+              Pjax::begin(['id'=>'playerCountry-pjax','enablePushState'=>false, 'linkSelector'=>'#player-country-leaderboard-pager a', 'formSelector'=>false]);
               echo ListView::widget([
                   'id'=>'playerCountry',
                   'dataProvider' => $playerCountryDataProvider,

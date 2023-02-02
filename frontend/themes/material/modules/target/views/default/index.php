@@ -70,7 +70,7 @@ $hidden_attributes=['id'];
     </div>
     <div class="row justify-content-center">
       <div class="col">
-      <?php Pjax::begin(['id'=>'target-listing', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
+      <?php Pjax::begin(['id'=>'target-listing-pjax', 'enablePushState'=>false, 'linkSelector'=>'#target-pager a', 'formSelector'=>false]);?>
       <?php echo TargetWidget::widget(['dataProvider' => null, 'hidden_attributes'=>$hidden_attributes,'player_id'=>Yii::$app->user->id,'pageSize'=>10,/*'buttonsTemplate'=>null*/]);?>
       <?php Pjax::end();?>
       </div>

@@ -14,6 +14,12 @@ use yii\helpers\Url;
           <div class="navbar-wrapper">
             <a class="navbar-brand" href="<?=Html::encode(Yii::$app->request->url)?>"><?=Html::encode($this->title)?></a>
           </div>
+          <?php if(!Yii::$app->user->isGuest):?>
+          <div class="justify-content-end">
+              <?=$this->render('@app/modules/target/views/default/search');?>
+          </div>
+            <?php endif;?>
+
           <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
             <span class="sr-only">Toggle navigation</span>
             <span class="navbar-toggler-icon icon-bar"></span>

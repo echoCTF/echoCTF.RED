@@ -420,6 +420,23 @@ class PlayerController extends Controller {
         }
     }
   }
+
+  /**
+   * Penalize a player that is using a writeup hoarder and disable access to the hoarder. The user is penalized with a 1/3 reduction of points and headshot timers zeroed out.
+   * @param integer $hoarder_id the ID of the writeup hoarder
+   * @param integer $beneficiary_id the ID of the beneficiary
+   */
+  public function actionPenalizeWithHoarder($hoarder_id,$beneficiary_id)
+  {
+    Yii::$app->db->createCommand("update ignore player_target_help set player_id=:beneficiary_id where player_id=:hoarder_id",[':beneficiary_id'=>$beneficiary_id,':hoarder_id'=>$hoarder_id])->execute();
+    Yii::$app->db->createCommand("update player SET status=0, active=0 WHERE id=:player_id",[':player_id'=>$hoarder_id])->execute();
+    Yii::$app->db->createCommand("update headshot set timer=0 WHERE player_id=:player_id",[':player_id'=>$beneficiary_id])->execute();
+    Yii::$app->db->createCommand("SET @TRIGGER_CHECKS=FALSE")->execute();
+    Yii::$app->db->createCommand("update stream set points=round(points/3) WHERE player_id=:player_id AND points>0",[':player_id'=>$beneficiary_id])->execute();
+    Yii::$app->db->createCommand("update player_score set points=(SELECT sum(points) from stream where player_id=:player_id) WHERE player_id=:player_id",[':player_id'=>$beneficiary_id])->execute();
+    Yii::$app->db->createCommand("SET @TRIGGER_CHECKS=TRUE")->execute();
+  }
+
   public function p($message, array $params=[])
   {
       $this->stdout(Yii::t('app', $message, $params).PHP_EOL);
