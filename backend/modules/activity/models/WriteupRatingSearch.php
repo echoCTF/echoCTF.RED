@@ -57,9 +57,9 @@ class WriteupRatingSearch extends WriteupRating
             'writeup_id' => $this->writeup_id,
             'writeup_rating.player_id' => $this->player_id,
             'writeup_rating.rating' => $this->rating,
-            'writeup_rating.created_at' => $this->created_at,
-            'writeup_rating.updated_at' => $this->updated_at,
         ]);
+        $query->andFilterWhere(['like', 'writeup_rating.created_at', $this->created_at]);
+        $query->andFilterWhere(['like', 'writeup_rating.updated_at', $this->updated_at]);
         $query->andFilterWhere(['like','player.username',$this->username]);
         $dataProvider->setSort([
             'attributes' => array_merge(

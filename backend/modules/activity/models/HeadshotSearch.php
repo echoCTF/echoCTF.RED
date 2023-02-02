@@ -67,8 +67,8 @@ class HeadshotSearch extends Headshot
             'target_id' => $this->target_id,
             'first' => $this->first,
             'rating' => $this->rating,
-            'headshot.created_at' => $this->created_at,
         ]);
+        $query->andFilterWhere(['like', 'headshot.created_at', $this->created_at]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $query->andFilterWhere(['like', 'target.name', $this->name]);
         $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
@@ -89,6 +89,10 @@ class HeadshotSearch extends Headshot
                       'asc' => ['target.ip' => SORT_ASC],
                       'desc' => ['target.ip' => SORT_DESC],
                   ],
+                  'created_at' => [
+                    'asc'=>['headshot.created_at' => SORT_ASC],
+                    'desc'=>['headshot.created_at' => SORT_DESC]
+                  ]
                 ]
             ),
         ]);

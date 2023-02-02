@@ -63,7 +63,6 @@ class PlayerBadgeSearch extends PlayerBadge
         $query->andFilterWhere([
             'player_badge.player_id' => $this->player_id,
             'player_badge.badge_id' => $this->badge_id,
-            'player_badge.ts' => $this->ts,
         ]);
 
         $query->andFilterWhere(['like', 'player_badge.ts', $this->ts]);
