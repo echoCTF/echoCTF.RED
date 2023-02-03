@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use app\modules\target\models\Target;
 use app\modules\target\models\Treasure;
 use app\modules\game\models\Headshot;
@@ -77,6 +78,23 @@ class DashboardController extends \app\components\BaseController
         $dayActivity['overallSeries'][]=$row['cnt'];
         $dayActivity['playerSeries'][]=$row['pcnt'];
       }
+      $visits=Yii::$app->session->get('last_targets_visited');
+      if($visits!==null && count($visits)>0)
+      {
+        $visitsSTR=implode($visits,',');
+        $last_targets_visited=Target::find()->addSelect("id,name")
+              ->active()
+              ->andWhere(['IN','id',$visits])
+              ->orderBy([new \yii\db\Expression("FIELD (id, $visitsSTR)")])
+              ->asArray()->all();
+      }
+      else
+        $last_targets_visited=[];
+      $lastVisitsProvider = new ArrayDataProvider([
+        'allModels' => $last_targets_visited,
+        'sort' => [],
+        'pagination'=>false
+      ]);
       $query=News::find()->orderBy(['created_at'=>SORT_DESC])->limit(3);
       $newsProvider=new ActiveDataProvider([
           'query' => $query,
@@ -86,6 +104,7 @@ class DashboardController extends \app\components\BaseController
 
       return $this->render('index', [
           'totalPoints'=>0,
+          'lastVisitsProvider'=>$lastVisitsProvider,
           'dashboardStats'=>$dashboardStats,
           'newsProvider'=>$newsProvider,
           'dayActivity'=>$dayActivity
