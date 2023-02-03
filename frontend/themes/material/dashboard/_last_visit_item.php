@@ -16,4 +16,4 @@ $item_classes = [
 
 $text =$model['name']. ' ' . Html::img("/images/targets/_" . $model['name'] . '-thumbnail.png', ['style' => 'max-height: 28px;'])  ;
 ?>
-<?= Html::a($text, ['/target/default/view', 'id' => $model['id']], ['class' => implode(' ', $item_classes)]); ?>
+<?= Html::a($text, ['/target/default/view', 'id' => $model['id']], ['class' => implode(' ', $item_classes),'style'=>'font-size: 1.1em !important;']); ?>
