@@ -182,7 +182,7 @@ class DefaultController extends \app\components\BaseController
         'pageSize' => 10,
       ]
     ]);
-
+    $this->lastVisit($target->id);
     return $this->render('versus', [
       'profile' => $profile,
       'target' => $target,
@@ -252,8 +252,10 @@ class DefaultController extends \app\components\BaseController
    */
   public function actionView(int $id)
   {
+
     $sum = 0;
     $target = $this->findModel($id);
+    $this->lastVisit($id);
     if (!Yii::$app->user->isGuest) {
       $target = Target::find()->forView((int) Yii::$app->user->id)->where(['t.id' => $id])->one();
     } else {
@@ -457,5 +459,36 @@ class DefaultController extends \app\components\BaseController
     if ($target->ondemand && $target->ondemand->state > 0) {
       $target->ondemand->updateAttributes(['heartbeat' => new \yii\db\Expression('NOW()')]);
     }
+  }
+
+  protected function lastVisit($id)
+  {
+    if(Yii::$app->user->isGuest)
+    {
+      return;
+    }
+    // get existing visits
+    $visits=Yii::$app->session->get('last_targets_visited');
+    // if not array reset;
+    if(!is_array($visits)) {
+      $visits=[];
+    }
+    // cleanup potential duplicate values
+    while(in_array($id,$visits)===true) {
+      if(($exists=array_search($id,$visits))!==false){
+        unset($visits[$exists]);
+      }
+    }
+    // add the last target ID first
+    array_unshift($visits, $id);
+
+    // if more then 5 visits
+    if(count($visits)>5)
+    {
+      // pop one entry from the end
+      array_pop($visits);
+    }
+    Yii::$app->session->set('last_targets_visited',$visits);
+    Yii::error($visits);
   }
 }
