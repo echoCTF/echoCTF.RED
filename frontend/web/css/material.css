@@ -961,7 +961,13 @@ mark {
 .text-difficulty-guru         { color:#FF0D0D; font-size: 1.25vw; }
 .text-difficulty-insane       { color:#ff0000; font-size: 1.25vw; }
 
-.card .card-header-target .card-icon { background: linear-gradient(45deg,#ff0400,70%,#ff7315); }
+
+
+.card .card-header-activities > .card-icon { background: linear-gradient(60deg,#4379FF,70%,#DA0503); }
+.card .card-header-countries  > .card-icon { background: linear-gradient(60deg,#4d246f,70%,#59b7e9); }
+.card .card-header-target     > .card-icon { background: linear-gradient(45deg,#ff0400,70%,#ff7315); }
+.card .card-header-users  > .card-icon { background: linear-gradient(70deg,navy,60%,deepskyblue); }
+
 .card .card-header-most              { background: linear-gradient(60deg,#4379FF,#DA0503); }
 .card .card-header-country           { background: linear-gradient(60deg,#4d246f,#59b7e9); }
 .card .card-header-score             { background: linear-gradient(45deg,#ff0000,60%,#FF8E15); }

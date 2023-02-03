@@ -18,85 +18,31 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
 <div class="dashboard-index">
   <div class="body-content">
     <div class="row justify-content-center">
-      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-8">
         <?php Card::begin([
           'header' => 'header-icon',
           'type' => 'card-stats',
           'icon' => '<i class="fas fa-flag"></i>',
-          'color' => 'primary',
+          'color' => 'target',
           'title' => number_format($dashboardStats->claims) /*sprintf('%d / %d', $treasureStats->claimed, $treasureStats->total)*/,
           'subtitle' => \Yii::t('app', 'Flag Claims'),
           'footer' => '<div class="stats"></div>',
         ]);
         Card::end(); ?>
-      </div>
-      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
         <?php Card::begin([
           'header' => 'header-icon',
           'type' => 'card-stats',
           'icon' => '<i class="fas fa-chart-line"></i>',
-          'color' => 'primary',
+          'color' => 'activities',
           'title' => number_format(\app\models\Stream::find()->count()),
           'subtitle' => \Yii::t('app', 'Activities'),
           'footer' => '<div class="stats"></div>',
         ]);
         Card::end(); ?>
       </div>
-
-      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-        <?php Card::begin([
-          'header' => 'header-icon',
-          'type' => 'card-stats',
-          'icon' => '<i class="fas fa-globe"></i>',
-          'color' => 'danger',
-          'title' => sprintf('%d', $dashboardStats->countries),
-          'subtitle' => \Yii::t('app', 'Countries'),
-          'footer' => '<div class="stats"></div>',
-        ]);
-        Card::end(); ?>
-      </div>
-
-      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6">
-        <?php Card::begin([
-          'type' => 'card-stats',
-          'header' => 'header-icon',
-          'icon' => '<i class="fas fa-user-secret"></i>',
-          'color' => 'info',
-          'title' => \app\models\Player::find()->active()->count(),
-          'subtitle' => \Yii::t('app', 'Users'),
-          'footer' => '<div class="stats"></div>',
-        ]);
-        Card::end(); ?>
-      </div>
-    </div>
-
-    <div class="row">
-      <?php if ($lastVisitsProvider->getModels() !== []) : ?>
-        <div class="col-lg-2">
-          <div class="card bg-dark">
-            <div class="card-body">
-              <h3 class="card-title text-center" data-toggle="tooltip" title="Last 5 targets you visited"><?= \Yii::t('app', 'Quick access') ?></h3>
-              <?= ListView::widget([
-                'layout' => '{items}',
-                'dataProvider' => $lastVisitsProvider,
-                'itemView' => '_last_visit_item',
-              ]);?>
-            </div>
-          </div>
-        </div>
-      <?php endif; ?>
-
-      <div class="col">
-        <div class="card bg-dark">
-          <div class="card-body">
-            <h3 class="card-title text-center"><?= \Yii::t('app', '10-Day Activity') ?></h3>
-          </div>
-          <div class="card-img-top ct-chart" id="LastDaysActivityChart"></div>
-        </div>
-      </div>
       <?php if ($newsProvider->getTotalCount() > 0) : ?>
-        <div class="col-lg-4">
-          <div class="card bg-dark">
+        <div class="col-lg-6 col-xl-6">
+          <div class="card bg-dark" style="margin-top:0px;">
             <div class="card-body">
               <h3 class="card-title text-center"><?= \Yii::t('app', 'Latest News') ?></h3>
               <?php
@@ -110,14 +56,59 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
           </div>
         </div>
       <?php endif; ?>
+      <div class="col-xl-3 col-lg-6 col-md-6 col-sm-8">
+        <?php Card::begin([
+          'header' => 'header-icon',
+          'type' => 'card-stats',
+          'icon' => '<i class="fas fa-globe"></i>',
+          'color' => 'countries',
+          'title' => sprintf('%d', $dashboardStats->countries),
+          'subtitle' => \Yii::t('app', 'Countries'),
+          'footer' => '<div class="stats"></div>',
+        ]);
+        Card::end(); ?>
+        <?php Card::begin([
+          'type' => 'card-stats',
+          'header' => 'header-icon',
+          'icon' => '<i class="fas fa-user-secret"></i>',
+          'color' => 'users',
+          'title' => \app\models\Player::find()->active()->count(),
+          'subtitle' => \Yii::t('app', 'Users'),
+          'footer' => '<div class="stats"></div>',
+        ]);
+        Card::end(); ?>
+      </div>
     </div>
-
+    <div class="row justify-content-center">
+      <?php if ($lastVisitsProvider->getModels() !== []) : ?>
+        <div class="col col-xl-4" style="max-width: 333px;">
+          <div class="card bg-dark">
+            <div class="card-body">
+              <h3 class="card-title " data-toggle="tooltip" title="Last 5 targets you visited" style="margin-bottom: 0.9em;"><?= \Yii::t('app', 'Last visits') ?></h3>
+              <?= ListView::widget([
+                'layout' => '{items}',
+                'options' => ['class' => "list-group list-group-flush"],
+                'dataProvider' => $lastVisitsProvider,
+                'itemView' => '_last_visit_item',
+              ]); ?>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
+      <div class="col">
+        <div class="card bg-dark">
+          <div class="card-body">
+            <h3 class="card-title text-center"><?= \Yii::t('app', '10-Day Activity') ?></h3>
+            <div class="card-img-top ct-chart" id="LastDaysActivityChart"></div>
+          </div>
+        </div>
+      </div>
+    </div>
     <?php
     Pjax::begin(['id' => 'stream-listing', 'enablePushState' => false, 'linkSelector' => '#stream-pager a', 'formSelector' => false]);
     echo Stream::widget(['divID' => 'stream', 'dataProvider' => null, 'pagerID' => 'stream-pager']);
     Pjax::end();
     ?>
-
     <div class="row justify-content-center">
       <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
         <?php Card::begin([
@@ -181,16 +172,13 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
         </div>
         <?php Card::end(); ?>
       </div>
-
     </div>
-
-
   </div><!-- //body-content -->
 </div>
 <?php
 if (!empty($dayActivity)) {
   if (intval(max($dayActivity['overallSeries'])) > 0)
-    $this->registerJs("maxHigh=" . max($dayActivity['overallSeries']) . "+10;", 1);
+    $this->registerJs("maxHigh=" . (max($dayActivity['overallSeries']) + 10) . ";", 1);
   else
     $this->registerJs("maxHigh=20;", 1);
 
