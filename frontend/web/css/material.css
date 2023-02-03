@@ -760,10 +760,13 @@ details.headshotters:not([open]) summary::after {
 }
 
 .orbitron {
-  font-family: Orbitron;
+  font-family: Orbitron !important;
   letter-spacing: 0.1em;
 }
 
+.roboto-mono {
+  font-family: 'Roboto Mono' !important;
+}
 
 
 
@@ -973,6 +976,7 @@ mark {
 .card .card-header-insane       .card-icon { background: linear-gradient(45deg,#910000,60%,#ff0000); min-width: 6rem; max-width: 6rem; min-height: 6rem;max-height: 6rem; text-align: center; }
 */
 .bootstrap-autocomplete.dropdown-menu  a.dropdown-item {
+  font-family: Orbitron !important;
   color:#222222;
   cursor: pointer;
 }
