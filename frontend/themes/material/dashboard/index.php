@@ -15,23 +15,9 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
 ?>
 <div class="dashboard-index">
   <div class="body-content">
-    <?php echo $this->render('_top', ['dashboardStats' => $dashboardStats, 'newsProvider' => $newsProvider]); ?>
+
+  <?php echo $this->render('_top', ['dashboardStats' => $dashboardStats, 'newsProvider' => $newsProvider,'lastVisitsProvider'=>$lastVisitsProvider]); ?>
     <div class="row justify-content-center">
-      <?php if ($lastVisitsProvider->getModels() !== []) : ?>
-        <div class="col col-xl-4" style="max-width: 333px;">
-          <div class="card bg-dark">
-            <div class="card-body">
-              <h3 class="card-title " data-toggle="tooltip" title="Last 5 targets you visited" style="margin-bottom: 0.9em;"><?= \Yii::t('app', 'Last visits') ?></h3>
-              <?= ListView::widget([
-                'layout' => '{items}',
-                'options' => ['class' => "list-group list-group-flush"],
-                'dataProvider' => $lastVisitsProvider,
-                'itemView' => '_last_visit_item',
-              ]); ?>
-            </div>
-          </div>
-        </div>
-      <?php endif; ?>
       <div class="col">
         <div class="card bg-dark">
           <div class="card-body">

@@ -14,6 +14,6 @@ $item_classes = [
   'rounded'
 ];
 
-$text = Html::img("/images/targets/_" . $model['name'] . '-thumbnail.png', ['style' => 'max-height: 28px;']) . ' ' . $model['name'];
+$text =$model['name']. ' ' . Html::img("/images/targets/_" . $model['name'] . '-thumbnail.png', ['style' => 'max-height: 28px;'])  ;
 ?>
 <?= Html::a($text, ['/target/default/view', 'id' => $model['id']], ['class' => implode(' ', $item_classes)]); ?>
