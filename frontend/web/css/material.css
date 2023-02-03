@@ -962,7 +962,7 @@ mark {
 .text-difficulty-insane       { color:#ff0000; font-size: 1.25vw; }
 
 .card-stats.bg-dark > .card-header.card-header-icon > .card-category,
-.card-stats.bg-dark > .card-header.card-header-icon > .card-title { font-family: Orbitron; font-weight: 500; color: white !important; }
+.card-stats.bg-dark > .card-header.card-header-icon > .card-title { font-size: 1.2em; font-family: Orbitron; font-weight: 500; color: white !important; }
 .card .card-header-activities > .card-icon { background: linear-gradient(60deg,#4379FF,70%,#DA0503); }
 .card .card-header-countries  > .card-icon { background: linear-gradient(60deg,#4d246f,70%,#59b7e9); }
 .card .card-header-target     > .card-icon { background: linear-gradient(45deg,#ff0400,70%,#ff7315); }
