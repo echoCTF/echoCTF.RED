@@ -93,9 +93,11 @@ class DashboardController extends \app\components\BaseController
       $lastVisitsProvider = new ArrayDataProvider([
         'allModels' => $last_targets_visited,
         'sort' => [],
-        'pagination'=>false
+        'pagination' => [
+          'pageSize' => 5,
+       ],
       ]);
-      $query=News::find()->orderBy(['created_at'=>SORT_DESC])->limit(3);
+      $query=News::find()->orderBy(['created_at'=>SORT_DESC])->limit(4);
       $newsProvider=new ActiveDataProvider([
           'query' => $query,
           'pagination'=>false,
