@@ -16,7 +16,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
 <div class="dashboard-index">
   <div class="body-content">
 
-  <?php echo $this->render('_top', ['dashboardStats' => $dashboardStats, 'newsProvider' => $newsProvider,'lastVisitsProvider'=>$lastVisitsProvider]); ?>
+  <?php echo $this->render('_top', ['dashboardStats' => $dashboardStats, 'newsProvider' => $newsProvider,'lastVisitsProvider'=>$lastVisitsProvider,'active_targets'=>$active_targets]); ?>
     <div class="row justify-content-center">
       <div class="col">
         <div class="card bg-dark">
@@ -35,7 +35,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
     <div class="row justify-content-center">
       <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
         <?php Card::begin([
-          'type' => 'card-stats',
+          'type' => 'card-stats bg-dark',
           'header' => 'header-icon',
           'icon' => '<i class="fas fa-level-up-alt"></i>',
           'color' => 'warning',
@@ -54,44 +54,44 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
 
       <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
         <?php Card::begin([
-          'type' => 'card-stats',
+          'type' => 'card-stats bg-dark',
           'header' => 'header-icon',
           'icon' => '<img src="/images/headshot.svg" class="img-fluid" style="max-height: 60px;"/>',
           'color' => 'danger',
           'title' => \Yii::t('app', "Completed: ") . Yii::$app->user->identity->profile->HeadshotsCount,
-          'subtitle' => \Yii::t('app', "Targets: ") . \app\modules\target\models\Target::find()->active()->count(),
+          'subtitle' => \Yii::t('app', "Targets: ") . $active_targets,
           'footer' => '<div class="stats"></div>',
         ]);
-        if (intval(\app\modules\target\models\Target::find()->active()->count()) != 0) {
-          $headshotsPct = intval((Yii::$app->user->identity->profile->headshotsCount / intval(\app\modules\target\models\Target::find()->active()->count())) * 100);
+        if (intval($active_targets) != 0) {
+          $headshotsPct = intval((Yii::$app->user->identity->profile->headshotsCount / intval($active_targets)) * 100);
         } else {
           $headshotsPct = 0;
         }
         ?>
         <div class="progress">
-          <div class="progress-bar text-dark" role="progressbar" style="width: <?= $headshotsPct ?>%" aria-valuenow="<?= Yii::$app->user->identity->profile->headshotsCount ?>" aria-valuemin="0" aria-valuemax="<?= \app\modules\target\models\Target::find()->active()->count() ?>"><b><?= $headshotsPct ?>%</b></div>
+          <div class="progress-bar text-dark" role="progressbar" style="width: <?= $headshotsPct ?>%" aria-valuenow="<?= Yii::$app->user->identity->profile->headshotsCount ?>" aria-valuemin="0" aria-valuemax="<?= $active_targets ?>"><b><?= $headshotsPct ?>%</b></div>
         </div>
         <?php Card::end(); ?>
       </div>
 
       <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
         <?php Card::begin([
-          'type' => 'card-stats',
+          'type' => 'card-stats bg-dark',
           'header' => 'header-icon',
           'icon' => '<i class="fas fa-clipboard-list"></i>',
           'color' => 'warning',
           'title' => \Yii::t('app', "Completed: ") . Yii::$app->user->identity->profile->challengesSolverCount,
-          'subtitle' => \Yii::t('app', "Challenges: ") . \app\modules\challenge\models\Challenge::find()->count(),
+          'subtitle' => \Yii::t('app', "Challenges: ") . $active_challenges,
           'footer' => '<div class="stats"></div>',
         ]);
-        if (intval(\app\modules\challenge\models\Challenge::find()->count()) > 0)
-          $headshotsPct = intval((Yii::$app->user->identity->profile->challengesSolverCount / intval(\app\modules\challenge\models\Challenge::find()->count())) * 100);
+        if (intval($active_challenges) > 0)
+          $headshotsPct = intval((Yii::$app->user->identity->profile->challengesSolverCount / intval($active_challenges)) * 100);
         else {
           $headshotsPct = 0;
         }
         ?>
         <div class="progress">
-          <div class="progress-bar text-dark" role="progressbar" style="width: <?= $headshotsPct ?>%" aria-valuenow="<?= Yii::$app->user->identity->profile->headshotsCount ?>" aria-valuemin="0" aria-valuemax="<?= \app\modules\target\models\Target::find()->active()->count() ?>"><b><?= $headshotsPct ?>%</b></div>
+          <div class="progress-bar text-dark" role="progressbar" style="width: <?= $headshotsPct ?>%" aria-valuenow="<?= Yii::$app->user->identity->profile->headshotsCount ?>" aria-valuemin="0" aria-valuemax="<?= $active_targets ?>"><b><?= $headshotsPct ?>%</b></div>
         </div>
         <?php Card::end(); ?>
       </div>

@@ -59,6 +59,8 @@ class DashboardController extends \app\components\BaseController
     public function actionIndex()
     {
       $dashboardStats=new \stdClass();
+      $active_targets=intval(\app\modules\target\models\Target::find()->active()->count());
+      $active_challenges=intval(\app\modules\challenge\models\Challenge::find()->alias('t')->active()->count());
       $dashboardStats->countries=(int) Profile::find()->select(['country'])->distinct()->count();
       if(Yii::$app->sys->academic_grouping!==false)
         $dashboardStats->claims=(int) PlayerTreasure::find()->where(['player.academic'=>Yii::$app->user->identity->academic])->joinWith(['player'])->count();
@@ -106,6 +108,8 @@ class DashboardController extends \app\components\BaseController
 
       return $this->render('index', [
           'totalPoints'=>0,
+          'active_targets'=>$active_targets,
+          'active_challenges'=>$active_challenges,
           'lastVisitsProvider'=>$lastVisitsProvider,
           'dashboardStats'=>$dashboardStats,
           'newsProvider'=>$newsProvider,
