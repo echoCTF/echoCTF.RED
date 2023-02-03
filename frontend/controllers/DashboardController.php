@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use app\modules\target\models\Target;
 use app\modules\target\models\Treasure;
 use app\modules\game\models\Headshot;
@@ -58,6 +59,8 @@ class DashboardController extends \app\components\BaseController
     public function actionIndex()
     {
       $dashboardStats=new \stdClass();
+      $active_targets=intval(\app\modules\target\models\Target::find()->active()->count());
+      $active_challenges=intval(\app\modules\challenge\models\Challenge::find()->alias('t')->active()->count());
       $dashboardStats->countries=(int) Profile::find()->select(['country'])->distinct()->count();
       if(Yii::$app->sys->academic_grouping!==false)
         $dashboardStats->claims=(int) PlayerTreasure::find()->where(['player.academic'=>Yii::$app->user->identity->academic])->joinWith(['player'])->count();
@@ -77,7 +80,26 @@ class DashboardController extends \app\components\BaseController
         $dayActivity['overallSeries'][]=$row['cnt'];
         $dayActivity['playerSeries'][]=$row['pcnt'];
       }
-      $query=News::find()->orderBy(['created_at'=>SORT_DESC])->limit(3);
+      $visits=Yii::$app->session->get('last_targets_visited');
+      if($visits!==null && count($visits)>0)
+      {
+        $visitsSTR=implode($visits,',');
+        $last_targets_visited=Target::find()->addSelect("id,name")
+              ->active()
+              ->andWhere(['IN','id',$visits])
+              ->orderBy([new \yii\db\Expression("FIELD (id, $visitsSTR)")])
+              ->asArray()->all();
+      }
+      else
+        $last_targets_visited=[];
+      $lastVisitsProvider = new ArrayDataProvider([
+        'allModels' => $last_targets_visited,
+        'sort' => [],
+        'pagination' => [
+          'pageSize' => 5,
+       ],
+      ]);
+      $query=News::find()->orderBy(['created_at'=>SORT_DESC])->limit(4);
       $newsProvider=new ActiveDataProvider([
           'query' => $query,
           'pagination'=>false,
@@ -86,6 +108,9 @@ class DashboardController extends \app\components\BaseController
 
       return $this->render('index', [
           'totalPoints'=>0,
+          'active_targets'=>$active_targets,
+          'active_challenges'=>$active_challenges,
+          'lastVisitsProvider'=>$lastVisitsProvider,
           'dashboardStats'=>$dashboardStats,
           'newsProvider'=>$newsProvider,
           'dayActivity'=>$dayActivity

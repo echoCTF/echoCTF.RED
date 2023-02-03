@@ -50,7 +50,7 @@ class Card extends \yii\base\Widget
      */
     public $plain=false;
     /*
-     * string If you want align car's content
+     * string If you want align card's content
      * text-right | text-center | card-stats
      */
     public $type='';
@@ -151,7 +151,7 @@ class Card extends \yii\base\Widget
      */
     public function getHeadericon()
     {
-      if($this->type != 'card-stats')
+      if(str_contains($this->type,'card-stats')!==true)
           return '<div class="card-header card-header-icon card-header-'.$this->color.'">
                   <div class="card-icon">
                     '.$this->icon.'
