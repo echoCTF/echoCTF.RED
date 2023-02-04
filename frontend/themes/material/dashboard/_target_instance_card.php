@@ -10,7 +10,6 @@ if (Yii::$app->user->identity->instance->ip === null)
 else
   $display_ip = Html::tag('b', $target_ip, ["class" => 'text-primary', 'data-toggle' => 'tooltip', 'title' => \Yii::t('app', "The IP of your private instance.")]);
 
-$this->title = \Yii::t('app', '{event_name} Target: {target_name} / {ipaddress}', ['target_name' => $target->name, 'ipaddress' => $target_ip, 'event_name' => \Yii::$app->sys->event_name]);
 Card::begin([
   'header' => 'header-icon',
   'type' => 'card-stats bg-dark',
