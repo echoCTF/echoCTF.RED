@@ -103,6 +103,8 @@
       - php-intl%7.4
       - php-pdo_mysql%7.4
       - php-zip%7.4
+      - certbot
+      - py3-requests
       - py3-mysqlclient
   tasks:
   - name: Sync date time
@@ -180,6 +182,9 @@
   - name: Install packages
     openbsd_pkg:
       name: "{{packages}}"
+
+  - name: Install lexicon (raw)
+    raw: pip install lexicon
 
   - name: Install composer
     get_url:
@@ -499,6 +504,37 @@
       - { name: "Generate local routes file", minute: "*/30",  job: "-ns frontend generator/routes >>/var/log/cron/routes.log" }
       - { name: "Generate local disabled-routes file", minute: "*/30",  job: "-ns frontend generator/disabled-routes >>/var/log/cron/disabled-routes.log" }
       - { name: "Generate local player-disabled-routes file", minute: "*/30",  job: "-ns frontend generator/player-disabled-routes >>/var/log/cron/player-disabled-routes.log" }
+
+  - name: Install post hook
+    copy:
+      content: |
+        #!/bin/ksh
+        cp /etc/letsencrypt/live/{{domain_name}}/fullchain.pem /etc/nginx/{{domain_name}}-server.crt
+        cp /etc/letsencrypt/live/{{domain_name}}/privkey.pem /etc/nginx/{{domain_name}}-server.key
+      dest: /etc/nginx/install_renewed_cert.sh
+      mode: "0500"
+
+  - name: Install sample lexicon (vultr)
+    copy:
+      content: |
+        #!/usr/bin/env ksh
+        /usr/local/bin/lexicon vultr --auth-token=YOUR_TOKEN_HERE "$1" "${CERTBOT_DOMAIN}" TXT --name "_acme-challenge.${CERTBOT_DOMAIN}" --content "${CERTBOT_VALIDATION}" || exit 255
+        if [ "$1" == "create" ]; then
+          sleep 30
+        fi
+      dest: /etc/letsencrypt/lexicon-vultr.sh
+      mode: "0500"
+
+  - name: Install renewal policy for letsencrypt
+    ini_file:
+        path: "/etc/letsencrypt/renewal/{{domain_name}}.conf"
+        section: renewalparams
+        option: "{{item.key}}"
+        value: "{{item.value}}"
+    with_items:
+      manual_auth_hook: /etc/letsencrypt/lexicon-vultr.sh create
+      manual_cleanup_hook: /etc/letsencrypt/lexicon-vultr.sh delete
+      post_hook: /etc/nginx/install_renewed_cert.sh
 
   - name: Execute fw_update
     command: fw_update -a
