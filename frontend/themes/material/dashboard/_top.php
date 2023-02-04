@@ -4,8 +4,8 @@ use app\widgets\Card;
 use yii\widgets\ListView;
 ?>
 <div class="row justify-content-center">
-  <?php if ($lastVisitsProvider->getModels() !== []) : ?>
-    <div class="col col-xl-4" style="max-width: 333px;">
+  <div class="col col-xl-4" style="max-width: 333px;">
+    <?php if ($lastVisitsProvider->getModels() !== []) : ?>
       <div class="card bg-dark" style="margin-top:0px;">
         <div class="card-body">
           <h3 class="card-title text-center" data-toggle="tooltip" title="Last 5 targets you visited" style="margin-bottom: 0.9em;"><?= \Yii::t('app', 'Last visits') ?></h3>
@@ -17,8 +17,12 @@ use yii\widgets\ListView;
           ]); ?>
         </div>
       </div>
-    </div>
-  <?php endif; ?>
+    <?php endif; ?>
+    <?php if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target) : ?>
+      <?= $this->render('_target_instance_card'); ?>
+    <?php endif; ?>
+
+  </div>
 
   <?php if ($newsProvider->getTotalCount() > 0) : ?>
     <div class="col-lg-6 col-xl-6">
