@@ -333,6 +333,9 @@
     tags:
       - nginx
 
+  - name: Generate self signed certificate for mUI
+    command: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj "/CN={{domain_name}}" -keyout "/etc/nginx/{{domain_name}}-server.key" -out "/etc/nginx/{{domain_name}}-server.crt"
+
   - name: Copy nginx cache folder to moderatorUI
     command: "{{item}}"
     with_items:
