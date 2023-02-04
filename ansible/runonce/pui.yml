@@ -76,6 +76,7 @@
     post_inst: |
       Things to do:
         - Update /etc/administrators.conf with your IP's
+        - Update /etc/letsencrypt/lexicon-vultr.sh with your details
         - Reboot the system for the changes to take effect
     rcctl:
       - { name: check_quotas, state: "disable" }
