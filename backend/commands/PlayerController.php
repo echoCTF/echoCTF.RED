@@ -349,19 +349,24 @@ class PlayerController extends Controller {
    */
   public function actionCheckDupips($skip_uids=false)
   {
-    $playerIPs=PlayerVpnHistory::find()->select(["player_id","vpn_remote_address"])->groupBy(['vpn_remote_address'])->distinct();
-    if($skip_uids!==false)
-      $playerIPs->andWhere(['NOT IN','player_id',explode(",",$skip_uids)]);
-
-    foreach($playerIPs->all() as $pip)
+    $table="player_ips_".substr(md5(Yii::$app->security->generateRandomString(32)),0,12);
+    echo "Using table $table\n";
+    $populate_ips[]="create table $table (id integer unsigned not null, ip integer unsigned not null, primary key (id,ip)) engine=memory";
+    $populate_ips[]="INSERT IGNORE INTO $table SELECT id,signup_ip FROM player_last WHERE signup_ip IS NOT null";
+    $populate_ips[]="INSERT IGNORE INTO $table SELECT id,signin_ip FROM player_last WHERE signin_ip IS NOT null";
+    $populate_ips[]="INSERT IGNORE INTO $table SELECT player_id as id,vpn_remote_address FROM player_vpn_history WHERE 1=1";
+    foreach($populate_ips as $query)
     {
-      $sameIPusers=PlayerVpnHistory::find()->where(['vpn_remote_address'=>$pip->vpn_remote_address])->groupBy(['player_id']);
-      if($skip_uids!==false)
-        $sameIPusers->andWhere(['NOT IN','player_id',explode(",",$skip_uids)]);
-      if(intval($sameIPusers->count())>1)
-      {
-        echo long2ip($pip->vpn_remote_address&ip2long("255.255.0.0"))," => ",trim(implode(", ",ArrayHelper::getColumn($sameIPusers->all(),'player.username'))),"\n";
-      }
+      if(substr($query,0,6)=="INSERT" && $skip_uids!==false)
+        $query.=" AND id not in ($skip_uids)";
+      Yii::$app->db->createCommand($query)->execute();
+    }
+    $offenders=Yii::$app->db->createCommand("select inet_ntoa(ip) as IP,group_concat(id) as players from $table group by ip having count(id)>1")->queryAll();
+    Yii::$app->db->createCommand("DROP TABLE $table")->execute();
+    foreach($offenders as $offense)
+    {
+        $players=ArrayHelper::getColumn(Player::find()->where("id in (".$offense['players'].")")->all(),'username');
+        printf("%s => %s\n",$offense['IP'],implode(',',$players));
     }
   }
 
