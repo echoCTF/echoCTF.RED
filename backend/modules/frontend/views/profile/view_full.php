@@ -48,7 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   ],]],
                   ['label' => 'View player', 'url' => ['player/view', 'id' => $model->player_id]],
                   ['label' => 'Update player', 'url' => ['player/update', 'id' => $model->player_id]],
-                  ['label' => 'Delete player', 'url' => ['player/update', 'id' => $model->player_id], 'linkOptions' => ['data' => [
+                  ['label' => 'Delete player', 'url' => ['player/delete', 'id' => $model->player_id], 'linkOptions' => ['data' => [
                     'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
                     'method' => 'post',
                   ],]],
