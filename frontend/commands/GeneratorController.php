@@ -167,16 +167,11 @@ class GeneratorController extends Controller {
         // Draw actual text
         imagefttext($background_img, $fontsize, $angle, $x, $y-130, $green, $font, $text);
 
-        // Make the target IP the text to draw
-        $text=long2ip($target->ip);
-        imagefttext($background_img, $fontsize-5, $angle, $x+2, ($y+2)-75, $grey, $font, $text);
-        imagefttext($background_img, $fontsize-5, $angle, $x,   $y-75,     $green, $font, $text);
-
         $purposes=explode("\n",wordwrap(trim($target->purpose),50));
         foreach($purposes as $key=>$val)
         {
-          imagefttext($background_img, 14, $angle, 10+$x+1, 175+($key*20)+1, $black,$font,trim($val));
-          imagefttext($background_img, 14, $angle, 10+$x,   175+($key*20),   $green,$font,trim($val));
+          imagefttext($background_img, 14, $angle, $x+2+$key, ($y+($key*19))-80, $black,$font,trim($val));
+          imagefttext($background_img, 14, $angle, $x+2+$key,   ($y+($key*19))-81,   $green,$font,trim($val));
         }
 
         imagepng($background_img, \Yii::getAlias("@app/web/images/targets/".$target->name.".png"));

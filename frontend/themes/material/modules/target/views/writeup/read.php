@@ -7,7 +7,7 @@ use app\widgets\vote\VoteWidget;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\Writeup */
-$this->title=\Yii::t('app','{event_name} Writeup for {target_name} #{target_id} by {username}',['event_name'=>Yii::$app->sys->event_name,'target_name'=>$model->target->name,'target_id'=>$model->target->id,'username'=>$model->player->username]);
+$this->title=\Yii::t('app','{event_name} Writeup for {target_name} by {username}',['event_name'=>Yii::$app->sys->event_name,'target_name'=>$model->target->name,'target_id'=>$model->target->id,'username'=>$model->player->username]);
 $this->_description=$model->target->purpose;
 $this->_image=\yii\helpers\Url::to($model->target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->target->id], 'https');

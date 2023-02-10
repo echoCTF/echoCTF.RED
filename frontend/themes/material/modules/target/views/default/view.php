@@ -14,17 +14,7 @@ Url::remember();
 <div class="target-index">
   <div class="body-content">
 <?php if(!Yii::$app->user->isGuest):?>
-  <?php if(Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$target->id):?>
-    <div>
-      <?php if(Yii::$app->user->identity->instance->reboot===0 && Yii::$app->user->identity->instance->ip===null):?>
-        <p class="text-warning"><?=\Yii::t('app','Your private instance is being powered up.')?></p>
-      <?php elseif(Yii::$app->user->identity->instance->reboot===2):?>
-        <p class="text-danger"><?=\Yii::t('app','Your private instance is scheduled to be powered off.')?></p>
-      <?php else:?>
-        <p class="text-info"><?=\Yii::t('app','Your private instance is up and running.')?></p>
-      <?php endif;?>
-    </div>
-  <?php elseif($target->ondemand && $target->ondemand->state<0):?>
+  <?php if($target->ondemand && $target->ondemand->state<0):?>
     <div><p class="text-info"><?=\Yii::t('app','This target is currently powered off.')?> <?php if(Yii::$app->user->identity->profile->last->vpn_local_address===null):?><em><?=\Yii::t('app','Connect to the VPN to be allowed to power the system up.')?></em><?php endif;?></p></div>
   <?php elseif($target->ondemand && $target->ondemand->state>0):?>
     <div><p class="text-danger"><?=\Yii::t('app','The target will shutdown in')?> <code id="tcountdown" data="<?=$target->ondemand->expired?>"></code></p></div>
@@ -44,7 +34,6 @@ Url::remember();
       }, 1000);',
     4
     );?>
-
   <?php endif;?>
 <?php endif;?>
 <?php if($target->status !== 'online'):?>

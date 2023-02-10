@@ -18,9 +18,7 @@ if(!Yii::$app->user->isGuest && Yii::$app->user->identity->instance !== NULL && 
   if(Yii::$app->user->identity->instance->ip===null)
     $display_ip=Html::tag('b',$target_ip,["class"=>'text-danger','data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance will become visible once its powered up.")]);
   else
-    $display_ip=Html::tag('b',$target_ip,["class"=>'text-danger','data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance.")]);
-
-  $this->title=\Yii::t('app','{event_name} Target: {target_name} / {ipaddress}',['target_name'=>$target->name,'ipaddress'=>$target_ip,'event_name'=>\Yii::$app->sys->event_name]);
+    $display_ip=Html::a($target_ip,$target_ip,["class"=>'copy-to-clipboard text-danger text-bold','swal-data'=>"Copied to clipboard",'data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance. Click to copy IP to clipboard.")]);
 }
 
 $subtitleARR=[$target->category,ucfirst($target->getDifficultyText($target->average_rating)),boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===false ? null:'Timed'];
@@ -40,7 +38,7 @@ echo  "<small>(<code class='text-danger'>";
 echo $target->treasureCategoriesFormatted;
 echo "</code>)</small><br/>";
 echo "<i class='fas fa-fire'></i> ", $target->total_findings, ": Service".($target->total_findings > 1 ? 's' : '')."<br/><i class='fas fa-calculator'></i> ", number_format($target->points), " pts";
-if($target->timer!==false)
+if($target->timer!==false && $target->timer_avg>0)
   echo '<br/><i class="fas fa-stopwatch"></i> Avg. headshot: '.number_format($target->timer_avg / 60).' minutes';
 echo "</p>";
 Card::end();?>
