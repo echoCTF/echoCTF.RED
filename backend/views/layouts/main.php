@@ -5,9 +5,9 @@
 
 use app\widgets\Alert;
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
+use yii\bootstrap5\Nav;
+use yii\bootstrap5\NavBar;
+use yii\bootstrap5\Breadcrumbs;
 use app\assets\AppAsset;
 Yii::$app->timeZone=Yii::$app->sys->time_zone ?: 'UTC';
 date_default_timezone_set(Yii::$app->sys->time_zone ?: 'UTC');
@@ -34,11 +34,11 @@ AppAsset::register($this);
         'brandLabel' => '<img src="/images/echoCTF logo white.png" class="pull-left" style="padding-right: 3px;" width="120" alt="'.Yii::$app->name.'"/>',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
+            'class' => ['navbar-dark', 'bg-dark', 'navbar-expand-xl'],
         ],
     ]);
     echo Nav::widget([
-        'options' => ['class' => 'navbar-nav navbar-right'],
+        'options' => ['class' => ['navbar-nav']],
         'encodeLabels'=>false,
         'items' => [
             //['label' => '<span class="glyphicon glyphicon-home"></span> Home', 'url' => ['/site/index'], 'icon' => 'fa fa-home', ],
@@ -163,6 +163,13 @@ AppAsset::register($this);
             ],
             ['label' => '<span class="glyphicon glyphicon-cog"></span> Settings', 'url' => ['/settings'], 'visible' => !Yii::$app->user->isGuest,'active'=>Yii::$app->controller->module->id=='settings',
               'items'=> [
+                [
+                    'label' => 'Moderation',
+                    'visible' => !Yii::$app->user->isGuest,
+                    'items'=>[
+                        ['label' => 'Avatar', 'url' => ['/settings/avatar1/index'], 'visible' => !Yii::$app->user->isGuest, ],
+                    ]
+                ],
                 ['label' => 'Avatar', 'url' => ['/settings/avatar/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Experience', 'url' => ['/settings/experience/index'], 'visible' => !Yii::$app->user->isGuest, ],
                 ['label' => 'Countries', 'url' => ['/settings/country/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, ],
@@ -183,7 +190,7 @@ AppAsset::register($this);
                 . Html::beginForm(['/site/logout'], 'post')
                 . Html::submitButton(
                     'Logout',
-                    ['class' => 'btn btn-link logout']
+                    ['class' => 'btn btn-link']
                 )
                 . Html::endForm()
                 . '</li>'
