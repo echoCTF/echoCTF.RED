@@ -11,12 +11,12 @@ $this->title=Yii::t('app', 'Update Network Target: {name}', [
 $this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Network Targets'), 'url' => ['index']];
 $this->params['breadcrumbs'][]=['label' => $model->network_id, 'url' => ['view', 'network_id' => $model->network_id, 'target_id' => $model->target_id]];
 $this->params['breadcrumbs'][]=Yii::t('app', 'Update');
-yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
-    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+yii\bootstrap5\Modal::begin([
+    'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
+    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');
-yii\bootstrap\Modal::end();
+yii\bootstrap5\Modal::end();
 ?>
 <div class="network-target-update">
 

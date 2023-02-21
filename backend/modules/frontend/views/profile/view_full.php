@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-//use yii\bootstrap\Tabs;
+//use yii\bootstrap5\Tabs;
 use kartik\tabs\TabsX;
-use yii\bootstrap\Dropdown;
+use yii\bootstrap5\Dropdown;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Profile */

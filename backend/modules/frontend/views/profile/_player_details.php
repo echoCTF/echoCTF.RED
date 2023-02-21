@@ -40,7 +40,7 @@ use yii\helpers\Html;
         <tr>
           <td><span class="fas fa-tasks text-warning"></span></td>
           <td>pending progress</td>
-          <td><?=$model->pending_progress?></td>
+          <td><?=\Yii::$app->formatter->asBoolean($model->pending_progress)?></td>
         </tr>
 
         <tr>
