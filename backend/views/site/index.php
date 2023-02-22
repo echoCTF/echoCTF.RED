@@ -22,10 +22,9 @@ use app\modules\activity\models\PlayerScore;
 $this->title = 'echoCTF mUI';
 ?>
 <div class="site-index">
-
-  <div class="jumbotron">
-    <img class="rounded" src="/images/logo.png" width="40%" />
-    <h2>echoCTF Management interface</h2>
+  <div class="mt-4 p-5 rounded text-center">
+    <p><img class="rounded" src="/images/logo.png" width="40%" /></p>
+    <h1>echoCTF Management interface</h1>
   </div>
 
   <div class="body-content">
