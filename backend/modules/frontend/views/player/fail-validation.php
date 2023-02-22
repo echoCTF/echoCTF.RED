@@ -40,17 +40,19 @@ yii\bootstrap5\Modal::end();
               'attribute'=>'id',
               'headerOptions' => ['style' => 'width:4em'],
             ],
+
             [
               'attribute'=>'avatar',
               'format'=>'html',
-              'value'=>function($data) { return Html::img('//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar,['width' => '50px']);}
+              'value'=>function($model) { $data=clone $model; return Html::img('//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar,['width' => '50px']);}
             ],
 
             'username',
             [
                 'attribute'=>'email',
                 'format'=>'raw',
-                'value' => function($model) {
+                'value' => function($modelorig) {
+                    $model=clone $modelorig;
                     $model->scenario='validator';
                     if(!$model->validate('email'))
                     {
@@ -63,7 +65,8 @@ yii\bootstrap5\Modal::end();
             [
                 'attribute'=>'verification_token',
                 'format'=>'raw',
-                'value' => function($model) {
+                'value' => function($modelorig) {
+                    $model=clone $modelorig;
                     $model->scenario='validator';
                     if(!$model->validate('verification_token'))
                     {
@@ -94,10 +97,9 @@ yii\bootstrap5\Modal::end();
                 'filter'=>[0=>Yii::$app->sys->academic_0short,1=>Yii::$app->sys->academic_1short, 2=>Yii::$app->sys->academic_2short],
             ],
             [
-             'attribute' => 'status',
-             'filter'=>[10=>'Enabled',9=>'Innactive', 8=>"Change",0=>"Deleted"],
-
+                'attribute' => 'status',
             ],
+
             'created',
             //'ts',
             [
@@ -105,7 +107,7 @@ yii\bootstrap5\Modal::end();
               'template' => '{player-view-full} {set-deleted} {view} {delete}',
               'buttons' => [
                   'delete' => function($url, $model) {
-                      return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->id], [
+                      return Html::a('<i class="bi bi-trash"></i>', ['delete', 'id' => $model->id], [
                           'class' => '',
                           'data' => [
                               'confirm' => 'Are you absolutely sure you want to delete ['.Html::encode($model->username).'] ?',
@@ -114,7 +116,7 @@ yii\bootstrap5\Modal::end();
                       ]);
                   },
                   'set-deleted' => function($url, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-ban-circle"></span>', ['set-deleted', 'id' => $model->id], [
+                    return Html::a('<i class="bi bi-hammer"></i>', ['set-deleted', 'id' => $model->id], [
                         'class' => '',
                         'data' => [
                             'confirm' => 'Are you absolutely sure you want to set status to deleted for ['.Html::encode($model->username).'] ?',
@@ -125,7 +127,7 @@ yii\bootstrap5\Modal::end();
                 'player-view-full' => function($url, $model) {
                     $url =  \yii\helpers\Url::to(['/frontend/profile/view-full', 'id' => $model->profile->id]);
                     return Html::a(
-                        '<span class="glyphicon glyphicon-user"></span>',
+                        '<i class="bi bi-person-lines-fill"></i>',
                         $url,
                         [
                           'title' => 'View full profile',
