@@ -49,7 +49,7 @@ yii\bootstrap5\Modal::end();
             [
               'attribute'=>'username',
               'label'=>'Username',
-              'value'=>function($model) {return sprintf("%d: %s", $model->player_id, $model->owner->username);}
+              'value'=>'owner.username'
             ],
             'bio:ntext',
             'country',
@@ -76,7 +76,7 @@ yii\bootstrap5\Modal::end();
                   'approve-avatar' => function($url, $model) {
                     if(!$model->approved_avatar)
                     return Html::a(
-                        '<span class="glyphicon glyphicon-file"></span>',
+                        '<i class="bi bi-file-image-fill"></i>',
                         $url,
                         [
                           'title' => 'Approve avatar for the user',
@@ -90,7 +90,7 @@ yii\bootstrap5\Modal::end();
                     $model->scenario='validator';
                     if(!$model->validate())
                     return Html::a(
-                        '<span class="glyphicon glyphicon-ok-circle"></span>',
+                        '<i class="bi bi-check-circle"></i>',
                         $url,
                         [
                           'title' => 'Clear failed validation fields',
@@ -114,7 +114,7 @@ yii\bootstrap5\Modal::end();
                   'player-view-full' => function($url, $model) {
                     $url =  \yii\helpers\Url::to(['view-full', 'id' => $model->id]);
                     return Html::a(
-                        '<span class="glyphicon glyphicon-user"></span>',
+                        '<i class="bi bi-person-lines-fill"></i>',
                         $url,
                         [
                           'title' => 'View full profile',
