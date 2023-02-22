@@ -34,7 +34,8 @@ yii\bootstrap5\Modal::end();
             [
               'attribute' => 'player',
               'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
+              'format'=>'html',
+              'value'=> function($modelorig) {$model=$modelorig->player; return Html::a($model->username,['/frontend/profile/view-full','id'=>$model->profile->id],['class' => 'profile-link','title'=>\Yii::t('app','Go to profile of [{username}]',['username'=>$model->username])]);},
             ],
             'points',
             'ts',
