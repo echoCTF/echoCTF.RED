@@ -60,6 +60,7 @@ class PlayerCounterNfSearch extends PlayerCounterNf
         $query->andFilterWhere([
             'player_id' => $this->player_id,
             'counter' => $this->counter,
+            'metric'=>$this->metric,
         ]);
 
         $query->andFilterWhere(['like', 'metric', $this->metric]);
