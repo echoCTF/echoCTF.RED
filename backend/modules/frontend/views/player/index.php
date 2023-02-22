@@ -56,15 +56,15 @@ yii\bootstrap5\Modal::end();
             ],
             [
               'attribute'=>'avatar',
-              'format'=>'html',
-              'value'=>function($data) { return Html::img('//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar,['width' => '50px']);}
+              'format'=>['image',['width' => '40px','class'=>'img-thumbnail']],
+              'value'=>function($data) { return '//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar;}
             ],
 
-            'username',
+            'username:linkProfile',
             'email:email',
             [
               'attribute'=>'vpn_local_address',
-              'label'=> 'VPN Local IP',
+              'label'=> 'VPN IP',
               'value'=>function($model) { return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
             ],
             'online:boolean',
@@ -76,6 +76,7 @@ yii\bootstrap5\Modal::end();
             ],
             [
              'attribute' => 'status',
+             'format'=>'playerStatus',
              'filter'=>array(10=>'Enabled',9=>'Innactive', 8=>"Change",0=>"Deleted",),
 
             ],
