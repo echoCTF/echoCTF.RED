@@ -31,6 +31,10 @@ yii\bootstrap5\Modal::end();
         'filterModel' => $searchModel,
         'columns' => [
             [
+              'attribute'=>'id',
+              'headerOptions' => ['style' => 'width:50px'],
+            ],
+            [
               'attribute'=>'logo',
               'filter'=>false,
               'format'=>['image',['width'=>'40','height'=>'40']],
@@ -40,11 +44,14 @@ yii\bootstrap5\Modal::end();
                 return '//'.Yii::$app->sys->offense_domain.'/images/team_player.png';
               }
             ],
-            [
-              'attribute'=>'id',
-              'headerOptions' => ['style' => 'width:50px'],
-            ],
             'name',
+            [
+              'label'=>'Owner',
+              'attribute'=>'username',
+              'format'=>'html',
+              'value'=>function($model){ return Html::a($model->owner->username,['profile/view-full','id'=>$model->owner->profile->id]);}
+            ],
+
             'description:ntext',
             [
               'attribute'=>'academic',
@@ -52,13 +59,13 @@ yii\bootstrap5\Modal::end();
               'filter'=>[0=>'Gov',1=>'Edu', 2=>"Pro"],
             ],
             'inviteonly:boolean',
-            [
-              'label'=>'Owner',
-              'attribute'=>'username',
-              'format'=>'html',
-              'value'=>function($model){ return Html::a($model->owner->username,['profile/view-full','id'=>$model->owner->profile->id]);}
-            ],
             //'token',
+            [
+              'label'=>'Members',
+              'format'=>'integer',
+              'value'=>function($model){ return count($model->players); },
+              'contentOptions'=>['class'=>'text-center'],
+            ],
             'ts',
 
             [
