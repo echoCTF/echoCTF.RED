@@ -15,7 +15,7 @@ use yii\helpers\Html;
          <p>ranked <?=$model->owner->rank->ordinalPlace?> with <?=number_format($model->owner->score->points)?> points</p>
         <p class="lead"><?=Html::encode($model->bio)?></p>
         <div class="media-links">
-          <ul class="list-inline list-unstyled">
+          <ul class="list-inline list-unstyled breadcrumb">
             <?php if($model->twitter):?>
             <li>
               <a href="https://twitter.com/<?=Html::encode($model->twitter)?>" title="<?=Html::encode($model->twitter)?>" target="_blank">
