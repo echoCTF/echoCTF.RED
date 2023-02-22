@@ -43,8 +43,8 @@ yii\bootstrap5\Modal::end();
                'value'=>'target.name'
             ],
             'weight',
-            'created_at',
-            'updated_at',
+            //'created_at',
+            //'updated_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
