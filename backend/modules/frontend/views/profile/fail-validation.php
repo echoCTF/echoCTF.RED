@@ -55,11 +55,12 @@ yii\bootstrap5\Modal::end();
               'class' => 'yii\grid\ActionColumn',
               'template' => '{view} {update} {delete} {clear-validation} {player-view} {player-view-full}',
               'buttons' => [
-                  'clear-validation' => function($url, $model) {
+                  'clear-validation' => function($url, $modelorig) {
+                    $model=clone $modelorig;
                     $model->scenario='validator';
                     if(!$model->validate())
                     return Html::a(
-                        '<span class="glyphicon glyphicon-ok-circle"></span>',
+                        '<i class="bi bi-check-circle"></i>',
                         $url,
                         [
                           'title' => 'Clear failed validation fields',
@@ -83,7 +84,7 @@ yii\bootstrap5\Modal::end();
                   'player-view-full' => function($url, $model) {
                     $url =  \yii\helpers\Url::to(['view-full', 'id' => $model->id]);
                     return Html::a(
-                        '<span class="glyphicon glyphicon-user"></span>',
+                        '<i class="bi bi-person-lines-fill"></i>',
                         $url,
                         [
                           'title' => 'View full profile',
