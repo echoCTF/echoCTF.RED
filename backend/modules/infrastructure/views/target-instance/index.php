@@ -71,7 +71,7 @@ yii\bootstrap5\Modal::end();
               'buttons' => [
                 'restart' => function($url) {
                   return Html::a(
-                      '<span class="glyphicon glyphicon-refresh"></span>',
+                      '<i class="bi bi-arrow-clockwise"></i>',
                       $url,
                       [
                         'title' => 'Restart instance',
@@ -83,7 +83,7 @@ yii\bootstrap5\Modal::end();
                 },
                 'destroy' => function($url) {
                   return Html::a(
-                      '<span class="glyphicon glyphicon-off"></span>',
+                      '<i class="bi bi-power"></i>',
                       $url,
                       [
                         'title' => 'Destroy container',

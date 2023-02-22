@@ -66,7 +66,7 @@ yii\bootstrap5\Modal::end();
               'buttons' => [
                   'give' => function($url) {
                       return Html::a(
-                          '<span class="glyphicon glyphicon-send"></span>',
+                          '<i class="bi bi-send-exclamation"></i>',
                           $url,
                           [
                               'title' => 'Give this hint to all active users',

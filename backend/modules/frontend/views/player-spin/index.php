@@ -54,7 +54,7 @@ yii\bootstrap5\Modal::end();
               'buttons' => [
                   'reset' => function($url) {
                       return Html::a(
-                          '<span class="glyphicon glyphicon-refresh"></span>',
+                          '<i class="bi bi-arrow-clockwise"></i>',
                           $url,
                           [
                               'title' => 'Reset Counters',

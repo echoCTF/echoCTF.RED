@@ -50,7 +50,7 @@ yii\bootstrap5\Modal::end();
               'buttons' => [
                 'toggle-approved' => function($url) {
                     return Html::a(
-                        '<span class="glyphicon glyphicon-ok"></span>',
+                        '<i class="bi bi-check-circle-fill"></i>',
                         $url,
                         [
                             'title' => 'Toggle membership approved flag',

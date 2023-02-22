@@ -51,7 +51,7 @@ yii\bootstrap5\Modal::end();
             [
               'class' => 'yii\grid\ActionColumn',
               'header' => Html::a(
-                  '<span class="glyphicon glyphicon-trash"></span>',
+                  '<i class="bi bi-trash"></i>',
                   ['delete-filtered'],
                   [
                       'title' => 'Mass Delete sessions',

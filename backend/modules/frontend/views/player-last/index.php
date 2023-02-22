@@ -63,7 +63,7 @@ yii\bootstrap5\Modal::end();
                 'player-view-full' => function($url, $model) {
                   $url =  \yii\helpers\Url::to(['/frontend/profile/view-full', 'id' => $model->player->profile->id]);
                   return Html::a(
-                      '<span class="glyphicon glyphicon-user"></span>',
+                      '<i class="bi bi-person-lines-fill"></i>',
                       $url,
                       [
                         'title' => 'View full profile',
