@@ -7,12 +7,12 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
 $this->params['breadcrumbs'][]=['label' => 'Players', 'url' => ['index']];
-yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
-    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+yii\bootstrap5\Modal::begin([
+    'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
+    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
-yii\bootstrap\Modal::end();
+yii\bootstrap5\Modal::end();
 ?>
 <div class="player-index">
 
@@ -56,15 +56,15 @@ yii\bootstrap\Modal::end();
             ],
             [
               'attribute'=>'avatar',
-              'format'=>'html',
-              'value'=>function($data) { return Html::img('//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar,['width' => '50px']);}
+              'format'=>['image',['width' => '40px','class'=>'img-thumbnail']],
+              'value'=>function($data) { return '//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar;}
             ],
 
-            'username',
+            'username:linkProfile',
             'email:email',
             [
               'attribute'=>'vpn_local_address',
-              'label'=> 'VPN Local IP',
+              'label'=> 'VPN IP',
               'value'=>function($model) { return $model->last && $model->last->vpn_local_address ? long2ip($model->last->vpn_local_address) : null;}
             ],
             'online:boolean',
@@ -76,6 +76,7 @@ yii\bootstrap\Modal::end();
             ],
             [
              'attribute' => 'status',
+             'format'=>'playerStatus',
              'filter'=>array(10=>'Enabled',9=>'Innactive', 8=>"Change",0=>"Deleted",),
 
             ],
@@ -85,7 +86,7 @@ yii\bootstrap\Modal::end();
               'class' => 'yii\grid\ActionColumn',
               'template' => '{player-view-full} {view} {generate-ssl} '.'{update} {delete} {ban} {mail}',
               'header' => Html::a(
-                  '<span class="glyphicon glyphicon-ban-circle"></span>',
+                '<i class="bi bi-person-fill-exclamation"></i>',
                   ['ban-filtered'],
                   [
                       'title' => 'Mass Delete and ban users',
@@ -98,7 +99,7 @@ yii\bootstrap\Modal::end();
                       ],
                   ]
               ).' '.Html::a(
-                  '<span class="glyphicon glyphicon-trash"></span>',
+                    '<i class="bi bi-person-dash-fill"></i>',
                   ['delete-filtered'],
                   [
                       'title' => 'Mass Delete users',
@@ -113,7 +114,7 @@ yii\bootstrap\Modal::end();
               ),
               'buttons' => [
                   'delete' => function($url, $model) {
-                      return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->id], [
+                      return Html::a('<i class="bi bi-trash3-fill"></i>', ['delete', 'id' => $model->id], [
                           'class' => '',
                           'data' => [
                               'confirm' => 'Are you absolutely sure you want to delete ['.Html::encode($model->username).'] ?',
@@ -122,9 +123,7 @@ yii\bootstrap\Modal::end();
                       ]);
                   },
                   'generate-ssl' => function($url) {
-                      return Html::a(
-                          '<span class="glyphicon glyphicon-lock"></span>',
-                          $url,
+                      return Html::a('<i class="bi bi-shield-lock-fill"></i>', $url,
                           [
                               'title' => 'Generate SSL Certificates',
                               'data-pjax' => '0',
@@ -134,9 +133,7 @@ yii\bootstrap\Modal::end();
                       );
                   },
                   'toggle-academic' => function($url) {
-                      return Html::a(
-                          '<span class="glyphicon glyphicon-education"></span>',
-                          $url,
+                      return Html::a('<i class="bi bi-building"></i>', $url,
                           [
                               'title' => 'Toggle user academic flag',
                               'data-pjax' => '0',
@@ -148,7 +145,7 @@ yii\bootstrap\Modal::end();
                   },
                   'ban' => function($url) {
                       return Html::a(
-                          '<span class="glyphicon glyphicon-ban-circle"></span>',
+                            '<i class="bi bi-hammer"></i>',
                           $url,
                           [
                               'title' => 'Delete and ban this user',
@@ -160,7 +157,7 @@ yii\bootstrap\Modal::end();
                   },
                   'mail' => function($url) {
                       return Html::a(
-                          '<span class="glyphicon glyphicon-envelope"></span>',
+                        '<i class="bi bi-envelope-at-fill"></i>',
                           $url,
                           [
                               'title' => 'Mail this user activation',
@@ -173,7 +170,7 @@ yii\bootstrap\Modal::end();
                   'player-view-full' => function($url, $model) {
                     $url =  \yii\helpers\Url::to(['/frontend/profile/view-full', 'id' => $model->profile->id]);
                     return Html::a(
-                        '<span class="glyphicon glyphicon-user"></span>',
+                        '<i class="bi bi-person-lines-fill"></i>',
                         $url,
                         [
                           'title' => 'View full profile',

@@ -9,12 +9,12 @@ use yii\grid\GridView;
 
 $this->title='Player Scores';
 $this->params['breadcrumbs'][]=$this->title;
-yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
-    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+yii\bootstrap5\Modal::begin([
+    'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
+    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
-yii\bootstrap\Modal::end();
+yii\bootstrap5\Modal::end();
 ?>
 <div class="player-score-index">
 
@@ -34,7 +34,8 @@ yii\bootstrap\Modal::end();
             [
               'attribute' => 'player',
               'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
+              'format'=>'html',
+              'value'=> function($modelorig) {$model=$modelorig->player; return Html::a($model->username,['/frontend/profile/view-full','id'=>$model->profile->id],['class' => 'profile-link','title'=>\Yii::t('app','Go to profile of [{username}]',['username'=>$model->username])]);},
             ],
             'points',
             'ts',

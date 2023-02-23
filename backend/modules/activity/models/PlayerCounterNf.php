@@ -3,6 +3,7 @@
 namespace app\modules\activity\models;
 
 use Yii;
+use app\modules\frontend\models\Player;
 
 /**
  * This is the model class for table "player_counter_nf".
@@ -45,6 +46,24 @@ class PlayerCounterNf extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPlayer()
+    {
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
+    }
+
+    public function distinctMetrics()
+    {
+        $ret=[];
+        $metrics=\yii\helpers\ArrayHelper::getColumn($this->db->createCommand("SELECT DISTINCT metric FROM player_counter_nf")->queryAll(),'metric');
+        foreach($metrics as $val)
+        {
+            $ret[$val]=$val;
+        }
+        return $ret;
+    }
     /**
      * {@inheritdoc}
      * @return PlayerCounterNfQuery the active query used by this AR class.

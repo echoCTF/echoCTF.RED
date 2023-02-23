@@ -9,12 +9,12 @@ use yii\grid\GridView;
 
 $this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
 $this->params['breadcrumbs'][]=['label' => 'Teams', 'url' => ['index']];
-yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
-    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+yii\bootstrap5\Modal::begin([
+    'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
+    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
-yii\bootstrap\Modal::end();
+yii\bootstrap5\Modal::end();
 ?>
 <div class="team-index">
 
@@ -31,6 +31,10 @@ yii\bootstrap\Modal::end();
         'filterModel' => $searchModel,
         'columns' => [
             [
+              'attribute'=>'id',
+              'headerOptions' => ['style' => 'width:50px'],
+            ],
+            [
               'attribute'=>'logo',
               'filter'=>false,
               'format'=>['image',['width'=>'40','height'=>'40']],
@@ -40,11 +44,14 @@ yii\bootstrap\Modal::end();
                 return '//'.Yii::$app->sys->offense_domain.'/images/team_player.png';
               }
             ],
-            [
-              'attribute'=>'id',
-              'headerOptions' => ['style' => 'width:50px'],
-            ],
             'name',
+            [
+              'label'=>'Owner',
+              'attribute'=>'username',
+              'format'=>'html',
+              'value'=>function($model){ return Html::a($model->owner->username,['profile/view-full','id'=>$model->owner->profile->id]);}
+            ],
+
             'description:ntext',
             [
               'attribute'=>'academic',
@@ -52,13 +59,13 @@ yii\bootstrap\Modal::end();
               'filter'=>[0=>'Gov',1=>'Edu', 2=>"Pro"],
             ],
             'inviteonly:boolean',
-            [
-              'label'=>'Owner',
-              'attribute'=>'username',
-              'format'=>'html',
-              'value'=>function($model){ return Html::a($model->owner->username,['profile/view-full','id'=>$model->owner->profile->id]);}
-            ],
             //'token',
+            [
+              'label'=>'Members',
+              'format'=>'integer',
+              'value'=>function($model){ return count($model->players); },
+              'contentOptions'=>['class'=>'text-center'],
+            ],
             'ts',
 
             [

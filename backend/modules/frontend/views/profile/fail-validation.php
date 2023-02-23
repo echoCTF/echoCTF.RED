@@ -10,12 +10,12 @@ use yii\grid\GridView;
 $this->title=Yii::t('app', 'Failed validation Profiles');
 $this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Profiles'), 'url' => ['index']];
 $this->params['breadcrumbs'][]=$this->title;
-yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
-    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+yii\bootstrap5\Modal::begin([
+    'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
+    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
-yii\bootstrap\Modal::end();
+yii\bootstrap5\Modal::end();
 ?>
 <div class="profile-index">
 
@@ -55,11 +55,12 @@ yii\bootstrap\Modal::end();
               'class' => 'yii\grid\ActionColumn',
               'template' => '{view} {update} {delete} {clear-validation} {player-view} {player-view-full}',
               'buttons' => [
-                  'clear-validation' => function($url, $model) {
+                  'clear-validation' => function($url, $modelorig) {
+                    $model=clone $modelorig;
                     $model->scenario='validator';
                     if(!$model->validate())
                     return Html::a(
-                        '<span class="glyphicon glyphicon-ok-circle"></span>',
+                        '<i class="bi bi-check-circle"></i>',
                         $url,
                         [
                           'title' => 'Clear failed validation fields',
@@ -83,7 +84,7 @@ yii\bootstrap\Modal::end();
                   'player-view-full' => function($url, $model) {
                     $url =  \yii\helpers\Url::to(['view-full', 'id' => $model->id]);
                     return Html::a(
-                        '<span class="glyphicon glyphicon-user"></span>',
+                        '<i class="bi bi-person-lines-fill"></i>',
                         $url,
                         [
                           'title' => 'View full profile',

@@ -75,6 +75,7 @@ $config=[
       ],
       'formatter' => [
           'class' => 'app\models\AppFormatter',
+          'nullDisplay' => '<span class="not-set small">(empty)</span>',
       ],
       'request' => [
           'parsers' => [
@@ -115,6 +116,14 @@ $config=[
         ],
       ],
     ],
+    'container' => [
+        'definitions' => [
+            \yii\widgets\LinkPager::class => \yii\bootstrap5\LinkPager::class,
+            'yii\grid\ActionColumn'=> [
+               'contentOptions' => ['style' => ['white-space' => 'nowrap']],
+            ]
+        ],
+      ],
     'params' => $params,
 ];
 

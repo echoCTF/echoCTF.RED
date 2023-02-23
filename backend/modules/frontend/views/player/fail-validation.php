@@ -7,12 +7,12 @@ use yii\grid\GridView;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 $this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
 $this->params['breadcrumbs'][]=['label' => 'Players', 'url' => ['index']];
-yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
-    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+yii\bootstrap5\Modal::begin([
+    'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
+    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
-yii\bootstrap\Modal::end();
+yii\bootstrap5\Modal::end();
 ?>
 <div class="player-index">
 
@@ -40,17 +40,19 @@ yii\bootstrap\Modal::end();
               'attribute'=>'id',
               'headerOptions' => ['style' => 'width:4em'],
             ],
+
             [
               'attribute'=>'avatar',
               'format'=>'html',
-              'value'=>function($data) { return Html::img('//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar,['width' => '50px']);}
+              'value'=>function($model) { $data=clone $model; return Html::img('//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar,['width' => '50px']);}
             ],
 
             'username',
             [
                 'attribute'=>'email',
                 'format'=>'raw',
-                'value' => function($model) {
+                'value' => function($modelorig) {
+                    $model=clone $modelorig;
                     $model->scenario='validator';
                     if(!$model->validate('email'))
                     {
@@ -63,7 +65,8 @@ yii\bootstrap\Modal::end();
             [
                 'attribute'=>'verification_token',
                 'format'=>'raw',
-                'value' => function($model) {
+                'value' => function($modelorig) {
+                    $model=clone $modelorig;
                     $model->scenario='validator';
                     if(!$model->validate('verification_token'))
                     {
@@ -94,10 +97,9 @@ yii\bootstrap\Modal::end();
                 'filter'=>[0=>Yii::$app->sys->academic_0short,1=>Yii::$app->sys->academic_1short, 2=>Yii::$app->sys->academic_2short],
             ],
             [
-             'attribute' => 'status',
-             'filter'=>[10=>'Enabled',9=>'Innactive', 8=>"Change",0=>"Deleted"],
-
+                'attribute' => 'status',
             ],
+
             'created',
             //'ts',
             [
@@ -105,7 +107,7 @@ yii\bootstrap\Modal::end();
               'template' => '{player-view-full} {set-deleted} {view} {delete}',
               'buttons' => [
                   'delete' => function($url, $model) {
-                      return Html::a('<span class="glyphicon glyphicon-trash"></span>', ['delete', 'id' => $model->id], [
+                      return Html::a('<i class="bi bi-trash"></i>', ['delete', 'id' => $model->id], [
                           'class' => '',
                           'data' => [
                               'confirm' => 'Are you absolutely sure you want to delete ['.Html::encode($model->username).'] ?',
@@ -114,7 +116,7 @@ yii\bootstrap\Modal::end();
                       ]);
                   },
                   'set-deleted' => function($url, $model) {
-                    return Html::a('<span class="glyphicon glyphicon-ban-circle"></span>', ['set-deleted', 'id' => $model->id], [
+                    return Html::a('<i class="bi bi-hammer"></i>', ['set-deleted', 'id' => $model->id], [
                         'class' => '',
                         'data' => [
                             'confirm' => 'Are you absolutely sure you want to set status to deleted for ['.Html::encode($model->username).'] ?',
@@ -125,7 +127,7 @@ yii\bootstrap\Modal::end();
                 'player-view-full' => function($url, $model) {
                     $url =  \yii\helpers\Url::to(['/frontend/profile/view-full', 'id' => $model->profile->id]);
                     return Html::a(
-                        '<span class="glyphicon glyphicon-user"></span>',
+                        '<i class="bi bi-person-lines-fill"></i>',
                         $url,
                         [
                           'title' => 'View full profile',

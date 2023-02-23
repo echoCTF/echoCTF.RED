@@ -28,7 +28,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'player_id',
             [
                 'attribute'=>'username',
-                'value'=>'player.username'
+                'format'=>'html',
+                'value'=> function($modelorig) {$model=$modelorig->player; return Html::a($model->username,['/frontend/profile/view-full','id'=>$model->profile->id],['class' => 'profile-link','title'=>\Yii::t('app','Go to profile of [{username}]',['username'=>$model->username])]);},
             ],
             'points',
             'dated_at',

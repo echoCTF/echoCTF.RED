@@ -32,7 +32,7 @@ use yii\grid\GridView;
             'buttons' => [
                 'approve' => function ($url) {
                     return Html::a(
-                        '<span class="glyphicon glyphicon-ok"></span>',
+                        '<i class="bi bi-check-circle-fill"></i>',
                         $url,
                         [
                             'title' => 'Approve writeup',

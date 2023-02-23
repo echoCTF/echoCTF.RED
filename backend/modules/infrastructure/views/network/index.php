@@ -9,12 +9,12 @@ use yii\grid\GridView;
 
 $this->title=Yii::t('app', 'Networks');
 $this->params['breadcrumbs'][]=['label' => 'Networks', 'url' => ['index']];
-yii\bootstrap\Modal::begin([
-    'header' => '<h2><span class="glyphicon glyphicon-question-sign"></span> '.Html::encode($this->title).' Help</h2>',
-    'toggleButton' => ['label' => '<span class="glyphicon glyphicon-question-sign"></span> Help','class'=>'btn btn-info'],
+yii\bootstrap5\Modal::begin([
+    'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
+    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
 ]);
 echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');
-yii\bootstrap\Modal::end();
+yii\bootstrap5\Modal::end();
 
 ?>
 <div class="network-index">
@@ -31,19 +31,63 @@ yii\bootstrap\Modal::end();
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
+            [
+                'attribute'=>'icon',
+                'format'=>'html',
+                'contentOptions'=>['class'=>'text-center'],
+                'value'=>function($model){
+                    if(substr($model->icon,0,1)!=='/') {
+                        return $model->icon;
+                    }
+                    return Html::img('//'.Yii::$app->sys->offense_domain.$model->icon,['style'=>'max-width: 50px;','class'=>'img-thumbnail']);
+                }
+            ],
             'codename:text',
-            'name:text',
-            'description:ntext',
-            'public:boolean',
-            'guest:boolean',
-            'active:boolean',
-            'announce:boolean',
-            'icon',
+            [
+                'attribute'=>'name',
+                'contentOptions'=>['style'=>'white-space: nowrap;']
+
+            ],
+            [
+                'attribute'=>'description',
+                'contentOptions'=>['class'=>'font-weight-light small text-monospace'],
+                'format'=>'html',
+            ],
+            [
+                'attribute'=>'public',
+                'format'=>'boolean',
+                'contentOptions'=>['class'=>'text-center'],
+            ],
+            [
+                'attribute'=>'guest',
+                'format'=>'boolean',
+                'contentOptions'=>['class'=>'text-center'],
+            ],
+            [
+                'attribute'=>'active',
+                'format'=>'boolean',
+                'contentOptions'=>['class'=>'text-center'],
+            ],
+            [
+                'attribute'=>'announce',
+                'format'=>'boolean',
+                'contentOptions'=>['class'=>'text-center'],
+            ],
+            [
+                'label'=>'Targets',
+                'format'=>'integer',
+                'value'=>function($model){ return count($model->networkTargets); },
+                'contentOptions'=>['class'=>'text-center'],
+            ],
+            [
+                'label'=>'Players',
+                'format'=>'integer',
+                'value'=>function($model){ return count($model->networkPlayers); },
+                'contentOptions'=>['class'=>'text-center'],
+            ],
             'weight:integer',
-            'ts',
+//            'ts',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

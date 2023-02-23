@@ -3,9 +3,9 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
-//use yii\bootstrap\Tabs;
 use kartik\tabs\TabsX;
-use yii\bootstrap\Dropdown;
+use yii\bootstrap5\Dropdown;
+use yii\bootstrap5\ButtonDropdown;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Profile */
@@ -36,34 +36,37 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="panel">
           <div class="panel-heading">
             <div class="dropdown">
-              <i class="fas fa-tasks"></i> <a href="#" data-toggle="dropdown" class="dropdown-toggle">Quick actions <b class="caret"></b></a>
-
-              <?php echo Dropdown::widget([
-                'items' => [
-                  ['label' => 'Download player ovpn', 'url' => ['/frontend/player/ovpn', 'id' => $model->player_id]],
-                  ['label' => 'Update profile', 'url' => ['update', 'id' => $model->id]],
-                  ['label' => 'Delete profile', 'url' => ['delete', 'id' => $model->id], 'linkOptions' => ['data' => [
-                    'confirm' => Yii::t('app', 'Are you sure you want to delete this profile?'),
-                    'method' => 'post',
-                  ],]],
-                  ['label' => 'View player', 'url' => ['player/view', 'id' => $model->player_id]],
-                  ['label' => 'Update player', 'url' => ['player/update', 'id' => $model->player_id]],
-                  ['label' => 'Delete player', 'url' => ['player/delete', 'id' => $model->player_id], 'linkOptions' => ['data' => [
-                    'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
-                    'method' => 'post',
-                  ],]],
-                  ['label' => 'Player profile', 'url' => "//" . Yii::$app->sys->offense_domain . '/profile/' . $model->id, 'linkOptions' => ['target' => '_blank']],
-                  ['label' => 'Reset auth_key', 'url' => ['player/reset-authkey', 'id' => $model->player_id], 'linkOptions' => [
-                    'class' => 'text-danger',
-                    'title' => 'Reset player auth_key (force logout)',
-                    'data' => [
-                      'confirm' => Yii::t('app', 'Are you sure you want to reset the player auth_key?'),
+              <?php
+              echo ButtonDropdown::widget([
+                'label'=>'Quick actions',
+                'options'=>['encodeLabels'=>false],
+                'dropdown' => [
+                  'items'=> [
+                    ['label' => 'Download player ovpn', 'url' => ['/frontend/player/ovpn', 'id' => $model->player_id]],
+                    ['label' => 'Update profile', 'url' => ['update', 'id' => $model->id]],
+                    ['label' => 'Delete profile', 'url' => ['delete', 'id' => $model->id], 'linkOptions' => ['data' => [
+                      'confirm' => Yii::t('app', 'Are you sure you want to delete this profile?'),
                       'method' => 'post',
-                    ],
-                  ]],
-                  ['label' => 'Activation URL', 'url' => "//" . Yii::$app->sys->offense_domain . '/verify-email?token=' . $model->owner->verification_token, 'linkOptions' => ['target' => '_blank'], 'visible' => $model->owner->verification_token != null],
-                  ['label' => 'Password Reset URL', 'url' => "//" . Yii::$app->sys->offense_domain . '/reset-password?token=' . $model->owner->password_reset_token, 'linkOptions' => ['target' => '_blank'], 'visible' => $model->owner->password_reset_token != null],
-                ],
+                    ],]],
+                    ['label' => 'View player', 'url' => ['player/view', 'id' => $model->player_id]],
+                    ['label' => 'Update player', 'url' => ['player/update', 'id' => $model->player_id]],
+                    ['label' => 'Delete player', 'url' => ['player/delete', 'id' => $model->player_id], 'linkOptions' => ['data' => [
+                      'confirm' => Yii::t('app', 'Are you sure you want to delete this item?'),
+                      'method' => 'post',
+                    ],]],
+                    ['label' => 'Player profile', 'url' => "//" . Yii::$app->sys->offense_domain . '/profile/' . $model->id, 'linkOptions' => ['target' => '_blank']],
+                    ['label' => 'Reset auth_key', 'url' => ['player/reset-authkey', 'id' => $model->player_id], 'linkOptions' => [
+                      'class' => 'text-danger',
+                      'title' => 'Reset player auth_key (force logout)',
+                      'data' => [
+                        'confirm' => Yii::t('app', 'Are you sure you want to reset the player auth_key?'),
+                        'method' => 'post',
+                      ],
+                    ]],
+                    ['label' => 'Activation URL', 'url' => "//" . Yii::$app->sys->offense_domain . '/verify-email?token=' . $model->owner->verification_token, 'linkOptions' => ['target' => '_blank'], 'visible' => $model->owner->verification_token != null],
+                    ['label' => 'Password Reset URL', 'url' => "//" . Yii::$app->sys->offense_domain . '/reset-password?token=' . $model->owner->password_reset_token, 'linkOptions' => ['target' => '_blank'], 'visible' => $model->owner->password_reset_token != null],
+                  ],
+                ]
               ]);
               ?>
             </div>
