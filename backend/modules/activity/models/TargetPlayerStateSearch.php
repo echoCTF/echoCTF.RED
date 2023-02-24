@@ -78,8 +78,8 @@ class TargetPlayerStateSearch extends TargetPlayerState
                       'desc' => ['player.username' => SORT_DESC],
                   ],
                   'hostname' => [
-                      'asc' => ['target.hostname' => SORT_ASC],
-                      'desc' => ['target.hostname' => SORT_DESC],
+                      'asc' => ['target.name' => SORT_ASC],
+                      'desc' => ['target.name' => SORT_DESC],
                   ],
                 ]
             ),
