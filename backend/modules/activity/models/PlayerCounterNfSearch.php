@@ -14,11 +14,12 @@ class PlayerCounterNfSearch extends PlayerCounterNf
     /**
      * {@inheritdoc}
      */
+    public $username;
     public function rules()
     {
         return [
             [['player_id', 'counter'], 'integer'],
-            [['metric'], 'safe'],
+            [['metric','username'], 'safe'],
         ];
     }
 
@@ -40,7 +41,7 @@ class PlayerCounterNfSearch extends PlayerCounterNf
      */
     public function search($params)
     {
-        $query = PlayerCounterNf::find();
+        $query = PlayerCounterNf::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
@@ -64,6 +65,19 @@ class PlayerCounterNfSearch extends PlayerCounterNf
         ]);
 
         $query->andFilterWhere(['like', 'metric', $this->metric]);
+        $query->andFilterWhere(['like', 'player.username', $this->username]);
+        $dataProvider->setSort([
+            'defaultOrder' => ['username'=>SORT_ASC],
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'username' => [
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
+                  ],
+                ]
+            ),
+        ]);
 
         return $dataProvider;
     }
