@@ -21,7 +21,7 @@ class m230224_103953_update_tad_player_trigger_to_clean_scores extends Migration
       SELECT memc_delete(CONCAT('player:',OLD.id)) INTO @devnull;
       SELECT memc_delete(CONCAT('team_player:',OLD.id)) INTO @devnull;
       DELETE FROM player_score WHERE player_id=OLD.id;
-      DELETE FROM player_monthly_score WHERE player_id=OLD.id;
+      DELETE FROM player_score_monthly WHERE player_id=OLD.id;
       DELETE FROM player_counter_nf WHERE player_id=OLD.id;
       DELETE FROM profile WHERE player_id=OLD.id;
       DELETE FROM player_last WHERE id=OLD.id;
