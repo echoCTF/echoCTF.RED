@@ -20,7 +20,6 @@ use yii\widgets\Pjax;
     ],
     'rating',
     'created_at',
-    ['class' => 'yii\grid\ActionColumn'],
   ],
 ]); ?>
 <?php Pjax::end(); ?>

@@ -7,7 +7,7 @@ use yii\grid\GridView;
 ?>
 <?php Pjax::begin(['id' => 'notificationsPJ', 'enablePushState' => false, 'enableReplaceState' => false,]); ?>
 <?= GridView::widget([
-  'id'=>'notifications',
+  'id' => 'notifications',
   'dataProvider' => $dataProvider,
   'filterModel' => $searchModel,
   'columns' => [
@@ -19,8 +19,13 @@ use yii\grid\GridView;
     'archived',
     'created_at',
     'updated_at',
-
-    ['class' => 'yii\grid\ActionColumn'],
+    [
+      'class' => 'yii\grid\ActionColumn',
+      'template' => '{delete}',
+      'urlCreator' => function ($action, $model, $key, $index) {
+        return Url::to(['/activity/notification/' . $action, 'id' => $model->id]);
+      }
+    ],
   ],
 ]);
 Pjax::end();
