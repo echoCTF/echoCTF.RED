@@ -19,10 +19,10 @@ class CronController extends Controller
    *
    * This operation is supposed to be run on the VPN Server
    */
-  public function actionExpireSubscriptions($active=true)
+  public function actionExpireSubscriptions($active=true,$interval=7200)
   {
     if($active===true)
-      $playerSubs = PlayerSubscription::find()->active()->expired();
+      $playerSubs = PlayerSubscription::find()->active()->expired($interval);
     else
       $playerSubs = PlayerSubscription::find()->active(intval($active));
 
