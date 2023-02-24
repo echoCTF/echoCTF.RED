@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 ?>
 <?php Pjax::begin(['id' => 'score-monthlyPJ','enablePushState'=>false,'enableReplaceState'=>false,]); ?>
+<h5>Monthly Scores</h5>
 <?= GridView::widget([
   'id'=>'score-monthly',
   'dataProvider' => $dataProvider,

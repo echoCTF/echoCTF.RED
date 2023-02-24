@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 ?>
 <?php Pjax::begin(['id' => 'target-progressPJ', 'enablePushState' => false, 'enableReplaceState' => false,]); ?>
+<h5>Target Progress</h5>
 <?= GridView::widget([
   'id'=>'target-progress',
   'dataProvider' => $dataProvider,

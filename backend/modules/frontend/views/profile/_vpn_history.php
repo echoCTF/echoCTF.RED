@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 ?>
 <?php Pjax::begin(['id' => 'vpn-historyPJ','enablePushState'=>false,'enableReplaceState'=>false,]);?>
+<h5>VPN History</h5>
 <?= GridView::widget([
     'id'=>'vpn-history',
     'dataProvider' => $dataProvider,

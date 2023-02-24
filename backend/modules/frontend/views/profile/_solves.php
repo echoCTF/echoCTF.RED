@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 ?>
 <?php Pjax::begin(['id' => 'solvesPJ','enablePushState'=>false,'enableReplaceState'=>false,]); ?>
+<h5>Challenge Solves</h5>
 <?= GridView::widget([
     'id' => 'solves',
     'dataProvider' => $dataProvider,
