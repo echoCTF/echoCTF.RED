@@ -74,8 +74,8 @@ class PlayerScoreSearch extends PlayerScore
                     'desc' => ['points'=>SORT_DESC, 'player_id'=>SORT_ASC],
                   ],
                   'player' => [
-                      'asc' => ['player_id' => SORT_ASC],
-                      'desc' => ['player_id' => SORT_DESC],
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
                   ],
                 ]
             ),

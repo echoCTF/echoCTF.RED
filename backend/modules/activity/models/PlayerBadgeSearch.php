@@ -74,8 +74,8 @@ class PlayerBadgeSearch extends PlayerBadge
                 $dataProvider->getSort()->attributes,
                 [
                   'player' => [
-                      'asc' => ['player_id' => SORT_ASC],
-                      'desc' => ['player_id' => SORT_DESC],
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
                   ],
                   'badge' => [
                       'asc' => ['badge_id' => SORT_ASC],

@@ -73,8 +73,8 @@ class PlayerSpinSearch extends PlayerSpin
                 $dataProvider->getSort()->attributes,
                 [
                   'player' => [
-                      'asc' => ['player_spin.player_id' => SORT_ASC],
-                      'desc' => ['player_spin.player_id' => SORT_DESC],
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
                   ],
                 ]
             ),
