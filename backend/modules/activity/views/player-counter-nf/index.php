@@ -28,17 +28,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'player_id',
-            [
-                'attribute'=>'username',
-                'format'=>'html',
-                'value'=> function($modelorig) {$model=$modelorig->player; return Html::a($model->username,['/frontend/profile/view-full','id'=>$model->profile->id],['class' => 'profile-link','title'=>\Yii::t('app','Go to profile of [{username}]',['username'=>$model->username])]);},
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             [
                 'attribute'=>'metric',
                 'filter'=>$searchModel->distinctMetrics(),
             ],
             'counter',
-
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

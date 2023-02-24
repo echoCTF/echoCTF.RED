@@ -36,12 +36,8 @@ yii\bootstrap5\Modal::end();
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-
-            [
-              'attribute' => 'player',
-              'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
-            ],
+            'player_id',
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
             'counter',
             'perday',
             'total',

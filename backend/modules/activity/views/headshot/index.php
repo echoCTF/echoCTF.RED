@@ -8,7 +8,7 @@ use yii\widgets\Pjax;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 $this->title=Yii::t('app', 'Headshots');
-$this->params['breadcrumbs'][]=$this->title;
+$this->params['breadcrumbs'][]=['label' => $this->title, 'url' => ['index']];
 yii\bootstrap5\Modal::begin([
     'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
     'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
@@ -34,10 +34,7 @@ yii\bootstrap5\Modal::end();
             ['class' => 'yii\grid\SerialColumn'],
 
             'player_id',
-            [
-              'attribute'=>'username',
-              'value'=>'player.username',
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             'target_id',
             [
               'attribute'=>'name',

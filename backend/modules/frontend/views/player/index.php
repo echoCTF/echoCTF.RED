@@ -59,8 +59,7 @@ yii\bootstrap5\Modal::end();
               'format'=>['image',['width' => '40px','class'=>'img-thumbnail']],
               'value'=>function($data) { return '//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data->profile->avatar;}
             ],
-
-            'username:linkProfile',
+            ['class' => 'app\components\columns\ProfileColumn','idkey'=>'profile.id','attribute'=>'username','field'=>'username'],
             'email:email',
             [
               'attribute'=>'vpn_local_address',

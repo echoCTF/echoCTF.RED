@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
-            'username',
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'username','idkey'=>'profile.id','field'=>'username'],
             'fullname',
             'email',
             [

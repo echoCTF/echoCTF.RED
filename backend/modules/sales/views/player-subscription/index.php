@@ -30,10 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
     'columns' => [
 
       'player_id',
-      [
-        'attribute' => 'username',
-        'value' => 'player.username'
-      ],
+      ['class' => 'app\components\columns\ProfileColumn'],
       [
         'attribute'=>'subscription_id',
         'format'=>'raw',

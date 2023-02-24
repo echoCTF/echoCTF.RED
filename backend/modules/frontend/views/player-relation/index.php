@@ -34,15 +34,9 @@ yii\bootstrap5\Modal::end();
             ['class' => 'yii\grid\SerialColumn'],
 
             'player_id',
-            [
-              'attribute'=>'player',
-              'value'=>'player.username',
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
             'referred_id',
-            [
-              'attribute'=>'referred',
-              'value'=>'referred.username',
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'referred','idkey'=>'referred.profile.id','field'=>'referred.username'],
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

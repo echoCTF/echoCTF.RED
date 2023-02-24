@@ -40,10 +40,7 @@ yii\bootstrap5\Modal::end();
 
             'id',
             'player_id',
-            [
-              'attribute'=>'username',
-              'value'=>'player.username',
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             [
               'attribute'=>'vpn_remote_address',
               'value'=>function($model) {return long2ip($model->vpn_remote_address);},

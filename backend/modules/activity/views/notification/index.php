@@ -33,14 +33,10 @@ yii\bootstrap5\Modal::end();
 
             'id',
             'player_id',
-            [
-              'attribute' => 'player',
-              'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
             'category',
             'title',
-            'body:ntext',
+            'body:html',
             'archived',
             'created_at',
             'updated_at',
