@@ -37,10 +37,7 @@ yii\bootstrap5\Modal::end();
               'attribute'=>'player_id',
               'headerOptions' => ['style' => 'width:3vw'],
             ],
-            [
-              'attribute'=>'username',
-              'value'=>'player.username'
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             [
               'attribute'=>'target_id',
               'headerOptions' => ['style' => 'width:3vw'],

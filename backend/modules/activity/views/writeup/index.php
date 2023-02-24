@@ -31,11 +31,7 @@ yii\bootstrap5\Modal::end();
         'filterModel' => $searchModel,
         'columns' => [
             'id',
-            [
-              'attribute'=>'username',
-              'contentOptions'=>['class'=>'text-nowrap'],
-              'value'=>function($model){return sprintf("(ID:%d) %s",$model->player->id,$model->player->username);},
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             //'target_id',
             [
               'attribute'=>'fqdn',

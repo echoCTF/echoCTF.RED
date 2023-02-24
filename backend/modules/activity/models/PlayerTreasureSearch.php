@@ -81,8 +81,8 @@ class PlayerTreasureSearch extends PlayerTreasure
                       'desc' => ['treasure.target_id' => SORT_DESC],
                   ],
                   'player' => [
-                      'asc' => ['player_id' => SORT_ASC],
-                      'desc' => ['player_id' => SORT_DESC],
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
                   ],
                   'treasure' => [
                       'asc' => ['treasure_id' => SORT_ASC],

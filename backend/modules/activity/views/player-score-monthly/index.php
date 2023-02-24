@@ -26,11 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             'player_id',
-            [
-                'attribute'=>'username',
-                'format'=>'html',
-                'value'=> function($modelorig) {$model=$modelorig->player; return Html::a($model->username,['/frontend/profile/view-full','id'=>$model->profile->id],['class' => 'profile-link','title'=>\Yii::t('app','Go to profile of [{username}]',['username'=>$model->username])]);},
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             'points',
             'dated_at',
             'ts',

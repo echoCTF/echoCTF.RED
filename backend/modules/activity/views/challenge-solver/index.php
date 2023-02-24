@@ -33,10 +33,7 @@ yii\bootstrap5\Modal::end();
             ['class' => 'yii\grid\SerialColumn'],
 
             'player_id',
-            [
-              'attribute'=>'username',
-              'value'=>'player.username'
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             'challenge_id',
             [
               'attribute'=>'challenge_name',

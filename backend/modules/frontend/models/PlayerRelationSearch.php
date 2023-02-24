@@ -42,7 +42,7 @@ class PlayerRelationSearch extends PlayerRelation
      */
     public function search($params)
     {
-        $query = PlayerRelation::find()->joinWith(['player']);
+        $query = PlayerRelation::find()->joinWith(['player'])->leftJoin('player referred','referred.id=player_relation.referred_id');
 
         // add conditions that should always apply here
 
@@ -64,18 +64,18 @@ class PlayerRelationSearch extends PlayerRelation
             'referred_id' => $this->referred_id,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->player]);
-        $query->orFilterWhere(['like', 'player.username', $this->referred]);
+        $query->orFilterWhere(['like', 'referred.username', $this->referred]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
                   'player' => [
-                      'asc' => ['player_id' => SORT_ASC],
-                      'desc' => ['player_id' => SORT_DESC],
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
                   ],
                   'referred' => [
-                      'asc' => ['referred_id' => SORT_ASC],
-                      'desc' => ['referred_id' => SORT_DESC],
+                      'asc' => ['referred.username' => SORT_ASC],
+                      'desc' => ['referred.username' => SORT_DESC],
                   ],
                 ]
             ),

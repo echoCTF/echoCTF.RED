@@ -37,10 +37,7 @@ yii\bootstrap5\Modal::end();
               'attribute'=>'writeup_id',
               'value'=>function($model){ return sprintf("%d: %s - %s",$model->writeup_id,$model->writeup->player->username,$model->writeup->target->name);}
             ],
-            [
-              'attribute'=>'username',
-              'value'=>'player.username',
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             'rating',
             'created_at',
             //'updated_at',

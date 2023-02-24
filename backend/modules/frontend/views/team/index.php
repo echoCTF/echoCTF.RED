@@ -45,12 +45,7 @@ yii\bootstrap5\Modal::end();
               }
             ],
             'name',
-            [
-              'label'=>'Owner',
-              'attribute'=>'username',
-              'format'=>'html',
-              'value'=>function($model){ return Html::a($model->owner->username,['profile/view-full','id'=>$model->owner->profile->id]);}
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'username','label'=>'Owner','idkey'=>'owner.profile.id','field'=>'owner.username'],
 
             'description:ntext',
             [

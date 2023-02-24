@@ -27,10 +27,7 @@ yii\bootstrap5\Modal::end();
         'filterModel' => $searchModel,
         'columns' => [
             'id',
-            [
-              'attribute'=>'username',
-              'value'=>'player.username'
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             [
               'attribute'=>'on_pui',
               'value'=>function($model) { return $model->on_pui == 0 ? null : $model->on_pui;}

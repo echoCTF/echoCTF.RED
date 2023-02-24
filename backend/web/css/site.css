@@ -59,6 +59,7 @@ a.desc:after {
 .bi-target-status-powerup::before { content: "\F4F6"; color: goldenrod; }
 .bi-target-status-powerdown::before { content: "\F4F7"; color: orangered; }
 
-.grid-view th {
-  white-space: nowrap;
-}
+.fa-nf-claims:before { content: "\f024"; }
+.fa-nf-failed_claims:before { content: "\f11e"; }
+.fa-nf-failed_login:before { content: "\f071"; }
+.grid-view th { white-space: nowrap; }

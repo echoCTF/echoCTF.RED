@@ -33,11 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'contentOptions'=>['class'=>'text-nowrap'],
                 'value'=>'target.name',
             ],
-            [
-                'attribute'=>'username',
-                'contentOptions'=>['class'=>'text-nowrap'],
-                'value'=>'player.username',
-            ],
+            ['class' => 'app\components\columns\ProfileColumn'],
             'player_id',
             'player_treasures',
             'player_findings',

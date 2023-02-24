@@ -38,11 +38,7 @@ yii\bootstrap5\Modal::end();
         'filterModel' => $searchModel,
         'columns' => [
             'player_id',
-            [
-                'attribute' => 'player',
-                'label'=>'Player',
-                'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player ? $model->player->username : "");},
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
             'ipoctet',
             'id',
             'expire:dateTime',

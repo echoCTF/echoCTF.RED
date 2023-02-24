@@ -22,7 +22,7 @@ class PlayerFindingSearch extends PlayerFinding
     {
         return [
             [['player_id', 'finding_id'], 'integer'],
-            [['ts', 'player', 'finding', 'target_id','points'], 'safe'],
+            [['ts', 'player', 'finding', 'target_id', 'points'], 'safe'],
         ];
     }
 
@@ -44,18 +44,17 @@ class PlayerFindingSearch extends PlayerFinding
      */
     public function search($params)
     {
-        $query=PlayerFinding::find()->joinWith(['player', 'finding']);
+        $query = PlayerFinding::find()->joinWith(['player', 'finding']);
 
         // add conditions that should always apply here
 
-        $dataProvider=new ActiveDataProvider([
+        $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
 
-        if(!$this->validate())
-        {
+        if (!$this->validate()) {
             $query->where('0=1');
             return $dataProvider;
         }
@@ -65,7 +64,7 @@ class PlayerFindingSearch extends PlayerFinding
             'player_finding.player_id' => $this->player_id,
             'player_finding.finding_id' => $this->finding_id,
             'player_finding.points' => $this->points,
-            'finding.target_id'=>$this->target_id,
+            'finding.target_id' => $this->target_id,
         ]);
 
         $query->andFilterWhere(['like', 'player_finding.ts', $this->ts]);
@@ -76,18 +75,18 @@ class PlayerFindingSearch extends PlayerFinding
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
-                  'target_id' => [
-                      'asc' => ['treasure.target_id' => SORT_ASC],
-                      'desc' => ['treasure.target_id' => SORT_DESC],
-                  ],
-                  'player' => [
-                      'asc' => ['player_id' => SORT_ASC],
-                      'desc' => ['player_id' => SORT_DESC],
-                  ],
-                  'finding' => [
-                      'asc' => ['finding_id' => SORT_ASC],
-                      'desc' => ['finding_id' => SORT_DESC],
-                  ],
+                    'target_id' => [
+                        'asc' => ['treasure.target_id' => SORT_ASC],
+                        'desc' => ['treasure.target_id' => SORT_DESC],
+                    ],
+                    'player' => [
+                        'asc' => ['player.username' => SORT_ASC],
+                        'desc' => ['player.username' => SORT_DESC],
+                    ],
+                    'finding' => [
+                        'asc' => ['finding_id' => SORT_ASC],
+                        'desc' => ['finding_id' => SORT_DESC],
+                    ],
                 ]
             ),
         ]);

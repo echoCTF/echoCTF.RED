@@ -6,9 +6,9 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\modules\activity\models\PlayerScore */
 
-$this->title=$model->player_id;
-$this->params['breadcrumbs'][]=['label' => 'Player Scores', 'url' => ['index']];
-$this->params['breadcrumbs'][]=$this->title;
+$this->title = $model->player_id;
+$this->params['breadcrumbs'][] = ['label' => 'Player Scores', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="player-score-view">
@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][]=$this->title;
         'model' => $model,
         'attributes' => [
             'player_id',
+            'player.username',
             'points',
         ],
     ]) ?>

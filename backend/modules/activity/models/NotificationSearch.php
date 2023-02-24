@@ -77,8 +77,8 @@ class NotificationSearch extends Notification
                     $dataProvider->getSort()->attributes,
                     [
                       'player' => [
-                          'asc' => ['player_id' => SORT_ASC],
-                          'desc' => ['player_id' => SORT_DESC],
+                          'asc' => ['player.username' => SORT_ASC],
+                          'desc' => ['player.username' => SORT_DESC],
                       ],
                     ]
                 ),

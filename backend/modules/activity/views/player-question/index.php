@@ -45,11 +45,7 @@ yii\bootstrap5\Modal::end();
                 'headerOptions' => ['style' => 'width:20vw'],
             ],
             'player_id',
-            [
-                'attribute' => 'player',
-                'label'=>'Player',
-                'value'=> function($model) {return sprintf("%s", Html::encode($model->player->username));},
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
             'points',
             'ts',
 

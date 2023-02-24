@@ -254,6 +254,64 @@ class ProfileController extends \app\components\BaseController
       'searchModel' => $searchModel
     ])));
   }
+  public function actionSpinHistory($id)
+  {
+    $profile = $this->findModel($id);
+    $searchModel = new \app\modules\activity\models\SpinHistorySearch();
+    $searchModel->player_id = $profile->player_id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('_spin_history', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+  public function actionNotifications($id)
+  {
+    $profile = $this->findModel($id);
+    $searchModel = new \app\modules\activity\models\NotificationSearch();
+    $searchModel->player_id = $profile->player_id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('_notifications', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
+  public function actionScoreMonthly($id)
+  {
+    $profile = $this->findModel($id);
+    $searchModel = new \app\modules\activity\models\PlayerScoreMonthlySearch();
+    $searchModel->player_id = $profile->player_id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('_score_monthly', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
+  public function actionTargetProgress($id)
+  {
+    $profile = $this->findModel($id);
+    $searchModel = new \app\modules\activity\models\TargetPlayerStateSearch();
+    $searchModel->player_id = $profile->player_id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('_target_progress', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
+  public function actionWriteupRating($id)
+  {
+    $profile = $this->findModel($id);
+    $searchModel = new \app\modules\activity\models\WriteupRatingSearch();
+    $searchModel->player_id = $profile->player_id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('_writeup_rating', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
 
   public function actionActivatedWriteups($id)
   {

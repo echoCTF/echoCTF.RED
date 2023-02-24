@@ -31,11 +31,7 @@ yii\bootstrap5\Modal::end();
         'filterModel' => $searchModel,
         'columns' => [
           'player_id',
-          [
-            'attribute' => 'player',
-            'label'=>'Player',
-            'value'=> 'player.username',
-          ],
+          ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
           [
             'attribute' => 'target_id',
             'label'=>'Target ID',
@@ -45,6 +41,7 @@ yii\bootstrap5\Modal::end();
           [
             'attribute' => 'finding',
             'label'=>'Finding',
+            'format'=>'html',
             'value'=> 'finding.name',
           ],
           [

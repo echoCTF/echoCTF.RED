@@ -163,6 +163,13 @@ class PlayerAR extends \yii\db\ActiveRecord
     {
         return $this->hasMany(\app\modules\activity\models\PlayerBadge::class, ['player_id' => 'id']);
     }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCountersNf()
+    {
+        return $this->hasMany(\app\modules\activity\models\PlayerCounterNf::class, ['player_id' => 'id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery

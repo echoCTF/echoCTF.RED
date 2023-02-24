@@ -67,7 +67,7 @@ class TeamSearch extends Team
 
         $query->andFilterWhere(['like', 'team.name', $this->name])
             ->andFilterWhere(['like', 'team.description', $this->description])
-            ->andFilterWhere(['like', 'owner.username', $this->username])
+            ->andFilterWhere(['like', 'player.username', $this->username])
             ->andFilterWhere(['like', 'team.logo', $this->logo])
             ->andFilterWhere(['like', 'team.token', $this->token]);
         $dataProvider->setSort([
