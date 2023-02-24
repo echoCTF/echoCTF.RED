@@ -19,13 +19,20 @@ class CronController extends Controller
    *
    * This operation is supposed to be run on the VPN Server
    */
-  public function actionExpireSubscriptions()
+  public function actionExpireSubscriptions($active=true)
   {
-    $playerSubs = PlayerSubscription::find()->active()->expired();
+    if($active===true)
+      $playerSubs = PlayerSubscription::find()->active()->expired();
+    else
+      $playerSubs = PlayerSubscription::find()->active(intval($active));
+
     foreach ($playerSubs->all() as $rec) {
       $transaction = \Yii::$app->db->beginTransaction();
       try {
-        printf("Expiring: %s => %s\n", $rec->player->email, $rec->subscription_id);
+        if($rec->active)
+          printf("Expiring: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
+        else
+          printf("Cleaning: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
         if ($rec->product) {
           \Yii::$app->db->createCommand("DELETE FROM network_player WHERE player_id=:player_id AND network_id IN (SELECT network_id FROM product_network WHERE product_id=:product_id)")
             ->bindValue(':player_id', $rec->player_id)
