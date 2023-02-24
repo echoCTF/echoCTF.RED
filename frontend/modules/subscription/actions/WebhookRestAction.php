@@ -74,7 +74,17 @@ class WebhookRestAction extends \yii\rest\Action
           }
           else
           {
+            // cancel subscription extras in case new metadata have other networks
             $ps->cancel();
+            // If currently there is an active subscription then just
+            if($ps->active==1 && $object->status!=="active")
+            {
+              $ps->updated_at=new \yii\db\Expression("NOW()");
+              $ps->active=0;
+              $ps->save();
+              $transaction->commit();
+              return [ 'status' => 'success','message'=>'canceled subscription' ];
+            }
           }
 
           $ps->subscription_id=$object->id;
