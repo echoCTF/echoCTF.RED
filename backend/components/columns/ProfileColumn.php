@@ -1,5 +1,7 @@
 <?php
+
 namespace app\components\columns;
+
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 
@@ -12,14 +14,14 @@ use yii\helpers\Html;
 
 class ProfileColumn extends \yii\grid\DataColumn
 {
-  public $idkey='player.profile.id';
-  public $field='player.username';
+  public $idkey = 'player.profile.id';
+  public $field = 'player.username';
 
   public function init()
   {
     parent::init();
-    $this->format="raw";
-    if(!$this->attribute) {
+    $this->format = "raw";
+    if (!$this->attribute) {
       $this->attribute = 'username';
       $this->label = 'Username';
     }
@@ -29,12 +31,12 @@ class ProfileColumn extends \yii\grid\DataColumn
 
   protected function renderDataCellContent($model, $key, $index)
   {
-    $username=ArrayHelper::getValue($model,$this->field);
-    $id=ArrayHelper::getValue($model,$this->idkey);
+    $username = ArrayHelper::getValue($model, $this->field);
+    $id = ArrayHelper::getValue($model, $this->idkey);
     if ($this->content === null) {
-          return $this->grid->formatter->format(Html::a($username,['/frontend/profile/view-full','id'=>$id]), $this->format);
-      }
+      return $this->grid->formatter->format(Html::a($username, ['/frontend/profile/view-full', 'id' => $id]), $this->format);
+    }
 
-      return parent::renderDataCellContent($model, $key, $index);
+    return parent::renderDataCellContent($model, $key, $index);
   }
 }
