@@ -1,3 +1,5 @@
+<h5>Activity Stream</h5>
+
 <p>
 <?php
 $i=1;

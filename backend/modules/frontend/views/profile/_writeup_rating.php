@@ -5,6 +5,7 @@ use yii\grid\GridView;
 use yii\widgets\Pjax;
 ?>
 <?php Pjax::begin(['id' => 'writeup-ratingPJ','enablePushState'=>false,'enableReplaceState'=>false,]);?>
+<h5>Writeup Ratings</h5>
 <?= GridView::widget([
   'id'=>'writeup-rating',
   'dataProvider' => $dataProvider,

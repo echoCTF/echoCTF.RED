@@ -6,6 +6,7 @@ use yii\helpers\Url;
 use yii\grid\GridView;
 ?>
 <?php Pjax::begin(['id' => 'activated-writeupsPJ', 'enablePushState' => false, 'enableReplaceState' => false,]); ?>
+<h5>Activated Writeups</h5>
 <?= GridView::widget([
     'id' => 'activated-writeups',
     'dataProvider' => $dataProvider,
