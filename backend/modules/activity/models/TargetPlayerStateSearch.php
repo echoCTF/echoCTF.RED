@@ -68,7 +68,7 @@ class TargetPlayerStateSearch extends TargetPlayerState
             'player_points' => $this->player_points,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
-        $query->andFilterWhere(['like', 'target.hostname', $this->hostname]);
+        $query->andFilterWhere(['like', 'target.name', $this->hostname]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
