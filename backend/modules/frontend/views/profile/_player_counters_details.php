@@ -16,6 +16,13 @@ use yii\helpers\Html;
         </tr>
       </thead>
       <tbody>
+        <?php foreach($model->owner->countersNf as $nf):?>
+          <tr>
+          <td><i class="fas fa-nf-<?=$nf->metric?>"></i></td>
+          <td><?=$nf->metric?></td>
+          <td><?=$nf->counter?></td>
+          </tr>
+        <?php endforeach;?>
         <tr>
           <td><i class="fas fa-skull"></i></td>
           <td>Headshots</td>
