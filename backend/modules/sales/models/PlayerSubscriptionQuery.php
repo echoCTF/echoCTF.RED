@@ -9,14 +9,14 @@ namespace app\modules\sales\models;
  */
 class PlayerSubscriptionQuery extends \yii\db\ActiveQuery
 {
-    public function active()
+    public function active($active=1)
     {
-        return $this->andWhere('[[active]]=1');
+        return $this->andWhere("[[active]]=".intval($active));
     }
 
-    public function expired()
+    public function expired($interval=240)
     {
-        return $this->andWhere(['<','ending',new \yii\db\Expression('NOW()')]);
+        return $this->andWhere(['<','ending',new \yii\db\Expression("NOW() - INTERVAL $interval MINUTE")]);
     }
 
     /**
