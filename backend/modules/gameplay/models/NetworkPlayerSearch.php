@@ -11,6 +11,8 @@ use app\modules\gameplay\models\NetworkPlayer;
  */
 class NetworkPlayerSearch extends NetworkPlayer
 {
+    public $username;
+    public $network_name;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,7 @@ class NetworkPlayerSearch extends NetworkPlayer
     {
         return [
             [['network_id', 'player_id'], 'integer'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'username','network_name'], 'safe'],
         ];
     }
 
@@ -40,7 +42,7 @@ class NetworkPlayerSearch extends NetworkPlayer
      */
     public function search($params)
     {
-        $query=NetworkPlayer::find();
+        $query=NetworkPlayer::find()->joinWith(['player','network']);
 
         // add conditions that should always apply here
 
@@ -63,8 +65,24 @@ class NetworkPlayerSearch extends NetworkPlayer
             'player_id' => $this->player_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+        ])
+        ->andFilterWhere(['like','player.username',$this->username])
+        ->andFilterWhere(['like','network.name',$this->network_name]);
+        $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'username' => [
+                      'asc' =>  ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
+                  ],
+                  'network_name' => [
+                    'asc' =>  ['network.name' => SORT_ASC],
+                    'desc' => ['network.name' => SORT_DESC],
+                ],
+            ]
+            ),
         ]);
-
         return $dataProvider;
     }
 }

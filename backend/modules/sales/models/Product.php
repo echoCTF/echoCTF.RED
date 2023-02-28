@@ -68,7 +68,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getProductNetworks()
     {
-        return $this->hasMany(ProductNetwork::class, ['id' => 'product_id']);
+        return $this->hasMany(ProductNetwork::class, ['product_id' => 'id']);
     }
 
     /**

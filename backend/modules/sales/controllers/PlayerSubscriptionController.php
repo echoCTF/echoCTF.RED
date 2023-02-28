@@ -7,6 +7,7 @@ use app\modules\sales\models\PlayerSubscription;
 use app\modules\sales\models\PlayerSubscriptionSearch;
 use app\modules\sales\models\Product;
 use app\modules\frontend\models\Player;
+use app\modules\gameplay\models\NetworkPlayer;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -83,6 +84,19 @@ class PlayerSubscriptionController extends \app\components\BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            if($model->active==0)
+            {
+                $network_ids=ArrayHelper::getColumn($model->price->product->productNetworks,'network_id');
+                NetworkPlayer::deleteAll([
+                    'AND', 'player_id = :player_id', [
+                        'IN', 'network_id',
+                        $network_ids
+                    ]
+                    ], [
+                    ':player_id' => $model->player_id
+                    ]);
+            }
+
             return $this->redirect(['view', 'id' => $model->player_id]);
         }
 

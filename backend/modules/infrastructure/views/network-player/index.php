@@ -33,9 +33,12 @@ yii\bootstrap5\Modal::end();
             ['class' => 'yii\grid\SerialColumn'],
 
             'network_id',
-            'network.name',
+            [
+                'attribute'=>'network_name',
+                'value'=>'network.name',
+            ],
             'player_id',
-            'player.username',
+            ['class' => 'app\components\columns\ProfileColumn'],
             'created_at',
             'updated_at',
 
