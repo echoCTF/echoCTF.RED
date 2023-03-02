@@ -43,7 +43,7 @@ yii\bootstrap5\Modal::end();
             'timer',
             'rating',
             'first',
-            'created_at:datetime',
+            'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
