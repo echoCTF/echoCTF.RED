@@ -60,9 +60,9 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
             'id' => $this->id,
             'reboot' => $this->reboot,
             'op'=>$this->op,
-            'ts' => $this->ts,
         ]);
-        
+        $query->andFilterWhere(['like','target_instance_audit.ts',$this->ts]);
+
         $query->andFilterWhere([
             'OR',
             ['like', 'INET_NTOA(ip)', $this->ipoctet],

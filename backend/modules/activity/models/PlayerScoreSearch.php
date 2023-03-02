@@ -19,7 +19,7 @@ class PlayerScoreSearch extends PlayerScore
     {
         return [
             [['player_id', 'points'], 'integer'],
-            [['player'], 'safe'],
+            [['player','ts'], 'safe'],
         ];
     }
 
@@ -64,6 +64,7 @@ class PlayerScoreSearch extends PlayerScore
             'player_score.points' => $this->points,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->player]);
+        $query->andFilterWhere(['like', 'player_score.ts', $this->ts]);
         $dataProvider->setSort([
             'defaultOrder' => ['points'=>SORT_DESC, 'player_id'=>SORT_ASC],
             'attributes' => array_merge(

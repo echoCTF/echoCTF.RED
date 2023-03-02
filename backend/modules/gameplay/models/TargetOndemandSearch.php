@@ -66,10 +66,9 @@ class TargetOndemandSearch extends TargetOndemand
             'target_id' => $this->target_id,
             'player_id' => $this->player_id,
             'state' => $this->state,
-            'heartbeat' => $this->heartbeat,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
+        $query->andFilterWhere(['like', 'target_ondemand.created_at', $this->created_at]);
+        $query->andFilterWhere(['like', 'target_ondemand.heartbeat', $this->heartbeat]);
         $query->andFilterWhere(['like', 'target.name', $this->name]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $query->andFilterWhere(['like','INET_NTOA(target.ip)',$this->ipoctet]);

@@ -67,10 +67,10 @@ class StreamSearch extends Stream
             'stream.player_id' => $this->player_id,
             'stream.model_id' => $this->model_id,
             'stream.points' => $this->points,
-            'stream.ts' => $this->ts,
         ]);
 
         $query->andFilterWhere(['like', 'stream.model', $this->model])
+            ->andFilterWhere(['like', 'stream.ts', $this->ts])
             ->andFilterWhere(['like', 'stream.title', $this->title])
             ->andFilterWhere(['like', 'stream.message', $this->message])
             ->andFilterWhere(['like', 'stream.pubtitle', $this->pubtitle])

@@ -60,11 +60,11 @@ class OpenvpnSearch extends Openvpn
         $query->andFilterWhere([
             'id' => $this->id,
             'management_port' => $this->management_port,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'provider_id', $this->provider_id])
+            ->andFilterWhere(['like', 'created_at', $this->created_at])
+            ->andFilterWhere(['like', 'updated_at', $this->updated_at])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'management_passwd', $this->management_passwd])
             ->andFilterWhere(['like', 'status_log', $this->status_log])

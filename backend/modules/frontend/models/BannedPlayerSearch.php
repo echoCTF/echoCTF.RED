@@ -61,11 +61,11 @@ class BannedPlayerSearch extends BannedPlayer
         $query->andFilterWhere([
             'banned_player.id' => $this->id,
             'banned_player.old_id' => $this->old_id,
-            'banned_player.registered_at' => $this->registered_at,
-            'banned_player.banned_at' => $this->banned_at,
         ]);
 
         $query->andFilterWhere(['like', 'banned_player.username', $this->username])
+            ->andFilterWhere(['like', 'banned_player.registered_at', $this->registered_at])
+            ->andFilterWhere(['like', 'banned_player.banned_at', $this->banned_at])
             ->andFilterWhere(['like', 'banned_player.email', $this->email]);
 
         return $dataProvider;

@@ -47,8 +47,8 @@ yii\bootstrap5\Modal::end();
             ],
             'player_id',
             ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
-            'created_at:dateTime',
-            'updated_at:dateTime',
+            'created_at',
+            'updated_at',
 
         ],
     ]);?>

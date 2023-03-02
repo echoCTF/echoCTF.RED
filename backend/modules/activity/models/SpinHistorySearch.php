@@ -65,10 +65,10 @@ class SpinHistorySearch extends SpinHistory
             'spin_history.id' => $this->id,
             'spin_history.target_id' => $this->target_id,
             'spin_history.player_id' => $this->player_id,
-            'spin_history.created_at' => $this->created_at,
-            'spin_history.updated_at' => $this->updated_at,
         ]);
 
+        $query->andFilterWhere(['like', 'spin_history.created_at', $this->created_at]);
+        $query->andFilterWhere(['like', 'spin_history.updated_at', $this->updated_at]);
         $query->andFilterWhere(['like', 'player.username', $this->player]);
         $dataProvider->setSort([
             'attributes' => array_merge(

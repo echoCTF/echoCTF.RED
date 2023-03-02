@@ -64,7 +64,6 @@ class PlayerTreasureSearch extends PlayerTreasure
             'player_treasure.player_id' => $this->player_id,
             'player_treasure.treasure_id' => $this->treasure_id,
             'player_treasure.points' => $this->points,
-            'player_treasure.ts' => $this->ts,
             'treasure.target_id' => $this->target_id,
         ]);
 

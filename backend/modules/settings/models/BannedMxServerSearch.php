@@ -59,12 +59,12 @@ class BannedMxServerSearch extends BannedMxServer
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'notes', $this->notes]);
+        ->andFilterWhere(['like', 'created_at', $this->created_at])
+        ->andFilterWhere(['like', 'updated_at', $this->updated_at])
+        ->andFilterWhere(['like', 'notes', $this->notes]);
 
         return $dataProvider;
     }

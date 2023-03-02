@@ -20,7 +20,7 @@ class TeamScoreSearch extends TeamScore
     {
         return [
             [['team_id', 'points'], 'integer'],
-            [['team_name','team_academic'], 'safe'],
+            [['team_name','team_academic','ts'], 'safe'],
         ];
     }
 
@@ -66,6 +66,7 @@ class TeamScoreSearch extends TeamScore
             'team.academic' => $this->team_academic,
         ]);
         $query->andFilterWhere(['like', 'team.name', $this->team_name]);
+        $query->andFilterWhere(['like', 'team_score.ts', $this->ts]);
         $dataProvider->setSort([
             'defaultOrder' => ['points'=>SORT_DESC, 'ts'=>SORT_ASC,'team_id'=>SORT_ASC],
             'attributes' => array_merge(
@@ -79,7 +80,7 @@ class TeamScoreSearch extends TeamScore
                       'asc' => ['team.name' => SORT_ASC],
                       'desc' => ['team.name' => SORT_DESC],
                   ],
-                  'team_acedemic' => [
+                  'team_academic' => [
                     'asc' => ['team.academic' => SORT_ASC],
                     'desc' => ['team.academic' => SORT_DESC],
                 ],

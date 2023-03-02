@@ -67,9 +67,9 @@ class PlayerQuestionSearch extends PlayerQuestion
             'player_question.question_id' => $this->question_id,
             'player_question.player_id' => $this->player_id,
             'player_question.points' => $this->points,
-            'player_question.ts' => $this->ts,
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->player]);
+        $query->andFilterWhere(['like', 'player_question.ts', $this->ts]);
         $query->andFilterWhere(['like', 'question.name', $this->question]);
         $query->andFilterWhere(['question.challenge_id'=> $this->challenge_id]);
         $dataProvider->setSort([

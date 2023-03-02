@@ -61,9 +61,9 @@ class NetworkTargetScheduleSearch extends NetworkTargetSchedule
         // grid filtering conditions
         $query->andFilterWhere([
             'network_target_schedule.id' => $this->id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
+        $query->andFilterWhere(['like','network_target_schedule.created_at',$this->created_at])
+              ->andFilterWhere(['like','network_target_schedule.updated_at',$this->updated_at]);
         $query->andFilterWhere([
             'OR',
             ['like','target.name',$this->target_name],

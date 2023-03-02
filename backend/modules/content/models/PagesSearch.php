@@ -63,6 +63,8 @@ class PagesSearch extends Pages
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title])
+            ->andFilterWhere(['like', 'created_at', $this->created_at])
+            ->andFilterWhere(['like', 'updated_at', $this->updated_at])
             ->andFilterWhere(['like', 'body', $this->body]);
 
         return $dataProvider;

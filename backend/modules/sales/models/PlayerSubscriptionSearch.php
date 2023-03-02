@@ -63,12 +63,12 @@ class PlayerSubscriptionSearch extends PlayerSubscription
         $query->andFilterWhere([
             'player_id' => $this->player_id,
             'player_subscription.active' => $this->active,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
 
         $query->andFilterWhere(['like', 'subscription_id', $this->subscription_id])
             ->andFilterWhere(['like', 'session_id', $this->session_id])
+            ->andFilterWhere(['like', 'starting', $this->starting])
+            ->andFilterWhere(['like', 'ending', $this->ending])
             ->andFilterWhere(['like', 'player.username', $this->username])
             ->andFilterWhere(['like', 'price_id', $this->price_id])
             ->andFilterWhere(['like', 'product.name', $this->product_name]);

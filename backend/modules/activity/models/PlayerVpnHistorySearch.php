@@ -63,7 +63,6 @@ class PlayerVpnHistorySearch extends PlayerVpnHistory
         $query->andFilterWhere([
             'player_vpn_history.id' => $this->id,
             'player_vpn_history.player_id' => $this->player_id,
-            'player_vpn_history.ts' => $this->ts,
         ]);
         $query->andFilterWhere(['or',
             ['=', 'vpn_remote_address', $this->vpn_remote_address],
@@ -74,6 +73,7 @@ class PlayerVpnHistorySearch extends PlayerVpnHistory
             ['like', 'INET_NTOA(vpn_local_address)', $this->vpn_local_address]
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
+        $query->andFilterWhere(['like', 'player_vpn_history.ts', $this->ts]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
