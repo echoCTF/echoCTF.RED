@@ -19,7 +19,7 @@ class TeamSearch extends Team
     {
         return [
             [['id', 'academic', 'owner_id','inviteonly'], 'integer'],
-            [['name', 'description', 'recruitment', 'logo', 'token','username'], 'safe'],
+            [['name', 'description', 'recruitment', 'logo', 'token','username','ts'], 'safe'],
         ];
     }
 
@@ -66,6 +66,7 @@ class TeamSearch extends Team
         ]);
 
         $query->andFilterWhere(['like', 'team.name', $this->name])
+            ->andFilterWhere(['like', 'team.ts', $this->ts])
             ->andFilterWhere(['like', 'team.description', $this->description])
             ->andFilterWhere(['like', 'player.username', $this->username])
             ->andFilterWhere(['like', 'team.logo', $this->logo])

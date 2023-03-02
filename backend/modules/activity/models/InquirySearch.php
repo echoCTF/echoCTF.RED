@@ -66,6 +66,8 @@ class InquirySearch extends Inquiry
         ]);
 
         $query->andFilterWhere(['like', 'category', $this->category])
+            ->andFilterWhere(['like', 'inquiry.created_at', $this->created_at])
+            ->andFilterWhere(['like', 'inquiry.updated_at', $this->updated_at])
             ->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'serialized', $this->serialized])

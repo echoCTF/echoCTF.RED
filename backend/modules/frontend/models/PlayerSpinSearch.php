@@ -19,7 +19,7 @@ class PlayerSpinSearch extends PlayerSpin
     {
         return [
             [['player_id', 'counter', 'total','perday'], 'integer'],
-            [['updated_at', 'player'], 'safe'],
+            [['updated_at', 'player','ts'], 'safe'],
         ];
     }
 
@@ -64,8 +64,9 @@ class PlayerSpinSearch extends PlayerSpin
             'player_spin.counter' => $this->counter,
             'player_spin.perday' => $this->perday,
             'player_spin.total' => $this->total,
-            'player_spin.updated_at' => $this->updated_at,
         ]);
+        $query->andFilterWhere(['like', 'player_spin.updated_at', $this->updated_at]);
+        $query->andFilterWhere(['like', 'player_spin.ts', $this->ts]);
         $query->andFilterWhere(['like', 'player.id', $this->player]);
         $query->orFilterWhere(['like', 'player.username', $this->player]);
         $dataProvider->setSort([

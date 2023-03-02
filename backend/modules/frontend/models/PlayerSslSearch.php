@@ -61,10 +61,10 @@ class PlayerSslSearch extends PlayerSsl
         // grid filtering conditions
         $query->andFilterWhere([
             'player_ssl.player_id' => $this->player_id,
-            'player_ssl.ts' => $this->ts,
         ]);
 
         $query->andFilterWhere(['like', 'player_ssl.subject', $this->subject])
+            ->andFilterWhere(['like', 'player_ssl.ts', $this->ts])
             ->andFilterWhere(['like', 'player_ssl.serial', $this->serial])
             ->andFilterWhere(['like', 'player_ssl.csr', $this->csr])
             ->andFilterWhere(['like', 'player_ssl.crt', $this->crt])

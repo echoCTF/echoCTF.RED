@@ -63,9 +63,9 @@ class NetworkPlayerSearch extends NetworkPlayer
         $query->andFilterWhere([
             'network_id' => $this->network_id,
             'player_id' => $this->player_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ])
+        ->andFilterWhere(['like','network_player.created_at',$this->created_at])
+        ->andFilterWhere(['like','network_player.updated_at',$this->updated_at])
         ->andFilterWhere(['like','player.username',$this->username])
         ->andFilterWhere(['like','network.name',$this->network_name]);
         $dataProvider->setSort([

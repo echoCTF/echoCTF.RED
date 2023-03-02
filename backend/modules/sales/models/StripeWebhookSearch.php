@@ -59,12 +59,12 @@ class StripeWebhookSearch extends StripeWebhook
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'ts' => $this->ts,
         ]);
 
         $query->andFilterWhere(['like', 'type', $this->type])
-            ->andFilterWhere(['like', 'object_id', $this->object_id])
-            ->andFilterWhere(['like', 'object', $this->object]);
+        ->andFilterWhere(['like', 'ts', $this->ts])
+        ->andFilterWhere(['like', 'object_id', $this->object_id])
+        ->andFilterWhere(['like', 'object', $this->object]);
         $dataProvider->setSort([
              'defaultOrder' => ['ts'=>SORT_DESC,'id'=>SORT_DESC]]);
         return $dataProvider;

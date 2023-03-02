@@ -73,9 +73,9 @@ class TargetInstanceSearch extends TargetInstance
         // grid filtering conditions
         $query->andFilterWhere([
             'reboot' => $this->reboot,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
         ]);
+        $query->andFilterWhere(['like','target_instance.created_at',$this->created_at])
+              ->andFilterWhere(['like','target_instance.updated_at',$this->updated_at]);
         $query->andFilterWhere([
             'OR',
             ['like', 'INET_NTOA(target_instance.ip)', $this->ipoctet],

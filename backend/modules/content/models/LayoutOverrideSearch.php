@@ -63,11 +63,11 @@ class LayoutOverrideSearch extends LayoutOverride
             'guest' => $this->guest,
             'repeating' => $this->repeating,
             'player_id' => $this->player_id,
-            'valid_from' => $this->valid_from,
-            'valid_until' => $this->valid_until,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
+            ->andFilterWhere(['like', 'valid_from', $this->valid_from])
+            ->andFilterWhere(['like', 'valid_until', $this->valid_until])
             ->andFilterWhere(['like', 'route', $this->route])
             ->andFilterWhere(['like', 'css', $this->css])
             ->andFilterWhere(['like', 'js', $this->js]);

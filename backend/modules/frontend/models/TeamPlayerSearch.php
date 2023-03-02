@@ -65,13 +65,13 @@ class TeamPlayerSearch extends TeamPlayer
             'team_player.team_id' => $this->team_id,
             'team_player.player_id' => $this->player_id,
             'team_player.approved' => $this->approved,
-            'team_player.ts' => $this->ts,
         ]);
 
         $query->andFilterWhere(['like', 'player.id', $this->player]);
         $query->orFilterWhere(['like', 'player.username', $this->player]);
         $query->andFilterWhere(['like', 'team.id', $this->team]);
         $query->orFilterWhere(['like', 'team.name', $this->team]);
+        $query->orFilterWhere(['like', 'team_player.ts', $this->ts]);
 
         $dataProvider->setSort([
             'attributes' => array_merge(

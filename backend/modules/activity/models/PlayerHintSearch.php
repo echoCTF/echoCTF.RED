@@ -64,7 +64,6 @@ class PlayerHintSearch extends PlayerHint
             'player_hint.player_id' => $this->player_id,
             'player_hint.hint_id' => $this->hint_id,
             'player_hint.status' => $this->status,
-            'player_hint.ts' => $this->ts,
         ]);
 
         $query->andFilterWhere(['like', 'player_hint.ts', $this->ts]);

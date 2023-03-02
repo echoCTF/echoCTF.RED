@@ -63,8 +63,8 @@ class SpinQueueSearch extends SpinQueue
         $query->andFilterWhere([
             'spin_queue.target_id' => $this->target_id,
             'spin_queue.player_id' => $this->player_id,
-            'spin_queue.created_at' => $this->created_at,
         ]);
+        $query->andFilterWhere(['like', 'spin_queue.created_at', $this->created_at]);
         $query->andFilterWhere(['like', 'player.username', $this->player]);
         $dataProvider->setSort([
             'attributes' => array_merge(
