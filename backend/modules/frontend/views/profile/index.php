@@ -31,8 +31,6 @@ yii\bootstrap5\Modal::end();
         ]) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -47,6 +45,14 @@ yii\bootstrap5\Modal::end();
             'id',
             'player_id',
             [
+              'attribute'=>'avatar',
+              'format'=>['image',['width' => '40px','class'=>'img-thumbnail']],
+              'contentOptions' => function ($model, $key, $index, $column) {
+                return ['class' => 'text-center'.($model->approved_avatar==1 ? ' approved_avatar' : ' pending_avatar')];
+              },
+              'value'=>function($data) { return '//'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data['avatar'];}
+            ],
+            [
               'attribute'=>'username',
               'label'=>'Username',
               'value'=>'owner.username'
@@ -60,15 +66,11 @@ yii\bootstrap5\Modal::end();
             'twitter',
             'github',
             'discord',
-//            'terms_and_conditions:boolean',
-//            'mail_optin:boolean',
-//            'gdpr:boolean',
             [
-              'attribute'=>'avatar',
-              'format'=>'html',
-              'value'=>function($data) { return Html::img('https://'.Yii::$app->sys->offense_domain.'/images/avatars/' . $data['avatar'],['width' => '50px']);}
+              'attribute'=>'approved_avatar',
+              'format'=>'boolean',
+              'visible'=>Yii::$app->sys->approved_avatar===false,
             ],
-            'approved_avatar:boolean',
             [
               'class' => 'yii\grid\ActionColumn',
               'template' => '{view} {update} {delete} {approve-avatar} {clear-validation} {player-view} {player-view-full}',
