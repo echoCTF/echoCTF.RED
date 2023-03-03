@@ -63,3 +63,6 @@ a.desc:after {
 .fa-nf-failed_claims:before { content: "\f11e"; }
 .fa-nf-failed_login:before { content: "\f071"; }
 .grid-view th { white-space: nowrap; }
+
+.approved_avatar>img { border: 1px solid lightgray; }
+.pending_avatar>img { border: 1px solid orangered; }
