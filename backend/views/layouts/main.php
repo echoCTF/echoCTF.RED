@@ -156,7 +156,6 @@ AppAsset::register($this);
                         ['label' => 'Volumes', 'url' => ['/infrastructure/target-volume/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Servers', 'url' => ['/infrastructure/server/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Target Instance Audit', 'url' => ['/infrastructure/target-instance-audit/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
-                        ['label' => 'Credential', 'url' => ['/gameplay/credential/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                     ],
                 ],
                 [
@@ -173,6 +172,7 @@ AppAsset::register($this);
                         ['label' => 'Tutorial Target', 'url' => ['/gameplay/tutorial-target/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Tutorial Tasks', 'url' => ['/gameplay/tutorial-task/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Tutorial Task Dependencies', 'url' => ['/gameplay/tutorial-task-dependency/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
+                        ['label' => 'Credential', 'url' => ['/gameplay/credential/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                     ],
                 ],
                 [
