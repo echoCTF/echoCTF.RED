@@ -9,7 +9,7 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('app', 'Player Customers');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['/sales/default/index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 ?>
 <div class="player-customer-index">
 
