@@ -11,7 +11,7 @@ use app\modules\sales\models\Product;
 use app\modules\sales\models\PlayerSubscription;
 use app\modules\sales\models\StripeWebhook as Webhook;
 $this->title = Yii::t('app', 'Sales Dashboard');
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 ?>
 <div class="player-customer-index">
 

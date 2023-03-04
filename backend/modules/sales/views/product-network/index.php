@@ -9,7 +9,7 @@ use yii\widgets\Pjax;
 
 $this->title = Yii::t('app', 'Product Networks');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['/sales/default/index']];
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 ?>
 <div class="product-network-index">
 
