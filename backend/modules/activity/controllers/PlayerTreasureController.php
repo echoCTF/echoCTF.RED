@@ -64,13 +64,13 @@ class PlayerTreasureController extends \app\components\BaseController
         if(Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
-          Yii::$app->session->setFlash('warning', "No Players found create one first.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No Players found create one first."));
           return $this->redirect(['/frontend/player/create']);
         }
         if(Treasure::find()->count() == 0)
         {
           // If there are no questions redirect to create question
-          Yii::$app->session->setFlash('warning', "No Treasures found create one first.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No Treasures found create one first."));
           return $this->redirect(['/gameplay/treasure/create']);
         }
 
@@ -136,6 +136,6 @@ class PlayerTreasureController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
 }

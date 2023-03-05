@@ -125,17 +125,18 @@ class PlayerSpinController extends \app\components\BaseController
           $ps->save();
           $notif=new \app\modules\activity\models\Notification;
           $notif->player_id=$id;
-          $notif->title="Restarts counter zeroed";
-          $notif->body='<p>We have zeroed your restart counters. You can request restarts again.</p><p>If you need more restarts and you\'ve reached your maximum restarts for the day, come and find our moderators over at our <a href="https://discord.gg/gQuAdzz" title="echoCTF Discord Server" target="_blank">discord server</a>. We will be more than happy to reset the system for you or reset your counters.</p>';
+          $notif->title=Yii::t('app',"Restarts counter zeroed");
+          $notif->category='info';
+          $notif->body=Yii::t('app','<p>We have zeroed your restart counter.</p>');
           $notif->save();
         }
         $trans->commit();
-        Yii::$app->session->setFlash('success', 'Player spin counters zeroed.');
+        Yii::$app->session->setFlash('success', Yii::t('app','Player spin counters zeroed.'));
       }
       catch(\Exception $e)
       {
         $trans->rollBack();
-        Yii::$app->session->setFlash('error', 'Player spin counters failed to zero out.');
+        Yii::$app->session->setFlash('error', Yii::t('app','Player spin counters failed to zero out.'));
       }
 
       return $this->goBack(Yii::$app->request->referrer);

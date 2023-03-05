@@ -40,12 +40,12 @@ class DefaultController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-          Yii::$app->session->setFlash('success', 'Frontpage Scenario updated');
+          Yii::$app->session->setFlash('success', Yii::t('app','Frontpage Scenario updated'));
         }
 
         return $this->render('sysconfig_content', [
             'model' => $model,
-            'hint'=>'Enter your desired html code to be displayed on the frontpage for guest visitors.'
+            'hint'=>Yii::t('app','Enter your desired html code to be displayed on the frontpage for guest visitors.')
         ]);
     }
 
@@ -60,12 +60,12 @@ class DefaultController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-          Yii::$app->session->setFlash('success', 'Writeup rules updated');
+          Yii::$app->session->setFlash('success', Yii::t('app','Writeup rules updated'));
         }
 
         return $this->render('sysconfig_content', [
             'model' => $model,
-            'hint'=>'Enter your desired html code to be displayed as writeup instructions.'
+            'hint'=>Yii::t('app','Enter your desired html code to be displayed as writeup instructions.')
         ]);
     }
 
@@ -80,12 +80,12 @@ class DefaultController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-          Yii::$app->session->setFlash('success', 'Offense Scenario updated');
+          Yii::$app->session->setFlash('success', Yii::t('app','Offense Scenario updated'));
         }
 
         return $this->render('sysconfig_content', [
             'model' => $model,
-            'hint'=>'Enter your desired html code to be displayed on default page of the logged in offense players.'
+            'hint'=>Yii::t('app','Enter your desired html code to be displayed on default page of the logged in offense players.')
         ]);
     }
 
@@ -100,12 +100,12 @@ class DefaultController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-          Yii::$app->session->setFlash('success', 'Defense Scenario updated');
+          Yii::$app->session->setFlash('success', Yii::t('app','Defense Scenario updated'));
         }
 
         return $this->render('sysconfig_content', [
             'model' => $model,
-            'hint'=>'Enter your desired html code to be displayed on default page of the logged in defense players.'
+            'hint'=>Yii::t('app','Enter your desired html code to be displayed on default page of the logged in defense players.')
         ]);
     }
 
@@ -120,12 +120,12 @@ class DefaultController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-          Yii::$app->session->setFlash('success', 'Footer Logos content updated');
+          Yii::$app->session->setFlash('success', Yii::t('app','Footer Logos content updated'));
         }
 
         return $this->render('sysconfig_content', [
             'model' => $model,
-            'hint'=>'Enter your desired html code to be displayed on the footer of every page.'
+            'hint'=>Yii::t('app','Enter your desired html code to be displayed on the footer of every page.')
         ]);
     }
 
@@ -140,12 +140,12 @@ class DefaultController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-          Yii::$app->session->setFlash('success', 'CSS overrides content updated');
+          Yii::$app->session->setFlash('success', Yii::t('app','CSS overrides content updated'));
         }
 
         return $this->render('sysconfig_content', [
             'model' => $model,
-            'hint'=>'Enter CSS files or URLs to be loaded (one per-line). Content starting with <kbd>/* ... */</kbd> will be included as raw CSS code.',
+            'hint'=>Yii::t('app','Enter CSS files or URLs to be loaded (one per-line). Content starting with <kbd>/* ... */</kbd> will be included as raw CSS code.'),
         ]);
     }
 
@@ -160,12 +160,12 @@ class DefaultController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-          Yii::$app->session->setFlash('success', 'JS overrides content updated');
+          Yii::$app->session->setFlash('success', Yii::t('app','JS overrides content updated'));
         }
 
         return $this->render('sysconfig_content', [
             'model' => $model,
-            'hint'=>'Enter Javascript files or URLs to be loaded (one per-line). Content starting with <kbd>/* ... */</kbd> will be included as raw javascript code.',
+            'hint'=>Yii::t('app','Enter Javascript files or URLs to be loaded (one per-line). Content starting with <kbd>/* ... */</kbd> will be included as raw javascript code.'),
         ]);
     }
 

@@ -62,7 +62,7 @@ class ReportController extends \app\components\BaseController
         if(Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
-          Yii::$app->session->setFlash('warning', "No Players found create one first.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No Players found create one first."));
           return $this->redirect(['/frontend/player/create']);
         }
 
@@ -125,6 +125,6 @@ class ReportController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
 }

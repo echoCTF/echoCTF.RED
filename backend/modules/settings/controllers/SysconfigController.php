@@ -83,7 +83,7 @@ class SysconfigController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            Yii::$app->session->setFlash('success', '<code>'.$model->id.'</code> updated.');
+            Yii::$app->session->setFlash('success', Yii::t('app','<code>{id}</code> updated.',['id'=>$model->id]));
             if($id!==$model->id)
             {
                 return $this->redirect(['update','id'=>$model->id]);
@@ -107,7 +107,7 @@ class SysconfigController extends \app\components\BaseController
       $model=new ConfigureForm();
       if($model->load(Yii::$app->request->post()) && $model->save())
       {
-        Yii::$app->session->setFlash('success','Configuration saved');
+        Yii::$app->session->setFlash('success',Yii::t('app','Configuration saved'));
         return $this->redirect(['configure']);
       }
 
@@ -144,7 +144,7 @@ class SysconfigController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
     protected function stripYii()
     {

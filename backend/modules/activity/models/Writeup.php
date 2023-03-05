@@ -15,7 +15,7 @@ use yii\helpers\ArrayHelper;
  *
  * @property int $player_id
  * @property int $target_id
- * @property resource|null $content
+ * @property string|null $content
  * @property int|null $approved
  * @property string|null $status
  * @property resource|null $comment

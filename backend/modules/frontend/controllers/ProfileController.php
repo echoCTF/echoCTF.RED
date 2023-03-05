@@ -177,7 +177,7 @@ class ProfileController extends \app\components\BaseController
       } elseif (array_search($attribute, $fields) !== false) {
         $model->$attribute = null;
       } else
-        Yii::$app->session->setFlash('error', "Failing attribute not on the list " . $attribute);
+        Yii::$app->session->setFlash('error', Yii::t('app',"Failing attribute not on the list {attribute}",['attribute'=>$attribute]));
     }
     $model->save();
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null
@@ -197,7 +197,7 @@ class ProfileController extends \app\components\BaseController
           } elseif (array_search($attribute, $fields) !== false) {
             $model->$attribute = null;
           } else
-            Yii::$app->session->setFlash('error', "Failing attribute not on the list " . $attribute);
+          Yii::$app->session->setFlash('error', Yii::t('app',"Failing attribute not on the list {attribute}",['attribute'=>$attribute]));
         }
         $model->save();
       }

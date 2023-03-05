@@ -113,7 +113,7 @@ class PlayerVpnHistoryController extends \app\components\BaseController
     public function actionTruncate()
     {
         if(PlayerVpnHistory::deleteAll())
-          Yii::$app->session->setFlash('success', "Truncated Player VPN History.");
+          Yii::$app->session->setFlash('success', Yii::t('app',"Truncated Player VPN History."));
 
         return $this->redirect(['index']);
     }

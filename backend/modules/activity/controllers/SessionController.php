@@ -126,9 +126,9 @@ class SessionController extends \app\components\BaseController
 //        $expired_at=(new \yii\db\Query)->select($expired)->scalar();
         $sess=Sessions::deleteAll(['<', 'expire', $expired]);
         if($sess > 0)
-          Yii::$app->session->setFlash('success', "Deleted $sess expired sessions.");
+          Yii::$app->session->setFlash('success', Yii::t('app',"Deleted {counter} expired sessions.",['counter'=>$sess]));
         else
-          Yii::$app->session->setFlash('warning', "No expired sessions found to delete.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No expired sessions found to delete."));
 
         return $this->redirect(['index']);
     }
@@ -145,13 +145,13 @@ class SessionController extends \app\components\BaseController
         foreach($query->getModels() as $q)
           $q->delete();
         $trans->commit();
-        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Sessions deleted');
+        Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Sessions deleted',['counter'=>intval($counter)]));
 
       }
       catch(\Exception $e)
       {
         $trans->rollBack();
-        Yii::$app->session->setFlash('error', 'Failed to delete Sessions');
+        Yii::$app->session->setFlash('error', Yii::t('app','Failed to delete Sessions'));
       }
       return $this->redirect(['index']);
     }

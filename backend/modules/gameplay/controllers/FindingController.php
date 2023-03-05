@@ -61,7 +61,7 @@ class FindingController extends \app\components\BaseController
         if(\app\modules\gameplay\models\Target::find()->count() == 0)
         {
           // If there are no player redirect to create player page
-          Yii::$app->session->setFlash('warning', "No targets found create one first.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No targets found create one first."));
           return $this->redirect(['/gameplay/target/create']);
         }
 
@@ -124,6 +124,6 @@ class FindingController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
 }
