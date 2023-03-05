@@ -86,16 +86,16 @@ class HintController extends \app\components\BaseController
         catch(\Exception $e)
         {
             $transaction->rollBack();
-            \Yii::$app->getSession()->setFlash('error', 'Failed to give hint to users');
+            \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to give hint to users'));
             return $this->redirect(['view', 'id'=>$id]);
         }
         catch(\Throwable $e)
         {
             $transaction->rollBack();
-            \Yii::$app->getSession()->setFlash('error', 'Failed to give hint to users');
+            \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to give hint to users'));
             return $this->redirect(['view', 'id'=>$id]);
         }
-        \Yii::$app->getSession()->setFlash('success', 'Hint was sent to all active users.');
+        \Yii::$app->getSession()->setFlash('success', Yii::t('app','Hint was sent to all active users.'));
         return $this->redirect(['view', 'id'=>$id]);
 
     }
@@ -168,6 +168,6 @@ class HintController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
 }

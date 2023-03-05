@@ -68,14 +68,14 @@ class BadgeController extends \app\components\BaseController
             $this->addBadgeFindings($findings,$model);
             $this->addBadgeTreasures($treasures,$model);
             $transaction->commit();
-            Yii::$app->session->setFlash('success', "Badge created with success");
+            Yii::$app->session->setFlash('success', Yii::t('app',"Badge created with success"));
             return $this->redirect(['view', 'id' => $model->id]);
           }
         }
         catch(\Exception $e)
         {
           $transaction->rollback();
-          Yii::$app->session->setFlash('error', "Failed to create badge");
+          Yii::$app->session->setFlash('error', Yii::t('app',"Failed to create badge"));
         }
         return $this->render('create', [
             'model' => $model,
@@ -141,7 +141,7 @@ class BadgeController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
 
     protected function addBadgeTreasures($treasures,$model)

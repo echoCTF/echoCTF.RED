@@ -61,13 +61,13 @@ class TeamplayerController extends \app\components\BaseController
         if(\app\modules\frontend\models\Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
-          Yii::$app->session->setFlash('warning', "No Players found create one first.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No Players found create one first."));
           return $this->redirect(['/frontend/player/create']);
         }
         if(\app\modules\frontend\models\Team::find()->count() == 0)
         {
           // If there are no player redirect to create player page
-          Yii::$app->session->setFlash('warning', "No Teams found create one first.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No Teams found create one first."));
           return $this->redirect(['/frontend/team/create']);
         }
 
@@ -151,6 +151,6 @@ class TeamplayerController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
 }

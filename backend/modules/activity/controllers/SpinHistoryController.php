@@ -116,11 +116,11 @@ class SpinHistoryController extends \app\components\BaseController
       try
       {
         Yii::$app->db->createCommand()->truncateTable('spin_history')->execute();
-        Yii::$app->session->setFlash('success', 'Spin History truncated.');
+        Yii::$app->session->setFlash('success', Yii::t('app','Spin History truncated.'));
       }
       catch(\Exception $e)
       {
-        Yii::$app->session->setFlash('error', 'Failed to truncate table.');
+        Yii::$app->session->setFlash('error', Yii::t('app','Failed to truncate table.'));
       }
       return $this->redirect(['index']);
     }

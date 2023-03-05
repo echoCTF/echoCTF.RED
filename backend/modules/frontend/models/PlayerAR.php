@@ -402,12 +402,12 @@ class PlayerAR extends \yii\db\ActiveRecord
                 ['team_id'=>$this->team->id],
                 ['!=','player_id',$this->id],
             ]);
-            Yii::$app->session->setFlash("warning","The team owned by the user changed category also. Any members got kicked out.");
+            Yii::$app->session->setFlash("warning",Yii::t('app',"The team owned by the user changed category also. Any members got kicked out."));
         }
         elseif($this->teamPlayer!==null && intval($this->teamPlayer->team->academic)!=$this->academic)
         {
             $this->teamPlayer->delete();
-            Yii::$app->session->setFlash("warning","The player got removed from the team");
+            Yii::$app->session->setFlash("warning",Yii::t('app',"The player got removed from the team"));
         }
       }
       return parent::beforeSave($insert);

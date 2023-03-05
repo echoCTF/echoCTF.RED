@@ -77,7 +77,7 @@ class TeamController extends \app\components\BaseController
         if(\app\modules\frontend\models\Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
-          Yii::$app->session->setFlash('warning', "No Players found create one first.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No Players found create one first."));
           return $this->redirect(['/frontend/player/create']);
         }
         $trans=Yii::$app->db->beginTransaction();
@@ -99,7 +99,7 @@ class TeamController extends \app\components\BaseController
         catch (\Exception $e)
         {
           $trans->rollBack();
-          \Yii::$app->getSession()->setFlash('error', 'Failed to create team. '.Html::encode($e->getMessage()));
+          \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to create team. {exception}',['exception'=>Html::encode($e->getMessage())]));
         }
         return $this->render('create', [
             'model' => $model,

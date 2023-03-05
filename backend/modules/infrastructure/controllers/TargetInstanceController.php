@@ -51,7 +51,7 @@ class TargetInstanceController extends \app\components\BaseController
         try {
           $docker=$target->connectAPI();
           if($docker===false)
-            throw new UserException('Failed to connect to the docker API');
+            throw new UserException(Yii::t('app','Failed to connect to the docker API'));
 
 
           $webSocketStream = $docker->containerAttachWebsocket($target->name, [
@@ -67,7 +67,7 @@ class TargetInstanceController extends \app\components\BaseController
         }
         catch(\Exception $e)
         {
-          Yii::$app->session->setFlash('error', "Failed to fetch logs. <b>".Html::encode($e->getMessage()).'</b>');
+          Yii::$app->session->setFlash('error', Yii::t('app',"Failed to fetch logs. <b>{exception}</b>",['exception'=>Html::encode($e->getMessage())]));
           return $this->redirect(['view','id'=>$target->player_id]);
         }
         return $this->render('logs', [
@@ -94,7 +94,7 @@ class TargetInstanceController extends \app\components\BaseController
           try {
             $docker=$target->connectAPI();
             if($docker===false)
-                throw new UserException("Failed to connect to docker API");
+                throw new UserException(Yii::t('app',"Failed to connect to docker API"));
             $execConfig = new ContainersIdExecPostBody();
             $execConfig->setTty($form->tty);
             $execConfig->setAttachStdout($form->stdout);
@@ -122,7 +122,7 @@ class TargetInstanceController extends \app\components\BaseController
           }
           catch (\Exception $e)
           {
-            Yii::$app->session->setFlash('error', "Failed to execute command. <b>".Html::encode($e->getMessage()).'</b>');
+            Yii::$app->session->setFlash('error', Yii::t('app',"Failed to execute command. <b>{exception}</b>",['exception'=>Html::encode($e->getMessage())]));
           }
         }
         else {

@@ -189,7 +189,7 @@ class PlayerController extends \app\components\BaseController
       }
     } catch (\Exception $e) {
       $trans->rollBack();
-      \Yii::$app->getSession()->setFlash('error', 'Failed to create player. ' . Html::encode($e->getMessage()));
+      \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to create player. {exception}', ['attribute'=>Html::encode($e->getMessage())]));
     }
     return $this->render('create', [
       'model' => $model,
@@ -228,9 +228,9 @@ class PlayerController extends \app\components\BaseController
   {
 
     if (($model = Player::findOne($id)) !== null && $model->delete() !== false)
-      Yii::$app->session->setFlash('success', sprintf('Player [%s] deleted.', Html::encode($model->username)));
+      Yii::$app->session->setFlash('success', Yii::t('app','Player [{username}] deleted.', ['username'=>Html::encode($model->username)]));
     else
-      Yii::$app->session->setFlash('error', 'Player deletion failed.');
+      Yii::$app->session->setFlash('error', Yii::t('app','Player deletion failed.'));
     return $this->redirect(['index']);
   }
 
@@ -245,9 +245,9 @@ class PlayerController extends \app\components\BaseController
   {
 
     if (($model = Player::findOne($id)) !== null && $model->updateAttributes(['status' => 0, 'active' => 0]))
-      Yii::$app->session->setFlash('success', sprintf('Player [%s] status set to deleted.', Html::encode($model->username)));
+      Yii::$app->session->setFlash('success', Yii::t('app','Player [{username}] status set to deleted.', ['username'=>Html::encode($model->username)]));
     else
-      Yii::$app->session->setFlash('error', 'Player deletion failed.');
+      Yii::$app->session->setFlash('error', Yii::t('app','Player deletion failed.'));
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
@@ -262,9 +262,9 @@ class PlayerController extends \app\components\BaseController
     $model = $this->findModel($id);
     $model->auth_key = "";
     if ($model->save()) {
-      Yii::$app->session->setFlash('success', 'Player auth_key regenerated');
+      Yii::$app->session->setFlash('success', Yii::t('app','Player auth_key regenerated'));
     } else {
-      Yii::$app->session->setFlash('error', 'Failed to reset player auth_key');
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to reset player auth_key'));
     }
 
     return $this->redirect(Yii::$app->request->referrer ?? ['index']);
@@ -290,10 +290,10 @@ class PlayerController extends \app\components\BaseController
         $model->team->delete();
       }
       $trans->commit();
-      Yii::$app->session->setFlash('success', 'User [' . Html::encode($model->username) . '] academic set to ' . Html::encode($model->academic));
+      Yii::$app->session->setFlash('success', Yii::t('app','User [{username}] academic set to {academic}', ['username'=>Html::encode($model->username),'academic'=>Html::encode($model->academic)]));
     } catch (\Exception $e) {
       $trans->rollBack();
-      Yii::$app->session->setFlash('error', 'Failed to toggle academic flag for player');
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to toggle academic flag for player'));
     }
 
     return $this->redirect(Yii::$app->request->referrer ?? ['index']);
@@ -312,10 +312,10 @@ class PlayerController extends \app\components\BaseController
       $model = $this->findModel($id);
       $model->updateAttributes(['active' => !$model->active]);
       $trans->commit();
-      Yii::$app->session->setFlash('success', 'User [' . Html::encode($model->username) . '] active set to ' . Html::encode($model->active));
+      Yii::$app->session->setFlash('success', Yii::t('app','User [{username}] active set to {status}', ['username'=>Html::encode($model->username),'status'=>Html::encode($model->active)]));
     } catch (\Exception $e) {
       $trans->rollBack();
-      Yii::$app->session->setFlash('error', 'Failed to toggle active flag for player');
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to toggle active flag for player'));
     }
 
     return $this->redirect(['index']);
@@ -327,10 +327,10 @@ class PlayerController extends \app\components\BaseController
     $ps = $player->playerSsl;
     $ps->generate();
     if ($ps->save()) {
-      Yii::$app->session->setFlash('success', "SSL Keys regenerated.");
+      Yii::$app->session->setFlash('success', Yii::t('app',"SSL Keys regenerated."));
       return $this->redirect(['/frontend/player/index']);
     }
-    Yii::$app->session->setFlash('error', "Something went wrong with the SSL keys regeneration.");
+    Yii::$app->session->setFlash('error', Yii::t('app',"Something went wrong with the SSL keys regeneration."));
     return $this->redirect(['/frontend/player/index']);
   }
 
@@ -340,7 +340,7 @@ class PlayerController extends \app\components\BaseController
     $query = $searchModel->search(['PlayerSearch' => Yii::$app->request->post()]);
     $query->pagination = false;
     if (intval($query->count) === intval(Player::find()->count())) {
-      Yii::$app->session->setFlash('error', 'Not allowed to ban all players. Please use the filters to limit the number of players to be banned.');
+      Yii::$app->session->setFlash('error', Yii::t('app','Not allowed to ban all players. Please use the filters to limit the number of players to be banned.'));
       return $this->redirect(['index']);
     }
 
@@ -351,10 +351,10 @@ class PlayerController extends \app\components\BaseController
         $q->ban();
 
       $trans->commit();
-      Yii::$app->session->setFlash('success', '[<code><b>' . intval($counter) . '</b></code>] Users banned');
+      Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Users banned',['counter'=>intval($counter)]));
     } catch (\Exception $e) {
       $trans->rollBack();
-      Yii::$app->session->setFlash('error', 'Failed to ban users');
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to ban users'));
     }
     return $this->redirect(['index']);
   }
@@ -365,7 +365,7 @@ class PlayerController extends \app\components\BaseController
     $query = $searchModel->search(['PlayerSearch' => Yii::$app->request->post()]);
     $query->pagination = false;
     if (intval($query->count) === intval(Player::find()->count())) {
-      Yii::$app->session->setFlash('error', 'You have attempted to delete all the records. Use the <b>Reset All player data</b> operation instead.');
+      Yii::$app->session->setFlash('error', Yii::t('app','You have attempted to delete all the records. Use the <b>Reset All player data</b> operation instead.'));
       return $this->redirect(['index']);
     }
 
@@ -375,10 +375,10 @@ class PlayerController extends \app\components\BaseController
       foreach ($query->getModels() as $q)
         $q->delete();
       $trans->commit();
-      Yii::$app->session->setFlash('success', '[<code><b>' . intval($counter) . '</b></code>] Users deleted');
+      Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Users deleted',['counter'=>intval($counter)]));
     } catch (\Exception $e) {
       $trans->rollBack();
-      Yii::$app->session->setFlash('error', 'Failed to delete users');
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to delete users'));
     }
     return $this->redirect(['index']);
   }
@@ -395,7 +395,7 @@ class PlayerController extends \app\components\BaseController
       return $model;
     }
 
-    throw new NotFoundHttpException('The requested page does not exist.');
+    throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
   }
 
   public function actionAjaxSearch($term, $load = false, $active = null, $status = null)

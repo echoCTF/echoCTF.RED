@@ -101,11 +101,11 @@ class ChallengeController extends \app\components\BaseController
             {
               if($model->file)
                 $model->file->saveAs('uploads/'.$model->id);
-              Yii::$app->session->setFlash('success', 'Challenge ['.Html::encode($model->name).'] created.');
+              Yii::$app->session->setFlash('success', Yii::t('app','Challenge [{name}] created',['name'=>Html::encode($model->name)]));
             }
             catch(\Exception $e)
             {
-              Yii::$app->session->setFlash('error', 'Failed to create challenge ['.Html::encode($model->name).']');
+              Yii::$app->session->setFlash('error', Yii::t('app','Failed to create challenge [{name}]',['name'=>Html::encode($model->name)]));
             }
             return $this->redirect(['view', 'id' => $model->id]);
         }
@@ -167,6 +167,6 @@ class ChallengeController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
 }

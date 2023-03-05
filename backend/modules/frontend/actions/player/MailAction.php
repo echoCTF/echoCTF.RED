@@ -24,7 +24,7 @@ class MailAction extends \yii\base\Action
     $player=$this->controller->findModel($id);
     if($player->status==10)
     {
-      \Yii::$app->getSession()->setFlash('warning', 'Player already active skipping mail.');
+      \Yii::$app->getSession()->setFlash('warning', Yii::t('app','Player already active skipping mail.'));
       return $this->controller->goBack(Yii::$app->request->referrer);
     }
     elseif($player->status==9)
@@ -40,18 +40,17 @@ class MailAction extends \yii\base\Action
             )
             ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
             ->setTo([$player->email => $player->fullname])
-            ->setSubject(trim(Yii::$app->sys->event_name). ' Account approved')
+            ->setSubject(Yii::t('app','{event_name} Account approved',['event_name'=>trim(Yii::$app->sys->event_name)]))
             ->send();
-            \Yii::$app->getSession()->setFlash('success', 'Player activation mail send.');
+            \Yii::$app->getSession()->setFlash('success', Yii::t('app','Player activation mail send.'));
         }
         catch(\Exception $e)
         {
-          \Yii::$app->getSession()->setFlash('error', 'Failed to mail player. '.Html::encode($e->getMessage()));
+          \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to mail player. {exception}',['exceptions'=>Html::encode($e->getMessage())]));
         }
     }
     elseif($player->status==0)
     {
-
       try {
         $activationURL=sprintf("https://%s/verify-email?token=%s",\Yii::$app->sys->offense_domain, $player->verification_token);
           Yii::$app
@@ -62,13 +61,13 @@ class MailAction extends \yii\base\Action
             )
             ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
             ->setTo([$player->email => $player->fullname])
-            ->setSubject(trim(Yii::$app->sys->event_name). ' Account Rejected')
+            ->setSubject(Yii::t('app','{event_name} Account Rejected',['event_name'=>trim(Yii::$app->sys->event_name)]))
             ->send();
-            \Yii::$app->getSession()->setFlash('success', 'Player rejection mail send.');
+            \Yii::$app->getSession()->setFlash('success', Yii::t('app','Player rejection mail send.'));
         }
         catch(\Exception $e)
         {
-          \Yii::$app->getSession()->setFlash('error', 'Failed to mail rejection to player. '.Html::encode($e->getMessage()));
+          \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to mail rejection to player. {exception}',['exception'=>Html::encode($e->getMessage())]));
         }
 
     }

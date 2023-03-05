@@ -36,12 +36,12 @@ class ImportAction extends \yii\base\Action
               {
                 $model->processCsvRecords();
                 $trans->commit();
-                \Yii::$app->getSession()->setFlash('success', 'successful import of csv records');
+                \Yii::$app->getSession()->setFlash('success', Yii::t('app','successful import of csv records'));
               }
               catch(\Exception $e)
               {
                 $trans->rollBack();
-                Yii::$app->session->setFlash('error', 'Failed to import file, '.Html::encode($e->getMessage()));
+                Yii::$app->session->setFlash('error', Yii::t('app','Failed to import file, {exception}',['exception'=>Html::encode($e->getMessage())]));
               }
           }
       }

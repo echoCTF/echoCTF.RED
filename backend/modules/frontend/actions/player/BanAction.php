@@ -27,17 +27,17 @@ class BanAction extends \yii\base\Action
       if($this->controller->findModel($id)->ban())
       {
         $trans->commit();
-        Yii::$app->session->setFlash('success', 'Player deleted and placed on banned table.');
+        Yii::$app->session->setFlash('success', Yii::t('app','Player deleted and placed on banned table.'));
       }
       else
       {
-          throw new \LogicException('Faled to delete and ban player.');
+          throw new \LogicException(Yii::t('app','Failed to delete and ban player.'));
       }
     }
     catch(\Exception $e)
     {
       $trans->rollBack();
-      Yii::$app->session->setFlash('error', 'Failed to ban player.');
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to ban player.'));
     }
     if(Yii::$app->request->referrer)
     {

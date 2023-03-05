@@ -152,7 +152,7 @@ class TargetController extends \app\components\BaseController
         }
         catch(\Exception $e)
         {
-          Yii::$app->session->setFlash('error', "Failed to fetch logs. <b>".Html::encode($e->getMessage()).'</b>');
+          Yii::$app->session->setFlash('error', Yii::t('app',"Failed to fetch logs. <b>{exception}</b>",['exception'=>Html::encode($e->getMessage())]));
           return $this->redirect(['view','id'=>$target->id]);
         }
         return $this->render('logs', [
@@ -250,7 +250,7 @@ class TargetController extends \app\components\BaseController
     {
         $model=$this->findModel($id);
         $modelOrig=$this->findModel($id);
-        $msg="Server updated successfully";
+        $msg=Yii::t('app',"Server updated successfully");
         if($model->load(Yii::$app->request->post()) && $model->validate())
         {
 
@@ -258,14 +258,14 @@ class TargetController extends \app\components\BaseController
           if($modelOrig->server != $model->server || array_key_exists('destroy', Yii::$app->request->post()))
           {
             $modelOrig->destroy();
-            $msg="Server destroyed and updated successfully";
+            $msg=Yii::t('app',"Server destroyed and updated successfully");
           }
           if($model->save())
           {
             Yii::$app->session->setFlash('success', $msg);
             return $this->redirect(['view', 'id' => $model->id]);
           }
-          Yii::$app->session->setFlash('error', 'Server failed to be updated ['.Html::encode(implode(", ", $model->errors)).']');
+          Yii::$app->session->setFlash('error', Yii::t('app','Server failed to be updated [{errors}]',['errors'=>Html::encode(implode(", ", $model->errors))]));
         }
 
         return $this->render('update', [
@@ -300,7 +300,7 @@ class TargetController extends \app\components\BaseController
       $query->pagination=false;
       if(intval($query->count)===intval(Target::find()->count()))
       {
-        Yii::$app->session->setFlash('error', 'You have attempted to delete all the records.');
+        Yii::$app->session->setFlash('error', Yii::t('app','You have attempted to delete all the records.'));
         return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
         //return $this->redirect(['index']);
       }
@@ -312,13 +312,13 @@ class TargetController extends \app\components\BaseController
         foreach($query->getModels() as $q)
           $q->delete();
         $trans->commit();
-        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Targets deleted');
+        Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Targets deleted',['counter'=>intval($counter)]));
 
       }
       catch(\Exception $e)
       {
         $trans->rollBack();
-        Yii::$app->session->setFlash('error', 'Failed to delete targets');
+        Yii::$app->session->setFlash('error', Yii::t('app','Failed to delete targets'));
       }
       return $this->redirect(['index']);
     }
@@ -339,11 +339,11 @@ class TargetController extends \app\components\BaseController
         $counter=$query->count;
         foreach($query->getModels() as $q)
           $q->pull();
-        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Targets pulled');
+        Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Target images pulled',['counter'=>intval($counter)]));
       }
       catch(\Exception $e)
       {
-        Yii::$app->session->setFlash('error', 'Failed to pull targets');
+        Yii::$app->session->setFlash('error', Yii::t('app','Failed to pull targets'));
       }
       return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
     }
@@ -366,13 +366,13 @@ class TargetController extends \app\components\BaseController
         foreach($query->getModels() as $q)
           $q->active=1;
         $trans->commit();
-        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Targets activated');
+        Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Targets activated',['counter'=>intval($counter)]));
 
       }
       catch(\Exception $e)
       {
         $trans->rollBack();
-        Yii::$app->session->setFlash('error', 'Failed to activate targets');
+        Yii::$app->session->setFlash('error', Yii::t('app','Failed to activate targets'));
       }
       return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
     }
@@ -393,11 +393,11 @@ class TargetController extends \app\components\BaseController
         $counter=$query->count;
         foreach($query->getModels() as $q)
           $q->spin();
-        Yii::$app->session->setFlash('success', '[<code><b>'.intval($counter).'</b></code>] Targets spinned');
+        Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Targets spun',['counter'=>intval($counter)]));
       }
       catch(\Exception $e)
       {
-        Yii::$app->session->setFlash('error', 'Failed to spin targets');
+        Yii::$app->session->setFlash('error', Yii::t('app','Failed to spin targets'));
       }
       return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
     }
@@ -414,9 +414,9 @@ class TargetController extends \app\components\BaseController
     {
       $model=$this->findModel($id);
         if($model->destroy())
-          Yii::$app->session->setFlash('success', 'Container destroyed from docker server [<code>'.Html::encode($model->server).'</code>]');
+          Yii::$app->session->setFlash('success', Yii::t('app','Container destroyed from docker server [<code>{server}</code>]',['server'=>Html::encode($model->server)]));
         else
-          Yii::$app->session->setFlash('error', 'Failed to destroy container from docker server [<code>'.Html::encode($model->server).'</code>]');
+          Yii::$app->session->setFlash('error', Yii::t('app','Failed to destroy container from docker server [<code>{server}</code>]',['server'=>Html::encode($model->server)]));
 
         return $this->goBack(Yii::$app->request->referrer);
     }
@@ -437,17 +437,17 @@ class TargetController extends \app\components\BaseController
           $models=Target::find()->all();
           foreach($models as $model)
             $model->spin();
-          \Yii::$app->getSession()->setFlash('success', 'Containers successfully restarted');
+          \Yii::$app->getSession()->setFlash('success', Yii::t('app','Containers successfully restarted'));
         }
         else
         {
           $this->findModel($id)->spin();
-          \Yii::$app->getSession()->setFlash('success', 'Container successfully restarted');
+          \Yii::$app->getSession()->setFlash('success', Yii::t('app','Container successfully restarted'));
         }
       }
       catch(\Exception $e)
       {
-        \Yii::$app->getSession()->setFlash('error', 'Failed to restart container. '.Html::encode($e->getMessage()));
+        \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to restart container. {exception}',['exception'=>Html::encode($e->getMessage())]));
       }
       return $this->goBack(Yii::$app->request->referrer);
     }
@@ -466,17 +466,17 @@ class TargetController extends \app\components\BaseController
           $models=Target::find()->all();
           foreach($models as $model)
             $model->pull();
-          \Yii::$app->getSession()->setFlash('success', 'Images pulled successfully');
+          \Yii::$app->getSession()->setFlash('success', Yii::t('app','Images pulled successfully'));
           return $this->redirect(['index']);
 
         }
         else
         {
           if($this->findModel($id)->pull())
-            \Yii::$app->getSession()->setFlash('success', 'Image successfully pulled');
+            \Yii::$app->getSession()->setFlash('success', Yii::t('app','Image successfully pulled'));
           else
           {
-            \Yii::$app->getSession()->setFlash('error', 'Failed to pull container image');
+            \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to pull container image'));
           }
           return $this->goBack(Yii::$app->request->referrer);
         }
@@ -497,7 +497,7 @@ class TargetController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
 
     /*

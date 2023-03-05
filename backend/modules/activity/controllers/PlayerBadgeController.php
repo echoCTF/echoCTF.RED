@@ -64,13 +64,13 @@ class PlayerBadgeController extends \app\components\BaseController
         if(Player::find()->count() == 0)
         {
           // If there are no player redirect to create player page
-          Yii::$app->session->setFlash('warning', "No Players found create one first.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No Players found create one first."));
           return $this->redirect(['/frontend/player/create']);
         }
         if(Badge::find()->count() == 0)
         {
           // If there are no questions redirect to create question
-          Yii::$app->session->setFlash('warning', "No Badges found create one first.");
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No Badges found create one first."));
           return $this->redirect(['/gameplay/badge/create']);
         }
         if($model->load(Yii::$app->request->post()) && $model->save())
@@ -125,11 +125,11 @@ class PlayerBadgeController extends \app\components\BaseController
             $stream->delete();
           }
           $transaction->commit();
-          Yii::$app->session->setFlash('success', "Badge deleted from player and stream.");
+          Yii::$app->session->setFlash('success', Yii::t('app',"Badge deleted from player and stream."));
         }
         catch (\Exception $e) {
           $transaction->rollback();
-          Yii::$app->session->setFlash('error', "Failed to delete Badge from player and stream.");
+          Yii::$app->session->setFlash('error', Yii::t('app',"Failed to delete Badge from player and stream."));
         }
 
         return $this->redirect(['index']);
@@ -150,6 +150,6 @@ class PlayerBadgeController extends \app\components\BaseController
             return $model;
         }
 
-        throw new NotFoundHttpException('The requested page does not exist.');
+        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
     }
 }

@@ -198,7 +198,7 @@ class TargetInstance extends \yii\db\ActiveRecord
     {
       $n=new \app\modules\activity\models\Notification;
       $n->player_id=$this->player_id;
-      $n->title=sprintf("Your instance for target [%s] got %s.",$this->target->name,$what);
+      $n->title=Yii::t('app',"Your instance for target [{target_name}] got {what}.",['target_name'=>$this->target->name,'what'=>$what]);
       $n->body=$n->title;
       $n->archived=0;
       $n->created_at=new \yii\db\Expression('NOW()');
