@@ -6,9 +6,11 @@ use Yii;
 use app\modules\activity\models\Notification;
 use app\modules\activity\models\Writeup;
 use app\modules\activity\models\WriteupSearch;
+use yii\base\UserException;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Html;
 
 /**
  * WriteupController implements the CRUD actions for Writeup model.
@@ -147,7 +149,7 @@ class WriteupController extends \app\components\BaseController
       $transaction->commit();
     } catch (\Exception $e) {
       $transaction->rollBack();
-      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to approve writeup for {target_name} by {username}.', ['target_name' => $model->target->name, 'username' => $model->player->username]));
+      Yii::$app->session->setFlash('error', Html::encode($e->getMessage()));
     }
     return $this->redirect(['index']);
   }
