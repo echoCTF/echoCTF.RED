@@ -146,7 +146,7 @@ if($headshot)
       <?=$this->render('_headshots_card',['target'=>$target]);?>
 
       <?php if(count($target->writeups)>0):?>
-      <?=$this->render('_target_writeups',['writeups'=>$target->writeups,'active'=>false,'writeups_activated'=>(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || ($identity->player_id===Yii::$app->user->id && $target->progress==100))]);?>
+        <?=$this->render('_target_writeups',['writeups'=>$target->writeups,'active'=>false,'writeups_activated'=>(PTH::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null || Headshot::findOne(['player_id'=>Yii::$app->user->id,'target_id'=>$target->id])!==null)]);?>
       <?php endif;?>
     </div>
   </div>
