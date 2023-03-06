@@ -21,7 +21,6 @@ use app\widgets\Noti;
 echo Html::endForm();
 $this->registerJs("
 $(document).on('autocomplete.select','#autocomplete', function (evt, item) { this.value=''; window.location=item.url; });
-$(document).on('autocomplete.dd.hidden','#autocomplete',function (evt, item) { this.value=''; });
 $(document).on('submit','#search', function (evt) { evt.preventDefault(); } );
 $('#autocomplete').autoComplete({
   minLength: 3,
