@@ -81,7 +81,7 @@ class Product extends \yii\db\ActiveRecord
 
     public function inPrices($price_id)
     {
-        return $this->hasMany(Price::class, ['product_id' => 'id'])->where(['price_id'=>$price_id]);
+        return $this->hasMany(Price::class, ['product_id' => 'id'])->where(['price.id'=>$price_id]);
     }
 
     public function htmlOptions($key)
