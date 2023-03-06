@@ -489,6 +489,5 @@ class DefaultController extends \app\components\BaseController
       array_pop($visits);
     }
     Yii::$app->session->set('last_targets_visited',$visits);
-    Yii::error($visits);
   }
 }
