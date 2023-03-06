@@ -4,7 +4,8 @@ use yii\helpers\Url;
 use app\widgets\Card;
 use app\widgets\targetcardactions\TargetCardActions;
 use app\modules\game\models\Headshot;
-$display_ip=$target_ip=long2ip($target->ip);
+$target_ip=long2ip($target->ip);
+$display_ip=Html::a($target_ip,$target_ip,["class"=>'copy-to-clipboard text-dark text-bold','swal-data'=>"Copied to clipboard",'data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance. Click to copy IP to clipboard.")]);
 
 if($target->on_ondemand && $target->ondemand_state===-1)
 {
