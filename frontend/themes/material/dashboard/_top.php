@@ -25,7 +25,7 @@ use yii\widgets\ListView;
   </div>
 
   <?php if ($newsProvider->getTotalCount() > 0) : ?>
-    <div class="col-lg-6 col-xl-6">
+    <div class="col-lg-6 col-xl-5">
       <div class="card bg-dark" style="margin-top:0px;">
         <div class="card-body">
           <h3 class="card-title text-center"><?= \Yii::t('app', 'Latest News') ?></h3>
@@ -40,7 +40,7 @@ use yii\widgets\ListView;
       </div>
     </div>
   <?php endif; ?>
-  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-8">
+  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
     <?php Card::begin([
       'header' => 'header-icon',
       'type' => 'card-stats bg-dark',
