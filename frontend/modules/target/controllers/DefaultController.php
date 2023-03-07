@@ -16,6 +16,8 @@ use app\modules\target\models\TargetSearch;
 use app\modules\target\models\Finding;
 use app\modules\target\models\Treasure;
 use app\modules\target\models\PlayerTargetHelp as PTH;
+use app\modules\target\models\TargetPlayerState as TPS;
+
 use app\models\PlayerFinding;
 use app\models\PlayerTreasure;
 use yii\filters\AccessControl;
@@ -317,15 +319,23 @@ class DefaultController extends \app\components\BaseController
     }
 
     $treasure = Treasure::find()->claimable()->byCode($string)->one();
-
     if ($treasure !== null && Treasure::find()->byCode($string)->claimable()->notBy((int) Yii::$app->user->id)->one() === null) {
-      Yii::$app->session->setFlash('warning', sprintf(\Yii::t('app', 'Flag [%s] claimed before'), $treasure->name, $treasure->target->name));
+      Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name'=>$treasure->name]));
       return $this->renderAjax('claim');
     } elseif ($treasure === null) {
       Yii::$app->counters->increment('failed_claims');
-      Yii::$app->session->setFlash('error', sprintf(\Yii::t('app', 'Flag [<strong>%s</strong>] does not exist!'), Html::encode($string)));
+      Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag'=>Html::encode($string)]));
       return $this->renderAjax('claim');
     }
+
+    $player_progress=TPS::findOne(['id'=>$treasure->target_id,'player_id'=>Yii::$app->user->id]);
+    if((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress===null && intval($treasure->target->getFindings()->count())>0)
+    {
+      Yii::$app->counters->increment('claim_no_finding');
+      Yii::$app->session->setFlash('warning', \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.'));
+      return $this->renderAjax('claim');
+    }
+
     try {
       $this->module->checkNetwork($treasure->target);
     } catch (\Throwable $e) {
