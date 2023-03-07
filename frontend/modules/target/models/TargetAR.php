@@ -108,6 +108,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
             'player_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'headshot_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'instance_allowed'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'require_findings'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
             'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
             'on_ondemand' => AttributeTypecastBehavior::TYPE_BOOLEAN,
@@ -130,7 +131,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
       return [
         [['description'], 'string'],
         [['ip'], 'required'],
-        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','timer','writeup_allowed','player_spin','headshot_spin','instance_allowed'], 'integer'],
+        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','timer','writeup_allowed','player_spin','headshot_spin','instance_allowed','require_findings'], 'integer'],
         [['scheduled_at', 'ts'], 'safe'],
         [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
         [['mac'], 'string', 'max' => 30],
