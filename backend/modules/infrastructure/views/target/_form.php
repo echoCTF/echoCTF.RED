@@ -64,6 +64,9 @@ use yii\bootstrap5\ActiveForm;
           <?= $form->field($model, 'instance_allowed')->checkbox()->hint('Whether or not private instances are allowed for the target (checked=allowed)') ?>
         </div>
         <div class="col-md-2">
+          <?= $form->field($model, 'require_findings')->checkbox()->hint('Whether or not findings are required before claiming flags. <small>This value is bypassed by <code>force_findings_to_claim</code> sysconfig key.</small>(checked=required)') ?>
+        </div>
+        <div class="col-md-2">
           <?= $form->field($model, 'player_spin')->checkbox()->hint('Allow players to spin targets?') ?>
         </div>
         <div class="col-md-2">

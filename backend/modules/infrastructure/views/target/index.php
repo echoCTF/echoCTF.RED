@@ -66,6 +66,7 @@ yii\bootstrap5\Modal::end();
       'scheduled_at:dateTime:Scheduled',
       'rootable:boolean',
       'instance_allowed:boolean:Instances',
+      'require_findings:boolean:Req. Findings',
       'active:boolean',
       'timer:boolean',
       [

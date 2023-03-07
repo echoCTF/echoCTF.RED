@@ -75,6 +75,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'headshot_spin:boolean',
             'player_spin:boolean',
             'instance_allowed:boolean',
+            'require_findings:boolean',
             'status',
             'scheduled_at',
             'purpose',
