@@ -8,6 +8,7 @@ LABEL description="Base debian-bullseye image"
 #####################
 ENV DEBIAN_FRONTEND noninteractive
 ADD https://github.com/krallin/tini/releases/download/v0.19.0/tini-amd64 /sbin/tini
+ADD 01_nodoc /etc/dpkg/dpkg.cfg.d/
 
 # PACKAGE INSTALLATIONS
 RUN set -ex \
@@ -19,7 +20,7 @@ RUN set -ex \
     libpq-dev libzip-dev locales-all make mcrypt \
     netcat-traditional nginx procps psmisc socat software-properties-common \
     unzip vim vim-tiny wget zip python \
-    && rm -rf /usr/src/* /var/lib/apt/lists/*
+    && rm -rf /usr/src/* /var/lib/apt/lists/* /tmp/* /usr/share/locale/* /usr/share/man/* /usr/share/doc/*
 
 ##############
 # COPY FILES

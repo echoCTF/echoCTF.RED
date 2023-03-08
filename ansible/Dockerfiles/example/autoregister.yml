@@ -7,10 +7,6 @@
   vars:
   tasks:
   - include_vars: /tmp/variables.yml
-#  - name: Display all variables/facts known for a host
-#    debug:
-#      var: hostvars[inventory_hostname]
-
   - name: Display Default IPv4
     debug:
       var: ansible_default_ipv4
@@ -21,13 +17,14 @@
       gid: "{{item.uid|default(omit)}}"
       state: present
     with_items: "{{DETAILS}}"
+    when: DETAILS is defined and item.module is defined and item.module=='user'
 
   - name: users based on details
     user:
       name: "{{item.username}}"
       shell: "{{item.shell|default('/bin/bash')}}"
       comment: "{{item.gecos}}"
-      uid: "{{item.uid|default('1000')}}"
+      uid: "{{item.uid|default(omit)}}"
       group: "{{item.group|default('nobody')}}"
       password: "{{item.password}}"
       state: present
@@ -85,6 +82,7 @@
       owner: "{{item.value.uid|default(0)}}"
       group: "{{item.value.gid|default(0)}}"
     with_dict: "{{RAW_CONFS}}"
+
 
 
   - name: Create Decoy flags
