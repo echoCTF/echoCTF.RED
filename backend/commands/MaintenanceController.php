@@ -66,13 +66,18 @@ class MaintenanceController extends Controller
    * Change table collations
    */
   public function actionSyncCollations($collation='utf8mb4_unicode_ci'){
+    $database = Yii::$app->db->createCommand("SELECT DATABASE()")->queryScalar();
     Yii::$app->db->createCommand("SET FOREIGN_KEY_CHECKS = 0")->execute();
 
-    $tables = Yii::$app->db->createCommand("SELECT table_name  FROM information_schema.tables  WHERE table_schema = 'echoCTF' and table_collation!='utf8mb4_unicode_ci'")->queryAll();
+    $tables = Yii::$app->db->createCommand("SELECT table_name,table_collation FROM information_schema.tables WHERE table_schema = :dbname and table_collation!=:collation")
+    ->bindValue(':dbname',$database)
+    ->bindValue(':collation',$collation)
+    ->queryAll();
     foreach ($tables as $row) {
       $table=$row['table_name'];
+      $currentCollation=$row['table_collation'];
       $query=sprintf("ALTER TABLE %s CONVERT TO CHARACTER SET %s COLLATE %s",$table,Yii::$app->db->charset,$collation);
-      echo "Changing $table => $collation\n";
+      echo "Changing $table: $currentCollation => $collation\n";
       try {
         Yii::$app->db->createCommand($query)->execute();
       } catch (\Exception $e) {
