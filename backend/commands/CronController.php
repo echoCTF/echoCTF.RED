@@ -617,7 +617,7 @@ class CronController extends Controller
               $unhealthy[$name]=$unhealthyTarget;
             }
             else {
-              echo date("Y-m-d H:i:s ")."Unhealthy container  [$name => {$target->server}] not on our list!!!";
+              echo date("Y-m-d H:i:s ")."Unhealthy container  [$name => {$target->server}] not on our list!!!\n";
             }
           }
       }
