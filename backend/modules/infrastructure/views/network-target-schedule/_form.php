@@ -13,12 +13,12 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'target_id')->widget(app\widgets\sleifer\autocompleteAjax\AutocompleteAjax::class, [
-        'multiple' => false,
+        'multiple' => true,
         'url' => ['/infrastructure/target/ajax-search'],
         'options' => ['placeholder' => 'Find target by name or id']
     ])->label('Target') ?>
     <?= $form->field($model, 'network_id')->widget(app\widgets\sleifer\autocompleteAjax\AutocompleteAjax::class, [
-        'multiple' => false,
+        'multiple' => true,
         'url' => ['/infrastructure/network/ajax-search'],
         'options' => ['placeholder' => 'Find network by name, codename or id ']
     ])->label('Network')->hint('Network that the target will be placed under on the given datetime') ?>

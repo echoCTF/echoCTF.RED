@@ -52,7 +52,7 @@ class AutocompleteAjax extends InputWidget
             $this->getView()->registerJs("
 
                 $('#{$id}').keyup(function(event) {
-                    if (event.keyCode == 8 && !$('#{$id}').val().length) {
+                    if (( event.keyCode == 8 || event.keyCode == 46 ) && !$('#{$id}').val().length) {
 
                         $('#{$id}-hidden').val('');
                         $('#{$id}-hidden').change();
