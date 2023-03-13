@@ -12,6 +12,7 @@ use app\assets\AppAsset;
 
 Yii::$app->timeZone = Yii::$app->sys->time_zone ?: 'UTC';
 date_default_timezone_set(Yii::$app->sys->time_zone ?: 'UTC');
+$this->title=Yii::$app->sys->event_name.' mUI: '.$this->title;
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>

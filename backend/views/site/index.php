@@ -10,6 +10,7 @@ use app\modules\gameplay\models\Question;
 use app\modules\frontend\models\Player;
 use app\modules\frontend\models\Team;
 use app\modules\activity\models\Report;
+use app\modules\activity\models\Notification;
 use app\modules\activity\models\Stream;
 use app\modules\activity\models\PlayerTreasure;
 use app\modules\activity\models\PlayerTargetHelp;
@@ -19,8 +20,8 @@ use app\modules\activity\models\Writeup;
 use app\modules\activity\models\PlayerScore;
 use app\widgets\statscard\StatsCardModel;
 
+$lastHeadshot=\app\modules\activity\models\Headshot::find()->orderBy(['created_at'=>SORT_DESC])->one();
 
-$this->title = 'echoCTF mUI';
 ?>
 <div class="site-index">
   <h2 class="text-center">echoCTF Management interface</h1>
@@ -96,6 +97,17 @@ $this->title = 'echoCTF mUI';
               <li><?= Html::a('Player Treasures &raquo;', ['/activity/player-treasure']) ?>: <abbr title="Total player treasure records"><?= PlayerTreasure::find()->count() ?></abbr> / <abbr title="Distinct players on player treasure"><?= (new \yii\db\Query())->from('player_treasure')->select('player_id')->distinct()->count() ?></abbr> / <abbr title="Distinct treasure on player treasure"><?= (new \yii\db\Query())->from('player_treasure')->select('treasure_id')->distinct()->count() ?></abbr>
               <li><?= Html::a('Player Findings &raquo;', ['/activity/player-finding']) ?>: <abbr title="Total player finding records"><?= PlayerFinding::find()->count() ?></abbr> / <abbr title="Distinct players on player finding"><?= (new \yii\db\Query())->from('player_finding')->select('player_id')->distinct()->count() ?></abbr> / <abbr title="Distinct finding on player finding"><?= (new \yii\db\Query())->from('player_finding')->select('finding_id')->distinct()->count() ?></abbr>
               <li><?= Html::a('Player Questions &raquo;', ['/activity/player-question']) ?>: <abbr title="Total player question records"><?= PlayerQuestion::find()->count() ?></abbr> / <abbr title="Distinct players on player question"><?= (new \yii\db\Query())->from('player_question')->select('player_id')->distinct()->count() ?></abbr> / <abbr title="Distinct question on player question"><?= (new \yii\db\Query())->from('player_question')->select('question_id')->distinct()->count() ?></abbr>
+              <li><?= Html::a('Notifications &raquo;', ['/activity/player-question']) ?>: <abbr title="Total Notifications"><?= Notification::find()->count() ?></abbr> / <abbr title="Pending Notifications"><?= Notification::find()->where("[[archived]]=0")->count() ?></abbr>
+            </ul>
+            </p>
+          </div>
+          <div class="col">
+            <h2>Infrastructure</h2>
+            <p>
+            <ul>
+              <li><?= Html::a('Instances &raquo;', ['/infrastructure/target-instance/index']) ?>: <?=\app\modules\infrastructure\models\TargetInstance::find()->count()?>
+              <li><?= Html::a('On Demand &raquo;', ['/infrastructure/target-ondemand/index']) ?>: <abbr title="Total targets on demand"?><?=\app\modules\gameplay\models\TargetOndemand::find()->count()?></abbr> / <abbr title="Powered on"><?=\app\modules\gameplay\models\TargetOndemand::find()->powered()->count()?></abbr>
+              <li><?= Html::a('Schedules &raquo;', ['/infrastructure/network-target-schedule/index']) ?>: <?=\app\modules\infrastructure\models\NetworkTargetSchedule::find()->count()?>
             </ul>
             </p>
           </div>
@@ -110,6 +122,9 @@ $this->title = 'echoCTF mUI';
               <?php if (Player::find()->count() > 0) : ?>
                 <?= Html::a(sprintf("Player %d: %s", Player::find()->limit(1)->orderBy('id desc')->one()->id, Html::encode(Player::find()->limit(1)->orderBy('id desc')->one()->username)), ['/frontend/profile/view-full', 'id' => Player::find()->limit(1)->orderBy('id desc')->one()->profile->id]) ?><br />
               <?php endif; ?>
+              <?php if ($lastHeadshot):?>
+              <?= Html::a('Headshot &raquo;', ['/activity/headshot/view','player_id'=>$lastHeadshot->player_id,'target_id'=>$lastHeadshot->target_id]) ?>: <?=sprintf("%s on %s %s ago",Html::a($lastHeadshot->player->username, ['/frontend/profile/view-full', 'id' => $lastHeadshot->player->profile->id]), Html::encode($lastHeadshot->target->name),\Yii::$app->formatter->asRelativeTime($lastHeadshot->created_at))?><br/>
+              <?php endif;?>
               <?php if (Stream::find()->count() > 0) : ?>
                 <?php $smsg = Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago')->limit(1)->orderBy('id desc')->one(); ?>
                 <?= Html::a(sprintf("Stream %d: %s %s", $smsg->id, $smsg->formatted, $smsg->ts_ago), ['/activity/stream/view', 'id' => $smsg->id]) ?>
