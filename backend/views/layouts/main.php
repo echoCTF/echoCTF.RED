@@ -213,6 +213,7 @@ AppAsset::register($this);
             <?= Alert::widget() ?>
             <?= $content ?>
         </div>
+        <hr />
         <footer class="footer">
             <div class="container">
                 <div class="row">

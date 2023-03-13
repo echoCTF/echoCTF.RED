@@ -5,6 +5,7 @@ namespace app\modules\gameplay\models;
 use Yii;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Headshot;
+use app\modules\infrastructure\models\TargetInstance;
 use app\modules\infrastructure\models\TargetMetadata;
 
 
@@ -184,6 +185,14 @@ class TargetAR extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getInstances()
+    {
+        return $this->hasMany(TargetInstance::class, ['target_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getSpinQueue()
     {
         return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
@@ -246,6 +255,5 @@ class TargetAR extends \yii\db\ActiveRecord
     {
       return $this->hasOne(TargetOndemand::class, ['target_id' => 'id'])->withExpired();
     }
-
 
 }

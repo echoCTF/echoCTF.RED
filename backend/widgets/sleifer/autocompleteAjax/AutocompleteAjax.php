@@ -40,7 +40,7 @@ class AutocompleteAjax extends InputWidget
     {
         $id = BaseHtml::getInputId($this->model, $this->attribute);
         $id = str_replace('-', '_', $id);
-        
+
         $this->afterSelect = "var afterSelect{$id} = " . $this->afterSelect;
         $value = $this->model->{$this->attribute};
         $this->registerActiveAssets();
@@ -48,18 +48,18 @@ class AutocompleteAjax extends InputWidget
         $this->getView()->registerJs("{$this->afterSelect}");
 
         if ($this->multiple) {
-            
+
             $this->getView()->registerJs("
-                
+
                 $('#{$id}').keyup(function(event) {
                     if (event.keyCode == 8 && !$('#{$id}').val().length) {
-                        
+
                         $('#{$id}-hidden').val('');
                         $('#{$id}-hidden').change();
-                        
-                    } else if ($('.ui-autocomplete').css('display') == 'none' && 
+
+                    } else if ($('.ui-autocomplete').css('display') == 'none' &&
                         $('#{$id}-hidden').val().split(', ').length > $(this).val().split(', ').length) {
-                            
+
                         var val = $('#{$id}').val().split(', ');
                         var ids = [];
                         for (var i = 0; i<val.length; i++) {
@@ -70,20 +70,20 @@ class AutocompleteAjax extends InputWidget
                         $('#{$id}-hidden').change();
                     }
                 });
-                
+
                 $('#{$id}').keydown(function(event) {
-                    
+
                     if (event.keyCode == 13 && $('.ui-autocomplete').css('display') == 'none') {
                         submit_{$id} = $('#{$id}').closest('.grid-view');
                         $('#{$id}').closest('.grid-view').yiiGridView('applyFilter');
                     }
-                    
+
                     if (event.keyCode == 13) {
                         $('.ui-autocomplete').hide();
                     }
-                    
+
                 });
-                
+
                 $('body').on('beforeFilter', '#' + $('#{$id}').closest('.grid-view').attr('id') , function(event) {
                     return submit_{$id};
                 });
@@ -105,7 +105,7 @@ class AutocompleteAjax extends InputWidget
                         }
                         $.getJSON('{$this->getUrl()}', request, function( data, status, xhr ) {
                             cache_{$id} [term] = data;
-                                
+
                             for (var i = 0; i<data.length; i++) {
                                 if (!(data[i].id in cache_{$id}_2)) {
                                     cache_{$id}_1[data[i].label] = data[i].id;
@@ -177,14 +177,14 @@ class AutocompleteAjax extends InputWidget
 
                         $('#{$id}').parent().removeClass('has-error');
                         $('#{$id}').next().html('');
-                        
+
                         $('#{$id}-hidden').val(ui.item.id);
                         $('#{$id}').change();
                     }
                 });
             ");
         }
-        
+
         if ($value && $this->startQuery) {
             $this->getView()->registerJs("
                 $(function(){
@@ -218,12 +218,12 @@ class AutocompleteAjax extends InputWidget
                 });
             ");
         }
-        
+
         if(!isset($this->options['class'])){
             $this->options['class'] = 'form-control';
         }
-        
-        return 
+
+        return
             Html::activeHiddenInput($this->model, $this->attribute,  array_merge($this->hidden_options, ['id' => $id . '-hidden']))
           . Html::textInput($id . '_text', $value && !$this->startQuery ? $value : '', array_merge($this->options, ['id' => $id]));
     }
