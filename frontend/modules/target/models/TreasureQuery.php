@@ -23,10 +23,10 @@ class TreasureQuery extends \yii\db\ActiveQuery
       }
       public function claimable()
       {
-        return $this->andWhere(new yii\db\Expression('appears!=0'));
+        return $this->andWhere(new \yii\db\Expression('appears!=0'));
       }
       public function notBy(int $player_id)
       {
-        return $this->andWhere(new yii\db\Expression('treasure.id NOT IN (SELECT treasure_id FROM player_treasure WHERE player_id='.$player_id.')'));
+        return $this->andWhere(new \yii\db\Expression('treasure.id NOT IN (SELECT treasure_id FROM player_treasure WHERE player_id='.$player_id.')'));
       }
 }

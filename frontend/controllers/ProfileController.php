@@ -8,7 +8,7 @@ use \app\modules\target\models\Target;
 use \app\modules\game\models\Headshot;
 use \app\modules\target\models\TargetQuery;
 use yii\helpers\ArrayHelper;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;

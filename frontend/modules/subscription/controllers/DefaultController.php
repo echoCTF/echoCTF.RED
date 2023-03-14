@@ -2,7 +2,7 @@
 namespace app\modules\subscription\controllers;
 
 use Yii;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\data\ActiveDataProvider;
 

@@ -2,7 +2,7 @@
 
 namespace app\modules\team;
 
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 
 /**

@@ -5,7 +5,7 @@ namespace app\modules\api\controllers;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\data\ActiveDataProvider;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\data\ActiveDataFilter;
 
 class NotificationController extends \yii\rest\ActiveController

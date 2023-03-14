@@ -13,7 +13,7 @@ use app\modules\game\models\Headshot;
 use app\modules\target\models\Target;
 use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\modules\target\models\Writeup;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;

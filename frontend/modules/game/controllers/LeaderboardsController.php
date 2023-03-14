@@ -4,7 +4,7 @@ namespace app\modules\game\controllers;
 
 use Yii;
 use yii\data\ActiveDataProvider;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 
 class LeaderboardsController extends \app\components\BaseController

@@ -3,7 +3,7 @@
 namespace app\components;
 
 use Yii;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 
 /**
  * @property bool $eventInactive

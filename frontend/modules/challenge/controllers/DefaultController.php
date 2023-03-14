@@ -12,7 +12,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\data\ActiveDataProvider;
 use app\modules\challenge\models\AnswerForm;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 
 /**

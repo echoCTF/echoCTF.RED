@@ -4,7 +4,7 @@ namespace app\modules\game\controllers;
 
 use Yii;
 use yii\web\Controller;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use app\modules\game\models\Headshot;

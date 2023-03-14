@@ -20,7 +20,7 @@ use app\modules\target\models\TargetPlayerState as TPS;
 
 use app\models\PlayerFinding;
 use app\models\PlayerTreasure;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;

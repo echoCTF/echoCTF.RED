@@ -13,7 +13,7 @@ use app\models\PlayerScore;
 use app\models\Profile;
 use app\models\News;
 use yii\helpers\ArrayHelper;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 
 class DashboardController extends \app\components\BaseController
