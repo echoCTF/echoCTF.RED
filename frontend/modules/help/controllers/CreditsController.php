@@ -3,7 +3,7 @@
 namespace app\modules\help\controllers;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\data\ActiveDataProvider;
 use app\modules\help\models\Credits;
 class CreditsController extends \app\components\BaseController

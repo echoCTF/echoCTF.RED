@@ -8,7 +8,7 @@ use yii\web\Response;
 use yii\web\BadRequestHttpException;
 use yii\base\InvalidArgumentException;
 use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 use yii\helpers\ArrayHelper;
 use app\models\forms\LoginForm;
 use app\models\forms\SignupForm;

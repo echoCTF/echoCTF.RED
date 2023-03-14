@@ -3,7 +3,7 @@
 namespace app\controllers;
 use Yii;
 use yii\helpers\ArrayHelper;
-use yii\filters\AccessControl;
+use app\overloads\yii\filters\AccessControl;
 
 class LegalController extends \app\components\BaseController
 {
