@@ -122,10 +122,10 @@ $lastHeadshot=\app\modules\activity\models\Headshot::find()->orderBy(['created_a
               <?php if (Player::find()->count() > 0) : ?>
                 <?php
                 $lastPlayer=Player::find()->limit(1)->orderBy('id desc')->one();
-                echo Html::a(sprintf('Player %d: <abbr title="%s" class="text-%s">%s</abbr>', $lastPlayer->id, Html::encode($lastPlayer->email),$lastPlayer->active ? 'success' : "danger",Html::encode($lastPlayer->username)), ['/frontend/profile/view-full', 'id' => Player::find()->limit(1)->orderBy('id desc')->one()->profile->id]) ?><br />
+                echo Html::a(sprintf('Player %d: <abbr title="%s" class="text-%s">%s</abbr> <sub>%s</sub>', $lastPlayer->id, Html::encode($lastPlayer->email),$lastPlayer->active ? 'success' : "danger",Html::encode($lastPlayer->username),Yii::$app->formatter->asRelativeTime($lastPlayer->created)), ['/frontend/profile/view-full', 'id' => Player::find()->limit(1)->orderBy('id desc')->one()->profile->id]) ?><br />
               <?php endif; ?>
               <?php if ($lastHeadshot):?>
-              <?= Html::a('Headshot &raquo;', ['/activity/headshot/view','player_id'=>$lastHeadshot->player_id,'target_id'=>$lastHeadshot->target_id]) ?>: <?=sprintf("%s on %s %s ago",Html::a($lastHeadshot->player->username, ['/frontend/profile/view-full', 'id' => $lastHeadshot->player->profile->id]), Html::encode($lastHeadshot->target->name),\Yii::$app->formatter->asRelativeTime($lastHeadshot->created_at))?><br/>
+              <?= Html::a('Headshot &raquo;', ['/activity/headshot/view','player_id'=>$lastHeadshot->player_id,'target_id'=>$lastHeadshot->target_id]) ?>: <?=sprintf("%s on %s <sub>%s</sub>",Html::a($lastHeadshot->player->username, ['/frontend/profile/view-full', 'id' => $lastHeadshot->player->profile->id]), Html::encode($lastHeadshot->target->name),\Yii::$app->formatter->asRelativeTime($lastHeadshot->created_at))?><br/>
               <?php endif;?>
               <?php if (Stream::find()->count() > 0) : ?>
                 <?php $smsg = Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago')->limit(1)->orderBy('id desc')->one(); ?>
