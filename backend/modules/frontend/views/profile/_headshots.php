@@ -20,11 +20,18 @@ use yii\grid\GridView;
           'attribute'=>'ipoctet',
           'value'=>'target.ipoctet',
         ],
-        'timer',
+        [
+          'attribute'=>'timer',
+          'format'=>'html',
+          'value'=>function($model){return sprintf('<abbr title="%s">%s</abbr>',Yii::$app->formatter->asDuration($model->timer),$model->timer);}
+        ],
         'first:boolean',
         'rating',
-        'created_at',
-
+        [
+          'attribute'=>'created_at',
+          'format'=>'html',
+          'value'=>function($model){return sprintf('<abbr title="%s">%s</abbr>',Yii::$app->formatter->asRelativeTime($model->created_at),$model->created_at);}
+        ],
         [
           'class' => 'yii\grid\ActionColumn',
           'template' => '{delete}',
