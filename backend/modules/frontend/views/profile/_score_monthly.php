@@ -14,7 +14,11 @@ use yii\grid\GridView;
   'columns' => [
     'points',
     'dated_at',
-    'ts',
+    [
+      'attribute'=>'ts',
+      'format'=>'html',
+      'value'=>function($model) { return sprintf('<abbr title="%s">%s</abbr>',Yii::$app->formatter->asRelativeTime($model->ts),$model->ts);}
+    ],
     [
       'class' => 'yii\grid\ActionColumn',
       'template' => '{delete}',
