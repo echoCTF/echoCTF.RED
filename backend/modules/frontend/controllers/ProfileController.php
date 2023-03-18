@@ -225,6 +225,8 @@ class ProfileController extends \app\components\BaseController
     $searchModel = new PlayerVpnHistorySearch();
     $searchModel->player_id = $profile->player_id;
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    $dataProvider->sort->defaultOrder = ['ts' => SORT_DESC];
+
     return Json::encode(trim($this->renderAjax('_vpn_history', [
       'dataProvider' => $dataProvider,
       'searchModel' => $searchModel
@@ -260,6 +262,8 @@ class ProfileController extends \app\components\BaseController
     $searchModel = new \app\modules\activity\models\SpinHistorySearch();
     $searchModel->player_id = $profile->player_id;
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    $dataProvider->sort->defaultOrder = ['created_at' => SORT_DESC];
+
     return Json::encode(trim($this->renderAjax('_spin_history', [
       'dataProvider' => $dataProvider,
       'searchModel' => $searchModel
@@ -283,6 +287,8 @@ class ProfileController extends \app\components\BaseController
     $searchModel = new \app\modules\activity\models\PlayerScoreMonthlySearch();
     $searchModel->player_id = $profile->player_id;
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    $dataProvider->sort->defaultOrder = ['dated_at' => SORT_DESC];
+
     return Json::encode(trim($this->renderAjax('_score_monthly', [
       'dataProvider' => $dataProvider,
       'searchModel' => $searchModel
@@ -351,6 +357,8 @@ class ProfileController extends \app\components\BaseController
     $searchModel = new ChallengeSolverSearch();
     $searchModel->player_id = $profile->player_id;
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    $dataProvider->sort->defaultOrder = ['created_at' => SORT_DESC];
+
     return Json::encode(trim($this->renderAjax('_solves', [
       'dataProvider' => $dataProvider,
       'searchModel' => $searchModel
