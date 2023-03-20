@@ -220,6 +220,13 @@ $config=[
         ],
     ],
     'params' => $params,
+    'on beforeRequest' => function ($event) {
+      if (Yii::$app->sys->maintenance === true) {
+          if (Yii::$app->user->isGuest || !Yii::$app->user->identity->isAdmin ) {
+              Yii::$app->catchAll = [ 'site/maintenance' ];
+          }
+      }
+    },
     'on afterRequest' => function() {
       try {
         if (!Yii::$app->user->isGuest) {
