@@ -162,6 +162,23 @@ class SiteController extends \app\components\BaseController
     }
 
     /**
+     * Displays Maintenance page. If a file exists at `@app/web/dt.html` render it,
+     * otherwise render the maintenance view file.
+     * Both pages are full HTML, no layouts are applied from the application.
+     *
+     * @return string
+     */
+    public function actionMaintenance()
+    {
+      Yii::$app->response->statusCode = 503;
+
+      if(file_exists(Yii::getAlias('@app/web/dt.html'))!==false)
+        return \Yii::$app->view->renderFile(Yii::getAlias('@app/web/dt.html'));
+
+      return $this->renderPartial('maintenance');
+    }
+
+    /**
      * Login action.
      *
      * @return Response|string
