@@ -16,6 +16,7 @@
 * `network_view_guest`: Allow networks to be viewed by guests
 * `monthly_leaderboards`: Enable monthly player related leaderboards
 * `force_findings_to_claim`: Enable the enforcement of players needing to have discovered the findings before claiming flags
+* `maintenance`: Enable site-wide maintenance mode
 
 Not activated by default on current code-base but are going to
 * _`require_activation`_ Whether it is required for users to activate their accounts
