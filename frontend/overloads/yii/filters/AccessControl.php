@@ -24,9 +24,9 @@ class AccessControl extends \yii\filters\AccessControl
         if ($user !== false && $user->getIsGuest()) {
             $user->loginRequired();
         } else {
-            Yii::$app->session->setFlash('warning',Yii::t('yii', 'You are not allowed to perform this action.'));
-            Yii::$app->response->redirect(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage])->send();
-            return;
+            //Yii::$app->session->setFlash('warning',Yii::t('yii', 'You are not allowed to perform this action.'));
+            //Yii::$app->response->redirect(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage])->send();
+            //return;
             throw new ForbiddenHttpException(Yii::t('yii', 'You are not allowed to perform this action.'));
         }
     }
