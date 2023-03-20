@@ -121,7 +121,11 @@ class ProfileController extends \app\components\BaseController
     {
       $profile=$this->findModel($id);
       if($profile->visible===false)
-          return $this->redirect(['/']);
+      {
+        Yii::$app->session->setFlash('warning',\Yii::t('app','This profile is not accessible by you.'));
+        return $this->redirect(['/']);
+      }
+
 
       Yii::$app->getResponse()->getHeaders()
           ->set('Pragma', 'public')
@@ -135,17 +139,21 @@ class ProfileController extends \app\components\BaseController
       {
         return file_get_contents(\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png');
       }
-      $image=\app\components\Img::profile($profile);
+      try {
+        $image=\app\components\Img::profile($profile);
 
-      if($image==false)
+        if($image==false)
+          return $this->redirect(['/']);
+
+
+        ob_start();
+        imagepng($image);
+        imagepng($image,\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png');
+        imagedestroy($image);
+        return ob_get_clean();
+      } catch (\Exception $e) {
         return $this->redirect(['/']);
-
-
-      ob_start();
-      imagepng($image);
-      imagepng($image,\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png');
-      imagedestroy($image);
-      return ob_get_clean();
+      }
     }
 
     public function actionIndex(int $id)
