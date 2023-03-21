@@ -219,6 +219,12 @@ class ProfileController extends \app\components\BaseController
     return $this->redirect(['index']);
   }
 
+  /**
+   * Return VPN history for a given player profile
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
   public function actionVpnHistory($id)
   {
     $profile = $this->findModel($id);
@@ -233,6 +239,12 @@ class ProfileController extends \app\components\BaseController
     ])));
   }
 
+  /**
+   * Return Headshots for a given player profile
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
   public function actionHeadshots($id)
   {
     $profile = $this->findModel($id);
@@ -245,6 +257,12 @@ class ProfileController extends \app\components\BaseController
     ])));
   }
 
+  /**
+   * Return submitted writeups for a given player profile
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
   public function actionWriteups($id)
   {
     $profile = $this->findModel($id);
@@ -256,6 +274,13 @@ class ProfileController extends \app\components\BaseController
       'searchModel' => $searchModel
     ])));
   }
+
+  /**
+   * Return Spin History for a given player profile
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
   public function actionSpinHistory($id)
   {
     $profile = $this->findModel($id);
@@ -269,6 +294,13 @@ class ProfileController extends \app\components\BaseController
       'searchModel' => $searchModel
     ])));
   }
+
+  /**
+   * Return submitted writeups for a given target
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
   public function actionNotifications($id)
   {
     $profile = $this->findModel($id);
