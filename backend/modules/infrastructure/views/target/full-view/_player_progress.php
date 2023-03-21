@@ -14,11 +14,8 @@ use yii\grid\GridView;
   'columns' => [
     ['class' => 'yii\grid\SerialColumn'],
 
-    [
-      'attribute' => 'username',
-      'contentOptions' => ['class' => 'text-nowrap'],
-      'value' => 'player.username',
-    ],
+    ['class' => 'app\components\columns\ProfileColumn','attribute'=>'username','label'=>'Username','idkey'=>'player.profile.id','field'=>'player.username'],
+
     'player_treasures',
     'player_findings',
     'player_points',

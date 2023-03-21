@@ -18,10 +18,7 @@ use yii\grid\GridView;
             'attribute' => 'player_id',
             'headerOptions' => ['style' => 'width:3vw'],
         ],
-        [
-            'attribute' => 'username',
-            'value' => 'player.username',
-        ],
+        ['class' => 'app\components\columns\ProfileColumn','attribute'=>'username','label'=>'Username','idkey'=>'player.profile.id','field'=>'player.username'],
         'created_at',
     ],
 ]);

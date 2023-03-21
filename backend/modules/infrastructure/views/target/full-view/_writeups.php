@@ -12,10 +12,7 @@ use yii\grid\GridView;
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
-        [
-            'attribute'=>'username',
-            'value'=>'player.username',
-        ],
+        ['class' => 'app\components\columns\ProfileColumn','attribute'=>'username','label'=>'Username','idkey'=>'player.profile.id','field'=>'player.username'],
         'approved:boolean',
         [
           'attribute'=>'status',

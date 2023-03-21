@@ -9,10 +9,7 @@ Pjax::begin(['id' => 'spin-historyPJ', 'enablePushState' => false, 'enableReplac
   'filterModel' => $searchModel,
   'columns' => [
     'id',
-    [
-      'attribute' => 'player',
-      'value' => 'player.username'
-    ],
+    ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player','label'=>'Username','idkey'=>'player.profile.id','field'=>'player.username'],
     'created_at:dateTime',
   ],
 ]);
