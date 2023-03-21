@@ -2,6 +2,16 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+$js = <<<SCRIPT
+$(function () {
+    $("[data-toggle='tooltip']").tooltip();
+});;
+$(function () {
+    $("[data-toggle='popover']").popover();
+});
+SCRIPT;
+// Register tooltip/popover initialization javascript
+$this->registerJs($js);
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\gameplay\models\TargetSearch */
@@ -101,8 +111,20 @@ yii\bootstrap5\Modal::end();
       'weight',
       [
         'class' => 'yii\grid\ActionColumn',
-        'template' => '{spin} {pull} {view} {update} {delete}',
+        'template' => '{full-view} {spin} {pull} {view} {update} {delete}',
         'buttons' => [
+          'full-view' => function ($url) {
+            return Html::a(
+              '<i class="fas fa-server"></i>',
+              $url,
+              [
+                'title' => 'Target Full View',
+                'data-pjax' => '0',
+                'data-toggle' => 'tooltip',
+              ]
+            );
+          },
+
           'spin' => function ($url) {
             return Html::a(
               '<i class="bi bi-power"></i>',

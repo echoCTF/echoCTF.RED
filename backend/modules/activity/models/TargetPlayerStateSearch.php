@@ -61,7 +61,7 @@ class TargetPlayerStateSearch extends TargetPlayerState
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'target_player_state.id' => $this->id,
             'player_id' => $this->player_id,
             'player_treasures' => $this->player_treasures,
             'player_findings' => $this->player_findings,
