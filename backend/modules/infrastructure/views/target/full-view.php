@@ -2,24 +2,10 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\widgets\DetailView;
 use kartik\tabs\TabsX;
-use yii\bootstrap5\Dropdown;
-use yii\bootstrap5\ButtonDropdown;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Profile */
-
-$js = <<<SCRIPT
-$(function () {
-    $("[data-toggle='tooltip']").tooltip();
-});;
-$(function () {
-    $("[data-toggle='popover']").popover();
-});
-SCRIPT;
-// Register tooltip/popover initialization javascript
-$this->registerJs($js);
 
 $this->title = "Full view of " . Html::encode($model->name) . " with id: " . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Targets'), 'url' => ['index']];
@@ -57,7 +43,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'active' => true,
               ],
               [
-                'label' => '<i class="fas fa-spinner" data-placement="top" title="Player Progress"></i>',
+                'label' => '<i class="fas fa-spinner" data-toggle="tooltip" data-placement="top" title="Player Progress"></i>',
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'linkOptions' => ['data-url' => Url::to(['player-progress', 'id' => $model->id])],
                 'options' => ['id' => 'player-progress-tab'],

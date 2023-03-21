@@ -2,16 +2,6 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-$js = <<<SCRIPT
-$(function () {
-    $("[data-toggle='tooltip']").tooltip();
-});;
-$(function () {
-    $("[data-toggle='popover']").popover();
-});
-SCRIPT;
-// Register tooltip/popover initialization javascript
-$this->registerJs($js);
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\gameplay\models\TargetSearch */
@@ -205,6 +195,5 @@ yii\bootstrap5\Modal::end();
       ],
     ],
   ]); ?>
-
 
 </div>
