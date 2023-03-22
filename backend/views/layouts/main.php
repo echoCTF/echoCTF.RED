@@ -46,7 +46,7 @@ AppAsset::register($this);
             ],
         ]);
         echo Nav::widget([
-            'options' => ['class' => ['navbar-nav me-auto ms-auto flex-nowrap d-flex justify-content-end']],
+            'options' => ['class' => ['navbar-nav me-auto ms-auto flex-nowrap d-flex justify-content-end float-right']],
             'activateParents' => true,
             'encodeLabels' => false,
             'items' => [
@@ -54,22 +54,31 @@ AppAsset::register($this);
                     'label' => '<i class="bi bi-globe2"></i> Content', 'url' => ['/content/default/index'], 'icon' => 'fas fa-money-check-alt', 'active' => Yii::$app->controller->module->id == 'content', 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,
                     'items' => [
                         ['label' => 'News', 'url' => ['/content/news/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin],
+                        ['label' => 'Writeup rules', 'url' => ['/content/default/writeup-rules'], 'visible' => !Yii::$app->user->isGuest,],
+                        '<div class="dropdown-divider"></div>',
+                        '<div class="dropdown-header">Help Sections</div>',
                         ['label' => 'FAQ', 'url' => ['/content/faq/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Rules', 'url' => ['/content/rule/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Objectives', 'url' => ['/content/objective/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Credits', 'url' => ['/content/credits/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Instructions', 'url' => ['/content/instruction/index'], 'visible' => !Yii::$app->user->isGuest,],
-                        ['label' => 'Writeup rules', 'url' => ['/content/default/writeup-rules'], 'visible' => !Yii::$app->user->isGuest,],
-                        ['label' => 'Email Templates', 'url' => ['/content/email-template/index'], 'visible' => !Yii::$app->user->isGuest,],
+                        '<div class="dropdown-divider"></div>',
+                        '<div class="dropdown-header">Overrides</div>',
+                        ['label' => 'CSS Override', 'url' => ['/content/default/css-override'], 'visible' => !Yii::$app->user->isGuest,],
+                        ['label' => 'JS Override', 'url' => ['/content/default/js-override'], 'visible' => !Yii::$app->user->isGuest,],
+                        ['label' => 'Layout Override', 'url' => ['/content/layout-override/index'], 'visible' => !Yii::$app->user->isGuest,],
+                        '<div class="dropdown-divider"></div>',
+                        '<div class="dropdown-header">Static</div>',
                         ['label' => 'Frontpage Scenario', 'url' => ['/content/default/frontpage-scenario'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Offense Scenario', 'url' => ['/content/default/offense-scenario'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Defense Scenario', 'url' => ['/content/default/defense-scenario'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Footer logos', 'url' => ['/content/default/footer-logos'], 'visible' => !Yii::$app->user->isGuest,],
-                        ['label' => 'CSS Override', 'url' => ['/content/default/css-override'], 'visible' => !Yii::$app->user->isGuest,],
-                        ['label' => 'JS Override', 'url' => ['/content/default/js-override'], 'visible' => !Yii::$app->user->isGuest,],
-                        ['label' => 'Layout Override', 'url' => ['/content/layout-override/index'], 'visible' => !Yii::$app->user->isGuest,],
-                        ['label' => 'VPN Templates', 'url' => ['/content/vpn-template/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Pages', 'url' => ['/content/pages/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin],
+
+                        '<div class="dropdown-divider"></div>',
+                        '<div class="dropdown-header">Templates</div>',
+                        ['label' => 'Email Templates', 'url' => ['/content/email-template/index'], 'visible' => !Yii::$app->user->isGuest,],
+                        ['label' => 'VPN Templates', 'url' => ['/content/vpn-template/index'], 'visible' => !Yii::$app->user->isGuest,],
                     ]
                 ],
 
@@ -94,7 +103,7 @@ AppAsset::register($this);
                         ['label' => 'Player Monthly Scores', 'url' => ['/activity/player-score-monthly/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Player Counters NF', 'url' => ['/activity/player-counter-nf/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Player vs Target Progress', 'url' => ['/activity/player-vs-target/index'], 'visible' => !Yii::$app->user->isGuest,],
-                        ['label' => 'Target Player Progress', 'url' => ['/activity/target-player-state/index'], 'visible' => !Yii::$app->user->isGuest,],
+                        ['label' => 'Target Player State', 'url' => ['/activity/target-player-state/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Player vs Challenge Progress', 'url' => ['/activity/player-vs-challenge/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Headshots', 'url' => ['/activity/headshot/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Challenge Solvers', 'url' => ['/activity/challenge-solver/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
@@ -163,7 +172,7 @@ AppAsset::register($this);
                     'label' => '<i class="bi bi-flag-fill"></i> Gameplay', 'url' => ['/gameplay'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin, 'active' => Yii::$app->controller->module->id == 'gameplay',
                     'items' => [
                         ['label' => 'Findings', 'url' => ['/gameplay/finding/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
-                        ['label' => 'Treasure', 'url' => ['/gameplay/treasure/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
+                        ['label' => 'Treasures', 'url' => ['/gameplay/treasure/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Challenges', 'url' => ['/gameplay/challenge/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Questions', 'url' => ['/gameplay/question/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Hints', 'url' => ['/gameplay/hint/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
@@ -173,13 +182,13 @@ AppAsset::register($this);
                         ['label' => 'Tutorial Target', 'url' => ['/gameplay/tutorial-target/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Tutorial Tasks', 'url' => ['/gameplay/tutorial-task/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Tutorial Task Dependencies', 'url' => ['/gameplay/tutorial-task-dependency/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
-                        ['label' => 'Credential', 'url' => ['/gameplay/credential/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
+                        ['label' => 'Credentials', 'url' => ['/gameplay/credential/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                     ],
                 ],
                 [
                     'label' => '<i class="bi bi-house-gear-fill"></i> Settings', 'url' => ['/settings'], 'visible' => !Yii::$app->user->isGuest, 'active' => Yii::$app->controller->module->id == 'settings',
                     'items' => [
-                        ['label' => 'Avatar', 'url' => ['/settings/avatar/index'], 'visible' => !Yii::$app->user->isGuest,],
+                        ['label' => 'Avatars', 'url' => ['/settings/avatar/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Experience', 'url' => ['/settings/experience/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Countries', 'url' => ['/settings/country/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                         ['label' => 'Users', 'url' => ['/settings/user/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
@@ -192,7 +201,7 @@ AppAsset::register($this);
                         ['label' => 'Configure', 'url' => ['/settings/sysconfig/configure'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
                     ],
                 ],
-                Yii::$app->user->isGuest ? (['label' => 'Login', 'url' => ['/site/login']]
+                Yii::$app->user->isGuest ? (['label' => 'Login', 'url' => ['/site/login'],'linkOptions'=>['class'=>'text-light'],'options'=>['class'=>'fw-bold d-flex justify-content-end']]
                 ) : ('<li class="dropdown nav-item">'
                     . Html::beginForm(['/site/logout'], 'post')
                     . Html::submitButton(
