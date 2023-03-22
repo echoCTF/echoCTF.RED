@@ -133,6 +133,31 @@ class NotificationController extends \app\components\BaseController
   }
 
   /**
+   * Rotates notifications
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionRotate($archived_interval_minute=180, $pending_interval_minute=4320)
+  {
+    try {
+      $affected=(int) Yii::$app->db->createCommand("CALL rotate_notifications(:archived_interval_minute,:pending_interval_minute)")
+                  ->bindValue(':archived_interval_minute',180)
+                  ->bindValue(':pending_interval_minute',4320)
+                  ->execute();
+      if($affected>0)
+        Yii::$app->session->setFlash('success',Yii::t('app','Deleted {n,plural,=0{no notifications} =1{one notification} other{# notifications}}.',['n'=>$affected]));
+      else
+        Yii::$app->session->setFlash('info',Yii::t('app',"No notifications found to rotate."));
+
+    } catch (\Exception $e)
+    {
+      Yii::$app->session->setFlash('error',Html::encode($e->getMessage()));
+    }
+    return $this->redirect(['index']);
+  }
+
+  /**
    * Finds the Notification model based on its primary key value.
    * If the model is not found, a 404 HTTP exception will be thrown.
    * @param integer $id
