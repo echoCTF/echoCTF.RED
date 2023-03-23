@@ -102,41 +102,31 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   public function give()
   {
     $metadata = json_decode($this->product->metadata);
-    if ($this->active == 1) {
-      if (isset($metadata->spins) && intval($metadata->spins) > 0) {
-        $this->player->profile->spins->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
-      } else {
-        $this->player->profile->spins->updateAttributes(['counter' => 0]);
-      }
+    if (isset($metadata->spins) && intval($metadata->spins) > 0) {
+      $this->player->profile->spins->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
+    } else {
+      $this->player->profile->spins->updateAttributes(['counter' => 0]);
+    }
 
-      if (isset($metadata->badge_ids)) {
-        $badge_ids = explode(',', $metadata->badge_ids);
-        foreach ($badge_ids as $bid) {
-          \Yii::$app->db->createCommand('INSERT IGNORE INTO player_badge (player_id,badge_id) VALUES (:player_id,:badge_id)')
-            ->bindValue(':player_id', $this->player_id)
-            ->bindValue(':badge_id', $bid)
-            ->execute();
-        }
+    if (isset($metadata->badge_ids)) {
+      $badge_ids = explode(',', $metadata->badge_ids);
+      foreach ($badge_ids as $bid) {
+        \Yii::$app->db->createCommand('INSERT IGNORE INTO player_badge (player_id,badge_id) VALUES (:player_id,:badge_id)')
+          ->bindValue(':player_id', $this->player_id)
+          ->bindValue(':badge_id', $bid)
+          ->execute();
       }
+    }
 
-      if (isset($metadata->network_ids)) {
-        foreach (explode(',', $metadata->network_ids) as $val) {
-          if (NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $this->player_id]) === null) {
-            $np = new NetworkPlayer;
-            $np->player_id = $this->player_id;
-            $np->network_id = $val;
-            $np->created_at = new \yii\db\Expression('NOW()');
-            $np->updated_at = new \yii\db\Expression('NOW()');
-            $np->save();
-          }
-        }
-      }
-    // subscription is inactive check it has networks
-    } else if (isset($metadata->network_ids)) {
-      // for each network_id remove the players record if any from network_player
+    if (isset($metadata->network_ids)) {
       foreach (explode(',', $metadata->network_ids) as $val) {
-        if (($np = NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $this->player_id])) !== null) {
-          $np->delete();
+        if (NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $this->player_id]) === null) {
+          $np = new NetworkPlayer;
+          $np->player_id = $this->player_id;
+          $np->network_id = $val;
+          $np->created_at = new \yii\db\Expression('NOW()');
+          $np->updated_at = new \yii\db\Expression('NOW()');
+          $np->save();
         }
       }
     }
