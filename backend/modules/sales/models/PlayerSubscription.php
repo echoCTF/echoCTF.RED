@@ -211,8 +211,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     } else {
       if (isset($metadata->network_ids)) {
         foreach (explode(',', $metadata->network_ids) as $val) {
-          if(($np=NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $this->player_id]))!==null)
-          {
+          if (($np = NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $this->player_id])) !== null) {
             $np->delete();
           }
         }
