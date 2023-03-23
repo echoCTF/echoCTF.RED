@@ -9,6 +9,11 @@ namespace app\modules\sales\models;
  */
 class PlayerSubscriptionQuery extends \yii\db\ActiveQuery
 {
+    public function vip()
+    {
+        return $this->andWhere("[[subscription_id]]='sub_vip'");
+    }
+
     public function active($active=1)
     {
         return $this->andWhere("[[active]]=".intval($active));
