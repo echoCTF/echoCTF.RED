@@ -15,3 +15,8 @@ Usage: `./backend/yii sales/import-stripe`
 Import Stripe products and their prices.
 
 Usage: `./backend/yii sales/stripe-import-products`
+
+## Delete Inactive
+Delete inactive subscriptions
+
+Usage: `./backend/yii sales/delete-inactive`

@@ -75,4 +75,14 @@ class CronController extends Controller
     echo "Importing Products\n";
     Product::FetchStripe();
   }
+
+  /**
+   * Delete Expired subscriptions
+   */
+  public function actionDeleteInactive()
+  {
+    echo "Deleting expired subscriptions\n";
+    PlayerSubscription::DeleteInactive();
+  }
+
 }
