@@ -28,7 +28,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
           'icon' => 'fab fa-cc-stripe',
           'color' => 'primary',
           'modelClass' => "app\modules\sales\models\PlayerSubscription",
-          'total' => PlayerSubscription::find()->count() . ' ' . '<small class="text-muted"><abbr title="Active">' . PlayerSubscription::find()->active()->count() . '</abbr></small>',
+          'total' => PlayerSubscription::find()->count() . ' ' . '<small class="text-muted"><abbr title="Active">' . PlayerSubscription::find()->active()->count() . '</abbr>/</small><sub class="text-muted fs-6">'.PlayerSubscription::find()->vip()->active()->count().' VIP</sub>',
           'title' => Html::a('Subscriptions', ['/sales/player-subscription/index'])
         ]); ?>
       </div>
