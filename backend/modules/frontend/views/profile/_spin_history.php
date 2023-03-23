@@ -17,8 +17,6 @@ Pjax::begin(['id' => 'spin-historyPJ', 'enablePushState' => false, 'enableReplac
       },
     ],
     'created_at:dateTime',
-    'updated_at:dateTime',
-
   ],
 ]);
 Pjax::end();

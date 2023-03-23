@@ -43,10 +43,10 @@ yii\bootstrap5\Modal::end();
             [
               'attribute' => 'target',
               'label'=>'Target',
-              'value'=> function($model) {return sprintf("id:%d %s", $model->target_id, $model->target->name);},
+              'value'=> function($model) {return $model->target->name;},
             ],
             'player_id',
-            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
+            ['class' => 'app\components\columns\ProfileColumn'],
             'created_at',
             'updated_at',
 
