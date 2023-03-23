@@ -12,6 +12,7 @@ use yii\base\InvalidConfigException;
 
 class BooleanColumn extends \yii\grid\DataColumn
 {
+
   public function init()
   {
     parent::init();
@@ -28,7 +29,7 @@ class BooleanColumn extends \yii\grid\DataColumn
     $value=(bool) ArrayHelper::getValue($model, $this->attribute);
     if ($this->content === null) {
       if($value)
-        return $this->grid->formatter->format('<i class="fas fa-check text-active"></i>', $this->format);
+        return $this->grid->formatter->format('<i class="fas fa-check text-success"></i>', $this->format);
       return $this->grid->formatter->format('<i class="fas fa-times text-danger"></i>', $this->format);
     }
     return parent::renderDataCellContent($model, $key, $index);
