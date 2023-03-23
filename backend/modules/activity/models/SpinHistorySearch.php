@@ -12,7 +12,7 @@ use app\modules\activity\models\SpinHistory;
 class SpinHistorySearch extends SpinHistory
 {
   public $target;
-  public $player;
+  public $username;
 
     /**
      * {@inheritdoc}
@@ -21,7 +21,7 @@ class SpinHistorySearch extends SpinHistory
     {
         return [
             [['id', 'target_id', 'player_id'], 'integer'],
-            [['created_at', 'updated_at', 'target', 'player'], 'safe'],
+            [['created_at', 'updated_at', 'target', 'username'], 'safe'],
         ];
     }
 
@@ -69,14 +69,14 @@ class SpinHistorySearch extends SpinHistory
 
         $query->andFilterWhere(['like', 'spin_history.created_at', $this->created_at]);
         $query->andFilterWhere(['like', 'spin_history.updated_at', $this->updated_at]);
-        $query->andFilterWhere(['like', 'player.username', $this->player]);
+        $query->andFilterWhere(['like', 'player.username', $this->username]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
-                  'player' => [
-                      'asc' => ['spin_history.player_id' => SORT_ASC],
-                      'desc' => ['spin_history.player_id' => SORT_DESC],
+                  'username' => [
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
                   ],
                 ]
             ),
