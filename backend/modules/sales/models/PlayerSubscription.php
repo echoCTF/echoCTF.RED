@@ -117,6 +117,28 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   }
 
   /**
+   * Deletes inactive subscriptions
+   * @return int — the number of rows deleted
+   * @throws NotSupportedException — if not overridden.
+   */
+  public static function DeleteInactive()
+  {
+    foreach (PlayerSubscription::find()->active(0)->all() as $sub) {
+      if ($sub->product)
+        $metadata = json_decode($sub->product->metadata);
+      if (isset($metadata->network_ids)) {
+        foreach (explode(',', $metadata->network_ids) as $val) {
+          if(($np=NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $sub->player_id]))!==null)
+          {
+            $np->delete();
+          }
+        }
+      }
+      $sub->delete();
+    }
+  }
+
+  /**
    * Gets all Product from Stripe and merges with existing ones (if any).
    * @return mixed
    */
@@ -156,9 +178,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
 
   public function afterSave($insert, $changedAttributes)
   {
+    if ($this->product)
+      $metadata = json_decode($this->product->metadata);
     if ($this->active == 1) {
-      if ($this->product)
-        $metadata = json_decode($this->product->metadata);
       if (isset($metadata->spins) && intval($metadata->spins) > 0) {
         $this->player->playerSpin->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
       } else {
@@ -184,6 +206,15 @@ class PlayerSubscription extends \yii\db\ActiveRecord
             $np->created_at = new \yii\db\Expression('NOW()');
             $np->updated_at = new \yii\db\Expression('NOW()');
             $np->save();
+          }
+        }
+      }
+    } else {
+      if (isset($metadata->network_ids)) {
+        foreach (explode(',', $metadata->network_ids) as $val) {
+          if(($np=NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $this->player_id]))!==null)
+          {
+            $np->delete();
           }
         }
       }
