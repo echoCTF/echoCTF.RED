@@ -18,13 +18,13 @@ use yii\helpers\ArrayHelper;
  */
 class PlayerSubscriptionController extends \app\components\BaseController
 {
-  /**
-   * {@inheritdoc}
-   */
-   public function behaviors()
-   {
-     return ArrayHelper::merge(parent::behaviors(),[]);
-   }
+    /**
+     * {@inheritdoc}
+     */
+    public function behaviors()
+    {
+        return ArrayHelper::merge(parent::behaviors(), []);
+    }
 
     /**
      * Lists all PlayerSubscription models.
@@ -84,17 +84,16 @@ class PlayerSubscriptionController extends \app\components\BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            if($model->active==0)
-            {
-                $network_ids=ArrayHelper::getColumn($model->price->product->productNetworks,'network_id');
+            if ($model->active == 0) {
+                $network_ids = ArrayHelper::getColumn($model->price->product->productNetworks, 'network_id');
                 NetworkPlayer::deleteAll([
                     'AND', 'player_id = :player_id', [
                         'IN', 'network_id',
                         $network_ids
                     ]
-                    ], [
+                ], [
                     ':player_id' => $model->player_id
-                    ]);
+                ]);
             }
 
             return $this->redirect(['view', 'id' => $model->player_id]);
@@ -120,23 +119,39 @@ class PlayerSubscriptionController extends \app\components\BaseController
     }
 
     /**
+     * Deletes all expired PlayerSubscription models.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @param integer $id
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionDeleteInactive()
+    {
+        try {
+            PlayerSubscription::DeleteInactive();
+            Yii::$app->session->setFlash('success','Inactive subscriptions deleted.');
+        } catch (\Exception $e) {
+            Yii::$app->session->setFlash('error','Failed to delete inactive subscriptions.[<code>'.\yii\helpers\Html::encode($e->getMessage()).'</code>]');
+        }
+        return $this->redirect(['index']);
+    }
+
+    /**
      * Gets all Product from Stripe and merges with existing ones (if any).
      * @return mixed
      */
     public function actionFetchStripe()
     {
-      if(intval(Product::find()->count())<1)
-      {
-        \Yii::$app->session->addFlash('warning','There are no products on the system. First fetch the stripe products and then import the subscriptions.');
-        return $this->redirect(['/sales/product/index']);
-      }
-      if(intval(Player::find()->where(['IS NOT', 'stripe_customer_id', null])->count())<1)
-      {
-        \Yii::$app->session->addFlash('warning','There are no customers on the system. First fetch the stripe customers and then import the subscriptions.');
-        return $this->redirect(['/sales/player-customer/index']);
-      }
-      PlayerSubscription::FetchStripe();
-      return $this->redirect(['index']);
+        if (intval(Product::find()->count()) < 1) {
+            \Yii::$app->session->addFlash('warning', 'There are no products on the system. First fetch the stripe products and then import the subscriptions.');
+            return $this->redirect(['/sales/product/index']);
+        }
+        if (intval(Player::find()->where(['IS NOT', 'stripe_customer_id', null])->count()) < 1) {
+            \Yii::$app->session->addFlash('warning', 'There are no customers on the system. First fetch the stripe customers and then import the subscriptions.');
+            return $this->redirect(['/sales/player-customer/index']);
+        }
+        PlayerSubscription::FetchStripe();
+        return $this->redirect(['index']);
     }
 
     /**
