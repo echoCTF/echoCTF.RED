@@ -10,11 +10,9 @@ Pjax::begin(['id' => 'spin-historyPJ', 'enablePushState' => false, 'enableReplac
   'columns' => [
     'id',
     [
-      'attribute' => 'target',
+      'attribute' => 'target_name',
       'label' => 'Target',
-      'value' => function ($model) {
-        return sprintf("id:%d %s", $model->target_id, $model->target->name);
-      },
+      'value' => 'target.name',
     ],
     'created_at:dateTime',
   ],
