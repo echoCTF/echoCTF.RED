@@ -41,9 +41,9 @@ yii\bootstrap5\Modal::end();
             'id',
             'target_id',
             [
-              'attribute' => 'target',
+              'attribute' => 'target_name',
               'label'=>'Target',
-              'value'=> function($model) {return $model->target->name;},
+              'value'=> 'target.name',
             ],
             'player_id',
             ['class' => 'app\components\columns\ProfileColumn'],
