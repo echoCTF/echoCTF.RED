@@ -127,12 +127,11 @@ class PlayerSubscription extends \yii\db\ActiveRecord
       if ($sub->product)
         $metadata = json_decode($sub->product->metadata);
       if (isset($metadata->network_ids)) {
-        foreach (explode(',', $metadata->network_ids) as $val) {
-          if(($np=NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $sub->player_id]))!==null)
-          {
-            $np->delete();
-          }
-        }
+        NetworkPlayer::deleteAll([
+          'and',
+          ['player_id' => $sub->player_id],
+          ['in', 'network_id', explode(',', $metadata->network_ids)]
+        ]);
       }
       $sub->delete();
     }
