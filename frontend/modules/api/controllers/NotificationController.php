@@ -60,7 +60,7 @@ class NotificationController extends \yii\rest\ActiveController
     if(Yii::$app->sys->maintenance_notification!==false)
     {
       return new ArrayDataProvider([
-        'allModels' => [['id'=>-1, 'title'=>'Platform Maintenance!', 'category'=>'swal:info', 'body'=>'The platform will go down for maintenance but will be back shortly!']],
+        'allModels' => [['id'=>-1, 'title'=>Yii::t('app','Platform Maintenance!'), 'category'=>'swal:info', 'body'=>Yii::t('app','The platform will go down for maintenance. We will be back back shortly!')]],
         'sort' => false,
         'pagination' => false,
       ]);
