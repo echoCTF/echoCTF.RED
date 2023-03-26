@@ -5,8 +5,8 @@ namespace app\modules\api\controllers;
 use Yii;
 use yii\helpers\ArrayHelper;
 use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use app\overloads\yii\filters\AccessControl;
-use yii\data\ActiveDataFilter;
 
 class NotificationController extends \yii\rest\ActiveController
 {
@@ -57,6 +57,14 @@ class NotificationController extends \yii\rest\ActiveController
   public function prepareDataProvider()
   {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    if(Yii::$app->sys->maintenance_notification!==false)
+    {
+      return new ArrayDataProvider([
+        'allModels' => [['id'=>-1, 'title'=>Yii::t('app','Platform Maintenance!'), 'category'=>'swal:info', 'body'=>Yii::t('app','The platform will go down for maintenance. We will be back back shortly!')]],
+        'sort' => false,
+        'pagination' => false,
+      ]);
+    }
     $query = \app\models\Notification::find()->my()->pending();
     if(intval($query->count())===0)
     {

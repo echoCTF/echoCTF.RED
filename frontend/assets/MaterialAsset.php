@@ -68,7 +68,7 @@ class MaterialAsset extends AssetBundle
     /******/
     //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
     '/js/material-dashboard.js?v=0.21.0',
-    ['/js/libechoctf.js?v=0.21.0', 'defer' => 'defer'],
+    ['/js/libechoctf.js?v=0.23.0', 'defer' => 'defer'],
   ];
 
   public $depends = [

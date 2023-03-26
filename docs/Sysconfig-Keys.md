@@ -17,6 +17,7 @@
 * `monthly_leaderboards`: Enable monthly player related leaderboards
 * `force_findings_to_claim`: Enable the enforcement of players needing to have discovered the findings before claiming flags
 * `maintenance`: Enable site-wide maintenance mode
+* `maintenance_notification`: Send maintenance notification to everyone connected to the frontend interface. The popup can be dismissed but it always comes back. No other notifications are delivered.
 
 Not activated by default on current code-base but are going to
 * _`require_activation`_ Whether it is required for users to activate their accounts
