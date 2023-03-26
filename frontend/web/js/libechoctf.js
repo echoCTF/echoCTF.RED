@@ -206,10 +206,8 @@ function apiNotifications(){
             const record=jsonObj[i];
             if(record.category.startsWith('swal'))
             {
-              if(!swal.isVisible())
-              {
-                swal.fire({ title: record.title, text: record.body, type: record.category.replace('swal:',''), showConfirmButton: true});
-              }
+              console.log('swal:'+record.category)
+              swal.fire({ title: record.title, text: record.body, type: record.category.replace('swal:',''), showConfirmButton: true});
             }
             else {
               $.notify({
@@ -236,8 +234,8 @@ $(document).ready(function(){
       }
       else
       {
-        clearTimeout(notifTimeout);
         // clear any existing ones
+        clearTimeout(notifTimeout);
         $('#Notifications, #Hints').ifexists(function(elem) { apiNotifications(); })
       }
     });
