@@ -6,8 +6,10 @@ hostname: dockerd160
 fqdn: dockerd160.example.net
 mac: xx:xx:xx:xx:xx:xx
 OS: debian
-DOCKER_REGISTRY: "10.0.160.254:5000"
+DOCKER_REGISTRY:
+  - "10.0.160.254:5000"
 DOCKER_REPOSITORY: "echoctfred"
+SYNC_DOCKERFILES: false
 PACKAGES: []
 network:
   name: echoctfred_targets
@@ -15,9 +17,9 @@ network:
   driver_options:
     parent: enp0s3
   ipam_options:
-    subnet: '10.0.160.0/24'
-    gateway: 10.0.160.254
-    iprange: '10.0.160.0/16'
+    - subnet: '10.0.160.0/24'
+      gateway: 10.0.160.254
+      iprange: '10.0.160.0/16'
 ETSCTF_TREASURES: []
 ETSCTF_FINDINGS: []
 ETSCTF_users: []
@@ -26,20 +28,28 @@ ETSCTF_authorized_keys:
  - { user: "sysadmin", key: "../ssh_keys/ctf_rsa.pub" }
 aptKeys:
  - { key: "https://download.docker.com/linux/debian/gpg", state: "present" }
+
 aptRepos:
  - { repo: "deb [arch=amd64] https://download.docker.com/linux/debian buster stable", state: "present"}
-apt:
- - { name: "python3-pip", state: "present", stage: 'preInst'}
- - { name: "rsync", state: "present", stage: 'preInst'}
- - { name: "open-vm-tools", state: "present", stage: 'preInst' }
- - { name: "python3-setuptools", state: "present", stage: 'preInst' }
- - { name: "docker-ce", state: "present" }
- - { name: "apt-transport-https", state: "present", stage: 'preInst' }
- - { name: "ca-certificates", state: "present", stage: 'preInst' }
- - { name: "curl", state: "present", stage: 'preInst' }
- - { name: "gnupg2", state: "present", stage: 'preInst' }
- - { name: "software-properties-common", state: "present", stage: 'preInst' }
+
+pre_apt:
+ - iptables-persistent
+ - python3-pip
+ - rsync
+ - open-vm-tools
+ - python3-setuptools
+ - apt-transport-https
+ - ca-certificates
+ - curl
+ - gnupg2
+ - software-properties-common
+ - rdate
+
+post_apt:
+ - docker-ce
+
 pip:
  - { name: "docker", version: "*", state: "present" }
+
 #sync:
 #  - { src: "../files/docker/build", dst: "/opt" }
