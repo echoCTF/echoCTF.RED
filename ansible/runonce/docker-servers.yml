@@ -7,22 +7,54 @@
   become: true
   become_method: su
   tasks:
-  - name: set timezone to UTC
+  - name: Set timezone to UTC
     timezone:
       name: UTC
+
+  - name: Kill any running pm2
+    shell: pm2 kill
+    no_log: true
+    ignore_errors: true
+
+  - name: Ensure docker services are stopped
+    command: service docker stop
+    no_log: true
+    ignore_errors: true
+
+  - name: Ensure existing docker service overrides are removed
+    ansible.builtin.file:
+      path: /etc/systemd/system/docker.service.d/dockerd-service-override.conf
+      state: absent
+
+  - name: Remove any existing /etc/docker/daemon.json
+    ansible.builtin.file:
+      path: /etc/docker/daemon.json
+      state: absent
 
   - name: Set hostname based on host_var
     hostname:
       name: "{{fqdn}}"
 
-  - name: update package cache
+  - name: Configure resolv.conf
+    copy:
+      content: "nameserver 10.0.0.254\n"
+      dest: /etc/resolv.conf
+
+  - name: Allow release-info to change for APT repositories
+    when: ansible_facts['distribution'] == 'Debian'
+    command: apt-get update -y --allow-releaseinfo-change
+    no_log: "{{DEBUG|default(true)}}"
+
+  - name: Update package cache
     apt:
       update_cache: yes
 
-  - name: install preInst packages
-    apt: name="{{item.name}}" state="{{item.state}}"
-    when: item.stage is defined
-    with_items: "{{apt}}"
+  - name: Install preInst packages
+    no_log: "{{DEBUG|default(true)}}"
+    apt:
+      state: present
+      pkg: "{{pre_apt}}"
+    when: pre_apt is defined and pre_apt|length > 0
 
   - name: Add apt keys
     when: aptKeys is defined
@@ -38,34 +70,74 @@
       state: "{{item.state}}"
     with_items: "{{aptRepos}}"
 
-  - name: update package cache
+  - name: Update package cache
     apt:
       update_cache: yes
 
   - name: Update all packages to the latest version
+    no_log: "{{DEBUG|default(true)}}"
     apt:
       upgrade: dist
 
-  - name: Add sysadmin on sudoers
+  - name: Adding defined users (optional)
+    when: users is defined
+    user:
+      name: "{{item.name}}"
+      comment: "{{item.comment}}"
+      uid: "{{item.uid}}"
+      password: '{{item.password}}'
+    with_items: "{{users}}"
+
+  - name: Set authorized keys for root from github
+    when: sshkeys is defined
+    authorized_key:
+      user: root
+      state: present
+      key: "https://github.com/{{item}}.keys"
+    with_items: "{{sshkeys}}"
+
+  - name: Set authorized keys for sysadmin
+    when: sshkeys is defined
+    authorized_key:
+      user: sysadmin
+      state: present
+      key: "https://github.com/{{item}}.keys"
+    with_items: "{{sshkeys}}"
+
+  - name: Make sure sysadmin has sudo access
     lineinfile:
       path: /etc/sudoers.d/90_sysadmin
       line: 'sysadmin ALL=(ALL) NOPASSWD:ALL'
       create: yes
 
-  - name: install remaining packages
-    apt: name="{{item.name}}" state="{{item.state}}"
-    when: apt is defined and item.stage is not defined
-    with_items: "{{apt}}"
+  - name: Ensure /home/sysadmin is owned by sysadmin user (recursive)
+    shell: chown -R sysadmin /home/sysadmin
+    when: users is defined
 
-#  - name: install pip
-#    easy_install: name=pip state=present
-#    when: pip is defined
-#
-  - name: pip install
+  - name: Install post install packages
+    apt:
+      state: latest
+      pkg: "{{post_apt}}"
+    when: post_apt is defined and post_apt|length > 0
+
+  - name: Install pip packages
+    no_log: "{{DEBUG|default(true)}}"
     pip: name="{{item.name}}" version="{{item.version|default(omit)}}" state="{{item.state}}"
     with_items: "{{pip}}"
     when: pip is defined
 
+  - name: Check if we're working with cloud-init
+    ansible.builtin.stat:
+      path: /etc/cloud/cloud.cfg.d
+    register: st_cloud_cfg
+    ignore_errors: true
+
+  - name: Disable cloud init on network interfaces
+    copy:
+      content: "network: {config: disabled}"
+      dest: /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
+    ignore_errors: true
+    when: st_cloud_cfg.stat.isdir is defined and st_cloud_cfg.stat.isdir
 
   - name: Copy docker data folder structure
     synchronize:
@@ -77,13 +149,25 @@
     tags:
       - SYNC
 
-#  - name: Copy Dockerfiles data folder structure
-#    when: SYNC_DOCKERFILES is defined and SYNC_DOCKERFILES
-#    synchronize:
-#      src: "../Dockerfiles"
-#      dest: /opt
-#    tags:
-#      - SYNC
+  - name: Force /etc/network/interfaces
+    ignore_errors: true
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../files/etc_network_interfaces.j2') != []
+    ansible.builtin.template:
+      src:  "{{inventory_dir}}/../files/etc_network_interfaces.j2"
+      dest: /etc/network/interfaces
+      owner: root
+      group: root
+      mode: '0644'
+    tags:
+      - interfaces
+
+  - name: Copy Dockerfiles data folder structure
+    when: SYNC_DOCKERFILES is defined and SYNC_DOCKERFILES
+    synchronize:
+      src: "../Dockerfiles"
+      dest: /opt
+    tags:
+      - SYNC
 
   - name: Set authorized keys
     when: ETSCTF_authorized_keys is defined and item.key is defined
@@ -103,23 +187,36 @@
       path: /etc/default/grub
       regexp: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet"'
       line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1"'
-#      line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1 net.ifnames=0 biosdevname=0"'
 
   - name: Push grub updates
+    no_log: "{{DEBUG|default(true)}}"
     command: /usr/sbin/update-grub
     environment:
-            PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-  - name: "Allow plaintext registry"
-    lineinfile:
-      create: yes
-      dest: "/etc/docker/daemon.json"
-      line: ' { "insecure-registries":["{{DOCKER_REGISTRY}}"] }'
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
-  - name: "Configure dockerd to listen to tcp port"
+  - name: Configure /etc/docker/daemon.json
     copy:
-      src: "../files/dockerd-service-override.conf"
+      dest: "/etc/docker/daemon.json"
+      content: |
+        {
+          "insecure-registries":{{ DOCKER_REGISTRY | default([])|to_nice_json}},
+          "hosts": ["tcp://0.0.0.0:2376", "unix://"]
+        }
+
+  - name: Configure new systemd docker overrides
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../files/dockerd-service-override.conf') != []
+    copy:
+      src: "{{inventory_dir}}/../files/dockerd-service-override.conf"
       dest: /etc/systemd/system/docker.service.d/
 
+  - name: Reload systemd
+    command: systemctl daemon-reload
+
+  - name: Ensure docker deamon is running, also issue daemon-reload to pick up config changes
+    ansible.builtin.systemd:
+      state: restarted
+      daemon_reload: true
+      name: docker
 
   - name: Check if docker network exists
     command: docker network ls -qf name={{network.name}}
@@ -127,16 +224,16 @@
     changed_when: false
     when: network is defined
 
-  - name: "Create docker network"
+  - name: Create docker network if needed
     docker_network:
       name: "{{network.name}}"
       state: present
       driver: "{{network.driver}}"
       driver_options: "{{network.driver_options}}"
-      ipam_options: "{{network.ipam_options}}"
+      ipam_config: "{{network.ipam_options}}"
     when: network is defined and netresult is defined and netresult.stdout == ""
 
-  - name: "force removal containers"
+  - name: Force removal of existing containers
     when: containers is defined
     docker_container:
       name: "{{item.key}}"
@@ -147,7 +244,7 @@
       state: "absent"
     with_dict: "{{ containers }}"
 
-  - name: build image if needed
+  - name: Build container image if needed
     when: containers is defined and item.value.build is defined
     docker_image:
       path: "/opt/build/{{item.value.build}}"
@@ -155,7 +252,7 @@
       nocache: yes
     with_dict: "{{ containers }}"
 
-  - name: "install containers"
+  - name: Install defined non managed containers
     when: containers is defined
     docker_container:
       name: "{{item.key}}"
@@ -175,3 +272,112 @@
       cleanup: yes
       restart_policy: "unless-stopped"
     with_dict: "{{ containers }}"
+
+  - name: Create iptables rules
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../files/iptables_rules.v4') != []
+    template:
+      src:  "{{inventory_dir}}/../files/iptables_rules.v4"
+      dest: /etc/iptables/rules.v4
+
+  - name: Disable IPv6 (needs restart)
+    no_log: "{{DEBUG|default(true)}}"
+    lineinfile:
+      path: /etc/sysctl.conf
+      line: "{{item}}"
+      create: yes
+    with_items:
+      - "net.ipv6.conf.default.disable_ipv6 = 1"
+      - "net.ipv6.conf.lo.disable_ipv6 = 1"
+      - "kernel.randomize_va_space = 0"
+    tags:
+      - sysctl
+
+  - name: Clone docker-event-action
+    git:
+      repo: "https://github.com/echoCTF/docker-event-action.git"
+      dest: /opt/docker-event-action
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+    tags:
+      - docker-event-action
+
+  - name: Download node16 setup script
+    no_log: "{{DEBUG|default(true)}}"
+    ansible.builtin.get_url:
+      url: https://deb.nodesource.com/setup_16.x
+      dest: /root/setup_16.x
+      mode: '0500'
+    tags:
+      - docker-event-action
+      - node
+
+  - name: Run node setup
+    shell: /root/setup_16.x
+    no_log: "{{DEBUG|default(true)}}"
+    args:
+      executable: /bin/bash
+    tags:
+      - docker-events
+      - node
+
+  - name: Install nodejs packages
+    no_log: "{{DEBUG|default(true)}}"
+    apt: name="nodejs" state="present"
+
+  - name: Remove useless packages from the cache
+    no_log: "{{DEBUG|default(true)}}"
+    apt:
+      autoclean: yes
+
+  - name: Remove dependencies that are no longer required
+    no_log: "{{DEBUG|default(true)}}"
+    apt:
+      autoremove: yes
+
+  - name: Run the equivalent of "apt-get clean"
+    no_log: "{{DEBUG|default(true)}}"
+    apt:
+      clean: yes
+
+  - name: Install pm2
+    npm:
+      name: pm2
+      global: true
+    tags:
+      - pm2
+
+  - name: Active pm2 start at boot
+    no_log: "{{DEBUG|default(true)}}"
+    ignore_errors: true
+    shell: pm2 startup
+    args:
+      chdir: /opt/docker-event-action
+    tags:
+      - pm2
+
+  - name: Run npm install for docker-event-action
+    npm:
+      path: /opt/docker-event-action
+    tags:
+      - pm2
+
+  - name: Copy local ctables
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../files/ctables') != []
+    copy:
+      src:  "{{inventory_dir}}/../files/ctables"
+      dest: /usr/local/bin/ctables
+      owner: root
+      group: root
+      mode: 0500
+    tags:
+      - ctables
+
+  - name: Register docker-event-action with pm2
+    no_log: "{{DEBUG|default(true)}}"
+    shell: pm2 start /opt/docker-event-action/docker-events.js
+    args:
+      chdir: /opt/docker-event-action
+    tags:
+      - pm2
