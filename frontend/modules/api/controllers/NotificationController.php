@@ -57,7 +57,7 @@ class NotificationController extends \yii\rest\ActiveController
   public function prepareDataProvider()
   {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    if(Yii::$app->sys->maintenance_notification!==false)
+    if(Yii::$app->sys->maintenance_notification!==false && !Yii::$app->user->identity->isAdmin)
     {
       return new ArrayDataProvider([
         'allModels' => [['id'=>-1, 'title'=>Yii::t('app','Platform Maintenance!'), 'category'=>'swal:info', 'body'=>Yii::t('app','The platform will go down for maintenance. We will be back shortly!')]],        'sort' => false,
