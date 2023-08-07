@@ -43,6 +43,8 @@ $ docker-compose up
 ```
 _NOTE_: The following ports will be binded localy `1194/udp`, `8080/tcp`, `8082/tcp`, `3306/tcp`, `11211/tcp`. If any of these ports are already in use the applications will fail to start.
 
+Please note that the docker images are intended for development and testing use only. For production environments we suggest to use the provided playbooks (under `ansible/runonce`) to setup the systems.
+
 For more details check the [echoCTF.RED@ReadTheDocs](https://echoctfred.rtfd.io) :notebook_with_decorative_cover:
 
 ## Screenshots :eyes::candy:

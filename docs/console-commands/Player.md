@@ -78,3 +78,11 @@ If `delete` is set to any value the players that fail validation get deleted
 Usage: `./backend/yii player/fail-validation-profiles [fix]`
 
 If `fix` is set to any value the player profiles that fail validation get fixed
+
+## Check duplicate IP's
+
+Usage: `./backend/yii player/check-dupips [skip_uids]
+
+## Check Spammy
+
+Usage: `./backend/yii player/check-spammy [domain]
