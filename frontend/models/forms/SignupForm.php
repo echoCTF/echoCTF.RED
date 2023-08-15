@@ -55,7 +55,7 @@ class SignupForm extends Model
             ['username', '\app\components\validators\HourRegistrationValidator',    'client_ip'=>\Yii::$app->request->userIp, 'max'=>Yii::$app->sys->signup_HourRegistrationValidator,'when' => function($model) { return Yii::$app->sys->signup_HourRegistrationValidator!==false;}],
             ['username', '\app\components\validators\TotalRegistrationsValidator',  'client_ip'=>\Yii::$app->request->userIp, 'max'=>Yii::$app->sys->signup_TotalRegistrationsValidator,'when' => function($model) { return Yii::$app->sys->signup_TotalRegistrationsValidator!==false;}],
             ['email',    '\app\components\validators\StopForumSpamValidator',       'max'=>Yii::$app->sys->signup_StopForumSpamValidator,'when' => function($model) { return Yii::$app->sys->signup_StopForumSpamValidator!==false;}],
-            ['email',   '\app\components\validators\MXServersValidator',            'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false;}],
+            ['email',   '\app\components\validators\MXServersValidator',  'mxonly'=>true,           'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false;}],
             //['email', '\app\components\validators\WhoisValidator', ],
 
             ['captcha', 'captcha'],
