@@ -4,6 +4,9 @@ name: "This is the challenge name"
 category: Tutorial # Free form
 difficulty: easy # Free form
 player_type: offense # offense or defense
+timer: 0 # 0 Dont keep timer, 1 keep timer
+active: 1 # 1 = Active, 0 = Not active
+public: 1 # If the challenge is publicly accessible
 # Optional filename that comes with the challenge
 # filename: challenge.zip
 description: "<p>Description of the challenge allows limited html</p>"
