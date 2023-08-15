@@ -90,8 +90,8 @@
       - { name: mysqld, state: "disable" }
       - { name: memcached, state: "disable" }
     packages:
-      - autoconf-2.69p3
-      - automake-1.16.3
+      - autoconf%2.69
+      - automake%1.16
       - curl
       - git
       - libmemcached
@@ -105,6 +105,7 @@
       - php-pdo_mysql%7.4
       - php-zip%7.4
       - certbot
+      - py3-pip
       - py3-requests
       - py3-mysqlclient
   tasks:
@@ -185,7 +186,7 @@
       name: "{{packages}}"
 
   - name: Install lexicon (raw)
-    raw: pip install lexicon
+    raw: pip3 install lexicon
 
   - name: Install composer
     get_url:
@@ -253,7 +254,7 @@
       - usr/bin
       - usr/libexec
       - usr/local/lib
-      - usr/local/share/icu/69.1
+      - usr/local/share/icu/72.1
       - usr/lib
 
   - name: "Copy pf conf files"

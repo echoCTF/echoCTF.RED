@@ -91,8 +91,8 @@
       - libmemcached
       - py3-mysqlclient
       - libtool
-      - autoconf-2.69p3
-      - automake-1.16.3
+      - autoconf%2.69
+      - automake%1.16
     my_cnf:
       - { init_file:  "/etc/mysql-init.sql"}
       - { bind-address:  "{{db_ip}}" }
