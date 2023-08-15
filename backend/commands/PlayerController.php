@@ -292,7 +292,7 @@ class PlayerController extends Controller {
   /**
    * Check mails for known spammers.
    */
-  public function actionCheckStopforumspam($interval=null)
+  public function actionCheckStopforumspam($interval=null,$confidence=90)
   {
     $players=Player::find();
     if($interval!==null)
@@ -307,7 +307,7 @@ class PlayerController extends Controller {
       $SFS->email=$p->email;
       $result=$SFS->check();
       $retData=json_decode($result)->email;
-      if(property_exists($retData,'confidence') && $retData->confidence>0)
+      if(property_exists($retData,'confidence') && $retData->confidence>=intval($confidence))
       {
         printf("Banning %d: %s %d %d => %s\n",$p->id,$p->email,$p->active,$p->status,floatval($retData->confidence));
         $p->ban();
@@ -322,24 +322,29 @@ class PlayerController extends Controller {
   public function actionCheckSpammy($domains=false)
   {
     $skip_domains=[];
-    $players=Player::find()->select(["right(email, length(email)-INSTR(email, '@')) as email"])->distinct();
+    $players=Player::find()->select(["SUBSTRING_INDEX(email,'@',-1) as email"])->distinct();
     foreach($skip_domains as $d)
       $players->andWhere(['not like','email', $d]);
       echo "Found ",$players->count()," distinct domains.\n";
     foreach($players->all() as $p)
     {
       try{
-      $DNS_NS=dns_get_record($p->email, DNS_NS);
-      $DNS_MX=dns_get_record($p->email, DNS_MX);
-      $DNS_A=dns_get_record($p->email, DNS_A);
+        $DNS_NS=dns_get_record($p->email, DNS_NS);
+        $DNS_MX=dns_get_record($p->email, DNS_MX);
+        $DNS_A=dns_get_record($p->email, DNS_A);
       }
       catch(\Exception $e)
       {
-        echo "Failed to resolve [",$p->email,"]",$e->getMessage(),"\n";
+        echo "Error: Failed to resolve [",$p->email,"]",$e->getMessage(),"\n";
       }
       if($DNS_NS===[] && $DNS_MX===[])
       {
         echo "Domain[",$p->email,"] has empty MX & NS records\n";
+      }
+      $validator = new \app\components\validators\MXServersValidator();
+      $validator->mxonly=true;
+      if (!$validator->validate($p->email, $error)) {
+        echo "Domain[",$p->email,"] MX Validator error\n";
       }
     }
   }
@@ -372,7 +377,7 @@ class PlayerController extends Controller {
 
   public function actionFailValidation($delete=false)
   {
-    $allRecords=Player::find()->all();
+    $allRecords=Player::find()->active()->all();
     foreach($allRecords as $p)
     {
         $p->scenario='validator';
