@@ -251,6 +251,7 @@ class ProfileController extends \app\components\BaseController
           $settingsForm->uploadedAvatar->saveAs($fname);
           $settingsForm->uploadedAvatar=null;
         }
+        $profile->genBadge();
         $settingsForm->save();
         $settingsForm->reset();
       }
