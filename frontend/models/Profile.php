@@ -198,4 +198,20 @@ class Profile extends ProfileAR
       ->bindValue(':metric',$key)
       ->queryScalar());
     }
+
+    public function genBadge()
+    {
+      try {
+        $image=\app\components\Img::profile($this);
+
+        if($image==false)
+          return false;
+
+        imagepng($image,\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$this->id.'.png');
+        imagedestroy($image);
+      } catch (\Exception $e) {
+        return false;
+      }
+      return true;
+    }
 }
