@@ -35,6 +35,7 @@ class StopForumSpamValidator extends Validator
       curl_setopt($ch, CURLOPT_POST, 1);
       curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_TIMEOUT, 40);
 
       try
       {
@@ -46,9 +47,10 @@ class StopForumSpamValidator extends Validator
       }
       catch(\Exception $e)
       {
-        return [$this->message, [
-            'email' => $value,
-        ]];
+        if(curl_errno($ch)===0)
+          return [$this->message, [
+              'email' => $value,
+          ]];
       }
     }
     public function validateAttribute($model, $attribute)
@@ -70,6 +72,7 @@ class StopForumSpamValidator extends Validator
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 40);
 
         try
         {
@@ -81,6 +84,7 @@ class StopForumSpamValidator extends Validator
         }
         catch(\Exception $e)
         {
+          if(curl_errno($ch)===0)
             $model->addError($attribute, $this->message);
         }
     }
