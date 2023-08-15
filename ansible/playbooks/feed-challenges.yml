@@ -6,10 +6,6 @@
   gather_facts: false
   connection: local
   serial: 1
-  vars:
-    TOKEN: randomtoken
-    mui:
-      URL: http://localhost:8080
   tasks:
   - name: Submit challenge
     delegate_to: 127.0.0.1
@@ -23,6 +19,9 @@
         author: "{{author|default(omit)}}"
         icon: "{{icon|default(omit)}}"
         name: "{{name}}"
+        public: "{{public|default(1)}}"
+        active: "{{active|default(1)}}"
+        timer: "{{timer|default(1)}}"
         category: "{{category}}"
         difficulty: "{{difficulty}}"
         player_type: "{{player_type}}"

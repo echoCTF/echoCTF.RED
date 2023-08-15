@@ -17,7 +17,7 @@
         args: "{{container.buildargs|default(omit)}}"
         nocache: yes
         pull: no
-      force: "{{force_build|default('no')}}"
-      rm: yes
+      force_source: "{{force_build|default('no')}}"
+      force_tag: "{{force_build|default('no')}}"
     when: container is defined and container.build is defined
     delegate_to: "{{BUILDER}}"

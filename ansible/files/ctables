@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# https://github.com/deitch/ctables
+#
+NSPID=${1}
+LINKFILE="/var/run/netns/${NSPID}"
+mkdir -p /var/run/netns
+/bin/rm -f "$LINKFILE"
+ln -s "/proc/$NSPID/ns/net" "$LINKFILE"
+ip netns exec ${NSPID} iptables -I INPUT -j REJECT
+ip netns exec ${NSPID} iptables -I INPUT -i lo -j ACCEPT
+ip netns exec ${NSPID} iptables -I INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+ip netns exec ${NSPID} iptables -I INPUT -s 10.0.0.0/24 -j ACCEPT
+ip netns exec ${NSPID} iptables -I INPUT -s 10.10.0.0/16 -j ACCEPT
+ip netns exec ${NSPID} iptables -I OUTPUT -o lo -j ACCEPT
+ip netns exec ${NSPID} iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+/bin/rm -f "$LINKFILE"
+#. /etc/docker-extras.sh
+#if [ -f /proc/$NSPID/root/usr/bin/pkexec ]; then
+#        chmod -s /proc/$NSPID/root/usr/bin/pkexec
+#fi
