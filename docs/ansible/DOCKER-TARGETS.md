@@ -93,6 +93,8 @@ And add links from the `variables.yml` file of each container into the
 ln -s ../../../Dockerfiles/example/variables.yml inventories/targets/host_vars/example.fqdn.com.yml
 ```
 
+NOTE: Ansible tries to access the `example.fqdn.com.yml` file relative to the `inventories/targets/host_vars` folder. You need to include the `../../../` part when creating the symbolic link for it to be able to find the variables.
+
 Alternatively you can generate both `hosts` and their corresponding `host_vars` by running the following from the ansible folder.
 ```sh
 INVENTORY="targets"
@@ -106,10 +108,42 @@ done
 
 In order to build the target images
 ```sh
-ansible-playbook gameplays/build-images.yml -i inventories/targets --extra-vars "BUILDER=localhost"
+ansible-playbook playbooks/build-images.yml -i inventories/targets --extra-vars "BUILDER=localhost" --extra-vars "DOCKER_REGISTRY=myregistry:5000" --extra-vars "DOCKER_REPOSITORY=targets"
 ```
 
 Feed the data to the backend
 ```sh
-ansible-playbook gameplays/feed-targets.yml -i inventories/targets  -e '{"mui":{"URL": "http://127.0.0.1:8080"}}'
+ansible-playbook playbooks/feed-targets.yml -i inventories/targets  -e '{"mui":{"URL": "http://127.0.0.1:8080"}}'
+```
+
+You can also create a `group_vars` for the targets to include all those extra-vars details and not having to type them again
+```yaml
+DOCKER_REGISTRY: "myregistry:5000"
+DOCKER_REPOSITORY: "targets"
+TOKEN: MyMUIToken
+mui:
+  URL: "{{MUI_URL|default('http://localhost:8080')}}"
+```
+
+## Alternative build
+You can also use the playbooks/build-squash.yml to build images with squashed layers. This however requires to add the option `"experimental": true,` to /etc/docker/daemon.json like so
+```json
+{
+  "experimental": true,
+  "insecure-registries":["myregistry:5555"]
+}
+```
+Once done restart the docker daemon for the changes to take effect and try to build your image
+```sh
+ansible-playbook playbooks/build-squash.yml -i inventories/targets
+```
+
+This playbook provides a few tags to ease in managing single tasks, such as
+* build: Build image
+* push: Push image to registry
+* rmi: Remove the image from local images
+
+These tags can be used to perform a specific task or to skip some ie
+```sh
+ansible-playbook playbooks/build-squash.yml -i inventories/targets --skip-tags push,rmi
 ```
