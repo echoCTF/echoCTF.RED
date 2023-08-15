@@ -250,7 +250,7 @@ class Player extends PlayerAR implements IdentityInterface
    */
   public function getIsVip():bool
   {
-    if($this->isAdmin || Yii::$app->sys->all_players_vip===true || $this->subscription!==null && $this->subscription->active>0)
+    if($this->isAdmin || Yii::$app->sys->all_players_vip===true || ($this->subscription!==null && $this->subscription->active>0))
       return true;
     return false;
   }
