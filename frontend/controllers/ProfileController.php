@@ -135,20 +135,23 @@ class ProfileController extends \app\components\BaseController
           ->set('Content-type', 'image/png');
 
       Yii::$app->response->format = Response::FORMAT_RAW;
-      if(file_exists(\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png'))
+      $playerBadgeFname=\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png';
+      if(file_exists($playerBadgeFname) && filemtime($playerBadgeFname)>(time()-86400))
       {
-        return file_get_contents(\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png');
+        return file_get_contents($playerBadgeFname);
       }
+      // Clear file cache since we are about to generate the file
+      clearstatcache(true,$playerBadgeFname);
+
       try {
         $image=\app\components\Img::profile($profile);
 
         if($image==false)
           return $this->redirect(['/']);
 
-
         ob_start();
         imagepng($image);
-        imagepng($image,\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$profile->id.'.png');
+        imagepng($image,$playerBadgeFname);
         imagedestroy($image);
         return ob_get_clean();
       } catch (\Exception $e) {
