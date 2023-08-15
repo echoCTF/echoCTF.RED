@@ -398,7 +398,7 @@
       - "mkdir -p /home/moderatorUI/{{domain_name}}/backend/web/assets"
       - "chown -R moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/assets"
       - "mkdir -p /var/log/cron"
-      - "ln -s /home/moderatorUI/{{domain_name}}/backend/yii /usr/local/bin/backend"
+      - "ln -sf /home/moderatorUI/{{domain_name}}/backend/yii /usr/local/bin/backend"
 
   - name: configure moderator rc.d
     command: rcctl {{item}}
