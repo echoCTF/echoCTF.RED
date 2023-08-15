@@ -151,10 +151,10 @@
 
   - name: Force /etc/network/interfaces
     ignore_errors: true
-    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../files/etc_network_interfaces.j2') != []
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../../files/etc_network_interfaces.j2') != []
     ansible.builtin.template:
-      src:  "{{inventory_dir}}/../files/etc_network_interfaces.j2"
-      dest: /etc/network/interfaces
+      src:  "{{inventory_dir}}/../../files/etc_network_interfaces.j2"
+      dest: "/etc/network/interfaces.d/{{network.driver_options.parent}}.conf"
       owner: root
       group: root
       mode: '0644'
@@ -204,9 +204,9 @@
         }
 
   - name: Configure new systemd docker overrides
-    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../files/dockerd-service-override.conf') != []
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../../files/dockerd-service-override.conf') != []
     copy:
-      src: "{{inventory_dir}}/../files/dockerd-service-override.conf"
+      src: "{{inventory_dir}}/../../files/dockerd-service-override.conf"
       dest: /etc/systemd/system/docker.service.d/
 
   - name: Reload systemd
@@ -274,9 +274,9 @@
     with_dict: "{{ containers }}"
 
   - name: Create iptables rules
-    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../files/iptables_rules.v4') != []
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../../files/iptables_rules.v4') != []
     template:
-      src:  "{{inventory_dir}}/../files/iptables_rules.v4"
+      src:  "{{inventory_dir}}/../../files/iptables_rules.v4"
       dest: /etc/iptables/rules.v4
 
   - name: Disable IPv6 (needs restart)
@@ -364,9 +364,9 @@
       - pm2
 
   - name: Copy local ctables
-    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../files/ctables') != []
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../../files/ctables') != []
     copy:
-      src:  "{{inventory_dir}}/../files/ctables"
+      src:  "{{inventory_dir}}/../../files/ctables"
       dest: /usr/local/bin/ctables
       owner: root
       group: root
