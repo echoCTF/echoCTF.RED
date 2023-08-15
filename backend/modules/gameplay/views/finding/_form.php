@@ -28,8 +28,8 @@ use app\modules\gameplay\models\Target;
 
     <?= $form->field($model, 'protocol')->dropDownList(['icmp' => 'ICMP', 'tcp' => 'TCP', 'udp' => 'UDP', ], ['prompt' => 'Choose the protocol of the finding']) ?>
 
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(), 'id', function($model) {
-        return sprintf("(id:%d) %s/%s", $model['id'], $model['fqdn'], $model['ipoctet']);}), ['prompt'=>'Select the target'])->Label('Target') ?>
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->orderBy(['fqdn'=>SORT_ASC])->all(), 'id', function($model) {
+        return sprintf("%s/%s", $model['fqdn'], $model['ipoctet']);}), ['prompt'=>'Select the target'])->Label('Target') ?>
 
     <?= $form->field($model, 'port')->textInput()->hint('The port where the service listens to (use 0 for icmp)') ?>
 
