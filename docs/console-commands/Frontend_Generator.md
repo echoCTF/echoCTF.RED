@@ -26,12 +26,14 @@ Generate profile badge images for all active players.
 Usage: `./frontend/yii generator/all-badges [owner]`
 * `owner` optional user id to change the ownership of the generated images
 
-## badges($owner=0)
-Update the badges for players that had activity during the past 26 hours
+## badges($owner=0,$interval=86400,$limit=200)
+Update the badges for players that had activity during the past 24 hours
 
-Usage: `./frontend/yii generator/badges [owner]`
+Usage: `./frontend/yii generator/badges [owner] [interval] [limit]`
 
-* `owner` optional user id to change the ownership of the generated images
+* `owner` optional local user to change the ownership of the generated image files (default uid 0)
+* `interval` optional time in seconds to check that the badges are older than (default older than 86400 seconds)
+* `limit` limit the operation to this number of players (default 200)
 
 ## urls($domain)
 Generate all available registered URL routes on the system for easier testing of the activated endpoints.
