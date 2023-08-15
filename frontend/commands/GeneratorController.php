@@ -288,32 +288,34 @@ class GeneratorController extends Controller {
       }
     }
 
-    public function actionBadges($owner=0, $interval=1440)
+    public function actionBadges($owner=0, $interval=86400,$limit=200)
     {
-      $streamPlayers=Stream::find()->select(['player_id'])->distinct()->where(['>=','ts',new \yii\db\Expression('NOW() - INTERVAL '.$interval.' MINUTE')]);
-      foreach($streamPlayers->all() as $item)
+      $players=Player::find()->active();
+      $processed=0;
+      foreach($players->all() as $item)
       {
-        echo "Processing user: ",$item->player->username;
-        $avatarPath=\Yii::getAlias('@app/web/images/avatars').'/'.$item->player->profile->id.'.png';
-        if(file_exists($avatarPath))
+        $avatarPath=\Yii::getAlias('@app/web/images/avatars').'/'.$item->profile->id.'.png';
+        $path=\Yii::getAlias('@app/web/images/avatars/badges/').$item->profile->id.'.png';
+        if($processed>intval($limit))
+          break;
+        if(file_exists($avatarPath) && (file_exists($path) && filemtime($path)<(time()-intval($interval))))
         {
-          $image=\app\components\Img::profile($item->player->profile);
+          $processed++;
+          echo "Processing user: ",$item->username;
+          $image=\app\components\Img::profile($item->profile);
           if($image!==false)
           {
-            $path=\Yii::getAlias('@app/web/images/avatars/badges/').$item->player->profile->id.'.png';
             try {
               imagepng($image,$path);
               chown($path, $owner);
               imagedestroy($image);
               echo " badge generated\n";
+
             } catch (\Exception $e) {
+              echo " failed avatar [",$avatarPath,"] not found\n";
               echo " ",$e->getMessage(),"\n";
             }
           }
-        }
-        else
-        {
-          echo " failed avatar [",$avatarPath,"] not found\n";
         }
       }
     }
