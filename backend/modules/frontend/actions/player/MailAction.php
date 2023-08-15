@@ -46,7 +46,7 @@ class MailAction extends \yii\base\Action
         }
         catch(\Exception $e)
         {
-          \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to mail player. {exception}',['exceptions'=>Html::encode($e->getMessage())]));
+          \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to mail player. {exception}',['exception'=>Html::encode($e->getMessage())]));
         }
     }
     elseif($player->status==0)

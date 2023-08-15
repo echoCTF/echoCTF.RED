@@ -66,6 +66,7 @@ class SettingsForm extends Model
 
           /* email field rules */
           [['email'], 'trim'],
+          ['email', 'email','checkDNS'=>true],
           [['email'], 'string', 'max'=>255],
           [['email'], 'email'],
           ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This email has already been taken.'), 'when' => function($model, $attribute) {
@@ -83,7 +84,7 @@ class SettingsForm extends Model
                 $this->addError($attribute, \Yii::t('app','This email is banned.'));
           }],
           ['email', '\app\components\validators\StopForumSpamValidator', 'max'=>intval(Yii::$app->sys->signup_StopForumSpamValidator),'when' => function($model) { return Yii::$app->sys->signup_StopForumSpamValidator!==false;}],
-          ['email', '\app\components\validators\MXServersValidator', 'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false;}],
+          ['email', '\app\components\validators\MXServersValidator',  'mxonly'=>true, 'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false;}],
 
 
           /* username field rules */

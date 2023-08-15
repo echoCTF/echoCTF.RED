@@ -90,8 +90,8 @@
       - { name: mysqld, state: "disable" }
       - { name: memcached, state: "disable" }
     packages:
-      - autoconf-2.69p3
-      - automake-1.16.3
+      - autoconf%2.69
+      - automake%1.16
       - curl
       - git
       - libmemcached
@@ -105,6 +105,7 @@
       - php-pdo_mysql%7.4
       - php-zip%7.4
       - certbot
+      - py3-pip
       - py3-requests
       - py3-mysqlclient
   tasks:
@@ -185,7 +186,7 @@
       name: "{{packages}}"
 
   - name: Install lexicon (raw)
-    raw: pip install lexicon
+    raw: pip3 install lexicon
 
   - name: Install composer
     get_url:
@@ -253,7 +254,7 @@
       - usr/bin
       - usr/libexec
       - usr/local/lib
-      - usr/local/share/icu/69.1
+      - usr/local/share/icu/72.1
       - usr/lib
 
   - name: "Copy pf conf files"
@@ -429,7 +430,7 @@
       - mkdir -p /var/log/cron
       - chown -R participantUI /home/participantUI/{{domain_name}}/frontend/web/assets
       - chown -R participantUI /home/participantUI/{{domain_name}}/frontend/web/images/avatars/
-      - ln -s /home/participantUI/{{domain_name}}/frontend/yii /usr/local/bin/frontend
+      - ln -sf /home/participantUI/{{domain_name}}/frontend/yii /usr/local/bin/frontend
 
   - name: configure participant rc.d
     command: rcctl {{item}}
@@ -466,7 +467,7 @@
     when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN!=""
 
   - name: run composer
-    command: chdir=/home/participantUI/{{domain_name}}/frontend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --no-suggest
+    command: chdir=/home/participantUI/{{domain_name}}/frontend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress
 
   - name: Fix home folder permissions for nginx
     command: chown root.daemon /home/participantUI
@@ -528,14 +529,14 @@
 
   - name: Install renewal policy for letsencrypt
     ini_file:
-        path: "/etc/letsencrypt/renewal/{{domain_name}}.conf"
-        section: renewalparams
-        option: "{{item.key}}"
-        value: "{{item.value}}"
+      path: "/etc/letsencrypt/renewal/{{domain_name}}.conf"
+      section: renewalparams
+      option: "{{item.key}}"
+      value: "{{item.value}}"
     with_items:
-      manual_auth_hook: /etc/letsencrypt/lexicon-vultr.sh create
-      manual_cleanup_hook: /etc/letsencrypt/lexicon-vultr.sh delete
-      post_hook: /etc/nginx/install_renewed_cert.sh
+      - { key: manual_auth_hook, value: "/etc/letsencrypt/lexicon-vultr.sh create" }
+      - { key: manual_cleanup_hook, value: "/etc/letsencrypt/lexicon-vultr.sh delete" }
+      - { key: post_hook, value: "/etc/nginx/install_renewed_cert.sh" }
 
   - name: Execute fw_update
     command: fw_update -a

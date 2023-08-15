@@ -19,7 +19,7 @@ class Mailer extends \yii\symfonymailer\Mailer
 
     if(Yii::$app->sys->mail_port !== false)
     {
-      $config['port']=Yii::$app->sys->mail_port;
+      $config['port']=intval(Yii::$app->sys->mail_port);
     }
 
     if(Yii::$app->sys->mail_username !== false)
