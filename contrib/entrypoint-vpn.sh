@@ -14,7 +14,7 @@ if [ ! -f /etc/openvpn/.configured ]; then
     echo "00" > /etc/openvpn/crl/number
     echo "OPENVPN_ADMIN_PASSWORD">/etc/openvpn/private/mgmt.pwd
     openssl dhparam -out /etc/openvpn/dh.pem 2048
-    openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key
+    openvpn --genkey secret /etc/openvpn/private/vpn-ta.key
     /var/www/echoCTF.RED/backend/yii migrate --interactive=0
     /var/www/echoCTF.RED/backend/yii migrate-sales/up --interactive=0
     /var/www/echoCTF.RED/backend/yii init_data --interactive=0
