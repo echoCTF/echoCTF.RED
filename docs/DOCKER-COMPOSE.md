@@ -32,9 +32,14 @@ The following diagram illustrates the docker networks and containers that are co
 ## Starting up
 The easy way to start is to use the official docker images and starting them up by executing.
 ```sh
-docker-compose pull
+docker pull echothrust/echoctf.red-db:latest
+docker pull echothrust/echoctf.red-backend:latest
+docker pull echothrust/echoctf.red-frontend:latest
+docker pull echothrust/echoctf.red-vpn:latest
 docker-compose up
 ```
+
+NOTE: You need to pull the images manually with `docker pull`.
 
 The first time you run `docker-compose up` give the containers a few minutes to complete the startup process.
 
