@@ -1,6 +1,9 @@
 ---
 hostname: example
 fqdn: example.echocity-f.com
+ansible_host: 10.0.160.xx # The IP address for the target
+DOCKER: localhost # Docker server to start the container
+mac: de:ad:be:ef:c0:ff:ee # printf "02:42:%.2x:%.2x:%.2x:%.2x\n" 10 0 160 123
 rootable: 1 # 0 for no
 difficulty: 3 # 0-6
 player_spin: 1 # allow player spins
