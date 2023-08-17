@@ -55,7 +55,8 @@
         player_spin: "{{player_spin|default('1')}}"
         headshot_spin: "{{headshot_spin|default('1')}}"
         writeup_allowed: "{{writeup_allowed|default('1')}}"
-        description: '{{description}}'
+        instance_allowed: "{{instance_allowed|default('1')}}"
+        description: '{{description|default("")}}'
         ipoctet: '{{ansible_host}}'
         difficulty: "{{difficulty|default('0')}}"
         mac: '{{mac}}'
@@ -116,7 +117,7 @@
 #    ignore_errors: true
     tags:
       - UI
-    when: target_id is defined and TargetOndemand is defined
+    when: target_id is defined and TargetOndemand is defined and ( TargetOndemand != 0 and TargetOndemand != false )
     uri:
       url: "{{mui.URL}}/index.php?r=restapi/target-ondemand/create&access-token={{TOKEN}}"
       validate_certs: false

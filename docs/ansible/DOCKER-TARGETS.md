@@ -116,7 +116,7 @@ Feed the data to the backend
 ansible-playbook playbooks/feed-targets.yml -i inventories/targets  -e '{"mui":{"URL": "http://127.0.0.1:8080"}}'
 ```
 
-You can also create a `group_vars` for the targets to include all those extra-vars details and not having to type them again
+You can also create a file at `inventories/targets/group_vars/all.yml` for the targets to include all those extra-vars details and not having to type them again
 ```yaml
 DOCKER_REGISTRY: "myregistry:5000"
 DOCKER_REPOSITORY: "targets"
