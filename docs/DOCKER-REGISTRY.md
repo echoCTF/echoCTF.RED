@@ -6,7 +6,7 @@ There are many ways you can do that depending on your network topology and avail
 
 The following guide will provide instructions on running your own registry.
 
-## On VPN gateway
+## On VPN gateway (OpenBSD)
 The suggested way is to run the docker registry on its own system, however the
 next best thing as far as flexibility goes is to run it on your VPN gateway and
 limit access to the registry to `dockerd` servers.
@@ -20,6 +20,7 @@ ansible-playbook --connection=local -i 127.0.0.1, runonce/docker-registry.yml
 ansible-playbook --connection=local -i 127.0.0.1, runonce/docker-registry.yml -e '@settings.yml'
 ```
 
+## On own server (OpenBSD)
 Alternatively, you can proceed with manual installation by following the steps.
 
 Install the needed packages
