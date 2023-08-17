@@ -94,3 +94,18 @@ a.desc:after {
   align-items: center;
   justify-content: center;
 }
+
+div.has-error {
+  border: 1px dashed red;
+  padding: 4px;
+}
+div.has-error > input {
+  background-color: lightpink;
+}
+div.has-error > input:focus {
+  background-color: lightpink;
+}
+.help-block {
+  color: red;
+  font-weight: 600;
+}
