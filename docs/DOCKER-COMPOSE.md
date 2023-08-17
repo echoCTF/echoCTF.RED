@@ -24,7 +24,10 @@ The following volumes are configured and used
 * `echoctfred_data-mysql` For persistent mysql data
 * `echoctfred_data-openvpn` For persistent openvpn data
 * `echoctfred_data-challenges` under backend & frontend `/var/www/echoCTF.RED/*/web/uploads`
-* `./themes/images` under `/var/www/echoCTF.RED/*/web/images` for logos and images
+* `frontend/web/images` under `/var/www/echoCTF.RED/frontend/web/images` for frontend logos and images
+* `backend/web/images` under `/var/www/echoCTF.RED/backend/web/images` for backend logos and images
+
+You can modify the volumes and port mappings by editing the corresponding values in the `docker-compose.yml` file.
 
 The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
 ![echoCTF.RED docker-compose topology](assets/docker-compose-topology.png?)
@@ -36,6 +39,7 @@ docker pull echothrust/echoctf.red-db:latest
 docker pull echothrust/echoctf.red-backend:latest
 docker pull echothrust/echoctf.red-frontend:latest
 docker pull echothrust/echoctf.red-vpn:latest
+chmod a+rw frontend/web/images/{avatars,avatars/badges,targets}
 docker-compose up
 ```
 
