@@ -6,6 +6,7 @@ sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" /var/www/echoCTF.RED/backend/config/cache.
 if [ ! -f /etc/openvpn/.configured ]; then
     echo "OpenVPN not configured"
     openssl dhparam -out /etc/openvpn/dh.pem 2048
+    echo "Sleeping 30 seconds" && sleep 30
     mkdir -p /etc/openvpn/certs /etc/openvpn/client_confs /var/log/openvpn /etc/openvpn/crl /etc/openvpn/ccd
     install -d -m 700 /etc/openvpn/private
     cp contrib/openvpn_tun0.conf /etc/openvpn
