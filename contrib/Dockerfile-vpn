@@ -22,7 +22,7 @@ RUN set -ex \
     && apt-get install --no-install-recommends -y procps git zip unzip mariadb-client tini \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
     openvpn netcat-openbsd tcpdump vim.tiny libnet-pcap-perl libpoe-component-pcap-perl \
-    libdbi-perl libdbd-mysql libdbd-mysql-perl; \
+    libdbi-perl libdbd-mysql libdbd-mysql-perl supervisor; \
     cd /var/www/echoCTF.RED/${RED_APP}; \
     chmod a+x /usr/local/bin/composer; \
     git config --global url."https://".insteadOf "git://" ; \
@@ -38,5 +38,5 @@ RUN cd /var/www/echoCTF.RED/${RED_APP} && composer validate
 EXPOSE 1194/udp
 VOLUME /etc/openvpn
 WORKDIR /var/www/echoCTF.RED
-CMD ["tail -3f /var/log/openvpn/openvpn.log"]
+CMD ["supervisord -c /var/www/echoCTF.RED/contrib/supervisord.conf"]
 ENTRYPOINT ["tini","--", "/entrypoint.sh"]
