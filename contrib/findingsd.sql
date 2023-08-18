@@ -55,19 +55,20 @@ BEGIN
 
   IF teams IS NOT NULL AND teams=1 THEN
     SELECT memc_get(CONCAT('team_player:',_PLAYER_ID)) INTO _TEAM_ID;
-    SELECT memc_get(CONCAT('team_finding:',_TEAM_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
-  ELSE
-    SELECT memc_get(CONCAT('player_finding:',_PLAYER_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
+--    SELECT memc_get(CONCAT('team_finding:',_TEAM_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
   END IF;
+  SELECT memc_get(CONCAT('player_finding:',_PLAYER_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
+
   IF @debug IS NOT NULL AND @debug=1 THEN
     INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[BEFORE FINDING] _TARGET_ID:',ifnull(_TARGET_ID,0),' _PLAYER_ID:',ifnull(_PLAYER_ID,0),' _FINDING_ID:',ifnull(_FINDING_ID,0),' _TEAM_ID:',ifnull(_TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
   END IF;
-
-  IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 THEN
-    UPDATE target_ondemand SET heartbeat=NOW() WHERE target_id=_TARGET_ID AND state>0;
-  END IF;
-
+--  IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 AND memc_get(CONCAT('target_ondemand_heartbeat:',_TARGET_ID)) IS NULL THEN
+--    -- we set it before the insert to reduce the number of queries
+--    DO memc_set(CONCAT('target_ondemand_heartbeat:',_TARGET_ID),UNIX_TIMESTAMP(now()),60);
+--    UPDATE target_ondemand SET heartbeat=NOW() WHERE target_id=_TARGET_ID AND state>0;
+--  END IF;
   IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 AND CLAIMED_BEFORE IS NULL THEN
+    -- we set it before the insert to reduce the number of queries
     INSERT IGNORE INTO player_finding (finding_id,player_id) VALUES(_FINDING_ID,_PLAYER_ID) on duplicate key update finding_id=values(finding_id);
     IF @debug IS NOT NULL AND @debug=1 THEN
       INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[AFTER FINDING] _TARGET_ID:',ifnull(_TARGET_ID,0),' _PLAYER_ID:',ifnull(_PLAYER_ID,0),' _FINDING_ID:',ifnull(_FINDING_ID,0),' _TEAM_ID:',ifnull(_TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
@@ -79,14 +80,7 @@ END
 DROP PROCEDURE IF EXISTS `VPN_LOGIN` //
 CREATE PROCEDURE `VPN_LOGIN`(IN usid BIGINT, IN  assignedIP INT UNSIGNED, IN remoteIP INT UNSIGNED)
 BEGIN
-  IF (select memc_server_count()<1) THEN
-    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
-  END IF;
-
   IF (SELECT COUNT(*) FROM player WHERE id=usid AND status=10)>0 THEN
-    SELECT memc_set(CONCAT('ovpn:',usid),INET_NTOA(assignedIP)) into @devnull;
-    SELECT memc_set(CONCAT('ovpn:',INET_NTOA(assignedIP)),usid) into @devnull;
-    SELECT memc_set(CONCAT('ovpn_remote:',usid),INET_NTOA(remoteIP)) into @devnull;
     UPDATE `player_last` SET `on_vpn`=NOW(), `vpn_local_address`=assignedIP, `vpn_remote_address`=remoteIP WHERE `id`=usid;
   END IF;
 END
@@ -95,11 +89,6 @@ END
 DROP PROCEDURE IF EXISTS `VPN_LOGOUT_STALLED` //
 CREATE PROCEDURE `VPN_LOGOUT_STALLED`(IN vpn_server CHAR(15))
 BEGIN
-  IF (select memc_server_count()<1) THEN
-    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
-  END IF;
-
-  SELECT memc_delete(CONCAT('ovpn:',id)), memc_delete(CONCAT('ovpn_remote:',id)) from player_last where vpn_remote_address is not null or vpn_local_address is not null;
   UPDATE player_last SET vpn_remote_address=null, vpn_local_address=null where vpn_remote_address is not null or vpn_local_address is not null;
 END
 //
@@ -107,14 +96,7 @@ END
 DROP PROCEDURE IF EXISTS `VPN_LOGOUT` //
 CREATE PROCEDURE `VPN_LOGOUT`(IN usid BIGINT, IN  assignedIP INT UNSIGNED, IN remoteIP INT UNSIGNED)
 BEGIN
-  IF (select memc_server_count()<1) THEN
-    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
-  END IF;
-
   IF (SELECT COUNT(*) FROM player WHERE id=usid AND status=10)>0 THEN
-    SELECT memc_delete(CONCAT('ovpn:',usid)) into @devnull;
-    SELECT memc_delete(CONCAT('ovpn_remote:',usid)) into @devnull;
-    SELECT memc_delete(CONCAT('ovpn:',INET_NTOA(assignedIP))) into @devnull;
     UPDATE `player_last` SET vpn_local_address=NULL, vpn_remote_address=NULL WHERE `id`=usid;
   END IF;
 END
