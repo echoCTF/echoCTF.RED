@@ -33,13 +33,9 @@ BEGIN
   DECLARE _PLAYER_ID, _FINDING_ID, _TARGET_ID, _TEAM_ID, CLAIMED_BEFORE, mac_auth, trust_user_ip,teams INT(11) DEFAULT NULL;
   DECLARE userMAC VARCHAR(32) DEFAULT NULL;
 
-  IF (select memc_server_count()<1) THEN
-    select memc_servers_set('127.0.0.1') INTO @memc_server_set_status;
-  END IF;
-  SELECT memc_get('sysconfig:debug') INTO @debug;
-  SELECT memc_get('sysconfig:mac_auth') INTO mac_auth;
-  SELECT memc_get('sysconfig:teams') INTO teams;
-
+  SELECT val into @debug FROM sysconfig where id='debug';
+  SELECT val into mac_auth FROM sysconfig where id='mac_auth';
+  SELECT val into teams FROM sysconfig where id='teams';
   SELECT memc_get(CONCAT('target:',NEW.dstip)) INTO _TARGET_ID;
   IF _TARGET_ID IS NOT NULL THEN
     SELECT memc_get(CONCAT('finding:',NEW.proto,':',ifnull(NEW.dstport,0), ':', _TARGET_ID )) INTO _FINDING_ID;
@@ -50,7 +46,7 @@ BEGIN
     SELECT memc_get(CONCAT('arpdat:',NEW.srcip)) INTO userMAC;
     SELECT memc_get(CONCAT('player_mac:',userMAC)) INTO _PLAYER_ID;
   ELSE
-    SELECT memc_get(CONCAT('ovpn:',INET_NTOA(NEW.srcip))) INTO _PLAYER_ID;
+    SELECT id INTO _PLAYER_ID FROM player_last WHERE vpn_local_address is not null and vpn_local_address=NEW.srcip;
   END IF;
 
   IF teams IS NOT NULL AND teams=1 THEN
@@ -62,11 +58,7 @@ BEGIN
   IF @debug IS NOT NULL AND @debug=1 THEN
     INSERT DELAYED into debuglogs (msg) VALUES (CONCAT('[BEFORE FINDING] _TARGET_ID:',ifnull(_TARGET_ID,0),' _PLAYER_ID:',ifnull(_PLAYER_ID,0),' _FINDING_ID:',ifnull(_FINDING_ID,0),' _TEAM_ID:',ifnull(_TEAM_ID,'-'),' CLAIMED BEFORE ID:', ifnull(CLAIMED_BEFORE,0)));
   END IF;
---  IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 AND memc_get(CONCAT('target_ondemand_heartbeat:',_TARGET_ID)) IS NULL THEN
---    -- we set it before the insert to reduce the number of queries
---    DO memc_set(CONCAT('target_ondemand_heartbeat:',_TARGET_ID),UNIX_TIMESTAMP(now()),60);
---    UPDATE target_ondemand SET heartbeat=NOW() WHERE target_id=_TARGET_ID AND state>0;
---  END IF;
+
   IF _PLAYER_ID IS NOT NULL AND _FINDING_ID IS NOT NULL AND _FINDING_ID>0 AND CLAIMED_BEFORE IS NULL THEN
     -- we set it before the insert to reduce the number of queries
     INSERT IGNORE INTO player_finding (finding_id,player_id) VALUES(_FINDING_ID,_PLAYER_ID) on duplicate key update finding_id=values(finding_id);
