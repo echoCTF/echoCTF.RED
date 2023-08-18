@@ -9,7 +9,7 @@ ARG MYSQL_USER=vpnuser
 ARG MYSQL_PASSWORD=vpnuserpass
 ARG MYSQL_DATABASE=echoCTF
 ARG GITHUB_OAUTH_TOKEN
-
+ENV OPENVPN_ADMIN_PASSWORD OPENVPN_ADMIN_PASSWORD
 ENV DEBIAN_FRONTEND noninteractive
 WORKDIR /var/www/echoCTF.RED
 COPY ${RED_APP} ./${RED_APP}/
@@ -21,7 +21,8 @@ RUN set -ex \
     && apt-get update \
     && apt-get install --no-install-recommends -y procps git zip unzip mariadb-client tini \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
-    openvpn netcat-openbsd; \
+    openvpn netcat-openbsd tcpdump vim.tiny libnet-pcap-perl libpoe-component-pcap-perl \
+    libdbi-perl libdbd-mysql libdbd-mysql-perl supervisor; \
     cd /var/www/echoCTF.RED/${RED_APP}; \
     chmod a+x /usr/local/bin/composer; \
     git config --global url."https://".insteadOf "git://" ; \
@@ -37,5 +38,5 @@ RUN cd /var/www/echoCTF.RED/${RED_APP} && composer validate
 EXPOSE 1194/udp
 VOLUME /etc/openvpn
 WORKDIR /var/www/echoCTF.RED
-CMD ["tail -3f /var/log/openvpn/openvpn.log"]
+CMD ["supervisord -c /var/www/echoCTF.RED/contrib/supervisord.conf"]
 ENTRYPOINT ["tini","--", "/entrypoint.sh"]
