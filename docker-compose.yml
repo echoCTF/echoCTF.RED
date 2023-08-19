@@ -2,6 +2,7 @@ version: '2'
 services:
   db:
     container_name: echoctfred_db
+    hostname: db
     image: echothrust/echoctf.red-db
     build:
       context: .
@@ -24,6 +25,7 @@ services:
 
   backend:
     container_name: echoctfred_backend
+    hostname: backend
     image: echothrust/echoctf.red-backend
     build:
       context: .
@@ -50,6 +52,7 @@ services:
 
   frontend:
     container_name: echoctfred_frontend
+    hostname: frontend
     image: echothrust/echoctf.red-frontend
     build:
       context: .
@@ -77,6 +80,7 @@ services:
 
   vpn:
     container_name: echoctfred_vpn
+    hostname: vpn
     cap_add:
       - NET_ADMIN
     privileged: true
