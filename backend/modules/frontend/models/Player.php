@@ -145,7 +145,7 @@ class Player extends PlayerAR
   }
   public function getAcademicLong()
   {
-    return Yii::$app->sys->{"academic_".$this->academic};
+    return Yii::$app->sys->{"academic_".$this->academic."long"};
   }
 
   public function getAcademicShort()
