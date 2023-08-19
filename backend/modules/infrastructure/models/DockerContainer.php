@@ -25,8 +25,8 @@ class DockerContainer extends Model
   public $image;
   public $net;
   public $dns;
-  public $targetVariables;
-  public $targetVolumes;
+  public $targetVariables=[];
+  public $targetVolumes=[];
   public $mac;
   public $memory;
   public $server;
@@ -123,9 +123,14 @@ class DockerContainer extends Model
   {
     $this->connectAPI();
     if(!$this->container)
+    {
       $this->container=$this->docker->getContainerManager()->find($this->name);
+    }
     if($this->container instanceof \Docker\API\Model\ContainersCreatePostResponse201 )
+    {
       $this->container=$this->docker->containerInspect($this->container->getId());
+    }
+
     return $this->container;
   }
 
