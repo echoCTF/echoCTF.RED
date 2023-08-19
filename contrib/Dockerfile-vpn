@@ -20,7 +20,7 @@ ADD https://getcomposer.org/download/latest-stable/composer.phar /usr/local/bin/
 RUN set -ex \
     && apt-get update \
     && apt-get install --no-install-recommends -y procps git zip unzip mariadb-client tini \
-    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache \
+    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached \
     openvpn netcat-openbsd tcpdump vim.tiny libnet-pcap-perl libpoe-component-pcap-perl \
     libdbi-perl libdbd-mysql libdbd-mysql-perl supervisor; \
     cd /var/www/echoCTF.RED/${RED_APP}; \
