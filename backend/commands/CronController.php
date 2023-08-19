@@ -204,8 +204,11 @@ class CronController extends Controller
       foreach($t->all() as $val)
       {
         $dc=new DockerContainer($val->target);
-        $dc->targetVolumes=$val->target->targetVolumes;
-        $dc->targetVariables=$val->target->targetVariables;
+        $dc->timeout=20000;
+        if($val->target->targetVolumes!==null)
+          $dc->targetVolumes=$val->target->targetVolumes;
+        if($val->target->targetVariables!==null)
+          $dc->targetVariables=$val->target->targetVariables;
         $dc->name=$val->name;
         $dc->server=$val->server->connstr;
         if($val->ip==null)
@@ -277,7 +280,7 @@ class CronController extends Controller
           if(method_exists($e,'getErrorResponse'))
             echo $e->getErrorResponse()->getMessage(),"\n";
           else
-            echo $e->getMessage(),"\n";
+            echo $e->getFile(),":",$e->getLine()," ",$e->getMessage(),"\n";
         }
       }
     }
