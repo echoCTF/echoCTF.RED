@@ -8,7 +8,7 @@ services:
       context: .
       dockerfile: contrib/Dockerfile-mariadb
     restart: "always"
-    command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake"]
+    command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake", "--init_file=/always-initdb.d/99_mysql-init.sql"]
 #    ports:
 #      - 3306:3306
 #      - 11211:11211
