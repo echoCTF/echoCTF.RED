@@ -25,7 +25,7 @@ class BaseController extends \yii\web\Controller
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function () {
-                          return Yii::$app->user->identity->getIsAdmin();
+                            return \Yii::$app->user->identity->isAdmin;
                         },
                   ],
                   'authActions'=>[
