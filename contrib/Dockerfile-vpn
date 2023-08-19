@@ -25,6 +25,8 @@ RUN set -ex \
     libdbi-perl libdbd-mysql libdbd-mysql-perl supervisor; \
     cd /var/www/echoCTF.RED/${RED_APP}; \
     chmod a+x /usr/local/bin/composer; \
+    touch /sbin/pfctl && chmod +x /sbin/pfctl; \
+    ln -s /var/www/echoCTF.RED/${RED_APP}/yii /usr/local/sbin/backend; \
     git config --global url."https://".insteadOf "git://" ; \
 #    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
 #    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config --global github-protocols https; \

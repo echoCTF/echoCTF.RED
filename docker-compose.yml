@@ -2,12 +2,13 @@ version: '2'
 services:
   db:
     container_name: echoctfred_db
+    hostname: db
     image: echothrust/echoctf.red-db
     build:
       context: .
       dockerfile: contrib/Dockerfile-mariadb
     restart: "always"
-    command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake"]
+    command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake", "--init_file=/always-initdb.d/99_mysql-init.sql"]
 #    ports:
 #      - 3306:3306
 #      - 11211:11211
@@ -24,6 +25,7 @@ services:
 
   backend:
     container_name: echoctfred_backend
+    hostname: backend
     image: echothrust/echoctf.red-backend
     build:
       context: .
@@ -50,6 +52,7 @@ services:
 
   frontend:
     container_name: echoctfred_frontend
+    hostname: frontend
     image: echothrust/echoctf.red-frontend
     build:
       context: .
@@ -77,6 +80,7 @@ services:
 
   vpn:
     container_name: echoctfred_vpn
+    hostname: vpn
     cap_add:
       - NET_ADMIN
     privileged: true

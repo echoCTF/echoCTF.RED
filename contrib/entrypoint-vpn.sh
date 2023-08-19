@@ -36,5 +36,13 @@ if [ ! -f /etc/openvpn/.configured ]; then
     echo "*** The systems are now configured. ***"
     echo "***************************************"
 fi
-openvpn --dev tun0 --config /etc/openvpn/openvpn_tun0.conf
+while ! mysqlshow -h db > /dev/null 2>&1
+do
+    echo "Failed to connect to [db], waiting 1 second" && sleep 1
+done
+
+echo "Attempting to spin up targets"
+backend target/spin
+
+
 $@
