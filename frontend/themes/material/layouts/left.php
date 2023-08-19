@@ -14,7 +14,7 @@ use yii\helpers\Url;
 
         <?php if(!Yii::$app->user->isGuest):?>
           <a href="<?=Url::to(['/profile/me'])?>" class="simple-text logo-normal" style="text-transform:none" title="<?=\Yii::t('app','Profile of')?> <?=Html::encode(Yii::$app->user->identity->username)?><?= Yii::$app->user->identity->onVPN ? "\nVPN IP: ".Yii::$app->user->identity->vpnIP : "" ?>">
-            <?php if(Yii::$app->user->identity->isVip):?>
+            <?php if(Yii::$app->user->identity->isVip && Yii::$app->sys->all_players_vip!==false):?>
                 <span class="badge badge-danger" style="position: absolute; bottom: 32%; left: 57%"><?php if(Yii::$app->user->identity->subscription!==null):?><img src="/images/<?=Yii::$app->user->identity->subscription->product ? Yii::$app->user->identity->subscription->product->shortcode : "vip"?>.svg" width="20px"><?php else:?>VIP<?php endif;?></span>
             <?php endif;?>
             <img style="width: 75px; height: 75px" src="/images/avatars/<?=Yii::$app->user->identity->profile->avtr;?>?<?=Yii::$app->formatter->asTimestamp(Yii::$app->user->identity->profile->updated_at)?>" class="img-fluid rounded <?php if(Yii::$app->user->identity->isVip):?>border-danger<?php endif;?> <?=\app\components\formatters\RankFormatter::ordinalPlaceCss(Yii::$app->user->identity->profile->rank->id)?>" style="max-width: 60px; max-height: 60px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"><br/>

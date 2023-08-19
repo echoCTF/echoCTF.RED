@@ -56,7 +56,7 @@ class Img extends Component
           imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"username.....: %s"),$profile->owner->username),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"joined.......: %s"),date("d.m.Y", strtotime($profile->owner->created))),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"points.......: %s"),number_format($profile->owner->playerScore->points)),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"rank.........: %s"),$profile->rank->ordinalPlace),$greencolor);
+          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"rank.........: %s"),$profile->owner->playerScore->points == 0 ? "-":$profile->rank->ordinalPlace),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"level........: %d / %s"),$profile->experience->id, $profile->experience->name),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"flags........: %d"), $profile->totalTreasures),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"challenges...: %d / %d first"),$profile->challengesSolverCount, $profile->firstChallengeSolversCount),$greencolor);
