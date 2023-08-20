@@ -20,7 +20,7 @@ RUN set -ex; \
     apt-get update; \
     apt-get install --no-install-recommends -y git zip unzip mariadb-client mcrypt apache2 tini \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached \
-    vim; \
+    vim cron; \
     chmod a+x /usr/local/bin/composer; \
     cp ${RED_APP}/config/cache-local.php ${RED_APP}/config/cache.php; \
     cp ${RED_APP}/config/validationKey-local.php ${RED_APP}/config/validationKey.php; \
