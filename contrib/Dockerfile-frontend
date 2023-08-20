@@ -16,7 +16,7 @@ RUN set -ex \
     && apt-get install --no-install-recommends -y git zip unzip tini \
     mariadb-client mcrypt apache2 \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached \
-    vim
+    vim cron
 
 WORKDIR /var/www/echoCTF.RED
 COPY ${RED_APP} ./${RED_APP}/
