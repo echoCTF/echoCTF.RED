@@ -56,7 +56,7 @@ else {
               ]);?>
           <?php endif;?>
     </p>
-    <?php if($subscription->exists && \Yii::$app->sys->all_players_vip!==false):?>
+    <?php if($subscription->exists && \Yii::$app->sys->all_players_vip!==true):?>
       <?php if($subscription->isActive):?>
         <h5 class="rounded text-success font-weight-bold"><?= $subscription->product ? $subscription->product->name: "subscription"?> expires in <?=$subscription->expires?></h5>
         <?=Html::a('Manage Billing',['/subscription/default/index'],['class'=>'btn btn-block btn-info font-weight-bold']);?>
