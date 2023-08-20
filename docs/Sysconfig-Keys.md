@@ -18,10 +18,8 @@
 * `force_findings_to_claim`: Enable the enforcement of players needing to have discovered the findings before claiming flags
 * `maintenance`: Enable site-wide maintenance mode
 * `maintenance_notification`: Send maintenance notification to everyone connected to the frontend interface. The popup can be dismissed but it always comes back. No other notifications are delivered.
-
-Not activated by default on current code-base but are going to
-* _`require_activation`_ Whether it is required for users to activate their accounts
-* _`disable_registration`_ Whether online registrations are allowed
+* `require_activation` Whether it is required for users to activate their accounts
+* `disable_registration` Whether online registrations are allowed
 
 ## String and numeric key/val pairs
 * `event_name` A name for your event
@@ -81,9 +79,10 @@ Not activated by default on current code-base but are going to
 ## Player Specific
 * `academic_N` Name for academic value `N`
 *	`academic_Nshort` Short name for academic value `N`
-* `acdemic_grouping` Enable/Disable support for academic grouping
+* `academic_grouping` (1)Enable/(2)Disable support for academic grouping of activity stream
 example:
 ```
+backend/yii sysconfig/set academic_grouping 1
 backend/yii sysconfig/set academic_0 "SuperSite.com"
 backend/yii sysconfig/set academic_1 "AnotherSite.com"
 backend/yii sysconfig/set academic_0short "supersite"
