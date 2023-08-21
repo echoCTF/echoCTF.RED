@@ -8,7 +8,7 @@ ENV MYSQL_DATABASE echoCTF
 ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /always-initdb.d/
-COPY contrib/mysql-init.sql  /always-initdb.d/99_mysql-init.sql
+COPY contrib/mysql-init.sql  /etc/mysql-init.sql
 COPY schemas/echoCTF.sql /docker-entrypoint-initdb.d/01.sql
 COPY schemas/echoCTF-routines.sql /docker-entrypoint-initdb.d/02.sql
 COPY schemas/echoCTF-triggers.sql /docker-entrypoint-initdb.d/03.sql
@@ -39,7 +39,7 @@ RUN set -ex; \
   echo "/usr/bin/memcached -d -M -m ${MEMCACHED_MEM} -p 11211 -u mysql -l 0.0.0.0 -o no_maxconns_fast,no_modern -P /tmp/memcached.pid  -L  --disable-cas" >> /always-initdb.d/00.sh; \
   chmod +x /always-initdb.d/00.sh; \
   cat sql/install_functions.sql>> /docker-entrypoint-initdb.d/00.sql; \
-  sed -i  -e "s/echoCTF/${MYSQL_DATABASE}/g" /always-initdb.d/99_mysql-init.sql; \
+  sed -i  -e "s/echoCTF/${MYSQL_DATABASE}/g" /etc/mysql-init.sql; \
   chmod +x /usr/local/bin/docker-entrypoint.sh; \
   apt-get purge -y build-essential gcc autoconf automake git zip unzip mcrypt libmariadb-dev libtool; \
   apt-get autoremove -y; \
