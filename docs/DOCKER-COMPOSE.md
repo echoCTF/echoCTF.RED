@@ -50,7 +50,7 @@ Once the initialization process completes, run the following command to connect 
 docker exec -it echoctfred_db bash -c "mysql < /etc/mysql-init.sql"
 ```
 
-This command will have to be run every time the database server stops or respawned by eg `docker-compose down`. You can make the change permanent by appending `, "--init_file=/etc/mysql-init.sql"` to the db `command` parameters before the closing bracket `]`.
+This command will have to be run every time the database server stops or respawned by eg `docker-compose down` and only once the systems are fully initialized. You can make the change permanent by appending `, "--init_file=/etc/mysql-init.sql"` to the db `command` parameters before the closing bracket `]`.
 ```yaml
 command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake", "--init_file=/etc/mysql-init.sql"]
 ```
