@@ -43,9 +43,19 @@ chmod a+rw frontend/web/images/{avatars,avatars/badges,targets}
 docker-compose up
 ```
 
-NOTE: You need to pull the images manually with `docker pull`.
-
 The first time you run `docker-compose up` give the containers a few minutes to complete the startup process.
+
+Once the initialization process completes, run the following command to connect the mysql server with the memcached
+```shell
+docker exec -it echoctfred_db bash -c "mysql < /etc/mysql-init.sql"
+```
+
+This command will have to be run every time the database server stops or respawned by eg `docker-compose down`. You can make the change permanent by appending `, "--init_file=/etc/mysql-init.sql"` to the db `command` parameters before the closing bracket `]`.
+```yaml
+command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake", "--init_file=/etc/mysql-init.sql"]
+```
+
+NOTE: You need to pull the images manually with `docker pull`.
 
 If you'd rather to build your own images make you sure you generate a Github OAuth Token to
 be used by the composer utility. This is needed in order to avoid hitting
