@@ -15,10 +15,11 @@ Accepted filter values include one of `all`, `active`, `inactive`
 ## Mail players
 Generate and mail participant account activation URLs
 
-Usage: `./backend/yii player/mail [baseURL] [active] [email]`
+Usage: `./backend/yii player/mail [active] [email] [status]`
 
-- `baseURL`: Base URL to use constructing the account activation url for the player (default: "https://echoctf.red/index.php?r=site/activate&key=")
 - `active`: Mail only users that are `0=inactive, 1=active` (default)
+- `email`: email specific email only
+- `status`: Mail only users that are `0=deleted, 8=unverified, 9=inactive, 10=active`
 
 
 ## Register player

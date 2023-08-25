@@ -151,17 +151,17 @@ class PlayerController extends Controller {
   /*
     Mail Users their activation URL
   */
-  public function actionMail($baseURL=null, $active=false, $email=false)
+  public function actionMail($active=false, $email=false,$status=9)
   {
     // Get innactive players
     if($email !== false)
     {
-      $players=Player::find()->where(['active'=>$active, 'email'=>trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $email))])->all();
+      $players=Player::find()->where(['active'=>$active, 'status'=>$status, 'email'=>trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $email))])->all();
       $this->stdout("Mailing user: ".trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $email))."\n", Console::BOLD);
     }
     else
     {
-      $players=Player::find()->where(['active'=>$active])->all();
+      $players=Player::find()->where(['active'=>$active,'status'=>$status])->all();
       $this->stdout("Mailing Registered users:\n", Console::BOLD);
     }
     $event_name=Sysconfig::findOne('event_name')->val;
@@ -179,6 +179,7 @@ class PlayerController extends Controller {
                   ['user' => $player,'verifyLink'=>$activationURL]
         )
         ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName])
+        ->setBcc([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName])
         ->setTo([$player->email => $player->fullname])
         ->setSubject(trim(Yii::$app->sys->event_name). ' Account approved')
         ->send();
