@@ -2,21 +2,35 @@
 #
 # www.packetmischief.ca
 #
+
+
 my $num_talkers = 10;
+my $more_than = 10000;
+
+
 my %talkers;
 while (<>) {
-        m/^\w+\s+\w+\s+([\d\.]+)(:\d+)*\s+[\-\<\>]+\s+([\d\.]+)/;
-        my $direction = $4;
-        my $sip = $3;
+        # vlan123 tcp 192.168.130.10:10120 -> 192.168.1.7:1025       ESTABLISHED:ESTABLISHED
+        # vlan123 ospf 224.0.0.5 <- 192.168.252.34       NO_TRAFFIC:SINGLE
+        m/^\w+\s+\w+\s+([\d\.]+)(:\d+)*\s+([\-\<\>]+)\s+([\d\.]+)/;
+        my $direction = $3;
+        my $sip = $1;
+        my $dip = $4;
+#        exit;
         if ($direction eq "<-") {
-                $sip = $5;
+
+                $sip = $4;
+                $dip = $1;
         }
-                if (defined $talkers{$sip})
-                {
-                        $talkers{$sip}++;
-                } else {
-                        $talkers{$sip} = 1;
-                }
+
+#        print "$sip->$dip\n";
+
+        if (defined $talkers{$sip})
+        {
+                $talkers{$sip}++;
+        } else {
+                $talkers{$sip} = 1;
+        }
 }
 
 my @top_talkers = sort { $talkers{$b} <=> $talkers{$a} } keys %talkers;
@@ -26,8 +40,11 @@ if($num_talkers > @top_talkers) {
 }
 
 for ($i = 0; $i < $num_talkers; $i++) {
-      if($talkers{$top_talkers[$i]} > 20000)
+      if($talkers{$top_talkers[$i]} >= $more_than)
       {
-              print $top_talkers[$i], "\n";
+              exec "pfctl -k ",$top_talkers[$i];
+              exec "pfctl -k ",$top_talkers[$i]," -k 0.0.0.0";
+              exec "pfctl -k 0.0.0.0 -k ",$top_talkers[$i];
+              print $top_talkers[$i], " (", $talkers{$top_talkers[$i]}, ")\n";
       }
 }
