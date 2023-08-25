@@ -239,9 +239,7 @@ class CronController extends Controller
               {
                 try {
                   $dc->destroy();
-                } catch (\Exception $e) {
-
-                }
+                } catch (\Exception $e) { }
                 $dc->pull();
                 $dc->spin();
               }
@@ -280,7 +278,7 @@ class CronController extends Controller
           if(method_exists($e,'getErrorResponse'))
             echo $e->getErrorResponse()->getMessage(),"\n";
           else
-            echo $e->getFile(),":",$e->getLine()," ",$e->getMessage(),"\n";
+            echo $e->getMessage(),"\n";
         }
       }
     }
