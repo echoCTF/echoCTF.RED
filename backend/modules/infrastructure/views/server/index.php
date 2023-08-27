@@ -37,10 +37,10 @@ yii\bootstrap5\Modal::end();
             'name',
             'ipoctet',
             'network',
-            //'description:ntext',
             'service',
             'connstr',
-
+            'ssl:boolean',
+            'timeout',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

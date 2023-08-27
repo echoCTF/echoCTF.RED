@@ -17,7 +17,8 @@ class ServerSearch extends Server
     public function rules()
     {
         return [
-            [['id', 'ip'], 'integer'],
+            [['id', 'ip','timeout'], 'integer'],
+            [['ssl'], 'boolean'],
             [['name', 'description', 'service', 'connstr','ipoctet','network','provider_id','ipoctet'], 'safe'],
         ];
     }
@@ -59,6 +60,8 @@ class ServerSearch extends Server
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
+            'timeout'=>$this->timeout,
+            'ssl'=>$this->ssl,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
