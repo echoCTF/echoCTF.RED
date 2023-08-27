@@ -31,7 +31,7 @@ class TargetInstanceSearch extends TargetInstance
     public function rules()
     {
         return [
-            [[ 'reboot'], 'integer'],
+            [[ 'reboot','team_allowed'], 'integer'],
             [['created_at', 'updated_at','ipoctet', 'player_id', 'target_id', 'server_id',], 'safe'],
         ];
     }
@@ -73,6 +73,7 @@ class TargetInstanceSearch extends TargetInstance
         // grid filtering conditions
         $query->andFilterWhere([
             'reboot' => $this->reboot,
+            'team_allowed' => $this->team_allowed,
         ]);
         $query->andFilterWhere(['like','target_instance.created_at',$this->created_at])
               ->andFilterWhere(['like','target_instance.updated_at',$this->updated_at]);

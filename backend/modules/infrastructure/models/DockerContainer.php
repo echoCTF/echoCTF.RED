@@ -50,6 +50,17 @@ class DockerContainer extends Model
     parent::__set($name,$value);
   }
 
+  public function setTargetVariables($value)
+  {
+    if(is_array($value)) $this->targetVariables=$value;
+    $this->targetVariables=[];
+  }
+  public function setTargetVolumes($value)
+  {
+    if(is_array($value)) $this->targetVolumes=$value;
+    $this->targetVolumes=[];
+  }
+
   public function connectAPI()
   {
     if($this->docker!==null) return;

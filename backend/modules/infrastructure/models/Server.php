@@ -3,6 +3,7 @@
 namespace app\modules\infrastructure\models;
 
 use Yii;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "server".
@@ -13,10 +14,29 @@ use Yii;
  * @property string|null $description
  * @property string $service
  * @property string $connstr
+ * @property boolean $ssl
+ * @property string $timeout
  */
 class Server extends \yii\db\ActiveRecord
 {
   public $ipoctet;
+
+    public function behaviors()
+    {
+        return [
+          'typecast' => [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'timeout' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'ssl' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            ],
+            'typecastAfterValidate' => false,
+            'typecastBeforeSave' => true,
+            'typecastAfterFind' => true,
+          ],
+        ];
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -33,6 +53,8 @@ class Server extends \yii\db\ActiveRecord
         return [
             [['name', 'ipoctet', 'connstr','network'], 'required'],
             [['ipoctet'], 'ip'],
+            [['ssl'], 'boolean','defaultValue'=>false],
+            [['timeout'], 'integer','defaultValue'=>9000],
             [['description', 'service','provider_id'], 'string'],
             ['service','default','value'=>'docker'],
             [['name','network'], 'string', 'max' => 32],
@@ -54,6 +76,8 @@ class Server extends \yii\db\ActiveRecord
             'description' => Yii::t('app', 'Description'),
             'service' => Yii::t('app', 'Service'),
             'connstr' => Yii::t('app', 'Connstr'),
+            'ssl' => Yii::t('app', 'SSL'),
+            'timeout' => Yii::t('app', 'Timeout'),
         ];
     }
 

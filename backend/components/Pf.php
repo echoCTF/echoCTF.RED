@@ -49,7 +49,7 @@ class Pf extends Component
    */
   public static function store($file, $contents)
   {
-    if(empty($contents)) return false;
+    if(empty($contents)) return file_put_contents($file, "\n")!==false;
     try
     {
       return file_put_contents($file, implode("\n", $contents)."\n")!==false;

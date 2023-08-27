@@ -29,7 +29,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
     <?= $form->field($model, 'ipoctet')->textInput() ?>
 
     <?= $form->field($model, 'reboot')->dropDownList(['0'=>'Nop','1'=>'Reboot','2'=>'Destroy']); ?>
-
+    <?= $form->field($model, 'team_allowed')->checkBox();?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

@@ -25,6 +25,7 @@ use Docker\API\Model\EndpointIPAMConfig;
  * @property int|null $server_id
  * @property int|null $ip
  * @property int $reboot
+ * @property bool $team_allowed
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -55,6 +56,7 @@ class TargetInstance extends \yii\db\ActiveRecord
             'class' => AttributeTypecastBehavior::class,
             'attributeTypes' => [
                 'reboot' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'team_allowed' => AttributeTypecastBehavior::TYPE_BOOLEAN,
             ],
             'typecastAfterValidate' => false,
             'typecastBeforeSave' => true,
@@ -78,6 +80,7 @@ class TargetInstance extends \yii\db\ActiveRecord
             [['ipoctet'], 'ip'],
             ['reboot','default','value'=>0],
             ['reboot','in','range'=>[0,1,2]],
+            [['team_allowed'], 'boolean',],
             [['created_at', 'updated_at'], 'safe'],
             [['player_id'], 'unique'],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -96,6 +99,7 @@ class TargetInstance extends \yii\db\ActiveRecord
             'server_id' => Yii::t('app', 'Server ID'),
             'ip' => Yii::t('app', 'IP'),
             'reboot' => Yii::t('app', 'Reboot'),
+            'team_allowed' => Yii::t('app', 'Team Allowed'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
         ];

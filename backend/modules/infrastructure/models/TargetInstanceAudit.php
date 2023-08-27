@@ -38,6 +38,7 @@ class TargetInstanceAudit extends \yii\db\ActiveRecord
             'class' => AttributeTypecastBehavior::class,
             'attributeTypes' => [
                 'reboot' => AttributeTypecastBehavior::TYPE_INTEGER,
+                'team_allowed' => AttributeTypecastBehavior::TYPE_BOOLEAN,
             ],
             'typecastAfterValidate' => false,
             'typecastBeforeSave' => false,
@@ -54,6 +55,7 @@ class TargetInstanceAudit extends \yii\db\ActiveRecord
         return [
             [['player_id', 'target_id'], 'required'],
             [['player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'integer'],
+            [['team_allowed'], 'boolean',],
             [['ts'], 'safe'],
             [['op'], 'string', 'max' => 1],
         ];

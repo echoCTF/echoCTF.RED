@@ -17,7 +17,7 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
     public function rules()
     {
         return [
-            [['id', ], 'integer'],
+            [['id', 'team_allowed'], 'integer'],
             [['op', 'ts','ipoctet','player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'safe'],
         ];
     }
@@ -59,6 +59,7 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
         $query->andFilterWhere([
             'id' => $this->id,
             'reboot' => $this->reboot,
+            'team_allowed'=>$this->team_allowed,
             'op'=>$this->op,
         ]);
         $query->andFilterWhere(['like','target_instance_audit.ts',$this->ts]);

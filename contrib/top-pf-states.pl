@@ -5,7 +5,6 @@
 
 
 my $num_talkers = 10;
-my $more_than = 10000;
 
 
 my %talkers;
@@ -40,11 +39,5 @@ if($num_talkers > @top_talkers) {
 }
 
 for ($i = 0; $i < $num_talkers; $i++) {
-      if($talkers{$top_talkers[$i]} >= $more_than)
-      {
-              exec "pfctl -k ",$top_talkers[$i];
-              exec "pfctl -k ",$top_talkers[$i]," -k 0.0.0.0";
-              exec "pfctl -k 0.0.0.0 -k ",$top_talkers[$i];
-              print $top_talkers[$i], " (", $talkers{$top_talkers[$i]}, ")\n";
-      }
+        print $top_talkers[$i], " (", $talkers{$top_talkers[$i]}, ")\n";
 }

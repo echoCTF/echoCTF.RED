@@ -27,6 +27,7 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'ip')->textInput() ?>
 
     <?= $form->field($model, 'reboot')->textInput() ?>
+    <?= $form->field($model, 'team_allowed')->checkBox();?>
 
     <?= $form->field($model, 'ts')->textInput() ?>
 

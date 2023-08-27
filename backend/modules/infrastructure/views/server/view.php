@@ -36,6 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'description:ntext',
             'service',
             'connstr',
+            'ssl:boolean',
+            'timeout',
             'provider_id',
         ],
     ]) ?>

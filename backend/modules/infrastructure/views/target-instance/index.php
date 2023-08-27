@@ -56,6 +56,7 @@ yii\bootstrap5\Modal::end();
                 'headerOptions' => ['style' => 'width:7em'],
                 'contentOptions' => ['style' => 'white-space: nowrap;'],
             ],
+            'team_allowed:boolean',
             [
               'attribute'=>'created_at',
               'contentOptions' => ['style' => 'white-space: nowrap;'],
