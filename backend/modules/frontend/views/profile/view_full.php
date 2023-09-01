@@ -27,10 +27,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="dropdown">
               <?php
               echo ButtonDropdown::widget([
-                'label'=>'Quick actions',
-                'options'=>['encodeLabels'=>false],
+                'label' => 'Quick actions',
+                'options' => ['encodeLabels' => false],
                 'dropdown' => [
-                  'items'=> [
+                  'items' => [
                     ['label' => 'Download player ovpn', 'url' => ['/frontend/player/ovpn', 'id' => $model->player_id]],
                     ['label' => 'Update profile', 'url' => ['update', 'id' => $model->id]],
                     ['label' => 'Delete profile', 'url' => ['delete', 'id' => $model->id], 'linkOptions' => ['data' => [
@@ -75,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
           echo TabsX::widget([
             'position' => TabsX::POS_ABOVE,
             'align' => TabsX::ALIGN_LEFT,
-            'encodeLabels'=>false,
+            'encodeLabels' => false,
             'pluginOptions' => [
               'enableCache' => false,
               'cacheTimeout' => 10000
