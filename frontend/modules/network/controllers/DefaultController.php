@@ -122,6 +122,10 @@ class DefaultController extends \app\components\BaseController
           'asc' => ['total_headshots' => SORT_ASC],
           'desc' => ['total_headshots' => SORT_DESC],
         ],
+        'rootable'=>[
+          'asc' =>  ['rootable' => SORT_ASC],
+          'desc' => ['rootable' => SORT_DESC],
+        ],
         'total_findings' => [
           'asc' => ['total_findings' => SORT_ASC],
           'desc' => ['total_findings' => SORT_DESC],
