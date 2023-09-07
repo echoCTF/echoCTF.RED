@@ -99,7 +99,8 @@ class Challenge extends \yii\db\ActiveRecord
 
     public function getCompleted(): bool
     {
-      return $this->total_questions === $this->player_answers;
+      if(\Yii::$app->user->isGuest) return false;
+      return ChallengeSolver::find()->where(['challenge_id' => $this->id,'player_id'=>\Yii::$app->user->id])->exists();
     }
 
     public function getPoints()
