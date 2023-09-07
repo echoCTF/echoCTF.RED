@@ -39,6 +39,7 @@ class OpenVPN extends Component
     try
     {
       $creds = self::determineServerByAddr($player_ip);
+      if($creds===null) return;
       $fp = fsockopen($creds->management_ip_octet, $creds->management_port, $errno, $errstr, 30);
       if (!$fp)
       {
@@ -67,7 +68,7 @@ class OpenVPN extends Component
    * Check the VPN server port based on the range assigned to the user
    * (if connected).
    * @param integer|null $player_ip IP of the player currently
-   * @return array [IP,PORT,PASSWORD]
+   * @return Openvpn|null
    */
   static public function determineServerByAddr(int $player_ip)
   {
