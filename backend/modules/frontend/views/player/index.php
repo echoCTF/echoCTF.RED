@@ -100,8 +100,9 @@ yii\bootstrap5\Modal::end();
           'mail'=>function($model){ if ($model->status==10 || $model->active==1) return false; return true;},
           'kill-vpn'=>function($model){ if ($model->last->vpn_local_address!==null) return true; return false;},
           'delete'=>function($model){ if (\Yii::$app->user->identity->isAdmin) return true; return false;},
+          'reset-activkey'=>function($model){ if ($model->active && trim($model->activkey)!=="") return true; return false;},
         ],
-        'template' => '{player-view-full} {kill-vpn} {view} {generate-ssl} ' . '{update} {delete} {ban} {mail}',
+        'template' => '{player-view-full} {kill-vpn} {view} {generate-ssl} ' . '{update} {delete} {ban} {mail} {reset-activkey}',
         'header' => Html::a(
           '<i class="bi bi-person-fill-exclamation"></i>',
           ['ban-filtered'],
@@ -130,6 +131,16 @@ yii\bootstrap5\Modal::end();
           ]
         ),
         'buttons' => [
+          'reset-activkey' => function($url, $model) {
+            return Html::a('<i class="bi bi-archive-fill"></i>', ['reset-activkey', 'id' => $model->id], [
+                'class' => '',
+                'title'=>'Reset Player activkey',
+                'data' => [
+                    'confirm' => 'Are you absolutely sure you want to empty the activkey for ['.Html::encode($model->username).'] ?',
+                    'method' => 'post',
+                  ],
+              ]);
+          },
           'kill-vpn' => function($url, $model) {
             return Html::a('<i class="bi bi-eraser-fill"></i>', ['kill-vpn', 'id' => $model->id], [
                 'class' => '',
