@@ -42,6 +42,7 @@ class PlayerController extends \app\components\BaseController
           'delete-filtered' => ['POST'],
           'reset-playdata' => ['POST'],
           'reset-authkey' => ['POST'],
+          'reset-activkey' => ['POST'],
           'reset-player-progress' => ['POST'],
           'toggle-academic' => ['POST'],
           'toggle-active' => ['POST'],
@@ -269,6 +270,24 @@ class PlayerController extends \app\components\BaseController
 
     return $this->redirect(Yii::$app->request->referrer ?? ['index']);
   }
+  /**
+   * Empty a players activKey
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionResetActivkey($id)
+  {
+    $model = $this->findModel($id);
+
+    if ($model->updateAttributes(['activkey' => null])) {
+      Yii::$app->session->setFlash('success', Yii::t('app','Player activkey emptied'));
+    } else {
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to empty player activkey'));
+    }
+
+    return $this->redirect(Yii::$app->request->referrer ?? ['index']);
+  }
 
   /**
    * Toggles an existing Player academic flag model.
@@ -325,6 +344,12 @@ class PlayerController extends \app\components\BaseController
   {
     $player = $this->findModel($id);
     $ps = $player->playerSsl;
+    if(!$ps)
+    {
+      $ps=new PlayerSsl;
+      $ps->player_id=$player->id;
+    }
+
     $ps->generate();
     if ($ps->save()) {
       Yii::$app->session->setFlash('success', Yii::t('app',"SSL Keys regenerated."));
