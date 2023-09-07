@@ -14,9 +14,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'username')->textInput(['maxlength' => true])->hint('The username of the player') ?>
 
-    <?= $form->field($model, 'academic')->dropDownList([0=>Yii::$app->sys->academic_0short,1=>Yii::$app->sys->academic_1short, 2=>Yii::$app->sys->academic_2short])->hint('Whether the player is gov, edu or pro') ?>
-
     <?= $form->field($model, 'fullname')->textInput(['maxlength' => true])->hint('The fullname of the player') ?>
+
+    <?= $form->field($model, 'academic')->dropDownList([0=>Yii::$app->sys->academic_0short,1=>Yii::$app->sys->academic_1short, 2=>Yii::$app->sys->academic_2short])->hint('Whether the player is gov, edu or pro') ?>
+    <?= $form->field($model, 'affiliation')->textInput(['maxlength' => true])->hint('The player affiliation') ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true])->hint('The email address of the player') ?>
 

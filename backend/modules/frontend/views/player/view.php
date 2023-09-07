@@ -57,6 +57,7 @@ $this->params['breadcrumbs'][] = $this->title;
           ],
           'email:email',
           'academicLong',
+          'affiliation',
           'active:boolean',
           'status',
           'type',
