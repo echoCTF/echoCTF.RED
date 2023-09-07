@@ -40,7 +40,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property Finding[] $findings
  * @property PlayerHint[] $playerHints
  * @property Hint[] $hints
- * @property PlayerIp[] $playerIp
+ * @property PlayerIp $playerIp
  * @property PlayerIp[] $playerIps
  * @property PlayerMac[] $playerMacs
  * @property PlayerQuestion[] $playerQuestions
@@ -50,11 +50,10 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property Sessions[] $sessions
  * @property Sshkey $sshkey
  * @property Stream[] $streams
- * @property Team[] $teams
  * @property TeamPlayer $teamPlayer
  * @property Team $team
- * @property Profile[] $profile
- * @property PlayerSsl[] $playerSsl
+ * @property Profile $profile
+ * @property PlayerSsl $playerSsl
  */
 class PlayerAR extends \yii\db\ActiveRecord
 {
