@@ -66,6 +66,7 @@ class TargetCardActions extends Widget
     }
     public function prep_instance_actions()
     {
+        if(intval(Yii::$app->db->createCommand('select count(*) from server')->queryScalar())==0) return;
         // If the target is pending powerup then dont show any actions
         if($this->model->status!=='online' || ($this->model->network && !$this->Network->checkTarget($this->model)))
             return;
