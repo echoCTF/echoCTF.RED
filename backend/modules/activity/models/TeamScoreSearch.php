@@ -73,8 +73,8 @@ class TeamScoreSearch extends TeamScore
                 $dataProvider->getSort()->attributes,
                 [
                   'points' => [
-                    'asc' => ['points'=>SORT_ASC, 'team_id'=>SORT_ASC],
-                    'desc' => ['points'=>SORT_DESC, 'team_id'=>SORT_ASC],
+                    'asc'  => ['points'=>SORT_ASC,  'ts'=>SORT_ASC, 'team_id'=>SORT_ASC],
+                    'desc' => ['points'=>SORT_DESC, 'ts'=>SORT_ASC, 'team_id'=>SORT_ASC],
                   ],
                   'team_name' => [
                       'asc' => ['team.name' => SORT_ASC],
