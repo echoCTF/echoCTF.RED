@@ -55,7 +55,7 @@ class SiteController extends \app\components\BaseController
                       'actions' => ['register', 'verify-email', 'resend-verification-email'],
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout','index'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
