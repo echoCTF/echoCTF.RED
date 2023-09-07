@@ -34,6 +34,7 @@ $first=false;
         <?php
           echo ListView::widget([
               'dataProvider' => $dataProvider,
+              'emptyText'=>'<b class="text-danger">No questions found for the challenge. You will have to wait for the administrators to add a question.</b>',
               'summary'=>false,
               'itemOptions' => [
                 'tag' => false
