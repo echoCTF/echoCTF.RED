@@ -23,6 +23,13 @@ use yii\helpers\Html;
               <?= Html::a('<span class="fab fa-stripe fs-2 text-info"></span>', "https://dashboard.stripe.com/customers/" . $model->owner->stripe_customer_id, ['target' => '_blank', 'title' => 'Go to stripe customer', 'data-toggle' => "tooltip", 'data-placement' => "top"]); ?>
             </li>
           <?php endif; ?>
+          <?php if($model->echoctf):?>
+            <li>
+              <a href="https://echoctf.red/profile/<?=Html::encode($model->echoctf)?>"  data-toggle="tooltip" data-placement="top" title="echoCTF profile <?=Html::encode($model->echoctf)?>" target="_blank">
+                <span class="fas fa-flag fs-2 <?=$model->validate('echoctf') ? "text-info" : "text-danger" ?>"></span>
+              </a>
+            </li>
+          <?php endif;?>
           <?php if ($model->twitter) : ?>
             <li>
               <a href="https://twitter.com/<?= Html::encode($model->twitter) ?>" data-toggle="tooltip" data-placement="top" title="<?= Html::encode($model->twitter) ?>" target="_blank">

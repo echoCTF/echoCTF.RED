@@ -19,6 +19,7 @@ use yii\helpers\Html;
  * @property string $discord Profile handle
  * @property string $twitter Twitter handle
  * @property string $github Github handle
+ * @property string $echoctf echoCTF ProfileID
  * @property string $htb HTB ProfileID
  * @property string $twitch Twitch.tv handle
  * @property string $youtube Youtube channelID
@@ -72,7 +73,7 @@ class Profile extends \yii\db\ActiveRecord
             ['country', 'exist', 'targetClass' => \app\modules\settings\models\Country::class, 'targetAttribute' => ['country' => 'id'],'on'=>'validator'],
             [['avatar'], 'string', 'max' => 255],
 
-            [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio','youtube','twitch'], 'trim','on'=>'validator'],
+            [['discord', 'twitter', 'github', 'echoctf', 'htb', 'avatar', 'bio','youtube','twitch'], 'trim','on'=>'validator'],
             ['twitter', '\app\components\validators\social\TwitterValidator','on'=>'validator'],
             ['twitch', '\app\components\validators\social\TwitchValidator','on'=>'validator'],
             ['github', '\app\components\validators\social\GithubValidator','on'=>'validator'],
@@ -81,6 +82,8 @@ class Profile extends \yii\db\ActiveRecord
 
             ['htb', 'string', 'max' => 8,'on'=>'validator'],
             ['htb', 'match', 'pattern' => '/^[0-9]+$/','message'=>'Only numberic HTB id is allowed','on'=>'validator'],
+            [['htb','echoctf'], 'integer', 'min'=>1, 'max' => 99999999,'on'=>'validator'],
+            [['htb','echoctf'], 'match', 'pattern' => '/^[0-9]+$/','message'=>'Only numberic values are allowed for {attribute}','on'=>'validator'],
 
         ];
     }
@@ -98,6 +101,7 @@ class Profile extends \yii\db\ActiveRecord
             'visibility' => 'Visibility',
             'twitter' => 'Twitter',
             'github' => 'Github',
+            'echoctf'=>'echoCTF.RED',
             'countr'=>'Country',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
