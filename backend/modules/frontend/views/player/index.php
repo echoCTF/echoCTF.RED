@@ -44,9 +44,11 @@ yii\bootstrap5\Modal::end();
     'rowOptions' => function ($model, $key, $index, $grid) {
       // $model is the current data model being rendered
       // check your condition in the if like `if($model->hasMedicalRecord())` which could be a method of model class which checks for medical records.
-      $model->scenario = 'validator';
-      if (!$model->validate()) {
-        return ['class' => 'text-danger', 'style' => 'font-weight: 800;'];
+      $tmpObj=clone($model);
+      $tmpObj->scenario='validator';
+      if(!$tmpObj->validate()) {
+          unset($tmpObj);
+          return ['class' => 'text-danger','style'=>'font-weight: 800;'];
       }
       return [];
     },
@@ -93,7 +95,13 @@ yii\bootstrap5\Modal::end();
       //'ts',
       [
         'class' => 'yii\grid\ActionColumn',
-        'template' => '{player-view-full} {view} {generate-ssl} ' . '{update} {delete} {ban} {mail}',
+        'visibleButtons'=>[
+          'generate-ssl'=>function($model){ if ($model->status==10 || $model->active==1) return true; return false;},
+          'mail'=>function($model){ if ($model->status==10 || $model->active==1) return false; return true;},
+          'kill-vpn'=>function($model){ if ($model->last->vpn_local_address!==null) return true; return false;},
+          'delete'=>function($model){ if (\Yii::$app->user->identity->isAdmin) return true; return false;},
+        ],
+        'template' => '{player-view-full} {kill-vpn} {view} {generate-ssl} ' . '{update} {delete} {ban} {mail}',
         'header' => Html::a(
           '<i class="bi bi-person-fill-exclamation"></i>',
           ['ban-filtered'],
@@ -122,9 +130,20 @@ yii\bootstrap5\Modal::end();
           ]
         ),
         'buttons' => [
+          'kill-vpn' => function($url, $model) {
+            return Html::a('<i class="bi bi-eraser-fill"></i>', ['kill-vpn', 'id' => $model->id], [
+                'class' => '',
+                'title'=>'Kill VPN Session',
+                'data' => [
+                    'confirm' => 'Are you absolutely sure you want to kill the vpn session for ['.Html::encode($model->username).'] ?',
+                    'method' => 'post',
+                  ],
+              ]);
+          },
           'delete' => function ($url, $model) {
             return Html::a('<i class="bi bi-trash3-fill"></i>', ['delete', 'id' => $model->id], [
               'class' => '',
+              'title'=>'Delete player from the database',
               'data' => [
                 'confirm' => 'Are you absolutely sure you want to delete [' . Html::encode($model->username) . '] ?',
                 'method' => 'post',
