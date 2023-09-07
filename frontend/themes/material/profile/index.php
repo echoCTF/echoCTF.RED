@@ -57,7 +57,9 @@ $this->_description=$this->title;
           $title_prefix='<b><i rel="tooltip" title="Progress will be visible to others" class="fas fa-eye"></i></i></b> ';
 
         $category='Pending progress of '.Html::encode($profile->owner->username).' on platform targets.';
-        echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>$title_prefix.'Progress', 'category'=>$category, 'personal'=>true,'hidden_attributes'=>['id']]);
+        if(\Yii::$app->user->isGuest) $hidden_attributes=['id','ip'];
+        else $hidden_attributes=['id'];
+        echo TargetWidget::widget(['dataProvider' => null, 'player_id'=>$profile->player_id, 'profile'=>$profile, 'title'=>$title_prefix.'Progress', 'category'=>$category, 'personal'=>true,'hidden_attributes'=>$hidden_attributes]);
         \yii\widgets\Pjax::end();
         ?>
       </div>
