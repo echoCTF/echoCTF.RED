@@ -76,13 +76,13 @@ class TargetSearch extends Target
             'difficulty' => $this->difficulty,
             'suggested_xp' => $this->suggested_xp,
             'required_xp' => $this->required_xp,
+            'status' => $this->status,
             'weight' => $this->weight,
             'target.timer' => $this->timer,
         ]);
 
         $query->andFilterWhere(['like', 'target.name', $this->name])
-            ->andFilterWhere(['like', 'category', $this->status])
-            ->andFilterWhere(['like', 'status', $this->status])
+            ->andFilterWhere(['like', 'category', $this->category])
             ->andFilterWhere(['like', 'scheduled_at', $this->scheduled_at])
             ->andFilterWhere(['like', 'INET_NTOA(ip)', $this->ipoctet])
             ->andFilterWhere(['like', 'fqdn', $this->fqdn])

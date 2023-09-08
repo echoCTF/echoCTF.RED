@@ -38,7 +38,7 @@ class ChallengeSolver extends \yii\db\ActiveRecord
             [['challenge_id', 'player_id'], 'required'],
             [['challenge_id', 'player_id', 'timer', 'rating','first'], 'integer'],
             [['created_at'], 'safe'],
-            [['challenge_id', 'player_id'], 'unique', 'targetAttribute' => ['challenge_id', 'player_id']],
+            [['challenge_id', 'player_id'], 'unique', 'targetAttribute' => ['challenge_id', 'player_id'],'message'=>'This challenge has already been solved by the player'],
             [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::class, 'targetAttribute' => ['challenge_id' => 'id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];

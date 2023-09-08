@@ -246,13 +246,16 @@ class ProfileController extends \app\components\BaseController
 
       if($settingsForm->load(Yii::$app->request->post()) && $settingsForm->validate())
       {
-        $settingsForm->uploadedAvatar = UploadedFile::getInstance($settingsForm, 'uploadedAvatar');
-        if($this->HandleUpload($settingsForm->uploadedAvatar))
+        if($settingsForm->_cf('avatar'))
         {
-          $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s.png',$profile->id));
-          $settingsForm->avatar=sprintf("%s.png",$profile->id);
-          $settingsForm->uploadedAvatar->saveAs($fname);
-          $settingsForm->uploadedAvatar=null;
+          $settingsForm->uploadedAvatar = UploadedFile::getInstance($settingsForm, 'uploadedAvatar');
+          if($this->HandleUpload($settingsForm->uploadedAvatar))
+          {
+            $fname=Yii::getAlias(sprintf('@app/web/images/avatars/%s.png',$profile->id));
+            $settingsForm->avatar=sprintf("%s.png",$profile->id);
+            $settingsForm->uploadedAvatar->saveAs($fname);
+            $settingsForm->uploadedAvatar=null;
+          }
         }
         $profile->genBadge();
         $settingsForm->save();

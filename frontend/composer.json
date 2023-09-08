@@ -12,7 +12,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=5.4.0 || >=8",
-        "yiisoft/yii2": "2.0.47",
+        "yiisoft/yii2": "2.0.49",
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-bootstrap4": "^2.0",
         "overals/yii2-whois": "~1.0.0",

@@ -89,7 +89,7 @@ class TargetWidget extends Widget
             ]
 
         ]);
-        $defaultOrder=['progress' => SORT_DESC, 'ip'=>SORT_ASC];
+        $defaultOrder=['progress' => SORT_DESC, 'name'=>SORT_ASC, 'ip'=>SORT_ASC];
       }
       else
       {
@@ -102,7 +102,7 @@ class TargetWidget extends Widget
             ]
 
         ]);
-        $defaultOrder=['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'difficulty' => SORT_ASC,'ip' => SORT_ASC, 'name' => SORT_ASC];
+        $defaultOrder=['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'difficulty' => SORT_ASC,'name' => SORT_ASC, 'ip' => SORT_ASC, ];
       }
       return $targetProgressProvider;
     }

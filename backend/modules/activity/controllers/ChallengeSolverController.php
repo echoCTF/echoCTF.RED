@@ -60,12 +60,15 @@ class ChallengeSolverController extends \app\components\BaseController
     {
       $submit=Yii::$app->request->post('submit');
       $model=new ChallengeSolver();
-      if($submit && $submit[0]==='give') $this->give();
+      $model->load(Yii::$app->request->post());
+      if($submit && $submit[0]==='give' && $model->validate() && $this->give())
+      {
+        return $this->redirect(['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]);
+      }
       elseif($submit && $submit[0]==='save' && $model->load(Yii::$app->request->post()) && $model->save())
       {
         return $this->redirect(['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]);
       }
-
       return $this->render('create', [
         'model' => $model,
       ]);
@@ -103,23 +106,33 @@ class ChallengeSolverController extends \app\components\BaseController
       $connection=Yii::$app->db;
       if($model->load(Yii::$app->request->post()) && $model->validate())
       {
+        if(intval($model->timer)===0) $model->timer=random_int(1000, 100000);
         $transaction=$connection->beginTransaction();
         try {
           $connection->createCommand('INSERT IGNORE INTO player_question (player_id,question_id) SELECT :player_id,id FROM question WHERE challenge_id=:challenge_id ORDER BY id DESC')
           ->bindValue(':player_id', $model->player_id)
           ->bindValue(':challenge_id', $model->challenge_id)->query();
+          if(!ChallengeSolver::find()->where(['challenge_id'=>$model->challenge_id,'player_id'=>$model->player_id])->exists())
+          {
+            $connection->createCommand('INSERT IGNORE INTO challenge_solver (challenge_id,player_id,timer) values (:challenge_id,:player_id,:timer)')
+            ->bindValue(':player_id', $model->player_id)
+            ->bindValue(':challenge_id', $model->challenge_id)
+            ->bindValue(':timer', $model->timer)->query();
+          }
           $connection->createCommand('UPDATE challenge_solver SET timer=:timer WHERE player_id=:player_id AND challenge_id=:challenge_id')
           ->bindValue(':player_id', $model->player_id)
           ->bindValue(':challenge_id', $model->challenge_id)
           ->bindValue(':timer', $model->timer)->query();
           $transaction->commit();
+          return true;
         }
         catch (\Throwable $e)
         {
           $transaction->rollBack();
+          Yii::$app->session->addFlash('error',$e->getMessage());
         }
-        return $this->redirect(['view', 'challenge_id' => $model->challenge_id, 'player_id' => $model->player_id]);
       }
+      return false;
     }
 
     /**

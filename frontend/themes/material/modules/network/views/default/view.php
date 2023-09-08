@@ -39,7 +39,7 @@ $module = \app\modules\network\Module::getInstance();
     <hr />
     <div class="row">
       <div class="col-md-8">
-        <?php \yii\widgets\Pjax::begin(['id' => 'target-listing-pjax', 'enablePushState' => false, 'linkSelector' => '#target-pager a', 'formSelector' => false]); ?>
+        <?php \yii\widgets\Pjax::begin(['id' => 'target-listing-pjax', 'enablePushState' => false, 'linkSelector' => '#target-pager a, #target-list th a', 'formSelector' => false]); ?>
         <?php
         if (Yii::$app->user->isGuest)
           echo TargetWidget::widget(['dataProvider' => $networkTargetProvider, 'title' => \Yii::t('app', 'Targets'), 'category' => \Yii::t('app', 'Network targets'), 'personal' => false, 'hidden_attributes' => ['id', 'progress', 'ip', 'writeup']]);

@@ -38,11 +38,12 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
       <div class="col-sm-3"><?= $form->field($model, 'avatar')->textInput(['maxlength' => true]) ?></div>
     </div>
 
-    <h4>Social media</h4>
+    <h4>Social links</h4>
     <div class="row form-group">
       <div class="col-sm-2"><?= $form->field($model, 'discord')->textInput(['maxlength' => true]) ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'twitter')->textInput(['maxlength' => true]) ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'github')->textInput(['maxlength' => true]) ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'echoctf')->textInput(['maxlength' => true]) ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'htb')->textInput(['maxlength' => true]) ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'youtube')->textInput(['maxlength' => true]) ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'twitch')->textInput(['maxlength' => true]) ?></div>

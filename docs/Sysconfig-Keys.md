@@ -41,6 +41,7 @@
 * `event_start`/`event_end` (optional): When the event starts and stops (timestamp)
 * `registrations_start`/`registrations_end` (optional): When the registrations starts and stops (timestamp)
 * `profile_visibility`: Set the default player profile visibility (users can still change settings)
+* `profile_settings_fields`: Comma separated list of field names that the users are allowed to change (avatar,bio,country,discord,echoctf,email,fullname,github,htb,pending_progress,twitch,twitter,username,visibility,youtube)
 * `discord_invite_url` (optional): discord server invite url on show on left sidebar
 * `admin_ids` (optional): Comma separated list of admin player IDs
 * `admin_player:<PLAYER_ID>` (optional): Set a specific player ID as admin

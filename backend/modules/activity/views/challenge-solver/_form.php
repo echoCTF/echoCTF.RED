@@ -17,7 +17,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'challenge_id')->dropDownList(ArrayHelper::map(Challenge::find()->orderBy(['id'=>SORT_ASC])->all(), 'id', function($model){return sprintf("%s (ID: %d)",$model->name, $model->id);}), ['prompt'=>'Select Target'])->hint('The challenge to solve.') ?>
+    <?= $form->field($model, 'challenge_id')->dropDownList(ArrayHelper::map(Challenge::find()->orderBy(['id'=>SORT_ASC])->all(), 'id', function($model){return sprintf("%s (ID: %d)",$model->name, $model->id);}), ['prompt'=>'Select Challenge'])->hint('The challenge to solve.') ?>
 
     <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
         'multiple' => false,

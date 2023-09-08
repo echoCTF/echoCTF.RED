@@ -101,7 +101,8 @@ class ChallengeController extends \app\components\BaseController
             {
               if($model->file)
                 $model->file->saveAs('uploads/'.$model->id);
-              Yii::$app->session->setFlash('success', Yii::t('app','Challenge [{name}] created',['name'=>Html::encode($model->name)]));
+              Yii::$app->session->addFlash('success', Yii::t('app','Challenge [{name}] created',['name'=>Html::encode($model->name)]));
+              Yii::$app->session->addFlash('warning', Yii::t('app','Don\'t forget to create a question for the challenge.'));
             }
             catch(\Exception $e)
             {
