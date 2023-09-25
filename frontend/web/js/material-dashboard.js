@@ -253,7 +253,7 @@ md = {
   },
 
   initDashboardPageCharts: function() {
-    if ($('#LastDaysActivityChart').length != 0) {
+    if ($('#LastDaysActivityChart').length != 0 && typeof maxHigh!=='undefined') {
           optionsLastDaysActivityChart = {
             //lineSmooth: Chartist.Interpolation.cardinal({
             //  tension: 0

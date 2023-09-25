@@ -67,7 +67,7 @@ class MaterialAsset extends AssetBundle
     // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
     /******/
     //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
-    '/js/material-dashboard.js?v=0.21.0',
+    '/js/material-dashboard.js?v=0.24.0',
     ['/js/libechoctf.js?v=0.23.0', 'defer' => 'defer'],
   ];
 
