@@ -13,7 +13,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=7.2.0",
-        "yiisoft/yii2": "2.0.49",
+        "yiisoft/yii2": "2.0.49.1",
         "docker-php/docker-php": "^2.0",
         "jane-php/jane-php": "^4 <4.3",
         "miloschuman/yii2-highcharts-widget": "^10.0",
