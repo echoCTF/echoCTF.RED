@@ -4,6 +4,7 @@ proto udp
 dev tun
 comp-lzo
 verb 3
+mssfix 1400
 cipher AES-256-CBC
 auth SHA256
 auth-nocache
