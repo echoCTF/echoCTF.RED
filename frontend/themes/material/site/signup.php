@@ -18,7 +18,7 @@ $this->registerJsFile("@web/js/plugins/jquery.pwstrength.js", [
 <div class="site-signup">
   <div class="body-content">
     <h2><?=Html::encode($this->title)?></h2>
-    <p class="text-primary"><?=\Yii::t('app','Please fill out the following fields to register for an <code style="color: red">{event_name}</code> account',['event_name'=>\Yii::$app->sys->event_name])?></p>
+    <p class="text-primary"><?=\Yii::t('app','Please fill out the following fields to register for an <code style="color: red">{event_name}</code> account',['event_name'=>Html::encode(\Yii::$app->sys->event_name)])?></p>
     <p class="text-warning"><?=\Yii::t('app','All our email communications come from the following address:')?> <small><code class="text-warning"><?=\app\widgets\Obfuscator::widget(['email' => Html::encode(Yii::$app->sys->mail_from)])?></code></small></p>
     <div class="row">
         <?=$this->render('_referrer_card',['referred'=>$referred]);?>
