@@ -147,5 +147,20 @@ $this->_fluid="-fluid";
       </div>
 
     </div>
+<?php
+if(Yii::$app->sys->team_visible_instances===true && Yii::$app->user->identity->teamPlayer && $team->id===Yii::$app->user->identity->teamPlayer->team_id && intval($teamInstanceProvider->count)>0)
+{
+  echo '<h3>',\Yii::t('app','Team instances'),'<h3>';
+  echo ListView::widget([
+    'summary'=>false,
+    'showOnEmpty'=>false,
+    'emptyText'=>false,
+    'options'=>['class'=>'row'],
+    'itemOptions'=>['class'=>'col-xl-3'],
+    'dataProvider' => $teamInstanceProvider,
+    'itemView' => '_target_instance_card',
+  ]);
+}
+?>
   </div>
 </div>

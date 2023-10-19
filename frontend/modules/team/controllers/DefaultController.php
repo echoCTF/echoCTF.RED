@@ -144,6 +144,19 @@ class DefaultController extends \app\components\BaseController
           'pagination' => false,
       ]);
       $teamPlayers = ArrayHelper::getColumn($TP->all(),'player_id');
+      $teamInstances = \app\modules\target\models\TargetInstance::find()->andFilterWhere(['player_id'=>$teamPlayers]);
+      if(\Yii::$app->sys->team_visible_instances!==true)
+      {
+        $teamInstances->andFilterWhere(['team_allowed'=>1]);
+      }
+      $teamInstanceProvider=new ActiveDataProvider([
+        'query' => $teamInstances,
+        'pagination' => [
+            'pageSizeParam'=>'teamInstance-perpage',
+            'pageParam'=>'teamInstance-page',
+            'pageSize' => Yii::$app->sys->members_per_team === false ? 10 : Yii::$app->sys->members_per_team,
+        ]
+      ]);
 
       $stream=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
       ->where(['player_id'=>$teamPlayers])
@@ -159,6 +172,7 @@ class DefaultController extends \app\components\BaseController
 
       return $this->render('view',[
         'team'=>$model,
+        'teamInstanceProvider'=>$teamInstanceProvider,
         'streamProvider'=>$streamProvider,
         'dataProvider'=>$dataProvider,
       ]);
@@ -179,10 +193,23 @@ class DefaultController extends \app\components\BaseController
           'pagination' => false,
       ]);
       $teamPlayers = ArrayHelper::getColumn(Yii::$app->user->identity->team->players,'id');
+      $teamInstances = \app\modules\target\models\TargetInstance::find()->andFilterWhere(['player_id'=>$teamPlayers]);
+      if(\Yii::$app->sys->team_visible_instances!==true)
+      {
+        $teamInstances->andFilterWhere(['team_allowed'=>1]);
+      }
+      $teamInstanceProvider=new ActiveDataProvider([
+        'query' => $teamInstances,
+        'pagination' => [
+            'pageSizeParam'=>'teamInstance-perpage',
+            'pageParam'=>'teamInstance-page',
+            'pageSize' => Yii::$app->sys->members_per_team === false ? 10 : Yii::$app->sys->members_per_team,
+        ]
+      ]);
 
       $stream=\app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
-      ->where(['player_id'=>$teamPlayers])
-      ->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]);
+          ->where(['player_id'=>$teamPlayers])
+          ->orderBy(['ts'=>SORT_DESC, 'id'=>SORT_DESC]);
       $streamProvider=new ActiveDataProvider([
             'query' => $stream,
             'pagination' => [
@@ -192,6 +219,7 @@ class DefaultController extends \app\components\BaseController
             ]
       ]);
       return $this->render('view', [
+          'teamInstanceProvider' => $teamInstanceProvider,
           'dataProvider' => $dataProvider,
           'streamProvider'=>$streamProvider,
           'team' => Yii::$app->user->identity->team
@@ -250,13 +278,13 @@ class DefaultController extends \app\components\BaseController
       if($team->academic!==Yii::$app->user->identity->academic)
       {
         Yii::$app->session->setFlash('error', \Yii::t('app','The team you tried to join was not on the same academic scope.'));
-        return $this->redirect(['view','token'=>$team->token]);
+        return $this->redirect(['index']);
       }
 
       if($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
       {
         Yii::$app->session->setFlash('error', \Yii::t('app','The team you are trying to join is full.'));
-        return $this->redirect(['view','token'=>$team->token]);
+        return $this->redirect(['index']);
       }
 
       $tp=new TeamPlayer();
@@ -266,7 +294,7 @@ class DefaultController extends \app\components\BaseController
       if($tp->save()===false)
       {
         Yii::$app->session->setFlash('error', \Yii::t('app','Failed to join the team, unknown error occurred.'));
-        return $this->redirect(['view','token'=>$team->token]);
+        return $this->redirect(['index']);
       }
 
       $tp->notifyJoinOwner();
