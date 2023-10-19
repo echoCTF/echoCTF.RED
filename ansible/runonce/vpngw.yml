@@ -567,6 +567,12 @@
 #        user: "root"
 #        pass: ""
 
+  - name: Fix /dev/pf permissions for openvpn updown script
+    file:
+      path: /dev/pf
+      owner: _openvpn
+      mode: '0660'
+
   - name: enable memcached
     command: "rcctl enable {{item}}"
     with_items:
