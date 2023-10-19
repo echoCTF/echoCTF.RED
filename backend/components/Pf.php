@@ -67,7 +67,7 @@ class Pf extends Component
       $clients_table=self::clients_table($target);
     if($targets_table===null)
       $targets_table=$target->network->codename;
-    return sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state",$clients_table,$targets_table);
+    return sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state  (max 10000, source-track rule, max-src-nodes 5, max-src-states 2000, max-src-conn 50)",$clients_table,$targets_table);
   }
 
   public static function allowToClient($target,$clients_table=null,$targets_table=null)
