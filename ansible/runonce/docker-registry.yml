@@ -35,9 +35,11 @@
     users:
       - { name: "{{registry_user}}", comment: "Docker Registry User", uid: 3750, password: '*' }
     rcctl:
-      - { name: 'docker_registry', state: "enable" }
+      - { name: 'supervisord', state: "enable" }
     packages:
     - go
+    - supervisor
+    - py3-setuptools
 
   tasks:
   - name: Install packages
@@ -53,6 +55,9 @@
     with_items: "{{users}}"
     tags: create_users
 
+  - name: Clean registry distribution
+    command: rm -rf distribution
+
   - name: Get registry distribution
     command: git clone https://github.com/distribution/distribution.git
     environment:
@@ -67,7 +72,7 @@
       GOPATH: "{{registry.home}}/go"
 
   - name: Install registry binary
-    command: install -u root /root/distribution/cmd/registry/main /usr/local/sbin/registry
+    command: install -o root /root/distribution/cmd/registry/main /usr/local/sbin/registry
     args:
       creates: /usr/local/sbin/registry
 
@@ -87,6 +92,23 @@
 
   - name: Change ownerships
     command: chown -R {{registry.user}}:{{registry.user}} {{registry.home}}/go {{registry.storage}}
+
+  - name: Configure supervisor registry service
+    community.general.ini_file:
+      path: /etc/conf
+      section: "program:registry"
+      option: "{{item.key}}"
+      value:  "{{item.value}}"
+      mode: '0600'
+      backup: false
+    with_dict:
+      user: registry
+      directory: /home/registry
+      command: /usr/local/sbin/registry serve /etc/docker-registry.yml
+      stdout_logfile: /var/log/registry.log
+      stdout_logfile_maxbytes: 0
+      stderr_logfile: /var/log/registry.log
+      stderr_logfile_maxbytes: 0
 
   - name: Configure default services
     command: "rcctl {{item.state}} {{item.name}}"
