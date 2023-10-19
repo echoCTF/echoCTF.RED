@@ -1,5 +1,6 @@
 <?php
 use app\widgets\Twitter;
+use yii\helpers\Html;
 
 $this->registerMetaTag(['name'=>'og:type', 'content'=>'game.achievement']);
 $this->registerMetaTag(['name'=>'game:points', 'content'=>'0']);
@@ -16,7 +17,7 @@ $this->_url=\yii\helpers\Url::to(['/game/badge/headshot', 'target_id'=>$headshot
 
   <?php echo $this->render('@app/modules/game/views/badge/_share',
       [
-        'twMessage'=>sprintf(\Yii::t('app','Check this out, I just headshotted %s at %s'), $headshot->target->name, \Yii::$app->sys->{"event_name"}),
+        'twMessage'=>sprintf(\Yii::t('app','Check this out, I just headshotted %s at %s'), $headshot->target->name, Html::encode(\Yii::$app->sys->{"event_name"})),
         'callbackURL'=>\yii\helpers\Url::to(['/game/badge/headshot', 'target_id'=>$headshot->target_id, 'profile_id'=>$headshot->player->profile->id], 'https'),
         'PRELINK'=>'<a class="btn btn-primary" href="#" onclick="history.back()"><i class="fas fa-reply"></i>&nbsp; Go back</a>'
       ]);?>
