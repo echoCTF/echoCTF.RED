@@ -55,6 +55,9 @@
       - php-pdo_mysql%7.4
       - php-zip%7.4
       - py3-mysqlclient
+      - py3-setuptools
+      - supervisor
+      - gnuwatch
       - go
       - p5-Net-Pcap
       - p5-NetPacket
@@ -352,7 +355,7 @@
       - "install -c -s -o root -g bin -m 555 findingsd /usr/local/sbin/findingsd"
       - "install -c -o root -g wheel -m 555 findingsd.rc /etc/rc.d/findingsd"
       - "rcctl set findingsd status on"
-      - "rcctl set findingsd flags -l pflog1 -n echoCTF -u root"
+      - "rcctl set findingsd flags -l pflog1 -n echoCTF -u root -U _memcached"
 
   - name: Add users
     user:
