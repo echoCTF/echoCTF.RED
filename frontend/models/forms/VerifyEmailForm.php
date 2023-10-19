@@ -67,7 +67,7 @@ class VerifyEmailForm extends Model
     }
     private function genAvatar()
     {
-      if(is_writable(\Yii::getAlias('@app/web/images/avatars/'))===false || is_writable(\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png'))===false)
+      if(is_writable(\Yii::getAlias('@app/web/images/avatars/'))===false || (file_exists(\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png')) && is_writable(\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png'))===false))
       {
         \Yii::error('The avatars folder or file is not writeable, correct the permissions for the avatars to be generated.');
         return ;
