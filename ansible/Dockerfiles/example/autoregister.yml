@@ -83,8 +83,6 @@
       group: "{{item.value.gid|default(0)}}"
     with_dict: "{{RAW_CONFS}}"
 
-
-
   - name: Create Decoy flags
     when: ETSCTF_DECOY is defined
     debug:
