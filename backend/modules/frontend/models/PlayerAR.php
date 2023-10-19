@@ -99,7 +99,7 @@ class PlayerAR extends \yii\db\ActiveRecord
     {
         return [
             [['username', 'type', 'status','email'], 'required'],
-            [['type'], 'string'],
+            [['type','affiliation'], 'string'],
             [['active', 'status'], 'integer'],
             [['academic'], 'integer'],
             [['academic'], 'default','value'=>0],
@@ -153,6 +153,7 @@ class PlayerAR extends \yii\db\ActiveRecord
             'created' => 'Created',
             'active' => 'Active',
             'academic' => 'Academic',
+            'affiliation' => 'Affiliation',
             'status'=>'Status',
             'ts' => 'Ts',
         ];
