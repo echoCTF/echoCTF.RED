@@ -57,6 +57,7 @@ yii\bootstrap5\Modal::end();
             //'token',
             [
               'label'=>'Members',
+              'attribute'=>'team_members',
               'format'=>'integer',
               'value'=>function($model){ return count($model->players); },
               'contentOptions'=>['class'=>'text-center'],
