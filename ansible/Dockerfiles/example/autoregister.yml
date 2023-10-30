@@ -83,6 +83,16 @@
       group: "{{item.value.gid|default(0)}}"
     with_dict: "{{RAW_CONFS}}"
 
+  - name: Generate INI files
+    when: INI_FILES is defined
+    ini_file:
+      path: "{{item.file}}"
+      section: "{{item.section}}"
+      option: "{{item.option}}"
+      value: "{{item.value}}"
+      backup: false
+    with_items: "{{INI_FILES}}"
+
   - name: Create Decoy flags
     when: ETSCTF_DECOY is defined
     debug:
