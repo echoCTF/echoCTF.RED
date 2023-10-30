@@ -19,7 +19,35 @@ class TeamScoreController extends \app\components\BaseController
      */
     public function behaviors()
     {
-      return ArrayHelper::merge(parent::behaviors(),[]);
+        return [
+            'rules' => [
+                'class' => 'yii\filters\AjaxFilter',
+                'only' => ['ajax-search']
+            ],
+            'access' => [
+              'class' => \yii\filters\AccessControl::class,
+              'rules' => [
+                'adminActions'=>[
+                      'allow' => true,
+                      'roles' => ['@'],
+                ],
+                'authActions'=>[
+                    'allow' => true,
+                    'actions'=>['index','view','top15','top15-inclusive'],
+                    'roles' => ['@'],
+                ],
+                'denyAll'=>[
+                    'allow' => false,
+                ],
+              ],
+            ],
+            'verbs' => [
+              'class' => VerbFilter::class,
+              'actions' => [
+                'delete' => ['POST'],
+              ],
+            ],
+          ];
     }
 
     /**
