@@ -1,0 +1,19 @@
+#!/usr/bin/ansible-playbook
+---
+- name: Reboot servers
+  hosts: all
+  order: inventory
+  gather_facts: false
+  user: root
+  no_log: true
+  tasks:
+  - name: Restart inventory hosts in order
+    when: SKIP_REBOOT is undefined
+    throttle: 1
+    reboot:
+      msg: "Reboot initiated by Ansible"
+      connect_timeout: 5
+      reboot_timeout: 80
+      pre_reboot_delay: 0
+      post_reboot_delay: 50
+      test_command: whoami
