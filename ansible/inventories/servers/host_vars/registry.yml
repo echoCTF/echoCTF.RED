@@ -1,0 +1,6 @@
+backups:
+  - { tgz: "/altroot/root.tgz", src: '/root' }
+  - { tgz: "/altroot/etc.tgz", src: '/etc'  }
+  - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
+  - { tgz: "/altroot/varmysql.tgz", src: '/var/mysql'  }
+  - { tgz: "/altroot/home.tgz", src: '/home'  }
