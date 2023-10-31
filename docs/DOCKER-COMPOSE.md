@@ -30,6 +30,7 @@ The following volumes are configured and used
 You can modify the volumes and port mappings by editing the corresponding values in the `docker-compose.yml` file.
 
 The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
+
 ![echoCTF.RED docker-compose topology](assets/docker-compose-topology.png?)
 
 ## Starting up
