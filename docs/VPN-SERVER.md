@@ -196,7 +196,7 @@ sed -i -e 's#{{db.host}}#172.24.0.253#g' /etc/openvpn/echoctf_updown_mysql.sh
 ```
 
 Prepare the tun0 interface and rc scripts
-```
+```sh
 echo "up" >/etc/hostname.tun0
 echo "group offense">>/etc/hostname.tun0
 rcctl set openvpn status on

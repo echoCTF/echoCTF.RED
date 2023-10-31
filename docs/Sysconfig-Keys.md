@@ -82,7 +82,7 @@
 *	`academic_Nshort` Short name for academic value `N`
 * `academic_grouping` (1)Enable/(2)Disable support for academic grouping of activity stream
 example:
-```
+```sh
 backend/yii sysconfig/set academic_grouping 1
 backend/yii sysconfig/set academic_0 "SuperSite.com"
 backend/yii sysconfig/set academic_1 "AnotherSite.com"

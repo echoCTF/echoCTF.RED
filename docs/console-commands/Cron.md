@@ -31,7 +31,7 @@ Usage: `./yii cron/instance-pf [seconds]`
 Checks the healthstatus of running containers and (optionaly) restart them if found unhealthy.
 
 Usage:
-```shell
+```sh
 ./yii cron/healthcheck
 # or to request restarting of unhealthy containers
 ./yii cron/healthcheck 1

@@ -42,7 +42,7 @@ composer install --no-dev --prefer-dist --no-progress --no-suggest -d frontend/
 ```
 
 * Install the needed migrations
-```
+```sh
 ./backend/yii migrate --interactive=0
 ./backend/yii init_data --interactive=0
 ./backend/yii migrate-sales --interactive=0
@@ -50,7 +50,7 @@ composer install --no-dev --prefer-dist --no-progress --no-suggest -d frontend/
 ```
 
 * The migrations for the live platform at https://echoCTF.RED are stored here. You don't need to run this as it will most likely fail, however you can use it to store your own modifications so that you can always apply them on future updates.
-```
+```sh
 ./echoCTF.RED/backend/yii migrate-red --interactive=0
 ```
 

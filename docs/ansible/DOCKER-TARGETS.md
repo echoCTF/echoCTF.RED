@@ -82,7 +82,7 @@ pwgen|md5sum
 ```
 
 One you have created all your docker targets prepare their hosts file we did with the `dockers` servers.
-```
+```sh
 echo "[targets]"> inventories/targets/hosts
 echo "example.fqdn.com">>inventories/targets/hosts
 ```
