@@ -3,11 +3,11 @@ The following steps outline the installation instructions for the applications h
 
 Keep in mind that you are advised to run `frontend` and `backend` from separate nginx instances, each with its own uid and chroot location.
 
-Note: Although the interfaces are able to run on any system, the VPN server is assumed to run on OpenBSD.
+**Note:** Although the interfaces are able to run on any system, the VPN server is assumed to run on OpenBSD.
 
 Before we start make sure you have MariaDB, NGiNX or Apache, PHP, php-memcached, composer and memcahed running, this guide will not deal with these.
 
-Also make sure you have installed the following UDFs https://github.com/echoCTF/memcached_functions_mysql.git & https://github.com/echoCTF/MySQL-global-user-variables-UDF.git
+Also make sure you have installed the following UDFs [https://github.com/echoCTF/memcached_functions_mysql](https://github.com/echoCTF/memcached_functions_mysql) & [https://github.com/echoCTF/MySQL-global-user-variables-UDF](https://github.com/echoCTF/MySQL-global-user-variables-UDF)
 
 Clone the repository
 ```sh
@@ -49,7 +49,7 @@ composer install --no-dev --prefer-dist --no-progress --no-suggest -d frontend/
 ./backend/yii template/emails --interactive=0
 ```
 
-* The migrations for the live platform at https://echoCTF.RED are stored here. You don't need to run this as it will most likely fail, however you can use it to store your own modifications so that you can always apply them on future updates.
+* The migrations for the live platform at [https://echoCTF.RED](https://echoCTF.RED) are stored here. You don't need to run this as it will most likely fail, however you can use it to store your own modifications so that you can always apply them on future updates.
 ```sh
 ./echoCTF.RED/backend/yii migrate-red --interactive=0
 ```
@@ -212,4 +212,4 @@ For nginx:
     }
 ```
 
-Refer to the official Yii2 guide (https://www.yiiframework.com/doc/guide/2.0/en/start-installation#configuring-web-servers) for more details on setting up your preferred webserver.
+Refer to the official Yii2 [guide](https://www.yiiframework.com/doc/guide/2.0/en/start-installation#configuring-web-servers) for more details on setting up your preferred webserver.

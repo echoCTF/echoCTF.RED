@@ -93,7 +93,7 @@ And add links from the `variables.yml` file of each container into the
 ln -s ../../../Dockerfiles/example/variables.yml inventories/targets/host_vars/example.fqdn.com.yml
 ```
 
-NOTE: Ansible tries to access the `example.fqdn.com.yml` file relative to the `inventories/targets/host_vars` folder. You need to include the `../../../` part when creating the symbolic link for it to be able to find the variables.
+**NOTE:** Ansible tries to access the `example.fqdn.com.yml` file relative to the `inventories/targets/host_vars` folder. You need to include the `../../../` part when creating the symbolic link for it to be able to find the variables.
 
 Alternatively you can generate both `hosts` and their corresponding `host_vars` by running the following from the ansible folder.
 ```sh

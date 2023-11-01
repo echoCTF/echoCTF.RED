@@ -10,10 +10,10 @@ Visit the given url (usualy echoctf.red) and register for an account. Fill in th
 Upon registration, you will receive an activation link to your given email. You activate your account by visiting the URL emailed to you and clicking the `Verify` button.
 
 ## SIGNIN
-NOTE: The CTF and the UI may only be accessed through the VPN, depending on the type of event.
+**NOTE:** The CTF and the UI may only be accessed through the VPN, depending on the type of event.
 
 Upon completing your registration, the application will log you in automatically. However, If you have been  logged-out, please follow the instructions below in order to login to the application:
- * Visit the homepage: https://echoctf.red
+ * Visit the homepage: [https://echoctf.red](https://echoctf.red)
  * Click the `Login` button
  * Fill-in your username and password and press the `Login` button
 
@@ -38,11 +38,11 @@ Upon logging in, the application will redirect you to the homepage of the post-l
 It is strongly advised to visit these links in order to have the best possible start. Visiting the links in the order they are listed will aid you even further. You may also visit the links through the main menu of application at any time.
 
 ## REPORTING VULNERABILITIES
-NOTE: This functionality is not enabled on all installations.
+**NOTE:** This functionality is not enabled on all installations.
 
 Should you identify and exploit any vulnerability for which you think you should be awarded extra points for, you should report it. This can be achieved through the Reports menu item. Please make sure you read the instructions carefully on how to submit a proper report, so you do not waste precious time during the CTF.
 
-NOTE: On single day events (eg 8 hours), reports are processed every 1 hour.
+**NOTE:** On single day events (eg 8 hours), reports are processed every 1 hour.
 
 Once a report has been submitted, it is examined and approved or rejected with an appropriate comment by the administrators. Points awarded by a vulnerability report, that is accepted, is up to the administrator’s judgement as the Reports do not award standard points.
 
@@ -56,7 +56,7 @@ _Note: Please note that no sensitive information (which may assist others) is di
 ## HAPPY HUNTING...
 Should you have any kind of problem during the CTF, please fill free to contact us through email or Discord.
 
-* Discord Server (invite URL can be found on the https://echoctf.red login page)
+* Discord Server (invite URL can be found on the [echoCTF](https://echoctf.red) login page)
 * Email: support [at] echothrust.com _(Please start your email subject with “**echoCTF Cloud Demo**”)_
 
 You are encouraged to use the feedback and support channels of our Discord server in order to suggest improvements or new features you would like to see on echoCTF.
