@@ -50,6 +50,10 @@ class DefaultController extends \app\components\BaseController
             'allow' => true,
             'roles' => ['@']
           ],
+          [
+            'actions' => ['view'],
+            'allow' => true,
+          ],
         ],
       ]
     ]);
