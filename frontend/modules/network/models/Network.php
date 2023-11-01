@@ -106,6 +106,11 @@ class Network extends \yii\db\ActiveRecord
         return (int)$this->hasMany(NetworkTarget::class, ['network_id' => 'id'])->count();
     }
 
+    public function getInProducts():int
+    {
+        return intval(\Yii::$app->db->createCommand("SELECT count(*) FROM product_network WHERE network_id=:network_id")->bindValue(':network_id',$this->id)->queryScalar());
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */

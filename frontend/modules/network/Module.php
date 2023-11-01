@@ -42,9 +42,11 @@ class Module extends \yii\base\Module
       if($network === null)
         return false;
 
+      // check network is not active
       if(!$network->active)
         return false;
 
+      // check network is not public and user has no access to it or network id does not exist in product_networks
       if(!$network->public && NetworkPlayer::findOne(['network_id'=>$network->id,'player_id'=>\Yii::$app->user->id]) === null)
         return false;
 
