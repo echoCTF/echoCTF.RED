@@ -47,7 +47,7 @@ class Module extends \yii\base\Module
         return false;
 
       // check network is not public and user has no access to it or network id does not exist in product_networks
-      if(!$network->public && ( NetworkPlayer::findOne(['network_id'=>$network->id,'player_id'=>\Yii::$app->user->id]) === null && $network->inProducts!==0))
+      if(!$network->public && NetworkPlayer::findOne(['network_id'=>$network->id,'player_id'=>\Yii::$app->user->id]) === null)
         return false;
 
       return true;

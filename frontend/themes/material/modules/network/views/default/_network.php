@@ -18,7 +18,7 @@ if($module->checkNetwork($model)!==false)
       ]
   )."</p>";
 }
-if(array_key_exists('subscription',Yii::$app->modules)!==false)
+if(array_key_exists('subscription',Yii::$app->modules)!==false && $model->inProducts>0)
 {
   if($module->checkNetwork($model)===false)
   {
