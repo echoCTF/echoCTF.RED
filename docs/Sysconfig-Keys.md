@@ -22,6 +22,14 @@
 * `disable_registration` Whether online registrations are allowed
 * `team_visible_instances` Whether or not player instances are visible to the rest of the team
 
+* `profile_discord`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_echoctf`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_twitter`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_github`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_htb`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_twitch`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_youtube`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+
 ## String and numeric key/val pairs
 * `event_name` A name for your event
 * `writeup_rules` Your rules for writeup submissions
