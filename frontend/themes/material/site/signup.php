@@ -31,11 +31,11 @@ $this->registerJsFile("@web/js/plugins/jquery.pwstrength.js", [
 
                 <?=$form->field($model, 'password')->passwordInput() ?>
 
-                <?php echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::class, ['options'=>['placeholder'=>'enter captcha code','autocomplete'=>'off']])->label(false) ?>
+                <?php echo $form->field($model, 'captcha')->widget(\yii\captcha\Captcha::class, ['options'=>['placeholder'=>'enter captcha code','autocomplete'=>'off']])->label(false)->hint('<small class="text-warning">You can click on the image to load a new captcha code.</small>') ?>
 
                 <p><small><?=\Yii::t('app','By signing up you accept the {event_name} <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b> and <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>.',['event_name'=>\Yii::$app->sys->{"event_name"}])?></small></p>
                 <div class="form-group">
-                    <?=Html::submitButton(\Yii::t('app','Signup'), ['class' => 'btn btn-primary', 'name' => 'signup-button']) ?>
+                    <?=Html::submitButton(\Yii::t('app','Signup'), ['class' => 'btn btn-primary text-dark text-bold', 'name' => 'signup-button']) ?>
                 </div>
 
             <?php ActiveForm::end();?>
