@@ -19,7 +19,35 @@ class TeamScoreController extends \app\components\BaseController
      */
     public function behaviors()
     {
-      return ArrayHelper::merge(parent::behaviors(),[]);
+        return [
+            'rules' => [
+                'class' => 'yii\filters\AjaxFilter',
+                'only' => ['ajax-search']
+            ],
+            'access' => [
+              'class' => \yii\filters\AccessControl::class,
+              'rules' => [
+                'adminActions'=>[
+                      'allow' => true,
+                      'roles' => ['@'],
+                ],
+                'authActions'=>[
+                    'allow' => true,
+                    'actions'=>['index','view','top15','top15-inclusive'],
+                    'roles' => ['@'],
+                ],
+                'denyAll'=>[
+                    'allow' => false,
+                ],
+              ],
+            ],
+            'verbs' => [
+              'class' => VerbFilter::class,
+              'actions' => [
+                'delete' => ['POST'],
+              ],
+            ],
+          ];
     }
 
     /**
@@ -102,6 +130,62 @@ class TeamScoreController extends \app\components\BaseController
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Lists all TeamScore models.
+     * @return mixed
+     */
+    public function actionTop15Inclusive()
+    {
+        $searchModel=new TeamScoreSearch();
+        $csv = fopen('php://temp/maxmemory:'. (5*1024*1024), 'r+');
+        fputcsv($csv, ['Rank','Team','Full name','Username','Email','category','affiliation']);
+        for($academic=0;$academic<3;$academic++)
+        {
+            $query=TeamScore::find()->joinWith(['team'])->andFilterWhere(['team.academic' => $academic])
+                ->orderBy(['points'=>SORT_DESC, 'ts'=>SORT_ASC, 'team_id'=>SORT_ASC])
+                ->limit(15);
+            $rank=1;
+            foreach($query->all() as $ts)
+            {
+                foreach($ts->team->teamPlayers as $tp)
+                {
+                    if($tp->approved==0)
+                        continue;
+                    fputcsv($csv, [$rank,$ts->team->name,$tp->player->fullname, $tp->player->username,$tp->player->email,Yii::$app->sys->{"academic_".$tp->player->academic.'short'},$tp->player->affiliation]);
+                }
+                $rank++;
+            }
+        }
+        rewind($csv);
+        return \Yii::$app->response->sendStreamAsFile($csv,'top15-inclusive.csv');
+    }
+
+    /**
+     * Lists all TeamScore models.
+     * @return mixed
+     */
+    public function actionTop15()
+    {
+        $searchModel=new TeamScoreSearch();
+        $params=Yii::$app->request->queryParams;
+        $csv = fopen('php://temp/maxmemory:'. (5*1024*1024), 'r+');
+        for($i=0;$i<3;$i++)
+        {
+            $params['TeamScoreSearch']['team_academic']=$i;
+            $dataProvider=$searchModel->search($params);
+            $dataProvider->pagination->pageSize=15;
+            fputcsv($csv, ['---------',Yii::$app->sys->{"event_name_".$i},'---------']);
+            fputcsv($csv, ['Rank','Team','Points']);
+            foreach($dataProvider->getModels() as $k=>$line)
+            {
+                fputcsv($csv, [$k+1,$line->team->name,$line->points]);
+            }
+        }
+        rewind($csv);
+
+        return \Yii::$app->response->sendStreamAsFile($csv,'top15.csv');
     }
 
     /**

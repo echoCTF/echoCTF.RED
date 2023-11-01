@@ -16,7 +16,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'fullname')->textInput(['maxlength' => true])->hint('The fullname of the player') ?>
 
-    <?= $form->field($model, 'academic')->dropDownList([0=>Yii::$app->sys->academic_0short,1=>Yii::$app->sys->academic_1short, 2=>Yii::$app->sys->academic_2short])->hint('Whether the player is gov, edu or pro') ?>
+    <?= $form->field($model, 'academic')->dropDownList([0=>'0: '.Yii::$app->sys->academic_0short,1=>'1: '.Yii::$app->sys->academic_1short, 2=>'2: '.Yii::$app->sys->academic_2short])->hint('Whether the player is gov, edu or pro') ?>
     <?= $form->field($model, 'affiliation')->textInput(['maxlength' => true])->hint('The player affiliation') ?>
 
     <?= $form->field($model, 'email')->textInput(['maxlength' => true])->hint('The email address of the player') ?>
@@ -31,7 +31,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'active')->checkbox()->hint('Whether the player is active or not') ?>
 
-    <?= $form->field($model, 'status')->dropDownList(['0' => 'DELETED', '8'=>'UNVERIFIED', '9' => 'DISABLED', '10' => 'ENABLED'], ['prompt' => 'Choose player status'])->hint('Account status') ?>
+    <?= $form->field($model, 'status')->dropDownList([10 => 'Enabled', 9 => 'Inactive', 8 => "Change", 0 => "Deleted"], ['prompt' => 'Choose player status'])->hint('Account status') ?>
 
 
     <div class="form-group">

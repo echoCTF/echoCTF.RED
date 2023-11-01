@@ -28,7 +28,13 @@ if [ "$script_type" == "client-connect" ]; then
         for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT codename FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id='${common_name}'))");do
           /sbin/pfctl -t "${network}_clients" -T add ${ifconfig_pool_remote_ip}
         done
-        for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT LOWER(CONCAT(t2.name,'_',player_id)) AS net FROM target_instance as t1 LEFT JOIN target as t2 on t1.target_id=t2.id WHERE player_id=${common_name}");do
+        # Add to private instances of our own and our team mates
+        TEAM_VISIBLE_INSTANCES=$(echo "get sysconfig:team_visible_instances"|nc ${NCOPTS} ${MEMD} 11211 |egrep -v "(VALUE|END)")
+        TEAMS_QUERY="SELECT LOWER(CONCAT(t2.name,'_',player_id)) AS net FROM target_instance as t1 LEFT JOIN target as t2 on t1.target_id=t2.id WHERE player_id=${common_name} or player_id IN (SELECT player_id from team_player WHERE team_id IN (SELECT team_id FROM team_player where player_id=${common_name}))"
+        if [ "$TEAM_VISIBLE_INSTANCES" == "" ]; then
+          TEAMS_QUERY="SELECT LOWER(CONCAT(t2.name,'_',player_id)) AS net FROM target_instance as t1 LEFT JOIN target as t2 on t1.target_id=t2.id WHERE player_id=${common_name} or (player_id IN (SELECT player_id from team_player WHERE team_id IN (SELECT team_id FROM team_player where player_id=${common_name})) AND team_allowed=1)"
+        fi
+        for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "$TEAMS_QUERY");do
           /sbin/pfctl -t "${network}_clients" -T add ${ifconfig_pool_remote_ip}
         done
       fi
@@ -43,7 +49,13 @@ elif [ "$script_type" == "client-disconnect" ]; then
     for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT codename FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id='${common_name}'))");do
       /sbin/pfctl -t "${network}_clients" -T delete ${ifconfig_pool_remote_ip}
     done
-    for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "SELECT LOWER(CONCAT(t2.name,'_',player_id)) AS net FROM target_instance as t1 LEFT JOIN target as t2 on t1.target_id=t2.id WHERE player_id=${common_name}");do
+    TEAM_VISIBLE_INSTANCES=$(echo "get sysconfig:team_visible_instances"|nc ${NCOPTS} ${MEMD} 11211 |egrep -v "(VALUE|END)")
+    TEAMS_QUERY="SELECT LOWER(CONCAT(t2.name,'_',player_id)) AS net FROM target_instance as t1 LEFT JOIN target as t2 on t1.target_id=t2.id WHERE player_id=${common_name} or player_id IN (SELECT player_id from team_player WHERE team_id IN (SELECT team_id FROM team_player where player_id=${common_name}))"
+    if [ "$TEAM_VISIBLE_INSTANCES" == "" ]; then
+      TEAMS_QUERY="SELECT LOWER(CONCAT(t2.name,'_',player_id)) AS net FROM target_instance as t1 LEFT JOIN target as t2 on t1.target_id=t2.id WHERE player_id=${common_name} or (player_id IN (SELECT player_id from team_player WHERE team_id IN (SELECT team_id FROM team_player where player_id=${common_name})) AND team_allowed=1)"
+    fi
+
+    for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "$TEAMS_QUERY");do
       /sbin/pfctl -t "${network}_clients" -T delete ${ifconfig_pool_remote_ip}
     done
   fi

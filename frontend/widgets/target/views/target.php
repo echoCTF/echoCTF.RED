@@ -71,7 +71,7 @@ echo GridView::widget([
           {
             $append.=' <sup><small class="text-danger">new</small></sup>';
           }
-          elseif(strtotime($model->ts) >= strtotime('-'.intval(Yii::$app->sys->target_days_updated).' days'))
+          elseif(Yii::$app->sys->target_days_updated!==false && strtotime($model->ts) >= strtotime('-'.intval(Yii::$app->sys->target_days_updated).' days'))
           {
             $append.=' <sup><small class="text-danger">updated</small></sup>';
           }

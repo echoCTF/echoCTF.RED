@@ -1,0 +1,13 @@
+hostname: db.mydomain
+backups:
+  - { tgz: "/altroot/root.tgz", src: '/root' }
+  - { tgz: "/altroot/etc.tgz", src: '/etc'  }
+  - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
+  - { tgz: "/altroot/varmysql.tgz", src: '/var/mysql'  }
+  - { tgz: "/altroot/home.tgz", src: '/home'  }
+
+pre_backups:
+  - "/usr/local/bin/mysqldump -YKER --add-drop-table --hex-blob --triggers --tz-utc echoCTF | gzip -9 > /altroot/echoCTF-full-$(date +%Y%m%d).sql.gz"
+  - "mysql -e 'PURGE BINARY LOGS BEFORE NOW()'"
+
+REPO: /root/sources

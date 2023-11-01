@@ -326,6 +326,10 @@
     no_log: "{{DEBUG|default(true)}}"
     apt: name="nodejs" state="present"
 
+  - name: Install npm package
+    no_log: "{{DEBUG|default(true)}}"
+    apt: name="npm" state="present"
+
   - name: Remove useless packages from the cache
     no_log: "{{DEBUG|default(true)}}"
     apt:

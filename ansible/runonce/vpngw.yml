@@ -15,18 +15,23 @@
         - Update /etc/administrators.conf with your IP's
         - Reboot the system for the changes to take effect
     sysctl:
-      net.inet.ip.forwarding: 1
-      net.inet.ip.mforwarding: 1
       kern.bufcachepercent: 30
-      net.inet.ip.maxqueue: 2048
-      kern.somaxconn: 2048
-      net.bpf.bufsize: 2097152
-      net.bpf.maxbufsize: 4194304
+      kern.maxfiles: 312180
       kern.seminfo.semmni: 1024
       kern.seminfo.semmns: 4096
-      kern.shminfo.shmmax: 67018864
       kern.shminfo.shmall: 32768
-      kern.maxfiles: 104060
+      kern.shminfo.shmmax: 67018864
+      kern.somaxconn: 8192
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      net.inet.divert.sendspace: 65636
+      net.inet.ip.forwarding: 1
+      net.inet.ip.ifq.maxlen: 2560
+      net.inet.ip.maxqueue: 2048
+      net.inet.ip.mforwarding: 0
+      net.inet.tcp.synuselimit: 1000000
+      net.inet.udp.sendspace: 9216
+      net.unix.dgram.sendspace: 9216
     rcctl:
       - { name: check_quotas, state: "disable" }
       - { name: cron, state: "enable" }
@@ -55,6 +60,9 @@
       - php-pdo_mysql%7.4
       - php-zip%7.4
       - py3-mysqlclient
+      - py3-setuptools
+      - supervisor
+      - gnuwatch
       - go
       - p5-Net-Pcap
       - p5-NetPacket
@@ -352,7 +360,7 @@
       - "install -c -s -o root -g bin -m 555 findingsd /usr/local/sbin/findingsd"
       - "install -c -o root -g wheel -m 555 findingsd.rc /etc/rc.d/findingsd"
       - "rcctl set findingsd status on"
-      - "rcctl set findingsd flags -l pflog1 -n echoCTF -u root"
+      - "rcctl set findingsd flags -l pflog1 -n echoCTF -u root -U _memcached"
 
   - name: Add users
     user:
@@ -563,6 +571,12 @@
 #        host: "tcp(127.0.0.1:3306)"
 #        user: "root"
 #        pass: ""
+
+  - name: Fix /dev/pf permissions for openvpn updown script
+    file:
+      path: /dev/pf
+      owner: _openvpn
+      mode: '0660'
 
   - name: enable memcached
     command: "rcctl enable {{item}}"

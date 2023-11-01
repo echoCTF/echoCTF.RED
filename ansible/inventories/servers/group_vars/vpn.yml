@@ -1,0 +1,13 @@
+backups:
+  - { tgz: "/altroot/root.tgz", src: '/root' }
+  - { tgz: "/altroot/etc.tgz", src: '/etc'  }
+  - { tgz: "/altroot/home.tgz", src: '/home'  }
+  - { tgz: "/altroot/var.tgz", src: '/var' }
+  - { tgz: "/altroot/usrlocal.tgz", src: '/usr/local' }
+  - { tgz: "/altroot/echoctf-federated.tgz", src: '/altroot/echoctf-federated.sql' }
+
+pre_backups:
+  - "mysql -e 'PURGE BINARY LOGS BEFORE NOW()'"
+  - "mysqldump --no-data echoCTF > /altroot/echoctf-federated.sql"
+
+REPO: /root/sources

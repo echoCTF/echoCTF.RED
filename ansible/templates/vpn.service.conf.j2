@@ -42,7 +42,7 @@ anchor "networks"
 load anchor "networks" from "/etc/targets_networks.conf"
 load anchor "offense/findings" from "/etc/match-findings-pf.conf"
 
-pass quick inet to <targets> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state
+pass quick inet to <targets> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state (max 100000, source-track rule, max-src-states 2000, max-src-conn 10)
 
 pass quick inet proto tcp from <docker_clients> to <docker_servers> port {2376}
 

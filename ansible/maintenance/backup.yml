@@ -1,0 +1,29 @@
+#!/usr/bin/ansible-playbook
+---
+- name: Perform Backups
+  hosts: all
+  order: sorted
+  gather_facts: true
+  user: root
+#  serial: 1
+  tasks:
+  - name: Backup existing files just in case before we start performing maintenance changes
+    when: backups is defined
+    command: "tar zcpf {{item.tgz}} {{item.src}}"
+    ignore_errors: yes
+    with_items: "{{backups}}"
+
+  - name: Fetch backups from systems
+    when: backups is defined
+    fetch:
+      flat: yes
+      src: "{{item.tgz}}"
+      dest: "backups/{{ inventory_hostname }}-{{ '%Y%m%d' | strftime }}-{{item.tgz|basename}}"
+    with_items: "{{backups}}"
+
+  - name: Remove backup files
+    when: backups is defined
+    file:
+      path: "{{item.tgz}}"
+      state: absent
+    with_items: "{{backups}}"

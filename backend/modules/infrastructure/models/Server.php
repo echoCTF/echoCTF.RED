@@ -53,8 +53,10 @@ class Server extends \yii\db\ActiveRecord
         return [
             [['name', 'ipoctet', 'connstr','network'], 'required'],
             [['ipoctet'], 'ip'],
-            [['ssl'], 'boolean','defaultValue'=>false],
-            [['timeout'], 'integer','defaultValue'=>9000],
+            [['ssl'], 'default', 'value'=>true],
+            [['ssl'], 'boolean','trueValue'=>true,'falseValue'=>false],
+            [['timeout'], 'default','value'=>9000],
+            [['timeout'], 'integer'],
             [['description', 'service','provider_id'], 'string'],
             ['service','default','value'=>'docker'],
             [['name','network'], 'string', 'max' => 32],

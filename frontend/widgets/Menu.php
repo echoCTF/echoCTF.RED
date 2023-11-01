@@ -72,11 +72,6 @@ class Menu extends MenuBase
 
       if(Yii::$app->sys->discord_invite_url!==false)
         $lines[]='<li class="nav-item"><b>'.Html::a('<i class="fab fa-discord text-discord"></i><p class="text-discord">Join our Discord!</p>', Yii::$app->sys->discord_invite_url, ['target'=>'_blank','class'=>'nav-link']).'</b></li>';
-      if(Yii::$app->sys->patreon_menu===false)
-      {
-        $lines[]='<li><hr/></li>';
-        $lines[]='<li class="nav-item"><b>'.Html::a('<i class="fab fa-patreon text-danger"></i><p class="text-danger">Become a Patron!</p>', 'https://www.patreon.com/bePatron?u=31165836', ['target'=>'_blank','class'=>'nav-link']).'</b></li>';
-      }
 
       return implode("\n", $lines);
   }

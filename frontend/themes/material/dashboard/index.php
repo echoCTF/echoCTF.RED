@@ -17,6 +17,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
   <div class="body-content">
 
   <?php echo $this->render('_top', ['dashboardStats' => $dashboardStats, 'newsProvider' => $newsProvider,'lastVisitsProvider'=>$lastVisitsProvider,'active_targets'=>$active_targets]); ?>
+<?php if(!empty($dayActivity)):?>
     <div class="row justify-content-center">
       <div class="col">
         <div class="card bg-dark">
@@ -27,6 +28,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
         </div>
       </div>
     </div>
+<?php endif;?>
     <?php
     Pjax::begin(['id' => 'stream-listing', 'enablePushState' => false, 'linkSelector' => '#stream-pager a', 'formSelector' => false]);
     echo Stream::widget(['divID' => 'stream', 'dataProvider' => null, 'pagerID' => 'stream-pager']);
@@ -107,10 +109,10 @@ if (!empty($dayActivity)) {
 
   $this->registerJs(
     "dataLastDaysActivityChart = {
-        labels: [" . implode($dayActivity['labels'], ",") . "],
+        labels: [" . implode(",",$dayActivity['labels']) . "],
         series: [
-          [" . implode($dayActivity['playerSeries'], ",") . "],
-          [" . implode($dayActivity['overallSeries'], ",") . "],
+          [" . implode(",",$dayActivity['playerSeries']) . "],
+          [" . implode(",",$dayActivity['overallSeries']) . "],
         ]
       };
       LastDaysActivityChart.update(dataLastDaysActivityChart);

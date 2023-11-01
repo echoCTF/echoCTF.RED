@@ -12,13 +12,15 @@ use app\modules\frontend\models\Team;
 class TeamSearch extends Team
 {
   public $username;
+  public $team_members;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'academic', 'owner_id','inviteonly'], 'integer'],
+            [['id', 'academic', 'owner_id','inviteonly','team_members'], 'integer'],
+            [['team_members'],'default','value'=>null ],
             [['name', 'description', 'recruitment', 'logo', 'token','username','ts'], 'safe'],
         ];
     }
@@ -41,7 +43,7 @@ class TeamSearch extends Team
      */
     public function search($params)
     {
-        $query=Team::find()->joinWith(['owner']);
+        $query=Team::find()->joinWith(['owner','teamPlayers']);
 
         // add conditions that should always apply here
 
@@ -71,6 +73,9 @@ class TeamSearch extends Team
             ->andFilterWhere(['like', 'player.username', $this->username])
             ->andFilterWhere(['like', 'team.logo', $this->logo])
             ->andFilterWhere(['like', 'team.token', $this->token]);
+        if($this->team_members !== null ) $query->having(["=",'count(team_player.player_id)',$this->team_members]);
+        $query->groupBy(['team.id']);
+
         $dataProvider->setSort([
           'attributes' => array_merge(
               $dataProvider->getSort()->attributes,
@@ -78,6 +83,10 @@ class TeamSearch extends Team
                 'username' => [
                     'asc' => ['player.username' => SORT_ASC],
                     'desc' => ['player.username' => SORT_DESC],
+                ],
+                'team_members' => [
+                    'asc' => ['count(team_player.player_id)' => SORT_ASC],
+                    'desc' => ['count(team_player.player_id)' => SORT_DESC],
                 ],
               ]
           ),

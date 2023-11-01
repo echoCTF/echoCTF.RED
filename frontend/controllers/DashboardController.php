@@ -67,7 +67,7 @@ class DashboardController extends \app\components\BaseController
       else
         $dashboardStats->claims=(int) PlayerTreasure::find()->count();
       $rows = (new \yii\db\Query())
-->select(['date_format(ts,"%D") as dat', 'count(*) as cnt','sum(if(player_id in ('.Yii::$app->user->id.'),1,0)) as pcnt'])
+        ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt','sum(if(player_id in ('.Yii::$app->user->id.'),1,0)) as pcnt'])
         ->from('stream')
         ->where(['>=','ts', new \yii\db\Expression('now()-interval 10 day')])
         ->groupBy(new \yii\db\Expression('date(ts)'))
@@ -83,7 +83,7 @@ class DashboardController extends \app\components\BaseController
       $visits=Yii::$app->session->get('last_targets_visited');
       if($visits!==null && count($visits)>0)
       {
-        $visitsSTR=implode($visits,',');
+        $visitsSTR=implode(',',$visits);
         $last_targets_visited=Target::find()->addSelect("id,name")
               ->active()
               ->andWhere(['IN','id',$visits])

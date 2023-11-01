@@ -22,7 +22,7 @@ $first=false;
     <div class="row">
       <div class="col-lg-8 col-md-8 col-sm-12">
         <div class="well">
-          <h3><b><?=$model->name.' (ID#'.$model->id.')'?> <?php if($model->completed):?><i class="fas fa-check-double"></i> <?=Twitter::widget(['message'=>\Yii::t('app','Hey check this out, I completed the challenge ').$model->name]);?><?php else:?><?=Twitter::widget(['message'=>\Yii::t('app','I currently grinding the challenge ').$model->name]);?><?php endif;?></b></h3>
+          <h3><b><?=$model->name.' (ID#'.$model->id.')'?> <?php if($model->completed):?><i class="fas fa-check-double"></i> <?=Twitter::widget(['message'=>\Yii::t('app','Hey check this out, I completed the challenge ').Html::encode($model->name)]);?><?php else:?><?=Twitter::widget(['message'=>\Yii::t('app','I currently grinding the challenge ').Html::encode($model->name)]);?><?php endif;?></b></h3>
           <h4><?=Html::encode($model->category);?> / <?=Html::encode($model->difficulty)?> / <?=Html::encode(number_format($model->points));?>pts</h4>
           <?=trim($model->filename) !== '' ? '<h4><b>'.\Yii::t('app','Challenge file:').'</b> '.Html::a($model->filename, ['/uploads/'.$model->filename], ['data-pjax'=>"0"]).'</h4>' : ''?>
           <?php if($model->completed):?>

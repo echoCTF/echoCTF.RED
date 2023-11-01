@@ -83,7 +83,7 @@ yii\bootstrap5\Modal::end();
       [
         'attribute' => 'status',
         'format' => 'playerStatus',
-        'filter' => array(10 => 'Enabled', 9 => 'Innactive', 8 => "Change", 0 => "Deleted",),
+        'filter' => [10 => 'Enabled', 9 => 'Inactive', 8 => "Change", 0 => "Deleted",],
 
       ],
       [
@@ -91,7 +91,10 @@ yii\bootstrap5\Modal::end();
         'filter' => ["offense"=>"offense","defense"=>"defense"]
       ],
 
-      'created',
+      [
+        'attribute'=>'created',
+        'contentOptions' => ['class' => 'text-small']
+      ],
       //'ts',
       [
         'class' => 'yii\grid\ActionColumn',

@@ -45,6 +45,16 @@ CREATE TABLE `player` (
   `status` int(11) DEFAULT '0'
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player';
 
+DROP TABLE IF EXISTS `team_player`;
+CREATE TABLE `team_player` (
+  `id` int(11) NOT NULL,
+  `team_id` int(11) NOT NULL,
+  `player_id` int(11) unsigned NOT NULL,
+  `approved` tinyint(1) DEFAULT 0,
+  `ts` timestamp NOT NULL
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/team_player';
+
+
 DROP TABLE IF EXISTS `network`;
 CREATE TABLE `network` (
   `id` int(11) NOT NULL AUTO_INCREMENT,

@@ -127,6 +127,7 @@ class Profile extends ProfileAR
     public function getFirstHeadshotsCount():int {
       return (int) $this->hasMany(Headshot::class, ['player_id' => 'player_id'])->where(['first'=>1])->count();
     }
+
     public function getChallengesSolverCount():int {
       return (int) $this->hasMany(ChallengeSolver::class, ['player_id' => 'player_id'])->count();
     }

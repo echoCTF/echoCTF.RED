@@ -1,0 +1,13 @@
+[all]
+vpn
+mui
+pui
+db
+registry
+
+[vpn]
+vpn
+
+[web]
+mui
+pui

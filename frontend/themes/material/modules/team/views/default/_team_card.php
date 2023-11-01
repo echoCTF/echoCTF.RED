@@ -15,9 +15,8 @@ $dataProvider = new ArrayDataProvider([
 ?>
 <div class="col col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch">
   <div class="card card-profile team-card bg-dark">
-    <!--<div class="card-header"></div>-->
     <div class="card-icon bg-dark">
-      <img class="img rounded-circle bg-light" src="/images/avatars/team/<?= $model->validLogo ?>" height="100vw" style="max-height: 100vw"/>
+      <img class="img rounded-circle bg-dark" src="/images/avatars/team/<?= $model->validLogo ?>" height="100vw" style="max-height: 100vw"/>
     </div>
 
     <div class="card-body">

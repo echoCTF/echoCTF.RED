@@ -45,13 +45,13 @@ else {
     <p class="card-description">
       <?=Html::encode($profile->bio)?><?php if($profile->isMine):?>&nbsp;
             <?php echo Twitter::widget([
-                  'message'=>sprintf('Checkout my profile at %s! %s', \Yii::$app->sys->{"event_name"}, $profile->braggingRights),
+                  'message'=>sprintf('Checkout my profile at %s! %s', Html::encode(\Yii::$app->sys->{"event_name"}), $profile->braggingRights),
                   'url'=>Url::to(['profile/index', 'id'=>$profile->id], 'https'),
                   'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;', 'rel'=>'noopener noreferrer nofollow'],
               ]);?>
           <?php else: ?>
             <?php echo Twitter::widget([
-                  'message'=>sprintf('Checkout the profile of %s at %s', $profile->twitterHandle, \Yii::$app->sys->{"event_name"}),
+                  'message'=>sprintf('Checkout the profile of %s at %s', $profile->twitterHandle, Html::encode(\Yii::$app->sys->{"event_name"})),
                   'linkOptions'=>['class'=>'profile-tweet', 'target'=>'_blank', 'style'=>'font-size: 1.3em;','rel'=>'noopener noreferrer nofollow'],
               ]);?>
           <?php endif;?>

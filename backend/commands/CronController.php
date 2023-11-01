@@ -143,33 +143,64 @@ class CronController extends Controller
   public function actionInstancePf($before=60)
   {
     $action=SELF::ACTION_START;
-    $t=TargetInstanceAudit::find()->where("op in ('i','d') and ts>(now() - INTERVAL $before SECOND)")->orderBy(['id'=>SORT_DESC]);
+    $t=TargetInstanceAudit::find()->where("ts>(now() - INTERVAL $before SECOND)")->orderBy(['id'=>SORT_ASC]);
+    $ACTIONS=[];
     foreach($t->all() as $val)
     {
-      if($val->op=='i')
+      $ACTION_ID=$val->player_id.'_'.$val->target_id;
+      $ACTIONS[$ACTION_ID]=['op'=>$val->op,'object'=>$val];
+    }
+    foreach($ACTIONS as $obj)
+    {
+      $val=$obj['object'];
+      $ips=[];
+      if($val->op==='i')
       {
-        echo date("Y-m-d H:i:s ")."Starting ",$val->target->name,'_',$val->player_id,"\n";
+        echo date("Y-m-d H:i:s ")."Starting ",$val->id, " ",$val->target->name,'_',$val->player_id,"\n";
         $action=SELF::ACTION_START;
       }
       else if($val->op==='d')
       {
-        echo date("Y-m-d H:i:s ")."Destroying ",$val->target->name,'_',$val->player_id,"\n";
+        echo date("Y-m-d H:i:s ")."Destroying ",$val->id, " ",$val->target->name,'_',$val->player_id," and its clients.\n";
         $action=SELF::ACTION_DESTROY;
       }
+      else if($val->op==='u')
+      {
+        echo date("Y-m-d H:i:s ")."Updating ",$val->id, " ",$val->target->name,'_',$val->player_id,"\n";
+        $action=SELF::ACTION_RESTART;
+      }
+
       switch($action)
       {
         case SELF::ACTION_START:
         case SELF::ACTION_RESTART:
-          if($val->player->last->vpn_local_address!==null)
+          if(($val->team_allowed===true && $val->player->teamPlayer) || \Yii::$app->sys->team_visible_instances===true)
           {
-            Pf::add_table_ip($val->target->name.'_'.$val->player_id.'_clients',long2ip($val->player->last->vpn_local_address),true);
-            Pf::add_table_ip($val->target->name.'_'.$val->player_id,long2ip($val->ip),true);
+            foreach($val->player->teamPlayer->team->teamPlayers as $teamPlayer)
+            {
+              if($teamPlayer->player->last->vpn_local_address!==null && $teamPlayer->player->last->vpn_local_address!==0)
+              {
+                $ips[]=long2ip($teamPlayer->player->last->vpn_local_address);
+              }
+            }
           }
+          else if($val->player->last->vpn_local_address!==null && $val->player->last->vpn_local_address!==0)
+          {
+            $ips[]=long2ip($val->player->last->vpn_local_address);
+          }
+          if($ips)
+          {
+            echo 'Adding ',$val->target->name.'_'.$val->player_id.'_clients',' IP: ',implode(' ',$ips);
+            Pf::add_table_ip($val->target->name.'_'.$val->player_id.'_clients',implode(' ',$ips),true);
+          }
+          if($val->ip!==null)
+            Pf::add_table_ip($val->target->name.'_'.$val->player_id,long2ip($val->ip),true);
+          else echo 'target not booted yet skipping table creation: ',$val->target->name.'_'.$val->player_id,"\n";
           break;
         case SELF::ACTION_EXPIRED:
         case SELF::ACTION_DESTROY:
-          Pf::kill_table($val->target->name.'_'.$val->player_id,true);
-          Pf::kill_table($val->target->name.'_'.$val->player_id.'_clients',true);
+            Pf::kill_table($val->target->name.'_'.$val->player_id,true);
+            Pf::kill_table($val->target->name.'_'.$val->player_id.'_clients',true);
           break;
         default:
           printf("Error: Unknown action\n");
@@ -203,8 +234,9 @@ class CronController extends Controller
       $t=TargetInstance::find()->pending_action(40);
       foreach($t->all() as $val)
       {
+        $ips=[];
         $dc=new DockerContainer($val->target);
-        $dc->timeout=20000;
+        $dc->timeout= ($val->server->timeout ? $val->server->timeout : $dc->timeout=2000);
         if($val->target->targetVolumes!==null)
           $dc->targetVolumes=$val->target->targetVolumes;
         if($val->target->targetVariables!==null)
@@ -243,11 +275,24 @@ class CronController extends Controller
                 $dc->pull();
                 $dc->spin();
               }
-              if($val->player->last->vpn_local_address!==null)
+              if(($val->team_allowed===true && $val->player->teamPlayer) || \Yii::$ap->sys->team_visible_instances===true)
               {
-                Pf::add_table_ip($dc->name.'_clients',long2ip($val->player->last->vpn_local_address)/*,true*/);
+                foreach($val->player->teamPlayer->team->teamPlayers as $teamPlayer)
+                {
+                  if($teamPlayer->player->last->vpn_local_address!==null)
+                  {
+                    $ips[]=long2ip($teamPlayer->player->last->vpn_local_address);
+                  }
+                }
               }
+              else if($val->player->last->vpn_local_address!==null)
+              {
+                $ips[]=long2ip($val->player->last->vpn_local_address);
+              }
+              if($ips!=[])
+                Pf::add_table_ip($dc->name.'_clients',implode(' ',$ips),true);
               $val->ipoctet=$dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
+              Pf::add_table_ip($dc->name,$val->ipoctet,true);
               $val->reboot=0;
               if($pfonly===false)
                 $val->save();

@@ -21,13 +21,15 @@ class SpinRestAction extends \yii\rest\ViewAction
       $module = \app\modules\target\Module::getInstance();
 
       $module->checkNetwork($target);
-      $this->checkSpinable($target);
+
       if(Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$target->id)
       {
         Yii::$app->user->identity->instance->updateAttributes(['reboot'=>1]);
         Yii::$app->session->setFlash('success', sprintf(\Yii::t('app','Target instance [%s] scheduled for restart. You will receive a notification when the operation is completed.'), $target->name));
         return $this->redirectTo();
       }
+
+      $this->checkSpinable($target);
       $msg=\Yii::t('app',"Target [%s] queued for restart. You will receive a notification when the operation is completed.");
       if($target->ondemand && $target->ondemand->state===-1)
         $msg=\Yii::t('app',"Target [%s] queued to power-up. You will receive a notification when the operation is completed.");

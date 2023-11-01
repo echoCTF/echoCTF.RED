@@ -221,6 +221,9 @@ ETSCTF_TREASURES:
 #      root    ALL=(ALL:ALL) ALL
 #      %sudo   ALL=(ALL:ALL) ALL
 
+#INI_FILES:
+#  - { file: "/path/to/file.ini", section: "SECTION", option: OPTION, value: "VALUE"}
+
 # These commands are executed at build time by ansible
 BUILD_COMMANDS:
 #  exec:

@@ -22,6 +22,8 @@ yii\bootstrap5\Modal::end();
 
     <p>
         <?= Html::a('Create Team Score', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Export Top15 CSV', ['top15'], ['class' => 'btn btn-warning']) ?>
+        <?= Html::a('Export Top15 w/ players CSV', ['top15-inclusive'], ['class' => 'btn btn-info']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

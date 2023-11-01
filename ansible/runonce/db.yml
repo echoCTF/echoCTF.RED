@@ -63,14 +63,14 @@
     sysctl:
       kern.bufcachepercent: 30
       net.inet.ip.maxqueue: 2048
-      kern.somaxconn: 2048
+      kern.somaxconn: 4096
       net.bpf.bufsize: 2097152
       net.bpf.maxbufsize: 4194304
       kern.seminfo.semmni: 1024
       kern.seminfo.semmns: 4096
       kern.shminfo.shmmax: 67018864
       kern.shminfo.shmall: 32768
-      kern.maxfiles: 104060
+      kern.maxfiles: 312180
     rcctl:
       - { name: check_quotas, state: "disable" }
       - { name: cron, state: "disable" }

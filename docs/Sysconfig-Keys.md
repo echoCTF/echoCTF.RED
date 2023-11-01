@@ -20,6 +20,15 @@
 * `maintenance_notification`: Send maintenance notification to everyone connected to the frontend interface. The popup can be dismissed but it always comes back. No other notifications are delivered.
 * `require_activation` Whether it is required for users to activate their accounts
 * `disable_registration` Whether online registrations are allowed
+* `team_visible_instances` Whether or not player instances are visible to the rest of the team by default otherwise the per-instance field `team_allowed` takes priority
+
+* `profile_discord`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_echoctf`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_twitter`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_github`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_htb`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_twitch`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+* `profile_youtube`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 
 ## String and numeric key/val pairs
 * `event_name` A name for your event
@@ -48,6 +57,7 @@
 * `target_new_days`: How many days is target considered as `new` on the frontend after creation
 * `target_updated_days`: How many days the target is considered as `updated` on the frontend after update
 * `discord_news_webhook`: A discord webhook url to send news and announcements to
+* `pf_state_limits`: The content to be appended to the pass rules that enforces limits (default: `(max 10000, source-track rule, max-src-nodes 5, max-src-states 2000, max-src-conn 50)`)
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from

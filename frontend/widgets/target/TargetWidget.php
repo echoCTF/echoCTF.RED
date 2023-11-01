@@ -89,7 +89,7 @@ class TargetWidget extends Widget
             ]
 
         ]);
-        $defaultOrder=['progress' => SORT_DESC, 'name'=>SORT_ASC, 'ip'=>SORT_ASC];
+        $defaultOrder=['progress' => SORT_DESC, 'weight'=> SORT_ASC, 'difficulty' => SORT_ASC, 'name'=>SORT_ASC, 'ip'=>SORT_ASC];
       }
       else
       {
@@ -102,7 +102,7 @@ class TargetWidget extends Widget
             ]
 
         ]);
-        $defaultOrder=['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'difficulty' => SORT_ASC,'name' => SORT_ASC, 'ip' => SORT_ASC, ];
+        $defaultOrder=['status'=>SORT_DESC ,'scheduled_at'=>SORT_ASC, 'weight'=> SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC, 'ip' => SORT_ASC, ];
       }
       return $targetProgressProvider;
     }
@@ -135,6 +135,10 @@ class TargetWidget extends Widget
                 'asc' => ['total_treasures'=>SORT_ASC],
                 'desc' => ['total_treasures'=>SORT_DESC],
               ],
+              'weight'=> [
+                 'asc'=>['weight'=>SORT_ASC],
+                'desc'=>['weight'=>SORT_DESC],
+              ],
               'progress'=>[
                 'asc'=>['progress'=>SORT_ASC],
                 'desc'=>['progress'=>SORT_DESC],
@@ -156,6 +160,11 @@ class TargetWidget extends Widget
           'name' => [
               'asc' => ['name' => SORT_ASC],
               'desc' => ['name' => SORT_DESC],
+          ],
+          'weight' => [
+            'asc' =>  ['weight' => SORT_ASC],
+            'desc' => ['weight' => SORT_DESC],
+            'default' => SORT_ASC
           ],
           'ip' => [
               'asc' => ['ip' => SORT_ASC],
