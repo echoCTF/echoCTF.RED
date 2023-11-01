@@ -11,7 +11,7 @@ The docker containers use the following networks ranges
 * `echoctfred_targets`: `10.0.160.0/24` (also a docker network)
 * `OpenVPN`: `10.10.0.0/16` (only availabe from with vpn and openvpn)
 
-Furthermore the following ports are mapped on the host server and containers
+Furthermore the following ports are mapped on the host server and containers by uncommenting the ports section in the `docker-compose.yml` file (**use it at your own risk!**)
 
 * udp 0.0.0.0:1194 => echoctfred_vpn 172.26.0.1:1194 openvpn
 * tcp 0.0.0.0:8082 => echoctfred_backend 172.26.0.2:80
@@ -29,7 +29,7 @@ The following volumes are configured and used
 
 You can modify the volumes and port mappings by editing the corresponding values in the `docker-compose.yml` file.
 
-The following diagram illustrates the docker networks and containers that are configured by `docker-compose`.
+The following diagram illustrates the docker networks and containers that are configured by `docker-compose.yml`.
 
 ![echoCTF.RED docker-compose topology](assets/docker-compose-topology.png?)
 
@@ -56,7 +56,7 @@ This command will have to be run every time the database server stops or respawn
 command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake", "--init_file=/etc/mysql-init.sql"]
 ```
 
-NOTE: You need to pull the images manually with `docker pull`.
+__NOTE__: You need to pull the images manually with `docker pull`.
 
 If you'd rather to build your own images make you sure you generate a Github OAuth Token to
 be used by the composer utility. This is needed in order to avoid hitting
@@ -116,13 +116,13 @@ sudo ip netns exec $pid ip route add default via 10.0.160.1
 Make sure you configure the host dockerd daemon to have its API listen to the new `private` network.
 However since the network becomes available only after dockerd starts you will have to bind to _`0.0.0.0`_ (ie `-H tcp://0.0.0.0:2376`)
 
-More information about enabling docker API https://success.docker.com/article/how-do-i-enable-the-remote-api-for-dockerd
+More information about enabling docker API ![here](https://docs.docker.com/config/daemon/remote-access/)
 
 Make sure you restrict connections to the dockerd port to only these containers `echoctfred_vpn/172.24.0.1` and `echoctfred_backend/172.24.0.2`.
 
-Your `frontend` is accessible at http://localhost:8080/
+Your `frontend` is accessible at ![http://172.26.0.3/](http://172.26.0.3/)
 
-Login to the backend (http://localhost:8082/) and add a target with the following details
+Login to the backend ![http://172.26.0.2/](http://172.26.0.2/) and add a target with the following details
 
 * Name: `echoctfred_target1`
 * FQDN: `echoctfred_target1.example.com`
