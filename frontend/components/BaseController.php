@@ -36,7 +36,7 @@ class BaseController extends \yii\web\Controller
               return $this->eventInactive;
             },
             'denyCallback' => function () {
-              Yii::$app->session->setFlash('info', 'This area is disabled until the competition starts');
+              Yii::$app->session->setFlash('info', 'The competition is not active');
               return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
             }
           ],
@@ -46,7 +46,10 @@ class BaseController extends \yii\web\Controller
               return $this->eventBetweenStartEnd;
             },
             'denyCallback' => function () {
-              Yii::$app->session->setFlash('info', \Yii::t('app', 'This area is disabled until the competition starts'));
+              if(\Yii::$app->sys->event_start !== false && time() < \Yii::$app->sys->event_start)
+                Yii::$app->session->setFlash('info', \Yii::t('app', 'This area is disabled until the event starts'));
+              if(\Yii::$app->sys->event_end !== false && time() > \Yii::$app->sys->event_end)
+                Yii::$app->session->setFlash('info', \Yii::t('app', 'This area is disabled after the end of the event'));
               return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
             }
           ],
@@ -67,7 +70,7 @@ class BaseController extends \yii\web\Controller
               return \Yii::$app->sys->event_end !== false && time() > \Yii::$app->sys->event_end;
             },
             'denyCallback' => function () {
-              Yii::$app->session->setFlash('info', \Yii::t('app', 'This operation is closed after the competition ends'));
+              Yii::$app->session->setFlash('info', \Yii::t('app', 'This area is disabled after the competition ends'));
               return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
             }
           ],
