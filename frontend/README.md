@@ -1,7 +1,7 @@
 # echoCTF.RED participants interface
 
 ## Update instructions
-```
+```sh
 cd echoCTF.RED
 git pull
 cd frontend/
@@ -9,7 +9,7 @@ composer update
 yii migrate/up --interactive=0
 ```
 ## Installation
-```
+```sh
 git clone https://github.com/echoCTF/echoCTF.RED.git
 cd echoCTF.RED/frontend
 composer install
@@ -44,7 +44,6 @@ return [
 ```js
 var url="http://localhost:8082/profile/settings";
 $.post( url, { "Player[username]": "John" });
-
 ```
 ## General Information
 
@@ -75,7 +74,7 @@ The minimum requirement by this project template that your Web server supports P
 
 ### Security Checking
 Install the needed composer packages and run phpcs
-```
+```sh
 composer global require "squizlabs/php_codesniffer=*"
 composer global require pheromone/phpcs-security-audit
 composer global require dealerdirect/phpcodesniffer-composer-installer

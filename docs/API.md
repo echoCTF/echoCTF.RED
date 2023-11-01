@@ -41,16 +41,16 @@ NOTE: __This documentation is only temporary and will be replaced by a Swagger.i
 **Examples:**
 
 * Simple request
-```
+```sh
 curl -i -H "Accept:application/json" "https://echoctf.red/api/headshots"
 ```
 
 * filter only headshots for player with profile_id=31337
-```
+```sh
 curl -i -H "Accept:application/json" "https://echoctf.red/api/headshots?filter[profile_id]=31337"
 ```
 
 * filter only headshots for player with profile_id=31337 and get only the target names
-```
+```sh
 curl -i -H "Accept:application/json" "https://echoctf.red/api/headshots?filter[profile_id]=31337&fields=target_name"
 ```

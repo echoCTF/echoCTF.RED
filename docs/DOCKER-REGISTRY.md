@@ -46,7 +46,7 @@ chown -R registry /home/registry/storage
 ```
 
 ## As Docker container
-There is an official docker registry image available at https://hub.docker.com/_/registry
+There is an official docker registry image available at [https://hub.docker.com/_/registry](https://hub.docker.com/_/registry)
 ```sh
 docker run -d -p 5000:5000 --restart always --name registry registry:2
 ```

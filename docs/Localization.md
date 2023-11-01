@@ -8,7 +8,7 @@ $config=[
 ```
 
 You can create translations to your language by copying the existing english folder
-```shell
+```sh
 cp -pr frontend/messages/en frontend/messages/el
 ```
 

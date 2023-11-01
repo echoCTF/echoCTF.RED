@@ -29,5 +29,5 @@ These components are are as follows:
  * `backend` => Admin interface and commands
  * `contrib` => Various contributed materials
  * `docs` => Documentation folder
- * `frontend` => User interface (what you see at https://echoctf.red/)
+ * `frontend` => User interface (what you see at [https://echoctf.red/](https://echoctf.red/))
  * `schemas` => database schema

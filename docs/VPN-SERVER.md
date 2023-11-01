@@ -33,7 +33,7 @@ nc -zv 172.24.0.253 3306
 nc -zv 172.24.0.253 11211
 ```
 
-Note: If you're using the supplied `docker-compose` without VPN this IP will be
+**NOTE:** If you're using the supplied `docker-compose` without VPN this IP will be
 the IP of the docker host and not the container.
 
 ```sh
@@ -150,7 +150,7 @@ the following details
 * `{{db_host}}` database host (prefer IP ex `172.24.0.253`)
 * `{{db_name}}` database name (default ex `echoCTF`)
 
-NOTE: If you are running the docker container that we provide then a user
+**NOTE:** If you are running the docker container that we provide then a user
 already exists on the database with the following credentials, otherwise you'll
 have to GRANT the permissions to your mysql host.
 
@@ -196,7 +196,7 @@ sed -i -e 's#{{db.host}}#172.24.0.253#g' /etc/openvpn/echoctf_updown_mysql.sh
 ```
 
 Prepare the tun0 interface and rc scripts
-```
+```sh
 echo "up" >/etc/hostname.tun0
 echo "group offense">>/etc/hostname.tun0
 rcctl set openvpn status on

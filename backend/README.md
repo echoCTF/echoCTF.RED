@@ -15,7 +15,7 @@ mysql echoCTF < ../schemas/echoCTF-event.sql
 
 ## VPN
 You need to perform the following commands from the current path
-```
+```sh
 ./yii ssl/create-ca 1  # create CA certificate and store it on the current folder
 ./yii ssl/get-ca 1     # Get the CA certificate from the database and store it on the current folder
 ./yii ssl/create-cert  # Create OpenVPN server keys and certificates and store them on the current folder
@@ -23,7 +23,7 @@ You need to perform the following commands from the current path
 
 Generate player certificates
 
-```
+```sh
 ./yii ssl/gen-all-player-certs # Generate and update database
 ./yii ssl/gen-player-certs email@example.com
 ./yii ssl/get-player-certs email@example.com 0 1 # for ccd generation
