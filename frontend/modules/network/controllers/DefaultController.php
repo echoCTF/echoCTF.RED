@@ -91,7 +91,7 @@ class DefaultController extends \app\components\BaseController
     $tmod = \app\modules\target\models\Target::find();
     if (Yii::$app->user->isGuest)
     {
-      $query = $tmod->forNet($id)->addState()->orderBy(['status' => SORT_DESC, 'scheduled_at' => SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC]);
+      $query = $tmod->forNet($id)->addState();
     }
     else
       $query = $tmod->forNet($id)->player_progress(Yii::$app->user->id);
@@ -103,16 +103,16 @@ class DefaultController extends \app\components\BaseController
         'pageParam' => 'target-page',
       ]
     ]);
-    if(Yii::$app->user->isGuest){
-      $targetProgressProvider->setSort(false);
-    }
-    else
     $targetProgressProvider->setSort([
-      'defaultOrder' => ['status' => SORT_DESC, 'scheduled_at' => SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC],
+      'defaultOrder' => ['status' => SORT_DESC, 'scheduled_at' => SORT_ASC, 't.weight'=>SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC],
       'attributes' => [
         'scheduled_at' => [
           'asc' =>  ['scheduled_at' => SORT_ASC],
           'desc' => ['scheduled_at' => SORT_DESC],
+        ],
+        't.weight'=> [
+          'asc'=>['t.weight'=>SORT_ASC],
+         'desc'=>['t.weight'=>SORT_DESC],
         ],
         'name' => [
           'asc' => ['name' => SORT_ASC],
@@ -152,7 +152,7 @@ class DefaultController extends \app\components\BaseController
 
     return $this->render('view', [
       'networkTargetProvider' => $targetProgressProvider,
-      'model' => $this->findModel($id),
+      'model' => $network,
     ]);
   }
   protected function findModel(int $id)
