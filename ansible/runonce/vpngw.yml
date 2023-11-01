@@ -15,18 +15,23 @@
         - Update /etc/administrators.conf with your IP's
         - Reboot the system for the changes to take effect
     sysctl:
-      net.inet.ip.forwarding: 1
-      net.inet.ip.mforwarding: 1
       kern.bufcachepercent: 30
-      net.inet.ip.maxqueue: 2048
-      kern.somaxconn: 2048
-      net.bpf.bufsize: 2097152
-      net.bpf.maxbufsize: 4194304
+      kern.maxfiles: 312180
       kern.seminfo.semmni: 1024
       kern.seminfo.semmns: 4096
-      kern.shminfo.shmmax: 67018864
       kern.shminfo.shmall: 32768
-      kern.maxfiles: 104060
+      kern.shminfo.shmmax: 67018864
+      kern.somaxconn: 8192
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      net.inet.divert.sendspace: 65636
+      net.inet.ip.forwarding: 1
+      net.inet.ip.ifq.maxlen: 2560
+      net.inet.ip.maxqueue: 2048
+      net.inet.ip.mforwarding: 0
+      net.inet.tcp.synuselimit: 1000000
+      net.inet.udp.sendspace: 9216
+      net.unix.dgram.sendspace: 9216
     rcctl:
       - { name: check_quotas, state: "disable" }
       - { name: cron, state: "enable" }
