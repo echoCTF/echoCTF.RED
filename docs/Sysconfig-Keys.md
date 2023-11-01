@@ -20,7 +20,7 @@
 * `maintenance_notification`: Send maintenance notification to everyone connected to the frontend interface. The popup can be dismissed but it always comes back. No other notifications are delivered.
 * `require_activation` Whether it is required for users to activate their accounts
 * `disable_registration` Whether online registrations are allowed
-* `team_visible_instances` Whether or not player instances are visible to the rest of the team
+* `team_visible_instances` Whether or not player instances are visible to the rest of the team by default otherwise the per-instance field `team_allowed` takes priority
 
 * `profile_discord`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_echoctf`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
