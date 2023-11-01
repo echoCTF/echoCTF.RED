@@ -139,11 +139,13 @@ class SettingsForm extends Model
           [['visibility'], 'default', 'value' =>  Yii::$app->sys->profile_visibility!==false ? Yii::$app->sys->profile_visibility : 'ingame','when' => function($model,$attribute) { return $model->_cf($attribute);}],
         ];
     }
+
     public function normalizeDiscord($value) {
         while($value!=str_replace('  ',' ',$value))
         {
           $value=str_replace('  ',' ',$value);
         }
+
         while($value!=str_replace("\xE2\x80\x8B", "", $value))
         {
           $value=str_replace("\xE2\x80\x8B", "", $value);
@@ -156,11 +158,12 @@ class SettingsForm extends Model
       asort($value);
       $this->_allowed_fields=$value;
     }
+
     public function getAllowed_fields()
     {
-
       return $this->_allowed_fields;
     }
+
     public function _cf($attribute):bool
     {
       return array_search($attribute,$this->allowed_fields,true)!==false;
@@ -198,6 +201,7 @@ class SettingsForm extends Model
 
       if($this->_cf('htb') && $this->_player->profile->validate('htb'))
         $this->htb=$this->_player->profile->htb;
+
       if($this->_cf('echoctf') && $this->_player->profile->validate('echoctf'))
         $this->echoctf=$this->_player->profile->echoctf;
 
