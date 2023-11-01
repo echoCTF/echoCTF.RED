@@ -16,7 +16,7 @@ server to access this service._
 
 The docker servers are expected to have a maclan network configured for the
 targets to attach to. More details about docker and macvlan networking can be
-found at https://docs.docker.com/network/macvlan/
+found at [https://docs.docker.com/network/drivers/macvlan/](https://docs.docker.com/network/macvlan/)
 
 Tha docker containers acting as targets are assigned a unique ip that needs to
 accessible by the players.
@@ -59,7 +59,7 @@ each player.
 The script first connects to the central memcached service to see if the user
 is currently online. After that the script connects to the local mysql database
 which in turn connects to the central database server through the use of
-Federated tables (https://mariadb.com/kb/en/about-federatedx/).
+Federated tables [https://mariadb.com/kb/en/about-federatedx/](https://mariadb.com/kb/en/about-federatedx/).
 
 Furthermore, the backend needs to exist on the VPN configured to access the
 main database and memcached for the backend console commands to operate.

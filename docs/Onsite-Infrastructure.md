@@ -17,7 +17,7 @@ gateway/vpn server and a Debian docker server, as illustrated below.
 
 This basic setup assumes 50 local participants with 10 to 20 targets.
 
-![Onsite echoCTF Basic Topology](assets/onsite-basic-topology.png?raw=true&2)
+![Onsite echoCTF Basic Topology](assets/onsite-basic-topology.png)
 
 The hardware specifications for the servers vary but for a small event the
 following should be more than enough:
@@ -25,7 +25,7 @@ following should be more than enough:
 * CPU: Intel(R) Xeon(R) CPU E5345 @ 2.33GHz
 * Storage: 160GB SSD
 
-**Gateway**\
+**Gateway**:
 The gateway runs all applications needed, except for the docker containers. It
 has a Quad Gigabit ethernet adapter with 3 ethernet interfaces being used by
 the setup and the fourth one if we also need to provide internet access to the
@@ -44,7 +44,7 @@ other available resource.
 __NOTE__: Only our support engineers are allowed to connect to the
 `administrators` switch for the events we develop and deliver.
 
-**Docker01**\
+**Docker01**:
 The docker01 system connects with a crossover cable to the gateway.
 
 ## Increased requirements
@@ -69,4 +69,4 @@ When the option to increase the hardware specs is no longer viable, we switch
 into splitting services into multiple servers starting with the addition of
 new docker servers.
 
-![Onsite Multiple Docker Servers Topology](assets/onsite-multiple-dockers.png?raw=true&2)
+![Onsite Multiple Docker Servers Topology](assets/onsite-multiple-dockers.png)

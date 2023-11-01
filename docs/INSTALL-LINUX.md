@@ -154,7 +154,7 @@ cp contrib/apache2-red.conf /etc/apache2/sites-enabled/echoctf.conf
 service apache2 restart
 ```
 
-The default interfaces are accessible under http://localhost:8080/ for the frontend and http://localhost:8081/ for the backend.
+The default interfaces are accessible under [http://localhost:8080/](http://localhost:8080/) for the frontend and [http://localhost:8081/](http://localhost:8081/) for the backend.
 
 ### Make mysql populate memcache on reboot and service restarts
 ```sh
