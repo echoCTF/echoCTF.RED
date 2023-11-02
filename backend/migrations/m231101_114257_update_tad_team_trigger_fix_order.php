@@ -16,6 +16,7 @@ class m231101_114257_update_tad_team_trigger_fix_order extends Migration
       DELETE FROM {{%team_stream}} WHERE team_id=OLD.id;
       DELETE FROM {{%team_rank}} WHERE team_id=OLD.id;
       DELETE FROM {{%team_score}} WHERE team_id=OLD.id;
+      INSERT INTO team_audit (team_id,player_id,`action`,`message`) VALUES (OLD.id,OLD.owner_id,'delete',CONCAT('Team ',OLD.name,' deleted'));
     END";
 
     public function up()
