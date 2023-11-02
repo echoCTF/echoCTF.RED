@@ -11,13 +11,17 @@ use app\modules\gameplay\models\Network;
  */
 class NetworkSearch extends Network
 {
+    public $network_players;
+    public $network_targets;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id','weight'], 'integer'],
+            [['id','weight','network_players','network_targets'], 'integer'],
+            [['network_players','network_targets'],'default','value'=>null ],
             [['public', 'active','announce','guest'], 'boolean'],
             [['name', 'description', 'codename', 'icon', 'ts'], 'safe'],
         ];
@@ -41,7 +45,7 @@ class NetworkSearch extends Network
      */
     public function search($params)
     {
-        $query=Network::find();
+        $query=Network::find()->joinWith(['targets','players']);
 
         // add conditions that should always apply here
 
@@ -59,19 +63,36 @@ class NetworkSearch extends Network
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
-            'weight' => $this->weight,
-            'active' => $this->active,
-            'announce' => $this->announce,
-            'public' => $this->public,
-            'guest' => $this->guest,
-            'ts' => $this->ts,
+            'network.id' => $this->id,
+            'network.weight' => $this->weight,
+            'network.active' => $this->active,
+            'network.announce' => $this->announce,
+            'network.public' => $this->public,
+            'network.guest' => $this->guest,
+            'network.ts' => $this->ts,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'codename', $this->codename])
-            ->andFilterWhere(['like', 'description', $this->description]);
-
+        $query->andFilterWhere(['like', 'network.name', $this->name])
+            ->andFilterWhere(['like', 'network.codename', $this->codename])
+            ->andFilterWhere(['like', 'network.description', $this->description]);
+        if($this->network_players !== null ) $query->andHaving(["=",'count(DISTINCT player.id)',$this->network_players]);
+        if($this->network_targets !== null ) $query->andHaving(["=",'count(DISTINCT target.id)',$this->network_targets]);
+        $query->groupBy(['network.id']);
+        $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'network_players' => [
+                      'asc' => ['count(DISTINCT player.id)' => SORT_ASC],
+                      'desc' => ['count(DISTINCT player.id)' => SORT_DESC],
+                  ],
+                  'network_targets' => [
+                    'asc' => ['count(distinct target.id)' => SORT_ASC],
+                    'desc' => ['count(distinct target.id)' => SORT_DESC],
+                  ],
+              ]
+            ),
+          ]);
         return $dataProvider;
     }
 }

@@ -77,11 +77,13 @@ yii\bootstrap5\Modal::end();
             [
                 'label'=>'Targets',
                 'format'=>'integer',
+                'attribute'=>'network_targets',
                 'value'=>function($model){ return count($model->networkTargets); },
                 'contentOptions'=>['class'=>'text-center'],
             ],
             [
                 'label'=>'Players',
+                'attribute'=>'network_players',
                 'format'=>'integer',
                 'value'=>function($model){ return count($model->networkPlayers); },
                 'contentOptions'=>['class'=>'text-center'],
