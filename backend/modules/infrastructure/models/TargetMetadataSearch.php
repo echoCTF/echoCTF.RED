@@ -11,7 +11,7 @@ use app\modules\infrastructure\models\TargetMetadata;
  */
 class TargetMetadataSearch extends TargetMetadata
 {
-    public $fqdn;
+    public $target_name;
 
     /**
      * {@inheritdoc}
@@ -20,7 +20,7 @@ class TargetMetadataSearch extends TargetMetadata
     {
         return [
             [['target_id'], 'integer'],
-            [['scenario', 'instructions', 'solution', 'pre_credits', 'post_credits', 'pre_exploitation', 'post_exploitation', 'created_at', 'updated_at','fqdn'], 'safe'],
+            [['scenario', 'instructions', 'solution', 'pre_credits', 'post_credits', 'pre_exploitation', 'post_exploitation', 'created_at', 'updated_at','target_name'], 'safe'],
         ];
     }
 
@@ -66,7 +66,7 @@ class TargetMetadataSearch extends TargetMetadata
         ]);
 
         $query->andFilterWhere(['like', 'scenario', $this->scenario])
-            ->andFilterWhere(['like', 'target.fqdn', $this->fqdn])
+            ->andFilterWhere(['like', 'target.name', $this->target_name])
             ->andFilterWhere(['like', 'instructions', $this->instructions])
             ->andFilterWhere(['like', 'solution', $this->solution])
             ->andFilterWhere(['like', 'pre_credits', $this->pre_credits])
@@ -75,13 +75,13 @@ class TargetMetadataSearch extends TargetMetadata
             ->andFilterWhere(['like', 'post_exploitation', $this->post_exploitation]);
 
         $dataProvider->setSort([
-            'defaultOrder' => ['created_at'=>SORT_DESC, 'fqdn'=>SORT_ASC],
+            'defaultOrder' => ['created_at'=>SORT_DESC, 'target_name'=>SORT_ASC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
-                  'fqdn' => [
-                      'asc' => ['target.fqdn' => SORT_ASC],
-                      'desc' => ['target.fqdn' => SORT_DESC],
+                  'target_name' => [
+                      'asc' => ['target.name' => SORT_ASC],
+                      'desc' => ['target.name' => SORT_DESC],
                   ],
                 ]
             ),
