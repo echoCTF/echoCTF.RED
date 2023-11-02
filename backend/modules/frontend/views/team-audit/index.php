@@ -11,8 +11,8 @@ use yii\widgets\Pjax;
 /** @var app\modules\frontend\models\TeamAuditSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = Yii::t('app', 'Team Audits');
-$this->params['breadcrumbs'][] = $this->title;
+$this->title = ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id);
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 yii\bootstrap5\Modal::begin([
   'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
   'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
