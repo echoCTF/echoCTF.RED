@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'team_id',
+            'player_id',
             'action',
             'message:ntext',
             'ts',

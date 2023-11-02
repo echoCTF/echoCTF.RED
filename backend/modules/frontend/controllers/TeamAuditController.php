@@ -25,6 +25,7 @@ class TeamAuditController extends BaseController
                     'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
+                        'truncate' => ['POST'],
                     ],
                 ],
             ]
@@ -113,6 +114,18 @@ class TeamAuditController extends BaseController
     {
         $this->findModel($id)->delete();
 
+        return $this->redirect(['index']);
+    }
+
+    /**
+     * Truncates TeamAudit.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionTruncate()
+    {
+        \Yii::$app->db->createCommand()->truncateTable('team_audit')->execute();
         return $this->redirect(['index']);
     }
 

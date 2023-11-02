@@ -22,11 +22,13 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'team_id') ?>
 
+    <?= $form->field($model, 'player_id') ?>
+
     <?= $form->field($model, 'action') ?>
 
     <?= $form->field($model, 'message') ?>
 
-    <?= $form->field($model, 'ts') ?>
+    <?php // echo $form->field($model, 'ts') ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Search'), ['class' => 'btn btn-primary']) ?>
