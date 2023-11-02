@@ -3,6 +3,8 @@
 namespace app\modules\frontend\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
 
 /**
  * This is the model class for table "team_audit".
@@ -23,7 +25,17 @@ class TeamAudit extends \yii\db\ActiveRecord
     {
         return 'team_audit';
     }
-
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::class,
+                'createdAtAttribute' => 'ts',
+                'updatedAtAttribute' => 'ts',
+                'value' => new Expression('NOW()'),
+            ],
+        ];
+    }
     /**
      * {@inheritdoc}
      */
