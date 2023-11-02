@@ -146,6 +146,7 @@ AppAsset::register($this);
                         ['label' => 'Player Relations', 'url' => ['/frontend/player-relation/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Teams', 'url' => ['/frontend/team/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Team Players', 'url' => ['/frontend/teamplayer/index'], 'visible' => !Yii::$app->user->isGuest,],
+                        ['label' => 'Teams Audit', 'url' => ['/frontend/team-audit/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Banned Players', 'url' => ['/frontend/banned-player/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Certificate Revocation List', 'url' => ['/frontend/crl/index'], 'visible' => !Yii::$app->user->isGuest,],
                     ],
