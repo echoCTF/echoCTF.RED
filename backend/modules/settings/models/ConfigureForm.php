@@ -21,6 +21,7 @@ class ConfigureForm extends Model
     public $player_profile;
     public $profile_visibility;
     public $event_name;
+    public $site_description;
     public $event_active;
     public $event_start;
     public $event_end;
@@ -55,6 +56,13 @@ class ConfigureForm extends Model
     public $time_zone;
     public $target_days_new;
     public $target_days_updated;
+    public $discord_invite_url;
+    public $discord_news_webhook;
+    public $pf_state_limits;
+    public $stripe_apiKey;
+    public $stripe_publicApiKey;
+    public $stripe_webhookSecret;
+    public $monthly_leaderboards;
 
     public $dn_countryName;
     public $dn_stateOrProvinceName;
@@ -77,6 +85,7 @@ class ConfigureForm extends Model
             'player_profile',
             'profile_visibility',
             'event_name',
+            'site_description',
             'event_active',
             'event_start',
             'event_end',
@@ -113,6 +122,13 @@ class ConfigureForm extends Model
             'dn_localityName',
             'dn_organizationName',
             'dn_organizationalUnitName',
+            'discord_news_webhook',
+            'discord_invite_url',
+            'pf_state_limits',
+            'stripe_apiKey',
+            'stripe_publicApiKey',
+            'stripe_webhookSecret',
+            'monthly_leaderboards'
         ];
 
     /**
@@ -140,12 +156,18 @@ class ConfigureForm extends Model
               'moderator_domain',
               'twitter_account',
               'twitter_hashtags',
+              'discord_invite_url',
+              'discord_news_webhook',
               'time_zone',
               'dn_countryName',
               'dn_stateOrProvinceName',
               'dn_localityName',
               'dn_organizationName',
               'dn_organizationalUnitName',
+              'pf_state_limits',
+              'stripe_apiKey',
+              'stripe_publicApiKey',
+              'stripe_webhookSecret',
             ], 'string'],
             [['offense_registered_tag',
               'defense_registered_tag',
@@ -162,19 +184,24 @@ class ConfigureForm extends Model
               'offense_domain',
               'defense_domain',
               'moderator_domain',
+              'site_description',
               'event_start',
               'event_end',
               'registrations_start',
               'registrations_end',
               'twitter_account',
               'twitter_hashtags',
+              'discord_invite_url',
+              'discord_news_webhook',
               'time_zone',
               'dn_countryName',
               'dn_stateOrProvinceName',
               'dn_localityName',
               'dn_organizationName',
               'dn_organizationalUnitName',
+              'pf_state_limits'
             ], 'trim'],
+            // required fields
             [['teams',
               'require_activation',
               'disable_registration',
@@ -216,6 +243,7 @@ class ConfigureForm extends Model
             'leaderboard_visible_before_event_start',
             'leaderboard_visible_after_event_end',
             'leaderboard_show_zero',
+            'monthly_leaderboards'
           ], 'boolean'],
 
         ];
@@ -233,6 +261,7 @@ class ConfigureForm extends Model
           'profile_visibility' => 'Player profile visibility',
           'join_team_with_token' => 'Join teams with token',
           'event_name' => 'Event name',
+          'site_description' => 'Site Description',
           'award_points' => 'Award points',
           'offense_home' => 'Offense home',
           'defense_home' => 'Defense home',
@@ -275,6 +304,10 @@ class ConfigureForm extends Model
           'dn_organizationalUnitName'=>'organizationalUnitName',
           'target_days_new'=>'Target days is new',
           'target_days_updated'=>'Target days is updated',
+          'discord_invite_url'=>'Discord invite URL',
+          'discord_news_webhook'=>'Discord News Webhook',
+          'monthly_leaderboards'=>'Monthly points leaderboards',
+
         ];
     }
 

@@ -20,8 +20,9 @@ $this->params['breadcrumbs'][]=$this->title;
 
         <h4>Event/CTF Settings</h4>
         <div class="row form-group">
-          <div class="col-sm-4"><?= $form->field($model, 'event_name')->textInput(['maxlength' => true])->input('text', ['placeholder' => "My Awesome CTF"])->hint('Enter your event or site name') ?></div>
-          <div class="col-sm-4"><?= $form->field($model, 'time_zone')->dropDownList(ArrayHelper::map(DateTimeZone::listIdentifiers(), function($model){ return $model;},function($model){ return $model;}))->hint('Enter your timezone') ?></div>
+          <div class="col-sm-2"><?= $form->field($model, 'event_name')->textInput(['maxlength' => true])->input('text', ['placeholder' => "My Awesome CTF"])->hint('Enter your event or site name') ?></div>
+          <div class="col-sm-4"><?= $form->field($model, 'site_description')->textInput(['maxlength' => true])->input('text', ['placeholder' => "My Awesome site description"])->hint('Enter your a description for your site') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'time_zone')->dropDownList(ArrayHelper::map(DateTimeZone::listIdentifiers(), function($model){ return $model;},function($model){ return $model;}))->hint('Choose your timezone') ?></div>
           <div class="col-sm-2"><?= $form->field($model, 'event_active')->checkbox()->hint('Is the site active?') ?></div>
         </div>
         <div class="row form-group">
@@ -36,6 +37,7 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'leaderboard_visible_before_event_start')->checkbox()->hint('Is the leaderboard going to be visible before the event starts?') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'leaderboard_visible_after_event_end')   ->checkbox()->hint('Is the leaderboard going to be visible after the event ends?') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'leaderboard_show_zero')   ->checkbox()->hint('Leaderboard show zero points?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'monthly_leaderboards')   ->checkbox()->hint('Show monthly leaderboards by points?') ?></div>
         </div>
         <hr/>
         <h4>Team properties</h4>
@@ -52,6 +54,7 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-6"><?= $form->field($model, 'target_days_updated')->textInput()->hint('How many days are targets considered updated?') ?></div>
         </div>
 
+        <hr/>
         <h4>Registration and Player properties</h4>
         <div class="row form-group">
           <div class="col-sm-3"><?= $form->field($model, 'require_activation')->checkbox()->hint('Do players need to activate their account?') ?></div>
@@ -92,19 +95,31 @@ $this->params['breadcrumbs'][]=$this->title;
         </div>
         <hr/>
 
-        <h4>Twitter Settings</h4>
+        <h4>Social media Settings</h4>
         <div class="row form-group">
-          <div class="col-sm-3"><?= $form->field($model, 'twitter_account')->textInput(['maxlength' => true])->hint('Twitter account to use for tagging and via') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'twitter_hashtags')->textInput(['maxlength' => true])->hint('Twitter hashtags to use for tweets') ?></div>
+          <div class="col-sm-2"><?= $form->field($model, 'twitter_account')->textInput(['maxlength' => true])->hint('Twitter account to use for tagging and via') ?></div>
+          <div class="col-sm-2"><?= $form->field($model, 'twitter_hashtags')->textInput(['maxlength' => true])->hint('Twitter hashtags to use for tweets') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'discord_invite_url')->textInput(['maxlength' => true])->hint('Discord URL to invite payers to your server') ?></div>
+          <div class="col-sm-5"><?= $form->field($model, 'discord_news_webhook')->textInput(['maxlength' => true])->hint('Discord Webhook URL to post platform news and updates') ?></div>
         </div>
         <hr/>
 
         <h4>Offense/Defense settings</h4>
         <div class="row form-group">
-          <div class="col-sm-4"><?= $form->field($model, 'offense_registered_tag')->textInput(['maxlength' => true])->hint('Offense PF/BRIDGE tag for registered players (OFFENSE_REGISTERED)') ?></div>
-          <div class="col-sm-4"><?= $form->field($model, 'defense_registered_tag')->textInput(['maxlength' => true])->hint('Defense PF/BRIDGE tag for registered players (DEFENSE_REGISTERED)') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'offense_registered_tag')->textInput(['maxlength' => true])->hint('Offense PF/BRIDGE tag for registered players (OFFENSE_REGISTERED)') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'defense_registered_tag')->textInput(['maxlength' => true])->hint('Defense PF/BRIDGE tag for registered players (DEFENSE_REGISTERED)') ?></div>
+          <div class="col-sm-6"><?= $form->field($model, 'pf_state_limits')->textInput(['maxlength' => true])->hint('PF firewall limits imposed to player connections to the targets') ?></div>
         </div>
         <hr/>
+
+        <h4>Stripe Settings</h4>
+        <div class="row form-group">
+          <div class="col-sm-4"><?= $form->field($model, 'stripe_apiKey')->textInput(['maxlength' => true])->hint('Your Stripe secret API Key') ?></div>
+          <div class="col-sm-4"><?= $form->field($model, 'stripe_publicApiKey')->textInput(['maxlength' => true])->hint('Your Stripe Public API Key') ?></div>
+          <div class="col-sm-4"><?= $form->field($model, 'stripe_webhookSecret')->textInput(['maxlength' => true])->hint('Stripe secret to validate webhook requests') ?></div>
+        </div>
+        <hr/>
+
         <h4>VPN Certificate Settings <span><small>If you change these values you will have to regenerate your ca keys and player certificates again.</small></span></h4>
 
         <div class="row form-group">
