@@ -114,8 +114,10 @@ $this->params['breadcrumbs'][]=$this->title;
 
         <h4>Stripe Settings</h4>
         <div class="row form-group">
-          <div class="col-sm-4"><?= $form->field($model, 'stripe_apiKey')->textInput(['maxlength' => true])->hint('Your Stripe secret API Key') ?></div>
-          <div class="col-sm-4"><?= $form->field($model, 'stripe_publicApiKey')->textInput(['maxlength' => true])->hint('Your Stripe Public API Key') ?></div>
+          <div class="col-sm-1"><?= $form->field($model, 'subscriptions_menu_show')->checkbox()->hint(false) ?></div>
+          <div class="col-sm-1"><?= $form->field($model, 'subscriptions_emergency_suspend')->checkbox()->hint(false) ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'stripe_apiKey')->textInput(['maxlength' => true])->hint('Your Stripe secret API Key') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'stripe_publicApiKey')->textInput(['maxlength' => true])->hint('Your Stripe Public API Key') ?></div>
           <div class="col-sm-4"><?= $form->field($model, 'stripe_webhookSecret')->textInput(['maxlength' => true])->hint('Stripe secret to validate webhook requests') ?></div>
         </div>
         <hr/>

@@ -83,7 +83,7 @@ AppAsset::register($this);
                 ],
 
                 [
-                    'label' => '<i class="bi bi-credit-card"></i> Sales', 'url' => ['/sales/default/index'], 'icon' => 'fas fa-money-check-alt', 'active' => Yii::$app->controller->module->id == 'sales', 'visible' => array_key_exists('sales', \Yii::$app->modules) !== false && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,
+                    'label' => '<i class="bi bi-credit-card"></i> Sales', 'url' => ['/sales/default/index'], 'icon' => 'fas fa-money-check-alt', 'active' => Yii::$app->controller->module->id == 'sales', 'visible' => array_key_exists('sales', \Yii::$app->modules) !== false && Yii::$app->sys->subscriptions_menu_show===true && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,
                     'items' => [
                         ['label' => 'Sales Dashboard', 'url' => ['/sales/default/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
                         ['label' => 'Customers', 'url' => ['/sales/player-customer/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],

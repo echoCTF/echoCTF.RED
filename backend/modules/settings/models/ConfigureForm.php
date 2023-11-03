@@ -63,6 +63,8 @@ class ConfigureForm extends Model
     public $stripe_publicApiKey;
     public $stripe_webhookSecret;
     public $monthly_leaderboards;
+    public $subscriptions_menu_show;
+    public $subscriptions_emergency_suspend;
 
     public $dn_countryName;
     public $dn_stateOrProvinceName;
@@ -128,7 +130,9 @@ class ConfigureForm extends Model
             'stripe_apiKey',
             'stripe_publicApiKey',
             'stripe_webhookSecret',
-            'monthly_leaderboards'
+            'monthly_leaderboards',
+            'subscriptions_menu_show',
+            'subscriptions_emergency_suspend'
         ];
 
     /**
@@ -243,7 +247,9 @@ class ConfigureForm extends Model
             'leaderboard_visible_before_event_start',
             'leaderboard_visible_after_event_end',
             'leaderboard_show_zero',
-            'monthly_leaderboards'
+            'monthly_leaderboards',
+            'subscriptions_menu_show',
+            'subscriptions_emergency_suspend'
           ], 'boolean'],
 
         ];
@@ -307,7 +313,8 @@ class ConfigureForm extends Model
           'discord_invite_url'=>'Discord invite URL',
           'discord_news_webhook'=>'Discord News Webhook',
           'monthly_leaderboards'=>'Monthly points leaderboards',
-
+          'subscriptions_menu_show'=>'Show subscriptions menu',
+          'subscriptions_emergency_suspend'=>'Emergency suspend subscriptions',
         ];
     }
 

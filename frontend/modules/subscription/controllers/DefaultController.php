@@ -26,13 +26,13 @@ class DefaultController extends \app\components\BaseController
                 'rules' => [
                     [
                       'allow' => false,
-                      'actions'=>['success', 'redirect-customer-portal','customer-portal','create-checkout-session', 'cancel-subscription'],
+                      'actions'=>['index', 'success', 'redirect-customer-portal','customer-portal','create-checkout-session', 'cancel-subscription'],
                       'matchCallback' => function () {
-                        return \Yii::$app->sys->subscriptions_emergency_suspend==true;
+                        return \Yii::$app->sys->subscriptions_emergency_suspend===true || \Yii::$app->sys->subscriptions_menu_show!==true;
                       },
                       'denyCallback' => function () {
                         Yii::$app->session->setFlash('info', \Yii::t('app','This area is temporarily disabled, please try again in a couple of hours.'));
-                        return  \Yii::$app->getResponse()->redirect(['/subscription/default/index']);
+                        return  \Yii::$app->getResponse()->redirect([\Yii::$app->sys->default_homepage]);
                       }
                     ],
                     [
