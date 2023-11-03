@@ -68,7 +68,7 @@ class SignupForm extends Model
     /**
      * Signs player up.
      *
-     * @return bool whether the creating new account was successful and email was sent
+     * @return Player The model of the new account
      */
     public function signup()
     {
@@ -76,25 +76,33 @@ class SignupForm extends Model
         {
           throw new \Exception(\Yii::t('app',"Error Processing Request"), 1);
         }
+
         $player=new Player();
         $player->username=$this->username;
         $player->email=$this->email;
+        $player->setPassword($this->password);
+        $player->generateAuthKey();
+
         if(\Yii::$app->sys->require_activation===true)
         {
           $player->active=0;
           $player->generateEmailVerificationToken();
+          if($player->saveNewPlayer()===false)
+          {
+            throw new \Exception(\Yii::t('app',"Error Processing Request"), 1);
+          }
         }
         else
         {
           $player->active=1;
+          if($player->saveWithSsl()===false)
+          {
+            throw new \Exception(\Yii::t('app',"Error Processing Request"), 1);
+          }
+          $player->genAvatar();
+          $player->trigger(Player::NEW_PLAYER);
         }
 
-        $player->setPassword($this->password);
-        $player->generateAuthKey();
-        if($player->saveNewPlayer()===false)
-        {
-          throw new \Exception(\Yii::t('app',"Error Processing Request"), 1);
-        }
         $player->profile->last->signup_ip=ip2long(\Yii::$app->request->userIp);
         $player->profile->last->save();
 
@@ -105,20 +113,24 @@ class SignupForm extends Model
           $pr->referred_id=$player->id;
           $pr->save();
         }
+
         $counter=intval(\Yii::$app->cache->memcache->get('registeredip:'.\Yii::$app->request->userIp));
         Yii::$app->cache->memcache->set('registeredip:'.\Yii::$app->request->userIp,$counter+1,3600);
-        if(Yii::$app->sys->require_activation===true)
-          return $this->sendEmail($player);
-        return true;
+        if(Yii::$app->sys->require_activation===true && !$this->sendEmail($player))
+        {
+          throw new \Exception(\Yii::t('app',"Error Processing Request. Failed to mail verification email!"), 1);
+        }
 
+        return $player;
     }
+
     public function attributeLabels()
     {
-        return [
-          'terms_and_conditions'=>\Yii::t('app','I accept the {event_name} <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',['event_name'=>\Yii::$app->sys->event_name]),
-          'mail_optin'=>\Yii::t('app','<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from {event_name}</abbr>',['event_name'=>\Yii::$app->sys->event_name]),
-          'gdpr'=>\Yii::t('app','I accept the {event_name} <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>',['event_name'=>\Yii::$app->sys->event_name]),
-        ];
+      return [
+        'terms_and_conditions'=>\Yii::t('app','I accept the {event_name} <b><a href="/terms_and_conditions" target="_blank">Terms and Conditions</a></b>',['event_name'=>\Yii::$app->sys->event_name]),
+        'mail_optin'=>\Yii::t('app','<abbr title="Check this if you would like to receive mail notifications from the platform. We will not use your email address to send you unsolicited emails.">I want to receive emails from {event_name}</abbr>',['event_name'=>\Yii::$app->sys->event_name]),
+        'gdpr'=>\Yii::t('app','I accept the {event_name} <b><a href="/privacy_policy" target="_blank">Privacy Policy</a></b>',['event_name'=>\Yii::$app->sys->event_name]),
+      ];
     }
 
 
