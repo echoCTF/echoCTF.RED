@@ -336,6 +336,29 @@ class Player extends PlayerAR implements IdentityInterface
       return $profile;
     }
 
+    public function genAvatar()
+    {
+      $_pID=$this->profile->id;
+      $avatarsDIR=\Yii::getAlias('@app/web/images/avatars/');
+      $avatarPNG=\Yii::getAlias('@app/web/images/avatars/'.$_pID.'.png');
+      if(is_writable($avatarsDIR)===false || (file_exists($avatarPNG) && is_writable($avatarPNG)===false))
+      {
+        \Yii::error('The avatars folder or avatar file is not writeable. correct the permissions for the avatars to be generated.');
+        return ;
+      }
+      if(file_exists($avatarPNG))
+        return;
+      $robohash=new \app\models\Robohash($_pID,'set1');
+      $image=$robohash->generate_image();
+      if(get_resource_type($image)=== 'gd')
+      {
+        imagepng($image,$avatarPNG);
+        imagedestroy($image);
+        $this->profile->avatar=$_pID.'.png';
+        $this->profile->save(false);
+      }
+    }
+
     public function getAcademicWord()
     {
       switch($this->academic)

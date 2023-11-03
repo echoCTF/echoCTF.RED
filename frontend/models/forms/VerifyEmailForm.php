@@ -52,7 +52,7 @@ class VerifyEmailForm extends Model
         $oldStatus=$this->_player->status;
         $player->status=Player::STATUS_ACTIVE;
         $player->active=1;
-        $this->genAvatar();
+        $player->genAvatar();
         if($player->saveWithSsl())
         {
           if($oldStatus===Player::STATUS_INACTIVE)
@@ -65,27 +65,7 @@ class VerifyEmailForm extends Model
         }
         return null;
     }
-    private function genAvatar()
-    {
-      if(is_writable(\Yii::getAlias('@app/web/images/avatars/'))===false || (file_exists(\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png')) && is_writable(\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png'))===false))
-      {
-        \Yii::error('The avatars folder or file is not writeable, correct the permissions for the avatars to be generated.');
-        return ;
-      }
-      $dst_img=\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png');
-      if(file_exists($dst_img))
-        return;
-      $robohash=new \app\models\Robohash($this->_player->profile->id,'set1');
-      $image=$robohash->generate_image();
-      if(get_resource_type($image)=== 'gd')
-      {
-        $dst_img=\Yii::getAlias('@app/web/images/avatars/'.$this->_player->profile->id.'.png');
-        imagepng($image,$dst_img);
-        imagedestroy($image);
-        $this->_player->profile->avatar=$this->_player->profile->id.'.png';
-        $this->_player->profile->save(false);
-      }
-    }
+
     public function getPlayer()
     {
       return $this->_player;

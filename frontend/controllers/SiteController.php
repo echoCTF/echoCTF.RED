@@ -138,7 +138,7 @@ class SiteController extends \app\components\BaseController
             ],
             'captcha' => [
                 'class' => 'app\widgets\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+                'fixedVerifyCode' => (YII_ENV_TEST || YII_ENV_DEV) ? 'testme' : null,
                 'offset' => 2,
                 'minLength' => 7,
                 'maxLength' => 7,
@@ -216,12 +216,16 @@ class SiteController extends \app\components\BaseController
         {
           if($model->load(Yii::$app->request->post()))
           {
-              $model->signup();
-              $transaction->commit();
-              Yii::$app->session->setFlash('success', \Yii::t('app','Thank you for registering. Your account is activated feel free to login.'));
-              if(Yii::$app->sys->require_activation===true)
+              if(($player=$model->signup())!==null)
               {
-                Yii::$app->session->setFlash('success', \Yii::t('app','Thank you for registering. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>'));
+                $transaction->commit();
+                if(Yii::$app->sys->require_activation===true)
+                {
+                  Yii::$app->session->setFlash('success', \Yii::t('app','Thank you for registering. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>'));
+                }
+                elseif (Yii::$app->user->login($player)) {
+                  Yii::$app->session->setFlash('success', \Yii::t('app','Thank you for registering. Your account is activated feel free to login.'));
+                }
               }
               return $this->goHome();
           }
@@ -354,6 +358,7 @@ class SiteController extends \app\components\BaseController
         catch(\Exception $e)
         {
           $transaction->rollBack();
+          die(var_dump($e->getMessage()));
         }
 
         Yii::$app->session->setFlash('error', \Yii::t('app','Sorry, we are unable to verify an account with the provided token.'));
