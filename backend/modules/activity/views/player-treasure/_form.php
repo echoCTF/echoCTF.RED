@@ -22,9 +22,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
         'options' => ['placeholder' => 'Find player by email, username, id or profile.']
     ])->hint('The player that the treasure will be given.');  ?>
 
-    <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->all(), 'id', 'name', 'target.fqdn'), ['prompt'=>'Select treasure']) ?>
-
-    <?= $form->field($model, 'ts')->textInput() ?>
+    <?= $form->field($model, 'treasure_id')->dropDownList(ArrayHelper::map(Treasure::find()->joinWith('target')->orderBy(['target.name'=>SORT_ASC])->all(), 'id', 'name', 'target.name'), ['prompt'=>'Select treasure']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
