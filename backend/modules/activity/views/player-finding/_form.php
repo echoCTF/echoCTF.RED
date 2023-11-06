@@ -24,8 +24,6 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
     <?= $form->field($model, 'finding_id')->dropDownList(ArrayHelper::map(Finding::find()->joinWith('target')->orderBy(['target.name'=>SORT_ASC])->all(), 'id', 'name', 'target.name'), ['prompt'=>'Select finding']) ?>
 
-    <?= $form->field($model, 'ts')->textInput() ?>
-
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
