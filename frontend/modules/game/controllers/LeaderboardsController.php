@@ -109,7 +109,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $mostSolvesDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_DESC, 'created_at' => SORT_ASC]),
+      'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_DESC, 'challenge_solver.created_at' => SORT_ASC]),
       'pagination' => [
         'pageSizeParam' => 'solverMost-perpage',
         'pageParam' => 'solverMost-page',
