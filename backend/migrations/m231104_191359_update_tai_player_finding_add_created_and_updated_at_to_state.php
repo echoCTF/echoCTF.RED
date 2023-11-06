@@ -35,7 +35,7 @@ class m231104_191359_update_tai_player_finding_add_created_and_updated_at_to_sta
     INSERT INTO headshot (player_id,target_id,created_at,timer) VALUES (NEW.player_id,local_target_id,now(),UNIX_TIMESTAMP(max_val)-UNIX_TIMESTAMP(min_val));
     INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'headshot',local_target_id,0,'','','','',now());
   END IF;
-  INSERT INTO target_player_state (id,player_id,player_findings,player_points,created_at) VALUES (local_target_id,NEW.player_id,1,NEW.points,now()) ON DUPLICATE KEY UPDATE player_findings=player_findings+values(player_findings),player_points=player_points+values(player_points),updated_at=now();
+  INSERT INTO target_player_state (id,player_id,player_findings,player_points,created_at,updated_at) VALUES (local_target_id,NEW.player_id,1,NEW.points,now(),now()) ON DUPLICATE KEY UPDATE player_findings=player_findings+values(player_findings),player_points=player_points+values(player_points),updated_at=now();
   END";
 
   public function up()
