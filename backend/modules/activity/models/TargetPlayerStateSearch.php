@@ -21,7 +21,7 @@ class TargetPlayerStateSearch extends TargetPlayerState
     {
         return [
             [['id', 'player_id', 'player_treasures', 'player_findings', 'player_points'], 'integer'],
-            [['username','hostname'], 'safe'],
+            [['username','hostname','created_at','updated_at'], 'safe'],
         ];
     }
 
@@ -69,6 +69,8 @@ class TargetPlayerStateSearch extends TargetPlayerState
         ]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
         $query->andFilterWhere(['like', 'target.name', $this->hostname]);
+        $query->andFilterWhere(['like', 'target_player_state.created_at', $this->created_at]);
+        $query->andFilterWhere(['like', 'target_player_state.updated_at', $this->updated_at]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,

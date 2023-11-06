@@ -25,8 +25,6 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             [
                 'attribute'=>'hostname',
@@ -38,7 +36,8 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
             'player_treasures',
             'player_findings',
             'player_points',
-
+            'created_at',
+            'updated_at',
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
