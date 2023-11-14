@@ -98,7 +98,8 @@ CREATE TABLE `target_instance` (
   `ip` int(11) unsigned DEFAULT 0,
   `reboot` tinyint(3) unsigned NOT NULL DEFAULT 0,
   `created_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
-  `updated_at` datetime(3) NOT NULL DEFAULT current_timestamp(3)
+  `updated_at` datetime(3) NOT NULL DEFAULT current_timestamp(3),
+  `team_allowed` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/target_instance';
 
 DROP TABLE IF EXISTS `target`;
