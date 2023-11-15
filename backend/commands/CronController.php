@@ -451,7 +451,7 @@ class CronController extends Controller
       {
         printf("Target %s ", $target->fqdn);
         try {
-          if(!$target->onDemand)
+          if(!$target->ondemand)
           {
             printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $target->spin() ? "success" : "fail");
           }
