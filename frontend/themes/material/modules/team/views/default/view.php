@@ -148,7 +148,7 @@ $this->_fluid="-fluid";
 
     </div>
 <?php
-if(Yii::$app->sys->team_visible_instances===true && Yii::$app->user->identity->teamPlayer && $team->id===Yii::$app->user->identity->teamPlayer->team_id && intval($teamInstanceProvider->count)>0)
+if((Yii::$app->sys->team_visible_instances===true || intval($teamInstanceProvider->count)>0) && Yii::$app->user->identity->teamPlayer && $team->id===Yii::$app->user->identity->teamPlayer->team_id)
 {
   echo '<h3>',\Yii::t('app','Team instances'),'<h3>';
   echo ListView::widget([
