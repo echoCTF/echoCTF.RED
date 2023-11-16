@@ -107,6 +107,8 @@ class TeamPlayer extends \yii\db\ActiveRecord
 
     public function notifyRejectPlayer()
     {
+      // Don't notify the players for deleting their own team
+      if($this->player_id===$this->team->owner_id) return;
       $msg=\Yii::t('app','Hi there, your team membership got rejected. Find another team to join.');
       return $this->sendNotification($this->player_id,$msg);
     }

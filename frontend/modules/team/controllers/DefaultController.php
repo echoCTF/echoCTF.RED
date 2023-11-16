@@ -357,7 +357,7 @@ class DefaultController extends \app\components\BaseController
       if($tp->player_id!==Yii::$app->user->id && $tp->team_id!==Yii::$app->user->identity->teamLeader->id)
       {
         Yii::$app->session->setFlash('error', \Yii::t('app','You have no permission to cancel this membership.'));
-        return $this->redirect(['view','token'=>$token]);
+        return $this->redirect(['index']);
       }
 
       if($tp->delete()===false)
@@ -371,8 +371,8 @@ class DefaultController extends \app\components\BaseController
         if(Yii::$app->user->identity->teamLeader)
         {
           $this->delete_with_extras();
-          $redir=['index'];
         }
+        $redir=['index'];
         Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$tp->team_id)->execute();
         Yii::$app->session->setFlash('success', \Yii::t('app','Your membership has been withdrawn.'));
       }
