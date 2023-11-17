@@ -24,7 +24,7 @@ $this->_fluid = "-fluid";
         'dataProvider' => $dataProvider,
         'emptyText' => '<p class="text-warning"><b>' . \Yii::t('app', 'Oh! no, there are no teams... Quickly create one :)') . '</b></p>',
         'options' => ['tag' => false,],
-        'itemOptions' => ['tag' => false],
+        'itemOptions' => ['tag' => 'div','class'=>'col col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch'],
         'summary' => false,
         'itemView' => '_team_card',
         'viewParams' => ['invite' => false],
