@@ -144,7 +144,9 @@ class DefaultController extends \app\components\BaseController
           'pagination' => false,
       ]);
       $teamPlayers = ArrayHelper::getColumn($TP->all(),'player_id');
-      $teamInstances = \app\modules\target\models\TargetInstance::find()->andFilterWhere(['player_id'=>$teamPlayers]);
+      $teamInstances = \app\modules\target\models\TargetInstance::find()->leftJoin('team_player','target_instance.player_id=team_player.player_id')
+          ->andFilterWhere(['in','target_instance.player_id',$teamPlayers])
+          ->andFilterWhere(['team_player.approved'=>1]);
       if(\Yii::$app->sys->team_visible_instances!==true)
       {
         $teamInstances->andFilterWhere(['team_allowed'=>1]);
@@ -193,7 +195,10 @@ class DefaultController extends \app\components\BaseController
           'pagination' => false,
       ]);
       $teamPlayers = ArrayHelper::getColumn(Yii::$app->user->identity->team->players,'id');
-      $teamInstances = \app\modules\target\models\TargetInstance::find()->andFilterWhere(['player_id'=>$teamPlayers]);
+      $teamInstances = \app\modules\target\models\TargetInstance::find()->leftJoin('team_player','target_instance.player_id=team_player.player_id')
+        ->andFilterWhere(['player_id'=>$teamPlayers])
+        ->andFilterWhere(['team_player.approved'=>1]);
+
       if(\Yii::$app->sys->team_visible_instances!==true)
       {
         $teamInstances->andFilterWhere(['team_allowed'=>1]);
