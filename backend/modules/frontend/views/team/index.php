@@ -37,7 +37,7 @@ yii\bootstrap5\Modal::end();
             [
               'attribute'=>'logo',
               'filter'=>false,
-              'format'=>['image',['width'=>'40','height'=>'40']],
+              'format'=>['image',['width'=>'40','height'=>'40', 'class'=>'rounded-circle bg-dark shadow']],
               'value'=>function($model){
                 if($model->logo)
                   return '//'.Yii::$app->sys->offense_domain.'/images/avatars/team/'.$model->logo;
