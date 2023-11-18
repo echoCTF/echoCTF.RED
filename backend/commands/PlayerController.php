@@ -378,7 +378,7 @@ class PlayerController extends Controller {
 
   public function actionFailValidation($delete=false)
   {
-    $allRecords=Player::find()->active()->all();
+    $allRecords=Player::find()->where(['status'=>10])->all();
     foreach($allRecords as $p)
     {
         $p->scenario='validator';
