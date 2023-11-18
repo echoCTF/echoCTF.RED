@@ -34,9 +34,9 @@ Yii::$app->user->setReturnUrl(['frontend/team/view','id'=>$model->id]);
       <div class="col-sm-2">
           <a href="//<?=Yii::$app->sys->offense_domain?>/team/<?=$model->token?>" target="_blank">
           <?php if($model->logo):?>
-            <img width="140px" class="img-fluid" src="//<?=Yii::$app->sys->offense_domain?>/images/avatars/team/<?=$model->logo?>" alt="<?=Yii::$app->sys->offense_domain?>/images/avatars/<?=$model->logo?>">
+            <img width="140px" height="140px" class="rounded-circle bg-dark shadow" src="//<?=Yii::$app->sys->offense_domain?>/images/avatars/team/<?=$model->logo?>" alt="<?=Yii::$app->sys->offense_domain?>/images/avatars/<?=$model->logo?>">
           <?php else: ?>
-            <img width="140px" class="img-fluid" src="//<?=Yii::$app->sys->offense_domain?>/images/team_player.png" alt="<?=Yii::$app->sys->offense_domain?>/images/avatars/<?=$model->logo?>">
+            <img width="140px" height="140px" class="rounded-circle bg-dark shadow" src="//<?=Yii::$app->sys->offense_domain?>/images/team_player.png" alt="<?=Yii::$app->sys->offense_domain?>/images/avatars/<?=$model->logo?>">
           <?php endif;?>
           </a>
       </div>
