@@ -8,7 +8,9 @@ use yii\helpers\Html;
       <a href="//<?= Yii::$app->sys->offense_domain ?>/profile/<?= $model->id ?>" target="_blank">
         <img width="140px" class="img-fluid img-thumbnail" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= $model->avatar ?>" alt="<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= $model->avatar ?>">
       </a>
+      <?php if ($model->owner->active):?>
       <img align="right" class="img-fluid" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/badges/<?= $model->id ?>.png" alt="Profile badge">
+      <?php endif;?>
     </div>
     <div class="media-body va-m">
       <h2 class="media-heading"><?= Html::encode($model->owner->username) ?>
