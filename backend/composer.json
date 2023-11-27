@@ -18,7 +18,7 @@
         "jane-php/jane-php": "^4 <4.3",
         "miloschuman/yii2-highcharts-widget": "^10.0",
         "kartik-v/yii2-tabs-x": "@dev",
-        "stripe/stripe-php": "^12.0",
+        "stripe/stripe-php": "^13.4",
         "sleifer/yii2-autocomplete-ajax": "dev-master",
         "yiisoft/yii2-jui": "^2.0",
         "cebe/markdown": "^1.2",
