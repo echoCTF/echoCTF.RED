@@ -105,7 +105,7 @@ yii\bootstrap5\Modal::end();
           'delete'=>function($model){ if (\Yii::$app->user->identity->isAdmin) return true; return false;},
           'reset-activkey'=>function($model){ if ($model->active && trim($model->activkey)!=="") return true; return false;},
         ],
-        'template' => '{player-view-full} {kill-vpn} {view} {generate-ssl} ' . '{update} {delete} {ban} {mail} {reset-activkey}',
+        'template' => '{player-view-full} {kill-vpn} {view} {generate-ssl} {set-deleted} ' . '{update} {delete} {ban} {mail} {reset-activkey}',
         'header' => Html::a(
           '<i class="bi bi-person-fill-exclamation"></i>',
           ['ban-filtered'],
@@ -212,6 +212,16 @@ yii\bootstrap5\Modal::end();
                 'data' => ['confirm' => 'Are you sure you want to mail this user his activation URL?']
               ]
             );
+          },
+          'set-deleted' => function($url, $model) {
+            return Html::a('<i class="fas fa-user-slash"></i>', ['set-deleted', 'id' => $model->id], [
+                'class' => '',
+                'title'=>'Set Deleted flag',
+                'data' => [
+                    'confirm' => 'Are you absolutely sure you want to set status to deleted for ['.Html::encode($model->username).'] ?',
+                    'method' => 'post',
+                ],
+            ]);
           },
           'player-view-full' => function ($url, $model) {
             $url =  \yii\helpers\Url::to(['/frontend/profile/view-full', 'id' => $model->profile->id]);

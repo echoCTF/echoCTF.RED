@@ -132,7 +132,7 @@ class PlayerAR extends \yii\db\ActiveRecord
             },'on'=>'validator'],
             //['email', 'email','checkDNS'=>true,'on'=>'validator','message'=>'This domain does not resolve.'],
             //['email',    '\app\components\validators\StopForumSpamValidator',       'max'=>Yii::$app->sys->signup_StopForumSpamValidator,'when' => function($model) { return Yii::$app->sys->signup_StopForumSpamValidator!==false;},'on'=>'validator'],
-            ['email',   '\app\components\validators\MXServersValidator', 'mxonly'=>true,            'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false;},'on'=>'validator'],
+            ['email', '\app\components\validators\MXServersValidator', 'mxonly'=>false, 'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false;},'on'=>'validator'],
 
         ];
     }
