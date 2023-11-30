@@ -92,7 +92,7 @@ class PlayerController extends \app\components\BaseController
   public function actionFailValidation()
   {
     $_ids = [];
-    $allRecords = Player::find()->all();
+    $allRecords = Player::find()->where(['status'=>10])->all();
     foreach ($allRecords as $p) {
       $p->scenario = 'validator';
       if (!$p->validate()) {
