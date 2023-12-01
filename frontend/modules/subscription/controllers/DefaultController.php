@@ -218,7 +218,7 @@ class DefaultController extends \app\components\BaseController
           'payment_method_types' => ['card'],
           'mode' => $mode,
           'line_items' => $line_items,
-          'automatic_tax' => ['enabled' => true],
+          'automatic_tax' => ['enabled' => \Yii::$app->sys->stripe_automatic_tax_enabled],
           'customer'=>$cid,
           'metadata'=> ['player_id'=>Yii::$app->user->id,'profile_id'=>Yii::$app->user->identity->profile->id]
         ]);
