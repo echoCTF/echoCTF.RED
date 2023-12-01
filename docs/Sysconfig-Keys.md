@@ -86,6 +86,7 @@
 * `stripe_apiKey` Stripe API key
 * `stripe_publicApiKey` Stripe public API Key
 * `stripe_webhookSecret` Stripe webhook secret
+* `stripe_automatic_tax_enabled` Enable Stripe automatic TAX
 
 ## Player Specific
 * `academic_N` Name for academic value `N`
