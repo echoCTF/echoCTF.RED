@@ -37,13 +37,15 @@ class Question extends \yii\db\ActiveRecord
         return [
             [['challenge_id'], 'required'],
             [['challenge_id', 'weight'], 'integer'],
-            [['weight'], 'default', 'value'=> 0],
             [['description', 'player_type'], 'string'],
             [['points'], 'number'],
+            ['player_type', 'in', 'range' => ['offense', 'defense','both']],
             [['name'], 'string', 'max' => 255],
             [['code'], 'string', 'max' => 128],
             [['challenge_id', 'name'], 'unique', 'targetAttribute' => ['challenge_id', 'name']],
             [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::class, 'targetAttribute' => ['challenge_id' => 'id']],
+            [['weight','points'], 'default', 'value'=> 0],
+            [['player_type'],'default', 'value'=>'offense'],
         ];
     }
 
