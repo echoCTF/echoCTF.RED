@@ -58,6 +58,7 @@
 * `target_updated_days`: How many days the target is considered as `updated` on the frontend after update
 * `discord_news_webhook`: A discord webhook url to send news and announcements to
 * `pf_state_limits`: The content to be appended to the pass rules that enforces limits (default: `(max 10000, source-track rule, max-src-nodes 5, max-src-states 2000, max-src-conn 50)`)
+* `force_https_urls`: Force URL generation to always be https (sets `_SERVER['HTTPS']=on`)
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
