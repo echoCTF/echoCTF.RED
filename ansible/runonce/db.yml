@@ -28,10 +28,10 @@
       prompt: "6/7. What is the internal VPN IP?"
       default: "10.7.0.254"
       private: no
-    - name: "GITHUB_REPO"
-      prompt: "7/7. Provide a github repo to clone?"
-      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
-      private: no
+#    - name: "GITHUB_REPO"
+#      prompt: "7/7. Provide a github repo to clone?"
+#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
+#      private: no
   vars:
     mysql_users:
       - { name: participantUI, password: 'participantUI', host: '{{pui_ip}}' }
@@ -236,7 +236,7 @@
     with_items: "{{rcctl}}"
 
   - name: Clone sources repo
-    when: ansible_connection != 'local'
+    when: ansible_connection != 'local' and GITHUB_REPO is defined
     git:
       repo: "{{GITHUB_REPO}}"
       dest: "{{APP_DIR}}"
