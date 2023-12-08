@@ -75,7 +75,7 @@
       - { name: check_quotas, state: "disable" }
       - { name: cron, state: "disable" }
       - { name: resolved, state: "disable" }
-      - { name: dhcpleased, state: "disable" }
+      #- { name: dhcpleased, state: "disable" }
       - { name: ntpd, state: "enable" }
       - { name: pflogd, state: "disable" }
       - { name: slaacd, state: "disable" }
