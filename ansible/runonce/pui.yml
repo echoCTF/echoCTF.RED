@@ -5,35 +5,35 @@
   gather_facts: false
   vars_prompt:
     - name: "myname"
-      prompt: "1/8. System hostname?"
+      prompt: "1/6. System hostname?"
       default: "pui.example.local"
       private: no
     - name: "pui_ext_ip"
-      prompt: "2/8. What is the external (public) IP?"
+      prompt: "2/6. What is the external (public) IP?"
       default: "1.2.3.4"
       private: no
     - name: "db_ip"
-      prompt: "3/8. What is the database server IP?"
+      prompt: "3/6. What is the database server IP?"
       default: "10.7.0.253"
       private: no
-    - name: "GITHUB_OAUTH_TOKEN"
-      prompt: "4/8. Provide a github oauth token?"
-      default: ""
-      private: no
-    - name: "GITHUB_REPO"
-      prompt: "5/8. Provide a github repo to clone?"
-      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
-      private: no
+#    - name: "GITHUB_OAUTH_TOKEN"
+#      prompt: "4/8. Provide a github oauth token?"
+#      default: ""
+#      private: no
+#    - name: "GITHUB_REPO"
+#      prompt: "5/8. Provide a github repo to clone?"
+#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
+#      private: no
     - name: "domain_name"
-      prompt: "6/8. Provide the domain the frontend will run on?"
+      prompt: "4/6. Provide the domain the frontend will run on?"
       default: "pui.example.com"
       private: no
     - name: "interconnect_interface"
-      prompt: "7/8. What is the interconnect interface to be used?"
+      prompt: "5/6. What is the interconnect interface to be used?"
       default: "em1"
       private: no
     - name: "pui_ip"
-      prompt: "8/8. What is the interconnect IP to be used?"
+      prompt: "6/6. What is the interconnect IP to be used?"
       default: "10.7.0.200"
       private: no
 
@@ -233,6 +233,7 @@
     with_items: "{{rcctl}}"
 
   - name: Clone echoCTF repo
+    when: GITHUB_REPO is defined
     git:
       repo: "{{GITHUB_REPO}}"
       dest: /home/participantUI/{{domain_name}}
