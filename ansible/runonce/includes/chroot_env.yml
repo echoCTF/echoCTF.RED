@@ -24,7 +24,7 @@ CHROOT_ENV:
 - "/usr/lib/libc++abi.so.*"
 - "/usr/lib/libm.so.*"
 - "/usr/lib/libssl.so.*"
-- "/usr/local/share/icu/72.1/icudt*l.dat"
+- "/usr/local/share/icu/{{versions.ICU_MAJOR}}.{{versions.ICU_MINOR}}/icudt*l.dat"
 - "/usr/local/lib/libmemcached.so.*"
 - "/usr/local/lib/libintl.so.*"
 - "/usr/local/lib/libonig.so.*"
