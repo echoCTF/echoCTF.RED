@@ -61,6 +61,8 @@
       libutil: "15.1"
       libcrypto: "47.0"
       libz: "6.0"
+      ICU_MAJOR: 73
+      ICU_MINOR: 2
     sysctl:
       kern.bufcachepercent: 30
       net.inet.ip.ifq.maxlen: 2560
