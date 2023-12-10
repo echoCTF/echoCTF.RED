@@ -475,6 +475,14 @@
   - name: run yii migrate
     command: chdir=/home/moderatorUI/{{domain_name}}/backend ./yii migrate --interactive=0
 
+  - name: copy nstables script
+    copy:
+      src: ../files/nstables.sh
+      dest: /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: '0555'
+
   - name: Execute fw_update
     command: fw_update -a
 

@@ -541,6 +541,14 @@
       - { key: manual_cleanup_hook, value: "/etc/letsencrypt/lexicon-vultr.sh delete" }
       - { key: post_hook, value: "/etc/nginx/install_renewed_cert.sh" }
 
+  - name: copy nstables script
+    copy:
+      src: ../files/nstables.sh
+      dest: /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: '0555'
+
   - name: Execute fw_update
     command: fw_update -a
 
