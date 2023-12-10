@@ -359,6 +359,14 @@
   - name: restart mysqld
     command: rcctl restart mysqld
 
+  - name: copy nstables script
+    copy:
+      src: ../files/nstables.sh
+      dest: /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: '0555'
+
   - name: Setting up sysctl.conf
     sysctl:
       name: "{{ item.key }}"
