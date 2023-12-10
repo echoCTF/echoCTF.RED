@@ -68,75 +68,75 @@
       - p5-NetPacket
   vars_prompt:
     - name: "myname"
-      prompt: "1/18. System hostname?"
+      prompt: "1/16. System hostname?"
       default: "vpn.example.local"
       private: no
     - name: "vpngw"
-      prompt: "2/18. OpenVPN gateway hostname or IP?"
+      prompt: "2/16. OpenVPN gateway hostname or IP?"
       default: "{{myname}}"
       private: no
     - name: "egress_if"
-      prompt: "3/18. Egress network interface (ifconfig egress)?"
+      prompt: "3/16. Egress network interface (ifconfig egress)?"
       default: "em0"
       private: no
     - name: "vpn_ext_ip"
-      prompt: "4/18. Egress interface IP?"
+      prompt: "4/16. Egress interface IP?"
       default: "1.2.3.4"
       private: no
     - name: "targets_if"
-      prompt: "5/18. Targets network interface?"
+      prompt: "5/16. Targets network interface?"
       default: "em1"
       private: no
     - name: "targets_if_ipv4"
-      prompt: "6/18. Targets network interface IPv4?"
+      prompt: "6/16. Targets network interface IPv4?"
       default: "10.0.160.254"
       private: no
     - name: "targets_subnet"
-      prompt: "7/18. Targets network subnet?"
+      prompt: "7/16. Targets network subnet?"
       default: "10.0.160.0"
       private: no
     - name: "targets_netmask"
-      prompt: "8/18. Targets network netmask?"
+      prompt: "8/16. Targets network netmask?"
       default: "255.255.255.0"
       private: no
     - name: "echoCTF_VPN_mgmt_passwd"
-      prompt: "9/18. OpenVPN managment interface password?"
+      prompt: "9/16. OpenVPN managment interface password?"
       default: "openvpn"
       private: no
     - name: "offense_network"
-      prompt: "10/18. OpenVPN client range?"
+      prompt: "10/16. OpenVPN client range?"
       default: "10.10.0.0/16"
       private: no
     - name: "db_host"
-      prompt: "11/18. Database Server IP?"
+      prompt: "11/16. Database Server IP?"
       default: "172.24.0.253"
       private: no
     - name: "db_name"
-      prompt: "12/18. Database name?"
+      prompt: "12/16. Database name?"
       default: "echoCTF"
       private: no
     - name: "db_user"
-      prompt: "13/18. Database Server user?"
+      prompt: "13/16. Database Server user?"
       default: "vpnuser"
       private: no
     - name: "db_pass"
-      prompt: "14/18. Database Server user password?"
+      prompt: "14/16. Database Server user password?"
       default: "vpnuserpass"
       private: no
-    - name: "GITHUB_OAUTH_TOKEN"
-      prompt: "15/18. Provide a GITHUB_OAUTH_TOKEN?"
-      default: "randomtoken"
-      private: no
-    - name: "GITHUB_REPO"
-      prompt: "16/18. Provide a github repo to clone?"
-      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
-      private: no
+#    - name: "GITHUB_OAUTH_TOKEN"
+#      prompt: "15/18. Provide a GITHUB_OAUTH_TOKEN?"
+#      default: "randomtoken"
+#      private: no
+#    - name: "GITHUB_REPO"
+#      prompt: "16/18. Provide a github repo to clone?"
+#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
+#      private: no
     - name: "interconnect_interface"
-      prompt: "17/18. Interconnect interface?"
+      prompt: "15/16. Interconnect interface?"
       default: "em2"
       private: no
     - name: "interconnect_interface_ip"
-      prompt: "18/18. Interconnect interface IP?"
+      prompt: "16/16. Interconnect interface IP?"
       default: "10.7.0.254"
       private: no
   tasks:
@@ -274,7 +274,7 @@
       login_unix_socket: "/var/run/mysql/mysql.sock"
 
   - name: Clone sources repo
-    when: ansible_connection != 'local'
+    when: ansible_connection != 'local' and GITHUB_REPO is defined
     git:
       repo: "{{GITHUB_REPO}}"
       dest: /root/sources
