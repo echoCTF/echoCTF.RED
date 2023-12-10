@@ -49,7 +49,7 @@
       - curl
       - git
       - libmemcached
-      - memcached
+      - memcached--
       - libtool
       - mariadb-server
       - openvpn--
