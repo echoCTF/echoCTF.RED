@@ -61,6 +61,7 @@
       - php-zip%7.4
       - py3-mysqlclient
       - py3-setuptools
+      - py3-netaddr
       - supervisor
       - gnuwatch
       - go
