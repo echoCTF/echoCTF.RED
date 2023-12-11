@@ -257,7 +257,7 @@
       - usr/bin
       - usr/libexec
       - usr/local/lib
-      - usr/local/share/icu/72.1
+      - "usr/local/share/icu/{{versions.ICU_MAJOR}}.{{versions.ICU_MAJOR}}"
       - usr/lib
 
   - name: "Copy pf conf files"
