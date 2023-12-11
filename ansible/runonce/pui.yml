@@ -352,7 +352,6 @@
     tags:
       - conf
 
-
   - name: Create validation key for participantUI
     copy:
       content: "<?php return '{{validation_key}}';"
