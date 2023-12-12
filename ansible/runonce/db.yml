@@ -148,7 +148,7 @@
     command: sh /etc/netstart {{interconnect_interface}}
 
 
-  - name: Set APP_DIR to /root/sources
+  - name: Set APP_DIR to /root/sources on non local connection
     when: ansible_connection != 'local'
     set_fact:
       APP_DIR: /root/sources
