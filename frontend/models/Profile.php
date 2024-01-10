@@ -150,7 +150,7 @@ class Profile extends ProfileAR
       $this->scenario='validator';
       if($this->twitter != "" && $this->validate('twitter'))
       {
-        return $this->twitter{0} === '@' ? $this->twitter : '@'.$this->twitter;
+        return $this->twitter[0] === '@' ? $this->twitter : '@'.$this->twitter;
       }
       return $this->owner->username;
     }
