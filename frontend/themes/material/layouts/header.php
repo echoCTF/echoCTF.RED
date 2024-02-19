@@ -34,7 +34,9 @@ use yii\helpers\Url;
             <?php endif;/*END OF FLAG FORM*/?>
             <ul class="navbar-nav">
               <?php if(Yii::$app->user->isGuest):?>
+                <?php if(Yii::$app->sys->disable_registration!==true):?>
                 <li class="nav-item"><?=Html::a('<i class="fas fa-user-plus"></i> Signup', ['/register'], ['class'=>'nav-link','rel'=>'tooltip', 'title'=>"Sign up for an ".\Yii::$app->sys->{"event_name"}." account"])?></li>
+                <?php endif;?>
                 <li class="nav-item"><?=Html::a('<i class="fas fa-sign-in-alt"></i>  Login', ['/site/login'], ['class'=>'nav-link','rel'=>"tooltip", 'title'=>"Login to your ".\Yii::$app->sys->{"event_name"}." account"])?></li>
               <?php else: ?>
                 <li class="nav-item dropdown" id="Hints">

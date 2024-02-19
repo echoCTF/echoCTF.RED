@@ -20,7 +20,7 @@ use app\components\formatters\Anchor;
             <h4 class="card-title"><b><?=Html::a(\Yii::t('app','Instructions'), ['/help/instruction/index'])?></b></h4>
             <p class="card-text"><?=\Yii::t('app','Instructions on connecting and requesting assistance')?></p>
           </div>
-          <div class="card-footer"><?=Html::a(\Yii::t('app',"Read the Instructions"), ['/help/instruction/index'],['class'=>'btn bg-primary text-dark card-link'])?></div>
+          <div class="card-footer"><?=Html::a(\Yii::t('app',"Read the Instructions"), ['/help/instruction/index'],['class'=>'btn bg-primary text-bold text-dark card-link'])?></div>
         </div>
       </div>
 <?php endif;?>
@@ -32,7 +32,7 @@ use app\components\formatters\Anchor;
             <h4 class="card-title"><b><?=Html::a(\Yii::t('app','FAQ'), ['/help/faq/index'])?></b></h4>
             <p class="card-text"><?=\Yii::t('app','Frequently Asked Questions about the platform and gameplay')?></p>
           </div>
-          <div class="card-footer"><?=Html::a(\Yii::t('app',"Check out the FAQ"), ['/help/faq/index'],['class'=>'btn bg-primary text-dark card-link'])?></div>
+          <div class="card-footer"><?=Html::a(\Yii::t('app',"Check out the FAQ"), ['/help/faq/index'],['class'=>'btn bg-primary text-bold text-dark card-link'])?></div>
         </div>
       </div>
 <?php endif;?>
@@ -44,7 +44,7 @@ use app\components\formatters\Anchor;
             <h4 class="card-title"><b><?=Html::a(\Yii::t('app','Rules'), ['/help/rule/index'])?></b></h4>
             <p class="card-text"><?=\Yii::t('app','Instructions on connecting and getting help')?></p>
           </div>
-          <div class="card-footer"><?=Html::a(\Yii::t('app',"Read the Rules"), ['/help/rule/index'],['class'=>'btn bg-primary text-dark card-link'])?></div>
+          <div class="card-footer"><?=Html::a(\Yii::t('app',"Read the Rules"), ['/help/rule/index'],['class'=>'btn bg-primary text-bold text-dark card-link'])?></div>
         </div>
       </div>
 <?php endif;?>
@@ -56,7 +56,7 @@ use app\components\formatters\Anchor;
             <h4 class="card-title"><b><?=Html::a(\Yii::t('app','Experience Levels'), ['/help/experience/index'])?></b></h4>
             <p class="card-text"><?=\Yii::t('app','List of the experience levels for the platform.')?></p>
           </div>
-          <div class="card-footer"><?=Html::a(\Yii::t('app',"See the Experience Levels"), ['/help/experience/index'],['class'=>'btn bg-primary text-dark card-link'])?></div>
+          <div class="card-footer"><?=Html::a(\Yii::t('app',"See the Experience Levels"), ['/help/experience/index'],['class'=>'btn bg-primary text-bold text-dark card-link'])?></div>
         </div>
       </div>
 <?php endif;?>

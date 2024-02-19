@@ -350,7 +350,7 @@ class Player extends PlayerAR implements IdentityInterface
         return;
       $robohash=new \app\models\Robohash($_pID,'set1');
       $image=$robohash->generate_image();
-      if(get_resource_type($image)=== 'gd')
+      if((gettype($image) === "object" && get_class($image) === "GdImage")||((int) phpversion() === 7 && gettype($image)==='resource'))
       {
         imagepng($image,$avatarPNG);
         imagedestroy($image);

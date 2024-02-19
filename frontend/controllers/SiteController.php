@@ -31,6 +31,17 @@ class SiteController extends \app\components\BaseController
                 'class' => AccessControl::class,
                 'only' => ['index','login','logout', 'changelog', 'register', 'request-password-reset', 'verify-email', 'resend-verification-email',  'captcha'],
                 'rules' => [
+                    'disabledRegs'=>[
+                        'actions'=>['register'],
+                        'allow'=>false,
+                        'roles'=>['*'],
+                        'matchCallback' => function ($rule, $action) {
+                            return Yii::$app->sys->disable_registration!==false;
+                        },
+                        'denyCallback' => function ($rule, $action) {
+                            return \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage],303);
+                        },
+                    ],
                     'indexAuth'=>[
                         'actions'=>['index'],
                         'allow'=>false,
@@ -233,6 +244,7 @@ class SiteController extends \app\components\BaseController
         catch(\Exception $e)
         {
             $transaction->rollBack();
+            Yii::error($e->getMessage());
             Yii::$app->session->setFlash('error', \Yii::t('app','Registration failed.'));
         }
         catch(\Throwable $e)
