@@ -75,7 +75,7 @@ $this->registerJs(
 <?php endif;?>
 <?php if ($model->_cf('discord')):?>
       <div class="col-lg-4">
-        <?=$form->field($model, 'discord',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text', ['placeholder' => "DiscordUsername#Number"])->Label('<i class="fab fa-discord"></i> Discord')->hint('Enter your discord user and number') ?>
+        <?=$form->field($model, 'discord',['errorOptions' => ['class'=>'text-danger text-bold','encode' => false]])->textInput(['maxlength' => true,'autocomplete'=>'off'])->input('text', ['placeholder' => "DiscordUsername"])->Label('<i class="fab fa-discord"></i> Discord')->hint('Enter your discord user and number') ?>
       </div>
 <?php endif;?>
 <?php if ($model->_cf('twitter')):?>
