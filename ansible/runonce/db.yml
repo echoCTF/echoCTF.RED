@@ -86,6 +86,7 @@
     packages:
       - curl
       - git
+      - rsync--
       - mariadb-server
       - memcached--
       - libmemcached

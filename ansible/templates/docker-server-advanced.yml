@@ -44,12 +44,14 @@ pre_apt:
  - gnupg2
  - software-properties-common
  - rdate
+ - python3-requests
+ - python3-docker
 
 post_apt:
  - docker-ce
 
-pip:
- - { name: "docker", version: "*", state: "present" }
+#pip:
+# - { name: "docker", version: "*", state: "present" }
 
 #sync:
 #  - { src: "../files/docker/build", dst: "/opt" }

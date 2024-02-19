@@ -37,8 +37,9 @@
 
   - name: Configure resolv.conf
     copy:
-      content: "nameserver 10.0.0.254\n"
+      content: "{{resolvconf}}\n"
       dest: /etc/resolv.conf
+    when: resolvconf is defined
 
   - name: Allow release-info to change for APT repositories
     when: ansible_facts['distribution'] == 'Debian'
@@ -120,11 +121,11 @@
       pkg: "{{post_apt}}"
     when: post_apt is defined and post_apt|length > 0
 
-  - name: Install pip packages
-    no_log: "{{DEBUG|default(true)}}"
-    pip: name="{{item.name}}" version="{{item.version|default(omit)}}" state="{{item.state}}"
-    with_items: "{{pip}}"
-    when: pip is defined
+#  - name: Install pip packages
+#    no_log: "{{DEBUG|default(true)}}"
+#    pip: name="{{item.name}}" version="{{item.version|default(omit)}}" state="{{item.state}}"
+#    with_items: "{{pip}}"
+#    when: pip is defined
 
   - name: Check if we're working with cloud-init
     ansible.builtin.stat:
