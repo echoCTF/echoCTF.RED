@@ -275,13 +275,16 @@ class CronController extends Controller
                 $dc->pull();
                 $dc->spin();
               }
-              if(($val->team_allowed===true && $val->player->teamPlayer && $val->player->teamPlayer->approved===1) || \Yii::$app->sys->team_visible_instances===true)
+              if(($val->team_allowed===true || \Yii::$app->sys->team_visible_instances===true) && $val->player->teamPlayer )
               {
-                foreach($val->player->teamPlayer->team->teamPlayers as $teamPlayer)
+                if($val->player->teamPlayer->approved===1)
                 {
-                  if($teamPlayer->player->last->vpn_local_address!==null && $teamPlayer->approved===1)
+                  foreach($val->player->teamPlayer->team->teamPlayers as $teamPlayer)
                   {
-                    $ips[]=long2ip($teamPlayer->player->last->vpn_local_address);
+                    if($teamPlayer->player->last->vpn_local_address!==null && $teamPlayer->approved===1)
+                    {
+                      $ips[]=long2ip($teamPlayer->player->last->vpn_local_address);
+                    }
                   }
                 }
               }
