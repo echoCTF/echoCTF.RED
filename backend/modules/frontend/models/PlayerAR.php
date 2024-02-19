@@ -109,7 +109,7 @@ class PlayerAR extends \yii\db\ActiveRecord
             [['auth_key'], 'string', 'max' => 32],
             [['type'], 'default', 'value' => 'offense'],
             [['status'], 'default', 'value' => self::STATUS_ACTIVE],
-            [['activkey'], 'default', 'value' => Yii::$app->security->generateRandomString().'-'.time(), 'on' => 'create'],
+            [['activkey'], 'default', 'value' => '', 'on' => 'create'],
             [['verification_token'], 'default', 'value' => str_replace('_','-',Yii::$app->security->generateRandomString().'-'.time()), 'on' => 'create'],
             [['username', 'fullname', 'email', 'new_password', 'activkey'], 'string', 'max' => 255],
             [['username'], 'unique'],
