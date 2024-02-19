@@ -96,6 +96,7 @@
       - automake%1.16
       - curl
       - git
+      - rsync--
       - libmemcached
       - libtool
       - memcached--

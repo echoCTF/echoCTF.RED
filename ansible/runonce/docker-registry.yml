@@ -37,9 +37,12 @@
     rcctl:
       - { name: 'supervisord', state: "enable" }
     packages:
+    - ansible
     - go
     - supervisor
     - py3-setuptools
+    - git
+    - rsync--
 
   tasks:
   - name: Install packages

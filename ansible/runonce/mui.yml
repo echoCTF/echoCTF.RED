@@ -87,6 +87,7 @@
     packages:
       - curl
       - git
+      - rsync--
       - memcached--
       - libmemcached
       - py3-mysqlclient

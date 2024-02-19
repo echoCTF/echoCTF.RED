@@ -48,6 +48,7 @@
       - automake%1.16
       - curl
       - git
+      - rsync--
       - libmemcached
       - memcached--
       - libtool
@@ -67,6 +68,7 @@
       - go
       - p5-Net-Pcap
       - p5-NetPacket
+      - gnuwatch
   vars_prompt:
     - name: "myname"
       prompt: "1/16. System hostname?"
