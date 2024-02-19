@@ -3,6 +3,7 @@
 - name: "Setup docker registry on an OpenBSD server (standalone)"
   hosts: all
   become_method: doas
+  gather_facts: no
   vars_prompt:
     - name: "registry_user"
       prompt: "1/5. User to run the registry as?"
@@ -46,8 +47,8 @@
 
   tasks:
   - name: Install packages
-    openbsd_pkg:
-      name: "{{packages}}"
+    raw: pkg_add {{item}}
+    with_items: "{{packages}}"
 
   - name: Add users
     user:
@@ -98,7 +99,7 @@
 
   - name: Configure supervisor registry service
     community.general.ini_file:
-      path: /etc/conf
+      path: /etc/supervisord.d/registry.ini
       section: "program:registry"
       option: "{{item.key}}"
       value:  "{{item.value}}"
