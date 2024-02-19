@@ -464,4 +464,65 @@ class PlayerController extends Controller {
     return $errorows;
   }
 
+  /**
+   * Fetch identification files from frontend
+   * @param string $filter Filter players by all, active and inactive
+   * @param string $scheme Default scheme to use
+   */
+  public function actionFetchIdentification($filter='inactive',$scheme='https')
+  {
+      $filters=['all', 'active', 'inactive'];
+      if(!in_array($filter, $filters))
+      {
+          throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
+      }
+
+      $players=Player::find();
+      switch($filter) {
+          case 'active':
+              $players->where(['active' => 1]);
+              break;
+
+          case 'inactive':
+              $players->where(['active' => 0]);
+              break;
+
+      }
+      $formats=['.pdf','.png','.jpg','.jpeg','.docx'];
+      foreach ($players->all() as $player){
+        $baseDir=\Yii::getAlias('@app/web/identificationFiles/');
+        echo "processing ",$player->username;
+        $format=null;
+
+        foreach ($formats as $f)
+        {
+          $format=null;
+          $skip=false;
+          if(file_exists($baseDir.$player->profile->id.$f))
+          {
+            echo " found local file,";
+            $skip=true;
+            break;
+          }
+          $ch = curl_init("$scheme://".Yii::$app->sys->offense_domain.'/identificationFiles/'.$player->profile->id.$f);
+          curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+          curl_setopt($ch, CURLOPT_NOBODY, true);
+          curl_setopt($ch, CURLOPT_HEADER, true);
+
+          curl_exec($ch);
+          $status = curl_getinfo($ch,CURLINFO_HTTP_CODE);
+          if ($status===200)
+          {
+            $format=$f;
+            break;
+          }
+        }
+        if($format!==null && $skip!==true) {
+          echo " => grabbing ",$baseDir .$player->profile->id.$format,"\n";
+          file_put_contents($baseDir .$player->profile->id.$format, fopen("$scheme://".Yii::$app->sys->offense_domain.'/identificationFiles/'.$player->profile->id.$format, 'r'));
+        }
+        else if ($skip===true)  { echo " skipping\n";}
+        else{ echo " no identification found\n";}
+      }
+  }
 }
