@@ -11,7 +11,7 @@ class BooleanTransform
    * @param mixed $val
    * @return string
    */
-  function toCheck($val)
+  public static function toCheck($val)
   {
     if($val===true || $val===1 || $val==='1')
     {
@@ -25,7 +25,7 @@ class BooleanTransform
    * @param mixed $val
    * @return string
    */
-  function toOnOff($val)
+  public static function toOnOff($val)
   {
     if($val===true || $val===1 || $val==='1')
     {

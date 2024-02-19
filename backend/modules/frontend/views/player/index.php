@@ -65,6 +65,29 @@ yii\bootstrap5\Modal::end();
         }
       ],
       ['class' => 'app\components\columns\ProfileColumn', 'idkey' => 'profile.id', 'attribute' => 'username', 'field' => 'username'],
+      [
+        'attribute'=>'affiliation',
+        'visible' => Yii::$app->sys->players_require_approval,
+        'format'=>'html',
+        'value'=>function($model){
+          if($model->active==1) return Html::encode($model->affiliation);
+          $formats=['.pdf','.png','.jpg','.jpeg','.docx'];
+          $format=null;
+          $baseDir=\Yii::getAlias('@app/web/identificationFiles/');
+          foreach ($formats as $f)
+          {
+            if(file_exists($baseDir.$model->profile->id.$f))
+            {
+              $format=$f;
+              break;
+            }
+          }
+          if($format!==null)
+            return Html::a($model->affiliation,'/identificationFiles/'.$model->profile->id.$format,['width' => '50px']);
+          else
+            return Html::encode($model->affiliation);
+        },
+      ],
       'email:email',
       [
         'attribute' => 'vpn_local_address',
