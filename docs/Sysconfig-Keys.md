@@ -19,6 +19,7 @@
 * `maintenance`: Enable site-wide maintenance mode
 * `maintenance_notification`: Send maintenance notification to everyone connected to the frontend interface. The popup can be dismissed but it always comes back. No other notifications are delivered.
 * `require_activation` Whether it is required for users to activate their accounts
+* `players_require_approval` If player activation requires moderator approval first
 * `disable_registration` Whether online registrations are allowed
 * `team_visible_instances` Whether or not player instances are visible to the rest of the team by default otherwise the per-instance field `team_allowed` takes priority
 
