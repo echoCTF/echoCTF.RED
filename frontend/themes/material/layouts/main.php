@@ -23,6 +23,9 @@ $this->registerMetaTag($this->twitter_description, 'twitter_description');
 $this->registerMetaTag($this->twitter_image, 'twitter_image');
 $this->registerMetaTag($this->twitter_image_width, 'twitter_image_width');
 $this->registerMetaTag($this->twitter_image_height, 'twitter_image_height');
+$this->registerJsOverrides();
+$this->registerCssOverrides();
+$this->registerLayoutOverrides();
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
