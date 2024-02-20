@@ -2,6 +2,7 @@
 namespace app\modules\restapi\controllers;
 
 use yii\rest\ActiveController;
+use Yii;
 
 class TreasureController extends ActiveController
 {
@@ -12,11 +13,16 @@ class TreasureController extends ActiveController
       \Yii::$app->response->format=\yii\web\Response:: FORMAT_JSON;
       $connection=\Yii::$app->db;
       $transaction=$connection->beginTransaction();
+      $params=Yii::$app->getRequest()->getBodyParams();
       try
       {
-        $treasure=new \app\modules\gameplay\models\Treasure;
+        if(($treasure=$this->modelClass::findOne(['target_id'=>$params['target_id'],'code'=>$params['code']]))==null)
+        {
+          $treasure=new $this->modelClass;
+        }
         $post=\yii::$app->request->post();
-        $treasure->attributes=$post;
+        $treasure->load(Yii::$app->getRequest()->getBodyParams(), '');
+
         if($treasure->validate() && $treasure->save())
         {
           $this->doTreasureActions($post,$treasure);
