@@ -36,6 +36,7 @@ class TargetController extends Controller {
           'id' => intval($target),
       ]);
     }
+
     foreach($query->all() as $t)
     {
       if($t->ondemand===null || $t->ondemand->state===1 || $target!==false )
@@ -121,6 +122,7 @@ class TargetController extends Controller {
       }
     } // end docker servers
   }
+
   public function actionDestroyInstances($id=false,$dopf=false)
   {
       $t=TargetInstance::find();
@@ -138,7 +140,8 @@ class TargetController extends Controller {
             // ignore errors of destroy
             try { $dc->destroy(); } catch (\Exception $e) { }
           }
-          try{
+        try
+        {
             if($dopf!==false)
             {
               Pf::kill_table($dc->name,true);
@@ -157,6 +160,7 @@ class TargetController extends Controller {
         }
       }
     }
+
     public function actionDestroyOndemand($id=false,$dopf=false)
     {
       try
