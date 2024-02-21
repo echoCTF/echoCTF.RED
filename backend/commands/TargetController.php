@@ -36,6 +36,7 @@ class TargetController extends Controller {
           'id' => intval($target),
       ]);
     }
+
     foreach($query->all() as $t)
     {
       if($t->ondemand===null || $t->ondemand->state===1 || $target!==false )
@@ -121,70 +122,73 @@ class TargetController extends Controller {
       }
     } // end docker servers
   }
+
   public function actionDestroyInstances($id=false,$dopf=false)
   {
-      $t=TargetInstance::find();
-      if(boolval($id)!==false)
-        $t->where(['=','target_id',$id]);
-      foreach($t->all() as $val)
-      {
-        $dc=new DockerContainer($val->target);
-        $dc->name=$val->name;
-        $dc->server=$val->server->connstr;
-        printf(" %s for %s (%s)\n",$val->target->name,$val->player->username,$dc->name);
-        try {
-          if($val->ip!==null)
-          {
-            // ignore errors of destroy
-            try { $dc->destroy(); } catch (\Exception $e) { }
-          }
-          try{
-            if($dopf!==false)
-            {
-              Pf::kill_table($dc->name,true);
-              Pf::kill_table($dc->name.'_clients',true);
-            }
-          } catch (\Exception $e) {}
-          $val->delete();
-        }
-        catch (\Exception $e)
-        {
-          if(method_exists($e,'getErrorResponse'))
-            echo $e->getErrorResponse()->getMessage(),"\n";
-          else
-            echo $e->getMessage(),"\n";
-
-        }
-      }
-    }
-    public function actionDestroyOndemand($id=false,$dopf=false)
+    $t=TargetInstance::find();
+    if(boolval($id)!==false)
+      $t->where(['=','target_id',$id]);
+    foreach($t->all() as $val)
     {
-      try
-      {
-        $demands=\app\modules\gameplay\models\TargetOndemand::find();
-        if(boolval($id)!==false)
+      $dc=new DockerContainer($val->target);
+      $dc->name=$val->name;
+      $dc->server=$val->server->connstr;
+      printf(" %s for %s (%s)\n",$val->target->name,$val->player->username,$dc->name);
+      try {
+        if($val->ip!==null)
         {
-          $demands->where(['target_id'=>$id]);
+          // ignore errors of destroy
+          try { $dc->destroy(); } catch (\Exception $e) { }
         }
-        else
+        try
         {
-          $demands->andWhere(['state'=>1]);
-        }
-
-        foreach($demands->all() as $ondemand)
-        {
-          printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
-          try { $ondemand->target->destroy(); } catch (\Exception $e) { }
-          $ondemand->state=-1;
-          $ondemand->heartbeat=null;
           if($dopf!==false)
-            Pf::del_table_ip('heartbeat',$ondemand->target->ipoctet);
-          $ondemand->save();
-        }
+          {
+            Pf::kill_table($dc->name,true);
+            Pf::kill_table($dc->name.'_clients',true);
+          }
+        } catch (\Exception $e) {}
+        $val->delete();
       }
       catch (\Exception $e)
       {
-        echo "OnDemand:", $e->getMessage(),"\n";
+        if(method_exists($e,'getErrorResponse'))
+          echo $e->getErrorResponse()->getMessage(),"\n";
+        else
+          echo $e->getMessage(),"\n";
+
       }
     }
+  }
+
+  public function actionDestroyOndemand($id=false,$dopf=false)
+  {
+    try
+    {
+      $demands=\app\modules\gameplay\models\TargetOndemand::find();
+      if(boolval($id)!==false)
+      {
+        $demands->where(['target_id'=>$id]);
+      }
+      else
+      {
+        $demands->andWhere(['state'=>1]);
+      }
+
+      foreach($demands->all() as $ondemand)
+      {
+        printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
+        try { $ondemand->target->destroy(); } catch (\Exception $e) { }
+        $ondemand->state=-1;
+        $ondemand->heartbeat=null;
+        if($dopf!==false)
+          Pf::del_table_ip('heartbeat',$ondemand->target->ipoctet);
+        $ondemand->save();
+      }
+    }
+    catch (\Exception $e)
+    {
+      echo "OnDemand:", $e->getMessage(),"\n";
+    }
+  }
 }
