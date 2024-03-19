@@ -77,7 +77,18 @@ class HintController extends \app\components\BaseController
 //          {
 //            // fetch player_question
 //          }
-          $db->createCommand('INSERT INTO player_hint (player_id, hint_id) SELECT id,:hint_id FROM player WHERE active=1 and `type`=:ptype ON DUPLICATE KEY UPDATE player_id=values(player_id)')
+          if($hint->player_type==='both')
+          {
+            foreach(['offense','defense'] as $val)
+            {
+              $db->createCommand('INSERT INTO player_hint (player_id, hint_id) SELECT id,:hint_id FROM player WHERE active=1 and `type`=:ptype ON DUPLICATE KEY UPDATE player_id=values(player_id)')
+              ->bindValue(':hint_id', $hint->id)
+              ->bindValue(':ptype', $val)
+              ->execute();
+            }
+          }
+          else
+            $db->createCommand('INSERT INTO player_hint (player_id, hint_id) SELECT id,:hint_id FROM player WHERE active=1 and `type`=:ptype ON DUPLICATE KEY UPDATE player_id=values(player_id)')
                     ->bindValue(':hint_id', $hint->id)
                     ->bindValue(':ptype', $hint->player_type)
                     ->execute();
