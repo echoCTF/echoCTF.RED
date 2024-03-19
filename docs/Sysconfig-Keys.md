@@ -38,7 +38,8 @@
 * `offense_scenario` A scenario displayed to the users once they have signed into the frontend.
 * `spins_per_day` Limit allowed restarts per day per player
 * `online_timeout` Timeout in seconds that a user is no longer considered online on the platform
-* `challenge_home` Web accessible folder that the challenges can be downloaded from. (default: `uploads/`)
+* `challenge_home` Full path to folder that the challenges will be uploaded to. (default: `@web/uploads/`)
+* `challenge_root` Web accessible folder that the challenges can be downloaded from. (default: `/uploads/`)
 * `offense_registered_tag` PF tag used for registered offense users
 * `defense_registered_tag` PF tag used for registered defense users
 * `footer_logos`: HTML code to display logos for the event on the footer of the page. (PENDING)

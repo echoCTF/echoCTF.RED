@@ -24,7 +24,7 @@ $first=false;
         <div class="well">
           <h3><b><?=$model->name.' (ID#'.$model->id.')'?> <?php if($model->completed):?><i class="fas fa-check-double"></i> <?=Twitter::widget(['message'=>\Yii::t('app','Hey check this out, I completed the challenge ').Html::encode($model->name)]);?><?php else:?><?=Twitter::widget(['message'=>\Yii::t('app','I currently grinding the challenge ').Html::encode($model->name)]);?><?php endif;?></b></h3>
           <h4><?=Html::encode($model->category);?> / <?=Html::encode($model->difficulty)?> / <?=Html::encode(number_format($model->points));?>pts</h4>
-          <?=trim($model->filename) !== '' ? '<h4><b>'.\Yii::t('app','Challenge file:').'</b> '.Html::a($model->filename, ['/uploads/'.$model->filename], ['data-pjax'=>"0"]).'</h4>' : ''?>
+          <?=trim($model->filename) !== '' ? '<h4><b>'.\Yii::t('app','Challenge file:').'</b> '.Html::a($model->filename, [Yii::getAlias(\Yii::$app->sys->challenge_root).'/'.$model->filename], ['data-pjax'=>"0"]).'</h4>' : ''?>
           <?php if($model->completed):?>
           <div class="col-xl-4 col-sm-6"><?=VoteWidget::widget(['model'=>$solver,'id'=>$model->id,'action'=>['/game/default/rate-solver','id'=>$model->id]]);?></div>
           <?php endif;?>

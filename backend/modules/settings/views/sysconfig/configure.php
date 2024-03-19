@@ -50,8 +50,11 @@ $this->params['breadcrumbs'][]=$this->title;
         <hr/>
         <h4>Targets and Challenges properties</h4>
         <div class="row form-group">
-          <div class="col-sm-6"><?= $form->field($model, 'target_days_new')->textInput()->hint('How many days are targets considered new?') ?></div>
-          <div class="col-sm-6"><?= $form->field($model, 'target_days_updated')->textInput()->hint('How many days are targets considered updated?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'target_days_new')->textInput()->hint('How many days are targets considered new?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'target_days_updated')->textInput()->hint('How many days are targets considered updated?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'challenge_home')->textInput()->hint('Web accessible path for downloading challenge files?') ?></div>
+          <div class="col-sm-3"><?= $form->field($model, 'challenge_root')->textInput()->hint('Folder that challenge files will be uploaded to?') ?></div>
+
         </div>
 
         <hr/>
