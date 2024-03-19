@@ -55,6 +55,8 @@ jobs:
     runs-on: ubuntu-20.04
     env:
       GITHUB_OAUTH_TOKEN: ${{ secrets.GITHUBOAUTHTOKEN }}
+      DOCKER_BUILDKIT: 0
+      BUILDKIT_PROGRESS: plain
     steps:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
@@ -83,15 +85,15 @@ jobs:
         php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Build the all-in-one Docker image
-      run: docker build --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
+      run: docker build --no-cache --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
     - name: Build the DB Docker image
-      run: docker build --squash . --file contrib/Dockerfile-mariadb --tag echothrust/echoctf.red-db:latest
+      run: docker build --no-cache --squash . --file contrib/Dockerfile-mariadb --tag echothrust/echoctf.red-db:latest
     - name: Build the frontend Docker image
-      run: docker build --squash . --file contrib/Dockerfile-frontend --tag echothrust/echoctf.red-frontend:latest
+      run: docker build --no-cache --squash . --file contrib/Dockerfile-frontend --tag echothrust/echoctf.red-frontend:latest
     - name: Build the backend Docker image
-      run: docker build --squash . --file contrib/Dockerfile-backend --tag echothrust/echoctf.red-backend:latest
+      run: docker build --no-cache --squash . --file contrib/Dockerfile-backend --tag echothrust/echoctf.red-backend:latest
     - name: Build the vpn Docker image
-      run: docker build  --squash . --file contrib/Dockerfile-vpn --tag echothrust/echoctf.red-vpn:latest
+      run: docker build  --no-cache --squash . --file contrib/Dockerfile-vpn --tag echothrust/echoctf.red-vpn:latest
 
     - name: Login to DockerHub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p${{ secrets.DOCKER_PASSWORD }}

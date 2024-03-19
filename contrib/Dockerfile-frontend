@@ -30,7 +30,7 @@ RUN set -ex \
     && chmod a+x /usr/local/bin/composer \
     && sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" ${RED_APP}/config/cache.php \
     && echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8mb4',  ];">${RED_APP}/config/db.php \
-    && mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime ${RED_APP}/web/images/avatars/team \
+    && mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime ${RED_APP}/web/images/avatars/team ${RED_APP}/web/uploads\
     && chown -R www-data ${RED_APP}/web/assets ${RED_APP}/web/images/avatars \
     && chown www-data ${RED_APP}/runtime ${RED_APP}/web/uploads \
     && chmod a+rwx ${RED_APP}/web/uploads \

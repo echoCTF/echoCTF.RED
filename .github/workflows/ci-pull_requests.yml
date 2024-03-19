@@ -12,6 +12,9 @@ on:
 jobs:
   phpcomposer:
     runs-on: ubuntu-20.04
+    env:
+      DOCKER_BUILDKIT: 0
+      BUILDKIT_PROGRESS: plain
 
     steps:
     - uses: actions/checkout@v3
@@ -41,3 +44,14 @@ jobs:
       run: |
         cd backend
         php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+
+    - name: Build the all-in-one Docker image
+      run: docker build --no-cache . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
+    - name: Build the DB Docker image
+      run: docker build --no-cache . --file contrib/Dockerfile-mariadb --tag echothrust/echoctf.red-db:latest
+    - name: Build the frontend Docker image
+      run: docker build --no-cache . --file contrib/Dockerfile-frontend --tag echothrust/echoctf.red-frontend:latest
+    - name: Build the backend Docker image
+      run: docker build --no-cache . --file contrib/Dockerfile-backend --tag echothrust/echoctf.red-backend:latest
+    - name: Build the vpn Docker image
+      run: docker build  --no-cache . --file contrib/Dockerfile-vpn --tag echothrust/echoctf.red-vpn:latest
