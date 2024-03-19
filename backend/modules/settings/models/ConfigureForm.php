@@ -29,7 +29,8 @@ class ConfigureForm extends Model
     public $twitter_hashtags;
     public $registrations_start;
     public $registrations_end;
-    public $challenge_home;
+    public $challenge_home='@web/uploads';
+    public $challenge_root='/uploads/';
     public $offense_registered_tag;
     public $defense_registered_tag;
     public $offense_domain;
@@ -94,6 +95,7 @@ class ConfigureForm extends Model
             'registrations_start',
             'registrations_end',
             'challenge_home',
+            'challenge_root',
             'offense_registered_tag',
             'defense_registered_tag',
             'vpngw',
@@ -220,6 +222,8 @@ class ConfigureForm extends Model
               'target_days_new',
               'target_days_updated',
           ], 'required'],
+          ['challenge_home','default','value'=>'@web/uploads'],
+          ['challenge_root','default','value'=>'/uploads/'],
           [['dn_countryName'],'default','value'=>\Yii::$app->sys->dn_countryName],
           [['dn_stateOrProvinceName'],'default','value'=>\Yii::$app->sys->dn_stateOrProvinceName],
           [['dn_localityName'],'default','value'=>\Yii::$app->sys->dn_localityName],
@@ -276,6 +280,7 @@ class ConfigureForm extends Model
           'defense_domain' => 'Defense domain',
           'moderator_domain' => 'Moderator domain',
           'challenge_home' => 'Challenge home',
+          'challenge_root' => 'Challenge root',
           'approved_avatar' => 'Approved Avatar',
           'offense_vether_network' => 'Offense vether network',
           'offense_vether_netmask' => 'Offense vether netmask',
