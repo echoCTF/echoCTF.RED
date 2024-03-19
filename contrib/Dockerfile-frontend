@@ -23,30 +23,23 @@ COPY ${RED_APP} ./${RED_APP}/
 COPY contrib/html-rewrite.conf /etc/apache2/sites-enabled/html-rewrite.conf
 ADD https://getcomposer.org/download/latest-stable/composer.phar /usr/local/bin/composer
 
-RUN set -ex; \
-    cp ${RED_APP}/config/memcached-local.php ${RED_APP}/config/cache.php; \
-    cp ${RED_APP}/config/validationKey-local.php ${RED_APP}/config/validationKey.php; \
-    cp ${RED_APP}/config/db-local.php ${RED_APP}/config/db.php; \
-    chmod a+x /usr/local/bin/composer; \
-    sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" ${RED_APP}/config/cache.php; \
-    echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8mb4',  ];">${RED_APP}/config/db.php; \
-    mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime ${RED_APP}/web/images/avatars/team; \
-    chown -R www-data ${RED_APP}/web/assets ${RED_APP}/web/images/avatars; \
-    chown www-data ${RED_APP}/runtime; \
-    cd ${RED_APP};  \
-#    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config -g github-oauth.github.com "${GITHUB_OAUTH_TOKEN}"; \
-#    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer config --global github-protocols https; \
-#    [ -z "${GITHUB_OAUTH_TOKEN}" ] || git config --global url."https://".insteadOf "git://" ; \
-#    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer install --no-dev --prefer-dist --no-progress --no-suggest; \
-#    [ -z "${GITHUB_OAUTH_TOKEN}" ] || composer clearcache; \
-    cd ..; \
-    mv /var/www/html /var/www/html.old; \
-    ln -s /var/www/echoCTF.RED/${RED_APP}/web /var/www/html; \
-    a2enmod rewrite; \
-    rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
-
-#ADD contrib/entrypoint.sh /
-#RUN chmod 0700 /entrypoint.sh
+RUN set -ex \
+    && cp ${RED_APP}/config/memcached-local.php ${RED_APP}/config/cache.php \
+    && cp ${RED_APP}/config/validationKey-local.php ${RED_APP}/config/validationKey.php \
+    && cp ${RED_APP}/config/db-local.php ${RED_APP}/config/db.php \
+    && chmod a+x /usr/local/bin/composer \
+    && sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" ${RED_APP}/config/cache.php \
+    && echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8mb4',  ];">${RED_APP}/config/db.php \
+    && mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime ${RED_APP}/web/images/avatars/team \
+    && chown -R www-data ${RED_APP}/web/assets ${RED_APP}/web/images/avatars \
+    && chown www-data ${RED_APP}/runtime ${RED_APP}/web/uploads \
+    && chmod a+rwx ${RED_APP}/web/uploads \
+    && cd ${RED_APP} \
+    && cd .. \
+    && mv /var/www/html /var/www/html.old \
+    && ln -s /var/www/echoCTF.RED/${RED_APP}/web /var/www/html \
+    && a2enmod rewrite \
+    && rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
 
 EXPOSE 80/tcp
 
