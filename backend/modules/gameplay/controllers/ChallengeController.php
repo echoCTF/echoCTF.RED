@@ -106,8 +106,8 @@ class ChallengeController extends \app\components\BaseController
                     $model->filename=$model->id;
                     $model->updateAttributes(['filename'=>$model->id]);
                 }
-                $model->file->saveAs('uploads/'.$model->filename);
-            }
+                $model->file->saveAs(Yii::getAlias(Yii::$app->sys->challenge_home).'/'.$model->filename);
+              }
               Yii::$app->session->addFlash('success', Yii::t('app','Challenge [{name}] created',['name'=>Html::encode($model->name)]));
               Yii::$app->session->addFlash('warning', Yii::t('app','Don\'t forget to create a question for the challenge.'));
             }
@@ -144,7 +144,7 @@ class ChallengeController extends \app\components\BaseController
                     $model->filename=$model->id;
                     $model->updateAttributes(['filename'=>$model->id]);
                 }
-                $model->file->saveAs('uploads/'.$model->filename);
+                $model->file->saveAs(Yii::getAlias(Yii::$app->sys->challenge_home).'/'.$model->filename);
             }
             Yii::$app->session->addFlash('success', Yii::t('app','Challenge [{name}] updated',['name'=>Html::encode($model->name)]));
             return $this->redirect(['view', 'id' => $model->id]);
