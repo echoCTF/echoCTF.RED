@@ -15,7 +15,7 @@ use yii\web\UploadedFile;
  * @property string $description
  * @property string $player_type
  * @property string $filename The filename that will be provided to participants
- * @property string $file The filename that will be provided to participants
+ * @property object $file The file upload handler
  * @property boolean $active Is challenge active?
  * @property boolean $timer Keep timer for solving?
  * @property boolean $public Is challenge public?
@@ -44,6 +44,7 @@ class Challenge extends \yii\db\ActiveRecord
             [['active','timer','public'], 'boolean'],
             [['file'], 'file'],
             [['name', 'category', 'difficulty', 'filename'], 'string', 'max' => 255],
+            [['filename'], 'trim'],
             [['name'], 'unique'],
             [['player_type'],'default', 'value'=>'offense'],
             ['player_type', 'in', 'range' => ['offense', 'defense','both']],
