@@ -29,8 +29,8 @@ class ConfigureForm extends Model
     public $twitter_hashtags;
     public $registrations_start;
     public $registrations_end;
-    public $challenge_home='@web/uploads';
-    public $challenge_root='/uploads/';
+    public $challenge_home='@webroot/uploads';
+    public $challenge_root='@web/uploads';
     public $offense_registered_tag;
     public $defense_registered_tag;
     public $offense_domain;
