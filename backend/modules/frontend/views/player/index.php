@@ -59,6 +59,8 @@ yii\bootstrap5\Modal::end();
       ],
       [
         'attribute' => 'avatar',
+        'label'=>false,
+        'headerOptions' => ['style' => 'width:3.5em'],
         'format' => ['image', ['width' => '40px', 'class' => 'img-thumbnail']],
         'value' => function ($data) {
           return '//' . Yii::$app->sys->offense_domain . '/images/avatars/' . $data->profile->avatar;
@@ -88,7 +90,11 @@ yii\bootstrap5\Modal::end();
             return Html::encode($model->affiliation);
         },
       ],
-      'email:email',
+      [
+        'attribute'=>'email',
+        'format'=>'email',
+        'contentOptions' => ['class' => 'small'],
+      ],
       [
         'attribute' => 'vpn_local_address',
         'label' => 'VPN IP',
@@ -101,22 +107,26 @@ yii\bootstrap5\Modal::end();
       [
         'attribute' => 'academic',
         'value' => 'academicShort',
+        'contentOptions' => ['class' => 'small'],
         'filter' => [0 => Yii::$app->sys->academic_0short, 1 => Yii::$app->sys->academic_1short, 2 => Yii::$app->sys->academic_2short],
       ],
       [
         'attribute' => 'status',
         'format' => 'playerStatus',
         'filter' => [10 => 'Enabled', 9 => 'Inactive', 8 => "Change", 0 => "Deleted",],
+        'contentOptions' => ['class' => 'small'],
+
 
       ],
       [
         'attribute' => 'type',
-        'filter' => ["offense"=>"offense","defense"=>"defense"]
+        'filter' => ["offense"=>"offense","defense"=>"defense"],
+        'contentOptions' => ['class' => 'small'],
       ],
 
       [
         'attribute'=>'created',
-        'contentOptions' => ['class' => 'text-small']
+        'contentOptions' => ['class' => 'small']
       ],
       //'ts',
       [
