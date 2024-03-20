@@ -56,6 +56,14 @@ class LeaderboardsController extends \app\components\BaseController
             'allow' => true,
             'roles' => ['@']
           ],
+          [
+            'allow' => true,
+            'roles' => ['?'],
+            'matchCallback' => function () {
+              return \Yii::$app->sys->guest_visible_leaderboards;
+            },
+          ],
+
         ],
       ]
     ]);
