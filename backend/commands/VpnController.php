@@ -11,7 +11,9 @@ use yii\console\Exception as ConsoleException;
 use yii\helpers\Console;
 use yii\console\Controller;
 use app\modules\frontend\models\Player;
+use app\modules\activity\models\PlayerLast;
 use app\components\OpenVPN;
+use yii\console\ExitCode;
 /**
  * Manages VPN specific operations.
  *
@@ -65,7 +67,15 @@ class VpnController extends Controller
       throw new ConsoleException(Yii::t('app', 'Player not found with id or username of [{values}]', ['values' => $player]));
     }
     printf("Killing %d with last local IP [%s]\n",$pM->id,$pM->last->vpn_local_address_octet);
-    OpenVPN::kill($pM->id,intval($pM->last->vpn_local_address));
+    try {
+      OpenVPN::kill($pM->id,intval($pM->last->vpn_local_address));
+    }
+    catch(\Exception $e)
+    {
+      echo "Error: ",$e->getMessage(),"\n";
+      return ExitCode::UNSPECIFIED_ERROR;
+    }
+
   }
 
   /**
@@ -74,14 +84,25 @@ class VpnController extends Controller
   public function actionKillall()
   {
 
-    foreach(Player::find()->where(['status'=>10])->all() as $pM)
+    foreach(PlayerLast::find()->all() as $pM)
     {
-      printf("Logging out %d\n",$pM->id);
-      OpenVPN::logout($pM->id);
+      try {
+        if($pM->vpn_local_address!==null)
+        {
+          printf("Killing %s =>  %d\n",$pM->player->username,$pM->id);
+          OpenVPN::kill($pM->id,intval($pM->vpn_local_address));
+        }
+      }
+      catch(\Exception $e)
+      {
+        echo "Error: ",$e->getMessage(),"\n";
+      }
     }
+    Yii::$app->db->createCommand("UPDATE player_last SET vpn_local_address=NULL, vpn_remote_address=NULL")->execute();
+
   }
   /**
-   * Logoutall stall connections from OpenVPN.
+   * Logout all stall connections from all player_last entries
    */
   public function actionLogoutall()
   {
@@ -89,43 +110,98 @@ class VpnController extends Controller
   }
 
   /**
-   * Load configuration from filesystem
+   * Load OpenVPN configuration from filesystem and store to the database.
+   * Parses the configuration file for management interface and ranges.
+   * @param string $filename The filename to read and store to the database
    */
   public function actionLoad($filepath)
   {
     $file=basename($filepath);
+    $conf=file_get_contents($filepath);
     try{
-      $contents=file_get_contents($filepath);
-      Yii::$app->db->createCommand("UPDATE openvpn SET conf=:config WHERE name=:filename",[':config'=>$contents,':filename'=>$file])->execute();
+      if(preg_match('/server (.*) (.*)/',$conf,$matches) && count($matches)>1)
+      {
+        $ovpnModel=\app\modules\settings\models\Openvpn::find()->where(['name'=>$file,'net'=>ip2long($matches[1])]);
+      }
+      if(($ovpn=$ovpnModel->one())===null)
+      {
+        $ovpn=new \app\modules\settings\models\Openvpn;
+      }
+      $ovpn->conf=file_get_contents($filepath);
+      $ovpn->name=$file;
+      $ovpn->server=gethostbyaddr(gethostbyname(gethostname()));
+      if(preg_match('/status (.*)/',$conf,$matches) && count($matches)>1)
+      {
+        $ovpn->status_log=trim($matches[1]);
+      }
+      if(preg_match('/management (.*) (.*) (.*)/',$conf,$matches) && count($matches)>1)
+      {
+        $ovpn->management_ip_octet=$matches[1];
+        $ovpn->management_port=$matches[2];
+        if(str_starts_with($matches[3], '/'))
+        {
+          if(file_exists($matches[3]))
+            $ovpn->management_passwd=file_get_contents($matches[3]);
+          else
+            echo "WARNING: The provided config uses a file as a management password\n\t but the file [",$matches[3], "] does not exist!\n";
+        }
+      }
+      if(preg_match('/server (.*) (.*)/',$conf,$matches) && count($matches)>1)
+      {
+        $ovpn->net_octet=$matches[1];
+        $ovpn->mask_octet=$matches[2];
+      }
+      if($ovpn->save())
+      {
+        echo $ovpn->isNewRecord ? "Record created successfully!\n" : "Record updated successfully!\n";
+      }
+      else
+      {
+        echo "Failed to save record: ",$ovpn->getErrorSummary(true),"\n";
+      }
     }
     catch (\Exception $e)
     {
-      printf("Error: ",$e->getMessage());
+      printf("Error: %s",$e->getMessage());
     }
-
   }
   /**
-   * Save configuration to filesystem
+   * Save OpenVPN configuration to filesystem.
+   * Uses the provided file basename and current system hostname to find the actual entry.
+   * @param string $filepath The full path to store the config contents.
    */
   public function actionSave($filepath)
   {
     try{
       $file=basename($filepath);
-      $contents=Yii::$app->db->createCommand("SELECT conf FROM openvpn WHERE name=:filename",[':filename'=>$file])->queryScalar();
-      file_put_contents($filepath,$contents);
+      $ovpnModel=\app\modules\settings\models\Openvpn::find()->where(['server'=>gethostname(),'name'=>$file]);
+      if(($ovpn=$ovpnModel->one())===null)
+      {
+        echo "No record found for the given file and server!\n";
+        return ExitCode::CANTCREAT;
+      }
+      if(file_put_contents($filepath,$ovpn->conf))
+      {
+        echo "File saved at ",$filepath,"\n";
+      }
+      else
+      {
+        echo "Failed to save ",$filepath,"\n";
+        return ExitCode::UNSPECIFIED_ERROR;
+      }
     }
     catch (\Exception $e)
     {
-      printf("Error: ",$e->getMessage());
+      printf("Error: %s",$e->getMessage());
     }
   }
 
   /**
    * Display openvpn status enriched with database details
    */
-  public function actionStatus($provider_id=null)
+  public function actionStatus()
   {
-    $q=\app\modules\settings\models\Openvpn::find()->select('status_log')->andFilterWhere(['LIKE','provider_id',$provider_id]);
+    $q=\app\modules\settings\models\Openvpn::find()->select('status_log')->andFilterWhere(['server'=>gethostname()]);
     $status['routing_table']=[];
     $status['client_list']=[];
     foreach($q->all() as $entry)
@@ -139,11 +215,11 @@ class VpnController extends Controller
       }
       catch (\Exception $e)
       {
-
+        printf("Error: %s",$e->getMessage());
       }
       unset($entry);
     }
-    $this->stdout(  sprintf("%-5s %-10s %-10s %-18s %-10s %-10s\n", 'ID', 'Username','Local IP','Remote IP', 'Received', 'Send'), Console::BOLD);
+    $this->stdout(sprintf("%-5s %-10s %-10s %-18s %-10s %-10s\n", 'ID', 'Username','Local IP','Remote IP', 'Received', 'Send'), Console::BOLD);
     foreach($status['client_list'] as $entry)
     {
       $p=\app\modules\frontend\models\Player::findOne($entry->player_id);
