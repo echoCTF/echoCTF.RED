@@ -24,6 +24,7 @@ if [ ! -f /etc/openvpn/.configured ]; then
     /var/www/echoCTF.RED/backend/yii ssl/create-ca
     /var/www/echoCTF.RED/backend/yii ssl/get-ca 1
     /var/www/echoCTF.RED/backend/yii ssl/create-cert "VPN Server"
+    /var/www/echoCTF.RED/backend/yii vpn/load /etc/openvpn/openvpn_tun0.conf
     mv echoCTF-OVPN-CA.crt /etc/openvpn/private/echoCTF-OVPN-CA.crt
     mv echoCTF-OVPN-CA.key /etc/openvpn/private/echoCTF-OVPN-CA.key
     mv VPN\ Server.crt /etc/openvpn/private/VPN\ Server.crt
