@@ -12,7 +12,6 @@ use app\models\Profile;
 use app\models\Stream;
 class ValidatorController extends Controller {
 
-
   public function actionIndex()
   {
     $this->stdout("The Validator provides the following actions: \n", Console::BOLD);
