@@ -14,7 +14,9 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'provider_id')->textInput(['maxlength' => true,'placeholder'=>'vpn01-eu01.example.com'])->hint("An string to help you distinguish the server instance that this entry refers to (eg. vpn01-eu01.example.com)") ?>
 
-    <?= $form->field($model, 'name')->textInput(['maxlength' => true,'placeholder'=>'openvpn_tun0.conf'])->hint("A unique name to distinguish this instance from others on the same server, this can be the configuration file name (eg. server_tun0.conf)") ?>
+    <?= $form->field($model, 'server')->textInput(['maxlength' => true,'placeholder'=>'vpn.example.com'])->hint("The server name for this entry)") ?>
+
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true,'placeholder'=>'openvpn_tun0.conf'])->hint("The configuration file name for this instance of openvpn (eg. server_tun0.conf)") ?>
 
     <?= $form->field($model, 'net_octet')->textInput(['maxlength' => true,'placeholder'=>'10.10.0.0'])->hint("Network address that this OpenVPN instance serves. This must reflect your <kbd>server</kbd> block ie <code>server 10.10.0.0 255.255.0.0</code>") ?>
 

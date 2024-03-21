@@ -31,6 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'provider_id',
+            'server',
             'name',
             'net_octet',
             'mask_octet',

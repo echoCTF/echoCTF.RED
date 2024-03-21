@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $id
  * @property string|null $provider_id
+ * @property string|null $server
  * @property string|null $name
  * @property int|null $net
  * @property int|null $mask
@@ -41,10 +42,9 @@ class Openvpn extends \yii\db\ActiveRecord
             [['net', 'mask', 'management_ip', 'management_port'], 'integer'],
             [['conf'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
-            [['provider_id', 'name', 'management_passwd','status_log'], 'string', 'max' => 255],
+            [['provider_id', 'name', 'management_passwd','status_log','server'], 'string', 'max' => 255],
             [['net_octet','mask_octet','management_ip_octet'], 'ip'],
-            [['name'], 'unique'],
-            [['net'], 'unique'],
+            [['server','name','net'], 'unique','targetAttribute'=>['server','name','net']],
         ];
     }
 
@@ -56,6 +56,7 @@ class Openvpn extends \yii\db\ActiveRecord
         return [
             'id' => Yii::t('app', 'ID'),
             'provider_id' => Yii::t('app', 'Provider ID'),
+            'server' => Yii::t('app', 'Server'),
             'name' => Yii::t('app', 'Name'),
             'net' => Yii::t('app', 'Net'),
             'mask' => Yii::t('app', 'Mask'),
@@ -87,10 +88,12 @@ class Openvpn extends \yii\db\ActiveRecord
         {
             return false;
         }
-
-        $this->net=ip2long($this->net_octet);
-        $this->mask=ip2long($this->mask_octet);
-        $this->management_ip=ip2long($this->management_ip_octet);
+        if(empty($this->net))
+          $this->net=ip2long($this->net_octet);
+        if(empty($this->mask))
+          $this->mask=ip2long($this->mask_octet);
+        if(empty($this->management_ip))
+          $this->management_ip=ip2long($this->management_ip_octet);
         return true;
     }
 
