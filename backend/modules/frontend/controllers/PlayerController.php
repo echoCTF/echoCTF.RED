@@ -36,6 +36,7 @@ class PlayerController extends \app\components\BaseController
         'actions' => [
           'set-deleted' => ['POST'],
           'clear-verification-token' => ['POST'],
+          'clear-vpn' => ['POST'],
           'delete' => ['POST'],
           'ban' => ['POST'],
           'ban-filtered' => ['POST'],
@@ -407,6 +408,37 @@ class PlayerController extends \app\components\BaseController
     }
     return $this->redirect(['index']);
   }
+
+  /**
+   * Clear VPN related data for a given user
+   * @param integer $id The player ID
+   * @throws NotFoundHttpException if the player id cannot be found
+   */
+  public function actionClearVpn($id)
+  {
+    $player=$this->findModel($id);
+    $ip=Yii::$app->cache->Memcache->get("ovpn:".$player->id);
+    if($ip!==false)
+    {
+      Yii::$app->cache->Memcache->delete("ovpn:".$player->id);
+      $memid=Yii::$app->cache->Memcache->get("ovpn:".long2ip($ip));
+      if($memid!==false && intval($memid)===intval($id))
+      {
+        Yii::$app->cache->Memcache->delete("ovpn:".long2ip($ip));
+      }
+    }
+    if($player->last->resetVPN())
+    {
+      \Yii::$app->session->addFlash('success', \Yii::t('app', "Player VPN details cleared"));
+    }
+    else
+    {
+      \Yii::$app->session->addFlash('error', \Yii::t('app', "Player VPN details failed to clear"));
+    }
+
+    return $this->redirect(['index']);
+  }
+
   /**
    * Finds the Player model based on its primary key value.
    * If the model is not found, a 404 HTTP exception will be thrown.
