@@ -22,6 +22,8 @@
 * `players_require_approval` If player activation requires moderator approval first
 * `disable_registration` Whether online registrations are allowed
 * `team_visible_instances` Whether or not player instances are visible to the rest of the team by default otherwise the per-instance field `team_allowed` takes priority
+* `guest_visible_leaderboards` Whether or not the leaderboards will be visible to guest users (this still respects the event start/end restrictions)
+* `hide_timezone` Whether or not the Timezone information should be visible
 
 * `profile_discord`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_echoctf`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
@@ -117,6 +119,8 @@ backend/yii sysconfig/set academic_1short "anothersite"
 * `signup_TotalRegistrationsValidator` Number of total registrations allowed per single IP overall on the platform. `0` Disables the check completely
 * `signup_HourRegistrationValidator` Number of total registrations per IP allowed. `0` Disables the check completely
 * `signup_StopForumSpamValidator` Percentage of confidence required before we mark an email offensive from StopForumSpam (eg `80`). `0` Disables the check completely
+* `signup_VerifymailValidator` Enable or disable verifymail.io validator
+* `verifymail_key` The API key for verifymail.io
 * `signup_MXServersValidator` Enable/Disable validating `MX` and `IN A` DNS records for given domains. `0` Disables the check completely
 * `failed_login_ip` A number of failed logins are allowed per IP. `0` Disables the check completely
 * `failed_login_ip_timeout` timeout of failed login ip counter expires

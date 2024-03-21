@@ -33,6 +33,7 @@ yii\bootstrap5\Modal::end();
         'columns' => [
             'id',
             'provider_id',
+            'server',
             'name',
             'net_octet',
             'mask_octet',
