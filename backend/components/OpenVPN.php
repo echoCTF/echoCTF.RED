@@ -49,9 +49,9 @@ class OpenVPN extends Component
       {
         echo "connected to {$creds->management_ip_octet}\n";
         fwrite($fp, "$creds->management_passwd\n");
-        echo "send {$creds->management_ip_octet}\n";
+        echo "sending to ",$creds->management_ip_octet,"\n";
         usleep(250000);
-        fwrite($fp, "kill ${player_id}\n");
+        fwrite($fp, "kill $player_id\n");
         usleep(250000);
         fwrite($fp, "exit\n");
         usleep(250000);
@@ -77,6 +77,10 @@ class OpenVPN extends Component
 
   static public function parseStatus(string $location)
   {
+    if(!file_exists($location))
+    {
+      throw new yii\base\UserException("Status file does not exist");
+    }
     $statusLines=explode("\n",file_get_contents($location));
     if(count($statusLines)==0)
       return new stdClass;
