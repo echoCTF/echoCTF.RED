@@ -55,8 +55,8 @@ class ConfigureForm extends Model
     public $leaderboard_visible_after_event_end;
     public $leaderboard_show_zero;
     public $time_zone;
-    public $target_days_new;
-    public $target_days_updated;
+    public $target_days_new=2;
+    public $target_days_updated=1;
     public $discord_invite_url;
     public $discord_news_webhook;
     public $pf_state_limits;
@@ -219,8 +219,6 @@ class ConfigureForm extends Model
               'mail_fromName',
               'approved_avatar',
               'team_manage_members',
-              'target_days_new',
-              'target_days_updated',
           ], 'required'],
           ['challenge_home','default','value'=>'@web/uploads'],
           ['challenge_root','default','value'=>'/uploads/'],
@@ -233,6 +231,8 @@ class ConfigureForm extends Model
           [['online_timeout', 'spins_per_day','members_per_team','target_days_new','target_days_updated'], 'integer'],
           [['online_timeout'], 'default', 'value'=>900],
           [['spins_per_day'], 'default', 'value'=> 2],
+          ['target_days_new','default','value'=>1],
+          ['target_days_updated','default','value'=>2],
           [['event_start','event_end','registrations_start','registrations_end'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
           [[
             'dashboard_is_home',
