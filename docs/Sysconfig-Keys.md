@@ -119,6 +119,8 @@ backend/yii sysconfig/set academic_1short "anothersite"
 * `signup_TotalRegistrationsValidator` Number of total registrations allowed per single IP overall on the platform. `0` Disables the check completely
 * `signup_HourRegistrationValidator` Number of total registrations per IP allowed. `0` Disables the check completely
 * `signup_StopForumSpamValidator` Percentage of confidence required before we mark an email offensive from StopForumSpam (eg `80`). `0` Disables the check completely
+* `signup_VerifymailValidator` Enable or disable verifymail.io validator
+* `verifymail_key` The API key for verifymail.io
 * `signup_MXServersValidator` Enable/Disable validating `MX` and `IN A` DNS records for given domains. `0` Disables the check completely
 * `failed_login_ip` A number of failed logins are allowed per IP. `0` Disables the check completely
 * `failed_login_ip_timeout` timeout of failed login ip counter expires
