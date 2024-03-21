@@ -22,6 +22,8 @@
 * `players_require_approval` If player activation requires moderator approval first
 * `disable_registration` Whether online registrations are allowed
 * `team_visible_instances` Whether or not player instances are visible to the rest of the team by default otherwise the per-instance field `team_allowed` takes priority
+* `guest_visible_leaderboards` Whether or not the leaderboards will be visible to guest users (this still respects the event start/end restrictions)
+* `hide_timezone` Whether or not the Timezone information should be visible
 
 * `profile_discord`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_echoctf`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
