@@ -56,6 +56,10 @@ class PlayerLast extends \yii\db\ActiveRecord
             'signup_ip' => 'Signup IP',
         ];
     }
+    public function resetVPN() {
+      return $this->updateAttributes(['vpn_remote_address' => null,'vpn_local_address'=>null]);
+    }
+
     public function afterFind() {
       parent::afterFind();
       $this->signin_ipoctet=long2ip($this->signin_ip);
