@@ -146,6 +146,11 @@ details summary>b:hover {
   width: 160px;
   text-align: right;
 }
+
+.sidebar-wrapper {
+  height: calc(100vh - 220px) !important;
+}
+
 .sidebar .nav p {
   color: white;
 }
