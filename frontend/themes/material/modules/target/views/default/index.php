@@ -6,6 +6,7 @@ use app\widgets\leaderboard\Leaderboard;
 use app\widgets\stream\StreamWidget as Stream;
 $this->_fluid="-fluid";
 $this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Targets');
+if(Yii::$app->request->get('_pjax')) $this->title=null;
 $this->_description=\Yii::t('app',"The echoCTF dashboard page");
 $hidden_attributes=['id'];
 ?>
