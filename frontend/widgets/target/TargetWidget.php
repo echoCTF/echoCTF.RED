@@ -59,21 +59,22 @@ class TargetWidget extends Widget
       $tmod=Target::find();
       if(intval($tmod->count()) === 0) return false;
 
-        TargetWidgetAsset::register($this->getView());
-        return $this->render($this->viewFile, [
-          'dataProvider'=>$this->dataProvider,
-          'divID'=>$this->divID,
-          'summary'=>$this->summary,
-          'personal'=>$this->personal,
-          'layout'=>$this->layout,
-          'pagerOptions'=>$this->pagerOptions,
-          'options'=>$this->divOptions,
-          'TITLE'=>$this->title,
-          'CATEGORY'=>$this->category,
-          'player_id'=>$this->player_id,
-          'hidden_attributes'=>$this->hidden_attributes,
-          'buttonsTemplate'=>$this->buttonsTemplate,
-        ]);
+      TargetWidgetAsset::register($this->getView());
+
+      return $this->render($this->viewFile, [
+        'dataProvider'=>$this->dataProvider,
+        'divID'=>$this->divID,
+        'summary'=>$this->summary,
+        'personal'=>$this->personal,
+        'layout'=>$this->layout,
+        'pagerOptions'=>$this->pagerOptions,
+        'options'=>$this->divOptions,
+        'TITLE'=>$this->title,
+        'CATEGORY'=>$this->category,
+        'player_id'=>$this->player_id,
+        'hidden_attributes'=>$this->hidden_attributes,
+        'buttonsTemplate'=>$this->buttonsTemplate,
+      ]);
     }
 
     protected function getTargetProgressProvider($tmod,$id,&$defaultOrder)
