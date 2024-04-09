@@ -3,6 +3,18 @@ use yii\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
+$this->registerJs(
+  "\$('[rel=\"tooltip\"]').tooltip({
+    trigger : 'hover',
+    container: '#target-list'
+  });
+  \$('[data-toggle=\"tooltip\"]').tooltip({
+    trigger : 'hover',
+    container: '#target-list'
+   });
+  ",
+  $this::POS_END,
+);
 ?>
 <div class="card bg-dark">
   <div class="card-header card-header-danger">
