@@ -1112,3 +1112,5 @@ mark {
  * https://github.com/bootstrap-vue/bootstrap-vue/issues/1732#issuecomment-381381818
  */
 .tooltip { top: 0; }
+
+.dropdown-menu.show{z-index: 9999;}
