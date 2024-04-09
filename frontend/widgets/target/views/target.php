@@ -231,20 +231,20 @@ echo GridView::widget([
               if(!Yii::$app->user->isGuest && Yii::$app->user->id === $this->context->player_id)
               {
                 if($model->total_treasures === $model->player_treasures && $model->total_findings === $model->player_findings)
-                  return Twitter::widget(['message'=>\Yii::t('app','Hey check this out, I headshotted ').strip_tags($model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer"]]);
+                  return Twitter::widget(['message'=>\Yii::t('app','Hey check this out, I headshotted ').strip_tags($model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer",'rel'=>"tooltip",]]);
                 elseif($model->player_treasures !== 0 || $model->player_findings !== 0)
-                  return Twitter::widget(['message'=>sprintf(\Yii::t('app','Hey check this out, i have found %d out of %d flags and %d out of %d services on %s'), $model->player_treasures, $model->total_treasures, $model->player_findings, $model->total_findings, $model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer"]]);
+                  return Twitter::widget(['message'=>sprintf(\Yii::t('app','Hey check this out, i have found %d out of %d flags and %d out of %d services on %s'), $model->player_treasures, $model->total_treasures, $model->player_findings, $model->total_findings, $model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer",'rel'=>"tooltip",]]);
 
               }
               if($this->context->profile !== null)
               {
                 $url=Url::to($this->context->profile->linkTo, 'https');
                 if($model->total_treasures === $model->player_treasures && $model->total_findings === $model->player_findings)
-                  return Twitter::widget(['message'=>sprintf(\Yii::t('app','Hey check this out, %s headshotted %s'), $this->context->profile->twitterHandle, $model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer"]]);
+                  return Twitter::widget(['message'=>sprintf(\Yii::t('app','Hey check this out, %s headshotted %s'), $this->context->profile->twitterHandle, $model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer",'rel'=>"tooltip",]]);
 
-                return Twitter::widget(['message'=>sprintf(\Yii::t('app','Hey check this out, %s found %d out of %d flags and %d out of %d services on %s'), $this->context->profile->twitterHandle, $model->player_treasures, $model->total_treasures, $model->player_findings, $model->total_findings, $model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer"]]);
+                return Twitter::widget(['message'=>sprintf(\Yii::t('app','Hey check this out, %s found %d out of %d flags and %d out of %d services on %s'), $this->context->profile->twitterHandle, $model->player_treasures, $model->total_treasures, $model->player_findings, $model->total_findings, $model->name), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer", 'rel'=>"tooltip",]]);
               }
-              return Twitter::widget(['message'=>sprintf(\Yii::t('app','Hey check this target [%s], %s'), $model->name, $model->purpose), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer"]]);
+              return Twitter::widget(['message'=>sprintf(\Yii::t('app','Hey check this target [%s], %s'), $model->name, $model->purpose), 'url'=>$url, 'linkOptions'=>['class'=>'twitterthis', 'target'=>'_blank', 'style'=>'font-size: 1.5em', 'rel'=>"noreferrer",'rel'=>"tooltip",]]);
           },
           'view' => function($url, $model) {
             if($this->context->profile !== null)
