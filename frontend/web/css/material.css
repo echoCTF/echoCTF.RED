@@ -995,3 +995,9 @@ mark {
   font-weight: 800;
   cursor: pointer;
 }
+
+/**
+ * fix for not centered tooltips when scrollbars are visible
+ * https://github.com/bootstrap-vue/bootstrap-vue/issues/1732#issuecomment-381381818
+ */
+.tooltip { top: 0; }
