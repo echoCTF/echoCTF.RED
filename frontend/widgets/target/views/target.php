@@ -4,11 +4,11 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
 $this->registerJs(
-  "\$('[rel=\"tooltip\"]').tooltip({
+  "\$('#target-list abbr[rel=\"tooltip\"], .td-actions a[rel=\"tooltip\"]').tooltip({
     trigger : 'hover',
     container: '#target-list'
   });
-  \$('[data-toggle=\"tooltip\"]').tooltip({
+  \$('#target-list abbr[data-toggle=\"tooltip\"], .td-actions a[data-toggle=\"tooltip\"]').tooltip({
     trigger : 'hover',
     container: '#target-list'
    });
