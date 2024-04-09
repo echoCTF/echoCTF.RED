@@ -81,7 +81,7 @@ $(document).ready(function() {
   });
   $('[data-toggle="tooltip"]').tooltip({
       trigger : 'hover',
-    });
+  });
   $('.form-control').on("focus", function() {
     $(this).parent('.input-group').addClass("input-group-focus");
   }).on("blur", function() {
