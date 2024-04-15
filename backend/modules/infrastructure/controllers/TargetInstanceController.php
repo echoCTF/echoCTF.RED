@@ -144,6 +144,11 @@ class TargetInstanceController extends \app\components\BaseController
      */
     public function actionIndex()
     {
+        if(($ret=$this->prerequisitesCheck())!==[])
+        {
+            return $this->redirect($ret);
+        }
+
         $searchModel = new TargetInstanceSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -173,6 +178,11 @@ class TargetInstanceController extends \app\components\BaseController
      */
     public function actionCreate()
     {
+        if(($ret=$this->prerequisitesCheck())!==[])
+        {
+            return $this->redirect($ret);
+        }
+
         $model = new TargetInstance();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -304,5 +314,34 @@ class TargetInstanceController extends \app\components\BaseController
         }
 
         throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+    }
+
+    /**
+     * Check for prerequisite players, targets and servers
+     * @param boolean $player Whether to check for players exist
+     * @param boolean $target Whether to check for target exist
+     * @param boolean $server Whether to check for server exist
+     * @return array
+     */
+    protected function prerequisitesCheck($player=true,$target=true,$server=true)
+    {
+        if((bool) $player && (int)\app\modules\frontend\models\Player::find()->count() === 0)
+        {
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No players found create one first."));
+          return ['/frontend/player/create'];
+        }
+
+        if((bool) $target && (int)\app\modules\gameplay\models\Target::find()->count() === 0)
+        {
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No targets found create one first."));
+          return ['/gameplay/target/create'];
+        }
+
+        if((bool) $server && (int)\app\modules\infrastructure\models\Server::find()->count() === 0)
+        {
+          Yii::$app->session->setFlash('warning', Yii::t('app',"No servers found create one first."));
+          return ['/infrastructure/server/create'];
+        }
+        return [];
     }
 }
