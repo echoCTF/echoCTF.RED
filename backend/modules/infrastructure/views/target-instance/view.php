@@ -20,7 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a(Yii::t('app', 'Update'), ['update', 'id' => $model->player_id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Logs', ['logs', 'id' => $model->player_id], ['class' => 'btn btn-info']) ?>
         <?= Html::a('Exec', ['exec', 'id' => $model->player_id], ['class' => 'btn btn-danger','style'=>'background: black; color: white']) ?>
-        <?= Html::a('Logs', ['logs', 'id' => $model->player_id], ['class' => 'btn btn-info']) ?>
         <?= Html::a('Restart', ['restart', 'id' => $model->player_id], [
             'class' => 'btn btn-warning',
             'data' => [
