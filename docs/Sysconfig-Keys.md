@@ -55,7 +55,6 @@
 * `registrations_start`/`registrations_end` (optional): When the registrations starts and stops (timestamp)
 * `profile_visibility`: Set the default player profile visibility (users can still change settings)
 * `profile_settings_fields`: Comma separated list of field names that the users are allowed to change (avatar,bio,country,discord,echoctf,email,fullname,github,htb,pending_progress,twitch,twitter,username,visibility,youtube)
-* `discord_invite_url` (optional): discord server invite url on show on left sidebar
 * `admin_ids` (optional): Comma separated list of admin player IDs
 * `admin_player:<PLAYER_ID>` (optional): Set a specific player ID as admin
 * `target_new_days`: How many days is target considered as `new` on the frontend after creation
@@ -63,6 +62,7 @@
 * `discord_news_webhook`: A discord webhook url to send news and announcements to
 * `pf_state_limits`: The content to be appended to the pass rules that enforces limits (default: `(max 10000, source-track rule, max-src-nodes 5, max-src-states 2000, max-src-conn 50)`)
 * `force_https_urls`: Force URL generation to always be https (sets `_SERVER['HTTPS']=on`)
+* `menu_items`: JSON encoded string of items to append to the frontend menu
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
