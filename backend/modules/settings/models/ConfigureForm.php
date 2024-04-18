@@ -57,7 +57,6 @@ class ConfigureForm extends Model
     public $time_zone;
     public $target_days_new=2;
     public $target_days_updated=1;
-    public $discord_invite_url;
     public $discord_news_webhook;
     public $pf_state_limits;
     public $stripe_apiKey;
@@ -127,7 +126,6 @@ class ConfigureForm extends Model
             'dn_organizationName',
             'dn_organizationalUnitName',
             'discord_news_webhook',
-            'discord_invite_url',
             'pf_state_limits',
             'stripe_apiKey',
             'stripe_publicApiKey',
@@ -162,7 +160,6 @@ class ConfigureForm extends Model
               'moderator_domain',
               'twitter_account',
               'twitter_hashtags',
-              'discord_invite_url',
               'discord_news_webhook',
               'time_zone',
               'dn_countryName',
@@ -197,7 +194,6 @@ class ConfigureForm extends Model
               'registrations_end',
               'twitter_account',
               'twitter_hashtags',
-              'discord_invite_url',
               'discord_news_webhook',
               'time_zone',
               'dn_countryName',
@@ -315,7 +311,6 @@ class ConfigureForm extends Model
           'dn_organizationalUnitName'=>'organizationalUnitName',
           'target_days_new'=>'Target days is new',
           'target_days_updated'=>'Target days is updated',
-          'discord_invite_url'=>'Discord invite URL',
           'discord_news_webhook'=>'Discord News Webhook',
           'monthly_leaderboards'=>'Monthly points leaderboards',
           'subscriptions_menu_show'=>'Show subscriptions menu',

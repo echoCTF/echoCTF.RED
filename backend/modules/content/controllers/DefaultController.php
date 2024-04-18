@@ -50,6 +50,32 @@ class DefaultController extends \app\components\BaseController
     }
 
     /**
+     * Updates menu items sysconfig key.
+     * @return mixed
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionMenuItems()
+    {
+        $model=Sysconfig::findOneNew('menu_items');
+        if(Yii::$app->request->isPost)
+        {
+          $items=[];
+          foreach(Yii::$app->request->post('item') as $item)
+          {
+            if(trim($item['name'])!== "")
+              $items[]=$item;
+          }
+          if(($model->val=json_encode($items)) && $model->save())
+            Yii::$app->session->setFlash('success', Yii::t('app','Menu items updated'));
+        }
+
+        return $this->render('menu_items', [
+            'model' => $model,
+            'hint'=>Yii::t('app','Add or remove menu items from the frontend.')
+        ]);
+    }
+
+    /**
      * Updates Writeup Rules sysconfig key.
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found

@@ -69,6 +69,7 @@ AppAsset::register($this);
                         ['label' => 'Layout Override', 'url' => ['/content/layout-override/index'], 'visible' => !Yii::$app->user->isGuest,],
                         '<div class="dropdown-divider"></div>',
                         '<div class="dropdown-header">Static</div>',
+                        ['label' => 'Menu items', 'url' => ['/content/default/menu-items'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Frontpage Scenario', 'url' => ['/content/default/frontpage-scenario'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Offense Scenario', 'url' => ['/content/default/offense-scenario'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Defense Scenario', 'url' => ['/content/default/defense-scenario'], 'visible' => !Yii::$app->user->isGuest,],

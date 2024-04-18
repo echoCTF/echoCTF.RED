@@ -70,8 +70,20 @@ class Menu extends MenuBase
           $lines[]=Html::tag($tag, $menu, $options);
       }
 
-      if(Yii::$app->sys->discord_invite_url!==false)
-        $lines[]='<li class="nav-item"><b>'.Html::a('<i class="fab fa-discord text-discord"></i><p class="text-discord">Join our Discord!</p>', Yii::$app->sys->discord_invite_url, ['target'=>'_blank','class'=>'nav-link']).'</b></li>';
+      // Add support for more menu items
+      if(Yii::$app->sys->menu_items!==false && Yii::$app->sys->menu_items!=="")
+      {
+        // use try so that if json decode fails we dont crash.
+        try {
+          foreach (json_decode(Yii::$app->sys->menu_items,true) as $item)
+          {
+            $lines[]='<li class="nav-item"><b>'.Html::a($item['name'], $item['link'], ['target'=>'_blank','class'=>'nav-link']).'</b></li>';
+          }
+        }
+        catch (\Exception $e) {} // avoid exceptions here
+        catch(\TypeError $e) {} // dont fail on offset errors
+      }
+
 
       return implode("\n", $lines);
   }
