@@ -13,7 +13,8 @@ $this->params['breadcrumbs'][]=['label' => 'Targets', 'url' => ['index']];
 $this->params['breadcrumbs'][]=$this->title;
 yii\bootstrap5\Modal::begin([
     'header' => '<h2><i class="bi bi-info-circle-fill"></i>Target Exec Command Help</h2>',
-    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
+    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help', 'class' => 'btn btn-info'],
+    'options'=>['class'=>'modal-lg']
 ]);
 echo yii\helpers\Markdown::process($this->render('help/exec.md'), 'gfm');
 yii\bootstrap5\Modal::end();
