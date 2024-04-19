@@ -22,6 +22,7 @@ class AnswerForm extends Model
     {
         return [
             [['answer'], 'required'],
+            [['answer'], 'string','max'=>128],
             [['answer'], 'exist',
               'targetClass' => Question::class,
               'targetAttribute' => ['answer'=>'code']]
