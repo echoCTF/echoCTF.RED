@@ -24,7 +24,7 @@ global $first;
                 //'labelOptions' => ['class' => 'control-label col-lg-2'],
             ],
             ]);?>
-          <?=$form->field($answer, 'answer')->textInput(['placeholder'=>$model->maskedCode,'autofocus' => false, 'autocomplete'=>'off', 'style'=>"width: 100%;margin: 0; padding: 0; border: 0;",'id'=>'question'.$model->id])->label(false) ?>
+          <?=$form->field($answer, 'answer')->textInput(['placeholder'=>$model->maskedCode,'autofocus' => false, 'autocomplete'=>'off', 'style'=>"width: 100%;margin: 0; padding: 0; border: 0;",'id'=>'question'.$model->id,'maxlength'=>128])->label(false) ?>
           <?php ActiveForm::end();?>
       <?php endif;?>
     </div>
