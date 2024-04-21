@@ -33,13 +33,11 @@ yii\bootstrap5\Modal::end();
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
             'id',
             'title',
             'category',
             'created_at',
             'updated_at',
-
             [
               'class' => 'yii\grid\ActionColumn',
               'template' => '{view} {update} {delete} {discord}', // <-- your custom action's name
@@ -47,6 +45,7 @@ yii\bootstrap5\Modal::end();
                 'discord' => function($url, $model) {
                   return Html::a('<img src="/images/discord_clyde_purple.svg" width="18px">', ['discord', 'id' => $model->id], [
                       'class' => '',
+                      'title'=>'Post news entry to a discord webhook',
                       'data' => [
                           'confirm' => 'Are you absolutely sure you want to send this news to the webhook?',
                           'method' => 'post',
