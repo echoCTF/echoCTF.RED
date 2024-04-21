@@ -42,7 +42,7 @@ use app\components\formatters\Anchor;
         <div class="card bg-dark">
           <div class="card-body">
             <h4 class="card-title"><b><?=Html::a(\Yii::t('app','Rules'), ['/help/rule/index'])?></b></h4>
-            <p class="card-text"><?=\Yii::t('app','Instructions on connecting and getting help')?></p>
+            <p class="card-text"><?=\Yii::t('app','Rules for participants of the competition')?></p>
           </div>
           <div class="card-footer"><?=Html::a(\Yii::t('app',"Read the Rules"), ['/help/rule/index'],['class'=>'btn bg-primary text-bold text-dark card-link'])?></div>
         </div>
