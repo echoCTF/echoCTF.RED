@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\modules\settings\models\Credits */
 
-$this->title=Yii::t('app', 'Create Credits entry');
+$this->title=Yii::t('app', 'Create Credit entry');
 $this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Credits'), 'url' => ['index']];
 $this->params['breadcrumbs'][]=$this->title;
 yii\bootstrap5\Modal::begin([

@@ -8,7 +8,7 @@ use yii\helpers\Html;
 $this->title=Yii::t('app', 'Update Credits: {name}', [
     'name' => $model->title,
 ]);
-$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Creditss'), 'url' => ['index']];
+$this->params['breadcrumbs'][]=['label' => Yii::t('app', 'Credits'), 'url' => ['index']];
 $this->params['breadcrumbs'][]=['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][]=Yii::t('app', 'Update');
 yii\bootstrap5\Modal::begin([
