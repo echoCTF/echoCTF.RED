@@ -15,7 +15,7 @@ class m230110_205525_create_privacy_policy_page extends Migration
         $pages=intval($this->db->createCommand("SELECT count(*) FROM pages WHERE id=2")->queryScalar());
         if($pages===0)
         {
-            $this->insert('pages',['title'=>'Privacy Policy','body'=>'Privacy Policy']);
+            $this->insert('pages',['title'=>'Privacy Policy','body'=>'Privacy Policy','slug'=>'privacy-policy']);
         }
     }
 
