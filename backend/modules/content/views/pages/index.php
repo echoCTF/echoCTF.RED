@@ -34,7 +34,7 @@ yii\bootstrap5\Modal::end();
         'columns' => [
             'id',
             'title',
-            'body',
+            'slug',
             'created_at',
             'updated_at',
             ['class' => 'yii\grid\ActionColumn'],
