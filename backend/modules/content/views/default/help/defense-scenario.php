@@ -1,0 +1,1 @@
+An optional scenario content that will be displayed to the Defense side of the frontend.
