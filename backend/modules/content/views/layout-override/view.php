@@ -7,6 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model app\modules\content\models\LayoutOverride */
 
 $this->title = $model->name;
+$this->params['breadcrumbs'][] = "Content";
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Layout Overrides'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
