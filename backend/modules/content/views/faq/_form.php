@@ -12,11 +12,11 @@ use yii\widgets\ActiveForm;
 
     <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true])->hint('The FAQ entry title (supports HTML)') ?>
 
-    <?= $form->field($model, 'body')->textarea(['rows' => 6]) ?>
+    <?= $form->field($model, 'body')->textarea(['rows' => 6])->hint('The FAQ entry body (supports HTML)') ?>
 
-    <?= $form->field($model, 'weight')->textInput() ?>
+    <?= $form->field($model, 'weight')->textInput()->hint('The entry weight used for ordering') ?>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>

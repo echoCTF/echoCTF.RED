@@ -1,0 +1,1 @@
+The HTML content to be displayed on the frontpage of your platform.

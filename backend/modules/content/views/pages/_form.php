@@ -14,6 +14,8 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
+    <?= $form->field($model, 'slug')->textInput(['maxlength' => true]) ?>
+
     <?= $form->field($model, 'metatags')->textArea(['maxlength' => true,'style'=>'font-family: monospace']) ?>
 
     <?= $form->field($model, 'body')->textArea(['maxlength' => true,'rows'=>20,'style'=>'font-family: monospace']) ?>

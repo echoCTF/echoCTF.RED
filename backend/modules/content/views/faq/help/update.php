@@ -1,1 +1,6 @@
-<p>Comming soon...</p>
+Update an existing FAQ entry for your platform.
+
+The form fields include:
+* `Title`: A title for the FAQ entry (supports HTML)
+* `Body`: The body of the FAQ entry (supports HTML)
+* `Weight`: A weight used for ordering the FAQ entries

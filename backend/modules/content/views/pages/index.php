@@ -11,7 +11,8 @@ $this->title = Yii::t('app', 'Pages');
 $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 yii\bootstrap5\Modal::begin([
     'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
-    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help','class'=>'btn btn-info'],
+    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help', 'class' => 'btn btn-info'],
+  'options'=>['class'=>'modal-lg']
 ]);
 echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
 yii\bootstrap5\Modal::end();
@@ -33,7 +34,7 @@ yii\bootstrap5\Modal::end();
         'columns' => [
             'id',
             'title',
-            'body',
+            'slug',
             'created_at',
             'updated_at',
             ['class' => 'yii\grid\ActionColumn'],

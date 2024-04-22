@@ -12,6 +12,8 @@ Fields:
 * `Rootable`: Wether or not the target is rootable
 * `Timer`: Wether or not the target completions are timed
 * `Writeups Allowed`: Wether or not writeups are allowed for this target
+* `Instance Allowed`: Wether or not private instances are allowed for this target
+* `Require Findings`: Wether or not findings are required before we allow flags to be claimed
 * `Player Spin`: Wether or not player spins are allowed
 * `Headshot Spin`: Wether or not to restart the target after each headshot
 * `Suggested XP`: Minimum suggested XP for the target
@@ -26,6 +28,7 @@ Fields:
 * `Image`: The full image url for this target
 * `Imageparams`: Image pull parameters (eg for registries that require authentication)
 * `Weight`: An ordering weight
+* `Parameters`: Extra parameters for docker containers (eg `{"hostConfig":{"Memory":"512"}}`)
 
 Actions:
 * `Save` the record details

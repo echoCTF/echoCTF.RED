@@ -44,7 +44,7 @@ class RuleController extends Controller
     public function actionIndex()
     {
         $dataProvider=new ActiveDataProvider([
-            'query' => Rule::find()->orderBy(['weight'=>SORT_ASC, 'id'=>SORT_ASC]),
+            'query' => Rule::find()->forPlayerType()->orderBy(['weight'=>SORT_ASC, 'id'=>SORT_ASC]),
         ]);
 
         return $this->render('index', [

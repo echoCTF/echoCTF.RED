@@ -16,7 +16,6 @@ use yii\widgets\ActiveForm;
       <div class="col-md-3"><?= $form->field($model, 'name')->textInput(['maxlength' => true])->hint('A short unique name for this template') ?></div>
       <div class="col-md-3"><?= $form->field($model, 'filename')->textInput(['maxlength' => true])->hint('A filename to be used when downloading') ?></div>
       <div class="col-md-6"><?= $form->field($model, 'description')->textInput(['maxlength'=>true])->hint('An (optional) short description for this template') ?></div>
-
     </div>
 
     <div class="row">
@@ -26,8 +25,8 @@ use yii\widgets\ActiveForm;
       <div class="col-md-3"><?= $form->field($model, 'server')->checkBox()->hint('Whether or not this template is for vpn servers') ?></div>
     </div>
 
-    <?= $form->field($model, 'content')->textarea(['rows' => 12,'style'=>'font-family: monospace']) ?>
-
+    <?= $form->field($model, 'content')->textarea(['rows' => 12,'style'=>'font-family: monospace'])->hint('The configuration file contents (supports PHP)') ?>
+    <hr/>
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>

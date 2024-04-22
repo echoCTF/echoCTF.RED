@@ -66,6 +66,8 @@ class CreditsSearch extends Credits
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'body', $this->body]);
 
+        $dataProvider->setSort(['defaultOrder' => ['weight'=>SORT_ASC]]);
+
         return $dataProvider;
     }
 }

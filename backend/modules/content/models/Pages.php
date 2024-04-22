@@ -11,6 +11,7 @@ use Yii;
  * @property string|null $metatags
  * @property string|null $title
  * @property string|null $body
+ * @property string|null $slug
  * @property string|null $created_at
  * @property string|null $updated_at
  */
@@ -30,7 +31,8 @@ class Pages extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['metatags', 'body'], 'string'],
+            [['slug'], 'required'],
+            [['metatags', 'body','slug'], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['title'], 'string', 'max' => 255],
         ];
@@ -45,6 +47,7 @@ class Pages extends \yii\db\ActiveRecord
             'id' => Yii::t('app', 'ID'),
             'metatags' => Yii::t('app', 'Metatags'),
             'title' => Yii::t('app', 'Title'),
+            'slug' => Yii::t('app', 'Slug'),
             'body' => Yii::t('app', 'Body'),
             'created_at' => Yii::t('app', 'Created At'),
             'updated_at' => Yii::t('app', 'Updated At'),
