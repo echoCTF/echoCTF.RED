@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\settings\models\FaqSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title=Yii::t('app', 'FAQ');
+$this->title=Yii::t('app',ucfirst(Yii::$app->controller->module->id).' / FAQ');
 $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 yii\bootstrap5\Modal::begin([
     'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
