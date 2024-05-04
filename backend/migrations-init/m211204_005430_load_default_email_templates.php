@@ -10,7 +10,8 @@ class m211204_005430_load_default_email_templates extends Migration
   public $TPL=[
     'emailChangeVerify',
     'emailVerify',
-    'passwordResetToken'
+    'passwordResetToken',
+    'rejectVerify',
   ];
     /**
      * {@inheritdoc}
