@@ -350,7 +350,6 @@ class PlayerController extends \app\components\BaseController
   /**
    * Approve player registration.
    * @param integer $id
-   * @param bool $id (optional) mail user
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
