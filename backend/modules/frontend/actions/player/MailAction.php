@@ -1,4 +1,5 @@
 <?php
+
 namespace app\modules\frontend\actions\player;
 
 use Yii;
@@ -17,67 +18,82 @@ class MailAction extends \yii\base\Action
   /*
     Mail Users their activation URL
   */
-  public function run(int $id, $baseURL="https://echoctf.red/activate/")
+  public function run(int $id, $baseURL = "https://echoctf.red/activate/")
   {
 
     // Get innactive players
-    $player=$this->controller->findModel($id);
-    if($player->status==10)
+    $player = $this->controller->findModel($id);
+    if ($player->status == 10)
     {
-      \Yii::$app->getSession()->setFlash('warning', Yii::t('app','Player already active skipping mail.'));
-      return $this->controller->goBack(Yii::$app->request->referrer);
+      \Yii::$app->getSession()->setFlash('warning', Yii::t('app', 'Player already active skipping mail.'));
     }
-    elseif($player->status==9)
+    elseif ($player->status == 9)
     {
-      //$event_name=Sysconfig::findOne('event_name')->val;
-      try {
-        $activationURL=sprintf("https://%s/verify-email?token=%s",\Yii::$app->sys->offense_domain, $player->verification_token);
-          Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
-                ['user' => $player,'verifyLink'=>$activationURL]
-            )
-            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
-            ->setTo([$player->email => $player->fullname])
-            ->setSubject(Yii::t('app','{event_name} Account approved',['event_name'=>trim(Yii::$app->sys->event_name)]))
-            ->send();
-            \Yii::$app->getSession()->setFlash('success', Yii::t('app','Player activation mail send.'));
-        }
-        catch(\Exception $e)
-        {
-          \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to mail player. {exception}',['exception'=>Html::encode($e->getMessage())]));
-        }
+      if(\Yii::$app->sys->players_require_approval === true && $player->approval>0 && $player->approval<=2)
+        $this->approvalMail($player);
+      elseif(\Yii::$app->sys->players_require_approval === true && $player->approval>2 && $player->approval<=4)
+        $this->rejectionMail($player);
     }
-    elseif($player->status==0)
+    elseif ($player->status == 0)
     {
-      try {
-        $activationURL=sprintf("https://%s/verify-email?token=%s",\Yii::$app->sys->offense_domain, $player->verification_token);
-          Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'rejectVerify-html', 'text' => 'rejectVerify-text'],
-                ['user' => $player]
-            )
-            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
-            ->setTo([$player->email => $player->fullname])
-            ->setSubject(Yii::t('app','{event_name} Account Rejected',['event_name'=>trim(Yii::$app->sys->event_name)]))
-            ->send();
-            \Yii::$app->getSession()->setFlash('success', Yii::t('app','Player rejection mail send.'));
-        }
-        catch(\Exception $e)
-        {
-          \Yii::$app->getSession()->setFlash('error', Yii::t('app','Failed to mail rejection to player. {exception}',['exception'=>Html::encode($e->getMessage())]));
-        }
-
+        $this->rejectionMail($player);
     }
 
-    // Generate activation URL
-//    $activationURL=sprintf("%s%s", $baseURL, $player->activkey);
-//    $content=$this->controller->renderPartial('_account_activation_email', ['player' => $player, 'activationURL'=>$activationURL, 'event_name'=>$event_name]);
-//    $player->mail($content, 'echoCTF RED re-sending of account activation URL');
-
+    if($player->approval==1)
+      $player->updateAttributes(['approval' => 2]);
+    elseif($player->approval==3)
+      $player->updateAttributes(['approval' => 4]);
 
     return $this->controller->goBack(Yii::$app->request->referrer);
+  }
+
+  /**
+   * Send player rejection mail
+   */
+  private function rejectionMail($player)
+  {
+    try {
+      Yii::$app
+        ->mailer
+        ->compose(
+          ['html' => 'rejectVerify-html', 'text' => 'rejectVerify-text'],
+          ['user' => $player]
+        )
+        ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName . ' robot'])
+        ->setTo([$player->email => $player->fullname])
+        ->setSubject(Yii::t('app', '{event_name} Account rejected', ['event_name' => trim(Yii::$app->sys->event_name)]))
+        ->send();
+      \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player rejection mail send.'));
+    } catch (\Exception $e) {
+      \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to mail rejection to player. {exception}', ['exception' => Html::encode($e->getMessage())]));
+    }
+  }
+
+  /**
+   * Send approval email to user
+   */
+  private function approvalMail($player)
+  {
+    try {
+      $activationURL = sprintf("https://%s/verify-email?token=%s", \Yii::$app->sys->offense_domain, $player->verification_token);
+      Yii::$app
+        ->mailer
+        ->compose(
+          ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
+          ['user' => $player, 'verifyLink' => $activationURL]
+        )
+        ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName . ' robot'])
+        ->setTo([$player->email => $player->fullname])
+        ->setSubject(Yii::t('app', '{event_name} Account approved', ['event_name' => trim(Yii::$app->sys->event_name)]))
+        ->send();
+      if (Yii::$app->sys->players_require_approval === true && $player->approval == 1) {
+        $player->updateAttributes(['approval' => 2]);
+        \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player activation mail send and approval status updated.'));
+      } else {
+        \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player activation mail send.'));
+      }
+    } catch (\Exception $e) {
+      \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to mail player. {exception}', ['exception' => Html::encode($e->getMessage())]));
+    }
   }
 }
