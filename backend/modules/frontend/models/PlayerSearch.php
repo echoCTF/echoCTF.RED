@@ -43,8 +43,8 @@ class PlayerSearch extends Player
     public function rules()
     {
         return [
-            [['id', 'academic', 'status', 'active'], 'integer'],
-            [['created','vpn_local_address', 'status', 'username', 'fullname', 'email', 'type', 'password', 'activkey', 'ts', 'last_seen', 'online', 'ovpn', 'on_pui', 'on_vpn'], 'safe'],
+            [['id', 'academic', 'status', 'active','approval'], 'integer'],
+            [['affiliation','created','vpn_local_address', 'status', 'username', 'fullname', 'email', 'type', 'password', 'activkey', 'ts', 'last_seen', 'online', 'ovpn', 'on_pui', 'on_vpn'], 'safe'],
         ];
     }
 
@@ -89,6 +89,7 @@ class PlayerSearch extends Player
             'player.active' => $this->active,
             'player.academic' => $this->academic,
             'player.status' => $this->status,
+            'player.approval' => $this->approval,
             'player_last.on_pui' => $this->on_pui,
             'player_last.on_vpn' => $this->on_vpn,
             'player.ts' => $this->ts,
@@ -101,6 +102,7 @@ class PlayerSearch extends Player
             ->andFilterWhere(['like', 'player.created', $this->created])
             ->andFilterWhere(['like', 'player.password', $this->password])
             ->andFilterWhere(['like', 'player.activkey', $this->activkey])
+            ->andFilterWhere(['like', 'player.affiliation', $this->affiliation])
             ->andFilterWhere(['like', 'INET_NTOA(player_last.vpn_local_address)', $this->vpn_local_address]);
 
 //        if(!empty($this->ovpn)) $query->andHaving(['like', 'ovpn', $this->ovpn]);
