@@ -47,6 +47,8 @@ class PlayerController extends \app\components\BaseController
           'reset-player-progress' => ['POST'],
           'toggle-academic' => ['POST'],
           'toggle-active' => ['POST'],
+          'approve' => ['POST'],
+          'reject' => ['POST'],
         ],
       ],
     ]);
@@ -343,6 +345,51 @@ class PlayerController extends \app\components\BaseController
     }
 
     return $this->redirect(['index']);
+  }
+
+  /**
+   * Approve player registration.
+   * @param integer $id
+   * @param bool $id (optional) mail user
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionApprove($id)
+  {
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $model = $this->findModel($id);
+      $model->updateAttributes(['approval' => 1]);
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app','Player [{username}] registration approved.', ['username'=>Html::encode($model->username)]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to approve player [{username}] registration [{exception}]', ['username'=>Html::encode($model->username),'exception'=>Html::encode($e->getMessage())]));
+    }
+
+    return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+  }
+
+  /**
+   * Reject player registration.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionReject($id)
+  {
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $model = $this->findModel($id);
+      $model->updateAttributes(['approval' => 3]);
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app','Player [{username}] registration rejected.', ['username'=>Html::encode($model->username)]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to reject player [{username}] registration.', ['username'=>Html::encode($model->username)]));
+    }
+
+    return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
   public function actionGenerateSsl($id)
