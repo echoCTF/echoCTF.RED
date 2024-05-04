@@ -245,11 +245,15 @@ class PlayerController extends \app\components\BaseController
    */
   public function actionSetDeleted($id)
   {
+    if(\Yii::$app->sys->players_require_approval===true)
+      $updateAttributes=['status' => 0, 'active' => 0,'approval'=>3];
+    else
+      $updateAttributes=['status' => 0, 'active' => 0];
 
-    if (($model = Player::findOne($id)) !== null && $model->updateAttributes(['status' => 0, 'active' => 0]))
+      if (($model = Player::findOne($id)) !== null && $model->updateAttributes($updateAttributes))
       Yii::$app->session->setFlash('success', Yii::t('app','Player [{username}] status set to deleted.', ['username'=>Html::encode($model->username)]));
     else
-      Yii::$app->session->setFlash('error', Yii::t('app','Player deletion failed.'));
+      Yii::$app->session->setFlash('error', Yii::t('app','Player setting deletion flag failed.'));
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
