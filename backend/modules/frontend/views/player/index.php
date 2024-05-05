@@ -177,6 +177,45 @@ yii\bootstrap5\Modal::end();
               'confirm' => 'Are you sure you want to delete the currently filtered users?',
             ],
           ]
+        ). ' ' . Html::a(
+          '<i class="fas fa-mail-bulk"></i>',
+          ['mail-filtered'],
+          [
+            'title' => 'Mass Mail Filtered players',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => $searchModel->attributes,
+              'confirm' => 'Are you sure you want to mail the currently filtered users?',
+            ],
+          ]
+        ). ' ' . Html::a(
+          '<i class="fas fa-users"></i>',
+          ['approve-filtered'],
+          [
+            'title' => 'Mass Approve Filtered players',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => $searchModel->attributes,
+              'confirm' => 'Are you sure you want to approve the currently filtered users?',
+            ],
+          ]
+        ). ' ' . Html::a(
+          '<i class="fas fa-users-slash"></i>',
+          ['reject-filtered'],
+          [
+            'title' => 'Mass Reject Filtered players',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => $searchModel->attributes,
+              'confirm' => 'Are you sure you want to reject the currently filtered users?',
+            ],
+          ]
         ),
         'buttons' => [
           'approve'=>function($url, $model){
