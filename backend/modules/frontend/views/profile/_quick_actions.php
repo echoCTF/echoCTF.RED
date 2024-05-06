@@ -55,7 +55,7 @@ $profile_actions = [
   ],
 ];
 
-if (\Yii::$app->sys->players_require_approval === true)
+if (\Yii::$app->sys->player_require_approval === true)
 {
   if ($model->owner->approval == 0 || $model->owner->approval==3)
   {
@@ -88,7 +88,7 @@ echo ButtonDropdown::widget([
     'items' => array_merge($frontend_shortcuts, ['<div class="dropdown-divider"></div>',], $player_actions, ['<div class="dropdown-divider"></div>'], $profile_actions),
   ]
 ]);
-if (\Yii::$app->sys->players_require_approval === true)
+if (\Yii::$app->sys->player_require_approval === true)
 {
   echo "<b>Status: </b>",$model->owner::APPROVAL[$model->owner->approval],"\n";
 }
