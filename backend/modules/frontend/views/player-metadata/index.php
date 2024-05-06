@@ -31,10 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'player_id',
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'username'],
             'identificationFile',
             'affiliation',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, PlayerMetadata $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'player_id' => $model->player_id]);
                  }

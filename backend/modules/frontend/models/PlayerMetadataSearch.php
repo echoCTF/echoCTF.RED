@@ -11,6 +11,7 @@ use app\modules\frontend\models\PlayerMetadata;
  */
 class PlayerMetadataSearch extends PlayerMetadata
 {
+  public $username;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +19,7 @@ class PlayerMetadataSearch extends PlayerMetadata
     {
         return [
             [['player_id'], 'integer'],
-            [['identificationFile', 'affiliation'], 'safe'],
+            [['identificationFile', 'affiliation','username'], 'safe'],
         ];
     }
 
@@ -40,7 +41,7 @@ class PlayerMetadataSearch extends PlayerMetadata
      */
     public function search($params)
     {
-        $query = PlayerMetadata::find();
+        $query = PlayerMetadata::find()->joinWith(['player']);
 
         // add conditions that should always apply here
 
@@ -62,7 +63,20 @@ class PlayerMetadataSearch extends PlayerMetadata
         ]);
 
         $query->andFilterWhere(['like', 'identificationFile', $this->identificationFile])
+            ->andFilterWhere(['like', 'player.username', $this->username])
             ->andFilterWhere(['like', 'affiliation', $this->affiliation]);
+
+        $dataProvider->setSort([
+          'attributes' => array_merge(
+              $dataProvider->getSort()->attributes,
+              [
+                'username' => [
+                    'asc' => ['player.username' => SORT_ASC],
+                    'desc' => ['player.username' => SORT_DESC],
+                ],
+              ]
+          ),
+      ]);
 
         return $dataProvider;
     }
