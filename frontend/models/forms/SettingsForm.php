@@ -229,16 +229,13 @@ class SettingsForm extends Model
      */
     protected function sendEmail()
     {
-      return Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'emailChangeVerify-html', 'text' => 'emailChangeVerify-text'],
-                ['user' => $this->player]
-            )
-            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
-            ->setTo([$this->player->email => $this->player->fullname])
-            ->setSubject(\Yii::t('app','Verify your email for {event_name}',['event_name'=>trim(Yii::$app->sys->event_name)]))
-            ->send();
+      $emailtpl=\app\modelscli\EmailTemplate::findOne(['name' => 'emailChangeVerify']);
+      $subject=\Yii::t('app','Verify your email for {event_name}',['event_name'=>trim(Yii::$app->sys->event_name)]);
+      $verifyLink=\Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $this->_player->verification_token]);
+      $contentHtml = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->html, ['user' => $this->_player,'verifyLink'=>$verifyLink]);
+      $contentTxt = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->txt, ['user' => $this->_player,'verifyLink'=>$verifyLink]);
+
+      return $this->_player->mail($subject,$contentHtml,$contentTxt);
     }
 
     public function save()

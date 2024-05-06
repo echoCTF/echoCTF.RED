@@ -56,15 +56,11 @@ class ResendVerificationEmailForm extends Model
         $verification_resend_email++;
         Yii::$app->cache->memcache->set('verification_resend_ip:'.\Yii::$app->request->userIp,$verification_resend_ip, Yii::$app->sys->verification_resend_ip_timeout);
         Yii::$app->cache->memcache->set('verification_resend_email:'.$this->email,$verification_resend_email, Yii::$app->sys->verification_resend_email_timeout);
-        return Yii::$app
-            ->mailer
-            ->compose(
-                ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
-                ['user' => $player]
-            )
-            ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
-            ->setTo([$player->email => $player->fullname])
-            ->setSubject(\Yii::t('app','Account registration for {event_name}', ['event_name'=>trim(Yii::$app->sys->event_name)]))
-            ->send();
+        $emailtpl=\app\modelscli\EmailTemplate::findOne(['name' => 'emailVerify']);
+        $subject=\Yii::t('app','Account registration for {event_name}', ['event_name'=>trim(Yii::$app->sys->event_name)]);
+        $verifyLink=\Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $player->verification_token]);
+        $contentHtml = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->html, ['user' => $player,'verifyLink'=>$verifyLink]);
+        $contentTxt = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->txt, ['user' => $player,'verifyLink'=>$verifyLink]);
+        return $player->mail($subject,$contentHtml,$contentTxt);
     }
 }
