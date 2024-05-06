@@ -114,13 +114,7 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'mail_useFileTransport')->checkbox()->hint('Activate the use of file transport (save mails in files)?') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'mail_from')->textInput(['maxlength' => true])->hint('Mail From (eg. dontreply@echoctf.red)') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'mail_fromName')->textInput(['maxlength' => true])->hint('Mail From Name (eg. echoCTF RED)') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'mail_host')->textInput(['maxlength' => true])->hint('Mail host (eg. smtp-relay.gmail.com)') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'mail_port')->textInput(['maxlength' => true])->hint('Mail port (eg. 25)') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'mail_username')->textInput(['maxlength' => true])->hint('Mail server username') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'mail_password')->textInput(['maxlength' => true])->hint('Mail server password') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'mail_encryption')->textInput(['maxlength' => true])->hint('Mail server encryption (ssl,tls,none)') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'mail_verify_peer')->checkbox()->hint('Verify peer sertificate?') ?></div>
-          <div class="col-sm-3"><?= $form->field($model, 'mail_verify_peer_name')->checkbox()->hint('Verify peer name from certificate?') ?></div>
+          <div class="col-sm-6"><?= $form->field($model, 'dsn')->textInput(['maxlength' => true,'placeholder'=>'smtp://username:password@mail.example.com:25?local_domain=blah'])->hint('Mail DSN see '.Html::a('Symphony Mailer','https://symfony.com/doc/current/mailer.html',['title'=>'Symphony Mailer Reference','target'=>'_blank'])) ?></div>
         </div>
         <hr/>
 
@@ -150,7 +144,8 @@ $this->params['breadcrumbs'][]=$this->title;
         </div>
         <hr/>
 
-        <h4>VPN Certificate Settings <span><small>If you change these values you will have to regenerate your ca keys and player certificates again.</small></span></h4>
+        <h4>VPN Certificate Settings</h4>
+        <small class="text-danger">If you change these values you will have to regenerate your CA keys and player certificates.</small>
 
         <div class="row form-group">
           <div class="col-sm-2"><?= $form->field($model, 'dn_countryName')->textInput(['maxlength' => true])->input('text', ['placeholder' => ""])->hint('') ?></div>

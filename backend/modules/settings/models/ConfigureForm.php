@@ -81,6 +81,7 @@ class ConfigureForm extends Model
     public $profile_twitch;
     public $profile_youtube;
     public $guest_visible_leaderboards;
+    public $dsn;
 
     public $dn_countryName;
     public $dn_stateOrProvinceName;
@@ -164,7 +165,8 @@ class ConfigureForm extends Model
             'profile_htb',
             'profile_twitch',
             'profile_youtube',
-            'guest_visible_leaderboards'
+            'guest_visible_leaderboards',
+            'dsn'
         ];
 
     /**
@@ -203,6 +205,7 @@ class ConfigureForm extends Model
               'stripe_apiKey',
               'stripe_publicApiKey',
               'stripe_webhookSecret',
+              'dsn'
             ], 'string'],
             [['offense_registered_tag',
               'defense_registered_tag',
@@ -233,7 +236,8 @@ class ConfigureForm extends Model
               'dn_localityName',
               'dn_organizationName',
               'dn_organizationalUnitName',
-              'pf_state_limits'
+              'pf_state_limits',
+              'dsn'
             ], 'trim'],
             // required fields
             [['teams',
@@ -380,6 +384,7 @@ class ConfigureForm extends Model
           'profile_twitch'=>'Twitch',
           'profile_youtube'=>'Youtube',
           'guest_visible_leaderboards'=>'Guest visible leaderboards',
+          'dsn'=>'Mail DSN'
         ];
     }
 
