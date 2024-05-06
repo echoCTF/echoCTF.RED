@@ -141,6 +141,7 @@ AppAsset::register($this);
                     'items' => [
                         ['label' => 'Players', 'url' => ['/frontend/player/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Profiles', 'url' => ['/frontend/profile/index'], 'visible' => !Yii::$app->user->isGuest,],
+                        ['label' => 'Player Metadata', 'url' => ['/frontend/player-metadata/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Player Last', 'url' => ['/frontend/player-last/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Player SSL', 'url' => ['/frontend/player-ssl/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Player Spins', 'url' => ['/frontend/player-spin/index'], 'visible' => !Yii::$app->user->isGuest,],
