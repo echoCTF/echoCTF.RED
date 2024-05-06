@@ -65,6 +65,22 @@ class ConfigureForm extends Model
     public $monthly_leaderboards;
     public $subscriptions_menu_show;
     public $subscriptions_emergency_suspend;
+    public $player_require_approval;
+    public $player_require_identification;
+    public $all_players_vip;
+    public $team_visible_instances;
+    public $target_hide_inactive;
+    public $target_guest_view_deny;
+    public $network_view_guest;
+    public $hide_timezone;
+    public $profile_discord;
+    public $profile_echoctf;
+    public $profile_twitter;
+    public $profile_github;
+    public $profile_htb;
+    public $profile_twitch;
+    public $profile_youtube;
+    public $guest_visible_leaderboards;
 
     public $dn_countryName;
     public $dn_stateOrProvinceName;
@@ -132,7 +148,23 @@ class ConfigureForm extends Model
             'stripe_webhookSecret',
             'monthly_leaderboards',
             'subscriptions_menu_show',
-            'subscriptions_emergency_suspend'
+            'subscriptions_emergency_suspend',
+            'player_require_approval',
+            'player_require_identification',
+            'all_players_vip',
+            'team_visible_instances',
+            'target_hide_inactive',
+            'target_guest_view_deny',
+            'network_view_guest',
+            'hide_timezone',
+            'profile_discord',
+            'profile_echoctf',
+            'profile_twitter',
+            'profile_github',
+            'profile_htb',
+            'profile_twitch',
+            'profile_youtube',
+            'guest_visible_leaderboards'
         ];
 
     /**
@@ -249,7 +281,24 @@ class ConfigureForm extends Model
             'leaderboard_show_zero',
             'monthly_leaderboards',
             'subscriptions_menu_show',
-            'subscriptions_emergency_suspend'
+            'subscriptions_emergency_suspend',
+            'player_require_approval',
+            'player_require_identification',
+            'all_players_vip',
+            'team_visible_instances',
+            'target_hide_inactive',
+            'target_guest_view_deny',
+            'network_view_guest',
+            'hide_timezone',
+            'profile_discord',
+            'profile_echoctf',
+            'profile_twitter',
+            'profile_github',
+            'profile_htb',
+            'profile_twitch',
+            'profile_youtube',
+            'guest_visible_leaderboards'
+
           ], 'boolean'],
 
         ];
@@ -315,6 +364,22 @@ class ConfigureForm extends Model
           'monthly_leaderboards'=>'Monthly points leaderboards',
           'subscriptions_menu_show'=>'Show subscriptions menu',
           'subscriptions_emergency_suspend'=>'Emergency suspend subscriptions',
+          'player_require_approval'=> 'Players require approval',
+          'player_require_identification'=>'Players require identification',
+          'all_players_vip'=>'Give all players VIP status',
+          'team_visible_instances'=>'Team instances',
+          'target_hide_inactive'=>'Hide inactive targets',
+          'target_guest_view_deny'=>'Target deny guest view',
+          'network_view_guest'=>'Allow guests network view',
+          'hide_timezone'=>'Hide timezone',
+          'profile_discord'=>'Discord',
+          'profile_echoctf'=>'echoCTF',
+          'profile_twitter'=>'Twitter/X',
+          'profile_github'=>'Github',
+          'profile_htb'=>'HackTheBox',
+          'profile_twitch'=>'Twitch',
+          'profile_youtube'=>'Youtube',
+          'guest_visible_leaderboards'=>'Guest visible leaderboards',
         ];
     }
 
