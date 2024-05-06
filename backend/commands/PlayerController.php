@@ -165,24 +165,18 @@ class PlayerController extends Controller {
       $this->stdout("Mailing Registered users:\n", Console::BOLD);
     }
     $event_name=Sysconfig::findOne('event_name')->val;
+    $emailtpl=\app\modules\content\models\EmailTemplate::findOne(['name' => 'emailVerify']);
+    $subject=Yii::t('app', '{event_name} Account approved', ['event_name' => trim(Yii::$app->sys->event_name)]);
 
     foreach($players as $player)
     {
       // Generate activation URL
       $activationURL=sprintf("https://%s/verify-email?token=%s",\Yii::$app->sys->offense_domain, $player->verification_token);
+      $contentHtml = \app\components\BaseController::renderPhpContent("?>" . $emailtpl->html, ['user' => $player,'verifyLink'=>$activationURL]);
+      $contentTxt = \app\components\BaseController::renderPhpContent("?>" . $emailtpl->txt, ['user' => $player,'verifyLink'=>$activationURL]);
 
       $this->stdout($player->email);
-      $numSend=Yii::$app
-        ->mailer
-        ->compose(
-                  ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
-                  ['user' => $player,'verifyLink'=>$activationURL]
-        )
-        ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName])
-        ->setBcc([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName])
-        ->setTo([$player->email => $player->fullname])
-        ->setSubject(trim(Yii::$app->sys->event_name). ' Account approved')
-        ->send();
+      $numSend=intval($player->mail($subject,$contentHtml,$contentTxt));
       $this->stdout($numSend ? " Ok\n" : "Not Ok\n");
     }
   }

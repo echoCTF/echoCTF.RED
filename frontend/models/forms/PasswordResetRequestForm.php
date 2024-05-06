@@ -68,17 +68,15 @@ class PasswordResetRequestForm extends Model
         $password_reset_email++;
         Yii::$app->cache->memcache->set('password_reset_ip:'.\Yii::$app->request->userIp,$password_reset_ip, \Yii::$app->sys->password_reset_ip_timeout);
         Yii::$app->cache->memcache->set('password_reset_email:'.$this->email,$password_reset_email, \Yii::$app->sys->password_reset_email_timeout);
-        $message=Yii::$app
-        ->mailer
-        ->compose(
-            ['html' => 'passwordResetToken-html', 'text' => 'passwordResetToken-text'],
-            ['user' => $player]
-        )
-        ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName.' robot'])
-        ->setTo([$player->email => $player->fullname])
-        ->setSubject(\Yii::t('app','Password reset request for {event_name}',['event_name'=>trim(Yii::$app->sys->event_name)]));
-        $message->addHeader('X-tag', 'password-reset');
-        $message->addHeader('X-Metadata-Requestor-IP', \Yii::$app->request->userIp);
-        return $message->send();
+        $emailtpl=\app\modelscli\EmailTemplate::findOne(['name' => 'passwordResetToken']);
+        $subject=\Yii::t('app','Password reset request for {event_name}',['event_name'=>trim(Yii::$app->sys->event_name)]);
+        $resetLink=\Yii::$app->urlManager->createAbsoluteUrl(['site/reset-password', 'token' => $player->password_reset_token]);
+        $contentHtml = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->html, ['user' => $player,'resetLink'=>$resetLink]);
+        $contentTxt = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->txt, ['user' => $player,'resetLink'=>$resetLink]);
+        $mailHeaders=[
+          ['X-tag','password-reset'],
+          ['X-Metadata-Requestor-IP',\Yii::$app->request->userIp],
+        ];
+        return $player->mail($subject,$contentHtml,$contentTxt,$mailHeaders);
     }
 }

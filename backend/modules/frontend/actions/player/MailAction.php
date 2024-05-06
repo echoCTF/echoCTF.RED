@@ -53,13 +53,21 @@ class MailAction extends \yii\base\Action
   private function rejectionMail($player)
   {
     try {
-      $this->sendMail(
-        $player,
-        'rejectVerify-html',
-        'rejectVerify-text',
-        Yii::t('app', '{event_name} Account rejected', ['event_name' => trim(Yii::$app->sys->event_name)])
-      );
-      \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player rejection mail send.'));
+      $emailtpl=\app\modules\content\models\EmailTemplate::findOne(['name' => 'rejectVerify']);
+      $contentHtml = $this->controller->renderPhpContent("?>" . $emailtpl->html, ['user' => $player]);
+      $contentTxt = $this->controller->renderPhpContent("?>" . $emailtpl->txt, ['user' => $player]);
+      $subject=Yii::t('app', '{event_name} Account rejected', ['event_name' => trim(Yii::$app->sys->event_name)]);
+      if(!$player->mail($subject,$contentHtml,$contentTxt))
+      {
+        throw new \Exception('Could not send mail');
+      }
+
+      if (Yii::$app->sys->player_require_approval === true && $player->approval == 3) {
+        $player->updateAttributes(['approval' => 4]);
+        \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player rejection mail send and approval status updated.'));
+      } else {
+        \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player rejection mail send.'));
+      }
     } catch (\Exception $e) {
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to mail rejection to player. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }
@@ -72,12 +80,16 @@ class MailAction extends \yii\base\Action
   {
     try {
       $activationURL = sprintf("https://%s/verify-email?token=%s", \Yii::$app->sys->offense_domain, $player->verification_token);
-      $this->sendMail(
-        $player,
-        'emailVerify-html',
-        'emailVerify-text',
-        Yii::t('app', '{event_name} Account approved', ['event_name' => trim(Yii::$app->sys->event_name)])
-      );
+      $emailtpl=\app\modules\content\models\EmailTemplate::findOne(['name' => 'emailVerify']);
+      $contentHtml = $this->controller->renderPhpContent("?>" . $emailtpl->html, ['user' => $player,'verifyLink'=>$activationURL]);
+      $contentTxt = $this->controller->renderPhpContent("?>" . $emailtpl->txt, ['user' => $player,'verifyLink'=>$activationURL]);
+      $subject=Yii::t('app', '{event_name} Account approved', ['event_name' => trim(Yii::$app->sys->event_name)]);
+
+      if(!$player->mail($subject,$contentHtml,$contentTxt))
+      {
+        throw new \Exception('Could not send mail');
+      }
+
       if (Yii::$app->sys->player_require_approval === true && $player->approval == 1) {
         $player->updateAttributes(['approval' => 2]);
         \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player activation mail send and approval status updated.'));
@@ -87,19 +99,5 @@ class MailAction extends \yii\base\Action
     } catch (\Exception $e) {
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to mail player. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }
-  }
-
-  private function sendMail($player, $html, $text, $subject)
-  {
-    Yii::$app
-      ->mailer
-      ->compose(
-        ['html' => $html, 'text' => $text],
-        ['user' => $player]
-      )
-      ->setFrom([Yii::$app->sys->mail_from => Yii::$app->sys->mail_fromName . ' robot'])
-      ->setTo([$player->email => $player->fullname])
-      ->setSubject($subject)
-      ->send();
   }
 }
