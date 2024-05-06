@@ -70,10 +70,16 @@
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
 * `mail_fromName` The name appeared on the email send for registration and password resets
+* `dsn` A symphony mailer compatible DSN
+
+Or instead if not DSN then use the following
 * `mail_host` The mail server host to send mails through
 * `mail_port` The mail server port to connect
 * `mail_username` The username to authenticate to the mail server
 * `mail_password` The password to authenticate to the mail server
+* `local_domain` Set the EHLO mail used when sending mail
+* `verify_peer_name` Verify the SSL peer name of the remote server when sending email
+* `verify_peer` Verify the remote peer certificate when sending mail
 
 ## VPN specific keys
 * `CA.csr` The CA CSR
