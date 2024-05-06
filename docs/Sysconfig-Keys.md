@@ -4,7 +4,7 @@
 * `event_active`: Enable/Disable current event
 * `player_profile`: Enable/Disable player profiles
 * `player_require_approval` If player activation requires moderator approval first
-* `players_require_idenfication` Whether players need to provide proof of ID during registration
+* `player_require_identification` Whether players need to provide proof of ID during registration
 * `all_players_vip`: Allow all players to have VIP features enabled
 * `dashboard_is_home`: Enable/Disable dashboard as default home page for players
 * `teams`: Enable/Disable teams support
@@ -33,6 +33,7 @@
 * `profile_htb`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_twitch`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_youtube`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
+
 
 ## String and numeric key/val pairs
 * `event_name` A name for your event
