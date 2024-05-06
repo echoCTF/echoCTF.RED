@@ -153,7 +153,10 @@ class TeamScoreController extends \app\components\BaseController
                 {
                     if($tp->approved==0)
                         continue;
-                    fputcsv($csv, [$rank,$ts->team->name,$tp->player->fullname, $tp->player->username,$tp->player->email,Yii::$app->sys->{"academic_".$tp->player->academic.'short'},$tp->player->affiliation]);
+                    if($tp->player->metadata)
+                      fputcsv($csv, [$rank,$ts->team->name,$tp->player->fullname, $tp->player->username,$tp->player->email,Yii::$app->sys->{"academic_".$tp->player->academic.'short'},$tp->player->metadata->affiliation]);
+                    else
+                      fputcsv($csv, [$rank,$ts->team->name,$tp->player->fullname, $tp->player->username,$tp->player->email,Yii::$app->sys->{"academic_".$tp->player->academic.'short'},'']);
                 }
                 $rank++;
             }

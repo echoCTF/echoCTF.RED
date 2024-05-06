@@ -59,8 +59,8 @@ yii\bootstrap5\Modal::end();
       [
         'attribute' => 'avatar',
         'label'=>false,
-        'headerOptions' => ['style' => 'width:3.5em'],
-        'format' => ['image', ['width' => '40px', 'class' => 'img-thumbnail']],
+        'headerOptions' => ['style' => 'width:3em'],
+        'format' => ['image', ['width' => '30px', 'class' => 'img-thumbnail']],
         'value' => function ($data) {
           return '//' . Yii::$app->sys->offense_domain . '/images/avatars/' . $data->profile->avatar;
         }
@@ -68,25 +68,19 @@ yii\bootstrap5\Modal::end();
       ['class' => 'app\components\columns\ProfileColumn', 'idkey' => 'profile.id', 'attribute' => 'username', 'field' => 'username'],
       [
         'attribute'=>'affiliation',
+        'label'=>'Affiliation',
         'visible' => Yii::$app->sys->player_require_approval,
         'format'=>'html',
         'value'=>function($model){
-          if($model->active==1) return Html::encode($model->affiliation);
-          $formats=['.pdf','.png','.jpg','.jpeg','.docx'];
-          $format=null;
-          $baseDir=\Yii::getAlias('@app/web/identificationFiles/');
-          foreach ($formats as $f)
+          if(Yii::$app->sys->player_require_identification===true && $model->metadata)
           {
-            if(file_exists($baseDir.$model->profile->id.$f))
-            {
-              $format=$f;
-              break;
-            }
+            $filePath=\Yii::getAlias('@app/web/identificationFiles/'.$model->metadata->identificationFile);
+            if(file_exists($filePath))
+              return Html::a($model->metadata->affiliation,'/identificationFiles/'.$model->metadata->identificationFile,['width' => '50px']);
           }
-          if($format!==null)
-            return Html::a($model->affiliation,'/identificationFiles/'.$model->profile->id.$format,['width' => '50px']);
-          else
-            return Html::encode($model->affiliation);
+          if($model->metadata)
+            return Html::encode($model->metadata->affiliation);
+
         },
       ],
       [

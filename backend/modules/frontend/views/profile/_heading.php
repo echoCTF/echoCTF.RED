@@ -14,7 +14,7 @@ use yii\helpers\Html;
     </div>
     <div class="media-body va-m">
       <h2 class="media-heading"><?= Html::encode($model->owner->username) ?>
-        <small><?php if(trim($model->owner->fullname)!=="") echo " - ",Html::encode($model->owner->fullname) ?><?php if(trim($model->owner->affiliation)!=="") echo " - ",Html::encode($model->owner->affiliation) ?></small>
+        <small><?php if(trim($model->owner->fullname)!=="") echo " - ",Html::encode($model->owner->fullname) ?><?php if($model->owner->metadata && trim($model->owner->metadata->affiliation)!=="") echo " - ",Html::encode($model->owner->metadata->affiliation) ?></small>
       </h2>
       <?php if($model->owner->teamPlayer):?><p>Team: <?= $model->owner->teamPlayer->team->name ?></p><?php endif;?>
       <p class="lead"><?= Html::encode($model->bio) ?></p>

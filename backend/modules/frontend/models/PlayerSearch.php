@@ -14,7 +14,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  */
 class PlayerSearch extends Player
 {
-  public $on_pui, $on_vpn, $vpn_local_address;
+  public $on_pui, $on_vpn, $vpn_local_address,$affiliation;
   public function behaviors()
   {
     return [
@@ -66,7 +66,7 @@ class PlayerSearch extends Player
      */
     public function search($params)
     {
-        $query=Player::find()->joinWith(['last']);
+        $query=Player::find()->joinWith(['last','metadata']);
         // add conditions that should always apply here
 
         $dataProvider=new ActiveDataProvider([
@@ -102,7 +102,7 @@ class PlayerSearch extends Player
             ->andFilterWhere(['like', 'player.created', $this->created])
             ->andFilterWhere(['like', 'player.password', $this->password])
             ->andFilterWhere(['like', 'player.activkey', $this->activkey])
-            ->andFilterWhere(['like', 'player.affiliation', $this->affiliation])
+            ->andFilterWhere(['like', 'player_metadata.affiliation', $this->affiliation])
             ->andFilterWhere(['like', 'INET_NTOA(player_last.vpn_local_address)', $this->vpn_local_address]);
 
 //        if(!empty($this->ovpn)) $query->andHaving(['like', 'ovpn', $this->ovpn]);
@@ -132,6 +132,10 @@ class PlayerSearch extends Player
                   'vpn_local_address' => [
                       'asc' => ['player_last.vpn_local_address' => SORT_ASC],
                       'desc' => ['player_last.vpn_local_address' => SORT_DESC],
+                  ],
+                  'affiliation' => [
+                    'asc' => ['player_metadata.affiliation' => SORT_ASC],
+                    'desc' => ['player_metadata.affiliation' => SORT_DESC],
                   ],
 
                 ]
