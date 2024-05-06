@@ -8,7 +8,6 @@ use yii\db\Expression;
 use app\modules\activity\models\PlayerQuestion;
 use app\modules\activity\models\PlayerTreasure;
 use app\modules\activity\models\SpinQueue;
-use app\modules\activity\models\SpinHistory;
 use app\modules\activity\models\Report;
 use app\modules\activity\models\Stream;
 use app\modules\gameplay\models\Hint;
@@ -102,7 +101,6 @@ class PlayerAR extends \yii\db\ActiveRecord
     {
         return [
             [['username', 'type', 'status','email'], 'required'],
-            [['type','affiliation'], 'string'],
             [['active', 'status','approval'], 'integer'],
             [['academic'], 'integer'],
             [['academic'], 'default','value'=>0],
@@ -157,7 +155,7 @@ class PlayerAR extends \yii\db\ActiveRecord
             'created' => 'Created',
             'active' => 'Active',
             'academic' => 'Academic',
-            'affiliation' => 'Affiliation',
+            'metadata.affiliation' => 'Affiliation',
             'status'=>'Status',
             'ts' => 'Ts',
         ];
@@ -377,6 +375,14 @@ class PlayerAR extends \yii\db\ActiveRecord
     public function getTeamPlayer()
     {
         return $this->hasOne(TeamPlayer::class, ['player_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMetadata()
+    {
+        return $this->hasOne(PlayerMetadata::class, ['player_id' => 'id']);
     }
 
     /**
