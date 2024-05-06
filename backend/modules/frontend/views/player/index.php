@@ -59,8 +59,8 @@ yii\bootstrap5\Modal::end();
       [
         'attribute' => 'avatar',
         'label'=>false,
-        'headerOptions' => ['style' => 'width:3.5em'],
-        'format' => ['image', ['width' => '40px', 'class' => 'img-thumbnail']],
+        'headerOptions' => ['style' => 'width:3em'],
+        'format' => ['image', ['width' => '30px', 'class' => 'img-thumbnail']],
         'value' => function ($data) {
           return '//' . Yii::$app->sys->offense_domain . '/images/avatars/' . $data->profile->avatar;
         }
