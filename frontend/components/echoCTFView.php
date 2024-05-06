@@ -124,7 +124,7 @@ class echoCTFView extends \yii\web\View
     return ['name'=>'twitter:image:height', 'content'=>$this->_image_height];
   }
 
-  public function renderPhpContent($_content_, $_params_ = [])
+  public static function renderPhpContent($_content_, $_params_ = [])
   {
       $_obInitialLevel_ = ob_get_level();
       ob_start();
