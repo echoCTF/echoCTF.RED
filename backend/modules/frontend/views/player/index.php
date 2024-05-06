@@ -68,7 +68,7 @@ yii\bootstrap5\Modal::end();
       ['class' => 'app\components\columns\ProfileColumn', 'idkey' => 'profile.id', 'attribute' => 'username', 'field' => 'username'],
       [
         'attribute'=>'affiliation',
-        'visible' => Yii::$app->sys->players_require_approval,
+        'visible' => Yii::$app->sys->player_require_approval,
         'format'=>'html',
         'value'=>function($model){
           if($model->active==1) return Html::encode($model->affiliation);
@@ -119,7 +119,7 @@ yii\bootstrap5\Modal::end();
       [
         'attribute'=>'approval',
         'filter'=>$searchModel::APPROVAL,
-        'visible'=> Yii::$app->sys->players_require_approval===true,
+        'visible'=> Yii::$app->sys->player_require_approval===true,
         'value' => function ($model) {
           return $model::APPROVAL[$model->approval];
         }
@@ -147,8 +147,8 @@ yii\bootstrap5\Modal::end();
           'mail'=>function($model){ if ($model->status==10 || $model->approval==0) return false; return true;},
           'delete'=>function($model){ if (\Yii::$app->user->identity->isAdmin) return true; return false;},
           'reset-activkey'=>function($model){ if ($model->active && trim($model->activkey)!=="") return true; return false;},
-          'approve'=>function($model){ if ($model->active==0 && Yii::$app->sys->players_require_approval===true && $model->approval<1) return true; return false;},
-          'reject'=>function($model){ if ($model->active==0 && Yii::$app->sys->players_require_approval===true && $model->approval<2) return true; return false;}
+          'approve'=>function($model){ if ($model->active==0 && Yii::$app->sys->player_require_approval===true && $model->approval<1) return true; return false;},
+          'reject'=>function($model){ if ($model->active==0 && Yii::$app->sys->player_require_approval===true && $model->approval<2) return true; return false;}
         ],
         'template' => '{player-view-full} {clear-vpn} {view} {generate-ssl} {update} {delete} {ban} {mail} {reset-activkey} {approve} {reject} {set-deleted}',
         'header' => Html::a(

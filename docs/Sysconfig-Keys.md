@@ -3,6 +3,9 @@
 ## Flags (0 false, 1 true)
 * `event_active`: Enable/Disable current event
 * `player_profile`: Enable/Disable player profiles
+* `player_require_approval` If player activation requires moderator approval first
+* `players_require_idenfication` Whether players need to provide proof of ID during registration
+* `all_players_vip`: Allow all players to have VIP features enabled
 * `dashboard_is_home`: Enable/Disable dashboard as default home page for players
 * `teams`: Enable/Disable teams support
 * (optional) `team_required`: Enable/Disable requirement for teams
@@ -10,7 +13,6 @@
 * `leaderboard_show_zero`: Show zero points on leaderboard
 * `leaderboard_visible_after_event_end`: Show leaderboard after event end
 * `leaderboard_visible_before_event_start`: Show leaderboard before event start
-* `all_players_vip`: Allow all players to have VIP features enabled
 * `target_guest_view_deny`: Deny guests to target/view and target/versus
 * `target_hide_inactive`: Hide inactive targets from the frontend listings. This includes upcoming powerups
 * `network_view_guest`: Allow networks to be viewed by guests
@@ -19,7 +21,6 @@
 * `maintenance`: Enable site-wide maintenance mode
 * `maintenance_notification`: Send maintenance notification to everyone connected to the frontend interface. The popup can be dismissed but it always comes back. No other notifications are delivered.
 * `require_activation` Whether it is required for users to activate their accounts
-* `players_require_approval` If player activation requires moderator approval first
 * `disable_registration` Whether online registrations are allowed
 * `team_visible_instances` Whether or not player instances are visible to the rest of the team by default otherwise the per-instance field `team_allowed` takes priority
 * `guest_visible_leaderboards` Whether or not the leaderboards will be visible to guest users (this still respects the event start/end restrictions)
@@ -38,6 +39,7 @@
 * `writeup_rules` Your rules for writeup submissions
 * `frontpage_scenario` The event scenario displayed at the `frontend/`, landing page for guests.
 * `offense_scenario` A scenario displayed to the users once they have signed into the frontend.
+* `defense_scenario` A scenario displayed to the users once they have signed into the frontend.
 * `spins_per_day` Limit allowed restarts per day per player
 * `online_timeout` Timeout in seconds that a user is no longer considered online on the platform
 * `challenge_home` Full path to folder that the challenges will be uploaded to. (default: `@web/uploads/`)
@@ -94,9 +96,9 @@
 * `stripe_automatic_tax_enabled` Enable Stripe automatic TAX
 
 ## Player Specific
-* `academic_N` Name for academic value `N`
+* `academic_N` Name for academic value `N` (starting at 0)
 *	`academic_Nshort` Short name for academic value `N`
-* `academic_grouping` (1)Enable/(2)Disable support for academic grouping of activity stream
+* `academic_grouping` (1)Enable/(0)Disable support for academic grouping of activity stream
 example:
 ```sh
 backend/yii sysconfig/set academic_grouping 1

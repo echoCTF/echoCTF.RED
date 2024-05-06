@@ -247,7 +247,7 @@ class PlayerController extends \app\components\BaseController
    */
   public function actionSetDeleted($id)
   {
-    if(\Yii::$app->sys->players_require_approval===true)
+    if(\Yii::$app->sys->player_require_approval===true)
       $updateAttributes=['status' => 0, 'active' => 0,'approval'=>3];
     else
       $updateAttributes=['status' => 0, 'active' => 0];

@@ -29,9 +29,9 @@ class MailAction extends \yii\base\Action
     }
     elseif ($player->status == 9)
     {
-      if (\Yii::$app->sys->players_require_approval === true && $player->approval > 0 && $player->approval <= 2)
+      if (\Yii::$app->sys->player_require_approval === true && $player->approval > 0 && $player->approval <= 2)
         $this->approvalMail($player);
-      elseif (\Yii::$app->sys->players_require_approval === true && $player->approval > 2 && $player->approval <= 4)
+      elseif (\Yii::$app->sys->player_require_approval === true && $player->approval > 2 && $player->approval <= 4)
         $this->rejectionMail($player);
     }
     elseif ($player->status == 0)
@@ -78,7 +78,7 @@ class MailAction extends \yii\base\Action
         'emailVerify-text',
         Yii::t('app', '{event_name} Account approved', ['event_name' => trim(Yii::$app->sys->event_name)])
       );
-      if (Yii::$app->sys->players_require_approval === true && $player->approval == 1) {
+      if (Yii::$app->sys->player_require_approval === true && $player->approval == 1) {
         $player->updateAttributes(['approval' => 2]);
         \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player activation mail send and approval status updated.'));
       } else {
