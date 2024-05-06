@@ -68,17 +68,28 @@ class Player extends PlayerAR
       return false;
     }
 
-    public function mail($content, $subject)
+    /**
+     * Send mail to player with
+     * @param string $subject
+     * @param string $html
+     * @param string $txt
+     * @param array $headers
+     * @return bool
+     */
+    public function mail($subject, $html, $txt,$headers=[])
     {
       // Get mailer
       try
       {
-        \Yii::$app->mailer->compose()
+        $message=\Yii::$app->mailer->compose()
           ->setFrom([\app\modules\settings\models\Sysconfig::findOne('mail_from')->val => \app\modules\settings\models\Sysconfig::findOne('mail_fromName')->val])
           ->setTo([$this->email=>$this->username])
           ->setSubject($subject)
-          ->setTextBody($content)
-          ->send();
+          ->setTextBody($txt)
+          ->setHtmlBody($html);
+          foreach($headers as $entry)
+            $message->addHeader($entry[0],$entry[1]);
+        $message->send();
         if (Yii::$app instanceof \yii\web\Application)
           \Yii::$app->session->setFlash('success', Yii::t('app',"The user has been mailed."));
         else {
