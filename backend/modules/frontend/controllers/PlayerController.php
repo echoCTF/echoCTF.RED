@@ -47,6 +47,8 @@ class PlayerController extends \app\components\BaseController
           'reset-player-progress' => ['POST'],
           'toggle-academic' => ['POST'],
           'toggle-active' => ['POST'],
+          'approve' => ['POST'],
+          'reject' => ['POST'],
         ],
       ],
     ]);
@@ -245,11 +247,15 @@ class PlayerController extends \app\components\BaseController
    */
   public function actionSetDeleted($id)
   {
+    if(\Yii::$app->sys->players_require_approval===true)
+      $updateAttributes=['status' => 0, 'active' => 0,'approval'=>3];
+    else
+      $updateAttributes=['status' => 0, 'active' => 0];
 
-    if (($model = Player::findOne($id)) !== null && $model->updateAttributes(['status' => 0, 'active' => 0]))
+      if (($model = Player::findOne($id)) !== null && $model->updateAttributes($updateAttributes))
       Yii::$app->session->setFlash('success', Yii::t('app','Player [{username}] status set to deleted.', ['username'=>Html::encode($model->username)]));
     else
-      Yii::$app->session->setFlash('error', Yii::t('app','Player deletion failed.'));
+      Yii::$app->session->setFlash('error', Yii::t('app','Player setting deletion flag failed.'));
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
@@ -339,6 +345,50 @@ class PlayerController extends \app\components\BaseController
     }
 
     return $this->redirect(['index']);
+  }
+
+  /**
+   * Approve player registration.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionApprove($id)
+  {
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $model = $this->findModel($id);
+      $model->updateAttributes(['approval' => 1]);
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app','Player [{username}] registration approved.', ['username'=>Html::encode($model->username)]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to approve player [{username}] registration [{exception}]', ['username'=>Html::encode($model->username),'exception'=>Html::encode($e->getMessage())]));
+    }
+
+    return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+  }
+
+  /**
+   * Reject player registration.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionReject($id)
+  {
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $model = $this->findModel($id);
+      $model->updateAttributes(['approval' => 3]);
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app','Player [{username}] registration rejected.', ['username'=>Html::encode($model->username)]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to reject player [{username}] registration.', ['username'=>Html::encode($model->username)]));
+    }
+
+    return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
   public function actionGenerateSsl($id)
@@ -440,6 +490,104 @@ class PlayerController extends \app\components\BaseController
   }
 
   /**
+   * Reject all filtered results
+   */
+  public function actionRejectFiltered()
+  {
+    $searchModel = new PlayerSearch();
+    $query = $searchModel->search(['PlayerSearch' => Yii::$app->request->post()]);
+    $query->pagination = false;
+    if (intval($query->count) === intval(Player::find()->count())) {
+      Yii::$app->session->setFlash('error', Yii::t('app','You have attempted to reject all the records.'));
+      return $this->redirect(['index']);
+    }
+
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $counter = $query->count;
+      foreach ($query->getModels() as $q)
+      {
+        $q->approval=3;
+        $q->save();
+      }
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Players rejected',['counter'=>intval($counter)]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to reject users'));
+    }
+    return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+  }
+
+  /**
+   * Approve all filtered results
+   */
+  public function actionApproveFiltered()
+  {
+    $searchModel = new PlayerSearch();
+    $query = $searchModel->search(['PlayerSearch' => Yii::$app->request->post()]);
+    $query->pagination = false;
+    if (intval($query->count) === intval(Player::find()->count())) {
+      Yii::$app->session->setFlash('error', Yii::t('app','You have attempted to approve all the records.'));
+      return $this->redirect(['index']);
+    }
+
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $counter = $query->count;
+      foreach ($query->getModels() as $q)
+      {
+        $q->approval=1;
+        $q->save();
+      }
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Players approved',['counter'=>intval($counter)]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to approve users'));
+    }
+    return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+  }
+
+  /**
+   * Mail all filtered results
+   */
+  public function actionMailFiltered()
+  {
+    $searchModel = new PlayerSearch();
+    $query = $searchModel->search(['PlayerSearch' => Yii::$app->request->post()]);
+    $query->query->andFilterWhere([
+      'player.approval' => [1,3],
+    ]);
+    //$query->pagination = false;
+    $query->pagination = ['pageSize' => 5];
+    if (intval($query->count) === intval(Player::find()->count())) {
+      Yii::$app->session->setFlash('error', Yii::t('app','You have attempted to mail all the players.'));
+      return $this->redirect(['index']);
+    }
+    $approved=$rejected=0;
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $counter = $query->count;
+      foreach ($query->getModels() as $q)
+      {
+        if($q->approval==1)
+          $approved++;
+        elseif($q->approval==3)
+          $rejected++;
+        Yii::$app->runAction('frontend/player/mail', ['id' => $q->id]);
+      }
+      $trans->commit();
+
+      Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] total Players mailed [{approved} approved/{rejected} rejected]',['counter'=>intval($counter),'approved'=>$approved,'rejected'=>$rejected]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app','Failed to mail users'));
+    }
+    return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+  }
+
+   /**
    * Finds the Player model based on its primary key value.
    * If the model is not found, a 404 HTTP exception will be thrown.
    * @param integer $id
