@@ -61,8 +61,7 @@ else {
         <h5 class="rounded text-success font-weight-bold"><?= $subscription->product ? $subscription->product->name: "subscription"?> expires in <?=$subscription->expires?></h5>
         <?=Html::a('Manage Billing',['/subscription/default/index'],['class'=>'btn btn-block btn-info font-weight-bold']);?>
       <?php else:?>
-        <p class="rounded text-danger font-weight-bold">Your <?=$subscription->product ? $subscription->product->name: "subscription"?> has expired<br/><?=Html::a('Subscribe',['/subscription/default/index'],['class'=>'btn btn-primary text-dark font-weight-bold col-md-12']);?></p>
-
+        <p class="rounded text-danger font-weight-bold">Your <?=$subscription->product ? $subscription->product->name: "subscription"?> has expired<br/><?=Html::a('Renew Subscription',['/subscription/default/index'],['class'=>'btn btn-warning text-dark text-bold col-md-12']);?></p>
       <?php endif;?>
     <?php endif;?>
     <?php if($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)):?>
