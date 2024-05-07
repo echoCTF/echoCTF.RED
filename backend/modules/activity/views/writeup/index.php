@@ -50,7 +50,12 @@ yii\bootstrap5\Modal::end();
               'attribute'=>'status',
               'filter'=>['OK'=>'OK','PENDING'=>'PENDING','REJECTED'=>'REJECTED','NEEDS FIXES'=>'NEEDS FIXES'],
             ],
-            //'comment',
+            [
+              'attribute'=>'lang',
+              'label'=>'Language',
+              'value'=>'language.l'
+
+            ],
             'created_at',
             'updated_at',
 

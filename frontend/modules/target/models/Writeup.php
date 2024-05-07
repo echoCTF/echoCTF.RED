@@ -20,10 +20,12 @@ use app\modules\game\models\WriteupRating;
  * @property int|null $approved
  * @property string|null $status
  * @property string|null $formatter
+ * @property string $language_id
  * @property resource|null $comment
  * @property string|null $created_at
  * @property string|null $updated_at
  *
+ * @property Language $language
  * @property Player $player
  * @property Target $target
  */
@@ -66,14 +68,16 @@ class Writeup extends \yii\db\ActiveRecord
             [['approved'], 'boolean'],
             [['approved'], 'default','value'=>false],
             ['formatter', 'default','value'=>'text'],
+            ['language_id', 'default','value'=>'en'],
             [['status', 'comment'], 'string'],
             [['content'], 'filter','filter'=>'trim'],
             [['content'], 'string','skipOnEmpty'=>false, 'min'=>'20'],
             ['status','default','value'=>'PENDING'],
             [['created_at', 'updated_at'], 'safe'],
-//            [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
+            [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Language::class, 'targetAttribute' => ['language_id' => 'id']],
+
         ];
     }
 
@@ -136,6 +140,16 @@ class Writeup extends \yii\db\ActiveRecord
     public function getTarget()
     {
         return $this->hasOne(Target::class, ['id' => 'target_id']);
+    }
+
+    /**
+     * Gets query for [[Language]].
+     *
+     * @return \yii\db\ActiveQuery|LanguageQuery|Language
+     */
+    public function getLanguage()
+    {
+        return $this->hasOne(\app\models\Language::class, ['id' => 'language_id']);
     }
 
     /**

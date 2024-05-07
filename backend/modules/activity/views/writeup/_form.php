@@ -26,6 +26,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
     <?= $form->field($model, 'formatter')->dropDownList([ 'text' => 'TEXT', 'markdown' => 'Markdown' ], ['prompt' => '']) ?>
 
+    <?= $form->field($model, 'language_id')->dropDownList(ArrayHelper::map(\app\modules\settings\models\Language::find()->orderBy('l')->all(), 'id', 'l'))?>
     <?= $form->field($model, 'content')->textArea(['rows'=>15]) ?>
 
     <?= $form->field($model, 'approved')->checkbox() ?>

@@ -31,7 +31,7 @@ if($goback==='/')
 ?>
 <div class="writeup-view">
   <div class="body-content">
-    <h2><?=\Yii::t('app','Writeup for {target_name} by {username}',['target_name'=>Html::a($model->target->name,$goback),'username'=>$model->player->profile->link]);?></h2>
+    <h2><?=\Yii::t('app','({language}) Writeup for {target_name} by {username}',['target_name'=>Html::a($model->target->name,$goback),'username'=>$model->player->profile->link,'language'=>$model->language->l]);?></h2>
     <div class="row">
       <div class="col-md-8">
         <div class="card bg-dark">
