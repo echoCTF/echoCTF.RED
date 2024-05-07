@@ -79,9 +79,10 @@ $this->params['breadcrumbs'][] = $this->title;
               ],
               [
                 'label' => '<i class="far fa-file-alt" data-toggle="tooltip" data-placement="top" title="Target Metadata"></i>',
-                'content' => $this->render('full-view/_metadata-tab', ['model' => $model]),
+                'content' => $this->render('full-view/_metadata-tab', ['model' => $model->metadata]),
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'options' => ['id' => '_metadata-tab'],
+                'visible' => $model->metadata!==null,
               ],
               [
                 'label' => '<i class="fas fa-server" data-toggle="tooltip" data-placement="top" title="Target Instances"></i>',
