@@ -1,14 +1,12 @@
 <?php
-
 use yii\widgets\DetailView;
 use yii\helpers\HtmlPurifier;
 use yii\helpers\Markdown;
 use yii\helpers\Html;
-
 ?>
 <h5>Target Metadata</h5>
-<?= DetailView::widget([
-  'model' => $model->metadata,
+<?php if($model) echo DetailView::widget([
+  'model' => $model,
   'attributes' => [
     [
       'attribute' => 'scenario',
@@ -75,4 +73,4 @@ use yii\helpers\Html;
       }
     ],
   ],
-]) ?>
+]);
