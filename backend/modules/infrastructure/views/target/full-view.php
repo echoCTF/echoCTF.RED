@@ -17,6 +17,41 @@ $this->params['breadcrumbs'][] = $this->title;
     <!-- Begin .page-heading -->
     <p></p>
     <?= $this->render('full-view/_heading', ['model' => $model]); ?>
+    <p>
+        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Logs', ['logs', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
+        <?= Html::a('Exec', ['exec', 'id' => $model->id], ['class' => 'btn btn-danger','style'=>'background: black; color: white']) ?>
+        <?= Html::a('Generate', ['generate', 'id' => $model->id], ['class' => 'btn btn-info', 'style'=>'background-color: gray']) ?>
+        <?= Html::a('Spin', ['spin', 'id' => $model->id], [
+            'class' => 'btn btn-warning',
+            'data' => [
+                'confirm' => 'Are you sure you want to restart the host?',
+                'method' => 'post',
+            ],
+        ]) ?>
+        <?= Html::a('Pull', ['pull', 'id' => $model->id], [
+            'class' => 'btn btn-success',
+            'data' => [
+                'method' => 'post',
+            ],
+        ]) ?>
+
+        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+            'class' => 'btn btn-danger',
+            'data' => [
+                'confirm' => 'Are you sure you want to delete this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
+        <?= Html::a('Destroy', ['destroy', 'id' => $model->id], [
+            'class' => 'btn btn-info',
+            'data' => [
+                'confirm' => 'Are you sure you want to destroy the container for this item?',
+                'method' => 'post',
+            ],
+        ]) ?>
+
+    </p>
     <div class="row">
       <div class="col-md-4">
         <?= $this->render('full-view/_target_booleans', ['model' => $model]); ?>
@@ -41,6 +76,22 @@ $this->params['breadcrumbs'][] = $this->title;
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'options' => ['id' => '_properties-tab'],
                 'active' => true,
+              ],
+              [
+                'label' => '<i class="far fa-file-alt" data-toggle="tooltip" data-placement="top" title="Target Metadata"></i>',
+                'content' => $this->render('full-view/_metadata-tab', ['model' => $model]),
+                'headerOptions' => ['style' => 'font-weight:bold'],
+                'options' => ['id' => '_metadata-tab'],
+              ],
+              [
+                'label' => '<i class="fas fa-server" data-toggle="tooltip" data-placement="top" title="Target Instances"></i>',
+                'linkOptions' => ['data-url' => Url::to(['instances', 'id' => $model->id])],
+                'options' => ['id' => 'instances-tab'],
+              ],
+              [
+                'label' => '<i class="fas fa-calendar-alt" data-toggle="tooltip" data-placement="top" title="Target Network Migration Schedule"></i>',
+                'linkOptions' => ['data-url' => Url::to(['network-schedule', 'id' => $model->id])],
+                'options' => ['id' => 'network-schedule-tab'],
               ],
               [
                 'label' => '<i class="fas fa-spinner" data-toggle="tooltip" data-placement="top" title="Player Progress"></i>',

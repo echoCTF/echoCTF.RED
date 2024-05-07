@@ -6,6 +6,9 @@ use Yii;
 use app\modules\gameplay\models\Target;
 use app\modules\gameplay\models\TargetSearch;
 use app\modules\infrastructure\models\TargetExecCommandForm;
+use app\modules\infrastructure\models\TargetInstanceSearch;
+use app\modules\infrastructure\models\NetworkTargetScheduleSearch;
+
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Docker\DockerClientFactory;
@@ -493,6 +496,42 @@ class TargetController extends \app\components\BaseController
     $searchModel->target_id = $target->id;
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     return Json::encode(trim($this->renderAjax('full-view/_headshots', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
+  /**
+   * Return Instances for a given target
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionInstances($id)
+  {
+    $target = $this->findModel($id);
+    $searchModel = new TargetInstanceSearch();
+    $searchModel->target_id = $target->id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('full-view/_target_instances-tab', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
+    /**
+   * Return Instances for a given target
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionNetworkSchedule($id)
+  {
+    $target = $this->findModel($id);
+    $searchModel = new NetworkTargetScheduleSearch();
+    $searchModel->target_id = $target->id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('full-view/_network-schedule-tab', [
       'dataProvider' => $dataProvider,
       'searchModel' => $searchModel
     ])));

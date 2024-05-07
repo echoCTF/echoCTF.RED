@@ -5,7 +5,7 @@ use app\widgets\BooleanTransform as BT;
 <div class="panel">
   <div class="panel-heading">
     <span class="panel-icon">
-    <i class="fas fa-diagnoses"></i>
+      <i class="fas fa-diagnoses"></i>
     </span>
     <span class="panel-title"> Details</span>
   </div>
@@ -16,6 +16,12 @@ use app\widgets\BooleanTransform as BT;
         </tr>
       </thead>
       <tbody>
+<?php if ($model->ondemand) : ?>
+          <tr>
+            <td class="<?= $model->ondemand->state==1 ? "text-success" : "text-danger"?>"><b><i class="fas fa-power-off"></i> OnDemand</b></td>
+            <td><?= $model->ondemand->state==1 ? $model->ondemand->player->username : "" ?></td>
+          </tr>
+<?php endif; ?>
         <tr>
           <td><i class="fas fa-battery-half"></i> Difficulty</td>
           <td><?= $model->difficultyString ?></td>
