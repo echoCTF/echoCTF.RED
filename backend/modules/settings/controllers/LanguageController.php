@@ -4,32 +4,22 @@ namespace app\modules\settings\controllers;
 
 use app\modules\settings\models\Language;
 use app\modules\settings\models\LanguageSearch;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * LanguageController implements the CRUD actions for Language model.
  */
-class LanguageController extends Controller
+class LanguageController extends \app\components\BaseController
 {
     /**
-     * @inheritDoc
+     * {@inheritdoc}
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
-                ],
-            ]
-        );
+      return ArrayHelper::merge(parent::behaviors(),[]);
     }
+
 
     /**
      * Lists all Language models.
