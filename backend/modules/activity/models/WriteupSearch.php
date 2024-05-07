@@ -14,6 +14,7 @@ class WriteupSearch extends Writeup
   public $username;
   public $fqdn;
   public $ipoctet;
+  public $lang;
 
     /**
      * {@inheritdoc}
@@ -22,7 +23,7 @@ class WriteupSearch extends Writeup
     {
         return [
             [['player_id', 'target_id', 'approved'], 'integer'],
-            [['content', 'status', 'comment', 'created_at', 'updated_at', 'username', 'fqdn', 'ipoctet'], 'safe'],
+            [['content', 'status', 'comment', 'created_at', 'updated_at', 'username', 'fqdn', 'ipoctet','lang'], 'safe'],
         ];
     }
 
@@ -44,7 +45,7 @@ class WriteupSearch extends Writeup
      */
     public function search($params)
     {
-        $query = Writeup::find()->joinWith(['player', 'target']);
+        $query = Writeup::find()->joinWith(['player', 'target','language']);
 
         // add conditions that should always apply here
 
@@ -71,8 +72,10 @@ class WriteupSearch extends Writeup
               ->andFilterWhere(['like', 'writeup.updated_at', $this->updated_at])
               ->andFilterWhere(['like', 'content', $this->content])
               ->andFilterWhere(['like', 'writeup.status', $this->status])
+              ->andFilterWhere(['like', 'writeup.language', $this->language])
               ->andFilterWhere(['like', 'comment', $this->comment]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
+        $query->andFilterWhere(['like', 'language.l', $this->lang]);
         $query->andFilterWhere(['like', 'target.fqdn', $this->fqdn]);
         $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
 
@@ -84,7 +87,11 @@ class WriteupSearch extends Writeup
                       'asc' => ['player.username' => SORT_ASC],
                       'desc' => ['player.username' => SORT_DESC],
                   ],
-                  'fqdn' => [
+                  'lang' => [
+                    'asc' => ['language.l' => SORT_ASC],
+                    'desc' => ['language.l' => SORT_DESC],
+                ],
+                'fqdn' => [
                       'asc' => ['target.fqdn' => SORT_ASC],
                       'desc' => ['target.fqdn' => SORT_DESC],
                   ],

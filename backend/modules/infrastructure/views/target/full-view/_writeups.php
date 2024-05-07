@@ -15,6 +15,10 @@ use yii\grid\GridView;
         ['class' => 'app\components\columns\ProfileColumn','attribute'=>'username','label'=>'Username','idkey'=>'player.profile.id','field'=>'player.username'],
         'approved:boolean',
         [
+          'attribute'=>'lang',
+          'value'=>'language.l'
+        ],
+        [
           'attribute'=>'status',
           'filter'=>['OK'=>'OK','PENDING'=>'PENDING','REJECTED'=>'REJECTED','NEEDS FIXES'=>'NEEDS FIXES'],
         ],

@@ -37,6 +37,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'target.ipoctet',
             'formatter',
             [
+              'attribute'=>'language.l',
+              'label'=>'Language'
+            ],
+            [
               'attribute'=>'content',
               'format'=>'raw',
               'contentOptions' => ['class' => $model->approved ? 'bg-primary' : 'bg-danger','style'=>'max-width:100%'],

@@ -20,6 +20,7 @@ use yii\helpers\ArrayHelper;
  * @property string|null $status
  * @property resource|null $comment
  * @property string|null $formatter
+ * @property string $language
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -42,17 +43,19 @@ class Writeup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['player_id', 'target_id'], 'required'],
+            [['player_id', 'target_id','language_id'], 'required'],
             [['player_id', 'target_id'], 'integer'],
             [['approved'], 'boolean'],
-            [['content', 'status', 'comment','formatter'], 'string'],
+            [['content', 'status', 'comment','formatter','language_id'], 'string'],
             ['formatter','in','range'=>['text','markdown']],
             ['formatter','default','value'=>'text'],
+            ['language_id','default','value'=>'en'],
             ['status','in','range'=>['PENDING','NEEDS FIXES','REJECTED','OK']],
             [['created_at', 'updated_at'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
+            [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\modules\settings\models\Language::class, 'targetAttribute' => ['language_id' => 'id']],
         ];
     }
 
@@ -91,6 +94,9 @@ class Writeup extends \yii\db\ActiveRecord
             'approved' => 'Approved',
             'status' => 'Status',
             'comment' => 'Comment',
+            'formatter' => 'Formatter',
+            'language_id' => 'Language',
+            'lang' => 'Language',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
         ];
@@ -124,6 +130,16 @@ class Writeup extends \yii\db\ActiveRecord
     public function getTarget()
     {
         return $this->hasOne(Target::class, ['id' => 'target_id']);
+    }
+
+    /**
+     * Gets query for [[Target]].
+     *
+     * @return \yii\db\ActiveQuery|Target
+     */
+    public function getLanguage()
+    {
+        return $this->hasOne(\app\modules\settings\models\Language::class, ['id' => 'language_id']);
     }
 
     /**
