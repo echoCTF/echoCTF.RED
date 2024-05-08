@@ -70,6 +70,7 @@ class m220102_214745_populate_url_routes extends Migration
       'team/<token>' => 'team/default/view',
       'team/join/<token>' => 'team/default/join',
       'team/invite/<token>' => 'team/default/invite',
+      'team/renew/<token>' => 'team/default/renew',
       'team/approve/<id:\d+>' => 'team/default/approve',
       'team/reject/<id:\d+>' => 'team/default/reject',
       'networks' => 'network/default/index',

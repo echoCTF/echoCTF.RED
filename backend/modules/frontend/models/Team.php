@@ -16,6 +16,7 @@ use app\modules\activity\models\TeamStream;
  * @property int $owner_id
  * @property string $token
  * @property int $inviteonly
+ * @property boolean $locked
  * @property string $recruitment
  *
  * @property Player $owner
@@ -49,8 +50,9 @@ class Team extends \yii\db\ActiveRecord
             [['name', 'owner_id'], 'required'],
             [['description', 'logo'], 'string'],
             [['academic', 'owner_id','inviteonly'], 'integer'],
-            [['inviteonly'], 'boolean'],
+            [['inviteonly','locked'], 'boolean'],
             [['inviteonly'], 'default','value'=>true],
+            [['locked'], 'default','value'=>false],
             [['name','recruitment'], 'string', 'max' => 255],
             [['token'], 'string', 'max' => 30],
             [['token'], 'default', 'value' => substr(Yii::$app->security->generateRandomString(), 0, 30)],
@@ -73,7 +75,8 @@ class Team extends \yii\db\ActiveRecord
             'logo' => 'Logo',
             'owner_id' => 'Owner ID',
             'token' => 'Token',
-            'inviteonly'=>'Invite only'
+            'inviteonly'=>'Invite only',
+            'locked'=>'Locked'
         ];
     }
 

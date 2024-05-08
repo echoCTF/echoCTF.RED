@@ -26,7 +26,8 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
     </div>
     <div class="row">
       <div class="col-md-6"><?= $form->field($model, 'academic')->dropDownList(['0' => 'Gov', '1' => 'Edu','2'=>'Org'])->hint('Whether the player is gov, edu or org') ?></div>
-      <div class="col-md-6"><?= $form->field($model, 'inviteonly')->checkbox()->hint('Whether the team is inviteonly on listings') ?></div>
+      <div class="col-md-3"><?= $form->field($model, 'inviteonly')->checkbox()->hint('Whether the team is inviteonly on listings') ?></div>
+      <div class="col-md-3"><?= $form->field($model, 'locked')->checkbox()->hint('Whether the team is locked (eg no new members can join)') ?></div>
     </div>
     <div class="row">
       <div class="col-md-6"><?= $form->field($model, 'recruitment')->textArea()->hint('Recruitment text for new members') ?></div>

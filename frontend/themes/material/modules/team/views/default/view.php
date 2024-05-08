@@ -15,7 +15,13 @@ $this->_fluid="-fluid";
   <div class="body-content">
     <h2><?=\Yii::t('app','Details for team')?> [<code><?=Html::encode($team->name)?></code>]</h2>
   <?php if($team->getTeamPlayers()->count()<Yii::$app->sys->members_per_team):?>
-    <p><?=\Yii::t('app','Allow other players to join the team easily by providing them with this link:')?> <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token],'https'),Url::to(['/team/default/invite','token'=>$team->token],'https'),['class'=>'text-bold copy-to-clipboard','swal-data'=>'Copied to clipboard!']);?></code></p>
+    <p>
+      <?=\Yii::t('app','Allow other players to join the team easily by providing them with this link:')?>
+      <code><?=Html::a(Url::to(['/team/default/invite','token'=>$team->token],'https'),Url::to(['/team/default/invite','token'=>$team->token],'https'),['class'=>'text-bold copy-to-clipboard','swal-data'=>'Copied to clipboard!']);?></code>
+      <?php if($team->owner_id===Yii::$app->user->id && \Yii::$app->cache->memcache->get('team_renewed:'.$team->id)===false):?>
+        <?= Html::a('<i class="fas fa-sync-alt text-info" style="font-size: 1.2em;"></i>', Url::to(['renew','token'=>$team->token]), ['data-method' => 'POST', 'title' => 'Regenerate invite URL','rel'=>"tooltip",]) ?>
+      <?php endif;?>
+    </p>
   <?php else:?>
     <p class="text-warning"><?=\Yii::t('app','Your team is full, you cannot invite any more members')?></p>
   <?php endif;?>

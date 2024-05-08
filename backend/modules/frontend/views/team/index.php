@@ -55,6 +55,7 @@ yii\bootstrap5\Modal::end();
               'filter'=>[0=>'Gov',1=>'Edu', 2=>"Pro"],
             ],
             'inviteonly:boolean',
+            'locked:boolean',
             //'token',
             [
               'label'=>'Members',

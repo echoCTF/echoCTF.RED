@@ -17,7 +17,7 @@ class TeamSearch extends Team
     public function rules()
     {
         return [
-            [['id', 'academic', 'owner_id'], 'integer'],
+            [['id', 'academic', 'owner_id','locked'], 'integer'],
             [['name', 'description', 'logo', 'token'], 'safe'],
         ];
     }
@@ -61,6 +61,7 @@ class TeamSearch extends Team
         $query->andFilterWhere([
             'team.id' => $this->id,
             'team.academic' => $this->academic,
+            'team.locked' => $this->locked,
             'team.owner_id' => $this->owner_id,
         ]);
 

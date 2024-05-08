@@ -19,7 +19,7 @@ class TeamSearch extends Team
     public function rules()
     {
         return [
-            [['id', 'academic', 'owner_id','inviteonly','team_members'], 'integer'],
+            [['id', 'academic', 'owner_id','inviteonly','team_members','locked'], 'integer'],
             [['team_members'],'default','value'=>null ],
             [['name', 'description', 'recruitment', 'logo', 'token','username','ts'], 'safe'],
         ];
@@ -64,6 +64,8 @@ class TeamSearch extends Team
         $query->andFilterWhere([
             'team.id' => $this->id,
             'team.academic' => $this->academic,
+            'team.inviteonly' => $this->inviteonly,
+            'team.locked' => $this->locked,
             'team.owner_id' => $this->owner_id,
         ]);
 
