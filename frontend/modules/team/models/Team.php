@@ -18,6 +18,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $owner_id
  * @property string $token
  * @property boolean $inviteonly
+ * @property boolean $locked
  * @property string $recruitment
  *
  * @property Player $owner
@@ -45,6 +46,7 @@ class Team extends \yii\db\ActiveRecord
           'attributeTypes' => [
             'id' => AttributeTypecastBehavior::TYPE_INTEGER,
             'inviteonly' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'locked' => AttributeTypecastBehavior::TYPE_BOOLEAN,
             'academic' => AttributeTypecastBehavior::TYPE_INTEGER,
           ],
           'typecastAfterValidate' => true,
@@ -64,7 +66,7 @@ class Team extends \yii\db\ActiveRecord
     {
         return [
             self::SCENARIO_CREATE => ['name', 'description','token','academic'],
-            self::SCENARIO_UPDATE => ['name', 'description', 'uploadedAvatar','inviteonly','recruitment'],
+            self::SCENARIO_UPDATE => ['name', 'description', 'uploadedAvatar','inviteonly','recruitment','locked'],
         ];
     }
 
@@ -77,8 +79,9 @@ class Team extends \yii\db\ActiveRecord
             [['name', 'owner_id'], 'required'],
             [['description', 'logo'], 'string'],
             [['academic', 'owner_id'], 'integer'],
-            [['inviteonly'], 'boolean'],
+            [['inviteonly','locked'], 'boolean'],
             [['inviteonly'], 'default','value'=>true],
+            [['locked'], 'default','value'=>false],
             [['name'], 'trim'],
             [['name'], 'string', 'length' => [3, 32]],
             [['description','recruitment'], 'string', 'max' =>250],
@@ -107,6 +110,7 @@ class Team extends \yii\db\ActiveRecord
             'owner_id' => 'Owner ID',
             'token' => 'Token',
             'inviteonly'=>'Invite Only',
+            'locked'=>'Locked',
             'recruitment'=>'Recruitment Text'
         ];
     }
