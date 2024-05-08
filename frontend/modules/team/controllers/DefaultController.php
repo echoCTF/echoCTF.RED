@@ -285,10 +285,14 @@ class DefaultController extends \app\components\BaseController
         Yii::$app->session->setFlash('error', \Yii::t('app','The team you tried to join was not on the same academic scope.'));
         return $this->redirect(['index']);
       }
-
-      if($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
+      elseif($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
       {
         Yii::$app->session->setFlash('error', \Yii::t('app','The team you are trying to join is full.'));
+        return $this->redirect(['index']);
+      }
+      elseif($team->locked)
+      {
+        Yii::$app->session->setFlash('error', \Yii::t('app','The team you tried to join is locked. No new members can join!'));
         return $this->redirect(['index']);
       }
 
@@ -404,10 +408,14 @@ class DefaultController extends \app\components\BaseController
         Yii::$app->session->setFlash('error', \Yii::t('app','The team you are trying to access is not of the same academic type.'));
         return $this->redirect(['index']);
       }
-
-      if($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
+      elseif($team->getTeamPlayers()->count()>=intval(Yii::$app->sys->members_per_team))
       {
         Yii::$app->session->setFlash('error', \Yii::t('app','The team you are trying to join is full.'));
+        return $this->redirect(['index']);
+      }
+      elseif($team->locked)
+      {
+        Yii::$app->session->setFlash('error', \Yii::t('app','The team you tried to join is locked. No new members can join!'));
         return $this->redirect(['index']);
       }
 
