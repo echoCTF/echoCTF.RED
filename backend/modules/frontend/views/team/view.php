@@ -51,6 +51,7 @@ Yii::$app->user->setReturnUrl(['frontend/team/view','id'=>$model->id]);
              <b>recruitment:</b> <?=Html::encode($model->recruitment)?><br/>
              <b>academic:</b> <?=Html::encode($model->academicLong)?><br/>
              <b>inviteonly:</b> <?=Html::encode($model->inviteonly===0?'nop':'yep')?><br/>
+             <b>locked:</b> <?=Html::encode($model->locked===0?'nop':'yep')?><br/>
              <b>last update:</b> <?=$model->ts?>
 
            </p>
