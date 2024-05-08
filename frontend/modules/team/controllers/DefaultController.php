@@ -29,7 +29,7 @@ class DefaultController extends \app\components\BaseController
         return ArrayHelper::merge($parent,[
           'access' => [
                 'class' => \yii\filters\AccessControl::class,
-                'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite', 'mine','view'],
+                'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite', 'mine','view','renew'],
                 'rules' => [
                   'teamsAccess'=>[
                     'actions'=>[''],
@@ -80,7 +80,7 @@ class DefaultController extends \app\components\BaseController
                     }
                   ],
                   [ // Only allow updates from teamLeaders
-                    'actions'=> ['update'],
+                    'actions'=> ['update','renew'],
                     'allow' => false,
                     'roles' => ['@'],
                     'matchCallback' => function ($rule, $action) {
@@ -113,7 +113,7 @@ class DefaultController extends \app\components\BaseController
                      },
                  ],
                  [
-                   'actions' => ['index', 'mine', 'create', 'join', 'update', 'approve', 'reject', 'invite', 'view'],
+                   'actions' => ['index', 'mine', 'create', 'join', 'update', 'approve', 'reject', 'invite', 'view','renew'],
                    'allow' => true,
                    'roles' => ['@'],
                  ],
@@ -125,6 +125,7 @@ class DefaultController extends \app\components\BaseController
                     'reject' => ['POST'],
                     'approve' => ['POST'],
                     'join' => ['POST'],
+                    'renew' => ['POST'],
                 ],
             ],
         ]);
@@ -268,6 +269,25 @@ class DefaultController extends \app\components\BaseController
           'model' => $model,
       ]);
 
+    }
+    /**
+     * Renew a Team token.
+     * @return mixed
+     */
+    public function actionRenew($token=null)
+    {
+      $team=$this->findModel(Yii::$app->user->identity->teamLeader->id);
+      if(\Yii::$app->cache->memcache->get('team_renewed:'.$team->id)!==false)
+      {
+        \Yii::$app->session->addFlash('warning', \Yii::t('app','Please wait 5 minutes until you can renew your URL again.'));
+      }
+      else
+      {
+        $team->updateAttributes(['token'=>Yii::$app->security->generateRandomString(10)]);
+        \Yii::$app->cache->memcache->set('team_renewed:'.$team->id,true,360);
+        \Yii::$app->session->addFlash('success', \Yii::t('app','Your team invite URL got renewed. You will have to wait 5 minutes before you can renew again.'));
+      }
+      return $this->redirect(['view','token'=>$team->token]);
     }
 
 
