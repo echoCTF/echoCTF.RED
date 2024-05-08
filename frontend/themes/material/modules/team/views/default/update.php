@@ -53,6 +53,7 @@ $this->registerJs(
             <div class="row">
               <div class="col"><?= $form->field($model, 'name')->textInput() ?></div>
               <div class="col"><?= $form->field($model, 'inviteonly')->checkbox() ?></div>
+              <div class="col"><?= $form->field($model, 'locked')->checkbox() ?></div>
             </div>
             <?= $form->field($model, 'recruitment')->textArea([]) ?>
             <?= $form->field($model, 'description')->textArea([]) ?>
