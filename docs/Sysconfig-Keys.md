@@ -34,6 +34,7 @@
 * `profile_twitch`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_youtube`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 
+* `writeup_rankings`: Whether or not writeup rankings will be visible on leaderboards
 
 ## String and numeric key/val pairs
 * `event_name` A name for your event

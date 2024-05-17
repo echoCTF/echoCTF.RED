@@ -145,6 +145,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ]
               ]);Pjax::end();?>
         </div>
+<?php if(\Yii::$app->sys->writeup_rankings!==false):?>
         <div class="col">
               <?php
               Pjax::begin(['id'=>'mostWriteups-pjax','enablePushState'=>false, 'linkSelector'=>'#mostWriteups-leaderboard-pager a', 'formSelector'=>false]);
@@ -177,7 +178,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ]
               ]);Pjax::end();?>
         </div>
-
+<?php endif;?>
         <div class="col">
               <?php
               Pjax::begin(['id'=>'mostSolves-pjax','enablePushState'=>false, 'linkSelector'=>'#mostSolves-leaderboard-pager a', 'formSelector'=>false]);
