@@ -167,8 +167,7 @@
 
 
   - name: Install packages
-    openbsd_pkg:
-      name: "{{packages}}"
+    shell: "pkg_add {{packages|join(' ')}}"
 
   - name: Add user 'sysadmin'
     user:

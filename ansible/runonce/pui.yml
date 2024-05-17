@@ -185,8 +185,7 @@
       - '/root/.profile'
 
   - name: Install packages
-    openbsd_pkg:
-      name: "{{packages}}"
+    shell: "pkg_add {{packages| join(' ')}}"
 
   - name: Install lexicon (raw)
     raw: pip3 install lexicon

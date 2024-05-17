@@ -192,8 +192,7 @@
       APP_DIR: "{{playbook_dir}}/../../"
 
   - name: Install packages
-    openbsd_pkg:
-      name: "{{packages}}"
+    shell: "pkg_add {{packages| join(' ')}}"
 
   - name: Configure PS1 for root and skeleton
     lineinfile:
