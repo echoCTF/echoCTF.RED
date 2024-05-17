@@ -69,6 +69,8 @@
       backup: no
 
   - name: BUILD_COMMANDS.exec
+    become_user: "{{item.become|default('root')}}"
+    become: true
     when: BUILD_COMMANDS is defined and BUILD_COMMANDS.exec is defined
     with_items: "{{BUILD_COMMANDS.exec}}"
     raw: "{{item.cmd}}"

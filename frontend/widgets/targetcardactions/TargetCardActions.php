@@ -81,7 +81,7 @@ class TargetCardActions extends Widget
             $linkOptions['data-showCancelButton']="false";
             $linkOptions['data-confirm']=\Yii::t('app','You have requested to spawn a new instance of this target but you currently dont have an active subscription. Subscribe to activate this feature.');
             $this->target_actions[]=[
-                'label' => \Yii::t('app','<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance <small class="text-danger">(vip only)</small></b>'),
+                'label' => \Yii::t('app','<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>'),
                 'url' => Url::to(['/subscription/default/index']),
                 'options'=>['style'=>'white-space: nowrap;'],
                 'linkOptions'=>$linkOptions
@@ -99,7 +99,7 @@ class TargetCardActions extends Widget
         elseif($this->target_instance->target_id!==$this->model->id)
         {
             $this->target_actions[]=[
-                'label' => \Yii::t('app','<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance <small>(vip only)</small></b>'),
+                'label' => \Yii::t('app','<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>'),
                 'url' => Url::to(['/target/default/spawn', 'id'=>$this->model->id]),
                 'options'=>['style'=>'white-space: nowrap;'],
                 'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>\Yii::t('app','You are about to spawn a private instance of this target. However, you already have one instance running for '.$this->target_instance->target->name.'. Do you want to schedule the existing instance to be destroyed in order to be able to spawn a new one?')])
@@ -114,7 +114,7 @@ class TargetCardActions extends Widget
                 'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>\Yii::t('app','You are about to restart your instance. You will receive a notification once the operation is complete.')])
             ];
             $this->target_actions[]=[
-                    'label' => \Yii::t('app','<b><i class="fas fa-power-off"></i>&nbsp; Shut your instance <small>(vip only)</small></b>'),
+                    'label' => \Yii::t('app','<b><i class="fas fa-power-off"></i>&nbsp; Shut your instance</b>'),
                     'url' => Url::to(['/target/default/shut', 'id'=>$this->model->id]),
                     'options'=>['style'=>'white-space: nowrap;'],
                     'linkOptions'=>ArrayHelper::merge($this->linkOptions,['data-confirm'=>\Yii::t('app','You are about to shutdown your private instance of this target. This process takes up to a minute to complete. You will get a notification once it is completed.')])

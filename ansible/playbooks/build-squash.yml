@@ -1,4 +1,4 @@
-#!/usr/bin/ansible-playbook
+#!/usr/bin/env ansible-playbook
 ---
 - name: Build with squash and tag docker target images
   hosts: all

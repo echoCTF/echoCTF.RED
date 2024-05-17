@@ -16,7 +16,6 @@
 * `target_guest_view_deny`: Deny guests to target/view and target/versus
 * `target_hide_inactive`: Hide inactive targets from the frontend listings. This includes upcoming powerups
 * `network_view_guest`: Allow networks to be viewed by guests
-* `monthly_leaderboards`: Enable monthly player related leaderboards
 * `force_findings_to_claim`: Enable the enforcement of players needing to have discovered the findings before claiming flags
 * `maintenance`: Enable site-wide maintenance mode
 * `maintenance_notification`: Send maintenance notification to everyone connected to the frontend interface. The popup can be dismissed but it always comes back. No other notifications are delivered.
@@ -34,6 +33,10 @@
 * `profile_twitch`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_youtube`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 
+* `writeup_rankings`: Whether or not writeup rankings will be visible on leaderboards
+* `country_rankings`: Whether or not country rankings will be visible on leaderboard
+* `player_point_rankings`: Whether or not player point rankings will be visible on leaderboard
+* `player_monthly_rankings`: Whether or not player monthly rankings will be visible on leaderboard
 
 ## String and numeric key/val pairs
 * `event_name` A name for your event

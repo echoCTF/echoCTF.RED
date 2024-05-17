@@ -176,8 +176,7 @@
       - '/root/.profile'
 
   - name: Install packages
-    openbsd_pkg:
-      name: "{{packages}}"
+    shell: "pkg_add {{packages| join(' ')}}"
 
   - name: Add users
     user:
@@ -404,13 +403,14 @@
       - enable moderator
       - set moderator flags -c /etc/nginx/moderatorUI.conf
       - set ntpd flags -s
+      - set syslogd flags -a /home/moderatorUI/dev/log
     tags:
       - rcctl
 
   - name: Generate DH params file for nginx
     command: openssl dhparam -out /etc/ssl/private/dhparam.pem 2048
 
-  - ansible.builtin.include: includes/selfsigned.yml
+  - ansible.builtin.include_tasks: includes/selfsigned.yml
 
   - name: Fix needed permissions
     file:

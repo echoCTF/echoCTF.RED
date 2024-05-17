@@ -228,6 +228,7 @@ ETSCTF_TREASURES:
 BUILD_COMMANDS:
 #  exec:
 #  - { cmd: "mysql < /tmp/ETSCTF.sql" }
+#  - { cmd: "somecommand", become: "ETSCTF" }
   replace:
   - { #1
       pattern: "ENVFLAG_HASH",

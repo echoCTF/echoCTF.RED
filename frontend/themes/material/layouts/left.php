@@ -20,7 +20,7 @@ use yii\helpers\Url;
             <img style="width: 75px; height: 75px" src="/images/avatars/<?=Yii::$app->user->identity->profile->avtr;?>?<?=Yii::$app->formatter->asTimestamp(Yii::$app->user->identity->profile->updated_at)?>" class="img-fluid rounded <?php if(Yii::$app->user->identity->isVip):?>border-danger<?php endif;?> <?=\app\components\formatters\RankFormatter::ordinalPlaceCss(Yii::$app->user->identity->profile->rank->id)?>" style="max-width: 60px; max-height: 60px" alt="Avatar of <?=Html::encode(Yii::$app->user->identity->username)?>"><br/>
             <i class="fas fa-shield-alt <?= Yii::$app->user->identity->onVPN ? "text-primary" : "text-danger"?>" style="font-size: 0.75em"></i> <?=Html::encode(Yii::$app->user->identity->username)?> <small style="font-size: 0.65em">(<code><?=number_format(Yii::$app->user->identity->profile->score->points)?> pts</code>)</small>
           </a>
-          <center id="clock" class="small clock text-primary"><?=\Yii::t('app','Server time:')?> <span id="time"><?=date('H:i');?><?php if(\Yii::$app->sys->hide_timezone):?> <small><?=date_default_timezone_get()?></small><?php endif;?></span></center>
+          <center id="clock" class="small clock text-primary"><?=\Yii::t('app','Server time:')?> <span id="time"><?=date('H:i');?><?php if(\Yii::$app->sys->hide_timezone!==true):?> <small><?=date_default_timezone_get()?></small><?php endif;?></span></center>
         <?php endif;?>
     </div>
     <div class="sidebar-wrapper">

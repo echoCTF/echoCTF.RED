@@ -61,7 +61,7 @@
       libutil: "15.1"
       libcrypto: "47.0"
       libz: "6.0"
-      ICU_MAJOR: 73
+      ICU_MAJOR: 74
       ICU_MINOR: 2
     sysctl:
       kern.bufcachepercent: 30
@@ -185,11 +185,10 @@
       - '/root/.profile'
 
   - name: Install packages
-    openbsd_pkg:
-      name: "{{packages}}"
+    shell: "pkg_add {{packages| join(' ')}}"
 
   - name: Install lexicon (raw)
-    raw: pip3 install lexicon
+    raw: pip3 install --break-system-packages lexicon
 
   - name: Install composer
     get_url:
@@ -459,7 +458,7 @@
   - name: Generate DH params file for nginx
     command: openssl dhparam -out /etc/ssl/private/dhparam.pem 2048
 
-  - ansible.builtin.include: includes/selfsigned.yml
+  - ansible.builtin.include_tasks: includes/selfsigned.yml
 
   - name: Fix needed permissions
     file:

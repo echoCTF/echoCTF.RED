@@ -45,7 +45,7 @@ $config=[
     'components' => [
       'i18n' => [
         'translations' => [
-          'yii' => [
+          'yii*' => [
             'class' => 'yii\i18n\PhpMessageSource',
           ],
           'app*' => [
