@@ -343,6 +343,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
         </div>
       </div>
       <div class="row">
+<?php if(\Yii::$app->sys->country_rankings!==false):?>
       <div class="col-md-6">
               <?php
               Pjax::begin(['id'=>'playerCountry-pjax','enablePushState'=>false, 'linkSelector'=>'#player-country-leaderboard-pager a', 'formSelector'=>false]);
@@ -375,6 +376,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               ]);
               Pjax::end();?>
         </div>
+<?php endif;?>
       </div>
     </div>
 </div>
