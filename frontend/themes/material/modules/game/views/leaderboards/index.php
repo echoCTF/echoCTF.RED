@@ -79,6 +79,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
               Pjax::end();?>
         </div>
 <?php endif;?>
+<?php if(\Yii::$app->sys->teams!==false):?>
         <div class="col">
               <?php
               Pjax::begin(['id'=>'teamScore-pjax','enablePushState'=>false, 'linkSelector'=>'#team-leaderboard-pager a', 'formSelector'=>false]);
@@ -109,6 +110,7 @@ $this->_url=\yii\helpers\Url::to(['index'], 'https');
                   ]
               ]);Pjax::end();?>
         </div>
+<?php endif;?>
       </div>
       <div class="row">
         <div class="col">
