@@ -410,7 +410,7 @@
     when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN != "randomtoken" and GITHUB_OAUTH_TOKEN!=""
 
   - name: run composer
-    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --no-suggest
+    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress
 
   - name: "Prepare empty interfaces (pflog0, pflog1...)"
     copy:
@@ -496,6 +496,8 @@
     - { cmd: "openvpn --genkey secret /etc/openvpn/private/vpn-ta.key", creates: "/etc/openvpn/private/vpn-ta.key" }
     - { cmd: "{{APP_DIR}}/backend/yii migrate --interactive=0" }
     - { cmd: "{{APP_DIR}}/backend/yii init_data --interactive=0" }
+    - { cmd: "{{APP_DIR}}/backend/yii migrate-sales --interactive=0" }
+#    - { cmd: "{{APP_DIR}}/backend/yii migrate-red --migrationPath=@app/../migrations --interactive=0" }
     - { cmd: "{{APP_DIR}}/backend/yii ssl/create-ca 1", creates: "/etc/openvpn/private/echoCTF-OVPN-CA.key", chdir: "/etc/openvpn/private" }
     - { cmd: '{{APP_DIR}}/backend/yii ssl/create-cert "VPN Server"', creates: "/etc/openvpn/private/VPN Server.key", chdir: "/etc/openvpn/private" }
     - { cmd: "{{APP_DIR}}/backend/yii ssl/create-crl", creates: "/etc/openvpn/crl.pem" }
