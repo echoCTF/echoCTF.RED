@@ -403,6 +403,7 @@
       - enable moderator
       - set moderator flags -c /etc/nginx/moderatorUI.conf
       - set ntpd flags -s
+      - set syslogd flags -a /home/moderatorUI/dev/log
     tags:
       - rcctl
 
