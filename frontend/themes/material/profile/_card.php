@@ -39,7 +39,7 @@ else {
     </a>
   </div>
   <div class="card-body">
-    <?php if($profile->isMine):?><?php if(Yii::$app->user->identity->isVip):?><span class="badge badge-danger text-bold">VIP</span><?php endif;?><?php endif;?>
+    <?php if($profile->isMine):?><?php if(Yii::$app->user->identity->isVip && Yii::$app->sys->all_players_vip==false):?><span class="badge badge-danger text-bold">VIP</span><?php endif;?><?php endif;?>
     <h6 class="badge badge-secondary">Level <?=$profile->experience->id?> / <?=$profile->experience->name?></h6>
     <h4 class="card-title"><?=Html::encode($profile->owner->username)?></h4>
     <p class="card-description">
