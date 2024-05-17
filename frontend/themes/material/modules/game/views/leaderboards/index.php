@@ -50,7 +50,7 @@ $this->_url = \yii\helpers\Url::to(['index'], 'https');
         Pjax::end(); ?>
       </div>
 <?php endif;?>
-      <?php if (\Yii::$app->sys->monthly_leaderboards !== false) : ?>
+      <?php if (\Yii::$app->sys->player_monthly_rankings !== false) : ?>
         <div class="col">
           <?php
           Pjax::begin(['id' => 'playerMonthlyScore-pjax', 'enablePushState' => false, 'linkSelector' => '#player-monthly-leaderboard-pager a', 'formSelector' => false]);
