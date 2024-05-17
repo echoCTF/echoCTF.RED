@@ -10,7 +10,6 @@ use app\modules\infrastructure\models\Server;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
 Pjax::begin(['id' => 'instances-tabPJ', 'enablePushState' => false, 'enableReplaceState' => false,]); ?>
-?>
 <h3>Target Instances</h3>
 
 <?= GridView::widget([
