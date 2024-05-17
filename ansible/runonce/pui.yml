@@ -458,7 +458,7 @@
   - name: Generate DH params file for nginx
     command: openssl dhparam -out /etc/ssl/private/dhparam.pem 2048
 
-  - ansible.builtin.include: includes/selfsigned.yml
+  - ansible.builtin.include_tasks: includes/selfsigned.yml
 
   - name: Fix needed permissions
     file:
