@@ -40,7 +40,10 @@ yii\bootstrap5\Modal::end();
             'updated_at',
             [
               'class' => 'yii\grid\ActionColumn',
-              'template' => '{view} {update} {delete} {discord}', // <-- your custom action's name
+              'template' => '{view} {update} {delete} {discord}',
+              'visibleButtons'=>[
+                'discord' => \Yii::$app->sys->discord_news_webhook!==false && trim(\Yii::$app->sys->discord_news_webhook)!=="",
+              ],
               'buttons' => [
                 'discord' => function($url, $model) {
                   return Html::a('<img src="/images/discord_clyde_purple.svg" width="18px">', ['discord', 'id' => $model->id], [
