@@ -17,6 +17,7 @@ $this->_url = \yii\helpers\Url::to(['index'], 'https');
   <div class="body-content">
     <h3><?= \Yii::t('app', 'Platform <code>most</code> rankings') ?></h3>
     <div class="row">
+<?php if(\Yii::$app->sys->player_point_rankings):?>
       <div class="col">
         <?php
         Pjax::begin(['id' => 'playerScore-pjax', 'enablePushState' => false, 'linkSelector' => '#player-leaderboard-pager a', 'formSelector' => false]);
@@ -48,6 +49,7 @@ $this->_url = \yii\helpers\Url::to(['index'], 'https');
         ]);
         Pjax::end(); ?>
       </div>
+<?php endif;?>
       <?php if (\Yii::$app->sys->monthly_leaderboards !== false) : ?>
         <div class="col">
           <?php

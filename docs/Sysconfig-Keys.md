@@ -36,6 +36,7 @@
 
 * `writeup_rankings`: Whether or not writeup rankings will be visible on leaderboards
 * `country_rankings`: Whether or not country rankings will be visible on leaderboard
+* `player_point_rankings`: Whether or not player point rankings will be visible on leaderboard
 
 ## String and numeric key/val pairs
 * `event_name` A name for your event
