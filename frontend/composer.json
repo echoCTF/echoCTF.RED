@@ -17,7 +17,7 @@
         "yiisoft/yii2-bootstrap4": "^2.0",
         "overals/yii2-whois": "~1.0.0",
         "stripe/stripe-php": "^12.0",
-        "yiisoft/yii2-symfonymailer": "^3.0"
+        "yiisoft/yii2-symfonymailer": "^3.0.0"
     },
     "require-dev": {
     },
@@ -104,16 +104,16 @@
             "type": "package",
             "package": {
                 "name": "bower-asset/inputmask",
-                "version": "3.3.11",
+                "version": "5.0.9",
                 "source": {
                     "type": "git",
                     "url": "git@github.com:RobinHerbots/Inputmask.git",
-                    "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
+                    "reference": "310a33557e2944daf86d5946a5e8c82b9118f8f7"
                 },
                 "dist": {
                     "type": "zip",
-                    "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/5e670ad62f50c738388d4dcec78d2888505ad77b",
-                    "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
+                    "url": "https://api.github.com/repos/RobinHerbots/Inputmask/zipball/310a33557e2944daf86d5946a5e8c82b9118f8f7",
+                    "reference": "310a33557e2944daf86d5946a5e8c82b9118f8f7"
                 },
                 "require": {
                     "bower-asset/jquery": ">=1.7"
@@ -128,16 +128,16 @@
             "type": "package",
             "package": {
                 "name": "bower-asset/punycode",
-                "version": "v1.3.2",
+                "version": "v2.3.1",
                 "source": {
                     "type": "git",
                     "url": "https://github.com/mathiasbynens/punycode.js.git",
-                    "reference": "38c8d3131a82567bfef18da09f7f4db68c84f8a3"
+                    "reference": "9e1b2cda98d215d3a73fcbfe93c62e021f4ba768"
                 },
                 "dist": {
                     "type": "zip",
-                    "url": "https://api.github.com/repos/mathiasbynens/punycode.js/zipball/38c8d3131a82567bfef18da09f7f4db68c84f8a3",
-                    "reference": "38c8d3131a82567bfef18da09f7f4db68c84f8a3"
+                    "url": "https://api.github.com/repos/mathiasbynens/punycode.js/zipball/9e1b2cda98d215d3a73fcbfe93c62e021f4ba768",
+                    "reference": "9e1b2cda98d215d3a73fcbfe93c62e021f4ba768"
                 },
                 "type": "bower-asset"
             }
