@@ -19,6 +19,7 @@
 * `force_findings_to_claim`: Enable the enforcement of players needing to have discovered the findings before claiming flags
 * `maintenance`: Enable site-wide maintenance mode
 * `maintenance_notification`: Send maintenance notification to everyone connected to the frontend interface. The popup can be dismissed but it always comes back. No other notifications are delivered.
+* `disable_mailer`: Whether to disable or not the platform mailing operations
 * `require_activation` Whether it is required for users to activate their accounts
 * `disable_registration` Whether online registrations are allowed
 * `team_visible_instances` Whether or not player instances are visible to the rest of the team by default otherwise the per-instance field `team_allowed` takes priority

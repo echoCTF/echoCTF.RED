@@ -1,0 +1,10 @@
+#!/usr/bin/env ansible-playbook
+- name: Shutdown inventory machines
+  hosts: all
+  gather_facts: false
+  serial: 1
+  order: inventory
+  tasks:
+  - name: Shutting down each of the systems
+    raw: halt -p
+    ignore_unreachable: true

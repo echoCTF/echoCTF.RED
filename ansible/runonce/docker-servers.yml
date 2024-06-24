@@ -159,6 +159,8 @@
       owner: root
       group: root
       mode: '0644'
+    vars:
+      network_interfaces: "{{network}}"
     tags:
       - interfaces
 
@@ -304,24 +306,24 @@
     tags:
       - docker-event-action
 
-  - name: Download node16 setup script
-    no_log: "{{DEBUG|default(true)}}"
-    ansible.builtin.get_url:
-      url: https://deb.nodesource.com/setup_16.x
-      dest: /root/setup_16.x
-      mode: '0500'
-    tags:
-      - docker-event-action
-      - node
+#  - name: Download node16 setup script
+#    no_log: "{{DEBUG|default(true)}}"
+#    ansible.builtin.get_url:
+#      url: https://deb.nodesource.com/setup_16.x
+#      dest: /root/setup_16.x
+#      mode: '0500'
+#    tags:
+#      - docker-event-action
+#      - node
 
-  - name: Run node setup
-    shell: /root/setup_16.x
-    no_log: "{{DEBUG|default(true)}}"
-    args:
-      executable: /bin/bash
-    tags:
-      - docker-events
-      - node
+#  - name: Run node setup
+#    shell: /root/setup_16.x
+#    no_log: "{{DEBUG|default(true)}}"
+#    args:
+#      executable: /bin/bash
+#    tags:
+#      - docker-events
+#      - node
 
   - name: Install nodejs packages
     no_log: "{{DEBUG|default(true)}}"

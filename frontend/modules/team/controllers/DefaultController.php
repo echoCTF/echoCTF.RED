@@ -197,7 +197,7 @@ class DefaultController extends \app\components\BaseController
       ]);
       $teamPlayers = ArrayHelper::getColumn(Yii::$app->user->identity->team->players,'id');
       $teamInstances = \app\modules\target\models\TargetInstance::find()->leftJoin('team_player','target_instance.player_id=team_player.player_id')
-        ->andFilterWhere(['team_instance.player_id'=>$teamPlayers])
+        ->andFilterWhere(['target_instance.player_id'=>$teamPlayers])
         ->andFilterWhere(['team_player.approved'=>1]);
 
       if(\Yii::$app->sys->team_visible_instances!==true)
