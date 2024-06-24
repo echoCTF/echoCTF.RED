@@ -271,6 +271,12 @@ class SiteController extends \app\components\BaseController
      */
     public function actionRequestPasswordReset()
     {
+      if(Yii::$app->sys->disable_mailer===true)
+      {
+        Yii::$app->session->setFlash('warning', \Yii::t('app', 'Mailing operations are disabled. Contact the support to assist you with accessing your account.'));
+        return $this->goHome();
+      }
+
         $model=new PasswordResetRequestForm();
         if($model->load(Yii::$app->request->post()) && $model->validate())
         {
@@ -384,6 +390,12 @@ class SiteController extends \app\components\BaseController
      */
     public function actionResendVerificationEmail()
     {
+      if(Yii::$app->sys->disable_mailer===true)
+      {
+        Yii::$app->session->setFlash('warning', \Yii::t('app', 'Mailing operations are disabled. Contact the support to assist you with accessing your account.'));
+        return $this->goHome();
+      }
+
         $model=new ResendVerificationEmailForm();
         if($model->load(Yii::$app->request->post()) && $model->validate())
         {
