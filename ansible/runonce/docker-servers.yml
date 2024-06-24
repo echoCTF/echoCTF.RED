@@ -159,6 +159,8 @@
       owner: root
       group: root
       mode: '0644'
+    vars:
+      network_interfaces: "{{network}}"
     tags:
       - interfaces
 
