@@ -1,6 +1,8 @@
-auto {{network.driver_options.parent}}
-iface {{network.driver_options.parent}} inet static
+auto {{network_interfaces.driver_options.parent}}
+iface {{network_interfaces.driver_options.parent}} inet static
         address {{ipv4}}/16
-        gateway {{network.ipam_options[0].gateway}}
-        up ip link set {{network.driver_options.parent}} promisc on
+        gateway {{network_interfaces.ipam_options[0].gateway}}
+{% if container is defined %}
+        up ip link set {{network_interfaces.driver_options.parent}} promisc on
         mtu 1450
+{% endif %}
