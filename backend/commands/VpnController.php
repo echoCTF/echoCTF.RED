@@ -169,12 +169,17 @@ class VpnController extends Controller
    * Save OpenVPN configuration to filesystem.
    * Uses the provided file basename and current system hostname to find the actual entry.
    * @param string $filepath The full path to store the config contents.
+   * @param string $server (optional) The server name to look for
    */
-  public function actionSave($filepath)
+  public function actionSave($filepath,$server=false)
   {
     try{
       $file=basename($filepath);
-      $ovpnModel=\app\modules\settings\models\Openvpn::find()->where(['server'=>gethostname(),'name'=>$file]);
+      if($server===false)
+      {
+        $server=gethostbyaddr(gethostbyname(gethostname()));
+      }
+      $ovpnModel=\app\modules\settings\models\Openvpn::find()->where(['server'=>$server,'name'=>$file]);
       if(($ovpn=$ovpnModel->one())===null)
       {
         echo "No record found for the given file and server!\n";
