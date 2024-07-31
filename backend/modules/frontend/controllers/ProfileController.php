@@ -26,7 +26,18 @@ class ProfileController extends \app\components\BaseController
    */
   public function behaviors()
   {
-    return ArrayHelper::merge(parent::behaviors(), [
+    return ArrayHelper::merge( 
+    [
+      'access' => [
+        'class' => \yii\filters\AccessControl::class,
+        'rules' => [
+          '00filtered-actions'=>[
+            'actions' => ['view-full','target-progress','score-monthly','headshots','vpn-history','spin-history','notifications'],
+            'allow' => true,
+            'roles' => ['@'],
+          ]
+        ],
+      ],
       'verbs' => [
         'class' => VerbFilter::class,
         'actions' => [
@@ -36,7 +47,7 @@ class ProfileController extends \app\components\BaseController
           'reset-key' => ['POST'],
         ],
       ],
-    ]);
+    ],parent::behaviors());
   }
 
   /**
