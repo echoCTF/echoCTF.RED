@@ -164,6 +164,14 @@
     tags:
       - interfaces
 
+  - name: Remove DHCP from interfaces
+    ansible.builtin.lineinfile:
+      path: /etc/network/interfaces
+      state: absent
+      regexp: '^iface {{network.driver_options.parent}} inet dhcp'
+    tags:
+      - interfaces
+
   - name: Copy Dockerfiles data folder structure
     when: SYNC_DOCKERFILES is defined and SYNC_DOCKERFILES
     synchronize:
