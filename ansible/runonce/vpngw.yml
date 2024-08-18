@@ -8,11 +8,11 @@
   vars_prompt:
     - name: "myname"
       prompt: "1/16. System hostname?"
-      default: "vpn.offensivex.net"
+      default: "vpn.example.com"
       private: no
     - name: "vpngw"
       prompt: "2/16. OpenVPN gateway hostname or IP?"
-      default: "vpn.offensivex.net"
+      default: "vpn.example.com"
       private: no
     - name: "egress_if"
       prompt: "3/16. Egress network interface (ifconfig egress)?"
@@ -194,7 +194,7 @@
       APP_DIR: "{{playbook_dir}}/../../"
 
   - name: Install packages
-    shell: "pkg_add {{packages| join(' ')}}"
+    shell: "pkg_add -I {{packages| join(' ')}}"
 
   - name: Configure PS1 for root and skeleton
     lineinfile:
@@ -304,13 +304,13 @@
       force: yes
       depth: 1
 
-  - name: Clone openvpn-updown repo
-    git:
-      repo: 'https://github.com/echoCTF/openvpn-updown.git'
-      dest: /usr/src/openvpn-updown
-      clone: yes
-      force: yes
-      depth: 1
+#  - name: Clone openvpn-updown repo
+#    git:
+#      repo: 'https://github.com/echoCTF/openvpn-updown.git'
+#      dest: /usr/src/openvpn-updown
+#      clone: yes
+#      force: yes
+#      depth: 1
 
 
   - name: Clone findingsd repo
@@ -340,10 +340,10 @@
       - "install -c -s -o root -g bin -m 555 heartbeatd /usr/local/sbin/heartbeatd"
       - "install -c -o root -g wheel -m 555 heartbeatd.rc /etc/rc.d/heartbeatd"
 
-  - name: make install openvpn-updown
-    shell: GOOS=openbsd CGO_ENABLED=0 go build -a -ldflags '-s -w -extldflags "-static"' -o /etc/openvpn/openvpn-updown /usr/src/openvpn-updown
-    args:
-      chdir: /usr/src/openvpn-updown
+#  - name: make install openvpn-updown
+#    shell: GOOS=openbsd CGO_ENABLED=0 go build -a -ldflags '-s -w -extldflags "-static"' -o /etc/openvpn/openvpn-updown /usr/src/openvpn-updown
+#    args:
+#      chdir: /usr/src/openvpn-updown
 
   - name: make install memcached udf
     shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 make all install
@@ -412,7 +412,7 @@
     when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN != "randomtoken" and GITHUB_OAUTH_TOKEN!=""
 
   - name: run composer
-    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress
+    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --ignore-platform-reqs
 
   - name: "Prepare empty interfaces (pflog0, pflog1...)"
     copy:
