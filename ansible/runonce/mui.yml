@@ -46,7 +46,7 @@
       libc: 96.0
       libutil: 15.0
       libcrypto: 46.2
-      ICU_MAJOR: 73
+      ICU_MAJOR: 74
       ICU_MINOR: 2
     sysctl:
       kern.bufcachepercent: 30
@@ -454,7 +454,7 @@
     when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN!=""
 
   - name: run composer
-    command: chdir=/home/moderatorUI/{{domain_name}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --no-suggest
+    command: chdir=/home/moderatorUI/{{domain_name}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
 
   - name: Fix home folder permissions for nginx
     command: chown root.daemon /home/moderatorUI
