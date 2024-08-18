@@ -44,10 +44,10 @@ Logout all players from the database. It **does NOT** issue an OpenVPN kill comm
 ## save
 Save an OpenVPN instance configuration file with data from the database
 
-Usage: `./backend/yii vpn/save <openvpn_conf>`
+Usage: `./backend/yii vpn/save <openvpn_conf> [server]`
 
 The command looks for a record with the following criteria:
-* uses the current system `hostname` as a `server`
+* uses the current system `hostname` as a `server` if a server parameter was not provided
 * uses the filename (basename) from the openvpn configuration file provided as cli argument
 
 ## status
