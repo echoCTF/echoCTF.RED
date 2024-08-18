@@ -23,7 +23,7 @@
 * `require_activation` Whether it is required for users to activate their accounts
 * `disable_registration` Whether online registrations are allowed
 * `team_visible_instances` Whether or not player instances are visible to the rest of the team by default otherwise the per-instance field `team_allowed` takes priority
-* `guest_visible_leaderboards` Whether or not the leaderboards will be visible to guest users (this still respects the event start/end restrictions)
+* `guest_visible_leaderboards` Whether or not the leaderboard will be visible to guest users (this still respects the event start/end restrictions)
 * `hide_timezone` Whether or not the Timezone information should be visible
 
 * `profile_discord`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
@@ -34,7 +34,7 @@
 * `profile_twitch`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_youtube`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 
-* `writeup_rankings`: Whether or not writeup rankings will be visible on leaderboards
+* `writeup_rankings`: Whether or not writeup rankings will be visible on leaderboard
 * `country_rankings`: Whether or not country rankings will be visible on leaderboard
 * `player_point_rankings`: Whether or not player point rankings will be visible on leaderboard
 * `player_monthly_rankings`: Whether or not player monthly rankings will be visible on leaderboard
