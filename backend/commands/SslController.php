@@ -246,15 +246,21 @@ class SslController extends Controller {
   public function actionGenerateCrl($clean=false)
   {
     $CERTS=Crl::find()->all();
+    $folder=\Yii::getAlias('@appconfig/revoke');
+    if(file_exists($folder)!==true)
+    {
+      mkdir($folder);
+    }
+
     foreach($CERTS as $cert)
     {
       try
       {
-        $tmpcrt=tempnam('/tmp', 'crt');
+        $tmpcrt=tempnam($folder, 'crt');
         file_put_contents($tmpcrt, $cert->crt);
         $cmd=sprintf("openssl ca -revoke %s %s ", $tmpcrt, $this->ssl_params);
         shell_exec($cmd);
-        unlink($tmpcrt);
+        //unlink($tmpcrt);
         if($clean!==false) $cert->delete();
       }
       catch(\Exception $e)
