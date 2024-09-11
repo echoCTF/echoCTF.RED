@@ -60,10 +60,17 @@
     tags: create_users
 
   - name: Clean registry distribution
-    command: rm -rf distribution
+    command: rm -rf /root/distribution
 
   - name: Get registry distribution
     command: git clone https://github.com/distribution/distribution.git
+    environment:
+      GOPATH: "{{registry.home}}/go"
+
+  - name: Checkout working hash for distribution
+    command: git checkout 90939f1173f65356e724f398793b4d7239a49595
+    args:
+      chdir: /root/distribution
     environment:
       GOPATH: "{{registry.home}}/go"
 
