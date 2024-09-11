@@ -128,7 +128,7 @@ AppAsset::register($this);
                 ],
 
                 [
-                    'label' => '<i class="bi bi-buildings-fill"></i> SmartCity', 'url' => ['/smartcity/default/index'], 'visible' => !Yii::$app->user->isGuest, 'active' => Yii::$app->controller->module->id == 'smartcity',
+                    'label' => '<i class="bi bi-buildings-fill"></i> SmartCity', 'url' => ['/smartcity/default/index'], 'visible' => !Yii::$app->user->isGuest && !Yii::$app->sys->module_smartcity_disabled, 'active' => Yii::$app->controller->module->id == 'smartcity',
                     'items' => [
                         ['label' => 'Infrastructure', 'url' => ['/smartcity/infrastructure/index'], 'visible' => !Yii::$app->user->isGuest,],
                         ['label' => 'Infrastructure Targets', 'url' => ['/smartcity/infrastructure-target/index'], 'visible' => !Yii::$app->user->isGuest,],
