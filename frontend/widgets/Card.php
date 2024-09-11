@@ -151,7 +151,7 @@ class Card extends \yii\base\Widget
      */
     public function getHeadericon()
     {
-      if(str_contains($this->type,'card-stats')!==true)
+      if(strpos($this->type,'card-stats')===false)
           return '<div class="card-header card-header-icon card-header-'.$this->color.'">
                   <div class="card-icon">
                     '.$this->icon.'

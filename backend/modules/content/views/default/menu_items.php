@@ -28,6 +28,7 @@ yii\bootstrap5\Modal::end();
 <?php
   try {
     $i=0;
+    if($model->val)
     foreach(json_decode($model->val,true) as $i => $item) {
       echo '<div class="row">';
       echo '<div class="col">',Html::label('Link name', "item[$i][name]", ['class' => 'label name']);

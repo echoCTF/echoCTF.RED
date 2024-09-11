@@ -31,6 +31,7 @@ use app\modules\target\models\TargetInstance;
  * @property PlayerSsl $playerSsl
  * @property TargetInstance $instance
  * @property Subscription $subscription
+ * @property Metadata $metadata
  */
 class PlayerAR extends ActiveRecord
 {
@@ -260,6 +261,11 @@ class PlayerAR extends ActiveRecord
   public function getSSL()
   {
     return $this->hasOne(PlayerSsl::class, ['player_id' => 'id']);
+  }
+
+  public function getMetadata()
+  {
+    return $this->hasOne(PlayerMetadata::class, ['player_id' => 'id']);
   }
 
 }

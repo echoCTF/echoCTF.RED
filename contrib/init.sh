@@ -24,8 +24,8 @@ function settings() {
 function services() {
   sudo service memcached restart
   sudo service mysql restart
+  sed -e "s/echoCTF/${DATABASE}/" contrib/mysql-init.sql | mysql ${DATABASE}  > /dev/null
   mysql ${DATABASE} -e "SET GLOBAL EVENT_SCHEDULER=ON"
-  mysql ${DATABASE} < contrib/mysql-init.sql > /dev/null
 }
 
 function sql() {
@@ -108,7 +108,7 @@ function tmuxs() {
 
 function eventOrganizers()
 {
-  #./backend/yii player/register "organizer" "organizer@example.com" "organizer" "organizer" offense 0 "" "CTF ORGANIZERS"
+  ./backend/yii player/register "organizer" "organizer@example.com" "organizer" "organizer" offense 0 "" "CTF ORGANIZERS"
 }
 
 function sampleData()

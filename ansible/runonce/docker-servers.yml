@@ -35,6 +35,12 @@
     hostname:
       name: "{{fqdn}}"
 
+  - name: Configure hosts
+    copy:
+      content: "{{etchosts}}\n"
+      dest: /etc/hosts
+    when: etchosts is defined
+
   - name: Configure resolv.conf
     copy:
       content: "{{resolvconf}}\n"
@@ -164,6 +170,14 @@
     tags:
       - interfaces
 
+  - name: Remove DHCP from interfaces
+    ansible.builtin.lineinfile:
+      path: /etc/network/interfaces
+      state: absent
+      regexp: '^iface {{network.driver_options.parent}} inet dhcp'
+    tags:
+      - interfaces
+
   - name: Copy Dockerfiles data folder structure
     when: SYNC_DOCKERFILES is defined and SYNC_DOCKERFILES
     synchronize:
@@ -221,11 +235,14 @@
       daemon_reload: true
       name: docker
 
-  - name: Check if docker network exists
-    command: docker network ls -qf name={{network.name}}
-    register: netresult
-    changed_when: false
-    when: network is defined
+  - name: Remove docker network if exists
+    command: docker network rm -f {{network.name}}
+
+#  - name: Check if docker network exists
+#    command: docker network ls -qf name={{network.name}}
+#    register: netresult
+#    changed_when: false
+#    when: network is defined
 
   - name: Create docker network if needed
     docker_network:
@@ -234,7 +251,7 @@
       driver: "{{network.driver}}"
       driver_options: "{{network.driver_options}}"
       ipam_config: "{{network.ipam_options}}"
-    when: network is defined and netresult is defined and netresult.stdout == ""
+    when: network is defined
 
   - name: Force removal of existing containers
     when: containers is defined
