@@ -109,20 +109,20 @@ jobs:
     - name: Push the vpn Docker image
       run: docker push echothrust/echoctf.red-vpn:latest
 
-    - name: Build the docker-compose stack
-      run: docker-compose up -d
+    - name: Build the docker compose stack
+      run: docker compose up -d
 
     - name: Check running containers
       run: docker ps -a
 
     - name: Drop containers
-      run: docker-compose down --rmi all
+      run: docker compose down --rmi all
 
-    - name: Build the docker-compose-novpn.yml stack
-      run: docker-compose -f docker-compose-novpn.yml up -d
+    - name: Build the docker compose-novpn.yml stack
+      run: docker compose -f docker-compose-novpn.yml up -d
 
     - name: Check running containers
       run: docker ps -a
 
     - name: Drop containers
-      run: docker-compose down --rmi all
+      run: docker compose down --rmi all
