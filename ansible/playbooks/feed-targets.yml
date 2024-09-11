@@ -70,6 +70,7 @@
         scheduled_at: "{{ scheduled_at|default(omit) }}"
 #        scheduled_at: "{{scheduled_at| default('%Y-%m-%d 00:00:00' | strftime( ( ansible_date_time.epoch | int ) ) ) }}"
         image: '{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.image | lower}}:{{container.tag|default("latest")}}'
+        weight: '{{weight|default(0)}}'
       status_code: 201
 
 # Add network if defined
