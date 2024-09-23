@@ -16,7 +16,7 @@
         "yiisoft/yii2-bootstrap": "~2.0.0",
         "yiisoft/yii2-bootstrap4": "^2.0",
         "overals/yii2-whois": "~1.0.0",
-        "stripe/stripe-php": "^12.0",
+        "stripe/stripe-php": "^15.10",
         "yiisoft/yii2-symfonymailer": "^3.0.0"
     },
     "require-dev": {
