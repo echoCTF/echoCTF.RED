@@ -16,7 +16,7 @@
         "yiisoft/yii2": "2.0.50",
         "docker-php/docker-php": "^2.0",
         "jane-php/jane-php": "^4 <4.3",
-        "miloschuman/yii2-highcharts-widget": "^10.0",
+        "miloschuman/yii2-highcharts-widget": "^11.0",
         "kartik-v/yii2-tabs-x": "@dev",
         "stripe/stripe-php": "^12.0",
         "sleifer/yii2-autocomplete-ajax": "dev-master",
