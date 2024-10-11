@@ -32,7 +32,8 @@ function sql() {
   mysqladmin drop -f ${DATABASE}
   mysql -e "CREATE DATABASE ${DATABASE} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
   if compgen -G "${DATABASE}-full-*.sql" > /dev/null; then
-    mysql ${DATABASE} < ${DATABASE}-full-*.sql
+    list=( ${DATABASE}-full-*.sql )
+    mysql ${DATABASE} < "${list[-1]}"
   else
     for _sql in echoCTF.sql echoCTF-routines.sql echoCTF-triggers.sql echoCTF-events.sql faq.sql instruction.sql rule.sql sysconfig.sql disabled_route.sql; do
       if [ -f "schemas/${_sql}" ]; then
