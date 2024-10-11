@@ -21,13 +21,16 @@ class ResendVerificationEmailForm extends Model
      */
     public function rules()
     {
+        $filter=['status'=>Player::STATUS_INACTIVE];
+        if(\Yii::$app->sys->player_require_approval)
+          $filter=['status'=>Player::STATUS_INACTIVE,'approval'=>[1,2]];
         return [
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'exist',
                 'targetClass' => '\app\models\Player',
-                'filter' => ['status' => Player::STATUS_INACTIVE],
+                'filter' => $filter,
                 'message' => \Yii::t('app','There is no user with this email address.')
             ],
         ];
