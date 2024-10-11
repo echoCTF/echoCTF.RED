@@ -376,7 +376,6 @@ class SiteController extends \app\components\BaseController
         catch(\Exception $e)
         {
           $transaction->rollBack();
-          die(var_dump($e->getMessage()));
         }
 
         Yii::$app->session->setFlash('error', \Yii::t('app','Sorry, we are unable to verify an account with the provided token.'));
