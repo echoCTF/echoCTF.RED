@@ -42,7 +42,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
           'icon' => '<i class="fas fa-level-up-alt"></i>',
           'color' => 'warning',
           'title' => \Yii::t('app', "Progress"),
-          'subtitle' => \Yii::t('app', "Current level: ") . Yii::$app->user->identity->profile->experience->name,
+          'subtitle' => \Yii::t('app', "Current level: ") . \Yii::t('app', Yii::$app->user->identity->profile->experience->name),
           'footer' => '<div class="stats"></div>',
         ]);
         $x = (Yii::$app->user->identity->profile->experience->max_points - Yii::$app->user->identity->playerScore->points);
