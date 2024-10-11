@@ -1,4 +1,4 @@
-#!/usr/bin/ansible-playbook
+#!/usr/bin/env ansible-playbook
 ---
 - name: Perform Backups
   hosts: all
@@ -7,6 +7,11 @@
   user: root
 #  serial: 1
   tasks:
+  - name: Execute pre-backup tasks
+    when: pre_backups is defined
+    raw: "{{item}}"
+    with_items: "{{pre_backups}}"
+
   - name: Backup existing files just in case before we start performing maintenance changes
     when: backups is defined
     command: "tar zcpf {{item.tgz}} {{item.src}}"
