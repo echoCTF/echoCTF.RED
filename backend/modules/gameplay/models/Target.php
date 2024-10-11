@@ -78,11 +78,7 @@ class Target extends TargetAR
     }
 
 
-
-    /**
-     * Spin the target up
-     */
-    public function spin()
+    public function dockerSpin()
     {
       $targetVariables=null;
       $docker=$this->connectAPI();
@@ -119,6 +115,52 @@ class Target extends TargetAR
       $docker->containerStart($containerCreateResult->getId());
 
       return true;
+    }
+
+    public function pveSpin($server)
+    {
+
+      $HEADERS=['Accept: application/json', 'Content-Type: application/json'];
+      if($this->imageparams!=='')
+      {
+        $decoded=json_decode($this->imageparams);
+        foreach($decoded as $key => $val)
+        {
+          $HEADERS[]=$key.': '.$val;
+        }
+      }
+
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_HTTPHEADER, $HEADERS);
+      curl_setopt($ch, CURLOPT_POST, true);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      curl_setopt($ch, CURLOPT_POSTFIELDS, '{}');
+      foreach([ 'status/stop' ,'snapshot/echoCTF/rollback','status/start'] as $action)
+      {
+        curl_setopt($ch, CURLOPT_URL,$server.$action);
+        if(curl_exec($ch)===false)
+          var_dump(curl_error($ch));
+        curl_close($ch);
+        sleep(1);
+      }
+      return true;
+    }
+    /**
+     * Spin the target up
+     */
+    public function spin()
+    {
+      // if tcp do docker staff
+      if(substr($this->server,0,3)=='tcp')
+      {
+        return $this->dockerSpin();
+      }
+      else if(substr($this->server,0,3)=='pve')
+      {
+        $this->pveSpin(substr($this->server,4));
+      }
     }
 
     /**
@@ -207,10 +249,7 @@ class Target extends TargetAR
       return true;
     }
 
-    /**
-     * Destroy the remote container
-     */
-    public function destroy()
+    public function dockerDestroy()
     {
       $docker=$this->connectAPI();
       try
@@ -222,6 +261,16 @@ class Target extends TargetAR
         return false;
       }
       return true;
+    }
+    /**
+     * Destroy the remote container
+     */
+    public function destroy()
+    {
+      if(substr($this->server,0,3)==='tcp')
+      {
+        return $this->dockerDestroy();
+      }
     }
 
   /**

@@ -48,7 +48,13 @@ yii\bootstrap5\Modal::end();
       [
         'label' => 'Server',
         'attribute' => 'server',
-        'contentOptions'=>['class'=>'font-weight-light small text-monospace'],
+        'format'=>'html',
+        'content'=>function($model){
+          if(strlen($model->server)>30)
+            return '<abbr title="'.Html::encode($model->server).'">'.Html::encode($model->server).'</abbr>';
+          return $model->server;
+        },
+        'contentOptions'=>['class'=>'font-weight-light small text-monospace', 'style'=>  'text-overflow: ellipsis;white-space: nowrap;overflow: hidden;max-width:10rem;' ],
       ],
       [
         'label' => 'Network',
