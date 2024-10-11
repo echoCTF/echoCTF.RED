@@ -47,6 +47,13 @@ $this->registerLayoutOverrides();
     <?php $this->head()?>
     <?=Html::csrfMetaTags() ?>
     <title><?=trim(Html::encode($this->title))?></title>
+<?php if(Yii::$app->sys->event_start!==false && Yii::$app->sys->event_end!==false):?>
+    <script>
+    var countDownStart = <?=intval(Yii::$app->sys->event_start)*1000?>;
+    var countDownDate = <?=intval(Yii::$app->sys->event_end)*1000?>;
+    </script>
+<?php endif;?>
+
 </head>
 <body>
 <?php $this->beginBody() ?>
@@ -57,6 +64,7 @@ $this->registerLayoutOverrides();
 	    <div class="content">
 	    	<div class="container<?=$this->_fluid?>">
             <?=Noti::widget() ?>
+            <h4 id="event_countdown"></h4>
       			<?=$content ?>
 	    	</div>
 	    </div>
