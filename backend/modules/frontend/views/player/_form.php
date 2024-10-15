@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\modules\frontend\models\Player */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
 
 <div class="player-form">
@@ -16,8 +17,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'fullname')->textInput(['maxlength' => true])->hint('The fullname of the player') ?>
 
-    <?= $form->field($model, 'academic')->dropDownList([0=>'0: '.Yii::$app->sys->academic_0short,1=>'1: '.Yii::$app->sys->academic_1short, 2=>'2: '.Yii::$app->sys->academic_2short])->hint('Whether the player is gov, edu or pro') ?>
-
+    <?php if (\Yii::$app->sys->academic_grouping !== false): ?>
+      <?= $form->field($model, 'academic')->dropDownList($filter)->hint('Whether the player is gov, edu or pro') ?>
+    <?php else:?>
+      <?= $form->field($model, 'academic')->textInput()->hint('Whether the player is gov, edu or pro') ?>
+    <?php endif;?>
     <?= $form->field($model, 'email')->textInput(['maxlength' => true])->hint('The email address of the player') ?>
 
     <?= $form->field($model, 'type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose player type'])->hint('Choose the type of the player. Either offense or defense') ?>

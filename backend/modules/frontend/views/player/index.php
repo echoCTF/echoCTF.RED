@@ -5,6 +5,7 @@ use yii\grid\GridView;
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\frontend\models\PlayerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+
 $this->title = ucfirst(Yii::$app->controller->module->id) . ' / ' . ucfirst(Yii::$app->controller->id);
 $this->params['breadcrumbs'][] = ['label' => 'Players', 'url' => ['index']];
 yii\bootstrap5\Modal::begin([
@@ -43,11 +44,11 @@ yii\bootstrap5\Modal::end();
     'rowOptions' => function ($model, $key, $index, $grid) {
       // $model is the current data model being rendered
       // check your condition in the if like `if($model->hasMedicalRecord())` which could be a method of model class which checks for medical records.
-      $tmpObj=clone($model);
-      $tmpObj->scenario='validator';
-      if(!$tmpObj->validate()) {
-          unset($tmpObj);
-          return ['class' => 'text-danger','style'=>'font-weight: 800;'];
+      $tmpObj = clone ($model);
+      $tmpObj->scenario = 'validator';
+      if (!$tmpObj->validate()) {
+        unset($tmpObj);
+        return ['class' => 'text-danger', 'style' => 'font-weight: 800;'];
       }
       return [];
     },
@@ -58,7 +59,7 @@ yii\bootstrap5\Modal::end();
       ],
       [
         'attribute' => 'avatar',
-        'label'=>false,
+        'label' => false,
         'headerOptions' => ['style' => 'width:3em'],
         'format' => ['image', ['width' => '30px', 'class' => 'img-thumbnail']],
         'value' => function ($data) {
@@ -67,25 +68,23 @@ yii\bootstrap5\Modal::end();
       ],
       ['class' => 'app\components\columns\ProfileColumn', 'idkey' => 'profile.id', 'attribute' => 'username', 'field' => 'username'],
       [
-        'attribute'=>'affiliation',
-        'label'=>'Affiliation',
+        'attribute' => 'affiliation',
+        'label' => 'Affiliation',
         'visible' => Yii::$app->sys->player_require_approval && Yii::$app->sys->player_require_identification,
-        'format'=>'html',
-        'value'=>function($model){
-          if(Yii::$app->sys->player_require_identification===true && $model->metadata)
-          {
-            $filePath=\Yii::getAlias('@app/web/identificationFiles/'.$model->metadata->identificationFile);
-            if(file_exists($filePath))
-              return Html::a($model->metadata->affiliation,'/identificationFiles/'.$model->metadata->identificationFile,['width' => '50px']);
+        'format' => 'html',
+        'value' => function ($model) {
+          if (Yii::$app->sys->player_require_identification === true && $model->metadata) {
+            $filePath = \Yii::getAlias('@app/web/identificationFiles/' . $model->metadata->identificationFile);
+            if (file_exists($filePath))
+              return Html::a($model->metadata->affiliation, '/identificationFiles/' . $model->metadata->identificationFile, ['width' => '50px']);
           }
-          if($model->metadata)
+          if ($model->metadata)
             return Html::encode($model->metadata->affiliation);
-
         },
       ],
       [
-        'attribute'=>'email',
-        'format'=>'email',
+        'attribute' => 'email',
+        'format' => 'email',
         'contentOptions' => ['class' => 'small'],
       ],
       [
@@ -99,10 +98,9 @@ yii\bootstrap5\Modal::end();
       //'active:boolean',
       [
         'attribute' => 'academic',
+        'class' => 'app\components\columns\AcademicColumn',
         'value' => 'academicShort',
         'contentOptions' => ['class' => 'small'],
-        'filter' => [0 => Yii::$app->sys->academic_0short, 1 => Yii::$app->sys->academic_1short, 2 => Yii::$app->sys->academic_2short],
-        'visible'=> trim(Yii::$app->sys->academic_0short)!==''
       ],
       [
         'attribute' => 'status',
@@ -111,9 +109,9 @@ yii\bootstrap5\Modal::end();
         'contentOptions' => ['class' => 'small'],
       ],
       [
-        'attribute'=>'approval',
-        'filter'=>$searchModel::APPROVAL,
-        'visible'=> Yii::$app->sys->player_require_approval===true,
+        'attribute' => 'approval',
+        'filter' => $searchModel::APPROVAL,
+        'visible' => Yii::$app->sys->player_require_approval === true,
         'value' => function ($model) {
           return $model::APPROVAL[$model->approval];
         }
@@ -121,28 +119,54 @@ yii\bootstrap5\Modal::end();
       ],
       [
         'attribute' => 'type',
-        'filter' => ["offense"=>"offense","defense"=>"defense"],
+        'filter' => ["offense" => "offense", "defense" => "defense"],
         'contentOptions' => ['class' => 'small'],
-        'visible'=>trim(Yii::$app->sys->defense_scenario)!==''
+        'visible' => trim(Yii::$app->sys->defense_scenario) !== ''
       ],
 
       [
-        'attribute'=>'created',
+        'attribute' => 'created',
         'contentOptions' => ['class' => 'small']
       ],
       //'ts',
       [
         'class' => 'yii\grid\ActionColumn',
-        'visibleButtons'=>[
-          'clear-vpn'=>function($model){ if ($model->last->vpn_local_address!==null) return true; return false;},
-          'view'=>function($model){return false;},
-          'generate-ssl'=>function($model){ if ($model->status==10) return true; return false;},
-          'set-deleted'=>function($model){ if($model->status==0) return false; return true;},
-          'mail'=>function($model){ if ($model->status==10 || $model->approval==0) return false; return true;},
-          'delete'=>function($model){ if (\Yii::$app->user->identity->isAdmin) return true; return false;},
-          'reset-activkey'=>function($model){ if ($model->active && trim($model->activkey)!=="") return true; return false;},
-          'approve'=>function($model){ if ($model->active==0 && Yii::$app->sys->player_require_approval===true && $model->approval<1) return true; return false;},
-          'reject'=>function($model){ if ($model->active==0 && Yii::$app->sys->player_require_approval===true && $model->approval<2) return true; return false;}
+        'visibleButtons' => [
+          'clear-vpn' => function ($model) {
+            if ($model->last->vpn_local_address !== null) return true;
+            return false;
+          },
+          'view' => function ($model) {
+            return false;
+          },
+          'generate-ssl' => function ($model) {
+            if ($model->status == 10) return true;
+            return false;
+          },
+          'set-deleted' => function ($model) {
+            if ($model->status == 0) return false;
+            return true;
+          },
+          'mail' => function ($model) {
+            if ($model->status == 10 || $model->approval == 0) return false;
+            return true;
+          },
+          'delete' => function ($model) {
+            if (\Yii::$app->user->identity->isAdmin) return true;
+            return false;
+          },
+          'reset-activkey' => function ($model) {
+            if ($model->active && trim($model->activkey) !== "") return true;
+            return false;
+          },
+          'approve' => function ($model) {
+            if ($model->active == 0 && Yii::$app->sys->player_require_approval === true && $model->approval < 1) return true;
+            return false;
+          },
+          'reject' => function ($model) {
+            if ($model->active == 0 && Yii::$app->sys->player_require_approval === true && $model->approval < 2) return true;
+            return false;
+          }
         ],
         'template' => '{player-view-full} {clear-vpn} {view} {generate-ssl} {update} {delete} {ban} {mail} {reset-activkey} {approve} {reject} {set-deleted}',
         'header' => Html::a(
@@ -171,7 +195,7 @@ yii\bootstrap5\Modal::end();
               'confirm' => 'Are you sure you want to delete the currently filtered users?',
             ],
           ]
-        ). ' ' . Html::a(
+        ) . ' ' . Html::a(
           '<i class="fas fa-mail-bulk"></i>',
           ['mail-filtered'],
           [
@@ -184,7 +208,7 @@ yii\bootstrap5\Modal::end();
               'confirm' => 'Are you sure you want to mail the currently filtered users?',
             ],
           ]
-        ). ' ' . Html::a(
+        ) . ' ' . Html::a(
           '<i class="fas fa-users"></i>',
           ['approve-filtered'],
           [
@@ -197,7 +221,7 @@ yii\bootstrap5\Modal::end();
               'confirm' => 'Are you sure you want to approve the currently filtered users?',
             ],
           ]
-        ). ' ' . Html::a(
+        ) . ' ' . Html::a(
           '<i class="fas fa-users-slash"></i>',
           ['reject-filtered'],
           [
@@ -212,50 +236,50 @@ yii\bootstrap5\Modal::end();
           ]
         ),
         'buttons' => [
-          'approve'=>function($url, $model){
+          'approve' => function ($url, $model) {
             return Html::a('<i class="fas fa-thumbs-up" style="font-size: 1.2em; vertical-align: -.01em;"></i>', ['approve', 'id' => $model->id], [
               'class' => '',
-              'title'=>'Approve Player',
+              'title' => 'Approve Player',
               'data' => [
-                  'confirm' => 'Are you absolutely sure you want to approve this player ['.Html::encode($model->username).'] ?',
-                  'method' => 'post',
-                ],
+                'confirm' => 'Are you absolutely sure you want to approve this player [' . Html::encode($model->username) . '] ?',
+                'method' => 'post',
+              ],
             ]);
           },
-          'reject'=>function($url, $model){
+          'reject' => function ($url, $model) {
             return Html::a('<i class="fas fa-thumbs-down" style="font-size: 1.2em; vertical-align: -.1em;"></i>', ['reject', 'id' => $model->id], [
               'class' => '',
-              'title'=>'Reject Player',
+              'title' => 'Reject Player',
               'data' => [
-                  'confirm' => 'Are you absolutely sure you want to reject this player ['.Html::encode($model->username).'] ?',
-                  'method' => 'post',
-                ],
+                'confirm' => 'Are you absolutely sure you want to reject this player [' . Html::encode($model->username) . '] ?',
+                'method' => 'post',
+              ],
             ]);
           },
-          'reset-activkey' => function($url, $model) {
+          'reset-activkey' => function ($url, $model) {
             return Html::a('<i class="bi bi-archive-fill"></i>', ['reset-activkey', 'id' => $model->id], [
-                'class' => '',
-                'title'=>'Reset Player activkey',
-                'data' => [
-                    'confirm' => 'Are you absolutely sure you want to empty the activkey for ['.Html::encode($model->username).'] ?',
-                    'method' => 'post',
-                  ],
-              ]);
+              'class' => '',
+              'title' => 'Reset Player activkey',
+              'data' => [
+                'confirm' => 'Are you absolutely sure you want to empty the activkey for [' . Html::encode($model->username) . '] ?',
+                'method' => 'post',
+              ],
+            ]);
           },
-          'clear-vpn' => function($url, $model) {
+          'clear-vpn' => function ($url, $model) {
             return Html::a('<i class="bi bi-eraser-fill"></i>', ['clear-vpn', 'id' => $model->id], [
-                'class' => '',
-                'title'=>'Clear VPN Session',
-                'data' => [
-                    'confirm' => 'Are you absolutely sure you want to clear the vpn session for ['.Html::encode($model->username).'] ?',
-                    'method' => 'post',
-                  ],
-              ]);
+              'class' => '',
+              'title' => 'Clear VPN Session',
+              'data' => [
+                'confirm' => 'Are you absolutely sure you want to clear the vpn session for [' . Html::encode($model->username) . '] ?',
+                'method' => 'post',
+              ],
+            ]);
           },
           'delete' => function ($url, $model) {
             return Html::a('<i class="bi bi-trash3-fill"></i>', ['delete', 'id' => $model->id], [
               'class' => '',
-              'title'=>'Delete player from the database',
+              'title' => 'Delete player from the database',
               'data' => [
                 'confirm' => 'Are you absolutely sure you want to delete [' . Html::encode($model->username) . '] ?',
                 'method' => 'post',
@@ -311,20 +335,20 @@ yii\bootstrap5\Modal::end();
               ]
             );
           },
-          'set-deleted' => function($url, $model) {
+          'set-deleted' => function ($url, $model) {
             return Html::a('<i class="fas fa-user-slash"></i>', ['set-deleted', 'id' => $model->id], [
-                'class' => '',
-                'title'=>'Set Deleted flag',
-                'data' => [
-                    'confirm' => 'Are you absolutely sure you want to set status to deleted for ['.Html::encode($model->username).'] ?',
-                    'method' => 'post',
-                ],
+              'class' => '',
+              'title' => 'Set Deleted flag',
+              'data' => [
+                'confirm' => 'Are you absolutely sure you want to set status to deleted for [' . Html::encode($model->username) . '] ?',
+                'method' => 'post',
+              ],
             ]);
           },
           'player-view-full' => function ($url, $model) {
             $url =  \yii\helpers\Url::to(['/frontend/profile/view-full', 'id' => $model->profile->id]);
-            return Html::a('<i class="bi bi-person-lines-fill" style="font-size: 1.3em; vertical-align: -.1em;"></i>', $url,[
-              'class'=>'',
+            return Html::a('<i class="bi bi-person-lines-fill" style="font-size: 1.3em; vertical-align: -.1em;"></i>', $url, [
+              'class' => '',
               'title' => 'View full profile',
               'data-pjax' => '0',
             ]);
