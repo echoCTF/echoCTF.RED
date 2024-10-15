@@ -61,6 +61,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
           [
                 'class' => TimestampBehavior::class,
                 'createdAtAttribute' => 'created_at',
+                'updatedAtAttribute' => false,
                 'value' => new Expression('NOW()'),
           ],
         ];

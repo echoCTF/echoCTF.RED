@@ -11,7 +11,7 @@ class TeamRankQuery extends \yii\db\ActiveQuery
 {
   public function academic($academic)
   {
-    if (\Yii::$app->sys->academic_grouping)
+    if (\Yii::$app->sys->academic_grouping !== false)
       return $this->joinWith('team')->where(['team.academic' => $academic]);
     return $this->joinWith('team');
   }

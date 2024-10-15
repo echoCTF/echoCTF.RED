@@ -26,7 +26,7 @@ class HeadshotQuery extends \yii\db\ActiveQuery
 
   public function academic($academic)
   {
-    if(\Yii::$app->sys->academic_grouping)
+    if (\Yii::$app->sys->academic_grouping !== false)
       return $this->joinWith(['player'])->andWhere(['player.academic' => $academic]);
     return $this->joinWith(['player']);
   }
