@@ -38,6 +38,7 @@
 * `country_rankings`: Whether or not country rankings will be visible on leaderboard
 * `player_point_rankings`: Whether or not player point rankings will be visible on leaderboard
 * `player_monthly_rankings`: Whether or not player monthly rankings will be visible on leaderboard
+* `module_smartcity_disabled`: Whether or not the smartcity module is disabled (hides the menu from backend)
 
 ## String and numeric key/val pairs
 * `event_name` A name for your event
