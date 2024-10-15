@@ -62,7 +62,7 @@ class ConfigureForm extends Model
     public $stripe_apiKey;
     public $stripe_publicApiKey;
     public $stripe_webhookSecret;
-    public $monthly_leaderboards;
+    public $player_monthly_rankings;
     public $subscriptions_menu_show;
     public $subscriptions_emergency_suspend;
     public $player_require_approval;
@@ -147,7 +147,7 @@ class ConfigureForm extends Model
             'stripe_apiKey',
             'stripe_publicApiKey',
             'stripe_webhookSecret',
-            'monthly_leaderboards',
+            'player_monthly_rankings',
             'subscriptions_menu_show',
             'subscriptions_emergency_suspend',
             'player_require_approval',
@@ -283,7 +283,7 @@ class ConfigureForm extends Model
             'leaderboard_visible_before_event_start',
             'leaderboard_visible_after_event_end',
             'leaderboard_show_zero',
-            'monthly_leaderboards',
+            'player_monthly_rankings',
             'subscriptions_menu_show',
             'subscriptions_emergency_suspend',
             'player_require_approval',
@@ -365,7 +365,7 @@ class ConfigureForm extends Model
           'target_days_new'=>'Target days is new',
           'target_days_updated'=>'Target days is updated',
           'discord_news_webhook'=>'Discord News Webhook',
-          'monthly_leaderboards'=>'Monthly points leaderboards',
+          'player_monthly_rankings'=>'Monthly points leaderboards',
           'subscriptions_menu_show'=>'Show subscriptions menu',
           'subscriptions_emergency_suspend'=>'Emergency suspend subscriptions',
           'player_require_approval'=> 'Players require approval',

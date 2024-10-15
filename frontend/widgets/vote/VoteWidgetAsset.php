@@ -14,9 +14,7 @@ class VoteWidgetAsset extends AssetBundle
     ];
 //    $this->registerJs('$.fn.selectpicker.Constructor.BootstrapVersion = "4";');
 
-    public $depends=[
-        'app\assets\MaterialAsset',
-    ];
+    public $depends=[];
 
     public function init()
     {

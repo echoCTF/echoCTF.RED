@@ -1,4 +1,4 @@
-#!/usr/bin/ansible-playbook
+#!/usr/bin/env ansible-playbook
 ---
 - name: Reboot servers
   hosts: all

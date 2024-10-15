@@ -356,27 +356,14 @@ class Player extends PlayerAR implements IdentityInterface
 
   public function getAcademicWord()
   {
-    switch ($this->academic) {
-      case 0:
-        return ".gov";
-      case 1:
-        return ".edu";
-      default:
-        return ".pro";
-    }
+    return \Yii::$app->sys->{"academic_".$this->academic."long"};
   }
 
   public function getAcademicShort()
   {
-    switch ($this->academic) {
-      case 0:
-        return ".gov";
-      case 1:
-        return ".edu";
-      default:
-        return ".pro";
-    }
+    return \Yii::$app->sys->{"academic_".$this->academic."short"};
   }
+
   public function getAcademicIcon()
   {
     switch ($this->academic) {

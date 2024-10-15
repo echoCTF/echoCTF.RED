@@ -208,7 +208,7 @@ function apiNotifications(){
             {
               if(!swal.isVisible())
               {
-                swal.fire({ title: record.title, text: record.body, type: record.category.replace('swal:',''), showConfirmButton: true});
+                swal.fire({ title: record.title, html: record.body, type: record.category.replace('swal:',''), showConfirmButton: true});
               }
             }
             else {
@@ -229,6 +229,57 @@ function apiNotifications(){
 }
 
 $(document).ready(function(){
+  var x = setInterval(function() {
+    if (typeof countDownDate === 'undefined')
+      return;
+    // Get today's date and time
+    //  var now = new Date();
+    // Find the distance between now and the count down date
+    if(countDownDate===0)
+    {
+      clearInterval(x);
+      return;
+    }
+    var timeNow = Date.now();
+    var distance = countDownDate - timeNow;
+    element=document.getElementById("event_countdown");
+    msg = "The competition ends in: <span>"
+    if(countDownStart>0 && countDownStart>timeNow)
+    {
+      distance = countDownStart - timeNow;
+      msg = "The competition starts in: <span>";
+    }
+
+
+    // Time calculations for days, hours, minutes and seconds
+    var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+    // If the count down is finished, write some text
+    if (distance < 0) {
+      clearInterval(x);
+      if(typeof(element)!='undefined' && element != null)
+        element.innerHTML = 'The competition is <b class="text-danger text-bold">finished</b>';
+    }
+    else
+    {
+      if(element)
+      {
+        //console.log(`${countDownStart} ${timeNow} ${distance}`);
+        if(days>0)
+          element.innerHTML = msg+ days + "d " + hours + "h " + minutes + "m " + seconds + "s</span>";
+        else if(hours>0)
+          element.innerHTML = msg+ hours + "h " + minutes + "m " + seconds + "s</span>";
+        else if(minutes>0)
+          element.innerHTML = msg+ minutes + "m " + seconds + "s</span>";
+        else if(seconds>0)
+          element.innerHTML = msg + seconds + "seconds</span>";
+      }
+    }
+  }, 1000);
+
   $('#Notifications, #Hints').ifexists(function(elem) {
     document.addEventListener('visibilitychange', function(e) {
       if (document.visibilityState === 'hidden') {

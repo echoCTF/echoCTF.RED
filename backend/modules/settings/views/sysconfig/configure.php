@@ -40,7 +40,7 @@ $this->params['breadcrumbs'][]=$this->title;
           <div class="col-sm-3"><?= $form->field($model, 'leaderboard_visible_before_event_start')->checkbox()->hint('Is the leaderboard going to be visible before the event starts?') ?></div>
           <div class="col-sm-3"><?= $form->field($model, 'leaderboard_visible_after_event_end')   ->checkbox()->hint('Is the leaderboard going to be visible after the event ends?') ?></div>
           <div class="col-sm-2"><?= $form->field($model, 'leaderboard_show_zero')   ->checkbox()->hint('Leaderboard show zero points?') ?></div>
-          <div class="col-sm-2"><?= $form->field($model, 'monthly_leaderboards')   ->checkbox()->hint('Show monthly leaderboards by points?') ?></div>
+          <div class="col-sm-2"><?= $form->field($model, 'player_monthly_rankings')   ->checkbox()->hint('Show monthly leaderboards by points?') ?></div>
         </div>
         <hr/>
         <h4>Team properties</h4>

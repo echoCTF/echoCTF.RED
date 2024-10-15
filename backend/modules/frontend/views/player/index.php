@@ -69,7 +69,7 @@ yii\bootstrap5\Modal::end();
       [
         'attribute'=>'affiliation',
         'label'=>'Affiliation',
-        'visible' => Yii::$app->sys->player_require_approval,
+        'visible' => Yii::$app->sys->player_require_approval && Yii::$app->sys->player_require_identification,
         'format'=>'html',
         'value'=>function($model){
           if(Yii::$app->sys->player_require_identification===true && $model->metadata)

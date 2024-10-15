@@ -173,8 +173,7 @@ class echoCTFView extends \yii\web\View
       $this->registerJsFile(
           trim($jsfile),
           [
-            'possition' => self::POS_END,
-            'depends' => [\app\assets\MaterialAsset::class]
+            'position' => self::POS_END,
           ]
       );
     }
@@ -201,7 +200,6 @@ class echoCTFView extends \yii\web\View
       if(trim($cssfile)!="")
       $this->registerCssFile(
           trim($cssfile),
-          ['depends' => [\app\assets\MaterialAsset::class]]
       );
     }
   }
