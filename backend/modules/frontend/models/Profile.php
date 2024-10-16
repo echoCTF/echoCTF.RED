@@ -118,7 +118,7 @@ class Profile extends \yii\db\ActiveRecord
     }
     public function getLink()
     {
-      return Html::a(Html::encode($this->owner->username), ['frontend/profile/view', 'id'=>$this->id]);
+      return Html::a(Html::encode($this->owner->username), ['/frontend/profile/view-full', 'id'=>$this->id]);
     }
 
     public function getAvtr()
