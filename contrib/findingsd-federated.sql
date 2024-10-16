@@ -111,7 +111,9 @@ CREATE TABLE `target` (
 DROP TABLE IF EXISTS `player_ssl`;
 CREATE TABLE `player_ssl` (
   `player_id` int(10) unsigned NOT NULL,
-  `serial` bigint(20) unsigned NOT NULL AUTO_INCREMENT
+  `serial` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`player_id`),
+  UNIQUE KEY `serial` (`serial`)
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_ssl';
 
 
