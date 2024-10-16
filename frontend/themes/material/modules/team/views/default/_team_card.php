@@ -28,7 +28,7 @@ $dataProvider = new ArrayDataProvider([
         'dataProvider' => $dataProvider,
         'rowOptions' => function ($model) {
           if ($model->approved !== 1) {
-            return ['class' => 'bg-dark text-primary'];
+            return ['class' => 'bg-dark text-danger'];
           }
         },
         'tableOptions' => ['class' => 'table table-xl orbitron'],
@@ -48,7 +48,7 @@ $dataProvider = new ArrayDataProvider([
             'attribute' => 'player.username',
             'format' => 'raw',
             'value' => function ($model) {
-              return $model->player->profile->link;
+              return $model->player->profile->getLink(true);
             },
             'label' => 'Member'
           ],
