@@ -79,7 +79,7 @@ class SettingsForm extends Model
     {
         return [
           [['fullname'], 'trim','when' => function($model,$attribute) { return $model->_cf($attribute);}],
-          [['fullname'], 'string', 'max'=>32,'when' => function($model,$attribute) { return $model->_cf($attribute);}],
+          [['fullname'], 'string', 'max'=>128,'when' => function($model,$attribute) { return $model->_cf($attribute);}],
           [['pending_progress'], 'boolean', 'trueValue' => true, 'falseValue' => false,'when' => function($model,$attribute) { return $model->_cf($attribute);}],
 
           /* email field rules */

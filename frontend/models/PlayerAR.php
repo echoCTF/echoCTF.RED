@@ -48,7 +48,7 @@ class PlayerAR extends ActiveRecord
       return [
           /* fullname rules */
           [['fullname'], 'trim'],
-          [['fullname'], 'string', 'max'=>32],
+          [['fullname'], 'string', 'max'=>128],
 
           /* email field rules */
           [['email'], 'trim'],
