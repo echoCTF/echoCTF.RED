@@ -63,7 +63,11 @@ class TargetOndemandController extends \app\components\BaseController
         return $this->redirect(['view', 'id' => $model->target_id]);
       }
     } catch (\Exception $e) {
-      Yii::$app->session->setFlash('error', Yii::t('app', "Failed to add OnDemand entry for target. <b>{exception}</b>", ['exception' => Html::encode($e->getMessage())]));
+      if ($e->getCode() === "23000")
+        Yii::$app->session->setFlash('error', Yii::t('app', "Failed to add OnDemand entry for target. <b>A record for this target already existing</b>"));
+      else
+        Yii::$app->session->setFlash('error', Yii::t('app', "Failed to add OnDemand entry for target. <b>{exception}</b>", ['exception' => Html::encode($e->getMessage())]));
+      $model->updated_at = $model->created_at = "";
     }
 
     return $this->render('create', [
