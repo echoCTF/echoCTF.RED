@@ -84,7 +84,7 @@ class SettingsForm extends Model
 
           /* email field rules */
           [['email'], 'trim','when' => function($model,$attribute) { return $model->_cf($attribute);}],
-          ['email', 'email','checkDNS'=>true,'when' => function($model,$attribute) { return $model->_cf($attribute);}],
+          ['email', 'email','checkDNS'=>true,'when' => function($model,$attribute) { return $model->_cf($attribute) && \Yii::$app->sys->disable_mail_validation!==true;}],
           [['email'], 'string', 'max'=>255,'when' => function($model,$attribute) { return $model->_cf($attribute);}],
           [['email'], 'email','when' => function($model,$attribute) { return $model->_cf($attribute);}],
           ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This email has already been taken.'), 'when' => function($model, $attribute) {
@@ -101,8 +101,8 @@ class SettingsForm extends Model
             if(intval($count)!==0)
                 $this->addError($attribute, \Yii::t('app','This email is banned.'));
           }],
-          ['email', '\app\components\validators\StopForumSpamValidator', 'max'=>intval(Yii::$app->sys->signup_StopForumSpamValidator),'when' => function($model,$attribute) { return $model->_cf($attribute) && Yii::$app->sys->signup_StopForumSpamValidator!==false;}],
-          ['email', '\app\components\validators\MXServersValidator',  'mxonly'=>true, 'when' => function($model,$attribute) { return $model->_cf($attribute) && Yii::$app->sys->signup_MXServersValidator!==false;}],
+          ['email', '\app\components\validators\StopForumSpamValidator', 'max'=>intval(Yii::$app->sys->signup_StopForumSpamValidator),'when' => function($model,$attribute) { return $model->_cf($attribute) && Yii::$app->sys->signup_StopForumSpamValidator!==false && \Yii::$app->sys->disable_mail_validation!==true;}],
+          ['email', '\app\components\validators\MXServersValidator',  'mxonly'=>true, 'when' => function($model,$attribute) { return $model->_cf($attribute) && Yii::$app->sys->signup_MXServersValidator!==false && \Yii::$app->sys->disable_mail_validation!==true;}],
 
 
           /* username field rules */

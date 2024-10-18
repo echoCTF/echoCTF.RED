@@ -25,6 +25,7 @@
 * `team_visible_instances` Whether or not player instances are visible to the rest of the team by default otherwise the per-instance field `team_allowed` takes priority
 * `guest_visible_leaderboards` Whether or not the leaderboard will be visible to guest users (this still respects the event start/end restrictions)
 * `hide_timezone` Whether or not the Timezone information should be visible
+* `disable_mail_validation`: Whether or not mail validation should be disabled
 
 * `profile_discord`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_echoctf`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
