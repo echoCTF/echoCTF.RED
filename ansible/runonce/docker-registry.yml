@@ -59,6 +59,14 @@
     with_items: "{{users}}"
     tags: create_users
 
+  - name: copy nstables script
+    copy:
+      src: ../files/nstables.sh
+      dest: /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: '0555'
+
   - name: Clean registry distribution
     command: rm -rf /root/distribution
 

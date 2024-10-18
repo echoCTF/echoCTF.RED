@@ -91,6 +91,7 @@
       - { name: php74_fpm, state: "enable" }
       - { name: mysqld, state: "disable" }
       - { name: memcached, state: "disable" }
+      - { name: unbound, state: "enable" }
     packages:
       - autoconf%2.69
       - automake%1.16
@@ -260,13 +261,14 @@
       - "usr/local/share/icu/{{versions.ICU_MAJOR}}.{{versions.ICU_MINOR}}"
       - usr/lib
 
-  - name: "Copy pf conf files"
+  - name: "Copy pf and unbound conf files"
     copy:
       src: "{{item.src}}"
       dest: "{{item.dest}}"
     with_items:
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
       - { src: '{{playbook_dir}}/../templates/pui.service.conf.j2', dest: '/etc/service.pf.conf' }
+      - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
 
   - name: Generate pf tables files
     copy:
@@ -294,7 +296,12 @@
       - { user: participantUI, dir: logs, mode: "0755" }
       - { user: participantUI, dir: tmp, mode: "1777" }
 
-
+  - name: Fix CHROOT resolv.conf
+    copy:
+      dest: /home/participantUI/etc/resolv.conf
+      content: "nameserver 127.0.0.1"
+    tags:
+      - chroot
 
   - name: Create default chroot /dev entries
     command: chdir=/home/{{item}}/dev /dev/MAKEDEV std

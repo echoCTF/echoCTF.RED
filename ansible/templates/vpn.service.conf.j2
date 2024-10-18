@@ -13,7 +13,7 @@ anchor "targets" on targets {
   # allow registry clients to have access to the internet
   pass quick inet from <registry_clients> to !(self)
   # allow targets to query the dns server on the targets interface
-  pass quick inet proto {tcp, udp} from <targets> to (targets:0) port 53
+  pass quick inet proto {tcp, udp} from <targets> to (targets:0) port 53 rdr-to 127.0.0.1
   # allow registry_clients to query the dns server on the targets interface
   pass quick inet proto {tcp, udp} from <registry_clients> to (targets:0) port 53
   # allow registry_clients to contact private registries
@@ -29,7 +29,7 @@ anchor "offense" on tun {
 	anchor "findings"
 	anchor "allowed" from <offense_network> to (offense) {
 		# allow ping on connected players interface for troubleshooting
-		pass in on tun inet proto icmp from <offense_network> to (offense)
+		pass in inet proto icmp from <offense_network> to (offense)
 	}
   # block targets from connecting to the VPN interface
 	block quick from <targets> to 10.10.0.1

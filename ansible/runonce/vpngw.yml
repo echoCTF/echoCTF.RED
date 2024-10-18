@@ -428,21 +428,23 @@
       content: "up group offense\n"
       dest: /etc/hostname.tun0
 
-  - name: Prepare openvpn
+  - name: Prepare openvpn services
     command: "{{item}}"
     with_items:
       - "mkdir -p /etc/openvpn/certs /etc/openvpn/client_confs /var/log/openvpn /etc/openvpn/crl /etc/openvpn/ccd"
       - "install -d -m 700 /etc/openvpn/private"
       - "rcctl set openvpn status on"
       - "rcctl set openvpn flags --dev tun0 --config /etc/openvpn/openvpn_tun0.conf"
+      - "rcctl enable unbound"
 
-  - name: "Copy openvpn and pf conf files"
+  - name: "Copy openvpn, pf and unbound conf files"
     copy:
       src: "{{item.src}}"
       dest: "{{item.dest}}"
     with_items:
       - { src: '{{playbook_dir}}/../../contrib/openvpn_tun0.conf', dest: '/etc/openvpn/openvpn_tun0.conf' }
       - { src: '{{playbook_dir}}/../../contrib/crl_openssl.conf', dest: '/etc/openvpn/crl/crl_openssl.conf' }
+      - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
       - { src: '{{playbook_dir}}/../templates/vpn.service.conf.j2', dest: '/etc/service.pf.conf' }
 
