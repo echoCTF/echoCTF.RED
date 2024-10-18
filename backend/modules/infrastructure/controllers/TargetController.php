@@ -291,8 +291,16 @@ class TargetController extends \app\components\BaseController
    */
   public function actionDelete($id)
   {
-    $this->findModel($id)->delete();
-
+    $model=$this->findModel($id);
+    $model->destroy();
+    if($model->delete())
+    {
+      Yii::$app->session->setFlash('success', Yii::t('app', 'Target removed...'));
+    }
+    else
+    {
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to remove target...'));
+    }
     return $this->redirect(['index']);
   }
 
@@ -317,7 +325,10 @@ class TargetController extends \app\components\BaseController
     try {
       $counter = $query->count;
       foreach ($query->getModels() as $q)
+      {
+        $q->destroy();
         $q->delete();
+      }
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets deleted', ['counter' => intval($counter)]));
     } catch (\Exception $e) {

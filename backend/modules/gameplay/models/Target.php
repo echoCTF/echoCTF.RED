@@ -271,10 +271,34 @@ class Target extends TargetAR
       {
         return $this->dockerDestroy();
       }
+      else if(substr($this->server,0,3)==='pve')
+      {
+        $HEADERS=['Accept: application/json', 'Content-Type: application/json'];
+        if($this->imageparams!=='')
+        {
+          $decoded=json_decode($this->imageparams);
+          foreach($decoded as $key => $val)
+          {
+            $HEADERS[]=$key.': '.$val;
+          }
+        }
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $HEADERS);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, '{}');
+        curl_setopt($ch, CURLOPT_URL,substr($this->server,4).'status/stop' );
+        if(curl_exec($ch)===false)
+          var_dump(curl_error($ch));
+        curl_close($ch);
+      }
     }
 
   /**
-   * Destroy the remote container
+   * Get memory from parameters
    */
   public function getMemory()
   {
