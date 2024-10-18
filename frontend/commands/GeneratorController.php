@@ -166,6 +166,35 @@ class GeneratorController extends Controller
       }
     }
   }
+
+  /**
+   * Generate target avatar thumbnails
+   */
+  public function actionTargetThumbnails($target_id = null, $pending = true,$w=200,$h=200)
+  {
+    if ($target_id === null || intval($target_id) == 0)
+      $targets = Target::find()->all();
+    else
+      $targets = Target::find()->where(['id' => $target_id])->all();
+
+    foreach ($targets as $target) {
+      if ($pending === true && file_exists(\Yii::getAlias("@app/web/images/targets/_" . $target->name . "-thumbnail.png")) === true)
+        continue;
+      try {
+        $target_img = imagecreatefrompng(\Yii::getAlias("@app/web/images/targets/_" . $target->name . ".png"));
+        $oldw = imagesx($target_img);
+        $oldh = imagesy($target_img);
+        $temp=imagecreatetruecolor($w, $h);
+        imagecopyresampled($temp, $target_img, 0, 0, 0, 0, $w, $h, $oldw, $oldh);
+        imagepng($temp,\Yii::getAlias("@app/web/images/targets/_" . $target->name . "-thumbnail.png"));
+        imagedestroy($target_img);
+        imagedestroy($temp);
+      } catch (\Exception $e) {
+        echo "Failed generation for ", $target->name, ". Error: ", $e->getMessage(), "\n";
+      }
+    }
+  }
+
   /**
    * Generate sitemap.xml
    */
