@@ -26,8 +26,6 @@ yii\bootstrap5\Modal::end();
   </p>
 
   <?php Pjax::begin(); ?>
-  <?php // echo $this->render('_search', ['model' => $searchModel]);
-  ?>
 
   <?= GridView::widget([
     'dataProvider' => $dataProvider,
