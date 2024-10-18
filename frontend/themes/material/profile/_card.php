@@ -15,8 +15,8 @@ use yii\bootstrap\ButtonDropdown;
 if(\Yii::$app->user->identity->sSL && $profile->isMine)
   $profile_actions=$profile->vpnItems;
 
-
-$profile_actions['revoke']=['encode'=>false, 'label'=>"<i class='fas fa-id-card'></i>&nbsp; Regenerate VPN Keys (revoke)", 'url'=>Url::to(['profile/revoke'],true), 'linkOptions'=>['class'=>'text-danger','data-swType'=>'question','data'=>['confirm'=>'You are about to revoke your old keys and generate a new pair!','method'=>'POST']]];
+if(\Yii::$app->user->identity->sSL && (time()-strtotime(\Yii::$app->user->identity->sSL->ts))>=300)
+  $profile_actions['revoke']=['encode'=>false, 'label'=>"<i class='fas fa-id-card'></i>&nbsp; Regenerate VPN Keys (revoke)", 'url'=>Url::to(['profile/revoke'],true), 'linkOptions'=>['class'=>'text-danger','data-swType'=>'question','data'=>['confirm'=>'You are about to revoke your old keys and generate a new pair!','method'=>'POST']]];
 $profile_actions['badge']=['encode'=>false, 'label'=>"<i class='fas fa-id-badge'></i>&nbsp; Your badge URL", 'url'=>Url::to(['profile/badge','id'=>$profile->id],true), 'linkOptions'=>['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!']];
 $profile_actions['edit']= ['encode'=>false, 'label'=>"<i class='fas fa-user-edit'></i>&nbsp; Edit your profile settings", 'url'=>['profile/settings'], 'linkOptions'=>['alt'=>'Edit profile and account settings']];
 $profile_actions['profileurl']=['encode'=>false, 'label'=>'<i class="fas fa-id-card"></i>&nbsp; Your profile URL','url'=>Url::to(['profile/index', 'id'=>$profile->id], 'https'),'linkOptions'=>['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!']];
