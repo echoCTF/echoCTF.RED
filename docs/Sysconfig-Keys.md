@@ -71,6 +71,8 @@
 * `pf_state_limits`: The content to be appended to the pass rules that enforces limits (default: `(max 10000, source-track rule, max-src-nodes 5, max-src-states 2000, max-src-conn 50)`)
 * `force_https_urls`: Force URL generation to always be https (sets `_SERVER['HTTPS']=on`)
 * `menu_items`: JSON encoded string of items to append to the frontend menu
+* `event_end_notification_title`: Title to be used for a notification when the event ends
+* `event_end_notification_body`: The body that will be used to send a notification to all players when the event ends
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
