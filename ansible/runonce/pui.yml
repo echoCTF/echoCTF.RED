@@ -47,22 +47,12 @@
       - { name: participantUI, comment: "{{domain_name}} Participants UI", uid: 4000, password: '*' }
     validation_key: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
     versions:
-      PHP: "7.4"
-      PHP_MINOR: "9"
-      PHP_patch_level:
+      PHP: "8.3"
+      PHP_MINOR: "12"
       AUTOCONF: "2.69"
-      AUTOCONFP: "p2"
-      AUTOMAKE: "1.16.2"
-      AUTOMAKEP: ""
-      memcached: "1.6.9"
-      syslog_ng: "3.12.1p7"
-      nginx: "1.14.2"
-      libc: "96.1"
-      libutil: "15.1"
-      libcrypto: "47.0"
-      libz: "6.0"
-      ICU_MAJOR: 74
-      ICU_MINOR: 2
+      AUTOMAKE: "1.16"
+      ICU_MAJOR: 75
+      ICU_MINOR: 1
     sysctl:
       kern.bufcachepercent: 30
       net.inet.ip.ifq.maxlen: 2560
@@ -88,7 +78,7 @@
       - { name: slaacd, state: "disable" }
       - { name: smtpd, state: "disable" }
       - { name: sndiod, state: "disable" }
-      - { name: php74_fpm, state: "enable" }
+      - { name: php83_fpm, state: "enable" }
       - { name: mysqld, state: "disable" }
       - { name: memcached, state: "disable" }
       - { name: unbound, state: "enable" }
@@ -102,12 +92,12 @@
       - libtool
       - memcached--
       - nginx
-      - pecl74-memcached
-      - php-curl%7.4
-      - php-gd%7.4
-      - php-intl%7.4
-      - php-pdo_mysql%7.4
-      - php-zip%7.4
+      - pecl83-memcached
+      - php-curl%8.3
+      - php-gd%8.3
+      - php-intl%8.3
+      - php-pdo_mysql%8.3
+      - php-zip%8.3
       - certbot
       - py3-pip
       - py3-requests

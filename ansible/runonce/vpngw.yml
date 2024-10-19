@@ -87,6 +87,13 @@
       Things to do:
         - Update /etc/administrators.conf with your IP's
         - Reboot the system for the changes to take effect
+    versions:
+      PHP: "8.3"
+      PHP_MINOR: "12"
+      AUTOCONF: "2.69"
+      AUTOMAKE: "1.16"
+      ICU_MAJOR: 75
+      ICU_MINOR: 1
     sysctl:
       kern.bufcachepercent: 30
       kern.maxfiles: 312180
@@ -127,12 +134,12 @@
       - libtool
       - mariadb-server
       - openvpn--
-      - pecl74-memcached
-      - php-curl%7.4
-      - php-gd%7.4
-      - php-intl%7.4
-      - php-pdo_mysql%7.4
-      - php-zip%7.4
+      - pecl83-memcached
+      - php-curl%8.3
+      - php-gd%8.3
+      - php-intl%8.3
+      - php-pdo_mysql%8.3
+      - php-zip%8.3
       - py3-mysqlclient
       - py3-setuptools
       - py3-netaddr
@@ -144,6 +151,7 @@
       - gnuwatch
       - py3-netaddr
       - nmap
+
   tasks:
   - name: Sync date time
     raw: rdate pool.ntp.org
@@ -230,7 +238,7 @@
       - '/root/.profile'
 
   - name: Activate install php modules
-    shell: cp /etc/php-7.4.sample/*.ini /etc/php-7.4/
+    shell: cp /etc/php-8.3.sample/*.ini /etc/php-8.3/
 
 
   - name: Update my.cnf
@@ -322,12 +330,12 @@
       depth: 1
 
   - name: Bootstrap memcached udf
-    shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 ./config/bootstrap
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./config/bootstrap
     args:
       chdir: /usr/src/memcached_functions_mysql
 
   - name: Configure memcached udf
-    shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
     args:
       chdir: /usr/src/memcached_functions_mysql
 
@@ -346,7 +354,7 @@
 #      chdir: /usr/src/openvpn-updown
 
   - name: make install memcached udf
-    shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 make all install
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" make all install
     args:
       chdir: /usr/src/memcached_functions_mysql
 
@@ -393,7 +401,7 @@
       group: wheel
       state: link
     with_items:
-      - { src: "/usr/local/bin/php-7.4", dst: "/usr/local/bin/php" }
+      - { src: "/usr/local/bin/php-8.3", dst: "/usr/local/bin/php" }
       - { src: "{{APP_DIR}}/backend/bin/cron-index", dst: "/usr/local/bin/cron-index" }
       - { src: "{{APP_DIR}}/backend/bin/ssl-generate-crl", dst: "/usr/local/bin/ssl-generate-crl" }
       - { src: "{{APP_DIR}}/backend/bin/healthcheck", dst: "/usr/local/bin/healthcheck" }
