@@ -50,15 +50,11 @@
     ansible_python_interpreter: /usr/local/bin/python3
     ansible_user: root
     versions:
-      AUTOCONF: 2.69
-      AUTOCONFP: p2
-      AUTOMAKE: 1.16.2
-      AUTOMAKEP: ""
-      memcached: 1.5.18
-      libc: 96.0
-      libutil: 15.0
-      libcrypto: 46.1
-      ICU_MAJOR: 67
+      PHP: "8.3"
+      PHP_MINOR: "12"
+      AUTOCONF: "2.69"
+      AUTOMAKE: "1.16"
+      ICU_MAJOR: 75
       ICU_MINOR: 1
     sysctl:
       kern.bufcachepercent: 30
@@ -94,6 +90,7 @@
       - libtool
       - autoconf%2.69
       - automake%1.16
+      - unzip--
     my_cnf:
       - { init_file:  "/etc/mysql-init.sql"}
       - { bind-address:  "{{db_ip}}" }
@@ -134,6 +131,12 @@
       mode: 0555
       dest: /usr/local/sbin/mysql-events-checker
 
+  - name: Copy database_backup.sh
+    template:
+      src: "{{playbook_dir}}/../../contrib/database_backup.sh"
+      mode: 0555
+      dest: /usr/local/sbin/database_backup
+
   - name: Create fresh /etc/hosts
     copy:
       content: "127.0.0.1 localhost\n{{db_ip}} {{  myname.split('.')[0] | lower }} {{ myname }}\n"
@@ -159,6 +162,16 @@
     when: ansible_connection != 'local'
     set_fact:
       APP_DIR: /root/sources
+
+  - name: Clean sources if exist
+    when: ansible_connection != 'local'
+    shell: rm -rf /root/sources
+
+  - name: Git checkout
+    when: ansible_connection != 'local'
+    ansible.builtin.git:
+      repo: 'https://github.com/echoCTF/echoCTF.RED.git'
+      dest: "{{APP_DIR}}"
 
   - name: Set APP_DIR to {{playbook_dir}}/../../
     when: ansible_connection == 'local'
@@ -281,7 +294,7 @@
 #      depth: 1
 
 #  - name: Make all install on global_variables_udf
-#    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 make DESTDIR=/usr/local/lib/mysql/plugin all install
+#    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" make DESTDIR=/usr/local/lib/mysql/plugin all install
 #    args:
 #      chdir: /root/global_variables_udf
 
@@ -295,17 +308,17 @@
       depth: 1
 
   - name: Bootstrap /root/memcached_functions_mysql
-    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 ./config/bootstrap
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./config/bootstrap
     args:
       chdir: /root/memcached_functions_mysql
 
   - name: Configure /root/memcached_functions_mysql
-    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
     args:
       chdir: /root/memcached_functions_mysql
 
   - name: Make all install /root/memcached_functions_mysql
-    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 make all install
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" make all install
     args:
       chdir: /root/memcached_functions_mysql
 
@@ -401,6 +414,7 @@
       job: "{{item.job}}"
     with_items:
       - { name: "events checker", minute: "*/1",  job: "/usr/local/sbin/mysql-events-checker" }
+      - { name: "daily database backups", minute: "0",hour: "0",  job: "/usr/local/sbin/database_backup" }
 
   - name: display post install message
     debug: msg="Reboot the system for the changes to take effect"

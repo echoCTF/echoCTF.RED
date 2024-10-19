@@ -1,4 +1,4 @@
-FROM buildpack-deps:bullseye-curl
+FROM buildpack-deps:bookworm-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED Participants interface (frontend)"
 ARG VPNUSER=vpnuser
