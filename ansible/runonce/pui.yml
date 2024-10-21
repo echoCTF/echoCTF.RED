@@ -277,6 +277,7 @@
     - { dest: "/etc/targets_networks.conf" }
     - { dest: "/etc/targets_anchor.conf" }
     - { dest: "/etc/offense_anchor.conf" }
+    - { dest: "/etc/service_clients.conf" }
 
   - name: Fix CHROOT environment
     file: path=/home/{{item.user}}/{{item.dir}} mode="{{item.mode}}" state=directory

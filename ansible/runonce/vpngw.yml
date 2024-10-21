@@ -527,6 +527,7 @@
     - { cmd: "touch /etc/offense_anchor.conf", creates: "/etc/offense_anchor.conf" }
     - { cmd: "touch /etc/docker_clients.conf", creates: "/etc/docker_clients.conf" }
     - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
+    - { cmd: "touch /etc/service_clients.conf", creates: "/etc/service_clients.conf" }
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
     - { cmd: "{{APP_DIR}}/backend/yii cron/pf" }
     - { cmd: "mkdir -p /var/log/cron" }
