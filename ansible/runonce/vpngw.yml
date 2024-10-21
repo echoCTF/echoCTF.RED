@@ -123,6 +123,7 @@
       - { name: sndiod, state: "disable" }
       - { name: openvpn, state: "enable"}
       - { name: mysqld, state: "enable"}
+      - { name: supervisord, state: "enable"}
     packages:
       - autoconf-2.69p3
       - automake%1.16
@@ -467,10 +468,7 @@
       - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'route 10\.0\.160\.0 255\.255\.255\.0', replace: 'route {{targets_subnet}} {{targets_netmask}}' }
       - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
 
-
-
-  ## XXX FIXME: REPLACE WITH echoctf/openvpn-updown
-  - name: Create echoctf_updown_mysql.sh (will be replaced)
+  - name: Create echoctf_updown_mysql.sh
     template:
       src:  "{{playbook_dir}}/../../contrib/echoctf_updown_mysql.sh"
       dest: /etc/openvpn/echoctf_updown_mysql.sh
@@ -557,11 +555,24 @@
     with_items:
       - { name: "Generate CRL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-generate-crl" }
       - { name: "Expire sales", minute: "*/2",  job: "{{APP_DIR}}/backend/yii sales/expire-subscriptions" }
-      - { name: "Cron Index", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/cron-index" }
       - { name: "Power Operations", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/powerops" }
-      - { name: "Private Instances", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/instances" }
       - { name: "restart targets with 24h uptime or more", minute: "*/5",  job: "{{APP_DIR}}/backend/bin/target-restart" }
       - { name: "Healthcheck", minute: "*/10",  job: "{{APP_DIR}}/backend/bin/healthcheck" }
+
+  - name: Install echoctf.ini for supervisord
+    copy:
+      dest: /etc/supervisord.d/echoctf.ini
+      content: >
+        [program:IndexPlusInstances]
+        user = root
+        environment = TERM=vt100
+        command = gnuwatch -t -n 30 "backend cron/index;backend cron/instances"
+        stdout_logfile=/var/log/supervisord-echoctf.log
+        stdout_logfile_maxbytes=0
+        stderr_logfile=/var/log/supervisord-echoctf.log
+        stderr_logfile_maxbytes=0
+        redirect_stderr=true
+
 
   - name: create user for openvpn up/down scripts
     mysql_user:
@@ -584,19 +595,6 @@
     with_items:
       - "/usr/src/memcached_functions_mysql/sql/install_functions.sql"
       - "/tmp/findingsd.sql"
-
-#  - name: Create openvpn-updown config on chroot
-#    template:
-#      src:  "{{playbook_dir}}/../../contrib/openvpn-updown-config.yml"
-#      dest: /var/openvpn/chrootjail/etc/config.yml
-#    vars:
-#      memc:
-#        host: "{{db_host}}:11211"
-#      db:
-#        name: "{{db_name}}"
-#        host: "tcp(127.0.0.1:3306)"
-#        user: "root"
-#        pass: ""
 
   - name: Fix /dev/pf permissions for openvpn updown script
     file:
