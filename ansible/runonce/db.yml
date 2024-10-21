@@ -157,6 +157,8 @@
   - name: Bring interface up
     command: sh /etc/netstart {{interconnect_interface}}
 
+  - name: Install packages
+    shell: "pkg_add {{packages|join(' ')}}"
 
   - name: Set APP_DIR to /root/sources on non local connection
     when: ansible_connection != 'local'
@@ -177,10 +179,6 @@
     when: ansible_connection == 'local'
     set_fact:
       APP_DIR: "{{playbook_dir}}/../../"
-
-
-  - name: Install packages
-    shell: "pkg_add {{packages|join(' ')}}"
 
   - name: Add user 'sysadmin'
     user:
@@ -284,20 +282,6 @@
       encoding: utf8mb4
       login_user: "root"
 
-#  - name: Clone global variables UDF repo
-#    git:
-#      repo: 'https://github.com/echoCTF/MySQL-global-user-variables-UDF.git'
-#      dest: /root/global_variables_udf
-#      accept_hostkey: yes
-#      clone: yes
-#      force: yes
-#      depth: 1
-
-#  - name: Make all install on global_variables_udf
-#    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" make DESTDIR=/usr/local/lib/mysql/plugin all install
-#    args:
-#      chdir: /root/global_variables_udf
-
   - name: Clone memcached_functions_mysql repo
     git:
       repo: 'https://github.com/echoCTF/memcached_functions_mysql.git'
@@ -392,6 +376,40 @@
       value: "{{ item.value }}"
     with_dict: "{{ sysctl }}"
 
+  - name: "Copy pf"
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
+
+  - name: "Create service.pf.conf"
+    copy:
+      dest: "/etc/service.pf.conf"
+      content: >
+        pass in quick on interconnect inet proto {tcp,udp} from <service_clients> to port { 11211, 3306 }
+
+  - name: Create pf files
+    ignore_errors: true
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+      chdir: "{{item.chdir|default(omit)}}"
+    with_items:
+    - { cmd: "touch /etc/administrators.conf", creates: "/etc/administrators.conf" }
+    - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
+    - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
+    - { cmd: "touch /etc/registry_clients.conf", creates: "/etc/registry_clients.conf" }
+    - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
+    - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
+    - { cmd: "touch /etc/targets_networks.conf", creates: "/etc/targets_networks.conf" }
+    - { cmd: "touch /etc/targets_anchor.conf", creates: "/etc/targets_anchor.conf" }
+    - { cmd: "touch /etc/offense_anchor.conf", creates: "/etc/offense_anchor.conf" }
+    - { cmd: "touch /etc/docker_clients.conf", creates: "/etc/docker_clients.conf" }
+    - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
+    - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
+    - { cmd: "echo $'10.7.0.200\n10.7.0.201\n10.7.0.254' > /etc/service_clients.conf", creates: "/etc/service_clients.conf" }
+
   - name: Execute fw_update
     command: fw_update -a
 
@@ -417,4 +435,4 @@
       - { name: "daily database backups", minute: "0",hour: "0",  job: "/usr/local/sbin/database_backup" }
 
   - name: display post install message
-    debug: msg="Reboot the system for the changes to take effect"
+    debug: msg="Make sure you've added your IP to the administrators.conf and reboot the system for the changes to take effect"
