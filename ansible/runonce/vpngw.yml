@@ -124,6 +124,7 @@
       - { name: openvpn, state: "enable"}
       - { name: mysqld, state: "enable"}
       - { name: supervisord, state: "enable"}
+      - { name: inetd, state: "enable"}
     packages:
       - autoconf-2.69p3
       - automake%1.16
@@ -456,6 +457,7 @@
       - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
       - { src: '{{playbook_dir}}/../templates/vpn.service.conf.j2', dest: '/etc/service.pf.conf' }
+      - { src: '{{playbook_dir}}/../../contrib/inetd.conf', dest: '/etc/inetd.conf' }
 
 
   - name: Update files with provided ip ranges
@@ -627,6 +629,14 @@
     copy:
       src: ../files/nstables.sh
       dest: /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: copy gource/logstalgia inetd service script
+    copy:
+      src: ../../contrib/gource-inetd-service.pl
+      dest: /usr/local/sbin/inetd-visuals
       owner: root
       group: wheel
       mode: '0555'
