@@ -182,13 +182,12 @@ class GeneratorController extends Controller
         continue;
       try {
         $target_img = imagecreatefrompng(\Yii::getAlias("@app/web/images/targets/_" . $target->name . ".png"));
-        $oldw = imagesx($target_img);
-        $oldh = imagesy($target_img);
-        $temp=imagecreatetruecolor($w, $h);
-        imagecopyresampled($temp, $target_img, 0, 0, 0, 0, $w, $h, $oldw, $oldh);
-        imagepng($temp,\Yii::getAlias("@app/web/images/targets/_" . $target->name . "-thumbnail.png"));
+        $scaled = imagescale($target_img, $w);
+        imagealphablending($scaled, false);
+        imagesavealpha($scaled, true);
+        imagepng($scaled,\Yii::getAlias("@app/web/images/targets/_" . $target->name . "-thumbnail.png"));
         imagedestroy($target_img);
-        imagedestroy($temp);
+        imagedestroy($scaled);
       } catch (\Exception $e) {
         echo "Failed generation for ", $target->name, ". Error: ", $e->getMessage(), "\n";
       }
