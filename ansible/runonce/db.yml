@@ -383,11 +383,13 @@
     with_items:
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
 
-  - name: "Create service.pf.conf"
+  - name: "Create service.pf.conf and service_clients.conf"
     copy:
-      dest: "/etc/service.pf.conf"
-      content: >
-        pass in quick on interconnect inet proto {tcp,udp} from <service_clients> to port { 11211, 3306 }
+      dest: "{{item.dest}}"
+      content: "{{item.val}}\n"
+    with_items:
+      - { dest: "/etc/service.pf.conf",val: "pass in quick on interconnect inet proto {tcp,udp} from <service_clients> to port { 11211, 3306 }"}
+      - { dest: "/etc/service_clients.conf", val: "10.7.0.200\n10.7.0.201\n10.7.0.254"}
 
   - name: Create pf files
     ignore_errors: true
@@ -408,7 +410,6 @@
     - { cmd: "touch /etc/docker_clients.conf", creates: "/etc/docker_clients.conf" }
     - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
-    - { cmd: "echo $'10.7.0.200\n10.7.0.201\n10.7.0.254' > /etc/service_clients.conf", creates: "/etc/service_clients.conf" }
 
   - name: Execute fw_update
     command: fw_update -a
