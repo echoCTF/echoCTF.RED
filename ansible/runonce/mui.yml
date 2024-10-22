@@ -33,21 +33,12 @@
     ansible_user: root
     validation_key: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
     versions:
-      PHP: 7.4
-      PHP_MINOR: 9
-      PHP_patch_level:
-      AUTOCONF: 2.69
-      AUTOCONFP: p2
-      AUTOMAKE: 1.16.2
-      AUTOMAKEP: ""
-      memcached: 1.5.18
-      syslog_ng: 3.12.1p7
-      nginx: 1.14.2
-      libc: 96.0
-      libutil: 15.0
-      libcrypto: 46.2
-      ICU_MAJOR: 74
-      ICU_MINOR: 2
+      PHP: "8.3"
+      PHP_MINOR: "12"
+      AUTOCONF: "2.69"
+      AUTOMAKE: "1.16"
+      ICU_MAJOR: 75
+      ICU_MINOR: 1
     sysctl:
       kern.bufcachepercent: 30
       net.inet.ip.ifq.maxlen: 2560
@@ -81,7 +72,7 @@
       - { name: slaacd, state: "disable" }
       - { name: smtpd, state: "disable" }
       - { name: sndiod, state: "disable" }
-      - { name: php74_fpm, state: "enable" }
+      - { name: php83_fpm, state: "enable" }
       - { name: mysqld, state: "disable" }
       - { name: memcached, state: "disable" }
     packages:
@@ -94,13 +85,13 @@
       - libtool
       - autoconf%2.69
       - automake%1.16
-      - pecl74-memcached
+      - pecl83-memcached
       - nginx
-      - php-gd%7.4
-      - php-curl%7.4
-      - php-intl%7.4
-      - php-pdo_mysql%7.4
-      - php-zip%7.4
+      - php-gd%8.3
+      - php-curl%8.3
+      - php-intl%8.3
+      - php-pdo_mysql%8.3
+      - php-zip%8.3
 
   tasks:
   - name: Sync date time
@@ -259,8 +250,7 @@
     - { cmd: "touch /etc/targets_networks.conf", creates: "/etc/targets_networks.conf" }
     - { cmd: "touch /etc/targets_anchor.conf", creates: "/etc/targets_anchor.conf" }
     - { cmd: "touch /etc/offense_anchor.conf", creates: "/etc/offense_anchor.conf" }
-
-
+    - { cmd: "touch /etc/service_clients.conf", creates: "/etc/service_clients.conf" }
 
   - name: Fix CHROOT environment
     file: path=/home/{{item.user}}/{{item.dir}} mode="{{item.mode}}" state=directory
@@ -294,7 +284,7 @@
       - chroot
 
   - name: Activate install php modules
-    shell: cp /etc/php-7.4.sample/*.ini /etc/php-7.4/
+    shell: cp /etc/php-8.3.sample/*.ini /etc/php-8.3/
 
   - name: "Create moderatorUI config/db.php"
     copy:
@@ -369,7 +359,7 @@
 
 
   - name: Fixing /etc/php.ini
-    ini_file: dest=/etc/php-7.4.ini section={{item.section}} option={{item.option}} value={{item.value}} mode=0644 owner=root group=wheel
+    ini_file: dest=/etc/php-8.3.ini section={{item.section}} option={{item.option}} value={{item.value}} mode=0644 owner=root group=wheel
     with_items:
       - { section: PHP, option: "cgi.fix_pathinfo", value: 0 }
       - { section: PHP, option: "expose_php", value: "Off" }

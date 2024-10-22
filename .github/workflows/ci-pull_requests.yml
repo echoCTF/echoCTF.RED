@@ -38,12 +38,12 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Build the all-in-one Docker image
       run: docker build --no-cache . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest

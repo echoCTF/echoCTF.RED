@@ -87,6 +87,13 @@
       Things to do:
         - Update /etc/administrators.conf with your IP's
         - Reboot the system for the changes to take effect
+    versions:
+      PHP: "8.3"
+      PHP_MINOR: "12"
+      AUTOCONF: "2.69"
+      AUTOMAKE: "1.16"
+      ICU_MAJOR: 75
+      ICU_MINOR: 1
     sysctl:
       kern.bufcachepercent: 30
       kern.maxfiles: 312180
@@ -116,6 +123,8 @@
       - { name: sndiod, state: "disable" }
       - { name: openvpn, state: "enable"}
       - { name: mysqld, state: "enable"}
+      - { name: supervisord, state: "enable"}
+      - { name: inetd, state: "enable"}
     packages:
       - autoconf-2.69p3
       - automake%1.16
@@ -127,12 +136,12 @@
       - libtool
       - mariadb-server
       - openvpn--
-      - pecl74-memcached
-      - php-curl%7.4
-      - php-gd%7.4
-      - php-intl%7.4
-      - php-pdo_mysql%7.4
-      - php-zip%7.4
+      - pecl83-memcached
+      - php-curl%8.3
+      - php-gd%8.3
+      - php-intl%8.3
+      - php-pdo_mysql%8.3
+      - php-zip%8.3
       - py3-mysqlclient
       - py3-setuptools
       - py3-netaddr
@@ -144,6 +153,7 @@
       - gnuwatch
       - py3-netaddr
       - nmap
+
   tasks:
   - name: Sync date time
     raw: rdate pool.ntp.org
@@ -230,7 +240,7 @@
       - '/root/.profile'
 
   - name: Activate install php modules
-    shell: cp /etc/php-7.4.sample/*.ini /etc/php-7.4/
+    shell: cp /etc/php-8.3.sample/*.ini /etc/php-8.3/
 
 
   - name: Update my.cnf
@@ -322,12 +332,12 @@
       depth: 1
 
   - name: Bootstrap memcached udf
-    shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 ./config/bootstrap
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./config/bootstrap
     args:
       chdir: /usr/src/memcached_functions_mysql
 
   - name: Configure memcached udf
-    shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
     args:
       chdir: /usr/src/memcached_functions_mysql
 
@@ -346,7 +356,7 @@
 #      chdir: /usr/src/openvpn-updown
 
   - name: make install memcached udf
-    shell: AUTOCONF_VERSION=2.69 AUTOMAKE_VERSION=1.16 make all install
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" make all install
     args:
       chdir: /usr/src/memcached_functions_mysql
 
@@ -393,7 +403,7 @@
       group: wheel
       state: link
     with_items:
-      - { src: "/usr/local/bin/php-7.4", dst: "/usr/local/bin/php" }
+      - { src: "/usr/local/bin/php-8.3", dst: "/usr/local/bin/php" }
       - { src: "{{APP_DIR}}/backend/bin/cron-index", dst: "/usr/local/bin/cron-index" }
       - { src: "{{APP_DIR}}/backend/bin/ssl-generate-crl", dst: "/usr/local/bin/ssl-generate-crl" }
       - { src: "{{APP_DIR}}/backend/bin/healthcheck", dst: "/usr/local/bin/healthcheck" }
@@ -447,6 +457,7 @@
       - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
       - { src: '{{playbook_dir}}/../templates/vpn.service.conf.j2', dest: '/etc/service.pf.conf' }
+      - { src: '{{playbook_dir}}/../../contrib/inetd.conf', dest: '/etc/inetd.conf' }
 
 
   - name: Update files with provided ip ranges
@@ -459,10 +470,7 @@
       - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'route 10\.0\.160\.0 255\.255\.255\.0', replace: 'route {{targets_subnet}} {{targets_netmask}}' }
       - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
 
-
-
-  ## XXX FIXME: REPLACE WITH echoctf/openvpn-updown
-  - name: Create echoctf_updown_mysql.sh (will be replaced)
+  - name: Create echoctf_updown_mysql.sh
     template:
       src:  "{{playbook_dir}}/../../contrib/echoctf_updown_mysql.sh"
       dest: /etc/openvpn/echoctf_updown_mysql.sh
@@ -519,6 +527,7 @@
     - { cmd: "touch /etc/offense_anchor.conf", creates: "/etc/offense_anchor.conf" }
     - { cmd: "touch /etc/docker_clients.conf", creates: "/etc/docker_clients.conf" }
     - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
+    - { cmd: "touch /etc/service_clients.conf", creates: "/etc/service_clients.conf" }
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
     - { cmd: "{{APP_DIR}}/backend/yii cron/pf" }
     - { cmd: "mkdir -p /var/log/cron" }
@@ -548,11 +557,24 @@
     with_items:
       - { name: "Generate CRL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-generate-crl" }
       - { name: "Expire sales", minute: "*/2",  job: "{{APP_DIR}}/backend/yii sales/expire-subscriptions" }
-      - { name: "Cron Index", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/cron-index" }
       - { name: "Power Operations", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/powerops" }
-      - { name: "Private Instances", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/instances" }
       - { name: "restart targets with 24h uptime or more", minute: "*/5",  job: "{{APP_DIR}}/backend/bin/target-restart" }
       - { name: "Healthcheck", minute: "*/10",  job: "{{APP_DIR}}/backend/bin/healthcheck" }
+
+  - name: Install echoctf.ini for supervisord
+    copy:
+      dest: /etc/supervisord.d/echoctf.ini
+      content: >
+        [program:IndexPlusInstances]
+        user = root
+        environment = TERM=vt100
+        command = gnuwatch -t -n 30 "backend cron/index;backend cron/instances"
+        stdout_logfile=/var/log/supervisord-echoctf.log
+        stdout_logfile_maxbytes=0
+        stderr_logfile=/var/log/supervisord-echoctf.log
+        stderr_logfile_maxbytes=0
+        redirect_stderr=true
+
 
   - name: create user for openvpn up/down scripts
     mysql_user:
@@ -575,19 +597,6 @@
     with_items:
       - "/usr/src/memcached_functions_mysql/sql/install_functions.sql"
       - "/tmp/findingsd.sql"
-
-#  - name: Create openvpn-updown config on chroot
-#    template:
-#      src:  "{{playbook_dir}}/../../contrib/openvpn-updown-config.yml"
-#      dest: /var/openvpn/chrootjail/etc/config.yml
-#    vars:
-#      memc:
-#        host: "{{db_host}}:11211"
-#      db:
-#        name: "{{db_name}}"
-#        host: "tcp(127.0.0.1:3306)"
-#        user: "root"
-#        pass: ""
 
   - name: Fix /dev/pf permissions for openvpn updown script
     file:
@@ -620,6 +629,14 @@
     copy:
       src: ../files/nstables.sh
       dest: /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: copy gource/logstalgia inetd service script
+    copy:
+      src: ../../contrib/gource-inetd-service.pl
+      dest: /usr/local/sbin/inetd-visuals
       owner: root
       group: wheel
       mode: '0555'

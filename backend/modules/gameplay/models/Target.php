@@ -21,6 +21,7 @@ use Docker\API\Model\AuthConfig;
 use app\modules\infrastructure\models\DockerInstance;
 use \yii\helpers\Html as H;
 use app\components\WebhookTrigger as Webhook;
+use yii\base\UserException;
 use yii\helpers\Url;
 /**
  * This is the model class for table "target".
@@ -82,6 +83,9 @@ class Target extends TargetAR
     {
       $targetVariables=null;
       $docker=$this->connectAPI();
+      if($docker===false)
+        throw new UserException("Failed to connect to docker server: ".$this->server);
+
       $this->destroy();
 
       $hostConfig=$this->hostConfig();
@@ -252,6 +256,9 @@ class Target extends TargetAR
     public function dockerDestroy()
     {
       $docker=$this->connectAPI();
+      if($docker===false)
+        return false;
+
       try
       {
         $docker->containerDelete($this->name, ['force'=>true]);

@@ -15,7 +15,7 @@ jobs:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.3'
         extensions: imagick, gd, mysqli, pdo, intl, mbstring
         tools: composer:v2
 
@@ -43,12 +43,12 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
   dockerbuilds:
     needs: [phpcomposer]
@@ -61,7 +61,7 @@ jobs:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'
+        php-version: '8.3'
         extensions: imagick, gd, mysqli, pdo, intl, mbstring
         tools: composer:v2
     - uses: actions/checkout@v3
@@ -77,12 +77,12 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
     - name: Build the all-in-one Docker image
       run: docker build --no-cache --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest

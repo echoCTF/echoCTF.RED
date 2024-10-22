@@ -14,8 +14,6 @@
     "require": {
         "php": ">=7.2.0",
         "yiisoft/yii2": "2.0.50",
-        "docker-php/docker-php": "^2.0",
-        "jane-php/jane-php": "^4 <4.3",
         "miloschuman/yii2-highcharts-widget": "^10.0",
         "kartik-v/yii2-tabs-x": "@dev",
         "stripe/stripe-php": "^12.0",
@@ -27,7 +25,8 @@
         "yiisoft/yii2-bootstrap5": "*",
         "twbs/bootstrap-icons": "^1.10",
         "kartik-v/yii2-krajee-base": "dev-master",
-        "kartik-v/yii2-bootstrap5-dropdown": "@dev"
+        "kartik-v/yii2-bootstrap5-dropdown": "@dev",
+        "beluga-php/docker-php": "^1.45"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "^2.1.0",
@@ -75,8 +74,6 @@
         }
     },
     "repositories": [
-        { "type": "vcs", "url": "https://github.com/echoCTF/docker-php.git" },
-        { "type": "vcs", "url": "https://github.com/echoCTF/docker-php-api.git" },
         {
             "type": "package",
             "package": {
