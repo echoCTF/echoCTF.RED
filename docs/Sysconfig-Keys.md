@@ -113,6 +113,7 @@ Or instead if not DSN then use the following
 ## Player Specific
 * `academic_Nlong` Name for academic value `N` (starting at 0)
 *	`academic_Nshort` Short name for academic value `N` (starting at 0)
+*	`academic_Nicon` An icon name associated with this academic grouping (starting at 0)
 * `academic_grouping` The number for the supported groups or (0) to Disable support for academic grouping of player activity
 example:
 ```sh
@@ -121,6 +122,8 @@ backend/yii sysconfig/set academic_0 "SuperSite.com"
 backend/yii sysconfig/set academic_1 "AnotherSite.com"
 backend/yii sysconfig/set academic_0short "supersite"
 backend/yii sysconfig/set academic_1short "anothersite"
+backend/yii sysconfig/set academic_0icon "supersite.png"
+backend/yii sysconfig/set academic_1icon "anothersite.png"
 ```
 
 
