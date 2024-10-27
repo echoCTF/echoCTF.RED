@@ -376,6 +376,21 @@ class Player extends PlayerAR implements IdentityInterface
     }
   }
 
+
+  /**
+   * Send a notification to current user
+   */
+  public function notify($type="info",$title,$body)
+  {
+    $n=new \app\models\Notification;
+    $n->player_id=$this->id;
+    $n->archived=0;
+    $n->category=$type;
+    $n->title=$title;
+    $n->body=$body;
+    return $n->save();
+  }
+
   /**
    * Send mail to player with
    * @param string $subject

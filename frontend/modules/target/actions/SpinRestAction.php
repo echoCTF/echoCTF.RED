@@ -41,7 +41,13 @@ class SpinRestAction extends \yii\rest\ViewAction
       $playerSpin->counter=intval($playerSpin->counter) + 1;
       $playerSpin->total=intval($playerSpin->total) + 1;
       if($SQ->save() !== false && $playerSpin->save() !== false)
+      {
         Yii::$app->session->setFlash('success', sprintf($msg, $target->name));
+        if(\Yii::$app->sys->spins_per_day!==false && intval($playerSpin->counter)>=intval(\Yii::$app->sys->spins_per_day))
+        {
+          Yii::$app->user->identity->notify("swal:info",\Yii::t('app',"Max spins reached"),\Yii::t('app','You have reached the maximum number of spins for the day. Feel free to reach out to our support to reset your counter!'));
+        }
+      }
       else
         throw new NotFoundHttpException(\Yii::t('app','Failed to queue target for restart.'));
 
