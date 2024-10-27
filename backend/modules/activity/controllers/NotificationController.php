@@ -61,15 +61,23 @@ class NotificationController extends \app\components\BaseController
   {
 
     $model = new Notification();
-    if ($model->load(Yii::$app->request->post())) {
+    if ($model->load(Yii::$app->request->post()) && $model->validate()) {
       if ($model->player_id == null) {
         $err = false;
         $connection=\Yii::$app->db;
         $transaction = $connection->beginTransaction();
-
+        $query=Player::find()->where(['active' => 1, 'status' => 10]);
+        if($model->online)
+        {
+          $query->andHaving(['!=','online',0]);
+        }
+        if($model->ovpn)
+        {
+          $query->andHaving(['!=','ovpn',0]);
+        }
         // Send notification to all players
         try {
-          foreach (Player::find()->where(['active' => 1, 'status' => 10])->all() as $player) {
+          foreach ($query->all() as $player) {
             $notif = new Notification;
             $notif->load(Yii::$app->request->post());
             $notif->player_id = $player->id;
