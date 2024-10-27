@@ -43,10 +43,6 @@ Url::remember();
     <div><p class="text-info"><?=\Yii::t('app','Target from:')?> <b><?=Html::a($target->network->name,['/network/default/view','id'=>$target->network->id])?></b></p></div>
 <?php endif;?>
 
-<div class="watermarked img-fluid">
-<img src="<?=$target->logo?>" width="100px"/>
-</div>
-
 <?php
 if(Yii::$app->user->isGuest)
 {
