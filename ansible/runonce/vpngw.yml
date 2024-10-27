@@ -532,6 +532,13 @@
     - { cmd: "{{APP_DIR}}/backend/yii cron/pf" }
     - { cmd: "mkdir -p /var/log/cron" }
 
+  - name: "Create configuration files with contents"
+    copy:
+      dest: "{{item.dest}}"
+      content: "{{item.val}}\n"
+    with_items:
+      - { dest: "/etc/registry_clients.conf", val: "10.0.0.0/24"}
+
   - name: "Create targets network interface hostname.{{targets_if}}"
     copy:
       content: "inet {{targets_if_ipv4}} {{targets_netmask}} NONE group targets\n"
