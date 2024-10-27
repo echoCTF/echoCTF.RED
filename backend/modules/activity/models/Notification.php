@@ -23,6 +23,9 @@ use yii\db\Expression;
  */
 class Notification extends \yii\db\ActiveRecord
 {
+  public $online;
+  public $ovpn;
+
   /**
    * {@inheritdoc}
    */
@@ -46,9 +49,10 @@ class Notification extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      //            [['player_id'], 'required'],
       [['player_id'], 'integer'],
       [['archived'], 'boolean'],
+      [['online','ovpn'], 'boolean'],
+      [['online','ovpn'],'filter', 'filter' => 'boolval'],
       [['body'], 'string'],
       [['created_at', 'updated_at'], 'safe'],
       [['title'], 'string', 'max' => 255],

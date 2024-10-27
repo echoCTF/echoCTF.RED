@@ -18,9 +18,9 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'fullname')->textInput(['maxlength' => true])->hint('The fullname of the player') ?>
 
     <?php if (\Yii::$app->sys->academic_grouping !== false): ?>
-      <?= $form->field($model, 'academic')->dropDownList($filter)->hint('Whether the player is gov, edu or pro') ?>
+      <?= $form->field($model, 'academic')->dropDownList((new \app\components\columns\AcademicColumn(['attribute'=>'academic']))->filter)->hint('Academic grouping number for the player (if any)') ?>
     <?php else:?>
-      <?= $form->field($model, 'academic')->textInput()->hint('Whether the player is gov, edu or pro') ?>
+      <?= $form->field($model, 'academic')->textInput()->hint('Academic grouping number for the player (if any)') ?>
     <?php endif;?>
     <?= $form->field($model, 'email')->textInput(['maxlength' => true])->hint('The email address of the player') ?>
 

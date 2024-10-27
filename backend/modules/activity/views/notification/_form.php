@@ -15,18 +15,26 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
   <?php $form = ActiveForm::begin(); ?>
   <div class="row">
-    <div class="col-md-5">
+    <div class="col-md-6">
     <?= $form->field($model, 'player_id',['inputOptions' => ['autofocus' => 'autofocus',]])->widget(AutocompleteAjax::class, [
       'multiple' => false,
       'url' => ['/frontend/player/ajax-search'],
       'options' => ['placeholder' => 'Find player by email, username, id or profile.']
     ])->hint('The player that we will send the notification.');  ?>
     </div>
-    <div class="col-md-5">
+    <div class="col-md-6">
     <?= $form->field($model, 'category')->dropDownList($model->supportedCategories())->hint('Choose the notification type. <code>swal:</code> prefixed notifications invoke a modal popup.') ?>
     </div>
-    <div class="col-md-2">
-    <?= $form->field($model, 'archived')->checkBox(['label'=>false])->label('Archived')->hint('Should the notification be archived? (default: no)') ?>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <?= $form->field($model, 'archived')->checkBox(['label'=>false])->label('Archived')->hint('Should the notification be archived? (default: no)') ?>
+    </div>
+    <div class="col-md-4">
+      <?= $form->field($model, 'online')->checkBox(['label'=>false])->label('Online')->hint('Notify only online players') ?>
+    </div>
+    <div class="col-md-4">
+      <?= $form->field($model, 'ovpn')->checkBox(['label'=>false])->label('On VPN')->hint('Notify only players on the VPN') ?>
     </div>
   </div>
   <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
