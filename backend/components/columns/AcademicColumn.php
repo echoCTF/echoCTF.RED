@@ -20,7 +20,7 @@ class AcademicColumn extends \yii\grid\DataColumn
     if (!$this->attribute) {
       throw new InvalidConfigException('No {attribute} provided.');
     }
-    if (\Yii::$app->sys->academic_grouping !== false) {
+    if (intval(\Yii::$app->sys->academic_grouping)>0) {
       $filter=[];
       for ($i = 0; $i < intval(\Yii::$app->sys->academic_grouping); $i++) {
         $filter[] = $i.': '.\Yii::$app->sys->{"academic_" . $i . "short"};
