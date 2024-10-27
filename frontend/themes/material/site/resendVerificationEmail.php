@@ -19,6 +19,7 @@ $this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Resend verification e
             <?php $form=ActiveForm::begin(['id' => 'resend-verification-email-form']);?>
 
             <?=$form->field($model, 'email')->textInput(['autofocus' => true]) ?>
+            <?=$form->field($model, 'captcha')->widget(\yii\captcha\Captcha::class, ['options'=>['placeholder'=>'enter captcha code','autocomplete'=>'off']])->label(false)->hint('<small class="text-warning">You can click on the image to load a new captcha code.</small>') ?>
 
             <div class="form-group">
                 <?=Html::submitButton(\Yii::t('app','Send'), ['class' => 'btn btn-primary']) ?>
