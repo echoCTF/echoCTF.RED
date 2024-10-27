@@ -113,10 +113,10 @@ Or instead if not DSN then use the following
 ## Player Specific
 * `academic_N` Name for academic value `N` (starting at 0)
 *	`academic_Nshort` Short name for academic value `N`
-* `academic_grouping` (1)Enable/(0)Disable support for academic grouping of activity stream
+* `academic_grouping` The number for the supported groups or (0) to Disable support for academic grouping of player activity
 example:
 ```sh
-backend/yii sysconfig/set academic_grouping 1
+backend/yii sysconfig/set academic_grouping 2
 backend/yii sysconfig/set academic_0 "SuperSite.com"
 backend/yii sysconfig/set academic_1 "AnotherSite.com"
 backend/yii sysconfig/set academic_0short "supersite"
