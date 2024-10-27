@@ -34,7 +34,7 @@ class CreditsController extends \app\components\BaseController
     public function actionIndex()
     {
       $dataProvider = new ActiveDataProvider([
-        'query' => Credits::find()->orderBy('id ASC'),
+        'query' => Credits::find()->orderBy('weight ASC, id ASC'),
         'pagination' =>false,
       ]);
       return $this->render('index',['dataProvider'=>$dataProvider]);
