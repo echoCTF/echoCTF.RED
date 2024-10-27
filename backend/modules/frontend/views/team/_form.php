@@ -10,14 +10,6 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 /* @var $model app\modules\frontend\models\Team */
 /* @var $form yii\widgets\ActiveForm */
 
-if (Yii::$app->sys->academic_grouping !== false) {
-  for ($i = 0; $i < intval(Yii::$app->sys->academic_grouping); $i++) {
-    $filter[] = Yii::$app->sys->{"academic_" . $i . "short"};
-  }
-} else {
-  $filter = [];
-}
-
 ?>
 
 <div class="team-form">
@@ -35,7 +27,7 @@ if (Yii::$app->sys->academic_grouping !== false) {
   </div>
   <div class="row">
     <?php if (\Yii::$app->sys->academic_grouping !== false): ?>
-      <div class="col-md-6"><?= $form->field($model, 'academic')->dropDownList($filter)->hint('Whether the player is gov, edu or org') ?></div>
+      <div class="col-md-6"><?= $form->field($model, 'academic')->dropDownList((new \app\components\columns\AcademicColumn(['attribute'=>'academic']))->filter)->hint('Whether the player is gov, edu or org') ?></div>
     <?php else: ?>
       <div class="col-md-6"><?= $form->field($model, 'academic')->textInput()->hint('Whether the player is gov, edu or org') ?></div>
     <?php endif; ?>
