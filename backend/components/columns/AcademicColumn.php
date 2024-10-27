@@ -23,7 +23,7 @@ class AcademicColumn extends \yii\grid\DataColumn
     if (\Yii::$app->sys->academic_grouping !== false) {
       $filter=[];
       for ($i = 0; $i < intval(\Yii::$app->sys->academic_grouping); $i++) {
-        $filter[] = \Yii::$app->sys->{"academic_" . $i . "short"};
+        $filter[] = $i.': '.\Yii::$app->sys->{"academic_" . $i . "short"};
       }
       $this->filter=$filter;
       $this->visible=true;
@@ -31,5 +31,9 @@ class AcademicColumn extends \yii\grid\DataColumn
       $this->visible=false;
     }
     $this->filterAttribute = $this->attribute;
+  }
+
+  public function getFilter(){
+    return $this->filter;
   }
 }
