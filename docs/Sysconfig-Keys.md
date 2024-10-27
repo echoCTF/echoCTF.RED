@@ -74,6 +74,7 @@
 * `menu_items`: JSON encoded string of items to append to the frontend menu
 * `event_end_notification_title`: Title to be used for a notification when the event ends
 * `event_end_notification_body`: The body that will be used to send a notification to all players when the event ends
+* `plus_writeups`: Number to add to the headshots to allow for writeup activations (eg. a value of `2` means that the player can have `player_headshots+2` writeups active at most). A value of `0` means that the player can have only as many writeups active as its own number of headshots.
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
