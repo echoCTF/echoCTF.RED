@@ -10,7 +10,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property string $id
  */
-class Avatar extends \yii\db\ActiveRecord
+class Avatar extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -42,8 +42,4 @@ class Avatar extends \yii\db\ActiveRecord
         ];
     }
 
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
-    }
 }

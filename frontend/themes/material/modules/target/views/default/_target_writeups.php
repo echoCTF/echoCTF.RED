@@ -30,7 +30,6 @@ use yii\helpers\Html;
         else
           echo Html::a(
             $item->player->username.' ('.$item->language->id.') <span class="badge badge-primary badge-pill">'.\Yii::t('app',$item->averageRatingName).'</span>',
-            //'<i class="fas fa-question-circle" style="font-size: 1.5em;"></i> '.\Yii::t('app','Writeups available.'),
             ['/target/writeup/enable', 'id'=>$item->target_id],
             [
               'class'=>implode(' ',$item_classes),

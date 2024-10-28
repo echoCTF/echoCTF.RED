@@ -12,6 +12,7 @@ use yii\behaviors\AttributeTypecastBehavior;
 class PasswordResetRequestForm extends Model
 {
     public $email;
+    public $captcha;
 
 
     /**
@@ -28,6 +29,7 @@ class PasswordResetRequestForm extends Model
                 'filter' => ['status' => Player::STATUS_ACTIVE],
                 'message' => \Yii::t('app','There is no user with this email address.')
             ],
+            ['captcha', 'captcha'],
         ];
     }
 

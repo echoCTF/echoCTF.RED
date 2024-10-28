@@ -24,7 +24,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property PlayerBadge[] $playerBadges
  * @property Player[] $players
  */
-class Badge extends \yii\db\ActiveRecord
+class Badge extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -82,26 +82,10 @@ class Badge extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-//    public function getBadgeFindings()
-//    {
-//        return $this->hasMany(BadgeFinding::class, ['badge_id' => 'id']);
-//    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getFindings()
     {
         return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->viaTable('badge_finding', ['badge_id' => 'id']);
     }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-//    public function getBadgeTreasures()
-//    {
-//        return $this->hasMany(BadgeTreasure::class, ['badge_id' => 'id']);
-//    }
 
     /**
      * @return \yii\db\ActiveQuery
@@ -122,14 +106,6 @@ class Badge extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-//    public function getPlayerBadges()
-//    {
-//        return $this->hasMany(PlayerBadge::class, ['badge_id' => 'id']);
-//    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPlayers()
     {
         return $this->hasMany(\app\models\Player::class, ['id' => 'player_id'])->viaTable('player_badge', ['badge_id' => 'id']);
@@ -143,11 +119,4 @@ class Badge extends \yii\db\ActiveRecord
     {
         return new BadgeQuery(get_called_class());
     }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
-    }
-
-
 }

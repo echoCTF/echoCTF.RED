@@ -74,6 +74,7 @@
 * `menu_items`: JSON encoded string of items to append to the frontend menu
 * `event_end_notification_title`: Title to be used for a notification when the event ends
 * `event_end_notification_body`: The body that will be used to send a notification to all players when the event ends
+* `plus_writeups`: Number to add to the headshots to allow for writeup activations (eg. a value of `2` means that the player can have `player_headshots+2` writeups active at most). A value of `0` means that the player can have only as many writeups active as its own number of headshots.
 
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
@@ -113,6 +114,7 @@ Or instead if not DSN then use the following
 ## Player Specific
 * `academic_Nlong` Name for academic value `N` (starting at 0)
 *	`academic_Nshort` Short name for academic value `N` (starting at 0)
+*	`academic_Nicon` An icon name associated with this academic grouping (starting at 0)
 * `academic_grouping` The number for the supported groups or (0) to Disable support for academic grouping of player activity
 example:
 ```sh
@@ -121,6 +123,8 @@ backend/yii sysconfig/set academic_0 "SuperSite.com"
 backend/yii sysconfig/set academic_1 "AnotherSite.com"
 backend/yii sysconfig/set academic_0short "supersite"
 backend/yii sysconfig/set academic_1short "anothersite"
+backend/yii sysconfig/set academic_0icon "supersite.png"
+backend/yii sysconfig/set academic_1icon "anothersite.png"
 ```
 
 

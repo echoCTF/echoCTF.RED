@@ -366,16 +366,8 @@ class Player extends PlayerAR implements IdentityInterface
 
   public function getAcademicIcon()
   {
-    switch ($this->academic) {
-      case 0:
-        return "government.svg";
-      case 1:
-        return "education.svg";
-      default:
-        return "professional.svg";
-    }
+    return \Yii::$app->sys->{"academic_".$this->academic."icon"};
   }
-
 
   /**
    * Send a notification to current user

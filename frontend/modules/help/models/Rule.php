@@ -17,7 +17,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $weight
  * @property string $ts
  */
-class Rule extends \yii\db\ActiveRecord
+class Rule extends \app\models\ActiveRecordReadOnly
 {
   /**
    * {@inheritdoc}

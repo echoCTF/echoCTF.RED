@@ -25,7 +25,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property Challenge $challenge
  * @property PlayerQuestion $answered
  */
-class Question extends \yii\db\ActiveRecord
+class Question extends \app\models\ActiveRecordReadOnly
 {
     public $challenge_name;
     /**
@@ -123,9 +123,4 @@ class Question extends \yii\db\ActiveRecord
       return $string;
     }
 
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
-    }
 }

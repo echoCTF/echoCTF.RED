@@ -14,7 +14,7 @@ use Yii;
  * @property string|null $created_at
  * @property string|null $updated_at
  */
-class News extends \yii\db\ActiveRecord
+class News extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -60,9 +60,4 @@ class News extends \yii\db\ActiveRecord
     {
         return new NewsQuery(get_called_class());
     }
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
-    }
-
 }

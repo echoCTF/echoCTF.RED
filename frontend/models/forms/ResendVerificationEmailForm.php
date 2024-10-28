@@ -14,7 +14,7 @@ class ResendVerificationEmailForm extends Model
      * @var string
      */
     public $email;
-
+    public $captcha;
 
     /**
      * {@inheritdoc}
@@ -33,7 +33,9 @@ class ResendVerificationEmailForm extends Model
                 'filter' => $filter,
                 'message' => \Yii::t('app','There is no user with this email address.')
             ],
+            ['captcha', 'captcha'],
         ];
+
     }
 
     /**
