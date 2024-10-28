@@ -11,7 +11,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property string $id
  * @property string|null $name
  */
-class Country extends \yii\db\ActiveRecord
+class Country extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -44,11 +44,6 @@ class Country extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
         ];
-    }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
     }
 
 }

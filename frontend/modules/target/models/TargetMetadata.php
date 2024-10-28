@@ -23,7 +23,7 @@ use yii\db\Expression;
  *
  * @property Target $target
  */
-class TargetMetadata extends \yii\db\ActiveRecord
+class TargetMetadata extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -81,11 +81,6 @@ class TargetMetadata extends \yii\db\ActiveRecord
     public static function find()
     {
         return new TargetMetadataQuery(get_called_class());
-    }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-      throw new \LogicException("Saving is disabled for this model.");
     }
 
 }

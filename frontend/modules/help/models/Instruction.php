@@ -15,7 +15,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $weight
  * @property string $ts
  */
-class Instruction extends \yii\db\ActiveRecord
+class Instruction extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -53,10 +53,4 @@ class Instruction extends \yii\db\ActiveRecord
             'ts' => 'Ts',
         ];
     }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
-    }
-
 }

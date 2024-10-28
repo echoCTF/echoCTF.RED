@@ -17,7 +17,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property Player $player
  * @property Finding $finding
  */
-class PlayerFinding extends \yii\db\ActiveRecord
+class PlayerFinding extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}

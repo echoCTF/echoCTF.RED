@@ -20,7 +20,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  *
  * @property Question[] $questions
  */
-class Challenge extends \yii\db\ActiveRecord
+class Challenge extends \app\models\ActiveRecordReadOnly
 {
     public $total_questions,
           $player_answers;
@@ -111,11 +111,6 @@ class Challenge extends \yii\db\ActiveRecord
         $sum_points+=$tr->points;
       }
       return $sum_points;
-    }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException(\Yii::t('app',"Saving is disabled for this model."));
     }
 
 }

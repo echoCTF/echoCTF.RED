@@ -22,7 +22,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property Player $player
  * @property Target $target
  */
-class Ondemand extends \yii\db\ActiveRecord
+class Ondemand extends \app\models\ActiveRecordReadOnly
 {
     public $expired=0;
     /**

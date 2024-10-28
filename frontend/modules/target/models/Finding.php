@@ -27,7 +27,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property PlayerFinding[] $playerFindings
  * @property Player[] $players
  */
-class Finding extends \yii\db\ActiveRecord
+class Finding extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -94,14 +94,6 @@ class Finding extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-//    public function getBadgeFindings()
-//    {
-//        return $this->hasMany(BadgeFinding::class, ['finding_id' => 'id']);
-//    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getBadges()
     {
         return $this->hasMany(\app\modules\game\models\Badge::class, ['id' => 'badge_id'])->viaTable('badge_finding', ['finding_id' => 'id']);
@@ -126,22 +118,9 @@ class Finding extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-//    public function getPlayerFindings()
-//    {
-//        return $this->hasMany(PlayerFinding::class, ['finding_id' => 'id']);
-//    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPlayers()
     {
         return $this->hasMany(\app\models\Player::class, ['id' => 'player_id'])->viaTable('player_finding', ['finding_id' => 'id']);
-    }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
     }
 
 }

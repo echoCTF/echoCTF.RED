@@ -14,7 +14,7 @@ use app\models\Player;
  * @property int $points
  * @property string $ts
  */
-class PlayerScoreMonthly extends \yii\db\ActiveRecord
+class PlayerScoreMonthly extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}

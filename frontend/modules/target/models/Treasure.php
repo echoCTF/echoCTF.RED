@@ -33,7 +33,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property Target $target
  * @property TreasureAction[] $treasureActions
  */
-class Treasure extends \yii\db\ActiveRecord
+class Treasure extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -104,14 +104,6 @@ class Treasure extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-//    public function getBadgeTreasures()
-//    {
-//        return $this->hasMany(BadgeTreasure::class, ['treasure_id' => 'id']);
-//    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getBadges()
     {
         return $this->hasMany(\app\modules\game\models\Badge::class, ['id' => 'badge_id'])->viaTable('badge_treasure', ['treasure_id' => 'id']);
@@ -157,22 +149,8 @@ class Treasure extends \yii\db\ActiveRecord
         return str_replace($this->code,"*REDACTED*",$this->location);
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-//    public function getTreasureActions()
-//    {
-//        return $this->hasMany(TreasureAction::class, ['treasure_id' => 'id']);
-//    }
-
     public static function find()
     {
         return new TreasureQuery(get_called_class());
     }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
-    }
-
 }

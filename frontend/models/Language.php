@@ -10,7 +10,7 @@ use Yii;
  * @property string $id
  * @property string|null $l
  */
-class Language extends \yii\db\ActiveRecord
+class Language extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}

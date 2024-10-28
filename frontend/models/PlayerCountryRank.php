@@ -11,9 +11,9 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $id
  * @property int $player_id
  *
- * @property Player[] $player
+ * @property Player $player
  */
-class PlayerCountryRank extends \yii\db\ActiveRecord
+class PlayerCountryRank extends \app\models\ActiveRecordReadOnly
 {
   public $name;
   public $counter;

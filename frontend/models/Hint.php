@@ -31,7 +31,7 @@ use app\modules\game\models\Badge;
  * @property PlayerHint[] $playerHints
  * @property Player[] $players
  */
-class Hint extends \yii\db\ActiveRecord
+class Hint extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -129,11 +129,6 @@ class Hint extends \yii\db\ActiveRecord
     public static function find()
     {
         return new HintQuery(get_called_class());
-    }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
     }
 
 }

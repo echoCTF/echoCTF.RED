@@ -12,7 +12,7 @@ use Yii;
  * @property string|null $body
  * @property int|null $weight
  */
-class Faq extends \yii\db\ActiveRecord
+class Faq extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -55,10 +55,4 @@ class Faq extends \yii\db\ActiveRecord
     {
         return new FaqQuery(get_called_class());
     }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
-    }
-
 }

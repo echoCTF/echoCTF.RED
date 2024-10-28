@@ -12,7 +12,7 @@ use Yii;
  * @property string $body
  * @property int $weight
  */
-class Credits extends \yii\db\ActiveRecord
+class Credits extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -45,10 +45,5 @@ class Credits extends \yii\db\ActiveRecord
             'body' => 'Body',
             'weight' => 'Weight',
         ];
-    }
-
-    public function save($runValidation = true, $attributeNames = null)
-    {
-        return;
     }
 }

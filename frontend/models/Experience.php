@@ -16,7 +16,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int|null $min_points
  * @property int|null $max_points
  */
-class Experience extends \yii\db\ActiveRecord
+class Experience extends \app\models\ActiveRecordReadOnly
 {
     /**
      * {@inheritdoc}
@@ -68,11 +68,6 @@ class Experience extends \yii\db\ActiveRecord
             'min_points' => 'Min Points',
             'max_points' => 'Max Points',
         ];
-    }
-
-    public function save($runValidation=true, $attributeNames=null)
-    {
-        throw new \LogicException("Saving is disabled for this model.");
     }
 
 }
