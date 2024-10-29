@@ -3,6 +3,8 @@
 namespace app\modules\frontend\models;
 
 use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "banned_player".
@@ -22,6 +24,27 @@ class BannedPlayer extends \yii\db\ActiveRecord
     public static function tableName()
     {
         return 'banned_player';
+    }
+
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'old_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+            ],
+            'typecastAfterValidate' => true,
+            'typecastBeforeSave' => true,
+            'typecastAfterFind' => true,
+        ],
+        [
+            'class' => TimestampBehavior::class,
+            'createdAtAttribute' => 'banned_at',
+            'updatedAtAttribute' => null,
+            'value' => new \yii\db\Expression('NOW()'),
+        ],
+      ];
     }
 
     /**
