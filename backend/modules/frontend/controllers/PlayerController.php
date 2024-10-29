@@ -88,6 +88,7 @@ class PlayerController extends \app\components\BaseController
     $model->updateAttributes(['verification_token'=>null]);
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
+
   /**
    * Lists all Profile models that fail validation.
    * @return mixed
