@@ -50,6 +50,7 @@ class Writeup extends \yii\db\ActiveRecord
             ['formatter','in','range'=>['text','markdown']],
             ['formatter','default','value'=>'text'],
             ['language_id','default','value'=>'en'],
+            ['status','default','value'=>'PENDING'],
             ['status','in','range'=>['PENDING','NEEDS FIXES','REJECTED','OK']],
             [['created_at', 'updated_at'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
