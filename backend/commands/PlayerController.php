@@ -368,20 +368,23 @@ class PlayerController extends Controller
     }
   }
 
-  public function actionFailValidation($delete = false)
+  public function actionFailValidation($delete = false,$extended=false,$csv=false)
   {
     $allRecords = Player::find()->where(['status' => 10])->all();
     foreach ($allRecords as $p) {
-      $p->scenario = 'validator';
-      if (!$p->validate('email')) {
-        echo Table::widget([
-          'headers' => ['Error for ID: ' . $p->id, 'Description'],
+      if($extended!==false)
+        $p->scenario = 'extendedValidator';
+      else
+        $p->scenario = 'validator';
+      if (!$p->validate()) {
+        echo boolval($csv)===true ? $p->id.",".$p->username : Table::widget([
+          'headers' => ['ID: ' . $p->id.' '.$p->username, 'Description'],
           'rows' => $this->getErrorRows($p),
         ]);
-        if ($delete !== false) {
-          $p->delete();
-          echo $p->id, " Deleted\n";
+        if (boolval($delete) !== false && $p->delete()) {
+          echo boolval($csv)===true ? ",deleted" : $p->id." Deleted\n";
         }
+        echo boolval($csv)===true ? "\n" : "";
       }
     }
   }
