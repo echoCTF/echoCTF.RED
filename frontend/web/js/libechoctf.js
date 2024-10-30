@@ -67,6 +67,7 @@ yii.confirm = function (message, okCallback, cancelCallback) {
     text: message,
     type: swType,
     showConfirmButton: true,
+    closeOnClickOutside: false,
     showCancelButton: showCancelButton,
   }).then((action) => {
     if (action.value) {
@@ -142,7 +143,7 @@ jQuery( document ).ready(function() {
     if($(this).parent('.dropdown-menu') && $(this).parent('.dropdown-menu').selectpicker)
       $(this).parent('.dropdown-menu').selectpicker('toggle');
     if($(this).attr('swal-data'))
-      return Swal.fire($(this).attr('swal-data'));
+      return Swal.fire({ title: $(this).attr('swal-data'),closeOnClickOutside: false,});
 
     return false;
   })
@@ -208,7 +209,7 @@ function apiNotifications(){
             {
               if(!swal.isVisible())
               {
-                swal.fire({ title: record.title, html: record.body, type: record.category.replace('swal:',''), showConfirmButton: true});
+                swal.fire({ title: record.title, html: record.body, type: record.category.replace('swal:',''), showConfirmButton: true, closeOnClickOutside: false});
               }
             }
             else {
