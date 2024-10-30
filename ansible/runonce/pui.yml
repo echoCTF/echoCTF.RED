@@ -141,6 +141,14 @@
   - name: Bring interface up
     command: sh /etc/netstart {{interconnect_interface}}
 
+  - name: Copy a examples/rc.local => /etc/rc.local
+    ansible.builtin.copy:
+      src: /etc/examples/rc.local
+      dest: /etc/rc.local
+      mode: "0500"
+      owner: "root"
+      group: "wheel"
+      remote_src: yes
 
   - name: Configure PS1 for root and skeleton
     lineinfile:

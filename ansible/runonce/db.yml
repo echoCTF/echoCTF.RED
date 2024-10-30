@@ -410,6 +410,7 @@
     - { cmd: "touch /etc/docker_clients.conf", creates: "/etc/docker_clients.conf" }
     - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
+    - { cmd: "install -m 0500 /etc/examples/rc.local", creates: "/etc/examples/rc.local" }
 
   - name: Execute fw_update
     command: fw_update -a
