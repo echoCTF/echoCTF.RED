@@ -7,7 +7,7 @@ use Docker\Docker;
 use Docker\DockerClientFactory;
 use Docker\API\Model\RestartPolicy;
 use Docker\API\Model\HostConfig;
-use Docker\API\Model\ContainersCreatePostBodyNetworkingConfig;
+use Docker\API\Model\NetworkingConfig;
 use Docker\API\Model\ContainersCreatePostBody;
 use Docker\API\Model\EndpointSettings;
 use Docker\API\Model\EndpointIPAMConfig;
@@ -96,7 +96,7 @@ class Target extends TargetAR
       $endpointIPAMConfig->setIPv4Address($this->ipoctet);
       $endpointSettings->setIPAMConfig($endpointIPAMConfig);
 
-      $nwc=new ContainersCreatePostBodyNetworkingConfig();
+      $nwc=new NetworkingConfig();
       $nwc->setEndpointsConfig(new \ArrayObject([
         $this->net => $endpointSettings
       ]));
