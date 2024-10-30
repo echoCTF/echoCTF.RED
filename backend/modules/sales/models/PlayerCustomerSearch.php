@@ -88,7 +88,7 @@ class PlayerCustomerSearch extends Player
           if(\Yii::$app instanceof \yii\console\Application)
             printf("Imported customer_id: %s for user %s with email %s\n",$player->stripe_customer_id,$player->username,$player->email);
           else
-            \Yii::$app->session->addFlash('success', sprintf('Imported customer_id: <b>%s</b> for user <b>%s</b> with email <b>%s</b>',Html::encode($player->stripe_customer_id),Html::encode($player->username,$player->email)));
+            \Yii::$app->session->addFlash('success', sprintf('Imported customer_id: <b>%s</b> for user <b>%s</b> with email <b>%s</b>',Html::encode($player->stripe_customer_id),Html::encode($player->username),Html::encode($player->email)));
         }
       }
     }
