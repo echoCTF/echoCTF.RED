@@ -176,8 +176,12 @@ class Target extends TargetAR
       $restartPolicy=new RestartPolicy();
       $restartPolicy->setName('always');
       $hostConfig=new HostConfig();
-      if($this->memory !== null)
-        $hostConfig->setMemory($this->memory);
+      $decoded=\yii\helpers\Json::decode($this->parameters, true);
+      if($decoded !== null && array_key_exists('hostConfig',$decoded))
+      {
+        foreach($decoded['hostConfig'] as $key=>$val)
+          $hostConfig->{"set".$key}($val);
+      }
 
       $hostConfig->setNetworkMode($this->net);
       $hostConfig->setDns([$this->dns]);
