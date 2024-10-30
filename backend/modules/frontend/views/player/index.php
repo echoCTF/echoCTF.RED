@@ -147,6 +147,10 @@ yii\bootstrap5\Modal::end();
             if ($model->status == 0) return false;
             return true;
           },
+          'activate' => function ($model) {
+            if ($model->status == 0 || $model->active == 0) return true;
+            return false;
+          },
           'mail' => function ($model) {
             if ($model->status == 10 || $model->approval == 0) return false;
             return true;
@@ -168,7 +172,7 @@ yii\bootstrap5\Modal::end();
             return false;
           }
         ],
-        'template' => '{player-view-full} {clear-vpn} {view} {generate-ssl} {update} {delete} {ban} {mail} {reset-activkey} {approve} {reject} {set-deleted}',
+        'template' => '{player-view-full} {clear-vpn} {view} {generate-ssl} {update} {delete} {ban} {mail} {reset-activkey} {approve} {reject} {activate} {set-deleted}',
         'header' => Html::a(
           '<i class="bi bi-person-fill-exclamation"></i>',
           ['ban-filtered'],
@@ -334,6 +338,16 @@ yii\bootstrap5\Modal::end();
                 'data' => ['confirm' => 'Are you sure you want to mail this user his activation URL?']
               ]
             );
+          },
+          'activate' => function ($url, $model) {
+            return Html::a('<i class="fas fa-user-check"></i>', ['activate', 'id' => $model->id], [
+              'class' => '',
+              'title' => 'Activate player',
+              'data' => [
+                'confirm' => 'Are you absolutely sure you want to activate [' . Html::encode($model->username) . '] ?',
+                'method' => 'post',
+              ],
+            ]);
           },
           'set-deleted' => function ($url, $model) {
             return Html::a('<i class="fas fa-user-slash"></i>', ['set-deleted', 'id' => $model->id], [
