@@ -89,7 +89,8 @@ class Target extends TargetAR
       $this->destroy();
 
       $hostConfig=$this->hostConfig();
-
+      // We set the memory here again for backwards compatibility
+      $hostConfig->setMemory($this->memory);
       $containerConfig=new ContainersCreatePostBody();
       $endpointSettings=new EndpointSettings();
       $endpointIPAMConfig=new EndpointIPAMConfig();
@@ -317,7 +318,7 @@ class Target extends TargetAR
     {
       $decoded=\yii\helpers\Json::decode($this->parameters, false);
       if($decoded !== null && property_exists($decoded, 'hostConfig') && property_exists($decoded->hostConfig, 'Memory'))
-        return intval($decoded->hostConfig->Memory) * 1024 * 1024;
+        return intval($decoded->hostConfig->Memory)<(16*1024*1024)? intval($decoded->hostConfig->Memory) * 1024 * 1024 : intval($decoded->hostConfig->Memory);
     }
     return null;
   }
