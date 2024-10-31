@@ -79,6 +79,7 @@
       - { name: sndiod, state: "disable" }
       - { name: memcached, state: "enable" }
       - { name: mysqld, state: "enable" }
+      - { name: supervisord, state: "enable"}
     packages:
       - curl
       - git
@@ -91,6 +92,12 @@
       - autoconf%2.69
       - automake%1.16
       - unzip--
+      - py3-pip
+      - py3-requests
+      - py3-mysqlclient
+      - py3-setuptools
+      - py3-netaddr
+      - supervisor
     my_cnf:
       - { init_file:  "/etc/mysql-init.sql"}
       - { bind-address:  "{{db_ip}}" }
@@ -433,8 +440,8 @@
       special_time: "{{item.special_time|default(omit)}}"
       job: "{{item.job}}"
     with_items:
-      - { name: "events checker", minute: "*/1",  job: "/usr/local/sbin/mysql-events-checker" }
-      - { name: "daily database backups", minute: "0",hour: "0",  job: "/usr/local/sbin/database_backup" }
+      - { name: "events checker", minute: "*/1",  job: "-ns /usr/local/sbin/mysql-events-checker" }
+      - { name: "daily database backups", minute: "0",hour: "23",  job: "-ns /usr/local/sbin/database_backup" }
 
   - name: display post install message
     debug: msg="Make sure you've added your IP to the administrators.conf and reboot the system for the changes to take effect"

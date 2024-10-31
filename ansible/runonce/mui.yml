@@ -75,6 +75,7 @@
       - { name: php83_fpm, state: "enable" }
       - { name: mysqld, state: "disable" }
       - { name: memcached, state: "disable" }
+      - { name: supervisord, state: "enable"}
     packages:
       - curl
       - git
@@ -92,6 +93,12 @@
       - php-intl%8.3
       - php-pdo_mysql%8.3
       - php-zip%8.3
+      - py3-pip
+      - py3-requests
+      - py3-mysqlclient
+      - py3-setuptools
+      - py3-netaddr
+      - supervisor
 
   tasks:
   - name: Sync date time

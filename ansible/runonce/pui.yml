@@ -82,6 +82,7 @@
       - { name: mysqld, state: "disable" }
       - { name: memcached, state: "disable" }
       - { name: unbound, state: "enable" }
+      - { name: supervisord, state: "enable"}
     packages:
       - autoconf%2.69
       - automake%1.16
@@ -102,6 +103,10 @@
       - py3-pip
       - py3-requests
       - py3-mysqlclient
+      - py3-setuptools
+      - py3-netaddr
+      - supervisor
+
   tasks:
   - name: Sync date time
     raw: rdate pool.ntp.org
@@ -426,6 +431,9 @@
       - { section: Session, option: "session.save_path", value: "{{db_ip}}:11211"}
       - { section: Session, option: "session.gc_maxlifetime", value: "43200" }
       - { section: Session, option: "session.use_strict_mode", value: "1" }
+      - { section: Session, option: "session.cookie_httponly", val: "1" }
+      - { section: Session, option: "session.cookie_secure", val: "1" }
+      - { section: Session, option: "session.cookie_samesite", val: '"Strict"' }
       - { section: opcache, option: "opcache.enable", value: "1" }
       - { section: opcache, option: "opcache.memory_consumption", value: "128" }
       - { section: opcache, option: "opcache.validate_timestamps", value: "0" }
