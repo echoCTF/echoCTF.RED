@@ -7,6 +7,7 @@ use yii\console\ExitCode;
 use app\modules\target\models\Target;
 use app\models\Player;
 use app\models\Stream;
+use yii\base\UserException;
 
 class GeneratorController extends Controller
 {
@@ -131,6 +132,8 @@ class GeneratorController extends Controller
       try {
         $target_img = imagecreatefrompng(\Yii::getAlias("@app/web/images/targets/_" . $target->name . "-thumbnail.png"));
         $background_img = imagecreatefrompng(\Yii::getAlias("@app/web/images/twnew-target.png"));
+        if($target_img === null || $background_img === null)
+          throw new UserException('Target or Background image not found\n');
         imagealphablending($target_img, true);
         $width  = imagesx($target_img);
         $height = imagesy($target_img);
