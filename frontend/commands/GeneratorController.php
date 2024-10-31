@@ -132,7 +132,7 @@ class GeneratorController extends Controller
       try {
         $target_img = imagecreatefrompng(\Yii::getAlias("@app/web/images/targets/_" . $target->name . "-thumbnail.png"));
         $background_img = imagecreatefrompng(\Yii::getAlias("@app/web/images/twnew-target.png"));
-        if($target_img === null || $background_img === null)
+        if($target_img !== false || $background_img !== false)
           throw new UserException('Target or Background image not found\n');
         imagealphablending($target_img, true);
         $width  = imagesx($target_img);
