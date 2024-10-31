@@ -151,7 +151,6 @@
       - p5-Net-Pcap
       - p5-NetPacket
       - gnuwatch
-      - py3-netaddr
       - nmap
 
   tasks:
