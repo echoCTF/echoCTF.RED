@@ -98,7 +98,7 @@ class Product extends \yii\db\ActiveRecord
     {
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
       $products=$stripe->products->all(['active'=>true]);
-      foreach($products->data as $stripeProduct)
+      foreach($products->autoPagingIterator() as $stripeProduct)
       {
         $product=Product::findOne($stripeProduct->id);
 

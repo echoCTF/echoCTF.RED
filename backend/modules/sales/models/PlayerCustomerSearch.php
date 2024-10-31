@@ -70,7 +70,7 @@ class PlayerCustomerSearch extends Player
     {
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
       $stripe_customers=$stripe->customers->all([]);
-      foreach($stripe_customers->data as $customer)
+      foreach($stripe_customers->autoPagingIterator() as $customer)
       {
         if(isset($customer->metadata->player_id))
         {
