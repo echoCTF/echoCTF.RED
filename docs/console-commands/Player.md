@@ -70,9 +70,11 @@ Accepted filter values include one of `all`, `active`, `inactive`
 
 ## Validate Player emails based on latest rules
 
-Usage: `./backend/yii player/fail-validation [delete]`
+Usage: `./backend/yii player/fail-validation [delete] [extended] [csv]`
 
-If `delete` is set to any value the players that fail validation get deleted
+* If `delete` is set to any value the players that fail validation get deleted
+* If `extended` is set to `1` makes extended validations to take place
+* If `csv` is set to `1` displays output in CSV format
 
 ## Validate Player Profiles based on latest rules
 
