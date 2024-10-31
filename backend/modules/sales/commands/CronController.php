@@ -19,9 +19,9 @@ class CronController extends Controller
    *
    * This operation is supposed to be run on the VPN Server
    */
-  public function actionExpireSubscriptions($active=true,$interval=7200)
+  public function actionExpireSubscriptions($active = true, $interval = 7200)
   {
-    if($active===true)
+    if ($active === true)
       $playerSubs = PlayerSubscription::find()->active()->expired($interval);
     else
       $playerSubs = PlayerSubscription::find()->active(intval($active));
@@ -29,7 +29,7 @@ class CronController extends Controller
     foreach ($playerSubs->all() as $rec) {
       $transaction = \Yii::$app->db->beginTransaction();
       try {
-        if($rec->active)
+        if ($rec->active)
           printf("Expiring: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
         else
           printf("Cleaning: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
@@ -84,5 +84,4 @@ class CronController extends Controller
     echo "Deleting expired subscriptions\n";
     PlayerSubscription::DeleteInactive();
   }
-
 }
