@@ -85,7 +85,7 @@ var createCheckoutSession = function(priceId) {
       html: "' . \Yii::t('app', 'We cannot process your request at this time. <br/>Try again later or contact the support!') . '<br/><small>[ "+error+" ]</small>",
       type: "warning",
       closeOnClickOutside: false
-    );
+    });
     return false;
   });
 };');
