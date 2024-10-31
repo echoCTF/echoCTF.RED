@@ -110,6 +110,7 @@ Or instead if not DSN then use the following
 * `stripe_publicApiKey` Stripe public API Key
 * `stripe_webhookSecret` Stripe webhook secret
 * `stripe_automatic_tax_enabled` Enable Stripe automatic TAX
+* `stripe_webhook_ips` List of IP's that are allowed to access the stripe webhook endpoint
 
 ## Player Specific
 * `academic_Nlong` Name for academic value `N` (starting at 0)
