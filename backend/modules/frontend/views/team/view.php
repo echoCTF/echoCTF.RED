@@ -49,8 +49,9 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
       <p style="font-weight: 800">ranked <?= $model->rank->ordinalPlace ?> with <?= number_format($model->score->points) ?> points</p>
       <p>
         <?php if($model->invite):?>
-        <b>invite url: <?= Html::a(Url::to('//' . Yii::$app->sys->offense_domain . '/team/invite/' . $model->invite->token, 'https'), Url::to('//' . Yii::$app->sys->offense_domain . '/team/invite/' . $model->token, 'https'), ['target' => '_blank']); ?></b><br />
+        <b>invite url: <?= Html::a(Url::to('//' . Yii::$app->sys->offense_domain . '/team/invite/' . $model->invite->token, 'https'), Url::to('//' . Yii::$app->sys->offense_domain . '/team/invite/' . $model->invite->token, 'https'), ['target' => '_blank']); ?></b><br />
         <?php endif;?>
+        <b>Team url: <?= Html::a(Url::to('//' . Yii::$app->sys->offense_domain . '/team/' . $model->token, 'https'), Url::to('//' . Yii::$app->sys->offense_domain . '/team/' . $model->token, 'https'), ['target' => '_blank']); ?></b><br />
         <b>description:</b> <?= Html::encode($model->description) ?><br />
         <b>recruitment:</b> <?= Html::encode($model->recruitment) ?><br />
         <b>academic:</b> <?= Html::encode($model->academicLong) ?><br />
