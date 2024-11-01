@@ -59,6 +59,7 @@ class Profile extends ProfileAR
 
     public function getVisible(): bool
     {
+      if($this->owner->status!==Player::STATUS_ACTIVE) return false;
       if($this->visibility === 'public') return true;
       if($this->visibilityAllowed) return true;
       if($this->visibilityDenied) return false;

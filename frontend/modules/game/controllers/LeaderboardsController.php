@@ -172,7 +172,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $playerCountryDataProvider = new ActiveDataProvider([
-      'query' => \app\models\PlayerCountryRank::find()->select('country,count(*) as counter')->where(['!=', 'country', 'UNK'])->groupBy('country')->orderBy(['counter' => SORT_DESC, 'country' => SORT_ASC]),
+      'query' => \app\models\PlayerCountryRank::find()->select('country,count(*) as counter')->joinWith(['player'])->where(['!=', 'country', 'UNK'])->andWhere(['player.status'=>\app\models\Player::STATUS_ACTIVE])->groupBy('country')->orderBy(['counter' => SORT_DESC, 'country' => SORT_ASC]),
       'pagination' => [
         'pageSizeParam' => 'playerCountryRank-perpage',
         'pageParam' => 'playerCountryRank-page',

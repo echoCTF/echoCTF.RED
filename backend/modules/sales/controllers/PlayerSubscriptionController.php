@@ -85,8 +85,11 @@ class PlayerSubscriptionController extends \app\components\BaseController
       if ($model->active == 0) {
         $network_ids = ArrayHelper::getColumn($model->price->product->productNetworks, 'network_id');
         NetworkPlayer::deleteAll([
-          'AND', 'player_id = :player_id', [
-            'IN', 'network_id',
+          'AND',
+          'player_id = :player_id',
+          [
+            'IN',
+            'network_id',
             $network_ids
           ]
         ], [
@@ -111,7 +114,26 @@ class PlayerSubscriptionController extends \app\components\BaseController
    */
   public function actionDelete($id)
   {
-    $this->findModel($id)->delete();
+    $connection = Yii::$app->db;
+    $transaction = $connection->beginTransaction();
+    try {
+      $sub=$this->findModel($id);
+      if ($sub->product)
+        $metadata = json_decode($sub->product->metadata);
+      if (isset($metadata->network_ids)) {
+        NetworkPlayer::deleteAll([
+          'and',
+          ['player_id' => $sub->player_id],
+          ['in', 'network_id', explode(',', $metadata->network_ids)]
+        ]);
+      }
+      $sub->delete();
+      $transaction->commit();
+      \Yii::$app->session->addFlash('success', Yii::t('app','Subscription and perks deleted.'));
+    } catch (\Exception $e) {
+      $transaction->rollBack();
+      \Yii::$app->session->addFlash('error', Yii::t('app','The following error occurred while trying to delete the subscription [{exception}]',['exception'=>$e->getMessage()]));
+    }
 
     return $this->redirect(['index']);
   }

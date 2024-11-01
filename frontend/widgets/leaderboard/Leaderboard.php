@@ -56,7 +56,7 @@ class Leaderboard extends Widget
       if($this->player_id !== null)
       {
         $this->dataProvider=new ActiveDataProvider([
-          'query' => \app\models\PlayerCountryRank::find()->where(['country'=>$this->country])->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
+          'query' => \app\models\PlayerCountryRank::find()->joinWith(['player'])->where(['country'=>$this->country,'player.status'=>\app\models\Player::STATUS_ACTIVE])->orderBy(['id'=>SORT_ASC, 'player_id'=>SORT_ASC]),
           'pagination' => [
               'pageSizeParam'=>'country-score-perpage',
               'pageParam'=>'country-score-page',

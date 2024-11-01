@@ -28,6 +28,7 @@ class AcademicColumn extends \yii\grid\DataColumn
       $this->filter=$filter;
       $this->visible=true;
     } else {
+      $this->filter=[ 'No groupings' ];
       $this->visible=false;
     }
     $this->filterAttribute = $this->attribute;

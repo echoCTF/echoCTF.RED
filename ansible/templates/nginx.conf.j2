@@ -240,7 +240,7 @@ http {
         }
 
         set $yii_bootstrap "/index.php";
-
+{% if "mui" not in inventory_hostname %}
         # Rate limit /api to 10 requests/sec
         # This is way too loose
         location /api {
@@ -314,17 +314,17 @@ http {
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
         }
-
+{% endif %}
         location / {
             index  index.html index.php;
             try_files $uri $uri/ /index.php$is_args$args;
         }
-
+{% if "mui" not in inventory_hostname %}
         # return 404 for direct access to php files
         location ~ \.php$ {
             return 404;
         }
-
+{% endif %}
         location = /index.php {
             try_files $uri =404;
             fastcgi_split_path_info ^(.+\.php)(.*)$;

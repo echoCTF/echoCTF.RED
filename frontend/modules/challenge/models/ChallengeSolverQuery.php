@@ -12,8 +12,8 @@ class ChallengeSolverQuery extends \yii\db\ActiveQuery
   public function academic($academic)
   {
     if (\Yii::$app->sys->academic_grouping !== false)
-      return $this->joinWith('player')->andWhere(['player.academic' => $academic]);
-    return $this->joinWith('player');
+      return $this->joinWith('player')->andWhere(['player.academic' => $academic,'player.status'=>\app\models\Player::STATUS_ACTIVE]);
+    return $this->joinWith('player')->andWhere(['player.status'=>\app\models\Player::STATUS_ACTIVE]);
   }
 
   public function timed()

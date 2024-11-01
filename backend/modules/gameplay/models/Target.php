@@ -7,7 +7,7 @@ use Docker\Docker;
 use Docker\DockerClientFactory;
 use Docker\API\Model\RestartPolicy;
 use Docker\API\Model\HostConfig;
-use Docker\API\Model\ContainersCreatePostBodyNetworkingConfig;
+use Docker\API\Model\NetworkingConfig;
 use Docker\API\Model\ContainersCreatePostBody;
 use Docker\API\Model\EndpointSettings;
 use Docker\API\Model\EndpointIPAMConfig;
@@ -89,14 +89,15 @@ class Target extends TargetAR
       $this->destroy();
 
       $hostConfig=$this->hostConfig();
-
+      // We set the memory here again for backwards compatibility
+      $hostConfig->setMemory($this->memory);
       $containerConfig=new ContainersCreatePostBody();
       $endpointSettings=new EndpointSettings();
       $endpointIPAMConfig=new EndpointIPAMConfig();
       $endpointIPAMConfig->setIPv4Address($this->ipoctet);
       $endpointSettings->setIPAMConfig($endpointIPAMConfig);
 
-      $nwc=new ContainersCreatePostBodyNetworkingConfig();
+      $nwc=new NetworkingConfig();
       $nwc->setEndpointsConfig(new \ArrayObject([
         $this->net => $endpointSettings
       ]));
@@ -176,8 +177,12 @@ class Target extends TargetAR
       $restartPolicy=new RestartPolicy();
       $restartPolicy->setName('always');
       $hostConfig=new HostConfig();
-      if($this->memory !== null)
-        $hostConfig->setMemory($this->memory);
+      $decoded=\yii\helpers\Json::decode($this->parameters, true);
+      if($decoded !== null && array_key_exists('hostConfig',$decoded))
+      {
+        foreach($decoded['hostConfig'] as $key=>$val)
+          $hostConfig->{"set".$key}($val);
+      }
 
       $hostConfig->setNetworkMode($this->net);
       $hostConfig->setDns([$this->dns]);
@@ -313,7 +318,7 @@ class Target extends TargetAR
     {
       $decoded=\yii\helpers\Json::decode($this->parameters, false);
       if($decoded !== null && property_exists($decoded, 'hostConfig') && property_exists($decoded->hostConfig, 'Memory'))
-        return intval($decoded->hostConfig->Memory) * 1024 * 1024;
+        return intval($decoded->hostConfig->Memory)<(16*1024*1024)? intval($decoded->hostConfig->Memory) * 1024 * 1024 : intval($decoded->hostConfig->Memory);
     }
     return null;
   }

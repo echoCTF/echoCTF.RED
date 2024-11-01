@@ -151,7 +151,6 @@
       - p5-Net-Pcap
       - p5-NetPacket
       - gnuwatch
-      - py3-netaddr
       - nmap
 
   tasks:
@@ -531,6 +530,7 @@
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
     - { cmd: "{{APP_DIR}}/backend/yii cron/pf" }
     - { cmd: "mkdir -p /var/log/cron" }
+    - { cmd: "install -m 0500 /etc/examples/rc.local /etc/rc.local", creates: "/etc/rc.local" }
 
   - name: "Create configuration files with contents"
     copy:
@@ -571,7 +571,7 @@
   - name: Install echoctf.ini for supervisord
     copy:
       dest: /etc/supervisord.d/echoctf.ini
-      content: >
+      content: |
         [program:IndexPlusInstances]
         user = root
         environment = TERM=vt100

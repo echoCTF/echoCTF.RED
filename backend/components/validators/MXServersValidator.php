@@ -24,51 +24,33 @@ class MXServersValidator extends Validator
 
     public function validateValue($value)
     {
+      $hosts=[];
       // if not email assume value is a domain
       if (preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches))
       {
         $value=$matches['domain'];
       }
 
-      if(getmxrr($value, $hosts)===false && $this->mxonly===false)
+      if($this->mxonly===false && getmxrr($value, $hosts)===false)
       {
-        return [$this->nxmessage, [
-            'domain' => $value,
-        ]];
+        return [$this->nxmessage, []];
       }
 
       foreach($this->range as $key)
       {
         if(array_search($key, $hosts)!==false)
-          return [$this->banned_message, [
-              'domain' => $value,
-          ]];
+          return [$this->banned_message, []];
       }
+      return null;
     }
 
     public function validateAttribute($model, $attribute)
     {
         $value = $model->$attribute;
-        $hosts=[];
-        // if not email assume value is a domain
-        if (preg_match('/^(?P<name>(?:"?([^"]*)"?\s)?)(?:\s+)?(?:(?P<open><?)((?P<local>.+)@(?P<domain>[^>]+))(?P<close>>?))$/i', $value, $matches))
-        {
-          $value=$matches['domain'];
-        }
+        $result = $this->validateValue($value);
 
-        if(getmxrr($value, $hosts)===false && $this->mxonly===false)
-        {
-          $model->addError($attribute, $this->nxmessage);
-          return;
-        }
-
-        foreach($this->range as $key)
-        {
-          if(array_search($key, $hosts)!==false)
-          {
-            $model->addError($attribute, $this->banned_message);
-            return;
-          }
+        if (!empty($result)) {
+          $this->addError($model, $attribute, $result[0], $result[1]);
         }
     }
 }

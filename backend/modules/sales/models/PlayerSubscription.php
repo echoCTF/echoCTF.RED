@@ -144,8 +144,8 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   public static function FetchStripe()
   {
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-    $stripeSubs = $stripe->subscriptions->all([]);
-    foreach ($stripeSubs->data as $stripe_subscription) {
+    $stripeSubs = $stripe->subscriptions->all(['limit'=>100]);
+    foreach ($stripeSubs->autoPagingIterator() as $stripe_subscription) {
       $player = Player::findOne(['stripe_customer_id' => $stripe_subscription->customer]);
       if ($player !== null) {
         if (($ps = PlayerSubscription::findOne($player->id)) === null) {

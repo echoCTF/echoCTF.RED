@@ -16,7 +16,7 @@ class PlayerScoreMonthlyQuery extends \yii\db\ActiveQuery
 
     public function currentMonth()
     {
-      return $this->andWhere(['=','dated_at',date('Ym')]);
+      return $this->andWhere(['dated_at'=>date('Ym')]);
     }
 
     public function nonZero()

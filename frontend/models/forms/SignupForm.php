@@ -54,9 +54,9 @@ class SignupForm extends Model
             }],
             ['username', '\app\components\validators\HourRegistrationValidator',    'client_ip'=>\Yii::$app->request->userIp, 'max'=>Yii::$app->sys->signup_HourRegistrationValidator,'when' => function($model) { return Yii::$app->sys->signup_HourRegistrationValidator!==false && \Yii::$app->sys->disable_mail_validation!==true;}],
             ['username', '\app\components\validators\TotalRegistrationsValidator',  'client_ip'=>\Yii::$app->request->userIp, 'max'=>Yii::$app->sys->signup_TotalRegistrationsValidator,'when' => function($model) { return Yii::$app->sys->signup_TotalRegistrationsValidator!==false && \Yii::$app->sys->disable_mail_validation!==true;}],
-            ['email',    '\app\components\validators\VerifymailValidator',          'when' => function($model) { return (bool)Yii::$app->sys->signup_ValidatemailValidator && \Yii::$app->sys->disable_mail_validation!==true;}],
-            ['email',    '\app\components\validators\StopForumSpamValidator',       'max'=>Yii::$app->sys->signup_StopForumSpamValidator,'when' => function($model) { return Yii::$app->sys->signup_StopForumSpamValidator!==false && \Yii::$app->sys->disable_mail_validation!==true;}],
-            ['email',   '\app\components\validators\MXServersValidator',  'mxonly'=>true,           'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false && \Yii::$app->sys->disable_mail_validation!==true;}],
+            ['email',    '\app\components\validators\VerifymailValidator',          'when' => function($model) { return (bool)Yii::$app->sys->signup_ValidatemailValidator && \Yii::$app->sys->disable_mail_validation!==true;},'skipOnError'=>false,'skipOnEmpty'=>false],
+            ['email',    '\app\components\validators\StopForumSpamValidator',       'max'=>Yii::$app->sys->signup_StopForumSpamValidator,'when' => function($model) { return Yii::$app->sys->signup_StopForumSpamValidator!==false && \Yii::$app->sys->disable_mail_validation!==true;},'skipOnError'=>false,'skipOnEmpty'=>false],
+            ['email',   '\app\components\validators\MXServersValidator',  'mxonly'=>true,           'when' => function($model) { return Yii::$app->sys->signup_MXServersValidator!==false && \Yii::$app->sys->disable_mail_validation!==true;},'skipOnError'=>false,'skipOnEmpty'=>false],
             //['email', '\app\components\validators\WhoisValidator', ],
 
             ['captcha', 'captcha'],

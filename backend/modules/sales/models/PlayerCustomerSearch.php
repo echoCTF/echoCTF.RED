@@ -70,7 +70,7 @@ class PlayerCustomerSearch extends Player
     {
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
       $stripe_customers=$stripe->customers->all([]);
-      foreach($stripe_customers->data as $customer)
+      foreach($stripe_customers->autoPagingIterator() as $customer)
       {
         if(isset($customer->metadata->player_id))
         {
@@ -88,7 +88,7 @@ class PlayerCustomerSearch extends Player
           if(\Yii::$app instanceof \yii\console\Application)
             printf("Imported customer_id: %s for user %s with email %s\n",$player->stripe_customer_id,$player->username,$player->email);
           else
-            \Yii::$app->session->addFlash('success', sprintf('Imported customer_id: <b>%s</b> for user <b>%s</b> with email <b>%s</b>',Html::encode($player->stripe_customer_id),Html::encode($player->username,$player->email)));
+            \Yii::$app->session->addFlash('success', sprintf('Imported customer_id: <b>%s</b> for user <b>%s</b> with email <b>%s</b>',Html::encode($player->stripe_customer_id),Html::encode($player->username),Html::encode($player->email)));
         }
       }
     }
