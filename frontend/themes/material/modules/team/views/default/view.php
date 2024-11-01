@@ -11,16 +11,19 @@ $this->loadLayoutOverrides = true;
 
 $this->title = Yii::$app->sys->event_name . ' ' . \Yii::t('app', 'Team details for') . ' [' . $team->name . ']';
 $this->_fluid = "-fluid";
-
+$class='text-bold';
 ?>
 <div class="team-view">
   <div class="body-content">
     <h2><?= \Yii::t('app', 'Details for team') ?> [<code><?= Html::encode($team->name) ?></code>]</h2>
     <?php if ($team->getTeamPlayers()->count() < Yii::$app->sys->members_per_team): ?>
       <p>
+        <?php if($team->invite):?>
+          <?php if($team->owner_id === Yii::$app->user->id) $class.=' copy-to-clipboard';?>
         <?= \Yii::t('app', 'Allow other players to join the team easily by providing them with this link:') ?>
-        <code><?= Html::a(Url::to(['/team/default/invite', 'token' => $team->token], 'https'), Url::to(['/team/default/invite', 'token' => $team->token], 'https'), ['class' => 'text-bold copy-to-clipboard', 'swal-data' => 'Copied to clipboard!']); ?></code>
-        <?php if ($team->owner_id === Yii::$app->user->id && \Yii::$app->cache->memcache->get('team_renewed:' . $team->id) === false): ?>
+        <code><?= Html::a(Url::to(['/team/default/invite', 'token' => $team->invite->token], 'https'), Url::to(['/team/default/invite', 'token' => $team->invite->token], 'https'), ['class' => $class, 'swal-data' => 'Copied to clipboard!']); ?></code>
+        <?php endif;?>
+        <?php if (\Yii::$app->user->identity->isAdmin || ($team->owner_id === Yii::$app->user->id /*&& \Yii::$app->cache->memcache->get('team_renewed:' . $team->id) === false*/)): ?>
           <?= Html::a('<i class="fas fa-sync-alt text-info" style="font-size: 1.2em;"></i>', Url::to(['renew', 'token' => $team->token]), ['data-method' => 'POST', 'title' => 'Regenerate invite URL', 'rel' => "tooltip",]) ?>
         <?php endif; ?>
       </p>

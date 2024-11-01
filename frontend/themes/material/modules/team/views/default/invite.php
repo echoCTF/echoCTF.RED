@@ -15,7 +15,7 @@ $this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Invite to join team')
     <hr />
     <div class="row d-flex justify-content-center">
       <div class="col-md-6">
-        <?= $this->render('_team_card',['model'=>$team,'invite'=>true]);?>
+        <?= $this->render('_team_card',['model'=>$team,'invite'=>true,'listing'=>false]);?>
       </div>
     </div>
   </div>

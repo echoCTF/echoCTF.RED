@@ -11,6 +11,11 @@ $this->_fluid = "-fluid";
 <div class="team-index">
   <div class="body-content">
     <h2><?= Html::encode($this->title) ?></h2>
+    <p>Filter:
+      <?= Html::a('All', '?', ['class' => 'btn block text-dark text-bold orbitron btn-sm']) ?>
+      <?= Html::a('Open', '?open', ['class' => 'btn block text-dark text-bold orbitron btn-primary btn-sm']) ?>
+      <?= Html::a('Invite Only', '?inviteonly', ['class' => 'btn block text-dark text-bold orbitron btn-danger btn-sm']) ?>
+    </p>
     <?php if (Yii::$app->user->identity->team === null) : ?>
       <?= \Yii::t('app', 'Join a team or <b>{createLink}</b> a new one!', ['createLink' => Html::a(\Yii::t('app', 'Create'), ['/team/default/create'], ['class' => 'btn btn-info btn-sm'])]) ?>
     <?php else : ?>
@@ -27,7 +32,7 @@ $this->_fluid = "-fluid";
         'itemOptions' => ['tag' => 'div','class'=>'col col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch'],
         'summary' => false,
         'itemView' => '_team_card',
-        'viewParams' => ['invite' => false],
+        'viewParams' => ['invite' => false,'listing'=>true],
       ]);
       ?>
     </div>
