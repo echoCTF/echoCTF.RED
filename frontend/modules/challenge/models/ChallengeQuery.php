@@ -23,7 +23,10 @@ class ChallengeQuery extends \yii\db\ActiveQuery
     {
       return $this->andWhere(['t.public'=>1]);
     }
-
+    public function solvedByTeam($team_id)
+    {
+      return $this->andWhere('id IN (SELECT DISTINCT challenge_id FROM challenge_solver WHERE player_id IN (SELECT player_id FROM team_player WHERE approved=1 AND team_id=:id))',[':id'=>$team_id]);
+    }
     public function player_progress($player_id)
     {
       $this->alias('t');

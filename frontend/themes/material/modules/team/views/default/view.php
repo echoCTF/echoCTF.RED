@@ -182,7 +182,7 @@ $class = 'text-bold';
         <div class="col col-xl-4 col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch">
           <div class="card bg-dark" style="margin-top:0px;">
             <div class="card-body">
-              <h3 class="card-title text-center" style="margin-bottom: 0.9em;"><?= \Yii::t('app', 'Pending') ?></h3>
+              <h3 class="card-title text-center" style="margin-bottom: 0.9em;"><?=$teamTargetsProvider->getTotalCount()?> <?= \Yii::t('app', 'Pending') ?></h3>
               <?php
               \yii\widgets\Pjax::begin(['id' => 'pending-listing-pjax', 'enablePushState' => false, 'linkSelector' => '#pending-pager a', 'formSelector' => false]);
               echo ListView::widget([
@@ -242,6 +242,38 @@ $class = 'text-bold';
           </div>
         </div>
       <?php endif; ?>
+      <?php if (intval($solverProvider->getTotalCount()) > 0): ?>
+        <div class="col col-xl-4 col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch">
+          <div class="card bg-dark" style="margin-top:0px;">
+            <div class="card-body">
+              <h3 class="card-title text-center" style="margin-bottom: 0.9em;"><?= $solverProvider->getTotalCount() ?> <?= \Yii::t('app', 'Solves') ?></h3>
+              <?php \yii\widgets\Pjax::begin(['id' => 'solves-listing-pjax', 'enablePushState' => false, 'linkSelector' => '#solves-pager a', 'formSelector' => false]); ?>
+              <?= ListView::widget([
+                'id' => 'solves-listing',
+                'layout' => '{items}{pager}',
+                'emptyText' => 'No targets headshotted yet.',
+                'options' => ['class' => "list-group list-group-flush"],
+                'dataProvider' => $solverProvider,
+                'viewParams' => ['progress' => false],
+                'itemView' => '_challenge_item',
+                'pager' => [
+                  'class' => 'yii\bootstrap4\LinkPager',
+                  'linkOptions' => ['class' => ['page-link', 'orbitron'], 'aria-label' => 'Pager link', 'rel' => 'nofollow'],
+                  'options' => ['id' => 'solves-pager', 'class' => 'align-middle'],
+                  'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                  'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                  'maxButtonCount' => 3,
+                  'disableCurrentPageButton' => true,
+                  'prevPageLabel' => '<i class="fas fa-chevron-left"></i>',
+                  'nextPageLabel' => '<i class="fas fa-chevron-right"></i>',
+                ],
+              ]); ?>
+              <?php \yii\widgets\Pjax::end(); ?>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
+
     </div>
     <?php
     if ((Yii::$app->sys->team_visible_instances === true || intval($teamInstanceProvider->count) > 0) && Yii::$app->user->identity->teamPlayer && $team->id === Yii::$app->user->identity->teamPlayer->team_id) {

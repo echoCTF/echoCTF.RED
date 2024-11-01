@@ -154,7 +154,18 @@ class DefaultController extends \app\components\BaseController
         'pageParam' => 'headshots-page',
         'pageSize' => 5,
       ],
-      'sort' => ['defaultOrder' => ['created_at' => SORT_DESC]],
+      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
+    ]);
+
+    $solves = \app\modules\challenge\models\Challenge::find()->solvedByTeam($model->id);
+    $solverProvider = new ActiveDataProvider([
+      'query' => $solves,
+      'pagination' => [
+        'pageSizeParam' => 'solves-perpage',
+        'pageParam' => 'solves-page',
+        'pageSize' => 5,
+      ],
+      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
     ]);
 
     $targetProgressProvider = new ActiveDataProvider([
@@ -200,6 +211,7 @@ class DefaultController extends \app\components\BaseController
       'streamProvider' => $streamProvider,
       'headshotsProvider' => $headshotsProvider,
       'teamTargetsProvider' => $targetProgressProvider,
+      'solverProvider'=>$solverProvider,
       'dataProvider' => $dataProvider,
     ]);
   }
