@@ -169,4 +169,13 @@ class Team extends \yii\db\ActiveRecord
     {
         return $this->hasMany(TeamStream::class, ['team_id' => 'id'])->orderBy(['ts'=>SORT_DESC]);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInvite()
+    {
+        return $this->hasOne(TeamInvite::class, ['team_id' => 'id']);
+    }
+
 }
