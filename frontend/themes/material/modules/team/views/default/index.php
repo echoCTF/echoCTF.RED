@@ -12,12 +12,12 @@ $this->_fluid = "-fluid";
   <div class="body-content">
     <h2><?= Html::encode($this->title) ?></h2>
     <p>Filter:
-      <?= Html::a('All', '?', ['class' => 'btn block text-dark text-bold orbitron btn-sm']) ?>
-      <?= Html::a('Open', '?open', ['class' => 'btn block text-dark text-bold orbitron btn-primary btn-sm']) ?>
-      <?= Html::a('Invite Only', '?inviteonly', ['class' => 'btn block text-dark text-bold orbitron btn-danger btn-sm']) ?>
+      <?= Html::a(Yii::t('app','All'), '?', ['class' => 'btn block text-dark text-bold orbitron btn-sm']) ?>
+      <?= Html::a(Yii::t('app','Open'), '?open', ['class' => 'btn block text-dark text-bold orbitron btn-info btn-sm']) ?>
+      <?= Html::a(Yii::t('app','Invite Only'), '?inviteonly', ['class' => 'btn block text-dark text-bold orbitron btn-warning btn-sm']) ?>
     </p>
     <?php if (Yii::$app->user->identity->team === null) : ?>
-      <?= \Yii::t('app', 'Join a team or <b>{createLink}</b> a new one!', ['createLink' => Html::a(\Yii::t('app', 'Create'), ['/team/default/create'], ['class' => 'btn btn-info btn-sm'])]) ?>
+      <?= \Yii::t('app', 'Join a team or <b>{createLink}</b> a new one!', ['createLink' => Html::a(\Yii::t('app', 'Create'), ['/team/default/create'], ['class' => 'btn btn-primary btn-sm'])]) ?>
     <?php else : ?>
       <?= Html::a('Go to your Team', ['/team/default/view', 'token' => Yii::$app->user->identity->team->token], ['class' => 'btn block text-dark text-bold orbitron' . (!Yii::$app->user->identity->team->inviteonly ? ' btn-info' : ' btn-warning')]) ?>
     <?php endif; ?>

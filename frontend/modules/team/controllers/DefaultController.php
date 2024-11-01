@@ -139,13 +139,34 @@ class DefaultController extends \app\components\BaseController
   public function actionView($token)
   {
     $model = $this->findModel(['token' => $token]);
-    $TP = TeamPlayer::find()->where(['team_id' => $model->id])->orderBy(['approved'=>SORT_DESC,'ts'=>SORT_ASC]);
+    $TP = TeamPlayer::find()->where(['team_id' => $model->id])->orderBy(['approved' => SORT_DESC, 'ts' => SORT_ASC]);
     $dataProvider = new ActiveDataProvider([
-      'query' => TeamPlayer::find()->where(['team_id' => $model->id])->orderBy(['approved'=>SORT_DESC,'ts'=>SORT_ASC]),
+      'query' => TeamPlayer::find()->where(['team_id' => $model->id])->orderBy(['approved' => SORT_DESC, 'ts' => SORT_ASC]),
       'sort' => false,
       'pagination' => false,
     ]);
     $teamPlayers = ArrayHelper::getColumn($TP->all(), 'player_id');
+    $headshots = \app\modules\target\models\Target::find()->headshottedByTeam($model->id);
+    $headshotsProvider = new ActiveDataProvider([
+      'query' => $headshots,
+      'pagination' => [
+        'pageSizeParam' => 'headshots-perpage',
+        'pageParam' => 'headshots-page',
+        'pageSize' => 5,
+      ],
+      'sort' => ['defaultOrder' => ['created_at' => SORT_DESC]],
+    ]);
+
+    $targetProgressProvider = new ActiveDataProvider([
+      'query' => \app\modules\target\models\Target::find()->team_progress($model->id)->having('(player_treasures>0 or player_findings>0) AND (progress>0 AND progress<100)'),
+      'pagination' => [
+        'pageSizeParam' => 'target-perpage',
+        'pageParam' => 'target-page',
+        'pageSize' => 5,
+      ],
+      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
+    ]);
+
     $teamInstances = \app\modules\target\models\TargetInstance::find()->leftJoin('team_player', 'target_instance.player_id=team_player.player_id')
       ->andFilterWhere(['in', 'target_instance.player_id', $teamPlayers])
       ->andFilterWhere(['team_player.approved' => 1]);
@@ -177,6 +198,8 @@ class DefaultController extends \app\components\BaseController
       'team' => $model,
       'teamInstanceProvider' => $teamInstanceProvider,
       'streamProvider' => $streamProvider,
+      'headshotsProvider' => $headshotsProvider,
+      'teamTargetsProvider' => $targetProgressProvider,
       'dataProvider' => $dataProvider,
     ]);
   }
@@ -236,10 +259,10 @@ class DefaultController extends \app\components\BaseController
   public function actionIndex($open = null, $nonfull = null, $inviteonly = null)
   {
     $baseq = Team::find()->byAcademic(Yii::$app->user->identity->academic);
-    if($open!==null)
-      $baseq->andWhere(['team.inviteonly'=>0]);
-    elseif($inviteonly!==null)
-      $baseq->andWhere(['team.inviteonly'=>1]);
+    if ($open !== null)
+      $baseq->andWhere(['team.inviteonly' => 0]);
+    elseif ($inviteonly !== null)
+      $baseq->andWhere(['team.inviteonly' => 1]);
 
     $dataProvider = new ActiveDataProvider([
       'query' => $baseq->joinWith(['teamPlayers'])->groupBy(['team.id'])->orderBy(['name' => SORT_ASC]),
@@ -248,8 +271,8 @@ class DefaultController extends \app\components\BaseController
 
     return $this->render('index', [
       'dataProvider' => $dataProvider,
-      'open'=>$open,
-      'inviteonly'=>$inviteonly,
+      'open' => $open,
+      'inviteonly' => $inviteonly,
     ]);
   }
 

@@ -21,7 +21,7 @@ $dataProvider = new ArrayDataProvider([
     <div class="card-body">
       <h4 class="card-title <?= $model->inviteonly && !$invite ? "text-danger" : ""  ?>"><?= Html::encode($model->name) ?></h4>
       <h6 class="badge badge-secondary"><?= \Yii::t('app', '{points,plural,=0{0 points} =1{# point} other{# points}}', ['points' => $model->score !== null ? $model->score->points : 0]) ?></h6>
-      <?php if ($model->inviteonly) : ?><h5 class="badge badge-primary"><?= \Yii::t('app', 'invite only') ?></h5><?php endif; ?>
+      <?php if ($model->inviteonly) : ?><h5 class="badge badge-warning"><?= \Yii::t('app', 'invite only') ?></h5><?php endif; ?>
       <p class="card-description"><?= Html::encode($model->description) ?></p>
       <?php if($listing===true):?>
         <p class=""><b>Owner: <?=$model->owner->profile->getLink(true);?></b></p>
@@ -78,9 +78,9 @@ $dataProvider = new ArrayDataProvider([
     </div>
     <div class="card-footer">
       <p class="small"><center>
-        <?php if (Yii::$app->user->identity->isAdmin || (Yii::$app->user->identity->team && Yii::$app->user->identity->team->id === $model->id) || (!$model->inviteonly && !$invite)) : ?>
+        <?php if (Yii::$app->user->identity->isAdmin || (Yii::$app->user->identity->team && !$model->inviteonly || ($invite===false && $listing===true))) : ?>
           <?= Html::a('View Team', ['/team/default/view', 'token' => $model->token], ['class' => 'btn block text-dark text-bold orbitron' . (!$model->inviteonly ? ' btn-info' : ' btn-warning')]) ?>
-        <?php elseif (intval($model->getTeamPlayers()->count()) < Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && (!$model->inviteonly || $invite) && !$model->locked && $model->invite) : ?>
+        <?php elseif (intval($model->getTeamPlayers()->count()) < Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && !$model->locked && $model->invite) : ?>
           <?= Html::a('Join Team', ['/team/default/join', 'token' => $model->invite->token], ['class' => 'btn block btn-primary text-dark text-bold orbitron', 'data-method' => 'POST', 'data' => ['confirm' => 'You are about to join this team. Your membership will have to be confirmed by the team captain.', 'method' => 'POST']]) ?>
         <?php endif; ?></center>
       </p>
