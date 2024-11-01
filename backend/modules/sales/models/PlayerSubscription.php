@@ -172,6 +172,41 @@ class PlayerSubscription extends \yii\db\ActiveRecord
             \Yii::$app->session->addFlash('success', sprintf('Imported subscription: %s for player %s', Html::encode($stripe_subscription->id), Html::encode($player->username)));
         }
       }
+      else
+        \Yii::$app->session->addFlash('warning', sprintf('Customer not found: %s', Html::encode($stripe_subscription->customer)));
+    }
+  }
+
+  /**
+   * Checks existing subscriptions against stripe
+   * @return mixed
+   */
+  public static function CheckStripe()
+  {
+    $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
+    foreach (PlayerSubscription::find()->where(['!=','subscription_id','sub_vip'])->all() as $ps) {
+      try {
+        $stripe->subscriptions->retrieve($ps->subscription_id, []);
+      }
+      catch(\Stripe\Exception\InvalidRequestException $e) {
+        if(str_starts_with($e->getMessage(),'No such subscription:'))
+        {
+          if ($ps->product)
+            $metadata = json_decode($ps->product->metadata);
+
+          if (isset($metadata->network_ids)) {
+            foreach (explode(',', $metadata->network_ids) as $val) {
+              if (($np = NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $ps->player_id])) !== null) {
+                $np->delete();
+              }
+            }
+          }
+          if($ps->delete())
+            \Yii::$app->session->addFlash('success', sprintf('Deleted subscription: %s', Html::encode($ps->subscription_id)));
+          else
+            \Yii::$app->session->addFlash('error', sprintf('Failed to delete subscription: %s', Html::encode($ps->id)));
+        }
+      }
     }
   }
 
