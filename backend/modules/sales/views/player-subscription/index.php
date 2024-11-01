@@ -18,6 +18,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
   <p>
     <?= Html::a(Yii::t('app', 'Create Player Subscription'), ['create'], ['class' => 'btn btn-success']) ?>
     <?= Html::a(Yii::t('app', 'Fetch from Stripe'), ['fetch-stripe'], ['class' => 'btn btn-warning']) ?>
+    <?= Html::a(Yii::t('app', 'Check on Stripe'), ['check-stripe'], ['class' => 'btn btn-info']) ?>
     <?= Html::a(Yii::t('app', 'Delete Inactive'), ['delete-inactive'], [
             'class' => 'btn btn-danger',
             'data' => [

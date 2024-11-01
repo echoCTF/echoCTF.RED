@@ -175,6 +175,24 @@ class PlayerSubscriptionController extends \app\components\BaseController
   }
 
   /**
+   * Checks existing subscriptions against stripe and updates accordingly
+   * @return mixed
+   */
+  public function actionCheckStripe()
+  {
+    if (intval(Product::find()->count()) < 1) {
+      \Yii::$app->session->addFlash('warning', 'There are no products on the system. First fetch the stripe products and then import the subscriptions.');
+      return $this->redirect(['/sales/product/index']);
+    }
+    if (intval(Player::find()->where(['IS NOT', 'stripe_customer_id', null])->count()) < 1) {
+      \Yii::$app->session->addFlash('warning', 'There are no customers on the system. First fetch the stripe customers and then import the subscriptions.');
+      return $this->redirect(['/sales/player-customer/index']);
+    }
+    PlayerSubscription::CheckStripe();
+    return $this->redirect(['index']);
+  }
+
+  /**
    * Finds the PlayerSubscription model based on its primary key value.
    * If the model is not found, a 404 HTTP exception will be thrown.
    * @param integer $id
