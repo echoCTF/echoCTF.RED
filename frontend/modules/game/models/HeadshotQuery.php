@@ -15,6 +15,11 @@ class HeadshotQuery extends \yii\db\ActiveQuery
     return $this->joinWith(['target'])->andWhere(['t.timer' => 1])->andWhere(['>', 'headshot.timer', 0]);
   }
 
+  public function forTeam($id)
+  {
+    return $this->andWhere('headshot.player_id IN (SELECT player_id FROM team_player WHERE team_id=:id)',[':id'=>$id]);
+  }
+
   public function target_avg_time($target_id)
   {
     return $this->addSelect(['*', 'avg(headshot.timer) as average'])->andWhere(['target_id' => $target_id]);

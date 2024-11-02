@@ -15,6 +15,11 @@ class TargetQuery extends \yii\db\ActiveQuery
     parent::init();
   }
 
+  public function headshottedByTeam(int $team_id)
+  {
+    return $this->andWhere('id IN (SELECT DISTINCT target_id FROM headshot WHERE player_id IN (SELECT player_id FROM team_player WHERE team_id=:id and approved=1))',[':id'=>$team_id]);
+  }
+
   public function forNet(int $network_id)
   {
     return $this->join('LEFT JOIN', 'network_target', 'network_target.target_id=t.id')->andWhere(['network_target.network_id' => $network_id]);
@@ -77,6 +82,25 @@ class TargetQuery extends \yii\db\ActiveQuery
     $this->join('LEFT JOIN', 'target_player_state', 'target_player_state.id=t.id AND target_player_state.player_id=' . intval($player_id));
     return $this;
   }
+
+  public function team_progress($team_id = 0)
+  {
+    $this->alias('t');
+    $this->select(['t.id', 't.name', 't.status', 't.active', 't.ip', 't.difficulty', 'rootable', 't.scheduled_at', 't.ts', 't.player_spin']);
+    $this->addSelect(['INET_NTOA(t.ip) as ipoctet']);
+    $this->addSelect(['on_ondemand', 'ondemand_state']);
+    $this->addSelect('total_treasures, total_findings, player_treasures, player_findings, player_rating, total_headshots, total_writeups, approved_writeups,player_points');
+    $this->addSelect([new \yii\db\Expression('(max((player_treasures+player_findings)/(total_treasures+total_findings))*100) as progress')]);
+    $this->addSelect([new \yii\db\Expression('if(player_rating>=0,round((player_rating+difficulty)/2),difficulty) as average_rating')]);
+
+    $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
+    $this->join('LEFT JOIN', 'target_player_state', 'target_player_state.id=t.id AND target_player_state.player_id IN (SELECT player_id FROM team_player WHERE approved=1 and team_id='.intval($team_id).')');
+    $this->andWhere('t.id NOT IN (SELECT target_id FROM headshot WHERE player_id IN (SELECT player_id FROM team_player WHERE team_id=:id and approved=1))',[':id'=>$team_id]);
+    $this->groupBy(['t.id']);
+    $this->addOrderBy([new \yii\db\Expression('(max((player_treasures+player_findings)/(total_treasures+total_findings))*100) DESC')]);
+    return $this;
+  }
+
 
   /**
    * {@inheritdoc}

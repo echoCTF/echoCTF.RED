@@ -5,6 +5,8 @@ use Yii;
 use yii\base\Model;
 use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\team\models\Team;
+use yii\base\UserException;
+
 /**
  * Signup form
  */
@@ -57,24 +59,34 @@ class CreateTeamForm extends Model
         $team->name=$this->name;
         $team->description=$this->description;
         $team->owner_id=Yii::$app->user->id;
-        if($team->save())
+        if(!$team->save())
         {
-          $tp=new TeamPlayer();
-          $tp->team_id=$team->id;
-          $tp->player_id=Yii::$app->user->id;
-          $tp->approved=1;
-          if($tp->save())
-          {
-            $transaction->commit();
-            return true;
-          }
+          throw new UserException(\Yii::t('Failed to save team: [{error}]',['error'=>implode(", ",$team->getErrors())]));
         }
+
+        $tp=new TeamPlayer();
+        $ti=new TeamInvite();
+        $ti->token=Yii::$app->security->generateRandomString(8);
+        $ti->team_id=$tp->team_id=$team->id;
+        $tp->player_id=Yii::$app->user->id;
+        $tp->approved=1;
+        if(!$tp->save())
+        {
+          throw new UserException(\Yii::t('Failed to save team player: [{error}]',['error'=>implode(", ",$tp->getErrors())]));
+        }
+
+        if(!$ti->save())
+        {
+          throw new UserException(\Yii::t('Failed to create team invite: [{error}]',['error'=>implode(", ",$ti->getErrors())]));
+        }
+        $transaction->commit();
       }
       catch (\Exception $e)
       {
         $transaction->rollback();
+        return false;
       }
-      return false;
+      return true;
     }
 
     public function attributeLabels()

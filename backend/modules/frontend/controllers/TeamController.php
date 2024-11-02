@@ -179,6 +179,30 @@ class TeamController extends \app\components\BaseController
 
     throw new NotFoundHttpException('The requested page does not exist.');
   }
+
+  public function actionAjaxSearch($term, $load = false, $active = null, $status = null)
+  {
+    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    $results = [];
+    if (Yii::$app->request->isAjax) {
+      $pq = Team::find()->where(['=', 'id', $term]);
+      if ($load === false) {
+        $pq->orWhere(['like', 'name', $term]);
+      }
+      $results = array_values(ArrayHelper::map(
+        $pq->all(),
+        'id',
+        function ($model) {
+          return [
+            'id' => $model->id,
+            'label' => sprintf("(id: %d / pid: %d) %s", $model->id, $model->owner->id, \yii\helpers\Html::encode($model->name)),
+          ];
+        }
+      ));
+    }
+    return $results;
+  }
+
   public function actionFreePlayerAjaxSearch($term, $load = false, $active = null, $status = null)
   {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;

@@ -11,6 +11,7 @@ $this->loadLayoutOverrides = true;
 
 $this->title = Yii::$app->sys->event_name . ' ' . \Yii::t('app', 'Team details for') . ' [' . $team->name . ']';
 $this->_fluid = "-fluid";
+$class = 'text-bold';
 
 ?>
 <div class="team-view">
@@ -18,9 +19,14 @@ $this->_fluid = "-fluid";
     <h2><?= \Yii::t('app', 'Details for team') ?> [<code><?= Html::encode($team->name) ?></code>]</h2>
     <?php if ($team->getTeamPlayers()->count() < Yii::$app->sys->members_per_team): ?>
       <p>
-        <?= \Yii::t('app', 'Allow other players to join the team easily by providing them with this link:') ?>
-        <code><?= Html::a(Url::to(['/team/default/invite', 'token' => $team->token], 'https'), Url::to(['/team/default/invite', 'token' => $team->token], 'https'), ['class' => 'text-bold copy-to-clipboard', 'swal-data' => 'Copied to clipboard!']); ?></code>
-        <?php if ($team->owner_id === Yii::$app->user->id && \Yii::$app->cache->memcache->get('team_renewed:' . $team->id) === false): ?>
+        <?php if ($team->invite && !$team->inviteonly): ?>
+          <?php if ($team->owner_id === Yii::$app->user->id) $class .= ' copy-to-clipboard'; ?>
+          <?= \Yii::t('app', 'Allow other players to join the team easily by providing them with this link:') ?>
+          <code><?= Html::a(Url::to(['/team/default/invite', 'token' => $team->invite->token], 'https'), Url::to(['/team/default/invite', 'token' => $team->invite->token], 'https'), ['class' => $class, 'swal-data' => 'Copied to clipboard!']); ?></code>
+        <?php else: ?>
+          <?= Html::encode($team->recruitment) ?>
+        <?php endif; ?>
+        <?php if (\Yii::$app->user->identity->isAdmin || ($team->owner_id === Yii::$app->user->id /*&& \Yii::$app->cache->memcache->get('team_renewed:' . $team->id) === false*/)): ?>
           <?= Html::a('<i class="fas fa-sync-alt text-info" style="font-size: 1.2em;"></i>', Url::to(['renew', 'token' => $team->token]), ['data-method' => 'POST', 'title' => 'Regenerate invite URL', 'rel' => "tooltip",]) ?>
         <?php endif; ?>
       </p>
@@ -80,7 +86,17 @@ $this->_fluid = "-fluid";
                   'label' => \Yii::t('app', 'Member')
                 ],
                 'player.playerScore.points:integer',
-                'approved:boolean',
+                [
+                  'headerOptions' => ['class' => 'd-none d-sm-table-cell d-xl-table-cell', 'style' => "width: 1.5em"],
+                  'contentOptions' => ['class' => 'd-none d-sm-table-cell d-xl-table-cell', 'style' => "width: 1.5em;text-align: right"],
+                  'visible' => $team->owner->id === Yii::$app->user->identity->id,
+                  'format' => 'raw',
+                  'value' => function ($model) {
+                    if ($model->approved)
+                      return '<i class="fas fa-check-square text-primary" style="font-size: 1.2em"></i>';
+                    return '<i class="fas fa-window-close text-danger" style="font-size: 1em"></i>';
+                  }
+                ],
                 [
                   'class' => 'app\actions\ActionColumn',
                   'visible' => function ($model) {
@@ -149,9 +165,114 @@ $this->_fluid = "-fluid";
             ?>
             <?php if (Yii::$app->user->identity->teamLeader !== null && $team->owner_id === Yii::$app->user->id): ?><?= Html::a(\Yii::t('app', 'Update'), ['/team/default/update'], ['class' => 'btn btn-primary text-dark text-bold d-block']) ?><?php endif; ?>
           </div>
-
+          <div class="card-footer">
+            <p class="small">
+              <center>
+                <?php if (intval($team->getTeamPlayers()->count()) < Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && !$team->locked && $team->invite && !$team->inviteonly) : ?>
+                  <?= Html::a('Join Team', ['/team/default/join', 'token' => $team->invite->token], ['class' => 'btn block btn-primary text-dark text-bold orbitron', 'data-method' => 'POST', 'data' => ['confirm' => 'You are about to join this team. Your membership will have to be confirmed by the team captain.', 'method' => 'POST']]) ?>
+                <?php endif; ?>
+              </center>
+            </p>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="row">
+      <?php if (intval($teamTargetsProvider->getTotalCount()) > 0): ?>
+        <div class="col col-xl-4 col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch">
+          <div class="card bg-dark" style="margin-top:0px;">
+            <div class="card-body">
+              <h3 class="card-title text-center" style="margin-bottom: 0.9em;"><?=$teamTargetsProvider->getTotalCount()?> <?= \Yii::t('app', 'Pending') ?></h3>
+              <?php
+              \yii\widgets\Pjax::begin(['id' => 'pending-listing-pjax', 'enablePushState' => false, 'linkSelector' => '#pending-pager a', 'formSelector' => false]);
+              echo ListView::widget([
+                'id' => 'pending-targets',
+                'layout' => '{items}{pager}',
+                'emptyText' => 'No targets currently pending.',
+                'options' => ['class' => "list-group list-group-flush"],
+                'dataProvider' => $teamTargetsProvider,
+                'itemView' => '_target_item',
+                'viewParams' => ['progress' => true],
+                'pager' => [
+                  'class' => 'yii\bootstrap4\LinkPager',
+                  'linkOptions' => ['class' => ['page-link', 'orbitron'], 'aria-label' => 'Pager link', 'rel' => 'nofollow'],
+                  'options' => ['id' => 'pending-pager', 'class' => 'align-middle'],
+                  'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                  'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                  'maxButtonCount' => 3,
+                  'disableCurrentPageButton' => true,
+                  'prevPageLabel' => '<i class="fas fa-chevron-left"></i>',
+                  'nextPageLabel' => '<i class="fas fa-chevron-right"></i>',
+                ],
+              ]);
+              \yii\widgets\Pjax::end();
+              ?>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
+      <?php if (intval($headshotsProvider->getTotalCount()) > 0): ?>
+        <div class="col col-xl-4 col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch">
+          <div class="card bg-dark" style="margin-top:0px;">
+            <div class="card-body">
+              <h3 class="card-title text-center" style="margin-bottom: 0.9em;"><?= $headshotsProvider->getTotalCount() ?> <?= \Yii::t('app', 'Headshots') ?></h3>
+              <?php \yii\widgets\Pjax::begin(['id' => 'headshots-listing-pjax', 'enablePushState' => false, 'linkSelector' => '#headshot-pager a', 'formSelector' => false]); ?>
+              <?= ListView::widget([
+                'id' => 'headshots-listing',
+                'layout' => '{items}{pager}',
+                'emptyText' => 'No targets headshotted yet.',
+                'options' => ['class' => "list-group list-group-flush"],
+                'dataProvider' => $headshotsProvider,
+                'viewParams' => ['progress' => false],
+                'itemView' => '_target_item',
+                'pager' => [
+                  'class' => 'yii\bootstrap4\LinkPager',
+                  'linkOptions' => ['class' => ['page-link', 'orbitron'], 'aria-label' => 'Pager link', 'rel' => 'nofollow'],
+                  'options' => ['id' => 'headshot-pager', 'class' => 'align-middle'],
+                  'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                  'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                  'maxButtonCount' => 3,
+                  'disableCurrentPageButton' => true,
+                  'prevPageLabel' => '<i class="fas fa-chevron-left"></i>',
+                  'nextPageLabel' => '<i class="fas fa-chevron-right"></i>',
+                ],
+              ]); ?>
+              <?php \yii\widgets\Pjax::end(); ?>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
+      <?php if (intval($solverProvider->getTotalCount()) > 0): ?>
+        <div class="col col-xl-4 col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch">
+          <div class="card bg-dark" style="margin-top:0px;">
+            <div class="card-body">
+              <h3 class="card-title text-center" style="margin-bottom: 0.9em;"><?= $solverProvider->getTotalCount() ?> <?= \Yii::t('app', 'Solves') ?></h3>
+              <?php \yii\widgets\Pjax::begin(['id' => 'solves-listing-pjax', 'enablePushState' => false, 'linkSelector' => '#solves-pager a', 'formSelector' => false]); ?>
+              <?= ListView::widget([
+                'id' => 'solves-listing',
+                'layout' => '{items}{pager}',
+                'emptyText' => 'No targets headshotted yet.',
+                'options' => ['class' => "list-group list-group-flush"],
+                'dataProvider' => $solverProvider,
+                'viewParams' => ['progress' => false],
+                'itemView' => '_challenge_item',
+                'pager' => [
+                  'class' => 'yii\bootstrap4\LinkPager',
+                  'linkOptions' => ['class' => ['page-link', 'orbitron'], 'aria-label' => 'Pager link', 'rel' => 'nofollow'],
+                  'options' => ['id' => 'solves-pager', 'class' => 'align-middle'],
+                  'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+                  'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+                  'maxButtonCount' => 3,
+                  'disableCurrentPageButton' => true,
+                  'prevPageLabel' => '<i class="fas fa-chevron-left"></i>',
+                  'nextPageLabel' => '<i class="fas fa-chevron-right"></i>',
+                ],
+              ]); ?>
+              <?php \yii\widgets\Pjax::end(); ?>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
 
     </div>
     <?php
