@@ -19,6 +19,11 @@ Usage: `./backend/yii vpn/killall`
 
 This command connects to the OpenVPN management port and issues a `kill` command for each active player which currently has an IP assigned to them. Once the OpenVPN operations are complete a cleanup is performed to reset the online status of all players.
 
+## process-disconnect-queue
+Process the queue of player disconnect requests and issue kill commands to appropriate VPN servers.
+
+Usage: `./backend/yii vpn/process-disconnect-queue`
+
 ## load
 Load an OpenVPN instance configuration file into the database
 
