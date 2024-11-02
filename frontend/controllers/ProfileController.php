@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\PlayerDisconnectQueue;
 use Yii;
 use app\models\Profile;
 use yii\data\ActiveDataProvider;
@@ -27,32 +28,32 @@ class ProfileController extends \app\components\BaseController
     return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['badge', 'index', 'invite', 'me', 'ovpn', 'revoke', 'settings', 'notifications', 'hints', 'disconnect'],
+        'only' => ['badge', 'index', 'invite', 'me', 'delete', 'ovpn', 'revoke', 'settings', 'notifications', 'hints', 'disconnect'],
         'rules' => [
           'eventActive' => [
-            'actions' => ['badge', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke', 'disconnect'],
+            'actions' => ['badge', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke', 'disconnect','delete'],
           ],
           'eventStartEnd' => [
             'actions' => [''],
           ],
           'eventStart' => [
-            'actions' => ['ovpn', 'revoke', 'disconnect'],
+            'actions' => ['ovpn', 'revoke', 'disconnect','delete'],
           ],
           'eventEnd' => [
-            'actions' => ['ovpn', 'revoke', 'disconnect'],
+            'actions' => ['ovpn', 'revoke', 'disconnect','delete'],
           ],
           'teamsAccess' => [
             'actions' => ['ovpn', 'disconnect'],
           ],
           'disabledRoute' => [
-            'actions' => ['badge', 'me', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke', 'disconnect'],
+            'actions' => ['badge', 'me', 'delete','index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke', 'disconnect'],
           ],
           [
             'actions' => ['index', 'badge'],
             'allow' => true,
           ],
           [
-            'actions' => ['ovpn', 'me', 'settings', 'notifications', 'hints', 'revoke', 'disconnect'],
+            'actions' => ['ovpn', 'me', 'delete','settings', 'notifications', 'hints', 'revoke', 'disconnect'],
             'allow' => true,
             'roles' => ['@']
           ],
@@ -82,6 +83,7 @@ class ProfileController extends \app\components\BaseController
         'actions' => [
           'revoke' => ['POST'],
           'disconnect' => ['POST'],
+          'delete' => ['POST'],
         ],
       ],
     ]);
@@ -186,6 +188,19 @@ class ProfileController extends \app\components\BaseController
     ]);
   }
 
+  public function actionDelete()
+  {
+    if(intval(Yii::$app->user->identity->updateAttributes(['status' => 0]))>0)
+    {
+      Yii::$app->user->logout();
+      \Yii::$app->session->addFlash('warning', \Yii::t('app', "Your account has been scheduled for deletion. We are sorry to see you go. Feel free to come back any time..."));
+    }
+
+    else
+      \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to delete your account. Contact our support to assist you in."));
+    return $this->redirect(['/']);
+  }
+
   public function actionInvite(int $id)
   {
     $profile = $this->findModel($id);
@@ -211,6 +226,26 @@ class ProfileController extends \app\components\BaseController
       \Yii::$app->session->addFlash('success', \Yii::t('app', "Your keys have been revoked. Make sure you download your OpenVPN configuration file again."));
     } catch (\Exception $e) {
       \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to revoke your keys."));
+    }
+    return $this->redirect(['/profile/me']);
+  }
+
+  /**
+   * Disconnect a VPN connection
+   */
+  public function actionDisconnect()
+  {
+    if (!Yii::$app->user->identity->onVPN || Yii::$app->user->identity->disconnectQueue!==null) {
+      \Yii::$app->session->addFlash('warning', \Yii::t('app', "There is a VPN disconnect queue entry already or player not on VPN."));
+      return $this->redirect(['/profile/me']);
+    }
+    try {
+      $dcq=new PlayerDisconnectQueue();
+      $dcq->player_id=Yii::$app->user->identity->id;
+      if($dcq->save())
+        \Yii::$app->session->addFlash('success', \Yii::t('app', "VPN disconnect request queued."));
+    } catch (\Exception $e) {
+      \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to queue VPN disconnect request."));
     }
     return $this->redirect(['/profile/me']);
   }
