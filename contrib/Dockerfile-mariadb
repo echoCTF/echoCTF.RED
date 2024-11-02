@@ -1,4 +1,4 @@
-FROM mariadb:10.5
+FROM mariadb:11.4.3
 LABEL description="echoCTF.RED database and memcache server"
 ARG MEMCACHED_MEM=128
 ENV MYSQL_ALLOW_EMPTY_PASSWORD root
@@ -16,34 +16,30 @@ COPY schemas/echoCTF-events.sql /docker-entrypoint-initdb.d/04.sql
 COPY contrib/findingsd.sql /docker-entrypoint-initdb.d/05.sql
 COPY contrib/entrypoint-mariadb.sh /usr/local/bin/docker-entrypoint.sh
 WORKDIR /
-RUN set -ex; \
-  apt-get update; \
-  apt-get install -y build-essential gcc autoconf automake git zip unzip mcrypt memcached libmariadb-dev tini libmemcached-dev libtool; \
-  echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf; \
-  echo "plugin_load_add = ha_federatedx">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
-  echo "plugin_load_add = ha_blackhole">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
-  echo "blackhole = FORCE">> /etc/mysql/mariadb.conf.d/50-server.cnf; \
-  git clone https://github.com/echoCTF/MySQL-global-user-variables-UDF.git; \
-  cd MySQL-global-user-variables-UDF; \
-  make DESTDIR=/usr/lib/mysql/plugin/ install; \
-  cp global_user_variables.sql /docker-entrypoint-initdb.d/00.sql; \
-  cd .. ; \
-  git clone https://github.com/echoCTF/memcached_functions_mysql.git; \
-  cd memcached_functions_mysql; \
-  ./config/bootstrap; \
-  ./configure --with-mysql=/usr/bin/mariadb_config; \
-  make ; \
-  cp src/.libs/libmemcached_functions_mysql.so /usr/lib/mysql/plugin/; \
-  sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/memcached.conf; \
-  mkdir -p /always-initdb.d; \
-  echo "/usr/bin/memcached -d -M -m ${MEMCACHED_MEM} -p 11211 -u mysql -l 0.0.0.0 -o no_maxconns_fast,no_modern -P /tmp/memcached.pid  -L  --disable-cas" >> /always-initdb.d/00.sh; \
-  chmod +x /always-initdb.d/00.sh; \
-  cat sql/install_functions.sql>> /docker-entrypoint-initdb.d/00.sql; \
-  sed -i  -e "s/echoCTF/${MYSQL_DATABASE}/g" /etc/mysql-init.sql; \
-  chmod +x /usr/local/bin/docker-entrypoint.sh; \
-  apt-get purge -y build-essential gcc autoconf automake git zip unzip mcrypt libmariadb-dev libtool; \
-  apt-get autoremove -y; \
-  rm -rf /usr/src/* /var/lib/apt/lists/*
+RUN set -ex \
+  && echo "deb http://ftp.cc.uoc.gr/mirrors/mariadb/mariadb-11.4.3/repo/ubuntu noble main main/debug" >>/etc/apt/sources.list.d/mariadb.list \
+  && apt-get update \
+  && apt-get install -y build-essential gcc autoconf automake git zip unzip mcrypt memcached libmariadb-dev tini libmemcached-dev libtool \
+  && echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf \
+  && echo "plugin_load_add = ha_federatedx">> /etc/mysql/mariadb.conf.d/50-server.cnf \
+  && echo "plugin_load_add = ha_blackhole">> /etc/mysql/mariadb.conf.d/50-server.cnf \
+  && echo "blackhole = FORCE">> /etc/mysql/mariadb.conf.d/50-server.cnf \
+  && git clone https://github.com/echoCTF/memcached_functions_mysql.git \
+  && cd memcached_functions_mysql \
+  && ./config/bootstrap \
+  && ./configure --with-mysql=/usr/bin/mariadb_config \
+  && make \
+  && cp src/.libs/libmemcached_functions_mysql.so /usr/lib/mysql/plugin/ \
+  && sed -i -e 's/127.0.0.1/0.0.0.0/g' /etc/memcached.conf \
+  && mkdir -p /always-initdb.d \
+  && echo "/usr/bin/memcached -d -M -m ${MEMCACHED_MEM} -p 11211 -u mysql -l 0.0.0.0 -o no_maxconns_fast,no_modern -P /tmp/memcached.pid  -L  --disable-cas" >> /always-initdb.d/00.sh \
+  && chmod +x /always-initdb.d/00.sh \
+  && cat sql/install_functions.sql>> /docker-entrypoint-initdb.d/00.sql \
+  && sed -i  -e "s/echoCTF/${MYSQL_DATABASE}/g" /etc/mysql-init.sql \
+  && chmod +x /usr/local/bin/docker-entrypoint.sh \
+  && apt-get purge -y build-essential gcc autoconf automake git zip unzip mcrypt libmariadb-dev libtool \
+  && apt-get autoremove -y \
+  && rm -rf /usr/src/* /var/lib/apt/lists/*
 
 EXPOSE 3306/tcp
 EXPOSE 11211/tcp
