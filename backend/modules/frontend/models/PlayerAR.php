@@ -14,6 +14,7 @@ use app\modules\gameplay\models\Hint;
 use app\modules\gameplay\models\Finding;
 use app\modules\gameplay\models\Treasure;
 use yii\behaviors\AttributeTypecastBehavior;
+use app\modules\activity\models\PlayerDisconnectQueue;
 
 /**
  * This is the model class for table "player".
@@ -392,6 +393,14 @@ class PlayerAR extends \yii\db\ActiveRecord
     public function getLast()
     {
         return $this->hasOne(\app\modules\activity\models\PlayerLast::class, ['id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDisconnectQueue()
+    {
+        return $this->hasOne(PlayerDisconnectQueue::class, ['player_id' => 'id']);
     }
 
     public function beforeSave($insert)

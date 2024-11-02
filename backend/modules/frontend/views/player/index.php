@@ -136,6 +136,10 @@ yii\bootstrap5\Modal::end();
             if ($model->last->vpn_local_address !== null) return true;
             return false;
           },
+          'disconnect-vpn' => function ($model) {
+            if ($model->last->vpn_local_address !== null && $model->disconnectQueue===null) return true;
+            return false;
+          },
           'view' => function ($model) {
             return false;
           },
@@ -172,7 +176,7 @@ yii\bootstrap5\Modal::end();
             return false;
           }
         ],
-        'template' => '{player-view-full} {clear-vpn} {view} {generate-ssl} {update} {delete} {ban} {mail} {reset-activkey} {approve} {reject} {activate} {set-deleted}',
+        'template' => '{player-view-full} {clear-vpn} {disconnect-vpn} {view} {generate-ssl} {update} {delete} {ban} {mail} {reset-activkey} {approve} {reject} {activate} {set-deleted}',
         'header' => Html::a(
           '<i class="bi bi-person-fill-exclamation"></i>',
           ['ban-filtered'],
@@ -276,6 +280,16 @@ yii\bootstrap5\Modal::end();
               'title' => 'Clear VPN Session',
               'data' => [
                 'confirm' => 'Are you absolutely sure you want to clear the vpn session for [' . Html::encode($model->username) . '] ?',
+                'method' => 'post',
+              ],
+            ]);
+          },
+          'disconnect-vpn' => function ($url, $model) {
+            return Html::a('<i class="fas fa-user-shield"></i>', ['disconnect-vpn', 'id' => $model->id], [
+              'class' => '',
+              'title' => 'Disconnect from VPN',
+              'data' => [
+                'confirm' => 'Are you absolutely sure you want to disconnect the vpn session for [' . Html::encode($model->username) . '] ?',
                 'method' => 'post',
               ],
             ]);

@@ -15,6 +15,7 @@ use yii\web\UploadedFile;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\data\ActiveDataProvider;
+use app\modules\activity\models\PlayerDisconnectQueue;
 
 /**
  * PlayerController implements the CRUD actions for Player model.
@@ -255,10 +256,10 @@ class PlayerController extends \app\components\BaseController
     $connection = Yii::$app->db;
     $transaction = $connection->beginTransaction();
     try {
-      $monthlyscore = \app\modules\activity\models\PlayerScoreMonthly::find()->where('dated_at=EXTRACT(YEAR_MONTH FROM NOW())')->andWhere(['player_id'=>$id]);
+      $monthlyscore = \app\modules\activity\models\PlayerScoreMonthly::find()->where('dated_at=EXTRACT(YEAR_MONTH FROM NOW())')->andWhere(['player_id' => $id]);
       if (($model = Player::findOne($id)) !== null && $model->updateAttributes($updateAttributes)) {
 
-        if($monthlyscore->one() !== null) $monthlyscore->one()->delete();
+        if ($monthlyscore->one() !== null) $monthlyscore->one()->delete();
         Yii::$app->session->setFlash('success', Yii::t('app', 'Player [{username}] activated.', ['username' => Html::encode($model->username)]));
       } else {
         Yii::$app->session->setFlash('error', Yii::t('app', 'Player activation failed.'));
@@ -294,10 +295,9 @@ class PlayerController extends \app\components\BaseController
       else
         Yii::$app->session->setFlash('error', Yii::t('app', 'Player setting deletion flag failed.'));
       $transaction->commit();
-
     } catch (\Exception $e) {
       $transaction->rollBack();
-      Yii::$app->session->setFlash('error',$e->getMessage());
+      Yii::$app->session->setFlash('error', $e->getMessage());
     }
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
@@ -524,6 +524,26 @@ class PlayerController extends \app\components\BaseController
     }
 
     return $this->redirect(['index']);
+  }
+
+  /**
+   * Disconnect VPN player session
+   * @param integer $id The player ID
+   * @throws NotFoundHttpException if the player id cannot be found
+   */
+  public function actionDisconnectVpn($id)
+  {
+    $player = $this->findModel($id);
+    if ($player->disconnectQueue === null) {
+      $dq = new PlayerDisconnectQueue();
+      $dq->player_id = $player->id;
+      if ($dq->save()) {
+        \Yii::$app->session->addFlash('success', \Yii::t('app', "Queued player disconnect request."));
+      }
+    } else
+      \Yii::$app->session->addFlash('warning', \Yii::t('app', "There is already a queued disconnect request."));
+
+    return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
   /**
