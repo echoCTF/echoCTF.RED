@@ -567,6 +567,7 @@
       - { name: "Power Operations", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/powerops" }
       - { name: "restart targets with 24h uptime or more", minute: "*/5",  job: "{{APP_DIR}}/backend/bin/target-restart" }
       - { name: "Healthcheck", minute: "*/10",  job: "{{APP_DIR}}/backend/bin/healthcheck" }
+      - { name: "Process disconnect queue", minute: "*/1",  job: "{{APP_DIR}}/backend/yii vpn/process-disconnect-queue" }
 
   - name: Install echoctf.ini for supervisord
     copy:
