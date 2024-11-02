@@ -50,18 +50,20 @@ class OpenVPN extends Component
         echo "connected to {$creds->management_ip_octet}\n";
         fwrite($fp, "$creds->management_passwd\n");
         echo "sending to ",$creds->management_ip_octet,"\n";
-        usleep(250000);
+        usleep(450000);
         fwrite($fp, "kill $player_id\n");
-        usleep(250000);
+        usleep(450000);
         fwrite($fp, "exit\n");
-        usleep(250000);
+        usleep(450000);
         fclose($fp);
       }
     }
     catch (\Throwable $e)
     {
       echo "Error: ",$e->getMessage(),"\n";
+      return false;
     }
+    return true;
   }
 
   /**
