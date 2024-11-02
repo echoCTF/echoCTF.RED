@@ -132,6 +132,8 @@ AppAsset::register($this);
             //                ['label' => 'Player Tutorial Task', 'url' => ['/activity/player-tutorial-task'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin ,],
             ['label' => 'Spin History', 'url' => ['/activity/spin-history/index'], 'visible' => !Yii::$app->user->isGuest,],
             ['label' => 'Spin Queue', 'url' => ['/activity/spin-queue/index'], 'visible' => !Yii::$app->user->isGuest,],
+            ['label' => 'Player Disconnect Queue', 'url' => ['/activity/player-disconnect-queue/index'], 'visible' => !Yii::$app->user->isGuest,],
+            ['label' => 'Player Disconnect History', 'url' => ['/activity/player-disconnect-queue-history/index'], 'visible' => !Yii::$app->user->isGuest,],
             ['label' => 'Inquiries', 'url' => ['/activity/inquiry/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
             ['label' => 'Notifications', 'url' => ['/activity/notification/index'], 'visible' => !Yii::$app->user->isGuest,],
             ['label' => 'Sessions', 'url' => ['/activity/session/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
