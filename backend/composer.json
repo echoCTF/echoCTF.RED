@@ -21,7 +21,7 @@
         "yiisoft/yii2-jui": "^2.0",
         "cebe/markdown": "^1.2",
         "ezyang/htmlpurifier": "^4.14",
-        "yiisoft/yii2-symfonymailer": "^3.0",
+        "yiisoft/yii2-symfonymailer": "^4.0",
         "yiisoft/yii2-bootstrap5": "*",
         "twbs/bootstrap-icons": "^1.10",
         "kartik-v/yii2-krajee-base": "dev-master",
