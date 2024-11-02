@@ -13,8 +13,10 @@ use yii\helpers\Console;
 use yii\console\Controller;
 use app\modules\frontend\models\Player;
 use app\modules\activity\models\PlayerLast;
+use app\modules\activity\models\Notification;
 use app\components\OpenVPN;
 use yii\console\ExitCode;
+use app\modules\activity\models\PlayerDisconnectQueue;
 
 /**
  * Manages VPN specific operations.
@@ -203,12 +205,36 @@ class VpnController extends Controller
 
   public function actionVerifyCn()
   {
-    $email = getenv('X509_0_emailAddress'); //=***@mail.ru
-    $player_id = getenv('X509_0_CN'); //=Client6
-    $serial = getenv('tls_serial_1'); //=11536565143839473019
+    $email = getenv('X509_0_emailAddress');
+    $player_id = getenv('X509_0_CN');
+    $serial = getenv('tls_serial_1');
     if (\app\modules\frontend\models\PlayerSsl::findOne(['serial' => $serial]) !== null) {
       return ExitCode::OK;
     }
     return ExitCode::UNSPECIFIED_ERROR;
+  }
+
+  public function actionProcessDisconnectQueue()
+  {
+    foreach (PlayerDisconnectQueue::find()->all() as $entry) {
+      try {
+        printf("Processing [%s] scheduled at [%s]\n", $entry->player->username, $entry->created_at);
+        if (OpenVPN::kill($entry->player_id, intval($entry->player->last->vpn_local_address)) === true) {
+          $n=new Notification();
+          $n->player_id=$entry->player_id;
+          $n->body=$n->title="Successfully disconnected your VPN connection";
+          $n->archived=0;
+          $n->category='info';
+          Yii::$app->db->createCommand("UPDATE player_last SET vpn_local_address=NULL, vpn_remote_address=NULL WHERE id=:player_id", [':player_id' => $entry->player_id])->execute();
+          if($entry->delete()) {
+            $n->save();
+          }
+
+        }
+      } catch (\Exception $e) {
+        echo "Error: ", $e->getMessage(), "\n";
+        return ExitCode::UNSPECIFIED_ERROR;
+      }
+    }
   }
 }
