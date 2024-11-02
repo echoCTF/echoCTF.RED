@@ -15,12 +15,18 @@ use yii\bootstrap\ButtonDropdown;
 if(\Yii::$app->user->identity->sSL && $profile->isMine)
   $profile_actions=$profile->vpnItems;
 
-if(\Yii::$app->user->identity->sSL && (time()-strtotime(\Yii::$app->user->identity->sSL->ts))>=300)
-  $profile_actions['revoke']=['encode'=>false, 'label'=>"<i class='fas fa-id-card'></i>&nbsp; Regenerate VPN Keys (revoke)", 'url'=>Url::to(['profile/revoke'],true), 'linkOptions'=>['class'=>'text-danger','data-swType'=>'question','data'=>['confirm'=>'You are about to revoke your old keys and generate a new pair!','method'=>'POST']]];
 $profile_actions['badge']=['encode'=>false, 'label'=>"<i class='fas fa-id-badge'></i>&nbsp; Your badge URL", 'url'=>Url::to(['profile/badge','id'=>$profile->id],true), 'linkOptions'=>['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!']];
 $profile_actions['edit']= ['encode'=>false, 'label'=>"<i class='fas fa-user-edit'></i>&nbsp; Edit your profile settings", 'url'=>['profile/settings'], 'linkOptions'=>['alt'=>'Edit profile and account settings']];
 $profile_actions['profileurl']=['encode'=>false, 'label'=>'<i class="fas fa-id-card"></i>&nbsp; Your profile URL','url'=>Url::to(['profile/index', 'id'=>$profile->id], 'https'),'linkOptions'=>['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!']];
 $profile_actions['inviteurl']=['encode'=>false, 'label'=>'<i class="fas fa-link"></i>&nbsp; Your invite URL','url'=>Url::to(['profile/invite', 'id'=>$profile->id],true),'linkOptions'=>['class'=>'copy-to-clipboard','swal-data'=>'Copied to clipboard!']];
+
+if(\Yii::$app->user->identity->sSL && (time()-strtotime(\Yii::$app->user->identity->sSL->ts))>=300)
+  $profile_actions['revoke']=['encode'=>false, 'label'=>"<i class='fas fa-id-card'></i>&nbsp; Regenerate VPN Keys (revoke)", 'url'=>Url::to(['profile/revoke'],true), 'linkOptions'=>['class'=>'text-danger','data-swType'=>'question','data'=>['confirm'=>'You are about to revoke your old keys and generate a new pair!','method'=>'POST']]];
+
+if(Yii::$app->user->identity->onVPN && Yii::$app->user->identity->disconnectQueue===null)
+  $profile_actions['disconnect']=['encode'=>false, 'label'=>"<i class='fas fa-shield-virus'></i>&nbsp; Disconnect your VPN", 'url'=>Url::to(['profile/disconnect'],true), 'linkOptions'=>['class'=>'text-danger','data-swType'=>'question','data'=>['confirm'=>'You are about to disconnect your current VPN connection! You will receive another notification once the process is completed!','method'=>'POST']]];
+
+$profile_actions['delete']=['encode'=>false, 'label'=>"<i class='fas fa-user-slash'></i>&nbsp; Delete your account", 'url'=>Url::to(['profile/delete'],true), 'linkOptions'=>['class'=>'text-danger','data-swType'=>'error','data'=>['confirm'=>'You are about to delete your account! This is irreversible and will cause you loss of all your progress.','method'=>'POST']]];
 
 
 if(array_key_exists('subscription',Yii::$app->modules)!==false)

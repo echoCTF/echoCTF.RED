@@ -235,6 +235,14 @@ class PlayerAR extends ActiveRecord
   /**
    * @return \yii\db\ActiveQuery
    */
+  public function getDisconnectQueue()
+  {
+      return $this->hasOne(PlayerDisconnectQueue::class, ['player_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
   public function getInstance()
   {
       return $this->hasOne(TargetInstance::class, ['player_id' => 'id']);
