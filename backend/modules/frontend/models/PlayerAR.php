@@ -10,6 +10,7 @@ use app\modules\activity\models\PlayerTreasure;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Report;
 use app\modules\activity\models\Stream;
+use app\modules\activity\models\ArchivedStream;
 use app\modules\gameplay\models\Hint;
 use app\modules\gameplay\models\Finding;
 use app\modules\gameplay\models\Treasure;
@@ -326,6 +327,13 @@ class PlayerAR extends \yii\db\ActiveRecord
     public function getStreams()
     {
         return $this->hasMany(Stream::class, ['player_id' => 'id'])->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArchivedStreams()
+    {
+        return $this->hasMany(ArchivedStream::class, ['player_id' => 'id'])->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]);
     }
 
     /**
