@@ -19,14 +19,14 @@ $class = 'text-bold';
     <h2><?= \Yii::t('app', 'Details for team') ?> [<code><?= Html::encode($team->name) ?></code>]</h2>
     <?php if ($team->getTeamPlayers()->count() < Yii::$app->sys->members_per_team): ?>
       <p>
-        <?php if ($team->invite && !$team->inviteonly): ?>
+        <?php if ($team->owner_id === Yii::$app->user->id || ($team->invite && !$team->inviteonly)): ?>
           <?php if ($team->owner_id === Yii::$app->user->id) $class .= ' copy-to-clipboard'; ?>
           <?= \Yii::t('app', 'Allow other players to join the team easily by providing them with this link:') ?>
           <code><?= Html::a(Url::to(['/team/default/invite', 'token' => $team->invite->token], 'https'), Url::to(['/team/default/invite', 'token' => $team->invite->token], 'https'), ['class' => $class, 'swal-data' => 'Copied to clipboard!']); ?></code>
         <?php else: ?>
           <?= Html::encode($team->recruitment) ?>
         <?php endif; ?>
-        <?php if (\Yii::$app->user->identity->isAdmin || ($team->owner_id === Yii::$app->user->id /*&& \Yii::$app->cache->memcache->get('team_renewed:' . $team->id) === false*/)): ?>
+        <?php if (($team->owner_id === Yii::$app->user->id && \Yii::$app->cache->memcache->get('team_renewed:' . $team->id) === false)): ?>
           <?= Html::a('<i class="fas fa-sync-alt text-info" style="font-size: 1.2em;"></i>', Url::to(['renew', 'token' => $team->token]), ['data-method' => 'POST', 'title' => 'Regenerate invite URL', 'rel' => "tooltip",]) ?>
         <?php endif; ?>
       </p>
@@ -106,7 +106,7 @@ $class = 'text-bold';
                   'template' => '{approve} {reject}',
                   'visibleButtons' => [
                     'approve' => function ($model) {
-                      if ($model->approved === 0 && Yii::$app->user->identity->teamLeader !== null)
+                      if ($model->approved === 0 && Yii::$app->user->identity->teamLeader !== null && Yii::$app->user->identity->teamLeader->id === $model->team_id)
                         return true;
                       return false;
                     },
