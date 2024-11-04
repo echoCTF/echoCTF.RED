@@ -79,6 +79,10 @@
 * `api_bearer_enable` Enable Bearer authorizations API operations
 * `api_claim_timeout` set the rate limit for the api claim. One request per `api_claim_timeout`+1 seconds
 * `api_target_instances_timeout` set the rate limit for the target instances endpoint. One request per `api_target_instances_timeout`+1 seconds
+* `api_target_spin_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spin_timeout`+1 seconds
+* `api_target_spawn_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spawn_timeout`+1 seconds
+* `api_target_spawn_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spawn_timeout`+1 seconds
+
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
 * `mail_fromName` The name appeared on the email send for registration and password resets
