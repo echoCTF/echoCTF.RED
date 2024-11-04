@@ -61,10 +61,6 @@ class PasswordResetRequestForm extends Model
         if(!Player::isPasswordResetTokenValid($player->password_reset_token))
         {
             $player->generatePasswordResetToken();
-            if(!$player->save())
-            {
-                return false;
-            }
         }
         $password_reset_ip++;
         $password_reset_email++;
