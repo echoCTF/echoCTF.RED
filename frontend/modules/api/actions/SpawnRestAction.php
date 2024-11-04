@@ -23,6 +23,12 @@ class SpawnRestAction extends \yii\rest\ViewAction
     {
       \Yii::$app->response->statusCode = 201;
       $target=$this->findTarget($id);
+      if (\Yii::$app->cache->memcache->get("api_target_spawn:" . \Yii::$app->user->id) !== false) {
+        \Yii::$app->response->statusCode = 429;
+        return ["message"=>\Yii::t('app',"Rate-limited, wait a few seconds and try again."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
+      }
+      \Yii::$app->cache->memcache->set("api_target_spawn:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_target_spawn_timeout) + 1);
+
       if($this->actionAllowedFor($target->id))
       {
         \Yii::$app->response->statusCode = 403;
@@ -49,13 +55,15 @@ class SpawnRestAction extends \yii\rest\ViewAction
           \Yii::$app->response->statusCode = 201;
           $ti->reboot=2;
           $ti->save();
+          \Yii::$app->response->data=["message"=>\Yii::t('app',"Scheduled existing instance to shutdown"),"code"=>0,"status"=>\Yii::$app->response->statusCode];
         }
         else
         {
           \Yii::$app->response->statusCode = 200;
+          \Yii::$app->response->data=["message"=>\Yii::t('app',"Instance already exists for this target."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
         }
 
-        return [];
+        return \Yii::$app->response->data;
       }
 
       $ti=new TargetInstance;
@@ -68,12 +76,14 @@ class SpawnRestAction extends \yii\rest\ViewAction
         \Yii::$app->response->statusCode = 422;
         throw new UserException(\Yii::t('app','Failed to spawn new target instance for you.'));
       }
+      \Yii::$app->response->data=["message"=>\Yii::t('app',"Scheduled spawn of private target instance."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
     }
     catch(\Exception $e)
     {
+      \Yii::$app->response->data=["message"=>$e->getMessage(),"code"=>0,"status"=>\Yii::$app->response->statusCode];
     }
 
-    return [];
+    //return [];
   }
 
   protected function actionAllowedFor($id)
