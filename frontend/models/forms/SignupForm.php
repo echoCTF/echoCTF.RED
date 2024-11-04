@@ -87,11 +87,11 @@ class SignupForm extends Model
         if(\Yii::$app->sys->require_activation===true)
         {
           $player->active=0;
-          $player->generateEmailVerificationToken();
           if($player->saveNewPlayer()===false)
           {
             throw new \Exception(\Yii::t('app',"Error Processing Request"), 1);
           }
+          $player->generateEmailVerificationToken();
         }
         else
         {
