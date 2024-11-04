@@ -243,6 +243,14 @@ class PlayerAR extends ActiveRecord
   /**
    * @return \yii\db\ActiveQuery
    */
+  public function getApiToken()
+  {
+      return $this->hasOne(PlayerToken::class, ['player_id' => 'id'])->andWhere(['type'=>'API']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
   public function getInstance()
   {
       return $this->hasOne(TargetInstance::class, ['player_id' => 'id']);
