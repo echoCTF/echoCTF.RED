@@ -76,6 +76,9 @@
 * `event_end_notification_body`: The body that will be used to send a notification to all players when the event ends
 * `plus_writeups`: Number to add to the headshots to allow for writeup activations (eg. a value of `2` means that the player can have `player_headshots+2` writeups active at most). A value of `0` means that the player can have only as many writeups active as its own number of headshots.
 
+* `mail_verification_token_validity`: How long will the mail verification tokens be active for. Can take intervals supported by php and `INTERVAL`, eg. 10 day, meaning 10 days from now
+* `password_reset_token_validity`: How long will the password reset tokens be active for. Can take intervals supported by php and `INTERVAL`, eg. 10 day, meaning 10 days from now
+
 * `api_bearer_enable` Enable Bearer authorizations API operations
 * `api_claim_timeout` set the rate limit for the api claim. One request per `api_claim_timeout`+1 seconds
 * `api_target_instances_timeout` set the rate limit for the target instances endpoint. One request per `api_target_instances_timeout`+1 seconds
