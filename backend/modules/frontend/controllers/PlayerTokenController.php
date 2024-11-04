@@ -1,7 +1,7 @@
 <?php
 
 namespace app\modules\frontend\controllers;
-
+use Yii;
 use app\modules\frontend\models\PlayerToken;
 use app\modules\frontend\models\PlayerTokenSearch;
 use app\components\BaseController;
