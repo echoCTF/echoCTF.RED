@@ -51,7 +51,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
  * @property Headshot[] $headshots
- * @property Ondemand[] $ondemand
+ * @property Ondemand $ondemand
  * @property Writeup[] $writeups
  */
 class TargetAR extends \app\models\ActiveRecordReadOnly
@@ -103,6 +103,8 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
             'average_rating' => AttributeTypecastBehavior::TYPE_INTEGER,
             'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
             'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'rootable' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'healthcheck' => AttributeTypecastBehavior::TYPE_BOOLEAN,
             'writeup_allowed'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'timer'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'player_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,

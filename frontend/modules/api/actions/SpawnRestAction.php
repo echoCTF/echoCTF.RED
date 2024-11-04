@@ -1,5 +1,5 @@
 <?php
-namespace app\modules\target\actions;
+namespace app\modules\api\actions;
 
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -17,41 +17,53 @@ class SpawnRestAction extends \yii\rest\ViewAction
   {
 
     \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
-    $goback=Url::previous();
-    if($goback==='/')
-      $goback=['/target/default/view','id'=>$id];
+    \Yii::$app->response->statusCode = 200;
+
     try
     {
+      \Yii::$app->response->statusCode = 201;
       $target=$this->findTarget($id);
+      if (\Yii::$app->cache->memcache->get("api_target_spawn:" . \Yii::$app->user->id) !== false) {
+        \Yii::$app->response->statusCode = 429;
+        return ["message"=>\Yii::t('app',"Rate-limited, wait a few seconds and try again."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
+      }
+      \Yii::$app->cache->memcache->set("api_target_spawn:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_target_spawn_timeout) + 1);
+
       if($this->actionAllowedFor($target->id))
       {
+        \Yii::$app->response->statusCode = 403;
         throw new UserException(\Yii::t('app','Target not allowed to spawn private instances!'));
       }
       if(!$this->actionAllowedBy())
       {
-        throw new UserException(\Yii::t('app','You are not allowed to spawn private instances!'));
+        \Yii::$app->response->statusCode = 403;
+        throw new UserException(\Yii::t('app','Player not allowed to spawn private instances!'));
       }
 
       if($target->status!=='online')
       {
+        \Yii::$app->response->statusCode = 422;
         throw new UserException(\Yii::t('app','Target did not start, target is not online yet!'));
       }
+
       $ti=TargetInstance::findOne(Yii::$app->user->id);
       // Check if user has already a started instance
       if($ti!==null)
       {
         if($ti->target_id!=$id)
         {
-          Yii::$app->session->setFlash('warning', sprintf(\Yii::t('app','Scheduling shutdown for old [%s] instance. You will receive a notification when the instance is shut.'), $ti->target->name));
+          \Yii::$app->response->statusCode = 201;
           $ti->reboot=2;
           $ti->save();
+          \Yii::$app->response->data=["message"=>\Yii::t('app',"Scheduled existing instance to shutdown"),"code"=>0,"status"=>\Yii::$app->response->statusCode];
         }
         else
         {
-          Yii::$app->session->setFlash('info', sprintf(\Yii::t('app','You already have an instance of [%s] running.'), $ti->target->name));
+          \Yii::$app->response->statusCode = 200;
+          \Yii::$app->response->data=["message"=>\Yii::t('app',"Instance already exists for this target."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
         }
 
-        return Yii::$app->controller->redirect($goback);
+        return \Yii::$app->response->data;
       }
 
       $ti=new TargetInstance;
@@ -59,18 +71,19 @@ class SpawnRestAction extends \yii\rest\ViewAction
       $ti->target_id=$id;
       // pick the least used server currently
       $ti->server_id=intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id) limit 1')->queryScalar());
-      if($ti->save()!==false)
-        Yii::$app->session->setFlash('success', sprintf(\Yii::t('app','Spawning new instance for [%s]. You will receive a notification when the instance is up.'), $ti->target->name));
-      else
+      if(!$ti->save())
+      {
+        \Yii::$app->response->statusCode = 422;
         throw new UserException(\Yii::t('app','Failed to spawn new target instance for you.'));
-
+      }
+      \Yii::$app->response->data=["message"=>\Yii::t('app',"Scheduled spawn of private target instance."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
     }
     catch(\Exception $e)
     {
-      Yii::$app->session->setFlash('error', $e->getMessage());
+      \Yii::$app->response->data=["message"=>$e->getMessage(),"code"=>0,"status"=>\Yii::$app->response->statusCode];
     }
 
-    return Yii::$app->controller->redirect($goback);
+    //return [];
   }
 
   protected function actionAllowedFor($id)

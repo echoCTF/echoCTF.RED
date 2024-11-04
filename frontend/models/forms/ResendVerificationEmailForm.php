@@ -21,9 +21,9 @@ class ResendVerificationEmailForm extends Model
      */
     public function rules()
     {
-        $filter=['status'=>Player::STATUS_INACTIVE];
+        $filter=['status'=>[Player::STATUS_INACTIVE,Player::STATUS_UNVERIFIED]];
         if(\Yii::$app->sys->player_require_approval)
-          $filter=['status'=>Player::STATUS_INACTIVE,'approval'=>[1,2]];
+          $filter=['status'=>[Player::STATUS_INACTIVE,Player::STATUS_UNVERIFIED],'approval'=>[1,2]];
         return [
             ['email', 'trim'],
             ['email', 'required'],
@@ -53,9 +53,14 @@ class ResendVerificationEmailForm extends Model
           return false;
         }
 
-        if(($player=Player::findOne(['email' => $this->email,'status' => Player::STATUS_INACTIVE]))===null)
+        if(($player=Player::findOne(['email' => $this->email,'status' => [Player::STATUS_INACTIVE,Player::STATUS_UNVERIFIED]]))===null)
         {
             return false;
+        }
+
+        if($player->verification_token===null)
+        {
+          $player->generateEmailVerificationToken();
         }
         $verification_resend_ip++;
         $verification_resend_email++;

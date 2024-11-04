@@ -17,7 +17,7 @@ COPY contrib/findingsd.sql /docker-entrypoint-initdb.d/05.sql
 COPY contrib/entrypoint-mariadb.sh /usr/local/bin/docker-entrypoint.sh
 WORKDIR /
 RUN set -ex \
-  && echo "deb http://ftp.cc.uoc.gr/mirrors/mariadb/mariadb-11.4.3/repo/ubuntu noble main main/debug" >>/etc/apt/sources.list.d/mariadb.list \
+#  && echo "deb http://ftp.cc.uoc.gr/mirrors/mariadb/mariadb-11.4.3/repo/ubuntu noble main main/debug" >>/etc/apt/sources.list.d/mariadb.list \
   && apt-get update \
   && apt-get install -y build-essential gcc autoconf automake git zip unzip mcrypt memcached libmariadb-dev tini libmemcached-dev libtool \
   && echo "[mysqld]\nevent_scheduler=on" >/etc/mysql/mariadb.conf.d/50-mysqld.cnf \

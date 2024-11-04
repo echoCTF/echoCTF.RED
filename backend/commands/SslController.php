@@ -7,7 +7,6 @@ use yii\console\ExitCode;
 use app\modules\frontend\models\Player;
 use app\modules\frontend\models\Crl;
 use app\modules\frontend\models\PlayerSsl;
-use app\modules\frontend\models\PlayerIp;
 use app\modules\gameplay\models\Target;
 use app\modules\settings\models\Sysconfig;
 use yii\console\Exception as ConsoleException;

@@ -81,8 +81,10 @@ class Player extends PlayerAR implements IdentityInterface
    */
   public static function findIdentityByAccessToken($token, $type = null)
   {
-    throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+    if (($model = PlayerToken::findOne(['token' => $token, 'type' => 'API'])) !== null)
+      return static::findOne($model->player_id);
   }
+
 
   /**
    * Finds player by username
@@ -114,10 +116,8 @@ class Player extends PlayerAR implements IdentityInterface
    */
   public static function findByVerificationToken($token)
   {
-    return static::findOne([
-      'verification_token' => $token,
-      'status' => [self::STATUS_INACTIVE, self::STATUS_UNVERIFIED]
-    ]);
+    if (($model = PlayerToken::findOne(['token' => $token, 'type' => 'email_verification'])) !== null)
+      return static::findOne(['id' => $model->player_id, 'status' => [self::STATUS_INACTIVE, self::STATUS_UNVERIFIED]]);
   }
 
   /**
@@ -126,6 +126,20 @@ class Player extends PlayerAR implements IdentityInterface
   public function getId()
   {
     return $this->id;
+  }
+
+  public function getVerification_token()
+  {
+    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'email_verification'])) !== null)
+      return $model->token;
+    return null;
+  }
+
+  public function getPassword_reset_token()
+  {
+    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'password_reset'])) !== null)
+      return $model->token;
+    return null;
   }
 
   /**
@@ -179,12 +193,28 @@ class Player extends PlayerAR implements IdentityInterface
    */
   public function generatePasswordResetToken()
   {
-    $this->password_reset_token = str_replace('_', '-', Yii::$app->security->generateRandomString() . '-' . time());
+    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'password_reset'])) === null) {
+      $model = new PlayerToken();
+      $validity=(\Yii::$app->sys->password_reset_token_validity===false) ? '10 day':\Yii::$app->sys->password_reset_token_validity;
+      $model->player_id = $this->id;
+      $model->type = 'password_reset';
+      $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + '.$validity), 'php:Y-m-d H:i:s');
+      $model->token = str_replace('_', '-', Yii::$app->security->generateRandomString(30));
+      $model->save();
+    }
   }
 
   public function generateEmailVerificationToken()
   {
-    $this->verification_token = str_replace('_', '-', Yii::$app->security->generateRandomString() . '-' . time());
+    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'email_verification'])) === null) {
+      $model = new PlayerToken();
+      $validity=(\Yii::$app->sys->mail_verification_token_validity===false) ? '10 day':\Yii::$app->sys->mail_verification_token_validity;
+      $model->player_id = $this->id;
+      $model->type = 'email_verification';
+      $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + '.$validity), 'php:Y-m-d H:i:s');
+      $model->token = str_replace('_', '-', Yii::$app->security->generateRandomString(30));
+      $model->save();
+    }
   }
 
   /**
@@ -192,7 +222,7 @@ class Player extends PlayerAR implements IdentityInterface
    */
   public function removePasswordResetToken()
   {
-    $this->password_reset_token = null;
+    PlayerToken::deleteAll(['player_id' => $this->id, 'type' => 'password_reset']);
   }
 
   /**
@@ -271,12 +301,11 @@ class Player extends PlayerAR implements IdentityInterface
    */
   public static function isPasswordResetTokenValid($token, $expire = 86400): bool
   {
-    if (empty($token) || trim($token) === "") {
+    if (trim($token) === '')
       return false;
-    }
-    return true;
-    $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-    return $timestamp + $expire >= time();
+    if (PlayerToken::findOne(['token' => $token, 'type' => 'password_reset']) !== null)
+      return true;
+    return false;
   }
   /**
    * Finds user by password reset token
@@ -289,11 +318,8 @@ class Player extends PlayerAR implements IdentityInterface
     if (!static::isPasswordResetTokenValid($token)) {
       return null;
     }
-
-    return static::findOne([
-      'password_reset_token' => $token,
-      'status' => self::STATUS_ACTIVE,
-    ]);
+    if (($model = PlayerToken::findOne(['token' => $token, 'type' => 'password_reset'])) !== null)
+      return static::findOne(['id' => $model->player_id, 'status' => self::STATUS_ACTIVE]);
   }
 
   public function saveWithSsl($validation = true)
@@ -356,30 +382,30 @@ class Player extends PlayerAR implements IdentityInterface
 
   public function getAcademicWord()
   {
-    return \Yii::$app->sys->{"academic_".$this->academic."long"};
+    return \Yii::$app->sys->{"academic_" . $this->academic . "long"};
   }
 
   public function getAcademicShort()
   {
-    return \Yii::$app->sys->{"academic_".$this->academic."short"};
+    return \Yii::$app->sys->{"academic_" . $this->academic . "short"};
   }
 
   public function getAcademicIcon()
   {
-    return \Yii::$app->sys->{"academic_".$this->academic."icon"};
+    return \Yii::$app->sys->{"academic_" . $this->academic . "icon"};
   }
 
   /**
    * Send a notification to current user
    */
-  public function notify($type="info",$title,$body)
+  public function notify($type = "info", $title, $body)
   {
-    $n=new \app\models\Notification;
-    $n->player_id=$this->id;
-    $n->archived=0;
-    $n->category=$type;
-    $n->title=$title;
-    $n->body=$body;
+    $n = new \app\models\Notification;
+    $n->player_id = $this->id;
+    $n->archived = 0;
+    $n->category = $type;
+    $n->title = $title;
+    $n->body = $body;
     return $n->save();
   }
 

@@ -18,7 +18,6 @@ use app\modules\frontend\models\Player;
 use app\modules\frontend\models\Profile;
 use app\modules\frontend\models\Team;
 use app\modules\frontend\models\TeamPlayer;
-use app\modules\frontend\models\PlayerIp;
 use app\modules\frontend\models\PlayerSsl;
 use yii\helpers\ArrayHelper;
 use yii\console\widgets\Table;
@@ -212,15 +211,14 @@ class PlayerController extends Controller
 
       $player->active = intval($active);
       $player->status = 10;
-      if (!$player->active) {
-        $player->verification_token = str_replace('_', '-', Yii::$app->security->generateRandomString() . '-' . (time()));
-        $player->status = 9;
-      }
 
       $player->auth_key = Yii::$app->security->generateRandomString();
 
       if (!$player->saveWithSsl()) {
-        print_r($player->getErrors());
+        if (!$player->active) {
+          $player->generateEmailVerificationToken();
+          $player->status = 9;
+        }
         throw new ConsoleException('Failed to save player:' . $player->username, "\n");
       }
 

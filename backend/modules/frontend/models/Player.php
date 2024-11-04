@@ -163,5 +163,46 @@ class Player extends PlayerAR
   {
     return Yii::$app->sys->{"academic_".$this->academic."short"};
   }
+  public function getVerification_token()
+  {
+    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'email_verification'])) !== null)
+      return $model->token;
+    return null;
+  }
+
+  public function getPassword_reset_token()
+  {
+    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'password_reset'])) !== null)
+      return $model->token;
+    return null;
+  }
+  /**
+   * Generates new password reset token
+   */
+  public function generatePasswordResetToken()
+  {
+    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'password_reset'])) === null) {
+      $model = new PlayerToken();
+      $validity=(\Yii::$app->sys->password_reset_token_validity===false) ? '10 day':\Yii::$app->sys->password_reset_token_validity;
+      $model->player_id = $this->id;
+      $model->type = 'password_reset';
+      $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + '.$validity), 'php:Y-m-d H:i:s');
+      $model->token = str_replace('_', '-', Yii::$app->security->generateRandomString(30));
+      $model->save();
+    }
+  }
+
+  public function generateEmailVerificationToken()
+  {
+    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'email_verification'])) === null) {
+      $model = new PlayerToken();
+      $validity=(\Yii::$app->sys->mail_verification_token_validity===false) ? '10 day':\Yii::$app->sys->mail_verification_token_validity;
+      $model->player_id = $this->id;
+      $model->type = 'email_verification';
+      $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + '.$validity), 'php:Y-m-d H:i:s');
+      $model->token = str_replace('_', '-', Yii::$app->security->generateRandomString(30));
+      $model->save();
+    }
+  }
 
 }

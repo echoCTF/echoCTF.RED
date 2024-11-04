@@ -10,6 +10,7 @@ use app\modules\activity\models\PlayerTreasure;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Report;
 use app\modules\activity\models\Stream;
+use app\modules\activity\models\ArchivedStream;
 use app\modules\gameplay\models\Hint;
 use app\modules\gameplay\models\Finding;
 use app\modules\gameplay\models\Treasure;
@@ -41,8 +42,6 @@ use app\modules\activity\models\PlayerDisconnectQueue;
  * @property Finding[] $findings
  * @property PlayerHint[] $playerHints
  * @property Hint[] $hints
- * @property PlayerIp $playerIp
- * @property PlayerIp[] $playerIps
  * @property PlayerMac[] $playerMacs
  * @property PlayerQuestion[] $playerQuestions
  * @property PlayerTreasure[] $playerTreasures
@@ -112,7 +111,6 @@ class PlayerAR extends \yii\db\ActiveRecord
             [['type'], 'default', 'value' => 'offense'],
             [['status'], 'default', 'value' => self::STATUS_ACTIVE],
             [['activkey'], 'default', 'value' => '', 'on' => 'create'],
-            [['verification_token'], 'default', 'value' => str_replace('_','-',Yii::$app->security->generateRandomString().'-'.time()), 'on' => 'create'],
             [['username', 'email', 'new_password', 'activkey'], 'string', 'max' => 255],
             [['fullname'], 'string', 'max' => 128],
             [['username'], 'unique'],
@@ -129,7 +127,7 @@ class PlayerAR extends \yii\db\ActiveRecord
               if(intval($count)!==0)
                   $this->addError($attribute, 'This email is banned.');
             },'on'=>['validator','extendedValidator']],
-            [['activkey','verification_token'], function($attribute, $params){
+            [['activkey'], function($attribute, $params){
               if($this->{$attribute}!==null && $this->active===1 && $this->status=10)
                 $this->addError($attribute, '{attribute} must be empty when player active.');
             },'on'=>['validator','extendedValidator']],
@@ -221,24 +219,9 @@ class PlayerAR extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPlayerIp()
-    {
-        return $this->hasOne(PlayerIp::class, ['player_id' => 'id']);
-    }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPlayerLast()
     {
         return $this->hasOne(\app\modules\activity\models\PlayerLast::class, ['id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPlayerIps()
-    {
-        return $this->hasMany(PlayerIp::class, ['player_id' => 'id']);
     }
 
     /**
@@ -326,6 +309,13 @@ class PlayerAR extends \yii\db\ActiveRecord
     public function getStreams()
     {
         return $this->hasMany(Stream::class, ['player_id' => 'id'])->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]);
+    }
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArchivedStreams()
+    {
+        return $this->hasMany(ArchivedStream::class, ['player_id' => 'id'])->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]);
     }
 
     /**

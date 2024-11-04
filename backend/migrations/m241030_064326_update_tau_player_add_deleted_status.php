@@ -29,6 +29,8 @@ class m241030_064326_update_tau_player_add_deleted_status extends Migration
   ELSEIF NEW.status=10 AND OLD.status=0 THEN
     INSERT INTO stream SELECT * FROM archived_stream WHERE player_id=NEW.id;
     DELETE FROM archived_stream WHERE player_id=NEW.id;
+  ELSEIF NEW.status=10 AND (OLD.status=9 OR OLD.status=8) THEN
+    DELETE FROM player_token WHERE player_id=NEW.id AND `type`='email_verification';
   END IF;
   END";
 
