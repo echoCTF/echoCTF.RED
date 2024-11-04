@@ -27,6 +27,10 @@ class SpawnRestAction extends \yii\rest\ViewAction
       {
         throw new UserException(\Yii::t('app','Target not allowed to spawn private instances!'));
       }
+      if(!$this->actionAllowedBy())
+      {
+        throw new UserException(\Yii::t('app','You are not allowed to spawn private instances!'));
+      }
 
       if($target->status!=='online')
       {
@@ -74,6 +78,11 @@ class SpawnRestAction extends \yii\rest\ViewAction
       $model=$this->findTarget($id);
       $action=sprintf('/target/%d/spawn',$model->id);
       return $model->instance_allowed && Yii::$app->DisabledRoute->disabled($action);
+  }
+
+  protected function actionAllowedBy()
+  {
+    return (Yii::$app->user->identity->isVip===true || Yii::$app->sys->all_players_vip===true);
   }
 
   private function findTarget($id)
