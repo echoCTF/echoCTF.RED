@@ -18,7 +18,6 @@ use app\modules\frontend\models\Player;
 use app\modules\frontend\models\Profile;
 use app\modules\frontend\models\Team;
 use app\modules\frontend\models\TeamPlayer;
-use app\modules\frontend\models\PlayerIp;
 use app\modules\frontend\models\PlayerSsl;
 use yii\helpers\ArrayHelper;
 use yii\console\widgets\Table;
