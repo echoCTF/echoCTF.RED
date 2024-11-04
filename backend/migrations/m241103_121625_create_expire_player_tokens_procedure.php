@@ -12,11 +12,14 @@ class m241103_121625_create_expire_player_tokens_procedure extends Migration
   BEGIN
   DECLARE tnow TIMESTAMP;
   SET tnow=NOW();
-  IF (SELECT COUNT(*) FROM player_token WHERE expires_at<tnow)>0 THEN
+  IF (SELECT COUNT(*) FROM player_token WHERE expires_at<tnow and `type`='API')>0 THEN
     START TRANSACTION;
-    INSERT INTO notification (player_id,category,title,body,archived,created_at,updated_at) SELECT player_id,'info','Token expiration',CONCAT(type,' Token [',description,'] expired at ',expires_at),0,tnow,tnow FROM player_token WHERE expires_at<tnow;
-    DELETE FROM player_token WHERE expires_at<tnow;
+    INSERT INTO notification (player_id,category,title,body,archived,created_at,updated_at) SELECT player_id,'info','Token expiration',CONCAT(type,' Token [',description,'] expired at ',expires_at),0,tnow,tnow FROM player_token WHERE expires_at<tnow and `type`='API';
+    DELETE FROM player_token WHERE expires_at<tnow and `type`='API';
     COMMIT;
+  END IF;
+  IF (SELECT COUNT(*) FROM player_token WHERE expires_at<tnow)>0 THEN
+    DELETE FROM player_token WHERE expires_at<tnow;
   END IF;
   END";
 
