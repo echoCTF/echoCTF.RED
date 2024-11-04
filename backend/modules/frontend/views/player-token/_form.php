@@ -25,7 +25,9 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
     <div class="row">
     <div class="col"><?= $form->field($model, 'type')->dropDownList($model->types)->hint('The type of this token') ?></div>
     <div class="col"><?= $form->field($model, 'token')->textInput(['maxlength' => true]) ?></div>
+    <?php if(!$model->isNewRecord):?>
     <div class="col"><?= $form->field($model, 'expires_at')->textInput()->hint('Token expiration date (default: in 60 days)') ?></div>
+    <?php endif;?>
     </div>
 
 
