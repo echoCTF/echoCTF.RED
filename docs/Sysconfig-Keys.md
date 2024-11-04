@@ -76,6 +76,9 @@
 * `event_end_notification_body`: The body that will be used to send a notification to all players when the event ends
 * `plus_writeups`: Number to add to the headshots to allow for writeup activations (eg. a value of `2` means that the player can have `player_headshots+2` writeups active at most). A value of `0` means that the player can have only as many writeups active as its own number of headshots.
 
+* `api_bearer_enable` Enable Bearer authorizations API operations
+* `api_claim_timeout` set the rate limit for the api claim. One request per `api_claim_timeout`+1 seconds
+* `api_target_instances_timeout` set the rate limit for the target instances endpoint. One request per `api_target_instances_timeout`+1 seconds
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
 * `mail_fromName` The name appeared on the email send for registration and password resets
