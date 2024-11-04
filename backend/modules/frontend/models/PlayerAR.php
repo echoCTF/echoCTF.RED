@@ -42,8 +42,6 @@ use app\modules\activity\models\PlayerDisconnectQueue;
  * @property Finding[] $findings
  * @property PlayerHint[] $playerHints
  * @property Hint[] $hints
- * @property PlayerIp $playerIp
- * @property PlayerIp[] $playerIps
  * @property PlayerMac[] $playerMacs
  * @property PlayerQuestion[] $playerQuestions
  * @property PlayerTreasure[] $playerTreasures
@@ -113,7 +111,6 @@ class PlayerAR extends \yii\db\ActiveRecord
             [['type'], 'default', 'value' => 'offense'],
             [['status'], 'default', 'value' => self::STATUS_ACTIVE],
             [['activkey'], 'default', 'value' => '', 'on' => 'create'],
-            [['verification_token'], 'default', 'value' => str_replace('_','-',Yii::$app->security->generateRandomString().'-'.time()), 'on' => 'create'],
             [['username', 'email', 'new_password', 'activkey'], 'string', 'max' => 255],
             [['fullname'], 'string', 'max' => 128],
             [['username'], 'unique'],
@@ -130,7 +127,7 @@ class PlayerAR extends \yii\db\ActiveRecord
               if(intval($count)!==0)
                   $this->addError($attribute, 'This email is banned.');
             },'on'=>['validator','extendedValidator']],
-            [['activkey','verification_token'], function($attribute, $params){
+            [['activkey'], function($attribute, $params){
               if($this->{$attribute}!==null && $this->active===1 && $this->status=10)
                 $this->addError($attribute, '{attribute} must be empty when player active.');
             },'on'=>['validator','extendedValidator']],
@@ -222,24 +219,9 @@ class PlayerAR extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getPlayerIp()
-    {
-        return $this->hasOne(PlayerIp::class, ['player_id' => 'id']);
-    }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getPlayerLast()
     {
         return $this->hasOne(\app\modules\activity\models\PlayerLast::class, ['id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPlayerIps()
-    {
-        return $this->hasMany(PlayerIp::class, ['player_id' => 'id']);
     }
 
     /**
