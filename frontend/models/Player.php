@@ -81,8 +81,10 @@ class Player extends PlayerAR implements IdentityInterface
    */
   public static function findIdentityByAccessToken($token, $type = null)
   {
-    throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+    if(($model=PlayerToken::findOne(['token' => $token,'type'=>'API']))!==null)
+      return static::findOne($model->player_id);
   }
+
 
   /**
    * Finds player by username
