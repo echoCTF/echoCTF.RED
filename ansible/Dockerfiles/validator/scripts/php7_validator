@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Validating php7..."
+
+
+echo "TEST1"|timeout 1 php7 /echoctf/script_to_validate.php7

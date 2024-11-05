@@ -1,0 +1,6 @@
+#!/bin/bash
+
+echo "Validating cpp..."
+g++ /echoctf/script_to_validate.cpp -o /echoctf/submission
+
+timeout 1 bash -c "echo \"TEST1\"|/echoctf/submission"

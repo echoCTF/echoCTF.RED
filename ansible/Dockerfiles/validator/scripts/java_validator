@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Validating java..."
+timeout 1 bash -c "echo \"TEST1\"|java /echoctf/script_to_validate.java"
