@@ -3,11 +3,11 @@
 namespace app\modules\speedprogramming\models;
 
 /**
- * This is the ActiveQuery class for [[SpeedSolution]].
+ * This is the ActiveQuery class for [[SpeedProblem]].
  *
- * @see SpeedSolution
+ * @see SpeedProblem
  */
-class SpeedSolutionQuery extends \yii\db\ActiveQuery
+class SpeedProblemQuery extends \yii\db\ActiveQuery
 {
     /*public function active()
     {
@@ -16,7 +16,7 @@ class SpeedSolutionQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return SpeedSolution[]|array
+     * @return SpeedProblem[]|array
      */
     public function all($db = null)
     {
@@ -25,7 +25,7 @@ class SpeedSolutionQuery extends \yii\db\ActiveQuery
 
     /**
      * {@inheritdoc}
-     * @return SpeedSolution|array|null
+     * @return SpeedProblem|array|null
      */
     public function one($db = null)
     {
