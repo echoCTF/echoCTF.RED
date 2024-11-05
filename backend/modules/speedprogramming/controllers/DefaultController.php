@@ -142,7 +142,7 @@ class DefaultController extends Controller
     $containerConfig->setAttachStdout(true);
     $containerConfig->setAttachStderr(true);
     $containerConfig->setCmd(['echo', 'I am running a command inside the validator']);
-    $targetVariables[] = sprintf("FETCH_URL=https://" . \Yii::$app->sys->offense_domain . "/uploads/player_%d-target_%d.%s", $model->player_id, $model->target_id);
+    $targetVariables[] = sprintf("FETCH_URL=https://" . \Yii::$app->sys->offense_domain . "/uploads/player_%d-target_%d.%s", $model->player_id, $model->problem_id);
     $targetVariables[] = sprintf("VALIDATE_LANG=%s", $model->language);
     $targetVariables[] = sprintf("VALIDATE_PLAYER=%s", $model->player_id);
     $targetVariables[] = sprintf("VALIDATE_PROBLEM=%s", $model->problem_id);
