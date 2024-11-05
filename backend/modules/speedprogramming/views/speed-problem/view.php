@@ -34,6 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'description:ntext',
             'challenge_image',
             'validator_image',
+            'server',
             'created_at',
             'updated_at',
         ],
