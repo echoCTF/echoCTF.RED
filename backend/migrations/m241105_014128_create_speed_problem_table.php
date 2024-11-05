@@ -16,6 +16,7 @@ class m241105_014128_create_speed_problem_table extends Migration
         'id' => $this->primaryKey(),
         'name' => $this->string(),
         'description' => $this->text(),
+        'server' => $this->string(),
         'challenge_image' => $this->string(),
         'validator_image' => $this->string(),
         'created_at' => $this->datetime(),
