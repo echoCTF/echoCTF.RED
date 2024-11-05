@@ -371,7 +371,7 @@ class Player extends PlayerAR implements IdentityInterface
     if (file_exists($avatarPNG))
       return;
 
-    $robohash = new \app\components\generators\AvatarGenerator($_pID, 'set1');
+    $robohash = new \app\components\generators\AvatarGenerator($_pID);
     $image = $robohash->generate_image();
     if ((gettype($image) === "object" && get_class($image) === "GdImage") || ((int) phpversion() === 7 && gettype($image) === 'resource')) {
       imagepng($image, $avatarPNG);
