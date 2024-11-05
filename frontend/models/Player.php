@@ -368,8 +368,9 @@ class Player extends PlayerAR implements IdentityInterface
       \Yii::error('The avatars folder or avatar file is not writeable. correct the permissions for the avatars to be generated.');
       return;
     }
-    //if (file_exists($avatarPNG))
-    //  return;
+
+    if (file_exists($avatarPNG))
+      return;
 
     $robohash = new \app\components\generators\AvatarGenerator($_pID);
     $image = $robohash->generate_image();
@@ -377,7 +378,10 @@ class Player extends PlayerAR implements IdentityInterface
       imagepng($image, $avatarPNG);
       imagedestroy($image);
       $this->profile->avatar = $_pID . '.png';
-      $this->profile->save(false);
+      if(!$this->profile->save(false))
+      {
+        \Yii::error('Failed to save profile avatar for '.$_pID);
+      }
     }
   }
 
