@@ -19,9 +19,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'player_id') ?>
 
-    <?= $form->field($model, 'team_id') ?>
-
-    <?= $form->field($model, 'target_id') ?>
+    <?= $form->field($model, 'problem_id') ?>
 
     <?= $form->field($model, 'language') ?>
 

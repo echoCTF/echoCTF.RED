@@ -116,9 +116,9 @@ class SpeedSolution extends \yii\db\ActiveRecord
         $stream=new Stream();
         $stream->player_id=$this->player_id;
         $stream->model='solution';
-        $stream->model_id=$this->target_id;
+        $stream->model_id=$this->problem_id;
         $stream->points=$this->points;
-        $stream->title='submission for <code>'.$this->target->name.'</code> got '.$this->status;
+        $stream->title='submission for <code>'.$this->problem->name.'</code> got '.$this->status;
         $stream->message=$stream->pubmessage=$stream->pubtitle=$stream->title;
         return $stream->save();
       }

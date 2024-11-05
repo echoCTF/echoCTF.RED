@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <!--<?= Html::a('Validate', ['validate', 'id' => $model->id], ['class' => 'btn btn-info']) ?>-->
-        <?= Html::a('Download', '/solutions/player_' . $model->player_id . '-target_'. $model->target_id. '.'.$model->language, ['class' => 'btn btn-warning']) ?>
+        <?= Html::a('Download', '/solutions/player_' . $model->player_id . '-target_'. $model->problem_id. '.'.$model->language, ['class' => 'btn btn-warning']) ?>
 
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?php if($model->status==='pending'):?>
@@ -45,12 +45,12 @@ $this->params['breadcrumbs'][] = $this->title;
           [
            'attribute'=>'player.username',
            'label'=>'Player',
-           'value'=>function($model){ return sprintf("(id: %d) %s %s",$model->player_id,$model->player->username,$model->team ? $model->team->name:''); }
+           'value'=>function($model){ return sprintf("(id: %d) %s",$model->player_id,$model->player->username); }
           ],
           [
             'attribute'=>'target.name',
             'label'=>'Challenge',
-            'value'=>function($model){ return sprintf("(id: %d / difficulty: %d) %s",$model->target_id,$model->target->difficulty,$model->target->name); }
+            'value'=>function($model){ return sprintf("(id: %d / difficulty: %d) %s",$model->problem_id,$model->problem->difficulty,$model->problem->name); }
           ],
           [
              'attribute' => 'language',
@@ -65,7 +65,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'format'=>'raw',
             'value'=>function($model){return '<pre>'.Html::encode(wordwrap($model->sourcecode,90)).'</pre>';}
           ],
-          'modcomments:ntext',
           'created_at',
           'updated_at',
         ],
