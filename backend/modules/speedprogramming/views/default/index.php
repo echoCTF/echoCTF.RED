@@ -27,12 +27,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'player_id',
-            'problem_id',
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'username','idkey'=>'profile.id','field'=>'player.username'],
             [
-             'attribute'=>'player.username',
-             'label'=>'Player'
+              'attribute'=>'problem',
+              'value'=>'problem.name',
             ],
+
             [
                'attribute' => 'language',
                'filter'    => SpeedSolution::getLanguages(),
