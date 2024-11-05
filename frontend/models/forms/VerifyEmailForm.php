@@ -52,12 +52,12 @@ class VerifyEmailForm extends Model
         $oldStatus=$this->_player->status;
         $player->status=Player::STATUS_ACTIVE;
         $player->active=1;
-        $player->genAvatar();
         if($player->saveWithSsl())
         {
           if($oldStatus===Player::STATUS_INACTIVE)
           {
             $player->trigger(Player::NEW_PLAYER);
+            $player->genAvatar();
             $player->profile->genBadge();
             $player->profile->last->signin_ip=ip2long(\Yii::$app->request->userIp);
             $player->profile->last->save();
