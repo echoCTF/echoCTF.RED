@@ -15,6 +15,7 @@ class m241105_111349_add_speed_programming_url_routes extends Migration
     $this->upsert('url_route', ['source' => 'speed', 'destination' => 'speedprogramming/default/index'], true);
     $this->upsert('url_route', ['source' => 'speed/<id:\d+>', 'destination' => 'speedprogramming/default/view'], true);
     $this->upsert('url_route', ['source' => 'speed/<id:\d+>/answer', 'destination' => 'speedprogramming/default/answer'], true);
+    $this->upsert('sysconfig', ['id' => 'module_speedprogramming_disabled', 'val' => 1], true);
   }
 
   /**
