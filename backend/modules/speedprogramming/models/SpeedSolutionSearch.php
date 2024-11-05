@@ -11,6 +11,8 @@ use app\modules\speedprogramming\models\SpeedSolution;
  */
 class SpeedSolutionSearch extends SpeedSolution
 {
+  public $username;
+  public $problem;
     /**
      * {@inheritdoc}
      */
@@ -18,7 +20,7 @@ class SpeedSolutionSearch extends SpeedSolution
     {
         return [
             [['id', 'player_id', 'points'], 'integer'],
-            [['language', 'sourcecode', 'status', 'created_at', 'updated_at','problem_id'], 'safe'],
+            [['username','language', 'sourcecode', 'status', 'created_at', 'updated_at','problem_id','problem'], 'safe'],
         ];
     }
 
@@ -40,7 +42,7 @@ class SpeedSolutionSearch extends SpeedSolution
      */
     public function search($params)
     {
-        $query = SpeedSolution::find();
+        $query = SpeedSolution::find()->joinWith(['player','problem']);
 
         // add conditions that should always apply here
 
@@ -67,8 +69,26 @@ class SpeedSolutionSearch extends SpeedSolution
         ]);
 
         $query->andFilterWhere(['like', 'language', $this->language])
-            ->andFilterWhere(['like', 'sourcecode', $this->sourcecode])
-            ->andFilterWhere(['like', 'status', $this->status]);
+        ->andFilterWhere(['like', 'sourcecode', $this->sourcecode])
+        ->andFilterWhere(['like', 'player.username', $this->username])
+        ->andFilterWhere(['like', 'speed_problem.name', $this->problem])
+        ->andFilterWhere(['like', 'status', $this->status]);
+
+        $dataProvider->setSort([
+          'attributes' => array_merge(
+              $dataProvider->getSort()->attributes,
+              [
+                  'username' => [
+                      'asc' => ['player.username' => SORT_ASC],
+                      'desc' => ['player.username' => SORT_DESC],
+                  ],
+                  'problem' => [
+                    'asc' => ['problem.name' => SORT_ASC],
+                    'desc' => ['problem.name' => SORT_DESC],
+                ],
+            ]
+          ),
+      ]);
 
         return $dataProvider;
     }
