@@ -6,7 +6,6 @@
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use app\models\Country;
-use app\models\Avatar;
 
 $this->_fluid="-fluid";
 ?>
