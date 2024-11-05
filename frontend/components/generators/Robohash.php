@@ -4,7 +4,7 @@
 // https://github.com/hush2/php-robohash.git
 
 // Extra sets and images from https://github.com/e1ven/Robohash.git
-namespace app\models;
+namespace app\components\generators;
 
 use yii\base\Widget;
 use yii\helpers\Html;
