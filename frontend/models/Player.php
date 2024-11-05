@@ -368,8 +368,8 @@ class Player extends PlayerAR implements IdentityInterface
       \Yii::error('The avatars folder or avatar file is not writeable. correct the permissions for the avatars to be generated.');
       return;
     }
-    if (file_exists($avatarPNG))
-      return;
+    //if (file_exists($avatarPNG))
+    //  return;
 
     $robohash = new \app\components\generators\AvatarGenerator($_pID);
     $image = $robohash->generate_image();
