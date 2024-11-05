@@ -22,7 +22,7 @@ class Stream extends StreamAR
   const MODEL_ICONS=[
     'headshot'=>'<i class="fas fa-skull" style="color: #FF1A00;font-size: 1.5em;" title="Target Headshot"></i>',
     'challenge'=>'<i class="fas fa-tasks" style="color: #FF1A00; font-size: 1.5em;" title="Challenge Solve"></i>',
-    'solution'=>'<i class="fas fa-tasks" style="color: #FF1AFF; font-size: 1.5em;" title="Speed Programming Solution"></i>',
+    'solution'=>'<i class="fas fa-code" style="color: #FF1AFF; font-size: 1.5em;" title="Speed Programming Solution"></i>',
     'treasure'=>'<i class="fas fa-flag text-danger" style="font-size: 1.5em;" title="Target Flag"></i>',
     'finding'=>'<i class="fas fa-fingerprint" style="color:#FF7400; font-size: 1.5em;" title="Target Service"></i>',
     'question'=>'<i class="fas fa-list-ul text-info" style="font-size: 1.5em;" title="Challenge Question"></i>',
