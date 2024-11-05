@@ -317,6 +317,7 @@ class SiteController extends \app\components\BaseController
    */
   public function actionVerifyEmail($token)
   {
+    $redir=['site/verify-email'];
     try {
       $model = new VerifyEmailForm($token);
     } catch (InvalidArgumentException $e) {
@@ -332,18 +333,19 @@ class SiteController extends \app\components\BaseController
     $transaction = Yii::$app->db->beginTransaction();
     try {
       if ($user = $model->verifyEmail()) {
+        $transaction->commit();
         if (Yii::$app->user->login($user)) {
-          $transaction->commit();
           Yii::$app->session->setFlash('success', \Yii::t('app', 'Your email has been confirmed!'));
-          return $this->redirect(['/profile/me']);
+          $redir=['/profile/me'];
         }
       }
     } catch (\Exception $e) {
       $transaction->rollBack();
+      Yii::$app->session->setFlash('error', \Yii::t('app', 'Sorry, we are unable to verify an account with the provided token.'));
+      $redir=['/'];
     }
 
-    Yii::$app->session->setFlash('error', \Yii::t('app', 'Sorry, we are unable to verify an account with the provided token.'));
-    return $this->redirect(['/']);
+    return $this->redirect($redir);
   }
 
   /**
