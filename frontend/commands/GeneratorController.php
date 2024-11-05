@@ -233,7 +233,7 @@ class GeneratorController extends Controller
         $dst_img = \Yii::getAlias('@app/web/images/avatars/' . $player->profile->id . '.png');
         if ($player->profile->avatar === 'default.png' || !$player->profile->avatar || !file_exists($dst_img)) {
           echo "Generating " . $player->username . " profile avatar image.\n";
-          $robohash = new \app\models\Robohash($player->profile->id, 'set1');
+          $robohash = new \app\components\generators\AvatarGenerator($player->profile->id);
           $image = $robohash->generate_image();
           if (get_resource_type($image) === 'gd') {
             imagepng($image, $dst_img);

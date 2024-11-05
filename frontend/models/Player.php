@@ -195,10 +195,10 @@ class Player extends PlayerAR implements IdentityInterface
   {
     if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'password_reset'])) === null) {
       $model = new PlayerToken();
-      $validity=(\Yii::$app->sys->password_reset_token_validity===false) ? '10 day':\Yii::$app->sys->password_reset_token_validity;
+      $validity = (\Yii::$app->sys->password_reset_token_validity === false) ? '10 day' : \Yii::$app->sys->password_reset_token_validity;
       $model->player_id = $this->id;
       $model->type = 'password_reset';
-      $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + '.$validity), 'php:Y-m-d H:i:s');
+      $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + ' . $validity), 'php:Y-m-d H:i:s');
       $model->token = str_replace('_', '-', Yii::$app->security->generateRandomString(30));
       $model->save();
     }
@@ -208,10 +208,10 @@ class Player extends PlayerAR implements IdentityInterface
   {
     if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'email_verification'])) === null) {
       $model = new PlayerToken();
-      $validity=(\Yii::$app->sys->mail_verification_token_validity===false) ? '10 day':\Yii::$app->sys->mail_verification_token_validity;
+      $validity = (\Yii::$app->sys->mail_verification_token_validity === false) ? '10 day' : \Yii::$app->sys->mail_verification_token_validity;
       $model->player_id = $this->id;
       $model->type = 'email_verification';
-      $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + '.$validity), 'php:Y-m-d H:i:s');
+      $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + ' . $validity), 'php:Y-m-d H:i:s');
       $model->token = str_replace('_', '-', Yii::$app->security->generateRandomString(30));
       $model->save();
     }
@@ -370,7 +370,8 @@ class Player extends PlayerAR implements IdentityInterface
     }
     if (file_exists($avatarPNG))
       return;
-    $robohash = new \app\models\Robohash($_pID, 'set1');
+
+    $robohash = new \app\components\generators\AvatarGenerator($_pID);
     $image = $robohash->generate_image();
     if ((gettype($image) === "object" && get_class($image) === "GdImage") || ((int) phpversion() === 7 && gettype($image) === 'resource')) {
       imagepng($image, $avatarPNG);

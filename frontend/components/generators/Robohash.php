@@ -4,7 +4,7 @@
 // https://github.com/hush2/php-robohash.git
 
 // Extra sets and images from https://github.com/e1ven/Robohash.git
-namespace app\models;
+namespace app\components\generators;
 
 use yii\base\Widget;
 use yii\helpers\Html;
@@ -40,7 +40,8 @@ class Robohash
     {
         $this->image_dir =  \Yii::getAlias('@app/web/images/robohash/');
         $this->text=$text;
-        $this->set=$set;
+        if($set===null)
+          $this->set=\Yii::$app->sys->avatar_robohash_set;
         $this->color=$color;
         $this->width  = self::IMAGE_WIDTH;
         $this->height = self::IMAGE_WIDTH;
