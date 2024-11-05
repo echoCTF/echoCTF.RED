@@ -22,7 +22,7 @@ class SpeedProblemController extends BaseController
       parent::behaviors(),
       [
         'verbs' => [
-          'class' => VerbFilter::className(),
+          'class' => VerbFilter::class,
           'actions' => [
             'delete' => ['POST'],
           ],
