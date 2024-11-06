@@ -88,6 +88,11 @@
 * `api_target_spawn_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spawn_timeout`+1 seconds
 * `api_target_spawn_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spawn_timeout`+1 seconds
 
+* `player_delete_inactive_after`: Delete players with status=9 (inactive) after X days
+* `player_delete_deleted_after`: Delete players with status=0 (deleted) after X days
+* `player_changed_to_deleted_after`: Update players with status=8 (changed) into status=0 (deleted) after X days
+* `player_delete_rejected_after`: Delete players that their registration was rejected (status=9 and approval=4) after X days
+
 ## mail configuration
 * `mail_from` Email address used to send registration and password reset mails from
 * `mail_fromName` The name appeared on the email send for registration and password resets
