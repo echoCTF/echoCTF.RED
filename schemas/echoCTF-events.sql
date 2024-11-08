@@ -1,6 +1,4 @@
-/*!999999\- enable the sandbox mode */
-
-/*!40101 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci */;
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;

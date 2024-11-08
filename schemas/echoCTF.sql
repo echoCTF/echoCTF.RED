@@ -1,5 +1,4 @@
-/*!999999\- enable the sandbox mode */
-/*!40101 SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci */;
+SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 ALTER DATABASE `echoCTF` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
