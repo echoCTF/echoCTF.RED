@@ -95,6 +95,7 @@ class m220102_214745_populate_url_routes extends Migration
     'api/target/<id:\d+>/spin' => 'api/target/spin',
     'api/target/<id:\d+>/spawn' => 'api/target/spawn',
     'api/target/<id:\d+>/shut' => 'api/target/shut',
+    'api/profile/me' => 'api/profile/me',
     'speed' => 'speedprogramming/default/index',
     'speed/<id:\d+>' => 'speedprogramming/default/view',
     'speed/<id:\d+>/answer' => 'speedprogramming/default/answer',
