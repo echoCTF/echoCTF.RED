@@ -284,4 +284,9 @@ class PlayerAR extends ActiveRecord
     return $this->hasOne(PlayerMetadata::class, ['player_id' => 'id']);
   }
 
+  public function getPlayerLast()
+  {
+    return $this->hasOne(PlayerLast::class, ['id' => 'id']);
+  }
+
 }
