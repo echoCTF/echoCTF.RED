@@ -1009,26 +1009,6 @@ CREATE TABLE `player_ssl` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Player SSL Keys';
 
 --
--- Table structure for table `player_subscription`
---
-
-DROP TABLE IF EXISTS `player_subscription`;
-CREATE TABLE `player_subscription` (
-  `player_id` int(11) NOT NULL,
-  `subscription_id` varchar(255) DEFAULT NULL,
-  `session_id` varchar(255) DEFAULT NULL,
-  `price_id` varchar(255) DEFAULT NULL,
-  `active` tinyint(1) DEFAULT 0,
-  `starting` datetime DEFAULT NULL,
-  `ending` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`player_id`),
-  KEY `idx-player_subscription-player_id` (`player_id`),
-  KEY `idx-player_subscription-subscription_id` (`subscription_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-
---
 -- Table structure for table `player_target_help`
 --
 
@@ -1127,63 +1107,6 @@ CREATE TABLE `player_vpn_history` (
   `ts` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `price`
---
-
-DROP TABLE IF EXISTS `price`;
-CREATE TABLE `price` (
-  `id` varchar(32) NOT NULL,
-  `active` tinyint(1) DEFAULT NULL,
-  `currency` varchar(4) NOT NULL DEFAULT 'eur',
-  `metadata` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`metadata`)),
-  `nickname` varchar(255) DEFAULT NULL,
-  `product_id` varchar(40) NOT NULL,
-  `recurring_interval` varchar(255) NOT NULL DEFAULT 'month',
-  `interval_count` int(11) NOT NULL DEFAULT 1,
-  `ptype` varchar(20) NOT NULL DEFAULT 'recurring',
-  `unit_amount` int(10) unsigned NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  KEY `idx-price-product_id` (`product_id`),
-  CONSTRAINT `CONSTRAINT_1` CHECK (json_valid(`metadata`))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Table structure for table `product`
---
-
-DROP TABLE IF EXISTS `product`;
-CREATE TABLE `product` (
-  `id` varchar(40) NOT NULL,
-  `shortcode` varchar(40) DEFAULT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT 0,
-  `name` varchar(255) NOT NULL,
-  `description` text DEFAULT NULL,
-  `livemode` tinyint(1) NOT NULL DEFAULT 0,
-  `metadata` text DEFAULT NULL,
-  `htmlOptions` text DEFAULT NULL,
-  `perks` text DEFAULT NULL,
-  `weight` int(11) NOT NULL DEFAULT 0,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
-
---
--- Table structure for table `product_network`
---
-
-DROP TABLE IF EXISTS `product_network`;
-CREATE TABLE `product_network` (
-  `product_id` varchar(40) NOT NULL,
-  `network_id` int(11) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`product_id`,`network_id`),
-  KEY `idx-product_network-product_id` (`product_id`),
-  KEY `idx-product_network-network_id` (`network_id`),
-  CONSTRAINT `fk-product_network-network_id` FOREIGN KEY (`network_id`) REFERENCES `network` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk-product_network-product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Table structure for table `profile`
@@ -1417,20 +1340,6 @@ CREATE TABLE `stream` (
   KEY `player_id` (`player_id`),
   CONSTRAINT `stream_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Information stream for participants and public alike';
-
---
--- Table structure for table `stripe_webhook`
---
-
-DROP TABLE IF EXISTS `stripe_webhook`;
-CREATE TABLE `stripe_webhook` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(255) NOT NULL,
-  `object` text DEFAULT NULL,
-  `object_id` varchar(255) DEFAULT NULL,
-  `ts` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 --
 -- Table structure for table `sysconfig`
