@@ -58,12 +58,22 @@ curl -i -H "Accept:application/json" "https://echoctf.red/api/headshots?filter[p
 ## Bearer Operations
 For the following endpoints you will need to have a bearer token to be able to access them
 
+* `api/profile/me`: Get your profile details
 * `api/target/claim`: Submit a flag for validation
 * `api/target/instances`: List of instances (if any)
 * `api/target/<id:\d+>`: Get details for a given target
 * `api/target/<id:\d+>/spin`: spin a machine
 * `api/target/<id:\d+>/spawn`: Spawn a private instance (if allowed)
 * `api/target/<id:\d+>/shut`: Shutdown a private instance
+
+### Get profile details
+URL: `GET /api/profile/me`
+
+```sh
+curl "https://echoctf.red/api/target/me" \
+ -H "Authorization: Bearer YOURTOKEN" \
+ -H "Accept:application/json"
+```
 
 ### Claim Flag
 URL: `POST /api/target/claim` \
