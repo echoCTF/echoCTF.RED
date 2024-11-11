@@ -7,7 +7,7 @@ SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
 DELIMITER ;;
 
 DROP TRIGGER IF EXISTS tbd_challenge ;;
-CREATE  TRIGGER `tbd_challenge` BEFORE DELETE ON `challenge` FOR EACH ROW
+CREATE TRIGGER `tbd_challenge` BEFORE DELETE ON `challenge` FOR EACH ROW
 thisBegin:BEGIN
 IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -17,7 +17,7 @@ END IF;
 END ;;
 
 DROP TRIGGER IF EXISTS tad_challenge ;;
-CREATE  TRIGGER `tad_challenge` AFTER DELETE ON `challenge` FOR EACH ROW
+CREATE TRIGGER `tad_challenge` AFTER DELETE ON `challenge` FOR EACH ROW
 thisBegin:BEGIN
 IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -27,7 +27,7 @@ END IF;
 END ;;
 
 DROP TRIGGER IF EXISTS tbi_challenge_solver ;;
-CREATE  TRIGGER `tbi_challenge_solver` BEFORE INSERT ON `challenge_solver` FOR EACH ROW
+CREATE TRIGGER `tbi_challenge_solver` BEFORE INSERT ON `challenge_solver` FOR EACH ROW
   thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -38,7 +38,7 @@ CREATE  TRIGGER `tbi_challenge_solver` BEFORE INSERT ON `challenge_solver` FOR E
   END ;;
 
 DROP TRIGGER IF EXISTS tai_disabled_route ;;
-CREATE  TRIGGER `tai_disabled_route` AFTER INSERT ON `disabled_route` FOR EACH ROW
+CREATE TRIGGER `tai_disabled_route` AFTER INSERT ON `disabled_route` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE routes LONGTEXT;
       IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -49,7 +49,7 @@ CREATE  TRIGGER `tai_disabled_route` AFTER INSERT ON `disabled_route` FOR EACH R
     END ;;
 
 DROP TRIGGER IF EXISTS tau_disabled_route ;;
-CREATE  TRIGGER `tau_disabled_route` AFTER UPDATE ON `disabled_route` FOR EACH ROW
+CREATE TRIGGER `tau_disabled_route` AFTER UPDATE ON `disabled_route` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE routes LONGTEXT;
       IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -60,7 +60,7 @@ CREATE  TRIGGER `tau_disabled_route` AFTER UPDATE ON `disabled_route` FOR EACH R
     END ;;
 
 DROP TRIGGER IF EXISTS tad_disabled_route ;;
-CREATE  TRIGGER `tad_disabled_route` AFTER DELETE ON `disabled_route` FOR EACH ROW
+CREATE TRIGGER `tad_disabled_route` AFTER DELETE ON `disabled_route` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE routes LONGTEXT;
       IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -71,7 +71,7 @@ CREATE  TRIGGER `tad_disabled_route` AFTER DELETE ON `disabled_route` FOR EACH R
     END ;;
 
 DROP TRIGGER IF EXISTS tai_finding ;;
-CREATE  TRIGGER `tai_finding` AFTER INSERT ON `finding` FOR EACH ROW
+CREATE TRIGGER `tai_finding` AFTER INSERT ON `finding` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -84,7 +84,7 @@ CREATE  TRIGGER `tai_finding` AFTER INSERT ON `finding` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tau_finding ;;
-CREATE  TRIGGER `tau_finding` AFTER UPDATE ON `finding` FOR EACH ROW
+CREATE TRIGGER `tau_finding` AFTER UPDATE ON `finding` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -101,7 +101,7 @@ thisBegin:BEGIN
 END ;;
 
 DROP TRIGGER IF EXISTS tad_finding ;;
-CREATE  TRIGGER `tad_finding` AFTER DELETE ON `finding` FOR EACH ROW
+CREATE TRIGGER `tad_finding` AFTER DELETE ON `finding` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -117,7 +117,7 @@ CREATE  TRIGGER `tad_finding` AFTER DELETE ON `finding` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tbi_headshot ;;
-CREATE  TRIGGER `tbi_headshot` BEFORE INSERT ON `headshot` FOR EACH ROW
+CREATE TRIGGER `tbi_headshot` BEFORE INSERT ON `headshot` FOR EACH ROW
   thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -128,7 +128,7 @@ CREATE  TRIGGER `tbi_headshot` BEFORE INSERT ON `headshot` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tai_headshot ;;
-CREATE  TRIGGER `tai_headshot` AFTER INSERT ON `headshot` FOR EACH ROW
+CREATE TRIGGER `tai_headshot` AFTER INSERT ON `headshot` FOR EACH ROW
     thisBegin:BEGIN
     DECLARE private_instance int;
     IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -147,7 +147,7 @@ CREATE  TRIGGER `tai_headshot` AFTER INSERT ON `headshot` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tau_headshot ;;
-CREATE  TRIGGER `tau_headshot` AFTER UPDATE ON `headshot` FOR EACH ROW
+CREATE TRIGGER `tau_headshot` AFTER UPDATE ON `headshot` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -161,7 +161,7 @@ CREATE  TRIGGER `tau_headshot` AFTER UPDATE ON `headshot` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tad_headshot ;;
-CREATE  TRIGGER `tad_headshot` AFTER DELETE ON `headshot` FOR EACH ROW
+CREATE TRIGGER `tad_headshot` AFTER DELETE ON `headshot` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -171,7 +171,7 @@ CREATE  TRIGGER `tad_headshot` AFTER DELETE ON `headshot` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_network_target ;;
-CREATE  TRIGGER `tai_network_target` AFTER INSERT ON `network_target` FOR EACH ROW
+CREATE TRIGGER `tai_network_target` AFTER INSERT ON `network_target` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -180,7 +180,7 @@ CREATE  TRIGGER `tai_network_target` AFTER INSERT ON `network_target` FOR EACH R
     END ;;
 
 DROP TRIGGER IF EXISTS tad_network_target ;;
-CREATE  TRIGGER `tad_network_target` AFTER DELETE ON `network_target` FOR EACH ROW
+CREATE TRIGGER `tad_network_target` AFTER DELETE ON `network_target` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -189,7 +189,7 @@ CREATE  TRIGGER `tad_network_target` AFTER DELETE ON `network_target` FOR EACH R
     END ;;
 
 DROP TRIGGER IF EXISTS tai_player ;;
-CREATE  TRIGGER tai_player AFTER INSERT ON player FOR EACH ROW
+CREATE TRIGGER tai_player AFTER INSERT ON player FOR EACH ROW
   thisBegin:BEGIN
     DECLARE ltitle VARCHAR(20) DEFAULT 'Joined the platform';
 
@@ -209,7 +209,7 @@ CREATE  TRIGGER tai_player AFTER INSERT ON player FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tau_player ;;
-CREATE  TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
+CREATE TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
   thisBegin:BEGIN
   DECLARE ltitle VARCHAR(30) DEFAULT "Joined the platform";
   IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -236,7 +236,7 @@ CREATE  TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tbd_player ;;
-CREATE  TRIGGER `tbd_player` BEFORE DELETE ON `player` FOR EACH ROW
+CREATE TRIGGER `tbd_player` BEFORE DELETE ON `player` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE tid INT default 0;
       IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -251,7 +251,7 @@ CREATE  TRIGGER `tbd_player` BEFORE DELETE ON `player` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tad_player ;;
-CREATE  TRIGGER `tad_player` AFTER DELETE ON `player` FOR EACH ROW
+CREATE TRIGGER `tad_player` AFTER DELETE ON `player` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -271,7 +271,7 @@ CREATE  TRIGGER `tad_player` AFTER DELETE ON `player` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_player_badge ;;
-CREATE  TRIGGER `tai_player_badge` AFTER INSERT ON `player_badge` FOR EACH ROW
+CREATE TRIGGER `tai_player_badge` AFTER INSERT ON `player_badge` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -281,7 +281,7 @@ thisBegin:BEGIN
 END ;;
 
 DROP TRIGGER IF EXISTS tai_player_disabledroute ;;
-CREATE  TRIGGER `tai_player_disabledroute` AFTER INSERT ON `player_disabledroute` FOR EACH ROW
+CREATE TRIGGER `tai_player_disabledroute` AFTER INSERT ON `player_disabledroute` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE routes LONGTEXT;
       IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -292,7 +292,7 @@ CREATE  TRIGGER `tai_player_disabledroute` AFTER INSERT ON `player_disabledroute
     END ;;
 
 DROP TRIGGER IF EXISTS tau_player_disabledroute ;;
-CREATE  TRIGGER `tau_player_disabledroute` AFTER UPDATE ON `player_disabledroute` FOR EACH ROW
+CREATE TRIGGER `tau_player_disabledroute` AFTER UPDATE ON `player_disabledroute` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE routes LONGTEXT;
       IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -303,7 +303,7 @@ CREATE  TRIGGER `tau_player_disabledroute` AFTER UPDATE ON `player_disabledroute
     END ;;
 
 DROP TRIGGER IF EXISTS tad_player_disabledroute ;;
-CREATE  TRIGGER `tad_player_disabledroute` AFTER DELETE ON `player_disabledroute` FOR EACH ROW
+CREATE TRIGGER `tad_player_disabledroute` AFTER DELETE ON `player_disabledroute` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE routes LONGTEXT;
       IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -314,7 +314,7 @@ CREATE  TRIGGER `tad_player_disabledroute` AFTER DELETE ON `player_disabledroute
     END ;;
 
 DROP TRIGGER IF EXISTS tai_player_disconnect_queue ;;
-CREATE  TRIGGER `tai_player_disconnect_queue` AFTER INSERT ON `player_disconnect_queue` FOR EACH ROW
+CREATE TRIGGER `tai_player_disconnect_queue` AFTER INSERT ON `player_disconnect_queue` FOR EACH ROW
   thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -323,7 +323,7 @@ CREATE  TRIGGER `tai_player_disconnect_queue` AFTER INSERT ON `player_disconnect
   END ;;
 
 DROP TRIGGER IF EXISTS tad_player_disconnect_queue ;;
-CREATE  TRIGGER `tad_player_disconnect_queue` AFTER DELETE ON `player_disconnect_queue` FOR EACH ROW
+CREATE TRIGGER `tad_player_disconnect_queue` AFTER DELETE ON `player_disconnect_queue` FOR EACH ROW
   thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -332,7 +332,7 @@ CREATE  TRIGGER `tad_player_disconnect_queue` AFTER DELETE ON `player_disconnect
   END ;;
 
 DROP TRIGGER IF EXISTS tbi_player_finding ;;
-CREATE  TRIGGER `tbi_player_finding` BEFORE INSERT ON `player_finding` FOR EACH ROW
+CREATE TRIGGER `tbi_player_finding` BEFORE INSERT ON `player_finding` FOR EACH ROW
   thisBegin:BEGIN
     DECLARE local_target_id INT;
     DECLARE pts FLOAT;
@@ -347,7 +347,7 @@ CREATE  TRIGGER `tbi_player_finding` BEFORE INSERT ON `player_finding` FOR EACH 
   END ;;
 
 DROP TRIGGER IF EXISTS tai_player_finding ;;
-CREATE  TRIGGER `tai_player_finding` AFTER INSERT ON `player_finding` FOR EACH ROW
+CREATE TRIGGER `tai_player_finding` AFTER INSERT ON `player_finding` FOR EACH ROW
   thisBegin:BEGIN
   DECLARE local_target_id INT;
   DECLARE headshoted INT default null;
@@ -378,7 +378,7 @@ CREATE  TRIGGER `tai_player_finding` AFTER INSERT ON `player_finding` FOR EACH R
   END ;;
 
 DROP TRIGGER IF EXISTS tad_player_finding ;;
-CREATE  TRIGGER `tad_player_finding` AFTER DELETE ON `player_finding` FOR EACH ROW
+CREATE TRIGGER `tad_player_finding` AFTER DELETE ON `player_finding` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -391,7 +391,7 @@ thisBegin:BEGIN
 END ;;
 
 DROP TRIGGER IF EXISTS tau_player_last ;;
-CREATE  TRIGGER `tau_player_last` AFTER UPDATE ON `player_last` FOR EACH ROW
+CREATE TRIGGER `tau_player_last` AFTER UPDATE ON `player_last` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -413,7 +413,7 @@ CREATE  TRIGGER `tau_player_last` AFTER UPDATE ON `player_last` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_player_question ;;
-CREATE  TRIGGER `tai_player_question` AFTER INSERT ON `player_question` FOR EACH ROW
+CREATE TRIGGER `tai_player_question` AFTER INSERT ON `player_question` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE local_challenge_id INT default null;
       DECLARE completed INT default null;
@@ -439,7 +439,7 @@ CREATE  TRIGGER `tai_player_question` AFTER INSERT ON `player_question` FOR EACH
     END ;;
 
 DROP TRIGGER IF EXISTS tau_player_score ;;
-CREATE  TRIGGER `tau_player_score` AFTER UPDATE ON `player_score` FOR EACH ROW
+CREATE TRIGGER `tau_player_score` AFTER UPDATE ON `player_score` FOR EACH ROW
   thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -451,7 +451,7 @@ CREATE  TRIGGER `tau_player_score` AFTER UPDATE ON `player_score` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tau_player_ssl ;;
-CREATE  TRIGGER `tau_player_ssl` AFTER UPDATE ON `player_ssl` FOR EACH ROW
+CREATE TRIGGER `tau_player_ssl` AFTER UPDATE ON `player_ssl` FOR EACH ROW
   thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -463,7 +463,7 @@ CREATE  TRIGGER `tau_player_ssl` AFTER UPDATE ON `player_ssl` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tad_player_ssl ;;
-CREATE  TRIGGER `tad_player_ssl` AFTER DELETE ON `player_ssl` FOR EACH ROW
+CREATE TRIGGER `tad_player_ssl` AFTER DELETE ON `player_ssl` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -472,7 +472,7 @@ CREATE  TRIGGER `tad_player_ssl` AFTER DELETE ON `player_ssl` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_player_token ;;
-CREATE  TRIGGER `tai_player_token` AFTER INSERT ON `player_token` FOR EACH ROW
+CREATE TRIGGER `tai_player_token` AFTER INSERT ON `player_token` FOR EACH ROW
   thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -481,7 +481,7 @@ CREATE  TRIGGER `tai_player_token` AFTER INSERT ON `player_token` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tau_player_token ;;
-CREATE  TRIGGER `tau_player_token` AFTER UPDATE ON `player_token` FOR EACH ROW
+CREATE TRIGGER `tau_player_token` AFTER UPDATE ON `player_token` FOR EACH ROW
   thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -492,7 +492,7 @@ CREATE  TRIGGER `tau_player_token` AFTER UPDATE ON `player_token` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tad_player_token ;;
-CREATE  TRIGGER `tad_player_token` AFTER DELETE ON `player_token` FOR EACH ROW
+CREATE TRIGGER `tad_player_token` AFTER DELETE ON `player_token` FOR EACH ROW
   thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -501,7 +501,7 @@ CREATE  TRIGGER `tad_player_token` AFTER DELETE ON `player_token` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tbi_player_treasure ;;
-CREATE  TRIGGER `tbi_player_treasure` BEFORE INSERT ON `player_treasure` FOR EACH ROW
+CREATE TRIGGER `tbi_player_treasure` BEFORE INSERT ON `player_treasure` FOR EACH ROW
   thisBegin:BEGIN
     DECLARE local_target_id INT;
     DECLARE pts FLOAT;
@@ -516,7 +516,7 @@ CREATE  TRIGGER `tbi_player_treasure` BEFORE INSERT ON `player_treasure` FOR EAC
   END ;;
 
 DROP TRIGGER IF EXISTS tai_player_treasure ;;
-CREATE  TRIGGER `tai_player_treasure` AFTER INSERT ON `player_treasure` FOR EACH ROW
+CREATE TRIGGER `tai_player_treasure` AFTER INSERT ON `player_treasure` FOR EACH ROW
     thisBegin:BEGIN
     DECLARE local_target_id INT;
     DECLARE headshoted INT default null;
@@ -543,7 +543,7 @@ CREATE  TRIGGER `tai_player_treasure` AFTER INSERT ON `player_treasure` FOR EACH
     END ;;
 
 DROP TRIGGER IF EXISTS tbi_profile ;;
-CREATE  TRIGGER `tbi_profile` BEFORE INSERT ON `profile` FOR EACH ROW
+CREATE TRIGGER `tbi_profile` BEFORE INSERT ON `profile` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -565,7 +565,7 @@ thisBegin:BEGIN
 END ;;
 
 DROP TRIGGER IF EXISTS tad_sessions ;;
-CREATE  TRIGGER `tad_sessions` AFTER DELETE ON `sessions` FOR EACH ROW
+CREATE TRIGGER `tad_sessions` AFTER DELETE ON `sessions` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -580,7 +580,7 @@ thisBegin:BEGIN
 END ;;
 
 DROP TRIGGER IF EXISTS tad_spin_queue ;;
-CREATE  TRIGGER `tad_spin_queue` AFTER DELETE ON `spin_queue` FOR EACH ROW
+CREATE TRIGGER `tad_spin_queue` AFTER DELETE ON `spin_queue` FOR EACH ROW
 thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
@@ -589,7 +589,7 @@ thisBegin:BEGIN
 END ;;
 
 DROP TRIGGER IF EXISTS tai_stream ;;
-CREATE  TRIGGER `tai_stream` AFTER INSERT ON `stream` FOR EACH ROW
+CREATE TRIGGER `tai_stream` AFTER INSERT ON `stream` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE lteam_id INT;
       IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -605,7 +605,7 @@ CREATE  TRIGGER `tai_stream` AFTER INSERT ON `stream` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tad_stream ;;
-CREATE  TRIGGER `tad_stream` AFTER DELETE ON `stream` FOR EACH ROW
+CREATE TRIGGER `tad_stream` AFTER DELETE ON `stream` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -614,7 +614,7 @@ CREATE  TRIGGER `tad_stream` AFTER DELETE ON `stream` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_sysconfig ;;
-CREATE  TRIGGER `tai_sysconfig` AFTER INSERT ON `sysconfig` FOR EACH ROW
+CREATE TRIGGER `tai_sysconfig` AFTER INSERT ON `sysconfig` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
           LEAVE thisBegin;
@@ -628,7 +628,7 @@ CREATE  TRIGGER `tai_sysconfig` AFTER INSERT ON `sysconfig` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tau_sysconfig ;;
-CREATE  TRIGGER `tau_sysconfig` AFTER UPDATE ON `sysconfig` FOR EACH ROW
+CREATE TRIGGER `tau_sysconfig` AFTER UPDATE ON `sysconfig` FOR EACH ROW
   thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -644,7 +644,7 @@ CREATE  TRIGGER `tau_sysconfig` AFTER UPDATE ON `sysconfig` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tad_sysconfig ;;
-CREATE  TRIGGER `tad_sysconfig` AFTER DELETE ON `sysconfig` FOR EACH ROW
+CREATE TRIGGER `tad_sysconfig` AFTER DELETE ON `sysconfig` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
           LEAVE thisBegin;
@@ -658,7 +658,7 @@ CREATE  TRIGGER `tad_sysconfig` AFTER DELETE ON `sysconfig` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tai_target ;;
-CREATE  TRIGGER `tai_target` AFTER INSERT ON `target` FOR EACH ROW
+CREATE TRIGGER `tai_target` AFTER INSERT ON `target` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -673,7 +673,7 @@ CREATE  TRIGGER `tai_target` AFTER INSERT ON `target` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tbd_target ;;
-CREATE  TRIGGER `tbd_target` BEFORE DELETE ON `target` FOR EACH ROW
+CREATE TRIGGER `tbd_target` BEFORE DELETE ON `target` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -685,7 +685,7 @@ CREATE  TRIGGER `tbd_target` BEFORE DELETE ON `target` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_target_instance ;;
-CREATE  TRIGGER `tai_target_instance` AFTER INSERT ON `target_instance` FOR EACH ROW
+CREATE TRIGGER `tai_target_instance` AFTER INSERT ON `target_instance` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -697,7 +697,7 @@ CREATE  TRIGGER `tai_target_instance` AFTER INSERT ON `target_instance` FOR EACH
     END ;;
 
 DROP TRIGGER IF EXISTS tau_target_instance ;;
-CREATE  TRIGGER `tau_target_instance` AFTER UPDATE ON `target_instance` FOR EACH ROW
+CREATE TRIGGER `tau_target_instance` AFTER UPDATE ON `target_instance` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -716,7 +716,7 @@ CREATE  TRIGGER `tau_target_instance` AFTER UPDATE ON `target_instance` FOR EACH
     END ;;
 
 DROP TRIGGER IF EXISTS tad_target_instance ;;
-CREATE  TRIGGER `tad_target_instance` AFTER DELETE ON `target_instance` FOR EACH ROW
+CREATE TRIGGER `tad_target_instance` AFTER DELETE ON `target_instance` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -728,7 +728,7 @@ CREATE  TRIGGER `tad_target_instance` AFTER DELETE ON `target_instance` FOR EACH
     END ;;
 
 DROP TRIGGER IF EXISTS tai_target_ondemand ;;
-CREATE  TRIGGER `tai_target_ondemand` AFTER INSERT ON `target_ondemand` FOR EACH ROW
+CREATE TRIGGER `tai_target_ondemand` AFTER INSERT ON `target_ondemand` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -737,7 +737,7 @@ CREATE  TRIGGER `tai_target_ondemand` AFTER INSERT ON `target_ondemand` FOR EACH
     END ;;
 
 DROP TRIGGER IF EXISTS tau_target_ondemand ;;
-CREATE  TRIGGER `tau_target_ondemand` AFTER UPDATE ON `target_ondemand` FOR EACH ROW
+CREATE TRIGGER `tau_target_ondemand` AFTER UPDATE ON `target_ondemand` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -748,7 +748,7 @@ CREATE  TRIGGER `tau_target_ondemand` AFTER UPDATE ON `target_ondemand` FOR EACH
     END ;;
 
 DROP TRIGGER IF EXISTS tad_target_ondemand ;;
-CREATE  TRIGGER `tad_target_ondemand` AFTER DELETE ON `target_ondemand` FOR EACH ROW
+CREATE TRIGGER `tad_target_ondemand` AFTER DELETE ON `target_ondemand` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -757,7 +757,7 @@ CREATE  TRIGGER `tad_target_ondemand` AFTER DELETE ON `target_ondemand` FOR EACH
     END ;;
 
 DROP TRIGGER IF EXISTS tai_team ;;
-CREATE  TRIGGER `tai_team` AFTER INSERT ON `team` FOR EACH ROW
+CREATE TRIGGER `tai_team` AFTER INSERT ON `team` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -766,7 +766,7 @@ CREATE  TRIGGER `tai_team` AFTER INSERT ON `team` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tau_team ;;
-CREATE  TRIGGER `tau_team` AFTER UPDATE ON `team` FOR EACH ROW
+CREATE TRIGGER `tau_team` AFTER UPDATE ON `team` FOR EACH ROW
     thisBegin:BEGIN
       DECLARE msg TEXT;
       IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -797,7 +797,7 @@ CREATE  TRIGGER `tau_team` AFTER UPDATE ON `team` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tad_team ;;
-CREATE  TRIGGER `tad_team` AFTER DELETE ON `team` FOR EACH ROW
+CREATE TRIGGER `tad_team` AFTER DELETE ON `team` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -809,7 +809,7 @@ CREATE  TRIGGER `tad_team` AFTER DELETE ON `team` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_team_player ;;
-CREATE  TRIGGER `tai_team_player` AFTER INSERT ON `team_player` FOR EACH ROW
+CREATE TRIGGER `tai_team_player` AFTER INSERT ON `team_player` FOR EACH ROW
   thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -818,7 +818,7 @@ CREATE  TRIGGER `tai_team_player` AFTER INSERT ON `team_player` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tau_team_player ;;
-CREATE  TRIGGER `tau_team_player` AFTER UPDATE ON `team_player` FOR EACH ROW
+CREATE TRIGGER `tau_team_player` AFTER UPDATE ON `team_player` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -833,7 +833,7 @@ CREATE  TRIGGER `tau_team_player` AFTER UPDATE ON `team_player` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tad_team_player ;;
-CREATE  TRIGGER `tad_team_player` AFTER DELETE ON `team_player` FOR EACH ROW
+CREATE TRIGGER `tad_team_player` AFTER DELETE ON `team_player` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -842,7 +842,7 @@ CREATE  TRIGGER `tad_team_player` AFTER DELETE ON `team_player` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_team_stream ;;
-CREATE  TRIGGER `tai_team_stream` AFTER INSERT ON `team_stream` FOR EACH ROW
+CREATE TRIGGER `tai_team_stream` AFTER INSERT ON `team_stream` FOR EACH ROW
   thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -851,7 +851,7 @@ CREATE  TRIGGER `tai_team_stream` AFTER INSERT ON `team_stream` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tad_team_stream ;;
-CREATE  TRIGGER `tad_team_stream` AFTER DELETE ON `team_stream` FOR EACH ROW
+CREATE TRIGGER `tad_team_stream` AFTER DELETE ON `team_stream` FOR EACH ROW
     thisBegin:BEGIN
       IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -860,7 +860,7 @@ CREATE  TRIGGER `tad_team_stream` AFTER DELETE ON `team_stream` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_treasure ;;
-CREATE  TRIGGER `tai_treasure` AFTER INSERT ON `treasure` FOR EACH ROW
+CREATE TRIGGER `tai_treasure` AFTER INSERT ON `treasure` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -869,7 +869,7 @@ CREATE  TRIGGER `tai_treasure` AFTER INSERT ON `treasure` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tad_treasure ;;
-CREATE  TRIGGER `tad_treasure` AFTER DELETE ON `treasure` FOR EACH ROW
+CREATE TRIGGER `tad_treasure` AFTER DELETE ON `treasure` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -880,7 +880,7 @@ CREATE  TRIGGER `tad_treasure` AFTER DELETE ON `treasure` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tai_url_route ;;
-CREATE  TRIGGER `tai_url_route` AFTER INSERT ON `url_route` FOR EACH ROW
+CREATE TRIGGER `tai_url_route` AFTER INSERT ON `url_route` FOR EACH ROW
   thisBegin:BEGIN
     DECLARE routes LONGTEXT;
     IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -891,7 +891,7 @@ CREATE  TRIGGER `tai_url_route` AFTER INSERT ON `url_route` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tau_url_route ;;
-CREATE  TRIGGER `tau_url_route` AFTER UPDATE ON `url_route` FOR EACH ROW
+CREATE TRIGGER `tau_url_route` AFTER UPDATE ON `url_route` FOR EACH ROW
   thisBegin:BEGIN
     DECLARE routes LONGTEXT;
     IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -902,7 +902,7 @@ CREATE  TRIGGER `tau_url_route` AFTER UPDATE ON `url_route` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tad_url_route ;;
-CREATE  TRIGGER `tad_url_route` AFTER DELETE ON `url_route` FOR EACH ROW
+CREATE TRIGGER `tad_url_route` AFTER DELETE ON `url_route` FOR EACH ROW
   thisBegin:BEGIN
     DECLARE routes LONGTEXT;
     IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -913,7 +913,7 @@ CREATE  TRIGGER `tad_url_route` AFTER DELETE ON `url_route` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tai_writeup ;;
-CREATE  TRIGGER `tai_writeup` AFTER INSERT ON `writeup` FOR EACH ROW
+CREATE TRIGGER `tai_writeup` AFTER INSERT ON `writeup` FOR EACH ROW
   thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
       LEAVE thisBegin;
@@ -922,7 +922,7 @@ CREATE  TRIGGER `tai_writeup` AFTER INSERT ON `writeup` FOR EACH ROW
   END ;;
 
 DROP TRIGGER IF EXISTS tau_writeup ;;
-CREATE  TRIGGER `tau_writeup` AFTER UPDATE ON `writeup` FOR EACH ROW
+CREATE TRIGGER `tau_writeup` AFTER UPDATE ON `writeup` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
@@ -937,7 +937,7 @@ CREATE  TRIGGER `tau_writeup` AFTER UPDATE ON `writeup` FOR EACH ROW
     END ;;
 
 DROP TRIGGER IF EXISTS tad_writeup ;;
-CREATE  TRIGGER `tad_writeup` AFTER DELETE ON `writeup` FOR EACH ROW
+CREATE TRIGGER `tad_writeup` AFTER DELETE ON `writeup` FOR EACH ROW
     thisBegin:BEGIN
     IF (@TRIGGER_CHECKS = FALSE) THEN
         LEAVE thisBegin;
