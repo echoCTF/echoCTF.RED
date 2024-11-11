@@ -10,31 +10,31 @@ DELIMITER ;;
 -- Dumping events for database 'echoCTF'
 --
 DROP EVENT IF EXISTS `ev_player_token_expiration` ;;
-CREATE EVENT`ev_player_token_expiration` ON SCHEDULE EVERY 10 SECOND STARTS '2024-11-06 12:26:52' ON COMPLETION PRESERVE ENABLE DO BEGIN
+CREATE EVENT `ev_player_token_expiration` ON SCHEDULE EVERY 10 SECOND STARTS '2024-11-06 12:26:52' ON COMPLETION PRESERVE ENABLE DO BEGIN
     ALTER EVENT `ev_player_token_expiration` DISABLE;
       call expire_player_tokens();
     ALTER EVENT `ev_player_token_expiration` ENABLE;
   END ;;
 
 DROP EVENT IF EXISTS `player_maintenance` ;;
-CREATE EVENT`player_maintenance` ON SCHEDULE EVERY 1 DAY STARTS '2020-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
+CREATE EVENT `player_maintenance` ON SCHEDULE EVERY 1 DAY STARTS '2020-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
     CALL player_maintenance();
   END ;;
 
 DROP EVENT IF EXISTS `rotate_notifications` ;;
-CREATE EVENT`rotate_notifications` ON SCHEDULE EVERY 12 HOUR STARTS '2023-04-03 00:00:01' ON COMPLETION PRESERVE ENABLE DO BEGIN
+CREATE EVENT `rotate_notifications` ON SCHEDULE EVERY 12 HOUR STARTS '2023-04-03 00:00:01' ON COMPLETION PRESERVE ENABLE DO BEGIN
       ALTER EVENT `rotate_notifications` DISABLE;
       CALL rotate_notifications(180,(24*3)*60);
       ALTER EVENT `rotate_notifications` ENABLE;
     END ;;
 
 DROP EVENT IF EXISTS `update_player_last_seen` ;;
-CREATE EVENT`update_player_last_seen` ON SCHEDULE EVERY 1 HOUR STARTS '2020-09-14 11:10:05' ON COMPLETION PRESERVE ENABLE DO BEGIN
+CREATE EVENT `update_player_last_seen` ON SCHEDULE EVERY 1 HOUR STARTS '2020-09-14 11:10:05' ON COMPLETION PRESERVE ENABLE DO BEGIN
  UPDATE `player_last` SET `on_pui`=FROM_UNIXTIME(memc_get(CONCAT('last_seen:',id))) WHERE memc_get(CONCAT('last_seen:',id)) IS NOT NULL;
 END ;;
 
 DROP EVENT IF EXISTS `update_ranks` ;;
-CREATE EVENT`update_ranks` ON SCHEDULE EVERY 30 SECOND STARTS '2021-01-11 12:26:44' ON COMPLETION PRESERVE ENABLE DO BEGIN
+CREATE EVENT `update_ranks` ON SCHEDULE EVERY 30 SECOND STARTS '2021-01-11 12:26:44' ON COMPLETION PRESERVE ENABLE DO BEGIN
     ALTER EVENT `update_ranks` DISABLE;
     call calculate_ranks();
     call calculate_country_rank();
