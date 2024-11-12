@@ -44,7 +44,7 @@ class m241108_100648_populate_default_sysconfig_keys extends Migration
     'player_delete_deleted_after' => 30,
     'player_changed_to_deleted_after' => 10,
     'player_delete_rejected_after' => 5,
-    'module_speedprogramming_disabled' => 1,
+    'module_speedprogramming_enabled' => 0,
     'password_reset_token_validity' => '24 hour',
     'mail_verification_token_validity' => '10 day',
     'academic_grouping'=>0,
