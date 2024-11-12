@@ -45,10 +45,10 @@ class DefaultController extends \app\components\BaseController
           [
             'allow' => false,
             'matchCallback'=>function($event){
-              if(Yii::$app->sys->module_speedprogramming_disabled) {
-                return true;
+              if(Yii::$app->sys->module_speedprogramming_enabled===true) {
+                return false;
               }
-              return false;
+              return true;
             }
           ],
           [
