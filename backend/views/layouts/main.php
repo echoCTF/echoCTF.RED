@@ -107,7 +107,7 @@ AppAsset::register($this);
           'url' => ['/speedprogramming/default/index'],
           'icon' => 'fas fa-money-check-alt',
           'active' => Yii::$app->controller->module->id == 'speedprogramming',
-          'visible' => array_key_exists('speedprogramming', \Yii::$app->modules) !== false && !\Yii::$app->sys->module_speedprogramming_disabled && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,
+          'visible' => array_key_exists('speedprogramming', \Yii::$app->modules) !== false && \Yii::$app->sys->module_speedprogramming_enabled===true && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,
           'items' => [
             ['label' => 'Problems', 'url' => ['/speedprogramming/speed-problem/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
             ['label' => 'Solutions', 'url' => ['/speedprogramming/default/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
