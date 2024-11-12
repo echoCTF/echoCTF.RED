@@ -12,8 +12,8 @@ class m200309_081940_populate_countries extends Migration
      */
     public function safeUp()
     {
-      $CREATE_SQL="INSERT INTO country VALUES ('UNK', 'Not set');
-INSERT INTO country VALUES ('AF','Afghanistan'),
+      $CREATE_SQL="INSERT IGNORE INTO country VALUES ('UNK', 'Not set');
+INSERT IGNORE INTO country VALUES ('AF','Afghanistan'),
       ('AL','Albania'),('DZ','Algeria'),('AS','American Samoa'),('AD','Andorra'),('AO','Angola'),
       ('AI','Anguilla'),('AQ','Antarctica'),('AG','Antigua and Barbuda'),('AR','Argentina'),
       ('AM','Armenia'),('AW','Aruba'),('AU','Australia'),('AT','Austria'),('AZ','Azerbaijan'),
@@ -81,8 +81,7 @@ INSERT INTO country VALUES ('AF','Afghanistan'),
       ('GB','United Kingdom'),('US','United States'),('UM','United States Minor Outlying Islands'),
       ('UY','Uruguay'),('UZ','Uzbekistan'),('VU','Vanuatu'),('VE','Venezuela'),('VN','Viet Nam'),
       ('VG','Virgin Islands, British'),('VI','Virgin Islands, U.s.'),('WF','Wallis and Futuna'),
-      ('EH','Western Sahara'),('YE','Yemen'),('ZM','Zambia'),('ZW','Zimbabwe');
-";
+      ('EH','Western Sahara'),('YE','Yemen'),('ZM','Zambia'),('ZW','Zimbabwe')";
       $this->db->createCommand($CREATE_SQL)->execute();
 
     }

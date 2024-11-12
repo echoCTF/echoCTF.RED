@@ -12,7 +12,7 @@ class m200309_094731_populate_hints extends Migration
      */
     public function safeUp()
     {
-      $this->db->createCommand("insert into hint (id,title) values (-1,'Welcome to the gig')")->execute();
+      $this->upsert("hint",['id'=>-1,'title'=>'Welcome to the gig']);
 
     }
 

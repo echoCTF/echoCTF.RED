@@ -16,8 +16,8 @@ END";
 */
 class m210208_232789_create_do_subscription_expiration_procedure extends Migration
 {
-  public $DROP_SQL="DROP PROCEDURE IF EXISTS {{%do_subscription_expiration}}";
-  public $CREATE_SQL="CREATE PROCEDURE {{%do_subscription_expiration}} ()
+  public $DROP_SQL = "DROP PROCEDURE IF EXISTS {{%do_subscription_expiration}}";
+  public $CREATE_SQL = "CREATE PROCEDURE {{%do_subscription_expiration}} ()
   BEGIN
     DECLARE done INT DEFAULT FALSE;
     DECLARE csubscription_id varchar(255);
@@ -32,7 +32,7 @@ class m210208_232789_create_do_subscription_expiration_procedure extends Migrati
       IF done THEN
         LEAVE read_loop;
       END IF;
-      SELECT id INTO cproduct_id FROM product WHERE price_id=cprice_id;
+      SELECT product_id INTO cproduct_id FROM price WHERE id=cprice_id;
       START TRANSACTION;
         DELETE FROM network_player WHERE player_id=cplayer_id AND network_id IN (SELECT network_id FROM product_network WHERE product_id=cproduct_id);
         UPDATE player_subscription SET active=0 WHERE player_id=cplayer_id AND subscription_id=csubscription_id AND price_id=cprice_id;
@@ -40,15 +40,15 @@ class m210208_232789_create_do_subscription_expiration_procedure extends Migrati
     END LOOP;
     CLOSE expiredCursor;
   END";
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-      $this->db->createCommand($this->DROP_SQL)->execute();
-      $this->db->createCommand($this->CREATE_SQL)->execute();
-    }
 
-    public function down()
-    {
-      $this->db->createCommand($this->DROP_SQL)->execute();
-    }
+  public function up()
+  {
+    $this->db->createCommand($this->DROP_SQL)->execute();
+    $this->db->createCommand($this->CREATE_SQL)->execute();
+  }
+
+  public function down()
+  {
+    $this->db->createCommand($this->DROP_SQL)->execute();
+  }
 }
