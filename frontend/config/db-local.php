@@ -5,7 +5,7 @@ return [
     'username' => 'root',
     'password' => '',
     'charset' => 'utf8mb4',
-    'enableProfiling'=>true,
+    //'enableProfiling'=>false,
     //'enableParamLogging'=>true,
     // Schema cache options (for production environment)
     'enableSchemaCache' => true,
