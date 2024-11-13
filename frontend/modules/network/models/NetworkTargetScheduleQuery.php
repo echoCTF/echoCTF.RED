@@ -11,7 +11,7 @@ class NetworkTargetScheduleQuery extends \yii\db\ActiveQuery
 {
     public function pending()
     {
-        return $this->andWhere('migration_date >= NOW()')->orderBy(['migration_date'=>SORT_ASC,'network_id'=>SORT_ASC]);
+        return $this->orderBy(['migration_date'=>SORT_ASC,'network_id'=>SORT_ASC]);
     }
 
     /**
