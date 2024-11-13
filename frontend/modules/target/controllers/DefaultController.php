@@ -272,10 +272,13 @@ class DefaultController extends \app\components\BaseController
       ->where(['model_id' => $findings, 'model' => 'finding'])
       ->orWhere(['model_id' => $treasures, 'model' => 'treasure'])
       ->orWhere(['model_id' => $id, 'model' => 'headshot']);
-    if (\Yii::$app->user->isGuest) {
-      $model->andWhere(['academic' => 0]);
-    } else {
-      $model->andWhere(['academic' => \Yii::$app->user->identity->academic]);
+    if(\Yii::$app->sys->academic_grouping!==false)
+    {
+      if (\Yii::$app->user->isGuest) {
+        $model->andWhere(['academic' => 0]);
+      } else {
+        $model->andWhere(['academic' => \Yii::$app->user->identity->academic]);
+      }
     }
 
     $dataProvider = new ActiveDataProvider([
