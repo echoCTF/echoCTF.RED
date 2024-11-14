@@ -42,6 +42,30 @@ class m241110_214630_from_v0_25_0_to_v1_0_0 extends Migration
       // SELECT css,js FROM layout_override WHERE (player_id=21 or player_id IS NULL) AND ((NOW() BETWEEN valid_from AND valid_until) OR (repeating=1 AND NOW() BETWEEN DATE_FORMAT(valid_from,CONCAT(YEAR(NOW()),'-%m-%d')) AND DATE_FORMAT(valid_until,CONCAT(YEAR(NOW()),'-%m-%d'))))
       $this->db->createCommand('CREATE INDEX IF NOT EXISTS `query-index` ON layout_override (player_id,valid_from,valid_until,repeating)')->execute();
 
+      // SELECT COUNT(*) FROM `network` WHERE `active`=1
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `count-active-network` ON network (active)')->execute();
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `idx-network-weight` ON network (weight)')->execute();
+
+      // SELECT * FROM `question` WHERE `challenge_id`=1 ORDER BY `weight`, `id`
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `order-query-index` ON question (`challenge_id`,`weight`,`id`)')->execute();
+
+      // SELECT `id`, `name` FROM `vpn_template` WHERE (`active`=TRUE) AND (`visible`=TRUE) AND (`client`=TRUE) ORDER BY `name`
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `query-index` ON vpn_template (active,visible,client,`name`)')->execute();
+
+      // SELECT COUNT(*) FROM `challenge_solver` LEFT JOIN `player` ON `challenge_solver`.`player_id` = `player`.`id` LEFT JOIN `challenge` ON `challenge_solver`.`challenge_id` = `challenge`.`id` WHERE (`player`.`status`=10) AND (`challenge`.`timer`=1) AND (`challenge_solver`.`timer` > 0)
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `idx-timer` ON challenge (`timer`)')->execute();
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `idx-timer` ON challenge_solver (`timer`)')->execute();
+
+
+      // FILESORTS //
+      // SELECT `team`.* FROM `team` LEFT JOIN `team_player` ON `team`.`id` = `team_player`.`team_id` WHERE `academic`=0 GROUP BY `team`.`id` ORDER BY `name`, `approved` DESC, `ts`
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `idx-academic` ON team (`academic`)')->execute();
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `idx-ts` ON team (`ts`)')->execute();
+
+      // SELECT * FROM `team_player` WHERE `team_id` IN (61,  68, 32, 17, 58, 27, 75) ORDER BY `approved` DESC, `ts`
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `idx-approved` ON team_player (`approved`)')->execute();
+      $this->db->createCommand('CREATE INDEX IF NOT EXISTS `idx-ts` ON team_player (`ts`)')->execute();
+
       $this->upsert('sysconfig',['id'=>'platform_version','val'=>'v1.0.0']);
     }
 
