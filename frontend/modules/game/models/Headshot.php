@@ -111,6 +111,11 @@ class Headshot extends \yii\db\ActiveRecord
         return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
+    public function getPlayerWithProfile()
+    {
+        return $this->hasOne(Player::class, ['id' => 'player_id'])->with('profile');
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
