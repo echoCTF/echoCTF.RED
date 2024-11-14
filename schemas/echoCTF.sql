@@ -152,6 +152,7 @@ CREATE TABLE `challenge` (
   `public` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
+  KEY `idx-timer` (`timer`),
   KEY `idx-challenge-public` (`public`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -170,6 +171,7 @@ CREATE TABLE `challenge_solver` (
   PRIMARY KEY (`challenge_id`,`player_id`),
   KEY `idx-challenge_solver-challenge_id` (`challenge_id`),
   KEY `idx-challenge_solver-player_id` (`player_id`),
+  KEY `idx-timer` (`timer`),
   CONSTRAINT `fk-challenge_solver-challenge_id` FOREIGN KEY (`challenge_id`) REFERENCES `challenge` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk-challenge_solver-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -355,6 +357,7 @@ CREATE TABLE `headshot` (
   `rating` smallint(6) DEFAULT -1,
   `first` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`player_id`,`target_id`),
+  KEY `query-index` (`target_id`,`created_at`),
   KEY `idx-headshot-player_id` (`player_id`),
   KEY `idx-headshot-target_id` (`target_id`),
   CONSTRAINT `fk-headshot-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE,
@@ -493,6 +496,7 @@ CREATE TABLE `layout_override` (
   `repeating` tinyint(1) NOT NULL DEFAULT 0,
   `valid_from` datetime NOT NULL,
   `valid_until` datetime NOT NULL,
+  KEY `query-index` (player_id,valid_from,valid_until, repeating),
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -575,7 +579,8 @@ CREATE TABLE `network` (
   `weight` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
-  KEY `idx-network-weight` (`weight`)
+  KEY `idx-network-weight` (`weight`),
+  KEY `count-active-network` (`active`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -626,6 +631,7 @@ CREATE TABLE `network_target_schedule` (
   `created_at` datetime NOT NULL,
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
+  KEY `query-index` (`target_id`,`migration_date`,`network_id`),
   KEY `idx-network_target_schedule-target_id` (`target_id`),
   KEY `idx-network_target_schedule-network_id` (`network_id`),
   CONSTRAINT `fk-network_target_schedule-network_id` FOREIGN KEY (`network_id`) REFERENCES `network` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
@@ -662,6 +668,7 @@ CREATE TABLE `notification` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
+  KEY `query-index` (player_id,archived,created_at,id),
   KEY `idx-notification-player_id` (`player_id`),
   KEY `idx-notification-archived` (`archived`),
   KEY `idx-notification-category` (`category`),
@@ -1166,6 +1173,7 @@ CREATE TABLE `question` (
   `parent` int(11) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `challenge_id` (`challenge_id`,`name`),
+  KEY `order-query-index` (`challenge_id`,`weight`,`id`),
   CONSTRAINT `question_ibfk_1` FOREIGN KEY (`challenge_id`) REFERENCES `challenge` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1337,6 +1345,7 @@ CREATE TABLE `stream` (
   `pubmessage` mediumtext DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
+  KEY `query-index` (ts,id,model_id,model(20)),
   KEY `player_id` (`player_id`),
   CONSTRAINT `stream_ibfk_1` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Information stream for participants and public alike';
@@ -1576,6 +1585,8 @@ CREATE TABLE `team` (
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `token` (`token`),
   KEY `owner_id` (`owner_id`),
+  KEY `idx-academic` (`academic`),
+  KEY `idx-ts` (`ts`),
   CONSTRAINT `team_ibfk_1` FOREIGN KEY (`owner_id`) REFERENCES `player` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -1627,6 +1638,8 @@ CREATE TABLE `team_player` (
   `approved` tinyint(1) DEFAULT 0,
   `ts` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
+  KEY `idx-approved` (`approved`),
+  KEY `idx-ts` (`ts`),
   UNIQUE KEY `player_id` (`player_id`),
   UNIQUE KEY `team_id` (`team_id`,`player_id`),
   CONSTRAINT `team_player_ibfk_1` FOREIGN KEY (`team_id`) REFERENCES `team` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1704,6 +1717,7 @@ CREATE TABLE `treasure` (
   UNIQUE KEY `code` (`code`),
   KEY `target_id` (`target_id`),
   KEY `idx-treasure-weight` (`weight`),
+  KEY `query-index` (`target_id`,`weight`,`id`),
   CONSTRAINT `treasure_ibfk_1` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Claimable points by the user, through hidden codes and files';
 
@@ -1842,7 +1856,8 @@ CREATE TABLE `vpn_template` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
+  UNIQUE KEY `name` (`name`),
+  KEY `query-index` (active,visible,client,`name`(60))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1864,6 +1879,7 @@ CREATE TABLE `writeup` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`player_id`,`target_id`),
   UNIQUE KEY `id` (`id`),
+  KEY `query-index` (target_id,approved,created_at),
   KEY `idx-writeup-player_id` (`player_id`),
   KEY `idx-writeup-target_id` (`target_id`),
   KEY `fk_language_id` (`language_id`),
