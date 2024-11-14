@@ -137,7 +137,11 @@ if($headshot)
       <?=$this->render('_target_description',['target'=>$target,'identity'=>$identity]);?>
 
       <?php if(!Yii::$app->user->isGuest && Yii::$app->user->id === $identity->player_id && (Yii::$app->user->identity->getFindings($target->id)->count()>0 || Yii::$app->user->identity->getTreasures($target->id)->count()>0)):?>
-      <?=$this->render('_player_discoveries',['target'=>$target]);?>
+      <?=$this->render('_player_discoveries',[
+        'target'=>$target,
+        'findings'=>Yii::$app->user->identity->getFindings($target->id),
+        'treasures'=>Yii::$app->user->identity->getTreasures($target->id),
+        'playerHintsForTarget'=>Yii::$app->user->identity->getPlayerHintsForTarget($target->id)]);?>
       <?php endif;?>
 
     </div>
