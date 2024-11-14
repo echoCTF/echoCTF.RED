@@ -8,10 +8,10 @@ use yii\helpers\Html;
   </div>
   <div class="card-body table-responsive">
 <?php
-    if($findings->count()>0)
+    if(count($findings)>0)
     {
       echo \Yii::t('app','# Discovered services');
-      echo Html::ul($findings->all(), ['item' => function($item, $index) use ($target) {
+      echo Html::ul($findings, ['item' => function($item, $index) use ($target) {
           return Html::tag(
               'li',
               sprintf("<code>%s://%s:%d</code>",$item->protocol,$target->IpOrName,$item->port)
@@ -19,10 +19,10 @@ use yii\helpers\Html;
           );
       }]);
     }
-    if($treasures->count()>0)
+    if(count($treasures)>0)
     {
       echo \Yii::t('app','# Discovered flags');
-      echo Html::ul($treasures->orderBy(['id' => SORT_DESC])->all(), ['item' => function($item, $index) use ($target) {
+      echo Html::ul($treasures, ['item' => function($item, $index) use ($target) {
         return Html::tag(
             'li',
             sprintf("<code>(%s/%d pts) %s</code>",$item->category,$item->points,$item->locationRedacted)
