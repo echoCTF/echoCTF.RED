@@ -101,6 +101,14 @@ class ChallengeSolver extends \yii\db\ActiveRecord
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPlayerWithProfile()
+    {
+        return $this->hasOne(Player::class, ['id' => 'player_id'])->with('profile');
+    }
+
+    /**
      * {@inheritdoc}
      * @return ChallengeSolverQuery the active query used by this AR class.
      */

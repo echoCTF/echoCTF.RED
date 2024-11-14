@@ -5,7 +5,7 @@ use yii\helpers\Html;
   <h4><i class="fas fa-tasks"></i> <?=$solvers->count()>0? $solvers->count()." " : ""?>Solvers <small>(newer first)</small></h4>
   <div class="card-body table-responsive"><?php
     $solves=[];
-    foreach($solvers->orderBy(['created_at'=>SORT_DESC, 'player_id'=>SORT_ASC])->limit(50)->all() as $solver)
+    foreach($solvers->with('playerWithProfile')->orderBy(['created_at'=>SORT_DESC, 'player_id'=>SORT_ASC])->limit(50)->all() as $solver)
     {
       if((int) $solver->player->active === 1)
         $solves[]=$solver->player->profile->link;
