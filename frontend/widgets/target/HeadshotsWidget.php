@@ -22,16 +22,19 @@ class HeadshotsWidget extends Widget
   {
     $headshots = [];
     $sql = "SELECT player.id,player.username,profile.id as profile_id,profile.visibility FROM headshot LEFT JOIN player ON player.id=headshot.player_id LEFT JOIN profile on profile.player_id=player.id WHERE headshot.target_id=:target_id AND player.status=10 ORDER BY headshot.created_at DESC,headshot.player_id asc LIMIT 50";
+    $result = \Yii::$app->db->createCommand($sql, [':target_id' => $this->target_id])->cache(180)->query();
 
-    foreach (\Yii::$app->db->createCommand($sql,[':target_id'=>$this->target_id])->query() as $hs) {
+    foreach ($result as $hs) {
       $to = Html::encode($hs['username']);
 
       if (intval(\Yii::$app->user->id) === intval($hs['id']))
         $to = Html::a(Html::encode($hs['username']), ['/profile/me'], ['data-pjax' => 0]);
-      else if ($this->visible($hs['id'],$hs['visibility']) === true)
+      else if ($this->visible($hs['id'], $hs['visibility']) === true)
         $to = Html::a(Html::encode($hs['username']), ['/profile/index', 'id' => $hs['profile_id']], ['data-pjax' => 0]);
+
       $headshots[] = $to;
     }
+
     if (!empty($headshots)) {
       echo "<code>", implode(", ", array_slice($headshots, 0, 19)), "</code>";
       if (count($headshots) > 19) {
@@ -45,7 +48,7 @@ class HeadshotsWidget extends Widget
     }
   }
 
-  private function visible(int $player_id,$visibility): bool
+  private function visible(int $player_id, $visibility): bool
   {
     if ($visibility === 'public') return true;
     if ($this->visibilityAllowed($player_id)) return true;
