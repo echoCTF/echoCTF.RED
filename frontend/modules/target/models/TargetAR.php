@@ -194,7 +194,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getNetworks()
     {
-      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkTarget');
     }
 
     /**
@@ -202,7 +202,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getNetwork()
     {
-      return $this->hasOne(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+      return $this->hasOne(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkTarget');
     }
 
     /**
