@@ -9,6 +9,7 @@ namespace app\widgets\target;
 use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Url;
+use app\components\ProfileVisibility as PV;
 
 class HeadshotsWidget extends Widget
 {
@@ -29,7 +30,7 @@ class HeadshotsWidget extends Widget
 
       if (intval(\Yii::$app->user->id) === intval($hs['id']))
         $to = Html::a(Html::encode($hs['username']), ['/profile/me'], ['data-pjax' => 0]);
-      else if ($this->visible($hs['id'], $hs['visibility']) === true)
+      else if (PV::visible($hs['id'], $hs['visibility']) === true)
         $to = Html::a(Html::encode($hs['username']), ['/profile/index', 'id' => $hs['profile_id']], ['data-pjax' => 0]);
 
       $headshots[] = $to;
@@ -46,31 +47,5 @@ class HeadshotsWidget extends Widget
     } else {
       echo '<code>' . \Yii::t('app', 'no one yet...') . '</code>';
     }
-  }
-
-  private function visible(int $player_id, $visibility): bool
-  {
-    if ($visibility === 'public') return true;
-    if ($this->visibilityAllowed($player_id)) return true;
-    if ($this->visibilityDenied($visibility)) return false;
-    return true;
-  }
-
-  private function visibilityAllowed(int $player_id): bool
-  {
-    if (!\Yii::$app->user->isGuest) {
-      if (intval(\Yii::$app->user->id) === intval($player_id)) return true;
-      if (\Yii::$app->user->identity->isAdmin) return true;
-    }
-    return false;
-  }
-
-  private function visibilityDenied($visibility): bool
-  {
-    if (\Yii::$app->sys->player_profile === false) return true;
-
-    if ($visibility === 'private') return true;
-
-    return false;
   }
 }
