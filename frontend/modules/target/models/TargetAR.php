@@ -178,7 +178,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getFindings()
     {
-      return $this->hasMany(Finding::class, ['target_id' => 'id']);
+      return $this->hasMany(Finding::class, ['target_id' => 'id'])->cache(true);
     }
 
     /**
@@ -210,7 +210,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getTreasures()
     {
-      return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight'=>SORT_DESC,'id'=>SORT_DESC]);
+      return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight'=>SORT_DESC,'id'=>SORT_DESC])->cache(true);
     }
 
     /**
@@ -225,7 +225,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getMetadata()
     {
-        return $this->hasOne(TargetMetadata::class, ['target_id' => 'id']);
+        return $this->hasOne(TargetMetadata::class, ['target_id' => 'id'])->cache(true);
     }
 
 
