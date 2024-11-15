@@ -259,7 +259,7 @@ class DefaultController extends \app\components\BaseController
     $target = $this->findModel($id);
     $this->lastVisit($id);
     if (!Yii::$app->user->isGuest) {
-      $target = Target::find()->forView((int) Yii::$app->user->id)->where(['t.id' => $id])->one();
+      $target = Target::find()->with('headshots','networks','metadata')->forView((int) Yii::$app->user->id)->where(['t.id' => $id])->one();
     } else {
       $target = Target::find()->withAvgRating()->where(['t.id' => $id])->one();
     }

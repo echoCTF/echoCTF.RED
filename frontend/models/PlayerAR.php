@@ -176,7 +176,7 @@ class PlayerAR extends ActiveRecord
     if($target_id===null)
       return $this->hasMany(\app\modules\target\models\Treasure::class, ['id' => 'treasure_id'])->viaTable('player_treasure', ['player_id' => 'id']);
 
-    return $this->hasMany(\app\modules\target\models\Treasure::class, ['id' => 'treasure_id'])->onCondition(['target_id' => $target_id])->viaTable('player_treasure', ['player_id' => 'id']);
+    return $this->hasMany(\app\modules\target\models\Treasure::class, ['id' => 'treasure_id'])->onCondition(['target_id' => $target_id])->via('playerTreasures');
   }
   /**
    * @return \yii\db\ActiveQuery
@@ -203,7 +203,7 @@ class PlayerAR extends ActiveRecord
     if($target_id===null)
       return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->viaTable('player_finding', ['player_id' => 'id']);
 
-    return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->onCondition(['target_id' => $target_id])->viaTable('player_finding', ['player_id' => 'id']);
+    return $this->hasMany(\app\modules\target\models\Finding::class, ['id' => 'finding_id'])->onCondition(['target_id' => $target_id])->via('playerFindings');
   }
 
   public function getPlayerTreasures()

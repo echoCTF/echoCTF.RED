@@ -47,7 +47,7 @@ $first=false;
 
   </div>
   <div class="col-lg-4 col-md-4 col-sm-12">
-    <?= SolverWidget::widget(['model' => $solvers,'slice'=>30]) ?>
+    <?= SolverWidget::widget(['challenge_id' => $model->id,'slice'=>30]) ?>
   </div>
 
   </div>

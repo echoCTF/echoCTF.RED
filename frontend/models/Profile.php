@@ -89,18 +89,20 @@ class Profile extends ProfileAR
     /**
      * Get profile link based on player permissions,
      */
-    public function getLink($team=false)
+    public function getLink($team=false,$username=null)
     {
+      if($username===null)
+        $username=$this->owner->username;
       $style=['data-pjax'=>0];
       if($team!==false && $this->owner->teamPlayer->approved!==1)
       {
         $style=['data-pjax'=>0, 'class'=>'text-danger text-bold'];
       }
       if(intval(Yii::$app->user->id) === intval($this->player_id))
-        return Html::a(Html::encode($this->owner->username), ['/profile/me'],$style);
+        return Html::a(Html::encode($username), ['/profile/me'],$style);
       else if($this->visible === true)
-        return Html::a(Html::encode($this->owner->username), ['/profile/index', 'id'=>$this->id], $style);
-      return Html::encode($this->owner->username);
+        return Html::a(Html::encode($username), ['/profile/index', 'id'=>$this->id], $style);
+      return Html::encode($username);
     }
 
     public function getLinkto()

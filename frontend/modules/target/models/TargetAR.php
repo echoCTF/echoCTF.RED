@@ -178,7 +178,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getFindings()
     {
-      return $this->hasMany(Finding::class, ['target_id' => 'id']);
+      return $this->hasMany(Finding::class, ['target_id' => 'id'])->cache(true);
     }
 
     /**
@@ -194,7 +194,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getNetworks()
     {
-      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkTarget');
     }
 
     /**
@@ -202,7 +202,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getNetwork()
     {
-      return $this->hasOne(\app\modules\network\models\Network::class, ['id' => 'network_id'])->viaTable('network_target', ['target_id' => 'id']);
+      return $this->hasOne(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkTarget');
     }
 
     /**
@@ -210,7 +210,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getTreasures()
     {
-      return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight'=>SORT_DESC,'id'=>SORT_DESC]);
+      return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight'=>SORT_DESC,'id'=>SORT_DESC])->cache(true);
     }
 
     /**
@@ -225,7 +225,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
      */
     public function getMetadata()
     {
-        return $this->hasOne(TargetMetadata::class, ['target_id' => 'id']);
+        return $this->hasOne(TargetMetadata::class, ['target_id' => 'id'])->cache(true);
     }
 
 
@@ -243,10 +243,10 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
     public function getLastHeadshots()
     {
       if(Yii::$app->user->isGuest)
-        $academic=0;
-      else
-        $academic=Yii::$app->user->identity->academic;
-      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->academic($academic)->orderBy(['created_at'=>SORT_DESC])->limit(50);
+        return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at'=>SORT_DESC])->limit(50);
+      if(Yii::$app->sys->academic_grouping!==false)
+        return $this->hasMany(Headshot::class, ['target_id' => 'id'])->academic(Yii::$app->user->identity->academic)->orderBy(['created_at'=>SORT_DESC])->limit(50);
+      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->with('playerWithProfile')->orderBy(['created_at'=>SORT_DESC])->limit(50);
     }
     /*
      * Get Writeup relations of target

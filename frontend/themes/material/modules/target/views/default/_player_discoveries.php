@@ -8,10 +8,10 @@ use yii\helpers\Html;
   </div>
   <div class="card-body table-responsive">
 <?php
-    if(Yii::$app->user->identity->getFindings($target->id)->count()>0)
+    if(count($findings)>0)
     {
       echo \Yii::t('app','# Discovered services');
-      echo Html::ul(Yii::$app->user->identity->getFindings($target->id)->all(), ['item' => function($item, $index) use ($target) {
+      echo Html::ul($findings, ['item' => function($item, $index) use ($target) {
           return Html::tag(
               'li',
               sprintf("<code>%s://%s:%d</code>",$item->protocol,$target->IpOrName,$item->port)
@@ -19,10 +19,10 @@ use yii\helpers\Html;
           );
       }]);
     }
-    if(Yii::$app->user->identity->getTreasures($target->id)->count()>0)
+    if(count($treasures)>0)
     {
       echo \Yii::t('app','# Discovered flags');
-      echo Html::ul(Yii::$app->user->identity->getTreasures($target->id)->orderBy(['id' => SORT_DESC])->all(), ['item' => function($item, $index) use ($target) {
+      echo Html::ul($treasures, ['item' => function($item, $index) use ($target) {
         return Html::tag(
             'li',
             sprintf("<code>(%s/%d pts) %s</code>",$item->category,$item->points,$item->locationRedacted)
@@ -30,10 +30,10 @@ use yii\helpers\Html;
         );
       }]);
     }
-    if(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->count()>0)
+    if($playerHintsForTarget->count()>0)
     {
       echo \Yii::t('app','# Hints'),"\n";
-      echo Html::ul(Yii::$app->user->identity->getPlayerHintsForTarget($target->id)->all(), ['item' => function($item, $index) use ($target) {
+      echo Html::ul($playerHintsForTarget->all(), ['item' => function($item, $index) use ($target) {
         return Html::tag(
             'li',
             '<code>'.$item->hint->title.'</code>'
