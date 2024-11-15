@@ -168,6 +168,36 @@ class PlayerAR extends \yii\db\ActiveRecord
     {
         return $this->hasMany(\app\modules\activity\models\PlayerBadge::class, ['player_id' => 'id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWriteups()
+    {
+        return $this->hasMany(\app\modules\activity\models\Writeup::class, ['player_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMonthlyScores()
+    {
+        return $this->hasMany(\app\modules\activity\models\PlayerScoreMonthly::class, ['player_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getWriteupRatings()
+    {
+        return $this->hasMany(\app\modules\activity\models\WriteupRating::class, ['player_id' => 'id']);
+    }
+
+    public function getPlayerTargetHelps()
+    {
+        return $this->hasMany(\app\modules\activity\models\PlayerTargetHelp::class, ['player_id' => 'id']);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -247,6 +277,11 @@ class PlayerAR extends \yii\db\ActiveRecord
         return $this->hasMany(\app\modules\activity\models\SpinHistory::class, ['player_id' => 'id']);
     }
 
+    public function getVpnHistory()
+    {
+        return $this->hasMany(\app\modules\activity\models\PlayerVpnHistory::class, ['player_id' => 'id']);
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -290,14 +325,6 @@ class PlayerAR extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-//    public function getSshkey()
-//    {
-//        return $this->hasOne(Sshkey::class, ['player_id' => 'id']);
-//    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
     public function getProfile()
     {
         return $this->hasOne(Profile::class, ['player_id' => 'id']);
@@ -310,6 +337,7 @@ class PlayerAR extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Stream::class, ['player_id' => 'id'])->orderBy(['ts'=>SORT_DESC,'id'=>SORT_DESC]);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -321,10 +349,20 @@ class PlayerAR extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getProgressTargets()
+    {
+        return $this->hasMany(\app\modules\activity\models\TargetPlayerState::class, ['player_id' => 'id']);
+    }
+
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getReferred()
     {
         return $this->hasMany(PlayerRelation::class, ['player_id' => 'id']);
     }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -333,6 +371,13 @@ class PlayerAR extends \yii\db\ActiveRecord
         return $this->hasMany(\app\modules\activity\models\ChallengeSolver::class, ['player_id' => 'id']);
     }
 
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getNotifications()
+    {
+        return $this->hasMany(\app\modules\activity\models\Notification::class, ['player_id' => 'id']);
+    }
 
     /**
      * @return \yii\db\ActiveQuery
