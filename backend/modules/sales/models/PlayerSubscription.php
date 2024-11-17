@@ -117,24 +117,20 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   }
 
   /**
-   * Deletes inactive subscriptions
+   * Deletes inactive subscriptions and ensure their perks have been withdrawn
    * @return int — the number of rows deleted
    * @throws NotSupportedException — if not overridden.
    */
-  public static function DeleteInactive()
+  public static function DeleteInactive(): int
   {
+    $deleted=0;
     foreach (PlayerSubscription::find()->active(0)->all() as $sub) {
-      if ($sub->product)
-        $metadata = json_decode($sub->product->metadata);
-      if (isset($metadata->network_ids)) {
-        NetworkPlayer::deleteAll([
-          'and',
-          ['player_id' => $sub->player_id],
-          ['in', 'network_id', explode(',', $metadata->network_ids)]
-        ]);
-      }
-      $sub->delete();
+      // begin transaction
+      $sub->cancel();
+      if($sub->delete())
+        $deleted++;
     }
+    return $deleted;
   }
 
   /**
@@ -144,7 +140,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   public static function FetchStripe()
   {
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-    $stripeSubs = $stripe->subscriptions->all(['limit'=>100]);
+    $stripeSubs = $stripe->subscriptions->all(['limit' => 100]);
     foreach ($stripeSubs->autoPagingIterator() as $stripe_subscription) {
       $player = Player::findOne(['stripe_customer_id' => $stripe_subscription->customer]);
       if ($player !== null) {
@@ -171,8 +167,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           else
             \Yii::$app->session->addFlash('success', sprintf('Imported subscription: %s for player %s', Html::encode($stripe_subscription->id), Html::encode($player->username)));
         }
-      }
-      else
+      } else
         \Yii::$app->session->addFlash('warning', sprintf('Customer not found: %s', Html::encode($stripe_subscription->customer)));
     }
   }
@@ -184,13 +179,11 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   public static function CheckStripe()
   {
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-    foreach (PlayerSubscription::find()->where(['!=','subscription_id','sub_vip'])->all() as $ps) {
+    foreach (PlayerSubscription::find()->where(['!=', 'subscription_id', 'sub_vip'])->all() as $ps) {
       try {
         $stripe->subscriptions->retrieve($ps->subscription_id, []);
-      }
-      catch(\Stripe\Exception\InvalidRequestException $e) {
-        if(str_starts_with($e->getMessage(),'No such subscription:'))
-        {
+      } catch (\Stripe\Exception\InvalidRequestException $e) {
+        if (str_starts_with($e->getMessage(), 'No such subscription:')) {
           if ($ps->product)
             $metadata = json_decode($ps->product->metadata);
 
@@ -201,7 +194,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
               }
             }
           }
-          if($ps->delete())
+          if ($ps->delete())
             \Yii::$app->session->addFlash('success', sprintf('Deleted subscription: %s', Html::encode($ps->subscription_id)));
           else
             \Yii::$app->session->addFlash('error', sprintf('Failed to delete subscription: %s', Html::encode($ps->id)));
@@ -254,5 +247,22 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     }
 
     return parent::afterSave($insert, $changedAttributes);
+  }
+
+  public function cancel()
+  {
+    if ($this->product !== null) {
+      $metadata = json_decode($this->product->metadata);
+      if (isset($metadata->network_ids)) {
+        NetworkPlayer::deleteAll([
+          'and',
+          ['player_id' => $this->player_id],
+          ['in', 'network_id', explode(',', $metadata->network_ids)]
+        ]);
+      }
+      if (isset($metadata->spins) && intval($metadata->spins) > 0) {
+        $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
+      }
+    }
   }
 }
