@@ -21,7 +21,7 @@ class PlayerSubscriptionQuery extends \yii\db\ActiveQuery
 
     public function expired($interval=240)
     {
-        return $this->andWhere(['<','ending',new \yii\db\Expression("NOW() - INTERVAL $interval MINUTE")]);
+        return $this->andWhere(['<=',new \yii\db\Expression("ending + INTERVAL $interval MINUTE"),new \yii\db\Expression("NOW()")]);
     }
 
     /**
