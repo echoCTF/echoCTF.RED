@@ -100,15 +100,20 @@ class PlayerSubscription extends \yii\db\ActiveRecord
    * @return bool - If data are the same or subscription is sub_vip returns true
    * @throws Exception|UserException - When stripe error occurs or data problems
    */
-  public function StripeCompare()
+  public function StripeCompare($invalid_returns=false): bool
   {
     if ($this->subscription_id === 'sub_vip')
       return true;
 
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-    $stripe_subscription = $stripe->subscriptions->retrieve($this->subscription_id, []);
+    try {
+      $stripe_subscription = $stripe->subscriptions->retrieve($this->subscription_id, []);
+    } catch (\Stripe\Exception\InvalidRequestException $e) {
+      return $invalid_returns;
+    }
 
-    if(intval(\Yii::$app->formatter->asTimestamp($this->starting))!==intval($stripe_subscription->current_period_start) || intval(\Yii::$app->formatter->asTimestamp($this->ending))!==intval($stripe_subscription->current_period_end))
+
+    if (intval(\Yii::$app->formatter->asTimestamp($this->starting)) !== intval($stripe_subscription->current_period_start) || intval(\Yii::$app->formatter->asTimestamp($this->ending)) !== intval($stripe_subscription->current_period_end))
       return false;
 
     if (intval($this->active) !== intval($stripe_subscription->items->data[0]->plan->active) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)

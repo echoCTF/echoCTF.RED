@@ -30,7 +30,7 @@ class CronController extends Controller
     foreach ($playerSubs->all() as $rec) {
       $transaction = \Yii::$app->db->beginTransaction();
       try {
-        if ($rec->StripeCompare() !== true) {
+        if ($rec->StripeCompare(true) !== true) {
           printf("Stripe do not agree: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
           if ($rec->StripeSync() === false) {
             printf("Failed to sync and update: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
