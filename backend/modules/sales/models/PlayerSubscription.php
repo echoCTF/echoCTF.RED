@@ -125,7 +125,6 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   {
     $deleted=0;
     foreach (PlayerSubscription::find()->active(0)->all() as $sub) {
-      // begin transaction
       $sub->cancel();
       if($sub->delete())
         $deleted++;
