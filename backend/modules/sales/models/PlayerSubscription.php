@@ -5,6 +5,7 @@ namespace app\modules\sales\models;
 use Yii;
 use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\NetworkPlayer;
+use yii\base\UserException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\helpers\Html;
@@ -78,62 +79,68 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   }
 
   /**
-   * Gets query for [[Player]].
-   *
-   * @return \yii\db\ActiveQuery|PlayerQuery
-   */
-  public function getPlayer()
-  {
-    return $this->hasOne(Player::class, ['id' => 'player_id']);
-  }
-
-  /**
-   * Gets query for [[Product]].
-   *
-   * @return \yii\db\ActiveQuery|ProductQuery
-   */
-  public function getProduct()
-  {
-    return $this->hasOne(Product::class, ['id' => 'product_id'])->via('price');
-  }
-
-  /**
-   * Gets query for [[Price]].
-   *
-   * @return \yii\db\ActiveQuery|PriceQuery
-   */
-  public function getPrice()
-  {
-    return $this->hasOne(Price::class, ['id' => 'price_id']);
-  }
-
-  /**
-   * {@inheritdoc}
-   * @return PlayerSubscriptionQuery the active query used by this AR class.
-   */
-  public static function find()
-  {
-    return new PlayerSubscriptionQuery(get_called_class());
-  }
-
-  /**
    * Deletes inactive subscriptions and ensure their perks have been withdrawn
    * @return int — the number of rows deleted
    * @throws NotSupportedException — if not overridden.
    */
   public static function DeleteInactive(): int
   {
-    $deleted=0;
+    $deleted = 0;
     foreach (PlayerSubscription::find()->active(0)->all() as $sub) {
       $sub->cancel();
-      if($sub->delete())
+      if ($sub->delete())
         $deleted++;
     }
+
     return $deleted;
   }
 
   /**
-   * Gets all Product from Stripe and merges with existing ones (if any).
+   * Compare current subscription model with Stripe data
+   * @return bool - If data are the same or subscription is sub_vip returns true
+   * @throws Exception|UserException - When stripe error occurs or data problems
+   */
+  public function StripeCompare()
+  {
+    if ($this->subscription_id === 'sub_vip')
+      return true;
+
+    $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
+    $stripe_subscription = $stripe->subscriptions->retrieve($this->subscription_id, []);
+
+    if(intval(\Yii::$app->formatter->asTimestamp($this->starting))!==intval($stripe_subscription->current_period_start) || intval(\Yii::$app->formatter->asTimestamp($this->ending))!==intval($stripe_subscription->current_period_end))
+      return false;
+
+    if (intval($this->active) !== intval($stripe_subscription->items->data[0]->plan->active) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
+      return false;
+
+    return true;
+  }
+
+  /**
+   * Sync current subscription model with Stripe data
+   * @return bool - If data are the same or subscription is sub_vip returns true
+   * @throws Exception|UserException - When stripe error occurs or data problems
+   */
+  public function StripeSync()
+  {
+    if ($this->subscription_id === 'sub_vip')
+      return true;
+
+    $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
+    $stripe_subscription = $stripe->subscriptions->retrieve($this->subscription_id, []);
+    $this->subscription_id = $stripe_subscription->id;
+    $this->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->current_period_start]);
+    $this->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->current_period_end]);
+    $this->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->created]);
+    $this->updated_at = new \yii\db\Expression('NOW()');
+    $this->price_id = $stripe_subscription->items->data[0]->plan->id;
+    $this->active = intval($stripe_subscription->items->data[0]->plan->active);
+    return $this->update(false);
+  }
+
+  /**
+   * Gets all Player Subscriptions from Stripe and merges with existing ones (if any).
    * @return mixed
    */
   public static function FetchStripe()
@@ -172,27 +179,40 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   }
 
   /**
-   * Checks existing subscriptions against stripe
+   * Checks all existing subscriptions against stripe and updates
+   * the active and price_id fields to match Stripe if different
+   *
    * @return mixed
    */
   public static function CheckStripe()
   {
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     foreach (PlayerSubscription::find()->where(['!=', 'subscription_id', 'sub_vip'])->all() as $ps) {
+      $dosave = false;
       try {
-        $stripe->subscriptions->retrieve($ps->subscription_id, []);
+        $stripe_subscription = $stripe->subscriptions->retrieve($ps->subscription_id, []);
+
+        // Check if subscription active agrees with Stripe
+        if (intval($ps->active) !== intval($stripe_subscription->items->data[0]->plan->active)) {
+          \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Syncing <kbd>active</kbd>, not the same with Stripe'));
+          $ps->active = intval($stripe_subscription->items->data[0]->plan->active);
+          $dosave = true;
+        }
+
+        // Check if subscription price_id agrees with Stripe
+        if ($ps->price_id != $stripe_subscription->items->data[0]->plan->id) {
+          \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Syncing <kbd>price_id</kbd>, not the same with Stripe'));
+          $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
+          $dosave = true;
+        }
+
+        // Check if we have something to to fix active agrees with Stripe
+        if ($dosave && $ps->update(true, ['price_id', 'active'])); {
+          \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Updated subscription <kbd>{subscription_id}</kbd>', ['subscription_id' => $ps->subscription_id]));
+        }
       } catch (\Stripe\Exception\InvalidRequestException $e) {
         if (str_starts_with($e->getMessage(), 'No such subscription:')) {
-          if ($ps->product)
-            $metadata = json_decode($ps->product->metadata);
-
-          if (isset($metadata->network_ids)) {
-            foreach (explode(',', $metadata->network_ids) as $val) {
-              if (($np = NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $ps->player_id])) !== null) {
-                $np->delete();
-              }
-            }
-          }
+          $ps->cancel();
           if ($ps->delete())
             \Yii::$app->session->addFlash('success', sprintf('Deleted subscription: %s', Html::encode($ps->subscription_id)));
           else
@@ -248,6 +268,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     return parent::afterSave($insert, $changedAttributes);
   }
 
+  /**
+   * Cancel the player subscription removing perks and network
+   */
   public function cancel()
   {
     if ($this->product !== null) {
@@ -263,5 +286,44 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
       }
     }
+  }
+
+  /**
+   * Gets query for [[Player]].
+   *
+   * @return \yii\db\ActiveQuery|PlayerQuery
+   */
+  public function getPlayer()
+  {
+    return $this->hasOne(Player::class, ['id' => 'player_id']);
+  }
+
+  /**
+   * Gets query for [[Product]].
+   *
+   * @return \yii\db\ActiveQuery|ProductQuery
+   */
+  public function getProduct()
+  {
+    return $this->hasOne(Product::class, ['id' => 'product_id'])->via('price');
+  }
+
+  /**
+   * Gets query for [[Price]].
+   *
+   * @return \yii\db\ActiveQuery|PriceQuery
+   */
+  public function getPrice()
+  {
+    return $this->hasOne(Price::class, ['id' => 'price_id']);
+  }
+
+  /**
+   * {@inheritdoc}
+   * @return PlayerSubscriptionQuery the active query used by this AR class.
+   */
+  public static function find()
+  {
+    return new PlayerSubscriptionQuery(get_called_class());
   }
 }
