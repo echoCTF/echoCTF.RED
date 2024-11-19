@@ -361,21 +361,33 @@
             'username' => 'participantUI',
             'password' => 'participantUI',
             'charset' => 'utf8mb4',
-            'enableSchemaCache' => true,
             'schemaCacheDuration' => 0,
-            'schemaCache' => 'cache',
-            'enableQueryCache'=>true,
-            'queryCache'=>'qcache',
             'queryCacheDuration'=>60,
+            'enableSchemaCache' => true,
+            'enableQueryCache'=>true,
+            //'schemaCache' => 'qcache',
+            //'queryCache'=>'qcache',
           ];
     tags:
       - conf
 
   - name: "Create participant/config/cache.php"
     copy:
-      content: "<?php  return [ 'class' => 'yii\\caching\\MemCache', 'useMemcached' => true, 'servers' => [['host' => '{{db_ip}}','port' => 11211, 'weight' => 60]]];\n"
       dest: "/home/participantUI/{{domain_name}}/frontend/config/cache.php"
       mode: '0444'
+      content: |
+        <?php
+          return [
+            'class' => 'yii\\caching\\MemCache',
+            'useMemcached' => true,
+            'servers' => [
+              [
+                'host' => '{{db_ip}}',
+                'port' => 11211,
+                'weight' => 60
+              ]
+            ]
+          ];
     tags:
       - conf
 
