@@ -13,20 +13,20 @@ use yii\widgets\ActiveForm;
 
     <?php $form=ActiveForm::begin();?>
 
-    <?= $form->field($model, 'username')->textInput(['maxlength' => true])->hint('The username of the player') ?>
+    <?= $form->field($model, 'username')->textInput(['maxlength' => true,'autocomplete'=>"off"])->hint('The username of the player') ?>
 
-    <?= $form->field($model, 'fullname')->textInput(['maxlength' => true])->hint('The fullname of the player') ?>
+    <?= $form->field($model, 'fullname')->textInput(['maxlength' => true,'autocomplete'=>"off"])->hint('The fullname of the player') ?>
 
     <?php if (\Yii::$app->sys->academic_grouping !== false): ?>
       <?= $form->field($model, 'academic')->dropDownList((new \app\components\columns\AcademicColumn(['attribute'=>'academic']))->filter)->hint('Academic grouping number for the player (if any)') ?>
     <?php else:?>
       <?= $form->field($model, 'academic')->textInput()->hint('Academic grouping number for the player (if any)') ?>
     <?php endif;?>
-    <?= $form->field($model, 'email')->textInput(['maxlength' => true])->hint('The email address of the player') ?>
+    <?= $form->field($model, 'email')->textInput(['maxlength' => true,'autocomplete'=>"off"])->hint('The email address of the player') ?>
 
     <?= $form->field($model, 'type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose player type'])->hint('Choose the type of the player. Either offense or defense') ?>
 
-    <?= $form->field($model, 'new_password')->textInput(['maxlength' => true])->hint('Choose a password for the player') ?>
+    <?= $form->field($model, 'new_password')->textInput(['maxlength' => true,'autocomplete'=>"off"])->hint('Choose a password for the player') ?>
 
     <?= $form->field($model, 'activkey')->textInput(['maxlength' => true])->hint('The activation key, generated automatically by the application. TODO') ?>
 

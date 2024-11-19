@@ -104,8 +104,9 @@ class Subscription extends \yii\base\Model
         $ps->cancel();
         $notif=new Notification;
         $notif->player_id=$player->id;
-        $notif->title='Your subscription has expired';
-        $notif->body='Your subscription has expired';
+        $notif->category='swal:info';
+        $notif->title=\Yii::t('app','Your subscription has expired');
+        $notif->body= \Yii::t('app','We\'re sorry to let you know that your '.$ps->product->name.' subscription has expired. Feel free to re-subscribe at any time.');
         $notif->archived=0;
         if($notif->save() && $ps->save())
         {

@@ -7,6 +7,7 @@ use yii\helpers\Console;
 use app\modules\sales\models\Product;
 use app\modules\sales\models\PlayerSubscription;
 use app\modules\sales\models\PlayerCustomerSearch as PlayerCustomer;
+use yii\base\UserException;
 
 /**
  * Perform Stripe/Sales related cron operations.
@@ -14,42 +15,54 @@ use app\modules\sales\models\PlayerCustomerSearch as PlayerCustomer;
 class CronController extends Controller
 {
   /**
-   * Find subscriptions that have expired for more than 4 hours and cause
-   * expiration and disconnect from the VPN.
+   * Find subscriptions that have expired for more than 24 hours and clean them up
+   * TODO: Also disconnect from the VPN
    *
    * This operation is supposed to be run on the VPN Server
    */
-  public function actionExpireSubscriptions($active = true, $interval = 7200)
+  public function actionExpireSubscriptions($active = false, $interval = 1440)
   {
-    if ($active === true)
-      $playerSubs = PlayerSubscription::find()->active()->expired($interval);
+    if (boolval($active) === true)
+      $playerSubs = PlayerSubscription::find()->active(intval($active))->expired($interval);
     else
-      $playerSubs = PlayerSubscription::find()->active(intval($active));
+      $playerSubs = PlayerSubscription::find()->expired($interval)->orWhere(['active' => 0]);
 
     foreach ($playerSubs->all() as $rec) {
       $transaction = \Yii::$app->db->beginTransaction();
       try {
-        if ($rec->active)
-          printf("Expiring: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
-        else
-          printf("Cleaning: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
-        if ($rec->product) {
-          \Yii::$app->db->createCommand("DELETE FROM network_player WHERE player_id=:player_id AND network_id IN (SELECT network_id FROM product_network WHERE product_id=:product_id)")
-            ->bindValue(':player_id', $rec->player_id)
-            ->bindValue(':product_id', $rec->product->id)
-            ->execute();
-          $rec->updateAttributes(['active' => 0]);
+        if ($rec->StripeCompare(true) !== true) {
+          printf("Stripe do not agree: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
+          if ($rec->StripeSync() === false) {
+            printf("Failed to sync and update: %s %s => %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id);
+            throw new UserException(\Yii::t('app', 'Subscription {subscription} not in sync with Stripe!', ['subscription' => $rec->subscription_id]));
+          }
         } else {
-          \Yii::$app->db->createCommand("DELETE FROM network_player WHERE player_id=:player_id")
-            ->bindValue(':player_id', $rec->player_id)
-            ->execute();
+          if ($rec->active)
+            printf("Expiring: %s %s => %s / %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id, \Yii::$app->formatter->asRelativeTime($rec->ending));
+          else
+            printf("Inactive: %s %s => %s / %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id, \Yii::$app->formatter->asRelativeTime($rec->ending));
+
+          if ($rec->product) {
+            $notif = new \app\modules\activity\models\Notification;
+            $notif->player_id = $rec->player_id;
+            $notif->category = 'swal:info';
+            $notif->title = \Yii::t('app', 'Your subscription has expired');
+            $notif->body = \Yii::t('app', 'We\'re sorry to let you know that your ' . $rec->product->name . ' subscription has expired. Feel free to re-subscribe at any time.');
+            $notif->archived = 0;
+            $rec->cancel();
+            $notif->save();
+          } else {
+            \Yii::$app->db->createCommand("DELETE FROM network_player WHERE player_id=:player_id")
+              ->bindValue(':player_id', $rec->player_id)
+              ->execute();
+          }
+
           $rec->delete();
         }
         $transaction->commit();
       } catch (\Throwable $e) {
         $transaction->rollBack();
         echo "Rolling back: ", $e->getMessage(), "\n";
-        throw $e;
       }
     }
   }
@@ -81,7 +94,14 @@ class CronController extends Controller
    */
   public function actionDeleteInactive()
   {
-    echo "Deleting expired subscriptions\n";
-    PlayerSubscription::DeleteInactive();
+    $transaction = \Yii::$app->db->beginTransaction();
+    try {
+      echo "Deleting expired subscriptions\n";
+      echo "Deleted " . PlayerSubscription::DeleteInactive() . " subscriptions\n";
+      $transaction->commit();
+    } catch (\Exception $e) {
+      $transaction->rollBack();
+      echo "Failed to delete inactive subscriptions " . $e->getMessage() . "\n";
+    }
   }
 }

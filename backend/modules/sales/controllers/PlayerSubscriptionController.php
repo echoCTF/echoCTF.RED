@@ -82,7 +82,7 @@ class PlayerSubscriptionController extends \app\components\BaseController
     $model = $this->findModel($id);
 
     if ($model->load(Yii::$app->request->post()) && $model->save()) {
-      if ($model->active == 0) {
+      if ($model->active == 0 && $model->price && $model->price->product) {
         $network_ids = ArrayHelper::getColumn($model->price->product->productNetworks, 'network_id');
         NetworkPlayer::deleteAll([
           'AND',

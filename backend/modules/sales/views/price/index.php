@@ -54,7 +54,10 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Prices'), 'url' => [
               'format'=>'raw',
               'contentOptions'=>['style'=>'white-space: nowrap;'],
               'value'=>function($model){
+                if($model->product)
                   return sprintf('<small><abbr title="%s">%s</abbr></small>',$model->product_id,$model->product->name);
+                else
+                  return sprintf('<small class="text-danger"><abbr title="Product %s does not exist">%s</abbr></small>',$model->product_id,$model->product_id);
               }
             ],
             'recurring_interval',
