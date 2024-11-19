@@ -9,11 +9,12 @@ return [
     //'enableParamLogging'=>true,
     // Schema cache options (for production environment)
     'enableSchemaCache' => true,
-    'schemaCacheDuration' => 0,
-    'schemaCache' => 'cache',
     'enableQueryCache' => true,
-    'queryCache'=>'qcache',
+    'schemaCacheDuration' => 0,
     'queryCacheDuration'=>60,
+    // You can have multiple caches defined for queries
+    //'queryCache'=>'qcache',
+    //'schemaCache' => 'cache',
 //    'on afterOpen' => function($event) {
 //        $event->sender->createCommand("SET time_zone='+00:00'")->execute();
 //    },
