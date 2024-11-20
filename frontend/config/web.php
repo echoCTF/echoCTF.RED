@@ -170,7 +170,9 @@ $config = [
       'name' => 'red',
       'timeout' => 3600 * 12,
       'cookieParams' => [
+        'secure' => true,
         'sameSite' => 'Strict',
+        'lifetime'=> 3600 * 12,
         'httpOnly' => true
       ],
     ],
@@ -178,7 +180,12 @@ $config = [
       //'class' => '\app\components\User',
       'identityClass' => '\app\models\Player',
       'enableAutoLogin' => true,
-      'identityCookie' => ['name' => '_identity-red', 'httpOnly' => true, /*'sameSite'=>'Lax'*/],
+      'identityCookie' => [
+        'name' => '_identity-red',
+        'secure' => true,
+        'httpOnly' => true,
+        'sameSite'=>'Strict'
+      ],
     ],
     'errorHandler' => [
       'errorAction' => 'site/error',
