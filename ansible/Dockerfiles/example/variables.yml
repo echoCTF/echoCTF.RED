@@ -224,6 +224,8 @@ ETSCTF_TREASURES:
 #INI_FILES:
 #  - { file: "/path/to/file.ini", section: "SECTION", option: OPTION, value: "VALUE"}
 
+# Uncoment the following to run exec before replace
+# EXEC_BEFORE_REPLACE: true
 # These commands are executed at build time by ansible
 BUILD_COMMANDS:
 #  exec:

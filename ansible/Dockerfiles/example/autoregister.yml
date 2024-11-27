@@ -58,6 +58,13 @@
       replace: 'ETSCTF_{{item.code}}'
       backup: no
 
+  - name: BUILD_COMMANDS.exec
+    become_user: "{{item.become|default('root')}}"
+    become: true
+    when: BUILD_COMMANDS is defined and BUILD_COMMANDS.exec is defined and EXEC_BEFORE_REPLACE is defined
+    with_items: "{{BUILD_COMMANDS.exec}}"
+    raw: "{{item.cmd}}"
+
 
   - name: BUILD_COMMANDS.replace
     when: BUILD_COMMANDS is defined and BUILD_COMMANDS.replace is defined
@@ -71,7 +78,7 @@
   - name: BUILD_COMMANDS.exec
     become_user: "{{item.become|default('root')}}"
     become: true
-    when: BUILD_COMMANDS is defined and BUILD_COMMANDS.exec is defined
+    when: BUILD_COMMANDS is defined and BUILD_COMMANDS.exec is defined and EXEC_BEFORE_REPLACE is not defined
     with_items: "{{BUILD_COMMANDS.exec}}"
     raw: "{{item.cmd}}"
 
