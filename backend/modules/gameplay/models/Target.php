@@ -401,8 +401,6 @@ class Target extends TargetAR
     if(Yii::$app->sys->discord_news_webhook!==false)
     {
       $bodyPlain.="\n\nWe hope you enjoy and as always Happy Hacking :heart:";
-      $data["avatar_url"]=sprintf("https://%s/images/appicon.png",Yii::$app->sys->offense_domain);
-      $data['username']='echoCTF.RED';
       $data['content']=$bodyPlain;
       $client = new Webhook(['url' => Yii::$app->sys->discord_news_webhook,'data'=>json_encode($data)]);
       $client->run();

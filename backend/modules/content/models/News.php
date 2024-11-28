@@ -72,8 +72,6 @@ class News extends \yii\db\ActiveRecord
     public function toDiscord()
     {
       if(Yii::$app->sys->discord_news_webhook!==false){
-        $data["avatar_url"]=sprintf("https://%s/images/appicon.png",Yii::$app->sys->offense_domain);
-        $data['username']='echoCTF.RED';
         $data['content']=$this->body;
         $client = new Webhook(['url' => Yii::$app->sys->discord_news_webhook,'data'=>json_encode($data)]);
         return $client->run();

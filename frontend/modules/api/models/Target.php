@@ -40,10 +40,11 @@ class Target extends \app\modules\target\models\Target
     if (Yii::$app->user->identity->instance)
       $this->ip = long2ip(Yii::$app->user->identity->instance->ip);
     else if($this->ondemand && $this->ondemand->state==1)
-    {
       $this->ip = long2ip($this->ip);
-    }
+    else if($this->ondemand && $this->ondemand->state!=1)
+      $this->ip = long2ip(0);
     else
-      $this->ip=0;
-  }
+      $this->ip=long2ip($this->ip);
+    }
+
 }
