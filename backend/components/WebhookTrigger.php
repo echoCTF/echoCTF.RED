@@ -22,8 +22,6 @@ class WebhookTrigger extends Component
   {
     if (trim($this->url)=="") return;
 
-
-    // init the request, set some info, send it and finally close it
     $ch = curl_init($this->url);
 
     curl_setopt($ch, CURLOPT_POST, 1);
