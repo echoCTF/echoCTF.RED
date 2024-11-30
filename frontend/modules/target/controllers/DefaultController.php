@@ -256,7 +256,7 @@ class DefaultController extends \app\components\BaseController
   public function actionIp($id)
   {
     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    if (($target = \app\modules\target\models\Target::find()->where(['t.id' => $id])->forView(\Yii::$app->user->id)->cache(true)->one()) === null) {
+    if (($target = \app\modules\target\models\Target::find()->where(['t.id' => $id])->forView(\Yii::$app->user->id)->one()) === null) {
       throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
     }
     $obj=new \stdClass;
