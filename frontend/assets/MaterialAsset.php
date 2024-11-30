@@ -32,15 +32,15 @@ class MaterialAsset extends AssetBundle
 
   public $css = [
     ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap', 'async' => 'async', 'crossorigin' => "anonymous"],
-    ['css/all.min.css?v=0.20.3', 'defer' => 'defer'],
-    'css/material-dashboard.css?v=0.20.0',
-    'css/material.css?v=0.22.0',
+    ['css/all.min.css?v=1.0.0', 'defer' => 'defer'],
+    'css/material-dashboard.css?v=1.0.0',
+    'css/material.css?v=1.0.0',
   ];
 
   public $js = [
-    '/js/core/popper.min.js?v=0.20.0',
-    '/js/core/bootstrap-material-design.min.js?v=0.20.0',
-    '/js/plugins/perfect-scrollbar.jquery.min.js?v=0.20.0',
+    '/js/core/popper.min.js?v=1.0.0',
+    '/js/core/bootstrap-material-design.min.js?v=1.0.0',
+    '/js/plugins/perfect-scrollbar.jquery.min.js?v=1.0.0',
 //    ["js/plugins/bootstrap-autocomplete.min.js", 'defer' => 'defer'],
     /* Plugin for the momentJs  */
     ['/js/plugins/moment.min.js', 'defer' => 'defer'],
@@ -67,8 +67,8 @@ class MaterialAsset extends AssetBundle
     // 'https://maps.googleapis.com/maps/api/js?key=YOUR_KEY_HERE',
     /******/
     //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
-    '/js/material-dashboard.js?v=0.24.0',
-    ['/js/libechoctf.js?v=0.24.0', 'defer' => 'defer'],
+    '/js/material-dashboard.js?v=1.0.0',
+    ['/js/libechoctf.js?v=1.0.0', 'defer' => 'defer'],
   ];
 
   public $depends = [

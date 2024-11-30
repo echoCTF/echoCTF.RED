@@ -46,16 +46,16 @@ class DefaultController extends \app\components\BaseController
     return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus', 'badge', 'search'],
+        'only' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus', 'badge', 'search','ip'],
         'rules' => [
           'eventStartEnd' => [
-            'actions' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search'],
+            'actions' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search','ip'],
           ],
           'teamsAccess' => [
-            'actions' => ['index', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search'],
+            'actions' => ['index', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search','ip'],
           ],
           'disabledRoute' => [
-            'actions' => ['badge', 'view', 'index', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search'],
+            'actions' => ['badge', 'view', 'index', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search', 'ip'],
           ],
           [
             'actions' => ['spawn', 'shut', 'spin'],
@@ -110,7 +110,7 @@ class DefaultController extends \app\components\BaseController
             'verbs' => ['post'],
           ],
           [
-            'actions' => ['index','search'],
+            'actions' => ['index','search','ip'],
             'allow' => true,
             'roles' => ['@']
           ],
@@ -124,7 +124,7 @@ class DefaultController extends \app\components\BaseController
             },
           ],
           [
-            'actions' => ['view', 'versus', 'badge'],
+            'actions' => ['view', 'versus', 'badge','ip'],
             'allow' => true,
             'roles' => ['@']
           ],
@@ -140,7 +140,7 @@ class DefaultController extends \app\components\BaseController
       ],
       [
         'class' => 'yii\filters\AjaxFilter',
-        'only' => ['claim', 'search'],
+        'only' => ['claim', 'search','ip'],
       ],
     ]);
   }
@@ -221,7 +221,7 @@ class DefaultController extends \app\components\BaseController
   }
 
   /**
-   * Lists all Credits models.
+   * Returns target models matching $q.
    * @return mixed
    */
   public function actionSearch($q)
@@ -248,6 +248,32 @@ class DefaultController extends \app\components\BaseController
     return [];
   }
 
+  /**
+   * Lists all Credits models.
+   * @return mixed
+   */
+
+  public function actionIp($id)
+  {
+    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    if (($target = \app\modules\target\models\Target::find()->where(['t.id' => $id])->forView(\Yii::$app->user->id)->one()) === null) {
+      throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
+    }
+    $obj=new \stdClass;
+    if (Yii::$app->user->identity->instance)
+    {
+      $obj->ip = long2ip(Yii::$app->user->identity->instance->ip);
+      $obj->instance=true;
+    }
+    else if(($target->on_ondemand===false) || ($target->on_ondemand && $target->ondemand_state==1))
+    {
+      $obj->ip = long2ip($target->ip);
+    }
+    else
+      $obj->ip=long2ip(0);
+
+    return $obj;
+  }
   /**
    * Renders a Target model details view
    * @return string
