@@ -86,7 +86,7 @@ class PlayerController extends \app\components\BaseController
   public function actionClearVerificationToken($id)
   {
     $model = $this->findModel($id);
-    $model->updateAttributes(['verification_token' => null]);
+    \app\modules\frontend\models\PlayerToken::deleteAll(['player_id' => $model->id, 'type' => 'email_verification']);
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 

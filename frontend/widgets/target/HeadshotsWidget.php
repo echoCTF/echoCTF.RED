@@ -22,7 +22,10 @@ class HeadshotsWidget extends Widget
   public function run()
   {
     $headshots = [];
-    $sql = "SELECT player.id,player.username,profile.id as profile_id,profile.visibility FROM headshot LEFT JOIN player ON player.id=headshot.player_id LEFT JOIN profile on profile.player_id=player.id WHERE headshot.target_id=:target_id AND player.status=10 ORDER BY headshot.created_at DESC,headshot.player_id asc LIMIT 50";
+    $academicStr="";
+    if(\Yii::$app->sys->academic_grouping!==false)
+      $academicStr=" AND player.academic=".\Yii::$app->user->identity->academic;
+    $sql = "SELECT player.id,player.username,profile.id as profile_id,profile.visibility FROM headshot LEFT JOIN player ON player.id=headshot.player_id LEFT JOIN profile on profile.player_id=player.id WHERE headshot.target_id=:target_id AND player.status=10 {$academicStr} ORDER BY headshot.created_at DESC,headshot.player_id asc LIMIT 50";
     $result = \Yii::$app->db->createCommand($sql, [':target_id' => $this->target_id])->cache(180)->query();
 
     foreach ($result as $hs) {
