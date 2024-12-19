@@ -379,6 +379,7 @@
       - { section: PHP, option: "error_reporting", value: "E_NONE" }
       - { section: PHP, option: "post_max_size", value: "180M" }
       - { section: PHP, option: "upload_max_filesize", value: "120M" }
+      - { section: PHP, option: "allow_url_fopen", value: "On"}
       - { section: PHP, option: "session.save_handler", value: "memcached"}
       - { section: PHP, option: "session.save_path", value: "{{db_ip}}:11211"}
 
