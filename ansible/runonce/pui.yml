@@ -457,9 +457,9 @@
       - { section: Session, option: "session.save_path", value: "{{db_ip}}:11211"}
       - { section: Session, option: "session.gc_maxlifetime", value: "43200" }
       - { section: Session, option: "session.use_strict_mode", value: "1" }
-      - { section: Session, option: "session.cookie_httponly", val: "1" }
-      - { section: Session, option: "session.cookie_secure", val: "1" }
-      - { section: Session, option: "session.cookie_samesite", val: '"Strict"' }
+      - { section: Session, option: "session.cookie_httponly", value: "1" }
+      - { section: Session, option: "session.cookie_secure", value: "1" }
+      - { section: Session, option: "session.cookie_samesite", value: '"Strict"' }
       - { section: opcache, option: "opcache.enable", value: "1" }
       - { section: opcache, option: "opcache.memory_consumption", value: "128" }
       - { section: opcache, option: "opcache.validate_timestamps", value: "0" }
