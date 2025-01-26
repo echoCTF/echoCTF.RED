@@ -1,3 +1,4 @@
+#!/usr/bin/env ansible-playbook
 ---
 - name: Update container with gameplay data
   hosts: 127.0.0.1
@@ -17,7 +18,7 @@
       gid: "{{item.uid|default(omit)}}"
       state: present
     with_items: "{{DETAILS}}"
-    when: DETAILS is defined and item.module is defined and item.module=='user'
+    when: DETAILS is defined and item.module is defined and item.module=='user' and item.group is defined
 
   - name: users based on details
     user:
@@ -25,13 +26,12 @@
       shell: "{{item.shell|default('/bin/bash')}}"
       comment: "{{item.gecos}}"
       uid: "{{item.uid|default(omit)}}"
-      group: "{{item.group|default('nobody')}}"
+      group: "{{item.group|default(omit)}}"
       password: "{{item.password}}"
       state: present
       update_password: always
     with_items: "{{DETAILS}}"
     when: DETAILS is defined and item.module is defined and item.module=='user'
-
 
   - name: "Create flags on local filesystem"
     when: item.path is defined
@@ -39,7 +39,6 @@
     file:
       path: "{{item.path}}{{item.code}}"
       state: touch
-
 
   - name: "Create flag with content on local filesystem to be used as volumes"
     when: item.fullpath is defined
@@ -82,16 +81,6 @@
     with_items: "{{BUILD_COMMANDS.exec}}"
     raw: "{{item.cmd}}"
 
-  - name: Copy raw configs
-    when: RAW_CONFS is defined
-    copy:
-      content: "{{item.value.content}}\n"
-      dest: "{{item.key}}"
-      mode: "{{item.value.mode|default(omit)}}"
-      owner: "{{item.value.uid|default(0)}}"
-      group: "{{item.value.gid|default(0)}}"
-    with_dict: "{{RAW_CONFS}}"
-
   - name: Generate INI files
     when: INI_FILES is defined
     ini_file:
@@ -102,12 +91,6 @@
       backup: false
     with_items: "{{INI_FILES}}"
 
-  - name: Create Decoy flags
-    when: ETSCTF_DECOY is defined
-    debug:
-      var: ETSCTF_DECOY
-    with_sequence: start=1 end={{ ETSCTF_DECOY.number }}
-
   - name: Parse defined templates
     when: templates is defined
     template:
@@ -117,3 +100,19 @@
       group: "{{item.group}}"
       mode: "{{item.mode}}"
     with_items: "{{templates}}"
+
+  - name: Copy raw configs
+    when: RAW_CONFS is defined
+    copy:
+      content: "{{item.value.content}}\n"
+      dest: "{{item.key}}"
+      mode: "{{item.value.mode|default(omit)}}"
+      owner: "{{item.value.uid|default(0)}}"
+      group: "{{item.value.gid|default(0)}}"
+    with_dict: "{{RAW_CONFS}}"
+
+  - name: Create Decoy flags
+    when: ETSCTF_DECOY is defined
+    debug:
+      var: ETSCTF_DECOY
+    with_sequence: start=1 end={{ ETSCTF_DECOY.number }}
