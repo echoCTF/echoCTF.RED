@@ -48,7 +48,7 @@ The first time you run `docker-compose up` give the containers a few minutes to 
 
 Once the initialization process completes, run the following command to connect the mysql server with the memcached
 ```sh
-docker exec -it echoctfred_db bash -c "mysql < /etc/mysql-init.sql"
+docker exec -it echoctfred_db bash -c "mariadb < /etc/mysql-init.sql"
 ```
 
 This command will have to be run every time the database server stops or respawned by eg `docker-compose down` and only once the systems are fully initialized. You can make the change permanent by appending `, "--init_file=/etc/mysql-init.sql"` to the db `command` parameters before the closing bracket `]`.
