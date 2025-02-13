@@ -559,8 +559,6 @@ docker_mariadb_init()
 	docker_temp_server_stop
 	mysql_note "Temporary server stopped"
 
-  docker_process_init_files /always-initdb.d/*
-
 	echo
 	mysql_note "MariaDB init process done. Ready for start up."
 	echo
@@ -710,6 +708,7 @@ _main() {
 		elif _check_if_upgrade_is_needed; then
 			docker_mariadb_upgrade "$@"
 		fi
+    docker_process_init_files /always-initdb.d/*
 	fi
 	exec "$@"
 }
