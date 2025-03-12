@@ -31,9 +31,9 @@ services:
       args:
       - RED_APP=backend
       - MARIADB_HOST=172.24.0.253
-      - MYSQL_USER=vpnuser
+      - MARIADB_USER=vpnuser
       - MARIADB_PASSWORD=vpnuserpass
-      - MYSQL_DATABASE=echoCTF
+      - MARIADB_DATABASE=echoCTF
     restart: "always"
     volumes:
       - data-challenges:/var/www/echoCTF.RED/backend/web/uploads
@@ -57,9 +57,9 @@ services:
       args:
       - RED_APP=frontend
       - MARIADB_HOST=172.24.0.253
-      - MYSQL_USER=vpnuser
+      - MARIADB_USER=vpnuser
       - MARIADB_PASSWORD=vpnuserpass
-      - MYSQL_DATABASE=echoCTF
+      - MARIADB_DATABASE=echoCTF
     restart: "always"
     volumes:
       - data-challenges:/var/www/echoCTF.RED/frontend/web/uploads
