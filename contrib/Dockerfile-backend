@@ -4,10 +4,10 @@ LABEL description="echoCTF.RED Administration interface (backend)"
 ARG VPNUSER=vpnuser
 ARG VPNUSERPASS=vpnuserpass
 ARG RED_APP=backend
-ARG MYSQL_HOST=db
-ARG MYSQL_USER=vpnuser
-ARG MYSQL_PASSWORD=vpnuserpass
-ARG MYSQL_DATABASE=echoCTF
+ARG MARIADB_HOST=db
+ARG MARIADB_USER=vpnuser
+ARG MARIADB_PASSWORD=vpnuserpass
+ARG MARIADB_DATABASE=echoCTF
 ARG GITHUB_OAUTH_TOKEN
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -25,8 +25,8 @@ RUN set -ex \
     && cp ${RED_APP}/config/cache-local.php ${RED_APP}/config/cache.php \
     && cp ${RED_APP}/config/validationKey-local.php ${RED_APP}/config/validationKey.php \
     && cp ${RED_APP}/config/db-sample.php ${RED_APP}/config/db.php \
-    && sed -ie "s/localhost/${MYSQL_HOST}/g" ${RED_APP}/config/db.php \
-    && sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" ${RED_APP}/config/cache.php \
+    && sed -ie "s/localhost/${MARIADB_HOST}/g" ${RED_APP}/config/db.php \
+    && sed -ie "s/127.0.0.1/${MARIADB_HOST}/g" ${RED_APP}/config/cache.php \
     && mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime \
     && chown www-data ${RED_APP}/web/assets \
     && chown www-data /var/www/echoCTF.RED/${RED_APP}/runtime /var/www/echoCTF.RED/${RED_APP}/web/uploads \
@@ -37,7 +37,7 @@ RUN set -ex \
     && mv /var/www/html /var/www/html.old \
     && ln -s /var/www/echoCTF.RED/${RED_APP}/web /var/www/html \
     && a2enmod rewrite \
-    && echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8mb4',  ];">${RED_APP}/config/db.php \
+    && echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MARIADB_HOST};dbname=${MARIADB_DATABASE}', 'username' => '${MARIADB_USER}', 'password' => '${MARIADB_PASSWORD}', 'charset' => 'utf8mb4',  ];">${RED_APP}/config/db.php \
     && apt-get autoremove -y \
     && rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
 

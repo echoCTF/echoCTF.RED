@@ -2,9 +2,9 @@ FROM mariadb:11.4.3
 LABEL description="echoCTF.RED database and memcache server"
 ARG MEMCACHED_MEM=128
 ENV MYSQL_ALLOW_EMPTY_PASSWORD root
-ENV MYSQL_USER vpnuser
-ENV MYSQL_PASSWORD vpnuserpass
-ENV MYSQL_DATABASE echoCTF
+ENV MARIADB_USER vpnuser
+ENV MARIADB_PASSWORD vpnuserpass
+ENV MARIADB_DATABASE echoCTF
 ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /always-initdb.d/
@@ -35,7 +35,7 @@ RUN set -ex \
   && echo "/usr/bin/memcached -d -M -m ${MEMCACHED_MEM} -p 11211 -u mysql -l 0.0.0.0 -o no_maxconns_fast,no_modern -P /tmp/memcached.pid  -L  --disable-cas" >> /always-initdb.d/00.sh \
   && chmod +x /always-initdb.d/00.sh \
   && cat sql/install_functions.sql>> /docker-entrypoint-initdb.d/00.sql \
-  && sed -i  -e "s/echoCTF/${MYSQL_DATABASE}/g" /etc/mysql-init.sql \
+  && sed -i  -e "s/echoCTF/${MARIADB_DATABASE}/g" /etc/mysql-init.sql \
   && chmod +x /usr/local/bin/docker-entrypoint.sh \
   && apt-get purge -y build-essential gcc autoconf automake git zip unzip mcrypt libmariadb-dev libtool \
   && apt-get autoremove -y \

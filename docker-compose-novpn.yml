@@ -30,9 +30,9 @@ services:
       dockerfile: contrib/Dockerfile-backend
       args:
       - RED_APP=backend
-      - MYSQL_HOST=172.24.0.253
+      - MARIADB_HOST=172.24.0.253
       - MYSQL_USER=vpnuser
-      - MYSQL_PASSWORD=vpnuserpass
+      - MARIADB_PASSWORD=vpnuserpass
       - MYSQL_DATABASE=echoCTF
     restart: "always"
     volumes:
@@ -56,9 +56,9 @@ services:
       dockerfile: contrib/Dockerfile-frontend
       args:
       - RED_APP=frontend
-      - MYSQL_HOST=172.24.0.253
+      - MARIADB_HOST=172.24.0.253
       - MYSQL_USER=vpnuser
-      - MYSQL_PASSWORD=vpnuserpass
+      - MARIADB_PASSWORD=vpnuserpass
       - MYSQL_DATABASE=echoCTF
     restart: "always"
     volumes:

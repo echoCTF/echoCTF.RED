@@ -4,10 +4,10 @@ LABEL description="echoCTF.RED Participants interface (frontend)"
 ARG VPNUSER=vpnuser
 ARG VPNUSERPASS=vpnuserpass
 ARG RED_APP=frontend
-ARG MYSQL_HOST=db
-ARG MYSQL_USER=vpnuser
-ARG MYSQL_PASSWORD=vpnuserpass
-ARG MYSQL_DATABASE=echoCTF
+ARG MARIADB_HOST=db
+ARG MARIADB_USER=vpnuser
+ARG MARIADB_PASSWORD=vpnuserpass
+ARG MARIADB_DATABASE=echoCTF
 ARG GITHUB_OAUTH_TOKEN
 
 ENV DEBIAN_FRONTEND noninteractive
@@ -28,8 +28,8 @@ RUN set -ex \
     && cp ${RED_APP}/config/validationKey-local.php ${RED_APP}/config/validationKey.php \
     && cp ${RED_APP}/config/db-local.php ${RED_APP}/config/db.php \
     && chmod a+x /usr/local/bin/composer \
-    && sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" ${RED_APP}/config/cache.php \
-    && echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8mb4','enableSchemaCache' => true,'schemaCacheDuration' => 0,'schemaCache' => 'cache','enableQueryCache' => true,'queryCache'=>'qcache','queryCacheDuration'=>60,];">${RED_APP}/config/db.php \
+    && sed -ie "s/127.0.0.1/${MARIADB_HOST}/g" ${RED_APP}/config/cache.php \
+    && echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MARIADB_HOST};dbname=${MARIADB_DATABASE}', 'username' => '${MARIADB_USER}', 'password' => '${MARIADB_PASSWORD}', 'charset' => 'utf8mb4','enableSchemaCache' => true,'schemaCacheDuration' => 0,'schemaCache' => 'cache','enableQueryCache' => true,'queryCache'=>'qcache','queryCacheDuration'=>60,];">${RED_APP}/config/db.php \
     && sed -e "s|'secure' => true,|'secure' => false,|g" -i ${RED_APP}/config/web.php \
     && mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime ${RED_APP}/web/images/avatars/team ${RED_APP}/web/uploads\
     && chown -R www-data ${RED_APP}/web/assets ${RED_APP}/web/images/avatars \
