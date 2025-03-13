@@ -267,9 +267,9 @@ docker_setup_env() {
 
 	# Initialize values that might be stored in a file
 	_mariadb_file_env 'MYSQL_ROOT_HOST' '%'
-	_mariadb_file_env 'MYSQL_DATABASE'
-	_mariadb_file_env 'MYSQL_USER'
-	_mariadb_file_env 'MYSQL_PASSWORD'
+	_mariadb_file_env 'MARIADB_DATABASE'
+	_mariadb_file_env 'MARIADB_USER'
+	_mariadb_file_env 'MARIADB_PASSWORD'
 	_mariadb_file_env 'MYSQL_ROOT_PASSWORD'
 	# No MYSQL_ compatibility needed for new variables
 	file_env 'MARIADB_PASSWORD_HASH'
@@ -299,8 +299,8 @@ docker_setup_env() {
 # Execute the client, use via docker_process_sql to handle root password
 docker_exec_client() {
 	# args sent in can override this db, since they will be later in the command
-	if [ -n "$MYSQL_DATABASE" ]; then
-		set -- --database="$MYSQL_DATABASE" "$@"
+	if [ -n "$MARIADB_DATABASE" ]; then
+		set -- --database="$MARIADB_DATABASE" "$@"
 	fi
 	mariadb --protocol=socket -uroot -hlocalhost --socket="${SOCKET}" "$@"
 }
@@ -455,6 +455,9 @@ docker_setup_db() {
 		if [ -n "$MARIADB_DATABASE" ]; then
 			mysql_note "Giving user ${MARIADB_USER} access to schema ${MARIADB_DATABASE}"
 			userGrants="GRANT ALL ON \`${MARIADB_DATABASE//_/\\_}\`.* TO '$MARIADB_USER'@'%';"
+    else
+			mysql_note "Giving user ${MARIADB_USER} full access to database"
+			userGrants="GRANT ALL ON *.* TO '$MARIADB_USER'@'%';"
 		fi
 	fi
 

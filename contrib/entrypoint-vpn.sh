@@ -1,7 +1,7 @@
 #!/bin/bash
-echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MYSQL_HOST};dbname=${MYSQL_DATABASE}', 'username' => '${MYSQL_USER}', 'password' => '${MYSQL_PASSWORD}', 'charset' => 'utf8mb4',  ];">/var/www/echoCTF.RED/backend/config/db.php
+echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MARIADB_HOST};dbname=${MARIADB_DATABASE}', 'username' => '${MARIADB_USER}', 'password' => '${MARIADB_PASSWORD}', 'charset' => 'utf8mb4',  ];">/var/www/echoCTF.RED/backend/config/db.php
 cp /var/www/echoCTF.RED/backend/config/cache-local.php /var/www/echoCTF.RED/backend/config/cache.php
-sed -ie "s/127.0.0.1/${MYSQL_HOST}/g" /var/www/echoCTF.RED/backend/config/cache.php
+sed -ie "s/127.0.0.1/${MARIADB_HOST}/g" /var/www/echoCTF.RED/backend/config/cache.php
 
 if [ ! -f /etc/openvpn/.configured ]; then
     echo "OpenVPN not configured"
@@ -10,8 +10,8 @@ if [ ! -f /etc/openvpn/.configured ]; then
     mkdir -p /etc/openvpn/certs /etc/openvpn/client_confs /var/log/openvpn /etc/openvpn/crl /etc/openvpn/ccd
     install -d -m 700 /etc/openvpn/private
     cp contrib/openvpn_tun0.conf /etc/openvpn
-    sed -e "s#{{db.host}}#${MYSQL_HOST}#g" contrib/echoctf_updown_mysql.sh > /etc/openvpn/echoctf_updown_mysql.sh
-    sed -e "s#ksh#bash#" -e "s#127.0.0.1#${MYSQL_HOST}#g" -e "s#{{db.user}}#${MYSQL_USER}#g" -e "s#{{db.pass}}#${MYSQL_PASSWORD}#g" -i /etc/openvpn/echoctf_updown_mysql.sh
+    sed -e "s#{{db.host}}#${MARIADB_HOST}#g" contrib/echoctf_updown_mysql.sh > /etc/openvpn/echoctf_updown_mysql.sh
+    sed -e "s#ksh#bash#" -e "s#127.0.0.1#${MARIADB_HOST}#g" -e "s#{{db.user}}#${MARIADB_USER}#g" -e "s#{{db.pass}}#${MARIADB_PASSWORD}#g" -i /etc/openvpn/echoctf_updown_mysql.sh
     chmod 555 /etc/openvpn/echoctf_updown_mysql.sh
     cp contrib/crl_openssl.conf /etc/openvpn/crl/
     touch /etc/openvpn/crl/index.txt
