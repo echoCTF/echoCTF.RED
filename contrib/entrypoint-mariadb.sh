@@ -452,11 +452,8 @@ docker_setup_db() {
 			createUser="CREATE USER '$MARIADB_USER'@'%' IDENTIFIED BY '$userPasswordEscaped';"
 		fi
 
-		if [ -n "$MARIADB_DATABASE" ]; then
-			mysql_note "Giving user ${MARIADB_USER} access to schema ${MARIADB_DATABASE}"
-			userGrants="GRANT ALL ON \`${MARIADB_DATABASE//_/\\_}\`.* TO '$MARIADB_USER'@'%';"
-    else
-			mysql_note "Giving user ${MARIADB_USER} full access to database"
+		if [ -n "$MARIADB_USER" ]; then
+			mysql_note "Giving user ${MARIADB_USER} full access to the database server"
 			userGrants="GRANT ALL ON *.* TO '$MARIADB_USER'@'%';"
 		fi
 	fi
