@@ -133,6 +133,7 @@ class DockerContainer extends Model
   public function getContainer()
   {
     $this->connectAPI();
+/*
     if(!$this->container)
     {
       $this->container=$this->docker->getContainerManager()->find($this->name);
@@ -141,7 +142,9 @@ class DockerContainer extends Model
     {
       $this->container=$this->docker->containerInspect($this->container->getId());
     }
+*/
 
+    $this->container=$this->docker->containerInspect($this->container->getId());
     return $this->container;
   }
 
