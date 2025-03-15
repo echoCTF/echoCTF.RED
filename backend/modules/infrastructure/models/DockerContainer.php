@@ -43,6 +43,7 @@ class DockerContainer extends Model
   {
     parent::init();
   }
+
   public function __set($name, $value)
   {
     if(!property_exists($this,$name))
@@ -55,6 +56,7 @@ class DockerContainer extends Model
     if(is_array($value)) $this->targetVariables=$value;
     $this->targetVariables=[];
   }
+
   public function setTargetVolumes($value)
   {
     if(is_array($value)) $this->targetVolumes=$value;
@@ -80,6 +82,7 @@ class DockerContainer extends Model
   {
     $targetVariables=null;
     $this->connectAPI();
+
     $hostConfig=$this->hostConfig();
 
     $containerConfig=new ContainersCreatePostBody();
@@ -107,6 +110,7 @@ class DockerContainer extends Model
     $containerConfig->setEnv($targetVariables);
     //$containerConfig->setMacAddress($this->mac); // target->mac
     $containerConfig->setHostConfig($hostConfig);
+
     $this->container=$this->docker->containerCreate($containerConfig, ['name'=>$this->name]);
     $this->docker->containerStart($this->container->getId());
   }
