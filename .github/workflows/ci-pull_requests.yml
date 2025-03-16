@@ -45,8 +45,8 @@ jobs:
         cd backend
         php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
-    - name: Build the all-in-one Docker image
-      run: docker build --no-cache . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
+#    - name: Build the all-in-one Docker image
+#      run: docker build --no-cache . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
     - name: Build the DB Docker image
       run: docker build --no-cache . --file contrib/Dockerfile-mariadb --tag echothrust/echoctf.red-db:latest
     - name: Build the frontend Docker image

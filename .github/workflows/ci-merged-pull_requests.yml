@@ -59,8 +59,8 @@ jobs:
         echo $'{\n    "experimental": true\n}' | sudo tee /etc/docker/daemon.json
         sudo service docker restart
 
-    - name: Build the all-in-one Docker image
-      run: docker build --squash . --file contrib/Dockerfile --tag echoctf.red-all-in-one:$(date +%s)
+#    - name: Build the all-in-one Docker image
+#      run: docker build --squash . --file contrib/Dockerfile --tag echoctf.red-all-in-one:$(date +%s)
     - name: Build the DB Docker image
       run: docker build --squash . --file contrib/Dockerfile-mariadb --tag echoctf.red-db:$(date +%s)
     - name: Build the frontend Docker image
