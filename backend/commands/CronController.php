@@ -236,13 +236,15 @@ class CronController extends Controller
       {
         $ips=[];
         $dc=new DockerContainer($val->target);
-        $dc->timeout= ($val->server->timeout ? $val->server->timeout : $dc->timeout=2000);
+        $dc->timeout= ($val->server->timeout ? $val->server->timeout : 2000);
         if($val->target->targetVolumes!==null)
           $dc->targetVolumes=$val->target->targetVolumes;
         if($val->target->targetVariables!==null)
           $dc->targetVariables=$val->target->targetVariables;
         $dc->name=$val->name;
         $dc->server=$val->server->connstr;
+        $dc->net=$val->server->network;
+
         if($val->ip==null)
         {
           echo date("Y-m-d H:i:s ")."Starting";

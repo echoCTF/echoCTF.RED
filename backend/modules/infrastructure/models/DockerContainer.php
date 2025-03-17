@@ -43,6 +43,7 @@ class DockerContainer extends Model
   {
     parent::init();
   }
+
   public function __set($name, $value)
   {
     if(!property_exists($this,$name))
@@ -55,6 +56,7 @@ class DockerContainer extends Model
     if(is_array($value)) $this->targetVariables=$value;
     $this->targetVariables=[];
   }
+
   public function setTargetVolumes($value)
   {
     if(is_array($value)) $this->targetVolumes=$value;
@@ -80,9 +82,11 @@ class DockerContainer extends Model
   {
     $targetVariables=null;
     $this->connectAPI();
+
     $hostConfig=$this->hostConfig();
 
     $containerConfig=new ContainersCreatePostBody();
+/*
     $endpointSettings=new EndpointSettings();
     $endpointIPAMConfig=new EndpointIPAMConfig();
     $endpointIPAMConfig->setIPv4Address($this->ipoctet);// target->ipoctet
@@ -93,6 +97,7 @@ class DockerContainer extends Model
       $this->net => $endpointSettings
     ]));
     $containerConfig->setNetworkingConfig($nwc);
+*/
     $containerConfig->setHostname($this->fqdn);// target->fqdn
     $containerConfig->setImage($this->image);// target->image
     $containerConfig->setOpenStdin(true);
@@ -105,8 +110,8 @@ class DockerContainer extends Model
       $targetVariables[]=sprintf("%s=%s", $var->key, $var->val);
 
     $containerConfig->setEnv($targetVariables);
-    //$containerConfig->setMacAddress($this->mac); // target->mac
     $containerConfig->setHostConfig($hostConfig);
+
     $this->container=$this->docker->containerCreate($containerConfig, ['name'=>$this->name]);
     $this->docker->containerStart($this->container->getId());
   }
@@ -133,15 +138,18 @@ class DockerContainer extends Model
   public function getContainer()
   {
     $this->connectAPI();
+/*
     if(!$this->container)
     {
-      $this->container=$this->docker->getContainerManager()->find($this->name);
+     $this->container=$this->docker->getContainerManager()->find($this->name);
     }
     if($this->container instanceof \Docker\API\Model\ContainersCreatePostResponse201 )
     {
       $this->container=$this->docker->containerInspect($this->container->getId());
     }
+*/
 
+    $this->container=$this->docker->containerInspect($this->container->getId());
     return $this->container;
   }
 

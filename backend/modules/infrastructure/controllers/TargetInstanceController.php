@@ -230,6 +230,7 @@ class TargetInstanceController extends \app\components\BaseController
             $dc->targetVariables=$val->target->targetVariables;
             $dc->name=$val->name;
             $dc->server=$val->server->connstr;
+            $dc->net=$val->server->network;
             try
             {
                 $dc->destroy();
@@ -243,10 +244,10 @@ class TargetInstanceController extends \app\components\BaseController
         }
         catch (\Exception $e)
         {
-            if(method_exists($e,'getErrorResponse'))
-                echo $e->getErrorResponse()->getMessage(),"\n";
-            else
-                echo $e->getMessage(),"\n";
+          if(method_exists($e,'getErrorResponse'))
+            echo $e->getErrorResponse()->getMessage(),"\n";
+          else
+            echo $e->getMessage(),"\n";
         }
 
         return $this->redirect(['index']);

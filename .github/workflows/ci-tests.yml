@@ -84,8 +84,8 @@ jobs:
         cd backend
         php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
 
-    - name: Build the all-in-one Docker image
-      run: docker build --no-cache --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
+#    - name: Build the all-in-one Docker image
+#      run: docker build --no-cache --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
     - name: Build the DB Docker image
       run: docker build --no-cache --squash . --file contrib/Dockerfile-mariadb --tag echothrust/echoctf.red-db:latest
     - name: Build the frontend Docker image
@@ -98,8 +98,8 @@ jobs:
     - name: Login to DockerHub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Push the all-in-one Docker image
-      run: docker push echothrust/echoctf.red-all-in-one:latest
+#    - name: Push the all-in-one Docker image
+#      run: docker push echothrust/echoctf.red-all-in-one:latest
     - name: Push the DB Docker image
       run: docker push echothrust/echoctf.red-db:latest
     - name: Push the frontend Docker image
