@@ -86,6 +86,7 @@ class DockerContainer extends Model
     $hostConfig=$this->hostConfig();
 
     $containerConfig=new ContainersCreatePostBody();
+/*
     $endpointSettings=new EndpointSettings();
     $endpointIPAMConfig=new EndpointIPAMConfig();
     $endpointIPAMConfig->setIPv4Address($this->ipoctet);// target->ipoctet
@@ -96,6 +97,7 @@ class DockerContainer extends Model
       $this->net => $endpointSettings
     ]));
     $containerConfig->setNetworkingConfig($nwc);
+*/
     $containerConfig->setHostname($this->fqdn);// target->fqdn
     $containerConfig->setImage($this->image);// target->image
     $containerConfig->setOpenStdin(true);
@@ -108,7 +110,6 @@ class DockerContainer extends Model
       $targetVariables[]=sprintf("%s=%s", $var->key, $var->val);
 
     $containerConfig->setEnv($targetVariables);
-    //$containerConfig->setMacAddress($this->mac); // target->mac
     $containerConfig->setHostConfig($hostConfig);
 
     $this->container=$this->docker->containerCreate($containerConfig, ['name'=>$this->name]);
@@ -140,7 +141,7 @@ class DockerContainer extends Model
 /*
     if(!$this->container)
     {
-      $this->container=$this->docker->getContainerManager()->find($this->name);
+     $this->container=$this->docker->getContainerManager()->find($this->name);
     }
     if($this->container instanceof \Docker\API\Model\ContainersCreatePostResponse201 )
     {
