@@ -113,7 +113,7 @@ services:
       private:
         ipv4_address: "172.24.0.1"
       targets:
-        ipv4_address: "10.0.160.1"
+        ipv4_address: "10.0.160.253"
 
 #  target1:
 #    container_name: echoctfred_target1
@@ -152,9 +152,14 @@ networks:
       - subnet: 172.24.0.0/24
         gateway: 172.24.0.254
   targets:
+# uncomment the following to use macvlan and comment the bridge line
+# for macvlan use
+#    driver: macvlan
     driver: bridge
     driver_opts:
       com.docker.network.enable_ipv6: "false"
+# for macvlan also uncomment the line
+#      parent: ${PRIVATE_PARENT_INTERFACE}
     ipam:
       driver: default
       config:
