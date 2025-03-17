@@ -99,7 +99,7 @@ docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw vpn.example.com
 
 Ensure that the docker containers can communicate with the participants. Once the `echoctfred_vpn` host is up run this on the host you run docker-compose at.
 ```sh
-sudo route add -net 10.10.0.0/16 gw 10.0.160.1
+sudo route add -net 10.10.0.0/16 gw 10.0.160.253
 ```
 
 You can also manipulate a particular container routing table by following the
@@ -110,7 +110,7 @@ pid=$(docker inspect -f '{{.State.Pid}}' echoctfred_target1)
 sudo mkdir -p /var/run/netns
 sudo ln -s /proc/$pid/ns/net /var/run/netns/$pid
 sudo ip netns exec $pid ip route del default
-sudo ip netns exec $pid ip route add default via 10.0.160.1
+sudo ip netns exec $pid ip route add default via 10.0.160.253
 ```
 
 Make sure you configure the host dockerd daemon to have its API listen to the new `private` network.
@@ -134,8 +134,8 @@ Login to the backend [http://172.26.0.2/](http://172.26.0.2/) and add a target w
 * Suggested XP: 0
 * Required XP: 0
 * Purpose: `this will appear when participants tweet about targets`
-* Description: `this will to participants on the frontend`
-* IP Address: `10.0.160.2` _Same as `target1` entry from `docker-compose.yml`_
+* Description: `this will be displayed to participants on the frontend`
+* IP Address: `10.0.160.100` _Same as `target1` entry from `docker-compose.yml`_
 * MAC Address: `02:42:0a:00:a0:02`
 * Dns: `8.8.8.8`
 * Net: `echoctfred_targets`
