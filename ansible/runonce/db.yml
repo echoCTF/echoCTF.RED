@@ -397,7 +397,7 @@
       content: "{{item.val}}\n"
     with_items:
       - { dest: "/etc/service.pf.conf",val: "pass in quick on interconnect inet proto {tcp,udp} from <service_clients> to port { 11211, 3306 }"}
-      - { dest: "/etc/service_clients.conf", val: "10.7.0.200\n10.7.0.201\n10.7.0.254"}
+      - { dest: "/etc/service_clients.conf", val: "{{pui_ip}}\n{{mui_ip}}\n{{vpn_ip}}"}
 
   - name: Create pf files
     ignore_errors: true
