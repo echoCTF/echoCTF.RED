@@ -566,6 +566,12 @@
       dest: /etc/nginx/install_renewed_cert.sh
       mode: "0500"
 
+  - name: Create /etc/letsencrypt folders
+    ansible.builtin.file:
+      path: /etc/letsencrypt
+      state: directory
+      mode: '0750'
+
   - name: Install sample lexicon (vultr)
     copy:
       content: |
