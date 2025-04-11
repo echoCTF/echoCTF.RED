@@ -2,7 +2,8 @@
 This is a tutorial for participants of echoCTF based competitions. The platform interfaces are fairly easy to use, however, spending some time following this tutorial could prove of great value.
 
 ## SIGNUP
-Visit the given url (usualy echoctf.red) and register for an account. Fill in the required details such as
+Visit the given url (usualy echoctf.red) and register for an account. Fill in the required details such as:
+
  * your username/nickname
  * your email
  * and your password _(Consider yourself warned to not reuse existing passwords)_
@@ -13,6 +14,7 @@ Upon registration, you will receive an activation link to your given email. You 
 **NOTE:** The CTF and the UI may only be accessed through the VPN, depending on the type of event.
 
 Upon completing your registration, the application will log you in automatically. However, If you have been  logged-out, please follow the instructions below in order to login to the application:
+
  * Visit the homepage: [https://echoctf.red](https://echoctf.red)
  * Click the `Login` button
  * Fill-in your username and password and press the `Login` button
@@ -48,6 +50,7 @@ Once a report has been submitted, it is examined and approved or rejected with a
 
 ## INFORMATION STREAMS
 There are two ways to keep track of your and other players’ progress.
+
  * **Live -> Stream**: The global activity stream where the latest activities (e.g. claimed treasures, global hints etc.) of all users are shown
  * **Live -> Player Scores**: The global player scoreboard
 
