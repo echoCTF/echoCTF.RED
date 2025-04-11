@@ -295,6 +295,7 @@
       clone: yes
       force: yes
       depth: 1
+      version: "{{ GITHUB_REPO_BRANCH | default('main') }}"
 
 
   - name: Clone memcached udf repo

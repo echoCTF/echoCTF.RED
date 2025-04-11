@@ -247,6 +247,7 @@
       clone: yes
       force: yes
       depth: 1
+      version: "{{ GITHUB_REPO_BRANCH | default('main') }}"
 
   - name: Fix CHROOT environment for participantUI
     file: path=/home/participantUI/{{item}} mode=0755 state=directory
