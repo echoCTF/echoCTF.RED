@@ -67,12 +67,23 @@ http {
         listen              {{item.ip}}:80;
         server_name         {{item.domain}} {{item.ip}} default _ "";
 
-        location /.well-known/acme-challenge/ {
-            rewrite ^/.well-known/acme-challenge/(.*) /$1 break;
-            root /acme;
+        location / {
+          if ($request_uri !~* ^/\.well-known/acme-challenge/.*$) {
+                    return 302 https://{{item.domain}};
+          }
+
+          return 403;
         }
 
-        return 302 https://{{item.domain}};
+        location ^~ /.well-known/acme-challenge/ {
+           root /acme/;  # This means files are in /var/www/protected/.secret/
+           try_files $uri  @redirect_fallback;
+
+        }
+
+        location @redirect_fallback {
+          return 302 https://{{item.domain}};
+        }
     }
 
     server {
