@@ -136,9 +136,25 @@
       - "inet {{mui_ip}} 255.255.255.0 NONE group interconnect"
       - "up -inet6"
 
-  - name: Bring interface up
+  - name: Bring interconnect interface up
     command: sh /etc/netstart {{interconnect_interface}}
 
+  - name: Configure targets interface
+    when: targets_interface is defined and targets_interface is defined
+    lineinfile:
+      path: "/etc/hostname.{{targets_interface}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item}}"
+      create: yes
+    with_items:
+      - "inet {{targets_ip}} 255.255.255.0 NONE group targets"
+      - "up -inet6"
+
+  - name: Bring targets interface up
+    when: targets_interface is defined and targets_interface is defined
+    command: sh /etc/netstart {{targets_interface}}
 
   - name: Configure PS1 for root and skeleton
     lineinfile:
@@ -215,6 +231,7 @@
       clone: yes
       force: yes
       depth: 1
+      version: "{{ GITHUB_REPO_BRANCH | default('main') }}"
 
   - name: Fix CHROOT environment for moderatorUI
     file: path=/home/moderatorUI/{{item}} mode=0755 state=directory

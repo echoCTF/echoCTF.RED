@@ -99,6 +99,7 @@
 * `dsn` A symphony mailer compatible DSN
 
 Or instead if not DSN then use the following
+
 * `mail_host` The mail server host to send mails through
 * `mail_port` The mail server port to connect
 * `mail_username` The username to authenticate to the mail server
@@ -151,7 +152,7 @@ backend/yii sysconfig/set academic_1icon "anothersite.png"
 * `verification_resend_ip_timeout` the timeout for the verification resend_ip counter
 * `verification_resend_email` A number of attempts a verification resend email can be requested per email. `0` disables the verification completely
 * `verification_resend_email_timeout` the timeout for the verification resend_email counter
-* `password_reset_ip` A number of attempts an IP will stop being able to request password resets. `0` disables teh verification completely
+* `password_reset_ip` A number of attempts an IP will stop being able to request password resets. `0` disables the verification completely
 * `password_reset_ip_timeout` The timeout for the reset_ip counter
 * `password_reset_email` A number of attempts a password reset email can be requested per email. `0` disables the verification completely
 * `password_reset_email_timeout` The timeout for the reset_email counter
