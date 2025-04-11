@@ -16,7 +16,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
     <?php $form=ActiveForm::begin();?>
 
     <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->all(), 'id', function($model) {
-        return sprintf("(id:%d) %s/%s", $model['id'], $model['fqdn'], $model['ipoctet']);}), ['prompt'=>'Select the target'])->Label('Target') ?>
+        return sprintf("%s/%s (ID: %d)",  $model['name'], $model['ipoctet'],$model['id']);}), ['prompt'=>'Select the target'])->Label('Target') ?>
 
     <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
         'multiple' => false,
