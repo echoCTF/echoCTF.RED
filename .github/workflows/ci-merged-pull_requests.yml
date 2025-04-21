@@ -39,12 +39,12 @@ jobs:
     - name: Install frontend dependencies
       run: |
         cd frontend
-        php8.3 /usr/bin/composer update -q --no-dev --prefer-dist --no-progress
+        php8.4 /usr/bin/composer update -q --no-dev --prefer-dist --no-progress
 
     - name: Install backend dependencies
       run: |
         cd backend
-        php8.3 /usr/bin/composer update -q --no-dev --prefer-dist --no-progress
+        php8.4 /usr/bin/composer update -q --no-dev --prefer-dist --no-progress
 
   dockerbuilds:
     if: github.event.pull_request.merged == 'true'
