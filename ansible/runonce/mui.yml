@@ -33,11 +33,11 @@
     ansible_user: root
     validation_key: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
     versions:
-      PHP: "8.3"
-      PHP_MINOR: "12"
+      PHP: "8.4"
+      PHP_MINOR: "6"
       AUTOCONF: "2.69"
       AUTOMAKE: "1.16"
-      ICU_MAJOR: 75
+      ICU_MAJOR: 76
       ICU_MINOR: 1
     sysctl:
       kern.bufcachepercent: 30
@@ -72,7 +72,7 @@
       - { name: slaacd, state: "disable" }
       - { name: smtpd, state: "disable" }
       - { name: sndiod, state: "disable" }
-      - { name: php83_fpm, state: "enable" }
+      - { name: "php{{versions.PHP|replace('.','')}}_fpm", state: "enable" }
       - { name: mysqld, state: "disable" }
       - { name: memcached, state: "disable" }
       - { name: supervisord, state: "enable"}
@@ -86,13 +86,13 @@
       - libtool
       - autoconf%2.69
       - automake%1.16
-      - pecl83-memcached
+      - "pecl{{versions.PHP|replace('.','')}}-memcached"
       - nginx
-      - php-gd%8.3
-      - php-curl%8.3
-      - php-intl%8.3
-      - php-pdo_mysql%8.3
-      - php-zip%8.3
+      - "php-gd%{{versions.PHP}}"
+      - "php-curl%{{versions.PHP}}"
+      - "php-intl%{{versions.PHP}}"
+      - "php-pdo_mysql%{{versions.PHP}}"
+      - "php-zip%{{versions.PHP}}"
       - py3-pip
       - py3-requests
       - py3-mysqlclient
@@ -309,7 +309,7 @@
       - chroot
 
   - name: Activate install php modules
-    shell: cp /etc/php-8.3.sample/*.ini /etc/php-8.3/
+    shell: "cp /etc/php-{{versions.PHP}}.sample/*.ini /etc/php-{{versions.PHP}}/"
 
   - name: "Create moderatorUI config/db.php"
     copy:
@@ -384,7 +384,7 @@
 
 
   - name: Fixing /etc/php.ini
-    ini_file: dest=/etc/php-8.3.ini section={{item.section}} option={{item.option}} value={{item.value}} mode=0644 owner=root group=wheel
+    ini_file: dest=/etc/php-{{versions.PHP}}.ini section={{item.section}} option={{item.option}} value={{item.value}} mode=0644 owner=root group=wheel
     with_items:
       - { section: PHP, option: "cgi.fix_pathinfo", value: 0 }
       - { section: PHP, option: "expose_php", value: "Off" }
