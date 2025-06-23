@@ -3,7 +3,6 @@
 - name: Configure docker servers for echoCTF
   hosts: all
   gather_facts: true
-  user: sysadmin
   become: true
   become_method: su
   tasks:
