@@ -110,7 +110,7 @@
       dest: "/etc/docker-registry.yml"
 
   - name: Change ownerships
-    command: chown -R {{registry.user}}:{{registry.user}} {{registry.home}}/go {{registry.storage}}
+    command: chown -R {{registry.user}}:{{registry.user}} {{registry.home}} {{registry.storage}}
 
   - name: Configure supervisor registry service
     community.general.ini_file:
