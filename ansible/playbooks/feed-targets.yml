@@ -73,12 +73,59 @@
         weight: '{{weight|default(0)}}'
       status_code: 201
 
-# Add network if defined
   - set_fact:
       target_id: "{{newtarget.json.id}}"
-    when: container is defined and newtarget is defined and newtarget.json is defined and newtarget.json.id is defined
+    when: newtarget is defined and newtarget.json is defined and newtarget.json.id is defined
     delegate_to: 127.0.0.1
 
+
+# Create target if not exists
+  - name: create mui system target (without container)
+    delegate_to: 127.0.0.1
+    register: newtarget
+#    ignore_errors: true
+    when: target_id is undefined and ansible_host is defined and mac is defined and hostname is defined and fqdn is defined and container is not defined
+    tags:
+      - UI
+    uri:
+      url: "{{mui.URL}}/index.php?r=restapi/target/create&access-token={{TOKEN}}"
+      method: POST
+      validate_certs: false
+      body_format: json
+      body:
+        name: '{{hostname}}'
+        fqdn: '{{fqdn}}'
+        purpose: '{{purpose}}'
+        rootable: "{{rootable|default('0')}}"
+        healthcheck: "{{healthcheck|default('1')}}"
+        category: "{{category|default('')}}"
+        timer: "{{timer|default('1')}}"
+        player_spin: "{{player_spin|default('1')}}"
+        headshot_spin: "{{headshot_spin|default('1')}}"
+        writeup_allowed: "{{writeup_allowed|default('1')}}"
+        instance_allowed: "{{instance_allowed|default('1')}}"
+        description: '{{description|default("")}}'
+        ipoctet: '{{ansible_host}}'
+        difficulty: "{{difficulty|default('0')}}"
+        mac: '{{mac}}'
+        net: 'eth0'
+        server: 'tcp://{{fqdn}}:2376'
+        imageparams: "{{imageparams|default(omit)}}"
+        active: "{{ '0' if (scheduled_at is defined) else '1' }}"
+        status: "{{ 'powerup' if (scheduled_at is defined) else 'online' }}"
+        dns: "10.240.0.254"
+        scheduled_at: "{{ scheduled_at|default(omit) }}"
+#        scheduled_at: "{{scheduled_at| default('%Y-%m-%d 00:00:00' | strftime( ( ansible_date_time.epoch | int ) ) ) }}"
+        image: 'none'
+        weight: '{{weight|default(0)}}'
+      status_code: 201
+
+  - set_fact:
+      target_id: "{{newtarget.json.id}}"
+    when: target_id is undefined and newtarget is defined and newtarget.json is defined and newtarget.json.id is defined
+    delegate_to: 127.0.0.1
+
+  # Add network if defined
   - name: Add target to network (if set)
     delegate_to: 127.0.0.1
     tags:

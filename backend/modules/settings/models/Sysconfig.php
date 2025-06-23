@@ -63,13 +63,9 @@ class Sysconfig extends \yii\db\ActiveRecord
     public function beforeSave($insert){
         switch($this->id){
             case "event_end":
-              if(empty($this->val))
-              {
-                $this->val=0;
-                $Q=sprintf("DROP EVENT IF EXISTS event_end_notification");
-                \Yii::$app->db->createCommand($Q)->execute();
-              }
-              else
+              $Q=sprintf("DROP EVENT IF EXISTS event_end_notification");
+              \Yii::$app->db->createCommand($Q)->execute();
+              if(!empty($this->val))
               {
                 $Q=sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10",$this->val);
                 \Yii::$app->db->createCommand($Q)->execute();

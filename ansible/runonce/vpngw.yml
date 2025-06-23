@@ -88,11 +88,11 @@
         - Update /etc/administrators.conf with your IP's
         - Reboot the system for the changes to take effect
     versions:
-      PHP: "8.3"
-      PHP_MINOR: "12"
+      PHP: "8.4"
+      PHP_MINOR: "6"
       AUTOCONF: "2.69"
       AUTOMAKE: "1.16"
-      ICU_MAJOR: 75
+      ICU_MAJOR: 76
       ICU_MINOR: 1
     sysctl:
       kern.bufcachepercent: 30
@@ -130,18 +130,20 @@
       - automake%1.16
       - curl
       - git
+      - cmake
+      - gmake
       - rsync--
       - libmemcached
       - memcached--
       - libtool
       - mariadb-server
       - openvpn--
-      - pecl83-memcached
-      - php-curl%8.3
-      - php-gd%8.3
-      - php-intl%8.3
-      - php-pdo_mysql%8.3
-      - php-zip%8.3
+      - "pecl{{versions.PHP|replace('.','')}}-memcached"
+      - "php-gd%{{versions.PHP}}"
+      - "php-curl%{{versions.PHP}}"
+      - "php-intl%{{versions.PHP}}"
+      - "php-pdo_mysql%{{versions.PHP}}"
+      - "php-zip%{{versions.PHP}}"
       - py3-mysqlclient
       - py3-setuptools
       - py3-netaddr
@@ -239,7 +241,7 @@
       - '/root/.profile'
 
   - name: Activate install php modules
-    shell: cp /etc/php-8.3.sample/*.ini /etc/php-8.3/
+    shell: "cp /etc/php-{{versions.PHP}}.sample/*.ini /etc/php-{{versions.PHP}}/"
 
 
   - name: Update my.cnf
@@ -276,6 +278,31 @@
 
   - name: start mysqld
     command: rcctl restart mysqld
+
+  - name: Download MariaDB Connector C
+    ansible.builtin.get_url:
+      url: "https://dlm.mariadb.com/4234414/Connectors/c/connector-c-{{versions.MARIADB_CONNECTOR}}/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+      dest: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+
+  - name: extract connector
+    command: tar zxf "mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+    args:
+      chdir: /usr/src
+
+  - name: Replace Werror from CMakeLists.txt
+    ansible.builtin.replace:
+      path: /usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src/CMakeLists.txt
+      regexp: 'Werror'
+      replace: 'w'
+
+  - name: Build MariaDB Connector C
+    command: "{{item}}"
+    args:
+      chdir: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src"
+    with_items:
+      - 'cmake ../mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_FLAGS="-Wall"'
+      - gmake
+      - gmake install
 
   - name: Create local echoCTF mysql database
     mysql_db:
@@ -370,11 +397,11 @@
     args:
       chdir: /usr/src/findingsd
     with_items:
-      - "make"
+      - "LDFLAGS='-lssl -lm' make"
       - "install -c -s -o root -g bin -m 555 findingsd /usr/local/sbin/findingsd"
       - "install -c -o root -g wheel -m 555 findingsd.rc /etc/rc.d/findingsd"
       - "rcctl set findingsd status on"
-      - "rcctl set findingsd flags -l pflog1 -n echoCTF -u root -U _memcached"
+      - "rcctl set findingsd flags -l pflog1 -n echoCTF -u openvpn -p openvpn -h 127.0.0.1 -U _memcached"
 
   - name: Add users
     user:
@@ -403,7 +430,7 @@
       group: wheel
       state: link
     with_items:
-      - { src: "/usr/local/bin/php-8.3", dst: "/usr/local/bin/php" }
+      - { src: "/usr/local/bin/php-{{versions.PHP}}", dst: "/usr/local/bin/php" }
       - { src: "{{APP_DIR}}/backend/bin/cron-index", dst: "/usr/local/bin/cron-index" }
       - { src: "{{APP_DIR}}/backend/bin/ssl-generate-crl", dst: "/usr/local/bin/ssl-generate-crl" }
       - { src: "{{APP_DIR}}/backend/bin/healthcheck", dst: "/usr/local/bin/healthcheck" }
@@ -496,7 +523,7 @@
       content: ""
       dest: /etc/openvpn/crl/index.txt
 
-  - name: Generate OpenVPN and pf files
+  - name: Generate OpenVPN, PF files and migrations
     ignore_errors: true
     command: "{{item.cmd}}"
     args:
@@ -509,13 +536,31 @@
     - { cmd: "{{APP_DIR}}/backend/yii migrate --interactive=0" }
     - { cmd: "{{APP_DIR}}/backend/yii init_data --interactive=0" }
     - { cmd: "{{APP_DIR}}/backend/yii migrate-sales --interactive=0" }
-#    - { cmd: "{{APP_DIR}}/backend/yii migrate-red --migrationPath=@app/../migrations --interactive=0" }
+
+  - name: Check if local migrations folder exists
+    stat:
+      path: "{{APP_DIR}}/migrations"
+    register: migrations
+
+  - name: Apply local migrations if exist
+    when: migrations.stat.exists and migrations.stat.isdir
+    ignore_errors: true
+    command: "{{APP_DIR}}/backend/yii migrate-red --migrationPath=@app/../migrations --interactive=0"
+
+  - name: Continue OpenVPN, PF files and migrations
+    ignore_errors: true
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+      chdir: "{{item.chdir|default(omit)}}"
+    with_items:
     - { cmd: "{{APP_DIR}}/backend/yii ssl/create-ca 1", creates: "/etc/openvpn/private/echoCTF-OVPN-CA.key", chdir: "/etc/openvpn/private" }
     - { cmd: '{{APP_DIR}}/backend/yii ssl/create-cert "VPN Server"', creates: "/etc/openvpn/private/VPN Server.key", chdir: "/etc/openvpn/private" }
     - { cmd: "{{APP_DIR}}/backend/yii ssl/create-crl", creates: "/etc/openvpn/crl.pem" }
     - { cmd: "{{APP_DIR}}/backend/yii ssl/load-vpn-ta"}
     - { cmd: "{{APP_DIR}}/backend/yii sysconfig/set vpngw {{vpngw}}"}
     - { cmd: "{{APP_DIR}}/backend/yii sysconfig/set offense_registered_tag OFFENSE_REGISTERED"}
+    - { cmd: "{{APP_DIR}}/backend/yii vpn/load /etc/openvpn/openvpn_tun0.conf"}
     - { cmd: "touch /etc/administrators.conf", creates: "/etc/administrators.conf" }
     - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
     - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
