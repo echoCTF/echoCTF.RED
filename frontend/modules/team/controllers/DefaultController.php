@@ -257,12 +257,48 @@ class DefaultController extends \app\components\BaseController
         'pageSize' => 10,
       ]
     ]);
+
+    $targetProgressProvider = new ActiveDataProvider([
+      'query' => \app\modules\target\models\Target::find()->team_progress(\Yii::$app->user->identity->team->id)->having('(player_treasures>0 or player_findings>0) AND (progress>0 AND progress<100)'),
+      'pagination' => [
+        'pageSizeParam' => 'target-perpage',
+        'pageParam' => 'target-page',
+        'pageSize' => 5,
+      ],
+      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
+    ]);
+    $headshots = \app\modules\target\models\Target::find()->headshottedByTeam(\Yii::$app->user->identity->team->id);
+    $headshotsProvider = new ActiveDataProvider([
+      'query' => $headshots,
+      'pagination' => [
+        'pageSizeParam' => 'headshots-perpage',
+        'pageParam' => 'headshots-page',
+        'pageSize' => 5,
+      ],
+      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
+    ]);
+
+    $solves = \app\modules\challenge\models\Challenge::find()->solvedByTeam(\Yii::$app->user->identity->team->id);
+    $solverProvider = new ActiveDataProvider([
+      'query' => $solves,
+      'pagination' => [
+        'pageSizeParam' => 'solves-perpage',
+        'pageParam' => 'solves-page',
+        'pageSize' => 5,
+      ],
+      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
+    ]);
+
     return $this->render('view', [
       'teamInstanceProvider' => $teamInstanceProvider,
       'dataProvider' => $dataProvider,
       'streamProvider' => $streamProvider,
+      'teamTargetsProvider' => $targetProgressProvider,
+      'headshotsProvider'=>$headshotsProvider,
+      'solverProvider'=>$solverProvider,
       'team' => Yii::$app->user->identity->team
     ]);
+
   }
   /**
    * Lists all Team models.
