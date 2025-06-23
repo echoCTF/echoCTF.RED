@@ -215,7 +215,7 @@ class PlayerController extends Controller
       $player->auth_key = Yii::$app->security->generateRandomString();
 
       if (!$player->saveWithSsl()) {
-        if (!$player->active) {
+        if (!$player->active && intval(\Yii::$app->sys->disable_mailer)==0) {
           $player->generateEmailVerificationToken();
           $player->status = 9;
         }
