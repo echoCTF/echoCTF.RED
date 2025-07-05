@@ -564,7 +564,6 @@
     - { cmd: "{{APP_DIR}}/backend/yii sysconfig/set offense_registered_tag OFFENSE_REGISTERED"}
     - { cmd: "{{APP_DIR}}/backend/yii vpn/load /etc/openvpn/openvpn_tun0.conf"}
     - { cmd: "touch /etc/administrators.conf", creates: "/etc/administrators.conf" }
-    - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
     - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
     - { cmd: "touch /etc/registry_clients.conf", creates: "/etc/registry_clients.conf" }
     - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
@@ -586,6 +585,7 @@
       content: "{{item.val}}\n"
     with_items:
       - { dest: "/etc/registry_clients.conf", val: "10.0.0.0/24"}
+      - { dest: "/etc/maintenance.conf", val: "0.0.0.0/0"}
 
   - name: "Create targets network interface hostname.{{targets_if}}"
     copy:
