@@ -248,6 +248,7 @@
       - usr/local/lib
       - "usr/local/share/icu/{{versions.ICU_MAJOR}}.{{versions.ICU_MINOR}}"
       - usr/lib
+      - acme/.well-known/acme-challenge
 
   - name: "Copy pf conf files"
     copy:
