@@ -94,6 +94,7 @@
       AUTOMAKE: "1.16"
       ICU_MAJOR: 76
       ICU_MINOR: 1
+      MARIADB_CONNECTOR: "3.4.5"
     sysctl:
       kern.bufcachepercent: 30
       kern.maxfiles: 312180
@@ -147,6 +148,7 @@
       - py3-mysqlclient
       - py3-setuptools
       - py3-netaddr
+      - py3-pip
       - supervisor
       - gnuwatch
       - go
