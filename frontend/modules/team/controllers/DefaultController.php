@@ -452,6 +452,7 @@ class DefaultController extends \app\components\BaseController
       return $this->redirect(['view', 'token' => $token]);
     }
     $redir = ['view', 'token' => $token];
+    
     if ($tp->player_id === Yii::$app->user->id) {
       if (Yii::$app->user->identity->teamLeader) {
         $this->delete_with_extras();
@@ -462,7 +463,9 @@ class DefaultController extends \app\components\BaseController
     } else {
       Yii::$app->session->setFlash('success', \Yii::t('app', 'Membership has been withdrawn.'));
     }
+
     if (Yii::$app->user->identity->teamLeader) {
+      Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid', $tp->team_id)->execute();
       $tp->notifyRejectPlayer();
     } else {
       $tp->notifyPartOwner();
