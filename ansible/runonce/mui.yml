@@ -248,6 +248,7 @@
       - usr/local/lib
       - "usr/local/share/icu/{{versions.ICU_MAJOR}}.{{versions.ICU_MINOR}}"
       - usr/lib
+      - acme/.well-known/acme-challenge
 
   - name: "Copy pf conf files"
     copy:
@@ -256,6 +257,8 @@
     with_items:
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
       - { src: '{{playbook_dir}}/../templates/mui.service.conf.j2', dest: '/etc/service.pf.conf' }
+      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf' }
+      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf' }
 
   - name: Generate pf tables files
     command: "{{item.cmd}}"
