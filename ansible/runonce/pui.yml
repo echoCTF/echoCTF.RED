@@ -72,7 +72,7 @@
         - Reboot the system for the changes to take effect
     rcctl:
       - { name: check_quotas, state: "disable" }
-      - { name: cron, state: "disable" }
+      - { name: cron, state: "enable" }
       - { name: ntpd, state: "enable" }
       - { name: pflogd, state: "disable" }
       - { name: slaacd, state: "disable" }
@@ -273,9 +273,15 @@
     with_items:
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
       - { src: '{{playbook_dir}}/../templates/pui.service.conf.j2', dest: '/etc/service.pf.conf' }
-      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf' }
-      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf' }
       - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
+
+  - name: "Process templates"
+    template:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf' }
+      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf' }
 
   - name: Generate pf tables files
     copy:
@@ -285,7 +291,7 @@
     - { dest: "/etc/administrators.conf" }
     - { dest: "/etc/docker_clients.conf" }
     - { dest: "/etc/docker_servers.conf" }
-    - { dest: "/etc/maintenance.conf" }
+    - { content: "0.0.0.0/0", dest: "/etc/maintenance.conf" }
     - { dest: "/etc/moderators.conf" }
     - { dest: "/etc/registry_clients.conf" }
     - { dest: "/etc/registry_servers.conf" }
