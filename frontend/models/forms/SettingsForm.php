@@ -84,8 +84,9 @@ class SettingsForm extends Model
 
           /* email field rules */
           [['email'], 'trim','when' => function($model,$attribute) { return $model->_cf($attribute);}],
+          ['email', 'required', 'when'=> function($model,$attribute) { return $model->_cf($attribute);}],
           ['email', 'email','checkDNS'=>true,'when' => function($model,$attribute) { return $model->_cf($attribute) && \Yii::$app->sys->disable_mail_validation!==true;}],
-          [['email'], 'string', 'max'=>255,'when' => function($model,$attribute) { return $model->_cf($attribute);}],
+          [['email'], 'string', 'min'=>6, 'max'=>255,'when' => function($model,$attribute) { return $model->_cf($attribute);}],
           [['email'], 'email','when' => function($model,$attribute) { return $model->_cf($attribute);}],
           ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This email has already been taken.'), 'when' => function($model, $attribute) {
               return $model->_cf($attribute) && $model->{$attribute} !== $model->_player->{$attribute};
@@ -114,8 +115,8 @@ class SettingsForm extends Model
           ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This username has already been taken.'), 'when' => function($model, $attribute) {
               return $model->_cf($attribute) && $model->{$attribute} !== $model->_player->{$attribute};
           }],
-          [['new_password', ], 'string', 'max'=>255],
-          [['confirm_password'], 'string', 'max'=>255],
+          [['new_password', ], 'string', 'min'=>8, 'max'=>255],
+          [['confirm_password'], 'string', 'min'=>8, 'max'=>255],
           [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
           [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio','youtube','twitch'], 'trim','when' => function($model,$attribute) { return $model->_cf($attribute);}],
           ['country', 'exist', 'targetClass' => \app\models\Country::class, 'targetAttribute' => ['country' => 'id'],'when' => function($model,$attribute) { return $model->_cf($attribute);}],
