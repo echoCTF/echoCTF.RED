@@ -41,7 +41,7 @@ class SignupForm extends Model
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email','checkDNS'=>true],
-            ['email', 'string', 'max' => 255],
+            ['email', 'string', 'min'=>6, 'max' => 255],
             ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This email address has already been taken.')],
             ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => \Yii::t('app','This email is banned.')],
             ['email', function($attribute, $params){
