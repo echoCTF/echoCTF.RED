@@ -37,6 +37,7 @@ if [ "$script_type" == "client-connect" ]; then
         for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "$TEAMS_QUERY");do
           /sbin/pfctl -t "${network}_clients" -T add ${ifconfig_pool_remote_ip}
         done
+        echo "pass in quick inet from ${ifconfig_pool_remote_ip} to <targets> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state (max 1000, source-track rule, max-src-states 2000, max-src-conn 20)" | /sbin/pfctl -a offense/player_${common_name} -f -
       fi
       echo "[$$] client ${common_name} logged in successfully">>/tmp/updown.log
     else
@@ -58,6 +59,8 @@ elif [ "$script_type" == "client-disconnect" ]; then
     for network in $(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "$TEAMS_QUERY");do
       /sbin/pfctl -t "${network}_clients" -T delete ${ifconfig_pool_remote_ip}
     done
+    # delete player specific rules
+    /sbin/pfctl -a offense/player_${common_name} -Fr
   fi
   echo "[$$] client cn:${common_name}, local:${ifconfig_pool_remote_ip}, remote: ${untrusted_ip} disconnected successfully">>/tmp/updown.log
 fi
