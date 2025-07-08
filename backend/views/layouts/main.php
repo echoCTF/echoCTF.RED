@@ -167,6 +167,7 @@ AppAsset::register($this);
           'visible' => !Yii::$app->user->isGuest,
           'active' => Yii::$app->controller->module->id == 'frontend',
           'items' => [
+            ['label' => 'Moderation', 'url' => ['/frontend/moderation/index'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
             ['label' => 'Players', 'url' => ['/frontend/player/index'], 'visible' => !Yii::$app->user->isGuest,],
             ['label' => 'Profiles', 'url' => ['/frontend/profile/index'], 'visible' => !Yii::$app->user->isGuest,],
             ['label' => 'Player Metadata', 'url' => ['/frontend/player-metadata/index'], 'visible' => !Yii::$app->user->isGuest,],
