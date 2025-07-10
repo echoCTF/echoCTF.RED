@@ -33,24 +33,27 @@ function sql() {
   mysql -e "CREATE DATABASE ${DATABASE} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
   if compgen -G "${DATABASE}-full-*.sql" > /dev/null; then
     list=( ${DATABASE}-full-*.sql )
+    echo "Using local file ${list[-1]}"
     mysql ${DATABASE} < "${list[-1]}"
   else
     for _sql in echoCTF.sql echoCTF-routines.sql echoCTF-triggers.sql echoCTF-events.sql faq.sql instruction.sql rule.sql sysconfig.sql disabled_route.sql; do
       if [ -f "schemas/${_sql}" ]; then
-        mysql ${DATABASE} < schemas/${_sql}
+        sed -e "s/echoCTF/${DATABASE}/g" schemas/${_sql} | mysql ${DATABASE}
       fi
     done
   fi
-  mysql ${DATABASE} < contrib/mysql-init.sql
+  sed -e "s/echoCTF/${DATABASE}/g" contrib/mysql-init.sql | mysql ${DATABASE}
   mysql ${DATABASE} -e "SET GLOBAL EVENT_SCHEDULER=ON"
 }
 
-function init() {
+function migrate() {
   ./backend/yii migrate --interactive=0
   ./backend/yii init_data --interactive=0
   ./backend/yii migrate-sales --interactive=0
-  sysconfig
   ./backend/yii migrate-red --migrationPath=@app/../migrations --interactive=0
+}
+
+function init() {
   ./backend/yii ssl/create-ca
   ./backend/yii ssl/create-cert
   ./backend/yii user/create admin admin@example.com admin
@@ -84,10 +87,7 @@ function sysconfig() {
   SYSCONFIG[members_per_team]="3"
   SYSCONFIG[mail_from]="register@XXCHANGEMEXX"
   SYSCONFIG[mail_fromName]="XXCHANGEMEXX CTF"
-  SYSCONFIG[mail_host]="smtp.gmail.com"
-  SYSCONFIG[mail_port]="25"
-  SYSCONFIG[mail_username]="register@XXCHANGEMEXX"
-  SYSCONFIG[mail_password]=""
+  SYSCONFIG[dsn]='gmail+smtp://example@example.com:passcode@default?local_domain=PUI_FQDN'
   SYSCONFIG[offense_domain]="ctf.XXCHANGEMEXX"
   SYSCONFIG[frontpage_scenario]="XXCHANGEMEXX CTF"
   SYSCONFIG[event_name]="XXCHANGEMEXX CTF"
@@ -155,6 +155,7 @@ function usage() {
   echo "6. tmuxs: Start tmux sessions"
   echo "6. eventOrganizers: Add event organizers"
   echo "7. sampleData: Populate sample data"
+  echo "8. migrate: Perform Yii2 migrations
 }
 
 if [ $# -eq 0 ]; then
@@ -166,6 +167,7 @@ for arg in "$@"; do
     "settings") "$arg" ;;
     "services") "$arg" ;;
     "sql") "$arg" ;;
+    "migrate") "$arg" ;;
     "init") "$arg" ;;
     "tmuxs") "$arg" ;;
     "sysconfig") "$arg" ;;
