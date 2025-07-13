@@ -24,5 +24,5 @@ use yii\helpers\html;
 class ModerationPlayer extends Player
 {
   // The number of activated writeups a player has
-  public $player_target_help_count=0;
+  public $player_target_help_count;
 }
