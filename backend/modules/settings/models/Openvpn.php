@@ -88,11 +88,11 @@ class Openvpn extends \yii\db\ActiveRecord
         {
             return false;
         }
-        if(empty($this->net))
+        if($this->net!=ip2long($this->net_octet))
           $this->net=ip2long($this->net_octet);
-        if(empty($this->mask))
+        if($this->mask!=ip2long($this->mask_octet))
           $this->mask=ip2long($this->mask_octet);
-        if(empty($this->management_ip))
+        if($this->management_ip!=ip2long($this->management_ip_octet))
           $this->management_ip=ip2long($this->management_ip_octet);
         return true;
     }
