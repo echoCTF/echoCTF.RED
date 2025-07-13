@@ -27,7 +27,18 @@ class PlayerController extends \app\components\BaseController
    */
   public function behaviors()
   {
-    return ArrayHelper::merge(parent::behaviors(), [
+    return ArrayHelper::merge([
+      'access' => [
+        'class' => \yii\filters\AccessControl::class,
+        'rules' => [
+          '00filtered-actions'=>[
+            'actions' => ['mail','approve','reject','export'],
+            'allow' => true,
+            'roles' => ['@'],
+          ]
+        ],
+      ],
+
       'rules' => [
         'class' => 'yii\filters\AjaxFilter',
         'only' => ['ajax-search']
@@ -52,11 +63,12 @@ class PlayerController extends \app\components\BaseController
           'reject' => ['POST'],
         ],
       ],
-    ]);
+    ],parent::behaviors());
   }
   public function actions()
   {
     $actions = parent::actions();
+    $actions['export']['class'] = 'app\modules\frontend\actions\player\ExportAction';
     $actions['import']['class'] = 'app\modules\frontend\actions\player\ImportAction';
     $actions['ban']['class'] = 'app\modules\frontend\actions\player\BanAction';
     $actions['mail']['class'] = 'app\modules\frontend\actions\player\MailAction';

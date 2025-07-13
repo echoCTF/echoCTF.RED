@@ -22,6 +22,7 @@ yii\bootstrap5\Modal::end();
   <p>
     <?= Html::a('Create Player', ['create'], ['class' => 'btn btn-success']) ?>
     <?= Html::a('Import Players', ['import'], ['class' => 'btn btn-info']) ?>
+    <?= Html::a('Export Full Players', ['export'], ['class' => 'btn','style' => 'background: #4040bf; color: white;',]) ?>
     <?= Html::a(Yii::t('app', 'Fail Validate'), ['fail-validation'], [
       'class' => 'btn',
       'style' => 'background: #4d246f; color: white;',
@@ -386,6 +387,4 @@ yii\bootstrap5\Modal::end();
       ],
     ],
   ]); ?>
-
-
 </div>
