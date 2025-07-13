@@ -4,7 +4,7 @@ namespace app\modules\frontend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\frontend\models\Player;
+use app\modules\frontend\models\ModerationPlayer as Player;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\AttributeTypecastBehavior;
@@ -14,7 +14,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  */
 class PlayerSearch extends Player
 {
-  public $on_pui, $on_vpn, $vpn_local_address,$affiliation,$player_target_help_count;
+  public $on_pui, $on_vpn, $vpn_local_address,$affiliation;
   public function behaviors()
   {
     return [
