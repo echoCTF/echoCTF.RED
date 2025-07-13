@@ -140,7 +140,7 @@ class PlayerSearch extends Player
                 ]
             ),
         ]);
-        
+
         if($this->player_target_help_count!="")
             $query->andHaving(['=', 'player_target_help_count', $this->player_target_help_count]);
         $this->dataProviderSort($dataProvider);
