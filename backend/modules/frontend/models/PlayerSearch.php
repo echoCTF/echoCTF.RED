@@ -4,7 +4,7 @@ namespace app\modules\frontend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\modules\frontend\models\Player;
+use app\modules\frontend\models\ModerationPlayer as Player;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
 use yii\behaviors\AttributeTypecastBehavior;
@@ -44,7 +44,7 @@ class PlayerSearch extends Player
     {
         return [
             [['id', 'academic', 'status', 'active','approval'], 'integer'],
-            [['affiliation','created','vpn_local_address', 'status', 'username', 'fullname', 'email', 'type', 'password', 'activkey', 'ts', 'last_seen', 'online', 'ovpn', 'on_pui', 'on_vpn'], 'safe'],
+            [['affiliation','created','vpn_local_address', 'player_target_help_count','status', 'username', 'fullname', 'email', 'type', 'password', 'activkey', 'ts', 'last_seen', 'online', 'ovpn', 'on_pui', 'on_vpn'], 'safe'],
         ];
     }
 
@@ -82,33 +82,73 @@ class PlayerSearch extends Player
             return $dataProvider;
         }
 
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'player.id' => $this->id]);
-        $query->orFilterWhere([
-            'player.active' => $this->active,
-            'player.academic' => $this->academic,
-            'player.status' => $this->status,
-            'player.approval' => $this->approval,
-            'player_last.on_pui' => $this->on_pui,
-            'player_last.on_vpn' => $this->on_vpn,
-            'player.ts' => $this->ts,
-        ]);
-
-        $query->andFilterWhere(['like', 'player.username', $this->username])
-            ->andFilterWhere(['like', 'player.fullname', $this->fullname])
-            ->andFilterWhere(['like', 'player.email', $this->email])
-            ->andFilterWhere(['like', 'player.type', $this->type])
-            ->andFilterWhere(['like', 'player.created', $this->created])
-            ->andFilterWhere(['like', 'player.password', $this->password])
-            ->andFilterWhere(['like', 'player.activkey', $this->activkey])
-            ->andFilterWhere(['like', 'player_metadata.affiliation', $this->affiliation])
-            ->andFilterWhere(['like', 'INET_NTOA(player_last.vpn_local_address)', $this->vpn_local_address]);
+        $this->queryFilters($query);
 
 //        if(!empty($this->ovpn)) $query->andHaving(['like', 'ovpn', $this->ovpn]);
 //        if($this->last_seen !== "" && $this->last_seen !== NULL)$query->andHaving(['like', 'last_seen', $this->last_seen]);
         if($this->online === "1") $query->andHaving(['>', 'ifnull(online,0)', $this->online]);
         else if($this->online === "0") $query->andHaving(['=', 'ifnull(online,0)', $this->online]);
+
+        $this->dataProviderSort($dataProvider);
+
+        return $dataProvider;
+    }
+
+    /**
+     * Creates data provider instance for Players with 0 points that have activated writeups
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function zeroPointWiteupsActivatedSearch($params)
+    {
+        $query = ModerationPlayer::find()->joinWith(['last','metadata']);;
+        $query->addSelect('playerTargetHelp.player_target_help_count as player_target_help_count');
+        // add conditions that should always apply here
+        $query->where('(player.id in (select player_id from player_score where points=0)) and player.id in (select distinct player_id from player_target_help)');
+        $subQuery = \app\modules\activity\models\PlayerTargetHelp::find()
+        ->select('player_id,count(*) as player_target_help_count')
+        ->groupBy('player_id');
+        $query->leftJoin(['playerTargetHelp' => $subQuery], 'playerTargetHelp.player_id = player.id');
+
+        $dataProvider = new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        //die(var_dump($query->createCommand()->rawSql));
+        $this->load($params);
+
+        if (!$this->validate()) {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+
+        $this->queryFilters($query);
+
+        if($this->online === "1") $query->andHaving(['>', 'ifnull(online,0)', $this->online]);
+        else if($this->online === "0") $query->andHaving(['=', 'ifnull(online,0)', $this->online]);
+        $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'player_target_help_count' => [
+                      'asc' => ['playerTargetHelp.player_target_help_count' => SORT_ASC],
+                      'desc' => ['playerTargetHelp.player_target_help_count' => SORT_DESC],
+                  ],
+                ]
+            ),
+        ]);
+
+        if($this->player_target_help_count!="")
+            $query->andHaving(['=', 'player_target_help_count', $this->player_target_help_count]);
+        $this->dataProviderSort($dataProvider);
+        return $dataProvider;
+    }
+
+    private function dataProviderSort($dataProvider)
+    {
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
@@ -141,8 +181,31 @@ class PlayerSearch extends Player
                 ]
             ),
         ]);
+    }
 
-        return $dataProvider;
+    private function queryFilters($query)
+    {
+        $query->andFilterWhere([
+            'player.id' => $this->id]);
+        $query->orFilterWhere([
+            'player.active' => $this->active,
+            'player.academic' => $this->academic,
+            'player.status' => $this->status,
+            'player.approval' => $this->approval,
+            'player_last.on_pui' => $this->on_pui,
+            'player_last.on_vpn' => $this->on_vpn,
+            'player.ts' => $this->ts,
+        ]);
+
+        $query->andFilterWhere(['like', 'player.username', $this->username])
+            ->andFilterWhere(['like', 'player.fullname', $this->fullname])
+            ->andFilterWhere(['like', 'player.email', $this->email])
+            ->andFilterWhere(['like', 'player.type', $this->type])
+            ->andFilterWhere(['like', 'player.created', $this->created])
+            ->andFilterWhere(['like', 'player.password', $this->password])
+            ->andFilterWhere(['like', 'player.activkey', $this->activkey])
+            ->andFilterWhere(['like', 'player_metadata.affiliation', $this->affiliation])
+            ->andFilterWhere(['like', 'INET_NTOA(player_last.vpn_local_address)', $this->vpn_local_address]);
     }
 
 }

@@ -12,7 +12,7 @@ use app\modules\frontend\models\Player;
  */
 class StreamSearch extends Stream
 {
-    public $player;
+    public $player,$seconds_since_last;
 
     /**
      * {@inheritdoc}
@@ -21,7 +21,7 @@ class StreamSearch extends Stream
     {
         return [
             [['id', 'player_id', 'model_id', 'points'], 'integer'],
-            [['player','player_id','model', 'title', 'message', 'pubtitle', 'pubmessage', 'ts', 'player'], 'safe'],
+            [['player','player_id','model', 'title', 'message', 'pubtitle', 'pubmessage', 'ts', 'player','seconds_since_last'], 'safe'],
             //[['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
@@ -61,6 +61,54 @@ class StreamSearch extends Stream
             return $dataProvider;
         }
 
+        $this->queryFilters($query);
+        $this->dataProviderSort($dataProvider);
+        return $dataProvider;
+    }
+
+    /**
+     * Creates data provider instance with LAG() and search query applied
+     *
+     * @param array $params
+     *
+     * @return ActiveDataProvider
+     */
+    public function searchWithLag($params)
+    {
+        $query=Stream::find()->joinWith(['player']);
+        $query->select(['stream.*',new \yii\db\Expression('TIMESTAMPDIFF(SECOND, LAG(stream.ts) OVER (order by stream.ts), stream.ts) AS seconds_since_last')]);
+        // add conditions that should always apply here
+
+        $dataProvider=new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        $this->load($params);
+
+        if(!$this->validate())
+        {
+            return $dataProvider;
+        }
+
+        $this->queryFilters($query);
+        $query->andFilterWhere(['not in', 'stream.model', ['finding','badge']]);
+        $this->dataProviderSort($dataProvider);
+        $dataProvider->setSort([
+            'defaultOrder' => ['id'=>SORT_DESC],
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'player' => [
+                      'asc' => ['stream.player_id' => SORT_ASC],
+                      'desc' => ['stream.player_id' => SORT_DESC],
+                  ],
+                ]
+        )]);
+        return $dataProvider;
+    }
+
+    private function queryFilters($query)
+    {
         // grid filtering conditions
         $query->andFilterWhere([
             'stream.id' => $this->id,
@@ -76,20 +124,21 @@ class StreamSearch extends Stream
             ->andFilterWhere(['like', 'stream.pubtitle', $this->pubtitle])
             ->andFilterWhere(['like', 'stream.pubmessage', $this->pubmessage]);
         $query->orFilterWhere(['like', 'player.username', $this->player]);
+    }
 
+    private function dataProviderSort($dataProvider)
+    {
         $dataProvider->setSort([
             'defaultOrder' => ['id'=>SORT_DESC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
-                  'player' => [
-                      'asc' => ['stream.player_id' => SORT_ASC],
-                      'desc' => ['stream.player_id' => SORT_DESC],
+                  'seconds_since_last' => [
+                      'asc' => ['seconds_since_last' => SORT_ASC],
+                      'desc' => ['seconds_since_last' => SORT_DESC],
                   ],
                 ]
             ),
         ]);
-
-        return $dataProvider;
     }
 }

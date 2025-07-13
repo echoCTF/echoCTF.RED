@@ -31,7 +31,7 @@ class Stream extends StreamAR
     'report'=>'<i class="fas fa-clipboard-list" style="font-size: 1.5em;"></i>',
     'badge'=>'<i class="fas fa-trophy" style="color: #C79810;font-size: 1.5em;" data-toggle="tooltip" title="Badge"></i>',
   ];
-
+  public $seconds_since_last;
   public $ts_ago;
   public $pub=true;
   public function getIcon()

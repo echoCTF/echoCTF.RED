@@ -318,7 +318,7 @@ class PlayerController extends Controller
    */
   public function actionCheckSpammy($domains = false)
   {
-    $skip_domains = [];
+    $skip_domains = $DNS_NS = $DNS_MX = $DNS_A = [];
     $players = Player::find()->select(["SUBSTRING_INDEX(email,'@',-1) as email"])->distinct();
     foreach ($skip_domains as $d)
       $players->andWhere(['not like', 'email', $d]);
