@@ -120,9 +120,15 @@ use yii\bootstrap5\ActiveForm;
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6">
-          <?= $form->field($model, 'weight')->textInput(['maxlength' => true])->hint('Enter a number to be used as weight for ordering') ?>
-        </div>
+      <div class="col-md-4">
+        <?= $form->field($model, 'headshot_points')->textInput(['maxlength' => true])->hint('Points that will be awarded for every headshot') ?>
+      </div>
+      <div class="col-md-4">
+        <?= $form->field($model, 'first_headshot_points')->textInput(['maxlength' => true])->hint('Points that will be awarded for the first headshot') ?>
+      </div>
+      <div class="col-md-4">
+        <?= $form->field($model, 'weight')->textInput(['maxlength' => true])->hint('Enter a number to be used as weight for ordering') ?>
+      </div>
     </div>
 
     <?= $form->field($model, 'parameters')->textarea(['rows' => 6])->hint('Add extra docker parameters as json object (eg. <code>{"hostConfig":{"Memory":"512"}}</code>)') ?>
