@@ -7,6 +7,9 @@ use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Headshot;
 use app\modules\infrastructure\models\TargetInstance;
 use app\modules\infrastructure\models\TargetMetadata;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeTypecastBehavior;
+use yii\db\Expression;
 
 
 /**
@@ -38,6 +41,8 @@ use app\modules\infrastructure\models\TargetMetadata;
  * @property bool $writeup_allowed
  * @property bool $instance_allowed
  * @property bool $require_findings
+ * @property int $headshot_points
+ * @property int $first_headshot_points
  * @property string $created_at The date this record was created_at
  *
  * @property Finding[] $findings
@@ -56,7 +61,6 @@ class TargetAR extends \yii\db\ActiveRecord
     'powerup'=>'powerup',
     'powerdown'=>'powerdown',
     'maintenance'=>'maintenance'];
-
     /**
      * {@inheritdoc}
      */
@@ -64,6 +68,31 @@ class TargetAR extends \yii\db\ActiveRecord
     {
         return 'target';
     }
+
+  public function behaviors()
+  {
+    return [
+      'typecast' => [
+        'class' => AttributeTypecastBehavior::class,
+        'attributeTypes' => [
+          'headshot_points' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'first_headshot_points' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'suggested_xp' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'required_xp' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
+        ],
+        'typecastAfterValidate' => true,
+        'typecastBeforeSave' => true,
+        'typecastAfterFind' => true,
+      ],
+      [
+        'class' => TimestampBehavior::class,
+        'createdAtAttribute' => 'created_at',
+        'updatedAtAttribute' => 'ts',
+        'value' => new Expression('NOW()'),
+      ],
+    ];
+  }
 
     /**
      * {@inheritdoc}
@@ -73,7 +102,8 @@ class TargetAR extends \yii\db\ActiveRecord
         return [
             [['parameters', 'description','imageparams'], 'string'],
             [['name', 'fqdn'], 'required'],
-            [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','healthcheck','writeup_allowed','player_spin','headshot_spin','instance_allowed','require_findings'], 'integer'],
+            [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','healthcheck','writeup_allowed','player_spin','headshot_spin','instance_allowed','require_findings','headshot_points','first_headshot_points'], 'integer'],
+            [['headshot_points','first_headshot_points'],'default','value'=>0],
             [['ipoctet'], 'ip'],
             [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns','category'], 'string', 'max' => 255],
             [['image'], 'filter', 'filter'=>'strtolower'],
