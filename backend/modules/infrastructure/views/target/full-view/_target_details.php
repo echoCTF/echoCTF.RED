@@ -30,7 +30,7 @@ use app\widgets\BooleanTransform as BT;
 <?php endif; ?>
 <?php if($model->first_headshot_points>0):?>
           <tr>
-            <td><i class="fas fa-skull"></i> 1st Headshot Points</td>
+            <td><i class="fas fa-skull-crossbones"></i> 1st Headshot Points</td>
             <td><?=$model->first_headshot_points?></td>
           </tr>
 <?php endif; ?>
