@@ -79,7 +79,7 @@ class TargetSearch extends Target
             'suggested_xp' => $this->suggested_xp,
             'required_xp' => $this->required_xp,
             'status' => $this->status,
-            'weight' => $this->weight,
+            'target.weight' => $this->weight,
             'target.timer' => $this->timer,
         ]);
 
