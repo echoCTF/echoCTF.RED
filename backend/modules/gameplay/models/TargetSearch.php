@@ -20,7 +20,7 @@ class TargetSearch extends Target
     public function rules()
     {
         return [
-            [['id', 'ip', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp','headshot','weight','pts','instance_allowed','require_findings'], 'integer'],
+            [['id', 'ip', 'timer','rootable', 'difficulty', 'required_xp', 'suggested_xp','headshot','weight','pts','instance_allowed','require_findings','headshot_points','first_headshot_points'], 'integer'],
             ['active','boolean'],
             [['headshot'],'default','value'=>null ],
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
@@ -73,6 +73,8 @@ class TargetSearch extends Target
             'rootable' => $this->rootable,
             'instance_allowed' => $this->instance_allowed,
             'require_findings' => $this->require_findings,
+            'first_headshot_points' => $this->first_headshot_points,
+            'headshot_points' => $this->headshot_points,
             'difficulty' => $this->difficulty,
             'suggested_xp' => $this->suggested_xp,
             'required_xp' => $this->required_xp,
@@ -101,32 +103,40 @@ class TargetSearch extends Target
         if($this->headshot !== null ) $query->having(["=",'count(headshot.player_id)',$this->headshot]);
         $query->groupBy(['target.id']);
         $dataProvider->setSort([
-                'attributes' => array_merge(
-                    $dataProvider->getSort()->attributes,
-                    [
-                      'target.id' => [
-                          'asc' => ['target.id' => SORT_ASC],
-                          'desc' => ['target.id' => SORT_DESC],
-                      ],
-                      'ipoctet' => [
-                          'asc' => ['ip' => SORT_ASC],
-                          'desc' => ['ip' => SORT_DESC],
-                      ],
-                      'network_name' => [
-                          'asc' => ['network.name' => SORT_ASC],
-                          'desc' => ['network.name' => SORT_DESC],
-                      ],
-                      'headshot' => [
-                          'asc' => ['COUNT(headshot.player_id)' => SORT_ASC],
-                          'desc' => ['COUNT(headshot.player_id)' => SORT_DESC],
-                      ],
-                      'pts' => [
-                        'asc' => ['pts' => SORT_ASC],
-                        'desc' => ['pts' => SORT_DESC],
-                    ],
-                  ]
-                ),
-            ]);
+          'attributes' => array_merge(
+            $dataProvider->getSort()->attributes,
+            [
+              'target.id' => [
+                'asc' => ['target.id' => SORT_ASC],
+                'desc' => ['target.id' => SORT_DESC],
+              ],
+              'ipoctet' => [
+                  'asc' => ['ip' => SORT_ASC],
+                  'desc' => ['ip' => SORT_DESC],
+              ],
+              'network_name' => [
+                  'asc' => ['network.name' => SORT_ASC],
+                  'desc' => ['network.name' => SORT_DESC],
+              ],
+              'headshot' => [
+                  'asc' => ['COUNT(headshot.player_id)' => SORT_ASC],
+                  'desc' => ['COUNT(headshot.player_id)' => SORT_DESC],
+              ],
+              'headshot_points' => [
+                'asc' => ['headshot_points' => SORT_ASC],
+                'desc' => ['headshot_points' => SORT_DESC],
+              ],
+              'first_headshot_points' => [
+                'asc' => ['first_headshot_points' => SORT_ASC],
+                'desc' => ['first_headshot_points' => SORT_DESC],
+              ],
+              'pts' => [
+                'asc' => ['pts' => SORT_ASC],
+                'desc' => ['pts' => SORT_DESC],
+              ],
+            ]
+          ),
+        ]);
 
         return $dataProvider;
     }
