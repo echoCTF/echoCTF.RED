@@ -24,38 +24,9 @@ use app\components\WebhookTrigger as Webhook;
 use yii\base\UserException;
 use yii\helpers\Url;
 /**
- * This is the model class for table "target".
+ * This is the model class extends the default one for "target"
+ * with extra methods.
  *
- * @property int $id target ID
- * @property string $name A name for the target
- * @property string $fqdn The FQDN for the target
- * @property string $purpose The purpose of this target
- * @property string $description
- * @property int $ip The IP of the target
- * @property string $mac The mac associated with this IP
- * @property int $active
- * @property string $status Status for the target (online,offline,powerup,powerdown)
- * @property string $scheduled_at A date to associate with "status" if needed
- * @property string $net Network this pod is attached
- * @property string $server Docker Server connection string.
- * @property string $image
- * @property string $dns
- * @property string $parameters
- * @property int $suggested_xp
- * @property int $required_xp
- * @property int $rootable
- * @property int $difficulty
- * @property bool $timer
- * @property string $avatar
- *
- * @property int $memory
- *
- * @property Finding[] $findings
- * @property TargetVariable[] $targetVariables
- * @property TargetVolume[] $targetVolumes
- * @property Treasure[] $treasures
- * @property Headshot[] $headshots
- * @property Network $network
  */
 class Target extends TargetAR
 {
