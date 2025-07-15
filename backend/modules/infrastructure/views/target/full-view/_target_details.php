@@ -22,6 +22,19 @@ use app\widgets\BooleanTransform as BT;
             <td><?= $model->ondemand->state==1 ? $model->ondemand->player->username : "" ?></td>
           </tr>
 <?php endif; ?>
+<?php if($model->headshot_points>0):?>
+          <tr>
+            <td><i class="fas fa-skull"></i> Headshot Points</td>
+            <td><?=$model->headshot_points?></td>
+          </tr>
+<?php endif; ?>
+<?php if($model->first_headshot_points>0):?>
+          <tr>
+            <td><i class="fas fa-skull-crossbones"></i> 1st Headshot Points</td>
+            <td><?=$model->first_headshot_points?></td>
+          </tr>
+<?php endif; ?>
+
         <tr>
           <td><i class="fas fa-battery-half"></i> Difficulty</td>
           <td><?= $model->difficultyString ?></td>
