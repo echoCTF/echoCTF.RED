@@ -19,6 +19,7 @@ class PlayerLast extends \yii\db\ActiveRecord
   public $signup_ipoctet;
   public $vpn_remote_address_octet;
   public $vpn_local_address_octet;
+  public $duplicates,$offenders;
 
     /**
      * {@inheritdoc}
