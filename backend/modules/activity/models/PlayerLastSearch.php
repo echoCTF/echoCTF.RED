@@ -11,14 +11,14 @@ use app\modules\activity\models\PlayerLast;
  */
 class PlayerLastSearch extends PlayerLast
 {
-  public $username;
+  public $username,$duplicates;
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id'], 'integer'],
+            [['id','duplicates'], 'integer'],
             [['on_pui', 'on_vpn', 'vpn_remote_address', 'vpn_local_address', 'signup_ip','signin_ip', 'username','ts'], 'safe'],
         ];
     }
@@ -57,8 +57,52 @@ class PlayerLastSearch extends PlayerLast
             // $query->where('0=1');
             return $dataProvider;
         }
+        $this->queryFilters($query);
+        $this->dataProviderSort($dataProvider);
 
         // grid filtering conditions
+
+        return $dataProvider;
+    }
+
+    public function searchDuplicateSignupIps($params){
+        $query=PlayerLast::find()->joinWith(['player']);
+        $query->select(['player_last.*',new \yii\db\Expression('count(*) as duplicates'),new \yii\db\Expression('group_concat(username order by player.id) as offenders') ]);
+        $query->where('signup_ip is not null');
+        $query->groupBy(['signup_ip']);
+        $query->having('duplicates>1');
+        //$query->orderBy('signup_ip');
+        $dataProvider=new ActiveDataProvider([
+            'query' => $query,
+        ]);
+
+        $this->load($params);
+
+        if(!$this->validate())
+        {
+            // uncomment the following line if you do not want to return any records when validation fails
+            // $query->where('0=1');
+            return $dataProvider;
+        }
+        $this->queryFilters($query);
+        $this->dataProviderSort($dataProvider);
+        $dataProvider->setSort([
+            'attributes' => array_merge(
+                $dataProvider->getSort()->attributes,
+                [
+                  'duplicates' => [
+                      'asc' => [new \yii\db\Expression('duplicates ASC') ],
+                      'desc' => [new \yii\db\Expression('duplicates DESC') ],
+                  ],
+                ]
+            ),
+        ]);
+        //die(var_dump($query->createCommand()->rawSql));
+
+        return $dataProvider;
+
+    }
+    private function queryFilters($query) {
         $query->andFilterWhere([
             'player_last.id' => $this->id,
         ]);
@@ -77,6 +121,9 @@ class PlayerLastSearch extends PlayerLast
         $query->andFilterWhere(['like', 'player_last.on_pui', $this->on_pui]);
         $query->andFilterWhere(['like', 'player_last.on_vpn', $this->on_vpn]);
         $query->andFilterWhere(['like', 'player_last.ts', $this->ts]);
+    }
+
+    private function dataProviderSort($dataProvider) {
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
@@ -88,6 +135,6 @@ class PlayerLastSearch extends PlayerLast
                 ]
             ),
         ]);
-        return $dataProvider;
     }
+
 }

@@ -9,7 +9,9 @@ use app\modules\frontend\models\PlayerSsl;
 use app\modules\frontend\models\PlayerSearch;
 use app\modules\settings\models\Sysconfig;
 use app\modules\activity\models\StreamSearch;
+use app\modules\activity\models\PlayerLastSearch;
 use yii\helpers\ArrayHelper;
+use yii\data\ActiveDataProvider;
 
 class ModerationController extends \app\components\BaseController
 {
@@ -51,5 +53,18 @@ class ModerationController extends \app\components\BaseController
         ]);
     }
 
+    /**
+     * Lists stream entries with estimated lag from their previous entry.
+     * @return mixed
+     */
+    public function actionDuplicateSignupIps()
+    {
+        $searchModel=new PlayerLastSearch();
+        $dataProvider=$searchModel->searchDuplicateSignupIps(\Yii::$app->request->queryParams);
 
+        return $this->render('duplicate-signup-ips', [
+            'dataProvider' => $dataProvider,
+            'searchModel' => $searchModel,
+        ]);
+    }
 }

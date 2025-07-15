@@ -170,6 +170,7 @@ AppAsset::register($this);
             '<div class="dropdown-header">Moderation</div>',
             ['label' => 'Zero pts with activated help', 'url' => ['/frontend/moderation/index'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
             ['label' => 'Stream with Lag', 'url' => ['/frontend/moderation/stream-lag'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
+            ['label' => 'Duplicate Signup IPs', 'url' => ['/frontend/moderation/duplicate-signup-ips'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
             '<div class="dropdown-divider"></div>',
             ['label' => 'Players', 'url' => ['/frontend/player/index'], 'visible' => !Yii::$app->user->isGuest,],
             ['label' => 'Profiles', 'url' => ['/frontend/profile/index'], 'visible' => !Yii::$app->user->isGuest,],
