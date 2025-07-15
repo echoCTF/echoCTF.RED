@@ -7,7 +7,7 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\activity\models\StreamSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id) . ' / Stream Lag';
+$this->title=ucfirst(Yii::$app->controller->module->id).' / '.ucfirst(Yii::$app->controller->id) . ' / Duplicate Signup IPs';
 $this->params['breadcrumbs'][] = ['label' => ucfirst(Yii::$app->controller->module->id) ];
 $this->params['breadcrumbs'][] = ['label' => ucfirst(Yii::$app->controller->id), 'url'=>['index']];
 $this->params['breadcrumbs'][] = ['label' => "Duplicate Signup IPs", 'url' => ['duplicate-signup-ips']];
@@ -26,13 +26,15 @@ $this->params['breadcrumbs'][] = ['label' => "Duplicate Signup IPs", 'url' => ['
             [
               'attribute'=>'signup_ip',
               'value'=>function($model) {return $model->signup_ip === NULL ? null : long2ip($model->signup_ip);},
+              'headerOptions'=>['style'=>'width: 160px'],
             ],
             [
                 'attribute'=>'duplicates',
+                'contentOptions'=>['style'=>'width: 50px'],
             ],
             [
                 'attribute'=>'offenders',
-                'value'=>function($model){ return substr($model->offenders,0,50); }
+                'contentOptions'=>['style'=>'word-wrap:break-word'],
             ],
             [
               'class' => 'yii\grid\ActionColumn',

@@ -67,7 +67,7 @@ class PlayerLastSearch extends PlayerLast
 
     public function searchDuplicateSignupIps($params){
         $query=PlayerLast::find()->joinWith(['player']);
-        $query->select(['player_last.*',new \yii\db\Expression('count(*) as duplicates'),new \yii\db\Expression('group_concat(username order by player.id) as offenders') ]);
+        $query->select(['player_last.*',new \yii\db\Expression('count(*) as duplicates'),new \yii\db\Expression('group_concat(username order by player.id SEPARATOR ", ") as offenders') ]);
         $query->where('signup_ip is not null');
         $query->groupBy(['signup_ip']);
         $query->having('duplicates>1');
