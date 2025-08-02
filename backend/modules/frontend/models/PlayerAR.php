@@ -54,6 +54,7 @@ use app\modules\activity\models\PlayerDisconnectQueue;
  * @property Team $team
  * @property Profile $profile
  * @property PlayerSsl $playerSsl
+ * @property PlayerSubscription $subscription
  */
 class PlayerAR extends \yii\db\ActiveRecord
 {
@@ -442,6 +443,14 @@ class PlayerAR extends \yii\db\ActiveRecord
   public function getDisconnectQueue()
   {
     return $this->hasOne(PlayerDisconnectQueue::class, ['player_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getSubscription()
+  {
+    return $this->hasOne(\app\modules\sales\models\PlayerSubscription::class, ['player_id' => 'id']);
   }
 
   public function beforeSave($insert)
