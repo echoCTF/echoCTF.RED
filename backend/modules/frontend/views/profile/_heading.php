@@ -22,12 +22,12 @@ use yii\helpers\Html;
         <ul class="list-inline list-unstyled breadcrumb">
           <?php if ($model->owner->subscription) : ?>
             <li>
-              <?= Html::a('<span class="far fa-id-badge fs-3 text-info" style="padding-right: 0.2em"></span>', "https://dashboard.stripe.com/subscriptions/" . $model->owner->subscription->subscription_id, ['target' => '_blank', 'title' => 'Go to stripe subscription', 'data-toggle' => "tooltip", 'data-placement' => "top"]); ?>
+              <?= Html::a('<span class="far fa-id-badge fs-3 text-info" style="padding-right: 0.2em;"></span>', "https://dashboard.stripe.com/subscriptions/" . $model->owner->subscription->subscription_id, ['target' => '_blank', 'title' => 'Go to stripe subscription - '.($model->owner->subscription->product ? $model->owner->subscription->product->name: $model->owner->subscription->price_id), 'data-toggle' => "tooltip", 'data-placement' => "top"]); ?>
             </li>
           <?php endif; ?>
           <?php if ($model->owner->stripe_customer_id) : ?>
             <li>
-              <?= Html::a('<span class="fab fa-stripe fs-2 text-info"></span>', "https://dashboard.stripe.com/customers/" . $model->owner->stripe_customer_id, ['target' => '_blank', 'title' => 'Go to stripe customer', 'data-toggle' => "tooltip", 'data-placement' => "top"]); ?>
+              <?= Html::a('<span class="fab fa-stripe fs-2 text-info" style="padding-right: 0.1em;"></span>', "https://dashboard.stripe.com/customers/" . $model->owner->stripe_customer_id, ['target' => '_blank', 'title' => 'Go to stripe customer', 'data-toggle' => "tooltip", 'data-placement' => "top"]); ?>
             </li>
           <?php endif; ?>
           <?php if($model->echoctf):?>
