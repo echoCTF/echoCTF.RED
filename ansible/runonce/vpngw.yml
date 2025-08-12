@@ -424,7 +424,7 @@
       dest: /usr/local/bin/composer
       mode: '0555'
 
-  - name: Create php symlink without version
+  - name: Create needed symbolic links for backend commands
     file:
       src: "{{item.src}}"
       dest: "{{item.dst}}"
@@ -464,7 +464,9 @@
 
   - name: "Prepare /etc/hostname.tun0"
     copy:
-      content: "up group offense\n"
+      content: |
+        up group offense
+        inet -arp
       dest: /etc/hostname.tun0
 
   - name: Prepare openvpn services
