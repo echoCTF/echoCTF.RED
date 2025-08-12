@@ -5,25 +5,37 @@
   become_method: doas
   gather_facts: no
   vars_prompt:
+    - name: "myname"
+      prompt: "1/8. System FQDN?"
+      default: "registry.example.com"
+      private: no
     - name: "registry_user"
-      prompt: "1/5. User to run the registry as?"
+      prompt: "2/8. User to run the registry as?"
       default: "registry"
       private: no
     - name: "registry_home"
-      prompt: "2/5. Home folder for registry user?"
+      prompt: "3/8. Home folder for registry user?"
       default: "/home/registry"
       private: no
     - name: "registry_storage"
-      prompt: "3/5. Storage location for registry images?"
+      prompt: "4/8. Storage location for registry images?"
       default: "/home/registry/storage"
       private: no
     - name: "registry_bind_ip"
-      prompt: "4/5. Registry bind IP?"
+      prompt: "5/8. Registry bind IP?"
       default: "0.0.0.0"
       private: no
     - name: "registry_bind_port"
-      prompt: "5/5. Registry bind port?"
+      prompt: "6/8. Registry bind port?"
       default: "5000"
+      private: no
+    - name: "registry_targets_if"
+      prompt: "7/8. Targets interface?"
+      default: "vio1"
+      private: no
+    - name: "registry_targets_cidr"
+      prompt: "8/8. Targets interface IP CIDR?"
+      default: "10.0.0.100/24"
       private: no
   vars:
     ansible_python_interpreter: /usr/local/bin/python3
@@ -46,9 +58,45 @@
     - rsync--
 
   tasks:
+  - name: Sync date time
+    raw: rdate pool.ntp.org
+
   - name: Install packages
-    raw: pkg_add {{item}}
-    with_items: "{{packages}}"
+    raw: "pkg_add -I {{packages| join(' ')}}"
+
+  - name: Gather facts
+    setup:
+
+  - name: Set hostname
+    hostname:
+      name: "{{myname}}"
+
+  - name: Make hostname permanent (/etc/myname)
+    copy:
+      content: "{{ myname }}\n"
+      dest: /etc/myname
+
+  - name: Configure PS1 for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export PS1='\\u@\\H:\\w\\$ '"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTFILE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTFILE=~/.sh_history"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
 
   - name: Add users
     user:
@@ -66,6 +114,18 @@
       owner: root
       group: wheel
       mode: '0555'
+
+  - name: Create necessary registry PF Configurations
+    copy:
+      dest: /etc/service.pf.conf
+      owner: root
+      group: wheel
+      content: |
+        anchor "dynamic/*"
+        pass quick inet proto tcp from <service_clients> to port {{registry_bind_port}} label "service_clients"
+    with_items:
+      - { dest: "/etc/service.pf.conf", content: 'anchor "dynamic/*"\npass quick inet proto tcp from <service_clients> to port 5000 label "service_clients"\n'}
+      - { dest: "/etc/service_clients.conf", content: '{{registry_targets_cidr}}\n'}
 
   - name: Clean registry distribution
     command: rm -rf /root/distribution
@@ -95,14 +155,22 @@
     args:
       creates: /usr/local/sbin/registry
 
-  - name: Prepare registry folder
-    command: mkdir -p {{registry.storage}}
+  - name: Prepare registry folders
+    command: mkdir -p {{registry.storage}} /etc/nginx
 
   - name: Create /etc/rc.d/docker_registry
     template:
       src: "{{playbook_dir}}/../files/docker_registry.rc.j2"
       dest: "/etc/rc.d/docker_registry"
       mode: "0555"
+
+  - name: "Process templates"
+    template:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf', domain: '{{myname}}' }
+      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf', domain: '{{myname}}', challenge_dir: "/var/www/acme" }
 
   - name: Create /etc/docker-registry.yml
     template:
@@ -134,6 +202,33 @@
     when: item.state is defined
     with_items: "{{rcctl}}"
 
+  - name: Issue certificate for the system
+    command: "{{item}}"
+    register: ret
+    failed_when: "ret.rc == 1"
+    with_items:
+    - "pfctl -ef /etc/pf.conf"
+    - "rcctl -f start httpd"
+    - 'echo "pass quick on egress inet proto tcp to port 80" | /sbin/pfctl -a dynamic/letsencrypt -f -'
+    - "acme-client {{myname}}"
+    - "rcctl -f stop httpd"
+    - "/sbin/pfctl -a dynamic/letsencrypt -Fr"
+
+
+  - name: Configure targerts interface
+    lineinfile:
+      path: "/etc/hostname.{{registry_targets_if}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item}}"
+      create: yes
+    with_items:
+      - "inet {{registry_targets_cidr | ansible.utils.ipaddr('address')}} {{registry_targets_cidr | ansible.utils.ipaddr('netmask')}} NONE group targets"
+      - "up -inet6"
+
+  - name: Bring targets interface up
+    command: sh /etc/netstart {{registry_targets_if}}
 
 #  - set_fact:
 #      post_install: |
