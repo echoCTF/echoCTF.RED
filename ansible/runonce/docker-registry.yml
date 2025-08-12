@@ -6,36 +6,40 @@
   gather_facts: no
   vars_prompt:
     - name: "myname"
-      prompt: "1/8. System FQDN?"
+      prompt: "1/9. System FQDN?"
       default: "registry.example.com"
       private: no
     - name: "registry_user"
-      prompt: "2/8. User to run the registry as?"
+      prompt: "2/9. User to run the registry as?"
       default: "registry"
       private: no
     - name: "registry_home"
-      prompt: "3/8. Home folder for registry user?"
+      prompt: "3/9. Home folder for registry user?"
       default: "/home/registry"
       private: no
     - name: "registry_storage"
-      prompt: "4/8. Storage location for registry images?"
+      prompt: "4/9. Storage location for registry images?"
       default: "/home/registry/storage"
       private: no
     - name: "registry_bind_ip"
-      prompt: "5/8. Registry bind IP?"
+      prompt: "5/9. Registry bind IP?"
       default: "0.0.0.0"
       private: no
     - name: "registry_bind_port"
-      prompt: "6/8. Registry bind port?"
+      prompt: "6/9. Registry bind port?"
       default: "5000"
       private: no
     - name: "registry_targets_if"
-      prompt: "7/8. Targets interface?"
+      prompt: "7/9. Targets interface?"
       default: "vio1"
       private: no
     - name: "registry_targets_cidr"
-      prompt: "8/8. Targets interface IP CIDR?"
+      prompt: "8/9. Targets interface IP CIDR?"
       default: "10.0.0.100/24"
+      private: no
+    - name: "admins_domain"
+      prompt: "9/9. admin domain for TXT rules?"
+      default: "admin.example.com"
       private: no
   vars:
     ansible_python_interpreter: /usr/local/bin/python3
@@ -117,15 +121,19 @@
 
   - name: Create necessary registry PF Configurations
     copy:
-      dest: /etc/service.pf.conf
+      dest: "{{item.dest}}"
       owner: root
       group: wheel
-      content: |
-        anchor "dynamic/*"
-        pass quick inet proto tcp from <service_clients> to port {{registry_bind_port}} label "service_clients"
+      content: "{{item.content}}"
     with_items:
-      - { dest: "/etc/service.pf.conf", content: 'anchor "dynamic/*"\npass quick inet proto tcp from <service_clients> to port 5000 label "service_clients"\n'}
-      - { dest: "/etc/service_clients.conf", content: '{{registry_targets_cidr}}\n'}
+      - { dest: "/etc/service.pf.conf", content: "anchor \"dynamic\"\npass quick inet proto tcp from <service_clients> to port {{registry_bind_port}} label \"service_clients\"\n"}
+      - { dest: "/etc/service_clients.conf", content: "{{registry_targets_cidr}}\n"}
+
+  - name: Dump administrators PF table
+    raw: "pfctl -t administrators -T show > /etc/administrators.conf"
+
+  - name: Load new pf
+    command: pfctl -f /etc/pf.conf
 
   - name: Clean registry distribution
     command: rm -rf /root/distribution
@@ -203,17 +211,17 @@
     with_items: "{{rcctl}}"
 
   - name: Issue certificate for the system
-    command: "{{item}}"
+    raw: "{{item}}"
     register: ret
-    failed_when: "ret.rc == 1"
+    ignore_errors: true
     with_items:
-    - "pfctl -ef /etc/pf.conf"
+    - "pfctl -f /etc/pf.conf"
     - "rcctl -f start httpd"
-    - 'echo "pass quick on egress inet proto tcp to port 80" | /sbin/pfctl -a dynamic/letsencrypt -f -'
+    - 'echo "pass quick on egress inet proto tcp to port 80" | /sbin/pfctl -a dynamic -f -'
     - "acme-client {{myname}}"
     - "rcctl -f stop httpd"
-    - "/sbin/pfctl -a dynamic/letsencrypt -Fr"
-
+    - "/sbin/pfctl -a dynamic -Fr"
+    - "chmod +r /etc/nginx/{{myname}}-server.key"
 
   - name: Configure targerts interface
     lineinfile:
@@ -229,6 +237,28 @@
 
   - name: Bring targets interface up
     command: sh /etc/netstart {{registry_targets_if}}
+
+  - name: Create empty cron
+    copy:
+      dest: /tmp/empty.cron
+      content: |
+        SHELL=/bin/sh
+        PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+        HOME=/var/log
+
+  - name: Clear cron
+    raw: crontab /tmp/empty.cron
+
+  - name: Install cron entries
+    cron:
+      name: "{{item.name}}"
+      user: "root"
+      minute: "{{item.minute | default(omit)}}"
+      special_time: "{{item.special_time|default(omit)}}"
+      job: "{{item.job}}"
+    with_items:
+      - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
 
 #  - set_fact:
 #      post_install: |
