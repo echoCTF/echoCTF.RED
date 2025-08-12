@@ -21,7 +21,7 @@ authority buypass-test {
 }
 
 domain {{item.domain}} {
-  challengedir "/home/participantUI/acme/.well-known/acme-challenge/"
+  challengedir "{{item.challenge_dir}}"
 	domain key "/etc/nginx/{{item.domain}}-server.key"
 	domain full chain certificate "/etc/nginx/{{item.domain}}-server.crt"
   sign with letsencrypt
