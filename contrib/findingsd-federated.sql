@@ -131,7 +131,7 @@ BEGIN
   DECLARE userMAC VARCHAR(32) DEFAULT NULL;
 
   IF (select memc_server_count()<1) THEN
-    select memc_servers_set('{{db_host}}') INTO @memc_server_set_status;
+    select memc_servers_set('{{db_host}}:{{memc_port|default(11211)}}') INTO @memc_server_set_status;
   END IF;
   SELECT memc_get('sysconfig:debug') INTO @debug;
   SELECT memc_get('sysconfig:mac_auth') INTO mac_auth;
