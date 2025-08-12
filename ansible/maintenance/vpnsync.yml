@@ -1,0 +1,19 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: "Sync VPN Configurations"
+  hosts: all
+  order: inventory
+  gather_facts: true
+  tasks:
+  - name: Fix /etc/hosts
+    copy:
+      content: "{{ etchosts }}\n"
+      dest: /etc/hosts
+
+  - name: Fix registry_clients.conf
+    copy:
+      content: "{{ PF_TABLES.registry_clients|join('\n') }}\n"
+      dest: /etc/registry_clients.conf
+
+  - name: load registry_clients.conf
+    raw: pfctl -t registry_clients -T replace -f /etc/registry_clients.conf
