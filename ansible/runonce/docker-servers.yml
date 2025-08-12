@@ -39,12 +39,6 @@
     hostname:
       name: "{{fqdn}}"
 
-  - name: Configure resolv.conf
-    copy:
-      content: "{{resolvconf}}\n"
-      dest: /etc/resolv.conf
-    when: resolvconf is defined
-
   - name: Configure hosts
     copy:
       content: "{{etchosts}}\n"
@@ -150,6 +144,17 @@
     ignore_errors: true
     when: st_cloud_cfg.stat.isdir is defined and st_cloud_cfg.stat.isdir
 
+  - name: Clone docker-event-action
+    git:
+      repo: "https://github.com/echoCTF/docker-event-action.git"
+      dest: /opt/docker-event-action
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+    tags:
+      - docker-event-action
+
   - name: Copy docker data folder structure
     synchronize:
       src: "{{item.src}}"
@@ -175,10 +180,12 @@
       - interfaces
 
   - name: Remove DHCP from interfaces
-    ansible.builtin.lineinfile:
-      path: /etc/network/interfaces
-      state: absent
-      regexp: '^iface {{network.driver_options.parent}} inet dhcp'
+    copy:
+      dest: /etc/network/interfaces
+      content: |
+        auto lo
+        iface lo inet loopback
+        source /etc/network/interfaces.d/*
     tags:
       - interfaces
 
@@ -323,17 +330,6 @@
     tags:
       - sysctl
 
-  - name: Clone docker-event-action
-    git:
-      repo: "https://github.com/echoCTF/docker-event-action.git"
-      dest: /opt/docker-event-action
-      accept_hostkey: yes
-      clone: yes
-      force: yes
-      depth: 1
-    tags:
-      - docker-event-action
-
 #  - name: Download node16 setup script
 #    no_log: "{{DEBUG|default(true)}}"
 #    ansible.builtin.get_url:
@@ -408,6 +404,12 @@
       mode: 0500
     tags:
       - ctables
+
+  - name: Configure resolv.conf
+    copy:
+      content: "{{resolvconf}}\n"
+      dest: /etc/resolv.conf
+    when: resolvconf is defined
 
   - name: Register docker-event-action with pm2
     no_log: "{{DEBUG|default(true)}}"
