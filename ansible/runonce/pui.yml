@@ -166,17 +166,6 @@
       - '/etc/skel/.profile'
       - '/root/.profile'
 
-  - name: Configure HISTFILE for root and skeleton
-    lineinfile:
-      path: "{{item}}"
-      owner: root
-      group: wheel
-      mode: '0640'
-      line: "export HISTFILE=~/.sh_history"
-    with_items:
-      - '/etc/skel/.profile'
-      - '/root/.profile'
-
   - name: Configure HISTSIZE for root and skeleton
     lineinfile:
       path: "{{item}}"
@@ -265,6 +254,7 @@
       - "usr/local/share/icu/{{versions.ICU_MAJOR}}.{{versions.ICU_MINOR}}"
       - usr/lib
       - acme/.well-known/acme-challenge
+      - htdocs
 
   - name: "Copy pf and other conf files"
     copy:
@@ -274,14 +264,15 @@
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
       - { src: '{{playbook_dir}}/../templates/pui.service.conf.j2', dest: '/etc/service.pf.conf' }
       - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
+      - { src: '{{playbook_dir}}/../../contrib/downtime.html', dest: '/home/participantUI/htdocs/index.html' }
 
   - name: "Process templates"
     template:
       src: "{{item.src}}"
       dest: "{{item.dest}}"
     with_items:
-      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf' }
-      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf' }
+      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf', domain: "{{domain_name}}"}
+      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf', domain: "{{domain_name}}", challenge_dir: "/home/participantUI/acme/.well-known/acme-challenge/" }
 
   - name: Generate pf tables files
     copy:
@@ -407,12 +398,21 @@
     tags:
       - conf
 
-  - name: Create participantUI nginx.conf
+  - name: Create nginx participantUI.conf
     template:
       src: ../templates/nginx.conf.j2
       dest: /etc/nginx/{{item.user}}.conf
     with_items:
       - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}' }
+    tags:
+      - nginx
+
+  - name: Create nginx dt.conf
+    template:
+      src: ../templates/dt.conf.j2
+      dest: /etc/nginx/dt.conf
+    with_items:
+      - { user: 'www', domain: '{{domain_name}}', root: "/htdocs" }
     tags:
       - nginx
 
@@ -494,6 +494,7 @@
     with_items:
       - enable participant
       - set participant flags -p /home/participantUI -c /etc/nginx/participantUI.conf
+      - set nginx flags -p /home/participantUI -c /etc/nginx/dt.conf
       - set syslogd flags -a /home/participantUI/dev/log
       - set ntpd flags -s
     tags:
