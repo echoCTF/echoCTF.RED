@@ -10,4 +10,4 @@ _TABLE=${2:-"administrators"}
 echo "Settings: domain=>${_DOMAIN} table=>${_TABLE}"
 echo "Fetching TXT record"
 _append=$(host -t txt ${_DOMAIN}|grep -v TXT |awk -F'"' '{print $2}')
-pfctl -t ${_TABLE} -T replace ${_DOMAIN} ${_append}
+pfctl -t ${_TABLE} -T replace ${_append}
