@@ -16,3 +16,5 @@ db_host: "172.24.0.253"
 db_name: "echoCTF"
 db_user: "vpnuser"
 db_pass: "vpnuserpass"
+memc_port: 11211
+admins_domain: admin.example.com
