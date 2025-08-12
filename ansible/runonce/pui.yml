@@ -5,15 +5,15 @@
   gather_facts: false
   vars_prompt:
     - name: "myname"
-      prompt: "1/6. System hostname?"
+      prompt: "1/7. System hostname?"
       default: "pui.example.local"
       private: no
     - name: "pui_ext_ip"
-      prompt: "2/6. What is the external (public) IP?"
+      prompt: "2/7. What is the external (public) IP?"
       default: "1.2.3.4"
       private: no
     - name: "db_ip"
-      prompt: "3/6. What is the database server IP?"
+      prompt: "3/7. What is the database server IP?"
       default: "10.7.0.253"
       private: no
 #    - name: "GITHUB_OAUTH_TOKEN"
@@ -25,18 +25,21 @@
 #      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
 #      private: no
     - name: "domain_name"
-      prompt: "4/6. Provide the domain the frontend will run on?"
+      prompt: "4/7. Provide the domain the frontend will run on?"
       default: "pui.example.com"
       private: no
     - name: "interconnect_interface"
-      prompt: "5/6. What is the interconnect interface to be used?"
+      prompt: "5/7. What is the interconnect interface to be used?"
       default: "em1"
       private: no
     - name: "pui_ip"
-      prompt: "6/6. What is the interconnect IP to be used?"
+      prompt: "6/7. What is the interconnect IP to be used?"
       default: "10.7.0.200"
       private: no
-
+    - name: "admins_domain"
+      prompt: "7/7. admin domain for TXT rules?"
+      default: "admin.example.com"
+      private: no
   vars:
     ansible_python_interpreter: /usr/local/bin/python3
     ansible_user: root
@@ -564,6 +567,8 @@
       - { name: "Generate local routes file", minute: "*/30",  job: "-ns frontend generator/routes >>/var/log/cron/routes.log" }
       - { name: "Generate local disabled-routes file", minute: "*/30",  job: "-ns frontend generator/disabled-routes >>/var/log/cron/disabled-routes.log" }
       - { name: "Generate local player-disabled-routes file", minute: "*/30",  job: "-ns frontend generator/player-disabled-routes >>/var/log/cron/player-disabled-routes.log" }
+      - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
 
   - name: Install post hook
     copy:
