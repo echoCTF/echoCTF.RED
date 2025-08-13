@@ -1,0 +1,364 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: "Setup OpenBSD VPN slave from snapshot"
+  hosts: all
+#  hosts: 127.0.0.1
+#  connection: local
+  gather_facts: false
+  vars_prompt:
+    - name: "myname"
+      prompt: "1/17. System hostname?"
+      default: "vpn.example.com"
+      private: no
+    - name: "vpngw"
+      prompt: "2/17. OpenVPN gateway hostname or IP?"
+      default: "vpn.example.com"
+      private: no
+    - name: "egress_if"
+      prompt: "3/17. Egress network interface (ifconfig egress)?"
+      default: "em0"
+      private: no
+    - name: "vpn_ext_ip"
+      prompt: "4/17. Egress interface IP?"
+      default: "192.168.1.182"
+      private: no
+    - name: "targets_if"
+      prompt: "5/17. Targets network interface?"
+      default: "em2"
+      private: no
+    - name: "targets_if_ipv4"
+      prompt: "6/17. Targets network interface IPv4?"
+      default: "10.0.0.254"
+      private: no
+    - name: "targets_subnet"
+      prompt: "7/17. Targets network subnet?"
+      default: "10.0.0.0"
+      private: no
+    - name: "targets_netmask"
+      prompt: "8/17. Targets network netmask?"
+      default: "255.255.0.0"
+      private: no
+    - name: "echoCTF_VPN_mgmt_passwd"
+      prompt: "9/17. OpenVPN managment interface password?"
+      default: "openvpn"
+      private: no
+    - name: "offense_network"
+      prompt: "10/17. OpenVPN client range?"
+      default: "10.10.0.0/16"
+      private: no
+    - name: "db_host"
+      prompt: "11/17. Database Server IP?"
+      default: "10.7.0.253"
+      private: no
+    - name: "db_name"
+      prompt: "12/17. Database name?"
+      default: "echoCTF"
+      private: no
+    - name: "db_user"
+      prompt: "13/17. Database Server user?"
+      default: "vpnuser"
+      private: no
+    - name: "db_pass"
+      prompt: "14/17. Database Server user password?"
+      default: "vpnuserpass"
+      private: no
+#    - name: "GITHUB_OAUTH_TOKEN"
+#      prompt: "15/18. Provide a GITHUB_OAUTH_TOKEN?"
+#      default: "randomtoken"
+#      private: no
+#    - name: "GITHUB_REPO"
+#      prompt: "16/18. Provide a github repo to clone?"
+#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
+#      private: no
+    - name: "interconnect_interface"
+      prompt: "15/17. Interconnect interface?"
+      default: "em1"
+      private: no
+    - name: "interconnect_interface_ip"
+      prompt: "16/17. Interconnect interface IP?"
+      default: "10.7.0.254"
+      private: no
+    - name: "admins_domain"
+      prompt: "16/17. admin domain for TXT rules?"
+      default: "admin.example.com"
+      private: no
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+    users:
+      - { name: _findingsd, comment: "findingsd user", password: '*' }
+    post_inst: |
+      Things to do:
+        - Update /etc/administrators.conf with your IP's
+        - Reboot the system for the changes to take effect
+    versions:
+      PHP: "8.4"
+      PHP_MINOR: "6"
+      AUTOCONF: "2.69"
+      AUTOMAKE: "1.16"
+      ICU_MAJOR: 76
+      ICU_MINOR: 1
+      MARIADB_CONNECTOR: "3.4.5"
+    sysctl:
+      kern.bufcachepercent: 30
+      kern.maxfiles: 312180
+      kern.seminfo.semmni: 1024
+      kern.seminfo.semmns: 4096
+      kern.shminfo.shmall: 32768
+      kern.shminfo.shmmax: 67018864
+      kern.somaxconn: 8192
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      net.inet.divert.sendspace: 65636
+      net.inet.ip.forwarding: 1
+      net.inet.ip.ifq.maxlen: 2560
+      net.inet.ip.maxqueue: 2048
+      net.inet.ip.mforwarding: 0
+      net.inet.tcp.synuselimit: 1000000
+      net.inet.udp.sendspace: 9216
+      net.unix.dgram.sendspace: 9216
+    rcctl:
+      - { name: check_quotas, state: "disable" }
+      - { name: cron, state: "enable" }
+      - { name: resolvd, state: "disable" }
+      - { name: ntpd, state: "enable" }
+      - { name: pflogd, state: "disable" }
+      - { name: slaacd, state: "disable" }
+      - { name: smtpd, state: "disable" }
+      - { name: sndiod, state: "disable" }
+      - { name: openvpn, state: "enable"}
+      - { name: mysqld, state: "enable"}
+      - { name: supervisord, state: "enable"}
+      - { name: inetd, state: "enable"}
+    packages:
+      - autoconf-2.69p3
+      - automake%1.16
+      - curl
+      - git
+      - cmake
+      - gmake
+      - rsync--
+      - libmemcached
+      - memcached--
+      - libtool
+      - mariadb-server
+      - openvpn--
+      - "pecl{{versions.PHP|replace('.','')}}-memcached"
+      - "php-gd%{{versions.PHP}}"
+      - "php-curl%{{versions.PHP}}"
+      - "php-intl%{{versions.PHP}}"
+      - "php-pdo_mysql%{{versions.PHP}}"
+      - "php-zip%{{versions.PHP}}"
+      - py3-mysqlclient
+      - py3-setuptools
+      - py3-netaddr
+      - py3-pip
+      - supervisor
+      - gnuwatch
+      - go
+      - p5-Net-Pcap
+      - p5-NetPacket
+      - gnuwatch
+      - nmap
+
+  tasks:
+  - debug:
+      msg: |
+        Before you run this playbook make sure you have applied
+        any pending migrations to the database
+
+  - name: Cleanup ssh keys
+    raw: rm /etc/ssh/ssh_host_* && ssh-keygen -A
+
+  - name: Stop supervisord
+    raw: rcctl stop supervisord
+
+  - name: Sync date time
+    raw: rdate pool.ntp.org
+
+  - name: Gather facts
+    setup:
+
+  - name: Set hostname
+    hostname:
+      name: "{{myname}}"
+
+  - name: Make hostname permanent (/etc/myname)
+    copy:
+      content: "{{ myname }}\n"
+      dest: /etc/myname
+
+  - name: Create fresh /etc/hosts
+    copy:
+      content: "127.0.0.1 localhost\n{{db_ip|default('10.7.0.253')}} db\n{{vpn_ext_ip}} {{  myname.split('.')[0] | lower }} {{ myname }}\n"
+      dest: /etc/hosts
+
+  - name: Configure interconnect interface
+    copy:
+      dest: "/etc/hostname.{{interconnect_interface}}"
+      content: |
+        inet {{ interconnect_interface_ip |default('10.7.0.254')}} 255.255.255.0 NONE group interconnect
+        up -inet6
+        up mtu 1450
+
+  - name: "Prepare /etc/hostname.tun0"
+    copy:
+      content: |
+        up group offense
+        inet -arp
+      dest: /etc/hostname.tun0
+
+  - name: Bring interconnect interface up
+    command: "{{item}}"
+    with_items:
+      - "ifconfig {{interconnect_interface}} delete"
+      - "sh /etc/netstart {{interconnect_interface}}"
+
+  - name: Set APP_DIR to /root/sources
+    when: ansible_connection != 'local'
+    set_fact:
+      APP_DIR: /root/sources
+
+  - name: Configure default services
+    command: "rcctl {{item.state}} {{item.name}}"
+    when: item.state is defined
+    with_items: "{{rcctl}}"
+
+  - name: Clone sources repo
+    when: ansible_connection != 'local' and GITHUB_REPO is defined
+    git:
+      repo: "{{GITHUB_REPO}}"
+      dest: /root/sources
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+      version: "{{ GITHUB_REPO_BRANCH | default('main') }}"
+
+  - name: Set findings keylifetime to 30 hours
+    shell: rcctl set findingsd flags -l pflog1 -n echoCTF -u openvpn -p openvpn -h 127.0.0.1 -k 108000 -U _memcached
+
+  - name: Create temporary findingsd-federated.sql
+    template:
+      src: "{{playbook_dir}}/../../contrib/findingsd-federated.sql"
+      dest: /tmp/findingsd.sql
+
+  - name: Create echoctf_updown_mysql.sh
+    template:
+      src:  "{{playbook_dir}}/../../contrib/echoctf_updown_mysql.sh"
+      dest: /etc/openvpn/echoctf_updown_mysql.sh
+      mode: "0555"
+    vars:
+      db:
+        host: "{{db_host}}"
+        user: "openvpn"
+        pass: "openvpn"
+
+  - name: Update files with provided ip ranges
+    replace:
+      path: '{{item.file}}'
+      regexp: '{{item.regexp}}'
+      replace: '{{item.replace}}'
+    with_items:
+      - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
+      - { file: '/etc/service.pf.conf', regexp: '10\.10\.0\.1', replace: '{{ offense_network | ipaddr("next_usable") }}' }
+      - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: '10\.10\.0\.0 255\.255\.0\.0', replace: '{{ offense_network | replace("/" ~ offense_network.split("/")[-1], "") }} {{ offense_network | ipaddr("netmask") }}' }
+      - { file: '/etc/openvpn/echoctf_updown_mysql.sh', regexp: '11211', replace: '{{memc_port}}' }
+
+  - name: "Create targets network interface hostname.{{targets_if}}"
+    copy:
+      content: |
+        inet {{targets_if_ipv4}} {{targets_netmask}} NONE group targets
+        up -inet6
+        up mtu 1450
+      dest: "/etc/hostname.{{targets_if}}"
+
+  - name: Bring rest of interfaces up
+    command: "{{item}}"
+    with_items:
+      - "rcctl stop openvpn"
+      - "ifconfig tun0 delete"
+      - "ifconfig {{targets_if}} delete"
+      - "sh /etc/netstart {{targets_if}}"
+      - "sh /etc/netstart tun0"
+      - "rcctl start openvpn"
+
+  - name: Get OVPN Config
+    ignore_errors: true
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+      chdir: "{{item.chdir|default(omit)}}"
+    with_items:
+    - { cmd: "{{APP_DIR}}/backend/yii vpn/save /etc/openvpn/openvpn_tun0.conf"}
+
+  - name: Bring rest of interfaces up
+    command: "{{item}}"
+    with_items:
+      - "rcctl stop openvpn"
+      - "ifconfig tun0 delete"
+      - "sh /etc/netstart tun0"
+      - "rcctl start openvpn"
+
+  - name: Create empty cron
+    copy:
+      dest: /tmp/empty.cron
+      content: |
+        SHELL=/bin/sh
+        PATH="/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+        HOME=/var/log
+
+  - name: Clear cron
+    raw: crontab /tmp/empty.cron
+
+  - name: Install cron entries
+    cron:
+      name: "{{item.name}}"
+      user: "root"
+      minute: "{{item.minute | default(omit)}}"
+      special_time: "{{item.special_time|default(omit)}}"
+      job: "{{item.job}}"
+    with_items:
+      - { name: "Generate CRL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-generate-crl" }
+      - { name: "Process disconnect queue", minute: "*/1",  job: "{{APP_DIR}}/backend/yii vpn/process-disconnect-queue" }
+      - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
+
+  - name: Install echoctf.ini for supervisord
+    copy:
+      dest: /etc/supervisord.d/echoctf.ini
+      content: |
+        [program:echoctfcron]
+        user = root
+        environment = TERM=vt100
+        command = ksh -c "while true;do /usr/local/bin/backend cron/pf 1;/usr/local/bin/backend cron/instance-pf 30; sleep 10;done"
+        stdout_logfile=/var/log/supervisord-echoctf.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+  - name: Import echoCTF mysql schemas
+    ignore_errors: true
+    mysql_db:
+      state: import
+      name: echoCTF
+      target: "{{item}}"
+      login_user: "root"
+      login_unix_socket: "/var/run/mysql/mysql.sock"
+    with_items:
+      - "/usr/src/memcached_functions_mysql/sql/install_functions.sql"
+      - "/tmp/findingsd.sql"
+
+  - name: Execute fw_update
+    command: fw_update -a
+
+  - name: Execute syspatch
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - name: Re-Execute syspatch in case it updated it self on the previous run
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - debug: msg={{ post_inst.split('\n') }}

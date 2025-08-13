@@ -13,6 +13,9 @@ http:
   addr: {{registry.ip}}:{{registry.port}}
   headers:
     X-Content-Type-Options: [nosniff]
+  tls:
+    certificate: /etc/nginx/{{myname}}-server.crt
+    key: /etc/nginx/{{myname}}-server.key
 #auth:
 #  htpasswd:
 #    realm: basic-realm

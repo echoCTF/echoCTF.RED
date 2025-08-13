@@ -1,0 +1,52 @@
+user {{item.user}};
+worker_processes          5;
+worker_rlimit_nofile  1024;
+error_log  syslog:server=unix:/dev/log,severity=notice;
+pid                       logs/echoctf.dt-nginx.pid;
+
+events {
+    worker_connections    1024;
+}
+
+http {
+    include               mime.types;
+    default_type          application/octet-stream;
+    index                 /index.html;
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  syslog:server=unix:/dev/log,severity=notice main;
+
+    keepalive_timeout     65;
+    gzip                  on;
+    server_tokens         off;
+
+    server {
+        listen       127.0.0.1:8080;
+        listen       127.0.0.1:8443 ssl;
+        server_name  {{item.domain}} default _ "";
+        root         /htdocs;
+
+        ssl_certificate           /etc/nginx/{{item.domain}}-server.crt;
+        ssl_certificate_key       /etc/nginx/{{item.domain}}-server.key;
+        ssl_session_timeout 5m;
+        ssl_session_cache shared:SSL:10m;
+        ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+        ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+        ssl_prefer_server_ciphers on;
+        ssl_dhparam /etc/ssl/private/dhparam.pem;
+
+        return 503;
+        error_page   503  @maintenance;
+        location @maintenance {
+            add_header Strict-Transport-Security "max-age=63072000; includeSubDomains";
+            add_header X-Frame-Options DENY;
+            add_header X-Content-Type-Options nosniff;
+            add_header X-XSS-Protection "1; mode=block";
+            add_header Retry-After 600 always;
+            rewrite ^(.*)$ /index.html break;
+        }
+    }
+
+}
