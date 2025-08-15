@@ -41,6 +41,9 @@ class Openvpn extends \yii\db\ActiveRecord
         return [
             [['net', 'mask', 'management_ip', 'management_port'], 'integer'],
             [['conf'], 'string'],
+            [['conf'], 'filter', 'filter' => function ($value) {
+                return str_replace(["\r\n", "\r"], "\n", $value);
+            }],
             [['created_at', 'updated_at'], 'safe'],
             [['provider_id', 'name', 'management_passwd','status_log','server'], 'string', 'max' => 255],
             [['net_octet','mask_octet','management_ip_octet'], 'ip'],
