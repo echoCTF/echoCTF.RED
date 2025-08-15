@@ -99,10 +99,10 @@ class TargetCardActions extends Widget
       ];
     } elseif ($this->target_instance->target_id === $this->model->id && $this->target_instance->reboot < 2) {
       $this->target_actions[] = [
-        'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Restart your instance</b>'),
+        'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Reboot your instance</b>'),
         'url' => Url::to(['/target/default/spin', 'id' => $this->model->id]),
         'options' => ['style' => 'white-space: nowrap;'],
-        'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to restart your instance. You will receive a notification once the operation is complete.')])
+        'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to reboot your instance. You will receive a notification once the operation is complete.')])
       ];
       $this->target_actions[] = [
         'label' => \Yii::t('app', '<b><i class="fas fa-power-off"></i>&nbsp; Shut your instance</b>'),
@@ -125,7 +125,7 @@ class TargetCardActions extends Widget
       ];
     } elseif ($this->model->player_spin === true && $this->model->spinable) {
       $this->target_actions[] = [
-        'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Restart target</b>'),
+        'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Reboot target</b>'),
         'url' => Url::to(['/target/default/spin', 'id' => $this->model->id]),
         'options' => ['style' => 'white-space: nowrap;'],
         'linkOptions' => $this->linkOptions,

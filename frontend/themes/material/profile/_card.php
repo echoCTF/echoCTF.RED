@@ -94,7 +94,7 @@ if (array_key_exists('subscription', Yii::$app->modules) !== false) {
         <li class="nav-item text-left"><strong><i class="fas fa-users"></i> Failed logins</strong> <span class="pull-right"><?= $profile->metric('failed_login') ?></span></li>
         <li class="nav-item text-left"><strong><i class="fas fa-users"></i> Invites</strong> <span class="pull-right"><?= $profile->invitesCount ?></span></li>
         <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?= $profile->visibilities[$profile->visibility] ?></span></li>
-        <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Spins</strong> <span class="pull-right"><abbr title="Spins today"><?= intval($profile->spins->counter) ?></abbr> / <abbr title="Total Spins"><?= intval($profile->spins->total) ?></abbr></span></li>
+        <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Reboots</strong> <span class="pull-right"><abbr title="Reboots today"><?= intval($profile->spins->counter) ?></abbr> / <abbr title="Total Reboots"><?= intval($profile->spins->total) ?></abbr></span></li>
         <li class="nav-item text-left"><strong><i class="fas fa-file-signature"></i> Real name</strong> <span class="pull-right"><?= Html::encode($profile->owner->fullname) ?></span></li>
       <?php endif; ?>
       <li class="nav-item text-left"><strong><i class="fas fa-globe"></i> Country</strong> <span class="pull-right"><?= $profile->rCountry->name ?></span></li>
