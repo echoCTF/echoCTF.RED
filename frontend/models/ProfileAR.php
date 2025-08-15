@@ -107,6 +107,9 @@ class ProfileAR extends \yii\db\ActiveRecord
             [['id'], 'default', 'value' =>  new Expression('round(rand()*10000000)'), 'on'=>['register']],
             [['id', 'player_id'], 'integer'],
             [['bio'], 'string'],
+            [['bio'], 'filter', 'filter' => function ($value) {
+                return str_replace(["\r\n", "\r"], "\n", $value);
+            }],
             [['created_at', 'updated_at'], 'safe'],
             [['avatar'], 'string', 'max' => 255],
             [['country'], 'string', 'max'=>3],
