@@ -206,6 +206,42 @@ class CronController extends Controller
           printf("Error: Unknown action\n");
       }
     }
+    $this->actionInstancePfTables(true);
+  }
+
+  public function actionInstancePfTables($dopf=false)
+  {
+    $t=TargetInstance::find()->active();
+
+    foreach($t->all() as $val)
+    {
+      $IPs=[];
+      // get target name
+      $table=sprintf("%s_%d_clients",$val->target->name,$val->player_id);
+      // get team members
+      $team=$val->player->teamPlayer->team;
+      foreach($team->approvedMembers as $member)
+      {
+        // get IP's of connected players
+        if(($pIP=$member->player->last->vpn_local_address)!==null)
+        {
+          $IPs[]=long2ip($pIP);
+
+        }
+      }
+      if($dopf!==false)
+      {
+        if($IPs===[])
+        {
+          Pf::flush_table($table);
+        }
+        else
+        {
+          Pf::add_table_ip($table,implode(' ',$IPs),true);
+        }
+
+      }
+    }
   }
 
   /**
@@ -336,7 +372,7 @@ class CronController extends Controller
     {
       echo "Instances:",$e->getMessage();
     }
-
+    $this->actionInstancePfTables(true);
     @unlink("/tmp/cron-instances.lock");
   }
 

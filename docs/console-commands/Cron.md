@@ -1,7 +1,21 @@
 # Cron commands
 
+- [Cron commands](#cron-commands)
+  - [Index (default operation)](#index-default-operation)
+  - [PowerOperations](#poweroperations)
+  - [Instances](#instances)
+  - [InstancePf](#instancepf)
+  - [Healthcheck](#healthcheck)
+  - [SpinQueue](#spinqueue)
+  - [Powerups](#powerups)
+  - [Powerdowns](#powerdowns)
+  - [Ondemand](#ondemand)
+  - [Offlines](#offlines)
+  - [Update target related PF settings](#update-target-related-pf-settings)
+  - [Generate and load Instance tables PF rules](#generate-and-load-instance-tables-pf-rules)
 
-## Index
+## Index (default operation)
+
 Performs all of the following operations
 * `actionSpinQueue`
 * `actionOndemand`
@@ -73,3 +87,8 @@ Usage: `./yii cron/offlines`
 Update PF `/etc/targets.conf`, `/etc/match-findings-pf.conf` among other things. This action syncs the firewall ruleset with the decisions of the database (eg private instances, private networks, target access etc)
 
 Usage: `./yii target/pf [load]`
+
+## Generate and load Instance tables PF rules
+Generate and (optionaly) load pf tables related to instances. This operation is run on the VPN to keep the PF tables in sync.
+
+Usage: `./yii cron/instance-pf-tables [load]`
