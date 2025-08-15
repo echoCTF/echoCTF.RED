@@ -117,6 +117,10 @@
       net.inet.tcp.synuselimit: 1000000
       net.inet.udp.sendspace: 9216
       net.unix.dgram.sendspace: 9216
+      net.inet.ip.arptimeout: 30
+      net.inet.tcp.keepinittime: 15
+      net.inet.tcp.keepidle: 300
+      net.inet.tcp.keepintvl: 30
     rcctl:
       - { name: check_quotas, state: "disable" }
       - { name: cron, state: "enable" }
