@@ -222,7 +222,19 @@ class SslController extends Controller {
   }
 
   /*
-   * Creaet certificates revocation list
+   * Save a vpn-ta.key file from the database
+   */
+  public function actionSaveVpnTa($file='/etc/openvpn/private/vpn-ta.key')
+  {
+    $vpnta=Sysconfig::findOneNew('vpn-ta.key');
+    if(!file_put_contents($file,$vpnta->val))
+    {
+      throw new ConsoleException(Yii::t('app', 'File not found: {file}', ['file' => $file]));
+    }
+  }
+
+  /*
+   * Create certificates revocation list
    */
   public function actionCreateCrl()
   {
