@@ -505,6 +505,14 @@
       - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'route 10\.0\.160\.0 255\.255\.255\.0', replace: 'route {{targets_subnet}} {{targets_netmask}}' }
       - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
 
+  - name: Ensure tls-verify exists
+    ansible.builtin.lineinfile:
+      path: /etc/openvpn/openvpn_tun0.conf
+      regexp: '^tls-verify'
+      state: present
+      line: 'tls-verify "/etc/openvpn/verify-cn.sh"'
+      insertafter: EOF
+
   - name: Create echoctf_updown_mysql.sh
     template:
       src:  "{{playbook_dir}}/../../contrib/echoctf_updown_mysql.sh"
@@ -515,6 +523,19 @@
         host: "{{db_host}}"
         user: "openvpn"
         pass: "openvpn"
+
+## template of verify-cn.sh
+  - name: Parse verify-cn.sh
+    template:
+      src: "{{playbook_dir}}/../../contrib/verify-cn.sh"
+      dest: /etc/openvpn/verify-cn.sh
+      mode: "0555"
+    vars:
+      db:
+        host: "{{db_host}}"
+        user: "openvpn"
+        pass: "openvpn"
+
 
   - name: "Create openvpn management password file"
     copy:
