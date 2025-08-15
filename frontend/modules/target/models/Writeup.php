@@ -70,6 +70,9 @@ class Writeup extends \yii\db\ActiveRecord
             ['formatter', 'default','value'=>'text'],
             ['language_id', 'default','value'=>'en'],
             [['status', 'comment'], 'string'],
+            [['content'], 'filter', 'filter' => function ($value) {
+                return str_replace(["\r\n", "\r"], "\n", $value);
+            }],
             [['content'], 'filter','filter'=>'trim'],
             [['content'], 'string','skipOnEmpty'=>false, 'min'=>'20'],
             ['status','default','value'=>'PENDING'],

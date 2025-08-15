@@ -47,6 +47,9 @@ class Writeup extends \yii\db\ActiveRecord
             [['player_id', 'target_id'], 'integer'],
             [['approved'], 'boolean'],
             [['content', 'status', 'comment','formatter','language_id'], 'string'],
+            [['content'], 'filter', 'filter' => function ($value) {
+                return str_replace(["\r\n", "\r"], "\n", $value);
+            }],
             ['formatter','in','range'=>['text','markdown']],
             ['formatter','default','value'=>'text'],
             ['language_id','default','value'=>'en'],

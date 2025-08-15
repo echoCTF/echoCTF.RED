@@ -110,7 +110,7 @@ class VpnController extends Controller
   public function actionLoad($filepath)
   {
     $file = basename($filepath);
-    $conf = file_get_contents($filepath);
+    $conf = str_replace(["\r\n", "\r"],"\n",file_get_contents($filepath));
     try {
       if (preg_match('/server (.*) (.*)/', $conf, $matches) && count($matches) > 1) {
         $ovpnModel = \app\modules\settings\models\Openvpn::find()->where(['name' => $file, 'net' => ip2long($matches[1])]);
@@ -141,7 +141,7 @@ class VpnController extends Controller
       if ($ovpn->save()) {
         echo $ovpn->isNewRecord ? "Record created successfully!\n" : "Record updated successfully!\n";
       } else {
-        echo "Failed to save record: ", $ovpn->getErrorSummary(true), "\n";
+        echo "Failed to save record: ", implode(", ",$ovpn->getErrorSummary(true)), "\n";
       }
     } catch (\Exception $e) {
       printf("Error: %s", $e->getMessage());
@@ -165,7 +165,7 @@ class VpnController extends Controller
         echo "No record found for the given file and server!\n";
         return ExitCode::CANTCREAT;
       }
-      if (file_put_contents($filepath, $ovpn->conf)) {
+      if (file_put_contents($filepath, str_replace(["\r\n","\r"],"\n",$ovpn->conf))) {
         echo "File saved at ", $filepath, "\n";
       } else {
         echo "Failed to save ", $filepath, "\n";

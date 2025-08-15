@@ -119,6 +119,9 @@ class SettingsForm extends Model
           [['confirm_password'], 'string', 'min'=>8, 'max'=>255],
           [['new_password'], 'compare', 'compareAttribute'=>'confirm_password'],
           [['discord', 'twitter', 'github', 'htb', 'avatar', 'bio','youtube','twitch'], 'trim','when' => function($model,$attribute) { return $model->_cf($attribute);}],
+          [['bio'], 'filter', 'filter' => function ($value) {
+                return str_replace(["\r\n", "\r"], "\n", $value);
+          }],
           ['country', 'exist', 'targetClass' => \app\models\Country::class, 'targetAttribute' => ['country' => 'id'],'when' => function($model,$attribute) { return $model->_cf($attribute);}],
           [['avatar','youtube','twitch'], 'string', 'max' => 255,'when' => function($model,$attribute) { return $model->_cf($attribute);}],
           ['discord', 'filter', 'filter' => [$this, 'normalizeDiscord'],'when' => function($model,$attribute) { return $model->_cf($attribute);}],
