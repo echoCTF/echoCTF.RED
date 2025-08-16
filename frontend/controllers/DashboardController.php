@@ -66,19 +66,24 @@ class DashboardController extends \app\components\BaseController
         $dashboardStats->claims=(int) PlayerTreasure::find()->where(['player.academic'=>Yii::$app->user->identity->academic])->joinWith(['player'])->count();
       else
         $dashboardStats->claims=(int) PlayerTreasure::find()->count();
-      $rows = (new \yii\db\Query())
-        ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt','sum(if(player_id in ('.Yii::$app->user->id.'),1,0)) as pcnt'])
-        ->from('stream')
-        ->where(['>=','ts', new \yii\db\Expression('now()-interval 10 day')])
-        ->groupBy(new \yii\db\Expression('date(ts)'))
-        ->orderBy(new \yii\db\Expression('date(ts)'))
-        ->all();
+
       $dayActivity=null;
-      foreach($rows as $row)
+      if(Yii::$app->sys->dashboard_graph_visible)
       {
-        $dayActivity['labels'][]="'".$row['dat']."'";
-        $dayActivity['overallSeries'][]=$row['cnt'];
-        $dayActivity['playerSeries'][]=$row['pcnt'];
+        $rows = (new \yii\db\Query())
+          ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt','sum(if(player_id in ('.Yii::$app->user->id.'),1,0)) as pcnt'])
+          ->from('stream')
+          ->where(['>=','ts', new \yii\db\Expression('now()-interval 10 day')])
+          ->groupBy(new \yii\db\Expression('date(ts)'))
+          ->orderBy(new \yii\db\Expression('date(ts)'))
+          ->all();
+
+        foreach($rows as $row)
+        {
+          $dayActivity['labels'][]="'".$row['dat']."'";
+          $dayActivity['overallSeries'][]=$row['cnt'];
+          $dayActivity['playerSeries'][]=$row['pcnt'];
+        }
       }
       $visits=Yii::$app->session->get('last_targets_visited');
       if($visits!==null && count($visits)>0)
