@@ -77,7 +77,6 @@ class StreamSearch extends Stream
     {
         $query=Stream::find()->joinWith(['player']);
         $query->select(['stream.*',new \yii\db\Expression('TIMESTAMPDIFF(SECOND, LAG(stream.ts) OVER (order by stream.ts), stream.ts) AS seconds_since_last')]);
-        // add conditions that should always apply here
 
         $dataProvider=new ActiveDataProvider([
             'query' => $query,
@@ -91,7 +90,7 @@ class StreamSearch extends Stream
         }
 
         $this->queryFilters($query);
-        $query->andFilterWhere(['not in', 'stream.model', ['finding','badge']]);
+        //$query->andFilterWhere(['not in', 'stream.model', ['finding','badge']]);
         $this->dataProviderSort($dataProvider);
         $dataProvider->setSort([
             'defaultOrder' => ['id'=>SORT_DESC],
