@@ -47,10 +47,16 @@ $this->params['breadcrumbs'][] = $this->title;
             'items' => [
               [
                 'label' => '<i class="fas fa-file-contract" data-toggle="tooltip" data-placement="top" title="Activity Stream"></i>',
-                'content' => $this->render('_activity_tab', ['model' => $model]),
+                'content' => $this->render('_details_tab', ['model' => $model]),
                 'headerOptions' => ['style' => 'font-weight:bold'],
-                'options' => ['id' => 'stream-tab'],
+                'options' => ['id' => 'details-tab'],
                 'active' => true,
+              ],
+              [
+                'label' => '<i class="fas fa-file-contract" data-toggle="tooltip" data-placement="top" title="Activity Stream"></i>',
+                'headerOptions' => ['style' => 'font-weight:bold'],
+                'linkOptions' => ['data-url' => Url::to(['stream-lag', 'id' => $model->id])],
+                'options' => ['id' => 'stream-tab'],
               ],
               [
                 'label' => '<i class="fas fa-calendar" data-toggle="tooltip" data-placement="top" title="Monthly Scores"></i>',
