@@ -30,6 +30,7 @@ class Stream extends StreamAR
     'user'=>'<i class="fas fa-user-ninja " style="color: #4096EE;font-size: 1.5em;" data-toggle="tooltip" title="Player"></i>',
     'report'=>'<i class="fas fa-clipboard-list" style="font-size: 1.5em;"></i>',
     'badge'=>'<i class="fas fa-trophy" style="color: #C79810;font-size: 1.5em;" data-toggle="tooltip" title="Badge"></i>',
+    'player_target_help'=>'<i class="fas fa-book" style="color: #62c710ff;font-size: 1.5em;" data-toggle="tooltip" title="Activated Writeup"></i>'
   ];
   public $seconds_since_last;
   public $ts_ago;
@@ -40,9 +41,12 @@ class Stream extends StreamAR
     return self::MODEL_ICONS[$this->model];
   }
 
-  public function getPrefix()
+  public function getPrefix($showIcon=true)
   {
-    return sprintf("<img src='%s' class='rounded' width='25px'> <b>%s</b> %s", Url::to('//'.Yii::$app->sys->offense_domain.'/images/avatars/'.$this->player->profile->avtr),$this->player->profile->link,$this->icon);
+    if($showIcon)
+      return sprintf("<img src='%s' class='rounded' width='25px'> <b>%s</b> %s", Url::to('//'.Yii::$app->sys->offense_domain.'/images/avatars/'.$this->player->profile->avtr),$this->player->profile->link,$this->icon);
+    else
+      return sprintf("<img src='%s' class='rounded' width='25px'> <b>%s</b>", Url::to('//'.Yii::$app->sys->offense_domain.'/images/avatars/'.$this->player->profile->avtr),$this->player->profile->link);
   }
 
   public function Title(bool $pub=true)
@@ -74,6 +78,9 @@ class Stream extends StreamAR
       return sprintf("%s got the badge [<code>%s</code>]%s", $this->prefix, Badge::findOne(['id'=>$this->model_id])->name, $this->suffix);
   }
 
+  public function getPlayer_target_helpMessage(){
+    return sprintf("%s activated writeups for [<code>%s</code>]",$this->getPrefix(false),Target::findOne(['id'=>$this->model_id])->name);
+  }
 
   public function getHeadshotMessage()
   {

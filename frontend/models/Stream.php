@@ -39,7 +39,7 @@ class Stream extends StreamAR
     return self::MODEL_ICONS[$this->model];
   }
 
-  public function getPrefix()
+  public function getPrefix($showIcon=true)
   {
     if($this->twitter)
     {
@@ -48,7 +48,10 @@ class Stream extends StreamAR
 
       return sprintf("%s", $this->player->profile->twitterHandle);
     }
-    return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b> %s", $this->player->profile->avtr,RankFormatter::ordinalPlaceCss($this->player->profile->rank->id),$this->player->profile->link,$this->icon);
+    if($showIcon)
+      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b> %s", $this->player->profile->avtr,RankFormatter::ordinalPlaceCss($this->player->profile->rank->id),$this->player->profile->link,$this->icon);
+    else
+      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b>", $this->player->profile->avtr,RankFormatter::ordinalPlaceCss($this->player->profile->rank->id),$this->player->profile->link);
   }
 
   public function Title(bool $pub=true)
@@ -80,6 +83,9 @@ class Stream extends StreamAR
     return sprintf(\Yii::t('app',"%s got the badge [<code>%s</code>]%s"), $this->prefix, Badge::findOne(['id'=>$this->model_id])->name, $this->suffix);
   }
 
+  public function getPlayer_target_helpMessage(){
+    return sprintf("%s activated writeups for [<code>%s</code>]",$this->getPrefix(false),Target::findOne(['id'=>$this->model_id])->name);
+  }
 
   public function getHeadshotMessage()
   {
