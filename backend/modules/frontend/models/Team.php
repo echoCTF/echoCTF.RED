@@ -99,6 +99,14 @@ class Team extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getApprovedMembers()
+    {
+      return $this->hasMany(TeamPlayer::class, ['team_id' => 'id'])->andWhere(['approved' => 1]);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getPlayers()
     {
         return $this->hasMany(Player::class, ['id' => 'player_id'])->viaTable('team_player', ['team_id' => 'id']);
