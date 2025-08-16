@@ -7,7 +7,7 @@
 * `player_require_identification` Whether players need to provide proof of ID during registration
 * `all_players_vip`: Allow all players to have VIP features enabled
 * `dashboard_is_home`: Enable/Disable dashboard as default home page for players
-* `dashboard_graph`: Enable/Disable dashboard activity graph for last 10 days
+* `dashboard_graph_visible`: Enable/Disable dashboard activity graph for last 10 days
 * `teams`: Enable/Disable teams support
 * `team_required` (optional): Enable/Disable requirement for teams
 * `approved_avatar`: Enable/Disable automatic avatar approval

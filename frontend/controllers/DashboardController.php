@@ -68,7 +68,7 @@ class DashboardController extends \app\components\BaseController
         $dashboardStats->claims=(int) PlayerTreasure::find()->count();
 
       $dayActivity=null;
-      if(Yii::$app->sys->dashboard_graph)
+      if(Yii::$app->sys->dashboard_graph_visible)
       {
         $rows = (new \yii\db\Query())
           ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt','sum(if(player_id in ('.Yii::$app->user->id.'),1,0)) as pcnt'])
