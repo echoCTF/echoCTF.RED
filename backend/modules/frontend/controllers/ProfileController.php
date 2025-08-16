@@ -26,7 +26,7 @@ class ProfileController extends \app\components\BaseController
    */
   public function behaviors()
   {
-    return ArrayHelper::merge( 
+    return ArrayHelper::merge(
     [
       'access' => [
         'class' => \yii\filters\AccessControl::class,
@@ -345,6 +345,19 @@ class ProfileController extends \app\components\BaseController
     $searchModel->player_id = $profile->player_id;
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     return Json::encode(trim($this->renderAjax('_target_progress', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
+  public function actionStreamLag($id)
+  {
+    $profile = $this->findModel($id);
+    $searchModel=new \app\modules\activity\models\StreamSearch();
+    $searchModel->player_id = $profile->player_id;
+    $dataProvider=$searchModel->searchWithLag(\Yii::$app->request->queryParams);
+
+    return Json::encode(trim($this->renderAjax('_stream_lag', [
       'dataProvider' => $dataProvider,
       'searchModel' => $searchModel
     ])));

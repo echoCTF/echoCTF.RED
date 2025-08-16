@@ -34,6 +34,7 @@ class Stream extends StreamAR
   public $seconds_since_last;
   public $ts_ago;
   public $pub=true;
+
   public function getIcon()
   {
     return self::MODEL_ICONS[$this->model];
