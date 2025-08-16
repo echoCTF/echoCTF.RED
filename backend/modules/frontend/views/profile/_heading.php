@@ -16,7 +16,7 @@ use yii\helpers\Html;
       <h2 class="media-heading"><?= Html::encode($model->owner->username) ?>
         <small><?php if(trim($model->owner->fullname)!=="") echo " - ",Html::encode($model->owner->fullname) ?><?php if($model->owner->metadata && trim($model->owner->metadata->affiliation)!=="") echo " - ",Html::encode($model->owner->metadata->affiliation) ?></small>
       </h2>
-      <?php if($model->owner->teamPlayer):?><p>Team: <?= $model->owner->teamPlayer->team->name ?></p><?php endif;?>
+      <?php if($model->owner->teamPlayer):?><p>Team: <?php echo Html::a($model->owner->teamPlayer->team->name,['/frontend/team/view','id'=>$model->owner->teamPlayer->team_id]), " ",Html::a('<i class="fa-solid fa-up-right-from-square"></i>','//'.Yii::$app->sys->offense_domain.'/team/'.$model->owner->teamPlayer->team->token,['title'=>'Go to team frontend page']);?></p><?php endif;?>
       <p class="lead"><?= Html::encode($model->bio) ?></p>
       <div class="media-links">
         <ul class="list-inline list-unstyled breadcrumb">
