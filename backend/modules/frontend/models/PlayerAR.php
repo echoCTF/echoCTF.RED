@@ -342,7 +342,11 @@ class PlayerAR extends \yii\db\ActiveRecord
    */
   public function getStreams()
   {
-    return $this->hasMany(Stream::class, ['player_id' => 'id'])->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
+    return $this->hasMany(Stream::class, ['player_id' => 'id'])
+    ->select([
+        'stream.*', // Select all fields from the related Stream model
+        new \yii\db\Expression('TIMESTAMPDIFF(SECOND, LAG(stream.ts) OVER (ORDER BY stream.ts), stream.ts) AS seconds_since_last')
+    ])->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
   }
 
   /**
