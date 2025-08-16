@@ -14,7 +14,7 @@ class ExportAction extends \yii\base\Action
 {
   /**
    * Export Full Player Details
-   * 
+   *
    * @param integer $id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
@@ -26,7 +26,7 @@ class ExportAction extends \yii\base\Action
         fputcsv($csv, ['Username', 'Full Name', 'Email', 'Category', 'Affiliation', 'Approval Stage',"Account status"]);
         foreach(Player::find()->all() as $p)
         {
-          fputcsv($csv, [$p->username, $p->fullname, $p->email, $p->academicShort, $p->metadata->affiliation, $p::APPROVAL[$p->approval],$statuses[$p->status]]);
+          fputcsv($csv, [$p->username, $p->fullname, $p->email, $p->academicShort, ($p->metadata ? $p->metadata->affiliation : ''), $p::APPROVAL[$p->approval],$statuses[$p->status]]);
         }
         rewind($csv);
         return \Yii::$app->response->sendStreamAsFile($csv,'players-full.csv');

@@ -389,7 +389,7 @@
   - name: configure participant rc.d
     command: rcctl {{item}}
     with_items:
-      - set memcached flags -u _memcached -l {{db_ip}} -l 127.0.0.1 -m 1024 -c 181920
+      - set memcached flags -u _memcached -l {{db_ip}}:11200 -l {{db_ip}}:11201 -l {{db_ip}}:11211 -l {{db_ip}}:11254 -l 127.0.0.1 -m 1024 -c 181920
     tags:
       - rcctl
 
@@ -425,7 +425,7 @@
       dest: "{{item.dest}}"
       content: "{{item.val}}\n"
     with_items:
-      - { dest: "/etc/service.pf.conf",val: "pass in quick on interconnect inet proto {tcp,udp} from <service_clients> to port { 11211, 3306 }"}
+      - { dest: "/etc/service.pf.conf",val: "pass in quick on interconnect inet proto {tcp,udp} from <service_clients> to port { 11200, 11201, 11211, 11254, 3306 }"}
       - { dest: "/etc/service_clients.conf", val: "{{pui_ip}}\n{{mui_ip}}\n{{vpn_ip}}"}
 
   - name: Create pf files

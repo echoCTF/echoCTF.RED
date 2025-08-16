@@ -67,6 +67,9 @@ class Sysconfig extends \yii\db\ActiveRecord
               \Yii::$app->db->createCommand($Q)->execute();
               if(!empty($this->val))
               {
+                $utcTime=new \DateTime($this->val, new \DateTimeZone('UTC'));
+                if(self::findOne('time_zone'))
+                  $utcTime->setTimezone(new \DateTimeZone(self::findOne('time_zone')->val));
                 $Q=sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10",$this->val);
                 \Yii::$app->db->createCommand($Q)->execute();
                 $this->val=\Yii::$app->formatter->asTimestamp($this->val);
