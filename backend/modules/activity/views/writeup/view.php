@@ -30,11 +30,27 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'player_id',
-            'player.username',
-            'target_id',
-            'target.name',
-            'target.ipoctet',
+            [
+              'attribute'=>'player_id',
+              'label'=>'Player',
+              'format'=>'html',
+              'value'=>function ($model) use ($playerWriteups){
+                if ($playerWriteups>0)
+                  return '<abbr title="'.$playerWriteups.' more contributed writeups (excluding this)">(id: '.$model->player_id.') '.$model->player->username. '</abbr>';
+                return '(id: '.$model->player_id.') '.$model->player->username;
+              }
+            ],
+
+            [
+              'attribute'=>'target_id',
+              'label'=>'Target',
+              'format'=>'html',
+              'value'=>function ($model) use ($targetWriteups){
+                if($targetWriteups>0)
+                  return '<abbr title="'.$targetWriteups.' more writeups (excluding this)">(id: '.$model->target_id.') '.$model->target->name. '</abbr>';
+                return '(id: '.$model->target_id.') '.$model->target->name;
+              }
+            ],
             'formatter',
             [
               'attribute'=>'language.l',
@@ -43,15 +59,15 @@ $this->params['breadcrumbs'][] = $this->title;
             [
               'attribute'=>'content',
               'format'=>'raw',
-              'contentOptions' => ['class' => $model->approved ? 'bg-primary' : 'bg-danger','style'=>'max-width:100%'],
+              'contentOptions' => ['class' => 'text-break w-90 '.($model->approved ? 'bg-primary' : 'bg-danger')],
               'value'=>function($model){
                 if($model->formatter==='markdown')
                   return HtmlPurifier::process(Markdown::process($model->content,'gfm-comment'),['Attr.AllowedFrameTargets' => ['_blank']]);
                 else
-                  return "<pre>".Html::encode($model->content)."</pre>"; }
+                  return "<pre style='white-space: pre-wrap; word-break: break-word;'>".Html::encode($model->content)."</pre>"; }
 
             ],
-            'approved',
+            'approved:boolean',
             'status',
             'comment',
             'created_at',

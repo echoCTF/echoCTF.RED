@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\activity\models\WriteupSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -35,10 +34,11 @@ yii\bootstrap5\Modal::end();
             ['class' => 'app\components\columns\ProfileColumn'],
             //'target_id',
             [
-              'attribute'=>'fqdn',
-              'format'=>'html',
-              'contentOptions'=>['class'=>'text-nowrap','style'=>'min-width: 16em; max-width: 16em'],
-              'value'=>function($model){return sprintf("%s (<small>%s</small>)",$model->target->name,$model->target->ipoctet);},
+              'attribute'=>'target_id',
+              'label'=>'Target',
+              'contentOptions'=>['class'=>'text-nowrap','style'=>'min-width: 10em; max-width: 10em'],
+              'filter'=>$targets,
+              'value'=>'target.name',
             ],
             [
               'attribute'=>'content',
@@ -53,8 +53,9 @@ yii\bootstrap5\Modal::end();
             [
               'attribute'=>'lang',
               'label'=>'Language',
-              'value'=>'language.l'
-
+              'value'=>'language.l',
+              'filter'=>$languages,
+              'contentOptions'=>['class'=>'text-nowrap','style'=>'min-width: 5em; max-width: 10em'],
             ],
             'created_at',
             'updated_at',
