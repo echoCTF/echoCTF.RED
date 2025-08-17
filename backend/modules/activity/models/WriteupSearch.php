@@ -12,8 +12,7 @@ use app\modules\activity\models\Writeup;
 class WriteupSearch extends Writeup
 {
   public $username;
-  public $fqdn;
-  public $ipoctet;
+  public $name;
   public $lang;
 
     /**
@@ -23,7 +22,7 @@ class WriteupSearch extends Writeup
     {
         return [
             [['player_id', 'target_id', 'approved'], 'integer'],
-            [['content', 'status', 'comment', 'created_at', 'updated_at', 'username', 'fqdn', 'ipoctet','lang'], 'safe'],
+            [['content', 'status', 'comment', 'created_at', 'updated_at', 'username', 'name', 'lang'], 'safe'],
         ];
     }
 
@@ -72,14 +71,13 @@ class WriteupSearch extends Writeup
               ->andFilterWhere(['like', 'writeup.updated_at', $this->updated_at])
               ->andFilterWhere(['like', 'content', $this->content])
               ->andFilterWhere(['like', 'writeup.status', $this->status])
-              ->andFilterWhere(['like', 'writeup.language', $this->language])
               ->andFilterWhere(['like', 'comment', $this->comment]);
         $query->andFilterWhere(['like', 'player.username', $this->username]);
-        $query->andFilterWhere(['like', 'language.l', $this->lang]);
-        $query->andFilterWhere(['like', 'target.fqdn', $this->fqdn]);
-        $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
+        $query->andFilterWhere(['language_id'=> $this->lang]);
+        $query->andFilterWhere(['like', 'target.name', $this->name]);
 
         $dataProvider->setSort([
+            'defaultOrder'=>['id'=>SORT_DESC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
@@ -91,13 +89,9 @@ class WriteupSearch extends Writeup
                     'asc' => ['language.l' => SORT_ASC],
                     'desc' => ['language.l' => SORT_DESC],
                 ],
-                'fqdn' => [
-                      'asc' => ['target.fqdn' => SORT_ASC],
-                      'desc' => ['target.fqdn' => SORT_DESC],
-                  ],
-                  'ipoctet' => [
-                      'asc' => ['target.ip' => SORT_ASC],
-                      'desc' => ['target.ip' => SORT_DESC],
+                'name' => [
+                      'asc' => ['target.name' => SORT_ASC],
+                      'desc' => ['target.name' => SORT_DESC],
                   ],
                 ]
             ),

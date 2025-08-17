@@ -11,6 +11,8 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use app\modules\settings\models\Language;
+use app\modules\gameplay\models\Target;
 
 /**
  * WriteupController implements the CRUD actions for Writeup model.
@@ -33,8 +35,35 @@ class WriteupController extends \app\components\BaseController
   {
     $searchModel = new WriteupSearch();
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    $langIds = Writeup::find()
+        ->select('language_id')
+        ->distinct()
+        ->column();
+
+    $targetIds = Writeup::find()
+        ->select('target_id')
+        ->distinct()
+        ->column();
+
+    $languages=ArrayHelper::map(
+          Language::find()
+              ->where(['in', 'id', $langIds])
+              ->all(),
+          'id',
+          'l'
+    );
+    $targets=ArrayHelper::map(
+          Target::find()
+              ->where(['in', 'id', $targetIds])
+              ->orderBy('name')
+              ->all(),
+          'id',
+          'name'
+    );
 
     return $this->render('index', [
+      'languages'=>$languages,
+      'targets'=>$targets,
       'searchModel' => $searchModel,
       'dataProvider' => $dataProvider,
     ]);
@@ -49,8 +78,21 @@ class WriteupController extends \app\components\BaseController
    */
   public function actionView($player_id, $target_id)
   {
+    $model=$this->findModel($player_id, $target_id);
+    $targetWriteups=Writeup::find()->where([
+      'and',
+      ['!=','player_id',$model->player_id],
+      ['target_id'=>$model->target_id]
+    ])->count();
+    $playerWriteups=Writeup::find()->where([
+      'and',
+      ['player_id'=>$model->player_id],
+      ['!=','target_id',$model->target_id]
+    ])->count();
     return $this->render('view', [
-      'model' => $this->findModel($player_id, $target_id),
+      'playerWriteups'=>intval($playerWriteups),
+      'targetWriteups'=>intval($targetWriteups),
+      'model' => $model,
     ]);
   }
 
