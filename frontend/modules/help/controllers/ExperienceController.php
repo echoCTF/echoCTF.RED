@@ -43,13 +43,19 @@ class ExperienceController extends Controller
      */
     public function actionIndex()
     {
-        $dataProvider=new ActiveDataProvider([
-            'query' => Experience::find()->orderBy(['id'=>SORT_ASC]),
-        ]);
+      $dataProvider=new ActiveDataProvider([
+        'query' => Experience::find()
+          ->select(['experience.*','COUNT(p.player_id) AS player_count',])
+          ->leftJoin(['p' => 'player_score'], 'p.points BETWEEN experience.min_points AND experience.max_points')
+          ->groupBy(['experience.id', 'experience.name'])
+          ->orderBy(['experience.id'=>SORT_ASC]),
+      ]);
 
-        return $this->render('index', [
-            'dataProvider' => $dataProvider,
-        ]);
+      $totalPlayers=(int) \app\models\Player::find()->count();
+      return $this->render('index', [
+          'totalPlayers'=>$totalPlayers,
+          'dataProvider' => $dataProvider,
+      ]);
     }
 
 }

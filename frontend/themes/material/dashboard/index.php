@@ -41,7 +41,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
           'header' => 'header-icon',
           'icon' => '<i class="fas fa-level-up-alt"></i>',
           'color' => 'warning',
-          'title' => \Yii::t('app', "Progress"),
+          'title' => \Yii::t('app', "Next level: ") . \Yii::t('app', Yii::$app->user->identity->profile->nextExperience->name),
           'subtitle' => \Yii::t('app', "Current level: ") . \Yii::t('app', Yii::$app->user->identity->profile->experience->name),
           'footer' => '<div class="stats"></div>',
         ]);
@@ -49,7 +49,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
         $pct = 100 - intval(($x / Yii::$app->user->identity->profile->experience->max_points) * 100);
         ?>
         <div class="progress">
-          <div class="progress-bar text-dark" role="progressbar" style="width: <?= $pct ?>%" aria-valuenow="<?= Yii::$app->user->identity->playerScore->points ?>" aria-valuemin="<?= Yii::$app->user->identity->profile->experience->min_points ?>" aria-valuemax="<?= Yii::$app->user->identity->profile->experience->max_points ?>"><b><?= $pct ?>%</b></div>
+          <div class="progress-bar text-dark" role="progressbar" style="width: <?= $pct ?>%" aria-valuenow="<?= Yii::$app->user->identity->playerScore->points ?>" aria-valuemin="<?= Yii::$app->user->identity->profile->experience->min_points ?>" aria-valuemax="<?= Yii::$app->user->identity->profile->experience->max_points ?>"><b><?= $pct ?>% (<?=$x?> until next)</b></div>
         </div>
         <?php Card::end(); ?>
       </div>
