@@ -47,6 +47,7 @@ use app\modules\target\models\Writeup;
  * @property HeadshotsCount $headshotsCount
  * @property FirstHeadshotsCount $firstHeadshotsCount
  * @property Experience $experience
+ * @property Experience $nextExperience
  * @property TotalTreasures $totalTreasures
 */
 class Profile extends ProfileAR
@@ -116,6 +117,12 @@ class Profile extends ProfileAR
     public function getExperience()
     {
       return Experience::find()->where("{$this->score->points} BETWEEN min_points AND max_points");
+    }
+    public function getNextExperience()
+    {
+      if(($lvl=Experience::find()->where(['>=','min_points',$this->score->points])->one())!==NULL)
+        return $lvl;
+      return '-';
     }
 
     public function getTotalTreasures()

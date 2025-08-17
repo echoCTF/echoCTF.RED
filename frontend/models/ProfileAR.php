@@ -41,7 +41,6 @@ use app\modules\target\models\Writeup;
  * @property Score $score
  * @property Rank $rank
  * @property HeadshotsCount $headshotsCount
- * @property Experience $experience
  * @property TotalTreasures $totalTreasures
 */
 class ProfileAR extends \yii\db\ActiveRecord
