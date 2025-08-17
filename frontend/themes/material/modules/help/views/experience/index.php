@@ -13,20 +13,11 @@ use app\components\formatters\Anchor;
     <hr />
     <?php if(intval($dataProvider->getCount())>0):?>
       <h4><?=\Yii::t('app','Table of Contents')?></h4>
-      <ol>
+      <ol class="orbitron text-white">
       <?php foreach($dataProvider->getModels() as $entry):?>
-        <li><?=Html::a(Html::encode($entry->name),'#'.Html::encode(Anchor::to($entry->name)));?></li>
+        <li><?=Html::encode($entry->name);?> (<code><?=number_format($entry->min_points)?>-<?=number_format($entry->max_points)?></code>)</li>
       <?php endforeach;?>
       </ol>
     <?php endif;?>
-    <?php echo ListView::widget([
-        'dataProvider' => $dataProvider,
-        'emptyText'=>'<p class="text-info"><b>'.\Yii::t('app','No experience entries exist at the moment...').'</b></p>',
-        'summary'=>false,
-        'itemOptions' => [
-          'tag' => false
-        ],
-        'itemView' => '_item',
-    ]);?>
   </div>
 </div>
