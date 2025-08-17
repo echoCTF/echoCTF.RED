@@ -18,6 +18,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  */
 class Experience extends \app\models\ActiveRecordReadOnly
 {
+    public $player_count;
+
     /**
      * {@inheritdoc}
      */
