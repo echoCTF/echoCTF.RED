@@ -65,7 +65,7 @@ $config=[
         'migrate-red' => [
             'class' => 'yii\console\controllers\MigrateController',
             'migrationTable' => 'migration_red',
-            'migrationPath' => '@app/migrations-red',
+            'migrationPath' => '@app/../migrations',
         ],
         'init_data' => [
             'class' => 'yii\console\controllers\MigrateController',
