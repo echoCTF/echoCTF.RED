@@ -5,7 +5,7 @@ use yii\console\controllers\MigrateController as BaseMigrateController;
 use yii\helpers\FileHelper;
 use Yii;
 
-class MigrateController extends BaseMigrateController
+class MigrateTriggerController extends BaseMigrateController
 {
     // These will hold custom parameters passed to the template
     public $customParams = [];
