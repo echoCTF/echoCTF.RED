@@ -160,18 +160,24 @@ AppAsset::register($this);
             ['label' => 'Treasure Actions', 'url' => ['/smartcity/treasure-action/index'], 'visible' => !Yii::$app->user->isGuest,],
           ],
         ],
-
+        [
+          'label' => '<i class="fa fa-gavel"></i> Moderation',
+          'url' => ['/moderation/default/index'],
+          'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,
+          'active' => Yii::$app->controller->module->id == 'moderation',
+          'items' => [
+            ['label' => 'Abusers', 'url' => ['/moderation/abuser/index'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
+            ['label' => 'Zero pts with activated help', 'url' => ['/moderation/default/index'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
+            ['label' => 'Stream with Lag', 'url' => ['/moderation/default/stream-lag'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
+            ['label' => 'Duplicate Signup IPs', 'url' => ['/moderation/default/duplicate-signup-ips'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
+          ]
+        ],
         [
           'label' => '<i class="bi bi-people-fill"></i> Frontend',
           'url' => ['/frontend/default/index'],
           'visible' => !Yii::$app->user->isGuest,
           'active' => Yii::$app->controller->module->id == 'frontend',
           'items' => [
-            '<div class="dropdown-header">Moderation</div>',
-            ['label' => 'Zero pts with activated help', 'url' => ['/frontend/moderation/index'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
-            ['label' => 'Stream with Lag', 'url' => ['/frontend/moderation/stream-lag'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
-            ['label' => 'Duplicate Signup IPs', 'url' => ['/frontend/moderation/duplicate-signup-ips'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
-            '<div class="dropdown-divider"></div>',
             ['label' => 'Players', 'url' => ['/frontend/player/index'], 'visible' => !Yii::$app->user->isGuest,],
             ['label' => 'Profiles', 'url' => ['/frontend/profile/index'], 'visible' => !Yii::$app->user->isGuest,],
             ['label' => 'Player Metadata', 'url' => ['/frontend/player-metadata/index'], 'visible' => !Yii::$app->user->isGuest,],

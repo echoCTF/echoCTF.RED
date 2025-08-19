@@ -9,8 +9,8 @@ echo "Using database: ${DATABASE}"
 
 
 function settings() {
-  composer.phar install -d backend
-  composer.phar install -d frontend
+  composer install -d backend
+  composer install -d frontend
   cp backend/config/cache-local.php backend/config/cache.php
   sed -e "s/echoCTF/${DATABASE}/g" backend/config/db-sample.php > backend/config/db.php
   cp backend/config/validationKey-local.php backend/config/validationKey.php
@@ -155,7 +155,7 @@ function usage() {
   echo "6. tmuxs: Start tmux sessions"
   echo "6. eventOrganizers: Add event organizers"
   echo "7. sampleData: Populate sample data"
-  echo "8. migrate: Perform Yii2 migrations
+  echo "8. migrate: Perform Yii2 migrations"
 }
 
 if [ $# -eq 0 ]; then

@@ -14,6 +14,9 @@ $config=[
         '@npm'   => '@vendor/npm-asset',
     ],
     'modules' => [
+        'moderation' => [
+            'class' => 'app\modules\moderation\Module'
+        ],
         'speedprogramming' => [
           'class' => 'app\modules\speedprogramming\Module',
         ],

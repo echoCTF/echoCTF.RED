@@ -1,6 +1,6 @@
 <?php
 
-namespace app\modules\frontend\controllers;
+namespace app\modules\moderation\controllers;
 
 use app\modules\frontend\models\Player;
 use app\modules\frontend\models\Team;
