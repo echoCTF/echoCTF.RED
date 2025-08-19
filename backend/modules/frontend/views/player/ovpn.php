@@ -2,13 +2,13 @@ client
 nobind
 proto udp
 dev tun
-comp-lzo
+compress
 verb 1
-mssfix 1400
-cipher AES-256-CBC
-data-ciphers AES-256-CBC
-auth SHA256
+mssfix 1460
+cipher AES-128-GCM
+data-ciphers AES-128-GCM
 auth-nocache
+mute-replay-warnings
 
 remote-cert-tls server
 
