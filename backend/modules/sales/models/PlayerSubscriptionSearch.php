@@ -74,6 +74,7 @@ class PlayerSubscriptionSearch extends PlayerSubscription
             ->andFilterWhere(['like', 'product.name', $this->product_name]);
 
         $dataProvider->setSort([
+            'defaultOrder'=>['ending'=>SORT_ASC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
