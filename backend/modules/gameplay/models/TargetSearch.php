@@ -25,6 +25,7 @@ class TargetSearch extends Target
             [['headshot'],'default','value'=>null ],
             [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
             [['scheduled_at'], 'datetime'],
+            [['ipoctet'],'filter','filter'=>'trim'],
             [['timer','name', 'fqdn', 'pts','purpose', 'description', 'mac', 'net', 'server', 'image', 'dns', 'parameters', 'ipoctet', 'status', 'scheduled_at', 'required_xp', 'suggested_xp','headshot','category','network_name'], 'safe'],
         ];
     }
@@ -86,7 +87,6 @@ class TargetSearch extends Target
         $query->andFilterWhere(['like', 'target.name', $this->name])
             ->andFilterWhere(['like', 'category', $this->category])
             ->andFilterWhere(['like', 'scheduled_at', $this->scheduled_at])
-            ->andFilterWhere(['like', 'INET_NTOA(ip)', $this->ipoctet])
             ->andFilterWhere(['like', 'fqdn', $this->fqdn])
             ->andFilterWhere(['like', 'purpose', $this->purpose])
             ->andFilterWhere(['like', 'description', $this->description])
@@ -96,8 +96,31 @@ class TargetSearch extends Target
             ->andFilterWhere(['like', 'image', $this->image])
             ->andFilterWhere(['like', 'dns', $this->dns])
             ->andFilterWhere(['like', 'parameters', $this->parameters])
-            ->andFilterWhere(['like', 'network.name', $this->network_name])
-            ;
+            ->andFilterWhere(['like', 'network.name', $this->network_name]);
+        $validator = new \app\components\validators\ExtendedIpValidator(['subnet' => true, 'expandIPv6' => false]);
+        if ($validator->validate($this->ipoctet) !== false)
+        {
+          [$ip, $mask] = explode('/', $this->ipoctet, 2);
+          if (filter_var($mask, FILTER_VALIDATE_IP)) {
+            // Netmask style, keep as is
+              $netmask = $mask;
+          } else {
+            // Prefix length, convert to dotted netmask
+            $prefix = (int)$mask;
+            $netmaskLong = (~((1 << (32 - $prefix)) - 1)) & 0xFFFFFFFF;
+            $netmask = long2ip($netmaskLong);
+          }
+          $query->andFilterWhere(['=',new \yii\db\Expression('(ip & inet_aton(:remote_netmask))',[':remote_netmask'=>$netmask]),new \yii\db\Expression('(inet_aton(:remote_ip) & inet_aton(:remote_netmask))',[':remote_ip'=>$ip,':remote_netmask'=>$netmask])]);
+        }
+        elseif (filter_var($this->ipoctet, FILTER_VALIDATE_IP))
+        {
+          $query->andFilterWhere(['ip'=>ip2long($this->ipoctet)]);
+        }
+        else
+        {
+          $query->andFilterWhere(['like', 'INET_NTOA(ip)', $this->ipoctet]);
+        }
+
         if($this->pts)
             $query->andHaving(['pts'=>$this->pts]);
         if($this->headshot !== null ) $query->having(["=",'count(headshot.player_id)',$this->headshot]);

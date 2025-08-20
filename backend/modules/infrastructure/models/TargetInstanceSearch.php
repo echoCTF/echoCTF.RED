@@ -32,6 +32,7 @@ class TargetInstanceSearch extends TargetInstance
     {
         return [
             [[ 'reboot','team_allowed'], 'integer'],
+            [['ipoctet'],'filter','filter'=>'trim'],
             [['created_at', 'updated_at','ipoctet', 'player_id', 'target_id', 'server_id',], 'safe'],
         ];
     }
@@ -79,7 +80,6 @@ class TargetInstanceSearch extends TargetInstance
               ->andFilterWhere(['like','target_instance.updated_at',$this->updated_at]);
         $query->andFilterWhere([
             'OR',
-            ['like', 'INET_NTOA(target_instance.ip)', $this->ipoctet],
             ['LIKE','target.name',$this->target_id],
             ['target_id'=>$this->target_id],
             ['LIKE','player.username',$this->player_id],
@@ -87,6 +87,29 @@ class TargetInstanceSearch extends TargetInstance
             ['LIKE','server.name',$this->player_id],
             ['server_id'=>$this->server_id],
         ]);
+        $validator = new \app\components\validators\ExtendedIpValidator(['subnet' => true, 'expandIPv6' => false]);
+        if ($validator->validate($this->ipoctet) !== false)
+        {
+          [$ip, $mask] = explode('/', $this->ipoctet, 2);
+          if (filter_var($mask, FILTER_VALIDATE_IP)) {
+            // Netmask style, keep as is
+              $netmask = $mask;
+          } else {
+            // Prefix length, convert to dotted netmask
+            $prefix = (int)$mask;
+            $netmaskLong = (~((1 << (32 - $prefix)) - 1)) & 0xFFFFFFFF;
+            $netmask = long2ip($netmaskLong);
+          }
+          $query->andFilterWhere(['=',new \yii\db\Expression('(target_instance.ip & inet_aton(:remote_netmask))',[':remote_netmask'=>$netmask]),new \yii\db\Expression('(inet_aton(:remote_ip) & inet_aton(:remote_netmask))',[':remote_ip'=>$ip,':remote_netmask'=>$netmask])]);
+        }
+        elseif (filter_var($this->ipoctet, FILTER_VALIDATE_IP))
+        {
+          $query->andFilterWhere(['target_instance.ip'=>ip2long($this->ipoctet)]);
+        }
+        else
+        {
+          $query->andFilterWhere(['like', 'INET_NTOA(target_instance.ip)', $this->ipoctet]);
+        }
 
         $dataProvider->setSort([
                 'attributes' => array_merge(
