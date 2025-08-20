@@ -18,6 +18,7 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
     {
         return [
             [['id', 'team_allowed'], 'integer'],
+            [['ipoctet'],'filter','filter'=>'trim'],
             [['op', 'ts','ipoctet','player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'safe'],
         ];
     }
@@ -66,7 +67,6 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
 
         $query->andFilterWhere([
             'OR',
-            ['like', 'INET_NTOA(ip)', $this->ipoctet],
             ['LIKE','target.name',$this->target_id],
             ['target_id'=>$this->target_id],
             ['LIKE','player.username',$this->player_id],
@@ -74,6 +74,30 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
             ['LIKE','server.name',$this->player_id],
             ['server_id'=>$this->server_id],
         ]);
+
+        $validator = new \app\components\validators\ExtendedIpValidator(['subnet' => true, 'expandIPv6' => false]);
+        if ($validator->validate($this->ipoctet) !== false)
+        {
+          [$ip, $mask] = explode('/', $this->ipoctet, 2);
+          if (filter_var($mask, FILTER_VALIDATE_IP)) {
+            // Netmask style, keep as is
+              $netmask = $mask;
+          } else {
+            // Prefix length, convert to dotted netmask
+            $prefix = (int)$mask;
+            $netmaskLong = (~((1 << (32 - $prefix)) - 1)) & 0xFFFFFFFF;
+            $netmask = long2ip($netmaskLong);
+          }
+          $query->andFilterWhere(['=',new \yii\db\Expression('(target_instance_audit.ip & inet_aton(:remote_netmask))',[':remote_netmask'=>$netmask]),new \yii\db\Expression('(inet_aton(:remote_ip) & inet_aton(:remote_netmask))',[':remote_ip'=>$ip,':remote_netmask'=>$netmask])]);
+        }
+        elseif (filter_var($this->ipoctet, FILTER_VALIDATE_IP))
+        {
+          $query->andFilterWhere(['target_instance_audit.ip'=>ip2long($this->ipoctet)]);
+        }
+        else
+        {
+          $query->andFilterWhere(['like', 'INET_NTOA(target_instance_audit.ip)', $this->ipoctet]);
+        }
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,

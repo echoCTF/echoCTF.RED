@@ -19,6 +19,7 @@ class ServerSearch extends Server
         return [
             [['id', 'ip','timeout'], 'integer'],
             [['ssl'], 'boolean'],
+            [['ipoctet'],'filter','filter'=>'trim'],
             [['name', 'description', 'service', 'connstr','ipoctet','network','provider_id','ipoctet'], 'safe'],
         ];
     }
@@ -69,8 +70,30 @@ class ServerSearch extends Server
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'service', $this->service])
             ->andFilterWhere(['like', 'connstr', $this->connstr])
-            ->andFilterWhere(['like', 'provider_id', $this->provider_id])
-            ->andFilterWhere(['like', 'INET_NTOA(ip)', $this->ipoctet]);
+            ->andFilterWhere(['like', 'provider_id', $this->provider_id]);
+        $validator = new \app\components\validators\ExtendedIpValidator(['subnet' => true, 'expandIPv6' => false]);
+        if ($validator->validate($this->ipoctet) !== false)
+        {
+          [$ip, $mask] = explode('/', $this->ipoctet, 2);
+          if (filter_var($mask, FILTER_VALIDATE_IP)) {
+            // Netmask style, keep as is
+              $netmask = $mask;
+          } else {
+            // Prefix length, convert to dotted netmask
+            $prefix = (int)$mask;
+            $netmaskLong = (~((1 << (32 - $prefix)) - 1)) & 0xFFFFFFFF;
+            $netmask = long2ip($netmaskLong);
+          }
+          $query->andFilterWhere(['=',new \yii\db\Expression('(ip & inet_aton(:remote_netmask))',[':remote_netmask'=>$netmask]),new \yii\db\Expression('(inet_aton(:remote_ip) & inet_aton(:remote_netmask))',[':remote_ip'=>$ip,':remote_netmask'=>$netmask])]);
+        }
+        elseif (filter_var($this->ipoctet, FILTER_VALIDATE_IP))
+        {
+          $query->andFilterWhere(['ip'=>ip2long($this->ipoctet)]);
+        }
+        else
+        {
+          $query->andFilterWhere(['like', 'INET_NTOA(ip)', $this->ipoctet]);
+        }
 
         $dataProvider->setSort([
                 'attributes' => array_merge(
