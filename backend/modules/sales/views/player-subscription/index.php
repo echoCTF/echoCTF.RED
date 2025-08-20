@@ -87,7 +87,7 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
         'template' => '{view} {update} {delete} {sync-subscription}', // add {custom} where you want
         'buttons' => [
           'sync-subscription' => function ($url, $model, $key) {
-            return Html::a('<i class="fas fa-download" style="color: magenta"></i>', ['sync-subscription', 'subscription_id' => $model->subscription_id], [
+            return Html::a('<i class="fas fa-download" style="color: #5433FF"></i>', ['sync-subscription', 'subscription_id' => $model->subscription_id], [
               'class' => '',
               'title' => 'Sync an Player Subscription with Stripe',
               'data' => [
