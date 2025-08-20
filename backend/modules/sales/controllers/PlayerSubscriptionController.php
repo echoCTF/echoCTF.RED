@@ -8,6 +8,7 @@ use app\modules\sales\models\PlayerSubscriptionSearch;
 use app\modules\sales\models\Product;
 use app\modules\frontend\models\Player;
 use app\modules\gameplay\models\NetworkPlayer;
+use yii\base\UserException;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
 
@@ -171,6 +172,31 @@ class PlayerSubscriptionController extends \app\components\BaseController
       return $this->redirect(['/sales/player-customer/index']);
     }
     PlayerSubscription::FetchStripe();
+    return $this->redirect(['index']);
+  }
+
+  public function actionSyncSubscription($subscription_id)
+  {
+    if (intval(Product::find()->count()) < 1) {
+      \Yii::$app->session->addFlash('warning', 'There are no products on the system. First fetch the stripe products and then import the subscriptions.');
+      return $this->redirect(['/sales/product/index']);
+    }
+    if (intval(Player::find()->where(['IS NOT', 'stripe_customer_id', null])->count()) < 1) {
+      \Yii::$app->session->addFlash('warning', 'There are no customers on the system. First fetch the stripe customers and then import the subscriptions.');
+      return $this->redirect(['/sales/player-customer/index']);
+    }
+    $model=$this->findModel(['subscription_id'=>$subscription_id]);
+    try {
+      if($model->StripeSync()===false)
+      {
+        throw new UserException("Failed to update the stripe subscription");
+      }
+      \Yii::$app->session->addFlash('success', 'Subscription updated!');
+    }
+    catch (\Exception $e)
+    {
+      \Yii::$app->session->addFlash('error', $e->getMessage());
+    }
     return $this->redirect(['index']);
   }
 
