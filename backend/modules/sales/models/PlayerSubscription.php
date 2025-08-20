@@ -159,13 +159,18 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           $ps = new PlayerSubscription;
           $ps->player_id = $player->id;
         }
+
         $ps->subscription_id = $stripe_subscription->id;
-        $ps->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->items->data[0]->current_period_start]);
-        $ps->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->items->data[0]->current_period_end]);
-        $ps->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
-        $ps->updated_at = new \yii\db\Expression('NOW()');
-        $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
-        $ps->active = intval($stripe_subscription->items->data[0]->plan->active);
+        if($stripe_subscription->ended_at==null)
+        {
+          $ps->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->items->data[0]->current_period_start]);
+          $ps->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->items->data[0]->current_period_end]);
+          $ps->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
+          $ps->updated_at = new \yii\db\Expression('NOW()');
+          $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
+        }
+        $ps->active = intval($stripe_subscription->ended_at==null);
+
         if (!$ps->save(false)) {
           if (\Yii::$app instanceof \yii\console\Application)
             printf("Failed to save subscription: %s\n", $stripe_subscription->id);
@@ -193,14 +198,14 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   {
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     foreach (PlayerSubscription::find()->where(['!=', 'subscription_id', 'sub_vip'])->all() as $ps) {
-      $dosave = false;
       try {
+        $dosave = false;
         $stripe_subscription = $stripe->subscriptions->retrieve($ps->subscription_id, []);
 
-        // Check if subscription active agrees with Stripe
-        if (intval($ps->active) !== intval($stripe_subscription->items->data[0]->plan->active)) {
-          \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Syncing <kbd>active</kbd>, not the same with Stripe'));
-          $ps->active = intval($stripe_subscription->items->data[0]->plan->active);
+        // Check if subscription active agree with Stripe
+        if (intval($ps->active) !== intval($stripe_subscription->ended_at==null)) {
+          \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Syncing <kbd>active</kbd>, not the same with Stripe <kbd>{subscription_id}</kbd>', ['subscription_id' => $ps->subscription_id]));
+          $ps->active = intval($stripe_subscription->ended_at==null);
           $dosave = true;
         }
 
@@ -212,7 +217,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
 
         // Check if we have something to to fix active agrees with Stripe
-        if ($dosave && $ps->update(true, ['price_id', 'active'])); {
+        if ($dosave!==true && $ps->update(true, ['price_id', 'active'])) {
           \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Updated subscription <kbd>{subscription_id}</kbd>', ['subscription_id' => $ps->subscription_id]));
         }
       } catch (\Stripe\Exception\InvalidRequestException $e) {
