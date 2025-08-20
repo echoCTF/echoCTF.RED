@@ -3,6 +3,8 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;
+use yii\grid\ActionColumn;
+
 /* @var $this yii\web\View */
 /* @var $searchModel app\modules\sales\models\PlayerSubscriptionSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -37,7 +39,10 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
     'filterModel' => $searchModel,
     'columns' => [
 
-      'player_id',
+      [
+        'attribute'=>'player_id',
+        'headerOptions' => ['style' => 'width:7em'],
+      ],
       ['class' => 'app\components\columns\ProfileColumn'],
       [
         'attribute'=>'subscription_id',
@@ -50,14 +55,8 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
           return "";
         }
       ],
-      //          [
-      //            'attribute'=>'session_id',
-      //            'format'=>'raw',
-      //            'value'=>function($model){ return '<small>'.substr($model->session_id,0,25).'</small>';}
-      //          ],
       [
         'attribute' => 'product_name',
-        //'value'=>'product.name',
         'value'=>function($model){
           if($model->product)
             return $model->product->name;
@@ -83,10 +82,28 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
       'active:boolean',
       'starting',
       'ending',
-      //            'created_at',
-      //            'updated_at',
+      [
+        'class' => ActionColumn::class,
+        'template' => '{view} {update} {delete} {sync-subscription}', // add {custom} where you want
+        'buttons' => [
+          'sync-subscription' => function ($url, $model, $key) {
+            return Html::a('<i class="fas fa-download" style="color: magenta"></i>', ['sync-subscription', 'subscription_id' => $model->subscription_id], [
+              'class' => '',
+              'title' => 'Sync an Player Subscription with Stripe',
+              'data' => [
+                'confirm' => 'Are you absolutely sure you want to sync with Stripe the subscription for this player [' . Html::encode($model->player->username) . '] ?',
+                'method' => 'post',
+              ],
+            ]);
+          },
+        ],
+        'visibleButtons' => [
+          'custom' => function ($model, $key, $index) {
+            return $model->subscription_id!='' && $model->subscription_id!='sub_vip' && $model->price_id!='price_vip';
+          },
+        ],
 
-      ['class' => 'yii\grid\ActionColumn'],
+      ],
     ],
   ]); ?>
 
