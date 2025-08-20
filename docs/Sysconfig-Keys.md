@@ -27,7 +27,7 @@
 * `guest_visible_leaderboards` Whether or not the leaderboard will be visible to guest users (this still respects the event start/end restrictions)
 * `hide_timezone` Whether or not the Timezone information should be visible
 * `disable_mail_validation`: Whether or not mail validation should be disabled
-
+* `disable_ondemand_operations`: Whether or not to disable ondemand operations all together
 * `profile_discord`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_echoctf`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_twitter`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
