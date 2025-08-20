@@ -135,9 +135,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     $stripe_subscription = $stripe->subscriptions->retrieve($this->subscription_id, []);
     $this->subscription_id = $stripe_subscription->id;
-    $this->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->current_period_start]);
-    $this->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->current_period_end]);
-    $this->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->created]);
+    $this->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->items->data[0]->current_period_start]);
+    $this->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->items->data[0]->current_period_end]);
+    $this->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
     $this->updated_at = new \yii\db\Expression('NOW()');
     $this->price_id = $stripe_subscription->items->data[0]->plan->id;
     $this->active = intval($stripe_subscription->items->data[0]->plan->active);
@@ -160,9 +160,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           $ps->player_id = $player->id;
         }
         $ps->subscription_id = $stripe_subscription->id;
-        $ps->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->current_period_start]);
-        $ps->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->current_period_end]);
-        $ps->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->created]);
+        $ps->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->items->data[0]->current_period_start]);
+        $ps->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->items->data[0]->current_period_end]);
+        $ps->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
         $ps->updated_at = new \yii\db\Expression('NOW()');
         $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
         $ps->active = intval($stripe_subscription->items->data[0]->plan->active);
