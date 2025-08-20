@@ -57,13 +57,8 @@ $config=[
     ],
     'params' => $params,
     'controllerMap' => [
-        'migrate-trigger' => [
-            'class' => 'app\commands\MigrateTriggerController',
-            'migrationTable' => 'migration',
-            'migrationPath' => '@app/migrations',
-        ],
         'migrate' => [
-            'class' => 'yii\console\controllers\MigrateController',
+            'class' => 'app\commands\MigrateController',
             'migrationTable' => 'migration',
             'migrationPath' => '@app/migrations',
         ],
