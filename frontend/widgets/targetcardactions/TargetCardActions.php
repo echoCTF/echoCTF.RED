@@ -46,7 +46,8 @@ class TargetCardActions extends Widget
     if ($this->identity->player_id === intval(Yii::$app->user->id)) {
 
       $this->prep_instance_actions();
-      $this->prep_ondemand_actions();
+      if(Yii::$app->sys->disable_ondemand_operations)
+        $this->prep_ondemand_actions();
     }
   }
 
