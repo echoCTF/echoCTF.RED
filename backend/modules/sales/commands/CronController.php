@@ -22,10 +22,7 @@ class CronController extends Controller
    */
   public function actionExpireSubscriptions($active = false, $interval = 1440)
   {
-    if (boolval($active) === true)
-      $playerSubs = PlayerSubscription::find()->active(intval($active))->expired($interval);
-    else
-      $playerSubs = PlayerSubscription::find()->expired($interval)->orWhere(['active' => 0]);
+    $playerSubs = PlayerSubscription::find()->active(intval($active))->expired($interval);
 
     foreach ($playerSubs->all() as $rec) {
       $transaction = \Yii::$app->db->beginTransaction();
