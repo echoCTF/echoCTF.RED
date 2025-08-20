@@ -113,10 +113,10 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     }
 
 
-    if (intval(\Yii::$app->formatter->asTimestamp($this->starting)) !== intval($stripe_subscription->current_period_start) || intval(\Yii::$app->formatter->asTimestamp($this->ending)) !== intval($stripe_subscription->current_period_end))
+    if (intval(\Yii::$app->formatter->asTimestamp($this->starting)) !== intval($stripe_subscription->items->data[0]->current_period_start) || intval(\Yii::$app->formatter->asTimestamp($this->ending)) !== intval($stripe_subscription->items->data[0]->current_period_end))
       return false;
 
-    if (intval($this->active) !== intval($stripe_subscription->items->data[0]->plan->active) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
+    if (intval($this->active) !== intval($stripe_subscription->ended_at==null) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
       return false;
 
     return true;
@@ -135,12 +135,15 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     $stripe_subscription = $stripe->subscriptions->retrieve($this->subscription_id, []);
     $this->subscription_id = $stripe_subscription->id;
-    $this->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->items->data[0]->current_period_start]);
-    $this->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->items->data[0]->current_period_end]);
-    $this->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
+    if(intval($stripe_subscription->ended_at==null))
+    {
+      $this->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->items->data[0]->current_period_start]);
+      $this->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->items->data[0]->current_period_end]);
+      $this->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
+    }
     $this->updated_at = new \yii\db\Expression('NOW()');
     $this->price_id = $stripe_subscription->items->data[0]->plan->id;
-    $this->active = intval($stripe_subscription->items->data[0]->plan->active);
+    $this->active = intval($stripe_subscription->ended_at==null);
     return $this->update(false);
   }
 
@@ -166,9 +169,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           $ps->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->items->data[0]->current_period_start]);
           $ps->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->items->data[0]->current_period_end]);
           $ps->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
-          $ps->updated_at = new \yii\db\Expression('NOW()');
-          $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
         }
+        $ps->updated_at = new \yii\db\Expression('NOW()');
+        $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
         $ps->active = intval($stripe_subscription->ended_at==null);
 
         if (!$ps->save(false)) {
