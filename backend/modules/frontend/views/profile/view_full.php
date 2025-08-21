@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'items' => [
               [
                 'label' => '<i class="fas fa-file-contract" data-toggle="tooltip" data-placement="top" title="Activity Stream"></i>',
-                'content' => $this->render('_details_tab', ['model' => $model]),
+                'content' => $this->render('_details_tab', ['model' => $model,'abuserModel'=>$abuserModel]),
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'options' => ['id' => 'details-tab'],
                 'active' => true,

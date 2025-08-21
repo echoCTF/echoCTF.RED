@@ -113,8 +113,10 @@ class ProfileController extends \app\components\BaseController
    */
   public function actionViewFull($id)
   {
+    $abuserModel=new \app\modules\moderation\models\Abuser();
     return $this->render('view_full', [
       'model' => $this->findModel($id),
+      'abuserModel'=>$abuserModel
     ]);
   }
 
