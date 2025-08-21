@@ -79,7 +79,7 @@
       default: "10.7.0.254"
       private: no
     - name: "admins_domain"
-      prompt: "16/17. admin domain for TXT rules?"
+      prompt: "17/17. admin domain for TXT rules?"
       default: "admin.example.com"
       private: no
   vars:

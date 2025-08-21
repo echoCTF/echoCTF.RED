@@ -496,8 +496,9 @@
     command: rcctl {{item}}
     with_items:
       - enable participant
+      - enable nginx
       - set participant flags -p /home/participantUI -c /etc/nginx/participantUI.conf
-      - set nginx flags -p /home/participantUI -c /etc/nginx/dt.conf
+      - set nginx flags -c /etc/nginx/dt.conf
       - set syslogd flags -a /home/participantUI/dev/log
       - set ntpd flags -s
     tags:
@@ -552,7 +553,7 @@
       user: root
       name: PATH
       env: yes
-      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin"
+      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
 
 
   - name: Install cron entries

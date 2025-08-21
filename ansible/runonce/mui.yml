@@ -257,8 +257,14 @@
     with_items:
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
       - { src: '{{playbook_dir}}/../templates/mui.service.conf.j2', dest: '/etc/service.pf.conf' }
-      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf' }
-      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf' }
+
+  - name: "Copy remaining configuration templates"
+    template:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf', domain: '{{myname}}' }
+      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf', domain: '{{myname}}', challenge_dir: "/home/moderatortUI/acme/.well-known/acme-challenge/" }
 
   - name: Generate pf tables files
     command: "{{item.cmd}}"
