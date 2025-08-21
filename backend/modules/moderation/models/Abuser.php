@@ -4,6 +4,7 @@ namespace app\modules\moderation\models;
 
 use Yii;
 use app\modules\frontend\models\Player;
+use yii\behaviors\TimestampBehavior;
 
 /**
  * This is the model class for table "abuser".
@@ -22,6 +23,17 @@ use app\modules\frontend\models\Player;
  */
 class Abuser extends \yii\db\ActiveRecord
 {
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class'=>TimestampBehavior::class,
+                'value' => new \yii\db\Expression('NOW()'),
+
+            ]
+        ];
+    }
 
 
     /**
