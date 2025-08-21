@@ -338,7 +338,8 @@ class ProfileController extends \app\components\BaseController
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     return Json::encode(trim($this->renderAjax('_abusers', [
       'dataProvider' => $dataProvider,
-      'searchModel' => $searchModel
+      'searchModel' => $searchModel,
+      'model'=>$profile,
     ])));
   }
 
