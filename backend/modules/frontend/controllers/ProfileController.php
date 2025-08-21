@@ -253,6 +253,30 @@ class ProfileController extends \app\components\BaseController
   }
 
   /**
+   * Return VPN history for a given player profile
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionVpnHistoryDuplicates($id)
+  {
+    $profile = $this->findModel($id);
+    $ips=\app\modules\activity\models\PlayerVpnHistory::find()->select('vpn_remote_address')->distinct()->where(['player_id'=>$profile->player_id])->column();
+    if($profile->owner->last->signup_ip)
+      $ips[]=$profile->owner->last->signup_ip;
+    if($profile->owner->last->signin_ip)
+      $ips[]=$profile->owner->last->signin_ip;
+    $searchModel = new PlayerVpnHistorySearch();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    $dataProvider->query->andFilterWhere(['IN','vpn_remote_address',array_unique($ips)])->andFilterWhere(['!=','player_id',$profile->player_id]);
+    $dataProvider->sort->defaultOrder = ['ts' => SORT_DESC];
+    return Json::encode(trim($this->renderAjax('_vpn_history_ips', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
+  /**
    * Return Headshots for a given player profile
    * @param string $id
    * @return mixed

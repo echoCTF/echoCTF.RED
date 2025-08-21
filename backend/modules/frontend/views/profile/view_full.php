@@ -108,7 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => count($model->owner->challengeSolvers) > 0
               ],
               [
-                'label' => '<i class="fas fa-history" data-toggle="tooltip" data-placement="top" title="VPN History"></i>',
+                'label' => '<i class="fas fa-shield" data-toggle="tooltip" data-placement="top" title="VPN History"></i>',
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'linkOptions' => ['data-url' => Url::to(['vpn-history', 'id' => $model->id])],
                 'options' => ['id' => 'vpn-history-tab'],
@@ -129,13 +129,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => count($model->owner->notifications) > 0
               ],
               [
+                'label' => '<i class="fa fa-shield-virus" data-toggle="tooltip" data-placement="top" title="VPN History Duplicates"></i>',
+                'headerOptions' => ['style' => 'font-weight:bold'],
+                'linkOptions' => ['data-url' => Url::to(['vpn-history-duplicates', 'id' => $model->id])],
+                'options' => ['id' => 'vpn-history-duplicates-tab'],
+                'visible' => count($model->owner->vpnHistory) > 0
+              ],
+              [
                 'label' => '<i class="fas fa-bullhorn" data-toggle="tooltip" data-placement="top" title="Abuses"></i>',
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'linkOptions' => ['data-url' => Url::to(['abusers', 'id' => $model->id])],
                 'options' => ['id' => 'abusers-tab'],
                 'visible' => count($model->owner->abusers) > 0
               ],
-
             ],
           ]);
           ?>
