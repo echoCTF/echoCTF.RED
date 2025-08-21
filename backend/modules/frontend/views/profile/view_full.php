@@ -128,6 +128,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'options' => ['id' => 'notifications-tab'],
                 'visible' => count($model->owner->notifications) > 0
               ],
+              [
+                'label' => '<i class="fas fa-bullhorn" data-toggle="tooltip" data-placement="top" title="Abuses"></i>',
+                'headerOptions' => ['style' => 'font-weight:bold'],
+                'linkOptions' => ['data-url' => Url::to(['abusers', 'id' => $model->id])],
+                'options' => ['id' => 'abusers-tab'],
+                'visible' => count($model->owner->abusers) > 0
+              ],
+
             ],
           ]);
           ?>
