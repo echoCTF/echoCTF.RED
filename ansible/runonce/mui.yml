@@ -258,7 +258,7 @@
       - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
       - { src: '{{playbook_dir}}/../templates/mui.service.conf.j2', dest: '/etc/service.pf.conf' }
 
-  - name: "Copy pf conf files"
+  - name: "Copy remaining configuration templates"
     template:
       src: "{{item.src}}"
       dest: "{{item.dest}}"
