@@ -65,7 +65,7 @@ class AbuserController extends \app\components\BaseController
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    public function actionCreate($player_id=false)
     {
         $model = new Abuser();
 
@@ -76,7 +76,7 @@ class AbuserController extends \app\components\BaseController
         } else {
             $model->loadDefaultValues();
         }
-
+        if($player_id!==false) $model->player_id=$player_id;
         return $this->render('create', [
             'model' => $model,
         ]);

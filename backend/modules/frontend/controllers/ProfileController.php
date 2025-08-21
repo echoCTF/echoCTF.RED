@@ -324,6 +324,25 @@ class ProfileController extends \app\components\BaseController
     ])));
   }
 
+    /**
+   * Return Abuse entries for the player id
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionAbusers($id)
+  {
+    $profile = $this->findModel($id);
+    $searchModel = new \app\modules\moderation\models\AbuserSearch();
+    $searchModel->player_id = $profile->player_id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('_abusers', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel,
+      'model'=>$profile,
+    ])));
+  }
+
   public function actionScoreMonthly($id)
   {
     $profile = $this->findModel($id);

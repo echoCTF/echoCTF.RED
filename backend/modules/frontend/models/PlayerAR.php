@@ -179,6 +179,14 @@ class PlayerAR extends \yii\db\ActiveRecord
   /**
    * @return \yii\db\ActiveQuery
    */
+  public function getAbusers()
+  {
+    return $this->hasMany(\app\modules\moderation\models\Abuser::class, ['player_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
   public function getWriteups()
   {
     return $this->hasMany(\app\modules\activity\models\Writeup::class, ['player_id' => 'id']);
