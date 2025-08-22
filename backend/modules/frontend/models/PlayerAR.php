@@ -116,33 +116,11 @@ class PlayerAR extends \yii\db\ActiveRecord
       [['fullname'], 'string', 'max' => 128],
       [['username'], 'unique'],
       [['new_password', 'password'], 'safe'],
-
-      ['email', 'unique', 'targetClass' => '\app\modules\frontend\models\BannedPlayer', 'message' => 'This email is banned.', 'when' => function ($model, $attribute) {
-        return $model->{$attribute} !== $model->getOldAttribute($attribute);
-      }, 'on' => ['validator', 'extendedValidator']],
-      ['email', function ($attribute, $params) {
-        $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
-          ->bindValue(':email', $this->email)
-          ->queryScalar();
-
-        if (intval($count) !== 0)
-          $this->addError($attribute, 'This email is banned.');
-      }, 'on' => ['validator', 'extendedValidator']],
+      [['email'],'\app\components\validators\PlayerEmailValidator','on'=>['extendedValidator']],
       [['activkey'], function ($attribute, $params) {
         if ($this->{$attribute} !== null && $this->active === 1 && $this->status = 10)
           $this->addError($attribute, '{attribute} must be empty when player active.');
       }, 'on' => ['validator', 'extendedValidator']],
-      ['email', 'email', 'checkDNS' => true, 'on' => 'extendedValidator', 'message' => 'This domain does not resolve.', 'skipOnEmpty' => false, 'skipOnError' => false],
-      ['email',    '\app\components\validators\VerifymailValidator',          'when' => function ($model) {
-        return (bool)Yii::$app->sys->signup_ValidatemailValidator;
-      }, 'on' => 'extendedValidator', 'skipOnEmpty' => false, 'skipOnError' => false],
-      ['email',    '\app\components\validators\StopForumSpamValidator',       'max' => Yii::$app->sys->signup_StopForumSpamValidator, 'when' => function ($model) {
-        return Yii::$app->sys->signup_StopForumSpamValidator !== false;
-      }, 'on' => 'extendedValidator', 'skipOnEmpty' => false, 'skipOnError' => false],
-      ['email', '\app\components\validators\MXServersValidator', 'mxonly' => true, 'when' => function ($model) {
-        return Yii::$app->sys->signup_MXServersValidator !== false;
-      }, 'on' => 'extendedValidator', 'skipOnEmpty' => false, 'skipOnError' => false],
-
     ];
   }
 
