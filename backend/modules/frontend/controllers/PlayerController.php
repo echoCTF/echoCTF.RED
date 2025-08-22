@@ -92,7 +92,7 @@ class PlayerController extends \app\components\BaseController
     ]);
   }
   /**
-   * Lists all Profile models that fail validation.
+   * Clear verification token for player
    * @return mixed
    */
   public function actionClearVerificationToken($id)
