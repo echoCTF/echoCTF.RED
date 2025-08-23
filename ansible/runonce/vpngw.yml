@@ -7,59 +7,59 @@
   gather_facts: false
   vars_prompt:
     - name: "myname"
-      prompt: "1/17. System hostname?"
+      prompt: "1/18. System hostname?"
       default: "vpn.example.com"
       private: no
     - name: "vpngw"
-      prompt: "2/17. OpenVPN gateway hostname or IP?"
+      prompt: "2/18. OpenVPN gateway hostname or IP?"
       default: "vpn.example.com"
       private: no
     - name: "egress_if"
-      prompt: "3/17. Egress network interface (ifconfig egress)?"
+      prompt: "3/18. Egress network interface (ifconfig egress)?"
       default: "em0"
       private: no
     - name: "vpn_ext_ip"
-      prompt: "4/17. Egress interface IP?"
+      prompt: "4/18. Egress interface IP?"
       default: "192.168.1.182"
       private: no
     - name: "targets_if"
-      prompt: "5/17. Targets network interface?"
+      prompt: "5/18. Targets network interface?"
       default: "em2"
       private: no
     - name: "targets_if_ipv4"
-      prompt: "6/17. Targets network interface IPv4?"
+      prompt: "6/18. Targets network interface IPv4?"
       default: "10.0.0.254"
       private: no
     - name: "targets_subnet"
-      prompt: "7/17. Targets network subnet?"
+      prompt: "7/18. Targets network subnet?"
       default: "10.0.0.0"
       private: no
     - name: "targets_netmask"
-      prompt: "8/17. Targets network netmask?"
+      prompt: "8/18. Targets network netmask?"
       default: "255.255.0.0"
       private: no
     - name: "echoCTF_VPN_mgmt_passwd"
-      prompt: "9/17. OpenVPN managment interface password?"
+      prompt: "9/18. OpenVPN managment interface password?"
       default: "openvpn"
       private: no
     - name: "offense_network"
-      prompt: "10/17. OpenVPN client range?"
+      prompt: "10/18. OpenVPN client range?"
       default: "10.10.0.0/16"
       private: no
     - name: "db_host"
-      prompt: "11/17. Database Server IP?"
+      prompt: "11/18. Database Server IP?"
       default: "10.7.0.253"
       private: no
     - name: "db_name"
-      prompt: "12/17. Database name?"
+      prompt: "12/18. Database name?"
       default: "echoCTF"
       private: no
     - name: "db_user"
-      prompt: "13/17. Database Server user?"
+      prompt: "13/18. Database Server user?"
       default: "vpnuser"
       private: no
     - name: "db_pass"
-      prompt: "14/17. Database Server user password?"
+      prompt: "14/18. Database Server user password?"
       default: "vpnuserpass"
       private: no
 #    - name: "GITHUB_OAUTH_TOKEN"
@@ -71,16 +71,20 @@
 #      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
 #      private: no
     - name: "interconnect_interface"
-      prompt: "15/17. Interconnect interface?"
+      prompt: "15/18. Interconnect interface?"
       default: "em1"
       private: no
     - name: "interconnect_interface_ip"
-      prompt: "16/17. Interconnect interface IP?"
+      prompt: "16/18. Interconnect interface IP?"
       default: "10.7.0.254"
       private: no
     - name: "admins_domain"
-      prompt: "17/17. admin domain for TXT rules?"
+      prompt: "17/18. admin domain for TXT rules?"
       default: "admin.example.com"
+      private: no
+    - name: "APP_DIR"
+      prompt: "18/18. What is the platform installation folder?"
+      default: "/root/sources"
       private: no
   vars:
     ansible_python_interpreter: /usr/local/bin/python3
@@ -204,11 +208,6 @@
   - name: Bring interface up
     command: sh /etc/netstart {{interconnect_interface}}
 
-  - name: Set APP_DIR to /root/sources
-    when: ansible_connection != 'local'
-    set_fact:
-      APP_DIR: /root/sources
-
   - name: Set APP_DIR to {{playbook_dir}}/../../
     when: ansible_connection == 'local'
     set_fact:
@@ -327,7 +326,7 @@
     when: ansible_connection != 'local' and GITHUB_REPO is defined
     git:
       repo: "{{GITHUB_REPO}}"
-      dest: /root/sources
+      dest: "{{APP_DIR}}"
       accept_hostkey: yes
       clone: yes
       force: yes
