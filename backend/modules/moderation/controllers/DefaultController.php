@@ -10,6 +10,7 @@ use app\modules\frontend\models\PlayerSearch;
 use app\modules\settings\models\Sysconfig;
 use app\modules\activity\models\StreamSearch;
 use app\modules\activity\models\PlayerLastSearch;
+use yii\base\UserException;
 use yii\helpers\ArrayHelper;
 use yii\data\ActiveDataProvider;
 
@@ -67,4 +68,37 @@ class DefaultController extends \app\components\BaseController
             'searchModel' => $searchModel,
         ]);
     }
+  /**
+   * Check mails for known spam and disposable hosters.
+   */
+  public function actionCheckSpammy()
+  {
+    $skip_domains = $DNS_NS = $DNS_MX = $DNS_A = $spammy=[];
+    $players = (new \yii\db\Query())
+    ->select(["SUBSTRING_INDEX(email,'@',-1) as email","count(*) as players"])
+    ->from('player')
+    ->where(['status'=>10])
+    ->groupBy(new \yii\db\Expression("SUBSTRING_INDEX(email,'@',-1)"));
+
+    foreach ($skip_domains as $d)
+      $players->andWhere(['not like', 'email', $d]);
+
+    $validator = new \app\components\validators\MXServersValidator();
+    $validator->mxonly = true;
+    foreach ($players->all() as $p) {
+        try {
+            if (!$validator->validate($p['email'], $error)) {
+                throw new UserException($error);
+            }
+        } catch (\Exception $e) {
+            $spammy[$p['email']][]=$e->getMessage();
+            $spammy[$p['email']]['players']=$p['players'];
+        }
+    }
+
+    return $this->render('spammy-domains', [
+        'spammy' => $spammy,
+    ]);
+
+  }
 }
