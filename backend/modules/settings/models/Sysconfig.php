@@ -27,6 +27,7 @@ class Sysconfig extends \yii\db\ActiveRecord
     {
         return [
             [['id'], 'required'],
+            [['id'], 'filter','filter'=>'trim'],
             [['val'], 'string'],
             [['id'], 'string', 'max' => 255],
             [['id'], 'unique'],

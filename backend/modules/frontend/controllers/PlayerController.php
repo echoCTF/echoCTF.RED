@@ -31,8 +31,8 @@ class PlayerController extends \app\components\BaseController
       'access' => [
         'class' => \yii\filters\AccessControl::class,
         'rules' => [
-          '00filtered-actions'=>[
-            'actions' => ['mail','approve','reject','export'],
+          '00filtered-actions' => [
+            'actions' => ['mail', 'approve', 'reject', 'export'],
             'allow' => true,
             'roles' => ['@'],
           ]
@@ -53,6 +53,7 @@ class PlayerController extends \app\components\BaseController
           'ban' => ['POST'],
           'ban-filtered' => ['POST'],
           'delete-filtered' => ['POST'],
+          'delete-domain' => ['POST'],
           'reset-playdata' => ['POST'],
           'reset-authkey' => ['POST'],
           'reset-activkey' => ['POST'],
@@ -63,7 +64,7 @@ class PlayerController extends \app\components\BaseController
           'reject' => ['POST'],
         ],
       ],
-    ],parent::behaviors());
+    ], parent::behaviors());
   }
   public function actions()
   {
@@ -92,7 +93,7 @@ class PlayerController extends \app\components\BaseController
     ]);
   }
   /**
-   * Lists all Profile models that fail validation.
+   * Clear verification token for player
    * @return mixed
    */
   public function actionClearVerificationToken($id)
@@ -651,6 +652,34 @@ class PlayerController extends \app\components\BaseController
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to mail users'));
     }
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
+  }
+
+  /**
+   * Deletes all players from the given domain
+   * If deletion is successful, the browser will be redirected to the 'index' page.
+   * @param int $id ID
+   * @return \yii\web\Response
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionDeleteDomain($domain)
+  {
+    $trans = \Yii::$app->db->beginTransaction();
+    try {
+      $records = Player::deleteAll([
+        'AND',
+        ['status' => 10],
+        ['=', new \yii\db\Expression("SUBSTRING_INDEX(email,'@',-1)"), $domain]
+      ]);
+
+      $trans->commit();
+      \Yii::$app->getSession()->setFlash('success', Yii::t('app', '{records,plural,=0{No players found} =1{Deleted one player} other{Deleted # players}}', ['records' => $records]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to delete players. {exception}', ['exception' => Html::encode($e->getMessage())]));
+    }
+    return $this->goBack((
+      !empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null
+    ));
   }
 
   /**

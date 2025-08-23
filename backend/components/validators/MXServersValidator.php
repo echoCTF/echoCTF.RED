@@ -18,7 +18,7 @@ class MXServersValidator extends Validator
         parent::init();
         if(!$this->range)
         {
-          $this->range=ArrayHelper::getColumn(\app\modelscli\BannedMxServer::find()->select('name')->asArray()->all(),'name');
+          $this->range=\app\modelscli\BannedMxServer::find()->select('name')->column();
         }
     }
 
@@ -30,27 +30,28 @@ class MXServersValidator extends Validator
       {
         $value=$matches['domain'];
       }
+      try{
+        $getmxrr_ret=getmxrr($value, $hosts);
 
-      if($this->mxonly===false && getmxrr($value, $hosts)===false)
-      {
-        return [$this->nxmessage, []];
-      }
+        if($this->mxonly===true && $getmxrr_ret===false)
+        {
+          return [$this->nxmessage, []];
+        }
+        else if ($getmxrr_ret===false) {
+          return null;
+        }
 
-      foreach($this->range as $key)
+        foreach($this->range as $key)
+        {
+          if(array_search($key, $hosts)!==false)
+          {
+            return [$this->banned_message,[]];
+          }
+        }
+      } catch(\Exception $e)
       {
-        if(array_search($key, $hosts)!==false)
-          return [$this->banned_message, []];
+        return [$e->getMessage(),[]];
       }
       return null;
-    }
-
-    public function validateAttribute($model, $attribute)
-    {
-        $value = $model->$attribute;
-        $result = $this->validateValue($value);
-
-        if (!empty($result)) {
-          $this->addError($model, $attribute, $result[0], $result[1]);
-        }
     }
 }

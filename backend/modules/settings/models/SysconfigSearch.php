@@ -17,6 +17,7 @@ class SysconfigSearch extends Sysconfig
     public function rules()
     {
         return [
+            [['id'], 'filter','filter'=>'trim'],
             [['id', 'val'], 'safe'],
         ];
     }
