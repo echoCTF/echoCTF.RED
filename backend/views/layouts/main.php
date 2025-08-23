@@ -170,6 +170,7 @@ AppAsset::register($this);
             ['label' => 'Zero pts with activated help', 'url' => ['/moderation/default/index'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
             ['label' => 'Stream with Lag', 'url' => ['/moderation/default/stream-lag'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
             ['label' => 'Duplicate Signup IPs', 'url' => ['/moderation/default/duplicate-signup-ips'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
+            ['label' => 'Check Spammy Domains', 'url' => ['/moderation/default/check-spammy'], 'linkOptions' => ['data'=>['confirm'=>'This operation takes time to complete when a lot of players are in your system. Are you sure?']],'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
           ]
         ],
         [
