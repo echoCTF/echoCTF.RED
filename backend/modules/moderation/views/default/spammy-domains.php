@@ -8,9 +8,15 @@ $dataProvider = new ArrayDataProvider([
     'allModels' => $spammy,
     'pagination' => false,
 ]);
+$this->title = ucfirst(Yii::$app->controller->module->id) . ' / ' . ucfirst(Yii::$app->controller->id) . '/ Check Spammy';
+$this->params['breadcrumbs'][] = ['label' => ucfirst(Yii::$app->controller->module->id) ];
+$this->params['breadcrumbs'][] = ['label' => ucfirst(Yii::$app->controller->id), 'url'=>['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Check Spammy', 'url'=>['check-spammy']];
 
 ?>
 <div class="spammy-domains">
+  <h1>Spammy Domains</h1>
+  <p>Email domains that fail validation</p>
 
 <?php
 
