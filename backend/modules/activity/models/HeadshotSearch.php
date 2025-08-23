@@ -25,7 +25,10 @@ class HeadshotSearch extends Headshot
             [['created_at', 'username', 'fqdn', 'ipoctet','name'], 'safe'],
         ];
     }
-
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['username', 'name']);
+    }
     /**
      * {@inheritdoc}
      */
@@ -66,6 +69,7 @@ class HeadshotSearch extends Headshot
             'player_id' => $this->player_id,
             'target_id' => $this->target_id,
             'first' => $this->first,
+            'headshot.timer' => $this->timer,
             'rating' => $this->rating,
         ]);
         $query->andFilterWhere(['like', 'headshot.created_at', $this->created_at]);
