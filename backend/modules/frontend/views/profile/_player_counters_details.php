@@ -16,6 +16,11 @@ use yii\helpers\Html;
         </tr>
       </thead>
       <tbody>
+        <tr>
+          <td><i class="fas fa-chart-line"></i></td>
+          <td>Points</td>
+          <td><?=number_format($model->owner->score->points)?></td>
+        </tr>
         <?php foreach($model->owner->countersNf as $nf):?>
           <tr>
           <td><i class="fas fa-nf-<?=$nf->metric?>"></i></td>
