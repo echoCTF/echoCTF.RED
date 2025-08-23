@@ -6,7 +6,8 @@ use Yii;
 use app\modules\frontend\models\Profile;
 
 /**
- * Profile Link widget renders link to a player profile based on email, profile_id, player_id, username
+ * Profile Link widget renders link to a player profile based on one of:
+ * email, profile_id, player_id, username
  * Requires at least one of the keys to be provided.
  *
  * @author Pantelis Roditis <proditis@echothrust.com>
@@ -64,7 +65,11 @@ class ProfileLink extends \yii\bootstrap5\Widget
     if (($model = $query->one()) === null) {
       throw new \yii\base\InvalidConfigException('ProfileLink widget no player profile found.');
     }
-    $links[] = \yii\helpers\Html::a($this->username, ['/frontend/profile/view-full', 'id' => $model->id],['target'=>'_blank',]);
+    $links[] = \yii\helpers\Html::a(
+      $this->username,
+      ['/frontend/profile/view-full', 'id' => $model->id],
+      ['target' => '_blank',]
+    );
     $links[] = \yii\helpers\Html::a(
       '<i class="bi bi-trash"></i>',
       ['/frontend/player/delete', 'id' => $model->player_id],
@@ -76,8 +81,8 @@ class ProfileLink extends \yii\bootstrap5\Widget
       ]
     );
 
-    if($this->actions)
-      return implode(" ",$links);
+    if ($this->actions)
+      return implode(" ", $links);
     return $links[0];
   }
 }
