@@ -23,7 +23,11 @@ Url::remember();
     <div class="watermarked img-fluid">
     <?=sprintf('<img src="%s" width="100px"/>', $target->logo)?>
     </div>
+<?php if (Yii::$app->user->isGuest):?>
+    <?php echo $this->render('_versus-guest', ['target'=>$target, 'playerPoints'=>$playerPoints, 'identity'=>$profile]);?>
+<?php else: ?>
     <?php echo $this->render('_versus', ['target'=>$target, 'playerPoints'=>$playerPoints, 'identity'=>$profile]);?>
+<?php endif; ?>
 
         <?php \yii\widgets\Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);?>
         <?php echo Stream::widget(['divID'=>'target-activity', 'dataProvider' => $streamProvider, 'pagerID'=>'stream-pager', 'title'=>\Yii::t('app','Target activity'), 'category'=>\Yii::t('app','Latest activity on the target')]);?>
