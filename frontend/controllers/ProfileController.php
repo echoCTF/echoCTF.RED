@@ -165,7 +165,7 @@ class ProfileController extends \app\components\BaseController
 
   public function actionIndex(int $id)
   {
-    if (!Yii::$app->user->isGuest && intval($id) == intval(Yii::$app->user->identity->profile->id))
+    if (!Yii::$app->user->isGuest && $id == intval(Yii::$app->user->identity->profile->id))
       return $this->redirect(['/profile/me']);
 
     $profile = $this->findModel($id);
@@ -181,6 +181,16 @@ class ProfileController extends \app\components\BaseController
         'defaultOrder' => ['created_at' => SORT_ASC]
       ]
     ]);
+    if(Yii::$app->user->isGuest) {
+      return $this->render('guest/index', [
+        'me' => false,
+        'profile' => $profile,
+        'headshots' => $dataProvider,
+        'accountForm' => null,
+        'profileForm' => null,
+        'guest'=>true,
+      ]);
+    }
     return $this->render('index', [
       'me' => false,
       'profile' => $profile,
