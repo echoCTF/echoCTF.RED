@@ -8,6 +8,7 @@
 * `all_players_vip`: Allow all players to have VIP features enabled
 * `dashboard_is_home`: Enable/Disable dashboard as default home page for players
 * `dashboard_graph_visible`: Enable/Disable dashboard activity graph for last 10 days
+* `stream_record_limit`: Number of records to limit stream entries. A value of `0` disables limit.
 * `teams`: Enable/Disable teams support
 * `team_required` (optional): Enable/Disable requirement for teams
 * `approved_avatar`: Enable/Disable automatic avatar approval

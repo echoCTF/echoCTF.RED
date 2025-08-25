@@ -46,13 +46,13 @@ class DefaultController extends \app\components\BaseController
     return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus', 'badge', 'search','ip'],
+        'only' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus', 'badge', 'search', 'ip'],
         'rules' => [
           'eventStartEnd' => [
-            'actions' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search','ip'],
+            'actions' => ['index', 'view', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search', 'ip'],
           ],
           'teamsAccess' => [
-            'actions' => ['index', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search','ip'],
+            'actions' => ['index', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search', 'ip'],
           ],
           'disabledRoute' => [
             'actions' => ['badge', 'view', 'index', 'claim', 'spin', 'spawn', 'shut', 'versus', 'search', 'ip'],
@@ -110,7 +110,7 @@ class DefaultController extends \app\components\BaseController
             'verbs' => ['post'],
           ],
           [
-            'actions' => ['index','search','ip'],
+            'actions' => ['index', 'search', 'ip'],
             'allow' => true,
             'roles' => ['@']
           ],
@@ -124,7 +124,7 @@ class DefaultController extends \app\components\BaseController
             },
           ],
           [
-            'actions' => ['view', 'versus', 'badge','ip'],
+            'actions' => ['view', 'versus', 'badge', 'ip'],
             'allow' => true,
             'roles' => ['@']
           ],
@@ -140,7 +140,7 @@ class DefaultController extends \app\components\BaseController
       ],
       [
         'class' => 'yii\filters\AjaxFilter',
-        'only' => ['claim', 'search','ip'],
+        'only' => ['claim', 'search', 'ip'],
       ],
     ]);
   }
@@ -233,17 +233,21 @@ class DefaultController extends \app\components\BaseController
       $dataProvider->sort->defaultOrder = ['name' => SORT_ASC];
       $data = ArrayHelper::toArray($dataProvider->getModels(), [
         'app\modules\target\models\Target' => [
-            'id',
-            'name',
-            'difficultyText',
-            'url'=>function($model){ return Url::to(['/target/default/view','id'=>$model->id],""); },
-            'icon'=>function($model){ return '/images/targets/_'.$model->name.'-thumbnail.png'; },
-            'html'=>function($model){
-              return Html::img('/images/targets/_'.$model->name.'-thumbnail.png',['style'=>'height: 18px'])." ".$model->name;
-            },
+          'id',
+          'name',
+          'difficultyText',
+          'url' => function ($model) {
+            return Url::to(['/target/default/view', 'id' => $model->id], "");
+          },
+          'icon' => function ($model) {
+            return '/images/targets/_' . $model->name . '-thumbnail.png';
+          },
+          'html' => function ($model) {
+            return Html::img('/images/targets/_' . $model->name . '-thumbnail.png', ['style' => 'height: 18px']) . " " . $model->name;
+          },
         ],
       ]);
-      return ['results'=> $data ];
+      return ['results' => $data];
     }
     return [];
   }
@@ -259,18 +263,14 @@ class DefaultController extends \app\components\BaseController
     if (($target = \app\modules\target\models\Target::find()->where(['t.id' => $id])->forView(\Yii::$app->user->id)->one()) === null) {
       throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
     }
-    $obj=new \stdClass;
-    if (Yii::$app->user->identity->instance)
-    {
+    $obj = new \stdClass;
+    if (Yii::$app->user->identity->instance) {
       $obj->ip = long2ip(Yii::$app->user->identity->instance->ip);
-      $obj->instance=true;
-    }
-    else if(($target->on_ondemand===false) || ($target->on_ondemand && $target->ondemand_state==1))
-    {
+      $obj->instance = true;
+    } else if (($target->on_ondemand === false) || ($target->on_ondemand && $target->ondemand_state == 1)) {
       $obj->ip = long2ip($target->ip);
-    }
-    else
-      $obj->ip=long2ip(0);
+    } else
+      $obj->ip = long2ip(0);
 
     return $obj;
   }
@@ -285,7 +285,7 @@ class DefaultController extends \app\components\BaseController
     $target = $this->findModel($id);
     $this->lastVisit($id);
     if (!Yii::$app->user->isGuest) {
-      $target = Target::find()->with('headshots','networks','metadata')->forView((int) Yii::$app->user->id)->where(['t.id' => $id])->one();
+      $target = Target::find()->with('headshots', 'networks', 'metadata')->forView((int) Yii::$app->user->id)->where(['t.id' => $id])->one();
     } else {
       $target = Target::find()->withAvgRating()->where(['t.id' => $id])->one();
     }
@@ -299,22 +299,34 @@ class DefaultController extends \app\components\BaseController
       ->orWhere(['model_id' => $treasures, 'model' => 'treasure'])
       ->orWhere(['model_id' => $id, 'model' => 'player_target_help'])
       ->orWhere(['model_id' => $id, 'model' => 'headshot']);
-    if(\Yii::$app->sys->academic_grouping!==false)
-    {
+    if (\Yii::$app->sys->academic_grouping !== false) {
       if (\Yii::$app->user->isGuest) {
         $model->andWhere(['academic' => 0]);
       } else {
         $model->andWhere(['academic' => \Yii::$app->user->identity->academic]);
       }
     }
+    $model->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC]);
+    $streamModel=$model;
+    if (Yii::$app->sys->stream_record_limit !== false)
+    {
+      $model->limit(Yii::$app->sys->stream_record_limit);
+      $streamModel = \app\models\Stream::find()
+        ->from(['t' => $model])
+        ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
+    }
 
     $dataProvider = new ActiveDataProvider([
-      'query' => $model->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC]),
+      'query' => $streamModel,
       'pagination' => [
         'pageSizeParam' => 'stream-perpage',
         'pageParam' => 'stream-page',
         'pageSize' => 10,
+      ],
+      'sort' => [
+        'defaultOrder' => ['ts' => SORT_DESC, 'id' => SORT_DESC]
       ]
+
     ]);
 
 
@@ -350,17 +362,16 @@ class DefaultController extends \app\components\BaseController
 
     $treasure = Treasure::find()->claimable()->byCode($string)->one();
     if ($treasure !== null && Treasure::find()->byCode($string)->claimable()->notBy((int) Yii::$app->user->id)->one() === null) {
-      Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name'=>$treasure->name]));
+      Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
       return $this->renderAjax('claim');
     } elseif ($treasure === null) {
       Yii::$app->counters->increment('failed_claims');
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag'=>Html::encode($string)]));
+      Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag' => Html::encode($string)]));
       return $this->renderAjax('claim');
     }
 
-    $player_progress=TPS::findOne(['id'=>$treasure->target_id,'player_id'=>Yii::$app->user->id]);
-    if((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress===null && intval($treasure->target->getFindings()->count())>0)
-    {
+    $player_progress = TPS::findOne(['id' => $treasure->target_id, 'player_id' => Yii::$app->user->id]);
+    if ((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress === null && intval($treasure->target->getFindings()->count()) > 0) {
       Yii::$app->counters->increment('claim_no_finding');
       Yii::$app->session->setFlash('warning', \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.'));
       return $this->renderAjax('claim');
@@ -503,19 +514,18 @@ class DefaultController extends \app\components\BaseController
 
   protected function lastVisit($id)
   {
-    if(Yii::$app->user->isGuest)
-    {
+    if (Yii::$app->user->isGuest) {
       return;
     }
     // get existing visits
-    $visits=Yii::$app->session->get('last_targets_visited');
+    $visits = Yii::$app->session->get('last_targets_visited');
     // if not array reset;
-    if(!is_array($visits)) {
-      $visits=[];
+    if (!is_array($visits)) {
+      $visits = [];
     }
     // cleanup potential duplicate values
-    while(in_array($id,$visits)===true) {
-      if(($exists=array_search($id,$visits))!==false){
+    while (in_array($id, $visits) === true) {
+      if (($exists = array_search($id, $visits)) !== false) {
         unset($visits[$exists]);
       }
     }
@@ -523,11 +533,10 @@ class DefaultController extends \app\components\BaseController
     array_unshift($visits, $id);
 
     // if more then 5 visits
-    if(count($visits)>5)
-    {
+    if (count($visits) > 5) {
       // pop one entry from the end
       array_pop($visits);
     }
-    Yii::$app->session->set('last_targets_visited',$visits);
+    Yii::$app->session->set('last_targets_visited', $visits);
   }
 }
