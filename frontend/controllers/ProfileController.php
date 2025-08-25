@@ -30,32 +30,32 @@ class ProfileController extends \app\components\BaseController
     return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['badge', 'index', 'invite', 'me', 'delete', 'ovpn', 'revoke', 'settings', 'notifications', 'hints', 'disconnect','generate-token'],
+        'only' => ['badge', 'index', 'invite', 'me', 'delete', 'ovpn', 'revoke', 'settings', 'notifications', 'hints', 'disconnect', 'generate-token'],
         'rules' => [
           'eventActive' => [
-            'actions' => ['badge', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke', 'disconnect','delete','generate-token'],
+            'actions' => ['badge', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke', 'disconnect', 'delete', 'generate-token'],
           ],
           'eventStartEnd' => [
             'actions' => [''],
           ],
           'eventStart' => [
-            'actions' => ['ovpn', 'revoke', 'disconnect','delete','generate-token'],
+            'actions' => ['ovpn', 'revoke', 'disconnect', 'delete', 'generate-token'],
           ],
           'eventEnd' => [
-            'actions' => ['ovpn', 'revoke', 'disconnect','delete','generate-token'],
+            'actions' => ['ovpn', 'revoke', 'disconnect', 'delete', 'generate-token'],
           ],
           'teamsAccess' => [
-            'actions' => ['ovpn', 'disconnect','generate-token'],
+            'actions' => ['ovpn', 'disconnect', 'generate-token'],
           ],
           'disabledRoute' => [
-            'actions' => ['badge', 'me', 'delete','index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke', 'disconnect','generate-token'],
+            'actions' => ['badge', 'me', 'delete', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke', 'disconnect', 'generate-token'],
           ],
           [
             'actions' => ['index', 'badge'],
             'allow' => true,
           ],
           [
-            'actions' => ['ovpn', 'me', 'delete','settings', 'notifications', 'hints', 'revoke', 'disconnect','generate-token'],
+            'actions' => ['ovpn', 'me', 'delete', 'settings', 'notifications', 'hints', 'revoke', 'disconnect', 'generate-token'],
             'allow' => true,
             'roles' => ['@']
           ],
@@ -85,7 +85,7 @@ class ProfileController extends \app\components\BaseController
           'revoke' => ['POST'],
           'disconnect' => ['POST'],
           'delete' => ['POST'],
-          'generate-token'=>['POST'],
+          'generate-token' => ['POST'],
         ],
       ],
     ]);
@@ -178,17 +178,17 @@ class ProfileController extends \app\components\BaseController
         'pageSize' => 12,
       ],
       'sort' => [
-        'defaultOrder' => ['created_at' => SORT_ASC]
+        'defaultOrder' => ['created_at' => SORT_DESC]
       ]
     ]);
-    if(Yii::$app->user->isGuest) {
+    if (Yii::$app->user->isGuest) {
       return $this->render('guest/index', [
         'me' => false,
         'profile' => $profile,
         'headshots' => $dataProvider,
         'accountForm' => null,
         'profileForm' => null,
-        'guest'=>true,
+        'guest' => true,
       ]);
     }
     return $this->render('index', [
@@ -202,13 +202,10 @@ class ProfileController extends \app\components\BaseController
 
   public function actionDelete()
   {
-    if(intval(Yii::$app->user->identity->updateAttributes(['status' => 0]))>0)
-    {
+    if (intval(Yii::$app->user->identity->updateAttributes(['status' => 0])) > 0) {
       Yii::$app->user->logout();
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "Your account has been scheduled for deletion. We are sorry to see you go. Feel free to come back any time..."));
-    }
-
-    else
+    } else
       \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to delete your account. Contact our support to assist you in."));
     return $this->redirect(['/']);
   }
@@ -247,14 +244,14 @@ class ProfileController extends \app\components\BaseController
    */
   public function actionDisconnect()
   {
-    if (!Yii::$app->user->identity->onVPN || Yii::$app->user->identity->disconnectQueue!==null) {
+    if (!Yii::$app->user->identity->onVPN || Yii::$app->user->identity->disconnectQueue !== null) {
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "There is a VPN disconnect queue entry already or player not on VPN."));
       return $this->redirect(['/profile/me']);
     }
     try {
-      $dcq=new PlayerDisconnectQueue();
-      $dcq->player_id=Yii::$app->user->identity->id;
-      if($dcq->save())
+      $dcq = new PlayerDisconnectQueue();
+      $dcq->player_id = Yii::$app->user->identity->id;
+      if ($dcq->save())
         \Yii::$app->session->addFlash('success', \Yii::t('app', "VPN disconnect request queued."));
     } catch (\Exception $e) {
       \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to queue VPN disconnect request."));
@@ -267,23 +264,21 @@ class ProfileController extends \app\components\BaseController
    */
   public function actionGenerateToken()
   {
-    if(boolval(\Yii::$app->sys->api_bearer_enable)!==true)
-    {
+    if (boolval(\Yii::$app->sys->api_bearer_enable) !== true) {
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "Operation disabled."));
       return $this->redirect(['/profile/me']);
     }
-    if (Yii::$app->user->identity->apiToken!==null) {
+    if (Yii::$app->user->identity->apiToken !== null) {
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "There is already an API token."));
       return $this->redirect(['/profile/me']);
     }
     try {
-      $pt=new PlayerToken();
-      $pt->player_id=Yii::$app->user->identity->id;
-      $pt->type='API';
-      $pt->description='generated by player';
-      if(!$pt->validate('token') || !$pt->save())
-      {
-        throw new UserException(\Yii::t('app','Failed to generate API token'));
+      $pt = new PlayerToken();
+      $pt->player_id = Yii::$app->user->identity->id;
+      $pt->type = 'API';
+      $pt->description = 'generated by player';
+      if (!$pt->validate('token') || !$pt->save()) {
+        throw new UserException(\Yii::t('app', 'Failed to generate API token'));
       }
       \Yii::$app->session->addFlash('success', \Yii::t('app', "API Token generated."));
     } catch (\Exception $e) {
