@@ -297,6 +297,7 @@ class DefaultController extends \app\components\BaseController
     $model = \app\models\Stream::find()->select('stream.*,TS_AGO(stream.ts) as ts_ago')->joinWith(['player'])
       ->where(['model_id' => $findings, 'model' => 'finding'])
       ->orWhere(['model_id' => $treasures, 'model' => 'treasure'])
+      ->orWhere(['model_id' => $id, 'model' => 'player_target_help'])
       ->orWhere(['model_id' => $id, 'model' => 'headshot']);
     if(\Yii::$app->sys->academic_grouping!==false)
     {
