@@ -5,31 +5,35 @@
   gather_facts: false
   vars_prompt:
     - name: "myname"
-      prompt: "1/7. What is the desired hostname?"
+      prompt: "1/8. What is the desired hostname?"
       default: "db.example.com"
       private: no
     - name: "interconnect_interface"
-      prompt: "2/7. What is the interconnect interface?"
+      prompt: "2/8. What is the interconnect interface?"
       default: "em1"
       private: no
     - name: "db_ip"
-      prompt: "3/7. What is the IP mysql should bind to?"
+      prompt: "3/8. What is the IP mysql should bind to?"
       default: "10.7.0.253"
       private: no
     - name: "pui_ip"
-      prompt: "4/7. What is the internal participantUI IP?"
+      prompt: "4/8. What is the internal participantUI IP?"
       default: "10.7.0.200"
       private: no
     - name: "mui_ip"
-      prompt: "5/7. What is the internal moderatorUI IP?"
+      prompt: "5/8. What is the internal moderatorUI IP?"
       default: "10.7.0.201"
       private: no
     - name: "vpn_ip"
-      prompt: "6/7. What is the internal VPN IP?"
+      prompt: "6/8. What is the internal VPN IP?"
       default: "10.7.0.254"
       private: no
+    - name: "admins_domain"
+      prompt: "8/8. admin domain for TXT rules?"
+      default: "admin.example.com"
+      private: no
 #    - name: "GITHUB_REPO"
-#      prompt: "7/7. Provide a github repo to clone?"
+#      prompt: "7/8. Provide a github repo to clone?"
 #      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
 #      private: no
   vars:
@@ -470,6 +474,8 @@
       special_time: "{{item.special_time|default(omit)}}"
       job: "{{item.job}}"
     with_items:
+      - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
       - { name: "events checker", minute: "*/1",  job: "-ns /usr/local/sbin/mysql-events-checker" }
       - { name: "daily database backups", minute: "0",hour: "23",  job: "-ns /usr/local/sbin/database_backup" }
 

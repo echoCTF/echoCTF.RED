@@ -630,7 +630,7 @@
       user: root
       name: PATH
       env: yes
-      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin"
+      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
 
   - name: Install cron entries
     cron:

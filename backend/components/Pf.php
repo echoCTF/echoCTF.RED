@@ -1,4 +1,5 @@
 <?php
+
 namespace app\components;
 
 use Yii;
@@ -14,7 +15,7 @@ use yii\base\InvalidConfigException;
  */
 class Pf extends Component
 {
-  const PFCTL="/sbin/pfctl -q";
+  const PFCTL = "/sbin/pfctl -q";
 
 
   /**
@@ -25,8 +26,8 @@ class Pf extends Component
    */
   public static function load_table_file($table, $file)
   {
-    @passthru(self::PFCTL." -t $table -T replace -f $file",$return_var);
-    return intval($return_var)===0;
+    @passthru(self::PFCTL . " -t $table -T replace -f $file", $return_var);
+    return intval($return_var) === 0;
   }
 
   /**
@@ -37,8 +38,8 @@ class Pf extends Component
    */
   public static function load_anchor_file($anchor, $file)
   {
-    @passthru(self::PFCTL." -a $anchor -Fr -f $file",$return_var);
-    return intval($return_var)===0;
+    @passthru(self::PFCTL . " -a $anchor -Fr -f $file >/dev/null 2>&1", $return_var);
+    return intval($return_var) === 0;
   }
 
   /**
@@ -49,73 +50,66 @@ class Pf extends Component
    */
   public static function store($file, $contents)
   {
-    if(empty($contents)) return file_put_contents($file, "\n")!==false;
-    try
-    {
-      return file_put_contents($file, implode("\n", $contents)."\n")!==false;
-    }
-    catch(\Exception $e)
-    {
+    if (empty($contents)) return file_put_contents($file, "\n") !== false;
+    try {
+      return file_put_contents($file, implode("\n", $contents) . "\n") !== false;
+    } catch (\Exception $e) {
       echo "Failed to save {$file}\n";
     }
     return false;
   }
 
-  public static function allowToNetwork($target,$clients_table=null,$targets_table=null)
+  public static function allowToNetwork($target, $clients_table = null, $targets_table = null)
   {
-    if($clients_table===null)
-      $clients_table=self::clients_table($target);
-    if($targets_table===null)
-      $targets_table=$target->network->codename;
-    return sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state %s",$clients_table,$targets_table,\Yii::$app->sys->pf_state_limits);
+    if ($clients_table === null)
+      $clients_table = self::clients_table($target);
+    if ($targets_table === null)
+      $targets_table = $target->network->codename;
+    return sprintf("pass quick inet from <%s> to <%s> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state %s", $clients_table, $targets_table, \Yii::$app->sys->pf_state_limits);
   }
 
-  public static function allowToClient($target,$clients_table=null,$targets_table=null)
+  public static function allowToClient($target, $clients_table = null, $targets_table = null)
   {
-    if($clients_table===null)
-      $clients_table=self::clients_table($target);
-    if($targets_table===null)
-      $targets_table=$target->network->codename;
-    return sprintf("pass quick from <%s> to <%s>",$targets_table,$clients_table);
+    if ($clients_table === null)
+      $clients_table = self::clients_table($target);
+    if ($targets_table === null)
+      $targets_table = $target->network->codename;
+    return sprintf("pass quick from <%s> to <%s>", $targets_table, $clients_table);
   }
 
   public static function clients_table($target)
   {
-    if($target->network->public===false)
-    {
-      return $target->network->codename."_clients";
-    }
-    else
-    {
+    if ($target->network->public === false) {
+      return $target->network->codename . "_clients";
+    } else {
       return "offense_activated";
     }
-
   }
 
-  public static function add_table_ip($table,$ip,$replace=false)
+  public static function add_table_ip($table, $ip, $replace = false)
   {
-    if($replace)
-      @passthru(self::PFCTL." -t $table -T replace $ip",$return_var);
+    if ($replace)
+      @passthru(self::PFCTL . " -t $table -T replace $ip >/dev/null 2>&1", $return_var);
     else
-      @passthru(self::PFCTL." -t $table -T add $ip",$return_var);
+      @passthru(self::PFCTL . " -t $table -T add $ip >/dev/null 2>&1", $return_var);
   }
 
-  public static function del_table_ip($table,$ip)
+  public static function del_table_ip($table, $ip)
   {
-    @passthru(self::PFCTL." -t $table -T delete $ip",$return_var);
+    @passthru(self::PFCTL . " -t $table -T delete $ip >/dev/null 2>&1", $return_var);
   }
 
-  public static function flush_table($table,$unlink=false)
+  public static function flush_table($table, $unlink = false)
   {
-    @passthru(self::PFCTL." -t $table -T flush",$return_var);
-    if($unlink)
-      @unlink('/etc/'.$table.'.conf');
+    @passthru(self::PFCTL . " -t $table -T flush >/dev/null 2>&1", $return_var);
+    if ($unlink)
+      @unlink('/etc/' . $table . '.conf');
   }
 
-  public static function kill_table($table,$unlink=false)
+  public static function kill_table($table, $unlink = false)
   {
-    @passthru(self::PFCTL." -t $table -T kill",$return_var);
-    if($unlink)
-      @unlink('/etc/'.$table.'.conf');
+    @passthru(self::PFCTL . " -t $table -T kill >/dev/null 2>&1", $return_var);
+    if ($unlink)
+      @unlink('/etc/' . $table . '.conf');
   }
 }
