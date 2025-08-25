@@ -4,28 +4,32 @@
   gather_facts: false
   vars_prompt:
     - name: "myname"
-      prompt: "1/6. System hostname?"
+      prompt: "1/7. System hostname?"
       default: "mui.example.local"
       private: no
     - name: "mui_ext_ip"
-      prompt: "2/6. What is the external (public) IP?"
+      prompt: "2/7. What is the external (public) IP?"
       default: "1.2.3.4"
       private: no
     - name: "db_ip"
-      prompt: "3/6. What is the database server IP?"
+      prompt: "3/7. What is the database server IP?"
       default: "10.7.0.253"
       private: no
     - name: "domain_name"
-      prompt: "4/6. Provide the fqdn the backend will run on?"
+      prompt: "4/7. Provide the fqdn the backend will run on?"
       default: "mui.example.com"
       private: no
     - name: "interconnect_interface"
-      prompt: "5/6. What is the interconnect interface to be used?"
+      prompt: "5/7. What is the interconnect interface to be used?"
       default: "em1"
       private: no
     - name: "mui_ip"
-      prompt: "6/6. What is the interconnect IP to be used?"
+      prompt: "6/7. What is the interconnect IP to be used?"
       default: "10.7.0.201"
+      private: no
+    - name: "admins_domain"
+      prompt: "7/7. admin domain for TXT rules?"
+      default: "admin.example.com"
       private: no
 
   vars:
@@ -66,7 +70,7 @@
       - { name: moderatorUI, comment: "echoctf.red Moderator UI", uid: 3750, password: '*' }
     rcctl:
       - { name: check_quotas, state: "disable" }
-      - { name: cron, state: "disable" }
+      - { name: cron, state: "enable" }
       - { name: ntpd, state: "enable" }
       - { name: pflogd, state: "disable" }
       - { name: slaacd, state: "disable" }
@@ -511,6 +515,24 @@
 
   - name: Execute fw_update
     command: fw_update -a
+
+  - name: Update crontab PATH variable
+    cron:
+      user: root
+      name: PATH
+      env: yes
+      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+
+  - name: Install cron entries
+    cron:
+      name: "{{item.name}}"
+      user: "root"
+      minute: "{{item.minute | default(omit)}}"
+      special_time: "{{item.special_time|default(omit)}}"
+      job: "{{item.job}}"
+    with_items:
+      - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
 
   - name: Execute syspatch
     command: syspatch
