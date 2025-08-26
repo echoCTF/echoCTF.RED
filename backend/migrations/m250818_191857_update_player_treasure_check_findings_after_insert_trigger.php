@@ -31,7 +31,7 @@ class m250818_191857_update_player_treasure_check_findings_after_insert_trigger 
   INSERT INTO target_player_state (id,player_id,player_treasures,player_points,created_at,updated_at) VALUES (local_target_id,NEW.player_id,1,NEW.points,now(),now()) ON DUPLICATE KEY UPDATE player_treasures=player_treasures+values(player_treasures),player_points=player_points+values(player_points),updated_at=now();
 
   IF tfindings > 0 AND pfindings = 0 THEN
-    INSERT INTO abuser (player_id,title,reason,model,model_id) VALUES (NEW.player_id,'Claim flag before finding','tai_player_treasure','treasure',NEW.treasure_id,NOW(),NOW());
+    INSERT INTO abuser (player_id,title,reason,model,model_id,created_at,updated_at) VALUES (NEW.player_id,'Claim flag before finding','tai_player_treasure','treasure',NEW.treasure_id,NOW(),NOW());
   END IF;
   END";
 
