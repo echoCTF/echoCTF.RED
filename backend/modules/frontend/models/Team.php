@@ -158,6 +158,7 @@ class Team extends \yii\db\ActiveRecord
         return "pro";
     }
   }
+
   public function getUcademicLong()
   {
     return ucfirst($this->academicLong);
@@ -182,5 +183,13 @@ class Team extends \yii\db\ActiveRecord
   public function getInvite()
   {
     return $this->hasOne(TeamInvite::class, ['team_id' => 'id']);
+  }
+
+  /**
+   * Repopulate the stream for the model
+   */
+  public function repopulateStream()
+  {
+    return \Yii::$app->db->createCommand('CALL repopulate_team_stream(:tid)',[':tid'=>$this->id])->execute();
   }
 }

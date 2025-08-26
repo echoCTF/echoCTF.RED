@@ -32,6 +32,7 @@ class TeamController extends \app\components\BaseController
         'class' => VerbFilter::class,
         'actions' => [
           'toggle-academic' => ['POST'],
+          'repopulate-stream' => ['POST'],
         ],
       ],
     ]);
@@ -151,6 +152,31 @@ class TeamController extends \app\components\BaseController
 
     return $this->redirect(['index']);
   }
+
+  /**
+   * Repopulates an existing Team activity stream or all of no $id provided.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionRepopulateStream($id=0)
+  {
+    if(intval($id)!==0)
+    {
+      $this->findModel($id)->repopulateStream();
+      \Yii::$app->getSession()->setFlash('warning', Yii::t('app', 'Repopulated the team stream'));
+
+    }
+    else {
+      foreach(Team::find()->all() as $item) {
+        $item->repopulateStream();
+      }
+      \Yii::$app->getSession()->setFlash('warning', Yii::t('app', 'Repopulated all the team streams'));
+    }
+
+    return $this->redirect(['index']);
+  }
+
   /**
    * Toggles an existing Team academic flag model.
    * @param integer $id

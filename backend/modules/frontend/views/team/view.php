@@ -30,6 +30,13 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
         'method' => 'post',
       ],
     ]) ?>
+    <?= Html::a('Repopulate stream', ['repopulate-stream', 'id' => $model->id], [
+      'class' => 'btn btn-danger',
+      'data' => [
+        'confirm' => 'Are you sure you want to repopulate the stream of this team?',
+        'method' => 'post',
+      ],
+    ]) ?>
   </p>
 
   <div class="row">
