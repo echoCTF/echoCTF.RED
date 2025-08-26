@@ -23,6 +23,13 @@ yii\bootstrap5\Modal::end();
 
   <p>
     <?= Html::a('Create Team', ['create'], ['class' => 'btn btn-success']) ?>
+    <?= Html::a('Repopulate all streams', ['repopulate-stream'], [
+      'class' => 'btn btn-danger',
+      'data' => [
+        'confirm' => 'Are you sure you want to repopulate all the team streams?',
+        'method' => 'post',
+      ],
+    ]) ?>
   </p>
 
   <?php // echo $this->render('_search', ['model' => $searchModel]);
@@ -71,8 +78,19 @@ yii\bootstrap5\Modal::end();
 
       [
         'class' => 'yii\grid\ActionColumn',
-        'template' => '{toggle-academic} {view} {update} {delete}',
+        'template' => '{toggle-academic} {view} {update} {delete} {repopulate-stream}',
         'buttons' => [
+          'repopulate-stream' => function ($url) {
+            return Html::a(
+              '<i class="fas fa-newspaper"></i>',
+              $url,
+              [
+                'title' => 'Repopulate team stream',
+                'data-pjax' => '0',
+                'data-method' => 'POST',
+              ]
+            );
+          },
           'toggle-academic' => function ($url) {
             return Html::a(
               '<span class="glyphicon glyphicon glyphicon-education"></span>',
