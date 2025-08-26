@@ -5,10 +5,10 @@
  */
 
 /* @var $className string the new migration class name */
-/* @var $timing string the timing of the event BEFORE|AFTER */
-/* @var $event string the type of event INSERT|UPDATE|DELETE */
+/* @var $routineName string the name of the routine */
+/* @var $returns string the type of data returned */
+/* @var $deterministic boolean if the routine is DETERMINISTIC or READS SQL DATA */
 
-$triggerName=sprintf("t%s%s_%s",strtolower($timing[0] ?? ''),strtolower($event[0] ?? ''),$table);
 echo "<?php\n";
 ?>
 
@@ -16,16 +16,19 @@ use yii\db\Migration;
 
 class <?= $className ?> extends Migration
 {
-  public $DROP_SQL="DROP TRIGGER IF EXISTS {{%<?=$triggerName?>}}";
+  public $DROP_SQL="DROP FUNCTION IF EXISTS {{%<?=$routineName?>}}";
 <?php if($action=='delete' || $action=='drop'):?>
   public $CREATE_SQL="SELECT true";
 <?php else:?>
-  public $CREATE_SQL="CREATE TRIGGER {{%<?=$triggerName?>}} <?=$timing?> <?=$event?> ON {{%<?=$table?>}} FOR EACH ROW
-  thisBegin:BEGIN
-  IF (@TRIGGER_CHECKS = FALSE) THEN
-      LEAVE thisBegin;
-  END IF;
+  public $CREATE_SQL="CREATE FUNCTION {{%<?=$routineName?>}}() RETURNS <?=$returns?>
+<?php if($deterministic):?>
+  DETERMINISTIC
+<?php else: ?>
+  READS SQL DATA
+<?php endif;?>
+  BEGIN
     YOUR CODE HERE
+    RETURN something;
   END";
 <?php endif;?>
 
