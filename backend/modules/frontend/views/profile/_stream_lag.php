@@ -21,9 +21,9 @@ use yii\grid\GridView;
       'headerOptions' => ['style' => 'width:95%'],
       'value'=>function ($model){
         if($model->seconds_since_last)
-          return sprintf('<small>%s <sub><abbr title="%s after previous record">%s</abbr></sub></small>',$model->formatted,Yii::$app->formatter->asDuration($model->seconds_since_last),Yii::$app->formatter->asRelativeTime($model->ts));
+          return sprintf('<small>%s <sub><abbr title="%s after previous record">%s</abbr></sub></small>',$model->formatted,Yii::$app->formatter->asDuration($model->seconds_since_last),$model->ts_ago);
         else
-          return "<small>". $model->formatted. " <sub>". Yii::$app->formatter->asRelativeTime($model->ts). "</sub></small>";
+          return "<small>". $model->formatted. " <sub>". $model->ts_ago. "</sub></small>";
       }
     ],
     [

@@ -44,7 +44,7 @@ class StreamSearch extends Stream
      */
     public function search($params)
     {
-        $query=Stream::find()->joinWith(['player']);
+        $query=Stream::find()->select(['stream.*','TS_AGO(stream.ts) as ts_ago'])->joinWith(['player']);
 
         // add conditions that should always apply here
 
@@ -76,7 +76,7 @@ class StreamSearch extends Stream
     public function searchWithLag($params)
     {
         $query=Stream::find()->joinWith(['player']);
-        $query->select(['stream.*',new \yii\db\Expression('TIMESTAMPDIFF(SECOND, LAG(stream.ts) OVER (order by stream.ts), stream.ts) AS seconds_since_last')]);
+        $query->select(['stream.*',new \yii\db\Expression('TIMESTAMPDIFF(SECOND, LAG(stream.ts) OVER (order by stream.ts), stream.ts) AS seconds_since_last'),'TS_AGO(stream.ts) as ts_ago']);
 
         $dataProvider=new ActiveDataProvider([
             'query' => $query,
