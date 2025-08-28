@@ -16,5 +16,12 @@ db_host: "172.24.0.253"
 db_name: "echoCTF"
 db_user: "vpnuser"
 db_pass: "vpnuserpass"
+interconnect_interface: em2
+interconnect_interface_ip: 10.7.0.254
+## Memcache port
 memc_port: 11211
+## Domain with IN TXT space separated list `IN TXT "1.1.1.1 2.2.2.2"
 admins_domain: admin.example.com
+## Replace the following with your fork of the repo
+GITHUB_REPO: git@github.com:echoCTF/echoCTF.RED.git
+GITHUB_OAUTH_TOKEN: YOUR-GITHUB-TOKEN-FOR-COMPOSER
