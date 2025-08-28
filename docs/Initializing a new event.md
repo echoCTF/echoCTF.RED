@@ -19,4 +19,4 @@ In order to:
    * `frontend/images/logo-small.png` small logo used on top of the right menu pane (200x40)
    * `frontend/images/logo.png` same logo but larger (919x184)
    * `frontend/web/images/twnew-target.png` logo used to create target social images (1200x628)
-   * `ffrontend/web/images/badge.tpl.png` Template image used to generate the player badges (800x220)
+   * `frontend/web/images/badge.tpl.png` Template image used to generate the player badges (800x220)
