@@ -4,7 +4,7 @@ The VPN server for the platform is the system that allows participants to
 connect to the target infrastructure as well as keeping track of the findings.
 
 The following guide covers the installation of the needed applications on
-OpenBSD 6.6 to act as a VPN gateway.
+OpenBSD 7.7 to act as a VPN gateway.
 
 <img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png?nocache" alt="echoCTF.RED docker-compose topology" width="400px"/>
 
