@@ -16,7 +16,7 @@ pkg_add -vvi ansible
 ansible-playbook runonce/db.yml --connection=local -i 127.0.0.1,
 ```
 
-You can additionally provide a settings file (see `templates/default-settings.yml`)
+You can additionally provide a settings file (see `examples/default-settings.yml`)
 ```sh
 ansible-playbook runonce/db.yml -e @settings.yml --connection=local -i 127.0.0.1,
 ```

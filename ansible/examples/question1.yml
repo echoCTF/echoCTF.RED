@@ -5,6 +5,6 @@ code: "answer1"
 weight: 10
 description: |
   <p>multiline
-  description. 
+  description.
   keep
   the line indentation</p>

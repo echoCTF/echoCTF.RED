@@ -422,7 +422,7 @@
       src: "{{item.src}}"
       dest: "{{item.dest}}"
     with_items:
-      - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
+      - { src: '{{playbook_dir}}/../files/pf.conf', dest: '/etc/pf.conf' }
 
   - name: "Create service.pf.conf and service_clients.conf"
     copy:
