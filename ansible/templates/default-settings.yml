@@ -25,3 +25,4 @@ admins_domain: admin.example.com
 ## Replace the following with your fork of the repo
 GITHUB_REPO: git@github.com:echoCTF/echoCTF.RED.git
 GITHUB_OAUTH_TOKEN: YOUR-GITHUB-TOKEN-FOR-COMPOSER
+GITHUB_REPO_BRANCH: THE-DEFAULT-BRANCH
