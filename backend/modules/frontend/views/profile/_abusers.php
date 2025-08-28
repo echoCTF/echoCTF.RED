@@ -13,21 +13,15 @@ use app\modules\moderation\models\Abuser;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
+            ['class' => 'app\components\columns\ProfileColumn', 'idkey' => 'player.profile.id', 'attribute' => 'username', 'field' => 'player.username'],
             [
-                'attribute'=>'id',
-                'headerOptions' => ['style' => 'width:4em'],
+              'label'=>'Formatted',
+              'format'=>'html',
+              'value'=>function ($model) { return $model->formatted; }
             ],
-            [
-                'attribute'=>'title',
-                'headerOptions' => ['style' => 'width:18em'],
-            ],
-            'reason',
-            'model',
-            'model_id',
-            'created_at',
-            'updated_at',
             [
                 'class' => ActionColumn::class,
+                'template'=>'{delete}',
                 'urlCreator' => function ($action, Abuser $model, $key, $index, $column) {
                     return Url::toRoute(["/moderation/abuser/$action", 'id' => $model->id]);
                  }
