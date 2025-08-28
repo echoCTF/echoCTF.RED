@@ -4,7 +4,7 @@ The VPN server for the platform is the system that allows participants to
 connect to the target infrastructure as well as keeping track of the findings.
 
 The following guide covers the installation of the needed applications on
-OpenBSD 6.6 to act as a VPN gateway.
+OpenBSD 7.7 to act as a VPN gateway.
 
 <img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png?nocache" alt="echoCTF.RED docker-compose topology" width="400px"/>
 
@@ -50,9 +50,9 @@ once it comes back up following the instructions at
 
 ## Manual Installation
 Or if you'd rather execute the playbook in a non interactive mode, copy the
-file `templates/default-settings.yml` and edit to with your own values.
+file `examples/default-settings.yml` and edit to with your own values.
 ```sh
-cp templates/default-settings.yml settings.yml
+cp examples/default-settings.yml settings.yml
 ansible-playbook runonce/vpngw.yml -e '@settings.yml'
 ```
 
@@ -233,8 +233,8 @@ openvpn --genkey --secret /etc/openvpn/private/vpn-ta.key
 Prepare pf
 ```sh
 touch /etc/maintenance.conf /etc/targets.conf /etc/match-findings-pf.conf
-cp ansible/templates/pf.conf.j2 /etc/pf.conf
-cp ansible/templates/vpn.service.conf.j2 /etc/service.pf.conf
+cp ansible/files/pf.conf /etc/pf.conf
+cp ansible/files/vpn.service.conf /etc/service.pf.conf
 touch /etc/administrators.conf /etc/maintenance.conf /etc/moderators.conf
 touch /etc/registry_clients.conf /etc/registry_servers.conf /etc/targets.conf
 ./backend/yii cron/pf

@@ -19,7 +19,7 @@
 
   - name: Set static IP
     template:
-      src: ../files/rpi_etc_network_interfaces.j2
+      src: ../templates/rpi_etc_network_interfaces.j2
       dest: /etc/network/interfaces
 
   - name: update package cache

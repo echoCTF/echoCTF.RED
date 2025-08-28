@@ -168,7 +168,7 @@
 
   - name: Create /etc/rc.d/docker_registry
     template:
-      src: "{{playbook_dir}}/../files/docker_registry.rc.j2"
+      src: "{{playbook_dir}}/../templates/docker_registry.rc.j2"
       dest: "/etc/rc.d/docker_registry"
       mode: "0555"
 
@@ -182,7 +182,7 @@
 
   - name: Create /etc/docker-registry.yml
     template:
-      src: "{{playbook_dir}}/../files/docker-registry.yml.j2"
+      src: "{{playbook_dir}}/../templates/docker-registry.yml.j2"
       dest: "/etc/docker-registry.yml"
 
   - name: Change ownerships

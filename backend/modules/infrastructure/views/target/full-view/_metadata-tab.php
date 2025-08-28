@@ -11,7 +11,7 @@ use yii\helpers\Html;
     [
       'attribute' => 'scenario',
       'format' => 'html',
-      'contentOptions' => ['style' => 'max-width:100%'],
+      'contentOptions' => ['class' => 'text-break w-90','style' => 'word-break: break-word;'],
       'value' => function ($model) {
         return HtmlPurifier::process(Markdown::process($model->scenario, 'gfm-comment'), ['Attr.AllowedFrameTargets' => ['_blank']]);
       }
@@ -19,7 +19,7 @@ use yii\helpers\Html;
     [
       'attribute' => 'instructions',
       'format' => 'html',
-      'contentOptions' => ['style' => 'max-width:100%'],
+      'contentOptions' => ['class' => 'text-break w-90','style' => 'word-break: break-word;'],
       'value' => function ($model) {
         return HtmlPurifier::process(Markdown::process($model->instructions, 'gfm-comment'), ['Attr.AllowedFrameTargets' => ['_blank']]);
       }
@@ -27,7 +27,7 @@ use yii\helpers\Html;
     [
       'attribute' => 'solution',
       'format' => 'html',
-      'contentOptions' => ['style' => 'max-width:100%'],
+      'contentOptions' => ['class' => 'text-break w-90','style' => 'word-break: break-word;'],
       'value' => function ($model) {
         return HtmlPurifier::process(Markdown::process($model->solution, 'gfm-comment'), ['Attr.AllowedFrameTargets' => ['_blank']]);
       }

@@ -264,8 +264,8 @@
       src: "{{item.src}}"
       dest: "{{item.dest}}"
     with_items:
-      - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
-      - { src: '{{playbook_dir}}/../templates/pui.service.conf.j2', dest: '/etc/service.pf.conf' }
+      - { src: '{{playbook_dir}}/../files/pf.conf', dest: '/etc/pf.conf' }
+      - { src: '{{playbook_dir}}/../files/pui.service.conf', dest: '/etc/service.pf.conf' }
       - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
       - { src: '{{playbook_dir}}/../../contrib/downtime.html', dest: '/home/participantUI/htdocs/index.html' }
 
@@ -542,7 +542,7 @@
 
   - name: Copy login.conf
     copy:
-      src: ../templates/login.conf.j2
+      src: ../files/login.conf
       dest: /etc/login.conf
       owner: root
       group: wheel

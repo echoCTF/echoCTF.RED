@@ -259,8 +259,8 @@
       src: "{{item.src}}"
       dest: "{{item.dest}}"
     with_items:
-      - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
-      - { src: '{{playbook_dir}}/../templates/mui.service.conf.j2', dest: '/etc/service.pf.conf' }
+      - { src: '{{playbook_dir}}/../files/pf.conf', dest: '/etc/pf.conf' }
+      - { src: '{{playbook_dir}}/../files/mui.service.conf', dest: '/etc/service.pf.conf' }
 
   - name: "Copy remaining configuration templates"
     template:
@@ -496,7 +496,7 @@
 
   - name: Copy login.conf
     copy:
-      src: ../templates/login.conf.j2
+      src: ../files/login.conf
       dest: /etc/login.conf
       owner: root
       group: wheel

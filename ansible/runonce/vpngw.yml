@@ -493,8 +493,8 @@
       - { src: '{{playbook_dir}}/../../contrib/openvpn_tun0.conf', dest: '/etc/openvpn/openvpn_tun0.conf' }
       - { src: '{{playbook_dir}}/../../contrib/crl_openssl.conf', dest: '/etc/openvpn/crl/crl_openssl.conf' }
       - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
-      - { src: '{{playbook_dir}}/../templates/pf.conf.j2', dest: '/etc/pf.conf' }
-      - { src: '{{playbook_dir}}/../templates/vpn.service.conf.j2', dest: '/etc/service.pf.conf' }
+      - { src: '{{playbook_dir}}/../files/pf.conf', dest: '/etc/pf.conf' }
+      - { src: '{{playbook_dir}}/../files/vpn.service.conf', dest: '/etc/service.pf.conf' }
       - { src: '{{playbook_dir}}/../../contrib/inetd.conf', dest: '/etc/inetd.conf' }
 
 

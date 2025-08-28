@@ -167,9 +167,9 @@
 
   - name: Force /etc/network/interfaces
     ignore_errors: true
-    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../../files/etc_network_interfaces.j2') != []
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../../templates/etc_network_interfaces.j2') != []
     ansible.builtin.template:
-      src:  "{{inventory_dir}}/../../files/etc_network_interfaces.j2"
+      src:  "{{inventory_dir}}/../../templates/etc_network_interfaces.j2"
       dest: "/etc/network/interfaces.d/{{network.driver_options.parent}}.conf"
       owner: root
       group: root
@@ -312,9 +312,9 @@
     with_dict: "{{ containers }}"
 
   - name: Create iptables rules
-    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../../files/iptables_rules.v4') != []
+    when: lookup('ansible.builtin.fileglob', inventory_dir+'/../../templates/iptables_rules.v4') != []
     template:
-      src:  "{{inventory_dir}}/../../files/iptables_rules.v4"
+      src:  "{{inventory_dir}}/../../templates/iptables_rules.v4"
       dest: /etc/iptables/rules.v4
 
   - name: Disable IPv6 (needs restart)
