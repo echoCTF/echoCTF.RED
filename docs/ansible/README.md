@@ -63,13 +63,38 @@ ssh-keygen -t rsa -C "keycomment" -f ssh_keys/ctf_rsa -N ''
 ## Using the runonce playbooks
 
 ### runonce/db.yml
+This playbook setups the database server with all the needed dependencies on OpenBSD server.
+
+Run the following command from the `ansible` folder
+
+```sh
+cd echoCTF.RED/ansible
+ansible-playbook runonce/db.yml
+```
 
 ### runonce/mui.yml
+This playbook setups the management user interface (`backend`) with all the needed dependencies on OpenBSD server.
+
+Run the following command from the `ansible` folder
+
+```sh
+cd echoCTF.RED/ansible
+ansible-playbook runonce/mui.yml
+```
 
 ### runonce/vpngw.yml
+Check the [VPN Server](VPNGW.md) for more details.
 
 #### runonce/vpnslaves.yml
 
 ### runonce/pui.yml
+This playbook setups the player user interfaces (`frontend`) with all the needed dependencies on an OpenBSD server.
+
+Run the following command from the `ansible` folder
+
+```sh
+cd echoCTF.RED/ansible
+ansible-playbook runonce/mui.yml
+```
 
 ## Prepare your infrastructure inventory
