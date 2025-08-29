@@ -9,7 +9,7 @@ ___ FIXME: Add a diagram showing the server we are configuring... ___
 
 We assume that you have configured the VPN server according to the
 [VPN Server Installation](ansible/VPNGW.md) as well as having a working
-[Docker Registry](DOCKER-REGISTRY.md).
+[Docker Registry](ansible/DOCKER-REGISTRY.md).
 
 All the commands assume you're working from the project folder (eg. `/root/echoCTF.RED/ansible`)
 
