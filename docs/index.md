@@ -1,4 +1,4 @@
-Welcome to the echoCTF.RED documentation!
+# Welcome to the echoCTF.RED documentation!
 
 echoCTF is a pioneer computer security framework, developed by Echothrust Solutions, for developing, running, and maintaining Cybersecurity related competitions (such as CTF and Cyber Range).
 
@@ -25,9 +25,10 @@ These components are are as follows:
 
 
 ## Project Structure
- * `ansible` => Ansible playbooks for setting up and updating the infrastructure
- * `backend` => Admin interface and commands
- * `contrib` => Various contributed materials
- * `docs` => Documentation folder
- * `frontend` => User interface (what you see at [https://echoctf.red/](https://echoctf.red/))
- * `schemas` => database schema
+
+* [`ansible/`](ansible/README.md) => Ansible playbooks for setting up and updating the infrastructure
+* `backend/` => Admin interface and commands
+* `contrib/` => Various contributed materials
+* `docs/` => Documentation folder
+* `frontend/` => User participant interface (what players see)
+* `schemas/` => database schema
