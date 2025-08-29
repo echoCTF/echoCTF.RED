@@ -34,7 +34,7 @@ the one best fit for your needs.
 * [Build echoCTF.RED applications Docker images](BUILD-DOCKER.md)
 
 ## Extras
-* [Install VPN Gateway on OpenBSD (VPN-SERVER.md)](VPN-SERVER.md)
+* [Install VPN Gateway on OpenBSD (ansible/VPNGW.md)](ansible/VPNGW.md)
 * [Setup a Private Docker Registry (DOCKER-REGISTRY.md)](DOCKER-REGISTRY.md)
 * [Docker Servers Setup Guide (DOCKER-SERVERS.md)](DOCKER-SERVERS.md)
 * [Docker Targets Guide (DOCKER-TARGETS.md)](DOCKER-TARGETS.md)

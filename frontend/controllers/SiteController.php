@@ -91,7 +91,7 @@ class SiteController extends \app\components\BaseController
             },
           ],
           'registrationsStart' => [
-            'actions' => ['register', 'request-password-reset', 'captcha'],
+            'actions' => ['register', 'request-password-reset'],
             'allow' => false,
             'roles' => ['?'],
             'matchCallback' => function ($rule, $action) {
@@ -104,7 +104,7 @@ class SiteController extends \app\components\BaseController
             },
           ],
           'registrationsEnd' => [
-            'actions' => ['register', 'captcha',],
+            'actions' => ['register',],
             'allow' => false,
             'roles' => ['?'],
             'matchCallback' => function ($rule, $action) {
@@ -317,7 +317,7 @@ class SiteController extends \app\components\BaseController
    */
   public function actionVerifyEmail($token)
   {
-    $redir=['site/verify-email'];
+    $redir = ['site/verify-email'];
     try {
       $model = new VerifyEmailForm($token);
     } catch (InvalidArgumentException $e) {
@@ -336,13 +336,13 @@ class SiteController extends \app\components\BaseController
         $transaction->commit();
         if (Yii::$app->user->login($user)) {
           Yii::$app->session->setFlash('success', \Yii::t('app', 'Your email has been confirmed!'));
-          $redir=['/profile/me'];
+          $redir = ['/profile/me'];
         }
       }
     } catch (\Exception $e) {
       $transaction->rollBack();
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Sorry, we are unable to verify an account with the provided token.'));
-      $redir=['/'];
+      $redir = ['/'];
     }
 
     return $this->redirect($redir);
