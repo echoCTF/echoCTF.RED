@@ -24,11 +24,12 @@ nav:
     - Firewalling with PF: PF.md
   - Ansible:
     - Ansible folder structure: ansible/README.md
-    - Docker Servers: ansible/DOCKER-SERVERS.md
-    - Docker Targets: ansible/DOCKER-TARGETS.md
     - Database playbook: ansible/DB.md
     - Moderator UI playbook: ansible/MUI.md
+    - VPN Gateway: ansible/VPNGW.md
     - Participants UI playbook: ansible/PUI.md
+    - Docker Servers: ansible/DOCKER-SERVERS.md
+    - Docker Targets: ansible/DOCKER-TARGETS.md
   - Administration:
     - Sysconfig Keys: Sysconfig-Keys.md
     - Console Commands: Console-Commands.md
