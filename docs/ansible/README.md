@@ -28,14 +28,14 @@ The directory structure consists of:
   * `feed-challenges.yml` used to feed challenges to the backend
   * `feed-targets.yml` Feed all the target related data to the database through the backend web interface
 * `runonce/` Playbooks used to setup specific operations for servers. These playbooks are usually run only once during the server setups.
-  * `db.yml` Standalone playbook to setup and configure an openbsd host as database server
-  * `docker-registry.yml` Configures a docker registry on an OpenBSD server
+  * [`db.yml`](db.md) Standalone playbook to setup and configure an openbsd host as database server
+  * [`docker-registry.yml`](DOCKER-REGISTRY.md) Configures a docker registry on an OpenBSD server
   * [`docker-servers.yml`](DOCKER-SERVERS.md) Configures a docker server to be ready to run our containers
-  * `mui.yml` Standalone playbook to setup and configure an openbsd host as echoCTF.RED/backend server
-  * `pui.yml` Standalone playbook to setup and configure an openbsd host as echoCTF.RED/frontend server
+  * [`mui.yml`](MUI.md) Standalone playbook to setup and configure an openbsd host as echoCTF.RED/backend server
+  * [`pui.yml`](PUI.md) Standalone playbook to setup and configure an openbsd host as echoCTF.RED/frontend server
+  * [`vpngw.yml`](VPNGW.md) Configure an OpenBSD server to act as an VPN server with findings
   * `rpi-model.yml` Configures a Raspberry Pi to act as electronics controller (eg for a smart city model)
   * `rpi-targets.yml` Configure a Raspberry Pi to act as a target without docker
-  * `vpngw.yml` Configure an OpenBSD server to act as an VPN server with findings
 * `templates/` Template configurations to use as a starting point
 
 The following guide assumes you have Ansible installed and that you have
@@ -58,43 +58,6 @@ Generate a set of ssh keys that will be used for administering the servers
 ```sh
 mkdir -p ssh_keys/
 ssh-keygen -t rsa -C "keycomment" -f ssh_keys/ctf_rsa -N ''
-```
-
-## Using the runonce playbooks
-
-### runonce/db.yml
-This playbook setups the database server with all the needed dependencies on OpenBSD server.
-
-Run the following command from the `ansible` folder
-
-```sh
-cd echoCTF.RED/ansible
-ansible-playbook runonce/db.yml
-```
-
-### runonce/mui.yml
-This playbook setups the management user interface (`backend`) with all the needed dependencies on OpenBSD server.
-
-Run the following command from the `ansible` folder
-
-```sh
-cd echoCTF.RED/ansible
-ansible-playbook runonce/mui.yml
-```
-
-### runonce/vpngw.yml
-Check the [VPN Server](VPNGW.md) for more details.
-
-#### runonce/vpnslaves.yml
-
-### runonce/pui.yml
-This playbook setups the player user interfaces (`frontend`) with all the needed dependencies on an OpenBSD server.
-
-Run the following command from the `ansible` folder
-
-```sh
-cd echoCTF.RED/ansible
-ansible-playbook runonce/mui.yml
 ```
 
 ## Prepare your infrastructure inventory
