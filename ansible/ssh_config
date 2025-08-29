@@ -1,0 +1,29 @@
+Host *.example *.example.tld 192.168.*.* db mui pui vpn registry scores
+  ServerAliveInterval 15
+  LogLevel error
+  StrictHostKeyChecking no
+  UserKnownHostsFile /dev/null
+  User root
+  ForwardAgent yes
+  IdentityFile /path/to/echoCTF.RED/ssh_keys/ctf_rsa
+
+Host db db.example db.example.tld 192.168.1.253
+  Hostname 192.168.1.253
+
+Host pui ctf.example ctf.example.tld 192.168.1.200
+  Hostname 192.168.1.200
+
+Host mui mui.example mui.example.tld 192.168.1.201
+  Hostname 192.168.1.201
+
+Host registry registry.example registry.example.tld 192.168.1.100
+  Hostname 192.168.1.100
+
+Host scores scores.example scores.example.tld 192.168.1.250
+  Hostname 192.168.1.250
+
+Host vpn vpn.example vpn.example.tld 192.168.1.254
+  Hostname 192.168.1.254
+
+Host dockerXYZ dockerXYZ.example dockerXYZ.example.tld 192.168.1.1
+  Hostname 192.168.1.1

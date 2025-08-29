@@ -23,7 +23,7 @@ nav:
     - Personalize your installation: PERSONALIZING.md
     - Firewalling with PF: PF.md
   - Ansible:
-    - Ansible folder structure: ansible/README.md
+    - Ansible Infrastructure: ansible/README.md
     - Database playbook: ansible/DB.md
     - Moderator UI playbook: ansible/MUI.md
     - VPN Gateway: ansible/VPNGW.md
