@@ -20,7 +20,7 @@ ansible-playbook --connection=local -i 127.0.0.1, runonce/docker-registry.yml
 ansible-playbook --connection=local -i 127.0.0.1, runonce/docker-registry.yml -e '@settings.yml'
 ```
 
-## On own server (OpenBSD)
+## On dedicated server (OpenBSD)
 Alternatively, you can proceed with manual installation by following the steps.
 
 Install the needed packages
