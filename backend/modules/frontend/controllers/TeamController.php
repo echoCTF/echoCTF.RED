@@ -12,6 +12,7 @@ use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
+use yii\helpers\Json;
 
 /**
  * TeamController implements the CRUD actions for Team model.
@@ -159,16 +160,13 @@ class TeamController extends \app\components\BaseController
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function actionRepopulateStream($id=0)
+  public function actionRepopulateStream($id = 0)
   {
-    if(intval($id)!==0)
-    {
+    if (intval($id) !== 0) {
       $this->findModel($id)->repopulateStream();
       \Yii::$app->getSession()->setFlash('warning', Yii::t('app', 'Repopulated the team stream'));
-
-    }
-    else {
-      foreach(Team::find()->all() as $item) {
+    } else {
+      foreach (Team::find()->all() as $item) {
         $item->repopulateStream();
       }
       \Yii::$app->getSession()->setFlash('warning', Yii::t('app', 'Repopulated all the team streams'));
@@ -261,5 +259,55 @@ class TeamController extends \app\components\BaseController
       ));
     }
     return $results;
+  }
+
+  public function actionNotify($id)
+  {
+    $team = $this->findModel($id);
+    $notificationModel = new \app\modules\activity\models\Notification();
+    if (Yii::$app->request->isPost) {
+      Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+      $msg = "";
+      $ownerOnly = boolval(Yii::$app->request->post('DynamicModel')['owner'] ?? 0);
+      $ovpn = boolval(Yii::$app->request->post('Notification')['ovpn'] ?? 0);
+      $online = boolval(Yii::$app->request->post('Notification')['online'] ?? 0);
+      $notificationModel->load(Yii::$app->request->post());
+
+      if ($notificationModel->validate()) {
+        if ($ownerOnly) {
+          if ($this->notifyLogic($team->owner, $notificationModel, $ovpn, $online) === null) {
+            Yii::$app->session->addFlash('warning', 'Owner not notified due to filters.');
+          } else {
+            $msg = "Notified owner [" . $team->owner->username . "]";
+            Yii::$app->session->addFlash('success', $msg);
+          }
+        } else {
+          $_p = [];
+          foreach ($team->players as $player) {
+            if($this->notifyLogic($player, $notificationModel, $ovpn, $online)!==NULL)
+              Yii::$app->session->addFlash('success', "Notified [".$player->username."].");
+            else
+              Yii::$app->session->addFlash('warning', "Player [".$player->username."] not notified due to filters.");
+
+            $_p[] = $player->username;
+          }
+          $msg = "Notified [" . implode(", ", $_p) . "]";
+        }
+        return ['status' => 'success', 'message' => $msg];
+      }
+    }
+    return trim($this->renderAjax('_notify', [
+      'team' => $team,
+      'notificationModel' => $notificationModel,
+    ]));
+  }
+
+  private function notifyLogic($player, $notificationModel, $ovpn = false, $online = false)
+  {
+    if ($ovpn && $player->playerLast->vpn_local_address===null)
+      return null;
+    if ($online && !boolval($player->online))
+      return null;
+    return $player->notify($notificationModel->category, $notificationModel->title, $notificationModel->body);
   }
 }
