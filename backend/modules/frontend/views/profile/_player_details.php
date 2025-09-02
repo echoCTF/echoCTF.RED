@@ -16,7 +16,9 @@ use yii\helpers\Html;
               'confirm' => Yii::t('app', 'Are you sure you want to reset the player auth_key?'),
               'method' => 'post',
           ],
-      ]) ?></span>
+      ]) ?>
+      <?= \app\widgets\NotifyButton::widget(['url' => ['/frontend/player/notify', 'id' => $model->id],'label'=>'<i class="fas fa-paper-plane"></i>','buttonOptions'=>['class'=>'text-purple']]) ?>
+      </span>
   </div>
   <div class="panel-body pn">
     <table class="table mbn tc-icon-1 tc-med-2 tc-bold-last">
