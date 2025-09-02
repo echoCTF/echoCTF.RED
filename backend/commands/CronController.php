@@ -253,7 +253,7 @@ class CronController extends Controller
         } else {
           echo date("Y-m-d H:i:s ") . "Expiring";
         }
-        printf(" %s for %s (%s)\n", $val->target->name, $val->player->username, $dc->name);
+        printf(" %s for %s (%s) at %s\n", $val->target->name, $val->player->username, $dc->name,$val->server->name);
         try {
           switch ($action) {
             case SELF::ACTION_START:
