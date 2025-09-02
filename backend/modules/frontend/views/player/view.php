@@ -34,7 +34,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'method' => 'post',
       ],
     ]) ?>
-  </p>
+    <?= \app\widgets\NotifyButton::widget(['url' => ['notify', 'id' => $model->id],]) ?>
+
+</p>
 
   <div class="row">
     <div class="col-lg-6">
