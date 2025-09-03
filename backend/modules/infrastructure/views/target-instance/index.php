@@ -39,7 +39,7 @@ yii\bootstrap5\Modal::end();
     'columns' => [
       ['class' => 'app\components\columns\ProfileColumn'],
       [
-        'attribute' => 'target_id',
+        'attribute' => 'targetname',
         'value' => function ($model) {
           return $model->target_id . ': ' . $model->target->name;
         }

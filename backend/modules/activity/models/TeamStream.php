@@ -44,10 +44,7 @@ class TeamStream extends TeamStreamAR
 
   public function getPrefix($showIcon = true)
   {
-    if ($showIcon)
-      return sprintf("<img src='%s' class='rounded' width='25px'> <b>%s</b> %s", Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/' . $this->player->profile->avtr), $this->player->profile->link, $this->icon);
-    else
-      return sprintf("<img src='%s' class='rounded' width='25px'> <b>%s</b>", Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/' . $this->player->profile->avtr), $this->player->profile->link);
+    return "";
   }
 
   public function Title(bool $pub = true)
@@ -84,20 +81,18 @@ class TeamStream extends TeamStreamAR
 
   public function getHeadshotMessage()
   {
-    $headshot = \app\modules\activity\models\Headshot::findOne(['target_id' => $this->model_id, 'player_id' => $this->player_id]);
+    $headshot = \app\modules\activity\models\Headshot::findOne(['target_id' => $this->model_id]);
     if ($headshot->target->timer === 0 || $headshot->timer === 0)
-      return sprintf("%s managed to headshot [<code>%s</code>]%s", $this->prefix, Html::a(Target::findOne(['id' => $this->model_id])->name, ['/infrastructure/target/full-view', 'id' => $this->model_id]), $this->suffix);
+      return sprintf("%s%s", Html::a(Target::findOne(['id' => $this->model_id])->name, ['/infrastructure/target/full-view', 'id' => $this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to headshot [<code>%s</code>] in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id' => $this->model_id])->name, ['/infrastructure/target/full-view', 'id' => $this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
+    return sprintf("%s in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", Html::a(Target::findOne(['id' => $this->model_id])->name, ['/infrastructure/target/full-view', 'id' => $this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
   }
 
   public function getChallengeMessage()
   {
-    $csolver = \app\modules\activity\models\ChallengeSolver::findOne(['challenge_id' => $this->model_id, 'player_id' => $this->player_id]);
-    if ($csolver->challenge->timer === 0)
-      return sprintf("%s managed to complete the challenge [<code>%s</code>]%s", $this->prefix, Html::a(\app\modules\gameplay\models\Challenge::findOne(['id' => $this->model_id])->name, ['/gameplay/challenge/view', 'id' => $this->model_id]), $this->suffix);
+    $csolver = \app\modules\activity\models\ChallengeSolver::findOne(['challenge_id' => $this->model_id]);
+    return sprintf("%s managed to complete the challenge [<code>%s</code>]%s", $this->prefix, Html::a(\app\modules\gameplay\models\Challenge::findOne(['id' => $this->model_id])->name, ['/gameplay/challenge/view', 'id' => $this->model_id]), $this->suffix);
 
-    return sprintf("%s managed to complete the challenge [<code>%s</code>] in <i data-toggle='tooltip' title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(\app\modules\gameplay\models\Challenge::findOne(['id' => $this->model_id])->name, ['/gameplay/challenge/view', 'id' => $this->model_id]), Yii::$app->formatter->asDuration($csolver->timer), number_format($csolver->timer / 60), $this->suffix);
   }
 
   public function getReportMessage()
@@ -112,12 +107,12 @@ class TeamStream extends TeamStreamAR
 
   public function getFindingMessage()
   {
-    return $this->defaultMessage;
+    return sprintf("%s %s", \app\modules\gameplay\models\Finding::findOne(['id'=>$this->model_id])->name, $this->suffix);
   }
 
   public function getTreasureMessage()
   {
-    return $this->defaultMessage;
+    return sprintf("%s %s", \app\modules\gameplay\models\Treasure::findOne(['id'=>$this->model_id])->name, $this->suffix);
   }
 
   public function getUserMessage()
