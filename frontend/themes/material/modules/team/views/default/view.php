@@ -85,7 +85,15 @@ $class = 'text-bold';
                   },
                   'label' => \Yii::t('app', 'Member')
                 ],
-                'player.teamStreamPoints.points:integer',
+                [
+                  'attribute' => 'player.teamStreamPoints.points',
+                  'value' => function ($model) {
+                    if ($model->approved)
+                      return $model->player->teamStreamPoints->points ?? 0;
+                    return 0;
+                  },
+                  'format' => 'integer',
+                ],
                 [
                   'headerOptions' => ['class' => 'd-none d-sm-table-cell d-xl-table-cell', 'style' => "width: 1.5em"],
                   'contentOptions' => ['class' => 'd-none d-sm-table-cell d-xl-table-cell', 'style' => "width: 1.5em;text-align: right"],
@@ -182,7 +190,7 @@ $class = 'text-bold';
         <div class="col col-xl-4 col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch">
           <div class="card bg-dark" style="margin-top:0px;">
             <div class="card-body">
-              <h3 class="card-title text-center" style="margin-bottom: 0.9em;"><?=$teamTargetsProvider->getTotalCount()?> <?= \Yii::t('app', 'Pending') ?></h3>
+              <h3 class="card-title text-center" style="margin-bottom: 0.9em;"><?= $teamTargetsProvider->getTotalCount() ?> <?= \Yii::t('app', 'Pending') ?></h3>
               <?php
               \yii\widgets\Pjax::begin(['id' => 'pending-listing-pjax', 'enablePushState' => false, 'linkSelector' => '#pending-pager a', 'formSelector' => false]);
               echo ListView::widget([
