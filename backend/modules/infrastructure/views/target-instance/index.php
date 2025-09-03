@@ -37,12 +37,7 @@ yii\bootstrap5\Modal::end();
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
-      [
-        'attribute' => 'player_id',
-        'value' => function ($model) {
-          return $model->player_id . ': ' . $model->player->username;
-        }
-      ],
+      ['class' => 'app\components\columns\ProfileColumn'],
       [
         'attribute' => 'target_id',
         'value' => function ($model) {
