@@ -1,0 +1,16 @@
+---
+ansible_user: root
+domain: yourdomain
+ipv4: 10.0.0.100
+fqdn: docker100.yourdomain
+host_aliases: "docker100"
+
+network:
+  name: AAnet
+  driver: macvlan
+  driver_options:
+    parent: ens9
+  ipam_options:
+   - subnet: '10.0.0.0/16'
+     gateway: 10.0.0.254
+     iprange: '10.0.100.0/24'

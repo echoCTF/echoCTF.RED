@@ -99,7 +99,7 @@
 * `mail_from` Email address used to send registration and password reset mails from
 * `mail_fromName` The name appeared on the email send for registration and password resets
 * `dsn` A symphony mailer compatible DSN
-
+* `mail_useFileTransport` Do not actually send mails, just save them in a file
 Or instead if not DSN then use the following
 
 * `mail_host` The mail server host to send mails through

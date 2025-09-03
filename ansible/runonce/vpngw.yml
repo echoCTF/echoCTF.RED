@@ -653,15 +653,31 @@
     copy:
       dest: /etc/supervisord.d/echoctf.ini
       content: |
-        [program:IndexPlusInstances]
+        [program:backend-cron]
         user = root
         environment = TERM=vt100
-        command = ksh -c "while true;do backend cron/index;backend cron/instances;sleep 10;done"
-        #command = gnuwatch -t -n 30 "backend cron/index;backend cron/instances"
-        stdout_logfile=/var/log/supervisord-echoctf.log
+        command = ksh -c "while true;do backend cron/index;sleep 10;done"
+        #command = gnuwatch -t -n 10 "backend cron/index;backend cron/instances"
+        stdout_logfile=/var/log/echoctf-cron-index.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
 
+        [program:backend-instances]
+        user = root
+        environment = TERM=vt100
+        command = ksh -c "while true;do backend cron/instances;sleep 10;done"
+        #command = gnuwatch -t -n 10 "backend cron/index;backend cron/instances"
+        stdout_logfile=/var/log/echoctf-cron-instances.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+        [program:backend-instances-pf]
+        user = root
+        environment = TERM=vt100
+        command = ksh -c "while true;date; do backend cron/instance-pf-tables;date;sleep 10;done"
+        stdout_logfile=/var/log/echoctf-cron-instances-pf.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
 
   - name: create user for openvpn up/down scripts
     mysql_user:
