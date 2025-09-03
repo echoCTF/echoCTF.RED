@@ -1,0 +1,52 @@
+<?php
+
+use yii\db\Migration;
+
+class m250903_211650_update_procedure_repopulate_team_stream extends Migration
+{
+  public $DROP_SQL="DROP PROCEDURE IF EXISTS {{%repopulate_team_stream}}";
+  public $CREATE_SQL="CREATE PROCEDURE {{%repopulate_team_stream}}(IN tid INT)
+  BEGIN
+    DECLARE `_rollback` BOOL DEFAULT false;
+    DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = true;
+    IF (SELECT count(*) FROM sysconfig WHERE id='teams' AND val=1)>0 AND (SELECT count(*) FROM team WHERE id=tid)>0 THEN
+      START TRANSACTION;
+      UPDATE team_score SET points=0 WHERE team_id=tid;
+      DELETE FROM team_stream WHERE team_id=tid;
+      INSERT INTO team_stream (stream_id,player_id,team_id,model,model_id,points,ts)
+          SELECT id, player_id, tid, model, model_id, points, ts
+          FROM (
+              SELECT s.*,
+                    ROW_NUMBER() OVER (
+                        PARTITION BY model, model_id
+                        ORDER BY ts ASC, id ASC
+                    ) AS rn
+              FROM stream s
+              WHERE model != 'user'
+                AND player_id IN (
+                    SELECT player_id
+                    FROM team_player
+                    WHERE team_id = tid AND approved=1
+                )
+          ) t
+          WHERE rn = 1
+          ORDER BY id, ts;
+      IF `_rollback` THEN
+          ROLLBACK;
+      ELSE
+          COMMIT;
+      END IF;
+    END IF;
+  END";
+
+  public function up()
+  {
+    $this->db->createCommand($this->DROP_SQL)->execute();
+    $this->db->createCommand($this->CREATE_SQL)->execute();
+  }
+
+  public function down()
+  {
+    $this->db->createCommand($this->DROP_SQL)->execute();
+  }
+}

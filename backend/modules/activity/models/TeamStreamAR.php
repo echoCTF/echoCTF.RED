@@ -2,6 +2,7 @@
 
 namespace app\modules\activity\models;
 
+use app\modules\frontend\models\Player;
 use Yii;
 
 /**
@@ -12,6 +13,9 @@ use Yii;
  * @property int $model_id
  * @property float $points
  * @property string $ts
+ *
+ * @property Player $player
+ * @property Stream $stream
  */
 class TeamStreamAR extends \yii\db\ActiveRecord
 {
@@ -50,6 +54,21 @@ class TeamStreamAR extends \yii\db\ActiveRecord
             'points' => Yii::t('app', 'Points'),
             'ts' => Yii::t('app', 'Ts'),
         ];
+    }
+
+    public function getTeam()
+    {
+        return $this->hasOne(Team::class, ['id' => 'team_id']);
+    }
+
+    public function getStream()
+    {
+        return $this->hasOne(Stream::class, ['id' => 'stream_id']);
+    }
+
+    public function getPlayer()
+    {
+        return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
 
     /**
