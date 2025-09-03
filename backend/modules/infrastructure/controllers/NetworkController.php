@@ -176,6 +176,7 @@ class NetworkController extends \app\components\BaseController
       return null;
     return $player->notify($notificationModel->category, $notificationModel->title, $notificationModel->body);
   }
+
   /**
    * Finds the Network model based on its primary key value.
    * If the model is not found, a 404 HTTP exception will be thrown.
