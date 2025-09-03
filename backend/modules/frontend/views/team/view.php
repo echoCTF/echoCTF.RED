@@ -53,7 +53,7 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
         <?php endif; ?>
       </a>
     </div>
-    <div class="col-sm-10">
+    <div class="col-sm-5">
       <h2 class="media-heading">(id: <?= $model->id ?>) <?= Html::encode($model->name) ?>
         <small> - <?= Html::encode($model->owner->username) ?> (owner_id: <?= $model->owner_id ?>)</small>
       </h2>
@@ -71,7 +71,7 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
         <b>last update:</b> <?= $model->ts ?>
         <?php $form = ActiveForm::begin(); ?>
       <div class="row d-flex align-items-center">
-        <div class="col-md-4">
+        <div class="col-md-10">
           <?= $form->field($newTP, 'player_id')->widget(AutocompleteAjax::class, [
             'multiple' => false,
             'url' => ['/frontend/team/free-player-ajax-search'],
@@ -85,18 +85,26 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
     </div>
   </div>
   <div class="row">
-    <div class="col-sm-6 col-md-offset-2">
+    <div class="col-6">
       <h4><b>Team Members</b></h4>
       <?php
       $dataProvider->setSort([
-          'sortParam' => 'teamMembers',
-          'defaultOrder'=>['ts'=>SORT_ASC]
+        'sortParam' => 'teamMembers',
+        'defaultOrder' => ['ts' => SORT_ASC]
       ]);
       echo GridView::widget([
-        'id'=>'teamMembers',
+        'id' => 'teamMembers',
         'dataProvider' => $dataProvider,
         'columns' => [
           ['class' => 'app\components\columns\ProfileColumn', 'attribute' => 'player'],
+          [
+            'attribute' => 'player.playerLast.vpn_remote_address_octet',
+            'label' => 'Remote IP'
+          ],
+          [
+            'attribute' => 'player.playerLast.vpn_local_address_octet',
+            'label' => 'Local IP'
+          ],
           'approved:boolean',
           'ts',
           [
@@ -121,12 +129,11 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
                 );
               },
             ]
-
           ],
         ],
       ]); ?>
     </div>
-    <div class="col-sm-6 col-md-offset-2">
+    <div class="col-md-6">
       <h4><b>Team Instances</b></h4>
       <?= GridView::widget([
         'dataProvider' => new ArrayDataProvider([
@@ -157,33 +164,62 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
           [
             'attribute' => 'reboot',
             'label' => 'Status',
-            'value'=>'rebootVal'
+            'value' => 'rebootVal'
           ],
         ],
       ]); ?>
     </div>
   </div>
-  <div class="col-md-6">
-    <?= GridView::widget([
-      'id' => 'teamStream',
-      'dataProvider' => new ArrayDataProvider([
-        'allModels' => $model->streams,
-        'sort' => [
-          'sortParam' => 'teamStream',
-          'attributes' => ['model', 'model_id', 'points', 'ts'],
-          'defaultOrder'=>['ts'=>SORT_DESC]
+  <div class="row">
+    <div class="col-md-6">
+      <h4><b>Points Team Stream</b></h4>
+      <?= GridView::widget([
+        'id' => 'teamStream',
+        'dataProvider' => new ArrayDataProvider([
+          'allModels' => $model->streams,
+          'sort' => [
+            'sortParam' => 'teamStream',
+            'attributes' => ['model', 'model_id', 'points', 'ts'],
+            'defaultOrder' => ['ts' => SORT_DESC]
+          ],
+          'pagination' => [
+            'pageSize' => 10,
+          ],
+        ]),
+        'columns' => [
+          [
+            'attribute'=>'formatted',
+            'format'=>'html',
+            'value'=>function($model){ return sprintf('%s <abbr title="%s">%s</abbr>',$model->formatted,$model->ts,$model->ts_ago);}
+          ],
         ],
-        'pagination' => [
-          'pageSize' => 20,
+      ]); ?>
+    </div>
+    <div class="col-md-6">
+      <h4><b>Team Headshots</b></h4>
+      <?= GridView::widget([
+        'id' => 'teamStream',
+        'dataProvider' => new ArrayDataProvider([
+          'allModels' => array_filter($model->streams, function ($item) {
+            return isset($item['model']) && $item['model'] === 'headshot';
+          }),
+          'sort' => [
+            'sortParam' => 'teamHeadshots',
+            'attributes' => ['model', 'model_id', 'points', 'ts'],
+            'defaultOrder' => ['ts' => SORT_DESC]
+          ],
+          'pagination' => [
+            'pageSize' => 10,
+          ],
+        ]),
+        'columns' => [
+          [
+            'attribute'=>'headshotMessage',
+            'format'=>'html'
+          ],
+          'ts'
         ],
-      ]),
-      'columns' => [
-        'model',
-        'model_id',
-        'points',
-        'ts'
-      ],
-    ]); ?>
-
+      ]); ?>
+    </div>
   </div>
 </div>
