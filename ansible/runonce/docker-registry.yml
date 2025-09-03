@@ -120,6 +120,14 @@
       group: wheel
       mode: '0555'
 
+  - name: copy nstables script
+    copy:
+      src: ../files/nstables.sh
+      dest: /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: '0555'
+
   - name: Create necessary registry PF Configurations
     copy:
       dest: "{{item.dest}}"
