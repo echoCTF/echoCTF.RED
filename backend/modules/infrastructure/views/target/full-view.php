@@ -88,6 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => '<i class="fas fa-server" data-toggle="tooltip" data-placement="top" title="Target Instances"></i>',
                 'linkOptions' => ['data-url' => Url::to(['instances', 'id' => $model->id])],
                 'options' => ['id' => 'instances-tab'],
+                'visible'=>count($model->instances)>0,
               ],
               [
                 'label' => '<i class="fas fa-calendar-alt" data-toggle="tooltip" data-placement="top" title="Target Network Migration Schedule"></i>',
