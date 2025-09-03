@@ -1,10 +1,13 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\grid\GridView;
+use yii\data\ArrayDataProvider;
 
 use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 ?>
 <div class="player-abuser-form">
+  <h4>Report a player abuse</h4>
   <?php $form = ActiveForm::begin(['action' =>['/moderation/abuser/create'], 'id' => 'create-abuser', 'method' => 'post',]); ?>
   <div class="row d-flex">
     <div class="col">
@@ -28,4 +31,42 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
     <?= $form->field($abuserModel, 'model')->hiddenInput(['value'=> 'player'])->label(false); ?>
     <?php ActiveForm::end(); ?>
   </div>
+</div>
+<hr />
+<div class="playerInstances">
+  <h4>Player Instances</h4>
+      <?= GridView::widget([
+        'dataProvider' => new ArrayDataProvider([
+          'id' => 'playerInstances',
+          'allModels' => $model->owner->targetInstances,
+          'sort' => [
+            'sortParam' => 'playerInstance',
+            'attributes' => ['player_id', 'target_id'],
+          ],
+          'pagination' => [
+            'pageSize' => 20,
+          ],
+        ]),
+        'columns' => [
+          [
+            'attribute' => 'target.name',
+            'label' => 'Target'
+          ],
+          [
+            'attribute' => 'server.name',
+            'label' => 'Server'
+          ],
+          [
+            'attribute' => 'ipoctet',
+            'label' => 'IP'
+          ],
+          [
+            'attribute' => 'reboot',
+            'label' => 'Status',
+            'value'=>'rebootVal'
+          ],
+          'created_at',
+          'updated_at'
+        ],
+      ]); ?>
 </div>
