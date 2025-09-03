@@ -2,6 +2,8 @@
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use yii\grid\GridView;
+use yii\data\ArrayDataProvider;
 
 /* @var $this yii\web\View */
 /* @var $model app\modules\infrastructure\models\Server */
@@ -25,7 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ]) ?>
     </p>
-
+<div class="row">
+  <div class="col-lg-6">
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -41,5 +44,41 @@ $this->params['breadcrumbs'][] = $this->title;
             'provider_id',
         ],
     ]) ?>
+  </div>
+  <div class="col-lg-6">
+      <?= GridView::widget([
+        'dataProvider' => new ArrayDataProvider([
+          'id' => 'teamInstances',
+          'allModels' => $model->targetInstances,
+          'sort' => [
+            'sortParam' => 'teamInstance',
+            'attributes' => ['player_id', 'target_id'],
+          ],
+          'pagination' => [
+            'pageSize' => 20,
+          ],
+        ]),
+        'columns' => [
+          ['class' => 'app\components\columns\ProfileColumn', 'attribute' => 'player'],
+          [
+            'attribute' => 'target.name',
+            'label' => 'Target'
+          ],
+          [
+            'attribute' => 'ipoctet',
+            'label' => 'IP'
+          ],
+          [
+            'attribute' => 'reboot',
+            'label' => 'Status',
+            'value'=>'rebootVal'
+          ],
+          'created_at',
+          'updated_at'
+        ],
+      ]); ?>
+
+  </div>
+</div>
 
 </div>
