@@ -1,0 +1,82 @@
+ansible_python_interpreter: /usr/bin/python3
+container: true
+PF_TABLES:
+  moderators:
+    - ""
+# Machines that need to be able to communicate with the docker servers
+# through the docker API port
+  docker_clients:
+    - "10.0.0.202" # Internal IP of backend if connected to the target network
+    - "10.0.0.254" # The gateway IP
+
+# List IP's that belong to our docker servers
+  docker_servers:
+    - "10.0.0.0/24" # Either IP or your range of the docker servers
+
+# IP's of your docker servers that need to access registry.
+# These clients are allowed internet access. Usually this list
+# is the same as the docker servers
+  registry_clients:
+    - "10.0.0.100"
+
+# IP's of your registry servcers, preferably
+# connected on the targets network.
+  registry_servers:
+    - "10.0.0.250"
+# Empty list like that means create the file with empty content
+  targets_networks:
+    - ""
+  targets:
+    - ""
+  target_network_ranges:
+    - "10.0.1.0/24" # The ipranges defined for your docker targets
+
+# Set system into maintenance mode
+  maintenance:
+    - "0.0.0.0/0"
+
+# Replace resolv.conf with this entry
+resolvconf: |
+  nameserver 10.0.0.254
+
+
+DOCKER_REGISTRY:
+  - your.registry.com:5000
+
+aptKeys:
+ - { key: "https://download.docker.com/linux/debian/gpg", state: "present" }
+
+aptRepos:
+ - { repo: "deb [arch=amd64] https://download.docker.com/linux/debian bookworm stable", state: "present"}
+
+pre_apt:
+ - iptables-persistent
+ - python3-pip
+ - rsync
+ - open-vm-tools
+ - python3-setuptools
+ - apt-transport-https
+ - ca-certificates
+ - curl
+ - gnupg2
+ - software-properties-common
+ - rdate
+ - python3-requests
+ - python3-docker
+
+post_apt:
+ - docker-ce
+
+pip:
+# Version pining of requests since it breaks
+# - { name: "requests", version: "2.28.1", state: "present" }
+# - { name: "docker", version: "*", state: "present" }
+
+etchosts: |
+  127.0.0.1       localhost
+  {{ipv4}}        {{fqdn}}    {{host_aliases}}
+  10.0.0.254      vpn01 gw
+  10.0.0.100      your.registry.com
+
+SYSTEM_CLEANUPS:
+#  - /root/uploads
