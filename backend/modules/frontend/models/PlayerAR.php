@@ -116,7 +116,7 @@ class PlayerAR extends \yii\db\ActiveRecord
       [['fullname'], 'string', 'max' => 128],
       [['username'], 'unique'],
       [['new_password', 'password'], 'safe'],
-      [['email'],'\app\components\validators\PlayerEmailValidator','on'=>['extendedValidator']],
+      [['email'], '\app\components\validators\PlayerEmailValidator', 'on' => ['extendedValidator']],
       [['activkey'], function ($attribute, $params) {
         if ($this->{$attribute} !== null && $this->active === 1 && $this->status = 10)
           $this->addError($attribute, '{attribute} must be empty when player active.');
@@ -329,10 +329,10 @@ class PlayerAR extends \yii\db\ActiveRecord
   public function getStreams()
   {
     return $this->hasMany(Stream::class, ['player_id' => 'id'])
-    ->select([
+      ->select([
         'stream.*', // Select all fields from the related Stream model
         new \yii\db\Expression('TIMESTAMPDIFF(SECOND, LAG(stream.ts) OVER (ORDER BY stream.ts), stream.ts) AS seconds_since_last')
-    ])->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
+      ])->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
   }
 
   /**
@@ -433,6 +433,14 @@ class PlayerAR extends \yii\db\ActiveRecord
   public function getDisconnectQueue()
   {
     return $this->hasOne(PlayerDisconnectQueue::class, ['player_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getTargetInstances()
+  {
+    return $this->hasMany(\app\modules\infrastructure\models\TargetInstance::class, ['player_id' => 'id']);
   }
 
   /**

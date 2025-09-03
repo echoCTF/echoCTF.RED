@@ -96,6 +96,13 @@ class Team extends \yii\db\ActiveRecord
     return $this->hasMany(TeamPlayer::class, ['team_id' => 'id']);
   }
 
+  public function getInstances()
+  {
+      return $this->hasMany(\app\modules\infrastructure\models\TargetInstance::class, ['player_id' => 'player_id'])
+                  ->via('teamPlayers', function($query) {
+            $query->andWhere(['approved' => 1]);
+        });
+  }
   /**
    * @return \yii\db\ActiveQuery
    */
