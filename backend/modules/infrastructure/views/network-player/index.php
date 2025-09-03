@@ -7,45 +7,56 @@ use yii\grid\GridView;
 /* @var $searchModel app\modules\gameplay\models\NetworkPlayerSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title=Yii::t('app', 'Network Players');
+$this->title = Yii::t('app', 'Network Players');
 $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 yii\bootstrap5\Modal::begin([
-    'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',
-    'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help', 'class' => 'btn btn-info'],
-  'options'=>['class'=>'modal-lg']
+  'title' => '<h2><i class="bi bi-info-circle-fill"></i> ' . Html::encode($this->title) . ' Help</h2>',
+  'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help', 'class' => 'btn btn-info'],
+  'options' => ['class' => 'modal-lg']
 ]);
 echo yii\helpers\Markdown::process($this->render('help/index.md'), 'gfm');
 yii\bootstrap5\Modal::end();
 ?>
 <div class="network-player-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+  <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Network Player'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+  <p>
+    <?= Html::a(Yii::t('app', 'Create Network Player'), ['create'], ['class' => 'btn btn-success']) ?>
+  </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+  <?php // echo $this->render('_search', ['model' => $searchModel]);
+  ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+  <?= GridView::widget([
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'columns' => [
+      ['class' => 'yii\grid\SerialColumn'],
 
-            'network_id',
-            [
-                'attribute'=>'network_name',
-                'value'=>'network.name',
-            ],
-            'player_id',
-            ['class' => 'app\components\columns\ProfileColumn'],
-            'created_at',
-            'updated_at',
+      'network_id',
+      [
+        'attribute' => 'network_name',
+        'value' => 'network.name',
+      ],
+      'player_id',
+      ['class' => 'app\components\columns\ProfileColumn'],
+      'created_at',
+      'updated_at',
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]);?>
+      [
+        'template' => '{view} {update} {delete} {notify}',
+        'class' => '\app\components\columns\ActionColumn',
+        'notifyIdValue' => function ($model) { return $model->player_id; },
+        'urlCreator' => function ($action, $model, $key, $index, $column) {
+          if ($action === 'notify') {
+            return \yii\helpers\Url::to(['/frontend/player/notify', 'id' => $model->player_id]);
+          }
+          return \yii\helpers\Url::to([$action, 'network_id' => $model->network_id,'player_id'=>$model->player_id]);
+        },
+      ],
+    ],
+  ]); ?>
 
 
 </div>

@@ -723,4 +723,42 @@ class PlayerController extends \app\components\BaseController
     }
     return $results;
   }
+
+  public function actionNotify($id)
+  {
+    $model = $this->findModel($id);
+    $notificationModel = new \app\modules\activity\models\Notification();
+    if (Yii::$app->request->isPost) {
+      Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+      $ovpn = boolval(Yii::$app->request->post('Notification')['ovpn'] ?? 0);
+      $online = boolval(Yii::$app->request->post('Notification')['online'] ?? 0);
+      $notificationModel->load(Yii::$app->request->post());
+
+      if ($notificationModel->validate()) {
+        $status = ['status' => 'success', 'message' => "Notified [" . $model->username . "]"];
+        if ($this->notifyLogic($model, $notificationModel, $ovpn, $online) !== NULL) {
+          Yii::$app->session->addFlash('success', "Notified [" . $model->username . "].");
+        } else {
+          $status = ['status' => 'error', 'message' => "Player [" . $model->username . "] not notified due to filters."];
+          Yii::$app->session->addFlash('warning', "Player [" . $model->username . "] not notified due to filters.");
+        }
+        return $status;
+      }
+      Yii::$app->session->addFlash('error', implode(", ", $notificationModel->getErrors()));
+      return ['status' => 'error', 'message' => "Failed to validate."];
+    }
+    return trim($this->renderAjax('//common/_notify', [
+      'model' => $model,
+      'notificationModel' => $notificationModel,
+    ]));
+  }
+
+  private function notifyLogic($player, $notificationModel, $ovpn = false, $online = false)
+  {
+    if ($ovpn && $player->playerLast->vpn_local_address===null)
+      return null;
+    if ($online && !boolval($player->online))
+      return null;
+    return $player->notify($notificationModel->category, $notificationModel->title, $notificationModel->body);
+  }
 }

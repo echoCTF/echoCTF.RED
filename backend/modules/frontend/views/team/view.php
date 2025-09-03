@@ -9,6 +9,7 @@ use yii\data\ArrayDataProvider;
 /* @var $model app\modules\frontend\models\Team */
 use yii\widgets\ActiveForm;
 use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
+use yii\bootstrap5\Modal;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ucfirst(Yii::$app->controller->module->id);
@@ -16,8 +17,9 @@ $this->params['breadcrumbs'][] = ['label' => 'Teams', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
+
 ?>
-<div class="team-view">
+<div class="team-view" id="team-view">
 
   <h1><?= Html::encode($this->title) ?></h1>
 
@@ -31,12 +33,14 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
       ],
     ]) ?>
     <?= Html::a('Repopulate stream', ['repopulate-stream', 'id' => $model->id], [
-      'class' => 'btn btn-danger',
+      'class' => 'btn btn-warning',
       'data' => [
         'confirm' => 'Are you sure you want to repopulate the stream of this team?',
         'method' => 'post',
       ],
     ]) ?>
+    <?= \app\widgets\NotifyButton::widget(['url' => ['notify', 'id' => $model->id],]) ?>
+
   </p>
 
   <div class="row">
@@ -55,9 +59,9 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
       </h2>
       <p style="font-weight: 800">ranked <?= $model->rank->ordinalPlace ?> with <?= number_format($model->score->points) ?> points</p>
       <p>
-        <?php if($model->invite):?>
-        <b>invite url: <?= Html::a(Url::to('//' . Yii::$app->sys->offense_domain . '/team/invite/' . $model->invite->token, 'https'), Url::to('//' . Yii::$app->sys->offense_domain . '/team/invite/' . $model->invite->token, 'https'), ['target' => '_blank']); ?></b><br />
-        <?php endif;?>
+        <?php if ($model->invite): ?>
+          <b>invite url: <?= Html::a(Url::to('//' . Yii::$app->sys->offense_domain . '/team/invite/' . $model->invite->token, 'https'), Url::to('//' . Yii::$app->sys->offense_domain . '/team/invite/' . $model->invite->token, 'https'), ['target' => '_blank']); ?></b><br />
+        <?php endif; ?>
         <b>Team url: <?= Html::a(Url::to('//' . Yii::$app->sys->offense_domain . '/team/' . $model->token, 'https'), Url::to('//' . Yii::$app->sys->offense_domain . '/team/' . $model->token, 'https'), ['target' => '_blank']); ?></b><br />
         <b>description:</b> <?= Html::encode($model->description) ?><br />
         <b>recruitment:</b> <?= Html::encode($model->recruitment) ?><br />
@@ -66,17 +70,17 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
         <b>locked:</b> <?= Html::encode($model->locked === 0 ? 'nop' : 'yep') ?><br />
         <b>last update:</b> <?= $model->ts ?>
         <?php $form = ActiveForm::begin(); ?>
-        <div class="row d-flex align-items-center">
-          <div class="col-md-4">
-            <?= $form->field($newTP, 'player_id')->widget(AutocompleteAjax::class, [
-              'multiple' => false,
-              'url' => ['/frontend/team/free-player-ajax-search'],
-              'options' => ['placeholder' => 'Add new player by email, username, id or profile.']
-            ])->Label(false) ?>
-          </div>
-          <div class="col-md-2"><?= Html::submitButton('Add', ['class' => 'btn btn-success']) ?></div>
+      <div class="row d-flex align-items-center">
+        <div class="col-md-4">
+          <?= $form->field($newTP, 'player_id')->widget(AutocompleteAjax::class, [
+            'multiple' => false,
+            'url' => ['/frontend/team/free-player-ajax-search'],
+            'options' => ['placeholder' => 'Add new player by email, username, id or profile.']
+          ])->Label(false) ?>
         </div>
-        <?php ActiveForm::end(); ?>
+        <div class="col-md-2"><?= Html::submitButton('Add', ['class' => 'btn btn-success']) ?></div>
+      </div>
+      <?php ActiveForm::end(); ?>
       </p>
     </div>
   </div>
@@ -86,15 +90,16 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
       <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'columns' => [
-          ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
+          ['class' => 'app\components\columns\ProfileColumn', 'attribute' => 'player'],
           'approved:boolean',
           'ts',
           [
+            //'class' => '\app\components\columns\ActionColumn',
             'class' => 'yii\grid\ActionColumn',
             'urlCreator' => function ($action, $model, $key, $index) {
               return Url::to(['teamplayer/' . $action, 'id' => $key]);
             },
-            'template' => '{toggle-approved} ' . '{view} {update} {delete}',
+            'template' => '{toggle-approved} {view} {update} {delete}',
             'buttons' => [
               'toggle-approved' => function ($url) {
                 return Html::a(

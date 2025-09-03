@@ -109,3 +109,15 @@ div.has-error > input:focus {
   color: red;
   font-weight: 600;
 }
+
+.btn-purple, .btn-purple:hover, .btn-purple:active, .btn-purple:visited {
+    background-color: #8064A2;
+}
+
+.text-purple {
+    color: #8064A2;
+}
+
+.text-white {
+    color: white;
+}

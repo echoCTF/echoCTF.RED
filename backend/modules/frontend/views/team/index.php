@@ -77,8 +77,8 @@ yii\bootstrap5\Modal::end();
       'ts',
 
       [
-        'class' => 'yii\grid\ActionColumn',
-        'template' => '{toggle-academic} {view} {update} {delete} {repopulate-stream}',
+        'class' => '\app\components\columns\ActionColumn',
+        'template' => '{toggle-academic} {view} {update} {delete} {repopulate-stream} {notify}',
         'buttons' => [
           'repopulate-stream' => function ($url) {
             return Html::a(
@@ -93,7 +93,7 @@ yii\bootstrap5\Modal::end();
           },
           'toggle-academic' => function ($url) {
             return Html::a(
-              '<span class="glyphicon glyphicon glyphicon-education"></span>',
+              '<i class="fas fa-user-graduate"></i>',
               $url,
               [
                 'title' => 'Toggle team academic flag',

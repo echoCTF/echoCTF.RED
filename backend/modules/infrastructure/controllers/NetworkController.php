@@ -17,144 +17,179 @@ class NetworkController extends \app\components\BaseController
   /**
    * {@inheritdoc}
    */
-    public function behaviors()
-    {
-      return ArrayHelper::merge(parent::behaviors(),[
-        'rules'=>[
-            'class' => 'yii\filters\AjaxFilter',
-            'only' => ['ajax-search']
-          ],
-      ]);
+  public function behaviors()
+  {
+    return ArrayHelper::merge(parent::behaviors(), [
+      'rules' => [
+        'class' => 'yii\filters\AjaxFilter',
+        'only' => ['ajax-search']
+      ],
+    ]);
+  }
+
+  /**
+   * Lists all Network models.
+   * @return mixed
+   */
+  public function actionIndex()
+  {
+    $searchModel = new NetworkSearch();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+    return $this->render('index', [
+      'searchModel' => $searchModel,
+      'dataProvider' => $dataProvider,
+    ]);
+  }
+
+  /**
+   * Displays a single Network model.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionView($id)
+  {
+    return $this->render('view', [
+      'model' => $this->findModel($id),
+    ]);
+  }
+
+  /**
+   * Creates a new Network model.
+   * If creation is successful, the browser will be redirected to the 'view' page.
+   * @return mixed
+   */
+  public function actionCreate()
+  {
+    $model = new Network();
+
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      return $this->redirect(['view', 'id' => $model->id]);
     }
 
-    /**
-     * Lists all Network models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel=new NetworkSearch();
-        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
+    return $this->render('create', [
+      'model' => $model,
+    ]);
+  }
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
+  /**
+   * Updates an existing Network model.
+   * If update is successful, the browser will be redirected to the 'view' page.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionUpdate($id)
+  {
+    $model = $this->findModel($id);
+
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      return $this->redirect(['view', 'id' => $model->id]);
     }
 
-    /**
-     * Displays a single Network model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
+    return $this->render('update', [
+      'model' => $model,
+    ]);
+  }
 
-    /**
-     * Creates a new Network model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model=new Network();
+  /**
+   * Deletes an existing Network model.
+   * If deletion is successful, the browser will be redirected to the 'index' page.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionDelete($id)
+  {
+    $this->findModel($id)->delete();
 
-        if($model->load(Yii::$app->request->post()) && $model->save())
-        {
-            return $this->redirect(['view', 'id' => $model->id]);
+    return $this->redirect(['index']);
+  }
+
+  /**
+   * Perform an ajax search for a network
+   */
+  public function actionAjaxSearch($term, $load = false)
+  {
+    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    $results = [];
+    if (Yii::$app->request->isAjax) {
+      $pq = Network::find()->select(['id', 'name', 'codename']);
+      if ($load === false) {
+        $pq->where(['like', 'name', $term . '%', false]);
+        $pq->orWhere(['LIKE', 'codename', $term . '%', false]);
+      } else {
+        $pq->where(['=', 'id', $term]);
+      }
+      $results = array_values(ArrayHelper::map(
+        $pq->all(),
+        'id',
+        function ($model) {
+          return [
+            'id' => $model->id,
+            'label' => sprintf("(id: %d / %s) %s", $model->id, $model->codename, $model->name),
+          ];
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+      ));
     }
+    return $results;
+  }
 
-    /**
-     * Updates an existing Network model.
-     * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model=$this->findModel($id);
+  public function actionNotify($id)
+  {
+    $model = $this->findModel($id);
+    $notificationModel = new \app\modules\activity\models\Notification();
+    if (Yii::$app->request->isPost) {
+      Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+      $msg = "";
+      $ovpn = boolval(Yii::$app->request->post('Notification')['ovpn'] ?? 0);
+      $online = boolval(Yii::$app->request->post('Notification')['online'] ?? 0);
+      $notificationModel->load(Yii::$app->request->post());
 
-        if($model->load(Yii::$app->request->post()) && $model->save())
-        {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Deletes an existing Network model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
-    }
-
-    /**
-     * Perform an ajax search for a network
-     */
-    public function actionAjaxSearch($term,$load=false)
-    {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-        $results=[];
-        if (Yii::$app->request->isAjax)
-        {
-          $pq=Network::find()->select(['id','name','codename']);
-          if($load===false)
-          {
-            $pq->where(['like','name',$term.'%',false]);
-            $pq->orWhere(['LIKE','codename',$term.'%',false]);
-          }
+      if ($notificationModel->validate() && $model->players) {
+        $_p = [];
+        foreach ($model->players as $player) {
+          if ($this->notifyLogic($player, $notificationModel, $ovpn, $online) !== NULL)
+            Yii::$app->session->addFlash('success', "Notified [" . $player->username . "].");
           else
-          {
-            $pq->where(['=','id',$term]);
-          }
-          $results=array_values(ArrayHelper::map($pq->all(),'id',
-            function($model){
-              return [
-                'id'=>$model->id,
-                'label'=>sprintf("(id: %d / %s) %s",$model->id,$model->codename,$model->name),
-              ];
-            }
-          ));
+            Yii::$app->session->addFlash('warning', "Player [" . $player->username . "] not notified due to filters.");
 
+          $_p[] = $player->username;
         }
-        return $results;
+        $msg = "Notified [" . implode(", ", $_p) . "]";
+        return ['status' => 'success', 'message' => $msg];
+      }
+      return ['status'=>'error', 'message'=>'Validation failed or network has no players'];
+    }
+    return trim($this->renderAjax('//common/_notify', [
+      'model' => $model,
+      'notificationModel' => $notificationModel,
+    ]));
+  }
+
+  private function notifyLogic($player, $notificationModel, $ovpn = false, $online = false)
+  {
+    if ($ovpn && $player->playerLast->vpn_local_address===null)
+      return null;
+    if ($online && !boolval($player->online))
+      return null;
+    return $player->notify($notificationModel->category, $notificationModel->title, $notificationModel->body);
+  }
+
+  /**
+   * Finds the Network model based on its primary key value.
+   * If the model is not found, a 404 HTTP exception will be thrown.
+   * @param integer $id
+   * @return Network the loaded model
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  protected function findModel($id)
+  {
+    if (($model = Network::findOne($id)) !== null) {
+      return $model;
     }
 
-    /**
-     * Finds the Network model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return Network the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if(($model=Network::findOne($id)) !== null)
-        {
-            return $model;
-        }
-
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
-    }
+    throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+  }
 }

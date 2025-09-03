@@ -24,6 +24,7 @@ $this->params['breadcrumbs'][]=$this->title;
                 'method' => 'post',
             ],
         ]) ?>
+    <?= \app\widgets\NotifyButton::widget(['url' => ['/frontend/player/notify', 'id' => $model->player_id],]) ?>
     </p>
 
     <?= DetailView::widget([

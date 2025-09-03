@@ -49,6 +49,7 @@ class Notification extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
+      [['body','title','category'],'required'],
       [['player_id'], 'integer'],
       [['archived'], 'boolean'],
       [['online','ovpn'], 'boolean'],
@@ -84,6 +85,7 @@ class Notification extends \yii\db\ActiveRecord
   {
     return $this->hasOne(Player::class, ['id' => 'player_id']);
   }
+
   public static function supportedCategories(): array
   {
     return [
