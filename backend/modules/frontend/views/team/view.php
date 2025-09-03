@@ -87,7 +87,13 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
   <div class="row">
     <div class="col-sm-6 col-md-offset-2">
       <h4><b>Team Members</b></h4>
-      <?= GridView::widget([
+      <?php
+      $dataProvider->setSort([
+          'sortParam' => 'teamMembers',
+          'defaultOrder'=>['ts'=>SORT_ASC]
+      ]);
+      echo GridView::widget([
+        'id'=>'teamMembers',
         'dataProvider' => $dataProvider,
         'columns' => [
           ['class' => 'app\components\columns\ProfileColumn', 'attribute' => 'player'],
@@ -120,13 +126,52 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
         ],
       ]); ?>
     </div>
+    <div class="col-sm-6 col-md-offset-2">
+      <h4><b>Team Instances</b></h4>
+      <?= GridView::widget([
+        'dataProvider' => new ArrayDataProvider([
+          'id' => 'teamInstances',
+          'allModels' => $model->instances,
+          'sort' => [
+            'sortParam' => 'teamInstance',
+            'attributes' => ['player_id', 'target_id'],
+          ],
+          'pagination' => [
+            'pageSize' => 20,
+          ],
+        ]),
+        'columns' => [
+          ['class' => 'app\components\columns\ProfileColumn', 'attribute' => 'player'],
+          [
+            'attribute' => 'target.name',
+            'label' => 'Target'
+          ],
+          [
+            'attribute' => 'server.name',
+            'label' => 'Server'
+          ],
+          [
+            'attribute' => 'ipoctet',
+            'label' => 'IP'
+          ],
+          [
+            'attribute' => 'reboot',
+            'label' => 'Status',
+            'value'=>'rebootVal'
+          ],
+        ],
+      ]); ?>
+    </div>
   </div>
-  <div class="col-md-12">
+  <div class="col-md-6">
     <?= GridView::widget([
+      'id' => 'teamStream',
       'dataProvider' => new ArrayDataProvider([
         'allModels' => $model->streams,
         'sort' => [
+          'sortParam' => 'teamStream',
           'attributes' => ['model', 'model_id', 'points', 'ts'],
+          'defaultOrder'=>['ts'=>SORT_DESC]
         ],
         'pagination' => [
           'pageSize' => 20,
