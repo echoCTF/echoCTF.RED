@@ -34,15 +34,19 @@ useradd -m registry
 mkdir -p ~registry/storage
 ```
 
-Install and configure the go docker registry
+Install and configure the go docker registry (these steps assume you are in the root folder of the project `echoCTF.RED/`)
 ```sh
-export GOPATH="/home/registry/go"
-go get github.com/docker/distribution/cmd/registry
+#export GOPATH="/home/registry/go"
+git clone https://github.com/distribution/distribution.git
+cd distribution/cmd/registry/main
+git checkout 90939f1173f65356e724f398793b4d7239a49595
+go build main.go
+install -o root /root/distribution/cmd/registry/main /usr/local/sbin/registry
 install -m 555 -o root -g wheel contrib/docker_registry.rc /etc/rc.d/docker_registry
 install -m 444 -o root -g wheel contrib/docker-registry.yml /etc/docker-registry.yml
+install -d  -o registry /home/registry/storage
 rcctl set docker_registry status on
 rcctl start docker_registry
-chown -R registry /home/registry/storage
 ```
 
 ## As Docker container
