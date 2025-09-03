@@ -85,7 +85,7 @@ $class = 'text-bold';
                   },
                   'label' => \Yii::t('app', 'Member')
                 ],
-                'player.playerScore.points:integer',
+                'player.teamStreamPoints.points:integer',
                 [
                   'headerOptions' => ['class' => 'd-none d-sm-table-cell d-xl-table-cell', 'style' => "width: 1.5em"],
                   'contentOptions' => ['class' => 'd-none d-sm-table-cell d-xl-table-cell', 'style' => "width: 1.5em;text-align: right"],

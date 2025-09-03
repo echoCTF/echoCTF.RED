@@ -288,5 +288,10 @@ class PlayerAR extends ActiveRecord
   {
     return $this->hasOne(PlayerLast::class, ['id' => 'id']);
   }
-
+  public function getTeamStreamPoints()
+  {
+      return $this->hasOne(\app\modules\team\models\TeamStream::class, ['player_id' => 'id'])
+          ->select(['player_id', 'points' => new \yii\db\Expression('SUM(points)')])
+          ->groupBy('player_id');
+  }
 }

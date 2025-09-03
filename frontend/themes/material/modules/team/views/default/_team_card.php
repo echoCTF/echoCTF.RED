@@ -58,7 +58,7 @@ $dataProvider = new ArrayDataProvider([
             'headerOptions' => ['class' => 'd-none d-xl-table-cell',],
             'contentOptions' => ['class' => 'd-none d-md-table-cell d-lg-table-cell d-xl-table-cell', 'style' => 'width: 100%; text-align: right'],
             'format' => 'integer',
-            'attribute' => 'player.playerScore.points',
+            'attribute' => 'player.teamStreamPoints.points',
           ],
           [
             'headerOptions' => ['class' => 'd-none d-sm-table-cell d-xl-table-cell', 'style' => "width: 1.5em"],
