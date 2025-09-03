@@ -16,12 +16,8 @@ Pjax::begin(['id' => 'instances-tabPJ', 'enablePushState' => false, 'enableRepla
   'id' => 'instances-tab',
   'dataProvider' => $dataProvider,
   'columns' => [
-    [
-      'attribute' => 'player_id',
-      'value' => function ($model) {
-        return $model->player_id . ': ' . $model->player->username;
-      }
-    ],
+    ['class' => 'app\components\columns\ProfileColumn'],
+
     [
       'attribute' => 'server_id',
       'filter' => ArrayHelper::map(Server::find()->orderBy(['name' => SORT_ASC, 'ip' => SORT_ASC])->asArray()->all(), 'id', 'name'),
