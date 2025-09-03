@@ -58,6 +58,7 @@
     - go
     - supervisor
     - py3-setuptools
+    - py3-netaddr
     - git
     - rsync--
 
