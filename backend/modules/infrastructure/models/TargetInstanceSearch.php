@@ -15,6 +15,7 @@ class TargetInstanceSearch extends TargetInstance
 {
   public $username;
   public $targetname;
+  public $servername;
 
   /**
    * {@inheritdoc}
@@ -36,7 +37,7 @@ class TargetInstanceSearch extends TargetInstance
     return [
       [['reboot', 'team_allowed'], 'integer'],
       [['ipoctet'], 'filter', 'filter' => 'trim'],
-      [['created_at', 'updated_at', 'ipoctet', 'player_id', 'target_id', 'server_id', "username",'targetname'], 'safe'],
+      [['created_at', 'updated_at', 'ipoctet', 'player_id', 'target_id', 'server_id', "username",'targetname','servername'], 'safe'],
     ];
   }
 
@@ -78,17 +79,15 @@ class TargetInstanceSearch extends TargetInstance
     $query->andFilterWhere([
       'reboot' => $this->reboot,
       'team_allowed' => $this->team_allowed,
+      'target_id' => $this->target_id,
+      'player_id' => $this->player_id,
+      'server_id' => $this->server_id
     ]);
+
     $query->andFilterWhere(['like', 'target_instance.created_at', $this->created_at])
-      ->andFilterWhere(['like', 'target_instance.updated_at', $this->updated_at]);
-    $query->andFilterWhere([
-      'OR',
-      ['LIKE', 'target.name', $this->targetname],
-      ['LIKE', 'player.username', $this->username],
-      ['player_id' => $this->player_id],
-      ['LIKE', 'server.id', $this->server_id],
-      ['server_id' => $this->server_id],
-    ]);
+          ->andFilterWhere(['like', 'target_instance.updated_at', $this->updated_at])
+          ->andFilterWhere(['LIKE', 'target.name', $this->targetname])
+          ->andFilterWhere(['LIKE', 'player.username', $this->username]);
     $validator = new \app\components\validators\ExtendedIpValidator(['subnet' => true, 'expandIPv6' => false]);
     if ($validator->validate($this->ipoctet) !== false) {
       [$ip, $mask] = explode('/', $this->ipoctet, 2);
