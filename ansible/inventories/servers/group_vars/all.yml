@@ -1,1 +1,8 @@
+## Replace the following with your fork of the repo
+GITHUB_REPO: git@github.com:echoCTF/echoCTF.RED.git
+GITHUB_OAUTH_TOKEN: YOUR-GITHUB-TOKEN-FOR-COMPOSER
+GITHUB_REPO_BRANCH: THE-DEFAULT-BRANCH
+## Domain with IN TXT space separated list `IN TXT "1.1.1.1 2.2.2.2"
+admins_domain: admin.example.com
+
 ansible_python_interpreter: "/usr/local/bin/python3.10"

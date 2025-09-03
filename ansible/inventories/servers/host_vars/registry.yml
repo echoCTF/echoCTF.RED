@@ -1,6 +1,15 @@
+myname: registry.example.com
+registry_user: registry
+registry_home: "/home/registry"
+registry_storage: "/storage"
+registry_bind_ip: "0.0.0.0"
+registry_bind_port: "5000"
+registry_targets_if: if0
+registry_targets_cidr: 10.0.100.0/24
 backups:
   - { tgz: "/altroot/root.tgz", src: '/root' }
   - { tgz: "/altroot/etc.tgz", src: '/etc'  }
   - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
   - { tgz: "/altroot/varmysql.tgz", src: '/var/mysql'  }
   - { tgz: "/altroot/home.tgz", src: '/home'  }
+
