@@ -13,6 +13,7 @@ class ActionColumn extends \yii\grid\ActionColumn
 
   public $contentOptions = ['class' => 'text-center', 'style' => 'white-space: nowrap;'];
   public $headerOptions = ['class' => 'action-column', 'style' => 'text-align: center;'];
+  public $notifyIdValue;
 
   protected function initDefaultButtons()
   {
@@ -33,8 +34,19 @@ class ActionColumn extends \yii\grid\ActionColumn
   public function createUrl($action, $model, $key, $index)
   {
     if ($action === 'notify') {
-      return ['notify', 'id' => $model->id]; // adjust URL
+      if (isset($this->urlCreator) && is_callable($this->urlCreator)) {
+        return call_user_func($this->urlCreator, $action, $model, $key, $index, $this);
+      }
+
+      if (is_callable($this->notifyIdValue)) {
+        $id = call_user_func($this->notifyIdValue, $model, $key, $index);
+      } else {
+        $id = $this->notifyIdValue ?? $model->id;
+      }
+
+      return ['notify', 'id' => $id];
     }
+
     return parent::createUrl($action, $model, $key, $index);
   }
 
@@ -44,7 +56,7 @@ class ActionColumn extends \yii\grid\ActionColumn
     if (!self::$modalRendered) {
       \yii\bootstrap5\Modal::begin([
         'id' => 'notifyModal',
-        'title' => '<h3>Send notification for '.\Yii::$app->controller->id.'</h3>',
+        'title' => '<h3>Send notification for ' . str_replace(['-', '_'], ' ', \Yii::$app->controller->id) . '</h3>',
         'size' => \yii\bootstrap5\Modal::SIZE_LARGE,
       ]);
       echo '<div id="notifyModalContent"></div>';
