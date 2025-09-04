@@ -25,6 +25,7 @@ class Notification extends \yii\db\ActiveRecord
 {
   public $online;
   public $ovpn;
+  public $created_at_ago,$updated_at_ago;
 
   /**
    * {@inheritdoc}

@@ -20,7 +20,7 @@ use yii\grid\GridView;
       'attribute' => 'timer',
       'format' => 'html',
       'value' => function ($model) {
-        return sprintf('<abbr title="%s">%s</abbr>', Yii::$app->formatter->asDuration($model->timer), $model->timer);
+        return Html::tag('abbr', Yii::$app->formatter->asDuration($model->timer), ['title'=> $model->timer]);
       }
     ],
     'first:boolean',
@@ -29,7 +29,7 @@ use yii\grid\GridView;
       'attribute' => 'created_at',
       'format' => 'html',
       'value' => function ($model) {
-        return sprintf('<abbr title="%s">%s</abbr>', Yii::$app->formatter->asRelativeTime($model->created_at), $model->created_at);
+        return Html::tag('abbr', $model->created_at_ago, ['title'=> $model->created_at]);
       }
     ],
     [

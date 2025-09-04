@@ -51,7 +51,7 @@ yii\bootstrap5\Modal::end();
       [
         'attribute' => 'created_at',
         'format'=>'raw',
-        'value'=>function($model){return Html::tag('abbr',Yii::$app->formatter->asRelativeTime($model->created_at),['title'=>$model->created_at]);}
+        'value'=>function($model){return Html::tag('abbr',$model->created_at_ago,['title'=>$model->created_at]);}
       ],
       //'updated_at',
 

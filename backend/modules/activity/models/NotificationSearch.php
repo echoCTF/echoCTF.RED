@@ -20,7 +20,7 @@ class NotificationSearch extends Notification
         return [
             [['id', 'player_id', 'archived'], 'integer'],
             [['title', 'body', 'created_at', 'updated_at','category'], 'safe'],
-            [['player'], 'safe'],
+            [['player','updated_at_ago','created_at_ago'], 'safe'],
         ];
     }
 
@@ -42,7 +42,7 @@ class NotificationSearch extends Notification
      */
     public function search($params)
     {
-        $query=Notification::find()->joinWith(['player']);
+        $query=Notification::find()->select('notification.*, TS_AGO(notification.created_at) as created_at_ago,TS_AGO(notification.updated_at) as updated_at_ago')->joinWith(['player']);
 
         // add conditions that should always apply here
 
