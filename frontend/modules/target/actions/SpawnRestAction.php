@@ -48,7 +48,9 @@ class SpawnRestAction extends \yii\rest\ViewAction
         }
         else
         {
-          Yii::$app->session->setFlash('info', sprintf(\Yii::t('app','You already have an instance of [%s] running.'), $ti->target->name));
+          Yii::$app->session->setFlash('success', sprintf(\Yii::t('app','Target instance [%s] scheduled for restart. You will receive a notification when the operation is completed.'), $ti->target->name));
+          $ti->reboot=1;
+          $ti->save();
         }
 
         return Yii::$app->controller->redirect($goback);
