@@ -61,6 +61,9 @@ $class = 'text-bold';
                 if ($model->approved !== 1) {
                   return ['class' => 'bg-dark text-danger'];
                 }
+                if ($model->team->owner_id == $model->player_id) {
+                  return ['class' => 'text-bold teamLeader'];
+                }
               },
               'tableOptions' => ['class' => 'table orbitron'],
               'layout' => '{items}',
