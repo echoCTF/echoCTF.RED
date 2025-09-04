@@ -33,6 +33,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
   </div>
 </div>
 <hr />
+<?php if($model->owner->targetInstances):?>
 <div class="playerInstances">
   <h4>Player Instances</h4>
       <?= GridView::widget([
@@ -70,3 +71,4 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
         ],
       ]); ?>
 </div>
+<?php endif;?>
