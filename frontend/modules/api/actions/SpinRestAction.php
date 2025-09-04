@@ -34,12 +34,6 @@ class SpinRestAction extends \yii\rest\ViewAction
 
       $module->checkNetwork($target);
 
-      if (Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id === $target->id) {
-        Yii::$app->user->identity->instance->updateAttributes(['reboot' => 1]);
-        \Yii::$app->response->statusCode = 201;
-        return ["message"=>\Yii::t('app',"Instance scheduled for reboot"),"code"=>0,"status"=>\Yii::$app->response->statusCode];;
-      }
-
       $this->checkSpinable($target);
 
       $playerSpin = Yii::$app->user->identity->profile->spins;
