@@ -8,6 +8,7 @@ use app\modules\target\models\Target;
 use yii\web\NotFoundHttpException;
 use yii\base\UserException;
 use yii\helpers\Url;
+
 class SpawnRestAction extends \yii\rest\ViewAction
 {
   public $modelClass='\app\modules\target\models\TargetInstance';
