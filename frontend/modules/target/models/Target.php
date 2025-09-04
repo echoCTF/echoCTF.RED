@@ -108,7 +108,7 @@ class Target extends TargetAR
   }
 
   /*
-   * Checks if the target cab be spinned up by the current player
+   * Checks if the target cab be spun up by the current player
    */
   public function getSpinable(): bool
   {

@@ -8,6 +8,7 @@ use app\modules\target\models\Target;
 use yii\web\NotFoundHttpException;
 use yii\base\UserException;
 use yii\helpers\Url;
+
 class SpawnRestAction extends \yii\rest\ViewAction
 {
   public $modelClass='\app\modules\target\models\TargetInstance';
@@ -60,7 +61,9 @@ class SpawnRestAction extends \yii\rest\ViewAction
         else
         {
           \Yii::$app->response->statusCode = 200;
-          \Yii::$app->response->data=["message"=>\Yii::t('app',"Instance already exists for this target."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
+          $ti->reboot=1;
+          $ti->save();
+          \Yii::$app->response->data=["message"=>\Yii::t('app',"Scheduled instance restart."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
         }
 
         return \Yii::$app->response->data;
