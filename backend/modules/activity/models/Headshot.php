@@ -22,6 +22,7 @@ use yii\base\UserException;
  */
 class Headshot extends \yii\db\ActiveRecord
 {
+  public $created_at_ago;
   private $ratings = [
     -1 => "unrated",
     0 => "beginner",

@@ -9,26 +9,30 @@ namespace app\modules\moderation\models;
  */
 class AbuserQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
+  public function init()
+  {
+    parent::init();
 
-    /**
-     * {@inheritdoc}
-     * @return Abuser[]|array
-     */
-    public function all($db = null)
-    {
-        return parent::all($db);
+    if ($this->select === null) {
+      $this->select(['abuser.*', 'TS_AGO(abuser.created_at) as created_at_ago','TS_AGO(abuser.updated_at) as updated_at_ago']);
     }
+  }
 
-    /**
-     * {@inheritdoc}
-     * @return Abuser|array|null
-     */
-    public function one($db = null)
-    {
-        return parent::one($db);
-    }
+  /**
+   * {@inheritdoc}
+   * @return Abuser[]|array
+   */
+  public function all($db = null)
+  {
+    return parent::all($db);
+  }
+
+  /**
+   * {@inheritdoc}
+   * @return Abuser|array|null
+   */
+  public function one($db = null)
+  {
+    return parent::one($db);
+  }
 }

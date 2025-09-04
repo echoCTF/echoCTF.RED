@@ -17,7 +17,7 @@ use yii\grid\GridView;
     [
       'attribute'=>'ts',
       'format'=>'html',
-      'value'=>function($model) { return sprintf('<abbr title="%s">%s</abbr>',Yii::$app->formatter->asRelativeTime($model->ts),$model->ts);}
+      'value'=>function($model) { return Html::tag('abbr',$model->ts_ago,['title'=>$model->ts]); }
     ],
     [
       'class' => 'yii\grid\ActionColumn',
