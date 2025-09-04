@@ -1,8 +1,8 @@
 <?php
 
-namespace app\modules\activity\models;
+namespace app\modules\team\models;
 
-use app\modules\frontend\models\Player;
+use app\models\Player;
 use Yii;
 
 /**
@@ -17,7 +17,7 @@ use Yii;
  * @property Player $player
  * @property Stream $stream
  */
-class TeamStreamAR extends \yii\db\ActiveRecord
+class TeamStream extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -63,7 +63,7 @@ class TeamStreamAR extends \yii\db\ActiveRecord
 
     public function getStream()
     {
-        return $this->hasOne(Stream::class, ['id' => 'stream_id']);
+        return $this->hasOne(\app\models\Stream::class, ['id' => 'stream_id']);
     }
 
     public function getPlayer()

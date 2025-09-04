@@ -7,6 +7,7 @@ use app\modules\team\models\Team;
 use app\modules\team\models\TeamInvite;
 use app\modules\team\models\TeamPlayer;
 use app\modules\team\models\TeamSearch;
+use app\modules\team\models\TeamStream;
 use app\modules\team\models\CreateTeamForm;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -192,9 +193,12 @@ class DefaultController extends \app\components\BaseController
         'pageSize' => Yii::$app->sys->members_per_team === false ? 10 : Yii::$app->sys->members_per_team,
       ]
     ]);
+    $subQuery = TeamStream::find()
+    ->select('stream_id')
+    ->where(['team_id'=>$model->id]);
 
     $stream = \app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
-      ->where(['player_id' => $teamPlayers])
+      ->where(['id' => $subQuery])
       ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
     $streamProvider = new ActiveDataProvider([
       'query' => $stream,
@@ -452,7 +456,7 @@ class DefaultController extends \app\components\BaseController
       return $this->redirect(['view', 'token' => $token]);
     }
     $redir = ['view', 'token' => $token];
-    
+
     if ($tp->player_id === Yii::$app->user->id) {
       if (Yii::$app->user->identity->teamLeader) {
         $this->delete_with_extras();

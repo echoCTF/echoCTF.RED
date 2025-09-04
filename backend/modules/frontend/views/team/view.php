@@ -179,8 +179,8 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
           'allModels' => $model->streams,
           'sort' => [
             'sortParam' => 'teamStream',
-            'attributes' => ['model', 'model_id', 'points', 'ts'],
-            'defaultOrder' => ['ts' => SORT_DESC]
+            'attributes' => ['model', 'model_id', 'points', 'ts','stream_id'],
+            'defaultOrder' => ['stream_id'=>SORT_DESC,'ts' => SORT_DESC]
           ],
           'pagination' => [
             'pageSize' => 10,
@@ -190,7 +190,7 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
           [
             'attribute'=>'formatted',
             'format'=>'html',
-            'value'=>function($model){ return sprintf('%s <abbr title="%s">%s</abbr>',$model->formatted,$model->ts,$model->ts_ago);}
+            'value'=>function($model){ return sprintf('%s %s <abbr title="%s">%s</abbr>',$model->player->username,$model->formatted,$model->ts,$model->ts_ago);}
           ],
         ],
       ]); ?>
@@ -198,7 +198,7 @@ Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
     <div class="col-md-6">
       <h4><b>Team Headshots</b></h4>
       <?= GridView::widget([
-        'id' => 'teamStream',
+        'id' => 'teamHeadshots',
         'dataProvider' => new ArrayDataProvider([
           'allModels' => array_filter($model->streams, function ($item) {
             return isset($item['model']) && $item['model'] === 'headshot';
