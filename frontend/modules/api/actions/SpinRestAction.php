@@ -34,12 +34,6 @@ class SpinRestAction extends \yii\rest\ViewAction
 
       $module->checkNetwork($target);
 
-      if (Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id === $target->id) {
-        Yii::$app->user->identity->instance->updateAttributes(['reboot' => 1]);
-        \Yii::$app->response->statusCode = 201;
-        return ["message"=>\Yii::t('app',"Instance scheduled for reboot"),"code"=>0,"status"=>\Yii::$app->response->statusCode];;
-      }
-
       $this->checkSpinable($target);
 
       $playerSpin = Yii::$app->user->identity->profile->spins;
@@ -52,7 +46,7 @@ class SpinRestAction extends \yii\rest\ViewAction
         \Yii::$app->response->statusCode = 201;
         \Yii::$app->response->data=["message"=>\Yii::t('app',"Queued target for spin"),"code"=>0,"status"=>\Yii::$app->response->statusCode];
       } else
-        throw new NotFoundHttpException(\Yii::t('app', 'Failed to queue target for restart.'));
+        throw new NotFoundHttpException(\Yii::t('app', 'Failed to queue target for reboot.'));
     } catch (\Exception $e) {
       \Yii::$app->response->statusCode = 422;
       \Yii::$app->response->data=["message"=>$e->getMessage(),"code"=>0,"status"=>\Yii::$app->response->statusCode];
@@ -70,6 +64,6 @@ class SpinRestAction extends \yii\rest\ViewAction
   protected function checkSpinable($target)
   {
     if ($target->spinable !== true)
-      throw new NotFoundHttpException(\Yii::t('app', 'Not allowed to spin target. Target cannot not be spined.'));
+      throw new NotFoundHttpException(\Yii::t('app', 'Not allowed to spin target. Target cannot be spun.'));
   }
 }
