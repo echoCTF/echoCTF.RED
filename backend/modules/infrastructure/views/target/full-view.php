@@ -15,43 +15,65 @@ $this->params['breadcrumbs'][] = $this->title;
 <section class="container">
   <div class="profile-view-full">
     <!-- Begin .page-heading -->
-    <p></p>
     <?= $this->render('full-view/_heading', ['model' => $model]); ?>
-    <p>
-        <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Logs', ['logs', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
-        <?= Html::a('Exec', ['exec', 'id' => $model->id], ['class' => 'btn btn-danger','style'=>'background: black; color: white']) ?>
-        <?= Html::a('Generate', ['generate', 'id' => $model->id], ['class' => 'btn btn-info', 'style'=>'background-color: gray']) ?>
-        <?= Html::a('Spin', ['spin', 'id' => $model->id], [
+    <div class="row">
+            <div class="col-md-3">
+        <p>
+          <?= yii\jui\AutoComplete::widget([
+            'name' => 'target_jump',
+            'options' => [
+              'class' => 'form-control form-control-md rounded-pill shadow-sm border-primary',
+              'placeholder' => '🔍 Jump to target...',
+            ],
+            'clientOptions' => [
+              'source' => Url::to(['/infrastructure/target/ajax-search']),
+              'minLength' => 2,
+              'select' => new \yii\web\JsExpression("function(event, ui) {
+                    window.location.href = '" . Url::to(['/infrastructure/target/full-view']) . "&id=' + ui.item.id;
+                }"),
+            ],
+          ]); ?>
+        </p>
+      </div>
+
+      <div class="col">
+        <p>
+          <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+          <?= Html::a('Logs', ['logs', 'id' => $model->id], ['class' => 'btn btn-info']) ?>
+          <?= Html::a('Exec', ['exec', 'id' => $model->id], ['class' => 'btn btn-danger', 'style' => 'background: black; color: white']) ?>
+          <?= Html::a('Generate', ['generate', 'id' => $model->id], ['class' => 'btn btn-info', 'style' => 'background-color: gray']) ?>
+          <?= Html::a('Spin', ['spin', 'id' => $model->id], [
             'class' => 'btn btn-warning',
             'data' => [
-                'confirm' => 'Are you sure you want to restart the host?',
-                'method' => 'post',
+              'confirm' => 'Are you sure you want to restart the host?',
+              'method' => 'post',
             ],
-        ]) ?>
-        <?= Html::a('Pull', ['pull', 'id' => $model->id], [
+          ]) ?>
+          <?= Html::a('Pull', ['pull', 'id' => $model->id], [
             'class' => 'btn btn-success',
             'data' => [
-                'method' => 'post',
+              'method' => 'post',
             ],
-        ]) ?>
+          ]) ?>
 
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+          <?= Html::a('Delete', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
+              'confirm' => 'Are you sure you want to delete this item?',
+              'method' => 'post',
             ],
-        ]) ?>
-        <?= Html::a('Destroy', ['destroy', 'id' => $model->id], [
+          ]) ?>
+          <?= Html::a('Destroy', ['destroy', 'id' => $model->id], [
             'class' => 'btn btn-info',
             'data' => [
-                'confirm' => 'Are you sure you want to destroy the container for this item?',
-                'method' => 'post',
+              'confirm' => 'Are you sure you want to destroy the container for this item?',
+              'method' => 'post',
             ],
-        ]) ?>
+          ]) ?>
+        </p>
+      </div> <!-- /col -->
+    </div> <!-- /row -->
 
-    </p>
     <div class="row">
       <div class="col-md-4">
         <?= $this->render('full-view/_target_booleans', ['model' => $model]); ?>
@@ -64,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
           echo TabsX::widget([
             'position' => TabsX::POS_ABOVE,
             'align' => TabsX::ALIGN_LEFT,
-            'encodeLabels'=>false,
+            'encodeLabels' => false,
             'pluginOptions' => [
               'enableCache' => false,
               'cacheTimeout' => 10000
@@ -82,13 +104,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'content' => $this->render('full-view/_metadata-tab', ['model' => $model->metadata]),
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'options' => ['id' => '_metadata-tab'],
-                'visible' => $model->metadata!==null,
+                'visible' => $model->metadata !== null,
               ],
               [
                 'label' => '<i class="fas fa-server" data-toggle="tooltip" data-placement="top" title="Target Instances"></i>',
                 'linkOptions' => ['data-url' => Url::to(['instances', 'id' => $model->id])],
                 'options' => ['id' => 'instances-tab'],
-                'visible'=>count($model->instances)>0,
+                'visible' => count($model->instances) > 0,
               ],
               [
                 'label' => '<i class="fas fa-calendar-alt" data-toggle="tooltip" data-placement="top" title="Target Network Migration Schedule"></i>',

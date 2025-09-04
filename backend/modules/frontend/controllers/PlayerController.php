@@ -716,6 +716,7 @@ class PlayerController extends \app\components\BaseController
         function ($model) {
           return [
             'id' => $model->id,
+            'pid'=>$model->profile->id,
             'label' => sprintf("(id: %d / pid: %d) %s <%s>%s", $model->id, $model->profile->id, $model->username, $model->email, $model->status === 10 ? '' : ' (innactive)'),
           ];
         }

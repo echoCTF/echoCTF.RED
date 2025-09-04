@@ -1,7 +1,9 @@
+<div class="row">
+<div class="col-md-4">
 <div class="dropdown">
 <?php
 use yii\bootstrap5\ButtonDropdown;
-
+use yii\helpers\Url;
 $player_actions = [
   '<div class="text-center"><b>Player Actions</b></div>',
   ['label' => 'View player', 'url' => ['player/view', 'id' => $model->player_id]],
@@ -93,4 +95,25 @@ if (\Yii::$app->sys->player_require_approval === true)
   echo "<b>Status: </b>",$model->owner::APPROVAL[$model->owner->approval],"\n";
 }
 ?>
-</div>
+</div><!--// dropdown -->
+</div><!--//col -->
+<div class="col">
+<?php
+
+echo yii\jui\AutoComplete::widget([
+            'name' => 'player_jump',
+            'options' => [
+              'class' => 'form-control form-control-md rounded-pill shadow-sm border-primary',
+              'placeholder' => '🔍 Jump to player...',
+            ],
+            'clientOptions' => [
+              'source' => Url::to(['/frontend/player/ajax-search']),
+              'minLength' => 2,
+              'select' => new \yii\web\JsExpression("function(event, ui) {
+                    window.location.href = '" . Url::to(['/frontend/profile/view-full']) . "&id=' + ui.item.pid;
+                }"),
+            ],
+          ]);
+?>
+</div><!-- /col -->
+</div><!-- /row -->
