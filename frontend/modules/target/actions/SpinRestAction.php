@@ -23,7 +23,7 @@ class SpinRestAction extends \yii\rest\ViewAction
       $module->checkNetwork($target);
 
       $this->checkSpinable($target);
-      $msg=\Yii::t('app',"Target [%s] queued for restart. You will receive a notification when the operation is completed.");
+      $msg=\Yii::t('app',"Target [%s] queued for reboot. You will receive a notification when the operation is completed.");
       if($target->ondemand && $target->ondemand->state===-1)
         $msg=\Yii::t('app',"Target [%s] queued to power-up. You will receive a notification when the operation is completed.");
 
@@ -42,7 +42,7 @@ class SpinRestAction extends \yii\rest\ViewAction
         }
       }
       else
-        throw new NotFoundHttpException(\Yii::t('app','Failed to queue target for restart.'));
+        throw new NotFoundHttpException(\Yii::t('app','Failed to queue target for reboot.'));
 
     }
     catch(\Exception $e)
@@ -74,7 +74,7 @@ class SpinRestAction extends \yii\rest\ViewAction
   protected function checkSpinable($target)
   {
     if($target->spinable !== true)
-      throw new NotFoundHttpException(\Yii::t('app','Not allowed to spin target. Target cannot not be spined.'));
+      throw new NotFoundHttpException(\Yii::t('app','Not allowed to spin target. Target cannot be spun.'));
   }
 
 }
