@@ -307,9 +307,8 @@ class DefaultController extends \app\components\BaseController
       }
     }
     $model->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC]);
-    $streamModel=$model;
-    if (Yii::$app->sys->stream_record_limit !== false)
-    {
+    $streamModel = $model;
+    if (Yii::$app->sys->stream_record_limit !== false) {
       $model->limit(Yii::$app->sys->stream_record_limit);
       $streamModel = \app\models\Stream::find()
         ->from(['t' => $model])
@@ -361,12 +360,32 @@ class DefaultController extends \app\components\BaseController
     }
 
     $treasure = Treasure::find()->claimable()->byCode($string)->one();
-    if ($treasure !== null && Treasure::find()->byCode($string)->claimable()->notBy((int) Yii::$app->user->id)->one() === null) {
+
+    if ($treasure === null && Yii::$app->sys->treasure_secret_key !== false) {
+      $treasure = Treasure::find()
+        ->claimable()
+        ->byEncryptedCode($string)
+        ->one();
+    }
+
+    if ($treasure !== null && PlayerTreasure::findOne(['player_id'=>(int) Yii::$app->user->id,'treasure_id'=>$treasure->id]) !== null) {
       Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
       return $this->renderAjax('claim');
     } elseif ($treasure === null) {
       Yii::$app->counters->increment('failed_claims');
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag' => Html::encode($string)]));
+      if (Yii::$app->sys->log_failed_claims) {
+        Yii::$app->db->createCommand()
+          ->insert('abuser', [
+            'player_id' => Yii::$app->user->id,
+            'title' => $string,
+            'reason' => 'failed_claim',
+            'model' => 'failed_claim',
+            'model_id' => 0,
+            'created_at' => new \yii\db\Expression('NOW()'),
+            'updated_at' => new \yii\db\Expression('NOW()'),
+          ])->execute();
+      }
       return $this->renderAjax('claim');
     }
 
