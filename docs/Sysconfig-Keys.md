@@ -44,6 +44,9 @@
 * `module_smartcity_disabled`: Whether or not the smartcity module is disabled (hides the menu from backend)
 * `module_speedprogramming_enabled`: Whether or not the Speed Programming module is enabled (hides the menu from backend also)
 
+* `log_failed_claims`: Log failed claim attempts?
+* `treasure_secret_key`: Encrypt flags per player?
+
 ## String and numeric key/val pairs
 * `event_name` A name for your event
 * `writeup_rules` Your rules for writeup submissions
