@@ -43,6 +43,7 @@ class Treasure extends \yii\db\ActiveRecord
   public $file;
   public $fullpath;
   public $content;
+  public $encrypted_code;
     /**
      * {@inheritdoc}
      */
