@@ -1,4 +1,5 @@
 <?php
+
 namespace app\modules\infrastructure\models;
 
 use yii\base\Model;
@@ -7,6 +8,7 @@ use Docker\DockerClientFactory;
 use Docker\API\Model\RestartPolicy;
 use Docker\API\Model\HostConfig;
 use Docker\API\Model\NetworkingConfig;;
+
 use Docker\API\Model\ContainersCreatePostBody;
 use Docker\API\Model\EndpointSettings;
 use Docker\API\Model\EndpointIPAMConfig;
@@ -25,16 +27,16 @@ class DockerContainer extends Model
   public $image;
   public $net;
   public $dns;
-  public $targetVariables=[];
-  public $targetVolumes=[];
+  public $targetVariables = [];
+  public $targetVolumes = [];
   public $mac;
   public $memory;
   public $server;
   public $ssl;
   public $parameters;
   public $imageparams;
-  public $timeout=2000;
-
+  public $timeout = 2000;
+  public $labels = [];
   private $container;
   private $client;
   private $docker;
@@ -46,47 +48,46 @@ class DockerContainer extends Model
 
   public function __set($name, $value)
   {
-    if(!property_exists($this,$name))
+    if (!property_exists($this, $name))
       return;
-    parent::__set($name,$value);
+    parent::__set($name, $value);
   }
 
   public function setTargetVariables($value)
   {
-    if(is_array($value)) $this->targetVariables=$value;
-    $this->targetVariables=[];
+    if (is_array($value)) $this->targetVariables = $value;
+    $this->targetVariables = [];
   }
 
   public function setTargetVolumes($value)
   {
-    if(is_array($value)) $this->targetVolumes=$value;
-    $this->targetVolumes=[];
+    if (is_array($value)) $this->targetVolumes = $value;
+    $this->targetVolumes = [];
   }
 
   public function connectAPI()
   {
-    if($this->docker!==null) return;
+    if ($this->docker !== null) return;
 
-    $params['remote_socket']=$this->server;
-    $params['ssl']=$this->ssl;
-    $params['timeout']=$this->timeout;
+    $params['remote_socket'] = $this->server;
+    $params['ssl'] = $this->ssl;
+    $params['timeout'] = $this->timeout;
 
-    $this->client=DockerClientFactory::create($params);
-    $this->docker=Docker::create($this->client);
-
+    $this->client = DockerClientFactory::create($params);
+    $this->docker = Docker::create($this->client);
   }
 
 
   // Spin a container
   public function spin()
   {
-    $targetVariables=null;
+    $targetVariables = null;
     $this->connectAPI();
 
-    $hostConfig=$this->hostConfig();
+    $hostConfig = $this->hostConfig();
 
-    $containerConfig=new ContainersCreatePostBody();
-/*
+    $containerConfig = new ContainersCreatePostBody();
+    /*
     $endpointSettings=new EndpointSettings();
     $endpointIPAMConfig=new EndpointIPAMConfig();
     $endpointIPAMConfig->setIPv4Address($this->ipoctet);// target->ipoctet
@@ -98,37 +99,41 @@ class DockerContainer extends Model
     ]));
     $containerConfig->setNetworkingConfig($nwc);
 */
-    $containerConfig->setHostname($this->fqdn);// target->fqdn
-    $containerConfig->setImage($this->image);// target->image
+    $containerConfig->setHostname($this->fqdn); // target->fqdn
+    $containerConfig->setImage($this->image); // target->image
     $containerConfig->setOpenStdin(true);
     $containerConfig->setTty(true);
     $containerConfig->setAttachStdin(true);
     $containerConfig->setAttachStdout(true);
     $containerConfig->setAttachStderr(true);
 
-    foreach($this->targetVariables as $var)
-      $targetVariables[]=sprintf("%s=%s", $var->key, $var->val);
+    foreach ($this->targetVariables as $var)
+      $targetVariables[] = sprintf("%s=%s", $var->key, $var->val);
 
     $containerConfig->setEnv($targetVariables);
     $containerConfig->setHostConfig($hostConfig);
 
-    $this->container=$this->docker->containerCreate($containerConfig, ['name'=>$this->name]);
+    if (!empty($this->labels) && is_array($this->labels)) {
+      $containerConfig->setLabels($this->labels);
+    }
+
+    $this->container = $this->docker->containerCreate($containerConfig, ['name' => $this->name]);
     $this->docker->containerStart($this->container->getId());
   }
 
   public function hostConfig()
   {
-    $targetVolumes=null;
-    $restartPolicy=new RestartPolicy();
+    $targetVolumes = null;
+    $restartPolicy = new RestartPolicy();
     $restartPolicy->setName('always');
-    $hostConfig=new HostConfig();
-    if($this->memory !== null)
+    $hostConfig = new HostConfig();
+    if ($this->memory !== null)
       $hostConfig->setMemory($this->memory);
 
     $hostConfig->setNetworkMode($this->net);
     $hostConfig->setDns([$this->dns]);
-    foreach($this->targetVolumes as $var)
-      $targetVolumes[]=sprintf("%s:%s", $var->volume, $var->bind);
+    foreach ($this->targetVolumes as $var)
+      $targetVolumes[] = sprintf("%s:%s", $var->volume, $var->bind);
     $hostConfig->setBinds($targetVolumes);
 
     $hostConfig->setRestartPolicy($restartPolicy);
@@ -138,7 +143,7 @@ class DockerContainer extends Model
   public function getContainer()
   {
     $this->connectAPI();
-/*
+    /*
     if(!$this->container)
     {
      $this->container=$this->docker->getContainerManager()->find($this->name);
@@ -149,7 +154,7 @@ class DockerContainer extends Model
     }
 */
 
-    $this->container=$this->docker->containerInspect($this->container->getId());
+    $this->container = $this->docker->containerInspect($this->container->getId());
     return $this->container;
   }
 
@@ -160,31 +165,27 @@ class DockerContainer extends Model
 
   public function pull()
   {
-    if($this->server == null) return false;
+    if ($this->server == null) return false;
     $this->connectAPI();
-    $authHeaders=[];
-    if(!empty($this->imageparams))
-    {
+    $authHeaders = [];
+    if (!empty($this->imageparams)) {
       $registryConfig = new AuthConfig();
-      $decoded=\yii\helpers\Json::decode($this->imageparams, false);
+      $decoded = \yii\helpers\Json::decode($this->imageparams, false);
 
-      if($decoded !== null && property_exists($decoded, 'username'))
-      {
+      if ($decoded !== null && property_exists($decoded, 'username')) {
         $registryConfig->setUsername($decoded->username);
       }
 
-      if($decoded !== null && property_exists($decoded, 'password'))
-      {
+      if ($decoded !== null && property_exists($decoded, 'password')) {
         $registryConfig->setPassword($decoded->password);
       }
 
-      if($decoded !== null && property_exists($decoded, 'email'))
-      {
+      if ($decoded !== null && property_exists($decoded, 'email')) {
         $registryConfig->setEmail($decoded->email);
       }
-      $authHeaders['X-Registry-Auth']=$registryConfig;
+      $authHeaders['X-Registry-Auth'] = $registryConfig;
     }
-    $imageCreateResult=$this->docker->imageCreate($this->image, ['fromImage'=>$this->image],$authHeaders);
+    $imageCreateResult = $this->docker->imageCreate($this->image, ['fromImage' => $this->image], $authHeaders);
     $imageCreateResult->wait();
     return true;
   }
@@ -192,15 +193,14 @@ class DockerContainer extends Model
   public function destroy()
   {
     $this->connectAPI();
-    $this->docker->containerDelete($this->name, ['force'=>true]);
+    $this->docker->containerDelete($this->name, ['force' => true]);
   }
 
   public function getMemory()
   {
-    if($this->parameters !== NULL)
-    {
-      $decoded=\yii\helpers\Json::decode($this->parameters, false);
-      if($decoded !== null && property_exists($decoded, 'hostConfig') && property_exists($decoded->hostConfig, 'Memory'))
+    if ($this->parameters !== NULL) {
+      $decoded = \yii\helpers\Json::decode($this->parameters, false);
+      if ($decoded !== null && property_exists($decoded, 'hostConfig') && property_exists($decoded->hostConfig, 'Memory'))
         return intval($decoded->hostConfig->Memory) * 1024 * 1024;
     }
     return null;

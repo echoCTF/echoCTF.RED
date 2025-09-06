@@ -20,6 +20,10 @@ use app\widgets\BooleanTransform as BT;
           <td><?= BT::toOnOff($model->active) ?></td>
         </tr>
         <tr>
+          <td><i class="fas fa-flag-checkered"></i> Dynamic Treasures</td>
+          <td><?= BT::toOnOff($model->dynamic_treasures) ?></td>
+        </tr>
+        <tr>
           <td><i class="fas fa-stopwatch"></i> Timer</td>
           <td><?= BT::toOnOff($model->timer) ?></td>
         </tr>

@@ -72,6 +72,9 @@ use yii\bootstrap5\ActiveForm;
         <div class="col-md-2">
           <?= $form->field($model, 'headshot_spin')->checkbox()->hint('Automatic spin target on headshot?') ?>
         </div>
+        <div class="col-md-2">
+          <?= $form->field($model, 'dynamic_treasures')->checkbox()->hint('Target supports dynamic treasures?') ?>
+        </div>
 
     </div>
     <div class="row">
