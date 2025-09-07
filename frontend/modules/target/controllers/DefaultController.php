@@ -362,13 +362,20 @@ class DefaultController extends \app\components\BaseController
     $treasure = Treasure::find()->claimable()->byCode($string)->one();
 
     if ($treasure === null && Yii::$app->sys->treasure_secret_key !== false) {
-      $treasure = Treasure::find()
-        ->claimable()
-        ->byEncryptedCode($string)
-        ->one();
+      if (Yii::$app->sys->team_claims_allowed === true && Yii::$app->user->identity->teamPlayer) {
+        $treasure = Treasure::find()
+          ->claimable()
+          ->byTeamEncryptedCode($string,Yii::$app->user->identity->teamPlayer->team_id)
+          ->one();
+      } else {
+        $treasure = Treasure::find()
+          ->claimable()
+          ->byEncryptedCode($string)
+          ->one();
+      }
     }
 
-    if ($treasure !== null && PlayerTreasure::findOne(['player_id'=>(int) Yii::$app->user->id,'treasure_id'=>$treasure->id]) !== null) {
+    if ($treasure !== null && PlayerTreasure::findOne(['player_id' => (int) Yii::$app->user->id, 'treasure_id' => $treasure->id]) !== null) {
       Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
       return $this->renderAjax('claim');
     } elseif ($treasure === null) {
