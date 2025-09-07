@@ -82,38 +82,41 @@ class TreasureQuery extends \yii\db\ActiveQuery
       return $this;
     }
 
-    // Join Treasure with TeamPlayer
-    $this->innerJoin('TeamPlayer tp', 'tp.player_id = Treasure.player_id')
-      ->andWhere(['tp.team_id' => $team_id, 'tp.approved' => 1]);
+    // Join approved team players
+    $this->innerJoin(
+        'team_player tp',
+        'tp.team_id = :team_id AND tp.approved = 1',
+        [':team_id' => $team_id]
+    );
 
     return $this->andWhere([
       'or',
       new Expression(
-        'md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey))) = :code',
+        'md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey))) = :code',
         [':secretKey' => $secretKey, ':code' => $code]
       ),
       new Expression(
-        'CONCAT("ETSCTF_", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        'CONCAT("ETSCTF_", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
         [':secretKey' => $secretKey, ':code' => $code]
       ),
       new Expression(
-        'CONCAT("ETSCTF:", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        'CONCAT("ETSCTF:", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
         [':secretKey' => $secretKey, ':code' => $code]
       ),
       new Expression(
-        'CONCAT("ETSCTF ", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        'CONCAT("ETSCTF ", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
         [':secretKey' => $secretKey, ':code' => $code]
       ),
       new Expression(
-        'CONCAT("ETSCTF.", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        'CONCAT("ETSCTF.", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
         [':secretKey' => $secretKey, ':code' => $code]
       ),
       new Expression(
-        'CONCAT("ETSCTF-", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        'CONCAT("ETSCTF-", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
         [':secretKey' => $secretKey, ':code' => $code]
       ),
       new Expression(
-        'CONCAT("ETSCTF{", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey))), "}") = :code',
+        'CONCAT("ETSCTF{", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey))), "}") = :code',
         [':secretKey' => $secretKey, ':code' => $code]
       ),
     ]);
