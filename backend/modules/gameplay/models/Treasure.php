@@ -174,5 +174,13 @@ class Treasure extends \yii\db\ActiveRecord
       }
       return true;
     }
+    /**
+     * {@inheritdoc}
+     * @return TutorialQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new TreasureQuery(get_called_class());
+    }
 
 }
