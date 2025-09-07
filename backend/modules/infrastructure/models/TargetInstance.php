@@ -232,4 +232,33 @@ class TargetInstance extends \yii\db\ActiveRecord
       return false;
     }
   }
+
+  public function getEncryptedTreasures()
+  {
+    $query = \app\modules\gameplay\models\Treasure::find()
+      ->select([
+        'id',
+        'code',
+        new \yii\db\Expression(
+          "MD5(HEX(AES_ENCRYPT(CONCAT(code, :playerId), :secretKey))) AS encrypted_code",
+          [':playerId' => $this->player_id, ':secretKey' => Yii::$app->sys->treasure_secret_key]
+        ),
+        'target_id',
+        'location',
+        'category',
+      ])
+      ->where(['target_id' => $this->target_id]);
+    $treasures = [];
+    foreach ($query->all() as $t) {
+      if ($t->category == 'env' && $t->location=='environment') {
+        $treasures['env'][] = ["src" => $t->code, 'dest' => $t->encrypted_code];
+      } else if (str_contains($t->location, $t->code)) {
+        $treasures['mv'][] = ["src" => $t->location, 'dest' => str_replace($t->code, $t->encrypted_code, $t->location)];
+      } else {
+        $treasures['sed'][] = ["src"=>$t->code, 'dest'=>$t->encrypted_code,'file'=>$t->location];
+      }
+    }
+
+    return ['fs'=>$treasures];
+  }
 }
