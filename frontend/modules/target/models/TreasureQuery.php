@@ -72,6 +72,52 @@ class TreasureQuery extends \yii\db\ActiveQuery
       ]);
   }
 
+  public function byTeamEncryptedCode($code, $team_id = false, $secretKey = false)
+  {
+    if ($secretKey == false && Yii::$app->sys->treasure_secret_key !== false) {
+      $secretKey = Yii::$app->sys->treasure_secret_key;
+    }
+
+    if ($team_id === false || $secretKey === false) {
+      return $this;
+    }
+
+    // Join Treasure with TeamPlayer
+    $this->innerJoin('TeamPlayer tp', 'tp.player_id = Treasure.player_id')
+      ->andWhere(['tp.team_id' => $team_id, 'tp.approved' => 1]);
+
+    return $this->andWhere([
+      'or',
+      new Expression(
+        'md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey))) = :code',
+        [':secretKey' => $secretKey, ':code' => $code]
+      ),
+      new Expression(
+        'CONCAT("ETSCTF_", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        [':secretKey' => $secretKey, ':code' => $code]
+      ),
+      new Expression(
+        'CONCAT("ETSCTF:", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        [':secretKey' => $secretKey, ':code' => $code]
+      ),
+      new Expression(
+        'CONCAT("ETSCTF ", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        [':secretKey' => $secretKey, ':code' => $code]
+      ),
+      new Expression(
+        'CONCAT("ETSCTF.", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        [':secretKey' => $secretKey, ':code' => $code]
+      ),
+      new Expression(
+        'CONCAT("ETSCTF-", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey)))) = :code',
+        [':secretKey' => $secretKey, ':code' => $code]
+      ),
+      new Expression(
+        'CONCAT("ETSCTF{", md5(HEX(AES_ENCRYPT(CONCAT(Treasure.code, tp.player_id), :secretKey))), "}") = :code',
+        [':secretKey' => $secretKey, ':code' => $code]
+      ),
+    ]);
+  }
   public function claimable()
   {
     return $this->andWhere(new \yii\db\Expression('appears!=0'));
