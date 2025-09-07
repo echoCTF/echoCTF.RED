@@ -41,6 +41,7 @@ use yii\db\Expression;
  * @property bool $writeup_allowed
  * @property bool $instance_allowed
  * @property bool $require_findings
+ * @property bool $dynamic_treasures
  * @property int $headshot_points
  * @property int $first_headshot_points
  * @property string $created_at The date this record was created_at
@@ -50,24 +51,28 @@ use yii\db\Expression;
  * @property TargetVolume[] $targetVolumes
  * @property Treasure[] $treasures
  * @property Headshot[] $headshots
+ * @property Treasure $envTreasure
+ * @property Treasure $rootTreasure
+ * @property Treasure $systemTreasures
  * @property int $memory
  */
 class TargetAR extends \yii\db\ActiveRecord
 {
   public $ipoctet;
-  public $statuses=[
-    'online'=>'online',
-    'offline'=>'offline',
-    'powerup'=>'powerup',
-    'powerdown'=>'powerdown',
-    'maintenance'=>'maintenance'];
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'target';
-    }
+  public $statuses = [
+    'online' => 'online',
+    'offline' => 'offline',
+    'powerup' => 'powerup',
+    'powerdown' => 'powerdown',
+    'maintenance' => 'maintenance'
+  ];
+  /**
+   * {@inheritdoc}
+   */
+  public static function tableName()
+  {
+    return 'target';
+  }
 
   public function behaviors()
   {
@@ -94,196 +99,210 @@ class TargetAR extends \yii\db\ActiveRecord
     ];
   }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['parameters', 'description','imageparams'], 'string'],
-            [['name', 'fqdn'], 'required'],
-            [['ip', 'timer','active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','healthcheck','writeup_allowed','player_spin','headshot_spin','instance_allowed','require_findings','headshot_points','first_headshot_points'], 'integer'],
-            [['headshot_points','first_headshot_points'],'default','value'=>0],
-            [['ipoctet'], 'ip'],
-            [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns','category'], 'string', 'max' => 255],
-            [['image'], 'filter', 'filter'=>'strtolower'],
-            [['mac'], 'string', 'max' => 30],
-            [['name'], 'unique'],
-            [['fqdn'], 'unique'],
-            [['mac'], 'unique'],
-            [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
-            [['status'], 'default', 'value'=> 'offline'],
-            [['scheduled_at'], 'datetime', 'format'=>'php:Y-m-d H:i:s'],
-            [['created_at'], 'datetime', 'format'=>'php:Y-m-d H:i:s'],
-            [['weight'],'filter', 'filter' => 'intval'],
-        ];
+  /**
+   * {@inheritdoc}
+   */
+  public function rules()
+  {
+    return [
+      [['parameters', 'description', 'imageparams'], 'string'],
+      [['name', 'fqdn'], 'required'],
+      [['dynamic_treasures', 'ip', 'timer', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp', 'weight', 'healthcheck', 'writeup_allowed', 'player_spin', 'headshot_spin', 'instance_allowed', 'require_findings', 'headshot_points', 'first_headshot_points'], 'integer'],
+      [['headshot_points', 'first_headshot_points'], 'default', 'value' => 0],
+      [['ipoctet'], 'ip'],
+      [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'category'], 'string', 'max' => 255],
+      [['image'], 'filter', 'filter' => 'strtolower'],
+      [['mac'], 'string', 'max' => 30],
+      [['name'], 'unique'],
+      [['fqdn'], 'unique'],
+      [['mac'], 'unique'],
+      [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
+      [['status'], 'default', 'value' => 'offline'],
+      [['scheduled_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+      [['created_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
+      [['weight'], 'filter', 'filter' => 'intval'],
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function attributeLabels()
+  {
+    return [
+      'id' => 'ID',
+      'name' => 'Name',
+      'fqdn' => 'Fqdn',
+      'purpose' => 'Purpose',
+      'description' => 'Description',
+      'ip' => 'IP',
+      'mac' => 'Mac',
+      'active' => 'Active',
+      'net' => 'Net',
+      'server' => 'Server',
+      'image' => 'Image',
+      'dns' => 'Dns',
+      'parameters' => 'Parameters',
+      'rootable' => 'Rootable',
+      'difficulty' => 'Difficulty',
+      'suggested_xp' => 'Suggested XP',
+      'required_xp' => 'Required XP',
+      'timer' => 'Timer',
+      'weight' => 'Weight',
+      'category' => 'Category'
+    ];
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getFindings()
+  {
+    return $this->hasMany(Finding::class, ['target_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getNetworkTarget()
+  {
+    return $this->hasOne(NetworkTarget::class, ['target_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getNetwork()
+  {
+    return $this->hasOne(Network::class, ['id' => 'network_id'])->via('networkTarget');
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getMetadata()
+  {
+    return $this->hasOne(TargetMetadata::class, ['target_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getTargetVariables()
+  {
+    return $this->hasMany(TargetVariable::class, ['target_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getTargetVolumes()
+  {
+    return $this->hasMany(TargetVolume::class, ['target_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getTreasures()
+  {
+    return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight' => SORT_DESC, 'id' => SORT_DESC]);
+  }
+
+  public function getEnvTreasure()
+  {
+    return $this->hasOne(Treasure::class, ['target_id' => 'id'])
+      ->andOnCondition(['category' => 'env']);
+  }
+
+  public function getRootTreasure()
+  {
+    return $this->hasOne(Treasure::class, ['target_id' => 'id'])
+      ->andOnCondition(['category' => 'root']);
+  }
+
+  public function getSystemTreasures()
+  {
+    return $this->hasMany(Treasure::class, ['target_id' => 'id'])
+      ->andOnCondition(['category' => 'system']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getHeadshots()
+  {
+    return $this->hasMany(Headshot::class, ['target_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getInstances()
+  {
+    return $this->hasMany(TargetInstance::class, ['target_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getSpinQueue()
+  {
+    return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
+  }
+
+  public function afterFind()
+  {
+    parent::afterFind();
+    $this->ipoctet = long2ip($this->ip);
+  }
+
+
+  public function beforeSave($insert)
+  {
+    if (!parent::beforeSave($insert)) {
+      return false;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'name' => 'Name',
-            'fqdn' => 'Fqdn',
-            'purpose' => 'Purpose',
-            'description' => 'Description',
-            'ip' => 'IP',
-            'mac' => 'Mac',
-            'active' => 'Active',
-            'net' => 'Net',
-            'server' => 'Server',
-            'image' => 'Image',
-            'dns' => 'Dns',
-            'parameters' => 'Parameters',
-            'rootable' => 'Rootable',
-            'difficulty' => 'Difficulty',
-            'suggested_xp'=>'Suggested XP',
-            'required_xp'=>'Required XP',
-            'timer'=>'Timer',
-            'weight'=>'Weight',
-            'category'=>'Category'
-        ];
+    if ($insert && $this->created_at === null) {
+      $this->created_at = new \yii\db\Expression('now()');
     }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFindings()
-    {
-        return $this->hasMany(Finding::class, ['target_id' => 'id']);
-    }
+    $this->ip = ip2long($this->ipoctet);
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNetworkTarget()
-    {
-        return $this->hasOne(NetworkTarget::class, ['target_id' => 'id']);
-    }
+    return true;
+  }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNetwork()
-    {
-        return $this->hasOne(Network::class, ['id' => 'network_id'])->via('networkTarget');
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMetadata()
-    {
-        return $this->hasOne(TargetMetadata::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTargetVariables()
-    {
-        return $this->hasMany(TargetVariable::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTargetVolumes()
-    {
-        return $this->hasMany(TargetVolume::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTreasures()
-    {
-        return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight' => SORT_DESC,'id'=>SORT_DESC]);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getHeadshots()
-    {
-        return $this->hasMany(Headshot::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getInstances()
-    {
-        return $this->hasMany(TargetInstance::class, ['target_id' => 'id']);
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSpinQueue()
-    {
-        return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
-    }
-
-    public function afterFind() {
-      parent::afterFind();
-      $this->ipoctet=long2ip($this->ip);
-    }
-
-
-    public function beforeSave($insert)
-    {
-      if(!parent::beforeSave($insert))
-      {
-        return false;
+  public function afterSave($insert, $changedAttributes)
+  {
+    if (!$this->isNewRecord) {
+      if (array_key_exists('name', $changedAttributes)) {
+        Yii::$app->db->createCommand('UPDATE finding SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt', [':search' => $changedAttributes['name'], ':replace' => $this->name, ':tgt' => $this->id])->execute();
+        Yii::$app->db->createCommand('UPDATE treasure SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt', [':search' => $changedAttributes['name'], ':replace' => $this->name, ':tgt' => $this->id])->execute();
       }
-
-      if($insert && $this->created_at===null)
-      {
-          $this->created_at=new \yii\db\Expression('now()');
+      if (array_key_exists('ip', $changedAttributes)) {
+        Yii::$app->db->createCommand('UPDATE finding SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt', [':search' => long2ip($changedAttributes['ip']), ':replace' => $this->ipoctet, ':tgt' => $this->id])->execute();
+        Yii::$app->db->createCommand('UPDATE treasure SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt', [':search' => long2ip($changedAttributes['ip']), ':replace' => $this->ipoctet, ':tgt' => $this->id])->execute();
       }
-
-      $this->ip=ip2long($this->ipoctet);
-
-      return true;
     }
+    parent::afterSave($insert, $changedAttributes);
+  }
 
-    public function afterSave($insert, $changedAttributes)
-    {
-        if(!$this->isNewRecord)
-        {
-            if(array_key_exists('name',$changedAttributes))
-            {
-                Yii::$app->db->createCommand('UPDATE finding SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt',[':search'=>$changedAttributes['name'],':replace'=>$this->name,':tgt'=>$this->id])->execute();
-                Yii::$app->db->createCommand('UPDATE treasure SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt',[':search'=>$changedAttributes['name'],':replace'=>$this->name,':tgt'=>$this->id])->execute();
-            }
-            if(array_key_exists('ip',$changedAttributes))
-            {
-                Yii::$app->db->createCommand('UPDATE finding SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt',[':search'=>long2ip($changedAttributes['ip']),':replace'=>$this->ipoctet,':tgt'=>$this->id])->execute();
-                Yii::$app->db->createCommand('UPDATE treasure SET name=REPLACE(name,:search,:replace),pubname=REPLACE(pubname,:search,:replace) WHERE target_id=:tgt',[':search'=>long2ip($changedAttributes['ip']),':replace'=>$this->ipoctet,':tgt'=>$this->id])->execute();
-            }
-        }
-        parent::afterSave($insert,$changedAttributes);
-    }
+  /**
+   * {@inheritdoc}
+   * @return TargetQuery the active query used by this AR class.
+   */
+  public static function find()
+  {
+    return new TargetQuery(get_called_class());
+  }
 
-    /**
-     * {@inheritdoc}
-     * @return TargetQuery the active query used by this AR class.
-     */
-    public static function find()
-    {
-        return new TargetQuery(get_called_class());
-    }
-
-    /*
+  /*
      * Get Target Ondemand relations of target
      */
-    public function getOndemand()
-    {
-      return $this->hasOne(TargetOndemand::class, ['target_id' => 'id'])->withExpired();
-    }
+  public function getOndemand()
+  {
+    return $this->hasOne(TargetOndemand::class, ['target_id' => 'id'])->withExpired();
+  }
 
 }
