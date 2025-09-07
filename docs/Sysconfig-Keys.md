@@ -1,6 +1,7 @@
 # Sysconfig Keys
 
 ## Flags (0 false, 1 true)
+
 * `event_active`: Enable/Disable current event
 * `player_profile`: Enable/Disable player profiles
 * `player_require_approval` If player activation requires moderator approval first
@@ -46,8 +47,11 @@
 
 * `log_failed_claims`: Log failed claim attempts?
 * `treasure_secret_key`: Encrypt flags per player?
+* `team_claims_allowed`: Should we allow claims of flags across teams?
+
 
 ## String and numeric key/val pairs
+
 * `event_name` A name for your event
 * `writeup_rules` Your rules for writeup submissions
 * `frontpage_scenario` The event scenario displayed at the `frontend/`, landing page for guests.
@@ -98,7 +102,9 @@
 * `player_changed_to_deleted_after`: Update players with status=8 (changed) into status=0 (deleted) after X days
 * `player_delete_rejected_after`: Delete players that their registration was rejected (status=9 and approval=4) after X days
 
+
 ## mail configuration
+
 * `mail_from` Email address used to send registration and password reset mails from
 * `mail_fromName` The name appeared on the email send for registration and password resets
 * `dsn` A symphony mailer compatible DSN
@@ -113,7 +119,9 @@ Or instead if not DSN then use the following
 * `verify_peer_name` Verify the SSL peer name of the remote server when sending email
 * `verify_peer` Verify the remote peer certificate when sending mail
 
+
 ## VPN specific keys
+
 * `CA.csr` The CA CSR
 * `CA.crt` The CA certificate
 * `CA.key` The CA private key
@@ -123,10 +131,13 @@ Or instead if not DSN then use the following
 
 
 ## Application specific
+
 * `platform_codename`
 * `platform_version`
 
+
 ## Subscriptions Specific
+
 * `subscriptions_emergency_suspend` Temporary suspend subscriptions
 * `subscriptions_menu_show` Show subscriptions left side menu item to logged in users
 * `stripe_apiKey` Stripe API key
@@ -135,12 +146,16 @@ Or instead if not DSN then use the following
 * `stripe_automatic_tax_enabled` Enable Stripe automatic TAX
 * `stripe_webhook_ips` List of IP's that are allowed to access the stripe webhook endpoint
 
+
 ## Player Specific
+
 * `academic_Nlong` Name for academic value `N` (starting at 0)
-*	`academic_Nshort` Short name for academic value `N` (starting at 0)
-*	`academic_Nicon` An icon name associated with this academic grouping (starting at 0)
+* `academic_Nshort` Short name for academic value `N` (starting at 0)
+* `academic_Nicon` An icon name associated with this academic grouping (starting at 0)
 * `academic_grouping` The number for the supported groups or (0) to Disable support for academic grouping of player activity
-example:
+
+**example:**
+
 ```sh
 backend/yii sysconfig/set academic_grouping 2
 backend/yii sysconfig/set academic_0 "SuperSite.com"
@@ -153,6 +168,7 @@ backend/yii sysconfig/set academic_1icon "anothersite.png"
 
 
 ## Validator Configuration Keys
+
 * `verification_resend_ip` A number of attempts an IP will stop being able to request verification resend email. `0` disables the verification completely
 * `verification_resend_ip_timeout` the timeout for the verification resend_ip counter
 * `verification_resend_email` A number of attempts a verification resend email can be requested per email. `0` disables the verification completely
