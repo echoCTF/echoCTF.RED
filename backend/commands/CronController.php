@@ -262,7 +262,7 @@ class CronController extends Controller
           foreach(str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key=>$part)
             $dc->labels['treasures_'.$key]=$part;
         }
-        die(var_dump($dc->labels));
+
         $dc->name = $val->name;
         $dc->server = $val->server->connstr;
         $dc->net = $val->server->network;
