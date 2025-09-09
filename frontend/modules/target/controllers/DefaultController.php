@@ -152,7 +152,10 @@ class DefaultController extends \app\components\BaseController
   {
     $sum = 0;
     $profile = $this->findProfile($profile_id);
-    $this->checkVisible($profile);
+    $resp = $this->checkVisible($profile);
+    if ($resp instanceof \yii\web\Response) {
+      return $resp;
+    }
 
     $target = Target::find()->forView($profile->player_id)->where(['t.id' => $id])->one();
     $PF = PlayerFinding::find()->joinWith(['finding'])->where(['player_id' => $profile->player_id, 'finding.target_id' => $id])->all();
@@ -399,8 +402,8 @@ class DefaultController extends \app\components\BaseController
       return $this->renderAjax('claim');
     }
 
-    $player_progress = TPS::findOne(['id' => $treasure->target_id, 'player_id' => Yii::$app->user->id]);
-    if ((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress === null && intval($treasure->target->getFindings()->count()) > 0) {
+    $player_progress = TPS::find()->where(['id' => $treasure->target_id, 'player_id' => Yii::$app->user->id])->exists();
+    if ((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress === false && intval($treasure->target->getFindings()->count()) > 0) {
       Yii::$app->counters->increment('claim_no_finding');
       Yii::$app->session->setFlash('warning', \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.'));
       return $this->renderAjax('claim');
@@ -442,9 +445,8 @@ class DefaultController extends \app\components\BaseController
     }
     $lineheight = 20;
     $i = 3;
-    imagestring($src, 5, 60, $lineheight * $i, sprintf("root@%s:/#", \Yii::$app->sys->offense_domain, $target->name), $consolecolor);
+    imagestring($src, 5, 60, $lineheight * $i, sprintf("root@%s:/#", \Yii::$app->sys->offense_domain), $consolecolor);
     imagestring($src, 5, 235, $lineheight * $i++, sprintf("./target --stats %s", $target->name), $textcolor);
-    imagestring($src, 5, 60, $lineheight * $i++, sprintf("ipv4..........: %s", long2ip($target->ip)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("fqdn..........: %s", $target->fqdn), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("points........: %s", number_format($target->points)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("flags.........: %d", count($target->treasures)), $greencolor);
