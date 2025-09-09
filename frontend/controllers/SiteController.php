@@ -26,6 +26,9 @@ class SiteController extends \app\components\BaseController
   {
     $parent = parent::behaviors();
     unset($parent['access']['rules']['teamsAccess']);
+    unset($parent['access']['rules']['eventStartEnd']);
+    unset($parent['access']['rules']['eventStart']);
+
     return ArrayHelper::merge($parent, [
       'access' => [
         'class' => AccessControl::class,
@@ -52,12 +55,6 @@ class SiteController extends \app\components\BaseController
             'denyCallback' => function ($rule, $action) {
               return \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage], 303);
             },
-          ],
-          'eventStartEnd' => [
-            'actions' => ['register',],
-          ],
-          'eventStart' => [
-            'actions' => ['register',],
           ],
           'eventEnd' => [
             'actions' => ['register', 'request-password-reset', 'verify-email', 'resend-verification-email',],
