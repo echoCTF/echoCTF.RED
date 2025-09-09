@@ -55,7 +55,7 @@ class Sysconfig extends \yii\db\ActiveRecord
               if($this->val==0)
                 $this->val="";
               else
-                $this->val=\Yii::$app->formatter->asDate($this->val,'php:Y-m-d H:i:s');
+                $this->val = Yii::$app->formatter->asDatetime($this->val,'php:Y-m-d H:i:s','UTC');
               break;
             default:
               break;
@@ -73,7 +73,7 @@ class Sysconfig extends \yii\db\ActiveRecord
                   $utcTime->setTimezone(new \DateTimeZone(self::findOne('time_zone')->val));
                 $Q=sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10",$utcTime->format('Y-m-d H:i:s'));
                 \Yii::$app->db->createCommand($Q)->execute();
-                $this->val=\Yii::$app->formatter->asTimestamp($this->val);
+                $this->val=strtotime($this->val);
               }
               break;
             case "event_start":
@@ -85,7 +85,7 @@ class Sysconfig extends \yii\db\ActiveRecord
               }
               else
               {
-                $this->val=\Yii::$app->formatter->asTimestamp($this->val);
+                $this->val=strtotime($this->val);
               }
               break;
             default:

@@ -63,6 +63,14 @@ class ConfigureForm extends Model
     public $stripe_publicApiKey;
     public $stripe_webhookSecret;
     public $player_monthly_rankings;
+    public $player_point_rankings;
+    public $country_rankings;
+    public $writeup_rankings;
+    public $disable_mailer;
+    public $log_failed_claims;
+    public $team_encrypted_claims_allowed;
+    public $module_smartcity_disabled;
+    public $api_bearer_enable;
     public $subscriptions_menu_show;
     public $subscriptions_emergency_suspend;
     public $player_require_approval;
@@ -82,6 +90,17 @@ class ConfigureForm extends Model
     public $profile_youtube;
     public $guest_visible_leaderboards;
     public $dsn;
+    public $treasure_secret_key;
+    public $api_claim_timeout;
+    public $api_target_instances_timeout;
+    public $api_target_spin_timeout;
+    public $api_target_spawn_timeout;
+    public $player_delete_inactive_after;
+    public $player_delete_deleted_after;
+    public $player_changed_to_deleted_after;
+    public $player_delete_rejected_after;
+    public $mail_verification_token_validity;
+    public $password_reset_token_validity;
 
     public $dn_countryName;
     public $dn_stateOrProvinceName;
@@ -148,6 +167,24 @@ class ConfigureForm extends Model
             'stripe_publicApiKey',
             'stripe_webhookSecret',
             'player_monthly_rankings',
+            'player_point_rankings',
+            'country_rankings',
+            'writeup_rankings',
+            'disable_mailer',
+            'log_failed_claims',
+            'team_encrypted_claims_allowed',
+            'module_smartcity_disabled',
+            'api_bearer_enable',
+            'api_claim_timeout',
+            'api_target_instances_timeout',
+            'api_target_spin_timeout',
+            'api_target_spawn_timeout',
+            'player_delete_inactive_after',
+            'player_delete_deleted_after',
+            'player_changed_to_deleted_after',
+            'player_delete_rejected_after',
+            'mail_verification_token_validity',
+            'password_reset_token_validity',
             'subscriptions_menu_show',
             'subscriptions_emergency_suspend',
             'player_require_approval',
@@ -205,7 +242,10 @@ class ConfigureForm extends Model
               'stripe_apiKey',
               'stripe_publicApiKey',
               'stripe_webhookSecret',
-              'dsn'
+              'dsn',
+              'treasure_secret_key',
+              'mail_verification_token_validity',
+              'password_reset_token_validity',
             ], 'string'],
             [['offense_registered_tag',
               'defense_registered_tag',
@@ -237,7 +277,10 @@ class ConfigureForm extends Model
               'dn_organizationName',
               'dn_organizationalUnitName',
               'pf_state_limits',
-              'dsn'
+              'dsn',
+              'treasure_secret_key',
+              'mail_verification_token_validity',
+              'password_reset_token_validity',
             ], 'trim'],
             // required fields
             [['teams',
@@ -260,7 +303,21 @@ class ConfigureForm extends Model
           [['dn_organizationName'],'default','value'=>\Yii::$app->sys->dn_organizationName],
           [['dn_organizationalUnitName'],'default','value'=>\Yii::$app->sys->dn_organizationalUnitName],
           ['profile_visibility','default','value'=>'ingame'],
-          [['online_timeout', 'spins_per_day','members_per_team','target_days_new','target_days_updated'], 'integer'],
+          [[
+            'online_timeout',
+            'spins_per_day',
+            'members_per_team',
+            'target_days_new',
+            'target_days_updated',
+            'api_claim_timeout',
+            'api_target_instances_timeout',
+            'api_target_spin_timeout',
+            'api_target_spawn_timeout',
+            'player_delete_inactive_after',
+            'player_delete_deleted_after',
+            'player_changed_to_deleted_after',
+            'player_delete_rejected_after',
+          ], 'integer'],
           [['online_timeout'], 'default', 'value'=>900],
           [['spins_per_day'], 'default', 'value'=> 2],
           ['target_days_new','default','value'=>1],
@@ -284,6 +341,14 @@ class ConfigureForm extends Model
             'leaderboard_visible_after_event_end',
             'leaderboard_show_zero',
             'player_monthly_rankings',
+            'player_point_rankings',
+            'country_rankings',
+            'writeup_rankings',
+            'disable_mailer',
+            'log_failed_claims',
+            'team_encrypted_claims_allowed',
+            'module_smartcity_disabled',
+            'api_bearer_enable',
             'subscriptions_menu_show',
             'subscriptions_emergency_suspend',
             'player_require_approval',
@@ -366,6 +431,24 @@ class ConfigureForm extends Model
           'target_days_updated'=>'Target days is updated',
           'discord_news_webhook'=>'Discord News Webhook',
           'player_monthly_rankings'=>'Monthly points leaderboards',
+          'player_point_rankings'=>'Individual player leaderboards',
+          'country_rankings'=>'Country based leaderboards',
+          'writeup_rankings'=>'Writeup Ratings',
+          'disable_mailer'=>'Disable mailer operations',
+          'log_failed_claims'=>'Log failed attempts',
+          'team_encrypted_claims_allowed'=>'Team claims',
+          'module_smartcity_disabled'=>'Disable SmartCity module',
+          'api_bearer_enable'=>'Enable Bearer authorizations API operations',
+          'api_claim_timeout'=>'API Claim timeout',
+          'api_target_instances_timeout'=>'API Target Instance timeout',
+          'api_target_spin_timeout'=>'API Target Spin timeout',
+          'api_target_spawn_timeout'=>'API Target spawn timeout',
+          'player_delete_inactive_after'=>'Delete innactive players after',
+          'player_delete_deleted_after'=>'Delete deleted players after',
+          'player_changed_to_deleted_after'=>'Player changed to deleted after',
+          'player_delete_rejected_after'=>'Player delete rejected after',
+          'mail_verification_token_validity' => 'Mail verification token validity',
+          'password_reset_token_validity' => 'Password reset token validity',
           'subscriptions_menu_show'=>'Show subscriptions menu',
           'subscriptions_emergency_suspend'=>'Emergency suspend subscriptions',
           'player_require_approval'=> 'Players require approval',
