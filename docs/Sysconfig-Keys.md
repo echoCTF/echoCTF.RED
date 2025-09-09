@@ -47,7 +47,7 @@
 
 * `log_failed_claims`: Log failed claim attempts?
 * `treasure_secret_key`: Encrypt flags per player?
-* `team_claims_allowed`: Should we allow claims of flags across teams?
+* `team_encrypted_claims_allowed`: Should we allow claims of flags across teams?
 
 
 ## String and numeric key/val pairs
@@ -94,7 +94,6 @@
 * `api_claim_timeout` set the rate limit for the api claim. One request per `api_claim_timeout`+1 seconds
 * `api_target_instances_timeout` set the rate limit for the target instances endpoint. One request per `api_target_instances_timeout`+1 seconds
 * `api_target_spin_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spin_timeout`+1 seconds
-* `api_target_spawn_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spawn_timeout`+1 seconds
 * `api_target_spawn_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spawn_timeout`+1 seconds
 
 * `player_delete_inactive_after`: Delete players with status=9 (inactive) after X days
