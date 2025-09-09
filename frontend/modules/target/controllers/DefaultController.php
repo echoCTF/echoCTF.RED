@@ -437,10 +437,8 @@ class DefaultController extends \app\components\BaseController
     $textcolor = imagecolorallocate($src, 255, 255, 255);
     $consolecolor = imagecolorallocate($src, 148, 148, 148);
     $greencolor = imagecolorallocate($src, 148, 193, 31);
-    if (Headshot::find()->where(['target_id' => $target->id])->last()->one()) {
-      $lastHeadshot = Headshot::find()->where(['target_id' => $target->id])->last()->one()->player->username;
-      //        $hs=Headshot::find()->target_avg_time($target->id)->one();
-    } else {
+    $lastHeadshot = Headshot::find()->where(['target_id' => $target->id])->last()->one();
+    if ($lastHeadshot === null) {
       $lastHeadshot = "none yet";
     }
     $lineheight = 20;
