@@ -19,19 +19,8 @@ use Docker\API\Model\EndpointIPAMConfig;
 /**
  * This is the model class for table "target_instance".
  *
- * @property int $player_id
- * @property int $target_id
- * @property int|null $server_id
- * @property int|null $ip
- * @property int $reboot
- * @property bool $team_allowed
- * @property string|null $created_at
- * @property string|null $updated_at
- *
- * @property Player $player
- * @property Target $target
  */
-class TargetInstance extends \yii\db\ActiveRecord
+class TargetInstance extends TargetInstanceAR
 {
   public $ipoctet;
   const ACTION_START = 0;
@@ -40,69 +29,6 @@ class TargetInstance extends \yii\db\ActiveRecord
   const ACTION_EXPIRED = 3;
 
 
-  /**
-   * {@inheritdoc}
-   */
-  public static function tableName()
-  {
-    return 'target_instance';
-  }
-
-  public function behaviors()
-  {
-    return [
-      'typecast' => [
-        'class' => AttributeTypecastBehavior::class,
-        'attributeTypes' => [
-          'reboot' => AttributeTypecastBehavior::TYPE_INTEGER,
-          'team_allowed' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-        ],
-        'typecastAfterValidate' => false,
-        'typecastBeforeSave' => true,
-        'typecastAfterFind' => true,
-      ],
-      'timestamp' => [
-        'class' => TimestampBehavior::class,
-        'value' => new Expression('NOW()'),
-      ]
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function rules()
-  {
-    return [
-      [['player_id', 'target_id'], 'required'],
-      [['player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'integer'],
-      [['ipoctet'], 'ip'],
-      ['reboot', 'default', 'value' => 0],
-      ['reboot', 'in', 'range' => [0, 1, 2]],
-      [['team_allowed'], 'boolean',],
-      [['created_at', 'updated_at'], 'safe'],
-      [['player_id'], 'unique'],
-      [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
-      [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
-    ];
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function attributeLabels()
-  {
-    return [
-      'player_id' => Yii::t('app', 'Player ID'),
-      'target_id' => Yii::t('app', 'Target ID'),
-      'server_id' => Yii::t('app', 'Server ID'),
-      'ip' => Yii::t('app', 'IP'),
-      'reboot' => Yii::t('app', 'Reboot'),
-      'team_allowed' => Yii::t('app', 'Team Allowed'),
-      'created_at' => Yii::t('app', 'Created At'),
-      'updated_at' => Yii::t('app', 'Updated At'),
-    ];
-  }
 
   /**
    * Gets name tha the target will have
@@ -110,44 +36,6 @@ class TargetInstance extends \yii\db\ActiveRecord
   public function getName()
   {
     return sprintf("%s_%d", strtolower($this->target->name), $this->player_id);
-  }
-  /**
-   * Gets query for [[Player]].
-   *
-   * @return \yii\db\ActiveQuery|PlayerQuery
-   */
-  public function getPlayer()
-  {
-    return $this->hasOne(Player::class, ['id' => 'player_id']);
-  }
-
-  /**
-   * Gets query for [[Target]].
-   *
-   * @return \yii\db\ActiveQuery|TargetQuery
-   */
-  public function getTarget()
-  {
-    return $this->hasOne(Target::class, ['id' => 'target_id']);
-  }
-
-  /**
-   * Gets query for [[Target]].
-   *
-   * @return \yii\db\ActiveQuery|TargetQuery
-   */
-  public function getServer()
-  {
-    return $this->hasOne(Server::class, ['id' => 'server_id']);
-  }
-
-  /**
-   * {@inheritdoc}
-   * @return TargetInstanceQuery the active query used by this AR class.
-   */
-  public static function find()
-  {
-    return new TargetInstanceQuery(get_called_class());
   }
 
   public function afterFind()
@@ -233,6 +121,44 @@ class TargetInstance extends \yii\db\ActiveRecord
     }
   }
 
+  public function restart()
+  {
+    $dc = new DockerContainer($this->target);
+    $dc->targetVolumes = $this->target->targetVolumes;
+    $dc->targetVariables = $this->target->targetVariables;
+    $dc->name = $this->name;
+    $dc->server = $this->server->connstr;
+    $dc->net = $this->server->network;
+    // Check If target supports dynamic_treasures
+    if ($this->target->dynamic_treasures) {
+      // Fetch the encrypted env flag
+      $encryptedTreasures = $this->encryptedTreasures;
+
+      // Check existing environment variables for ETSCTF_FLAG keys
+      foreach ($dc->targetVariables as $key => $tv) {
+        // Replace the old key with the encrypted treasure
+        if ($tv->key == 'ETSCTF_FLAG') {
+          $tv->val = str_replace($encryptedTreasures['fs']['env'][0]['src'], $encryptedTreasures['fs']['env'][0]['dest'], $tv->val);
+          break;
+        }
+      }
+      $dc->labels['dynamic_flags'] = 1;
+      $dc->labels['player_id'] = $this->player_id;
+      $dc->labels['target_id'] = $this->target_id;
+      foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part)
+        $dc->labels['treasures_' . $key] = $part;
+    }
+
+    try {
+      $dc->destroy();
+    } catch (\Exception $e) {
+    }
+    $dc->pull();
+    $dc->spin();
+    $this->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$this->server->network}->getIPAddress();
+    $this->reboot = 0;
+  }
+
   public function getEncryptedTreasures()
   {
     $query = \app\modules\gameplay\models\Treasure::find()
@@ -250,15 +176,15 @@ class TargetInstance extends \yii\db\ActiveRecord
       ->where(['target_id' => $this->target_id]);
     $treasures = [];
     foreach ($query->all() as $t) {
-      if ($t->category == 'env' && $t->location=='environment') {
+      if ($t->category == 'env' && $t->location == 'environment') {
         $treasures['env'][] = ["src" => $t->code, 'dest' => $t->encrypted_code];
       } else if (str_contains($t->location, $t->code)) {
         $treasures['mv'][] = ["src" => $t->location, 'dest' => str_replace($t->code, $t->encrypted_code, $t->location)];
       } else {
-        $treasures['sed'][] = ["src"=>$t->code, 'dest'=>$t->encrypted_code,'file'=>$t->location];
+        $treasures['sed'][] = ["src" => $t->code, 'dest' => $t->encrypted_code, 'file' => $t->location];
       }
     }
 
-    return ['fs'=>$treasures];
+    return ['fs' => $treasures];
   }
 }
