@@ -365,7 +365,7 @@ class DefaultController extends \app\components\BaseController
       if (Yii::$app->sys->team_encrypted_claims_allowed === true && Yii::$app->user->identity->teamPlayer) {
         $treasure = Treasure::find()
           ->claimable()
-          ->byTeamEncryptedCode($string,Yii::$app->user->identity->teamPlayer->team_id)
+          ->byTeamEncryptedCode($string, Yii::$app->user->identity->teamPlayer->team_id)
           ->one();
       } else {
         $treasure = Treasure::find()
@@ -382,16 +382,19 @@ class DefaultController extends \app\components\BaseController
       Yii::$app->counters->increment('failed_claims');
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag' => Html::encode($string)]));
       if (Yii::$app->sys->log_failed_claims) {
-        Yii::$app->db->createCommand()
-          ->insert('abuser', [
-            'player_id' => Yii::$app->user->id,
-            'title' => $string,
-            'reason' => 'failed_claim',
-            'model' => 'failed_claim',
-            'model_id' => 0,
-            'created_at' => new \yii\db\Expression('NOW()'),
-            'updated_at' => new \yii\db\Expression('NOW()'),
-          ])->execute();
+        try {
+          Yii::$app->db->createCommand()
+            ->insert('abuser', [
+              'player_id' => Yii::$app->user->id,
+              'title' => $string,
+              'reason' => 'failed_claim',
+              'model' => 'failed_claim',
+              'model_id' => 0,
+              'created_at' => new \yii\db\Expression('NOW()'),
+              'updated_at' => new \yii\db\Expression('NOW()'),
+            ])->execute();
+        } catch (\Exception $e) {
+        }
       }
       return $this->renderAjax('claim');
     }
