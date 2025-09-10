@@ -20,9 +20,6 @@ Url::remember();
 <?php if($target->network):?>
     <div><p class="text-info"><?=\Yii::t('app','Target from:')?> <b><?=$target->network->name?></b></p></div>
 <?php endif;?>
-    <div class="watermarked img-fluid">
-    <?=sprintf('<img src="%s" width="100px"/>', $target->logo)?>
-    </div>
 <?php if (Yii::$app->user->isGuest):?>
     <?php echo $this->render('_versus-guest', ['target'=>$target, 'playerPoints'=>$playerPoints, 'identity'=>$profile]);?>
 <?php else: ?>
