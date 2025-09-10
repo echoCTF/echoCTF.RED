@@ -232,6 +232,7 @@
     - "pfctl -f /etc/pf.conf"
     - "rcctl -f start httpd"
     - 'echo "pass quick on egress inet proto tcp to port 80" | /sbin/pfctl -a dynamic -f -'
+    - "chmod 0400 /etc/nginx/{{myname}}-server.key"
     - "acme-client {{myname}}"
     - "rcctl -f stop httpd"
     - "/sbin/pfctl -a dynamic -Fr"
