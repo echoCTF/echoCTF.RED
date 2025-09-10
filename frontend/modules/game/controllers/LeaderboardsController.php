@@ -77,7 +77,7 @@ class LeaderboardsController extends \app\components\BaseController
       $academic = Yii::$app->user->identity->academic;
     }
 
-    $command = \Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)');
+    $command = Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)+(SELECT sum(ifnull(first_headshot_points,0)) from target)');
     $command->bindValue(':player_type', 'offense');
     $totalPoints = $command->queryScalar();
     $total_targets=intval(\app\modules\target\models\Target::find()->active()->count());
