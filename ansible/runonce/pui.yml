@@ -498,7 +498,7 @@
       - enable participant
       - enable nginx
       - set participant flags -p /home/participantUI -c /etc/nginx/participantUI.conf
-      - set nginx flags -c /etc/nginx/dt.conf
+      - set nginx flags -p /home/participantUI -c /etc/nginx/dt.conf
       - set syslogd flags -a /home/participantUI/dev/log
       - set ntpd flags -s
     tags:
