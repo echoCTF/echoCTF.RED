@@ -52,7 +52,7 @@ class Sysconfig extends \yii\db\ActiveRecord
             case "event_end":
             case "registrations_start":
             case "registrations_end":
-              if($this->val==0)
+              if($this->val==0 || $this->val=="")
                 $this->val="";
               else
                 $this->val = Yii::$app->formatter->asDatetime($this->val,'php:Y-m-d H:i:s','UTC');
@@ -61,6 +61,7 @@ class Sysconfig extends \yii\db\ActiveRecord
               break;
         }
     }
+
     public function beforeSave($insert){
         switch($this->id){
             case "event_end":
@@ -68,12 +69,12 @@ class Sysconfig extends \yii\db\ActiveRecord
               \Yii::$app->db->createCommand($Q)->execute();
               if(!empty($this->val))
               {
-                $utcTime=new \DateTime($this->val, new \DateTimeZone('UTC'));
-                if(self::findOne('time_zone'))
-                  $utcTime->setTimezone(new \DateTimeZone(self::findOne('time_zone')->val));
-                $Q=sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10",$utcTime->format('Y-m-d H:i:s'));
+                $Q=sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10",$this->val);
                 \Yii::$app->db->createCommand($Q)->execute();
                 $this->val=strtotime($this->val);
+              }
+              else {
+                \Yii::$app->db->createCommand("DROP EVENT IF EXISTS event_end_notification")->execute();
               }
               break;
             case "event_start":
