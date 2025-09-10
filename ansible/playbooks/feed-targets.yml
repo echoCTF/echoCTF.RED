@@ -56,6 +56,9 @@
         headshot_spin: "{{headshot_spin|default('1')}}"
         writeup_allowed: "{{writeup_allowed|default('1')}}"
         instance_allowed: "{{instance_allowed|default('1')}}"
+        dynamic_treasures: "{{dynamic_treasures|default('0')}}"
+        first_headshot_points: "{{first_headshot_points|default('0')}}"
+        headshot_points: "{{headshot_points|default('0')}}"
         description: '{{description|default("")}}'
         ipoctet: '{{ansible_host}}'
         difficulty: "{{difficulty|default('0')}}"
