@@ -44,7 +44,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
         $pct = 100 - intval(($x / Yii::$app->user->identity->profile->experience->max_points) * 100);
         ?>
         <div class="progress">
-          <div class="progress-bar text-dark" role="progressbar" style="width: <?= $pct ?>%" aria-valuenow="<?= Yii::$app->user->identity->playerScore->points ?>" aria-valuemin="<?= Yii::$app->user->identity->profile->experience->min_points ?>" aria-valuemax="<?= Yii::$app->user->identity->profile->experience->max_points ?>"><b><?= $pct ?>% (<?=$x?> until next)</b></div>
+          <div class="progress-bar text-dark" role="progressbar" style="width: <?= $pct ?>%" aria-valuenow="<?= Yii::$app->user->identity->playerScore->points ?>" aria-valuemin="<?= Yii::$app->user->identity->profile->experience->min_points ?>" aria-valuemax="<?= Yii::$app->user->identity->profile->experience->max_points ?>"><b><abbr title="<?=number_format($x)?> points until next"><?= $pct ?>%</abbr></b></div>
         </div>
         <?php Card::end(); ?>
       </div>
