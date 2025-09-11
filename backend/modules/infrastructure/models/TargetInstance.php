@@ -142,9 +142,9 @@ class TargetInstance extends TargetInstanceAR
           break;
         }
       }
-      $dc->labels['dynamic_flags'] = 1;
-      $dc->labels['player_id'] = $this->player_id;
-      $dc->labels['target_id'] = $this->target_id;
+      $dc->labels['dynamic_treasures'] = "1";
+      $dc->labels['player_id'] = (string)$this->player_id;
+      $dc->labels['target_id'] = (string)$this->target_id;
       foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part)
         $dc->labels['treasures_' . $key] = $part;
     }
