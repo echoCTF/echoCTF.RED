@@ -267,7 +267,7 @@ class DefaultController extends \app\components\BaseController
       throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
     }
     $obj = new \stdClass;
-    if (Yii::$app->user->identity->instance) {
+    if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id==$id) {
       $obj->ip = long2ip(Yii::$app->user->identity->instance->ip);
       $obj->instance = true;
     } else if (($target->on_ondemand === false) || ($target->on_ondemand && $target->ondemand_state == 1)) {
