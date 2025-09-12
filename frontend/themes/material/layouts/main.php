@@ -64,7 +64,6 @@ $this->registerLayoutOverrides();
 	    <div class="content">
 	    	<div class="container<?=$this->_fluid?>">
             <?=Noti::widget() ?>
-            <h4 id="event_countdown"></h4>
       			<?=$content ?>
 	    	</div>
 	    </div>
