@@ -47,7 +47,7 @@ use yii\helpers\Url;
               <?php if (count(Yii::$app->user->identity->pendingHints) > 0): ?><i class="fas fa-lightbulb text-primary" style="font-size: 2em;"></i><span class="notification"><?= count(Yii::$app->user->identity->pendingHints) ?></span><?php else: ?><i class="fas fa-lightbulb" style="font-size: 2em;"></i><?php endif; ?>
               <p class="d-lg-none d-md-block">Hints</p>
             </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHintsDropDown" id="hintsMenu">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarHintsDropDown" id="hintsMenu" style="min-width: 20em;">
               <?= \app\widgets\HintsWidget::widget(); ?>
             </div>
           </li>
@@ -57,7 +57,7 @@ use yii\helpers\Url;
               <?php if (count(Yii::$app->user->identity->pendingNotifications) > 0): ?><i class="fas fa-bell text-primary" style="font-size: 2em;"></i><span class="notification"><?= count(Yii::$app->user->identity->pendingNotifications) ?></span><?php else: ?><i class="fas fa-bell" style="font-size: 2em;"></i><?php endif; ?>
               <p class="d-lg-none d-md-block"><?= \Yii::t('app', 'Notifications') ?></p>
             </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" id="notificationsMenu">
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" id="notificationsMenu" style="min-width: 20em;">
               <?= \app\widgets\NotificationsWidget::widget(); ?>
             </div>
           </li>
