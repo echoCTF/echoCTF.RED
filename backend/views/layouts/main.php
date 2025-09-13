@@ -105,7 +105,7 @@ AppAsset::register($this);
           'url' => ['/speedprogramming/default/index'],
           'icon' => 'fas fa-money-check-alt',
           'active' => Yii::$app->controller->module->id == 'speedprogramming',
-          'visible' => array_key_exists('speedprogramming', \Yii::$app->modules) !== false && \Yii::$app->sys->module_speedprogramming_enabled===true && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,
+          'visible' => array_key_exists('speedprogramming', \Yii::$app->modules) !== false && \Yii::$app->sys->module_speedprogramming_enabled === true && !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,
           'items' => [
             ['label' => 'Problems', 'url' => ['/speedprogramming/speed-problem/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
             ['label' => 'Solutions', 'url' => ['/speedprogramming/default/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
@@ -168,7 +168,7 @@ AppAsset::register($this);
             ['label' => 'Zero pts with activated help', 'url' => ['/moderation/default/index'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
             ['label' => 'Stream with Lag', 'url' => ['/moderation/default/stream-lag'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
             ['label' => 'Duplicate Signup IPs', 'url' => ['/moderation/default/duplicate-signup-ips'], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
-            ['label' => 'Check Spammy Domains', 'url' => ['/moderation/default/check-spammy'], 'linkOptions' => ['data'=>['confirm'=>'This operation takes time to complete when a lot of players are in your system. Are you sure?']],'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
+            ['label' => 'Check Spammy Domains', 'url' => ['/moderation/default/check-spammy'], 'linkOptions' => ['data' => ['confirm' => 'This operation takes time to complete when a lot of players are in your system. Are you sure?']], 'visible' => !Yii::$app->user->isGuest && \Yii::$app->user->identity->isAdmin,],
           ]
         ],
         [
@@ -280,9 +280,19 @@ AppAsset::register($this);
     ?>
 
     <div class="container">
-      <?= Breadcrumbs::widget([
-        'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-      ]) ?>
+      <div class="row">
+        <?php if (!empty($this->params['jumpto'])): ?>
+          <div class="col-md-2">
+            <?= $this->params['jumpto'] ?>
+          </div>
+        <?php endif; ?>
+        <div class="col">
+          <?= Breadcrumbs::widget([
+            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+          ]) ?>
+
+        </div>
+      </div>
       <?= Alert::widget() ?>
       <?= $content ?>
     </div>
