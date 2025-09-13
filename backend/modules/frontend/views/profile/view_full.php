@@ -11,6 +11,13 @@ use kartik\tabs\TabsX;
 $this->title = "View Profile for " . Html::encode($model->owner->username) . " profile: " . $model->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Profiles'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+$this->params['jumpto'] = \app\widgets\JumpToWidget::widget([
+    'name' => 'player_jump',
+    'placeholder' => '🔍 Jump to player...',
+    'sourceUrl' => ['/frontend/player/ajax-search'],
+    'redirectUrl' => ['/frontend/profile/view-full'],
+    'idField' => 'pid',
+]);
 \yii\web\YiiAsset::register($this);
 ?>
 <section class="container">

@@ -17,6 +17,13 @@ $this->params['breadcrumbs'][] = ['label' => 'Teams', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 Yii::$app->user->setReturnUrl(['frontend/team/view', 'id' => $model->id]);
+$this->params['jumpto'] = \app\widgets\JumpToWidget::widget([
+    'name' => 'team_jump',
+    'placeholder' => '🔍 Jump to team...',
+    'sourceUrl' => ['/frontend/team/ajax-search'],
+    'redirectUrl' => ['/frontend/team/view'],
+    'idField' => 'id',
+]);
 
 ?>
 <div class="team-view" id="team-view">
