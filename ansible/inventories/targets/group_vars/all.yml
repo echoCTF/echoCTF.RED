@@ -1,0 +1,16 @@
+DOCKER_REGISTRY: "registry.example.com:5000"
+DOCKER_REPOSITORY: "repository"
+TOKEN: "YOUR_BACKEND_USER_TOKEN"
+mui:
+  URL: "{{MUI_URL|default('http://mui.example.local:8080')}}"
+
+instance_allowed: 1
+TargetOndemand: 1
+player_spin: 1
+healthcheck: 0
+headshot_spin: 0
+writeup_allowed: 0
+DOCKER: "10.0.0.100"
+dynamic_treasures: 1
+first_headshot_points: 300
+headshot_points: 100

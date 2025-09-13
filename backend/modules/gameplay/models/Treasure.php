@@ -43,6 +43,7 @@ class Treasure extends \yii\db\ActiveRecord
   public $file;
   public $fullpath;
   public $content;
+  public $encrypted_code;
     /**
      * {@inheritdoc}
      */
@@ -172,6 +173,14 @@ class Treasure extends \yii\db\ActiveRecord
           return false;
       }
       return true;
+    }
+    /**
+     * {@inheritdoc}
+     * @return TutorialQuery the active query used by this AR class.
+     */
+    public static function find()
+    {
+        return new TreasureQuery(get_called_class());
     }
 
 }

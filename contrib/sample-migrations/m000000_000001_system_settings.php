@@ -94,18 +94,20 @@ class m000000_000001_system_settings extends Migration
     //        ['route'=>'/help/credit%'],
   ];
   public $delete_url_routes = [
-    //      ['id'=>8 ],// changelog
-    //      ['id'=>52 ],// tutorials
-    //      ['id'=>53 ],// tutorial/<id>
-    //      ['id'=>70 ],// subs
-    //      ['id'=>71 ],// subs
-    //      ['id'=>72 ],// subs
-    //      ['id'=>73 ],// subs
-    //      ['id'=>74 ],// subs
-    //      ['id'=>75 ],// subs
-    //      ['id'=>76 ],// subs
-    //      ['id'=>77 ],// subs
-    //      ['id'=>78 ],// subs
+//      ['id'=>8 ],// changelog
+//
+//      ['id'=>53 ],// tutorials
+//      ['id'=>54 ],// tutorial/<id>
+//
+//      ['id'=>71 ],// subs
+//      ['id'=>72 ],// subs
+//      ['id'=>73 ],// subs
+//      ['id'=>74 ],// subs
+//      ['id'=>75 ],// subs
+//      ['id'=>76 ],// subs
+//      ['id'=>77 ],// subs
+//      ['id'=>78 ],// subs
+//      ['id'=>79 ],// subs
   ];
 
   public $upsert_url_routes = [];

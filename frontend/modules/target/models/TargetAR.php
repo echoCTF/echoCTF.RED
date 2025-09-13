@@ -111,6 +111,7 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
             'headshot_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'instance_allowed'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'require_findings'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
+            'dynamic_treasures'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
             'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
             'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
             'on_ondemand' => AttributeTypecastBehavior::TYPE_BOOLEAN,

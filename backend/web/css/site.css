@@ -121,3 +121,17 @@ div.has-error > input:focus {
 .text-white {
     color: white;
 }
+
+.hint-block,
+#configureForm input[type="text"]::placeholder
+ {
+  font-size: small;
+  color: rgb(111, 111, 111);
+}
+
+#configureForm input[type="text"],
+#configureForm select {
+    font-family: var(--bs-font-monospace); /* Bootstrap monospace */
+    font-size: 0.9em;
+}
+

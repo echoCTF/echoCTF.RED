@@ -152,7 +152,10 @@ class DefaultController extends \app\components\BaseController
   {
     $sum = 0;
     $profile = $this->findProfile($profile_id);
-    $this->checkVisible($profile);
+    $resp = $this->checkVisible($profile);
+    if ($resp instanceof \yii\web\Response) {
+      return $resp;
+    }
 
     $target = Target::find()->forView($profile->player_id)->where(['t.id' => $id])->one();
     $PF = PlayerFinding::find()->joinWith(['finding'])->where(['player_id' => $profile->player_id, 'finding.target_id' => $id])->all();
@@ -264,7 +267,7 @@ class DefaultController extends \app\components\BaseController
       throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
     }
     $obj = new \stdClass;
-    if (Yii::$app->user->identity->instance) {
+    if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id==$id) {
       $obj->ip = long2ip(Yii::$app->user->identity->instance->ip);
       $obj->instance = true;
     } else if (($target->on_ondemand === false) || ($target->on_ondemand && $target->ondemand_state == 1)) {
@@ -307,9 +310,8 @@ class DefaultController extends \app\components\BaseController
       }
     }
     $model->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC]);
-    $streamModel=$model;
-    if (Yii::$app->sys->stream_record_limit !== false)
-    {
+    $streamModel = $model;
+    if (Yii::$app->sys->stream_record_limit !== false) {
       $model->limit(Yii::$app->sys->stream_record_limit);
       $streamModel = \app\models\Stream::find()
         ->from(['t' => $model])
@@ -361,17 +363,47 @@ class DefaultController extends \app\components\BaseController
     }
 
     $treasure = Treasure::find()->claimable()->byCode($string)->one();
-    if ($treasure !== null && Treasure::find()->byCode($string)->claimable()->notBy((int) Yii::$app->user->id)->one() === null) {
+
+    if ($treasure === null && Yii::$app->sys->treasure_secret_key !== false) {
+      if (Yii::$app->sys->team_encrypted_claims_allowed === true && Yii::$app->user->identity->teamPlayer) {
+        $treasure = Treasure::find()
+          ->claimable()
+          ->byTeamEncryptedCode($string, Yii::$app->user->identity->teamPlayer->team_id)
+          ->one();
+      } else {
+        $treasure = Treasure::find()
+          ->claimable()
+          ->byEncryptedCode($string)
+          ->one();
+      }
+    }
+
+    if ($treasure !== null && PlayerTreasure::findOne(['player_id' => (int) Yii::$app->user->id, 'treasure_id' => $treasure->id]) !== null) {
       Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
       return $this->renderAjax('claim');
     } elseif ($treasure === null) {
       Yii::$app->counters->increment('failed_claims');
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag' => Html::encode($string)]));
+      if (Yii::$app->sys->log_failed_claims) {
+        try {
+          Yii::$app->db->createCommand()
+            ->insert('abuser', [
+              'player_id' => Yii::$app->user->id,
+              'title' => $string,
+              'reason' => 'failed_claim',
+              'model' => 'failed_claim',
+              'model_id' => 0,
+              'created_at' => new \yii\db\Expression('NOW()'),
+              'updated_at' => new \yii\db\Expression('NOW()'),
+            ])->execute();
+        } catch (\Exception $e) {
+        }
+      }
       return $this->renderAjax('claim');
     }
 
-    $player_progress = TPS::findOne(['id' => $treasure->target_id, 'player_id' => Yii::$app->user->id]);
-    if ((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress === null && intval($treasure->target->getFindings()->count()) > 0) {
+    $player_progress = TPS::find()->where(['id' => $treasure->target_id, 'player_id' => Yii::$app->user->id])->exists();
+    if ((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress === false && intval($treasure->target->getFindings()->count()) > 0) {
       Yii::$app->counters->increment('claim_no_finding');
       Yii::$app->session->setFlash('warning', \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.'));
       return $this->renderAjax('claim');
@@ -405,17 +437,14 @@ class DefaultController extends \app\components\BaseController
     $textcolor = imagecolorallocate($src, 255, 255, 255);
     $consolecolor = imagecolorallocate($src, 148, 148, 148);
     $greencolor = imagecolorallocate($src, 148, 193, 31);
-    if (Headshot::find()->where(['target_id' => $target->id])->last()->one()) {
-      $lastHeadshot = Headshot::find()->where(['target_id' => $target->id])->last()->one()->player->username;
-      //        $hs=Headshot::find()->target_avg_time($target->id)->one();
-    } else {
+    $lastHeadshot = Headshot::find()->where(['target_id' => $target->id])->last()->one();
+    if ($lastHeadshot === null) {
       $lastHeadshot = "none yet";
     }
     $lineheight = 20;
     $i = 3;
-    imagestring($src, 5, 60, $lineheight * $i, sprintf("root@%s:/#", \Yii::$app->sys->offense_domain, $target->name), $consolecolor);
+    imagestring($src, 5, 60, $lineheight * $i, sprintf("root@%s:/#", \Yii::$app->sys->offense_domain), $consolecolor);
     imagestring($src, 5, 235, $lineheight * $i++, sprintf("./target --stats %s", $target->name), $textcolor);
-    imagestring($src, 5, 60, $lineheight * $i++, sprintf("ipv4..........: %s", long2ip($target->ip)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("fqdn..........: %s", $target->fqdn), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("points........: %s", number_format($target->points)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("flags.........: %d", count($target->treasures)), $greencolor);

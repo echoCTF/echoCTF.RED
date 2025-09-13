@@ -7,6 +7,7 @@ verb 1
 mssfix 1460
 cipher AES-128-GCM
 data-ciphers AES-128-GCM
+auth SHA256
 auth-nocache
 mute-replay-warnings
 

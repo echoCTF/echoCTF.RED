@@ -17,6 +17,12 @@ http {
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
     access_log  syslog:server=unix:/dev/log,severity=notice main;
+    client_body_temp_path /cache/client_body_temp 1 2;
+    scgi_temp_path /cache/scgi_temp 1 2;
+    uwsgi_temp_path /cache/uwsgi_temp 1 2;
+    fastcgi_temp_path /cache/fastcgi_temp 1 2;
+    proxy_temp_path /cache/proxy_temp 1 2;
+
 
     keepalive_timeout     65;
     gzip                  on;

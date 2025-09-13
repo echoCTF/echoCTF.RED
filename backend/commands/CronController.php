@@ -224,6 +224,7 @@ class CronController extends Controller
       $t = TargetInstance::find()->active();
       foreach ($t->all() as $instance) {
         if ($instance->player->last->vpn_local_address !== null && $pfonly === false) {
+          printf("Updating heartbeat [%d: %s for %d: %s]\n",$instance->target_id,$instance->target->name,$instance->player_id,$instance->player->username);
           $instance->updateAttributes(['updated_at' => new \yii\db\Expression('NOW()')]);
         }
       }
@@ -235,8 +236,33 @@ class CronController extends Controller
         $dc->timeout = ($val->server->timeout ? $val->server->timeout : 2000);
         if ($val->target->targetVolumes !== null)
           $dc->targetVolumes = $val->target->targetVolumes;
+
         if ($val->target->targetVariables !== null)
+        {
           $dc->targetVariables = $val->target->targetVariables;
+        }
+
+        // Check If target supports dynamic_treasures
+        if($val->target->dynamic_treasures) {
+          // Fetch the encrypted env flag
+          $encryptedTreasures=$val->encryptedTreasures;
+
+          // Check existing environment variables for ETSCTF_FLAG keys
+          foreach($dc->targetVariables as $key => $tv)
+          {
+            // Replace the old key with the encrypted treasure
+            if($tv->key=='ETSCTF_FLAG'){
+              $tv->val=str_replace($encryptedTreasures['fs']['env'][0]['src'],$encryptedTreasures['fs']['env'][0]['dest'],$tv->val);
+              break;
+            }
+          }
+          $dc->labels['dynamic_treasures']="1";
+          $dc->labels['player_id']=(string)$val->player_id;
+          $dc->labels['target_id']=(string)$val->target_id;
+          foreach(str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key=>$part)
+            $dc->labels['treasures_'.$key]=$part;
+        }
+
         $dc->name = $val->name;
         $dc->server = $val->server->connstr;
         $dc->net = $val->server->network;

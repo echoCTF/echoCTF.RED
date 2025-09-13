@@ -10,7 +10,7 @@ class TargetQuery extends \yii\db\ActiveQuery
   {
     $this->alias('t');
     if (Yii::$app->sys->target_hide_inactive === true) {
-      $this->andOnCondition('active = :target_hide_inactive', [':target_hide_inactive' => 1]);
+      $this->andOnCondition('t.active = :target_hide_inactive', [':target_hide_inactive' => 1]);
     }
     parent::init();
   }

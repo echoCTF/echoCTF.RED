@@ -214,20 +214,7 @@ class TargetInstanceController extends \app\components\BaseController
   {
     try {
       $val = $this->findModel($id);
-      $dc = new DockerContainer($val->target);
-      $dc->targetVolumes = $val->target->targetVolumes;
-      $dc->targetVariables = $val->target->targetVariables;
-      $dc->name = $val->name;
-      $dc->server = $val->server->connstr;
-      $dc->net = $val->server->network;
-      try {
-        $dc->destroy();
-      } catch (\Exception $e) {
-      }
-      $dc->pull();
-      $dc->spin();
-      $val->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
-      $val->reboot = 0;
+      $val->restart();
       $val->save();
     } catch (\Exception $e) {
       if (method_exists($e, 'getErrorResponse'))
@@ -324,5 +311,4 @@ class TargetInstanceController extends \app\components\BaseController
     }
     return [];
   }
-
 }
