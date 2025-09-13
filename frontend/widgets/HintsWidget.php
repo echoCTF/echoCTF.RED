@@ -20,10 +20,10 @@ class HintsWidget extends Widget
       $links=[];
       $pending=false;
       $playerHints=\app\models\PlayerHint::find()->forAjax()->forPlayer((int) \Yii::$app->user->id)->pending()->all();
-      if($playerHints==null)
-      {
-        $playerHints=\app\models\PlayerHint::find()->forAjax()->forPlayer((int) \Yii::$app->user->id)->limit(5)->all();
-      }
+      //if($playerHints==null)
+      //{
+      //  $playerHints=\app\models\PlayerHint::find()->forAjax()->forPlayer((int) \Yii::$app->user->id)->limit(5)->all();
+      //}
 
       foreach($playerHints as $ph)
       {
