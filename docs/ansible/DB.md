@@ -1,25 +1,19 @@
 # Database playbook (ansible/runonce/db.yml)
 
-The playbook can run be run in remote and local mode depending on your setup
-and access.
+The playbook can run remotely by performing the following before start.
 
-**REMOTE**
-Connect with SSH as root and ask password to connect
+1. Upload your public keys to your account on github
+2. Upload your public keys to the systems and make sure you can connect as root with these keys
+3. Make sure you have enabled agent forwarding for the system by an `~/.ssh/config` entry
+
+Connect with SSH as root and prompt to ask for password (requires `sshpass`) to connect.
+
 ```sh
 ansible-playbook runonce/db.yml -i 192.168.1.12, -uroot -k
 ```
 
-**LOCAL**
-Run on local OpenBSD system. Current user `root`.
-```sh
-pkg_add -vvi ansible
-ansible-playbook runonce/db.yml --connection=local -i 127.0.0.1,
-```
+NOTE: It is adviced to only connect with SSH keys, as this is the way we tested it with.
 
-You can additionally provide a settings file (see `examples/default-settings.yml`)
-```sh
-ansible-playbook runonce/db.yml -e @settings.yml --connection=local -i 127.0.0.1,
-```
 
 ## Playbook Tasks
 
