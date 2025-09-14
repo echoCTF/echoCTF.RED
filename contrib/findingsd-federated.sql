@@ -174,6 +174,29 @@ BEGIN
 END
 //
 
+DROP PROCEDURE IF EXISTS get_player_pf_networks //
+CREATE PROCEDURE get_player_pf_networks(IN usid INT)
+BEGIN
+  SELECT codename as netname FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id=usid))
+  UNION
+  SELECT t2.name as netname
+  FROM target_instance AS t1
+  LEFT JOIN target AS t2 ON t1.target_id = t2.id
+  WHERE player_id = usid
+    OR player_id IN (
+      SELECT tp1.player_id
+      FROM team_player tp1
+      JOIN team_player tp2 ON tp1.team_id = tp2.team_id
+      WHERE tp2.player_id = usid
+        AND tp1.approved = 1
+        AND (
+          memc_get('sysconfig:team_visible_instances') IS NOT NULL
+          OR team_allowed = 1
+        )
+    );
+END
+//
+
 DROP PROCEDURE IF EXISTS `VPN_LOGIN` //
 CREATE PROCEDURE `VPN_LOGIN`(IN usid BIGINT, IN  assignedIP INT UNSIGNED, IN remoteIP INT UNSIGNED)
 BEGIN
@@ -182,26 +205,10 @@ BEGIN
     -- Set the player logged in
     UPDATE `player_last` SET `on_vpn`=NOW(), `vpn_local_address`=assignedIP, `vpn_remote_address`=remoteIP WHERE `id`=usid;
     -- Bring all networks for the client
-    SELECT CONCAT(codename,'_clients') FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id=usid))
-    UNION
-    SELECT LOWER(CONCAT(t2.name,'_',player_id,'_clients')) AS net
-    FROM target_instance AS t1
-    LEFT JOIN target AS t2 ON t1.target_id = t2.id
-    WHERE player_id = usid
-      OR player_id IN (
-        SELECT tp1.player_id
-        FROM team_player tp1
-        JOIN team_player tp2 ON tp1.team_id = tp2.team_id
-        WHERE tp2.player_id = usid
-          AND tp1.approved = 1
-          AND (
-            memc_get('sysconfig:team_visible_instances') IS NOT NULL
-            OR team_allowed = 1
-          )
-      );
-    ELSE
-      SELECT 'LOGGEDIN' as '';
-    END IF;
+    CALL get_player_pf_networks(usid);
+  ELSE
+    SELECT 'LOGGEDIN' as '';
+  END IF;
 END
 //
 
@@ -217,6 +224,7 @@ CREATE PROCEDURE `VPN_LOGOUT`(IN usid BIGINT, IN  assignedIP INT UNSIGNED, IN re
 BEGIN
   IF (SELECT COUNT(*) FROM player WHERE id=usid AND status=10)>0 THEN
     UPDATE `player_last` SET vpn_local_address=NULL, vpn_remote_address=NULL WHERE `id`=usid;
+    CALL get_player_pf_networks(usid);
   END IF;
 END
 //
