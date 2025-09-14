@@ -522,14 +522,6 @@ class PlayerController extends \app\components\BaseController
   public function actionClearVpn($id)
   {
     $player = $this->findModel($id);
-    $ip = Yii::$app->cache->Memcache->get("ovpn:" . $player->id);
-    if ($ip !== false) {
-      Yii::$app->cache->Memcache->delete("ovpn:" . $player->id);
-      $memid = Yii::$app->cache->Memcache->get("ovpn:" . long2ip($ip));
-      if ($memid !== false && intval($memid) === intval($id)) {
-        Yii::$app->cache->Memcache->delete("ovpn:" . long2ip($ip));
-      }
-    }
     if ($player->last->resetVPN()) {
       \Yii::$app->session->addFlash('success', \Yii::t('app', "Player VPN details cleared"));
     } else {
