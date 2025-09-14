@@ -11,34 +11,37 @@ NCOPTS="-N"
 #fi
 
 # Capture all output that may escape us into /tmp/logging of the chroot
-exec 1>>/tmp/logging
+exec 1>>/tmp/openvpn-updown.log
 exec 2>&1
 
-echo "------------" >>/tmp/updown.log
-date >> /tmp/updown.log
+echo "------------"
+date
 
 if [ "$script_type" == "client-connect" ]; then
-    echo "client connect $common_name" >> /tmp/updown.log
-    NETWORKS=$(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "CALL VPN_LOGIN(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))")
+    echo "client-connect[$$]: CN=${common_name}"
+    NETWORKS=$(mysql -h ${DBHOST} -u"${DBUSER}" echoCTF -NBe "CALL VPN_LOGIN(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))")
     if [ "$NETWORKS" == "LOGGEDIN" ]; then
-      echo "[$$] client ${common_name} already logged in">>/tmp/updown.log
+      echo "client-connect[$$]: ERROR CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip} already logged in"
       exit 1
-    elif [ "$NETWORKS"x != "x" ]; then
+    elif [ "${NETWORKS}"x != "x" ]; then
+      echo "client-connect[$$]: CN=${common_name} networks="${NETWORKS}
       if [ -x /sbin/pfctl ]; then
         for network in ${NETWORKS};do
           /sbin/pfctl -t "${network}_clients" -T add ${ifconfig_pool_remote_ip}
         done
-        echo "[$$] client ${common_name} logged in successfully">>/tmp/updown.log
       fi
+    else
+      echo "client-connect[$$]: CN=${common_name} no networks"
     fi
+    echo "client-connect[$$]: CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip}"
 elif [ "$script_type" == "client-disconnect" ]; then
-  NETWORKS=$(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" -NBe "CALL VPN_LOGOUT(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))" echoCTF)
+  NETWORKS=$(mysql -h ${DBHOST} -u"${DBUSER}" -NBe "CALL VPN_LOGOUT(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))" echoCTF)
   if [ -x /sbin/pfctl ]; then
     for network in ${NETWORKS};do
       /sbin/pfctl -t "${network}_clients" -T delete ${ifconfig_pool_remote_ip}
     done
   fi
-  echo "[$$] client cn:${common_name}, local:${ifconfig_pool_remote_ip}, remote: ${untrusted_ip} disconnected successfully">>/tmp/updown.log
+  echo "client-disconnect[$$]: CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip}"
 fi
 
 exit 0
