@@ -9,7 +9,7 @@ class m250914_091828_create_procedure_get_player_networks extends Migration
   BEGIN
     SELECT codename as netname FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id=usid))
     UNION
-    SELECT t2.name as netname
+    SELECT LOWER(CONCAT(t2.name,'_',player_id)) as netname
     FROM target_instance AS t1
     LEFT JOIN target AS t2 ON t1.target_id = t2.id
     WHERE player_id = usid
