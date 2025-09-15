@@ -123,12 +123,25 @@ class CronController extends Controller
   public function actionInstancePf($before = 60)
   {
     $action = SELF::ACTION_START;
-    $t = TargetInstanceAudit::find()->where("ts>(now() - INTERVAL $before SECOND)")->orderBy(['id' => SORT_ASC]);
+
+    $LASTID = intval(@file_get_contents('/tmp/instance-pf.last_id'));
+    $t = TargetInstanceAudit::find()->latestPerPlayerInstance();
+
+    if ($LASTID === 0) {
+      $t->since($before);
+    } else {
+      $t->andWhere(['>', 'id', $LASTID]);
+    }
+
     $ACTIONS = [];
     foreach ($t->all() as $val) {
       $ACTION_ID = $val->player_id . '_' . $val->target_id;
       $ACTIONS[$ACTION_ID] = ['op' => $val->op, 'object' => $val];
+      $LASTID = $val->id;
     }
+
+    @file_put_contents('/tmp/instance-pf.last_id', $LASTID);
+
     foreach ($ACTIONS as $obj) {
       $val = $obj['object'];
       $ips = [];
@@ -147,12 +160,12 @@ class CronController extends Controller
         case SELF::ACTION_START:
         case SELF::ACTION_RESTART:
           if (($val->team_allowed === true && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) || \Yii::$app->sys->team_visible_instances === true) {
-            foreach ($val->player->teamPlayer->team->teamPlayers as $teamPlayer) {
-              if ($teamPlayer->player->last->vpn_local_address !== null && $teamPlayer->player->last->vpn_local_address !== 0 && $teamPlayer->approved === 1) {
+            foreach ($val->player->teamPlayer->team->approvedMembers as $teamPlayer) {
+              if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
                 $ips[] = long2ip($teamPlayer->player->last->vpn_local_address);
               }
             }
-          } else if ($val->player->last->vpn_local_address !== null && $val->player->last->vpn_local_address !== 0) {
+          } else if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
             $ips[] = long2ip($val->player->last->vpn_local_address);
           }
           if ($ips) {
@@ -186,21 +199,23 @@ class CronController extends Controller
       if (($pIP = $val->player->last->vpn_local_address) !== null) {
         $IPs[] = long2ip($pIP);
       }
-
-      // get team members
-      if ($val->player->teamPlayer) {
-        $team = $val->player->teamPlayer->team;
-        foreach ($team->approvedMembers as $member) {
-          // get IP's of connected players
-          if (($pIP = $member->player->last->vpn_local_address) !== null) {
-            $IPs[] = long2ip($pIP);
+      $team_visible_instances = \Yii::$app->sys->team_visible_instances;
+      if ($val->team_allowed == true ||  $team_visible_instances === true) {
+        // get team members
+        if ($val->player->teamPlayer) {
+          $team = $val->player->teamPlayer->team;
+          foreach ($team->approvedMembers as $member) {
+            // get IP's of connected players
+            if (($pIP = $member->player->last->vpn_local_address) !== null) {
+              $IPs[] = long2ip($pIP);
+            }
           }
         }
       }
 
       if ($dopf !== false) {
         if ($IPs === []) {
-          Pf::flush_table($table);
+          Pf::kill_table($table);
         } else {
           Pf::add_table_ip($table, implode(' ', $IPs), true);
         }
@@ -224,8 +239,8 @@ class CronController extends Controller
       $t = TargetInstance::find()->active();
       foreach ($t->all() as $instance) {
         if ($instance->player->last->vpn_local_address !== null && $pfonly === false) {
-          printf("Updating heartbeat [%d: %s for %d: %s]\n",$instance->target_id,$instance->target->name,$instance->player_id,$instance->player->username);
-          $instance->updateAttributes(['updated_at' => new \yii\db\Expression('NOW()')]);
+          printf("Updating heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
+          $instance->touch('updated_at');
         }
       }
 
@@ -237,30 +252,28 @@ class CronController extends Controller
         if ($val->target->targetVolumes !== null)
           $dc->targetVolumes = $val->target->targetVolumes;
 
-        if ($val->target->targetVariables !== null)
-        {
+        if ($val->target->targetVariables !== null) {
           $dc->targetVariables = $val->target->targetVariables;
         }
 
         // Check If target supports dynamic_treasures
-        if($val->target->dynamic_treasures) {
+        if ($val->target->dynamic_treasures) {
           // Fetch the encrypted env flag
-          $encryptedTreasures=$val->encryptedTreasures;
+          $encryptedTreasures = $val->encryptedTreasures;
 
           // Check existing environment variables for ETSCTF_FLAG keys
-          foreach($dc->targetVariables as $key => $tv)
-          {
+          foreach ($dc->targetVariables as $key => $tv) {
             // Replace the old key with the encrypted treasure
-            if($tv->key=='ETSCTF_FLAG'){
-              $tv->val=str_replace($encryptedTreasures['fs']['env'][0]['src'],$encryptedTreasures['fs']['env'][0]['dest'],$tv->val);
+            if ($tv->key == 'ETSCTF_FLAG') {
+              $tv->val = str_replace($encryptedTreasures['fs']['env'][0]['src'], $encryptedTreasures['fs']['env'][0]['dest'], $tv->val);
               break;
             }
           }
-          $dc->labels['dynamic_treasures']="1";
-          $dc->labels['player_id']=(string)$val->player_id;
-          $dc->labels['target_id']=(string)$val->target_id;
-          foreach(str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key=>$part)
-            $dc->labels['treasures_'.$key]=$part;
+          $dc->labels['dynamic_treasures'] = "1";
+          $dc->labels['player_id'] = (string)$val->player_id;
+          $dc->labels['target_id'] = (string)$val->target_id;
+          foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part)
+            $dc->labels['treasures_' . $key] = $part;
         }
 
         $dc->name = $val->name;
@@ -279,7 +292,7 @@ class CronController extends Controller
         } else {
           echo date("Y-m-d H:i:s ") . "Expiring";
         }
-        printf(" %s for %s (%s) at %s\n", $val->target->name, $val->player->username, $dc->name,$val->server->name);
+        printf(" %s for %s (%s) at %s\n", $val->target->name, $val->player->username, $dc->name, $val->server->name);
         try {
           switch ($action) {
             case SELF::ACTION_START:
@@ -294,13 +307,13 @@ class CronController extends Controller
               }
               if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer) {
                 if ($val->player->teamPlayer->approved === 1) {
-                  foreach ($val->player->teamPlayer->team->teamPlayers as $teamPlayer) {
-                    if ($teamPlayer->player->last->vpn_local_address !== null && $teamPlayer->approved === 1) {
+                  foreach ($val->player->teamPlayer->team->approvedMembers as $teamPlayer) {
+                    if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
                       $ips[] = long2ip($teamPlayer->player->last->vpn_local_address);
                     }
                   }
                 }
-              } else if ($val->player->last->vpn_local_address !== null) {
+              } else if ((int)$val->player->last->vpn_local_address !== 0) {
                 $ips[] = long2ip($val->player->last->vpn_local_address);
               }
               if ($ips != [])
@@ -464,7 +477,7 @@ class CronController extends Controller
       foreach ($demands->all() as $ondemand) {
         $val = $memcache->get('target_heartbeat:' . $ondemand->target->ipoctet);
         if ($val !== false)
-          $ondemand->updateAttributes(['heartbeat' => new \yii\db\Expression('NOW()')]);
+          $ondemand->touch('heartbeat');
       }
     } catch (\Exception $e) {
     }
@@ -547,7 +560,7 @@ class CronController extends Controller
     $pflogmax = intval(\Yii::$app->sys->pflog_max);
     if ($pflogmin === 0)
       $pflogmin = $pflogmax = 1;
-    $networks = $rules = $frules = array();
+    $networks = $rules = $frules = [];
     $targets = Target::find()->active()->online()->poweredup()->all();
     foreach ($targets as $target) {
       foreach ($target->findings as $finding) {

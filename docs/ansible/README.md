@@ -28,21 +28,25 @@ servers and targets, more information about ansible inventories can be found at
 [Inventory Intro](https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html)
 
 
-## Preparing SSH
+## !!!IMPORTANT!!! Preparing SSH
 
 Ansible is relying heavily on ssh to contact the necessary systems.
 
-You need to make sure that you can access the systems with your
-prefered names or IP's before you run any playbooks.
+You need to make sure that you can access the systems with your prefered names or IP's before you run any playbooks.
 
 Edit the provided `ssh_config` and update according to your needs. Make sure paths and domains are as they should.
+
+The setup assumes that each server has at least 2 network interfaces (and some 3). Make sure that you check the documentation for each of the playbooks for details on how these interfaces are configured.
+
+The IP's mentioned in this config file always refer to the `egress` interface (the interface that has a default gateway). Once the systems are configured you access the systems through the VPN if you like by using `ProxyCommand` (example included into the `ssh_config`).
+
 Once everything is configured edit your `~/.ssh/config` and on top of the file add the following line
 
 ```config
 Include /path/to/the/above/ssh_config
 ```
 
-Generate a set of ssh keys that will be used for administering the servers
+Generate a set of ssh keys that will be used for administering the servers and make sure you include the `IdentityFile` directive to the `ssh_config`.
 
 ```sh
 mkdir -p ssh_keys/
@@ -60,7 +64,6 @@ ssh scores
 ssh registry
 ```
 
-
 ## Prepare the inventory
 
 Before you start make sure the inventory folders for the docker servers and
@@ -76,17 +79,19 @@ The following inventory folders exist
 * `targets/` inventory of the targets
 
 
+It is good to familiarize your self with ansible inventories, groups and host selection before going further.
+
 ### Challenges
 
-Inventory for challenges following questionn/answer format
+Inventory for challenges following question/answer format. These are yml files that our playbooks can use to feed challenges to the online platform.
 
 ### Dockers
 
-Inventory for the docker machines running docker api
+Inventory for the docker machines running docker api. These are Linux Debian systems that are responsible for running the targets.
 
 ### Servers
 
-Inventory for the servers of the infrastructure (other than dockers). In this inventory you will find the following structure
+Inventory for the servers of the infrastructure (other than dockers). This inventory comes with a default inventory and sample settings and it includes the following
 
 ```text
 ├── group_vars
@@ -105,9 +110,11 @@ Inventory for the servers of the infrastructure (other than dockers). In this in
 2. Edit the files under `host_vars` and update IP's and hostnames for the systems
 3. Edit the files under `group_vars` to ensure everything matches your setup
 
+Also confirm that ansible can communicate with the systems `ansible -i inventories/servers -m ping`
+
 ### Targets
 
-Also confirm that ansible can communicate with the systems `ansible -i inventories/servers -m ping`
+The inventory for the docker container machines that will act as targets for the platform.
 
 ## Generators
 
@@ -133,9 +140,9 @@ Playbooks that assist in generating files based on target, docker and challenge 
 
 ## runonce
 
-Playbooks used to setup specific operations for servers. These playbooks are usually run only once during the server setups. As such they are specifically configured so that they do not require inventories to be configured. They are meant to run as standalone scripts locally or remotely in order to bging each of their corresponding system up and running.
+Playbooks used to setup specific operations for servers. These playbooks are usually run only once during the server setups. As such they are specifically configured so that they do not require inventories in order to run. They are meant to run as standalone scripts remotely (and if you know what you're doing localy also) in order to setup and configure the software for each of the corresponding servers.
 
-* [`db.yml`](db.md) Standalone playbook to setup and configure an openbsd host as database server
+* [`db.yml`](DB.md) Standalone playbook to setup and configure an openbsd host as database server
 * [`docker-registry.yml`](DOCKER-REGISTRY.md) Configures a docker registry on an OpenBSD server
 * [`docker-servers.yml`](DOCKER-SERVERS.md) Configures a docker server to be ready to run our containers
 * [`mui.yml`](MUI.md) Standalone playbook to setup and configure an openbsd host as echoCTF.RED/backend server

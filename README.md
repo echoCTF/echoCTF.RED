@@ -27,11 +27,15 @@ For more information about our competitions visit [https://echoCTF.com/](https:/
 you'd rather see a live example of our platform feel free to visit [https://echoCTF.RED/](https://echoCTF.RED/)
 
 Our main goals for echoCTF include:
-* **Completeness** - Provide a complete set of tools and applications to develop, deploy and maintain competitions
+
+* **Completeness** - Provide a complete set of tools and applications to develop, deploy and maintain cyber-security and Capture the Flag (CTF) competitions
 * **Modularity** - Each component has a unique and clear role
 * **Expandability** - echoCTF's components are designed to permit expansion
 
+
 ## Quick start
+The following instructions will get you up and running for development and testing. The Docker compose method do not include many of the automatic firewalling features that the non-container systems have and as such its not intended for production use.
+
 ```sh
 $ git clone https://github.com/echoCTF/echoCTF.RED.git
 $ cd echoCTF.RED
@@ -91,6 +95,7 @@ interesting are as following:
   - Configurable mandatory teams flag
   - Configurable team management
   - Configurable number of maximum team members
+  - Configurable team instances
 * Player and Registration settings
   - Configurable activation required
   - Support for global enable/disable registrations
@@ -107,6 +112,7 @@ interesting are as following:
 * Support for configurable Targets and Challenges
   - Target support for start/stop/logs/exec/healthchecks
   - Unlimited flags per targets & challenges
+  - Configurable unique flags per players and teams
   - Dynamic target networks
   - Dynamic target environment variables
   - Dynamic target volumes
@@ -127,11 +133,14 @@ interesting are as following:
 * Network activity tracking and visuals
 * REST support
 * Docker API support
-* Help/Rules/FAQ/Instructions sections
+* Help/Rules/FAQ/Instructions/Objectives sections
 * URLs Management add/edit/delete/disable
 * Separate player and admin interfaces and authentication databases
 * Configurable SSL certificate details
+* Dynamic CSS and javascript overloads (css, js, per player, per url)
 * Twitter & Linkedin support for publishing achievements
+* Support for static pages
+* Live notifications to the player(s)
 * Stand-alone applications for activity streaming
   - Bots for discord and twitter announcements
   - websocket leaderboards
@@ -152,7 +161,8 @@ interesting are as following:
 The documents and guides in this repository are only examples and are not meant
 to be used to setup production environments.
 
-Special care should be taken with securing and restring access to your setups.
+Special care should be taken with securing access to your setups. The application
+is designed to fit into our own setup process which takes care of these details for us.
 
 Apply common logic when copy pasting commands and files :)
 

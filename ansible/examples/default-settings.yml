@@ -14,6 +14,8 @@ echoCTF_VPN_mgmt_passwd: "openvpn"
 offense_network: "10.10.0.0/16"
 db_host: "172.24.0.253"
 db_name: "echoCTF"
+## This is the user that was created by runonce/db.yml
+## Make sure these match the mysql_users section of that playbook
 db_user: "vpnuser"
 db_pass: "vpnuserpass"
 interconnect_interface: em2
