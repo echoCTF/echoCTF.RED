@@ -149,7 +149,7 @@ class TeamScoreController extends \app\components\BaseController
             $rank=1;
             foreach($query->all() as $ts)
             {
-                foreach($ts->team->teamPlayers as $tp)
+                foreach($ts->team->approvedMembers as $tp)
                 {
                     if($tp->approved==0)
                         continue;

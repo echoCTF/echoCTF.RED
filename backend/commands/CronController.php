@@ -160,12 +160,12 @@ class CronController extends Controller
         case SELF::ACTION_START:
         case SELF::ACTION_RESTART:
           if (($val->team_allowed === true && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) || \Yii::$app->sys->team_visible_instances === true) {
-            foreach ($val->player->teamPlayer->team->teamPlayers as $teamPlayer) {
-              if ($teamPlayer->player->last->vpn_local_address !== null && $teamPlayer->player->last->vpn_local_address !== 0 && $teamPlayer->approved === 1) {
+            foreach ($val->player->teamPlayer->team->approvedMembers as $teamPlayer) {
+              if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
                 $ips[] = long2ip($teamPlayer->player->last->vpn_local_address);
               }
             }
-          } else if ($val->player->last->vpn_local_address !== null && $val->player->last->vpn_local_address !== 0) {
+          } else if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
             $ips[] = long2ip($val->player->last->vpn_local_address);
           }
           if ($ips) {
@@ -308,12 +308,12 @@ class CronController extends Controller
               if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer) {
                 if ($val->player->teamPlayer->approved === 1) {
                   foreach ($val->player->teamPlayer->team->approvedMembers as $teamPlayer) {
-                    if ($teamPlayer->player->last->vpn_local_address !== null) {
+                    if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
                       $ips[] = long2ip($teamPlayer->player->last->vpn_local_address);
                     }
                   }
                 }
-              } else if ($val->player->last->vpn_local_address !== null) {
+              } else if ((int)$val->player->last->vpn_local_address !== 0) {
                 $ips[] = long2ip($val->player->last->vpn_local_address);
               }
               if ($ips != [])
@@ -477,7 +477,7 @@ class CronController extends Controller
       foreach ($demands->all() as $ondemand) {
         $val = $memcache->get('target_heartbeat:' . $ondemand->target->ipoctet);
         if ($val !== false)
-          $ondemand->updateAttributes(['heartbeat' => new \yii\db\Expression('NOW()')]);
+          $ondemand->touch('heartbeat');
       }
     } catch (\Exception $e) {
     }
