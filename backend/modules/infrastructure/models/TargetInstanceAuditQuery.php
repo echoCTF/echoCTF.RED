@@ -9,11 +9,27 @@ namespace app\modules\infrastructure\models;
  */
 class TargetInstanceAuditQuery extends \yii\db\ActiveQuery
 {
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
+  /**
+   * Limit results to the latest row per (player_id, target_id),
+   * based on highest id (requires MySQL 8+ or MariaDB 10.2+).
+   */
+  public function latestPerPlayerInstance()
+  {
+    $table = $this->modelClass::tableName();
 
+    $subQuery = (new \yii\db\Query())
+      ->select([
+        "$table.*",
+        new \yii\db\Expression(
+          'ROW_NUMBER() OVER (PARTITION BY player_id, target_id ORDER BY id DESC) AS rn'
+        ),
+      ])
+      ->from($table);
+
+    return $this
+      ->from(['ranked' => $subQuery])
+      ->andWhere(['rn' => 1]);
+  }
     /**
      * {@inheritdoc}
      * @return TargetInstanceAudit[]|array
