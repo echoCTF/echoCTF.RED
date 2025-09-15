@@ -184,7 +184,7 @@ class TeamController extends \app\components\BaseController
   public function actionToggleAcademic($id)
   {
     $model = $this->findModel($id);
-    $model->updateAttributes(['academic' => ($model->academic + 1) % \Yii::$app->sys->academic]);
+    $model->updateAttributes(['academic' => ($model->academic + 1) % \Yii::$app->sys->academic_grouping]);
     return $this->redirect(Yii::$app->request->referrer ?? ['frontend/teamplayer/index']);
   }
 

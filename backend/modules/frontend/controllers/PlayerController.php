@@ -363,7 +363,7 @@ class PlayerController extends \app\components\BaseController
     $trans = Yii::$app->db->beginTransaction();
     try {
       $model = $this->findModel($id);
-      $model->updateAttributes(['academic' => ($model->academic + 1) % Yii::$app->sys->academic]);
+      $model->updateAttributes(['academic' => ($model->academic + 1) % Yii::$app->sys->academic_grouping]);
       if ($model->teamPlayer !== NULL) {
         $model->teamPlayer->delete();
       }
