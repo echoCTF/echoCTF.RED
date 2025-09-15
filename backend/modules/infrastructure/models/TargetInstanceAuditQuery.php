@@ -30,21 +30,34 @@ class TargetInstanceAuditQuery extends \yii\db\ActiveQuery
       ->from(['ranked' => $subQuery])
       ->andWhere(['rn' => 1]);
   }
-    /**
-     * {@inheritdoc}
-     * @return TargetInstanceAudit[]|array
-     */
-    public function all($db = null)
-    {
-        return parent::all($db);
-    }
 
-    /**
-     * {@inheritdoc}
-     * @return TargetInstanceAudit|array|null
-     */
-    public function one($db = null)
-    {
-        return parent::one($db);
-    }
+  /**
+   * Get rows in the last X seconds.
+   *
+   * @param int $ago
+   * @param string $unit
+   * @return $this
+   */
+  public function since($ago = 60,$unit="SECOND")
+  {
+    return $this->andWhere(new \yii\db\Expression("ts > (NOW() - INTERVAL {$ago} {$unit})"));
+  }
+
+  /**
+   * {@inheritdoc}
+   * @return TargetInstanceAudit[]|array
+   */
+  public function all($db = null)
+  {
+    return parent::all($db);
+  }
+
+  /**
+   * {@inheritdoc}
+   * @return TargetInstanceAudit|array|null
+   */
+  public function one($db = null)
+  {
+    return parent::one($db);
+  }
 }
