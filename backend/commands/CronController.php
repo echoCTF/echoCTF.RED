@@ -128,7 +128,7 @@ class CronController extends Controller
     $t = TargetInstanceAudit::find()->latestPerPlayerInstance();
 
     if ($LASTID === 0) {
-      $t->andWhere("ts>(now() - INTERVAL $before SECOND)");
+      $t->since($before);
     } else {
       $t->andWhere(['>', 'id', $LASTID]);
     }
