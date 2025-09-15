@@ -123,7 +123,7 @@ class TeamplayerController extends \app\components\BaseController
             $t=Yii::$app->db->createCommand("CALL repopulate_team_stream(:tid)")->bindValue(':tid',$model->team_id)->execute();
             Yii::$app->session->setFlash('success', "Team membership deleted.");
         }
-          
+
         return $this->redirect(Yii::$app->request->referrer ?? ['frontend/teamplayer/index']);
     }
 
