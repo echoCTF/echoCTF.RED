@@ -8,12 +8,27 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mailer\Transport\TransportFactory;
 use Symfony\Component\Mailer\Transport\DebugTransport;
 use Symfony\Component\Mime\Email;
+use yii\console\widgets\Table;
 
 /**
  * Tester console controller for system checks.
  */
 class TesterController extends Controller
 {
+
+  public function actionIndex()
+  {
+    $this->stdout("*** TESTER COMMAND ***\n");
+
+    echo Table::widget([
+      'headers' => ['Action', 'Usage', 'Description'],
+      'rows' => [
+        ['Action' => 'tester/mail',   'Usage' => 'tester/mail email@example.com', 'Description' => 'Send a test mail with the current settings'],
+//        ['Action' => 'docker', 'Usage' => 'tester/docker nginx:latest', 'Description' => 'Test the a given image to make sure it can be deployed on the configured docker servers of the platform.'],
+      ],
+    ]);
+  }
+
   /**
    * Test the mailer configuration by sending a test email.
    *
