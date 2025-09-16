@@ -365,7 +365,7 @@ class DefaultController extends \app\components\BaseController
     $treasure = Treasure::find()->claimable()->byCode($string)->one();
 
     if ($treasure === null && Yii::$app->sys->treasure_secret_key !== false) {
-      if (Yii::$app->sys->team_encrypted_claims_allowed === true && Yii::$app->user->identity->teamPlayer) {
+      if (Yii::$app->sys->team_encrypted_claims_allowed === true && Yii::$app->user->identity->teamPlayer && Yii::$app->user->identity->teamPlayer->approved) {
         $treasure = Treasure::find()
           ->claimable()
           ->byTeamEncryptedCode($string, Yii::$app->user->identity->teamPlayer->team_id)
