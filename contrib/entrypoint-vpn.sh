@@ -10,8 +10,11 @@ if [ ! -f /etc/openvpn/.configured ]; then
     mkdir -p /etc/openvpn/certs /etc/openvpn/client_confs /var/log/openvpn /etc/openvpn/crl /etc/openvpn/ccd
     install -d -m 700 /etc/openvpn/private
     cp contrib/openvpn_tun0.conf /etc/openvpn
+    cp contrib/verify-cn.sh /etc/openvpn/
     sed -e "s#{{db.host}}#${MARIADB_HOST}#g" contrib/echoctf_updown_mysql.sh > /etc/openvpn/echoctf_updown_mysql.sh
     sed -e "s#ksh#bash#" -e "s#127.0.0.1#${MARIADB_HOST}#g" -e "s#{{db.user}}#${MARIADB_USER}#g" -e "s#{{db.pass}}#${MARIADB_PASSWORD}#g" -i /etc/openvpn/echoctf_updown_mysql.sh
+    sed -e "s#ksh#bash#" -e "s#{{db.user}}#${MARIADB_USER}#g" -e "s#{{db.pass}}#${MARIADB_PASSWORD}#g" -i /etc/openvpn/verify-cn.sh
+
     chmod 555 /etc/openvpn/echoctf_updown_mysql.sh
     cp contrib/crl_openssl.conf /etc/openvpn/crl/
     touch /etc/openvpn/crl/index.txt
