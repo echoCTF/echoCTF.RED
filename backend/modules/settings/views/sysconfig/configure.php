@@ -54,7 +54,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row form-group">
       <div class="col-sm-3"><?= $form->field($model, 'teams')->checkbox()->hint('Are teams supported?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'team_required')->checkbox()->hint('Are teams required?') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'team_encrypted_claims_allowed')->checkbox()->hint('Allow team mambers to claim each others flags? Only when per player flags are enabled.') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'team_encrypted_claims_allowed')->checkbox()->hint('Allow team members to claim each others flags? Only when per player flags are enabled.') ?></div>
 
       <div class="col-sm-3"><?= $form->field($model, 'team_visible_instances')->checkbox()->hint('Make private instances accessible by team members?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'team_manage_members')->checkbox()->hint('Allow team members management operations?') ?></div>

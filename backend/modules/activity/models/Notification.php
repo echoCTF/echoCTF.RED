@@ -51,6 +51,7 @@ class Notification extends \yii\db\ActiveRecord
   {
     return [
       [['body','title','category'],'required'],
+      [['category'],'default','value'=>'info'],
       [['player_id'], 'integer'],
       [['archived'], 'boolean'],
       [['online','ovpn'], 'boolean'],

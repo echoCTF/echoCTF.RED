@@ -41,7 +41,7 @@ class MaterialAsset extends AssetBundle
     '/js/core/popper.min.js?v=1.0.0',
     '/js/core/bootstrap-material-design.min.js?v=1.0.0',
     '/js/plugins/perfect-scrollbar.jquery.min.js?v=1.0.0',
-//    ["js/plugins/bootstrap-autocomplete.min.js", 'defer' => 'defer'],
+    //    ["js/plugins/bootstrap-autocomplete.min.js", 'defer' => 'defer'],
     /* Plugin for the momentJs  */
     ['/js/plugins/moment.min.js', 'defer' => 'defer'],
     /*  Plugin for Sweet Alert */
@@ -60,6 +60,8 @@ class MaterialAsset extends AssetBundle
     '/js/plugins/arrive.min.js',
     /*  Notifications Plugin    */
     ['js/plugins/bootstrap-notify.min.js', 'defer' => 'defer'],
+    'js/plugins/bootstrap-selectpicker.min.js',
+
     /* Control Center for Material Dashboard: parallax effects, scripts for the example pages etc */
     /* Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert */
     //'//cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core.min.js',
@@ -79,8 +81,7 @@ class MaterialAsset extends AssetBundle
   public function init()
   {
     if (!\Yii::$app->user->isGuest) {
-      $this->js[]=["js/plugins/bootstrap-autocomplete.min.js", 'defer' => 'defer'];
-
+      $this->js[] = ["js/plugins/bootstrap-autocomplete.min.js", 'defer' => 'defer'];
     }
     parent::init();
   }
