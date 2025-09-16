@@ -137,4 +137,59 @@ class TargetInstanceAR extends \yii\db\ActiveRecord
   {
     return new TargetInstanceQuery(get_called_class());
   }
+
+
+  public function afterFind()
+  {
+    parent::afterFind();
+    if ($this->ip)
+      $this->ipoctet = long2ip($this->ip);
+  }
+
+  public function beforeSave($insert)
+  {
+    if (parent::beforeSave($insert)) {
+      if ($this->ipoctet)
+        $this->ip = ip2long($this->ipoctet);
+      else $this->ip = null;
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public function afterSave($insert, $changedAttributes)
+  {
+    parent::afterSave($insert, $changedAttributes);
+    if ($insert) {
+      return;
+    }
+    if ($this->ip !== null && array_key_exists('ip', $changedAttributes) && $changedAttributes['ip'] === null) {
+      $this->notify('started');
+    } elseif ($this->reboot === 0 && @$changedAttributes['reboot'] === 1) {
+      $this->notify('restarted');
+    }
+  }
+
+  /**
+   * Send notif after model deletion
+   */
+  public function afterDelete()
+  {
+    $this->notify('destroyed');
+    parent::afterDelete();
+  }
+
+  public function notify($what)
+  {
+    $n = new \app\modules\activity\models\Notification;
+    $n->player_id = $this->player_id;
+    $n->title = Yii::t('app', "Your instance for target [{target_name}] got {what}.", ['target_name' => $this->target->name, 'what' => $what]);
+    $n->body = $n->title;
+    $n->category='info';
+    $n->archived = 0;
+    $n->created_at = new \yii\db\Expression('NOW()');
+    $n->updated_at = new \yii\db\Expression('NOW()');
+    return $n->save() ? true : $n;
+  }
 }
