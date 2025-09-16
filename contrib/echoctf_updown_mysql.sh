@@ -19,7 +19,7 @@ date
 
 if [ "$script_type" == "client-connect" ]; then
     echo "client-connect[$$]: CN=${common_name}"
-    NETWORKS=$(mysql -h ${DBHOST} -u"${DBUSER}" echoCTF -NBe "CALL VPN_LOGIN(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))")
+    NETWORKS=$(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "CALL VPN_LOGIN(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))")
     if [ "$NETWORKS" == "LOGGEDIN" ]; then
       echo "client-connect[$$]: ERROR CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip} already logged in"
       exit 1
@@ -35,7 +35,7 @@ if [ "$script_type" == "client-connect" ]; then
     fi
     echo "client-connect[$$]: CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip}"
 elif [ "$script_type" == "client-disconnect" ]; then
-  NETWORKS=$(mysql -h ${DBHOST} -u"${DBUSER}" -NBe "CALL VPN_LOGOUT(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))" echoCTF)
+  NETWORKS=$(mysql -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" -NBe "CALL VPN_LOGOUT(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))" echoCTF)
   if [ -x /sbin/pfctl ]; then
     for network in ${NETWORKS};do
       /sbin/pfctl -t "${network}_clients" -T delete ${ifconfig_pool_remote_ip}
