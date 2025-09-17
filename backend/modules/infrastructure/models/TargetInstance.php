@@ -134,4 +134,22 @@ class TargetInstance extends TargetInstanceAR
 
     return ['fs' => $treasures];
   }
+
+  /**
+   * Get the list of findings for the given instance, excluding findings that the player already found
+   */
+  public function getFindings()
+  {
+    $subQuery = \app\modules\activity\models\PlayerFinding::find()
+      ->alias('pf')
+      ->select('pf.finding_id')
+      ->innerJoin(['f' => \app\modules\gameplay\models\Finding::tableName()], 'f.id = pf.finding_id')
+      ->where([
+        'pf.player_id' => $this->player_id,
+        'f.target_id'  => $this->target_id,
+      ]);
+
+    return $this->hasMany(\app\modules\gameplay\models\Finding::class, ['target_id' => 'target_id'])
+      ->andWhere(['not in', \app\modules\gameplay\models\Finding::tableName() . '.id', $subQuery]);
+  }
 }
