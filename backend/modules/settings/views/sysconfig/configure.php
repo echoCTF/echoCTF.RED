@@ -151,14 +151,6 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
     <hr />
 
-    <h4>Firewalling Settings</h4>
-    <div class="row form-group">
-      <div class="col-sm-3"><?= $form->field($model, 'offense_registered_tag')->textInput(['maxlength' => true])->hint('Offense PF/BRIDGE tag for registered players (OFFENSE_REGISTERED)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'defense_registered_tag')->textInput(['maxlength' => true])->hint('Defense PF/BRIDGE tag for registered players (DEFENSE_REGISTERED)') ?></div>
-      <div class="col-sm-6"><?= $form->field($model, 'pf_state_limits')->textInput(['maxlength' => true])->hint('PF firewall limits imposed to player connections to the targets') ?></div>
-    </div>
-    <hr />
-
     <h4>Platform Settings</h4>
     <div class="row form-group">
       <div class="col-sm-2"><?= $form->field($model, 'module_smartcity_disabled')->checkbox()->hint(false) ?></div>
@@ -181,6 +173,17 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'stripe_apiKey')->textInput(['maxlength' => true])->hint('Your Stripe secret API Key') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'stripe_publicApiKey')->textInput(['maxlength' => true])->hint('Your Stripe Public API Key') ?></div>
       <div class="col-sm-4"><?= $form->field($model, 'stripe_webhookSecret')->textInput(['maxlength' => true])->hint('Stripe secret to validate webhook requests') ?></div>
+      <div class="col-sm-4"><?= $form->field($model, 'stripe_webhookLocalEndpoint')->textInput(['maxlength' => true,'placeholder'=>'subscriptions/somethingrandom/webhook'])->hint('Local endpoint url that receives webhook POST from Stripe') ?></div>
+    </div>
+    <hr />
+
+    <h4>Firewalling Settings</h4>
+    <div class="row form-group">
+      <div class="col-sm-3"><?= $form->field($model, 'offense_registered_tag')->textInput(['maxlength' => true])->hint('Offense PF/BRIDGE tag for registered players (OFFENSE_REGISTERED)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'defense_registered_tag')->textInput(['maxlength' => true])->hint('Defense PF/BRIDGE tag for registered players (DEFENSE_REGISTERED)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'pflog_min')->textInput(['maxlength' => true])->hint('Minimum pflog interface to use (<code>default: 0</code> means use <code>pflog0</code>') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'pflog_max')->textInput(['maxlength' => true])->hint('Maximum pflog interface to use (<code>default: 0</code> means use <code>pflog0</code>') ?></div>
+      <div class="col-sm-6"><?= $form->field($model, 'pf_state_limits')->textInput(['maxlength' => true])->hint('PF firewall limits imposed to player connections to the targets') ?></div>
     </div>
     <hr />
 

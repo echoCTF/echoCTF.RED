@@ -12,95 +12,109 @@ use Yii;
  */
 class Sysconfig extends \yii\db\ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'sysconfig';
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public static function tableName()
+  {
+    return 'sysconfig';
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['id'], 'required'],
-            [['id'], 'filter','filter'=>'trim'],
-            [['val'], 'string'],
-            [['id'], 'string', 'max' => 255],
-            [['id'], 'unique'],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function rules()
+  {
+    return [
+      [['id'], 'required'],
+      [['id'], 'filter', 'filter' => 'trim'],
+      [['val'], 'string'],
+      [['id'], 'string', 'max' => 255],
+      [['id'], 'unique'],
+    ];
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'id' => 'ID',
-            'val' => 'Val',
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function attributeLabels()
+  {
+    return [
+      'id' => 'ID',
+      'val' => 'Val',
+    ];
+  }
 
-    public function afterFind(){
-        parent::afterFind();
-        switch($this->id){
-            case "event_start":
-            case "event_end":
-            case "registrations_start":
-            case "registrations_end":
-              if($this->val==0 || $this->val=="")
-                $this->val="";
-              else
-                $this->val = Yii::$app->formatter->asDatetime($this->val,'php:Y-m-d H:i:s','UTC');
-              break;
-            default:
-              break;
+  public function afterFind()
+  {
+    parent::afterFind();
+    switch ($this->id) {
+      case "event_start":
+      case "event_end":
+      case "registrations_start":
+      case "registrations_end":
+        if ($this->val == 0 || $this->val == "")
+          $this->val = "";
+        else
+          $this->val = Yii::$app->formatter->asDatetime($this->val, 'php:Y-m-d H:i:s', 'UTC');
+        break;
+      default:
+        break;
+    }
+  }
+
+  public function beforeSave($insert)
+  {
+    switch ($this->id) {
+      case "event_end":
+        $Q = sprintf("DROP EVENT IF EXISTS event_end_notification");
+        \Yii::$app->db->createCommand($Q)->execute();
+        if (!empty($this->val)) {
+          $Q = sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10", $this->val);
+          \Yii::$app->db->createCommand($Q)->execute();
+          $this->val = strtotime($this->val);
+        } else {
+          \Yii::$app->db->createCommand("DROP EVENT IF EXISTS event_end_notification")->execute();
         }
-    }
-
-    public function beforeSave($insert){
-        switch($this->id){
-            case "event_end":
-              $Q=sprintf("DROP EVENT IF EXISTS event_end_notification");
-              \Yii::$app->db->createCommand($Q)->execute();
-              if(!empty($this->val))
-              {
-                $Q=sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10",$this->val);
-                \Yii::$app->db->createCommand($Q)->execute();
-                $this->val=strtotime($this->val);
-              }
-              else {
-                \Yii::$app->db->createCommand("DROP EVENT IF EXISTS event_end_notification")->execute();
-              }
-              break;
-            case "event_start":
-            case "registrations_start":
-            case "registrations_end":
-              if(empty($this->val))
-              {
-                $this->val=0;
-              }
-              else
-              {
-                $this->val=strtotime($this->val);
-              }
-              break;
-            default:
-              break;
+        break;
+      case "event_start":
+      case "registrations_start":
+      case "registrations_end":
+        if (empty($this->val)) {
+          $this->val = 0;
+        } else {
+          $this->val = strtotime($this->val);
         }
-        return true;
+        break;
+      default:
+        break;
     }
+    return true;
+  }
 
-    public static function findOneNew($id)
-    {
-      if(($model=self::findOne($id))!==null)
-        return $model;
-      $model=new self;
-      $model->id=$id;
+  public function afterSave($insert, $changedAttributes)
+  {
+    parent::afterSave($insert, $changedAttributes);
+
+    // $insert is true if it’s a new record
+    // $changedAttributes is an array of old values
+    if ($this->id === 'stripe_webhookLocalEndpoint' && array_key_exists('val', $changedAttributes)) {
+      $oldVal = $changedAttributes['val'];
+      $newVal = $this->val;
+      if(($u=UrlRoute::findOne(['destination'=>'subscription/default/webhook']))!==NULL)
+      {
+        $u->updateAttributes(['source'=>$newVal]);
+      }
+
+    }
+  }
+
+  public static function findOneNew($id)
+  {
+    if (($model = self::findOne($id)) !== null)
       return $model;
-    }
+    $model = new self;
+    $model->id = $id;
+    return $model;
+  }
 }

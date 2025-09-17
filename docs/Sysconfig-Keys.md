@@ -46,14 +46,13 @@
 * `module_speedprogramming_enabled`: Whether or not the Speed Programming module is enabled (hides the menu from backend also)
 
 * `log_failed_claims`: Log failed claim attempts?
-* `treasure_secret_key`: Encrypt flags per player?
 * `team_encrypted_claims_allowed`: Should we allow claims of flags across teams?
-
 
 ## String and numeric key/val pairs
 
-* `event_name` A name for your event
 * `writeup_rules` Your rules for writeup submissions
+* `treasure_secret_key`: Encrypt flags per player?
+* `event_name` A name for your event
 * `frontpage_scenario` The event scenario displayed at the `frontend/`, landing page for guests.
 * `offense_scenario` A scenario displayed to the users once they have signed into the frontend.
 * `defense_scenario` A scenario displayed to the users once they have signed into the frontend.
@@ -89,6 +88,7 @@
 * `avatar_robohash_set`: Choose the set for when robohash is configured
 * `mail_verification_token_validity`: How long will the mail verification tokens be active for. Can take intervals supported by php and `INTERVAL`, eg. 10 day, meaning 10 days from now
 * `password_reset_token_validity`: How long will the password reset tokens be active for. Can take intervals supported by php and `INTERVAL`, eg. 10 day, meaning 10 days from now
+* `pflog_min`/`pflog_max`: min/max number of pflog interfaces to use for the match findings. Allows for splitting the findings load into multiple processes.
 
 * `api_bearer_enable` Enable Bearer authorizations API operations
 * `api_claim_timeout` set the rate limit for the api claim. One request per `api_claim_timeout`+1 seconds
@@ -144,7 +144,7 @@ Or instead if not DSN then use the following
 * `stripe_webhookSecret` Stripe webhook secret
 * `stripe_automatic_tax_enabled` Enable Stripe automatic TAX
 * `stripe_webhook_ips` List of IP's that are allowed to access the stripe webhook endpoint
-
+* `stripe_webhookLocalEndpoint`: The local endpoint url for the receive of Stripe webhooks. Make it something unique and random so that its not easy to be hit by anyone.
 
 ## Player Specific
 
