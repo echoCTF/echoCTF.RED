@@ -572,8 +572,10 @@ class CronController extends Controller
     }
     $instances = TargetInstance::find()->active();
     foreach ($instances->all() as $ti)
-      foreach ($ti->target->findings as $f)
-        $rules[] = $f->getMatchRule('<' . $ti->name . '_clients>', '<' . $ti->name . '>', $pflogmin, $pflogmax);
+      foreach ($ti->findings as $f) {
+        $rules[] = $f->getMatchRule('<' . $ti->name . '_clients>', '<' . $ti->name . '>', $pflogmin, $pflogmax, $ti->player_id);
+      }
+
 
     Pf::store($base . '/match-findings-pf.conf', ArrayHelper::merge($frules, $rules));
 

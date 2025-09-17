@@ -63,6 +63,7 @@ class ConfigureForm extends Model
   public $stripe_apiKey;
   public $stripe_publicApiKey;
   public $stripe_webhookSecret;
+  public $stripe_webhookLocalEndpoint;
   public $player_monthly_rankings;
   public $player_point_rankings;
   public $country_rankings;
@@ -107,6 +108,7 @@ class ConfigureForm extends Model
   public $dn_localityName;
   public $dn_organizationName;
   public $dn_organizationalUnitName;
+  public $pflog_min, $pflog_max;
 
   public $keys = [
     'target_days_updated',
@@ -204,7 +206,10 @@ class ConfigureForm extends Model
     'profile_twitch',
     'profile_youtube',
     'guest_visible_leaderboards',
-    'dsn'
+    'dsn',
+    'pflog_min',
+    'pflog_max',
+    'stripe_webhookLocalEndpoint',
   ];
 
   /**
@@ -244,10 +249,12 @@ class ConfigureForm extends Model
         'stripe_apiKey',
         'stripe_publicApiKey',
         'stripe_webhookSecret',
+        'stripe_webhookLocalEndpoint',
         'dsn',
         'treasure_secret_key',
         'mail_verification_token_validity',
         'password_reset_token_validity',
+        'stripe_webhookLocalEndpoint',
       ], 'string'],
       [[
         'offense_registered_tag',
@@ -284,6 +291,7 @@ class ConfigureForm extends Model
         'treasure_secret_key',
         'mail_verification_token_validity',
         'password_reset_token_validity',
+        'stripe_webhookLocalEndpoint',
       ], 'trim'],
       // required fields
       [[
@@ -321,6 +329,8 @@ class ConfigureForm extends Model
         'player_delete_deleted_after',
         'player_changed_to_deleted_after',
         'player_delete_rejected_after',
+        'pflog_min',
+        'pflog_max',
       ], 'integer'],
       [['online_timeout'], 'default', 'value' => 900],
       [['spins_per_day'], 'default', 'value' => 2],
@@ -373,7 +383,6 @@ class ConfigureForm extends Model
         'guest_visible_leaderboards'
 
       ], 'boolean'],
-
     ];
   }
   public function attributeLabels()
@@ -472,7 +481,9 @@ class ConfigureForm extends Model
       'profile_twitch' => 'Twitch',
       'profile_youtube' => 'Youtube',
       'guest_visible_leaderboards' => 'Guest visible leaderboards',
-      'dsn' => 'Mail DSN'
+      'dsn' => 'Mail DSN',
+      'pflog_min',
+      'pflog_max',
     ];
   }
 
