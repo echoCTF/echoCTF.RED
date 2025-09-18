@@ -70,6 +70,8 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-2"><?= $form->field($model, 'network_view_guest')->checkbox()->hint('Allow guests to view networks?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'writeup_rankings')->checkbox()->hint('Enable writeup ratings?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'log_failed_claims')->checkbox()->hint('Log failed treasure claims?') ?></div>
+        <div class="col-sm-2"><?= $form->field($model, 'disable_ondemand_operations')->checkbox()->hint('Disable on-demand target operations?') ?></div>
+
       </div>
       <div class="col-sm-2"><?= $form->field($model, 'challenge_home')->textInput()->hint('Web accessible path for downloading challenge files?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'challenge_root')->textInput()->hint('Folder that challenge files will be uploaded to?') ?></div>
@@ -154,6 +156,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h4>Platform Settings</h4>
     <div class="row form-group">
       <div class="col-sm-2"><?= $form->field($model, 'module_smartcity_disabled')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'dashboard_graph_visible')->checkbox()->hint(false) ?></div>
     </div>
     <hr />
     <h4>API Settings</h4>

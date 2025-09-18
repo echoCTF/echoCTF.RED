@@ -109,6 +109,8 @@ class ConfigureForm extends Model
   public $dn_organizationName;
   public $dn_organizationalUnitName;
   public $pflog_min, $pflog_max;
+  public $dashboard_graph_visible;
+  public $disable_ondemand_operations;
 
   public $keys = [
     'target_days_updated',
@@ -210,6 +212,8 @@ class ConfigureForm extends Model
     'pflog_min',
     'pflog_max',
     'stripe_webhookLocalEndpoint',
+    'dashboard_graph_visible',
+    'disable_ondemand_operations',
   ];
 
   /**
@@ -380,8 +384,9 @@ class ConfigureForm extends Model
         'profile_htb',
         'profile_twitch',
         'profile_youtube',
-        'guest_visible_leaderboards'
-
+        'guest_visible_leaderboards',
+        'dashboard_graph_visible',
+        'disable_ondemand_operations',
       ], 'boolean'],
     ];
   }
