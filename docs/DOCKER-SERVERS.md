@@ -16,10 +16,10 @@ All the commands assume you're working from the project folder (eg. `/root/echoC
 
 The guide is based on a system base installation of `debian-10.3.0-amd64-netinst.iso` on a server with the following details
 
-* Hostname: `dockerd160`
+* Hostname: `docker100`
 * interface: `enp0s3`
-* IP: `10.0.160.1/24`
-* GW: `10.0.160.254`
+* IP: `10.0.100.1/24`
+* GW: `10.0.100.254`
 * username (during install): `sysadmin`
 
 This is the `/etc/network/interfaces` from the system right after the installation.
@@ -30,9 +30,9 @@ This is the `/etc/network/interfaces` from the system right after the installati
 allow-hotplug enp0s3
 auto enp0s3
 iface enp0s3 inet static
-	address 10.0.160.1
+	address 10.0.100.1
 	netmask 255.255.255.0
-	gateway 10.0.160.254
+	gateway 10.0.100.254
 ```
 
 
@@ -46,79 +46,28 @@ ssh-keygen -t rsa -C "keycomment" -f ssh_keys/ctf_rsa -N ''
 ssh-add ssh_keys/ctf_rsa
 ```
 
-Copy the `docker-server-advanced.yml` to prepare it for `dockerd160`
+Copy the `docker-server-advanced.yml` to prepare it for `docker100`
 ```sh
-cp templates/docker-server-advanced.yml inventories/dockers/host_vars/dockerd160.yml
+cp templates/docker-server-advanced.yml inventories/dockers/host_vars/docker100.yml
 ```
 
-Modify the file `inventories/dockers/host_vars/dockerd160.yml` to match your settings, for our setup this is
-```yml
----
-ansible_host: 10.0.160.1
-ansible_user: sysadmin
-ansible_python_interpreter: /usr/bin/python3
-hostname: dockerd160
-fqdn: dockerd160.example.net
-mac: xx:xx:xx:xx:xx:xx
-OS: debian
-DOCKER_REGISTRY:
-  - "10.0.160.254:5000"
-DOCKER_REPOSITORY: "echoctfred"
-PACKAGES: []
-network:
-  name: echoctfred_targets
-  driver: macvlan
-  driver_options:
-    parent: enp0s3
-  ipam_options:
-    subnet: '10.0.160.0/24'
-    gateway: 10.0.160.254
-    iprange: '10.0.160.0/16'
-ETSCTF_TREASURES: []
-ETSCTF_FINDINGS: []
-ETSCTF_users: []
-ETSCTF_authorized_keys:
- - { user: "root", key: "../ssh_keys/ctf_rsa.pub" }
- - { user: "sysadmin", key: "../ssh_keys/ctf_rsa.pub" }
-aptKeys:
- - { key: "https://download.docker.com/linux/debian/gpg", state: "present" }
-aptRepos:
- - { repo: "deb [arch=amd64] https://download.docker.com/linux/debian buster stable", state: "present"}
-apt:
- - { name: "python3-pip", state: "present", stage: 'preInst'}
- - { name: "open-vm-tools", state: "present", stage: 'preInst' }
- - { name: "python3-setuptools", state: "present", stage: 'preInst' }
- - { name: "docker-ce", state: "present" }
- - { name: "apt-transport-https", state: "present", stage: 'preInst' }
- - { name: "ca-certificates", state: "present", stage: 'preInst' }
- - { name: "curl", state: "present", stage: 'preInst' }
- - { name: "gnupg2", state: "present", stage: 'preInst' }
- - { name: "software-properties-common", state: "present", stage: 'preInst' }
-pip:
- - { name: "docker", version: "*", state: "present" }
-#sync:
-#  - { src: "../files/docker/build", dst: "/opt" }
-```
+Modify the files under `inventories/dockers/group_vars/all.yml` and `inventories/dockers/host_vars/docker100.yml` to match your settings
 
 Ensure you modified the following values according to your setup
 
-* `ansible_host: 10.0.160.1` Change the IP for the host
+* `ansible_host: 10.0.100.1` Change the IP for the host
 * `ansible_user: sysadmin` The user that is allowed to ssh into the host and use the `su` command
-* `DOCKER_REGISTRY:` Change the registry IP `"10.0.160.254:5000"` for your setup
+* `DOCKER_REGISTRY:` Change the registry IP `"10.0.100.254:5000"` for your setup
 * `parent: enp0s3` Change the interface name to your existing one (the one connected to the targets network)
-* `subnet: '10.0.160.0/24'` Change according to your setup
-* `gateway: 10.0.160.254` Change according to your setup
-* `iprange: '10.0.160.0/24'` Change according to your setup
+* `subnet: '10.0.100.0/24'` Change according to your setup
+* `gateway: 10.0.100.254` Change according to your setup
+* `iprange: '10.0.100.0/24'` Change according to your setup
 * `ETSCTF_authorized_keys:` Append any authorized_keys you would like to be added to the remote server
 
-Create a hosts file under `inventories/dockers` for the server
-
-```sh
-echo -e "[dockers]\ndockerd160" >> inventories/dockers/hosts
-```
+If you have created other docker servers make sure you include them into the inventory file under `inventories/dockers/hosts`.
 
 Push your changes to the server by running ansible-playbook. Ansible will try
-to connect based on the user defined on the `dockerd160.yml` file. The first
+to connect based on the user defined on the `docker100.yml` file. The first
 password is for the SSH to connect with the user supplied (eg `sysadmin`) and
 the second is for becoming root through `su`.
 ```sh
@@ -130,7 +79,7 @@ ansible-playbook -K -k -i inventories/dockers runonce/docker-servers.yml
 `-k`, take a look at the following page https://docs.ansible.com/ansible/2.3/become.html#command-line-options
 
 Once this the playbook is complete without failures, you will have to restart
-your docker server (`dockerd160`) for all the changes to activate.
+your docker server (`docker100`) for all the changes to activate.
 
 If you're using virtual machines for the docker servers make sure you allow
 promiscuous mode settings and as well as mac address changes. This is needed
