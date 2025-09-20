@@ -61,7 +61,8 @@ hostname: dockerd160
 fqdn: dockerd160.example.net
 mac: xx:xx:xx:xx:xx:xx
 OS: debian
-DOCKER_REGISTRY: "10.0.160.254:5000"
+DOCKER_REGISTRY:
+  - "10.0.160.254:5000"
 DOCKER_REPOSITORY: "echoctfred"
 PACKAGES: []
 network:
@@ -103,7 +104,7 @@ Ensure you modified the following values according to your setup
 
 * `ansible_host: 10.0.160.1` Change the IP for the host
 * `ansible_user: sysadmin` The user that is allowed to ssh into the host and use the `su` command
-* `DOCKER_REGISTRY: "10.0.160.254:5000"` Change the registry IP for your setup
+* `DOCKER_REGISTRY:` Change the registry IP `"10.0.160.254:5000"` for your setup
 * `parent: enp0s3` Change the interface name to your existing one
 * `subnet: '10.0.160.0/24'` Change according to your setup
 * `gateway: 10.0.160.254` Change according to your setup
