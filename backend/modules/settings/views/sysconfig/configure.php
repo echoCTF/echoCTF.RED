@@ -70,15 +70,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-2"><?= $form->field($model, 'network_view_guest')->checkbox()->hint('Allow guests to view networks?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'writeup_rankings')->checkbox()->hint('Enable writeup ratings?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'log_failed_claims')->checkbox()->hint('Log failed treasure claims?') ?></div>
+        <div class="col-sm-2"><?= $form->field($model, 'force_findings_to_claim')->checkbox()->hint('Force findings before claim?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'disable_ondemand_operations')->checkbox()->hint('Disable on-demand target operations?') ?></div>
-
       </div>
       <div class="col-sm-2"><?= $form->field($model, 'challenge_home')->textInput()->hint('Web accessible path for downloading challenge files?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'challenge_root')->textInput()->hint('Folder that challenge files will be uploaded to?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'treasure_secret_key')->textInput()->hint('Secret key to encrypt player flags?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'target_days_new')->textInput()->hint('How many days are targets considered new?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'target_days_updated')->textInput()->hint('How many days are targets considered updated?') ?></div>
-
     </div>
 
     <hr />
@@ -90,26 +89,38 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'require_activation')->checkbox()->hint('Do players need to activate their account?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'disable_registration')->checkbox()->hint('Are online registrations allowed on the pUI?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'approved_avatar')->checkbox()->hint('Are player profile avatars approved?') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'signup_StopForumSpamValidator')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'signup_HourRegistrationValidator')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'signup_TotalRegistrationsValidator')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'signup_MXServersValidator')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'signup_ValidatemailValidator')->checkbox()->hint('Enable verifymail.io domain validation?') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'verifymail_key')->textInput()->hint('Add API key for verifymail.io') ?></div>
       <div class="row">
+        <div class="col-sm-3"><?= $form->field($model, 'username_length_min')->textInput()->hint('Minimum player username length') ?></div>
+        <div class="col-sm-3"><?= $form->field($model, 'username_length_max')->textInput()->hint('Maximum player username length') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'player_delete_inactive_after')->textInput()->hint('Delete players with status=9 (inactive) after X days') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'player_delete_deleted_after')->textInput()->hint('Delete players with status=0 (deleted) after X days') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'player_changed_to_deleted_after')->textInput()->hint('Update players with status=8 (changed) into status=0 (deleted) after X days') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'player_delete_rejected_after')->textInput()->hint('Delete players that their registration was rejected (status=9 and approval=4) after X days') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'mail_verification_token_validity')->textInput()->hint('How long will the mail verification tokens be active for. Can take intervals supported by php and <code>INTERVAL</code>, eg. <code>10 day</code>, meaning 10 days from now') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'password_reset_token_validity')->textInput()->hint('How long will the password reset tokens be active for. Can take intervals supported by php and <code>INTERVAL</code>, eg. <code>10 day</code>, meaning 10 days from now') ?></div>
-
-
+        <div class="col-sm-3"><?= $form->field($model, 'online_timeout')->textInput()->hint('Timeout (in seconds) for the <b><code>online</code></b> memcache key to expire (eg. 900)') ?></div>
+      </div>
+      <div class="row">
+        <div class="col-sm-3"><?= $form->field($model, 'academic_grouping')->textInput()->hint('Number of participant groups') ?></div>
+        <div class="col-sm-3"><?= $form->field($model, 'admin_ids')->textInput()->hint('Comma separated list of player IDs') ?></div>
 
       </div>
     </div>
     <hr />
 
-    <h4>Profile social details</h4>
+    <h4>Profile properties</h4>
     <div class="row form-group">
-      <div class="col-sm-3"><?= $form->field($model, 'profile_visibility')->textInput()->hint('Choose default profile visibility (<code>ingame, public, private</code>)') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'default_homepage')->textInput()->hint('Default homepage for logged in users (eg. /dashboard)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'online_timeout')->textInput()->hint('Timeout (in seconds) for the <b><code>online</code></b> memcache key to expire (eg. 900)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'profile_visibility')->textInput()->hint('Choose default profile visibility (<code>ingame, public, private</code>)') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'spins_per_day')->textInput()->hint('Maximum target spins per day per user (eg. 2)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'avatar_generator')->textInput()->hint('Change the avatar generator') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'avatar_robohash_set')->textInput()->hint('Set for Robohash images to use') ?></div>
     </div>
     <hr />
 
@@ -132,12 +143,17 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'offense_domain')->textInput(['maxlength' => true])->hint('Offense domain')->input('text', ['placeholder' => "red.example.ctf"]) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'defense_domain')->textInput(['maxlength' => true])->hint('Defense domain')->input('text', ['placeholder' => "blue.example.ctf"]) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'vpngw')->textInput(['maxlength' => true])->hint('VPN Gateway FQDN or IP (eg. vpn.echoctf.red)')->input('text', ['placeholder' => "vpngw.example.ctf"]) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'offense_home')->textInput(['maxlength' => true])->hint(false)->input('text') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'defense_home')->textInput(['maxlength' => true])->hint(false)->input('text') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'moderator_home')->textInput(['maxlength' => true])->hint(false)->input('text') ?></div>
     </div>
     <hr />
 
     <h4>Mail Settings</h4>
     <div class="row form-group">
       <div class="col-sm-3"><?= $form->field($model, 'disable_mailer')->checkbox()->hint('Disable all mailer operations?') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'disable_mail_validation')->checkbox()->hint('Disable mail validations?') ?></div>
+
       <div class="col-sm-3"><?= $form->field($model, 'mail_useFileTransport')->checkbox()->hint('Activate the use of file transport (save mails in files)?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'mail_from')->textInput(['maxlength' => true])->hint('Mail From (eg. dontreply@echoctf.red)') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'mail_fromName')->textInput(['maxlength' => true])->hint('Mail From Name (eg. echoCTF RED)') ?></div>
@@ -155,10 +171,29 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h4>Platform Settings</h4>
     <div class="row form-group">
-      <div class="col-sm-2"><?= $form->field($model, 'module_smartcity_disabled')->checkbox()->hint(false) ?></div>
-      <div class="col-sm-2"><?= $form->field($model, 'dashboard_graph_visible')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'module_smartcity_disabled')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'module_speedprogramming_enabled')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'dashboard_graph_visible')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'force_https_urls')->checkbox()->hint(false) ?></div>
+    </div>
+    <div class="row form-group">
+      <div class="col-sm-3"><?= $form->field($model, 'failed_login_ip')->textInput(['maxlength' => true])->hint('Failed logins per IP before denied access (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'failed_login_ip_timeout')->textInput(['maxlength' => true])->hint('Failed logins per IP timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'failed_login_username_timeout')->textInput(['maxlength' => true])->hint('Failed logins per username timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'password_reset_ip')->textInput(['maxlength' => true])->hint('Password reset per IP before denied access (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'password_reset_ip_timeout')->textInput(['maxlength' => true])->hint('Password reset per IP timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'password_reset_email_timeout')->textInput(['maxlength' => true])->hint('Password reset per email timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'verification_resend_ip')->textInput(['maxlength' => true])->hint('Verification resend per IP before denied access (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'verification_resend_ip_timeout')->textInput(['maxlength' => true])->hint('Verification resend per IP timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'verification_resend_email_timeout')->textInput(['maxlength' => true])->hint('Verification resend per email timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'stream_record_limit')->textInput(['maxlength' => true])->hint(false) ?></div>
+    </div>
+    <div class="row form-group">
+      <div class="col-sm-2"><?= $form->field($model, 'maintenance')->checkbox()->hint('Is the site under maintenance?') ?></div>
+      <div class="col-sm-4"><?= $form->field($model, 'maintenance_notification')->textInput(['maxlength' => true])->input('text')->hint('The notification to sent to users when the is under maintenance') ?></div>
     </div>
     <hr />
+
     <h4>API Settings</h4>
     <div class="row form-group">
       <div class="col-sm-2"><?= $form->field($model, 'api_bearer_enable')->checkbox()->hint(false) ?></div>
@@ -176,7 +211,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'stripe_apiKey')->textInput(['maxlength' => true])->hint('Your Stripe secret API Key') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'stripe_publicApiKey')->textInput(['maxlength' => true])->hint('Your Stripe Public API Key') ?></div>
       <div class="col-sm-4"><?= $form->field($model, 'stripe_webhookSecret')->textInput(['maxlength' => true])->hint('Stripe secret to validate webhook requests') ?></div>
-      <div class="col-sm-4"><?= $form->field($model, 'stripe_webhookLocalEndpoint')->textInput(['maxlength' => true,'placeholder'=>'subscriptions/somethingrandom/webhook'])->hint('Local endpoint url that receives webhook POST from Stripe') ?></div>
+      <div class="col-sm-4"><?= $form->field($model, 'stripe_webhookLocalEndpoint')->textInput(['maxlength' => true, 'placeholder' => 'subscriptions/somethingrandom/webhook'])->hint('Local endpoint url that receives webhook POST from Stripe') ?></div>
     </div>
     <hr />
 
@@ -187,6 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'pflog_min')->textInput(['maxlength' => true])->hint('Minimum pflog interface to use (<code>default: 0</code> means use <code>pflog0</code>') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'pflog_max')->textInput(['maxlength' => true])->hint('Maximum pflog interface to use (<code>default: 0</code> means use <code>pflog0</code>') ?></div>
       <div class="col-sm-6"><?= $form->field($model, 'pf_state_limits')->textInput(['maxlength' => true])->hint('PF firewall limits imposed to player connections to the targets') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'bannedIPS')->textInput(['maxlength' => true])->hint('List of comma separated player IPs that will be blocked from the platform') ?></div>
     </div>
     <hr />
 
