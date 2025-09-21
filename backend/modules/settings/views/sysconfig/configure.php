@@ -89,39 +89,35 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'require_activation')->checkbox()->hint('Do players need to activate their account?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'disable_registration')->checkbox()->hint('Are online registrations allowed on the pUI?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'approved_avatar')->checkbox()->hint('Are player profile avatars approved?') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'signup_ValidatemailValidator')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'signup_StopForumSpamValidator')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'signup_HourRegistrationValidator')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'signup_TotalRegistrationsValidator')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'signup_MXServersValidator')->checkbox()->hint(false) ?></div>
-
-
-
+      <div class="col-sm-3"><?= $form->field($model, 'signup_ValidatemailValidator')->checkbox()->hint('Enable verifymail.io domain validation?') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'verifymail_key')->textInput()->hint('Add API key for verifymail.io') ?></div>
       <div class="row">
-
-
         <div class="col-sm-3"><?= $form->field($model, 'username_length_min')->textInput()->hint('Minimum player username length') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'username_length_max')->textInput()->hint('Maximum player username length') ?></div>
-
         <div class="col-sm-3"><?= $form->field($model, 'player_delete_inactive_after')->textInput()->hint('Delete players with status=9 (inactive) after X days') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'player_delete_deleted_after')->textInput()->hint('Delete players with status=0 (deleted) after X days') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'player_changed_to_deleted_after')->textInput()->hint('Update players with status=8 (changed) into status=0 (deleted) after X days') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'player_delete_rejected_after')->textInput()->hint('Delete players that their registration was rejected (status=9 and approval=4) after X days') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'mail_verification_token_validity')->textInput()->hint('How long will the mail verification tokens be active for. Can take intervals supported by php and <code>INTERVAL</code>, eg. <code>10 day</code>, meaning 10 days from now') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'password_reset_token_validity')->textInput()->hint('How long will the password reset tokens be active for. Can take intervals supported by php and <code>INTERVAL</code>, eg. <code>10 day</code>, meaning 10 days from now') ?></div>
+        <div class="col-sm-3"><?= $form->field($model, 'online_timeout')->textInput()->hint('Timeout (in seconds) for the <b><code>online</code></b> memcache key to expire (eg. 900)') ?></div>
       </div>
       <div class="row">
         <div class="col-sm-3"><?= $form->field($model, 'academic_grouping')->textInput()->hint('Number of participant groups') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'admin_ids')->textInput()->hint('Comma separated list of player IDs') ?></div>
+
       </div>
     </div>
     <hr />
 
-    <h4>Profile social details</h4>
+    <h4>Profile properties</h4>
     <div class="row form-group">
       <div class="col-sm-3"><?= $form->field($model, 'default_homepage')->textInput()->hint('Default homepage for logged in users (eg. /dashboard)') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'profile_visibility')->textInput()->hint('Choose default profile visibility (<code>ingame, public, private</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'online_timeout')->textInput()->hint('Timeout (in seconds) for the <b><code>online</code></b> memcache key to expire (eg. 900)') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'spins_per_day')->textInput()->hint('Maximum target spins per day per user (eg. 2)') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'avatar_generator')->textInput()->hint('Change the avatar generator') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'avatar_robohash_set')->textInput()->hint('Set for Robohash images to use') ?></div>
@@ -181,16 +177,16 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'force_https_urls')->checkbox()->hint(false) ?></div>
     </div>
     <div class="row form-group">
-      <div class="col-sm-3"><?= $form->field($model, 'failed_login_ip')->textInput(['maxlength'=>true])->hint('Failed logins per IP before denied access (disable: <code>0</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'failed_login_ip_timeout')->textInput(['maxlength'=>true])->hint('Failed logins per IP timeout (disable: <code>0</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'failed_login_username_timeout')->textInput(['maxlength'=>true])->hint('Failed logins per username timeout (disable: <code>0</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'password_reset_ip')->textInput(['maxlength'=>true])->hint('Password reset per IP before denied access (disable: <code>0</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'password_reset_ip_timeout')->textInput(['maxlength'=>true])->hint('Password reset per IP timeout (disable: <code>0</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'password_reset_email_timeout')->textInput(['maxlength'=>true])->hint('Password reset per email timeout (disable: <code>0</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'verification_resend_ip')->textInput(['maxlength'=>true])->hint('Verification resend per IP before denied access (disable: <code>0</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'verification_resend_ip_timeout')->textInput(['maxlength'=>true])->hint('Verification resend per IP timeout (disable: <code>0</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'verification_resend_email_timeout')->textInput(['maxlength'=>true])->hint('Verification resend per email timeout (disable: <code>0</code>)') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'stream_record_limit')->textInput(['maxlength'=>true])->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'failed_login_ip')->textInput(['maxlength' => true])->hint('Failed logins per IP before denied access (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'failed_login_ip_timeout')->textInput(['maxlength' => true])->hint('Failed logins per IP timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'failed_login_username_timeout')->textInput(['maxlength' => true])->hint('Failed logins per username timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'password_reset_ip')->textInput(['maxlength' => true])->hint('Password reset per IP before denied access (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'password_reset_ip_timeout')->textInput(['maxlength' => true])->hint('Password reset per IP timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'password_reset_email_timeout')->textInput(['maxlength' => true])->hint('Password reset per email timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'verification_resend_ip')->textInput(['maxlength' => true])->hint('Verification resend per IP before denied access (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'verification_resend_ip_timeout')->textInput(['maxlength' => true])->hint('Verification resend per IP timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'verification_resend_email_timeout')->textInput(['maxlength' => true])->hint('Verification resend per email timeout (disable: <code>0</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'stream_record_limit')->textInput(['maxlength' => true])->hint(false) ?></div>
     </div>
     <div class="row form-group">
       <div class="col-sm-2"><?= $form->field($model, 'maintenance')->checkbox()->hint('Is the site under maintenance?') ?></div>
