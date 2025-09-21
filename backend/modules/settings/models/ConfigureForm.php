@@ -111,6 +111,39 @@ class ConfigureForm extends Model
   public $pflog_min, $pflog_max;
   public $dashboard_graph_visible;
   public $disable_ondemand_operations;
+  public $maintenance;
+  public $maintenance_notification;
+  public $force_findings_to_claim;
+  public $academic_grouping;
+  public $admin_ids;
+  public $avatar_generator;
+  public $avatar_robohash_set;
+  public $disable_mail_validation;
+  public $module_speedprogramming_enabled;
+  public $force_https_urls;
+  public $stream_record_limit;
+  public $bannedIPS;
+  public $offense_home;
+  public $defense_home;
+  public $moderator_home;
+  public $failed_login_ip;
+  public $password_reset_ip;
+  public $verification_resend_ip;
+  public $signup_ValidatemailValidator;
+  public $signup_StopForumSpamValidator;
+  public $signup_HourRegistrationValidator;
+  public $signup_TotalRegistrationsValidator;
+  public $signup_MXServersValidator;
+  public $password_reset_email;
+  public $verification_resend_email;
+  public $username_length_min;
+  public $username_length_max;
+  public $failed_login_ip_timeout;
+  public $failed_login_username_timeout;
+  public $password_reset_ip_timeout;
+  public $password_reset_email_timeout;
+  public $verification_resend_ip_timeout;
+  public $verification_resend_email_timeout;
 
   public $keys = [
     'target_days_updated',
@@ -214,6 +247,39 @@ class ConfigureForm extends Model
     'stripe_webhookLocalEndpoint',
     'dashboard_graph_visible',
     'disable_ondemand_operations',
+    'maintenance',
+    'maintenance_notification',
+    'force_findings_to_claim',
+    'academic_grouping',
+    'admin_ids',
+    'avatar_generator',
+    'avatar_robohash_set',
+    'disable_mail_validation',
+    'module_speedprogramming_enabled',
+    'force_https_urls',
+    'stream_record_limit',
+    'bannedIPS',
+    'offense_home',
+    'defense_home',
+    'moderator_home',
+    'failed_login_ip',
+    'password_reset_ip',
+    'verification_resend_ip',
+    'signup_ValidatemailValidator',
+    'signup_StopForumSpamValidator',
+    'signup_HourRegistrationValidator',
+    'signup_TotalRegistrationsValidator',
+    'signup_MXServersValidator',
+    'password_reset_email',
+    'verification_resend_email',
+    'username_length_min',
+    'username_length_max',
+    'failed_login_ip_timeout',
+    'failed_login_username_timeout',
+    'password_reset_ip_timeout',
+    'password_reset_email_timeout',
+    'verification_resend_ip_timeout',
+    'verification_resend_email_timeout',
   ];
 
   /**
@@ -259,6 +325,14 @@ class ConfigureForm extends Model
         'mail_verification_token_validity',
         'password_reset_token_validity',
         'stripe_webhookLocalEndpoint',
+        'bannedIPS',
+        'admin_ids',
+        'maintenance_notification',
+        'avatar_generator',
+        'avatar_robohash_set',
+        'offense_home',
+        'defense_home',
+        'moderator_home',
       ], 'string'],
       [[
         'offense_registered_tag',
@@ -296,6 +370,14 @@ class ConfigureForm extends Model
         'mail_verification_token_validity',
         'password_reset_token_validity',
         'stripe_webhookLocalEndpoint',
+        'bannedIPS',
+        'admin_ids',
+        'maintenance_notification',
+        'avatar_generator',
+        'avatar_robohash_set',
+        'offense_home',
+        'defense_home',
+        'moderator_home',
       ], 'trim'],
       // required fields
       [[
@@ -335,6 +417,21 @@ class ConfigureForm extends Model
         'player_delete_rejected_after',
         'pflog_min',
         'pflog_max',
+        'stream_record_limit',
+        'academic_grouping',
+        'failed_login_ip',
+        'password_reset_ip',
+        'verification_resend_ip',
+        'password_reset_email',
+        'verification_resend_email',
+        'username_length_min',
+        'username_length_max',
+        'failed_login_ip_timeout',
+        'failed_login_username_timeout',
+        'password_reset_ip_timeout',
+        'password_reset_email_timeout',
+        'verification_resend_ip_timeout',
+        'verification_resend_email_timeout',
       ], 'integer'],
       [['online_timeout'], 'default', 'value' => 900],
       [['spins_per_day'], 'default', 'value' => 2],
@@ -387,6 +484,16 @@ class ConfigureForm extends Model
         'guest_visible_leaderboards',
         'dashboard_graph_visible',
         'disable_ondemand_operations',
+        'maintenance',
+        'force_findings_to_claim',
+        'disable_mail_validation',
+        'module_speedprogramming_enabled',
+        'force_https_urls',
+        'signup_ValidatemailValidator',
+        'signup_StopForumSpamValidator',
+        'signup_HourRegistrationValidator',
+        'signup_TotalRegistrationsValidator',
+        'signup_MXServersValidator',
       ], 'boolean'],
     ];
   }
@@ -398,13 +505,10 @@ class ConfigureForm extends Model
       'teams' => 'Teams',
       'require_activation' => 'Require activation',
       'disable_registration' => 'Disable registration',
-      'strict_activation' => 'Strict player activations',
       'player_profile' => 'Player profile',
       'profile_visibility' => 'Player profile visibility',
-      'join_team_with_token' => 'Join teams with token',
       'event_name' => 'Event name',
       'site_description' => 'Site Description',
-      'award_points' => 'Award points',
       'offense_home' => 'Offense home',
       'defense_home' => 'Defense home',
       'moderator_home' => 'Moderator home',
@@ -423,8 +527,6 @@ class ConfigureForm extends Model
       'treasure_secret_key' => 'treasure_secret_key',
       'vpngw' => 'VPN Gateway',
       'team_manage_members' => 'Team Manage Members',
-      'registerForm_academic' => 'Registration form ask academic',
-      'registerForm_fullname' => 'Register form ask fullname',
       'dashboard_is_home' => 'Dashboard page is home',
       'default_homepage' => 'Default Homepage',
       'mail_from' => 'Mail From',
@@ -512,16 +614,23 @@ class ConfigureForm extends Model
         $sysconfig = new Sysconfig;
         $sysconfig->id = $id;
       }
-      if ($this->{$id} !== "" && $this->{$id} !== NULL) {
+
+      if ($this->{$id} !== "" && $this->{$id} !== NULL && $this->{$id} != 0) {
+        file_put_contents('/tmp/post.log', "$id=>" . $this->{$id} . "\n", FILE_APPEND);
+
         $sysconfig->val = $this->{$id};
         $sysconfig->save();
         if ($id === 'time_zone') {
-          Yii::$app->db->createCommand("SET GLOBAL time_zone=(SELECT val FROM sysconfig WHERE id='time_zone')")->execute();
+          \Yii::$app->db->createCommand("SET GLOBAL time_zone=(SELECT val FROM sysconfig WHERE id='time_zone')")->execute();
         }
       } else {
+        file_put_contents('/tmp/post.log', "delete $id\n", FILE_APPEND);
+
         $sysconfig->delete();
       }
     }
+    Yii::getLogger()->flush(true);
+
     return true;
   }
 }
