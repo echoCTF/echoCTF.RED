@@ -8,7 +8,8 @@
    `CREDITS.md`, `CONTRIBUTING.md`
 5. `mkdir migrations`
 6. edit `contrib/init.sh` and modify the database name on top of the file as well as and the **`sysconfig`** values
-7. run `./init.sh settings services sql sysconfig init services tmuxs` (notice that `services` need to given twice)
+7. run `./init.sh settings services sql migrate sysconfig init services tmuxs` (notice that `services` need to given twice)
+8. Edit `frontend/config/web.php` and change the cookie `secure` flag to false
 
 In order to:
 * attach to the existing development server run `tmux -L DATABASENAME attach`
