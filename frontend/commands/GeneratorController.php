@@ -235,7 +235,7 @@ class GeneratorController extends Controller
           echo "Generating " . $player->username . " profile avatar image.\n";
           $robohash = new \app\components\generators\AvatarGenerator($player->profile->id);
           $image = $robohash->generate_image();
-          if (get_resource_type($image) === 'gd') {
+          if (gettype($image) == "object" && get_class($image) == "GdImage") {
             imagepng($image, $dst_img);
             imagedestroy($image);
             $player->profile->avatar = $player->profile->id . '.png';
