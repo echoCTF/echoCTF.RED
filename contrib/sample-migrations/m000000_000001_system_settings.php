@@ -13,7 +13,7 @@ class m000000_000001_system_settings extends Migration
      */
     ['id' => "event_active", 'val' => "1"],
     ['id' => "event_name", 'val' => "echoCTF"],
-    ['id' => "event_description", 'val' => "Our Awesome echoCTF"],
+    ['id' => "site_description", 'val' => "Our Awesome echoCTF"],
     ['id' => 'time_zone', 'val' => 'Europe/Athens'],
     ['id' => 'event_start', 'val' => '1758261600'], // "2025-09-19 08:00:00"
     ['id' => 'event_end', 'val' => '1758283200'], // "2025-09-19 14:00:00"

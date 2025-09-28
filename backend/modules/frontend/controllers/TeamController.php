@@ -184,7 +184,21 @@ class TeamController extends \app\components\BaseController
   public function actionToggleAcademic($id)
   {
     $model = $this->findModel($id);
-    $model->updateAttributes(['academic' => ($model->academic + 1) % \Yii::$app->sys->academic_grouping]);
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $model->updateAttributes(['academic' => ($model->academic + 1) % \Yii::$app->sys->academic_grouping]);
+      foreach($model->teamPlayers as $p)
+      {
+        $p->updateAttributes(['academic'=>$model->academic]);
+      }
+      $trans->commit();
+      \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Team changed academic grouping.'));
+
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to update academic grouping for team'));
+    }
+
     return $this->redirect(Yii::$app->request->referrer ?? ['frontend/teamplayer/index']);
   }
 
@@ -284,10 +298,10 @@ class TeamController extends \app\components\BaseController
         } else {
           $_p = [];
           foreach ($team->players as $player) {
-            if($this->notifyLogic($player, $notificationModel, $ovpn, $online)!==NULL)
-              Yii::$app->session->addFlash('success', "Notified [".$player->username."].");
+            if ($this->notifyLogic($player, $notificationModel, $ovpn, $online) !== NULL)
+              Yii::$app->session->addFlash('success', "Notified [" . $player->username . "].");
             else
-              Yii::$app->session->addFlash('warning', "Player [".$player->username."] not notified due to filters.");
+              Yii::$app->session->addFlash('warning', "Player [" . $player->username . "] not notified due to filters.");
 
             $_p[] = $player->username;
           }
@@ -304,7 +318,7 @@ class TeamController extends \app\components\BaseController
 
   private function notifyLogic($player, $notificationModel, $ovpn = false, $online = false)
   {
-    if ($ovpn && $player->playerLast->vpn_local_address===null)
+    if ($ovpn && $player->playerLast->vpn_local_address === null)
       return null;
     if ($online && !boolval($player->online))
       return null;

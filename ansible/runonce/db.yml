@@ -466,6 +466,13 @@
     failed_when: result.rc not in [0,2]
     register: result
 
+  - name: Update crontab PATH variable
+    cron:
+      user: root
+      name: PATH
+      env: yes
+      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+
   - name: Install cron entries
     cron:
       name: "{{item.name}}"
