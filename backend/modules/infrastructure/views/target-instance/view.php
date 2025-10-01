@@ -61,11 +61,31 @@ $this->params['breadcrumbs'][] = $this->title;
         'value' => $model->server_id . ': ' . $model->server->name
       ],
       'ipoctet',
-      'reboot',
+      [
+        'attribute' => 'reboot',
+        'value' => $model->rebootVal,
+      ],
       'team_allowed:boolean',
+      [
+        'label' => 'encrypted flags',
+        'format' => 'raw',
+        'value' => function ($model) {
+          $lines=[];
+          foreach ($model->encryptedTreasures['fs'] as $key => $val) {
+            $lines[]="$key";
+            foreach ($val as $entry) {
+              if(key_exists('file', $entry))
+              $lines[]=$entry['file']." " .$entry['src']. ' => '. $entry['dest'];
+            else
+              $lines[]=$entry['src']. ' => '. $entry['dest'];
+            }
+          }
+          return '<pre>'.implode("\n",$lines).'</pre>';
+        }
+      ],
       'created_at',
       'updated_at',
     ],
-  ]) ?>
-
+  ]);
+  ?>
 </div>
