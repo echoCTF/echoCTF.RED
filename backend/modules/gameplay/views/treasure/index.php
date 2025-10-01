@@ -23,6 +23,7 @@ yii\bootstrap5\Modal::end();
 
     <p>
         <?= Html::a('Create Treasure', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Validate Treasure', ['validate'], ['class' => 'btn btn-info']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
