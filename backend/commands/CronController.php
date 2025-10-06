@@ -264,7 +264,7 @@ class CronController extends Controller
           // Check existing environment variables for ETSCTF_FLAG keys
           foreach ($dc->targetVariables as $key => $tv) {
             // Replace the old key with the encrypted treasure
-            if ($tv->key == 'ETSCTF_FLAG') {
+            if ($tv->key == 'ETSCTF_FLAG' && array_key_exists('env',$encryptedTreasures['fs'])) {
               $tv->val = str_replace($encryptedTreasures['fs']['env'][0]['src'], $encryptedTreasures['fs']['env'][0]['dest'], $tv->val);
               break;
             }

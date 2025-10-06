@@ -47,7 +47,7 @@ def main():
                     # Process full lines from the buffer
                     while '\n' in buffers[sock]:
                         line, buffers[sock] = buffers[sock].split('\n', 1)  # Split at the first newline
-                        eprint(f"{line}")
+                        print(f"{line}")
                 else:
                     # Connection closed by the server
                     eprint(f"Connection to {sock.getpeername()[0]}:{sock.getpeername()[1]} closed.")

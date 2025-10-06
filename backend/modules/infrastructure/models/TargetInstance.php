@@ -123,7 +123,7 @@ class TargetInstance extends TargetInstanceAR
       ->where(['target_id' => $this->target_id]);
     $treasures = [];
     foreach ($query->all() as $t) {
-      if ($t->category == 'env' && $t->location == 'environment') {
+      if ($t->category == 'env' && ($t->location == 'environment' || $t->location == '')) {
         $treasures['env'][] = ["src" => $t->code, 'dest' => $t->encrypted_code];
       } else if (str_contains($t->location, $t->code)) {
         $treasures['mv'][] = ["src" => $t->location, 'dest' => str_replace($t->code, $t->encrypted_code, $t->location)];
