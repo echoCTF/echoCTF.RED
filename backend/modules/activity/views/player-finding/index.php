@@ -52,7 +52,10 @@ yii\bootstrap5\Modal::end();
         'value' => 'points',
       ],
       'ts',
-      ['class' => 'yii\grid\ActionColumn'],
+      [
+        'class' => 'yii\grid\ActionColumn',
+        'template' => '{update} {delete}'
+      ],
     ],
   ]); ?>
 

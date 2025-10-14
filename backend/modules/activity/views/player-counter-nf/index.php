@@ -12,32 +12,36 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 ?>
 <div class="player-counter-nf-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+  <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Player Counter Nf'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+  <p>
+    <?= Html::a(Yii::t('app', 'Create Player Counter Nf'), ['create'], ['class' => 'btn btn-success']) ?>
+  </p>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+  <?php Pjax::begin(); ?>
+  <?php // echo $this->render('_search', ['model' => $searchModel]);
+  ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+  <?= GridView::widget([
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'columns' => [
+      ['class' => 'yii\grid\SerialColumn'],
 
-            'player_id',
-            ['class' => 'app\components\columns\ProfileColumn'],
-            [
-                'attribute'=>'metric',
-                'filter'=>$searchModel->distinctMetrics(),
-            ],
-            'counter',
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+      'player_id',
+      ['class' => 'app\components\columns\ProfileColumn'],
+      [
+        'attribute' => 'metric',
+        'filter' => $searchModel->distinctMetrics(),
+      ],
+      'counter',
+      [
+        'class' => 'yii\grid\ActionColumn',
+        'template' => '{update} {delete}'
+      ],
+    ],
+  ]); ?>
 
-    <?php Pjax::end(); ?>
+  <?php Pjax::end(); ?>
 
 </div>

@@ -39,21 +39,8 @@ class PlayerCounterNfController extends \app\components\BaseController
     }
 
     /**
-     * Displays a single PlayerCounterNf model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($player_id,$metric)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel(['player_id'=>$player_id,'metric'=>$metric]),
-        ]);
-    }
-
-    /**
      * Creates a new PlayerCounterNf model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'index' page.
      * @return mixed
      */
     public function actionCreate()
@@ -61,7 +48,7 @@ class PlayerCounterNfController extends \app\components\BaseController
         $model = new PlayerCounterNf();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->player_id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -71,7 +58,7 @@ class PlayerCounterNfController extends \app\components\BaseController
 
     /**
      * Updates an existing PlayerCounterNf model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -81,7 +68,7 @@ class PlayerCounterNfController extends \app\components\BaseController
         $model = $this->findModel(['player_id'=>$player_id,'metric'=>$metric]);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->player_id,'metric'=>$model->metric]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [

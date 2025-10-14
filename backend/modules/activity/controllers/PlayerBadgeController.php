@@ -40,22 +40,8 @@ class PlayerBadgeController extends \app\components\BaseController
     }
 
     /**
-     * Displays a single PlayerBadge model.
-     * @param integer $player_id
-     * @param integer $badge_id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($player_id, $badge_id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($player_id, $badge_id),
-        ]);
-    }
-
-    /**
      * Creates a new PlayerBadge model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'index' page.
      * @return mixed
      */
     public function actionCreate()
@@ -75,7 +61,7 @@ class PlayerBadgeController extends \app\components\BaseController
         }
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'player_id' => $model->player_id, 'badge_id' => $model->badge_id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -85,7 +71,7 @@ class PlayerBadgeController extends \app\components\BaseController
 
     /**
      * Updates an existing PlayerBadge model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the browser will be redirected to the 'index' page.
      * @param integer $player_id
      * @param integer $badge_id
      * @return mixed
@@ -97,7 +83,7 @@ class PlayerBadgeController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'player_id' => $model->player_id, 'badge_id' => $model->badge_id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
