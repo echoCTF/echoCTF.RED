@@ -31,11 +31,7 @@ $this->params['breadcrumbs'][]=$this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            [
-                'attribute' => 'player',
-                'label'=>'Player',
-                'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player.username'],
             'model',
             'model_id',
             'points',

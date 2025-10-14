@@ -42,11 +42,7 @@ yii\bootstrap5\Modal::end();
         'columns' => [
             'id',
             'player_id',
-            [
-              'attribute'=>'username',
-              'label'=>'Username',
-              'value'=>function($model) {return sprintf("%d: %s", $model->player_id, $model->owner->username);}
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'username'],
             'bio:ntext',
             'country',
             'twitter',
