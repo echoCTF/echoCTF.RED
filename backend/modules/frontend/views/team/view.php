@@ -155,6 +155,7 @@ $this->params['jumpto'] = \app\widgets\JumpToWidget::widget([
           ],
         ]),
         'columns' => [
+          'name',
           ['class' => 'app\components\columns\ProfileColumn', 'attribute' => 'player'],
           [
             'attribute' => 'target.name',

@@ -49,6 +49,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
           ],
         ]),
         'columns' => [
+          'name',
           [
             'attribute' => 'target.name',
             'label' => 'Target'
