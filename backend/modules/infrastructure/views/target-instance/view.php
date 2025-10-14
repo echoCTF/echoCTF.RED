@@ -48,13 +48,14 @@ $this->params['breadcrumbs'][] = $this->title;
   <?= DetailView::widget([
     'model' => $model,
     'attributes' => [
+      'name',
       ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player.username'],
       [
-        'label' => 'target',
+        'label' => 'Target',
         'value' => $model->target_id . ': ' . $model->target->name
       ],
       [
-        'label' => 'server',
+        'label' => 'Server',
         'value' => $model->server_id . ': ' . $model->server->name
       ],
       'ipoctet',

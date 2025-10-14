@@ -37,9 +37,11 @@ yii\bootstrap5\Modal::end();
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
+      'name',
       ['class' => 'app\components\columns\ProfileColumn'],
       [
         'attribute' => 'targetname',
+        'label'=>'Target',
         'value' => function ($model) {
           return $model->target_id . ': ' . $model->target->name;
         }
