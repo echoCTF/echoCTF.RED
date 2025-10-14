@@ -30,14 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            [
-              'label'=>'Player',
-              'attribute'=>'player_id',
-              'format'=>'html',
-              'value'=>function($model) {
-                return sprintf('%d: %s',$model->player_id,\Yii::$app->formatter->asLinkProfile($model->player->username));
-              },
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player.username'],
             'title',
             'body:ntext',
             'reason',

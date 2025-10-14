@@ -38,10 +38,7 @@ yii\bootstrap5\Modal::end();
                'attribute' => 'op',
                'headerOptions' => ['style' => 'width:4em'],
             ],
-            [
-                'attribute'=>'player_id',
-                'value'=>function($model){return $model->player_id.': '.$model->player->username;}
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player_id'],
             [
                 'attribute'=>'target_id',
                 'value'=>function($model){return $model->target_id.': '.$model->target->name;}

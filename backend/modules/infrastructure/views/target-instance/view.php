@@ -48,10 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
   <?= DetailView::widget([
     'model' => $model,
     'attributes' => [
-      [
-        'label' => 'player',
-        'value' => $model->player_id . ': ' . $model->player->username
-      ],
+      ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player.username'],
       [
         'label' => 'target',
         'value' => $model->target_id . ': ' . $model->target->name

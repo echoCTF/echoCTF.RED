@@ -188,3 +188,12 @@ backend/yii sysconfig/set academic_1icon "anothersite.png"
 * `failed_login_username_timeout` the timeout for the failed login_username counter.
 * `username_length_min` min length for a username
 * `username_length_max` max length for a username
+
+
+## Dynamic Keys
+* `player_type:PLAYER_ID`: The type of the player `offense`/`defense`
+* `player:PLAYER_ID`:
+* `team_player:PLAYER_ID`:
+* `ovpn:PLAYER_ID`: Local IP of player in dotted octet notation
+* `ovpn:LOCAL_IP`: The player ID of the vpn assigned local IP `LOCAL_IP`
+* `ovpn_remote:PLAYER_ID`: The remote IP of the player

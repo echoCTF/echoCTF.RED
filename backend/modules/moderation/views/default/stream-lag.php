@@ -41,11 +41,6 @@ yii\bootstrap5\Modal::end();
               'format'=>'html',
               'headerOptions' => ['style' => 'width:50%'],
             ],
-/*            [
-                'attribute' => 'player',
-                'label'=>'Player',
-                'value'=> function($model) {return sprintf("id:%d %s",$model->player_id,$model->player->username);},
-            ],*/
             'player_id',
             'model',
             'model_id',

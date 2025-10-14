@@ -32,11 +32,7 @@ Yii::$app->getSession()->set('__deleteUrl',['frontend/teamplayer/index'])
         'model' => $model,
         'attributes' => [
             'id',
-            [
-              'attribute' => 'player',
-              'label'=>'Player',
-              'value'=> function($model) {return sprintf("id:%d %s", $model->player_id, $model->player->username);},
-            ],
+            ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player.username'],
             [
               'attribute' => 'team',
               'label'=>'Team',

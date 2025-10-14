@@ -417,7 +417,7 @@ class CronController extends Controller
           $notif = new Notification;
           $notif->player_id = $t->player_id;
           $notif->title = $notifTitle;
-          $notif->body = sprintf("<p>The restart you requested, of [<b><code>%s</code></b>] is complete.<br/>Have fun</p>", $t->target->name);
+          $notif->body = sprintf("<p>Target [<b><code>%s</code></b>] got rebooted.<br/>Have fun</p>", $t->target->name);
           $notif->archived = 0;
           $notif->created_at = new \yii\db\Expression('NOW()');
           $notif->updated_at = new \yii\db\Expression('NOW()');
