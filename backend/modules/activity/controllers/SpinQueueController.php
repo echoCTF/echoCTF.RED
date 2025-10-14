@@ -38,21 +38,8 @@ class SpinQueueController extends \app\components\BaseController
     }
 
     /**
-     * Displays a single SpinQueue model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
-    }
-
-    /**
      * Creates a new SpinQueue model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'index' page.
      * @return mixed
      */
     public function actionCreate()
@@ -61,7 +48,7 @@ class SpinQueueController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'id' => $model->target_id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -71,7 +58,7 @@ class SpinQueueController extends \app\components\BaseController
 
     /**
      * Updates an existing SpinQueue model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -82,7 +69,7 @@ class SpinQueueController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'id' => $model->target_id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [

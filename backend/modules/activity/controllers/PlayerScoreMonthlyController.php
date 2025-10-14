@@ -40,22 +40,8 @@ class PlayerScoreMonthlyController extends \app\components\BaseController
     }
 
     /**
-     * Displays a single PlayerScoreMonthly model.
-     * @param integer $player_id
-     * @param string $dated_at
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($player_id, $dated_at)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($player_id, $dated_at),
-        ]);
-    }
-
-    /**
      * Creates a new PlayerScoreMonthly model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'index' page.
      * @return mixed
      */
     public function actionCreate()
@@ -63,7 +49,7 @@ class PlayerScoreMonthlyController extends \app\components\BaseController
         $model = new PlayerScoreMonthly();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'player_id' => $model->player_id, 'dated_at' => $model->dated_at]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -73,7 +59,7 @@ class PlayerScoreMonthlyController extends \app\components\BaseController
 
     /**
      * Updates an existing PlayerScoreMonthly model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the browser will be redirected to the 'index' page.
      * @param integer $player_id
      * @param string $dated_at
      * @return mixed
@@ -84,7 +70,7 @@ class PlayerScoreMonthlyController extends \app\components\BaseController
         $model = $this->findModel($player_id, $dated_at);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'player_id' => $model->player_id, 'dated_at' => $model->dated_at]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [

@@ -12,29 +12,33 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 ?>
 <div class="player-score-monthly-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+  <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Player Monthly Score'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+  <p>
+    <?= Html::a(Yii::t('app', 'Create Player Monthly Score'), ['create'], ['class' => 'btn btn-success']) ?>
+  </p>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+  <?php Pjax::begin(); ?>
+  <?php // echo $this->render('_search', ['model' => $searchModel]);
+  ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            'player_id',
-            ['class' => 'app\components\columns\ProfileColumn'],
-            'points',
-            'dated_at',
-            'ts',
+  <?= GridView::widget([
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'columns' => [
+      'player_id',
+      ['class' => 'app\components\columns\ProfileColumn'],
+      'points',
+      'dated_at',
+      'ts',
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+      [
+        'class' => 'yii\grid\ActionColumn',
+        'template' => '{update} {delete}'
+      ],
+    ],
+  ]); ?>
 
-    <?php Pjax::end(); ?>
+  <?php Pjax::end(); ?>
 
 </div>

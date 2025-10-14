@@ -40,22 +40,8 @@ class PlayerHintController extends \app\components\BaseController
     }
 
     /**
-     * Displays a single PlayerHint model.
-     * @param integer $player_id
-     * @param integer $hint_id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($player_id, $hint_id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($player_id, $hint_id),
-        ]);
-    }
-
-    /**
      * Creates a new PlayerHint model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'index' page.
      * @return mixed
      */
     public function actionCreate()
@@ -76,7 +62,7 @@ class PlayerHintController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'player_id' => $model->player_id, 'hint_id' => $model->hint_id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('create', [
@@ -86,7 +72,7 @@ class PlayerHintController extends \app\components\BaseController
 
     /**
      * Updates an existing PlayerHint model.
-     * If update is successful, the browser will be redirected to the 'view' page.
+     * If update is successful, the browser will be redirected to the 'index' page.
      * @param integer $player_id
      * @param integer $hint_id
      * @return mixed
@@ -98,7 +84,7 @@ class PlayerHintController extends \app\components\BaseController
 
         if($model->load(Yii::$app->request->post()) && $model->save())
         {
-            return $this->redirect(['view', 'player_id' => $model->player_id, 'hint_id' => $model->hint_id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
