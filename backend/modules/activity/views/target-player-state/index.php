@@ -12,36 +12,65 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 ?>
 <div class="target-player-state-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+  <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Target Player State'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+  <p>
+    <?= Html::a(Yii::t('app', 'Create Target Player State'), ['create'], ['class' => 'btn btn-success']) ?>
+  </p>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+  <?php Pjax::begin(); ?>
+  <?php // echo $this->render('_search', ['model' => $searchModel]);
+  ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            'id',
-            [
-                'attribute'=>'hostname',
-                'contentOptions'=>['class'=>'text-nowrap'],
-                'value'=>'target.name',
+  <?= GridView::widget([
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'columns' => [
+      'id',
+      [
+        'attribute' => 'hostname',
+        'contentOptions' => ['class' => 'text-nowrap'],
+        'value' => 'target.name',
+      ],
+      ['class' => 'app\components\columns\ProfileColumn'],
+      //'player_id',
+      'player_treasures',
+      'player_findings',
+      'player_points',
+      'created_at',
+      'updated_at',
+      [
+        'class' => '\app\components\columns\ActionColumn',
+        'template' => '{update} {delete} {sync}',
+        'header' => Html::a(
+          '<i class="fas fa-sync"></i>',
+          ['sync-all'],
+          [
+            'title' => 'Mass sync all states',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => $searchModel->attributes,
             ],
-            ['class' => 'app\components\columns\ProfileColumn'],
-            'player_id',
-            'player_treasures',
-            'player_findings',
-            'player_points',
-            'created_at',
-            'updated_at',
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
 
-    <?php Pjax::end(); ?>
+          ]
+        ),
+        'buttons' => [
+          'sync' => function ($url, $model) {
+            return Html::a('<i class="fas fa-sync"></i>', $url, [
+              'class' => '',
+              'title' => Yii::t('app', 'target-player-state-sync'),
+              'data' => [
+                'method' => 'post',
+              ],
+            ]);
+          },
+        ],
+      ],
+    ],
+  ]); ?>
+
+  <?php Pjax::end(); ?>
 
 </div>
