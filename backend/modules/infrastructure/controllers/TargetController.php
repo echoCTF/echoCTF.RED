@@ -8,7 +8,8 @@ use app\modules\gameplay\models\TargetSearch;
 use app\modules\infrastructure\models\TargetExecCommandForm;
 use app\modules\infrastructure\models\TargetInstanceSearch;
 use app\modules\infrastructure\models\NetworkTargetScheduleSearch;
-
+use app\modules\activity\models\TargetPlayerState;
+use app\modules\activity\models\Headshot;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Docker\DockerClientFactory;
@@ -23,6 +24,7 @@ use yii\helpers\Json;
 use app\modules\activity\models\HeadshotSearch;
 use app\modules\activity\models\WriteupSearch;
 use app\modules\activity\models\PlayerTargetHelpSearch;
+use yii\db\Query;
 
 /**
  * TargetController implements the CRUD actions for Target model.
@@ -271,6 +273,25 @@ class TargetController extends \app\components\BaseController
         $msg = Yii::t('app', "Server destroyed and updated successfully");
       }
       if ($model->save()) {
+        if (array_key_exists('notify', Yii::$app->request->post())) {
+          //foreach player with progress and not headshot
+          $subQuery = (new Query())
+            ->select('player_id')
+            ->from(Headshot::tableName());
+          $players = TargetPlayerState::find()
+            ->select('player_id')
+            ->distinct()
+            ->where(['target_player_state.id' => $id])
+            ->andWhere(['not in', 'player_id', $subQuery])
+            ->joinWith(['player' => function ($query) {
+              $query->andWhere(['status' => 10]);
+            }])
+            ->all();
+
+          foreach ($players as $r) {
+            $r->player->notify('swal:warning', Yii::t('app', 'Target [<code>{target}</code>] updated',['target' => $model->name]), Yii::t('app','The target (<kbd>{target}</kbd>), you had progress on got updated. Feel free to check it out!', ['target' => $model->name]));
+          }
+        }
         Yii::$app->session->setFlash('success', $msg);
         return $this->redirect(['view', 'id' => $model->id]);
       }
@@ -291,14 +312,11 @@ class TargetController extends \app\components\BaseController
    */
   public function actionDelete($id)
   {
-    $model=$this->findModel($id);
+    $model = $this->findModel($id);
     $model->destroy();
-    if($model->delete())
-    {
+    if ($model->delete()) {
       Yii::$app->session->setFlash('success', Yii::t('app', 'Target removed...'));
-    }
-    else
-    {
+    } else {
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to remove target...'));
     }
     return $this->redirect(['index']);
@@ -324,8 +342,7 @@ class TargetController extends \app\components\BaseController
     $trans = Yii::$app->db->beginTransaction();
     try {
       $counter = $query->count;
-      foreach ($query->getModels() as $q)
-      {
+      foreach ($query->getModels() as $q) {
         $q->destroy();
         $q->delete();
       }
@@ -530,7 +547,7 @@ class TargetController extends \app\components\BaseController
     ])));
   }
 
-    /**
+  /**
    * Return Instances for a given target
    * @param string $id
    * @return mixed
