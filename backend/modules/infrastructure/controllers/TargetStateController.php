@@ -8,7 +8,7 @@ use app\modules\infrastructure\models\TargetStateSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\helpers\Html;
 /**
  * TargetStateController implements the CRUD actions for TargetState model.
  */
@@ -26,19 +26,6 @@ class TargetStateController extends \app\components\BaseController
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
-    }
-
-    /**
-     * Displays a single TargetState model.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionView($id)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
         ]);
     }
 
@@ -72,7 +59,7 @@ class TargetStateController extends \app\components\BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index']);
         }
 
         return $this->render('update', [
@@ -93,6 +80,56 @@ class TargetStateController extends \app\components\BaseController
 
         return $this->redirect(['index']);
     }
+
+  /**
+   * Syncs an existing target state
+   * If update is successful, the browser will be redirected to the 'index' page.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionSync($id)
+  {
+    $model=$this->findModel($id);
+    if ($model!==null && !$model->sync()) {
+      \Yii::$app->getSession()->addFlash('error', Html::errorSummary($model));
+    } else
+      \Yii::$app->getSession()->addFlash('success', "Record synced!");
+
+    return $this->redirect(['index']);
+  }
+
+  /**
+   * Syncs all target states for players
+   * If deletion is successful, the browser will be redirected to the 'index' page.
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionSyncAll()
+  {
+    $searchModel = new TargetStateSearch();
+    $query = $searchModel->search(['TargetStateSearch' => Yii::$app->request->post()]);
+    //die(var_dump(Yii::$app->request->post()));
+    $query->pagination = false;
+
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $counter = 0;
+      foreach ($query->getModels() as $q) {
+        if ($q->sync()) $counter++;
+        else $counter--;
+      }
+
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] records synced', ['counter' => intval($counter)]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      die(var_dump($e->getMessage()));
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to sync records'));
+    }
+    return $this->redirect(['index']);
+  }
+
 
     /**
      * Finds the TargetState model based on its primary key value.

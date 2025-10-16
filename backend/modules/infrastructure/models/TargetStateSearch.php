@@ -23,6 +23,11 @@ class TargetStateSearch extends TargetState
         ];
     }
 
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['target_name']);
+    }
+
     /**
      * {@inheritdoc}
      */

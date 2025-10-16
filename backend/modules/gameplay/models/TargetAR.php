@@ -5,6 +5,7 @@ namespace app\modules\gameplay\models;
 use Yii;
 use app\modules\activity\models\SpinQueue;
 use app\modules\activity\models\Headshot;
+use app\modules\activity\models\Writeup;
 use app\modules\infrastructure\models\TargetInstance;
 use app\modules\infrastructure\models\TargetMetadata;
 use yii\behaviors\TimestampBehavior;
@@ -54,6 +55,7 @@ use yii\db\Expression;
  * @property Treasure $envTreasure
  * @property Treasure $rootTreasure
  * @property Treasure $systemTreasures
+ * @property Writeup $writeups
  * @property int $memory
  */
 class TargetAR extends \yii\db\ActiveRecord
@@ -207,6 +209,22 @@ class TargetAR extends \yii\db\ActiveRecord
   public function getTreasures()
   {
     return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight' => SORT_DESC, 'id' => SORT_DESC]);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getWriteups()
+  {
+    return $this->hasMany(Writeup::class, ['target_id' => 'id']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getApprovedWriteups()
+  {
+    return $this->hasMany(Writeup::class, ['target_id' => 'id'])->onCondition(['approved' => 1]);
   }
 
   public function getEnvTreasure()
