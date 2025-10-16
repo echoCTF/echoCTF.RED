@@ -38,21 +38,8 @@ class TargetOndemandController extends \app\components\BaseController
   }
 
   /**
-   * Displays a single TargetOndemand model.
-   * @param integer $id
-   * @return mixed
-   * @throws NotFoundHttpException if the model cannot be found
-   */
-  public function actionView($id)
-  {
-    return $this->render('view', [
-      'model' => $this->findModel($id),
-    ]);
-  }
-
-  /**
    * Creates a new TargetOndemand model.
-   * If creation is successful, the browser will be redirected to the 'view' page.
+   * If creation is successful, the browser will be redirected to the 'index' page.
    * @return mixed
    */
   public function actionCreate()
@@ -60,7 +47,7 @@ class TargetOndemandController extends \app\components\BaseController
     $model = new TargetOndemand();
     try {
       if ($model->load(Yii::$app->request->post()) && $model->save()) {
-        return $this->redirect(['view', 'id' => $model->target_id]);
+        return $this->redirect(['index']);
       }
     } catch (\Exception $e) {
       if ($e->getCode() === "23000")
@@ -77,7 +64,7 @@ class TargetOndemandController extends \app\components\BaseController
 
   /**
    * Updates an existing TargetOndemand model.
-   * If update is successful, the browser will be redirected to the 'view' page.
+   * If update is successful, the browser will be redirected to the 'index' page.
    * @param integer $id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
@@ -87,7 +74,7 @@ class TargetOndemandController extends \app\components\BaseController
     $model = $this->findModel($id);
 
     if ($model->load(Yii::$app->request->post()) && $model->save()) {
-      return $this->redirect(['view', 'id' => $model->target_id]);
+      return $this->redirect(['index']);
     }
 
     return $this->render('update', [
@@ -107,6 +94,55 @@ class TargetOndemandController extends \app\components\BaseController
     $this->findModel($id)->delete();
 
     return $this->redirect(['index']);
+  }
+
+  /**
+   * Clear an existing target state
+   * If update is successful, the browser will be redirected to the 'index' page.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionClear($id)
+  {
+    $model=$this->findModel($id);
+    if ($model!==null && !$model->clear()) {
+      \Yii::$app->getSession()->addFlash('error', Html::errorSummary($model));
+    } else
+      \Yii::$app->getSession()->addFlash('success', "Record synced!");
+
+    return $this->redirect(Yii::$app->request->referrer);
+  }
+
+  /**
+   * Clear all target states for players
+   * If successful, the browser will be redirected to the 'index' page.
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionClearAll()
+  {
+    $searchModel = new TargetOndemandSearch();
+    $query = $searchModel->search(['TargetOndemandSearch' => Yii::$app->request->post()]);
+    //die(var_dump(Yii::$app->request->post()));
+    $query->pagination = false;
+
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $counter = 0;
+      foreach ($query->getModels() as $q) {
+        if ($q->clear()) $counter++;
+        else $counter--;
+      }
+
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] records synced', ['counter' => intval($counter)]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      die(var_dump($e->getMessage()));
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to sync records'));
+    }
+    return $this->redirect(Yii::$app->request->referrer);
   }
 
   /**

@@ -27,6 +27,11 @@ class TargetOndemandSearch extends TargetOndemand
         ];
     }
 
+    public function attributes()
+    {
+        return array_merge(parent::attributes(), ['name','username','ipoctet']);
+    }
+
     /**
      * {@inheritdoc}
      */
