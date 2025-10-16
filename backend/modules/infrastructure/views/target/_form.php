@@ -141,6 +141,7 @@ use yii\bootstrap5\ActiveForm;
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['name'=>'save', 'class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Save and notify', ['name'=>'notify', 'class' => 'btn btn-warning']) ?>
         <?= Html::submitButton('Save and destroy', ['name'=>'destroy', 'class' => 'btn btn-danger']) ?>
 
     </div>
