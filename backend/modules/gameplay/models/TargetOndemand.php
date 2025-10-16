@@ -101,4 +101,26 @@ class TargetOndemand extends \yii\db\ActiveRecord
     {
         return new TargetOndemandQuery(get_called_class());
     }
+
+    /**
+     * Syncs current [[Target]] state with the docker server.
+     *
+     * @return boolean
+     */
+    public function sync() {
+      throw new \Exception('Not implemented');
+    }
+
+    /**
+     * Clear current [[Target]] state.
+     *
+     * @return boolean
+     */
+    public function clear() {
+      $this->state=-1;
+      $this->player_id=1;
+      $this->heartbeat=null;
+      return $this->save();
+    }
+
 }

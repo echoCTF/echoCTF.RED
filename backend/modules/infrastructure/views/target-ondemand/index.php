@@ -60,13 +60,60 @@ yii\bootstrap5\Modal::end();
         'notifyIdValue' => function ($model) {
           return $model->player_id;
         },
-        'template' => '{view} {update} {delete} {notify}',
+        'template' => '{update} {delete} {notify} {clear}',
         'urlCreator' => function ($action, $model, $key, $index, $column) {
           if ($action === 'notify') {
             return \yii\helpers\Url::to(['/frontend/player/notify', 'id' => $model->player_id]);
           }
           return \yii\helpers\Url::to([$action, 'id' => $model->target_id]);
         },
+        'header' => /*Html::a(
+          '<i class="fas fa-sync"></i>',
+          ['sync-all'],
+          [
+            'title' => 'Mass sync all states',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => $searchModel->attributes,
+            ],
+
+          ]
+        )." ".*/ Html::a(
+          '<i class="fas fa-eraser"></i>',
+          ['clear-all'],
+          [
+            'title' => 'Mass clear all states',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => $searchModel->attributes,
+            ],
+
+          ]
+        ),
+        'buttons' => [
+          'sync' => function ($url, $model) {
+            return Html::a('<i class="fas fa-sync"></i>', $url, [
+              'class' => '',
+              'title' => Yii::t('app', 'target-ondemand-sync'),
+              'data' => [
+                'method' => 'post',
+              ],
+            ]);
+          },
+          'clear' => function ($url, $model) {
+            return Html::a('<i class="fas fa-eraser"></i>', $url, [
+              'class' => '',
+              'title' => Yii::t('app', 'target-ondemand-clear'),
+              'data' => [
+                'method' => 'post',
+              ],
+            ]);
+          },
+        ],
       ],
     ],
   ]); ?>
