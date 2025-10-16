@@ -201,7 +201,8 @@ class Target extends TargetAR
     public function pull()
     {
       if($this->server == null) return false;
-      $docker=$this->connectAPI();
+      if(($docker=$this->connectAPI())===false)
+        return false;
       $authHeaders=[];
       if(!empty($this->imageparams))
       {
