@@ -88,13 +88,13 @@ class Player extends PlayerAR
         $message->addHeader($entry[0], $entry[1]);
       $message->send();
       if (Yii::$app instanceof \yii\web\Application)
-        \Yii::$app->session->setFlash('success', Yii::t('app', "The user has been mailed."));
+        \Yii::$app->session->addFlash('success', Yii::t('app', "The user {username} with email {email} has been mailed.",['username'=>$this->username,'email'=>$this->email]));
       else {
         echo Yii::t('app', "The user has been mailed."), "\n";
       }
     } catch (\Exception $e) {
       if (Yii::$app instanceof \yii\web\Application)
-        \Yii::$app->session->setFlash('notice', Yii::t('app', "Failed to send mail to user. {exception}", ['exception' => Html::encode($e->getMessage())]));
+        \Yii::$app->session->addFlash('notice', Yii::t('app', "Failed to send mail to user {username} with email {email}. {exception}", ['username'=>$this->username,'email'=>$this->email,'exception' => Html::encode($e->getMessage())]));
       else
         echo Yii::t('app', "Failed to send mail to user."), "\n";
 

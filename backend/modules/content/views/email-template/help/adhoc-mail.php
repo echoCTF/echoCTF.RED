@@ -1,0 +1,1 @@
+Mass mail your players with an ad hoc message.

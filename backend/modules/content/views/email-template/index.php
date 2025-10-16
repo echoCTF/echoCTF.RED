@@ -23,6 +23,7 @@ yii\bootstrap5\Modal::end();
 
     <p>
         <?= Html::a(Yii::t('app', 'Create Email Template'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Ad hoc mailer'), ['adhoc-mail'], ['class' => 'btn btn-info']) ?>
     </p>
 
     <?php Pjax::begin(); ?>
