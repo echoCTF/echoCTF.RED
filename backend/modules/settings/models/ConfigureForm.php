@@ -145,6 +145,7 @@ class ConfigureForm extends Model
   public $verification_resend_ip_timeout;
   public $verification_resend_email_timeout;
   public $verifymail_key;
+  public $team_only_leaderboards;
 
   public $keys = [
     'target_days_updated',
@@ -282,6 +283,7 @@ class ConfigureForm extends Model
     'verification_resend_ip_timeout',
     'verification_resend_email_timeout',
     'verifymail_key',
+    'team_only_leaderboards',
   ];
 
   /**
@@ -498,6 +500,7 @@ class ConfigureForm extends Model
         'signup_HourRegistrationValidator',
         'signup_TotalRegistrationsValidator',
         'signup_MXServersValidator',
+        'team_only_leaderboards',
       ], 'boolean'],
     ];
   }

@@ -188,21 +188,27 @@ class LeaderboardsController extends \app\components\BaseController
         'pageSize' => 10
       ]
     ]);
-    return $this->render('index', [
-      'total_targets'=>$total_targets,
-      'total_challenges'=>$total_challenges,
-      'mostWriteupsDataProvider'=>$mostWriteupsDataProvider,
-      'playerMonthlyDataProvider'=>$playerMonthlyDataProvider,
-      'teamDataProvider' => $teamDataProvider,
-      'playerCountryDataProvider' => $playerCountryDataProvider,
-      'playerDataProvider' => $playerDataProvider,
-      'headshotDataProvider' => $headshotDataProvider,
-      'mostHeadshotsDataProvider' => $mostHeadshotsDataProvider,
-      'AvgHeadshotDataProvider' => $AvgHeadshotDataProvider,
-      'solversDataProvider' => $solversDataProvider,
-      'mostSolvesDataProvider' => $mostSolvesDataProvider,
-      'AvgSolvesDataProvider' => $AvgSolvesDataProvider,
-      'totalPoints' => $totalPoints
-    ]);
+    if(Yii::$app->sys->team_only_leaderboards)
+      return $this->render('teamonly', [
+        'teamDataProvider' => $teamDataProvider,
+        'totalPoints' => $totalPoints
+      ]);
+    else
+      return $this->render('index', [
+        'total_targets'=>$total_targets,
+        'total_challenges'=>$total_challenges,
+        'mostWriteupsDataProvider'=>$mostWriteupsDataProvider,
+        'playerMonthlyDataProvider'=>$playerMonthlyDataProvider,
+        'teamDataProvider' => $teamDataProvider,
+        'playerCountryDataProvider' => $playerCountryDataProvider,
+        'playerDataProvider' => $playerDataProvider,
+        'headshotDataProvider' => $headshotDataProvider,
+        'mostHeadshotsDataProvider' => $mostHeadshotsDataProvider,
+        'AvgHeadshotDataProvider' => $AvgHeadshotDataProvider,
+        'solversDataProvider' => $solversDataProvider,
+        'mostSolvesDataProvider' => $mostSolvesDataProvider,
+        'AvgSolvesDataProvider' => $AvgSolvesDataProvider,
+        'totalPoints' => $totalPoints
+      ]);
   }
 }

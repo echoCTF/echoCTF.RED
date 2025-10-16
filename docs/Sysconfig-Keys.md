@@ -37,7 +37,7 @@
 * `profile_htb`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_twitch`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_youtube`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
-
+* `team_only_leaderboards`: When enabled, only show team based leaderboards. All other leaderboards are hidden (including player profile ones)
 * `writeup_rankings`: Whether or not writeup rankings will be visible on leaderboard
 * `country_rankings`: Whether or not country rankings will be visible on leaderboard
 * `player_point_rankings`: Whether or not player point rankings will be visible on leaderboard

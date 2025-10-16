@@ -47,6 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'player_point_rankings')->checkbox()->hint('Show individual player leaderboards?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'player_monthly_rankings')->checkbox()->hint('Show monthly leaderboards by points?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'country_rankings')->checkbox()->hint('Show country based leaderboards?') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'team_only_leaderboards')->checkbox()->hint('Show only team based leaderboards?') ?></div>
     </div>
     <hr />
 
