@@ -56,7 +56,15 @@ class TreasureController extends \app\components\BaseController
           'username' => $player->username,
           'actions' => false
         ]);
-        $msg = sprintf('Code belongs to player %s for target %s and treasure %s', $profileLink, $treasure->target->name, $treasure->name);
+        if($player->teamPlayer!==NULL)
+        {
+          $msg = sprintf('Code belongs to player [%s] from team [%s] for target %s and treasure %s', $profileLink,$player->teamPlayer->team->name, $treasure->target->name, $treasure->name);
+        }
+        else
+        {
+          $msg = sprintf('Code belongs to player [%s] for target %s and treasure %s', $profileLink, $treasure->target->name, $treasure->name);
+        }
+
         Yii::$app->session->setFlash('success', $msg);
         $string='';
       }
