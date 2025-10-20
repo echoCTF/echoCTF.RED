@@ -122,6 +122,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'spins_per_day')->textInput()->hint('Maximum target spins per day per user (eg. 2)') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'avatar_generator')->textInput()->hint('Change the avatar generator') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'avatar_robohash_set')->textInput()->hint('Set for Robohash images to use') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'profile_card_disabled_actions')->textInput()->hint('Comma separated list of profile card actions that will be disabled. Can be any combination of <code>badge, edit, profileurl, inviteurl, generate-token, copy-token, revoke, disconnect, delete</code>') ?></div>
     </div>
     <hr />
 

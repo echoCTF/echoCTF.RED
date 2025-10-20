@@ -146,6 +146,7 @@ class ConfigureForm extends Model
   public $verification_resend_email_timeout;
   public $verifymail_key;
   public $team_only_leaderboards;
+  public $profile_card_disabled_actions;
 
   public $keys = [
     'target_days_updated',
@@ -284,6 +285,7 @@ class ConfigureForm extends Model
     'verification_resend_email_timeout',
     'verifymail_key',
     'team_only_leaderboards',
+    'profile_card_disabled_actions',
   ];
 
   /**
@@ -338,6 +340,7 @@ class ConfigureForm extends Model
         'defense_home',
         'moderator_home',
         'verifymail_key',
+        'profile_card_disabled_actions',
       ], 'string'],
       [[
         'offense_registered_tag',
@@ -384,6 +387,7 @@ class ConfigureForm extends Model
         'defense_home',
         'moderator_home',
         'verifymail_key',
+        'profile_card_disabled_actions',
       ], 'trim'],
       // required fields
       [[

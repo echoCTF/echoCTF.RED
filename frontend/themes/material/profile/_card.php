@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use app\widgets\Twitter;
+use app\widgets\ProfileActionsWidget;
 use app\modules\game\models\Headshot;
 use yii\bootstrap\ButtonDropdown;
 
@@ -13,29 +14,6 @@ use yii\bootstrap\ButtonDropdown;
     'method' => 'post',
 ],]],
 */
-
-if (\Yii::$app->user->identity->sSL && $profile->isMine)
-  $profile_actions = $profile->vpnItems;
-
-$profile_actions['badge'] = ['encode' => false, 'label' => "<i class='fas fa-id-badge'></i>&nbsp; Your badge URL", 'url' => Url::to(['profile/badge', 'id' => $profile->id], true), 'linkOptions' => ['class' => 'copy-to-clipboard', 'swal-data' => 'Copied to clipboard!']];
-$profile_actions['edit'] = ['encode' => false, 'label' => "<i class='fas fa-user-edit'></i>&nbsp; Edit your profile settings", 'url' => ['profile/settings'], 'linkOptions' => ['alt' => 'Edit profile and account settings']];
-$profile_actions['profileurl'] = ['encode' => false, 'label' => '<i class="fas fa-id-card"></i>&nbsp; Your profile URL', 'url' => Url::to(['profile/index', 'id' => $profile->id], 'https'), 'linkOptions' => ['class' => 'copy-to-clipboard', 'swal-data' => 'Copied to clipboard!']];
-$profile_actions['inviteurl'] = ['encode' => false, 'label' => '<i class="fas fa-link"></i>&nbsp; Your invite URL', 'url' => Url::to(['profile/invite', 'id' => $profile->id], true), 'linkOptions' => ['class' => 'copy-to-clipboard', 'swal-data' => 'Copied to clipboard!']];
-
-if (\Yii::$app->sys->api_bearer_enable === true) {
-  if (\Yii::$app->user->identity->apiToken === null) {
-    $profile_actions['generate-token'] = ['encode' => false, 'label' => "<i class='fas fa-terminal'></i>&nbsp; Generate API Token", 'url' => Url::to(['profile/generate-token'], true), 'linkOptions' => ['class' => 'text-danger', 'data-swType' => 'question', 'data' => ['confirm' => 'You are about to generate a new API token! Are you sure?', 'method' => 'POST']]];
-  } else {
-    $profile_actions['copy-token'] = ['encode' => false, 'label' => "<i class='fas fa-terminal'></i>&nbsp; Copy API Token", 'url' => $profile->owner->apiToken->token, 'linkOptions' => ['class' => 'copy-to-clipboard', 'swal-data' => 'API token copied to clipboard!']];
-  }
-}
-if (\Yii::$app->user->identity->sSL && (time() - strtotime(\Yii::$app->user->identity->sSL->ts)) >= 300)
-  $profile_actions['revoke'] = ['encode' => false, 'label' => "<i class='fas fa-id-card'></i>&nbsp; Regenerate VPN Keys (revoke)", 'url' => Url::to(['profile/revoke'], true), 'linkOptions' => ['class' => 'text-danger', 'data-swType' => 'question', 'data' => ['confirm' => 'You are about to revoke your old keys and generate a new pair!', 'method' => 'POST']]];
-
-if (Yii::$app->user->identity->onVPN && Yii::$app->user->identity->disconnectQueue === null)
-  $profile_actions['disconnect'] = ['encode' => false, 'label' => "<i class='fas fa-shield-virus'></i>&nbsp; Disconnect your VPN", 'url' => Url::to(['profile/disconnect'], true), 'linkOptions' => ['class' => 'text-danger', 'data-swType' => 'question', 'data' => ['confirm' => 'You are about to disconnect your current VPN connection! You will receive another notification once the process is completed!', 'method' => 'POST']]];
-
-$profile_actions['delete'] = ['encode' => false, 'label' => "<i class='fas fa-user-slash'></i>&nbsp; Delete your account", 'url' => Url::to(['profile/delete'], true), 'linkOptions' => ['class' => 'text-danger', 'data-swType' => 'error', 'data' => ['confirm' => 'You are about to delete your account! This is irreversible and will cause you loss of all your progress.', 'method' => 'POST']]];
 
 
 if (array_key_exists('subscription', Yii::$app->modules) !== false) {
@@ -78,16 +56,7 @@ if (array_key_exists('subscription', Yii::$app->modules) !== false) {
       <?php endif; ?>
     <?php endif; ?>
     <?php if ($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)): ?>
-      <?php echo ButtonDropdown::widget([
-        'label' => '<i class="fas fa-users-cog"></i>&nbsp; Profile Actions',
-        'containerOptions' => ['class' => 'row d-flex'],
-        'options' => ['class' => 'btn-primary text-bold btn-block', 'style' => 'color: black'],
-        'encodeLabel' => false,
-        'dropdown' => [
-          'items' => $profile_actions,
-        ],
-      ]);
-      ?>
+      <?php echo ProfileActionsWidget::widget(['profile'=>$profile]);?>
     <?php endif; ?>
     <ul class="nav flex-column">
       <?php if ($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)): ?>
