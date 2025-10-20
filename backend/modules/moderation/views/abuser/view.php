@@ -32,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'id',
             ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player.username'],
             'title',
-            'body:ntext',
+            'body:html',
             'reason',
             'model',
             'model_id',

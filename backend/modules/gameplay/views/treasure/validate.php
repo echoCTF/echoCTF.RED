@@ -23,7 +23,7 @@ yii\bootstrap5\Modal::end();
   <?= Html::beginForm(['/gameplay/treasure/validate'], 'post') ?>
   <div class="form-group">
     <?= Html::label('Code', 'code') ?>
-    <?= Html::textInput('code', $code, ['class' => 'form-control', 'id' => 'code', 'required' => true, 'autocomplete' => 'off']) ?>
+    <?= Html::textInput('code', $code, ['class' => 'form-control', 'id' => 'code', 'required' => true, 'autocomplete' => 'off','autofocus' => true,]) ?>
   </div>
 
   <div class="form-group">
