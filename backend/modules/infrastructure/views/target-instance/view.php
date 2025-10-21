@@ -66,6 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
       'team_allowed:boolean',
       [
         'label' => 'encrypted flags',
+        'visible'=>$model->target->dynamic_treasures,
         'format' => 'raw',
         'value' => function ($model) {
           $lines=[];

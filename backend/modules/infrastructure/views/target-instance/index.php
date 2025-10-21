@@ -27,6 +27,13 @@ yii\bootstrap5\Modal::end();
 
   <p>
     <?= Html::a(Yii::t('app', 'Create Target Instance'), ['create'], ['class' => 'btn btn-success']) ?>
+    <?= Html::a(Yii::t('app', 'Destroy Instances'), ['destroy-all'], [
+      'class' => 'btn btn-danger',
+      'title'=>'Destroy all instances',
+      'data-confirm' => 'Are you sure you want to destroy all instances?',
+      'data-pjax' => '0',
+      'data-method' => 'POST',
+    ]) ?>
   </p>
 
   <?php Pjax::begin(); ?>
@@ -41,7 +48,7 @@ yii\bootstrap5\Modal::end();
       ['class' => 'app\components\columns\ProfileColumn'],
       [
         'attribute' => 'targetname',
-        'label'=>'Target',
+        'label' => 'Target',
         'value' => function ($model) {
           return $model->target_id . ': ' . $model->target->name;
         }
