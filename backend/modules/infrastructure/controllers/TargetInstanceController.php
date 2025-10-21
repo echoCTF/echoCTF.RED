@@ -227,7 +227,7 @@ class TargetInstanceController extends \app\components\BaseController
   }
 
   /**
-   * Destroy a Target Instance .
+   * Destroy a Target Instance.
    * @param integer $id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
@@ -251,6 +251,40 @@ class TargetInstanceController extends \app\components\BaseController
         echo $e->getErrorResponse()->getMessage(), "\n";
       else
         echo $e->getMessage(), "\n";
+    }
+
+    return $this->redirect(['index']);
+  }
+
+  /**
+   * Destroy all Target Instances.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionDestroyAll()
+  {
+    try {
+      foreach (TargetInstance::find()->all() as $val) {
+        $dc = new DockerContainer($val->target);
+        $dc->targetVolumes = $val->target->targetVolumes;
+        $dc->targetVariables = $val->target->targetVariables;
+        $dc->name = $val->name;
+        $dc->server = $val->server->connstr;
+        try {
+          $dc->destroy();
+          Yii::$app->session->addFlash('success', Yii::t('app', "Target instance [" . $dc->name . "] got destroyed."));
+        } catch (\Exception $e) {
+          Yii::$app->session->addFlash('error', Yii::t('app', "Target instance [" . $dc->name . "] failed to get destroyed: ". $e->getMessage()));
+        }
+        $val->delete();
+        Yii::$app->session->addFlash('success', Yii::t('app', "Target instance [" . $dc->name . "] got deleted."));
+      }
+    } catch (\Exception $e) {
+      if (method_exists($e, 'getErrorResponse'))
+        Yii::$app->session->addFlash('error', Yii::t('app', "Target instance [" . $dc->name . "] failed to delete: ". $e->getErrorResponse()->getMessage()));
+      else
+        Yii::$app->session->addFlash('error', Yii::t('app', "Target instance [" . $dc->name . "] failed to delete: ". $e->getMessage()));
     }
 
     return $this->redirect(['index']);
