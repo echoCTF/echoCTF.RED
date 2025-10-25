@@ -15,6 +15,13 @@ class BaseController extends \yii\web\Controller
   public function behaviors()
   {
     return [
+      'rateLimiter' => [
+        'class' => \yii\filters\RateLimiter::class,
+        'enableRateLimitHeaders' => true,
+        //'except' => ['login', 'signup'], // disable rate limit for these actions
+        //'only' => ['login', 'signup','index'], // enable rate limit for these actions
+      ],
+
       'access' => [
         'class' => AccessControl::class,
         'rules' => [
@@ -46,9 +53,9 @@ class BaseController extends \yii\web\Controller
               return $this->eventBetweenStartEnd;
             },
             'denyCallback' => function () {
-              if(\Yii::$app->sys->event_start !== false && time() < \Yii::$app->sys->event_start)
+              if (\Yii::$app->sys->event_start !== false && time() < \Yii::$app->sys->event_start)
                 Yii::$app->session->setFlash('info', \Yii::t('app', 'This area is disabled until the event starts'));
-              if(\Yii::$app->sys->event_end !== false && time() > \Yii::$app->sys->event_end)
+              if (\Yii::$app->sys->event_end !== false && time() > \Yii::$app->sys->event_end)
                 Yii::$app->session->setFlash('info', \Yii::t('app', 'This area is disabled after the end of the event'));
               return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
             }
