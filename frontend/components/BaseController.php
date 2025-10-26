@@ -15,13 +15,6 @@ class BaseController extends \yii\web\Controller
   public function behaviors()
   {
     return [
-      'rateLimiter' => [
-        'class' => \yii\filters\RateLimiter::class,
-        'enableRateLimitHeaders' => true,
-        //'except' => ['login', 'signup'], // disable rate limit for these actions
-        //'only' => ['login', 'signup','index'], // enable rate limit for these actions
-      ],
-
       'access' => [
         'class' => AccessControl::class,
         'rules' => [
@@ -102,6 +95,14 @@ class BaseController extends \yii\web\Controller
           ],
         ],
       ],
+      'rateLimiter' => [
+        'class' => \yii\filters\RateLimiter::class,
+        'enableRateLimitHeaders' => true,
+        'except' => ['error'],
+        //'except' => ['login', 'signup'], // disable rate limit for these actions
+        //'only' => ['login', 'signup','index'], // enable rate limit for these actions
+      ],
+
     ];
   }
 
