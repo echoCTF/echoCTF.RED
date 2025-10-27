@@ -440,7 +440,6 @@ class CronController extends Controller
     }
   }
 
-
   public function actionPowerups()
   {
     try {

@@ -298,4 +298,26 @@ class SslController extends Controller {
     echo "Not implemented\n";
   }
 
+  /**
+   * Revoke and regenerate expired player certificates
+   */
+  public function actionRevokeExpired($player_id=false)
+  {
+    foreach(PlayerSsl::find()->expired()->all() as $ps)
+    {
+      echo "Generating for ",$ps->player->username,"\n";
+      $ps->generate();
+      if(!$ps->save())
+      {
+        foreach($ps->getErrors() as $key => $msgz)
+        {
+          echo "Failed to generate: ",implode("\n",$msgz),"\n";
+        }
+      }
+      else {
+        $ps->player->notify("swal:info", "VPN key renewed", \Yii::t('app','Your VPN key had expired and a new one was generated for you. Go to your profile and download the new VPN file.'));
+      }
+      sleep(1);
+    }
+  }
 }
