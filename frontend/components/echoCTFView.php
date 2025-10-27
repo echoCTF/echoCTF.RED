@@ -35,8 +35,6 @@ class echoCTFView extends \yii\web\View
 
     parent::init();
 
-    if(!\Yii::$app->user->isGuest && \Yii::$app->user->identity->sSL!==null && \Yii::$app->user->identity->sSL->expires)
-    \Yii::$app->getSession()->addFlash('warning', \Yii::t('app','Your VPN key is about to expire. Go to your profile and {revokeURL} it to get a new one.',['revokeURL'=>\yii\helpers\Html::a(\Yii::t('app','revoke it'),['/profile/revoke'],['class'=>'text-dark text-bold','data-method'=>'post'])]));
   }
 
   public function getTwitterHandle()

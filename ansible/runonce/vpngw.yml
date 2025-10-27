@@ -641,6 +641,7 @@
       job: "{{item.job}}"
     with_items:
       - { name: "Generate CRL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-generate-crl" }
+      - { name: "Revoke Expoired Player SSL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-revoke-expired" }
       - { name: "Expire sales", minute: "*/2",  job: "{{APP_DIR}}/backend/yii sales/expire-subscriptions" }
       - { name: "Power Operations", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/powerops" }
       - { name: "restart targets with 24h uptime or more", minute: "*/5",  job: "{{APP_DIR}}/backend/bin/target-restart" }
