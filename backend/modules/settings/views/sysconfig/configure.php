@@ -191,8 +191,6 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'stream_record_limit')->textInput(['maxlength' => true])->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'rate_limit_requests')->textInput(['maxlength' => true])->hint("Rate limit number of requests") ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'rate_limit_window')->textInput(['maxlength' => true])->hint("Rate limit window in seconds for the requests") ?></div>
-
-
     </div>
     <div class="row form-group">
       <div class="col-sm-2"><?= $form->field($model, 'maintenance')->checkbox()->hint('Is the site under maintenance?') ?></div>
