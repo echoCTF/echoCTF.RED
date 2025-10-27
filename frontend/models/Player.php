@@ -379,9 +379,8 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
       imagepng($image, $avatarPNG);
       imagedestroy($image);
       $this->profile->avatar = $_pID . '.png';
-      if(!$this->profile->save(false))
-      {
-        \Yii::error('Failed to save profile avatar for '.$_pID);
+      if (!$this->profile->save(false)) {
+        \Yii::error('Failed to save profile avatar for ' . $_pID);
       }
     }
   }
@@ -462,7 +461,9 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public function getRateLimit($request, $action)
   {
-    return [30, 60]; // 10 requests per 60 seconds
+    if (Yii::$app->sys->rate_limit_requests !== false && Yii::$app->sys->rate_limit_window !== false)
+      return [Yii::$app->sys->rate_limit_requests, Yii::$app->sys->rate_limit_window];
+    return [10000000, 1];
   }
 
   /**
@@ -478,10 +479,10 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
 
     $current = $cache->memcache->get($key);
     if ($current === false) {
-      // First request: set counter to (limit - 1) and expire after window
+
       [$limit, $window] = $this->getRateLimit($request, $action);
-      $cache->memcache->set($key, $limit - 1, $window);
-      return [$limit - 1, time()];
+      $cache->memcache->set($key, $limit, $window);
+      return [$limit, time()];
     } else {
       return [$current, time()];
     }
@@ -503,5 +504,4 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
   {
     return 'rate_limit_user_' . $this->id;
   }
-
 }
