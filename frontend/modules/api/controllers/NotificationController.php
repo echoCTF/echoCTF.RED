@@ -17,7 +17,7 @@ class NotificationController extends \yii\rest\ActiveController
   ];
   public function behaviors()
   {
-    return ArrayHelper::merge(parent::behaviors(), [
+    $behaviors=ArrayHelper::merge(parent::behaviors(), [
       'content'=>[
         'class' => yii\filters\ContentNegotiator::class,
         'formats' => [
@@ -42,6 +42,14 @@ class NotificationController extends \yii\rest\ActiveController
         }
       ],
     ]);
+    unset($behaviors['rateLimiter']);
+    $behaviors['rateLimiter'] = [
+        'class' => \yii\filters\RateLimiter::class,
+        'enableRateLimitHeaders' => true,
+        //'except' => ['login', 'signup'], // disable rate limit for these actions
+        //'only' => ['login', 'signup','index'], // enable rate limit for these actions
+    ];
+    return $behaviors;
   }
 
   public function actions()

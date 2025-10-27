@@ -91,16 +91,22 @@
 * `password_reset_token_validity`: How long will the password reset tokens be active for. Can take intervals supported by php and `INTERVAL`, eg. 10 day, meaning 10 days from now
 * `pflog_min`/`pflog_max`: min/max number of pflog interfaces to use for the match findings. Allows for splitting the findings load into multiple processes.
 
+
+* `player_delete_inactive_after`: Delete players with status=9 (inactive) after X days
+* `player_delete_deleted_after`: Delete players with status=0 (deleted) after X days
+* `player_changed_to_deleted_after`: Update players with status=8 (changed) into status=0 (deleted) after X days
+* `player_delete_rejected_after`: Delete players that their registration was rejected (status=9 and approval=4) after X days
+
+## Frontend API
 * `api_bearer_enable` Enable Bearer authorizations API operations
 * `api_claim_timeout` set the rate limit for the api claim. One request per `api_claim_timeout`+1 seconds
 * `api_target_instances_timeout` set the rate limit for the target instances endpoint. One request per `api_target_instances_timeout`+1 seconds
 * `api_target_spin_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spin_timeout`+1 seconds
 * `api_target_spawn_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spawn_timeout`+1 seconds
 
-* `player_delete_inactive_after`: Delete players with status=9 (inactive) after X days
-* `player_delete_deleted_after`: Delete players with status=0 (deleted) after X days
-* `player_changed_to_deleted_after`: Update players with status=8 (changed) into status=0 (deleted) after X days
-* `player_delete_rejected_after`: Delete players that their registration was rejected (status=9 and approval=4) after X days
+## Rate limit
+* `rate_limit_requests`: Rate limit number of requests
+* `rate_limit_window`: Rate limit window in seconds for the requests above
 
 
 ## mail configuration
@@ -109,7 +115,8 @@
 * `mail_fromName` The name appeared on the email send for registration and password resets
 * `dsn` A symphony mailer compatible DSN
 * `mail_useFileTransport` Do not actually send mails, just save them in a file
-Or instead if not DSN then use the following
+
+Alternatively, instead of DSN the following keys can be used
 
 * `mail_host` The mail server host to send mails through
 * `mail_port` The mail server port to connect

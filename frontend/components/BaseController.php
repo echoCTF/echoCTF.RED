@@ -46,9 +46,9 @@ class BaseController extends \yii\web\Controller
               return $this->eventBetweenStartEnd;
             },
             'denyCallback' => function () {
-              if(\Yii::$app->sys->event_start !== false && time() < \Yii::$app->sys->event_start)
+              if (\Yii::$app->sys->event_start !== false && time() < \Yii::$app->sys->event_start)
                 Yii::$app->session->setFlash('info', \Yii::t('app', 'This area is disabled until the event starts'));
-              if(\Yii::$app->sys->event_end !== false && time() > \Yii::$app->sys->event_end)
+              if (\Yii::$app->sys->event_end !== false && time() > \Yii::$app->sys->event_end)
                 Yii::$app->session->setFlash('info', \Yii::t('app', 'This area is disabled after the end of the event'));
               return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
             }
@@ -95,6 +95,14 @@ class BaseController extends \yii\web\Controller
           ],
         ],
       ],
+      'rateLimiter' => [
+        'class' => \yii\filters\RateLimiter::class,
+        'enableRateLimitHeaders' => true,
+        'except' => ['error'],
+        //'except' => ['login', 'signup'], // disable rate limit for these actions
+        //'only' => ['login', 'signup','index'], // enable rate limit for these actions
+      ],
+
     ];
   }
 
@@ -129,7 +137,7 @@ class BaseController extends \yii\web\Controller
   {
     if (parent::beforeAction($action)) {
       if ($this->enableCsrfValidation && Yii::$app->getErrorHandler()->exception === null && !$this->request->validateCsrfToken()) {
-        Yii::$app->session->setFlash('error', Yii::t('yii', \Yii::t('app', 'Unable to verify your CSRF token, please try again.')));
+        Yii::$app->session->setFlash('error',  \Yii::t('app', 'Unable to verify your CSRF token, please try again.'));
         Yii::$app->response->redirect(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage])->send();
         return false;
       }

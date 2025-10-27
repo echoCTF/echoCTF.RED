@@ -147,6 +147,8 @@ class ConfigureForm extends Model
   public $verifymail_key;
   public $team_only_leaderboards;
   public $profile_card_disabled_actions;
+  public $rate_limit_requests;
+  public $rate_limit_window;
 
   public $keys = [
     'target_days_updated',
@@ -286,6 +288,8 @@ class ConfigureForm extends Model
     'verifymail_key',
     'team_only_leaderboards',
     'profile_card_disabled_actions',
+    'rate_limit_requests',
+    'rate_limit_window',
   ];
 
   /**
@@ -442,6 +446,8 @@ class ConfigureForm extends Model
         'password_reset_email_timeout',
         'verification_resend_ip_timeout',
         'verification_resend_email_timeout',
+        'rate_limit_requests',
+        'rate_limit_window',
       ], 'integer'],
       [['online_timeout'], 'default', 'value' => 900],
       [['spins_per_day'], 'default', 'value' => 2],

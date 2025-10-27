@@ -9,6 +9,7 @@ use yii\db\ActiveRecord;
 use yii\db\Expression;
 use yii\web\IdentityInterface;
 use yii\behaviors\AttributeTypecastBehavior;
+use yii\filters\RateLimitInterface;
 use app\modules\game\models\Headshot;
 
 /**
@@ -20,7 +21,7 @@ use app\modules\game\models\Headshot;
  * @property bool $visibilityDenied
  * @property bool $isVip
  */
-class Player extends PlayerAR implements IdentityInterface
+class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
 {
   const NEW_PLAYER = 'new-player';
   const SCENARIO_SETTINGS = 'settings';
@@ -378,9 +379,8 @@ class Player extends PlayerAR implements IdentityInterface
       imagepng($image, $avatarPNG);
       imagedestroy($image);
       $this->profile->avatar = $_pID . '.png';
-      if(!$this->profile->save(false))
-      {
-        \Yii::error('Failed to save profile avatar for '.$_pID);
+      if (!$this->profile->save(false)) {
+        \Yii::error('Failed to save profile avatar for ' . $_pID);
       }
     }
   }
@@ -415,7 +415,7 @@ class Player extends PlayerAR implements IdentityInterface
   }
 
   /**
-   * Send mail to player with
+   * Send mail to player with given subject, html, text and optional SMTP headers
    * @param string $subject
    * @param string $html
    * @param string $txt
@@ -450,5 +450,58 @@ class Player extends PlayerAR implements IdentityInterface
       return false;
     }
     return true;
+  }
+  /**
+   * RAΤΕ LIMIT METHODS
+   */
+
+  /**
+   * Return the current limits for the player
+   * @returns array [requests,seconds]
+   */
+  public function getRateLimit($request, $action)
+  {
+    if (Yii::$app->sys->rate_limit_requests !== false && Yii::$app->sys->rate_limit_window !== false)
+      return [Yii::$app->sys->rate_limit_requests, Yii::$app->sys->rate_limit_window];
+    return [10000000, 1];
+  }
+
+  /**
+   * Load or set initial current allowance for player
+   * @returns array [limit, time]
+   */
+  public function loadAllowance($request, $action)
+  {
+    if ($this->isAdmin)
+      return [1000000000, 1];
+    $key = $this->getRateLimitCacheKey();
+    $cache = Yii::$app->cache;
+
+    $current = $cache->memcache->get($key);
+    if ($current === false) {
+
+      [$limit, $window] = $this->getRateLimit($request, $action);
+      $cache->memcache->set($key, $limit, $window);
+      return [$limit, time()];
+    } else {
+      return [$current, time()];
+    }
+  }
+
+  /**
+   * Save current allowance for the player
+   */
+  public function saveAllowance($request, $action, $allowance, $timestamp)
+  {
+    if ($this->isAdmin)
+      return true;
+    $key = $this->getRateLimitCacheKey();
+    // No need to reset expiry, Memcached keeps TTL on decrement
+    Yii::$app->cache->memcache->decrement($key);
+  }
+
+  private function getRateLimitCacheKey()
+  {
+    return 'rate_limit_user_' . $this->id;
   }
 }
