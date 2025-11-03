@@ -100,6 +100,7 @@ class m220102_214745_populate_url_routes extends Migration
     'speed' => 'speedprogramming/default/index',
     'speed/<id:\d+>' => 'speedprogramming/default/view',
     'speed/<id:\d+>/answer' => 'speedprogramming/default/answer',
+    'suspended' => 'site/suspended',
   ];
   /**
    * {@inheritdoc}
