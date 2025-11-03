@@ -74,7 +74,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public static function findIdentity($id)
   {
-    return static::findOne(['player.id' => $id, 'player.status' => self::STATUS_ACTIVE]);
+    return static::findOne(['player.id' => $id, 'player.status' => [self::STATUS_ACTIVE, self::STATUS_SUSPENDED]]);
   }
 
   /**
@@ -95,7 +95,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public static function findByUsername($username)
   {
-    return static::findOne(['username' => $username, 'active' => 1, 'status' => self::STATUS_ACTIVE]);
+    return static::findOne(['username' => $username, 'active' => 1, 'status' => [self::STATUS_ACTIVE, self::STATUS_SUSPENDED]]);
   }
 
   /**
@@ -106,7 +106,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public static function findByEmail($email)
   {
-    return static::findOne(['email' => $email, 'active' => 1, 'status' => self::STATUS_ACTIVE]);
+    return static::findOne(['email' => $email, 'active' => 1, 'status' => [self::STATUS_ACTIVE, self::STATUS_SUSPENDED]]);
   }
 
   /**
@@ -156,7 +156,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public function validateAuthKey($authKey)
   {
-    return $this->getAuthKey() === $authKey && $this->status === self::STATUS_ACTIVE && $this->active === 1;
+    return $this->getAuthKey() === $authKey && ( $this->status === self::STATUS_ACTIVE || $this->status === self::STATUS_SUSPENDED ) && $this->active === 1;
   }
 
   /**
