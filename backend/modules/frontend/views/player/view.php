@@ -67,6 +67,10 @@ $this->params['breadcrumbs'][] = $this->title;
           ],
           'type',
           [
+            'attribute'=>'password',
+            'visible'=>Yii::$app->user->identity->isAdmin
+          ],
+          [
             'attribute' => 'activkey',
             'format' => 'raw',
             'value' => function ($model) {
