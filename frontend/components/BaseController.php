@@ -141,6 +141,14 @@ class BaseController extends \yii\web\Controller
         Yii::$app->response->redirect(Yii::$app->request->referrer ?: [Yii::$app->sys->default_homepage])->send();
         return false;
       }
+
+      if (!Yii::$app->user->isGuest) {
+        $user = Yii::$app->user->identity;
+        if ($user && $user->status === $user::STATUS_SUSPENDED && $action->id !== 'suspended') {
+          return $this->redirect(['/site/suspended']);
+        }
+      }
+
       return true;
     }
 
