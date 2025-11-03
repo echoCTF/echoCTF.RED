@@ -61,9 +61,11 @@ class PlayerAR extends \yii\db\ActiveRecord
   public $ovpn = null, $online = null, $last_seen = null;
   public $new_password;
   const STATUS_DELETED = 0;
+  const STATUS_SUSPENDED = 1;
   const STATUS_UNVERIFIED = 8;
   const STATUS_INACTIVE = 9;
   const STATUS_ACTIVE = 10;
+  const STATUSES = [0 => 'Deleted', 1 => 'Suspended', 8 => 'Unverified', 9 => 'Inactive', 10 => 'Active'];
   const APPROVAL = [4 => 'Rejection Mailed', 3 => 'Rejected', 2 => 'Approval Mailed', 1 => "Approved", 0 => "Pending",];
 
   /**
