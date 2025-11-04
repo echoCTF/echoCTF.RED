@@ -32,7 +32,7 @@ class SiteController extends \app\components\BaseController
     return ArrayHelper::merge($parent, [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['index', 'login', 'logout', 'changelog', 'register', 'request-password-reset', 'verify-email', 'resend-verification-email',  'captcha'],
+        'only' => ['index', 'login', 'logout', 'changelog', 'register', 'request-password-reset', 'verify-email', 'resend-verification-email', 'captcha', 'suspended'],
         'rules' => [
           'disabledRegs' => [
             'actions' => ['register'],
@@ -63,7 +63,7 @@ class SiteController extends \app\components\BaseController
             'actions' => ['register', 'verify-email', 'resend-verification-email'],
           ],
           [
-            'actions' => ['logout', 'index'],
+            'actions' => ['logout', 'index','suspended'],
             'allow' => true,
             'roles' => ['@'],
           ],
@@ -212,7 +212,6 @@ class SiteController extends \app\components\BaseController
    */
   public function actionRegister()
   {
-
     $model = new SignupForm();
     $transaction = Yii::$app->db->beginTransaction();
     try {
@@ -389,6 +388,17 @@ class SiteController extends \app\components\BaseController
     return $this->render('changelog', [
       'changelog' => $changelog,
       'todo' => $todo
+    ]);
+  }
+
+  public function actionSuspended()
+  {
+    $player=Yii::$app->user->identity;
+    if($player->status!==$player::STATUS_SUSPENDED)
+      return $this->redirect(['/']);
+    Yii::$app->user->logout();
+    return $this->render('suspended',[
+      'player'=>$player,
     ]);
   }
 }

@@ -106,7 +106,7 @@ yii\bootstrap5\Modal::end();
       [
         'attribute' => 'status',
         'format' => 'playerStatus',
-        'filter' => [10 => 'Enabled', 9 => 'Inactive', 8 => "Change", 0 => "Deleted",],
+        'filter' => \app\modules\frontend\models\Player::STATUSES,
         'contentOptions' => ['class' => 'small'],
       ],
       [

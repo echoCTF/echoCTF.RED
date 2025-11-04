@@ -101,11 +101,11 @@ class LoginForm extends Model
      */
     public function getPlayer()
     {
-      $this->_player=Player::findByUsername($this->username);
-      if($this->_player === null)
-      {
+      if(str_contains($this->username, '@'))
         $this->_player=Player::findByEmail($this->username);
-      }
+      else
+        $this->_player=Player::findByUsername($this->username);
+
       return $this->_player;
     }
 }

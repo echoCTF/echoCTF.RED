@@ -4,6 +4,15 @@ use yii\helpers\Html;
 ?>
 <div class="page-heading">
   <div class="media clearfix">
+    <?php if ($model->owner->status!==$model->owner::STATUS_ACTIVE):?>
+      <?= \yii\bootstrap5\Alert::widget([
+                      'body' => "<b>Account is ".$model->owner::STATUSES[$model->owner->status]."</b>",
+                      'options' => [
+                          'id' => 'user-status',
+                          'class' => 'alert-danger text-center',
+                      ],
+                  ]);?>
+    <?php endif;?>
     <div class="media-left pr30">
       <a href="//<?= Yii::$app->sys->offense_domain ?>/profile/<?= $model->id ?>" target="_blank">
         <img width="140px" class="img-fluid img-thumbnail" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= $model->avatar ?>" alt="<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= $model->avatar ?>">

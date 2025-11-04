@@ -24,8 +24,6 @@ yii\bootstrap5\Modal::end();
         <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -40,11 +38,7 @@ yii\bootstrap5\Modal::end();
                 'label'=>'Status',
                 'filter'=>[0=>'Deleted', 9=>'Inactive', 10=>'Active'],
             ],
-            //'created_at',
-            //'updated_at',
-            //'verification_token',
             'admin:boolean',
-
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]);?>

@@ -71,15 +71,8 @@ class AppFormatter extends \yii\i18n\Formatter
    */
   public function asPlayerStatus($value)
   {
-    switch ($value) {
-      case 0:
-        return 'Deleted';
-      case 8:
-        return 'Changed';
-      case 9:
-        return 'Inactive';
-      default:
-        return 'Enabled';
-    }
+    if(array_key_exists($value,\app\modules\frontend\models\Player::STATUSES))
+      return \app\modules\frontend\models\Player::STATUSES[$value];
+    return $value;
   }
 }

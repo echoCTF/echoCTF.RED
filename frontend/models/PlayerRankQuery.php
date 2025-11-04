@@ -9,7 +9,7 @@ namespace app\models;
  */
 class PlayerRankQuery extends \yii\db\ActiveQuery
 {
-    public function academic($academic)
+    public function academic($academic=false)
     {
       $this->joinWith('player');
       if(\Yii::$app->sys->academic_grouping!==false)
@@ -24,7 +24,7 @@ class PlayerRankQuery extends \yii\db\ActiveQuery
 
     public function active()
     {
-      return $this->joinWith('player')->where(['player.active'=>1,'player.status'=>10]);
+      return $this->joinWith('player')->where(['player.active'=>1,'player.status'=>\app\models\Player::STATUS_ACTIVE]);
     }
 
     /**

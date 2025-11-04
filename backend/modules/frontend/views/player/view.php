@@ -61,8 +61,15 @@ $this->params['breadcrumbs'][] = $this->title;
           'academicLong',
           'metadata.affiliation',
           'active:boolean',
-          'status',
+          [
+            'attribute'=>'status',
+            'format' => 'playerStatus',
+          ],
           'type',
+          [
+            'attribute'=>'password',
+            'visible'=>Yii::$app->user->identity->isAdmin
+          ],
           [
             'attribute' => 'activkey',
             'format' => 'raw',
