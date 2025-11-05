@@ -85,7 +85,7 @@ yii\bootstrap5\Modal::end();
       ],
       [
         'attribute' => 'email',
-        'format' => 'email',
+        //'format' => 'email',
         'contentOptions' => ['class' => 'small'],
       ],
       [
@@ -177,7 +177,7 @@ yii\bootstrap5\Modal::end();
             return false;
           }
         ],
-        'template' => '{player-view-full} {clear-vpn} {disconnect-vpn} {view} {generate-ssl} {update} {delete} {ban} {mail} {reset-activkey} {approve} {reject} {activate} {set-deleted} {notify}',
+        'template' => '{clear-vpn} {disconnect-vpn} {view} {generate-ssl} {update} {delete} {ban} {mail} {reset-activkey} {approve} {reject} {activate} {set-deleted} {notify}',
         'header' => Html::a(
           '<i class="bi bi-person-fill-exclamation"></i>',
           ['ban-filtered'],
