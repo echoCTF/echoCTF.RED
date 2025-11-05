@@ -336,6 +336,24 @@ http {
             return 404;
         }
 {% endif %}
+
+{% if captcha is defined %}
+        # Check for requests to /profile/<NUMBER>
+        location ~ ^/profile/\d+$ {
+          # Check if query string contains page parameter
+          if ($query_string ~ "(?:^|&)[^&]*-?page=([1-9][0-9]*)") {
+            # Check if PUISESSID is not set and redirect to a captcha page.
+            if ($cookie_PUISESSID = "") {
+              rewrite ^(.*)$ /captcha.html break;
+            }
+
+          }
+
+          # triggers location re-evaluation if no previous rewrite fired
+          rewrite ^(.*)$ $1 last;
+        }
+{% endif %}
+
         location = /index.php {
             try_files $uri =404;
             fastcgi_split_path_info ^(.+\.php)(.*)$;
