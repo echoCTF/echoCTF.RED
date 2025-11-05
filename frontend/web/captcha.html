@@ -1,0 +1,41 @@
+<!doctype html>
+<title>echoCTF verification</title>
+<style>
+  body { text-align: center; padding: 150px; background: #222; }
+  h1 { font-size: 50px; }
+  body { font: 20px Helvetica, sans-serif; color: #cecece; }
+  article { display: block; text-align: left; width: 650px; margin: 0 auto; }
+  a { color: #dc8100; text-decoration: none; }
+  a:hover { color: #333; text-decoration: none; }
+  #captcha-button { padding: 15px 30px; background-color: #dc8100; color: #fff; border: none; cursor: pointer; font-size: 18px; }
+  #captcha-button:hover { background-color: #333; }
+</style>
+<body>
+<img width="480px" src="/images/logo-red.png">
+<article>
+    <h1>Verify you are not a bot!</h1>
+    <div>
+      <p>Please verify you are not a bot by clicking on the button below.</p>
+      <p>Sorry for the inconvenience and Thank you for your understanding</p>
+      <div id="captcha-button"><center><b>I'm not a bot</b></center></div>
+      <p>&mdash; the echoCTF team</p>
+    </div>
+</article>
+<script>
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days*24*60*60*1000));
+      const expires = "expires=" + date.toUTCString();
+      document.cookie = name + "=" + value + ";" + expires + ";path=/";
+    }
+
+    // Add click listener to the button
+    document.getElementById('captcha-button').addEventListener('click', function() {
+      setCookie('PUISESSID', 'true', 1); // Set cookie for 1 day
+      location.reload(); // Reload the current page
+    });
+  </script>
+
+</body>
+</html>
