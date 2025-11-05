@@ -82,6 +82,7 @@ class Profile extends ProfileAR
       if(Yii::$app->sys->player_profile === false) return true;
 
       if($this->visibility === 'private') return true;
+      if($this->visibility === 'ingame' && Yii::$app->user->isGuest) return true;
 
       return false;
     }
