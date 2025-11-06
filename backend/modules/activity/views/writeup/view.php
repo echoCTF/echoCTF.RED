@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'contentOptions' => ['class' => 'text-break w-90 '.($model->approved ? 'bg-primary' : 'bg-danger')],
               'value'=>function($model){
                 if($model->formatter==='markdown')
-                  return HtmlPurifier::process(Markdown::process($model->content,'gfm-comment'),['Attr.AllowedFrameTargets' => ['_blank']]);
+                  return Yii::$app->formatter->asMarkdown($model->content);
                 else
                   return "<pre style='white-space: pre-wrap; word-break: break-word;'>".Html::encode($model->content)."</pre>"; }
 
