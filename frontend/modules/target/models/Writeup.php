@@ -208,8 +208,7 @@ class Writeup extends \yii\db\ActiveRecord
 
     public function getMarkdown()
     {
-      return \yii\helpers\Markdown::process($this->content,'gfm');
-
+      return Yii::$app->formatter->asMarkdown($this->content);
     }
 
 }
