@@ -11,7 +11,7 @@ class WriteupQuery extends \yii\db\ActiveQuery
 {
     public function approved()
     {
-        return $this->andWhere('approved=1');
+        return $this->andWhere(['approved'=>'1','status'=>'OK']);
     }
     public function active()
     {
