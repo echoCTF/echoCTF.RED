@@ -90,8 +90,7 @@ $config = [
       'sessionTable' => 'muisess',
     ],
     'formatter' => [
-      'class' => 'app\models\AppFormatter',
-      'nullDisplay' => '<span class="not-set small">(empty)</span>',
+      'class' => app\components\Formatter::class,
     ],
     'request' => [
       'parsers' => [
