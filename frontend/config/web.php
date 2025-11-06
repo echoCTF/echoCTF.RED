@@ -54,6 +54,9 @@ $config = [
     ],
   ],
   'components' => [
+    'formatter' => [
+      'class' => app\components\Formatter::class,
+    ],
     'i18n' => [
       'translations' => [
         'yii' => [
