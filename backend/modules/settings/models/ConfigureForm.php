@@ -149,6 +149,7 @@ class ConfigureForm extends Model
   public $profile_card_disabled_actions;
   public $rate_limit_requests;
   public $rate_limit_window;
+  public $player_request_delete_allow;
 
   public $keys = [
     'target_days_updated',
@@ -290,6 +291,7 @@ class ConfigureForm extends Model
     'profile_card_disabled_actions',
     'rate_limit_requests',
     'rate_limit_window',
+    'player_request_delete_allow',
   ];
 
   /**
@@ -511,6 +513,7 @@ class ConfigureForm extends Model
         'signup_TotalRegistrationsValidator',
         'signup_MXServersValidator',
         'team_only_leaderboards',
+        'player_request_delete_allow',
       ], 'boolean'],
     ];
   }
