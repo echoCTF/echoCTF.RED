@@ -25,7 +25,16 @@ class m251104_084144_update_trigger_after_update_on_player_table extends Migrati
     DELETE FROM stream WHERE player_id=NEW.id;
     DELETE FROM team WHERE owner_id=NEW.id;
     DELETE FROM team_player WHERE player_id=NEW.id;
-    DELETE FROM notification WHERE player_id=NEW.id;
+    DELETE FROM `notification` WHERE player_id=NEW.id;
+    IF NEW.status=0 THEN
+      DELETE FROM writeup WHERE player_id=NEW.id;
+      DELETE FROM headshot WHERE player_id=NEW.id;
+      DELETE FROM target_player_state WHERE player_id=NEW.id;
+      DELETE FROM player_score WHERE player_id=NEW.id;
+      DELETE FROM challenge_solver WHERE player_id=NEW.id;
+      DELETE FROM writeup_rating WHERE player_id=NEW.id;
+      DELETE FROM player_target_help WHERE player_id=NEW.id;
+    END IF;
   ELSEIF NEW.status=10 AND OLD.status=0 THEN
     INSERT INTO stream SELECT * FROM archived_stream WHERE player_id=NEW.id;
     DELETE FROM archived_stream WHERE player_id=NEW.id;
