@@ -75,4 +75,18 @@ class BannedPlayer extends \yii\db\ActiveRecord
             'banned_at' => 'Banned At',
         ];
     }
-}
+    public static function needsOptimization() {
+      return Yii::$app->db->createCommand("SELECT COUNT(*) AS total_groups
+        FROM (
+            SELECT
+                p2.id AS general_id,
+                p2.email AS general_pattern,
+                GROUP_CONCAT(p1.email ORDER BY p1.email SEPARATOR ', ') AS matched_emails
+            FROM banned_player p1
+            JOIN banned_player p2
+              ON p1.email LIKE p2.email
+            WHERE p1.id <> p2.id
+            GROUP BY p2.id, p2.email
+        ) AS t")->queryScalar();
+    }
+  }
