@@ -43,7 +43,6 @@ class SignupForm extends Model
             ['email', 'email','checkDNS'=>true],
             ['email', 'string', 'min'=>6, 'max' => 255],
             ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app','This email address has already been taken.')],
-            ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => \Yii::t('app','This email is banned.')],
             ['email', function($attribute, $params){
               $count = \Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
                   ->bindValue(':email', $this->email)
