@@ -11,6 +11,7 @@ use yii\base\Widget;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\bootstrap\ButtonDropdown;
+
 class ProfileActionsWidget extends Widget
 {
   public $profile;
@@ -42,14 +43,13 @@ class ProfileActionsWidget extends Widget
     if (Yii::$app->user->identity->onVPN && Yii::$app->user->identity->disconnectQueue === null)
       $profile_actions['disconnect'] = ['encode' => false, 'label' => "<i class='fas fa-shield-virus'></i>&nbsp; Disconnect your VPN", 'url' => Url::to(['profile/disconnect'], true), 'linkOptions' => ['class' => 'text-danger', 'data-swType' => 'question', 'data' => ['confirm' => 'You are about to disconnect your current VPN connection! You will receive another notification once the process is completed!', 'method' => 'POST']]];
 
-    $profile_actions['delete'] = ['encode' => false, 'label' => "<i class='fas fa-user-slash'></i>&nbsp; Delete your account", 'url' => Url::to(['profile/delete'], true), 'linkOptions' => ['class' => 'text-danger', 'data-swType' => 'error', 'data' => ['confirm' => 'You are about to delete your account! This is irreversible and will cause you loss of all your progress.', 'method' => 'POST']]];
+    if (\Yii::$app->sys->player_request_delete_allow === true)
+      $profile_actions['delete'] = ['encode' => false, 'label' => "<i class='fas fa-user-slash'></i>&nbsp; Delete your account", 'url' => Url::to(['profile/delete'], true), 'linkOptions' => ['class' => 'text-danger', 'data-swType' => 'error', 'data' => ['confirm' => 'You are about to delete your account! This is irreversible and will cause loss of all your progress. If you currently have an active subscription, the deletion will happen when it ends.', 'method' => 'POST']]];
 
-    if(\Yii::$app->sys->profile_card_disabled_actions!==false && explode(",",\Yii::$app->sys->profile_card_disabled_actions)!==[])
-    {
-      $disabled_keys=explode(",",\Yii::$app->sys->profile_card_disabled_actions);
-      foreach($disabled_keys as $dkey)
-      {
-        if(array_key_exists(trim($dkey),$profile_actions))
+    if (\Yii::$app->sys->profile_card_disabled_actions !== false && explode(",", \Yii::$app->sys->profile_card_disabled_actions) !== []) {
+      $disabled_keys = explode(",", \Yii::$app->sys->profile_card_disabled_actions);
+      foreach ($disabled_keys as $dkey) {
+        if (array_key_exists(trim($dkey), $profile_actions))
           unset($profile_actions[trim($dkey)]);
       }
     }

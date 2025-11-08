@@ -103,6 +103,10 @@ function sysconfig() {
 }
 
 function tmuxs() {
+  tmux -L ${DATABASE} kill-server
+  sleep 1
+  #backend serve -a 127.0.0.1 -p 8080
+  #frontend serve -a 127.0.0.1 -p 8082
   tmux -L ${DATABASE} new -d  'cd ./backend; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=mUISESSID yii serve 127.0.0.1:8080'
   tmux -L ${DATABASE} split-window 'cd ./frontend/web; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=pUI2SESSID -S 127.0.0.1:8082'
 }

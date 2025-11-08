@@ -1,4 +1,5 @@
 # Sysconfig Keys
+These are the system configuration keys used by the platform applications. Any key not set defaults to `false`.
 
 ## Flags (0 false, 1 true)
 
@@ -42,6 +43,7 @@
 * `country_rankings`: Whether or not country rankings will be visible on leaderboard
 * `player_point_rankings`: Whether or not player point rankings will be visible on leaderboard
 * `player_monthly_rankings`: Whether or not player monthly rankings will be visible on leaderboard
+* `player_request_delete_allow`: Whether or not to allow players to request deletion of their own account
 * `module_smartcity_disabled`: Whether or not the smartcity module is disabled (hides the menu from backend)
 * `module_speedprogramming_enabled`: Whether or not the Speed Programming module is enabled (hides the menu from backend also)
 

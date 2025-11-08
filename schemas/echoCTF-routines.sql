@@ -364,17 +364,13 @@ BEGIN
   SET player_delete_rejected_after=memc_get('sysconfig:player_delete_rejected_after');
 
   IF player_require_approval IS NOT NULL and player_require_approval>0 AND player_delete_rejected_after IS NOT NULL AND player_delete_rejected_after>0 THEN
-    -- DELETE players who have been rejected after 5 days
-    SELECT 'player_require_approval' as '';
-    DELETE FROM `player` WHERE `ts` < NOW() - INTERVAL player_delete_rejected_after DAY AND `status`=9 AND approval=4;
+    DELETE FROM `player` WHERE `status`=9 AND approval=4 AND `ts` < NOW() - INTERVAL player_delete_rejected_after DAY;
   END IF;
   IF player_delete_inactive_after IS NOT NULL AND player_delete_inactive_after > 0 THEN
-    SELECT 'player_delete_inactive_after' as '';
-    DELETE FROM `player` WHERE `ts` < NOW() - INTERVAL player_delete_inactive_after DAY AND `status`=9;
+    DELETE FROM `player` WHERE `status`=9 AND`ts` < NOW() - INTERVAL player_delete_inactive_after DAY;
   END IF;
   IF player_delete_deleted_after IS NOT NULL AND player_delete_deleted_after > 0 THEN
-    SELECT 'player_delete_deleted_after' as '';
-    DELETE FROM `player` WHERE `ts` < NOW() - INTERVAL player_delete_deleted_after DAY AND `status`=0;
+    DELETE FROM `player` WHERE `status`=0 AND `ts` < NOW() - INTERVAL player_delete_deleted_after DAY;
   END IF;
   IF player_changed_to_deleted_after IS NOT NULL AND player_changed_to_deleted_after > 0 THEN
     UPDATE player SET status=0 WHERE status=8 AND ts < NOW() - INTERVAL player_changed_to_deleted_after DAY;

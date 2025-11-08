@@ -32,6 +32,18 @@ class ProfileController extends \app\components\BaseController
         'class' => AccessControl::class,
         'only' => ['badge', 'index', 'invite', 'me', 'delete', 'ovpn', 'revoke', 'settings', 'notifications', 'hints', 'disconnect', 'generate-token'],
         'rules' => [
+          [
+            'actions' => ['delete'],
+            'allow' => false,
+            'roles' => ['@'],
+            'matchCallback' => function () {
+              return !\Yii::$app->sys->player_request_delete_allow;
+            },
+            'denyCallback' => function () {
+              Yii::$app->session->setFlash('info', \Yii::t('app', 'This operation is disabled!'));
+              return  \Yii::$app->getResponse()->redirect([Yii::$app->sys->default_homepage]);
+            }
+          ],
           'eventActive' => [
             'actions' => ['badge', 'index', 'notifications', 'hints', 'ovpn', 'settings', 'invite', 'revoke', 'disconnect', 'delete', 'generate-token'],
           ],
@@ -202,11 +214,26 @@ class ProfileController extends \app\components\BaseController
 
   public function actionDelete()
   {
-    if (intval(Yii::$app->user->identity->updateAttributes(['status' => 0])) > 0) {
-      Yii::$app->user->logout();
+    if (intval(\Yii::$app->user->identity->updateAttributes(['status' => 0])) > 0) {
+      if (\Yii::$app->user->identity->subscription) {
+        if (\Yii::$app->user->identity->subscription->subscription_id === 'sub_vip') {
+          \Yii::$app->user->identity->subscription->delete();
+        } else {
+          $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
+          $subscription = $stripe->subscriptions->cancel(\Yii::$app->user->identity->subscription->subscription_id, []);
+        }
+      }
+
+      try {
+        $dcq = new PlayerDisconnectQueue();
+        $dcq->player_id = Yii::$app->user->identity->id;
+        $dcq->save();
+      } catch (\Exception $e) { }
+
+      \Yii::$app->user->logout();
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "Your account has been scheduled for deletion. We are sorry to see you go. Feel free to come back any time..."));
     } else
-      \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to delete your account. Contact our support to assist you in."));
+      \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to delete your account. Contact our support for assistance."));
     return $this->redirect(['/']);
   }
 

@@ -90,6 +90,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'require_activation')->checkbox()->hint('Do players need to activate their account?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'disable_registration')->checkbox()->hint('Are online registrations allowed on the pUI?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'approved_avatar')->checkbox()->hint('Are player profile avatars approved?') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'player_request_delete_allow')->checkbox()->hint('Allow players to request account deletion?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'signup_StopForumSpamValidator')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'signup_HourRegistrationValidator')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'signup_TotalRegistrationsValidator')->checkbox()->hint(false) ?></div>
