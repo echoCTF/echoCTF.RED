@@ -23,6 +23,10 @@ yii\bootstrap5\Modal::end();
 
     <p>
         <?= Html::a(Yii::t('app', 'Create Banned Player'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a(Yii::t('app', 'Optimize Banned Players'), ['optimize'], ['class' => 'btn btn-warning','data' => [
+                'confirm' => Yii::t('app', 'This will remove duplicate matched rules. Are you sure you want to continue?'),
+                'method' => 'post',
+            ],]) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

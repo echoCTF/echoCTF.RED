@@ -4,6 +4,8 @@ namespace app\modules\frontend\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\frontend\models\BannedPlayer;
 
 /**
@@ -20,6 +22,27 @@ class BannedPlayerSearch extends BannedPlayer
             [['id', 'old_id'], 'integer'],
             [['username', 'email', 'registered_at', 'banned_at'], 'safe'],
         ];
+    }
+
+    public function behaviors()
+    {
+      return [
+        'typecast' => [
+            'class' => AttributeTypecastBehavior::class,
+            'attributeTypes' => [
+                'old_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+            ],
+            'typecastAfterValidate' => false,
+            'typecastBeforeSave' => true,
+            'typecastAfterFind' => true,
+        ],
+        [
+            'class' => TimestampBehavior::class,
+            'createdAtAttribute' => 'banned_at',
+            'updatedAtAttribute' => null,
+            'value' => new \yii\db\Expression('NOW()'),
+        ],
+      ];
     }
 
     /**
