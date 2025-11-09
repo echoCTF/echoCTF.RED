@@ -55,6 +55,7 @@ use app\modules\activity\models\PlayerDisconnectQueue;
  * @property Profile $profile
  * @property PlayerSsl $playerSsl
  * @property PlayerSubscription $subscription
+ * @property PlayerToken $apiToken
  */
 class PlayerAR extends \yii\db\ActiveRecord
 {
@@ -519,4 +520,13 @@ class PlayerAR extends \yii\db\ActiveRecord
   {
     return $this->auth_key;
   }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getApiToken()
+  {
+    return $this->hasOne(PlayerToken::class, ['player_id' => 'id'])->andWhere(['type' => 'API']);
+  }
+
 }
