@@ -100,7 +100,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
    * @return bool - If data are the same or subscription is sub_vip returns true
    * @throws Exception|UserException - When stripe error occurs or data problems
    */
-  public function StripeCompare($invalid_returns=false): bool
+  public function StripeCompare($invalid_returns = false): bool
   {
     if ($this->subscription_id === 'sub_vip')
       return true;
@@ -116,7 +116,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     if (intval(\Yii::$app->formatter->asTimestamp($this->starting)) !== intval($stripe_subscription->items->data[0]->current_period_start) || intval(\Yii::$app->formatter->asTimestamp($this->ending)) !== intval($stripe_subscription->items->data[0]->current_period_end))
       return false;
 
-    if (intval($this->active) !== intval($stripe_subscription->ended_at==null) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
+    if (intval($this->active) !== intval($stripe_subscription->ended_at == null) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
       return false;
 
     return true;
@@ -135,15 +135,14 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     $stripe_subscription = $stripe->subscriptions->retrieve($this->subscription_id, []);
     $this->subscription_id = $stripe_subscription->id;
-    if(intval($stripe_subscription->ended_at==null))
-    {
+    if (intval($stripe_subscription->ended_at == null)) {
       $this->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->items->data[0]->current_period_start]);
       $this->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->items->data[0]->current_period_end]);
       $this->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
     }
     $this->updated_at = new \yii\db\Expression('NOW()');
     $this->price_id = $stripe_subscription->items->data[0]->plan->id;
-    $this->active = intval($stripe_subscription->ended_at==null);
+    $this->active = intval($stripe_subscription->ended_at == null);
     return $this->update(false);
   }
 
@@ -164,15 +163,14 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
 
         $ps->subscription_id = $stripe_subscription->id;
-        if($stripe_subscription->ended_at==null)
-        {
+        if ($stripe_subscription->ended_at == null) {
           $ps->starting = new \yii\db\Expression("FROM_UNIXTIME(:starting)", [':starting' => $stripe_subscription->items->data[0]->current_period_start]);
           $ps->ending = new \yii\db\Expression("FROM_UNIXTIME(:ending)", [':ending' => $stripe_subscription->items->data[0]->current_period_end]);
           $ps->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
         }
         $ps->updated_at = new \yii\db\Expression('NOW()');
         $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
-        $ps->active = intval($stripe_subscription->ended_at==null);
+        $ps->active = intval($stripe_subscription->ended_at == null);
 
         if (!$ps->save(false)) {
           if (\Yii::$app instanceof \yii\console\Application)
@@ -206,9 +204,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         $stripe_subscription = $stripe->subscriptions->retrieve($ps->subscription_id, []);
 
         // Check if subscription active agree with Stripe
-        if (intval($ps->active) !== intval($stripe_subscription->ended_at==null)) {
+        if (intval($ps->active) !== intval($stripe_subscription->ended_at == null)) {
           \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Syncing <kbd>active</kbd>, not the same with Stripe <kbd>{subscription_id}</kbd>', ['subscription_id' => $ps->subscription_id]));
-          $ps->active = intval($stripe_subscription->ended_at==null);
+          $ps->active = intval($stripe_subscription->ended_at == null);
           $dosave = true;
         }
 
@@ -220,7 +218,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
 
         // Check if we have something to to fix active agrees with Stripe
-        if ($dosave!==true && $ps->update(true, ['price_id', 'active'])) {
+        if ($dosave !== true && $ps->update(true, ['price_id', 'active'])) {
           \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Updated subscription <kbd>{subscription_id}</kbd>', ['subscription_id' => $ps->subscription_id]));
         }
       } catch (\Stripe\Exception\InvalidRequestException $e) {
@@ -268,7 +266,20 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           }
         }
       }
-    } else {
+
+      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api===true) {
+        if ($this->player->apiToken !== null) {
+          $pt = new \app\modules\frontend\models\PlayerToken();
+          $pt->player_id = $this->player_id;
+          $pt->type = 'API';
+          $pt->description = 'generated by subscription';
+          if (!$pt->validate('token') || !$pt->save()) {
+            throw new UserException(\Yii::t('app', 'Failed to generate API token'));
+          }
+        }
+      }
+
+    } else { // subscription expired
       if (isset($metadata->network_ids)) {
         foreach (explode(',', $metadata->network_ids) as $val) {
           if (($np = NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $this->player_id])) !== null) {
@@ -276,6 +287,11 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           }
         }
       }
+
+      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api===true && $this->player->apiToken !== null) {
+        $this->player->apiToken->delete();
+      }
+
     }
 
     return parent::afterSave($insert, $changedAttributes);
