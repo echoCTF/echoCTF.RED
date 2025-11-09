@@ -291,10 +291,11 @@ class ProfileController extends \app\components\BaseController
    */
   public function actionGenerateToken()
   {
-    if (boolval(\Yii::$app->sys->api_bearer_enable) !== true) {
+    if (boolval(\Yii::$app->sys->api_bearer_enable) !== true || \Yii::$app->sys->subscriptions_feature_api===true) {
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "Operation disabled."));
       return $this->redirect(['/profile/me']);
     }
+
     if (Yii::$app->user->identity->apiToken !== null) {
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "There is already an API token."));
       return $this->redirect(['/profile/me']);
