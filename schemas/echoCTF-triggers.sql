@@ -156,7 +156,7 @@ CREATE TRIGGER `tau_headshot` AFTER UPDATE ON `headshot` FOR EACH ROW
       UPDATE target_state SET player_rating=(SELECT round(avg(rating)) FROM headshot WHERE target_id=NEW.target_id AND rating>-1) WHERE id=NEW.target_id;
     END IF;
     IF (OLD.timer IS NULL AND NEW.timer IS NOT NULL) OR (OLD.timer IS NOT NULL AND NEW.timer!=OLD.timer) THEN
-        UPDATE target_state SET timer_avg=(SELECT round(avg(timer)) FROM headshot WHERE target_id=NEW.target_id and timer>60) WHERE id=NEW.target_id;
+      UPDATE target_state SET timer_avg=(SELECT ifnull(round(avg(timer)),0) FROM headshot WHERE target_id=NEW.target_id and timer>60) WHERE id=NEW.target_id;
     END IF;
     END ;;
 
@@ -211,7 +211,7 @@ CREATE TRIGGER tai_player AFTER INSERT ON player FOR EACH ROW
 DROP TRIGGER IF EXISTS tau_player ;;
 CREATE TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
   thisBegin:BEGIN
-  DECLARE ltitle VARCHAR(30) DEFAULT "Joined the platform";
+  DECLARE ltitle VARCHAR(30) DEFAULT 'Joined the platform';
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
   END IF;
@@ -224,9 +224,21 @@ CREATE TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
     SELECT memc_set(CONCAT('player_type:',NEW.id), NEW.type) INTO @devnull;
   END IF;
 
-  IF NEW.status=0 AND OLD.status=10 THEN
+  IF ( NEW.status=0 OR NEW.status=1 ) AND OLD.status=10 THEN
     INSERT INTO archived_stream SELECT * FROM stream WHERE player_id=NEW.id;
     DELETE FROM stream WHERE player_id=NEW.id;
+    DELETE FROM team WHERE owner_id=NEW.id;
+    DELETE FROM team_player WHERE player_id=NEW.id;
+    DELETE FROM `notification` WHERE player_id=NEW.id;
+    IF NEW.status=0 THEN
+      DELETE FROM writeup WHERE player_id=NEW.id;
+      DELETE FROM headshot WHERE player_id=NEW.id;
+      DELETE FROM target_player_state WHERE player_id=NEW.id;
+      DELETE FROM player_score WHERE player_id=NEW.id;
+      DELETE FROM challenge_solver WHERE player_id=NEW.id;
+      DELETE FROM writeup_rating WHERE player_id=NEW.id;
+      DELETE FROM player_target_help WHERE player_id=NEW.id;
+    END IF;
   ELSEIF NEW.status=10 AND OLD.status=0 THEN
     INSERT INTO stream SELECT * FROM archived_stream WHERE player_id=NEW.id;
     DELETE FROM archived_stream WHERE player_id=NEW.id;
@@ -248,6 +260,7 @@ CREATE TRIGGER `tbd_player` BEFORE DELETE ON `player` FOR EACH ROW
       END IF;
       DELETE FROM player_ssl WHERE player_id=OLD.id;
       DELETE FROM player_rank WHERE player_id=OLD.id;
+  DELETE FROM headshot WHERE player_id=OLD.id;
     END ;;
 
 DROP TRIGGER IF EXISTS tad_player ;;
@@ -372,7 +385,6 @@ CREATE TRIGGER `tai_player_finding` AFTER INSERT ON `player_finding` FOR EACH RO
     SELECT min(ts),max(ts) INTO min_treasure,max_treasure FROM player_treasure WHERE player_id=NEW.player_id AND treasure_id IN (SELECT id FROM treasure WHERE target_id=local_target_id);
     SELECT GREATEST(max_finding, max_treasure), LEAST(min_finding, min_treasure) INTO max_val,min_val;
     INSERT INTO headshot (player_id,target_id,created_at,timer) VALUES (NEW.player_id,local_target_id,now(),UNIX_TIMESTAMP(max_val)-UNIX_TIMESTAMP(min_val));
-    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'headshot',local_target_id,0,'','','','',now());
   END IF;
   INSERT INTO target_player_state (id,player_id,player_findings,player_points,created_at,updated_at) VALUES (local_target_id,NEW.player_id,1,NEW.points,now(),now()) ON DUPLICATE KEY UPDATE player_findings=player_findings+values(player_findings),player_points=player_points+values(player_points),updated_at=now();
   END ;;
@@ -520,6 +532,7 @@ CREATE TRIGGER `tai_player_treasure` AFTER INSERT ON `player_treasure` FOR EACH 
     thisBegin:BEGIN
     DECLARE local_target_id INT;
     DECLARE headshoted INT default null;
+  DECLARE tfindings,pfindings INT;
     DECLARE min_finding,min_treasure,max_finding,max_treasure, max_val, min_val DATETIME;
 
     IF (@TRIGGER_CHECKS = FALSE) THEN
@@ -531,15 +544,19 @@ CREATE TRIGGER `tai_player_treasure` AFTER INSERT ON `player_treasure` FOR EACH 
 
     SET local_target_id=(SELECT target_id FROM treasure WHERE id=NEW.treasure_id);
     SET headshoted=(select true as headshoted FROM target as t left join treasure as t2 on t2.target_id=t.id left join finding as t3 on t3.target_id=t.id LEFT JOIN player_treasure as t4 on t4.treasure_id=t2.id and t4.player_id=NEW.player_id left join player_finding as t5 on t5.finding_id=t3.id and t5.player_id=NEW.player_id WHERE t.id=local_target_id   GROUP BY t.id HAVING count(distinct t2.id)=count(distinct t4.treasure_id) AND count(distinct t3.id)=count(distinct t5.finding_id));
-
+  SET tfindings=(SELECT count(*) FROM finding WHERE target_id=local_target_id);
+  SET pfindings=(SELECT count(*) FROM player_finding WHERE player_id=NEW.player_id AND finding_id IN (SELECT id FROM finding WHERE target_id=local_target_id));
     IF headshoted IS NOT NULL THEN
         SELECT min(ts),max(ts) INTO min_finding,max_finding FROM player_finding WHERE player_id=NEW.player_id AND finding_id IN (SELECT id FROM finding WHERE target_id=local_target_id);
         SELECT min(ts),max(ts) INTO min_treasure,max_treasure FROM player_treasure WHERE player_id=NEW.player_id AND treasure_id IN (SELECT id FROM treasure WHERE target_id=local_target_id);
         SELECT GREATEST(max_finding, max_treasure), LEAST(min_finding, min_treasure) INTO max_val,min_val;
         INSERT INTO headshot (player_id,target_id,created_at,timer) VALUES (NEW.player_id,local_target_id,now(),UNIX_TIMESTAMP(max_val)-UNIX_TIMESTAMP(min_val));
-        INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'headshot',local_target_id,0,'','','','',now());
     END IF;
     INSERT INTO target_player_state (id,player_id,player_treasures,player_points,created_at,updated_at) VALUES (local_target_id,NEW.player_id,1,NEW.points,now(),now()) ON DUPLICATE KEY UPDATE player_treasures=player_treasures+values(player_treasures),player_points=player_points+values(player_points),updated_at=now();
+
+  IF tfindings > 0 AND pfindings = 0 THEN
+    INSERT INTO abuser (player_id,title,reason,model,model_id,created_at,updated_at) VALUES (NEW.player_id,'Claim flag before finding','tai_player_treasure','treasure',NEW.treasure_id,NOW(),NOW());
+  END IF;
     END ;;
 
 DROP TRIGGER IF EXISTS tbi_profile ;;
@@ -600,7 +617,7 @@ CREATE TRIGGER `tai_stream` AFTER INSERT ON `stream` FOR EACH ROW
       END IF;
       SELECT team_id INTO lteam_id FROM team_player WHERE player_id=NEW.player_id AND approved=1;
       IF lteam_id IS NOT NULL THEN
-        INSERT IGNORE INTO team_stream (team_id,model,model_id,points,ts) VALUES (lteam_id,NEW.model,NEW.model_id,NEW.points,NEW.ts);
+    INSERT IGNORE INTO team_stream (stream_id,player_id,team_id,model,model_id,points,ts) VALUES (NEW.id,NEW.player_id,lteam_id,NEW.model,NEW.model_id,NEW.points,NEW.ts);
       END IF;
     END ;;
 
@@ -611,6 +628,7 @@ CREATE TRIGGER `tad_stream` AFTER DELETE ON `stream` FOR EACH ROW
         LEAVE thisBegin;
     END IF;
     INSERT INTO player_score (player_id,points) VALUES (OLD.player_id,-OLD.points) ON DUPLICATE KEY UPDATE points=if(points+values(points)<0,0,points+values(points));
+  DELETE FROM team_stream where stream_id=OLD.id;
     END ;;
 
 DROP TRIGGER IF EXISTS tai_sysconfig ;;
@@ -949,6 +967,16 @@ CREATE TRIGGER `tad_writeup` AFTER DELETE ON `writeup` FOR EACH ROW
        UPDATE target_state SET total_writeups=total_writeups-1 WHERE id=OLD.target_id;
     END IF;
 
+    END ;;
+
+
+DROP TRIGGER IF EXISTS tai_player_target_help ;;
+CREATE TRIGGER tai_player_target_help AFTER INSERT ON player_target_help FOR EACH ROW
+  thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+      LEAVE thisBegin;
+  END IF;
+  INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'player_target_help',NEW.target_id,0,'','','','',now());
     END ;;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
