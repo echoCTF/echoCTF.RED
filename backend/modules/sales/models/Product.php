@@ -96,6 +96,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public static function FetchStripe()
     {
+      \Stripe\Stripe::setEnableTelemetry(false);
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
       $products=$stripe->products->all(['active'=>true]);
       foreach($products->autoPagingIterator() as $stripeProduct)

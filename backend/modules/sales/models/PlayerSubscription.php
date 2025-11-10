@@ -105,6 +105,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     if ($this->subscription_id === 'sub_vip')
       return true;
 
+    \Stripe\Stripe::setEnableTelemetry(false);
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     try {
       $stripe_subscription = $stripe->subscriptions->retrieve($this->subscription_id, []);
@@ -132,6 +133,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     if ($this->subscription_id === 'sub_vip')
       return true;
 
+    \Stripe\Stripe::setEnableTelemetry(false);
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     $stripe_subscription = $stripe->subscriptions->retrieve($this->subscription_id, []);
     $this->subscription_id = $stripe_subscription->id;
@@ -152,6 +154,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
    */
   public static function FetchStripe()
   {
+    \Stripe\Stripe::setEnableTelemetry(false);
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     $stripeSubs = $stripe->subscriptions->all(['limit' => 100]);
     foreach ($stripeSubs->autoPagingIterator() as $stripe_subscription) {
@@ -197,6 +200,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
    */
   public static function CheckStripe()
   {
+    \Stripe\Stripe::setEnableTelemetry(false);
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     foreach (PlayerSubscription::find()->where(['!=', 'subscription_id', 'sub_vip'])->all() as $ps) {
       try {

@@ -50,6 +50,7 @@ class Customer extends \yii\base\Model
 
     public static function createOnStripe()
     {
+      \Stripe\Stripe::setEnableTelemetry(false);
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
       $stripe_customer = $stripe->customers->create([
         'description' => Yii::$app->user->identity->username,
@@ -67,6 +68,7 @@ class Customer extends \yii\base\Model
       if($player)
       {
         $player->updateAttributes(['stripe_customer_id'=>$object->id]);
+        \Stripe\Stripe::setEnableTelemetry(false);
         $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
         $stripe->customers->update(
           $object->id,
@@ -84,6 +86,7 @@ class Customer extends \yii\base\Model
 
     public static function existsOnStripe()
     {
+      \Stripe\Stripe::setEnableTelemetry(false);
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
       $stripe_customer=null;
       try
