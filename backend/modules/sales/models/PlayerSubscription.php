@@ -272,7 +272,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
       }
 
       if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api===true) {
-        if ($this->player->apiToken !== null) {
+        if ($this->player->apiToken === null) {
           $pt = new \app\modules\frontend\models\PlayerToken();
           $pt->player_id = $this->player_id;
           $pt->type = 'API';
