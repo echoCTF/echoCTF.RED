@@ -106,7 +106,7 @@ class DefaultController extends \app\components\BaseController
         \Stripe\Stripe::setEnableTelemetry(false);
         \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
         $success_session = \Stripe\Checkout\Session::retrieve($session_id);
-        $ps=PlayerSubscription::findOne(['player_id'=>\Yii::$app->user->id,'subscription_id'=>$success_session->subscription]);
+        $ps=PlayerSubscription::findOne(['player_id'=>\Yii::$app->user->id,'subscription_id'=>$success_session->subscription,'active'=>1]);
         if(!$ps)
         {
           return $this->redirect(['/subscription/default/index']);
