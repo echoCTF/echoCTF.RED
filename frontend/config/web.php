@@ -174,8 +174,8 @@ $config = [
       'timeout' => 3600 * 12,
       'cookieParams' => [
         'secure' => true,
-        'sameSite' => 'Strict',
-        'lifetime'=> 3600 * 12,
+        'sameSite' => 'Lax',
+        'lifetime' => 3600 * 12,
         'httpOnly' => true
       ],
     ],
