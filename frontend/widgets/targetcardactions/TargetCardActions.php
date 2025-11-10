@@ -95,7 +95,7 @@ class TargetCardActions extends Widget
       if(\Yii::$app->user->identity->subscription !== null && \Yii::$app->user->identity->subscription->active > 0 && \Yii::$app->user->identity->subscription->product !== null)
       {
         $metadata = json_decode(\Yii::$app->user->identity->subscription->product->metadata);
-        if (isset($metadata->team_subscription) && $metadata->team_subscription===true) {
+        if (isset($metadata->team_subscription) && boolval($metadata->team_subscription)===true) {
           $this->target_actions[] = [
             'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a team instance</b>'),
             'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id,'team'=>true]),
