@@ -151,6 +151,7 @@ class ConfigureForm extends Model
   public $rate_limit_window;
   public $player_request_delete_allow;
   public $subscriptions_feature_api;
+  public $stream_player_target_help;
 
   public $keys = [
     'target_days_updated',
@@ -294,6 +295,7 @@ class ConfigureForm extends Model
     'rate_limit_window',
     'player_request_delete_allow',
     'subscriptions_feature_api',
+    'stream_player_target_help',
   ];
 
   /**
@@ -517,6 +519,7 @@ class ConfigureForm extends Model
         'team_only_leaderboards',
         'player_request_delete_allow',
         'subscriptions_feature_api',
+        'stream_player_target_help',
       ], 'boolean'],
     ];
   }

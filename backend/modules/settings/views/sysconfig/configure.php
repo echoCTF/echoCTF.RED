@@ -70,6 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-2"><?= $form->field($model, 'target_guest_view_deny')->checkbox()->hint('Hide targets from guests?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'network_view_guest')->checkbox()->hint('Allow guests to view networks?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'writeup_rankings')->checkbox()->hint('Enable writeup ratings?') ?></div>
+        <div class="col-sm-2"><?= $form->field($model, 'stream_player_target_help')->checkbox()->hint('Log writeup activations on activity stream?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'log_failed_claims')->checkbox()->hint('Log failed treasure claims?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'force_findings_to_claim')->checkbox()->hint('Force findings before claim?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'disable_ondemand_operations')->checkbox()->hint('Disable on-demand target operations?') ?></div>

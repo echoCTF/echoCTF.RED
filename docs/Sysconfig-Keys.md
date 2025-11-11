@@ -46,7 +46,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `player_request_delete_allow`: Whether or not to allow players to request deletion of their own account
 * `module_smartcity_disabled`: Whether or not the smartcity module is disabled (hides the menu from backend)
 * `module_speedprogramming_enabled`: Whether or not the Speed Programming module is enabled (hides the menu from backend also)
-
+* `stream_player_target_help`: Whether or not to produce stream entries for players who activate writeups on a target.
 * `log_failed_claims`: Log failed claim attempts?
 * `team_encrypted_claims_allowed`: Should we allow claims of flags across teams?
 
