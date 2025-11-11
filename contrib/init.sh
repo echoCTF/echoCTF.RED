@@ -5,6 +5,9 @@
 
 : ${DATABASE:=echoCTF}
 
+# Wait in seconds after each step
+: ${WAIT_AFTER_STEP:=0}
+
 echo "Using database: ${DATABASE}"
 
 
@@ -166,7 +169,11 @@ if [ $# -eq 0 ]; then
   usage
   exit 1
 fi
+
+count=$#
 for arg in "$@"; do
+  echo "Doing $arg";
+
   case "$arg" in
     "settings") "$arg" ;;
     "services") "$arg" ;;
@@ -179,4 +186,10 @@ for arg in "$@"; do
     "eventOrganizers") "$arg" ;;
     *) echo "Option: $arg does not exist"; usage ;;
   esac
+  ((count--))
+
+  if [ "${WAIT_AFTER_STEP}" != "0" ] && ((count > 0)); then
+    read -t $WAIT_AFTER_STEP -p "Hit ENTER or wait ${WAIT_AFTER_STEP} seconds" || echo;
+  fi
+
 done
