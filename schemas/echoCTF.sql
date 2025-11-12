@@ -526,6 +526,7 @@ CREATE TABLE `migration` (
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+INSERT INTO `migration` values ('m251107_082209_update_procedure_player_maintenance_use_index',1);
 --
 -- Table structure for table `migration_red`
 --
@@ -1382,7 +1383,7 @@ CREATE TABLE `target` (
   `server` varchar(255) DEFAULT NULL COMMENT 'Docker Server connection string.',
   `image` varchar(255) DEFAULT '',
   `dns` varchar(255) DEFAULT NULL,
-  `parameters` mediumtext DEFAULT NULL CHECK (json_valid(`parameters`)),
+  `parameters` mediumtext DEFAULT NULL,
   `rootable` tinyint(1) DEFAULT 0 COMMENT 'Whether the target is rootable or not',
   `difficulty` int(11) DEFAULT 0,
   `suggested_xp` int(11) DEFAULT 0,
@@ -1393,12 +1394,15 @@ CREATE TABLE `target` (
   `weight` int(11) NOT NULL DEFAULT 0,
   `healthcheck` tinyint(1) NOT NULL DEFAULT 1,
   `category` varchar(255) DEFAULT NULL,
-  `imageparams` mediumtext DEFAULT NULL CHECK (json_valid(`imageparams`)),
+  `imageparams` mediumtext DEFAULT NULL,
   `writeup_allowed` int(11) DEFAULT 1,
   `player_spin` tinyint(1) DEFAULT 1,
   `headshot_spin` tinyint(1) DEFAULT 1,
   `instance_allowed` smallint(6) DEFAULT 1,
   `require_findings` tinyint(1) DEFAULT 0,
+  `headshot_points` int(11) unsigned NOT NULL DEFAULT 0,
+  `first_headshot_points` int(11) unsigned NOT NULL DEFAULT 0,
+  `dynamic_treasures` tinyint(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `fqdn` (`fqdn`),
@@ -1681,6 +1685,8 @@ CREATE TABLE `team_stream` (
   `model` varchar(255) NOT NULL DEFAULT '',
   `model_id` int(11) NOT NULL DEFAULT 0,
   `points` float NOT NULL DEFAULT 0,
+  `player_id` int(11) unsigned DEFAULT NULL,
+  `stream_id` bigint(20) unsigned DEFAULT NULL,
   `ts` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`team_id`,`model`,`model_id`),
   KEY `idx-team_stream-team_id` (`team_id`),
@@ -1906,6 +1912,22 @@ CREATE TABLE `writeup_rating` (
   KEY `idx-writeup_rating-player_id` (`player_id`),
   CONSTRAINT `fk-writeup_rating-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE,
   CONSTRAINT `fk-writeup_rating-writeup_id` FOREIGN KEY (`writeup_id`) REFERENCES `writeup` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `abuser`;
+CREATE TABLE `abuser` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) unsigned NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `body` text DEFAULT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `model` varchar(255) NOT NULL,
+  `model_id` int(11) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx-abuser-player_id` (`player_id`),
+  CONSTRAINT `fk-abuser-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

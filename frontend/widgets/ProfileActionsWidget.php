@@ -31,12 +31,13 @@ class ProfileActionsWidget extends Widget
     $profile_actions['inviteurl'] = ['encode' => false, 'label' => '<i class="fas fa-link"></i>&nbsp; Your invite URL', 'url' => Url::to(['profile/invite', 'id' => $this->profile->id], true), 'linkOptions' => ['class' => 'copy-to-clipboard', 'swal-data' => 'Copied to clipboard!']];
 
     if (\Yii::$app->sys->api_bearer_enable === true) {
-      if (\Yii::$app->user->identity->apiToken === null) {
+      if (\Yii::$app->sys->subscriptions_feature_api===false && \Yii::$app->user->identity->apiToken === null) {
         $profile_actions['generate-token'] = ['encode' => false, 'label' => "<i class='fas fa-terminal'></i>&nbsp; Generate API Token", 'url' => Url::to(['profile/generate-token'], true), 'linkOptions' => ['class' => 'text-danger', 'data-swType' => 'question', 'data' => ['confirm' => 'You are about to generate a new API token! Are you sure?', 'method' => 'POST']]];
-      } else {
+      } else if(\Yii::$app->user->identity->apiToken !== null) {
         $profile_actions['copy-token'] = ['encode' => false, 'label' => "<i class='fas fa-terminal'></i>&nbsp; Copy API Token", 'url' => $this->profile->owner->apiToken->token, 'linkOptions' => ['class' => 'copy-to-clipboard', 'swal-data' => 'API token copied to clipboard!']];
       }
     }
+
     if (\Yii::$app->user->identity->sSL && (time() - strtotime(\Yii::$app->user->identity->sSL->ts)) >= 3600)
       $profile_actions['revoke'] = ['encode' => false, 'label' => "<i class='fas fa-id-card'></i>&nbsp; Regenerate VPN Keys (revoke)", 'url' => Url::to(['profile/revoke'], true), 'linkOptions' => ['class' => 'text-danger', 'data-swType' => 'question', 'data' => ['confirm' => 'You are about to revoke your old keys and generate a new pair!', 'method' => 'POST']]];
 

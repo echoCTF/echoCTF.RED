@@ -46,7 +46,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `player_request_delete_allow`: Whether or not to allow players to request deletion of their own account
 * `module_smartcity_disabled`: Whether or not the smartcity module is disabled (hides the menu from backend)
 * `module_speedprogramming_enabled`: Whether or not the Speed Programming module is enabled (hides the menu from backend also)
-
+* `stream_player_target_help`: Whether or not to produce stream entries for players who activate writeups on a target.
 * `log_failed_claims`: Log failed claim attempts?
 * `team_encrypted_claims_allowed`: Should we allow claims of flags across teams?
 
@@ -100,6 +100,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `player_delete_rejected_after`: Delete players that their registration was rejected (status=9 and approval=4) after X days
 
 ## Frontend API
+
 * `api_bearer_enable` Enable Bearer authorizations API operations
 * `api_claim_timeout` set the rate limit for the api claim. One request per `api_claim_timeout`+1 seconds
 * `api_target_instances_timeout` set the rate limit for the target instances endpoint. One request per `api_target_instances_timeout`+1 seconds
@@ -107,6 +108,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `api_target_spawn_timeout` set the rate limit for the given target operation endpoints. One request per `api_target_spawn_timeout`+1 seconds
 
 ## Rate limit
+
 * `rate_limit_requests`: Rate limit number of requests
 * `rate_limit_window`: Rate limit window in seconds for the requests above
 
@@ -149,6 +151,7 @@ Alternatively, instead of DSN the following keys can be used
 
 * `subscriptions_emergency_suspend` Temporary suspend subscriptions
 * `subscriptions_menu_show` Show subscriptions left side menu item to logged in users
+* `subscriptions_feature_api`: Whether or not the buildin API should be a subscription based feature.
 * `stripe_apiKey` Stripe API key
 * `stripe_publicApiKey` Stripe public API Key
 * `stripe_webhookSecret` Stripe webhook secret
@@ -201,6 +204,7 @@ backend/yii sysconfig/set academic_1icon "anothersite.png"
 
 
 ## Dynamic Keys
+
 * `player_type:PLAYER_ID`: The type of the player `offense`/`defense`
 * `player:PLAYER_ID`:
 * `team_player:PLAYER_ID`:

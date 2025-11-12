@@ -91,6 +91,19 @@ class TargetCardActions extends Widget
         'options' => ['style' => 'white-space: nowrap;'],
         'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn a private instance of this target. Once booted, this instance will only be accessible by you and its IP will become visible here.')])
       ];
+      // display start team instance
+      if(\Yii::$app->user->identity->subscription !== null && \Yii::$app->user->identity->subscription->active > 0 && \Yii::$app->user->identity->subscription->product !== null)
+      {
+        $metadata = json_decode(\Yii::$app->user->identity->subscription->product->metadata);
+        if (isset($metadata->team_subscription) && boolval($metadata->team_subscription)===true) {
+          $this->target_actions[] = [
+            'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a team instance</b>'),
+            'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id,'team'=>true]),
+            'options' => ['style' => 'white-space: nowrap;'],
+            'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn an instance of this target for your entire team. Once booted, this instance will only be accessible by you and your team. The IP will become visible here.')])
+          ];
+        }
+      }
     } elseif ($this->target_instance->target_id !== $this->model->id) {
       $this->target_actions[] = [
         'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>'),

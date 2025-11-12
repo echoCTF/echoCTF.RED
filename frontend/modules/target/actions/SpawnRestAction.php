@@ -14,9 +14,8 @@ class SpawnRestAction extends \yii\rest\ViewAction
   public $modelClass='\app\modules\target\models\TargetInstance';
   public $serializer='yii\rest\Serializer';
 
-  public function run($id)
+  public function run($id,$team=false)
   {
-
     \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
     $goback=Url::previous();
     if($goback==='/')
@@ -61,6 +60,13 @@ class SpawnRestAction extends \yii\rest\ViewAction
       $ti->player_id=Yii::$app->user->id;
       $ti->target_id=$id;
       // pick the least used server currently
+      if(\Yii::$app->user->identity->subscription !== null && \Yii::$app->user->identity->subscription->active > 0 && \Yii::$app->user->identity->subscription->product !== null)
+      {
+        $metadata = json_decode(\Yii::$app->user->identity->subscription->product->metadata);
+        if (isset($metadata->team_subscription) && boolval($metadata->team_subscription)===true) {
+          $ti->team_allowed=($team===false ? 0 : 1);
+        }
+      }
       $ti->server_id=intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id) limit 1')->queryScalar());
       if($ti->save()!==false)
         Yii::$app->session->setFlash('success', sprintf(\Yii::t('app','Spawning new instance for [%s]. You will receive a notification when the instance is up.'), $ti->target->name));

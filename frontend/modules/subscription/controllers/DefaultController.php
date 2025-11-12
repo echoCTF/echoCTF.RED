@@ -103,9 +103,10 @@ class DefaultController extends \app\components\BaseController
     {
       try
       {
+        \Stripe\Stripe::setEnableTelemetry(false);
         \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
         $success_session = \Stripe\Checkout\Session::retrieve($session_id);
-        $ps=PlayerSubscription::findOne(['player_id'=>\Yii::$app->user->id,'subscription_id'=>$success_session->subscription]);
+        $ps=PlayerSubscription::findOne(['player_id'=>\Yii::$app->user->id,'subscription_id'=>$success_session->subscription,'active'=>1]);
         if(!$ps)
         {
           return $this->redirect(['/subscription/default/index']);
@@ -129,6 +130,7 @@ class DefaultController extends \app\components\BaseController
       \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
       $sessionId = Yii::$app->request->getBodyParam('sessionId');
 
+      \Stripe\Stripe::setEnableTelemetry(false);
       \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
       $checkout_session = \Stripe\Checkout\Session::retrieve($sessionId);
       $stripe_customer_id = $checkout_session->customer;
@@ -159,6 +161,7 @@ class DefaultController extends \app\components\BaseController
       $return_url = \yii\helpers\Url::toRoute('/profile/me',true);
       try
       {
+        \Stripe\Stripe::setEnableTelemetry(false);
         \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
 
         $session = \Stripe\BillingPortal\Session::create([
@@ -182,6 +185,7 @@ class DefaultController extends \app\components\BaseController
       \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
       $priceId=Yii::$app->request->post('priceId',null);
       try {
+        \Stripe\Stripe::setEnableTelemetry(false);
         \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
         $cid=Customer::getCustomerId();
         $product=Price::findOne(['id'=>$priceId])->product;
@@ -235,6 +239,7 @@ class DefaultController extends \app\components\BaseController
       {
         try
         {
+          \Stripe\Stripe::setEnableTelemetry(false);
           \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
 
           \Stripe\Subscription::update(

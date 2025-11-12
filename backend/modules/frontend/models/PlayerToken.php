@@ -73,8 +73,8 @@ class PlayerToken extends \yii\db\ActiveRecord
       [['expires_at', 'created_at', 'description'], 'safe'],
       [['type'], 'string', 'max' => 32],
       [['token'], 'string', 'max' => 128],
-      [['description'], 'string'],
       [['token'], 'unique'],
+      [['description'], 'string'],
       [['player_id', 'type'], 'unique', 'targetAttribute' => ['player_id', 'type']],
       [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
     ];

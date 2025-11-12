@@ -25,6 +25,7 @@ class WebhookRestAction extends \yii\rest\Action
     \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
 
     \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
+    \Stripe\Stripe::setEnableTelemetry(false);
 
     $webhookSecret = \Yii::$app->sys->stripe_webhookSecret;
     if ($webhookSecret)

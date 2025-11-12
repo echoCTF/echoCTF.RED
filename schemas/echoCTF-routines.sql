@@ -363,7 +363,7 @@ BEGIN
   SET player_changed_to_deleted_after=memc_get('sysconfig:player_changed_to_deleted_after');
   SET player_delete_rejected_after=memc_get('sysconfig:player_delete_rejected_after');
 
-  IF player_require_approval IS NOT NULL and player_require_approval>0 AND player_delete_rejected_after IS NOT NULL AND player_delete_rejected_after>0 THEN
+  IF player_require_approval IS NOT NULL AND player_require_approval>0 AND player_delete_rejected_after IS NOT NULL AND player_delete_rejected_after>0 THEN
     DELETE FROM `player` WHERE `status`=9 AND approval=4 AND `ts` < NOW() - INTERVAL player_delete_rejected_after DAY;
   END IF;
   IF player_delete_inactive_after IS NOT NULL AND player_delete_inactive_after > 0 THEN
@@ -398,11 +398,28 @@ CREATE PROCEDURE `repopulate_team_stream`(IN tid INT)
 BEGIN
   DECLARE `_rollback` BOOL DEFAULT false;
   DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET `_rollback` = true;
-  IF (SELECT count(*) FROM sysconfig WHERE id='teams')>0 AND (SELECT val FROM sysconfig WHERE id='teams')=1 THEN
+  IF (SELECT count(*) FROM sysconfig WHERE id='teams' AND val=1)>0 AND (SELECT count(*) FROM team WHERE id=tid)>0 THEN
     START TRANSACTION;
     UPDATE team_score SET points=0 WHERE team_id=tid;
     DELETE FROM team_stream WHERE team_id=tid;
-    INSERT INTO team_stream SELECT tid,model,model_id,points,ts FROM stream WHERE model!='user' AND player_id IN (select player_id FROM team_player WHERE team_id=tid) GROUP BY model,model_id ORDER BY id,ts;
+    INSERT INTO team_stream (stream_id,player_id,team_id,model,model_id,points,ts)
+        SELECT id, player_id, tid, model, model_id, points, ts
+        FROM (
+            SELECT s.*,
+                  ROW_NUMBER() OVER (
+                      PARTITION BY model, model_id
+                      ORDER BY ts ASC, id ASC
+                  ) AS rn
+            FROM stream s
+            WHERE model != 'user'
+              AND player_id IN (
+                  SELECT player_id
+                  FROM team_player
+                  WHERE team_id = tid AND approved=1
+              )
+        ) t
+        WHERE rn = 1
+        ORDER BY id, ts;
     IF `_rollback` THEN
         ROLLBACK;
     ELSE
@@ -498,6 +515,47 @@ BEGIN
   UPDATE `headshot` SET timer=UNIX_TIMESTAMP(max_val)-UNIX_TIMESTAMP(min_val) WHERE player_id=pid AND target_id=tid;
 END ;;
 
+DROP PROCEDURE IF EXISTS `repopulate_all_team_streams` ;;
+CREATE PROCEDURE `repopulate_all_team_streams`()
+BEGIN
+  DECLARE done INT DEFAULT 0;
+  DECLARE tid INT;
+  DECLARE cur CURSOR FOR SELECT id FROM team;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = 1;
+
+  OPEN cur;
+  read_loop: LOOP
+    FETCH cur INTO tid;
+    IF done THEN
+      LEAVE read_loop;
+    END IF;
+    CALL repopulate_team_stream(tid);
+  END LOOP;
+  CLOSE cur;
+END ;;
+
+
+DROP PROCEDURE IF EXISTS `get_player_pf_networks` ;;
+CREATE PROCEDURE `get_player_pf_networks`(IN usid INT)
+BEGIN
+  SELECT codename as netname FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id=usid))
+  UNION
+  SELECT LOWER(CONCAT(t2.name,'_',player_id)) as netname
+  FROM target_instance AS t1
+  LEFT JOIN target AS t2 ON t1.target_id = t2.id
+  WHERE player_id = usid
+    OR player_id IN (
+      SELECT tp1.player_id
+      FROM team_player tp1
+      JOIN team_player tp2 ON tp1.team_id = tp2.team_id
+      WHERE tp2.player_id = usid
+        AND tp1.approved = 1
+        AND (
+          memc_get('sysconfig:team_visible_instances') IS NOT NULL
+          OR team_allowed = 1
+        )
+    );
+END ;;
 DELIMITER ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

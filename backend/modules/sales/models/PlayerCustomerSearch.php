@@ -68,6 +68,7 @@ class PlayerCustomerSearch extends Player
      */
     public static function FetchStripe()
     {
+      \Stripe\Stripe::setEnableTelemetry(false);
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
       $stripe_customers=$stripe->customers->all([]);
       foreach($stripe_customers->autoPagingIterator() as $customer)

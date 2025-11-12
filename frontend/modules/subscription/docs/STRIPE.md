@@ -12,6 +12,7 @@
   - shortcode: Network shortcode
   - weight: users by ordering
   - perks: raw html of the perks the subscription provides
+  - api_bearer_enable: Wheather the subscription includes enables API access to the frontend for the players
   - htmlOptions: jsonEncoded Options to be used by the UI
     - title: title to show
     - class: css classes
