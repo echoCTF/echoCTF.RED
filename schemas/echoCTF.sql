@@ -526,7 +526,7 @@ CREATE TABLE `migration` (
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `migration` values ('m251107_082209_update_procedure_player_maintenance_use_index',1);
+INSERT INTO `migration` values ('m251112_130505_add_dashboard_news_url_route',1);
 --
 -- Table structure for table `migration_red`
 --
