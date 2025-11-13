@@ -74,233 +74,234 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
   public $ondemand_state;
   public $timer_avg;
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-      return 'target';
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public static function tableName()
+  {
+    return 'target';
+  }
 
 
-    public function behaviors()
-    {
-      return [
-        'typecast' => [
-          'class' => AttributeTypecastBehavior::class,
-          'attributeTypes' => [
-            'id' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'player_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'player_points' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'player_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'total_headshots' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'total_writeups' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'approved_writeups' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'total_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
-            'player_rating' => AttributeTypecastBehavior::TYPE_FLOAT,
-            'average_rating' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'rootable' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'healthcheck' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'writeup_allowed'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'timer'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'player_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'headshot_spin'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'instance_allowed'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'require_findings'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'dynamic_treasures'=> AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'on_ondemand' => AttributeTypecastBehavior::TYPE_BOOLEAN,
-            'ondemand_state' => AttributeTypecastBehavior::TYPE_INTEGER,
-            'timer_avg'=> AttributeTypecastBehavior::TYPE_INTEGER,
-          ],
-          'skipOnNull'=>false,
-          'typecastAfterValidate' => true,
-          'typecastBeforeSave' => true,
-          'typecastAfterFind' => true,
+  public function behaviors()
+  {
+    return [
+      'typecast' => [
+        'class' => AttributeTypecastBehavior::class,
+        'attributeTypes' => [
+          'id' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'total_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'player_findings' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'player_points' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'player_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'total_headshots' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'total_writeups' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'approved_writeups' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'total_treasures' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'progress' => AttributeTypecastBehavior::TYPE_FLOAT,
+          'player_rating' => AttributeTypecastBehavior::TYPE_FLOAT,
+          'average_rating' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'ip' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'active' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'rootable' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'healthcheck' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'writeup_allowed' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'timer' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'player_spin' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'headshot_spin' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'instance_allowed' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'require_findings' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'dynamic_treasures' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'difficulty' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'weight' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'on_ondemand' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'ondemand_state' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'timer_avg' => AttributeTypecastBehavior::TYPE_INTEGER,
         ],
-      ];
-    }
+        'skipOnNull' => false,
+        'typecastAfterValidate' => true,
+        'typecastBeforeSave' => true,
+        'typecastAfterFind' => true,
+      ],
+    ];
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-      return [
-        [['description'], 'string'],
-        [['ip'], 'required'],
-        [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp','weight','timer','writeup_allowed','player_spin','headshot_spin','instance_allowed','require_findings'], 'integer'],
-        [['scheduled_at', 'ts'], 'safe'],
-        [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
-        [['mac'], 'string', 'max' => 30],
-        [['status'], 'string', 'max' => 32],
-        [['name'], 'unique'],
-        [['fqdn'], 'unique'],
-        [['mac'], 'unique'],
-      ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function rules()
+  {
+    return [
+      [['description'], 'string'],
+      [['ip'], 'required'],
+      [['ip', 'active', 'rootable', 'difficulty', 'suggested_xp', 'required_xp', 'weight', 'timer', 'writeup_allowed', 'player_spin', 'headshot_spin', 'instance_allowed', 'require_findings'], 'integer'],
+      [['scheduled_at', 'ts'], 'safe'],
+      [['name', 'fqdn', 'purpose', 'net', 'server', 'image', 'dns', 'parameters'], 'string', 'max' => 255],
+      [['mac'], 'string', 'max' => 30],
+      [['status'], 'string', 'max' => 32],
+      [['name'], 'unique'],
+      [['fqdn'], 'unique'],
+      [['mac'], 'unique'],
+    ];
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-      return [
-        'id' => 'ID',
-        'name' => 'Name',
-        'fqdn' => 'FQDN',
-        'purpose' => 'Purpose',
-        'description' => 'Description',
-        'ip' => 'IP',
-        'mac' => 'Mac',
-        'active' => 'Active',
-        'status' => 'Status',
-        'scheduled_at' => 'Scheduled At',
-        'net' => 'Net',
-        'server' => 'Server',
-        'image' => 'Image',
-        'dns' => 'Dns',
-        'parameters' => 'Parameters',
-        'rootable' => 'Rootable',
-        'difficulty' => 'Difficulty',
-        'suggested_xp' => 'Suggested Xp',
-        'required_xp' => 'Required Xp',
-        'ts' => 'Ts',
-      ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function attributeLabels()
+  {
+    return [
+      'id' => 'ID',
+      'name' => 'Name',
+      'fqdn' => 'FQDN',
+      'purpose' => 'Purpose',
+      'description' => 'Description',
+      'ip' => 'IP',
+      'mac' => 'Mac',
+      'active' => 'Active',
+      'status' => 'Status',
+      'scheduled_at' => 'Scheduled At',
+      'net' => 'Net',
+      'server' => 'Server',
+      'image' => 'Image',
+      'dns' => 'Dns',
+      'parameters' => 'Parameters',
+      'rootable' => 'Rootable',
+      'difficulty' => 'Difficulty',
+      'suggested_xp' => 'Suggested Xp',
+      'required_xp' => 'Required Xp',
+      'ts' => 'Ts',
+    ];
+  }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getFindings()
-    {
-      return $this->hasMany(Finding::class, ['target_id' => 'id'])->cache(true);
-    }
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getFindings()
+  {
+    return $this->hasMany(Finding::class, ['target_id' => 'id'])->cache(true);
+  }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSpinHistories()
-    {
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getSpinHistories()
+  {
+    if (Yii::$app->sys->target_restart_log_interval !== false)
       return $this->hasMany(SpinHistory::class, ['target_id' => 'id'])
-      ->where('spin_history.created_at>=NOW() - INTERVAL 1 DAY')
-      ->orderBy(['created_at'=>SORT_DESC,'id'=>SORT_DESC])
-      ->limit(5)
-      ->cache(true);
-    }
+        ->where('spin_history.created_at>=NOW() - INTERVAL ' . Yii::$app->sys->target_restart_log_interval)
+        ->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC])
+        ->limit(5)
+        ->cache(true);
+    return null;
+  }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNetworkTarget()
-    {
-      return $this->hasMany(\app\modules\network\models\NetworkTarget::class, ['target_id' => 'id']);
-    }
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getNetworkTarget()
+  {
+    return $this->hasMany(\app\modules\network\models\NetworkTarget::class, ['target_id' => 'id']);
+  }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNetworks()
-    {
-      return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkTarget');
-    }
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getNetworks()
+  {
+    return $this->hasMany(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkTarget');
+  }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNetwork()
-    {
-      return $this->hasOne(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkTarget');
-    }
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getNetwork()
+  {
+    return $this->hasOne(\app\modules\network\models\Network::class, ['id' => 'network_id'])->via('networkTarget');
+  }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getTreasures()
-    {
-      return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight'=>SORT_DESC,'id'=>SORT_DESC])->cache(true);
-    }
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getTreasures()
+  {
+    return $this->hasMany(Treasure::class, ['target_id' => 'id'])->orderBy(['weight' => SORT_DESC, 'id' => SORT_DESC])->cache(true);
+  }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSpinQueue()
-    {
-      return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
-    }
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMetadata()
-    {
-        return $this->hasOne(TargetMetadata::class, ['target_id' => 'id'])->cache(true);
-    }
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getSpinQueue()
+  {
+    return $this->hasOne(SpinQueue::class, ['target_id' => 'id']);
+  }
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getMetadata()
+  {
+    return $this->hasOne(TargetMetadata::class, ['target_id' => 'id'])->cache(true);
+  }
 
 
-    /*
+  /*
      * Get Headshot relations of target
      */
-    public function getHeadshots()
-    {
-      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at'=>SORT_ASC]);
-    }
+  public function getHeadshots()
+  {
+    return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at' => SORT_ASC]);
+  }
 
-    /*
+  /*
      * Get Headshot relations of target in reverse ordr
      */
-    public function getLastHeadshots()
-    {
-      if(Yii::$app->user->isGuest)
-        return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at'=>SORT_DESC])->limit(50);
-      if(Yii::$app->sys->academic_grouping!==false)
-        return $this->hasMany(Headshot::class, ['target_id' => 'id'])->academic(Yii::$app->user->identity->academic)->orderBy(['created_at'=>SORT_DESC])->limit(50);
-      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->with('playerWithProfile')->orderBy(['created_at'=>SORT_DESC])->limit(50);
-    }
-    /*
+  public function getLastHeadshots()
+  {
+    if (Yii::$app->user->isGuest)
+      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->orderBy(['created_at' => SORT_DESC])->limit(50);
+    if (Yii::$app->sys->academic_grouping !== false)
+      return $this->hasMany(Headshot::class, ['target_id' => 'id'])->academic(Yii::$app->user->identity->academic)->orderBy(['created_at' => SORT_DESC])->limit(50);
+    return $this->hasMany(Headshot::class, ['target_id' => 'id'])->with('playerWithProfile')->orderBy(['created_at' => SORT_DESC])->limit(50);
+  }
+  /*
      * Get Writeup relations of target
      */
-    public function getWriteups()
-    {
-      return $this->hasMany(Writeup::class, ['target_id' => 'id'])->approved()->orderBy(['created_at'=>SORT_ASC]);
-    }
+  public function getWriteups()
+  {
+    return $this->hasMany(Writeup::class, ['target_id' => 'id'])->approved()->orderBy(['created_at' => SORT_ASC]);
+  }
 
-    /*
+  /*
      * Get Target Ondemand relations of target
      */
-    public function getOndemand()
-    {
-      return $this->hasOne(Ondemand::class, ['target_id' => 'id'])->withExpired();
-    }
+  public function getOndemand()
+  {
+    return $this->hasOne(Ondemand::class, ['target_id' => 'id'])->withExpired();
+  }
 
-    /*
+  /*
      * Check if given $player_id has headshot on the target
      */
-    public function headshot($player_id)
-    {
-      return Headshot::find()->where(['target_id' => $this->id, 'player_id'=>$player_id])->one();
-    }
+  public function headshot($player_id)
+  {
+    return Headshot::find()->where(['target_id' => $this->id, 'player_id' => $player_id])->one();
+  }
 
-    public static function find()
-    {
-      return new TargetQuery(get_called_class());
-    }
+  public static function find()
+  {
+    return new TargetQuery(get_called_class());
+  }
 
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getMigrationSchedule()
-    {
-      return $this->hasMany(\app\modules\network\models\NetworkTargetSchedule::class, ['target_id' => 'id']);
-    }
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getMigrationSchedule()
+  {
+    return $this->hasMany(\app\modules\network\models\NetworkTargetSchedule::class, ['target_id' => 'id']);
+  }
 
-    public function getScheduled()
-    {
-      return $this->hasOne(\app\modules\network\models\NetworkTargetSchedule::class, ['target_id' => 'id'])->pending()->limit(1);
-    }
-
+  public function getScheduled()
+  {
+    return $this->hasOne(\app\modules\network\models\NetworkTargetSchedule::class, ['target_id' => 'id'])->pending()->limit(1);
+  }
 }
