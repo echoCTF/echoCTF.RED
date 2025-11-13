@@ -185,6 +185,18 @@ class TargetAR extends \app\models\ActiveRecordReadOnly
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getSpinHistories()
+    {
+      return $this->hasMany(SpinHistory::class, ['target_id' => 'id'])
+      ->where('spin_history.created_at>=NOW() - INTERVAL 1 DAY')
+      ->orderBy(['created_at'=>SORT_DESC,'id'=>SORT_DESC])
+      ->limit(5)
+      ->cache(true);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getNetworkTarget()
     {
       return $this->hasMany(\app\modules\network\models\NetworkTarget::class, ['target_id' => 'id']);
