@@ -31,7 +31,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'id',
             'title:html',
-            'body:html',
+            [
+              'attribute'=>'body',
+              'format'=>'html',
+              'value'=>function($model) { return str_replace('<!--TEASER-->','&lt;!--TEASER--&gt;',$model->body); }
+            ],
             'category',
             'created_at:datetime',
             'updated_at:datetime',
