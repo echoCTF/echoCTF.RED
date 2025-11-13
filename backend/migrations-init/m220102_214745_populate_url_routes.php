@@ -18,6 +18,7 @@ class m220102_214745_populate_url_routes extends Migration
     'changelog' => 'site/changelog',
     'site/captcha' => 'site/captcha',
     'dashboard' => 'dashboard/index',
+    'dashboard/news/<id:\d+>' => 'dashboard/news',
     'challenges' => 'challenge/default/index',
     'challenge/<id:\d+>' => 'challenge/default/view',
     'challenge/<id:\d+>/download' => 'challenge/default/download',

@@ -99,6 +99,9 @@ These are the system configuration keys used by the platform applications. Any k
 * `player_changed_to_deleted_after`: Update players with status=8 (changed) into status=0 (deleted) after X days
 * `player_delete_rejected_after`: Delete players that their registration was rejected (status=9 and approval=4) after X days
 
+* `dashboard_news_total_pages`: Total pages to display on dashboard news
+* `dashboard_news_records_per_page`: Records per page on dashboard news
+
 ## Frontend API
 
 * `api_bearer_enable` Enable Bearer authorizations API operations

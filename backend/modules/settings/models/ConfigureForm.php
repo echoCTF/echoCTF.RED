@@ -152,6 +152,8 @@ class ConfigureForm extends Model
   public $player_request_delete_allow;
   public $subscriptions_feature_api;
   public $stream_player_target_help;
+  public $dashboard_news_total_pages;
+  public $dashboard_news_records_per_page;
 
   public $keys = [
     'target_days_updated',
@@ -296,6 +298,8 @@ class ConfigureForm extends Model
     'player_request_delete_allow',
     'subscriptions_feature_api',
     'stream_player_target_help',
+    'dashboard_news_total_pages',
+    'dashboard_news_records_per_page',
   ];
 
   /**
@@ -454,6 +458,8 @@ class ConfigureForm extends Model
         'verification_resend_email_timeout',
         'rate_limit_requests',
         'rate_limit_window',
+        'dashboard_news_total_pages',
+        'dashboard_news_records_per_page',
       ], 'integer'],
       [['online_timeout'], 'default', 'value' => 900],
       [['spins_per_day'], 'default', 'value' => 2],

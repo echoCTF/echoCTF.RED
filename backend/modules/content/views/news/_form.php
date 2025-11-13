@@ -12,9 +12,9 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'category')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'body')->textArea() ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true])->hint('Category that this article belongs, supports HTML.') ?>
+    <?= $form->field($model, 'category')->textInput(['maxlength' => true])->hint('Category that this article belongs, supports HTML.') ?>
+    <?= $form->field($model, 'body')->textArea(['rows'=>5])->hint('The body of the news article, supports HTML and Markdown. Use <code>&lt!--TEASER--&gt;</code> to split large text.') ?>
 
 
     <div class="form-group">

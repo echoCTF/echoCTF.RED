@@ -1,7 +1,8 @@
 <?php
-
+use yii\widgets\Pjax;
 use app\widgets\Card;
 use yii\widgets\ListView;
+use yii\helpers\Html;
 ?>
 <div class="row justify-content-center">
   <div class="col col-xl-4" style="max-width: 333px;">
@@ -26,13 +27,31 @@ use yii\widgets\ListView;
     <div class="col-lg-6 col-xl-5">
       <div class="card bg-dark" style="margin-top:0px;">
         <div class="card-body">
-          <h3 class="card-title text-center"><?= \Yii::t('app', 'Latest News') ?></h3>
+          <h3 class="card-title text-center"><i class="fas fa-newspaper"></i> <?= \Yii::t('app', 'Latest News') ?></h3>
           <?php
+          Pjax::begin(['id' => 'dashboardNews', 'enablePushState' => false, 'linkSelector' => '#news-pager a', 'formSelector' => false]);
+
           echo ListView::widget([
-            'layout' => '{items}',
+            'id' => 'dashboardNews',
+            'layout' => '{items}<div class="card-footer">{pager}</div>',
             'dataProvider' => $newsProvider,
             'itemView' => '_news_item',
+            'viewParams' => ['full' => false],
+            'pager' => [
+              'class' => 'yii\bootstrap4\LinkPager',
+              'options' => ['class' => 'd-flex align-items-end justify-content-between', 'id' => 'news-pager'],
+              'linkOptions' => ['class' => ['page-link'], 'aria-label' => 'Pager link', 'rel' => 'nofollow'],
+              'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+              'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+              'maxButtonCount' => 3,
+              'disableCurrentPageButton' => true,
+              'prevPageLabel' => '<i class="fas fa-chevron-left"></i>',
+              'nextPageLabel' => '<i class="fas fa-chevron-right"></i>',
+            ],
+
           ]);
+
+          Pjax::end();
           ?>
         </div>
       </div>
