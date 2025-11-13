@@ -154,6 +154,7 @@ class ConfigureForm extends Model
   public $stream_player_target_help;
   public $dashboard_news_total_pages;
   public $dashboard_news_records_per_page;
+  public $target_restart_log_interval;
 
   public $keys = [
     'target_days_updated',
@@ -300,6 +301,7 @@ class ConfigureForm extends Model
     'stream_player_target_help',
     'dashboard_news_total_pages',
     'dashboard_news_records_per_page',
+    'target_restart_log_interval',
   ];
 
   /**
@@ -355,6 +357,7 @@ class ConfigureForm extends Model
         'moderator_home',
         'verifymail_key',
         'profile_card_disabled_actions',
+        'target_restart_log_interval',
       ], 'string'],
       [[
         'offense_registered_tag',
@@ -402,6 +405,7 @@ class ConfigureForm extends Model
         'moderator_home',
         'verifymail_key',
         'profile_card_disabled_actions',
+        'target_restart_log_interval',
       ], 'trim'],
       // required fields
       [[

@@ -75,6 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-2"><?= $form->field($model, 'force_findings_to_claim')->checkbox()->hint('Force findings before claim?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'disable_ondemand_operations')->checkbox()->hint('Disable on-demand target operations?') ?></div>
       </div>
+      <div class="col-sm-2"><?= $form->field($model, 'target_restart_log_interval')->textInput(['placeholder'=>'1 hour'])->hint('Interval of restart logs to show. Can take intervals supported by SQL <code>INTERVAL</code>, eg. <code>10 day</code>, meaning 10 days from now') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'challenge_home')->textInput()->hint('Web accessible path for downloading challenge files?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'challenge_root')->textInput()->hint('Folder that challenge files will be uploaded to?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'treasure_secret_key')->textInput()->hint('Secret key to encrypt player flags?') ?></div>
