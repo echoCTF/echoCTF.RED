@@ -88,29 +88,41 @@ class ValidatorController extends Controller {
   public function actionPlayerAvatars($remove=false)
   {
     $base=\Yii::getAlias('@app/web/images/avatars');
+    $removed=0;
     foreach(glob("$base/[0-9]*.png") as $path)
     {
       $id=intval(basename(basename($path),'.png'));
       if(Profile::findOne($id)===null && $remove!==false)
       {
-        echo "deleting $path\n";
+        echo "Deleting $path\n";
         unlink($path);
+        $removed++;
         @unlink(sprintf("%s/badges/%d.png",$base,$id));
+        $removed++;
       }
+    }
+    if($remove!==false && $removed>0) {
+      echo "Removed {$removed} images";
     }
   }
 
   public function actionTeamAvatars($remove=false)
   {
     $base=\Yii::getAlias('@app/web/images/avatars/team');
+    $removed=0;
     foreach(glob("$base/[0-9]*.png") as $path)
     {
       $id=intval(basename(basename($path),'.png'));
       if(Team::findOne($id)===null && $remove!==false)
       {
-        echo "deleting $path\n";
+        echo "Deleting $path\n";
         unlink($path);
+        $removed++;
       }
+    }
+
+    if($remove!==false && $removed>0) {
+      echo "Removed {$removed} images";
     }
   }
 
