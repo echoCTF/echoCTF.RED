@@ -178,6 +178,8 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'module_smartcity_disabled')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'module_speedprogramming_enabled')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'dashboard_graph_visible')->checkbox()->hint(false) ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'dashboard_news_total_pages')->textInput(['maxlength' => true])->hint('Total pages to return for dashboard news') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'dashboard_news_records_per_page')->textInput(['maxlength' => true])->hint('Records per page for dashbaord news') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'force_https_urls')->checkbox()->hint(false) ?></div>
     </div>
     <div class="row form-group">
