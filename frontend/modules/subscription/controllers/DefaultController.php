@@ -189,41 +189,43 @@ class DefaultController extends \app\components\BaseController
      */
     public function actionCreateCheckoutSession()
     {
-      \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
-      $priceId=Yii::$app->request->post('priceId',null);
+    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    $priceId = Yii::$app->request->post('priceId', null);
       try {
         \Stripe\Stripe::setEnableTelemetry(false);
         \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
-        $cid=Customer::getCustomerId();
-        $product=Price::findOne(['id'=>$priceId])->product;
-        if($product===null)
-        {
-          throw new \Exception(\Yii::t('app','No such price exist'));
-        }
+      $cid = Customer::getCustomerId();
+      $price = Price::findOne(['id' => $priceId]);
+      if ($price === null || $price->product === null)
+        throw new \Exception(\Yii::t('app', 'No such price or product exist'));
 
-        $mode='subscription';
-        $line_items=[[
+      $product = $price->product;
+
+      if ($price->recurring_interval === 'one-off' || $price->recurring_interval === 'payment')
+        $mode = 'payment';
+      else
+        $mode = 'subscription';
+
+      $line_items = [[
           'price' => $priceId,
           'quantity' => 1,
         ]];
 
         $checkout_session = \Stripe\Checkout\Session::create([
-          'success_url' => \yii\helpers\Url::toRoute('/subscription/default/success',true).'?session_id={CHECKOUT_SESSION_ID}',
-          'cancel_url' => \yii\helpers\Url::toRoute('/subscription/default/index',true),
-          'allow_promotion_codes'=>true,
+        'success_url' => \yii\helpers\Url::toRoute('/subscription/default/success', true) . '?session_id={CHECKOUT_SESSION_ID}',
+        'cancel_url' => \yii\helpers\Url::toRoute('/subscription/default/index', true),
+        'allow_promotion_codes' => true,
           'payment_method_types' => ['card'],
           'mode' => $mode,
           'line_items' => $line_items,
           'automatic_tax' => ['enabled' => \Yii::$app->sys->stripe_automatic_tax_enabled],
-          'customer'=>$cid,
-          'metadata'=> ['player_id'=>Yii::$app->user->id,'profile_id'=>Yii::$app->user->identity->profile->id]
+        'customer' => $cid,
+        'metadata' => ['player_id' => Yii::$app->user->id, 'profile_id' => Yii::$app->user->identity->profile->id, 'price_id' => $priceId]
         ]);
-      }
-      catch (\Exception $e)
-      {
-        \Yii::$app->response->statusCode=403;
-        if(empty($cid))
-          \Yii::$app->response->statusCode=403;
+    } catch (\Exception $e) {
+      \Yii::$app->response->statusCode = 403;
+      if (empty($cid))
+        \Yii::$app->response->statusCode = 403;
         Yii::error($e->getMessage());
         return [
           'error' =>
