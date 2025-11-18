@@ -94,9 +94,11 @@ AppAsset::register($this);
             ['label' => 'Sales Dashboard', 'url' => ['/sales/default/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
             ['label' => 'Customers', 'url' => ['/sales/player-customer/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
             ['label' => 'Subscriptions', 'url' => ['/sales/player-subscription/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
+            ['label' => 'Player Products', 'url' => ['/sales/player-product/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
             ['label' => 'Products', 'url' => ['/sales/product/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
             ['label' => 'Prices', 'url' => ['/sales/price/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
             ['label' => 'Product Networks', 'url' => ['/sales/product-network/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
+            ['label' => 'Payment History', 'url' => ['/sales/player-payment-history/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
             ['label' => 'Webhook', 'url' => ['/sales/stripe-webhook/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin && array_key_exists('sales', \Yii::$app->modules) !== false,],
           ]
         ],
