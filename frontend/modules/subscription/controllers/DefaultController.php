@@ -47,11 +47,24 @@ class DefaultController extends \app\components\BaseController
                         'roles' => ['@'],
                     ],
                     [
-                      'actions'=>['webhook'],
-                      'allow'=>true,
-                      'roles'=>['?'],
-                      'verbs'=>['post'],
-                      'ips' => explode(",",Yii::$app->sys->stripe_webhook_ips), // https://stripe.com/docs/ips
+            'actions' => ['webhook'],
+            'allow' => true,
+            'roles' => ['?'],
+            'verbs' => ['post'],
+            'ips' => explode(",", Yii::$app->sys->stripe_webhook_ips), // https://stripe.com/docs/ips
+            'matchCallback' => function () {
+              return Yii::$app->sys->stripe_webhook_ips !== false;
+            },
+          ],
+          // Allow webhook if no stripe_webhook_ips exist
+          [
+            'actions' => ['webhook'],
+            'allow' => true,
+            'roles' => ['?'],
+            'verbs' => ['post'],
+            'matchCallback' => function () {
+              return Yii::$app->sys->stripe_webhook_ips === false;
+            },
                     ]
                 ],
             ],
