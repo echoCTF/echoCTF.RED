@@ -7,6 +7,7 @@ use app\modules\sales\models\PlayerProductSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerProductController implements the CRUD actions for PlayerProduct model.

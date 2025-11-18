@@ -7,6 +7,7 @@ use app\modules\sales\models\PlayerPaymentHistorySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\ArrayHelper;
 
 /**
  * PlayerPaymentHistoryController implements the CRUD actions for PlayerPaymentHistory model.
