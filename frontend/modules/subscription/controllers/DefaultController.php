@@ -101,23 +101,30 @@ class DefaultController extends \app\components\BaseController
      */
     public function actionSuccess($session_id)
     {
-      try
-      {
+    try {
         \Stripe\Stripe::setEnableTelemetry(false);
         \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
         $success_session = \Stripe\Checkout\Session::retrieve($session_id);
-        $ps=PlayerSubscription::findOne(['player_id'=>\Yii::$app->user->id,'subscription_id'=>$success_session->subscription,'active'=>1]);
-        if(!$ps)
-        {
+      if ($success_session->subscription !== NULL) {
+        $ps = PlayerSubscription::findOne(['player_id' => \Yii::$app->user->id, 'subscription_id' => $success_session->subscription, 'active' => 1]);
+        if (!$ps) {
+          Yii::$app->session->addFlash('error', Yii::t('app', 'Subscription not found!'));
           return $this->redirect(['/subscription/default/index']);
         }
-        return $this->render('success',[
-          'success_session'=>$success_session,
-          'mine'=>$ps
-        ]);
+      } else if ($success_session->mode === 'payment' && $success_session->payment_status === 'paid') {
+        $ps = Price::findOne(['id' => $success_session->metadata->price_id]);
+        if (!$ps) {
+          Yii::$app->session->addFlash('error', Yii::t('app', 'Price not found!'));
+          return $this->redirect(['/subscription/default/index']);
+        }
       }
-      catch(\Exception $e)
-      {
+      return $this->render('success', [
+        'success_session' => $success_session,
+        'mine' => $ps
+        ]);
+    } catch (\Exception $e) {
+      die(var_dump($e->getMessage()));
+      Yii::$app->session->addFlash('error', Yii::t('app', 'No such session!'));
         return $this->redirect(['/subscription/default/index']);
       }
     }
