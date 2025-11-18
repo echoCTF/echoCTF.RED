@@ -1,20 +1,24 @@
-<div class="col-xl-4 col-lg-5 col-md-6 col-sm-6">
-  <div class="pricingTable rounded <?= $model->htmlOptions('class') ?>">
-    <div class="pricingTable-header">
-      <h3 class="title"><img src="/images/<?= $model->shortcode ?>.svg" width="50px"> <?= $model->htmlOptions('title') ?></h3>
-    </div>
-    <ul class="pricing-content">
-      <?= $model->perks ?>
-    </ul>
-    <div class="row">
-      <?php foreach ($model->prices as $price) : ?>
-        <?php if ($price->active) : ?>
-            <div class="col"><?php echo yii\bootstrap\Button::widget([
-                                'label' => "€" . intval($price->unit_amount / 100) . '/' . $price->recurring_interval,
-                                'options' => ['class' => 'btn '.$model->htmlOptions('class').' text-dark text-bold', 'id' => $price->id],
-                              ]);
-                              $this->registerJs('document
-                              .getElementById("' . $price->id. '")
+<div class="col-xl-5 col-lg-5 col-md-6 col-sm-6">
+  <?php \app\widgets\Card::begin([
+    'header' => 'header-icon',
+    'type' => 'card-stats',
+    'icon' => '<img src="/images/' . $model->shortcode . '.svg" width="50px">',
+    'color' => 'rose',
+    'encode' => false,
+    'title' => '<b>' . $model->htmlOptions('title') . '</b>',
+    'footer' =>  null,
+  ]); ?>
+  <?= $model->description ?>
+  <?= $model->metadataObj->perks ?>
+  <?php foreach ($model->prices as $price) : ?>
+    <?php if ($price->active) : ?>
+      <div class="col">
+        <?php echo yii\bootstrap\Button::widget([
+          'label' => Yii::$app->formatter->asCurrency(intval($price->unit_amount / 100)) . '/' . $price->recurring_interval,
+          'options' => ['class' => 'btn ' . $model->htmlOptions('class') . ' text-dark text-bold', 'id' => $price->id],
+        ]);
+        $this->registerJs('document
+                              .getElementById("' . $price->id . '")
                               .addEventListener("click", function(evt) {
                                 evt.preventDefault();
                                 createCheckoutSession("' . $price->id . '").then(function(data) {
@@ -28,10 +32,10 @@
                                     });
                                 });
                               });
-                            ',\yii\web\View::POS_READY);
-                          ?></div>
-        <?php endif; ?>
-      <?php endforeach; ?>
-    </div>
-  </div>
+                            ', \yii\web\View::POS_READY);
+        ?>
+      </div>
+    <?php endif; ?>
+  <?php endforeach; ?>
+  <?php \app\widgets\Card::end(); ?>
 </div>
