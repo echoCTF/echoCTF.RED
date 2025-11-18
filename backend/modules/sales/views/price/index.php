@@ -36,21 +36,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Prices'), 'url' => [
                 return null;
               }
             ],
-            'active:boolean',
             [
-              'attribute'=>'currency',
-              'contentOptions'=>['style'=>'text-transform: uppercase;'],
-            ],
-            [
-              'attribute'=>'metadata',
-              'value'=>function($model) {
-                if($model->metadata==='[]')
-                  return null;
-              }
-            ],
-            'nickname',
-            [
-              'attribute'=>'product_id',
+              'attribute'=>'product_name',
               'format'=>'raw',
               'contentOptions'=>['style'=>'white-space: nowrap;'],
               'value'=>function($model){
@@ -60,6 +47,12 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Prices'), 'url' => [
                   return sprintf('<small class="text-danger"><abbr title="Product %s does not exist">%s</abbr></small>',$model->product_id,$model->product_id);
               }
             ],
+            'active:boolean',
+            [
+              'attribute'=>'currency',
+              'contentOptions'=>['style'=>'text-transform: uppercase;'],
+            ],
+            //'nickname',
             'recurring_interval',
             'interval_count',
             [
