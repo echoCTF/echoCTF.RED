@@ -15,6 +15,7 @@ class Formatter extends \yii\i18n\Formatter
   public $dateFormat = 'medium';
   public $timeFormat = 'medium';
   public $datetimeFormat = 'medium';
+  public $currencyCode = 'EUR';
   public $timeZone = 'UTC';
   public $divID = 'markdown-content';
   public $nullDisplay = '<span class="not-set small">(empty)</span>';
