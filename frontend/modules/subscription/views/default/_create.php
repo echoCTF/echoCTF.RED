@@ -8,19 +8,21 @@ $subscription = Yii::$app->getModule('subscription');
 
 ?>
 <div class="container">
-  <?=ListView::widget([
-    'id' => 'subscriptionBased',
-    'dataProvider' => $subscriptionsProvider,
-    'emptyText' => '<p class="text-info"><b>' . \Yii::t('app', 'There are no subscriptions available at the moment...') . '</b></p>',
-    'options' => ['class' => 'list-view row d-flex justify-content-center'],
-    'summary' => false,
-    'itemOptions' => [
-      'tag' => false,
-    ],
-    'itemView' => '_subscription',
-    'viewParams' => ['mine' => $mine],
-  ]);?><!--//subscriptionBased-->
-  <hr style="border-color: white;"/>
+  <?php if ($mine===null || !$mine->active): ?>
+    <?= ListView::widget([
+      'id' => 'subscriptionBased',
+      'dataProvider' => $subscriptionsProvider,
+      'emptyText' => '<p class="text-info"><b>' . \Yii::t('app', 'There are no subscriptions available at the moment...') . '</b></p>',
+      'options' => ['class' => 'list-view row d-flex justify-content-center'],
+      'summary' => false,
+      'itemOptions' => [
+        'tag' => false,
+      ],
+      'itemView' => '_subscription',
+      'viewParams' => ['mine' => $mine],
+    ]); ?><!--//subscriptionBased-->
+    <hr style="border-color: white;" />
+  <?php endif; ?>
   <?= ListView::widget([
     'id' => 'onetimeBased',
     'dataProvider' => $productsProvider,
@@ -32,28 +34,7 @@ $subscription = Yii::$app->getModule('subscription');
     ],
     'itemView' => '_product',
     'viewParams' => ['mine' => $mine],
-  ]);?><!--//onetimeBased-->
-  <div class="row d-flex justify-content-center">
-    <?php if ($mine && $mine->subscription_id !== 'sub_vip') : ?>
-      <div class="col-md-5 col-sm-6">
-        <?php \app\widgets\Card::begin([
-          'header' => 'header-icon',
-          'type' => 'card-stats',
-          'icon' => '<i class="fa-brands fa-stripe"></i>',
-          'encode' => false,
-          'color' => 'stripe',
-          'title' => '<b>' . \Yii::t('app', 'Stripe Customer Portal!') . '</b>',
-          'footer' => $subscription->getPortalLink($this, Html::a('Stripe Portal', ['/subscription/default/redirect-customer-portal'], [
-            'class' => 'h4 font-weight-bold btn btn-outline-stripe btn-block',
-            'id' => 'stripePortal',
-          ])),
-        ]); ?>
-        Go to your Stripe Portal to manage your payment details or subscription package.
-        <?php \app\widgets\Card::end(); ?>
-
-      </div>
-    <?php endif; ?>
-  </div>
+  ]); ?><!--//onetimeBased-->
 </div>
 <?php
 $this->registerJs('
