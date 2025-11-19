@@ -101,7 +101,7 @@ class DefaultController extends \app\components\BaseController
   {
     $mine = PlayerSubscription::findOne(\Yii::$app->user->id);
     $subscriptions = Product::find()->purchasable()->recurring()->ordered();
-    $products = Product::find()->purchasable()->onetime()->ordered();
+    $products = Product::find()->purchasable()->onetime()->notOwned()->ordered();
 
     $productsProvider = new ActiveDataProvider([
       'query' => $products,
@@ -146,7 +146,7 @@ class DefaultController extends \app\components\BaseController
         'mine' => $ps
       ]);
     } catch (\Exception $e) {
-      die(var_dump($e->getMessage()));
+      Yii::error($e->getMessage());
       Yii::$app->session->addFlash('error', Yii::t('app', 'No such session!'));
       return $this->redirect(['/subscription/default/index']);
     }
