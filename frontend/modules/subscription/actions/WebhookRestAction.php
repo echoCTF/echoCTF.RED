@@ -165,6 +165,7 @@ class WebhookRestAction extends \yii\rest\Action
             if (isset($price->metadataObj->days) && intval($price->metadataObj->days) > 0) {
               $pp = new PlayerProduct();
               $pp->player_id = $player->id;
+              $pp->product_id = $product->id;
               $pp->price_id = $price->id;
               $pp->metadata = json_encode($object->metadata);
               $pp->ending = new Expression('NOW()+interval :x day', ['x' => intval($price->metadataObj->days)]);
@@ -180,6 +181,12 @@ class WebhookRestAction extends \yii\rest\Action
                 $psp->setOldAttribute('counter', null);
                 $psp->updateAttributes(['counter' => 0, 'perday' => new Expression('perday+:extras', ['extras' => intval($price->metadataObj->spins)])]);
               }
+
+              $player->notify(
+                isset($price->metadataObj->notification_type) ? $price->metadataObj->notification_type: 'swal:success', // type
+                isset($price->metadataObj->notification_title) ? $price->metadataObj->notification_title: $product->name.' activated', //title
+                isset($price->metadataObj->notification_body) ? $price->metadataObj->notification_body: 'Your '.$product->name.' have been activated. Thank you for your support!!!', // body
+              );
             }
           }
           // add entry to payment history
