@@ -14,6 +14,8 @@
     * `weight`: users by ordering
     * `perks`: raw html of the perks the subscription provides
     * `api_bearer_enable`: Wheather the subscription includes enables API access to the frontend for the players
+    * `standalone_perk`: (optional) 0/1 if this is a stand-alone perk (non-recurring)
+    * `days`: If this is a stand-alone product but needs to stay active for a number of days (non-recurring)
     * `htmlOptions`: jsonEncoded Options to be used by the UI
       * `title`: title to show on frontend
       * `class`: css classes to add to the product card
@@ -23,6 +25,10 @@
   * `days`: number of days this will be active
   * `perk`: 0/1 if this is a perk
   * `spins`: 0 reset, any other number increase player daily limit by number
+  * `notification_body`: Notification details to be send to the user (overloads product details if present)
+  * `notification_title`: Notification details to be send to the user (overloads product details if present)
+  * `notification_type`: Notification details to be send to the user (overloads product details if present)
+  * `machines`: Number of machines this involves
 
 ## 3. Configure customer portal
 
