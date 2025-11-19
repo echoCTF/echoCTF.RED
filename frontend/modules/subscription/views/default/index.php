@@ -12,7 +12,7 @@ $this->registerJsFile("https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core
 
 $this->registerCss(file_get_contents(__DIR__ . "/pricing.css"));
 ?>
-<div class="site-index">
+<div class="subscription-index">
   <div class="body-content">
 
     <div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
@@ -24,12 +24,15 @@ $this->registerCss(file_get_contents(__DIR__ . "/pricing.css"));
     if (Yii::$app->sys->subscriptions_emergency_suspend === true) {
       echo $this->render('_suspended');
     } else {
-      if ($mine && $mine->active && $mine->subscription_id !== 'sub_vip')
+      echo $this->render('_create', ['mine' => $mine, 'subscriptionsProvider' => $subscriptionsProvider, 'productsProvider' => $productsProvider]);
+      if ($mine && $mine->active && $mine->subscription_id !== 'sub_vip') {
         echo $this->render('_update', ['mine' => $mine,]);
-      else
-        echo $this->render('_create', ['mine' => $mine, 'subscriptionsProvider' => $subscriptionsProvider,'productsProvider'=>$productsProvider]);
+      } else if (trim(\Yii::$app->user->identity->stripe_customer_id) !== "") {
+        echo $this->render('_stripe_portal', ['mine' => $mine,]);
+      }
     }
     ?>
+    <!--
     <div class="row d-flex justify-content-center">
       <div class="col-md-5 col-sm-6">
         <?php \app\widgets\Card::begin([
@@ -47,6 +50,7 @@ $this->registerCss(file_get_contents(__DIR__ . "/pricing.css"));
         <?php \app\widgets\Card::end(); ?>
       </div>
     </div>
+    -->
 
   </div>
 </div>
