@@ -33,6 +33,16 @@ class ProductQuery extends \yii\db\ActiveQuery
     ]);
   }
 
+  public function notOwned()
+  {
+    return $this->andWhere([
+      'not exists',
+      (new \yii\db\Query())
+        ->from('player_product pp')
+        ->where('pp.product_id = product.id')
+        ->andWhere(['pp.player_id' => \Yii::$app->user->id])
+    ]);
+  }
   public function recurring()
   {
     return $this->andWhere(
