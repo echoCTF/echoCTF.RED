@@ -94,6 +94,7 @@ class WebhookRestAction extends \yii\rest\Action
           $ps->updated_at = new \yii\db\Expression("NOW()");
           $ps->save();
           $ps->give();
+          $ps->addHistory();
           $transaction->commit();
         } catch (\Exception $e) {
           $transaction->rollBack();

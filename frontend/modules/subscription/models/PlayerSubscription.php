@@ -97,7 +97,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
       }
 
-      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api===true && $this->player->apiToken !== null) {
+      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api === true && $this->player->apiToken !== null) {
         $this->player->apiToken->delete();
       }
     }
@@ -138,7 +138,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     if (isset($metadata->team_subscription)) {
     }
 
-    if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api===true) {
+    if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api === true) {
       if ($this->player->apiToken === null) {
         $pt = new \app\models\PlayerToken();
         $pt->player_id = $this->player_id;
@@ -164,6 +164,19 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     }
 
     return parent::beforeSave($insert);
+  }
+
+
+  public function addHistory()
+  {
+    return Yii::$app->db->createCommand()->insert('player_payment_history', [
+      'player_id' => $this->player_id,
+      'product_id' => $this->product->id,
+      'price_id' => $this->price_id,
+      'amount' => $this->price->unit_amount,
+      'metadata' => json_encode($this->price->metadata),
+      'created_at' => new \yii\db\Expression('NOW()'),
+    ])->execute();
   }
   /**
    * {@inheritdoc}
