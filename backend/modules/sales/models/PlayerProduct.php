@@ -13,6 +13,7 @@ use yii\db\Expression;
  *
  * @property int $id
  * @property int $player_id
+ * @property string $product_id
  * @property string $price_id
  * @property string|null $ending
  * @property string|null $metadata
@@ -50,7 +51,7 @@ class PlayerProduct extends \yii\db\ActiveRecord
   {
     return [
       [['ending', 'metadata', 'created_at', 'updated_at'], 'default', 'value' => null],
-      [['player_id', 'price_id'], 'required'],
+      [['player_id', 'price_id','product_id'], 'required'],
       [['player_id'], 'integer'],
       [['ending', 'metadata', 'created_at', 'updated_at'], 'safe'],
       [['price_id'], 'string', 'max' => 32],
@@ -90,7 +91,7 @@ class PlayerProduct extends \yii\db\ActiveRecord
    */
   public function getProduct()
   {
-    return $this->hasOne(Product::class, ['id' => 'product_id'])->via('price');
+    return $this->hasOne(Product::class, ['id' => 'product_id']);
   }
 
   /**
