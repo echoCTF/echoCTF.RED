@@ -15,6 +15,7 @@ class m251116_124317_create_player_product_table extends Migration
     $this->createTable('{{%player_product}}', [
       'id' => $this->primaryKey(),
       'player_id' => $this->integer()->notNull(),
+      'product_id' => $this->string(40)->notNull(),
       'price_id' => $this->string(32)->notNull(),
       'ending'=>$this->datetime(),
       'metadata LONGTEXT COLLATE utf8mb4_bin',
