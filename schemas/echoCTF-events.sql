@@ -34,13 +34,22 @@ CREATE EVENT `update_player_last_seen` ON SCHEDULE EVERY 1 HOUR STARTS '2020-09-
 END ;;
 
 DROP EVENT IF EXISTS `update_ranks` ;;
-CREATE EVENT `update_ranks` ON SCHEDULE EVERY 30 SECOND STARTS '2021-01-11 12:26:44' ON COMPLETION PRESERVE ENABLE DO BEGIN
+CREATE EVENT `update_ranks` ON SCHEDULE EVERY 30 SECOND STARTS '2021-01-11 12:26:44' ON COMPLETION PRESERVE ENABLE DO
+BEGIN
     ALTER EVENT `update_ranks` DISABLE;
     call calculate_ranks();
     call calculate_country_rank();
     call calculate_team_ranks();
     ALTER EVENT `update_ranks` ENABLE;
-  END ;;
+END ;;
+
+DROP EVENT IF EXISTS `ev_player_product_expiration` ;;
+CREATE EVENT `ev_player_product_expiration` ON SCHEDULE EVERY 1 HOUR ON COMPLETION PRESERVE ENABLE DO
+BEGIN
+  ALTER EVENT ev_player_product_expiration DISABLE;
+  call expire_player_products();
+  ALTER EVENT ev_player_product_expiration ENABLE;
+END ;;
 
 DELIMITER ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
