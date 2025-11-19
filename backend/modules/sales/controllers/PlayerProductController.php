@@ -2,6 +2,7 @@
 
 namespace app\modules\sales\controllers;
 
+use Yii;
 use app\modules\sales\models\PlayerProduct;
 use app\modules\sales\models\PlayerProductSearch;
 use yii\web\Controller;

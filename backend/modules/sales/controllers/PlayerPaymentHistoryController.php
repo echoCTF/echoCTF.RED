@@ -2,6 +2,7 @@
 
 namespace app\modules\sales\controllers;
 
+use Yii;
 use app\modules\sales\models\PlayerPaymentHistory;
 use app\modules\sales\models\PlayerPaymentHistorySearch;
 use yii\web\Controller;
