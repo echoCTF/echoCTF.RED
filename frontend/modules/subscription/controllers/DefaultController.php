@@ -186,7 +186,7 @@ class DefaultController extends \app\components\BaseController
   public function actionRedirectCustomerPortal()
   {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    $return_url = \yii\helpers\Url::toRoute('/profile/me', true);
+    $return_url = \yii\helpers\Url::toRoute('/subscriptions', true);
     try {
       \Stripe\Stripe::setEnableTelemetry(false);
       \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
