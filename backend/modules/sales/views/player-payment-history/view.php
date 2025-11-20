@@ -30,11 +30,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
+            'payment_id',
             'player_id',
-            'product_id',
-            'price_id',
             'amount',
-            'metadata',
+            'metadata:markdownJsonPretty',
             'created_at',
         ],
     ]) ?>

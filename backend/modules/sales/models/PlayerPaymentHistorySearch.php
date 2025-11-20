@@ -20,8 +20,8 @@ class PlayerPaymentHistorySearch extends PlayerPaymentHistory
   public function rules()
   {
     return [
-      [['id', 'player_id', 'amount'], 'integer'],
-      [['product_id', 'price_id', 'metadata', 'created_at', 'username', 'product_name'], 'safe'],
+      [['id', 'amount','player_id'], 'integer'],
+      [['payment_id', 'metadata', 'created_at', 'username'], 'safe'],
     ];
   }
 
@@ -44,7 +44,7 @@ class PlayerPaymentHistorySearch extends PlayerPaymentHistory
    */
   public function search($params, $formName = null)
   {
-    $query = PlayerPaymentHistory::find()->joinWith(['player', 'product', 'price']);
+    $query = PlayerPaymentHistory::find()->joinWith(['player']);
 
     // add conditions that should always apply here
 
@@ -68,10 +68,8 @@ class PlayerPaymentHistorySearch extends PlayerPaymentHistory
       'created_at' => $this->created_at,
     ]);
 
-    $query->andFilterWhere(['like', 'product_id', $this->product_id])
-      ->andFilterWhere(['like', 'price_id', $this->price_id])
-      ->andFilterWhere(['like', 'player.username', $this->username])
-      ->andFilterWhere(['like', 'product.name', $this->product_name])
+    $query->andFilterWhere(['like', 'username', $this->username])
+    ->andFilterWhere(['like', 'payment_id', $this->payment_id])
       ->andFilterWhere(['like', 'metadata', $this->metadata]);
 
       $dataProvider->setSort([
@@ -82,10 +80,6 @@ class PlayerPaymentHistorySearch extends PlayerPaymentHistory
           'username' => [
             'asc' => ['player.username' => SORT_ASC],
             'desc' => ['player.username' => SORT_DESC],
-          ],
-          'product_name' => [
-            'asc' => ['product.name' => SORT_ASC],
-            'desc' => ['product.name' => SORT_DESC],
           ],
         ]
       ),

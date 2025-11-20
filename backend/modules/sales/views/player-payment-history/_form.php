@@ -12,15 +12,13 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'player_id')->textInput() ?>
+    <?= $form->field($model, 'customer_id')->textInput() ?>
 
-    <?= $form->field($model, 'product_id')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'price_id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'payment_id')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'amount')->textInput() ?>
 
-    <?= $form->field($model, 'metadata')->textInput() ?>
+    <?= $form->field($model, 'metadata')->textArea() ?>
 
     <?= $form->field($model, 'created_at')->textInput() ?>
 

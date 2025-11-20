@@ -10,8 +10,7 @@ use app\modules\frontend\models\Player;
  *
  * @property int $id
  * @property int $player_id
- * @property string $product_id
- * @property string $price_id
+ * @property string $payment_id
  * @property int|null $amount
  * @property string|null $metadata
  * @property string|null $created_at
@@ -36,11 +35,9 @@ class PlayerPaymentHistory extends \yii\db\ActiveRecord
     return [
       [['metadata', 'created_at'], 'default', 'value' => null],
       [['amount'], 'default', 'value' => 0],
-      [['player_id', 'product_id', 'price_id'], 'required'],
-      [['player_id', 'amount'], 'integer'],
+      [['player_id', 'payment_id', 'amount'], 'required'],
+      [['amount','player_id'], 'integer'],
       [['metadata', 'created_at'], 'safe'],
-      [['product_id'], 'string', 'max' => 40],
-      [['price_id'], 'string', 'max' => 32],
     ];
   }
 
@@ -69,26 +66,6 @@ class PlayerPaymentHistory extends \yii\db\ActiveRecord
   public function getPlayer()
   {
     return $this->hasOne(Player::class, ['id' => 'player_id']);
-  }
-
-  /**
-   * Gets query for [[Product]].
-   *
-   * @return \yii\db\ActiveQuery|ProductQuery
-   */
-  public function getProduct()
-  {
-    return $this->hasOne(Product::class, ['id' => 'product_id']);
-  }
-
-  /**
-   * Gets query for [[Price]].
-   *
-   * @return \yii\db\ActiveQuery|PriceQuery
-   */
-  public function getPrice()
-  {
-    return $this->hasOne(Price::class, ['id' => 'price_id']);
   }
 
   /**

@@ -25,13 +25,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             'id',
+            'payment_id',
             [
               'attribute'=>'username',
               'value'=>'player.username',
-            ],
-            [
-              'attribute'=>'product_name',
-              'value'=>'product.name',
             ],
             [
               'attribute'=>'amount',
