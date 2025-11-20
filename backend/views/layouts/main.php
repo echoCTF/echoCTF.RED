@@ -12,6 +12,13 @@ use app\assets\AppAsset;
 
 $this->title = Yii::$app->sys->event_name . ' mUI: ' . $this->title;
 AppAsset::register($this);
+$this->registerJsFile('@web/js/hljs/highlight.min.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::class
+    ]
+]);
+$this->registerCssFile('@web/js/hljs/styles/a11y-dark.min.css',['depends' => [\yii\web\JqueryAsset::class]]);
+
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -327,6 +334,13 @@ AppAsset::register($this);
 
   <?php $this->endBody() ?>
 </body>
+<?php
+$this->registerJs(
+  'hljs.highlightAll();',
+  $this::POS_READY,
+  'markdown-highlighter'
+);
+?>
 
 </html>
 <?php $this->endPage() ?>
