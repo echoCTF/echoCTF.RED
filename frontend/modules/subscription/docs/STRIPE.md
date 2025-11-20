@@ -13,7 +13,7 @@
     * `shortcode`: Network shortcode
     * `weight`: users by ordering
     * `perks`: raw html of the perks the subscription provides
-    * `api_bearer_enable`: Wheather the subscription includes enables API access to the frontend for the players
+    * `api_bearer_enable`: 0/1 Wheather the subscription includes enables API access to the frontend for the players
     * `standalone_perk`: (optional) 0/1 if this is a stand-alone perk (non-recurring)
     * `days`: If this is a stand-alone product but needs to stay active for a number of days (non-recurring)
     * `htmlOptions`: jsonEncoded Options to be used by the UI
