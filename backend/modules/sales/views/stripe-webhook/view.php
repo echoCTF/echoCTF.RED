@@ -11,12 +11,6 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Stripe Webhooks'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
-$this->registerJsFile('@web/js/hljs/highlight.min.js',[
-    'depends' => [
-        \yii\web\JqueryAsset::class
-    ]
-]);
-$this->registerCssFile('@web/js/hljs/styles/a11y-dark.min.css',['depends' => [\yii\web\JqueryAsset::class]]);
 
 ?>
 <div class="stripe-webhook-view">
@@ -42,8 +36,7 @@ $this->registerCssFile('@web/js/hljs/styles/a11y-dark.min.css',['depends' => [\y
             'object_id',
             [
               'attribute'=>'object',
-              'format'=>'markdown',
-              'value'=>function($model) { return sprintf("```json\n%s\n```",$model->object);}
+              'format'=>'markdownJson',
             ],
             'ts',
         ],
@@ -51,10 +44,3 @@ $this->registerCssFile('@web/js/hljs/styles/a11y-dark.min.css',['depends' => [\y
 
 </div>
 
-<?php
-$this->registerJs(
-  'hljs.highlightAll();',
-  $this::POS_READY,
-  'markdown-highlighter'
-);
-?>

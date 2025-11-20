@@ -32,7 +32,6 @@ $this->params['breadcrumbs'][] = $this->title;
     'columns' => [
       'id',
       ['class' => 'app\components\columns\ProfileColumn'],
-      'player_id',
       [
         'attribute' => 'product_name',
         'value' => function ($model) {
@@ -57,9 +56,9 @@ $this->params['breadcrumbs'][] = $this->title;
           return $model->price_id;
         }
       ],
+      'created_at',
       'ending',
-      'metadata',
-      //'created_at',
+      //'metadata',
       //'updated_at',
       [
         'class' => ActionColumn::className(),

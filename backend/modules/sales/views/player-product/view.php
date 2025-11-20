@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'player_id',
             'price_id',
             'ending',
-            'metadata',
+            'metadata:markdownJsonPretty',
             'created_at',
             'updated_at',
         ],
