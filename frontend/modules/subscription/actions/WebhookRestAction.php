@@ -94,7 +94,6 @@ class WebhookRestAction extends \yii\rest\Action
           $ps->updated_at = new \yii\db\Expression("NOW()");
           $ps->save();
           $ps->give();
-          $ps->addHistory();
           $transaction->commit();
         } catch (\Exception $e) {
           $transaction->rollBack();
@@ -183,24 +182,10 @@ class WebhookRestAction extends \yii\rest\Action
               }
 
               $player->notify(
-                isset($price->metadataObj->notification_type) ? $price->metadataObj->notification_type: 'swal:success', // type
-                isset($price->metadataObj->notification_title) ? $price->metadataObj->notification_title: $product->name.' activated', //title
-                isset($price->metadataObj->notification_body) ? $price->metadataObj->notification_body: 'Your '.$product->name.' have been activated. Thank you for your support!!!', // body
+                isset($price->metadataObj->notification_type) ? $price->metadataObj->notification_type : 'swal:success', // type
+                isset($price->metadataObj->notification_title) ? $price->metadataObj->notification_title : $product->name . ' activated', //title
+                isset($price->metadataObj->notification_body) ? $price->metadataObj->notification_body : 'Your ' . $product->name . ' have been activated. Thank you for your support!!!', // body
               );
-            }
-          }
-          // add entry to payment history
-          if (isset($object->payment_status) && $object->payment_status == 'paid') {
-            try {
-              Yii::$app->db->createCommand()->insert('player_payment_history', [
-                'player_id' => $player->id,
-                'product_id' => $product->id,
-                'price_id' => $price->id,
-                'amount'=>$object->amount_total,
-                'metadata' => json_encode($price->metadata),
-                'created_at' => new Expression('NOW()'),
-              ])->execute();
-            } catch (\Exception $e) {
             }
           }
         } catch (\Exception $e) {
@@ -208,6 +193,28 @@ class WebhookRestAction extends \yii\rest\Action
           \Yii::error($e);
           return ['error' => $e->getMessage()];
         }
+        break;
+
+      case 'payment_intent.succeeded':
+        if ($object->data === []) {
+          throw new UserException('Empty data[]');
+        }
+        $data = $object->charges->data[0];
+        if (isset($data->paid) && $data->paid === true) {
+          try {
+            $player = Player::findOne(['stripe_customer_id' => $object->customer]);
+            if ($player !== null)
+              Yii::$app->db->createCommand()->insert('player_payment_history', [
+                'payment_id' => $object->id,
+                'player_id' => $player->id,
+                'amount' => $object->amount,
+                'metadata' => yii\helpers\Json::encode($object, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
+                'created_at' => new Expression('NOW()'),
+              ])->execute();
+          } catch (\Exception $e) {
+          }
+        }
+
         break;
 
       default:
