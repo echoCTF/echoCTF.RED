@@ -51,7 +51,11 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
           if($model->subscription_id=='sub_vip')
             return "<small><abbr title='VIP Subscription'>sub_vip</abbr></small>";
           elseif($model->subscription_id!='')
-                return '<small>'.Html::a($model->subscription_id,"https://dashboard.stripe.com/subscriptions/".$model->subscription_id,['target'=>'_blank']).'</small>';
+          {
+            $baseURL="https://dashboard.stripe.com/". (\Yii::$app->sys->stripe_url_prefix!==false ? \Yii::$app->sys->stripe_url_prefix.'subscriptions/' : 'subscriptions/');
+            return '<small>'.Html::a($model->subscription_id,$baseURL.$model->subscription_id,['target'=>'_blank']).'</small>';
+          }
+
           return "";
         }
       ],
