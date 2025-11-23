@@ -90,7 +90,7 @@ class PlayerProduct extends \yii\db\ActiveRecord
    */
   public function getProduct()
   {
-    return $this->hasOne(Product::class, ['id' => 'product_id'])->via('price');
+    return $this->hasOne(Product::class, ['id' => 'product_id']);
   }
 
   /**
