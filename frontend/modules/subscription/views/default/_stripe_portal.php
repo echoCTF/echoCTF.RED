@@ -4,8 +4,7 @@ use \yii\helpers\Html;
 
 $subscription = \Yii::$app->getModule('subscription');
 ?>
-<div class="row d-flex justify-content-center">
-  <div class="col-md-6">
+  <div class="col col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch">
     <?php \app\widgets\Card::begin([
       'header' => 'header-icon',
       'type' => 'card-stats',
@@ -21,4 +20,3 @@ $subscription = \Yii::$app->getModule('subscription');
     Go to your Stripe Portal to manage your payment and subscription details as well as ability to update your current subscription.
     <?php \app\widgets\Card::end(); ?>
   </div>
-</div>
