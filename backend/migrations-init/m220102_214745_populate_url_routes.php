@@ -88,6 +88,7 @@ class m220102_214745_populate_url_routes extends Migration
     'subscription/cancel' => 'subscription/default/cancel-subscription',
     'subscription/webhook' => 'subscription/default/webhook',
     'subscription/inquiry' => 'subscription/default/inquiry',
+    'subscription/perk/configure/<id>' => 'subscription/perk/configure',
     'profile/disconnect' => 'profile/disconnect',
     'profile/delete' => 'profile/delete',
     'profile/generate-token' => 'profile/generate-token',
