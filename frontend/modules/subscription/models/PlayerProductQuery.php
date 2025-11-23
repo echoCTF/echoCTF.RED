@@ -9,6 +9,16 @@ namespace app\modules\subscription\models;
  */
 class PlayerProductQuery extends \yii\db\ActiveQuery
 {
+  public function mine()
+  {
+    return $this->andWhere(['player_id' => \Yii::$app->user->id]);
+  }
+
+  public function active()
+  {
+    return $this->andWhere(['>', 'ending', new \yii\db\Expression('NOW() - INTERVAL 1 DAY')]);
+  }
+
   /**
    * {@inheritdoc}
    * @return PlayerProduct[]|array
