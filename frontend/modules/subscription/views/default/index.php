@@ -25,11 +25,14 @@ $this->registerCss(file_get_contents(__DIR__ . "/pricing.css"));
       echo $this->render('_suspended');
     } else {
       echo $this->render('_create', ['mine' => $mine, 'subscriptionsProvider' => $subscriptionsProvider, 'productsProvider' => $productsProvider]);
-      if ($mine && $mine->active && $mine->subscription_id !== 'sub_vip') {
-        echo $this->render('_update', ['mine' => $mine,]);
-      } else if (trim(\Yii::$app->user->identity->stripe_customer_id) !== "") {
+      echo '<div class="d-flex justify-content-center row">';
+      if (($mine && $mine->active && $mine->subscription_id !== 'sub_vip')|| intval($myproducts->count())>0) {
+        echo $this->render('_update', ['mine' => $mine,'myproductsProvider'=>$myproductsProvider,'myproducts'=>$myproducts]);
+      }
+      if (trim(\Yii::$app->user->identity->stripe_customer_id) !== "") {
         echo $this->render('_stripe_portal', ['mine' => $mine,]);
       }
+      echo '</div>';
     }
     ?>
     <!--
