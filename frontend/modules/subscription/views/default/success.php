@@ -19,10 +19,6 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
         <p class="lead"><?= \Yii::t('app', 'Your {product_name} subscription purchase is complete. You will receive a notification informing you about its activation shortly.', ['product_name' => $mine->product->name]) ?></p>
       <?php endif; ?>
     </div>
-    <?php if (Yii::$app->user->identity->subscription): ?>
-      <?php echo $this->render('_update', ['mine' => $mine,]); ?>
-    <?php else: ?>
-      <center><?= Html::a('<b><i class="fas fa-backward"></i> ' . \Yii::t('app', 'Go back') . '</b>', ['/subscriptions'], ['class' => 'btn btn-lg btn-primary text-dark']) ?></center>
-    <?php endif; ?>
+    <center><?= Html::a('<b><i class="fas fa-backward"></i> ' . \Yii::t('app', 'Go back') . '</b>', ['/subscriptions'], ['class' => 'btn btn-lg btn-primary text-dark']) ?></center>
   </div>
 </div>
