@@ -208,7 +208,7 @@ class WebhookRestAction extends \yii\rest\Action
                 'payment_id' => $object->id,
                 'player_id' => $player->id,
                 'amount' => $object->amount,
-                'metadata' => yii\helpers\Json::encode($object, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
+                'metadata' => \yii\helpers\Json::encode($object, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
                 'created_at' => new Expression('NOW()'),
               ])->execute();
           } catch (\Exception $e) {
