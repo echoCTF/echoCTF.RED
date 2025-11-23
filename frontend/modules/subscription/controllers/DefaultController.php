@@ -100,13 +100,20 @@ class DefaultController extends \app\components\BaseController
   public function actionIndex()
   {
     $mine = PlayerSubscription::findOne(\Yii::$app->user->id);
+    $myproducts=PlayerProduct::find()->mine();
     $subscriptions = Product::find()->purchasable()->recurring()->ordered();
     $products = Product::find()->purchasable()->onetime()->notOwned()->ordered();
+
+    $myproductsProvider = new ActiveDataProvider([
+      'query' => $myproducts,
+      'pagination' => false,
+    ]);
 
     $productsProvider = new ActiveDataProvider([
       'query' => $products,
       'pagination' => false,
     ]);
+
     $subscriptionsProvider = new ActiveDataProvider([
       'query' => $subscriptions,
       'pagination' => false,
@@ -115,6 +122,8 @@ class DefaultController extends \app\components\BaseController
     return $this->render('index', [
       'subscriptionsProvider' => $subscriptionsProvider,
       'productsProvider' => $productsProvider,
+      'myproductsProvider'=>$myproductsProvider,
+      'myproducts'=>$myproducts,
       'mine' => $mine,
     ]);
   }
@@ -141,6 +150,7 @@ class DefaultController extends \app\components\BaseController
           return $this->redirect(['/subscription/default/index']);
         }
       }
+
       return $this->render('success', [
         'success_session' => $success_session,
         'mine' => $ps
