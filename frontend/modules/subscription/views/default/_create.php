@@ -36,6 +36,7 @@ $subscription = Yii::$app->getModule('subscription');
     'viewParams' => ['mine' => $mine],
   ]); ?><!--//onetimeBased-->
 </div>
+<hr style="border-color: white;"/>
 <?php
 $this->registerJs('
 var stripe = Stripe("' . \Yii::$app->sys->stripe_publicApiKey . '");
