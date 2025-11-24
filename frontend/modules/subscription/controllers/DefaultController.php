@@ -8,6 +8,7 @@ use yii\helpers\ArrayHelper;
 use yii\data\ActiveDataProvider;
 
 use \app\modules\subscription\models\PlayerSubscription;
+use \app\modules\subscription\models\PlayerPaymentHistory;
 use \app\modules\subscription\models\PlayerProduct;
 use \app\modules\subscription\models\Customer;
 use \app\modules\subscription\models\Product;
@@ -25,11 +26,11 @@ class DefaultController extends \app\components\BaseController
     return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['index', 'success', 'redirect-customer-portal', 'customer-portal', 'create-checkout-session', 'webhook', 'inquiry', 'cancel-subscription'],
+        'only' => ['index', 'success', 'redirect-customer-portal', 'customer-portal', 'create-checkout-session', 'webhook', 'inquiry', 'cancel-subscription', 'payments', 'payment'],
         'rules' => [
           [
             'allow' => false,
-            'actions' => ['index', 'success', 'redirect-customer-portal', 'customer-portal', 'create-checkout-session', 'cancel-subscription'],
+            'actions' => ['index', 'success', 'redirect-customer-portal', 'customer-portal', 'create-checkout-session', 'cancel-subscription', 'payments', 'payment'],
             'matchCallback' => function () {
               return \Yii::$app->sys->subscriptions_emergency_suspend === true || \Yii::$app->sys->subscriptions_menu_show !== true;
             },
@@ -46,7 +47,7 @@ class DefaultController extends \app\components\BaseController
           ],
           [
             'allow' => true,
-            'actions' => ['index', 'create-checkout-session', 'success', 'inquiry'],
+            'actions' => ['index', 'create-checkout-session', 'success', 'inquiry', 'payments', 'payment'],
             'roles' => ['@'],
           ],
           [
@@ -312,5 +313,31 @@ class DefaultController extends \app\components\BaseController
     }
   }
 
-  public function actionPayments() {}
+  public function actionPayments()
+  {
+    $payments = PlayerPaymentHistory::find()->mine();
+
+    $paymentsProvider = new ActiveDataProvider([
+      'query' => $payments,
+      'pagination' => false,
+    ]);
+    return $this->render('payments', [
+      'paymentsProvider' => $paymentsProvider,
+    ]);
+  }
+
+  public function actionPayment($id)
+  {
+    $payment = PlayerPaymentHistory::findOne(['player_id' => \Yii::$app->user->id, 'payment_id' => $id]);
+    if ($payment === null) {
+      Yii::$app->session->setFlash('warning', \Yii::t('app', 'There is no such payment'));
+    } else {
+      $metadata = $payment->metadataObj;
+      if ($metadata && isset($metadata->charges) && isset($metadata->charges->data)) {
+        return $this->redirect($metadata->charges->data[0]->receipt_url);
+      }
+      Yii::$app->session->setFlash('error', \Yii::t('app', 'No details found, contact support'));
+    }
+    return $this->redirect(['payments']);
+  }
 }
