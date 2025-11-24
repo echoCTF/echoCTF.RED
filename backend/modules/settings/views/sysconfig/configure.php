@@ -222,6 +222,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'stripe_publicApiKey')->textInput(['maxlength' => true])->hint('Your Stripe Public API Key') ?></div>
       <div class="col-sm-4"><?= $form->field($model, 'stripe_webhookSecret')->textInput(['maxlength' => true])->hint('Stripe secret to validate webhook requests') ?></div>
       <div class="col-sm-4"><?= $form->field($model, 'stripe_webhookLocalEndpoint')->textInput(['maxlength' => true, 'placeholder' => 'subscriptions/somethingrandom/webhook'])->hint('Local endpoint url that receives webhook POST from Stripe') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'stripe_url_prefix')->textInput(['maxlength' => true])->hint('An optional prefix to use (eg <code>test</code> for test mode urls') ?></div>
     </div>
     <hr />
 

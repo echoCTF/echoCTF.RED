@@ -68,7 +68,7 @@ class Card extends \yii\base\Widget
 
     /*
      *
-     * FOR THE BODY CONTENT (inside .card-body class div) user can use varies content types Ex.:
+     * FOR THE BODY CONTENT (inside .card-body class div) user can use varied content types Ex.:
      *
      * <h4 class="card-title">Card title</h4>
      * <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
@@ -157,7 +157,7 @@ class Card extends \yii\base\Widget
                     '.$this->icon.'
                   </div>
                 </div>';
-      else
+      else if(strpos($this->type,'reverse')===false)
           return '<div class="card-header card-header-icon card-header-'.$this->color.'">
                   <div class="card-icon">
                     '.$this->icon.'
@@ -165,6 +165,15 @@ class Card extends \yii\base\Widget
                   <p class="card-category">'.$this->subtitle.'</p>
                   <h4 class="card-title">'.$this->title.'</h4>
                 </div>';
+      else
+          return '<div class="card-header card-header-icon card-header-'.$this->color.'">
+                  <div class="card-icon">
+                    '.$this->icon.'
+                  </div>
+                  <h4 class="card-title">'.$this->title.'</h4>
+                  <p class="card-category">'.$this->subtitle.'</p>
+                </div>';
+
     }
 
     /**

@@ -162,6 +162,7 @@ Alternatively, instead of DSN the following keys can be used
 * `stripe_automatic_tax_enabled` Enable Stripe automatic TAX
 * `stripe_webhook_ips` List of IP's that are allowed to access the stripe webhook endpoint
 * `stripe_webhookLocalEndpoint`: The local endpoint url for the receive of Stripe webhooks. Make it something unique and random so that its not easy to be hit by anyone.
+* `stripe_url_prefix`: An optional prefix to add with the product, subscription and payment linkst of the backend (eg `acct_112345667/test/` for Stripe test mode).
 
 ## Player Specific
 

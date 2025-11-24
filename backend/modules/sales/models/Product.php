@@ -16,6 +16,7 @@ use yii\helpers\Html;
  * @property string|null $metadata
  * @property string|null $created_at
  * @property string|null $updated_at
+ * @property StdClass|null $metadataObj
  */
 class Product extends \yii\db\ActiveRecord
 {
@@ -82,6 +83,16 @@ class Product extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets decoded json metadata for [[Product]].
+     *
+     * @return StdClass
+     */
+    public function getMetadataObj()
+    {
+        return json_decode($this->metadata);
+    }
+
+    /**
      * {@inheritdoc}
      * @return ProductQuery the active query used by this AR class.
      */
@@ -135,7 +146,7 @@ class Product extends \yii\db\ActiveRecord
           }
           else
           {
-            $price->recurring_interval='day';
+            $price->recurring_interval='one-off';
           }
 
           if(isset($p->recurring) && $p->recurring->interval_count)
@@ -154,16 +165,16 @@ class Product extends \yii\db\ActiveRecord
 
         $product->metadata=json_encode($stripeProduct->metadata);
         $product->updated_at=new \yii\db\Expression('NOW()');
-        if($stripeProduct->metadata->htmlOptions)
+        if(isset($stripeProduct->metadata->htmlOptions))
           $product->htmlOptions=trim($stripeProduct->metadata->htmlOptions);
 
-        if($stripeProduct->metadata->shortcode)
+        if(isset($stripeProduct->metadata->shortcode))
           $product->shortcode=trim($stripeProduct->metadata->shortcode);
 
-        if($stripeProduct->metadata->perks)
+        if(isset($stripeProduct->metadata->perks))
           $product->perks=trim($stripeProduct->metadata->perks);
 
-        if($stripeProduct->metadata->weight)
+        if(isset($stripeProduct->metadata->weight))
           $product->weight=intval(trim($stripeProduct->metadata->weight));
 
         if(!$product->save())

@@ -1,7 +1,7 @@
 html,
 body {
-    height: 100%;
-    font-size: 0.95em;
+  height: 100%;
+  font-size: 0.95em;
 }
 
 .wrap {
@@ -9,8 +9,8 @@ body {
   height: auto;
 }
 
-.wrap > .container {
-    padding-top: 20px;
+.wrap>.container {
+  padding-top: 20px;
 }
 
 .footer {
@@ -24,7 +24,8 @@ a {
   text-decoration: none;
 }
 
-a.asc:after, a.desc:after {
+a.asc:after,
+a.desc:after {
   position: relative;
   top: 1px;
   display: inline-block;
@@ -43,7 +44,7 @@ a.desc:after {
   content: "\F575";
 }
 
-.dropdown.nav-item  button.btn.btn-link.logout {
+.dropdown.nav-item button.btn.btn-link.logout {
   text-decoration: none;
   color: #ddd;
   font-weight: 600;
@@ -54,27 +55,65 @@ a.desc:after {
   font-style: italic;
 }
 
-.bi-target-status-online::before { content: "\F287"; color: greenyellow; }
-.bi-target-status-offline::before { content: "\F28A"; color: red; }
-.bi-target-status-powerup::before { content: "\F4F6"; color: goldenrod; }
-.bi-target-status-powerdown::before { content: "\F4F7"; color: orangered; }
+.bi-target-status-online::before {
+  content: "\F287";
+  color: greenyellow;
+}
 
-.fa-nf-claims:before { content: "\f024"; }
-.fa-nf-failed_claims:before { content: "\f11e"; }
-.fa-nf-failed_login:before { content: "\f071"; }
-.grid-view th { white-space: nowrap; }
+.bi-target-status-offline::before {
+  content: "\F28A";
+  color: red;
+}
 
-.approved_avatar>img { border: 1px solid lightgray; }
-.pending_avatar>img { border: 1px solid orangered; }
+.bi-target-status-powerup::before {
+  content: "\F4F6";
+  color: goldenrod;
+}
+
+.bi-target-status-powerdown::before {
+  content: "\F4F7";
+  color: orangered;
+}
+
+.fa-nf-claims:before {
+  content: "\f024";
+}
+
+.fa-nf-failed_claims:before {
+  content: "\f11e";
+}
+
+.fa-nf-failed_login:before {
+  content: "\f071";
+}
+
+.grid-view th {
+  white-space: nowrap;
+}
+
+.approved_avatar>img {
+  border: 1px solid lightgray;
+}
+
+.pending_avatar>img {
+  border: 1px solid orangered;
+}
 
 .wordwrap {
-  white-space: pre; /* CSS 2.0 */
-  white-space: pre-wrap; /* CSS 2.1 */
-  white-space: pre-line; /* CSS 3.0 */
-  white-space: -pre-wrap; /* Opera 4-6 */
-  white-space: -o-pre-wrap; /* Opera 7 */
-  white-space: -moz-pre-wrap; /* Mozilla */
-  word-wrap: break-word; /* IE 5+ */
+  white-space: pre;
+  /* CSS 2.0 */
+  white-space: pre-wrap;
+  /* CSS 2.1 */
+  white-space: pre-line;
+  /* CSS 3.0 */
+  white-space: -pre-wrap;
+  /* Opera 4-6 */
+  white-space: -o-pre-wrap;
+  /* Opera 7 */
+  white-space: -moz-pre-wrap;
+  /* Mozilla */
+  word-wrap: break-word;
+  /* IE 5+ */
 }
 
 .icon {
@@ -99,39 +138,44 @@ div.has-error {
   border: 1px dashed red;
   padding: 4px;
 }
-div.has-error > input {
+
+div.has-error>input {
   background-color: lightpink;
 }
-div.has-error > input:focus {
+
+div.has-error>input:focus {
   background-color: lightpink;
 }
+
 .help-block {
   color: red;
   font-weight: 600;
 }
 
-.btn-purple, .btn-purple:hover, .btn-purple:active, .btn-purple:visited {
-    background-color: #8064A2;
+.btn-purple,
+.btn-purple:hover,
+.btn-purple:active,
+.btn-purple:visited {
+  background-color: #8064A2;
 }
 
 .text-purple {
-    color: #8064A2;
+  color: #8064A2;
 }
 
 .text-white {
-    color: white;
+  color: white;
 }
 
 .hint-block,
-#configureForm input[type="text"]::placeholder
- {
+#configureForm input[type="text"]::placeholder {
   font-size: small;
   color: rgb(111, 111, 111);
 }
 
 #configureForm input[type="text"],
 #configureForm select {
-    font-family: var(--bs-font-monospace); /* Bootstrap monospace */
-    font-size: 0.9em;
+  font-family: var(--bs-font-monospace);
+  /* Bootstrap monospace */
+  font-size: 0.9em;
 }
-

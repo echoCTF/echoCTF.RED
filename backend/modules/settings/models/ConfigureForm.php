@@ -64,6 +64,7 @@ class ConfigureForm extends Model
   public $stripe_publicApiKey;
   public $stripe_webhookSecret;
   public $stripe_webhookLocalEndpoint;
+  public $stripe_url_prefix;
   public $player_monthly_rankings;
   public $player_point_rankings;
   public $country_rankings;
@@ -215,6 +216,7 @@ class ConfigureForm extends Model
     'stripe_apiKey',
     'stripe_publicApiKey',
     'stripe_webhookSecret',
+    'stripe_url_prefix',
     'player_monthly_rankings',
     'player_point_rankings',
     'country_rankings',
@@ -358,6 +360,7 @@ class ConfigureForm extends Model
         'verifymail_key',
         'profile_card_disabled_actions',
         'target_restart_log_interval',
+        'stripe_url_prefix',
       ], 'string'],
       [[
         'offense_registered_tag',
@@ -406,6 +409,7 @@ class ConfigureForm extends Model
         'verifymail_key',
         'profile_card_disabled_actions',
         'target_restart_log_interval',
+        'stripe_url_prefix',
       ], 'trim'],
       // required fields
       [[

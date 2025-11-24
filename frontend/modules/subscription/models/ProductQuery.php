@@ -9,40 +9,66 @@ namespace app\modules\subscription\models;
  */
 class ProductQuery extends \yii\db\ActiveQuery
 {
-    public function active()
-    {
-        return $this->andWhere('[[active]]=1');
-    }
+  public function active()
+  {
+    return $this->andWhere('[[active]]=1');
+  }
 
-    public function hasPrice()
-    {
-        return $this->andWhere('id in (SELECT DISTINCT product_id FROM price)');
-    }
+  public function hasPrice()
+  {
+    return $this->andWhere('id in (SELECT DISTINCT product_id FROM price)');
+  }
 
-    public function purchasable()
-    {
-        return $this->active()->hasPrice();
-    }
+  public function purchasable()
+  {
+    return $this->active()->hasPrice();
+  }
 
-    public function ordered()
-    {
-        return $this->orderBy(['weight'=>SORT_ASC,'name'=>SORT_ASC]);
-    }
-    /**
-     * {@inheritdoc}
-     * @return Product[]|array
-     */
-    public function all($db = null)
-    {
-        return parent::all($db);
-    }
+  public function onetime()
+  {
+    return $this->andWhere([
+      '=',
+      new \yii\db\Expression("JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.standalone_perk'))"),
+      '1'
+    ]);
+  }
 
-    /**
-     * {@inheritdoc}
-     * @return Product|array|null
-     */
-    public function one($db = null)
-    {
-        return parent::one($db);
-    }
+  public function notOwned()
+  {
+    return $this->andWhere([
+      'not exists',
+      (new \yii\db\Query())
+        ->from('player_product pp')
+        ->where('pp.product_id = product.id')
+        ->andWhere(['pp.player_id' => \Yii::$app->user->id])
+    ]);
+  }
+  public function recurring()
+  {
+    return $this->andWhere(
+      new \yii\db\Expression("JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.standalone_perk')) IS NULL"),
+    );
+  }
+
+  public function ordered()
+  {
+    return $this->orderBy(['weight' => SORT_ASC, 'name' => SORT_ASC]);
+  }
+  /**
+   * {@inheritdoc}
+   * @return Product[]|array
+   */
+  public function all($db = null)
+  {
+    return parent::all($db);
+  }
+
+  /**
+   * {@inheritdoc}
+   * @return Product|array|null
+   */
+  public function one($db = null)
+  {
+    return parent::one($db);
+  }
 }

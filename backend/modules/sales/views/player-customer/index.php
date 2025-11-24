@@ -34,7 +34,11 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
                 'format'=>'raw',
                 'value'=>function($model){
                     if($model->stripe_customer_id)
-                        return Html::a($model->stripe_customer_id,"https://dashboard.stripe.com/customers/".$model->stripe_customer_id,['target'=>'_blank']);
+                    {
+                      $baseURL="https://dashboard.stripe.com/". (\Yii::$app->sys->stripe_url_prefix!==false ? \Yii::$app->sys->stripe_url_prefix.'customers/' : 'customers/');
+                      return Html::a($model->stripe_customer_id,$baseURL.$model->stripe_customer_id,['target'=>'_blank']);
+                    }
+
                     return "";
                 }
             ],

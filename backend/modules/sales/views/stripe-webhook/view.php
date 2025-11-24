@@ -11,6 +11,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Sales'), 'url' => ['
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Stripe Webhooks'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
 ?>
 <div class="stripe-webhook-view">
 
@@ -35,11 +36,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'object_id',
             [
               'attribute'=>'object',
-              'format'=>'raw',
-              'value'=>function($model) { return sprintf("<pre>%s</pre>",Html::encode($model->object));}
+              'format'=>'markdownJson',
             ],
             'ts',
         ],
     ]) ?>
 
 </div>
+

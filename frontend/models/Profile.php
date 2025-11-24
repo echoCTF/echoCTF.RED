@@ -96,7 +96,7 @@ class Profile extends ProfileAR
       if($username===null)
         $username=$this->owner->username;
       $style=['data-pjax'=>0];
-      if($team!==false && $this->owner->teamPlayer->approved!==1)
+      if($team!==false && $this->owner->teamPlayer!==null && $this->owner->teamPlayer->approved!==1)
       {
         $style=['data-pjax'=>0, 'class'=>'text-danger text-bold'];
       }

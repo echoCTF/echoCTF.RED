@@ -15,6 +15,7 @@ class Formatter extends \yii\i18n\Formatter
   public $dateFormat = 'medium';
   public $timeFormat = 'medium';
   public $datetimeFormat = 'medium';
+  public $currencyCode = 'EUR';
   public $timeZone = 'UTC';
   public $divID = 'markdown-content';
   public $nullDisplay = '<span class="not-set small">(empty)</span>';
@@ -80,7 +81,31 @@ class Formatter extends \yii\i18n\Formatter
 
     $output = HtmlPurifier::process($html, $this->purifierConfig);
 
-    return '<div id="' . $this->divID . '" class="markdown">' . $output . '</div>';
+    return '<div class="markdown">' . $output . '</div>';
+  }
+
+  /**
+   * Format as normal markdown json code without class link extensions.
+   *
+   * @param $markdown
+   * @return string
+   */
+  public function asMarkdownJson($markdown)
+  {
+    return $this->asMarkdown(sprintf("```json\n%s\n```",$markdown));
+  }
+
+  /**
+   * Format as normal markdown json code  without class link extensions.
+   *
+   * @param $markdown
+   * @return string
+   */
+  public function asMarkdownJsonPretty($markdown)
+  {
+    $obj=\yii\helpers\Json::decode($markdown);
+    $nice=wordwrap(\yii\helpers\Json::encode($obj, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), 120, "\n", true);
+    return $this->asMarkdown(sprintf("```json\n%s\n```",$nice));
   }
 
   /**

@@ -585,6 +585,14 @@ details.headshotters:not([open]) summary::after {
   background: linear-gradient(60deg, #4379FF, #5433FF);
 }
 
+.btn.btn-outline-rose {
+  color: #ec407a;
+  background-color: transparent;
+  border-color: #ec407a;
+  border-style: solid;
+  border-width: 1px;
+}
+
 .btn.btn-outline-stripe {
   color: #5433FF;
   background-color: transparent;
