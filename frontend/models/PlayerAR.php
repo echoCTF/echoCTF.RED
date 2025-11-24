@@ -296,4 +296,10 @@ class PlayerAR extends ActiveRecord
       ->select(['player_id', 'points' => new \yii\db\Expression('SUM(points)')])
       ->groupBy('player_id');
   }
+
+  public function getPlayerPaymentHistory()
+  {
+    return $this->hasMany(\app\modules\subscription\models\PlayerPaymentHistory::class, ['player_id' => 'id']);
+  }
+
 }
