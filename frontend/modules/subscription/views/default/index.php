@@ -11,6 +11,7 @@ $this->registerJsFile("https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core
 //$this->registerJsFile("/js/plugins/sweetalert2.js");
 
 $this->registerCss(file_get_contents(__DIR__ . "/pricing.css"));
+$this->_fluid='-fluid';
 ?>
 <div class="subscription-index">
   <div class="body-content">
@@ -29,31 +30,15 @@ $this->registerCss(file_get_contents(__DIR__ . "/pricing.css"));
       if (($mine && $mine->active && $mine->subscription_id !== 'sub_vip')|| intval($myproducts->count())>0) {
         echo $this->render('_update', ['mine' => $mine,'myproductsProvider'=>$myproductsProvider,'myproducts'=>$myproducts]);
       }
+      if(\Yii::$app->user->identity->playerPaymentHistory) {
+        echo $this->render('_payments_card');
+      }
       if (trim(\Yii::$app->user->identity->stripe_customer_id) !== "") {
         echo $this->render('_stripe_portal', ['mine' => $mine,]);
       }
       echo '</div>';
     }
     ?>
-    <!--
-    <div class="row d-flex justify-content-center">
-      <div class="col-md-5 col-sm-6">
-        <?php \app\widgets\Card::begin([
-          'header' => 'header-icon',
-          'type' => 'card-stats',
-          'icon' => '<i class="fas fa-flag"></i>',
-          'color' => 'rose',
-          'encode' => false,
-          'title' => '<b>' . \Yii::t('app', 'On premises CTF or Hackathon?') . '</b>',
-          'footer' => Html::mailto(\Yii::t('app', 'Contact us'), 'info@echothrust.com', [
-            'class' => 'h4 font-weight-bold btn btn-outline-danger btn-block'
-          ]),
-        ]); ?>
-        <?= \Yii::t('app', 'Want to run or host your own CTF, Hackathon or Cybersecurity exercises?') ?>
-        <?php \app\widgets\Card::end(); ?>
-      </div>
-    </div>
-    -->
 
   </div>
 </div>
