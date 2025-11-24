@@ -10,7 +10,7 @@ $subscription = Yii::$app->getModule('subscription');
 <?= ListView::widget([
   'id' => false,
   'dataProvider' => $myproductsProvider,
-  'emptyText' => null,
+  'emptyText' => false,
   'options' => ['tag' => false],
   'summary' => false,
   'itemOptions' => ['tag' => 'div', 'class' => 'col col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch'],
