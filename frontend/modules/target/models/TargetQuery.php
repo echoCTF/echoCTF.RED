@@ -25,6 +25,11 @@ class TargetQuery extends \yii\db\ActiveQuery
     return $this->join('LEFT JOIN', 'network_target', 'network_target.target_id=t.id')->andWhere(['network_target.network_id' => $network_id]);
   }
 
+  public function forPrivateNet(int $network_id)
+  {
+    return $this->join('LEFT JOIN', 'private_network_target', 'private_network_target.target_id=t.id')->andWhere(['private_network_target.private_network_id' => $network_id]);
+  }
+
   public function addState(){
     $this->addSelect(['t.*']);
     $this->addSelect('total_treasures, total_findings, player_rating, total_headshots, total_writeups, approved_writeups');
