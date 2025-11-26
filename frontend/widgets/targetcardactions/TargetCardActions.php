@@ -46,7 +46,7 @@ class TargetCardActions extends Widget
     if ($this->identity->player_id === intval(Yii::$app->user->id)) {
 
       $this->prep_instance_actions();
-      if(Yii::$app->sys->disable_ondemand_operations===false)
+      if (Yii::$app->sys->disable_ondemand_operations === false)
         $this->prep_ondemand_actions();
     }
   }
@@ -85,6 +85,7 @@ class TargetCardActions extends Widget
         'linkOptions' => $linkOptions
       ];
     } elseif ($this->target_instance === NULL) {
+
       $this->target_actions[] = [
         'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>'),
         'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id]),
@@ -92,13 +93,12 @@ class TargetCardActions extends Widget
         'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn a private instance of this target. Once booted, this instance will only be accessible by you and its IP will become visible here.')])
       ];
       // display start team instance
-      if(\Yii::$app->user->identity->subscription !== null && \Yii::$app->user->identity->subscription->active > 0 && \Yii::$app->user->identity->subscription->product !== null)
-      {
+      if (\Yii::$app->user->identity->subscription !== null && \Yii::$app->user->identity->subscription->active > 0 && \Yii::$app->user->identity->subscription->product !== null) {
         $metadata = json_decode(\Yii::$app->user->identity->subscription->product->metadata);
-        if (isset($metadata->team_subscription) && boolval($metadata->team_subscription)===true) {
+        if (isset($metadata->team_subscription) && boolval($metadata->team_subscription) === true) {
           $this->target_actions[] = [
             'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a team instance</b>'),
-            'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id,'team'=>true]),
+            'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id, 'team' => true]),
             'options' => ['style' => 'white-space: nowrap;'],
             'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn an instance of this target for your entire team. Once booted, this instance will only be accessible by you and your team. The IP will become visible here.')])
           ];
@@ -111,13 +111,15 @@ class TargetCardActions extends Widget
         'options' => ['style' => 'white-space: nowrap;'],
         'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn a private instance of this target. However, you already have one instance running for ' . $this->target_instance->target->name . '. Do you want to schedule the existing instance to be destroyed in order to be able to spawn a new one?')])
       ];
-    } elseif ($this->target_instance->target_id === $this->model->id && $this->target_instance->reboot < 2) {
-      $this->target_actions[] = [
-        'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Reboot your instance</b>'),
-        'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id]),
-        'options' => ['style' => 'white-space: nowrap;'],
-        'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to reboot your instance. You will receive a notification once the operation is complete.')])
-      ];
+    } elseif (($this->target_instance->target_id === $this->model->id && $this->target_instance->reboot < 2)) {
+      if ($this->target_instance->ip !== null) {
+        $this->target_actions[] = [
+          'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Reboot your instance</b>'),
+          'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id]),
+          'options' => ['style' => 'white-space: nowrap;'],
+          'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to reboot your instance. You will receive a notification once the operation is complete.')])
+        ];
+      }
       $this->target_actions[] = [
         'label' => \Yii::t('app', '<b><i class="fas fa-power-off"></i>&nbsp; Shut your instance</b>'),
         'url' => Url::to(['/target/default/shut', 'id' => $this->model->id]),
