@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'attribute'=>'target_name',
               'value'=>'target.name'
             ],
-
+            'ipoctet',
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, PrivateNetworkTarget $model, $key, $index, $column) {

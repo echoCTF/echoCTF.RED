@@ -22,6 +22,8 @@ use yii\helpers\ArrayHelper;
     ['prompt' => 'Select a Private Network']
   )->Label('Private Network')->hint('The private network this target will belong') ?>
 
+<?= $form->field($model, 'ipoctet')->textInput(['maxlength' => true])->hint('The target IP') ?>
+
   <div class="form-group">
     <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
   </div>

@@ -1947,6 +1947,8 @@ CREATE TABLE `private_network_target` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `private_network_id` int(11) DEFAULT NULL,
   `target_id` int(11) DEFAULT NULL,
+  `ip` int(11) unsigned DEFAULT NULL,
+  `ipoctet` varchar(15) GENERATED ALWAYS AS (inet_ntoa(`ip`)) VIRTUAL,
   PRIMARY KEY (`id`),
   KEY `idx-private_network_target-private_network_id` (`private_network_id`),
   KEY `idx-private_network_target-target_id` (`target_id`),

@@ -20,6 +20,8 @@ class m251125_095103_create_private_network_target_table extends Migration
       'id' => $this->primaryKey(),
       'private_network_id' => $this->integer(),
       'target_id' => $this->integer(),
+      'ip' => $this->integer()->unsigned(),
+      'ipoctet' => "VARCHAR(15) GENERATED ALWAYS AS (INET_NTOA(ip)) VIRTUAL",
     ]);
 
     // creates index for column `private_network_id`

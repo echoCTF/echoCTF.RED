@@ -20,7 +20,7 @@ class PrivateNetworkTargetSearch extends PrivateNetworkTarget
   {
     return [
       [['id', 'private_network_id', 'target_id'], 'integer'],
-      [['private_network_name', 'target_name'], 'filter', 'filter' => 'trim'],
+      [['private_network_name', 'target_name','ipoctet'], 'filter', 'filter' => 'trim'],
       [['private_network_name', 'target_name'], 'safe'],
     ];
   }
@@ -68,6 +68,7 @@ class PrivateNetworkTargetSearch extends PrivateNetworkTarget
     ]);
     $query->andFilterWhere(['like', 'target.name', $this->target_name]);
     $query->andFilterWhere(['like', 'private_network.name', $this->private_network_name]);
+    $query->andFilterWhere(['like', 'private_network_target.ipoctet', $this->ipoctet]);
 
     $dataProvider->setSort([
       'attributes' => array_merge(
