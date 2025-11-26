@@ -90,6 +90,7 @@ class PlayerProductSearch extends PlayerProduct
         ]
       ),
     ]);
+
     return $dataProvider;
   }
 }

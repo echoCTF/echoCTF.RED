@@ -13,28 +13,35 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 ?>
 <div class="product-network-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+  <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a(Yii::t('app', 'Create Product Network'), ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+  <p>
+    <?= Html::a(Yii::t('app', 'Create Product Network'), ['create'], ['class' => 'btn btn-success']) ?>
+  </p>
 
-    <?php Pjax::begin(); ?>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+  <?php Pjax::begin(); ?>
+  <?php // echo $this->render('_search', ['model' => $searchModel]);
+  ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            'product_id',
-            'network_id',
-            'product.name',
-            'network.name',
+  <?= GridView::widget([
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'columns' => [
+      'product_id',
+      'network_id',
+      [
+        'attribute' => 'product_name',
+        'value'=>'product.name'
+      ],
+      [
+        'attribute' => 'network_name',
+        'value'=>'network.name'
+      ],
 
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+      ['class' => 'yii\grid\ActionColumn'],
+    ],
+  ]); ?>
 
-    <?php Pjax::end(); ?>
+  <?php Pjax::end(); ?>
 
 </div>
