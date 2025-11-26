@@ -526,7 +526,7 @@ CREATE TABLE `migration` (
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `migration` values ('m251123_081343_add_subscription_perk_url_route',1);
+INSERT INTO `migration` values ('m251126_122227_add_private_network_url_route',1);
 --
 -- Table structure for table `migration_red`
 --
@@ -1929,6 +1929,30 @@ CREATE TABLE `abuser` (
   KEY `idx-abuser-player_id` (`player_id`),
   CONSTRAINT `fk-abuser-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `private_network`;
+CREATE TABLE `private_network` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) unsigned DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `team_accessible` tinyint(1) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx-private_network-player_id` (`player_id`),
+  CONSTRAINT `fk-private_network-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `private_network_target`;
+CREATE TABLE `private_network_target` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `private_network_id` int(11) DEFAULT NULL,
+  `target_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx-private_network_target-private_network_id` (`private_network_id`),
+  KEY `idx-private_network_target-target_id` (`target_id`),
+  CONSTRAINT `fk-private_network_target-private_network_id` FOREIGN KEY (`private_network_id`) REFERENCES `private_network` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk-private_network_target-target_id` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
