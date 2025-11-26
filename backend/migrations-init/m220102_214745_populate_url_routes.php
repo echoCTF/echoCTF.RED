@@ -77,6 +77,7 @@ class m220102_214745_populate_url_routes extends Migration
     'team/reject/<id:\d+>' => 'team/default/reject',
     'networks' => 'network/default/index',
     'network/<id:\d+>' => 'network/default/view',
+    'network/private/<id:\d+>' => 'network/private/view',
     'api/headshots' => 'api/headshot/index',
     'api/notification' => 'api/notification/index',
     'subscriptions' => 'subscription/default/index',
@@ -89,8 +90,8 @@ class m220102_214745_populate_url_routes extends Migration
     'subscription/webhook' => 'subscription/default/webhook',
     'subscription/inquiry' => 'subscription/default/inquiry',
     'subscription/perk/configure/<id>' => 'subscription/perk/configure',
-    'subscription/payments' => 'subscription/default/payments' ,
-    'subscription/payment/<id>' => 'subscription/default/payment' ,
+    'subscription/payments' => 'subscription/default/payments',
+    'subscription/payment/<id>' => 'subscription/default/payment',
     'profile/disconnect' => 'profile/disconnect',
     'profile/delete' => 'profile/delete',
     'profile/generate-token' => 'profile/generate-token',
@@ -113,7 +114,7 @@ class m220102_214745_populate_url_routes extends Migration
   {
     $weight = 10;
     foreach ($this->url_rules as $key => $val)
-      $this->upsert('url_route', ['source' => $key, 'destination' => $val, 'weight' => $weight += 10],true);
+      $this->upsert('url_route', ['source' => $key, 'destination' => $val, 'weight' => $weight += 10], true);
   }
 
   /**
