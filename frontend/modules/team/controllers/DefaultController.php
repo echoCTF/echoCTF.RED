@@ -182,6 +182,7 @@ class DefaultController extends \app\components\BaseController
     $teamInstances = \app\modules\target\models\TargetInstance::find()->leftJoin('team_player', 'target_instance.player_id=team_player.player_id')
       ->andFilterWhere(['in', 'target_instance.player_id', $teamPlayers])
       ->andFilterWhere(['team_player.approved' => 1]);
+
     if (\Yii::$app->sys->team_visible_instances !== true) {
       $teamInstances->andFilterWhere(['team_allowed' => 1]);
     }
@@ -193,9 +194,21 @@ class DefaultController extends \app\components\BaseController
         'pageSize' => Yii::$app->sys->members_per_team === false ? 10 : Yii::$app->sys->members_per_team,
       ]
     ]);
+
+    $teamNetworks = \app\modules\network\models\PrivateNetwork::find()->forTeam($model->id);
+    $teamNetworksProvider = new ActiveDataProvider([
+      'query' => $teamNetworks,
+      'pagination' => [
+        'pageSizeParam' => 'networks-perpage',
+        'pageParam' => 'networks-page',
+        'pageSize' => 5,
+      ],
+      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
+    ]);
+
     $subQuery = TeamStream::find()
-    ->select('stream_id')
-    ->where(['team_id'=>$model->id]);
+      ->select('stream_id')
+      ->where(['team_id' => $model->id]);
 
     $stream = \app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
       ->where(['id' => $subQuery])
@@ -215,8 +228,9 @@ class DefaultController extends \app\components\BaseController
       'streamProvider' => $streamProvider,
       'headshotsProvider' => $headshotsProvider,
       'teamTargetsProvider' => $targetProgressProvider,
-      'solverProvider'=>$solverProvider,
+      'solverProvider' => $solverProvider,
       'dataProvider' => $dataProvider,
+      'networksProvider' => $teamNetworksProvider,
     ]);
   }
   /**
@@ -298,11 +312,10 @@ class DefaultController extends \app\components\BaseController
       'dataProvider' => $dataProvider,
       'streamProvider' => $streamProvider,
       'teamTargetsProvider' => $targetProgressProvider,
-      'headshotsProvider'=>$headshotsProvider,
-      'solverProvider'=>$solverProvider,
+      'headshotsProvider' => $headshotsProvider,
+      'solverProvider' => $solverProvider,
       'team' => Yii::$app->user->identity->team
     ]);
-
   }
   /**
    * Lists all Team models.
