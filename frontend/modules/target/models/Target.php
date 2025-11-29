@@ -188,6 +188,7 @@ class Target extends TargetAR
   {
     if (Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id === $this->id) {
       $msg = Yii::t('app', "The IP of your private instance.");
+
       if (Yii::$app->user->identity->instance->ip === null) {
         $msg = Yii::t('app', "Your instance is being powered up, please wait...");
       }

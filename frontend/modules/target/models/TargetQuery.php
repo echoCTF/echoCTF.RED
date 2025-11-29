@@ -17,7 +17,7 @@ class TargetQuery extends \yii\db\ActiveQuery
 
   public function headshottedByTeam(int $team_id)
   {
-    return $this->andWhere('id IN (SELECT DISTINCT target_id FROM headshot WHERE player_id IN (SELECT player_id FROM team_player WHERE team_id=:id and approved=1))',[':id'=>$team_id]);
+    return $this->andWhere('id IN (SELECT DISTINCT target_id FROM headshot WHERE player_id IN (SELECT player_id FROM team_player WHERE team_id=:id and approved=1))', [':id' => $team_id]);
   }
 
   public function forNet(int $network_id)
@@ -30,7 +30,8 @@ class TargetQuery extends \yii\db\ActiveQuery
     return $this->join('LEFT JOIN', 'private_network_target', 'private_network_target.target_id=t.id')->andWhere(['private_network_target.private_network_id' => $network_id]);
   }
 
-  public function addState(){
+  public function addState()
+  {
     $this->addSelect(['t.*']);
     $this->addSelect('total_treasures, total_findings, player_rating, total_headshots, total_writeups, approved_writeups');
     $this->addSelect([new \yii\db\Expression('if(player_rating>=0,round((player_rating+difficulty)/2),difficulty) as average_rating')]);
@@ -52,7 +53,8 @@ class TargetQuery extends \yii\db\ActiveQuery
     return $this->andWhere(['on_network' => 0]);
   }
 
-  public function withAvgRating(){
+  public function withAvgRating()
+  {
     $this->alias('t');
     $this->select(['t.*']);
     $this->addSelect([new \yii\db\Expression('if(player_rating>=0,round((player_rating+difficulty)/2),difficulty) as average_rating')]);
@@ -70,6 +72,23 @@ class TargetQuery extends \yii\db\ActiveQuery
     $this->addSelect([new \yii\db\Expression('if(player_rating>=0,round((player_rating+difficulty)/2),difficulty) as average_rating')]);
     $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
     $this->join('LEFT JOIN', 'target_player_state', 'target_player_state.id=t.id AND target_player_state.player_id=' . intval($player_id));
+    return $this;
+  }
+
+  /**
+   * Replace the existing select so that we include the ip from the private network
+   */
+  public function private_network_player_progress_select()
+  {
+    $this->alias('t');
+    // add the private_network_target.ipoctet instead
+    $this->select(['t.id', 't.name', 't.status', 't.active', 't.difficulty', 'rootable', 't.scheduled_at', 't.ts', 't.player_spin']);
+    // force returning of current IP
+    $this->addSelect([new \yii\db\Expression('ifnull(private_network_target.ipoctet,"0.0.0.0") as ipoctet')]);
+    $this->addSelect([new \yii\db\Expression('false as on_ondemand'), 'ondemand_state']);
+    $this->addSelect('total_treasures, total_findings, player_treasures, player_findings, player_rating, total_headshots, total_writeups, approved_writeups,player_points');
+    $this->addSelect([new \yii\db\Expression('((player_treasures+player_findings)/(total_treasures+total_findings))*100 as progress')]);
+    $this->addSelect([new \yii\db\Expression('if(player_rating>=0,round((player_rating+difficulty)/2),difficulty) as average_rating')]);
     return $this;
   }
 
@@ -99,8 +118,8 @@ class TargetQuery extends \yii\db\ActiveQuery
     $this->addSelect([new \yii\db\Expression('if(player_rating>=0,round((player_rating+difficulty)/2),difficulty) as average_rating')]);
 
     $this->join('LEFT JOIN', 'target_state', 'target_state.id=t.id');
-    $this->join('LEFT JOIN', 'target_player_state', 'target_player_state.id=t.id AND target_player_state.player_id IN (SELECT player_id FROM team_player WHERE approved=1 and team_id='.intval($team_id).')');
-    $this->andWhere('t.id NOT IN (SELECT target_id FROM headshot WHERE player_id IN (SELECT player_id FROM team_player WHERE team_id=:id and approved=1))',[':id'=>$team_id]);
+    $this->join('LEFT JOIN', 'target_player_state', 'target_player_state.id=t.id AND target_player_state.player_id IN (SELECT player_id FROM team_player WHERE approved=1 and team_id=' . intval($team_id) . ')');
+    $this->andWhere('t.id NOT IN (SELECT target_id FROM headshot WHERE player_id IN (SELECT player_id FROM team_player WHERE team_id=:id and approved=1))', [':id' => $team_id]);
     $this->groupBy(['t.id']);
     $this->addOrderBy([new \yii\db\Expression('(max((player_treasures+player_findings)/(total_treasures+total_findings))*100) DESC')]);
     return $this;
