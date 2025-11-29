@@ -21,6 +21,8 @@ class m251125_095103_create_private_network_target_table extends Migration
       'private_network_id' => $this->integer(),
       'target_id' => $this->integer(),
       'ip' => $this->integer()->unsigned(),
+      'state' => $this->smallInteger()->unsigned()->defaultValue(0),
+      'server_id' => $this->integer(),
       'ipoctet' => "VARCHAR(15) GENERATED ALWAYS AS (INET_NTOA(ip)) VIRTUAL",
     ]);
 
@@ -31,6 +33,13 @@ class m251125_095103_create_private_network_target_table extends Migration
       'private_network_id'
     );
 
+    // creates index for column `server_id`
+    $this->createIndex(
+      '{{%idx-private_network_target-server_id}}',
+      '{{%private_network_target}}',
+      'server_id'
+    );
+
     // add foreign key for table `{{%private_network}}`
     $this->addForeignKey(
       '{{%fk-private_network_target-private_network_id}}',
@@ -38,6 +47,17 @@ class m251125_095103_create_private_network_target_table extends Migration
       'private_network_id',
       '{{%private_network}}',
       'id',
+      'CASCADE'
+    );
+
+    // add foreign key for table `{{%server}}`
+    $this->addForeignKey(
+      '{{%fk-private_network_target-server_id}}',
+      '{{%private_network_target}}',
+      'server_id',
+      '{{%server}}',
+      'id',
+      'SET NULL',
       'CASCADE'
     );
 
