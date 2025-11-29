@@ -3,6 +3,7 @@
 namespace app\modules\infrastructure\models;
 
 use app\modules\gameplay\models\Target;
+use app\modules\infrastructure\models\Server;
 
 use Yii;
 
@@ -17,6 +18,7 @@ use Yii;
  *
  * @property PrivateNetwork $privateNetwork
  * @property Target $target
+ * @property Server $server
  */
 class PrivateNetworkTarget extends \yii\db\ActiveRecord
 {
@@ -36,11 +38,13 @@ class PrivateNetworkTarget extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      [['private_network_id', 'target_id', 'ip'], 'default', 'value' => null],
-      [['private_network_id', 'target_id', 'ip'], 'integer'],
+      [['private_network_id', 'target_id', 'ip', 'server_id'], 'default', 'value' => null],
+      [['state'], 'default', 'value' => 0],
+      [['private_network_id', 'target_id', 'ip', 'server_id','state'], 'integer'],
       ['ipoctet', 'ip'],
       [['private_network_id'], 'exist', 'skipOnError' => true, 'targetClass' => PrivateNetwork::class, 'targetAttribute' => ['private_network_id' => 'id']],
       [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
+      [['server_id'], 'exist', 'skipOnError' => true, 'targetClass' => Server::class, 'targetAttribute' => ['server_id' => 'id']],
     ];
   }
 
@@ -51,8 +55,11 @@ class PrivateNetworkTarget extends \yii\db\ActiveRecord
   {
     return [
       'id' => Yii::t('app', 'ID'),
-      'private_network_id' => Yii::t('app', 'Private Network ID'),
-      'target_id' => Yii::t('app', 'Target ID'),
+      'private_network_id' => Yii::t('app', 'Private Network'),
+      'private_network_name' => Yii::t('app', 'Private Network'),
+      'target_id' => Yii::t('app', 'Target'),
+      'target_name' => Yii::t('app', 'Target'),
+      'server_name' => Yii::t('app', 'Server'),
       'ip' => Yii::t('app', 'IP (integer)'),
       'ipoctet' => Yii::t('app', 'IP'),
     ];
@@ -79,6 +86,16 @@ class PrivateNetworkTarget extends \yii\db\ActiveRecord
   }
 
   /**
+   * Gets query for [[Server]].
+   *
+   * @return \yii\db\ActiveQuery|TargetQuery
+   */
+  public function getServer()
+  {
+    return $this->hasOne(Target::class, ['id' => 'server_id']);
+  }
+
+  /**
    * {@inheritdoc}
    * @return PrivateNetworkTargetQuery the active query used by this AR class.
    */
@@ -91,8 +108,7 @@ class PrivateNetworkTarget extends \yii\db\ActiveRecord
   {
     if ($this->ipoctet) {
       $this->ip = ip2long($this->ipoctet);
-    }
-    else
+    } else
       $this->ip = null;
 
     return parent::beforeValidate();

@@ -22,6 +22,12 @@ use yii\helpers\ArrayHelper;
     ['prompt' => 'Select a Private Network']
   )->Label('Private Network')->hint('The private network this target will belong') ?>
 
+  <?= $form->field($model, 'server_id')->dropDownList(
+    ArrayHelper::map(app\modules\infrastructure\models\Server::find()->all(), 'id', 'name'),
+    ['prompt' => 'Select a Server']
+  )->Label('Private Network')->hint('The server this machine is spawned') ?>
+
+<?= $form->field($model, 'state')->textInput(['maxlength' => true])->hint('The target state (<code>default: 0</code>)') ?>
 <?= $form->field($model, 'ipoctet')->textInput(['maxlength' => true])->hint('The target IP') ?>
 
   <div class="form-group">

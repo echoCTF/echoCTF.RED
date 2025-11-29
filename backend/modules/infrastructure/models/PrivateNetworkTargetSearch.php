@@ -12,6 +12,7 @@ use app\modules\infrastructure\models\PrivateNetworkTarget;
 class PrivateNetworkTargetSearch extends PrivateNetworkTarget
 {
   public $target_name;
+  public $server_name;
   public $private_network_name;
   /**
    * {@inheritdoc}
@@ -19,9 +20,9 @@ class PrivateNetworkTargetSearch extends PrivateNetworkTarget
   public function rules()
   {
     return [
-      [['id', 'private_network_id', 'target_id'], 'integer'],
+      [['id', 'private_network_id', 'target_id','state'], 'integer'],
       [['private_network_name', 'target_name','ipoctet'], 'filter', 'filter' => 'trim'],
-      [['private_network_name', 'target_name'], 'safe'],
+      [['private_network_name', 'target_name','server_name'], 'safe'],
     ];
   }
 
@@ -44,7 +45,7 @@ class PrivateNetworkTargetSearch extends PrivateNetworkTarget
    */
   public function search($params, $formName = null)
   {
-    $query = PrivateNetworkTarget::find()->joinWith(['target', 'privateNetwork']);
+    $query = PrivateNetworkTarget::find()->joinWith(['target', 'privateNetwork','server']);
 
     // add conditions that should always apply here
 
@@ -65,10 +66,12 @@ class PrivateNetworkTargetSearch extends PrivateNetworkTarget
       'private_network_target.id' => $this->id,
       'private_network_id' => $this->private_network_id,
       'target_id' => $this->target_id,
+      'server_id' => $this->server_id,
     ]);
     $query->andFilterWhere(['like', 'target.name', $this->target_name]);
     $query->andFilterWhere(['like', 'private_network.name', $this->private_network_name]);
     $query->andFilterWhere(['like', 'private_network_target.ipoctet', $this->ipoctet]);
+    $query->andFilterWhere(['like', 'server.name', $this->server_name]);
 
     $dataProvider->setSort([
       'attributes' => array_merge(
@@ -77,6 +80,10 @@ class PrivateNetworkTargetSearch extends PrivateNetworkTarget
           'target_name' => [
             'asc' =>  ['target.name' => SORT_ASC],
             'desc' => ['target.name' => SORT_DESC],
+          ],
+          'server_name' => [
+            'asc' =>  ['server.name' => SORT_ASC],
+            'desc' => ['server.name' => SORT_DESC],
           ],
           'private_network_name' => [
             'asc' =>  ['private_network.name' => SORT_ASC],

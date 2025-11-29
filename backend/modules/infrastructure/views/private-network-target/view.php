@@ -30,8 +30,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'privateNetwork.name',
-            'target.name',
+            [
+              'attribute'=>'private_network_name',
+              'value'=>$model->privateNetwork->name
+            ],
+            [
+              'attribute'=>'target_name',
+              'value'=>$model->target->name
+            ],
+            [
+              'attribute'=>'server_name',
+              'value'=>$model->server!==NULL ? $model->server->name : $model->server,
+            ],
+            'state',
+            'ipoctet',
         ],
     ]) ?>
 
