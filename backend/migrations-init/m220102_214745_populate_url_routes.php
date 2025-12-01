@@ -78,6 +78,7 @@ class m220102_214745_populate_url_routes extends Migration
     'networks' => 'network/default/index',
     'network/<id:\d+>' => 'network/default/view',
     'network/private/<id:\d+>' => 'network/private/view',
+    'network/private/spin/<network_id:\d+>/<target_id:\d+>' => 'network/private/spin',
     'api/headshots' => 'api/headshot/index',
     'api/notification' => 'api/notification/index',
     'subscriptions' => 'subscription/default/index',
