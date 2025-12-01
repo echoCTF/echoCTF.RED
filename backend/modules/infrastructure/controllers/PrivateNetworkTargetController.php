@@ -2,6 +2,7 @@
 
 namespace app\modules\infrastructure\controllers;
 
+use Yii;
 use app\modules\infrastructure\models\PrivateNetworkTarget;
 use app\modules\infrastructure\models\PrivateNetworkTargetSearch;
 use app\components\BaseController;
