@@ -1122,3 +1122,7 @@ mark {
 .tooltip { top: 0; }
 
 .dropdown-menu.show{z-index: 1059;}
+
+.card_actions {
+ margin-left: 5px;
+}
