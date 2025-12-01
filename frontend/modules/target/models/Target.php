@@ -16,10 +16,14 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property array $treasureCategories
  * @property bool $spinAllowed
  * @property bool $spinDenied
+ * @property int $private_network_id
+ * @property int $state
  *
  */
 class Target extends TargetAR
 {
+  public $private_network_id;
+  public $state;
   const DEFAULT_LOGO = '/images/default_target.png';
   public $difficulties = [
     "beginner",
