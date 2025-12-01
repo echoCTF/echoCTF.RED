@@ -5,6 +5,7 @@ namespace app\modules\network\controllers;
 use Yii;
 use app\modules\network\models\Network;
 use app\modules\network\models\PrivateNetwork;
+use app\modules\network\models\PrivateNetworkTarget;
 use app\modules\team\models\TeamPlayer;
 use yii\base\UserException;
 use yii\web\Controller;
@@ -28,16 +29,16 @@ class PrivateController extends \app\components\BaseController
     return ArrayHelper::merge([
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['view'],
+        'only' => ['view','spin'],
         'rules' => [
           'eventStartEnd' => [
-            'actions' => ['view'],
+            'actions' => ['view','spin'],
           ],
           'disabledRoute' => [
-            'actions' => ['view'],
+            'actions' => ['view','spin'],
           ],
           [
-            'actions' => ['view'],
+            'actions' => ['view','spin'],
             'allow' => true,
             'roles' => ['@']
           ],
@@ -56,11 +57,11 @@ class PrivateController extends \app\components\BaseController
     try {
       $network = $this->findModel($id);
     } catch (\Exception $e) {
-      Yii::$app->session->setFlash('info', $e->getMessage());
+      Yii::$app->session->setFlash('error', $e->getMessage());
       return $this->redirect(['/']);
     }
     $tmod = \app\modules\target\models\Target::find();
-    $query = $tmod->forPrivateNet($id)->player_progress(Yii::$app->user->id);
+    $query = $tmod->forPrivateNet($id)->player_progress(Yii::$app->user->id)->private_network_player_progress_select();
 
     $targetProgressProvider = new ActiveDataProvider([
       'query' => $query,
@@ -69,6 +70,7 @@ class PrivateController extends \app\components\BaseController
         'pageParam' => 'target-page',
       ]
     ]);
+
     $targetProgressProvider->setSort([
       'defaultOrder' => ['status' => SORT_DESC, 'scheduled_at' => SORT_ASC, 't.weight' => SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC],
       'attributes' => [
@@ -120,6 +122,48 @@ class PrivateController extends \app\components\BaseController
       'networkTargetProvider' => $targetProgressProvider,
       'model' => $network,
     ]);
+  }
+
+  /**
+   * View Private Network target.
+   * @return mixed
+   */
+  public function actionSpin(int $target_id, int $network_id = 0)
+  {
+    $model = PrivateNetworkTarget::findOne([
+      'private_network_id' => $network_id,
+      'target_id' => $target_id,
+    ]);
+
+    if ($model == NULL || intval($model->privateNetwork->player_id) !== intval(Yii::$app->user->id)) {
+      Yii::$app->session->setFlash('error', 'No such private network target exists!!!');
+      return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+    }
+    if (intval($model->state) !== 0) {
+      Yii::$app->session->setFlash('warning', 'Target already scheduled for restart!!!');
+      return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+    }
+
+    $transaction = Yii::$app->db->beginTransaction();
+    try {
+      if (intval(Yii::$app->user->identity->profile->spins->counter) >= intval(Yii::$app->user->identity->profile->spins->perday)) {
+        throw new UserException('You have run out of spins!');
+      }
+
+      $playerSpin = Yii::$app->user->identity->profile->spins;
+      $playerSpin->counter = intval($playerSpin->counter) + 1;
+      $playerSpin->total = intval($playerSpin->total) + 1;
+      $model->updateAttributes(['state' => 1]);
+      if (!$playerSpin->save())
+        throw new UserException('Failed to update player spins!');
+      $transaction->commit();
+      Yii::$app->session->setFlash('success', 'Target scheduled for restart!!!');
+    } catch (\Exception $e) {
+      $transaction->rollBack();
+      Yii::$app->session->setFlash('error', $e->getMessage());
+    }
+
+    return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
   }
 
   protected function findModel(int $id)
