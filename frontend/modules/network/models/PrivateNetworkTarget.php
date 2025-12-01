@@ -1,7 +1,7 @@
 <?php
 
 namespace app\modules\network\models;
-use app\modules\gameplay\models\Target;
+use app\modules\target\models\Target;
 
 use Yii;
 

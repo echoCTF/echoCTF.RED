@@ -6,6 +6,7 @@ use Yii;
 use app\models\Player;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use app\modules\target\models\Target;
 
 /**
  * This is the model class for table "private_network".
