@@ -10,11 +10,13 @@ use yii\helpers\ArrayHelper;
 
 class TargetCardActions extends Widget
 {
+  public $inline = false;
   public $model;
   public $identity;
   public $htmlOptions = ['class' => 'card bg-dark solves'];
   public $target_actions;
   public $target_instance;
+  public $private_network_target;
   public $linkOptions = [
     'data-pjax' => '0',
     'data-method' => 'POST',
@@ -44,17 +46,18 @@ class TargetCardActions extends Widget
   public function prep_actions()
   {
     if ($this->identity->player_id === intval(Yii::$app->user->id)) {
-
       $this->prep_instance_actions();
-      if (Yii::$app->sys->disable_ondemand_operations === false)
+      if (Yii::$app->sys->disable_ondemand_operations === false) {
         $this->prep_ondemand_actions();
+      }
+      $this->prep_private_network_target_actions();
     }
   }
 
   public function renderDropdown()
   {
 
-    if ($this->target_actions !== null) {
+    if ($this->target_actions !== null && $this->inline !== true) {
       echo '<div class="dropdown target-actions">' .
         '<a href="#" data-toggle="dropdown" class="dropdown-toggle text-secondary"><i class="fas fa-cogs" style="font-size: 1.3em;"></i><b class="caret"></b></a>' . \yii\bootstrap\Dropdown::widget([
           'encodeLabels' => false,
@@ -63,6 +66,10 @@ class TargetCardActions extends Widget
         ]) . '</div>';
     }
   }
+
+  /**
+   * Prepare target instance related actions
+   */
   public function prep_instance_actions()
   {
     if (intval(Yii::$app->db->createCommand('select count(*) from server')->cache(true)->queryScalar()) == 0) return;
@@ -128,6 +135,10 @@ class TargetCardActions extends Widget
       ];
     }
   }
+
+  /**
+   * Prepare links for ondemand based targets
+   */
   public function prep_ondemand_actions()
   {
     if ($this->target_instance !== null && $this->target_instance->target_id == $this->model->id)
@@ -147,5 +158,31 @@ class TargetCardActions extends Widget
         'linkOptions' => $this->linkOptions,
       ];
     }
+  }
+
+  /**
+   * Prepare links for targets belonging to a private network
+   */
+  public function prep_private_network_target_actions()
+  {
+    if ($this->model->private_network_id === null)
+      return;
+
+    if(\app\modules\network\models\PrivateNetwork::findOne(['id'=>$this->model->private_network_id,'player_id'=>Yii::$app->user->id])!==NULL)
+      if ($this->model->ipoctet !== '0.0.0.0' && $this->model->ipoctet !== NULL && intval($this->model->state) === 0) {
+        $this->target_actions[] = [
+          'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Reboot target</b>'),
+          'url' => Url::to(['/network/private/spin', 'target_id' => $this->model->id, 'network_id' => $this->model->private_network_id]),
+          'options' => ['style' => 'white-space: nowrap;'],
+          'linkOptions' => $this->linkOptions,
+        ];
+      }
+
+    $this->target_actions[] = [
+      'label' => \Yii::t('app', '<b><i class="fas fa-eye"></i>&nbsp; Go to target</b>'),
+      'url' => Url::to(['/target/default/view', 'id' => $this->model->id]),
+      'options' => ['style' => 'white-space: nowrap;'],
+      'linkOptions' => $this->linkOptions,
+    ];
   }
 }
