@@ -19,7 +19,7 @@ class m251125_095103_create_private_network_target_table extends Migration
     $this->createTable('{{%private_network_target}}', [
       'id' => $this->primaryKey(),
       'private_network_id' => $this->integer(),
-      'target_id' => $this->integer(),
+      'target_id' => $this->integer()->notNull(),
       'ip' => $this->integer()->unsigned(),
       'state' => $this->smallInteger()->unsigned()->defaultValue(0),
       'server_id' => $this->integer(),
@@ -55,7 +55,9 @@ class m251125_095103_create_private_network_target_table extends Migration
       'private_network_id',
       '{{%private_network}}',
       'id',
+      'CASCADE',
       'CASCADE'
+
     );
 
     // add foreign key for table `{{%server}}`
@@ -65,8 +67,9 @@ class m251125_095103_create_private_network_target_table extends Migration
       'server_id',
       '{{%server}}',
       'id',
-      'SET NULL',
+      'CASCADE',
       'CASCADE'
+
     );
 
     // creates index for column `target_id`
@@ -83,6 +86,7 @@ class m251125_095103_create_private_network_target_table extends Migration
       'target_id',
       '{{%target}}',
       'id',
+      'CASCADE',
       'CASCADE'
     );
   }
