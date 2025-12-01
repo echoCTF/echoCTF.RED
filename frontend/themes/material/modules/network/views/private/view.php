@@ -31,12 +31,12 @@ $module = \app\modules\network\Module::getInstance();
     </div>
     <hr />
     <div class="row">
-      <div class="col-md-8">
+      <div class="col-md-9">
         <?php \yii\widgets\Pjax::begin(['id' => 'target-listing-pjax', 'enablePushState' => false, 'linkSelector' => '#target-pager a, #target-list th a', 'formSelector' => false]); ?>
-        <?= TargetWidget::widget(['twitter' => false, 'buttonsTemplate' => '', 'dataProvider' => $networkTargetProvider, 'player_id' => Yii::$app->user->id, 'profile' => Yii::$app->user->identity->profile, 'title' => \Yii::t('app', 'Progress'), 'category' => \Yii::t('app', 'The private network targets and their privately assigned IP'), 'personal' => false, 'targetRoute'=>'/network/private/target','hidden_attributes' => ['id']]); ?>
+        <?= TargetWidget::widget(['viewFile'=>'target-list','twitter' => false, 'buttonsTemplate' => '', 'dataProvider' => $networkTargetProvider, 'player_id' => Yii::$app->user->id, 'profile' => Yii::$app->user->identity->profile, 'title' => '', 'category' => '', 'personal' => false, 'targetRoute'=>'/network/private/target','hidden_attributes' => ['id']]); ?>
         <?php \yii\widgets\Pjax::end() ?>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="card card-profile bg-dark orbitron">
           <div class="card-body table-responsive">
             <h4 class="card-title orbitron text-bold"><?= \Yii::t('app', '{username}\'s private network', ['username' => Html::encode($model->player->username)]) ?></h4>
