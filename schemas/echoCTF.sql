@@ -1946,7 +1946,7 @@ DROP TABLE IF EXISTS `private_network_target`;
 CREATE TABLE `private_network_target` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `private_network_id` int(11) DEFAULT NULL,
-  `target_id` int(11) DEFAULT NULL,
+  `target_id` int(11) NOT NULL,
   `ip` int(11) unsigned DEFAULT NULL,
   `state` smallint(6) unsigned DEFAULT 0,
   `server_id` int(11) DEFAULT NULL,
@@ -1956,9 +1956,9 @@ CREATE TABLE `private_network_target` (
   KEY `idx-private_network_target-private_network_id` (`private_network_id`),
   KEY `idx-private_network_target-server_id` (`server_id`),
   KEY `idx-private_network_target-target_id` (`target_id`),
-  CONSTRAINT `fk-private_network_target-private_network_id` FOREIGN KEY (`private_network_id`) REFERENCES `private_network` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk-private_network_target-server_id` FOREIGN KEY (`server_id`) REFERENCES `server` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `fk-private_network_target-target_id` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE
+  CONSTRAINT `fk-private_network_target-private_network_id` FOREIGN KEY (`private_network_id`) REFERENCES `private_network` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk-private_network_target-server_id` FOREIGN KEY (`server_id`) REFERENCES `server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk-private_network_target-target_id` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
