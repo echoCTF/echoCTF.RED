@@ -82,7 +82,7 @@ class TargetQuery extends \yii\db\ActiveQuery
   {
     $this->alias('t');
     // add the private_network_target.ipoctet instead
-    $this->select(['t.id', 't.name', 't.status', 't.active', 't.difficulty', 'rootable', 't.scheduled_at', 't.ts', 't.player_spin']);
+    $this->select(['t.id', 't.name', 't.status', 't.active', 't.difficulty', 'rootable', 't.scheduled_at', 't.ts', 't.player_spin','t.purpose','t.description','private_network_target.private_network_id','private_network_target.state','private_network_target.server_id','private_network_target.state']);
     // force returning of current IP
     $this->addSelect([new \yii\db\Expression('ifnull(private_network_target.ipoctet,"0.0.0.0") as ipoctet')]);
     $this->addSelect([new \yii\db\Expression('false as on_ondemand'), 'ondemand_state']);
