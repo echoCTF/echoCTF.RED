@@ -26,6 +26,14 @@ class m251125_095103_create_private_network_target_table extends Migration
       'ipoctet' => "VARCHAR(15) GENERATED ALWAYS AS (INET_NTOA(ip)) VIRTUAL",
     ]);
 
+    // creates unique index on network/target combo
+    $this->createIndex(
+      '{{%idx-unique-private_network_id-target_id}}',
+      '{{%private_network_target}}',
+      ['private_network_id', 'target_id'],
+      true
+    );
+
     // creates index for column `private_network_id`
     $this->createIndex(
       '{{%idx-private_network_target-private_network_id}}',
