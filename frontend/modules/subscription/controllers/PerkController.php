@@ -109,7 +109,7 @@ class PerkController extends \app\components\BaseController
         $privateNetwork = new PrivateNetwork([
           'name' => 'player_product_' . $model->id,
           'player_id' => Yii::$app->user->id,
-          'team_accessible' => $model->product->metadataObj->team_accessible
+          'team_accessible' => isset($model->product->metadataObj->team_accessible) ? $model->product->metadataObj->team_accessible : 0,
         ]);
 
         if (!$privateNetwork->save())
@@ -133,7 +133,7 @@ class PerkController extends \app\components\BaseController
 
     // Check if network if full
     if (isset($model->product->metadataObj->private_instances) && count($privateNetwork->privateTargets) >= intval($model->product->metadataObj->private_instances)) {
-      \Yii::$app->session->setFlash('error', 'You have reached your limit of targets for this network');
+      \Yii::$app->session->setFlash('warning', 'You have reached your maximum number of targets for this network!');
       return $this->redirect(['/network/private/view','id'=>$model->id]);
     }
 
