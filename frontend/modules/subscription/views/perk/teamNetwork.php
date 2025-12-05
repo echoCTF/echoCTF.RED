@@ -11,6 +11,7 @@ $title = \Yii::t('app', "Configure: {perkName}", ['perkName' => $model->product-
 $this->title = Yii::$app->sys->event_name . " " . $title;
 $this->_url = \yii\helpers\Url::to([null], 'https');
 $this->_fluid = "-fluid";
+$privateNetwork=null;
 if (isset($model->metadataObj->private_network_id)) {
   $privateNetwork=\app\modules\network\models\PrivateNetwork::findOne($model->metadataObj->private_network_id);
   $tmod = \app\modules\target\models\Target::find();
@@ -23,15 +24,16 @@ if (isset($model->metadataObj->private_network_id)) {
       'pageParam' => 'target-page',
     ]
   ]);
-}
 
+}
 ?>
 <div class="team-index">
   <div class="body-content">
     <h2><?= Html::encode($title) ?></h2>
-    <?php if (isset($model->product->metadataObj->private_instances) && count($privateNetwork->privateTargets) < intval($model->product->metadataObj->private_instances)): ?>
+    <?php if ($privateNetwork===null || (isset($model->product->metadataObj->private_instances) && count($privateNetwork->privateTargets) < intval($model->product->metadataObj->private_instances))): ?>
+      <p>Search for targets to add to your private network</p>
       <div class="row">
-        <div class="col-5">
+        <div class="col-3">
           <?php echo Html::beginForm(['/subscription/perk/configure', 'id' => $model->id], 'post', ['id' => 'targetAutocompleteForm', 'autocomplete' => "off"]); ?>
           <div class="input-group no-border" style="padding-right: 10px;">
             <?php echo Html::submitButton(
@@ -63,7 +65,7 @@ if (isset($model->metadataObj->private_network_id)) {
   </div>
 </div>
 <?php
-if (isset($privateNetwork) &&  isset($model->product->metadataObj->private_instances) && count($privateNetwork->privateTargets) < intval($model->product->metadataObj->private_instances)) {
+if ($privateNetwork==null || (isset($model->product->metadataObj->private_instances) && count($privateNetwork->privateTargets) < intval($model->product->metadataObj->private_instances))) {
   $this->registerJs("
 $(document).on('autocomplete.select','#targetAutocompleteForm', function (evt, item) {
   var targetId = item.id;
