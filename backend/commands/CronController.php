@@ -159,7 +159,7 @@ class CronController extends Controller
       switch ($action) {
         case SELF::ACTION_START:
         case SELF::ACTION_RESTART:
-          if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer!==null && $val->player->teamPlayer->approved === 1) {
+          if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer !== null && $val->player->teamPlayer->approved === 1) {
             foreach ($val->player->teamPlayer->team->approvedMembers as $teamPlayer) {
               if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
                 $ips[] = long2ip($teamPlayer->player->last->vpn_local_address);
@@ -234,18 +234,18 @@ class CronController extends Controller
     }
     touch("/tmp/cron-instances.lock");
     $action = SELF::ACTION_EXPIRED;
-    try {
-      // Get powered instances
-      $t = TargetInstance::find()->active();
-      foreach ($t->all() as $instance) {
-        if ($instance->player->last->vpn_local_address !== null && $pfonly === false) {
-          printf("Updating heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
-          $instance->touch('updated_at');
-        }
+    // Get powered instances
+    $t = TargetInstance::find()->active();
+    foreach ($t->all() as $instance) {
+      if ($instance->player->last->vpn_local_address !== null && $pfonly === false) {
+        printf("Updating heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
+        $instance->touch('updated_at');
       }
+    }
 
-      $t = TargetInstance::find()->pending_action(40);
-      foreach ($t->all() as $val) {
+    $t = TargetInstance::find()->pending_action(40);
+    foreach ($t->all() as $val) {
+      try {
         $ips = [];
         $dc = new DockerContainer($val->target);
         $dc->timeout = ($val->server->timeout ? $val->server->timeout : 2000);
@@ -264,7 +264,7 @@ class CronController extends Controller
           // Check existing environment variables for ETSCTF_FLAG keys
           foreach ($dc->targetVariables as $key => $tv) {
             // Replace the old key with the encrypted treasure
-            if ($tv->key == 'ETSCTF_FLAG' && array_key_exists('env',$encryptedTreasures['fs'])) {
+            if ($tv->key == 'ETSCTF_FLAG' && array_key_exists('env', $encryptedTreasures['fs'])) {
               $tv->val = str_replace($encryptedTreasures['fs']['env'][0]['src'], $encryptedTreasures['fs']['env'][0]['dest'], $tv->val);
               break;
             }
@@ -293,62 +293,58 @@ class CronController extends Controller
           echo date("Y-m-d H:i:s ") . "Expiring";
         }
         printf(" %s for %s (%s) at %s\n", $val->target->name, $val->player->username, $dc->name, $val->server->name);
-        try {
-          switch ($action) {
-            case SELF::ACTION_START:
-            case SELF::ACTION_RESTART:
-              if ($pfonly === false) {
-                try {
-                  $dc->destroy();
-                } catch (\Exception $e) {
-                }
-                $dc->pull();
-                $dc->spin();
+        switch ($action) {
+          case SELF::ACTION_START:
+          case SELF::ACTION_RESTART:
+            if ($pfonly === false) {
+              try {
+                $dc->destroy();
+              } catch (\Exception $e) {
               }
-              if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) {
-                  foreach ($val->player->teamPlayer->team->approvedMembers as $teamPlayer) {
-                    if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
-                      $ips[] = long2ip($teamPlayer->player->last->vpn_local_address);
-                    }
+              $dc->pull();
+              $dc->spin();
+            }
+            if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) {
+              foreach ($val->player->teamPlayer->team->approvedMembers as $teamPlayer) {
+                if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
+                  $ips[] = long2ip($teamPlayer->player->last->vpn_local_address);
                 }
-              } else if ((int)$val->player->last->vpn_local_address !== 0) {
-                $ips[] = long2ip($val->player->last->vpn_local_address);
               }
-              if ($ips != [])
-                Pf::add_table_ip($dc->name . '_clients', implode(' ', $ips), true);
-              $val->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
-              Pf::add_table_ip($dc->name, $val->ipoctet, true);
-              $val->reboot = 0;
-              if ($pfonly === false)
-                $val->save();
+            } else if ((int)$val->player->last->vpn_local_address !== 0) {
+              $ips[] = long2ip($val->player->last->vpn_local_address);
+            }
+            if ($ips != [])
+              Pf::add_table_ip($dc->name . '_clients', implode(' ', $ips), true);
+            $val->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
+            Pf::add_table_ip($dc->name, $val->ipoctet, true);
+            $val->reboot = 0;
+            if ($pfonly === false)
+              $val->save();
 
-              break;
-            case SELF::ACTION_EXPIRED:
-            case SELF::ACTION_DESTROY:
-              if ($pfonly === false) {
-                try {
-                  $dc->destroy();
-                } catch (\Exception $e) {
-                }
+            break;
+          case SELF::ACTION_EXPIRED:
+          case SELF::ACTION_DESTROY:
+            if ($pfonly === false) {
+              try {
+                $dc->destroy();
+              } catch (\Exception $e) {
               }
-              Pf::kill_table($dc->name, true);
-              Pf::kill_table($dc->name . '_clients', true);
-              if ($pfonly === false)
-                $val->delete();
-              break;
-            default:
-              printf("Error: Unknown action\n");
-          }
-        } catch (\Exception $e) {
-          if (method_exists($e, 'getErrorResponse'))
-            echo $e->getErrorResponse()->getMessage(), "\n";
-          else
-            echo $e->getMessage(), "\n";
+            }
+            Pf::kill_table($dc->name, true);
+            Pf::kill_table($dc->name . '_clients', true);
+            if ($pfonly === false)
+              $val->delete();
+            break;
+          default:
+            printf("Error: Unknown action\n");
         }
+      } catch (\Exception $e) {
+        if (method_exists($e, 'getErrorResponse'))
+          echo "Instances:", $e->getErrorResponse()->getMessage(), "\n";
+        else
+          echo "Instances:", $e->getMessage(), "\n";
       }
-    } catch (\Exception $e) {
-      echo "Instances:", $e->getMessage();
-    }
+    } // end foreach
     $this->actionInstancePfTables(true);
     @unlink("/tmp/cron-instances.lock");
   }
