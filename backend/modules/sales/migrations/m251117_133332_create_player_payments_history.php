@@ -13,7 +13,7 @@ class m251117_133332_create_player_payments_history extends Migration
       'id' => $this->primaryKey(),
       'player_id' => $this->integer()->notNull(),
       'payment_id' => $this->string(40)->notNull(),
-      'amount' => $this->integer()->unsigned()->defaultValue(0),
+      'amount' => $this->integer()->defaultValue(0),
       'metadata LONGTEXT COLLATE utf8mb4_bin',
       'created_at' => $this->datetime(),
       'CHECK (JSON_VALID(metadata))',
