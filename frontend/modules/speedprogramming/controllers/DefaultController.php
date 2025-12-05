@@ -173,7 +173,7 @@ class DefaultController extends \app\components\BaseController
           return $this->redirect(['/speedprogramming/default/view', 'id' => $id]);
         } catch (\Exception $e) {
           $transaction->rollback();
-          die(var_dump($e->getMessage()));
+          Yii::error($e->getMessage());
           Yii::$app->session->setFlash('error', 'Failed to accept your submission.');
           return $this->redirect(['/speedprogramming/default/view', 'id' => $id]);
         }
