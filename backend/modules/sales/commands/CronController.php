@@ -40,7 +40,7 @@ class CronController extends Controller
           else
             printf("Inactive: %s %s => %s / %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id, \Yii::$app->formatter->asRelativeTime($rec->ending));
 
-          if ($rec->product) {
+          if ($rec->product && $rec->active) {
             $notif = new \app\modules\activity\models\Notification;
             $notif->player_id = $rec->player_id;
             $notif->category = 'swal:info';
