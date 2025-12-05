@@ -51,7 +51,7 @@ class PlayerProduct extends \yii\db\ActiveRecord
   {
     return [
       [['ending', 'metadata', 'created_at', 'updated_at'], 'default', 'value' => null],
-      [['player_id', 'price_id','product_id'], 'required'],
+      [['player_id', 'price_id', 'product_id'], 'required'],
       [['player_id'], 'integer'],
       [['ending', 'metadata', 'created_at', 'updated_at'], 'safe'],
       [['price_id'], 'string', 'max' => 32],
@@ -111,5 +111,15 @@ class PlayerProduct extends \yii\db\ActiveRecord
   public static function find()
   {
     return new PlayerProductQuery(get_called_class());
+  }
+
+  /**
+   * Gets decoded json metadata for [[PlayerProduct]].
+   *
+   * @return StdClass
+   */
+  public function getMetadataObj()
+  {
+    return json_decode($this->metadata);
   }
 }
