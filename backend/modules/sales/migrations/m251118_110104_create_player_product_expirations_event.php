@@ -15,7 +15,7 @@ class m251118_110104_create_player_product_expirations_event extends Migration
   public function up()
   {
     $this->db->createCommand($this->DROP_SQL)->execute();
-    $this->db->createCommand($this->CREATE_SQL)->execute();
+    //$this->db->createCommand($this->CREATE_SQL)->execute();
   }
 
   public function down()
