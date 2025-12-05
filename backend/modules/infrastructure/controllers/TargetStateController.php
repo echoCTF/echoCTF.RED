@@ -109,7 +109,7 @@ class TargetStateController extends \app\components\BaseController
   {
     $searchModel = new TargetStateSearch();
     $query = $searchModel->search(['TargetStateSearch' => Yii::$app->request->post()]);
-    //die(var_dump(Yii::$app->request->post()));
+
     $query->pagination = false;
 
     $trans = Yii::$app->db->beginTransaction();
@@ -124,8 +124,8 @@ class TargetStateController extends \app\components\BaseController
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] records synced', ['counter' => intval($counter)]));
     } catch (\Exception $e) {
       $trans->rollBack();
-      die(var_dump($e->getMessage()));
-      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to sync records'));
+      Yii::error($e->getMessage());
+      Yii::$app->session->setFlash('error', 'Failed to sync records: '.$e->getMessage());
     }
     return $this->redirect(['index']);
   }

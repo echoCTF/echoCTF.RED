@@ -99,7 +99,6 @@ class PlayerLastSearch extends PlayerLast
                 ]
             ),
         ]);
-        //die(var_dump($query->createCommand()->rawSql));
 
         return $dataProvider;
 

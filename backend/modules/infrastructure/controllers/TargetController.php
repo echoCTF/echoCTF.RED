@@ -221,7 +221,7 @@ class TargetController extends \app\components\BaseController
 
         $stream->wait();
       } catch (\Exception $e) {
-        die(var_dump($e->getMessage()));
+        Yii::$app->session->setFlash('error', $e->getMessage());
       }
     } else {
       $form->tty = true;
