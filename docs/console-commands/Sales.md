@@ -20,3 +20,8 @@ Usage: `./backend/yii sales/stripe-import-products`
 Delete inactive subscriptions
 
 Usage: `./backend/yii sales/delete-inactive`
+
+## Process Expired Player Products
+Process expired player products
+
+Usage: `./backend/yii sales/expired-player-products`
