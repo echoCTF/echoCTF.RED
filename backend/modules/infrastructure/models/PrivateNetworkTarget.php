@@ -2,6 +2,8 @@
 
 namespace app\modules\infrastructure\models;
 
+use yii\behaviors\AttributeTypecastBehavior;
+use yii\behaviors\TimestampBehavior;
 use app\modules\gameplay\models\Target;
 use app\modules\infrastructure\models\Server;
 
@@ -32,6 +34,23 @@ class PrivateNetworkTarget extends \yii\db\ActiveRecord
     return 'private_network_target';
   }
 
+  public function behaviors()
+  {
+    return [
+      'typecast' => [
+        'class' => AttributeTypecastBehavior::class,
+        'attributeTypes' => [
+          'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'private_network_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+        ],
+        'typecastAfterValidate' => false,
+        'typecastBeforeSave' => true,
+        'typecastAfterFind' => true,
+      ],
+
+    ];
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -40,7 +59,7 @@ class PrivateNetworkTarget extends \yii\db\ActiveRecord
     return [
       [['private_network_id', 'target_id', 'ip', 'server_id'], 'default', 'value' => null],
       [['state'], 'default', 'value' => 0],
-      [['private_network_id', 'target_id', 'ip', 'server_id','state'], 'integer'],
+      [['private_network_id', 'target_id', 'ip', 'server_id', 'state'], 'integer'],
       ['ipoctet', 'ip'],
       [['private_network_id'], 'exist', 'skipOnError' => true, 'targetClass' => PrivateNetwork::class, 'targetAttribute' => ['private_network_id' => 'id']],
       [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
@@ -92,7 +111,7 @@ class PrivateNetworkTarget extends \yii\db\ActiveRecord
    */
   public function getServer()
   {
-    return $this->hasOne(Target::class, ['id' => 'server_id']);
+    return $this->hasOne(Server::class, ['id' => 'server_id']);
   }
 
   /**
@@ -119,4 +138,51 @@ class PrivateNetworkTarget extends \yii\db\ActiveRecord
     unset($this->ipoctet);
     return parent::beforeSave($insert);
   }
+
+  /**
+   * Find the IP to use for the target
+   *
+   * @return string
+   */
+  public function convertIdToIp()
+  {
+    $integer = $this->id % (256 * 256);
+
+    $lastByte1 = ($integer >> 8) & 0xFF;
+    $lastByte2 = $integer & 0xFF;
+
+    return '10.10.' . $lastByte1 . '.' . $lastByte2;
+  }
+
+  public function getEncryptedTreasures($playerId=null)
+  {
+    if($playerId===null)
+      $playerId=$this->privateNetwork->name."_".$this->privateNetwork->player_id;
+    $query = \app\modules\gameplay\models\Treasure::find()
+      ->select([
+        'id',
+        'code',
+        new \yii\db\Expression(
+          "MD5(HEX(AES_ENCRYPT(CONCAT(code, :playerId), :secretKey))) AS encrypted_code",
+          [':playerId' => $playerId, ':secretKey' => Yii::$app->sys->treasure_secret_key]
+        ),
+        'target_id',
+        'location',
+        'category',
+      ])
+      ->where(['target_id' => $this->target_id]);
+    $treasures = [];
+    foreach ($query->all() as $t) {
+      if ($t->category == 'env' && ($t->location == 'environment' || $t->location == '')) {
+        $treasures['env'][] = ["src" => $t->code, 'dest' => $t->encrypted_code];
+      } else if (str_contains($t->location, $t->code)) {
+        $treasures['mv'][] = ["src" => $t->location, 'dest' => str_replace($t->code, $t->encrypted_code, $t->location)];
+      } else {
+        $treasures['sed'][] = ["src" => $t->code, 'dest' => $t->encrypted_code, 'file' => $t->location];
+      }
+    }
+
+    return ['fs' => $treasures];
+  }
+
 }
