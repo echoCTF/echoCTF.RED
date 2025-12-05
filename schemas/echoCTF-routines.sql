@@ -535,9 +535,12 @@ BEGIN
 END ;;
 
 
-DROP PROCEDURE IF EXISTS `get_player_pf_networks` ;;
-CREATE PROCEDURE `get_player_pf_networks`(IN usid INT)
+DROP PROCEDURE IF EXISTS get_player_pf_networks ;;
+CREATE PROCEDURE get_player_pf_networks(IN usid INT)
 BEGIN
+DECLARE tid INTEGER;
+SELECT team_id INTO tid FROM team_player WHERE player_id=usid;
+
   SELECT codename as netname FROM network WHERE (codename IS NOT NULL AND active=1) AND (public=1 or id IN (SELECT network_id FROM network_player WHERE player_id=usid))
   UNION
   SELECT LOWER(CONCAT(t2.name,'_',player_id)) as netname
@@ -553,6 +556,16 @@ BEGIN
         AND (
           memc_get('sysconfig:team_visible_instances') IS NOT NULL
           OR team_allowed = 1
+        )
+    )
+    UNION
+    SELECT name FROM private_network
+    WHERE player_id=usid
+     OR (team_accessible=1
+           AND player_id IN (
+            SELECT player_id
+            FROM team_player
+            WHERE team_id=tid AND approved=1
         )
     );
 END ;;
