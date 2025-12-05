@@ -5,6 +5,7 @@ namespace app\modules\sales\commands;
 use yii\console\Controller;
 use yii\helpers\Console;
 use app\modules\sales\models\Product;
+use app\modules\sales\models\PlayerProduct;
 use app\modules\sales\models\PlayerSubscription;
 use app\modules\sales\models\PlayerCustomerSearch as PlayerCustomer;
 use yii\base\UserException;
@@ -99,6 +100,40 @@ class CronController extends Controller
     } catch (\Exception $e) {
       $transaction->rollBack();
       echo "Failed to delete inactive subscriptions " . $e->getMessage() . "\n";
+    }
+  }
+  /**
+   * Expire Player Products taking care of cases where instances
+   * or private networks are assigned to them.
+   */
+  public function actionExpiredPlayerProducts()
+  {
+    foreach (PlayerProduct::find()->expired()->all() as $pp) {
+      $notification_title = \Yii::t('app', '{product_name} expired', ['product_name' => $pp->product->name]);
+      $notification_body = \Yii::t('app', 'Your {product_name} has expired. Feel free to get a new one any time. Thank you for your support!', ['product_name' => $pp->product->name]);
+      $player = $pp->player; // Get a copy of the player model
+
+      if (isset($pp->metadataObj->private_network_id) && ($pn = \app\modules\infrastructure\models\PrivateNetwork::findOne(intval($pp->metadataObj->private_network_id))) !== null) {
+        $updatedRecords = \app\modules\infrastructure\models\PrivateNetworkTarget::updateAll(['state' => 2], [
+          'and',
+          ['!=', 'state', 2],
+          ['is not', 'server_id', null],
+          ['=', 'private_network_id', intval($pp->metadataObj->private_network_id)]
+        ]);
+        $totalRecords = \app\modules\infrastructure\models\PrivateNetworkTarget::find()->andWhere(['state' => 2, 'server_id' => null, 'private_network_id' => intval($pp->metadataObj->private_network_id)])->count();
+
+        if ($totalRecords === count($pn->privateTargets)) {
+          if ($pp->delete() && $pn->delete()) // Delete the player product
+            $player->notify('swal:info', $notification_title, $notification_body); // notify player
+          else
+            throw new UserException('Failed to delete Player Product or Private Network.');
+        }
+      } else {
+        if ($pp->delete()) // Delete the player product
+          $player->notify('swal:info', $notification_title, $notification_body); // notify player
+        else
+          throw new UserException('Failed to delete Player Product.');
+      }
     }
   }
 }
