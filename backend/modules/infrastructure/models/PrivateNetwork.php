@@ -3,9 +3,10 @@
 namespace app\modules\infrastructure\models;
 
 use Yii;
-use app\modules\frontend\models\Player;
+use yii\behaviors\AttributeTypecastBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\Expression;
+use app\modules\frontend\models\Player;
 
 /**
  * This is the model class for table "private_network".
@@ -39,6 +40,17 @@ class PrivateNetwork extends \yii\db\ActiveRecord
         'updatedAtAttribute' => false,
         'value' => new Expression('NOW()'),
       ],
+      'typecast' => [
+        'class' => AttributeTypecastBehavior::class,
+        'attributeTypes' => [
+          'team_accessible' => AttributeTypecastBehavior::TYPE_BOOLEAN,
+          'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+        ],
+        'typecastAfterValidate' => false,
+        'typecastBeforeSave' => true,
+        'typecastAfterFind' => true,
+      ],
+
     ];
   }
 
@@ -78,6 +90,16 @@ class PrivateNetwork extends \yii\db\ActiveRecord
   public function getPlayer()
   {
     return $this->hasOne(Player::class, ['id' => 'player_id']);
+  }
+
+  /**
+   * Gets query for [[Targets]].
+   *
+   * @return \yii\db\ActiveQuery|TargetQuery
+   */
+  public function getPrivateTargets()
+  {
+    return $this->hasMany(PrivateNetworkTarget::class, ['private_network_id' => 'id']);
   }
 
   /**
