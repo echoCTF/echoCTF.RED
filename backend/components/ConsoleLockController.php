@@ -33,8 +33,9 @@ class ConsoleLockController extends Controller
   {
     if (\Yii::$app->controller->action->id != 'index') {
       $lock = sprintf('/tmp/%s-%s.lock', \Yii::$app->controller->id, $action->id);
-      // clear your custom lock here
+      // Check for lock existance
       $this::lockCheck($lock);
+      // Request a lock
       $this::lockGet($lock);
     }
 
@@ -45,6 +46,7 @@ class ConsoleLockController extends Controller
   {
     if (\Yii::$app->controller->action->id != 'index') {
       $lock = sprintf('/tmp/%s-%s.lock', \Yii::$app->controller->id, $action->id);
+      // Clear the lock
       $this::lockClear($lock);
     }
 
