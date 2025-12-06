@@ -7,6 +7,7 @@ use yii\helpers\Console;
 use app\modules\sales\models\Product;
 use app\modules\sales\models\PlayerProduct;
 use app\modules\sales\models\PlayerSubscription;
+use app\modules\sales\models\PlayerPaymentHistory;
 use app\modules\sales\models\PlayerCustomerSearch as PlayerCustomer;
 use yii\base\UserException;
 
@@ -76,6 +77,10 @@ class CronController extends Controller
     Product::FetchStripe();
     echo "Importing Player subscriptions\n";
     PlayerSubscription::FetchStripe();
+    echo "Importing Payments\n";
+    PlayerPaymentHistory::FetchStripePayments();
+    echo "Importing Refunds\n";
+    PlayerPaymentHistory::FetchStripeRefunds();
   }
 
   /**
@@ -134,6 +139,38 @@ class CronController extends Controller
         else
           throw new UserException('Failed to delete Player Product.');
       }
+    }
+  }
+
+  /**
+   * Retrieve all payments from Stripe
+   */
+  public function actionStripeImportPayments()
+  {
+    $transaction = \Yii::$app->db->beginTransaction();
+    try {
+      echo "Importing Payments\n";
+      PlayerPaymentHistory::FetchStripePayments();
+      PlayerPaymentHistory::FetchStripeRefunds();
+      $transaction->commit();
+    } catch (\Exception $e) {
+      $transaction->rollBack();
+      echo "Failed to import payments history: " . $e->getMessage() . "\n";
+    }
+  }
+  /**
+   * Retrieve all refunds from Stripe
+   */
+  public function actionStripeImportRefunds()
+  {
+    $transaction = \Yii::$app->db->beginTransaction();
+    try {
+      echo "Importing Refunds\n";
+      PlayerPaymentHistory::FetchStripeRefunds();
+      $transaction->commit();
+    } catch (\Exception $e) {
+      $transaction->rollBack();
+      echo "Failed to import refunds: " . $e->getMessage() . "\n";
     }
   }
 }
