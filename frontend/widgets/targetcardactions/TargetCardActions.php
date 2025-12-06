@@ -10,11 +10,13 @@ use yii\helpers\ArrayHelper;
 
 class TargetCardActions extends Widget
 {
+  public $inline = false;
   public $model;
   public $identity;
   public $htmlOptions = ['class' => 'card bg-dark solves'];
   public $target_actions;
   public $target_instance;
+  public $private_network_target;
   public $linkOptions = [
     'data-pjax' => '0',
     'data-method' => 'POST',
@@ -44,17 +46,18 @@ class TargetCardActions extends Widget
   public function prep_actions()
   {
     if ($this->identity->player_id === intval(Yii::$app->user->id)) {
-
       $this->prep_instance_actions();
-      if(Yii::$app->sys->disable_ondemand_operations===false)
+      if (Yii::$app->sys->disable_ondemand_operations === false) {
         $this->prep_ondemand_actions();
+      }
+      $this->prep_private_network_target_actions();
     }
   }
 
   public function renderDropdown()
   {
 
-    if ($this->target_actions !== null) {
+    if ($this->target_actions !== null && $this->inline !== true) {
       echo '<div class="dropdown target-actions">' .
         '<a href="#" data-toggle="dropdown" class="dropdown-toggle text-secondary"><i class="fas fa-cogs" style="font-size: 1.3em;"></i><b class="caret"></b></a>' . \yii\bootstrap\Dropdown::widget([
           'encodeLabels' => false,
@@ -63,6 +66,10 @@ class TargetCardActions extends Widget
         ]) . '</div>';
     }
   }
+
+  /**
+   * Prepare target instance related actions
+   */
   public function prep_instance_actions()
   {
     if (intval(Yii::$app->db->createCommand('select count(*) from server')->cache(true)->queryScalar()) == 0) return;
@@ -85,6 +92,7 @@ class TargetCardActions extends Widget
         'linkOptions' => $linkOptions
       ];
     } elseif ($this->target_instance === NULL) {
+
       $this->target_actions[] = [
         'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>'),
         'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id]),
@@ -92,13 +100,12 @@ class TargetCardActions extends Widget
         'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn a private instance of this target. Once booted, this instance will only be accessible by you and its IP will become visible here.')])
       ];
       // display start team instance
-      if(\Yii::$app->user->identity->subscription !== null && \Yii::$app->user->identity->subscription->active > 0 && \Yii::$app->user->identity->subscription->product !== null)
-      {
+      if (\Yii::$app->user->identity->subscription !== null && \Yii::$app->user->identity->subscription->active > 0 && \Yii::$app->user->identity->subscription->product !== null) {
         $metadata = json_decode(\Yii::$app->user->identity->subscription->product->metadata);
-        if (isset($metadata->team_subscription) && boolval($metadata->team_subscription)===true) {
+        if (isset($metadata->team_subscription) && boolval($metadata->team_subscription) === true) {
           $this->target_actions[] = [
             'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a team instance</b>'),
-            'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id,'team'=>true]),
+            'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id, 'team' => true]),
             'options' => ['style' => 'white-space: nowrap;'],
             'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn an instance of this target for your entire team. Once booted, this instance will only be accessible by you and your team. The IP will become visible here.')])
           ];
@@ -111,13 +118,15 @@ class TargetCardActions extends Widget
         'options' => ['style' => 'white-space: nowrap;'],
         'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn a private instance of this target. However, you already have one instance running for ' . $this->target_instance->target->name . '. Do you want to schedule the existing instance to be destroyed in order to be able to spawn a new one?')])
       ];
-    } elseif ($this->target_instance->target_id === $this->model->id && $this->target_instance->reboot < 2) {
-      $this->target_actions[] = [
-        'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Reboot your instance</b>'),
-        'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id]),
-        'options' => ['style' => 'white-space: nowrap;'],
-        'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to reboot your instance. You will receive a notification once the operation is complete.')])
-      ];
+    } elseif (($this->target_instance->target_id === $this->model->id && $this->target_instance->reboot < 2)) {
+      if ($this->target_instance->ip !== null) {
+        $this->target_actions[] = [
+          'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Reboot your instance</b>'),
+          'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id]),
+          'options' => ['style' => 'white-space: nowrap;'],
+          'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to reboot your instance. You will receive a notification once the operation is complete.')])
+        ];
+      }
       $this->target_actions[] = [
         'label' => \Yii::t('app', '<b><i class="fas fa-power-off"></i>&nbsp; Shut your instance</b>'),
         'url' => Url::to(['/target/default/shut', 'id' => $this->model->id]),
@@ -126,6 +135,10 @@ class TargetCardActions extends Widget
       ];
     }
   }
+
+  /**
+   * Prepare links for ondemand based targets
+   */
   public function prep_ondemand_actions()
   {
     if ($this->target_instance !== null && $this->target_instance->target_id == $this->model->id)
@@ -145,5 +158,31 @@ class TargetCardActions extends Widget
         'linkOptions' => $this->linkOptions,
       ];
     }
+  }
+
+  /**
+   * Prepare links for targets belonging to a private network
+   */
+  public function prep_private_network_target_actions()
+  {
+    if ($this->model->private_network_id === null)
+      return;
+
+    if(\app\modules\network\models\PrivateNetwork::findOne(['id'=>$this->model->private_network_id,'player_id'=>Yii::$app->user->id])!==NULL)
+      if ($this->model->ipoctet !== '0.0.0.0' && $this->model->ipoctet !== NULL && intval($this->model->state) === 0) {
+        $this->target_actions[] = [
+          'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Reboot target</b>'),
+          'url' => Url::to(['/network/private/spin', 'target_id' => $this->model->id, 'network_id' => $this->model->private_network_id]),
+          'options' => ['style' => 'white-space: nowrap;'],
+          'linkOptions' => $this->linkOptions,
+        ];
+      }
+
+    $this->target_actions[] = [
+      'label' => \Yii::t('app', '<b><i class="fas fa-eye"></i>&nbsp; Go to target</b>'),
+      'url' => Url::to(['/target/default/view', 'id' => $this->model->id]),
+      'options' => ['style' => 'white-space: nowrap;'],
+      'linkOptions' => $this->linkOptions,
+    ];
   }
 }

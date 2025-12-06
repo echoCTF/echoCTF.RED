@@ -1122,3 +1122,16 @@ mark {
 .tooltip { top: 0; }
 
 .dropdown-menu.show{z-index: 1059;}
+
+.card_actions {
+ min-width: 40px;
+}
+
+/* Fix target actions opening in random places */
+.target-actions .dropdown-menu {
+  position: absolute !important;
+  top: 100% !important;
+  right: 0 !important;
+  left: auto !important;
+  transform: none !important;
+}

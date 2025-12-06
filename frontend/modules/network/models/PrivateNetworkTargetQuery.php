@@ -1,0 +1,34 @@
+<?php
+
+namespace app\modules\network\models;
+
+/**
+ * This is the ActiveQuery class for [[PrivateNetworkTarget]].
+ *
+ * @see PrivateNetworkTarget
+ */
+class PrivateNetworkTargetQuery extends \yii\db\ActiveQuery
+{
+    /*public function active()
+    {
+        return $this->andWhere('[[status]]=1');
+    }*/
+
+    /**
+     * {@inheritdoc}
+     * @return PrivateNetworkTarget[]|array
+     */
+    public function all($db = null)
+    {
+        return parent::all($db);
+    }
+
+    /**
+     * {@inheritdoc}
+     * @return PrivateNetworkTarget|array|null
+     */
+    public function one($db = null)
+    {
+        return parent::one($db);
+    }
+}

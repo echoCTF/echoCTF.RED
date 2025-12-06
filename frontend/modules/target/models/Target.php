@@ -16,10 +16,14 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property array $treasureCategories
  * @property bool $spinAllowed
  * @property bool $spinDenied
+ * @property int $private_network_id
+ * @property int $state
  *
  */
 class Target extends TargetAR
 {
+  public $private_network_id;
+  public $state;
   const DEFAULT_LOGO = '/images/default_target.png';
   public $difficulties = [
     "beginner",
@@ -188,6 +192,7 @@ class Target extends TargetAR
   {
     if (Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id === $this->id) {
       $msg = Yii::t('app', "The IP of your private instance.");
+
       if (Yii::$app->user->identity->instance->ip === null) {
         $msg = Yii::t('app', "Your instance is being powered up, please wait...");
       }

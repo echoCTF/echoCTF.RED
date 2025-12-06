@@ -12,13 +12,14 @@ use app\widgets\Twitter;
     ListView::widget([
         'options'=>['class'=>'list-view row'],
         'itemOptions' => [
-          'tag' => false,
+          'class'=>'col col-sm-4 d-flex align-items-stretch'
         ],
         'dataProvider' => $dataProvider,
         'layout'=>"{items}",
         'summary'=>false,
         'pager'=>false,
         'itemView' => '_target_card',
+        'viewParams'=>['identity'=>Yii::$app->user->identity->profile]
     ]);
     ?>
   </div>

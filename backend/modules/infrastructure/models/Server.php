@@ -113,4 +113,20 @@ class Server extends \yii\db\ActiveRecord
       return false;
     }
   }
+
+  /**
+   * Find the next available free server least used.
+   *
+   * @return Server|null
+   */
+  public static function findNextFreeOne()
+  {
+    return self::find()
+      ->leftJoin('target_instance t2', 't2.server_id = server.id')
+      ->leftJoin('private_network_target pnt', 'pnt.server_id = server.id')
+      ->groupBy('server.id')
+      ->orderBy(['(COUNT(t2.server_id) + COUNT(pnt.server_id))' => SORT_ASC])
+      ->limit(1)
+      ->one();
+  }
 }

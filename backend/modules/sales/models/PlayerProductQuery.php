@@ -9,6 +9,13 @@ namespace app\modules\sales\models;
  */
 class PlayerProductQuery extends \yii\db\ActiveQuery
 {
+  public function expired($interval = null)
+  {
+    if ($interval === null)
+      return $this->andWhere('ending < NOW()');
+
+    return $this->andWhere(['<', 'ending', new \yii\db\Expression("NOW() - INTERVAL $interval")]);
+  }
   /**
    * {@inheritdoc}
    * @return PlayerProduct[]|array

@@ -12,7 +12,7 @@
     "minimum-stability": "stable",
     "require": {
         "php": ">=8.0.0",
-        "yiisoft/yii2": "2.0.50",
+        "yiisoft/yii2": "2.0.53",
         "yiisoft/yii2-bootstrap": "~2.0.11",
         "yiisoft/yii2-bootstrap4": "^2.0.11",
         "overals/yii2-whois": "~1.0.2",
@@ -127,16 +127,16 @@
             "type": "package",
             "package": {
                 "name": "bower-asset/punycode",
-                "version": "v2.3.1",
+                "version": "v1.4.1",
                 "source": {
                     "type": "git",
                     "url": "https://github.com/mathiasbynens/punycode.js.git",
-                    "reference": "9e1b2cda98d215d3a73fcbfe93c62e021f4ba768"
+                    "reference": "0fbadd6e81f3a0ce06c38998040d6db6bdfbc5c9"
                 },
                 "dist": {
                     "type": "zip",
-                    "url": "https://api.github.com/repos/mathiasbynens/punycode.js/zipball/9e1b2cda98d215d3a73fcbfe93c62e021f4ba768",
-                    "reference": "9e1b2cda98d215d3a73fcbfe93c62e021f4ba768"
+                    "url": "https://api.github.com/repos/mathiasbynens/punycode.js/zipball/0fbadd6e81f3a0ce06c38998040d6db6bdfbc5c9",
+                    "reference": "0fbadd6e81f3a0ce06c38998040d6db6bdfbc5c9"
                 },
                 "type": "bower-asset"
             }

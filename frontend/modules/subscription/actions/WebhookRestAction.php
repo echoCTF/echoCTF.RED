@@ -212,11 +212,27 @@ class WebhookRestAction extends \yii\rest\Action
                 'created_at' => new Expression('NOW()'),
               ])->execute();
           } catch (\Exception $e) {
+            Yii::error($e);
           }
         }
 
         break;
+      case 'charge.refunded':
+        try {
+          $player = Player::findOne(['stripe_customer_id' => $object->customer]);
+          if ($player !== null)
+            Yii::$app->db->createCommand()->insert('player_payment_history', [
+              'payment_id' => $object->id,
+              'player_id' => $player->id,
+              'amount' => -$object->amount,
+              'metadata' => \yii\helpers\Json::encode($object, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
+              'created_at' => new Expression('NOW()'),
+            ])->execute();
+        } catch (\Exception $e) {
+          Yii::error($e);
+        }
 
+        break;
       default:
         // Unhandled event type
     }

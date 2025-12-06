@@ -234,6 +234,8 @@ $this->registerCssFile('@web/js/hljs/styles/a11y-dark.min.css',['depends' => [\y
             ['label' => 'Variables', 'url' => ['/infrastructure/target-variable/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
             ['label' => 'Volumes', 'url' => ['/infrastructure/target-volume/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
             ['label' => 'Servers', 'url' => ['/infrastructure/server/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
+            ['label' => 'Private Networks', 'url' => ['/infrastructure/private-network/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
+            ['label' => 'Private Network Targets', 'url' => ['/infrastructure/private-network-target/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
             ['label' => 'Target Instance Audit', 'url' => ['/infrastructure/target-instance-audit/index'], 'visible' => !Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin,],
           ],
         ],

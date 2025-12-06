@@ -32,7 +32,6 @@ class TargetPlayerStateController extends \app\components\BaseController
   {
     $searchModel = new TargetPlayerStateSearch();
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-    //die(var_dump([Yii::$app->request->queryParams]));
 
     return $this->render('index', [
       'searchModel' => $searchModel,

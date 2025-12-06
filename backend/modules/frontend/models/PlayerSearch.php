@@ -116,7 +116,6 @@ class PlayerSearch extends Player
             'query' => $query,
         ]);
 
-        //die(var_dump($query->createCommand()->rawSql));
         $this->load($params);
 
         if (!$this->validate()) {

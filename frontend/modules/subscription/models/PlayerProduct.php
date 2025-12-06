@@ -104,6 +104,16 @@ class PlayerProduct extends \yii\db\ActiveRecord
   }
 
   /**
+   * Gets decoded json metadata for [[PlayerProduct]].
+   *
+   * @return StdClass
+   */
+  public function getMetadataObj()
+  {
+    return json_decode($this->metadata);
+  }
+
+  /**
    * {@inheritdoc}
    * @return PlayerSubscriptionQuery the active query used by this AR class.
    */
