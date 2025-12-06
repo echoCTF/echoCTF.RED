@@ -12,7 +12,7 @@ class m251117_133332_create_player_payments_history extends Migration
     $this->createTable('{{%player_payment_history}}', [
       'id' => $this->primaryKey(),
       'player_id' => $this->integer()->notNull(),
-      'payment_id' => $this->string(40)->notNull(),
+      'payment_id' => $this->string(40)->notNull()->unique(),
       'amount' => $this->integer()->defaultValue(0),
       'metadata LONGTEXT COLLATE utf8mb4_bin',
       'created_at' => $this->datetime(),
