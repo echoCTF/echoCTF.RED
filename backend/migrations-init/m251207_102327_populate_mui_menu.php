@@ -58,6 +58,7 @@ class m251207_102327_populate_mui_menu extends Migration
       'url' => ['/speedprogramming/default/index'],
       'icon' => 'fas fa-money-check-alt',
       'visibility' => 'admin',
+      'enabled'=>'0',
       'items' => [
         ['label' => 'Problems', 'url' => ['/speedprogramming/speed-problem/index'], 'visibility' => 'admin' ,],
         ['label' => 'Solutions', 'url' => ['/speedprogramming/default/index'], 'visibility' => 'admin' ,],
@@ -106,6 +107,7 @@ class m251207_102327_populate_mui_menu extends Migration
       'label' => '<i class="bi bi-buildings-fill"></i> SmartCity',
       'url' => ['/smartcity/default/index'],
       'visibility' => 'user',
+      'enabled'=>0,
       'items' => [
         ['label' => 'Infrastructure', 'url' => ['/smartcity/infrastructure/index'], 'visibility' => 'user',],
         ['label' => 'Infrastructure Targets', 'url' => ['/smartcity/infrastructure-target/index'], 'visibility' => 'user',],
@@ -182,10 +184,10 @@ class m251207_102327_populate_mui_menu extends Migration
         ['label' => 'Hints', 'url' => ['/gameplay/hint/index'], 'visibility' => 'admin',],
         ['label' => 'Achievements', 'url' => ['/gameplay/achievement/index'], 'visibility' => 'admin',],
         ['label' => 'Badges', 'url' => ['/gameplay/badge/index'], 'visibility' => 'admin',],
-        ['label' => 'Tutorials', 'url' => ['/gameplay/tutorial/index'], 'visibility' => 'admin',],
-        ['label' => 'Tutorial Target', 'url' => ['/gameplay/tutorial-target/index'], 'visibility' => 'admin',],
-        ['label' => 'Tutorial Tasks', 'url' => ['/gameplay/tutorial-task/index'], 'visibility' => 'admin',],
-        ['label' => 'Tutorial Task Dependencies', 'url' => ['/gameplay/tutorial-task-dependency/index'], 'visibility' => 'admin',],
+        ['label' => 'Tutorials', 'url' => ['/gameplay/tutorial/index'], 'visibility' => 'admin','enabled'=>0],
+        ['label' => 'Tutorial Target', 'url' => ['/gameplay/tutorial-target/index'], 'visibility' => 'admin','enabled'=>0],
+        ['label' => 'Tutorial Tasks', 'url' => ['/gameplay/tutorial-task/index'], 'visibility' => 'admin','enabled'=>0],
+        ['label' => 'Tutorial Task Dependencies', 'url' => ['/gameplay/tutorial-task-dependency/index'], 'visibility' => 'admin','enabled'=>0],
         ['label' => 'Credentials', 'url' => ['/gameplay/credential/index'], 'visibility' => 'admin',],
       ],
     ],
@@ -222,13 +224,13 @@ class m251207_102327_populate_mui_menu extends Migration
     $root=0;
     foreach($this->items as $menu)
     {
-      $this->insert('mui_menu',['label'=>$menu['label'],'url'=>$menu['url'][0],'visibility'=>$menu['visibility'],'sort_order'=>$root++]);
+      $this->insert('mui_menu',['label'=>$menu['label'],'url'=>$menu['url'][0],'visibility'=>$menu['visibility'],'sort_order'=>$root++,'enabled'=>intval(@$menu['enabled'] ?? 1 )]);
       $id=Yii::$app->db->getLastInsertID();
       $child=0;
       foreach($menu['items'] as $item)
       {
         if(is_array($item))
-          $this->insert('mui_menu',['label'=>$item['label'],'url'=>$item['url'][0],'visibility'=>$item['visibility'],'parent_id'=>$id,'sort_order'=>$child++]);
+          $this->insert('mui_menu',['label'=>$item['label'],'url'=>$item['url'][0],'visibility'=>$item['visibility'],'parent_id'=>$id,'sort_order'=>$child++,'enabled'=>intval(@$item['enabled'] ?? (@$menu['enabled'] ?? 1) )]);
         else
           $this->insert('mui_menu',['label'=>$item,'visibility'=>'admin','parent_id'=>$id,'sort_order'=>$child++]);
       }
@@ -241,22 +243,6 @@ class m251207_102327_populate_mui_menu extends Migration
    */
   public function safeDown()
   {
-    echo "m251207_102327_populate_mui_menu cannot be reverted.\n";
-
+    $this->truncateTable('mui_menu');
   }
-
-  /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m251207_102327_populate_mui_menu cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }
