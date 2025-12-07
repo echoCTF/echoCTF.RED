@@ -179,3 +179,13 @@ div.has-error>input:focus {
   /* Bootstrap monospace */
   font-size: 0.9em;
 }
+
+.dd-handle .dropdown-header {
+  color: gray;
+}
+
+h6.dropdown-header,h6.dropdown-header>div.dropdown-header {
+  padding-top: 0.1rem !important;
+  padding-bottom: 0.1rem !important;
+  font-weight: bold;
+}

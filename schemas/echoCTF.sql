@@ -526,7 +526,7 @@ CREATE TABLE `migration` (
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `migration` values ('m251126_122227_add_private_network_url_route',1);
+INSERT INTO `migration` values ('m251207_100542_create_mui_menu_table',1);
 --
 -- Table structure for table `migration_red`
 --
@@ -1960,6 +1960,22 @@ CREATE TABLE `private_network_target` (
   CONSTRAINT `fk-private_network_target-server_id` FOREIGN KEY (`server_id`) REFERENCES `server` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk-private_network_target-target_id` FOREIGN KEY (`target_id`) REFERENCES `target` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+DROP TABLE IF EXISTS `mui_menu`;
+CREATE TABLE `mui_menu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `label` varchar(255) NOT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `parent_id` int(11) DEFAULT NULL,
+  `sort_order` int(11) DEFAULT 0,
+  `visibility` set('all','guest','user','admin') NOT NULL DEFAULT 'admin',
+  `enabled` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`id`),
+  KEY `idx-mui_menu-parent_id` (`parent_id`),
+  KEY `idx-mui_menu-enabled` (`enabled`),
+  CONSTRAINT `fk-mui_menu-parent_id` FOREIGN KEY (`parent_id`) REFERENCES `mui_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
