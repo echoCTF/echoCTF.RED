@@ -56,5 +56,3 @@ $('#saveBtn').on('click', function () {
 JS;
 
 $this->registerJs($js, View::POS_READY);
-
-?>
