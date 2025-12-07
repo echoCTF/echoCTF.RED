@@ -22,10 +22,16 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
     'filterModel' => $searchModel,
     'columns' => [
       'id',
-      'label',
+      [
+        'attribute'=>'label',
+        'format'=>'html',
+      ],
       'url',
-      'parent_id',
-      'sort_order',
+      [
+        'attribute' => 'parent_id',
+        'format'=>'html',
+        'value' => function($model) { return $model->parent_id===null ? '(root)' : $model->parent->label; },
+      ],
       'visibility',
       [
         'class' => 'app\components\columns\BooleanColumn',
