@@ -315,7 +315,7 @@ class DefaultController extends \app\components\BaseController
 
   public function actionPayments()
   {
-    $payments = PlayerPaymentHistory::find()->mine();
+    $payments = PlayerPaymentHistory::find()->mine()->orderBy(['created_at'=>SORT_DESC]);
 
     $paymentsProvider = new ActiveDataProvider([
       'query' => $payments,
