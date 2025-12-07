@@ -15,7 +15,7 @@ class DbMenu extends ActiveRecord
   {
     return [
       [['label'], 'required'],
-      [['url', 'permission'], 'string', 'max' => 255],
+      [['url', 'visibilty'], 'string', 'max' => 255],
       [['parent_id', 'sort_order'], 'integer'],
       ['enabled','boolean'],
     ];
