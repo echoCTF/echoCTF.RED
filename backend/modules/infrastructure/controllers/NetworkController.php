@@ -123,14 +123,14 @@ class NetworkController extends \app\components\BaseController
         $pq->where(['=', 'id', $term]);
       }
       $results = array_values(ArrayHelper::map(
-        $pq->all(),
-        'id',
-        function ($model) {
-          return [
-            'id' => $model->id,
-            'label' => sprintf("(id: %d / %s) %s", $model->id, $model->codename, $model->name),
-          ];
-        }
+          $pq->all(),
+          'id',
+          function ($model) {
+            return [
+              'id' => $model->id,
+              'label' => sprintf('(id: %d / %s) %s', $model->id, $model->codename, $model->name),
+            ];
+          }
       ));
     }
     return $results;
@@ -142,7 +142,7 @@ class NetworkController extends \app\components\BaseController
     $notificationModel = new \app\modules\activity\models\Notification();
     if (Yii::$app->request->isPost) {
       Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-      $msg = "";
+      $msg = '';
       $ovpn = boolval(Yii::$app->request->post('Notification')['ovpn'] ?? 0);
       $online = boolval(Yii::$app->request->post('Notification')['online'] ?? 0);
       $notificationModel->load(Yii::$app->request->post());
@@ -150,14 +150,15 @@ class NetworkController extends \app\components\BaseController
       if ($notificationModel->validate() && $model->players) {
         $_p = [];
         foreach ($model->players as $player) {
-          if ($this->notifyLogic($player, $notificationModel, $ovpn, $online) !== NULL)
-            Yii::$app->session->addFlash('success', "Notified [" . $player->username . "].");
-          else
-            Yii::$app->session->addFlash('warning', "Player [" . $player->username . "] not notified due to filters.");
+          if ($this->notifyLogic($player, $notificationModel, $ovpn, $online) !== null) {
+            Yii::$app->session->addFlash('success', 'Notified [' . $player->username . '].');
+          } else {
+            Yii::$app->session->addFlash('warning', 'Player [' . $player->username . '] not notified due to filters.');
+          }
 
           $_p[] = $player->username;
         }
-        $msg = "Notified [" . implode(", ", $_p) . "]";
+        $msg = 'Notified [' . implode(', ', $_p) . ']';
         return ['status' => 'success', 'message' => $msg];
       }
       return ['status'=>'error', 'message'=>'Validation failed or network has no players'];
@@ -170,10 +171,12 @@ class NetworkController extends \app\components\BaseController
 
   private function notifyLogic($player, $notificationModel, $ovpn = false, $online = false)
   {
-    if ($ovpn && $player->playerLast->vpn_local_address===null)
+    if ($ovpn && $player->playerLast->vpn_local_address===null) {
       return null;
-    if ($online && !boolval($player->online))
+    }
+    if ($online && !boolval($player->online)) {
       return null;
+    }
     return $player->notify($notificationModel->category, $notificationModel->title, $notificationModel->body);
   }
 

@@ -19,33 +19,33 @@ class TargetInstanceAuditController extends \app\components\BaseController
     /**
      * {@inheritdoc}
      */
-    public function behaviors()
-    {
-        return ArrayHelper::merge(parent::behaviors(),[
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'truncate' => ['POST'],
-                ]
-            ]
-        ]);
-    }
+  public function behaviors()
+  {
+      return ArrayHelper::merge(parent::behaviors(), [
+          'verbs' => [
+              'class' => VerbFilter::class,
+              'actions' => [
+                  'truncate' => ['POST'],
+              ]
+          ]
+      ]);
+  }
 
 
     /**
      * Lists all TargetInstanceAudit models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-        $searchModel = new TargetInstanceAuditSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+  public function actionIndex()
+  {
+      $searchModel = new TargetInstanceAuditSearch();
+      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+      return $this->render('index', [
+          'searchModel' => $searchModel,
+          'dataProvider' => $dataProvider,
+      ]);
+  }
 
     /**
      * Truncate the existing records from TargetInstanceAudit table.
@@ -53,19 +53,16 @@ class TargetInstanceAuditController extends \app\components\BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionTruncate()
-    {
-        try
-        {
-            TargetInstanceAudit::deleteAll();
-            Yii::$app->session->setFlash('success', Yii::t('app',"All audit records have been deleted."));
-        }
-        catch(\Exception $e)
-        {
-            Yii::$app->session->setFlash('error', Yii::t('app',"Failed to delete audit records. <b>{exception}</b>",['exception'=>Html::encode($e->getMessage())]));
-        }
-        return $this->redirect(['index']);
+  public function actionTruncate()
+  {
+    try {
+        TargetInstanceAudit::deleteAll();
+        Yii::$app->session->setFlash('success', Yii::t('app', 'All audit records have been deleted.'));
+    } catch (\Exception $e) {
+        Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to delete audit records. <b>{exception}</b>', ['exception'=>Html::encode($e->getMessage())]));
     }
+      return $this->redirect(['index']);
+  }
 
     /**
      * Finds the TargetInstanceAudit model based on its primary key value.
@@ -74,12 +71,12 @@ class TargetInstanceAuditController extends \app\components\BaseController
      * @return TargetInstanceAudit the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
-        if (($model = TargetInstanceAudit::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+  protected function findModel($id)
+  {
+    if (($model = TargetInstanceAudit::findOne($id)) !== null) {
+        return $model;
     }
+
+      throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+  }
 }

@@ -50,11 +50,12 @@ class TargetOndemandController extends \app\components\BaseController
         return $this->redirect(['index']);
       }
     } catch (\Exception $e) {
-      if ($e->getCode() === "23000")
-        Yii::$app->session->setFlash('error', Yii::t('app', "Failed to add OnDemand entry for target. <b>A record for this target already existing</b>"));
-      else
-        Yii::$app->session->setFlash('error', Yii::t('app', "Failed to add OnDemand entry for target. <b>{exception}</b>", ['exception' => Html::encode($e->getMessage())]));
-      $model->updated_at = $model->created_at = "";
+      if ($e->getCode() === '23000') {
+        Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to add OnDemand entry for target. <b>A record for this target already existing</b>'));
+      } else {
+        Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to add OnDemand entry for target. <b>{exception}</b>', ['exception' => Html::encode($e->getMessage())]));
+      }
+      $model->updated_at = $model->created_at = '';
     }
 
     return $this->render('create', [
@@ -108,8 +109,9 @@ class TargetOndemandController extends \app\components\BaseController
     $model=$this->findModel($id);
     if ($model!==null && !$model->clear()) {
       \Yii::$app->getSession()->addFlash('error', Html::errorSummary($model));
-    } else
-      \Yii::$app->getSession()->addFlash('success', "Record synced!");
+    } else {
+      \Yii::$app->getSession()->addFlash('success', 'Record synced!');
+    }
 
     return $this->redirect(Yii::$app->request->referrer);
   }
@@ -131,8 +133,11 @@ class TargetOndemandController extends \app\components\BaseController
     try {
       $counter = 0;
       foreach ($query->getModels() as $q) {
-        if ($q->clear()) $counter++;
-        else $counter--;
+        if ($q->clear()) {
+          $counter++;
+        } else {
+          $counter--;
+        }
       }
 
       $trans->commit();
@@ -140,7 +145,7 @@ class TargetOndemandController extends \app\components\BaseController
     } catch (\Exception $e) {
       $trans->rollBack();
       Yii::error($e->getMessage());
-      Yii::$app->session->setFlash('error', 'Failed to sync records: '.$e->getMessage());
+      Yii::$app->session->setFlash('error', 'Failed to sync records: ' . $e->getMessage());
     }
     return $this->redirect(Yii::$app->request->referrer);
   }

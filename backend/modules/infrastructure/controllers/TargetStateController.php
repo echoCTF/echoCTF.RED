@@ -9,6 +9,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\helpers\Html;
+
 /**
  * TargetStateController implements the CRUD actions for TargetState model.
  */
@@ -18,34 +19,34 @@ class TargetStateController extends \app\components\BaseController
      * Lists all TargetState models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-        $searchModel = new TargetStateSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+  public function actionIndex()
+  {
+      $searchModel = new TargetStateSearch();
+      $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+      return $this->render('index', [
+          'searchModel' => $searchModel,
+          'dataProvider' => $dataProvider,
+      ]);
+  }
 
     /**
      * Creates a new TargetState model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new TargetState();
+  public function actionCreate()
+  {
+      $model = new TargetState();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        return $this->redirect(['view', 'id' => $model->id]);
     }
+
+      return $this->render('create', [
+          'model' => $model,
+      ]);
+  }
 
     /**
      * Updates an existing TargetState model.
@@ -54,18 +55,18 @@ class TargetStateController extends \app\components\BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
-    {
-        $model = $this->findModel($id);
+  public function actionUpdate($id)
+  {
+      $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        return $this->redirect(['index']);
     }
+
+      return $this->render('update', [
+          'model' => $model,
+      ]);
+  }
 
     /**
      * Deletes an existing TargetState model.
@@ -74,12 +75,12 @@ class TargetStateController extends \app\components\BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
+  public function actionDelete($id)
+  {
+      $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
-    }
+      return $this->redirect(['index']);
+  }
 
   /**
    * Syncs an existing target state
@@ -93,8 +94,9 @@ class TargetStateController extends \app\components\BaseController
     $model=$this->findModel($id);
     if ($model!==null && !$model->sync()) {
       \Yii::$app->getSession()->addFlash('error', Html::errorSummary($model));
-    } else
-      \Yii::$app->getSession()->addFlash('success', "Record synced!");
+    } else {
+      \Yii::$app->getSession()->addFlash('success', 'Record synced!');
+    }
 
     return $this->redirect(['index']);
   }
@@ -116,8 +118,11 @@ class TargetStateController extends \app\components\BaseController
     try {
       $counter = 0;
       foreach ($query->getModels() as $q) {
-        if ($q->sync()) $counter++;
-        else $counter--;
+        if ($q->sync()) {
+          $counter++;
+        } else {
+          $counter--;
+        }
       }
 
       $trans->commit();
@@ -125,7 +130,7 @@ class TargetStateController extends \app\components\BaseController
     } catch (\Exception $e) {
       $trans->rollBack();
       Yii::error($e->getMessage());
-      Yii::$app->session->setFlash('error', 'Failed to sync records: '.$e->getMessage());
+      Yii::$app->session->setFlash('error', 'Failed to sync records: ' . $e->getMessage());
     }
     return $this->redirect(['index']);
   }
@@ -138,12 +143,12 @@ class TargetStateController extends \app\components\BaseController
      * @return TargetState the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id)
-    {
-        if (($model = TargetState::findOne($id)) !== null) {
-            return $model;
-        }
-
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+  protected function findModel($id)
+  {
+    if (($model = TargetState::findOne($id)) !== null) {
+        return $model;
     }
+
+      throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+  }
 }
