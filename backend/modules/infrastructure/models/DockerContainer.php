@@ -5,18 +5,19 @@ namespace app\modules\infrastructure\models;
 use yii\base\Model;
 use Docker\Docker;
 use Docker\DockerClientFactory;
-use Docker\API\Model\RestartPolicy;
-use Docker\API\Model\HostConfig;
-use Docker\API\Model\NetworkingConfig;;
 
+use Docker\API\Model\AuthConfig;
 use Docker\API\Model\ContainersCreatePostBody;
-use Docker\API\Model\EndpointSettings;
 use Docker\API\Model\EndpointIPAMConfig;
+use Docker\API\Model\EndpointSettings;
+use Docker\API\Model\HostConfig;
+use Docker\API\Model\NetworkingConfig;
+use Docker\API\Model\RestartPolicy;
+
 use Docker\API\Exception\ImageCreateNotFoundException;
 use Docker\API\Exception\ContainerCreateNotFoundException;
 use Docker\API\Exception\ContainerStartNotFoundException;
 use Docker\API\Exception\ContainerStartInternalServerErrorException;
-use Docker\API\Model\AuthConfig;
 
 class DockerContainer extends Model
 {
@@ -204,5 +205,11 @@ class DockerContainer extends Model
         return intval($decoded->hostConfig->Memory) * 1024 * 1024;
     }
     return null;
+  }
+
+  public function disconnectApi()
+  {
+    $this->docker = null;
+    $this->client = null;
   }
 }
