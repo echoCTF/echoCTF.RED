@@ -21,7 +21,7 @@ class TargetInstanceAuditQuery extends \yii\db\ActiveQuery
       ->select([
         "$table.*",
         new \yii\db\Expression(
-          'ROW_NUMBER() OVER (PARTITION BY player_id, target_id ORDER BY id DESC) AS rn'
+            'ROW_NUMBER() OVER (PARTITION BY player_id, target_id ORDER BY id DESC) AS rn'
         ),
       ])
       ->from($table);
@@ -38,7 +38,7 @@ class TargetInstanceAuditQuery extends \yii\db\ActiveQuery
    * @param string $unit
    * @return $this
    */
-  public function since($ago = 60,$unit="SECOND")
+  public function since($ago = 60, $unit = 'SECOND')
   {
     return $this->andWhere(new \yii\db\Expression("ts > (NOW() - INTERVAL {$ago} {$unit})"));
   }

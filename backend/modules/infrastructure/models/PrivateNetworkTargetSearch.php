@@ -75,8 +75,8 @@ class PrivateNetworkTargetSearch extends PrivateNetworkTarget
 
     $dataProvider->setSort([
       'attributes' => array_merge(
-        $dataProvider->getSort()->attributes,
-        [
+          $dataProvider->getSort()->attributes,
+          [
           'target_name' => [
             'asc' =>  ['target.name' => SORT_ASC],
             'desc' => ['target.name' => SORT_DESC],
@@ -89,7 +89,7 @@ class PrivateNetworkTargetSearch extends PrivateNetworkTarget
             'asc' =>  ['private_network.name' => SORT_ASC],
             'desc' => ['private_network.name' => SORT_DESC],
           ],
-        ]
+          ]
       ),
     ]);
 

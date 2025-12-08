@@ -37,7 +37,7 @@ class TargetInstanceSearch extends TargetInstance
     return [
       [['reboot', 'team_allowed'], 'integer'],
       [['ipoctet'], 'filter', 'filter' => 'trim'],
-      [['created_at', 'updated_at', 'ipoctet', 'player_id', 'target_id', 'server_id', "username",'targetname','servername'], 'safe'],
+      [['created_at', 'updated_at', 'ipoctet', 'player_id', 'target_id', 'server_id', 'username','targetname','servername'], 'safe'],
     ];
   }
 
@@ -109,8 +109,8 @@ class TargetInstanceSearch extends TargetInstance
 
     $dataProvider->setSort([
       'attributes' => array_merge(
-        $dataProvider->getSort()->attributes,
-        [
+          $dataProvider->getSort()->attributes,
+          [
           'ipoctet' => [
             'asc' => ['ip' => SORT_ASC],
             'desc' => ['ip' => SORT_DESC],
@@ -128,7 +128,7 @@ class TargetInstanceSearch extends TargetInstance
             'desc' => ['server.name' => SORT_DESC],
           ],
 
-        ]
+          ]
       ),
     ]);
 

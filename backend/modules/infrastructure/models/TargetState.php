@@ -112,10 +112,11 @@ class TargetState extends \yii\db\ActiveRecord
     $this->total_points=$fpts+$tpts;
     $this->on_network=intval(\app\modules\gameplay\models\NetworkTarget::find()->where(['target_id'=>$this->id])->exists());
     $this->on_ondemand=intval(\app\modules\gameplay\models\TargetOndemand::find()->where(['target_id'=>$this->id])->exists());
-    if($this->on_ondemand===1)
+    if ($this->on_ondemand===1) {
       $this->ondemand_state=\app\modules\gameplay\models\TargetOndemand::find()->where(['target_id'=>$this->id])->one()->state;
-    else
+    } else {
       $this->ondemand_state=-1;
+    }
     return $this->save();
   }
 }

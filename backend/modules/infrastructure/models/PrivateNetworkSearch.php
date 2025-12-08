@@ -73,13 +73,13 @@ class PrivateNetworkSearch extends PrivateNetwork
 
     $dataProvider->setSort([
       'attributes' => array_merge(
-        $dataProvider->getSort()->attributes,
-        [
+          $dataProvider->getSort()->attributes,
+          [
           'username' => [
             'asc' =>  ['player.username' => SORT_ASC],
             'desc' => ['player.username' => SORT_DESC],
           ],
-        ]
+          ]
       ),
     ]);
 

@@ -56,26 +56,33 @@ class Containerd extends Component
 
   public function __set($name, $value)
   {
-    if (!property_exists($this, $name))
+    if (!property_exists($this, $name)) {
       return;
+    }
     parent::__set($name, $value);
   }
 
   public function setTargetVariables($value)
   {
-    if (is_array($value)) $this->targetVariables = $value;
+    if (is_array($value)) {
+      $this->targetVariables = $value;
+    }
     $this->targetVariables = [];
   }
 
   public function setTargetVolumes($value)
   {
-    if (is_array($value)) $this->targetVolumes = $value;
+    if (is_array($value)) {
+      $this->targetVolumes = $value;
+    }
     $this->targetVolumes = [];
   }
 
   public function connectAPI()
   {
-    if ($this->docker !== null) return;
+    if ($this->docker !== null) {
+      return;
+    }
 
     $params['remote_socket'] = $this->server;
     $params['ssl'] = $this->ssl;
@@ -115,8 +122,9 @@ class Containerd extends Component
     $containerConfig->setAttachStdout(true);
     $containerConfig->setAttachStderr(true);
 
-    foreach ($this->targetVariables as $var)
-      $targetVariables[] = sprintf("%s=%s", $var->key, $var->val);
+    foreach ($this->targetVariables as $var) {
+      $targetVariables[] = sprintf('%s=%s', $var->key, $var->val);
+    }
 
     $containerConfig->setEnv($targetVariables);
     $containerConfig->setHostConfig($hostConfig);
@@ -135,13 +143,15 @@ class Containerd extends Component
     $restartPolicy = new RestartPolicy();
     $restartPolicy->setName('always');
     $hostConfig = new HostConfig();
-    if ($this->memory !== null)
+    if ($this->memory !== null) {
       $hostConfig->setMemory($this->memory);
+    }
 
     $hostConfig->setNetworkMode($this->net);
     $hostConfig->setDns([$this->dns]);
-    foreach ($this->targetVolumes as $var)
-      $targetVolumes[] = sprintf("%s:%s", $var->volume, $var->bind);
+    foreach ($this->targetVolumes as $var) {
+      $targetVolumes[] = sprintf('%s:%s', $var->volume, $var->bind);
+    }
     $hostConfig->setBinds($targetVolumes);
 
     $hostConfig->setRestartPolicy($restartPolicy);
@@ -173,7 +183,9 @@ class Containerd extends Component
 
   public function pull()
   {
-    if ($this->server == null) return false;
+    if ($this->server == null) {
+      return false;
+    }
     $this->connectAPI();
     $authHeaders = [];
     if (!empty($this->imageparams)) {
@@ -206,10 +218,11 @@ class Containerd extends Component
 
   public function getMemory()
   {
-    if ($this->parameters !== NULL) {
+    if ($this->parameters !== null) {
       $decoded = \yii\helpers\Json::decode($this->parameters, false);
-      if ($decoded !== null && property_exists($decoded, 'hostConfig') && property_exists($decoded->hostConfig, 'Memory'))
+      if ($decoded !== null && property_exists($decoded, 'hostConfig') && property_exists($decoded->hostConfig, 'Memory')) {
         return intval($decoded->hostConfig->Memory) * 1024 * 1024;
+      }
     }
     return null;
   }

@@ -28,70 +28,70 @@ class TargetMetadata extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
-        return 'target_metadata';
-    }
+  public static function tableName()
+  {
+      return 'target_metadata';
+  }
 
-    public function behaviors()
-    {
+  public function behaviors()
+  {
+    return [
+        [
+            'class' => TimestampBehavior::class,
+            'createdAtAttribute' => 'created_at',
+            'updatedAtAttribute' => 'updated_at',
+            'value' => new Expression('NOW()'),
+        ],
+    ];
+  }
+
+    /**
+     * {@inheritdoc}
+     */
+  public function rules()
+  {
       return [
-          [
-              'class' => TimestampBehavior::class,
-              'createdAtAttribute' => 'created_at',
-              'updatedAtAttribute' => 'updated_at',
-              'value' => new Expression('NOW()'),
-          ],
+          [['scenario', 'instructions', 'solution', 'pre_credits', 'post_credits', 'pre_exploitation', 'post_exploitation'], 'string'],
+          [['created_at', 'updated_at'], 'safe'],
+          [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
       ];
-    }
+  }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
-        return [
-            [['scenario', 'instructions', 'solution', 'pre_credits', 'post_credits', 'pre_exploitation', 'post_exploitation'], 'string'],
-            [['created_at', 'updated_at'], 'safe'],
-            [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'target_id' => 'Target ID',
-            'scenario' => 'Scenario',
-            'instructions' => 'Instructions',
-            'solution' => 'Solution',
-            'pre_credits' => 'Pre Credits',
-            'post_credits' => 'Post Credits',
-            'pre_exploitation' => 'Pre Exploitation',
-            'post_exploitation' => 'Post Exploitation',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
-        ];
-    }
+  public function attributeLabels()
+  {
+      return [
+          'target_id' => 'Target ID',
+          'scenario' => 'Scenario',
+          'instructions' => 'Instructions',
+          'solution' => 'Solution',
+          'pre_credits' => 'Pre Credits',
+          'post_credits' => 'Post Credits',
+          'pre_exploitation' => 'Pre Exploitation',
+          'post_exploitation' => 'Post Exploitation',
+          'created_at' => 'Created At',
+          'updated_at' => 'Updated At',
+      ];
+  }
 
     /**
      * Gets query for [[Target]].
      *
      * @return \yii\db\ActiveQuery|TargetQuery
      */
-    public function getTarget()
-    {
-        return $this->hasOne(Target::class, ['id' => 'target_id']);
-    }
+  public function getTarget()
+  {
+      return $this->hasOne(Target::class, ['id' => 'target_id']);
+  }
 
     /**
      * {@inheritdoc}
      * @return TargetMetadataQuery the active query used by this AR class.
      */
-    public static function find()
-    {
-        return new TargetMetadataQuery(get_called_class());
-    }
+  public static function find()
+  {
+      return new TargetMetadataQuery(get_called_class());
+  }
 }

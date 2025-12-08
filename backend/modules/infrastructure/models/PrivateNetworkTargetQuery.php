@@ -17,7 +17,7 @@ class PrivateNetworkTargetQuery extends \yii\db\ActiveQuery
       [
         'or', // Conditions to match the records you want to keep
         ['is', 'ipoctet', null],
-        ['ipoctet' => "0.0.0.0"],
+        ['ipoctet' => '0.0.0.0'],
         ['is', 'server_id', null],
         ['>', 'state', 0]
       ],

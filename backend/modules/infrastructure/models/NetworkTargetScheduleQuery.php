@@ -9,26 +9,26 @@ namespace app\modules\infrastructure\models;
  */
 class NetworkTargetScheduleQuery extends \yii\db\ActiveQuery
 {
-    public function queue()
-    {
-        return $this->andWhere('migration_date <= NOW()');
-    }
+  public function queue()
+  {
+      return $this->andWhere('migration_date <= NOW()');
+  }
 
     /**
      * {@inheritdoc}
      * @return NetworkTargetSchedule[]|array
      */
-    public function all($db = null)
-    {
-        return parent::all($db);
-    }
+  public function all($db = null)
+  {
+      return parent::all($db);
+  }
 
     /**
      * {@inheritdoc}
      * @return NetworkTargetSchedule|array|null
      */
-    public function one($db = null)
-    {
-        return parent::one($db);
-    }
+  public function one($db = null)
+  {
+      return parent::one($db);
+  }
 }

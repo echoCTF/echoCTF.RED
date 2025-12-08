@@ -14,23 +14,23 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
-        return [
-            [['id', 'team_allowed'], 'integer'],
-            [['ipoctet'],'filter','filter'=>'trim'],
-            [['op', 'ts','ipoctet','player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'safe'],
-        ];
-    }
+  public function rules()
+  {
+      return [
+          [['id', 'team_allowed'], 'integer'],
+          [['ipoctet'],'filter','filter'=>'trim'],
+          [['op', 'ts','ipoctet','player_id', 'target_id', 'server_id', 'ip', 'reboot'], 'safe'],
+      ];
+  }
 
     /**
      * {@inheritdoc}
      */
-    public function scenarios()
-    {
-        // bypass scenarios() implementation in the parent class
-        return Model::scenarios();
-    }
+  public function scenarios()
+  {
+      // bypass scenarios() implementation in the parent class
+      return Model::scenarios();
+  }
 
     /**
      * Creates data provider instance with search query applied
@@ -39,77 +39,72 @@ class TargetInstanceAuditSearch extends TargetInstanceAudit
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
-    {
-        $query = TargetInstanceAudit::find()->joinWith(['target','player','server']);
-        // add conditions that should always apply here
+  public function search($params)
+  {
+      $query = TargetInstanceAudit::find()->joinWith(['target','player','server']);
+      // add conditions that should always apply here
 
-        $dataProvider = new ActiveDataProvider([
-            'query' => $query,
-        ]);
+      $dataProvider = new ActiveDataProvider([
+          'query' => $query,
+      ]);
 
-        $this->load($params);
+      $this->load($params);
 
-        if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
-        }
-
-        // grid filtering conditions
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'reboot' => $this->reboot,
-            'team_allowed'=>$this->team_allowed,
-            'op'=>$this->op,
-        ]);
-        $query->andFilterWhere(['like','target_instance_audit.ts',$this->ts]);
-
-        $query->andFilterWhere([
-            'OR',
-            ['LIKE','target.name',$this->target_id],
-            ['target_id'=>$this->target_id],
-            ['LIKE','player.username',$this->player_id],
-            ['player_id'=>$this->player_id],
-            ['LIKE','server.name',$this->player_id],
-            ['server_id'=>$this->server_id],
-        ]);
-
-        $validator = new \app\components\validators\ExtendedIpValidator(['subnet' => true, 'expandIPv6' => false]);
-        if ($validator->validate($this->ipoctet) !== false)
-        {
-          [$ip, $mask] = explode('/', $this->ipoctet, 2);
-          if (filter_var($mask, FILTER_VALIDATE_IP)) {
-            // Netmask style, keep as is
-              $netmask = $mask;
-          } else {
-            // Prefix length, convert to dotted netmask
-            $prefix = (int)$mask;
-            $netmaskLong = (~((1 << (32 - $prefix)) - 1)) & 0xFFFFFFFF;
-            $netmask = long2ip($netmaskLong);
-          }
-          $query->andFilterWhere(['=',new \yii\db\Expression('(target_instance_audit.ip & inet_aton(:remote_netmask))',[':remote_netmask'=>$netmask]),new \yii\db\Expression('(inet_aton(:remote_ip) & inet_aton(:remote_netmask))',[':remote_ip'=>$ip,':remote_netmask'=>$netmask])]);
-        }
-        elseif (filter_var($this->ipoctet, FILTER_VALIDATE_IP))
-        {
-          $query->andFilterWhere(['target_instance_audit.ip'=>ip2long($this->ipoctet)]);
-        }
-        else
-        {
-          $query->andFilterWhere(['like', 'INET_NTOA(target_instance_audit.ip)', $this->ipoctet]);
-        }
-        $dataProvider->setSort([
-            'attributes' => array_merge(
-                $dataProvider->getSort()->attributes,
-                [
-                  'ipoctet' => [
-                      'asc' => ['ip' => SORT_ASC],
-                      'desc' => ['ip' => SORT_DESC],
-                  ],
-                ]
-            ),
-        ]);
-
+    if (!$this->validate()) {
+        // uncomment the following line if you do not want to return any records when validation fails
+        // $query->where('0=1');
         return $dataProvider;
     }
+
+      // grid filtering conditions
+      $query->andFilterWhere([
+          'id' => $this->id,
+          'reboot' => $this->reboot,
+          'team_allowed'=>$this->team_allowed,
+          'op'=>$this->op,
+      ]);
+      $query->andFilterWhere(['like','target_instance_audit.ts',$this->ts]);
+
+      $query->andFilterWhere([
+          'OR',
+          ['LIKE','target.name',$this->target_id],
+          ['target_id'=>$this->target_id],
+          ['LIKE','player.username',$this->player_id],
+          ['player_id'=>$this->player_id],
+          ['LIKE','server.name',$this->player_id],
+          ['server_id'=>$this->server_id],
+      ]);
+
+      $validator = new \app\components\validators\ExtendedIpValidator(['subnet' => true, 'expandIPv6' => false]);
+    if ($validator->validate($this->ipoctet) !== false) {
+      [$ip, $mask] = explode('/', $this->ipoctet, 2);
+      if (filter_var($mask, FILTER_VALIDATE_IP)) {
+        // Netmask style, keep as is
+          $netmask = $mask;
+      } else {
+        // Prefix length, convert to dotted netmask
+        $prefix = (int)$mask;
+        $netmaskLong = (~((1 << (32 - $prefix)) - 1)) & 0xFFFFFFFF;
+        $netmask = long2ip($netmaskLong);
+      }
+      $query->andFilterWhere(['=',new \yii\db\Expression('(target_instance_audit.ip & inet_aton(:remote_netmask))', [':remote_netmask'=>$netmask]),new \yii\db\Expression('(inet_aton(:remote_ip) & inet_aton(:remote_netmask))', [':remote_ip'=>$ip,':remote_netmask'=>$netmask])]);
+    } elseif (filter_var($this->ipoctet, FILTER_VALIDATE_IP)) {
+      $query->andFilterWhere(['target_instance_audit.ip'=>ip2long($this->ipoctet)]);
+    } else {
+      $query->andFilterWhere(['like', 'INET_NTOA(target_instance_audit.ip)', $this->ipoctet]);
+    }
+      $dataProvider->setSort([
+          'attributes' => array_merge(
+              $dataProvider->getSort()->attributes,
+              [
+                'ipoctet' => [
+                    'asc' => ['ip' => SORT_ASC],
+                    'desc' => ['ip' => SORT_DESC],
+                ],
+              ]
+          ),
+      ]);
+
+      return $dataProvider;
+  }
 }

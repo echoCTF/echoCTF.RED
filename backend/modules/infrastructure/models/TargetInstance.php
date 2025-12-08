@@ -35,19 +35,19 @@ class TargetInstance extends TargetInstanceAR
    */
   public function getName()
   {
-    return sprintf("%s_%d", strtolower($this->target->name), $this->player_id);
+    return sprintf('%s_%d', strtolower($this->target->name), $this->player_id);
   }
 
   public function getRebootVal()
   {
     if ($this->reboot === 0 && $this->ip === null) {
-      return "Start";
+      return 'Start';
     } elseif ($this->reboot === 0) {
-      return "Do nothing";
+      return 'Do nothing';
     } elseif ($this->reboot === 1) {
-      return "Restart";
+      return 'Restart';
     } elseif ($this->reboot === 2) {
-      return "Destroy";
+      return 'Destroy';
     }
   }
 
@@ -89,11 +89,12 @@ class TargetInstance extends TargetInstanceAR
           break;
         }
       }
-      $dc->labels['dynamic_treasures'] = "1";
+      $dc->labels['dynamic_treasures'] = '1';
       $dc->labels['player_id'] = (string)$this->player_id;
       $dc->labels['target_id'] = (string)$this->target_id;
-      foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part)
+      foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part) {
         $dc->labels['treasures_' . $key] = $part;
+      }
     }
 
     try {
@@ -113,8 +114,8 @@ class TargetInstance extends TargetInstanceAR
         'id',
         'code',
         new \yii\db\Expression(
-          "MD5(HEX(AES_ENCRYPT(CONCAT(code, :playerId), :secretKey))) AS encrypted_code",
-          [':playerId' => $this->player_id, ':secretKey' => Yii::$app->sys->treasure_secret_key]
+            'MD5(HEX(AES_ENCRYPT(CONCAT(code, :playerId), :secretKey))) AS encrypted_code',
+            [':playerId' => $this->player_id, ':secretKey' => Yii::$app->sys->treasure_secret_key]
         ),
         'target_id',
         'location',
@@ -124,11 +125,11 @@ class TargetInstance extends TargetInstanceAR
     $treasures = [];
     foreach ($query->all() as $t) {
       if ($t->category == 'env' && ($t->location == 'environment' || $t->location == '')) {
-        $treasures['env'][] = ["src" => $t->code, 'dest' => $t->encrypted_code];
-      } else if (str_contains($t->location, $t->code)) {
-        $treasures['mv'][] = ["src" => $t->location, 'dest' => str_replace($t->code, $t->encrypted_code, $t->location)];
+        $treasures['env'][] = ['src' => $t->code, 'dest' => $t->encrypted_code];
+      } elseif (str_contains($t->location, $t->code)) {
+        $treasures['mv'][] = ['src' => $t->location, 'dest' => str_replace($t->code, $t->encrypted_code, $t->location)];
       } else {
-        $treasures['sed'][] = ["src" => $t->code, 'dest' => $t->encrypted_code, 'file' => $t->location];
+        $treasures['sed'][] = ['src' => $t->code, 'dest' => $t->encrypted_code, 'file' => $t->location];
       }
     }
 
