@@ -186,7 +186,7 @@ class TargetInstanceAR extends \yii\db\ActiveRecord
     $n->player_id = $this->player_id;
     $n->title = Yii::t('app', "Your instance for target [{target_name}] got {what}.", ['target_name' => $this->target->name, 'what' => $what]);
     $n->body = $n->title;
-    $n->category='info';
+    $n->category = 'info';
     $n->archived = 0;
     $n->created_at = new \yii\db\Expression('NOW()');
     $n->updated_at = new \yii\db\Expression('NOW()');
