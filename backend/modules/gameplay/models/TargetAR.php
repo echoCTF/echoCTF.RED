@@ -322,5 +322,4 @@ class TargetAR extends \yii\db\ActiveRecord
   {
     return $this->hasOne(TargetOndemand::class, ['target_id' => 'id'])->withExpired();
   }
-
 }

@@ -10,13 +10,13 @@ class Module extends \yii\base\Module
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace='app\modules\infrastructure\controllers';
+    public $controllerNamespace = 'app\modules\infrastructure\controllers';
 
     /**
      * {@inheritdoc}
      */
-    public function init()
-    {
-        parent::init();
-    }
+  public function init()
+  {
+      parent::init();
+  }
 }

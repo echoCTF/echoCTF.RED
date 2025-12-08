@@ -166,17 +166,17 @@ class TargetController extends \app\components\BaseController
         'stream' => true,
         'logs'   => true
       ]);
-      $line = "";
+      $line = '';
       while ($line !== false && $line !== null) {
         $line = $webSocketStream->read();
         $lines[] = $line;
       }
     } catch (\Exception $e) {
-      Yii::$app->session->setFlash('error', Yii::t('app', "Failed to fetch logs. <b>{exception}</b>", ['exception' => Html::encode($e->getMessage())]));
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to fetch logs. <b>{exception}</b>', ['exception' => Html::encode($e->getMessage())]));
       return $this->redirect(['view', 'id' => $target->id]);
     }
     return $this->render('logs', [
-      'logs' => implode("", $lines),
+      'logs' => implode('', $lines),
       'model' => $target,
     ]);
   }
@@ -191,8 +191,8 @@ class TargetController extends \app\components\BaseController
   {
     $target = $this->findModel($id);
     $form = new TargetExecCommandForm();
-    $stdoutText = "";
-    $stderrText = "";
+    $stdoutText = '';
+    $stderrText = '';
     if ($form->load(Yii::$app->request->post()) && $form->validate()) {
       try {
         $docker = $target->connectAPI();
@@ -230,7 +230,7 @@ class TargetController extends \app\components\BaseController
     return $this->render('exec', [
       'formModel' => $form,
       'stdout' => $stdoutText,
-      "stderr" => $stderrText,
+      'stderr' => $stderrText,
       'model' => $target,
     ]);
   }
@@ -264,13 +264,12 @@ class TargetController extends \app\components\BaseController
   {
     $model = $this->findModel($id);
     $modelOrig = $this->findModel($id);
-    $msg = Yii::t('app', "Server updated successfully");
+    $msg = Yii::t('app', 'Server updated successfully');
     if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-
       // if the target has changed server destroy from old one
       if ($modelOrig->server != $model->server || array_key_exists('destroy', Yii::$app->request->post())) {
         $modelOrig->destroy();
-        $msg = Yii::t('app', "Server destroyed and updated successfully");
+        $msg = Yii::t('app', 'Server destroyed and updated successfully');
       }
       if ($model->save()) {
         if (array_key_exists('notify', Yii::$app->request->post())) {
@@ -289,13 +288,13 @@ class TargetController extends \app\components\BaseController
             ->all();
 
           foreach ($players as $r) {
-            $r->player->notify('swal:warning', Yii::t('app', 'Target [<code>{target}</code>] updated',['target' => $model->name]), Yii::t('app','The target (<kbd>{target}</kbd>), you had progress on got updated. Feel free to check it out!', ['target' => $model->name]));
+            $r->player->notify('swal:warning', Yii::t('app', 'Target [<code>{target}</code>] updated', ['target' => $model->name]), Yii::t('app', 'The target (<kbd>{target}</kbd>), you had progress on got updated. Feel free to check it out!', ['target' => $model->name]));
           }
         }
         Yii::$app->session->setFlash('success', $msg);
         return $this->redirect(['view', 'id' => $model->id]);
       }
-      Yii::$app->session->setFlash('error', Yii::t('app', 'Server failed to be updated [{errors}]', ['errors' => Html::encode(implode(", ", $model->errors))]));
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Server failed to be updated [{errors}]', ['errors' => Html::encode(implode(', ', $model->errors))]));
     }
 
     return $this->render('update', [
@@ -368,8 +367,9 @@ class TargetController extends \app\components\BaseController
     $query->pagination = false;
     try {
       $counter = $query->count;
-      foreach ($query->getModels() as $q)
+      foreach ($query->getModels() as $q) {
         $q->pull();
+      }
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Target images pulled', ['counter' => intval($counter)]));
     } catch (\Exception $e) {
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to pull targets'));
@@ -391,8 +391,9 @@ class TargetController extends \app\components\BaseController
     $trans = Yii::$app->db->beginTransaction();
     try {
       $counter = $query->count;
-      foreach ($query->getModels() as $q)
+      foreach ($query->getModels() as $q) {
         $q->active = 1;
+      }
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets activated', ['counter' => intval($counter)]));
     } catch (\Exception $e) {
@@ -415,8 +416,9 @@ class TargetController extends \app\components\BaseController
     $query->pagination = false;
     try {
       $counter = $query->count;
-      foreach ($query->getModels() as $q)
+      foreach ($query->getModels() as $q) {
         $q->spin();
+      }
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets spun', ['counter' => intval($counter)]));
     } catch (\Exception $e) {
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to spin targets'));
@@ -435,10 +437,11 @@ class TargetController extends \app\components\BaseController
   public function actionDestroy($id)
   {
     $model = $this->findModel($id);
-    if ($model->destroy())
+    if ($model->destroy()) {
       Yii::$app->session->setFlash('success', Yii::t('app', 'Container destroyed from docker server [<code>{server}</code>]', ['server' => Html::encode($model->server)]));
-    else
+    } else {
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to destroy container from docker server [<code>{server}</code>]', ['server' => Html::encode($model->server)]));
+    }
 
     return $this->goBack(Yii::$app->request->referrer);
   }
@@ -455,8 +458,9 @@ class TargetController extends \app\components\BaseController
     try {
       if ($id === 'all') {
         $models = Target::find()->all();
-        foreach ($models as $model)
+        foreach ($models as $model) {
           $model->spin();
+        }
         \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Containers successfully restarted'));
       } else {
         $this->findModel($id)->spin();
@@ -479,14 +483,15 @@ class TargetController extends \app\components\BaseController
   {
     if ($id === 'all') {
       $models = Target::find()->all();
-      foreach ($models as $model)
+      foreach ($models as $model) {
         $model->pull();
+      }
       \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Images pulled successfully'));
       return $this->redirect(['index']);
     } else {
-      if ($this->findModel($id)->pull())
+      if ($this->findModel($id)->pull()) {
         \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Image successfully pulled'));
-      else {
+      } else {
         \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to pull container image'));
       }
       return $this->goBack(Yii::$app->request->referrer);
@@ -598,8 +603,8 @@ class TargetController extends \app\components\BaseController
     $dataProvider->setSort([
       'defaultOrder' => ['created_at' => SORT_DESC, 'target_id' => SORT_ASC],
       'attributes' => array_merge(
-        $dataProvider->getSort()->attributes,
-        [
+          $dataProvider->getSort()->attributes,
+          [
           'username' => [
             'asc' => ['player.username' => SORT_ASC],
             'desc' => ['player.username' => SORT_DESC],
@@ -612,7 +617,7 @@ class TargetController extends \app\components\BaseController
             'asc' =>  ['player_target_help.created_at' => SORT_ASC],
             'desc' => ['player_target_help.created_at' => SORT_DESC],
           ],
-        ]
+          ]
       ),
     ]);
     return Json::encode(trim($this->renderAjax('full-view/_activated_writeups', [
@@ -664,15 +669,16 @@ class TargetController extends \app\components\BaseController
   {
     $containers = [];
     foreach (Target::find()->select(['server'])->distinct()->all() as $target) {
-      if ($target->server[0] === '/')
+      if ($target->server[0] === '/') {
         $client = DockerClientFactory::create([
           'ssl' => false,
         ]);
-      else
+      } else {
         $client = DockerClientFactory::create([
           'remote_socket' => $target->server,
           'ssl' => false,
         ]);
+      }
 
       try {
         $docker = Docker::create($client);
@@ -698,14 +704,14 @@ class TargetController extends \app\components\BaseController
         $pq->where(['=', 'id', $term]);
       }
       $results = array_values(ArrayHelper::map(
-        $pq->all(),
-        'id',
-        function ($model) {
-          return [
-            'id' => $model->id,
-            'label' => sprintf("(id: %d / %s) %s%s", $model->id, $model->ipoctet, $model->name, ($model->network !== null ? " [{$model->network->name}]" : "")),
-          ];
-        }
+          $pq->all(),
+          'id',
+          function ($model) {
+            return [
+              'id' => $model->id,
+              'label' => sprintf('(id: %d / %s) %s%s', $model->id, $model->ipoctet, $model->name, ($model->network !== null ? " [{$model->network->name}]" : '')),
+            ];
+          }
       ));
     }
     return $results;

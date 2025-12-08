@@ -142,16 +142,19 @@ class TargetInstanceAR extends \yii\db\ActiveRecord
   public function afterFind()
   {
     parent::afterFind();
-    if ($this->ip)
+    if ($this->ip) {
       $this->ipoctet = long2ip($this->ip);
+    }
   }
 
   public function beforeSave($insert)
   {
     if (parent::beforeSave($insert)) {
-      if ($this->ipoctet)
+      if ($this->ipoctet) {
         $this->ip = ip2long($this->ipoctet);
-      else $this->ip = null;
+      } else {
+        $this->ip = null;
+      }
       return true;
     } else {
       return false;
@@ -184,9 +187,9 @@ class TargetInstanceAR extends \yii\db\ActiveRecord
   {
     $n = new \app\modules\activity\models\Notification;
     $n->player_id = $this->player_id;
-    $n->title = Yii::t('app', "Your instance for target [{target_name}] got {what}.", ['target_name' => $this->target->name, 'what' => $what]);
+    $n->title = Yii::t('app', 'Your instance for target [{target_name}] got {what}.', ['target_name' => $this->target->name, 'what' => $what]);
     $n->body = $n->title;
-    $n->category='info';
+    $n->category = 'info';
     $n->archived = 0;
     $n->created_at = new \yii\db\Expression('NOW()');
     $n->updated_at = new \yii\db\Expression('NOW()');

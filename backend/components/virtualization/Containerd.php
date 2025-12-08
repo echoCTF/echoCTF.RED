@@ -1,8 +1,12 @@
 <?php
 
-namespace app\modules\infrastructure\models;
+namespace app\components\virtualization;
 
-use yii\base\Model;
+use Yii;
+
+use yii\base\Component;
+use yii\base\InvalidConfigException;
+
 use Docker\Docker;
 use Docker\DockerClientFactory;
 
@@ -19,7 +23,10 @@ use Docker\API\Exception\ContainerCreateNotFoundException;
 use Docker\API\Exception\ContainerStartNotFoundException;
 use Docker\API\Exception\ContainerStartInternalServerErrorException;
 
-class DockerContainer extends Model
+/**
+ * Component that handles containerd  operations
+ */
+class Containerd extends Component
 {
   public $name;
   public $hostname;

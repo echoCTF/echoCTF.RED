@@ -17,25 +17,25 @@ class TargetVariableController extends \app\components\BaseController
   /**
    * {@inheritdoc}
    */
-    public function behaviors()
-    {
-      return ArrayHelper::merge(parent::behaviors(),[]);
-    }
+  public function behaviors()
+  {
+    return ArrayHelper::merge(parent::behaviors(), []);
+  }
 
     /**
      * Lists all TargetVariable models.
      * @return mixed
      */
-    public function actionIndex()
-    {
-        $searchModel=new TargetVariableSearch();
-        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
+  public function actionIndex()
+  {
+      $searchModel=new TargetVariableSearch();
+      $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+      return $this->render('index', [
+          'searchModel' => $searchModel,
+          'dataProvider' => $dataProvider,
+      ]);
+  }
 
     /**
      * Displays a single TargetVariable model.
@@ -44,37 +44,35 @@ class TargetVariableController extends \app\components\BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($target_id, $key)
-    {
-        return $this->render('view', [
-            'model' => $this->findModel($target_id, $key),
-        ]);
-    }
+  public function actionView($target_id, $key)
+  {
+      return $this->render('view', [
+          'model' => $this->findModel($target_id, $key),
+      ]);
+  }
 
     /**
      * Creates a new TargetVariable model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model=new TargetVariable();
-        if(\app\modules\gameplay\models\Target::find()->count() == 0)
-        {
-          // If there are no player redirect to create player page
-          Yii::$app->session->setFlash('warning', Yii::t('app',"No targets found create one first."));
-          return $this->redirect(['/gameplay/target/create']);
-        }
-
-        if($model->load(Yii::$app->request->post()) && $model->save())
-        {
-            return $this->redirect(['view', 'target_id' => $model->target_id, 'key' => $model->key]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+  public function actionCreate()
+  {
+      $model=new TargetVariable();
+    if (\app\modules\gameplay\models\Target::find()->count() == 0) {
+      // If there are no player redirect to create player page
+      Yii::$app->session->setFlash('warning', Yii::t('app', 'No targets found create one first.'));
+      return $this->redirect(['/gameplay/target/create']);
     }
+
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        return $this->redirect(['view', 'target_id' => $model->target_id, 'key' => $model->key]);
+    }
+
+      return $this->render('create', [
+          'model' => $model,
+      ]);
+  }
 
     /**
      * Updates an existing TargetVariable model.
@@ -84,19 +82,18 @@ class TargetVariableController extends \app\components\BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($target_id, $key)
-    {
-        $model=$this->findModel($target_id, $key);
+  public function actionUpdate($target_id, $key)
+  {
+      $model=$this->findModel($target_id, $key);
 
-        if($model->load(Yii::$app->request->post()) && $model->save())
-        {
-            return $this->redirect(['view', 'target_id' => $model->target_id, 'key' => $model->key]);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        return $this->redirect(['view', 'target_id' => $model->target_id, 'key' => $model->key]);
     }
+
+      return $this->render('update', [
+          'model' => $model,
+      ]);
+  }
 
     /**
      * Deletes an existing TargetVariable model.
@@ -106,12 +103,12 @@ class TargetVariableController extends \app\components\BaseController
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($target_id, $key)
-    {
-        $this->findModel($target_id, $key)->delete();
+  public function actionDelete($target_id, $key)
+  {
+      $this->findModel($target_id, $key)->delete();
 
-        return $this->redirect(['index']);
-    }
+      return $this->redirect(['index']);
+  }
 
     /**
      * Finds the TargetVariable model based on its primary key value.
@@ -121,13 +118,12 @@ class TargetVariableController extends \app\components\BaseController
      * @return TargetVariable the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($target_id, $key)
-    {
-        if(($model=TargetVariable::findOne(['target_id' => $target_id, 'key' => $key])) !== null)
-        {
-            return $model;
-        }
-
-        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
+  protected function findModel($target_id, $key)
+  {
+    if (($model=TargetVariable::findOne(['target_id' => $target_id, 'key' => $key])) !== null) {
+          return $model;
     }
+
+      throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+  }
 }

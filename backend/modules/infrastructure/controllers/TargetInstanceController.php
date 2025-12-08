@@ -16,7 +16,6 @@ use yii\filters\VerbFilter;
 use yii\helpers\Html;
 use yii\base\UserException;
 
-
 /**
  * TargetInstanceController implements the CRUD actions for TargetInstance model.
  */
@@ -50,25 +49,26 @@ class TargetInstanceController extends \app\components\BaseController
     $target = $this->findModel($id);
     try {
       $docker = $target->connectAPI();
-      if ($docker === false)
+      if ($docker === false) {
         throw new UserException(Yii::t('app', 'Failed to connect to the docker API'));
+      }
 
 
       $webSocketStream = $docker->containerAttachWebsocket($target->name, [
         'stream' => true,
         'logs'   => true
       ]);
-      $line = "";
+      $line = '';
       while ($line !== false && $line !== null) {
         $line = $webSocketStream->read();
         $lines[] = $line;
       }
     } catch (\Exception $e) {
-      Yii::$app->session->setFlash('error', Yii::t('app', "Failed to fetch logs. <b>{exception}</b>", ['exception' => Html::encode($e->getMessage())]));
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to fetch logs. <b>{exception}</b>', ['exception' => Html::encode($e->getMessage())]));
       return $this->redirect(['view', 'id' => $target->player_id]);
     }
     return $this->render('logs', [
-      'logs' => implode("", $lines),
+      'logs' => implode('', $lines),
       'model' => $target,
     ]);
   }
@@ -84,13 +84,14 @@ class TargetInstanceController extends \app\components\BaseController
   {
     $target = $this->findModel($id);
     $form = new TargetExecCommandForm();
-    $stdoutText = "";
-    $stderrText = "";
+    $stdoutText = '';
+    $stderrText = '';
     if ($form->load(Yii::$app->request->post()) && $form->validate()) {
       try {
         $docker = $target->connectAPI();
-        if ($docker === false)
-          throw new UserException(Yii::t('app', "Failed to connect to docker API"));
+        if ($docker === false) {
+          throw new UserException(Yii::t('app', 'Failed to connect to docker API'));
+        }
         $execConfig = new ContainersIdExecPostBody();
         $execConfig->setTty($form->tty);
         $execConfig->setAttachStdout($form->stdout);
@@ -116,7 +117,7 @@ class TargetInstanceController extends \app\components\BaseController
 
         $stream->wait();
       } catch (\Exception $e) {
-        Yii::$app->session->setFlash('error', Yii::t('app', "Failed to execute command. <b>{exception}</b>", ['exception' => Html::encode($e->getMessage())]));
+        Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to execute command. <b>{exception}</b>', ['exception' => Html::encode($e->getMessage())]));
       }
     } else {
       $form->tty = true;
@@ -125,7 +126,7 @@ class TargetInstanceController extends \app\components\BaseController
     return $this->render('exec', [
       'formModel' => $form,
       'stdout' => $stdoutText,
-      "stderr" => $stderrText,
+      'stderr' => $stderrText,
       'model' => $target,
     ]);
   }
@@ -217,10 +218,11 @@ class TargetInstanceController extends \app\components\BaseController
       $val->restart();
       $val->save();
     } catch (\Exception $e) {
-      if (method_exists($e, 'getErrorResponse'))
+      if (method_exists($e, 'getErrorResponse')) {
         echo $e->getErrorResponse()->getMessage(), "\n";
-      else
+      } else {
         echo $e->getMessage(), "\n";
+      }
     }
 
     return $this->redirect(['index']);
@@ -247,10 +249,11 @@ class TargetInstanceController extends \app\components\BaseController
       }
       $val->delete();
     } catch (\Exception $e) {
-      if (method_exists($e, 'getErrorResponse'))
+      if (method_exists($e, 'getErrorResponse')) {
         echo $e->getErrorResponse()->getMessage(), "\n";
-      else
+      } else {
         echo $e->getMessage(), "\n";
+      }
     }
 
     return $this->redirect(['index']);
@@ -273,18 +276,19 @@ class TargetInstanceController extends \app\components\BaseController
         $dc->server = $val->server->connstr;
         try {
           $dc->destroy();
-          Yii::$app->session->addFlash('success', Yii::t('app', "Target instance [" . $dc->name . "] got destroyed."));
+          Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got destroyed.'));
         } catch (\Exception $e) {
-          Yii::$app->session->addFlash('error', Yii::t('app', "Target instance [" . $dc->name . "] failed to get destroyed: ". $e->getMessage()));
+          Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to get destroyed: ' . $e->getMessage()));
         }
         $val->delete();
-        Yii::$app->session->addFlash('success', Yii::t('app', "Target instance [" . $dc->name . "] got deleted."));
+        Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got deleted.'));
       }
     } catch (\Exception $e) {
-      if (method_exists($e, 'getErrorResponse'))
-        Yii::$app->session->addFlash('error', Yii::t('app', "Target instance [" . $dc->name . "] failed to delete: ". $e->getErrorResponse()->getMessage()));
-      else
-        Yii::$app->session->addFlash('error', Yii::t('app', "Target instance [" . $dc->name . "] failed to delete: ". $e->getMessage()));
+      if (method_exists($e, 'getErrorResponse')) {
+        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to delete: ' . $e->getErrorResponse()->getMessage()));
+      } else {
+        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to delete: ' . $e->getMessage()));
+      }
     }
 
     return $this->redirect(['index']);
@@ -330,17 +334,17 @@ class TargetInstanceController extends \app\components\BaseController
   protected function prerequisitesCheck($player = true, $target = true, $server = true)
   {
     if ((bool) $player && (int)\app\modules\frontend\models\Player::find()->count() === 0) {
-      Yii::$app->session->setFlash('warning', Yii::t('app', "No players found create one first."));
+      Yii::$app->session->setFlash('warning', Yii::t('app', 'No players found create one first.'));
       return ['/frontend/player/create'];
     }
 
     if ((bool) $target && (int)\app\modules\gameplay\models\Target::find()->count() === 0) {
-      Yii::$app->session->setFlash('warning', Yii::t('app', "No targets found create one first."));
+      Yii::$app->session->setFlash('warning', Yii::t('app', 'No targets found create one first.'));
       return ['/gameplay/target/create'];
     }
 
     if ((bool) $server && (int)\app\modules\infrastructure\models\Server::find()->count() === 0) {
-      Yii::$app->session->setFlash('warning', Yii::t('app', "No servers found create one first."));
+      Yii::$app->session->setFlash('warning', Yii::t('app', 'No servers found create one first.'));
       return ['/infrastructure/server/create'];
     }
     return [];
