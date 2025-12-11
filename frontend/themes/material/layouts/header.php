@@ -21,7 +21,7 @@ use yii\helpers\Url;
       </div>
 
       <?php endif; ?>
-      <div class="justify-content-end" id="event_countdown"></h4>
+      <div class="justify-content-end" id="event_countdown"></div>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
       <span class="sr-only">Toggle navigation</span>
