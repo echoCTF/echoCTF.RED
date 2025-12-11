@@ -216,6 +216,10 @@ class SiteController extends \app\components\BaseController
     $transaction = Yii::$app->db->beginTransaction();
     try {
       if ($model->load(Yii::$app->request->post())) {
+        if(Yii::$app->sys->player_require_identification)
+        {
+          $model->identificationFile = \yii\web\UploadedFile::getInstance($model, 'identificationFile');
+        }
         if (($player = $model->signup()) !== null) {
           $transaction->commit();
           if (Yii::$app->sys->require_activation === true) {
