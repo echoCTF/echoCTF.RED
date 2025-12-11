@@ -19,9 +19,9 @@ use yii\helpers\Url;
       <div class="justify-content-end">
         <?= $this->render('@app/modules/target/views/default/search'); ?>
       </div>
-      <h4 id="event_countdown"></h4>
 
-    <?php endif; ?>
+      <?php endif; ?>
+      <div class="justify-content-end" id="event_countdown"></h4>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index" aria-expanded="false" aria-label="Toggle navigation">
       <span class="sr-only">Toggle navigation</span>
