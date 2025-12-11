@@ -202,7 +202,11 @@ CREATE TRIGGER tai_player AFTER INSERT ON player FOR EACH ROW
     END IF;
     SELECT memc_set(CONCAT('player_type:',NEW.id), NEW.type) INTO @devnull;
     SELECT memc_set(CONCAT('player:',NEW.id), NEW.id) INTO @devnull;
-    INSERT INTO profile (player_id) VALUES (NEW.id);
+    IF NEW.id>1 THEN
+      INSERT INTO profile (player_id) VALUES (NEW.id);
+    ELSE
+      INSERT INTO profile (id,player_id) VALUES (NEW.id,NEW.id);
+    END IF;
     INSERT INTO player_last (id,on_pui) VALUES (NEW.id,now());
     INSERT INTO player_spin (player_id,counter,total,perday,updated_at) values (NEW.id,0,0,memc_get('sysconfig:spins_per_day'),NOW());
     INSERT INTO player_score (player_id) VALUES (NEW.id);
@@ -566,7 +570,7 @@ thisBegin:BEGIN
     LEAVE thisBegin;
   END IF;
 
-  IF NEW.id is NULL or NEW.id<10000000 THEN
+  IF NEW.id is NULL or (NEW.id<10000000 AND NEW.player_id!=1) THEN
     REPEAT
         SET NEW.id=round(rand()*10000000);
     UNTIL (SELECT id FROM profile WHERE id=NEW.id) IS NULL
