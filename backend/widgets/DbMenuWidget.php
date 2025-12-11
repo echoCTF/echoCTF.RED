@@ -16,16 +16,16 @@ class DbMenuWidget extends Widget
   {
     $items = $this->buildItems();
     $this->setActive($items);
-    $items[]=Yii::$app->user->isGuest ? (['label' => 'Login', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'text-light'], 'options' => ['class' => 'fw-bold d-flex justify-content-end']]
-        ) : ('<li class="dropdown nav-item">'
-          . Html::beginForm(['/site/logout'], 'post')
-          . Html::submitButton(
-            'Logout',
-            ['class' => 'btn btn-link logout']
-          )
-          . Html::endForm()
-          . '</li>'
-          );
+    $items[] = Yii::$app->user->isGuest ? (['label' => 'Login', 'url' => ['/site/login'], 'linkOptions' => ['class' => 'text-light'], 'options' => ['class' => 'fw-bold d-flex justify-content-end']]
+    ) : ('<li class="dropdown nav-item">'
+      . Html::beginForm(['/site/logout'], 'post')
+      . Html::submitButton(
+        'Logout',
+        ['class' => 'btn btn-link logout']
+      )
+      . Html::endForm()
+      . '</li>'
+    );
 
     return \yii\bootstrap5\Nav::widget([
       'options' => $this->options,
@@ -44,7 +44,7 @@ class DbMenuWidget extends Widget
       ->andWhere(new \yii\db\Expression(
         implode(' OR ', array_map(fn($v) => "FIND_IN_SET('$v', visibility)", $allowedVisibilities))
       ))
-      ->andWhere(['enabled'=>1])
+      ->andWhere(['enabled' => 1])
       ->orderBy(['sort_order' => SORT_ASC])
       ->all();
 
@@ -67,6 +67,9 @@ class DbMenuWidget extends Widget
     return $items;
   }
 
+  /**
+   * Set active on item(s)
+   */
   private function setActive(&$items)
   {
     foreach ($items as &$item) {
@@ -84,19 +87,31 @@ class DbMenuWidget extends Widget
     }
   }
 
+  /**
+   * Check if a given route should be "active"
+   *
+   * @param string $route
+   * @return boolean
+   */
   private function isRouteActive($route)
   {
-    $currentRoute = Yii::$app->controller->getRoute();
-    $module = Yii::$app->controller->module->id;
+    $current = Yii::$app->controller->getRoute();
+    $route = ltrim($route, '/'); // remove leading slash
 
-    // Module-level matching
-    $routeParts = explode('/', ltrim($route, '/'));
-    if (count($routeParts) > 1 && $routeParts[0] === $module) {
+    if ($route === $current) {
       return true;
     }
 
-    // Exact route match fallback
-    return $currentRoute === ltrim($route, '/');
+    $currentParts = explode('/', $current);
+    $routeParts   = explode('/', $route);
+
+    // If menu entry is module-only
+    if (count($routeParts) === 1) {
+      return $routeParts[0] === $currentParts[0];
+    }
+
+    // Otherwise do NOT mark active
+    return false;
   }
 
   private function getAllowedVisibilities()
