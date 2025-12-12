@@ -230,10 +230,6 @@ class SiteController extends \app\components\BaseController
         }
         return $this->goHome();
       }
-    } catch (\Exception $e) {
-      $transaction->rollBack();
-      Yii::error($e->getMessage());
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'Registration failed.'));
     } catch (\Throwable $e) {
       $transaction->rollBack();
       Yii::error($e->getMessage());
