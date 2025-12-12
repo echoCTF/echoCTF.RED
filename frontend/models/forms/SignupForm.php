@@ -18,6 +18,9 @@ class SignupForm extends Model
   public $email;
   public $password;
   public $terms_and_conditions;
+  public $affiliation;
+  public $identificationFile;
+  public $fullname;
   public $gdpr;
   public $captcha;
 
@@ -74,10 +77,18 @@ class SignupForm extends Model
       ['password', 'required'],
       ['password', 'string', 'min' => 6],
 
-      ['affiliation', 'trim', 'when' => Yii::$app->sys->player_require_identification === true],
-      ['affiliation', 'required', 'when' => Yii::$app->sys->player_require_identification === true],
-      ['affiliation', 'string', 'max' => 255, 'when' => Yii::$app->sys->player_require_identification === true],
-      ['identificationFile', 'required', 'when' => Yii::$app->sys->player_require_identification === true],
+      ['affiliation', 'trim', 'when' => function ($model) {
+        return Yii::$app->sys->player_require_identification === true;
+      }],
+      ['affiliation', 'required', 'when' => function ($model) {
+        return Yii::$app->sys->player_require_identification === true;
+      }],
+      ['affiliation', 'string', 'max' => 255, 'when' => function ($model) {
+        return Yii::$app->sys->player_require_identification === true;
+      }],
+      ['identificationFile', 'required', 'when' => function ($model) {
+        return Yii::$app->sys->player_require_identification === true;
+      }],
       [
         ['identificationFile'],
         'file',
@@ -86,9 +97,19 @@ class SignupForm extends Model
         'minSize' => 1024,
         'tooSmall' => 'File must be at least 1Kb in size...',
         'maxSize' => 500000000,
-        'when' => Yii::$app->sys->player_require_identification === true
-      ]
-
+        'when' => function ($model) {
+          return Yii::$app->sys->player_require_identification === true;
+        }
+      ],
+      [['fullname'], 'required', 'when' => function ($model) {
+        return Yii::$app->sys->player_require_identification === true;
+      }],
+      [['fullname'], 'trim', 'when' => function ($model) {
+        return Yii::$app->sys->player_require_identification === true;
+      }],
+      [['fullname'], 'string', 'max' => 128, 'when' => function ($model) {
+        return Yii::$app->sys->player_require_identification === true;
+      }],
     ];
   }
 
