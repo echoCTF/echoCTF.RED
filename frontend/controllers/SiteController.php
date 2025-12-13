@@ -216,6 +216,10 @@ class SiteController extends \app\components\BaseController
     $transaction = Yii::$app->db->beginTransaction();
     try {
       if ($model->load(Yii::$app->request->post())) {
+        if(Yii::$app->sys->player_require_identification)
+        {
+          $model->identificationFile = \yii\web\UploadedFile::getInstance($model, 'identificationFile');
+        }
         if (($player = $model->signup()) !== null) {
           $transaction->commit();
           if (Yii::$app->sys->require_activation === true) {
@@ -226,10 +230,6 @@ class SiteController extends \app\components\BaseController
         }
         return $this->goHome();
       }
-    } catch (\Exception $e) {
-      $transaction->rollBack();
-      Yii::error($e->getMessage());
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'Registration failed.'));
     } catch (\Throwable $e) {
       $transaction->rollBack();
       Yii::error($e->getMessage());

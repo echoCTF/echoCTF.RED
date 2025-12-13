@@ -13,7 +13,8 @@ class StatsCardModel extends StatsCard
 {
   public $modelClass;
   public $field;
-  public function init()
+
+  public function init(): void
   {
     parent::init();
 

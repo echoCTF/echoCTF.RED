@@ -19,7 +19,7 @@ class StatsCard extends \yii\bootstrap5\Widget
   public $total;
   public $title;
 
-  public function init()
+  public function init(): void
   {
     parent::init();
 

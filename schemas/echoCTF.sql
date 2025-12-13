@@ -526,7 +526,39 @@ CREATE TABLE `migration` (
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `migration` values ('m251207_100542_create_mui_menu_table',1);
+INSERT INTO `migration` values INSERT INTO `migration` values
+        ('m241110_214630_from_v0_25_0_to_v1_0_0',1),
+        ('m250709_112000_add_headshot_points_column_to_target_table',1),
+        ('m250709_112001_add_first_headshot_points_column_to_target_table',1),
+        ('m250709_112518_update_tai_headshot_add_points',1),
+        ('m250709_112826_update_tai_player_finding_remove_headshot_stream_msg',1),
+        ('m250709_112833_update_tai_player_treasure_remove_headshot_stream_msg',1),
+        ('m250818_191856_create_abuser_table',1),
+        ('m250818_191857_update_player_treasure_check_findings_after_insert_trigger',1),
+        ('m250823_192525_create_trigger_after_update_on_headshot_table',1),
+        ('m250826_155619_create_procedure_repopulate_all_team_streams',1),
+        ('m250826_170248_update_procedure_repopulate_team_stream',1),
+        ('m250903_210652_add_player_id_column_to_team_stream_table',1),
+        ('m250903_211309_update_trigger_after_insert_on_stream',1),
+        ('m250903_211650_update_procedure_repopulate_team_stream',1),
+        ('m250903_213807_perform_team_repopulation',1),
+        ('m250903_214032_update_trigger_after_delete_on_stream',1),
+        ('m250905_085712_add_dynamic_treasures_column_to_target_table',1),
+        ('m250914_091828_create_procedure_get_player_networks',1),
+        ('m250921_104021_delete_unused_sysconfig_keys',1),
+        ('m250928_133214_update_trigger_after_update_on_player_last_table',1),
+        ('m251013_212443_update_trigger_before_delete_on_player_table',1),
+        ('m251103_122602_add_suspended_url_route',1),
+        ('m251104_084144_update_trigger_after_update_on_player_table',1),
+        ('m251107_082209_update_procedure_player_maintenance_use_index',1),
+        ('m251111_095121_update_trigger_after_insert_on_player_target_help_add_check',1),
+        ('m251112_130505_add_dashboard_news_url_route',1),
+        ('m251123_081343_add_subscription_perk_url_route',1),
+        ('m251125_074851_create_private_network_table',1),
+        ('m251125_095103_create_private_network_target_table',1),
+        ('m251126_122227_add_private_network_url_route',1),
+        ('m251207_100542_create_mui_menu_table',1);
+
 --
 -- Table structure for table `migration_red`
 --
