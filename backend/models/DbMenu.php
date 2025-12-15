@@ -15,11 +15,24 @@ class DbMenu extends ActiveRecord
   {
     return [
       [['label'], 'required'],
-      [['url', 'visibilty'], 'string', 'max' => 255],
+      [['url'], 'string', 'max' => 255],
+      ['visibility', 'each', 'rule' => ['in', 'range' => ['all', 'guest', 'user', 'admin']]],
       [['parent_id', 'sort_order'], 'integer'],
-      ['enabled','boolean'],
+      ['enabled', 'boolean'],
     ];
   }
+
+  public function beforeSave($insert)
+  {
+    if (parent::beforeSave($insert)) {
+      if (is_array($this->visibility)) {
+        $this->visibility = implode(',', $this->visibility);
+      }
+      return true;
+    }
+    return false;
+  }
+
   public function getParent()
   {
     return $this->hasOne(self::class, ['id' => 'parent_id']);
