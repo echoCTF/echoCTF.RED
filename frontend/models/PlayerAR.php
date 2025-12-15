@@ -252,6 +252,30 @@ class PlayerAR extends ActiveRecord
   /**
    * @return \yii\db\ActiveQuery
    */
+  public function getWsToken()
+  {
+    return $this->hasOne(WsToken::class, ['player_id' => 'id']);
+  }
+
+  public function getOrCreateWsToken()
+  {
+    $token = $this->wsToken; // uses relation
+
+    if (!$token) {
+      $token = new WsToken();
+      $token->player_id = $this->id;
+      $token->subject_id = $this->username;
+      $token->token = trim(str_replace(['_','+'], '-', \Yii::$app->security->generateRandomString(32)), '-');
+      $token->expires_at=date('Y-m-d H:i:s', strtotime('+1 day'));
+      $token->save(false);
+    }
+
+    return $token->token;
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
   public function getInstance()
   {
     return $this->hasOne(TargetInstance::class, ['player_id' => 'id']);
@@ -301,5 +325,4 @@ class PlayerAR extends ActiveRecord
   {
     return $this->hasMany(\app\modules\subscription\models\PlayerPaymentHistory::class, ['player_id' => 'id']);
   }
-
 }
