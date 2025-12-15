@@ -80,9 +80,18 @@ class MaterialAsset extends AssetBundle
 
   public function init()
   {
+    parent::init();
     if (!\Yii::$app->user->isGuest) {
       $this->js[] = ["js/plugins/bootstrap-autocomplete.min.js", 'defer' => 'defer'];
+      $this->js[] = ["js/wsclient.js", 'defer' => 'defer'];
+      $player = \Yii::$app->user->identity;
+      $wsToken = $player->getOrCreateWsToken(); // method from your model
+
+      // Register a JS variable globally
+      \Yii::$app->view->registerJs(
+        "window.wsToken = " . json_encode($wsToken) . ";",
+        \yii\web\View::POS_HEAD
+      );
     }
-    parent::init();
   }
 }
