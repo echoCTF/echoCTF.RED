@@ -15,7 +15,7 @@ class m251214_115824_create_ws_token_table extends Migration
     $this->createTable('{{%ws_token}}', [
       'token' => 'VARBINARY(32) PRIMARY KEY',
       'player_id' => $this->integer(10)->unsigned()->defaultValue(null),
-      'subject_id' => $this->binary(32)->notNull(),
+      'subject_id' => 'VARBINARY(32) NOT NULL',
       'is_server' => $this->boolean()->notNull()->defaultValue(0),
       'expires_at' => $this->dateTime()->notNull(),
     ]);
