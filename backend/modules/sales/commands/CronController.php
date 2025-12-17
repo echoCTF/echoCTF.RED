@@ -42,14 +42,9 @@ class CronController extends Controller
             printf("Inactive: %s %s => %s / %s\n", $rec->player->username, $rec->player->email, $rec->subscription_id, \Yii::$app->formatter->asRelativeTime($rec->ending));
 
           if ($rec->product && $rec->active) {
-            $notif = new \app\modules\activity\models\Notification;
-            $notif->player_id = $rec->player_id;
-            $notif->category = 'swal:info';
-            $notif->title = \Yii::t('app', 'Your subscription has expired');
-            $notif->body = \Yii::t('app', 'We\'re sorry to let you know that your ' . $rec->product->name . ' subscription has expired. Feel free to re-subscribe at any time.');
-            $notif->archived = 0;
+            $p=$rec->player;
             $rec->cancel();
-            $notif->save();
+            $p->notify('swal:info',\Yii::t('app', 'Your subscription has expired'),\Yii::t('app', 'We\'re sorry to let you know that your ' . $rec->product->name . ' subscription has expired. Feel free to re-subscribe at any time.'));
           } else {
             \Yii::$app->db->createCommand("DELETE FROM network_player WHERE player_id=:player_id")
               ->bindValue(':player_id', $rec->player_id)

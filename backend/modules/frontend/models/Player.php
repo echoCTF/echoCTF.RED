@@ -88,13 +88,13 @@ class Player extends PlayerAR
         $message->addHeader($entry[0], $entry[1]);
       $message->send();
       if (Yii::$app instanceof \yii\web\Application)
-        \Yii::$app->session->addFlash('success', Yii::t('app', "The user {username} with email {email} has been mailed.",['username'=>$this->username,'email'=>$this->email]));
+        \Yii::$app->session->addFlash('success', Yii::t('app', "The user {username} with email {email} has been mailed.", ['username' => $this->username, 'email' => $this->email]));
       else {
         echo Yii::t('app', "The user has been mailed."), "\n";
       }
     } catch (\Exception $e) {
       if (Yii::$app instanceof \yii\web\Application)
-        \Yii::$app->session->addFlash('notice', Yii::t('app', "Failed to send mail to user {username} with email {email}. {exception}", ['username'=>$this->username,'email'=>$this->email,'exception' => Html::encode($e->getMessage())]));
+        \Yii::$app->session->addFlash('notice', Yii::t('app', "Failed to send mail to user {username} with email {email}. {exception}", ['username' => $this->username, 'email' => $this->email, 'exception' => Html::encode($e->getMessage())]));
       else
         echo Yii::t('app', "Failed to send mail to user."), "\n";
 
@@ -149,15 +149,20 @@ class Player extends PlayerAR
   /**
    * Send a notification to current user
    */
-  public function notify($type = "info", $title, $body)
+  public function notify($type = "info", $title, $body, $archive = true)
   {
-    $n = new \app\modules\activity\models\Notification;
-    $n->player_id = $this->id;
-    $n->archived = 0;
-    $n->category = $type;
-    $n->title = $title;
-    $n->body = $body;
-    return $n->save();
+    $publisher = new \app\services\ServerPublisher(Yii::$app->params['serverPublisher']);
+    $publisher->publish($this->id, 'notification', ['type' => $type, 'title' => $title, 'body' => $body]);
+    if ($archive === true) {
+      $n = new \app\modules\activity\models\Notification;
+      $n->player_id = $this->id;
+      $n->archived = 1;
+      $n->category = $type;
+      $n->title = $title;
+      $n->body = $body;
+      return $n->save();
+    }
+    return true;
   }
 
   public function getAcademicLong()

@@ -13,7 +13,6 @@ use yii\helpers\Console;
 use yii\console\Controller;
 use app\modules\frontend\models\Player;
 use app\modules\activity\models\PlayerLast;
-use app\modules\activity\models\Notification;
 use app\components\OpenVPN;
 use yii\console\ExitCode;
 use app\modules\activity\models\PlayerDisconnectQueue;
@@ -110,7 +109,7 @@ class VpnController extends Controller
   public function actionLoad($filepath)
   {
     $file = basename($filepath);
-    $conf = str_replace(["\r\n", "\r"],"\n",file_get_contents($filepath));
+    $conf = str_replace(["\r\n", "\r"], "\n", file_get_contents($filepath));
     try {
       if (preg_match('/server (.*) (.*)/', $conf, $matches) && count($matches) > 1) {
         $ovpnModel = \app\modules\settings\models\Openvpn::find()->where(['name' => $file, 'net' => ip2long($matches[1])]);
@@ -141,7 +140,7 @@ class VpnController extends Controller
       if ($ovpn->save()) {
         echo $ovpn->isNewRecord ? "Record created successfully!\n" : "Record updated successfully!\n";
       } else {
-        echo "Failed to save record: ", implode(", ",$ovpn->getErrorSummary(true)), "\n";
+        echo "Failed to save record: ", implode(", ", $ovpn->getErrorSummary(true)), "\n";
       }
     } catch (\Exception $e) {
       printf("Error: %s", $e->getMessage());
@@ -165,7 +164,7 @@ class VpnController extends Controller
         echo "No record found for the given file and server!\n";
         return ExitCode::CANTCREAT;
       }
-      if (file_put_contents($filepath, str_replace(["\r\n","\r"],"\n",$ovpn->conf))) {
+      if (file_put_contents($filepath, str_replace(["\r\n", "\r"], "\n", $ovpn->conf))) {
         echo "File saved at ", $filepath, "\n";
       } else {
         echo "Failed to save ", $filepath, "\n";
@@ -179,9 +178,9 @@ class VpnController extends Controller
   /**
    * Display openvpn status enriched with database details
    */
-  public function actionStatus($server=false)
+  public function actionStatus($server = false)
   {
-    if($server===false) $server=gethostbyaddr(gethostbyname(gethostname()));
+    if ($server === false) $server = gethostbyaddr(gethostbyname(gethostname()));
     $q = \app\modules\settings\models\Openvpn::find()->select('status_log')->andFilterWhere(['server' => $server]);
     $status['routing_table'] = [];
     $status['client_list'] = [];
@@ -221,16 +220,11 @@ class VpnController extends Controller
       try {
         printf("Processing [%s] scheduled at [%s]\n", $entry->player->username, $entry->created_at);
         if (OpenVPN::kill($entry->player_id, intval($entry->player->last->vpn_local_address)) === true) {
-          $n=new Notification();
-          $n->player_id=$entry->player_id;
-          $n->body=$n->title="Successfully disconnected your VPN connection";
-          $n->archived=0;
-          $n->category='info';
+          $n = $entry->player;
           Yii::$app->db->createCommand("UPDATE player_last SET vpn_local_address=NULL, vpn_remote_address=NULL WHERE id=:player_id", [':player_id' => $entry->player_id])->execute();
-          if($entry->delete()) {
-            $n->save();
+          if ($entry->delete()) {
+            $n->notify('info', "Successfully disconnected your VPN connection", "Successfully disconnected your VPN connection");
           }
-
         }
       } catch (\Exception $e) {
         echo "Error: ", $e->getMessage(), "\n";

@@ -3,7 +3,6 @@
 namespace app\modules\activity\controllers;
 
 use Yii;
-use app\modules\activity\models\Notification;
 use app\modules\activity\models\Writeup;
 use app\modules\activity\models\WriteupSearch;
 use yii\base\UserException;
@@ -129,11 +128,8 @@ class WriteupController extends \app\components\BaseController
     $model->cleanup();
     if ($model->load(Yii::$app->request->post()) && $model->save()) {
       if ($oldmodel['status'] !== $model->status) {
-        $notif = new Notification;
-        $notif->player_id = $player_id;
-        $notif->archived = 0;
-        $notif->title = $notif->body = Yii::t('app', "The status of the writeup for [{target_name}] by [{username}], has changed to [{status}].", ['target_name' => $model->target->name, 'username' => $model->player->username, 'status' => $model->status]);
-        $notif->save();
+        $t=\Yii::t('app', "The status of the writeup for [{target_name}] by [{username}], has changed to [{status}].", ['target_name' => $model->target->name, 'username' => $model->player->username, 'status' => $model->status]);
+        $model->player->notify('info',$t,$t);
       }
       return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
     }
@@ -179,11 +175,8 @@ class WriteupController extends \app\components\BaseController
         $model->content = $string;
       }
       if ($model->save()) {
-        $notif = new Notification;
-        $notif->player_id = $player_id;
-        $notif->body = $notif->title = Yii::t('app', "The writeup you submitted for {target_name} has been approved. Thank you!", ['target_name' => $model->target->name]);
-        $notif->archived = 0;
-        $notif->save();
+        $t=Yii::t('app', "The writeup you submitted for {target_name} has been approved. Thank you!", ['target_name' => $model->target->name]);
+        $model->player->notify('info',$t,$t);
         Yii::$app->session->setFlash('success', Yii::t('app', 'Writeup for {target_name} by {username} approved.', ['target_name' => $model->target->name, 'username' => $model->player->username]));
       } else {
         Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to approve writeup for {target_name} by {username}.', ['target_name' => $model->target->name, 'username' => $model->player->username]));
