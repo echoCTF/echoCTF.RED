@@ -200,7 +200,6 @@
       group: wheel
       state: link
 
-
   - name: Add user 'sysadmin'
     user:
       name: "{{item.name}}"
@@ -607,6 +606,28 @@
       - { key: manual_auth_hook, value: "/etc/letsencrypt/lexicon-vultr.sh create" }
       - { key: manual_cleanup_hook, value: "/etc/letsencrypt/lexicon-vultr.sh delete" }
       - { key: post_hook, value: "/etc/nginx/install_renewed_cert.sh" }
+
+  - name: Grab wsserver
+    get_url:
+      url: "https://github.com/echoCTF/ws-server/releases/download/v1.0.0/wsserver-openbsd-amd64.zip"
+      dest: /tmp/wsserver.zip
+
+  - name: Extract wsserver
+    command: "{{item}}"
+    with_items:
+    - unzip /tmp/wsserver.zip -d /usr/local/bin/
+    - rm /tmp/wsserver.zip
+
+  - name: Install wsserver.ini for supervisord
+    copy:
+      dest: /etc/supervisord.d/wsserver.ini
+      content: |
+        [program:wsserver]
+        user = participantUI
+        command = /usr/local/bin/wsserver -addr "127.0.0.1:8888" -db mysql -dsn "participantUI:participantUI@{{db_ip}}/echoCTF" -max-queued 20 -origins "https://{{domain_name}},http://localhost:8888,http://127.0.0.1:8888"
+        stdout_logfile=/var/log/wsserver.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
 
   - name: copy nstables script
     copy:
