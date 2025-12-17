@@ -125,7 +125,7 @@ class ServerPublisher
         }
 
         throw new ServerErrorHttpException(
-          'Remote server error: HTTP ' . $response->statusCode
+          'Remote server error: HTTP ' . $response->statusCode .' ['.trim($response->content).']'
         );
       } catch (\Throwable $e) {
         $lastException = $e;
@@ -149,7 +149,7 @@ class ServerPublisher
     }
 
     throw new ServerErrorHttpException(
-      'Server publish failed after ' . ($this->maxRetries + 1) . ' attempts',
+      'Server publish failed after ' . ($this->maxRetries + 1) . ' attempts. Last error: '.$lastException->getMessage(),
       0,
       $lastException
     );

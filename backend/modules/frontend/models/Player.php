@@ -151,8 +151,15 @@ class Player extends PlayerAR
    */
   public function notify($type = "info", $title, $body, $cc = true, $archive = true)
   {
-    $publisher = new \app\services\ServerPublisher(Yii::$app->params['serverPublisher']);
-    $publisher->publish($this->id, 'notification', ['type' => $type, 'title' => $title, 'body' => $body]);
+    try {
+      $publisher = new \app\services\ServerPublisher(Yii::$app->params['serverPublisher']);
+      $publisher->publish($this->id, 'notification', ['type' => $type, 'title' => $title, 'body' => $body]);
+    } catch(\Throwable $e) {
+      // on publishing error make sure we store the noticication as pending
+      $cc=true;
+      $archive=false;
+      Yii::error($e->getMessage());
+    }
 
     if ($cc === true) {
       $n = new \app\modules\activity\models\Notification;
