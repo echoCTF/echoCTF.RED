@@ -624,10 +624,16 @@
       content: |
         [program:wsserver]
         user = participantUI
-        command = /usr/local/bin/wsserver -addr "127.0.0.1:8888" -db mysql -dsn "participantUI:participantUI@{{db_ip}}/echoCTF" -max-queued 20 -origins "https://{{domain_name}},http://localhost:8888,http://127.0.0.1:8888"
+        command = /usr/local/bin/wsserver -addr "127.0.0.1:8888" -db mysql -dsn "participantUI:participantUI@{{db_ip}}/echoCTF" -max-queued 20
         stdout_logfile=/var/log/wsserver.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
+
+  - name: "Update frontend/config/params.php"
+    replace:
+      path: "/home/participantUI/{{domain_name}}/frontend/config/params.php"
+      regexp: 'ws://localhost:8888/ws'
+      replace: 'wss://{{domain_name}}/ws'
 
   - name: copy nstables script
     copy:
