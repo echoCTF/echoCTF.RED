@@ -85,24 +85,21 @@ class TeamPlayer extends \yii\db\ActiveRecord
     {
         return $this->hasOne(Player::class, ['id' => 'player_id']);
     }
-    private function sendNotification($id,$msg="")
+    private function sendNotification($p,$msg="")
     {
-        $n=new \app\models\Notification;
-        $n->player_id=$id;
-        $n->archived=0;
-        $n->body=$n->title=$msg;
-        return $n->save();
+      $p->notify('info',$msg,$msg);
+      return true;
     }
 
     public function notifyJoinOwner()
     {
       $msg=sprintf(\Yii::t('app','Hi there, [%s] just joined your team. Go to your team page and approve the player.'),$this->player->username);
-      return $this->sendNotification($this->team->owner_id,$msg);
+      return $this->sendNotification($this->team->owner,$msg);
     }
     public function notifyPartOwner()
     {
       $msg=sprintf(\Yii::t('app','Hi there, [%s] just left your team.'),$this->player->username);
-      return $this->sendNotification($this->team->owner_id,$msg);
+      return $this->sendNotification($this->team->owner,$msg);
     }
 
     public function notifyRejectPlayer()
@@ -110,12 +107,12 @@ class TeamPlayer extends \yii\db\ActiveRecord
       // Don't notify the players for deleting their own team
       if($this->player_id===$this->team->owner_id) return;
       $msg=\Yii::t('app','Hi there, your team membership got rejected. Find another team to join.');
-      return $this->sendNotification($this->player_id,$msg);
+      return $this->sendNotification($this->player,$msg);
     }
     public function notifyApprovePlayer()
     {
       $msg=\Yii::t('app','Hi there, your team membership got approved.');
-      return $this->sendNotification($this->player_id,$msg);
+      return $this->sendNotification($this->player,$msg);
     }
 
 }
