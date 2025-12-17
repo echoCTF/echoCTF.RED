@@ -17,4 +17,11 @@ return [
       "private_key_type" => OPENSSL_KEYTYPE_RSA,
       "encrypt_key" => false
   ],
+  'serverPublisher' => [
+    'url'        => 'http://localhost:8888/publish',
+    'token'      => 'server123token',
+    'timeout'    => 5,
+    'maxRetries' => 3,
+    'backoffMs'  => 200,
+  ],
 ];

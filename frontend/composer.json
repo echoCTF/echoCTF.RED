@@ -18,7 +18,8 @@
         "overals/yii2-whois": "~1.0.2",
         "stripe/stripe-php": "^16.4",
         "yiisoft/yii2-symfonymailer": "^4.0.0",
-        "yzalis/identicon": "^2.0"
+        "echoctf/identicon": "^2.0",
+        "yiisoft/yii2-httpclient": "^2.0"
     },
     "config": {
         "platform-check": false,
@@ -79,6 +80,18 @@
                 "license": [
                     "MIT"
                 ]
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "echoctf/identicon",
+                "version": "2.0.45",
+                "source": {
+                    "type": "git",
+                    "url": "https://github.com/echoctf/identicon.git",
+                    "reference": "1978f83"
+                }
             }
         },
         {
