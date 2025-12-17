@@ -1,6 +1,7 @@
 const ws = new WebSocket(`ws://echoctf.local:8888/ws?token=${window.wsToken}`);
 const wsHandlers = {
   notification: onNotification,
+  apiNotifications: apiNotifications,
   target: onTarget,
   //instance: onInstance,
   //private_target: onPrivateTarget
@@ -19,7 +20,7 @@ ws.addEventListener("open", () => {
 });
 
 ws.addEventListener("message", (event) => {
-  //console.log("Received:", event.data);
+  console.log("Received:", event.data);
   let msg;
   try {
     msg = JSON.parse(event.data);
