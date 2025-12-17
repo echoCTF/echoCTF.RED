@@ -336,17 +336,4 @@ $(document).ready(function () {
     }
   }, 1000);
 
-  $('#Notifications, #Hints').ifexists(function (elem) {
-    document.addEventListener('visibilitychange', function (e) {
-      if (document.visibilityState === 'hidden') {
-        clearTimeout(notifTimeout);
-      }
-      else {
-        clearTimeout(notifTimeout);
-        // clear any existing ones
-        $('#Notifications, #Hints').ifexists(function (elem) { apiNotifications(); })
-      }
-    });
-    apiNotifications();
-  })
 })
