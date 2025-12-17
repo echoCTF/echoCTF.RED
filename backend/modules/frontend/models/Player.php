@@ -149,14 +149,15 @@ class Player extends PlayerAR
   /**
    * Send a notification to current user
    */
-  public function notify($type = "info", $title, $body, $archive = true)
+  public function notify($type = "info", $title, $body, $cc = true, $archive = true)
   {
     $publisher = new \app\services\ServerPublisher(Yii::$app->params['serverPublisher']);
     $publisher->publish($this->id, 'notification', ['type' => $type, 'title' => $title, 'body' => $body]);
-    if ($archive === true) {
+
+    if ($cc === true) {
       $n = new \app\modules\activity\models\Notification;
       $n->player_id = $this->id;
-      $n->archived = 1;
+      $n->archived = $archive;
       $n->category = $type;
       $n->title = $title;
       $n->body = $body;
