@@ -80,7 +80,7 @@ class ServerPublisher
       throw new InvalidConfigException('ServerPublisher config "token" is required.');
     }
 
-    $this->url         = $config['url'] ?? 'http://localhost:8888/publish';
+    $this->url         = $config['url'] ?? 'http://localhost:8888';
     $this->wsEndpoint  = $config['wsEndpoint'];
     $this->bearerToken = $config['token'] ?? 'server123token';
     $this->timeout     = $config['timeout'] ?? 5;
@@ -109,7 +109,7 @@ class ServerPublisher
       try {
         $response = $client->createRequest()
           ->setMethod('POST')
-          ->setUrl($this->url)
+          ->setUrl($this->url.'/publish')
           ->setHeaders([
             'Authorization' => 'Bearer ' . $this->bearerToken,
             'Content-Type'  => 'application/json',

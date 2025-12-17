@@ -18,7 +18,7 @@ return [
     "encrypt_key" => false
   ],
   'serverPublisher' => [
-    'url'        => 'http://localhost:8888/publish',
+    'url'        => 'http://localhost:8888',
     'wsEndpoint' => 'ws://localhost:8888/ws',
     'token'      => 'server123token',
     'timeout'    => 5,
