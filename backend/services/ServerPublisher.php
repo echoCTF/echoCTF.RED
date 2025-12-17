@@ -72,12 +72,16 @@ class ServerPublisher
     if (empty($config['url'])) {
       throw new InvalidConfigException('ServerPublisher config "url" is required.');
     }
+    if (empty($config['wsEndpoint'])) {
+      throw new InvalidConfigException('ServerPublisher config "wsEndpoint" is required.');
+    }
 
     if (empty($config['token'])) {
       throw new InvalidConfigException('ServerPublisher config "token" is required.');
     }
 
     $this->url         = $config['url'] ?? 'http://localhost:8888/publish';
+    $this->wsEndpoint  = $config['wsEndpoint'];
     $this->bearerToken = $config['token'] ?? 'server123token';
     $this->timeout     = $config['timeout'] ?? 5;
     $this->maxRetries  = $config['maxRetries'] ?? 3;
@@ -125,7 +129,7 @@ class ServerPublisher
         }
 
         throw new ServerErrorHttpException(
-          'Remote server error: HTTP ' . $response->statusCode .' ['.trim($response->content).']'
+          'Remote server error: HTTP ' . $response->statusCode . ' [' . trim($response->content) . ']'
         );
       } catch (\Throwable $e) {
         $lastException = $e;
@@ -149,7 +153,7 @@ class ServerPublisher
     }
 
     throw new ServerErrorHttpException(
-      'Server publish failed after ' . ($this->maxRetries + 1) . ' attempts. Last error: '.$lastException->getMessage(),
+      'Server publish failed after ' . ($this->maxRetries + 1) . ' attempts. Last error: ' . $lastException->getMessage(),
       0,
       $lastException
     );
