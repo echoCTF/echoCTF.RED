@@ -89,7 +89,8 @@ class MaterialAsset extends AssetBundle
 
       // Register a JS variable globally
       \Yii::$app->view->registerJs(
-        "window.wsToken = " . json_encode($wsToken) . ";",
+        "window.wsToken = " . json_encode($wsToken) . ";
+        window.wsEndpoint = " . json_encode(\Yii::$app->params['serverPublisher']['wsEndpoint']) . ";",
         \yii\web\View::POS_HEAD
       );
     }
