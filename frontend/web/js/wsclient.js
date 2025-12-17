@@ -26,7 +26,7 @@ function connectWS() {
 
   //console.log("Connecting WebSocket...");
 
-  ws = new WebSocket(`ws://echoctf.local:8888/ws?token=${window.wsToken}`);
+  ws = new WebSocket(`${window.wsEndpoint}?token=${window.wsToken}`);
 
   ws.addEventListener("open", () => {
     console.log("WebSocket Connected!");
