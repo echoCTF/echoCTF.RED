@@ -24,6 +24,7 @@ return [
   ],
   'serverPublisher' => [
     'url'        => 'http://localhost:8888/publish',
+    'wsEndpoint' => 'ws://localhost:8888/ws',
     'token'      => 'server123token',
     'timeout'    => 5,
     'maxRetries' => 3,
