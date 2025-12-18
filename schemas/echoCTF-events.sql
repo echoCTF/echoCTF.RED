@@ -43,12 +43,10 @@ BEGIN
     ALTER EVENT `update_ranks` ENABLE;
 END ;;
 
-DROP EVENT IF EXISTS `ev_player_product_expiration` ;;
-CREATE EVENT `ev_player_product_expiration` ON SCHEDULE EVERY 1 HOUR ON COMPLETION PRESERVE ENABLE DO
+DROP EVENT IF EXISTS `ev_ws_token_expiration` ;;
+CREATE EVENT `ev_ws_token_expiration` ON SCHEDULE EVERY 10 MINUTE ON COMPLETION PRESERVE ENABLE DO
 BEGIN
-  ALTER EVENT ev_player_product_expiration DISABLE;
-  call expire_player_products();
-  ALTER EVENT ev_player_product_expiration ENABLE;
+  DELETE FROM ws_token WHERE is_server=0 and expires_at<=NOW();
 END ;;
 
 DELIMITER ;
