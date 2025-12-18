@@ -97,6 +97,10 @@
       - "php-intl%{{versions.PHP}}"
       - "php-pdo_mysql%{{versions.PHP}}"
       - "php-zip%{{versions.PHP}}"
+      - "php-bcmath%{{versions.PHP}}"
+      - "php-gmp%{{versions.PHP}}"
+      - "php-mcrypt%{{versions.PHP}}"
+      - "php-tidy%{{versions.PHP}}"
       - py3-pip
       - py3-requests
       - py3-mysqlclient

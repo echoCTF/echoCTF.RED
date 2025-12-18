@@ -10,10 +10,11 @@ updates:
     schedule:
       interval: "weekly"
 
-  - package-ecosystem: "npm"
-    directory: "frontend/web"
-    schedule:
-      interval: "weekly"
+# This looks for package.json
+#  - package-ecosystem: "npm"
+#    directory: "frontend/web"
+#    schedule:
+#      interval: "weekly"
 
   - package-ecosystem: "docker-compose"
     directory: "/"
