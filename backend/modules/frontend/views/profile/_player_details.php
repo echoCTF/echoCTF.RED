@@ -17,7 +17,7 @@ use yii\helpers\Html;
               'method' => 'post',
           ],
       ]) ?>
-      <?= \app\widgets\NotifyButton::widget(['url' => ['/frontend/player/notify', 'id' => $model->id],'label'=>'<i class="fas fa-paper-plane"></i>','buttonOptions'=>['class'=>'text-purple']]) ?>
+      <?= \app\widgets\NotifyButton::widget(['url' => ['/frontend/player/notify', 'id' => $model->player_id],'label'=>'<i class="fas fa-paper-plane"></i>','buttonOptions'=>['class'=>'text-purple']]) ?>
       </span>
   </div>
   <div class="panel-body pn">
