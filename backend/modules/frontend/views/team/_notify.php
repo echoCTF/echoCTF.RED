@@ -13,7 +13,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
 <div class="notification-form">
 
-  <?php $form = ActiveForm::begin(); ?>
+  <?php $form = ActiveForm::begin(['id' => 'notifyForm-' . uniqid()]); ?>
   <div class="row">
     <div class="col-md-6">
       <?= $form->field($notificationModel, 'category')->dropDownList(\app\modules\activity\models\Notification::supportedCategories())->hint('Choose the notification type. <code>swal:</code> prefixed notifications invoke a modal popup.') ?>
