@@ -11,7 +11,7 @@
     },
     "minimum-stability": "stable",
     "require": {
-        "php": ">=8.0.0",
+        "php": ">=8.2.0",
         "yiisoft/yii2": "2.0.53",
         "yiisoft/yii2-bootstrap": "~2.0.11",
         "yiisoft/yii2-bootstrap4": "^2.0.11",
