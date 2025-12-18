@@ -9,3 +9,13 @@ updates:
     directory: "frontend/"
     schedule:
       interval: "weekly"
+
+  - package-ecosystem: "npm"
+    directory: "frontend/web"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker-compose"
+    directory: "/"
+    schedule:
+      interval: "weekly"
