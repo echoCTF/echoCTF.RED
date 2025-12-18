@@ -149,15 +149,18 @@ class Player extends PlayerAR
   /**
    * Send a notification to current user
    */
-  public function notify($type = "info", $title, $body, $cc = true, $archive = true)
+  public function notify($type = "info", $title, $body, $cc = true, $archive = true, $apiOnly = false)
   {
     try {
       $publisher = new \app\services\ServerPublisher(Yii::$app->params['serverPublisher']);
-      $publisher->publish($this->id, 'notification', ['type' => $type, 'title' => $title, 'body' => $body]);
-    } catch(\Throwable $e) {
+      if ($apiOnly !== false)
+        $publisher->publish($this->id, 'apiNotifications', []);
+      else
+        $publisher->publish($this->id, 'notification', ['type' => $type, 'title' => $title, 'body' => $body]);
+    } catch (\Throwable $e) {
       // on publishing error make sure we store the noticication as pending
-      $cc=true;
-      $archive=false;
+      $cc = true;
+      $archive = false;
       Yii::error($e->getMessage());
     }
 
