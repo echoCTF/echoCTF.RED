@@ -122,18 +122,13 @@ class PlayerSpinController extends \app\components\BaseController
         elseif(($ps=PlayerSpin::findOne($id)) !== null)
         {
           $ps->counter=0;
+          $ps->player->notify('info',\Yii::t('app',"Restarts counter zeroed"),Yii::t('app','<p>We have zeroed your restart counter.</p>'));
           $ps->save();
-          $notif=new \app\modules\activity\models\Notification;
-          $notif->player_id=$id;
-          $notif->title=Yii::t('app',"Restarts counter zeroed");
-          $notif->category='info';
-          $notif->body=Yii::t('app','<p>We have zeroed your restart counter.</p>');
-          $notif->save();
         }
         $trans->commit();
         Yii::$app->session->setFlash('success', Yii::t('app','Player spin counters zeroed.'));
       }
-      catch(\Exception $e)
+      catch(\Theowable $e)
       {
         $trans->rollBack();
         Yii::$app->session->setFlash('error', Yii::t('app','Player spin counters failed to zero out.'));

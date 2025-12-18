@@ -49,16 +49,6 @@ $config = [
     ],
   ],
   'components' => [
-/*
-    'assetManager' => [
-      //'bundles' => require __DIR__ . '/assets.php',
-      'basePath' => '@webroot/assets', // Where assets will be stored
-      'baseUrl' => '@web/assets',     // The public URL to access assets
-      'forceCopy' => YII_ENV_DEV,     // Force copy of assets during development
-      'linkAssets' => true,           // Use symlinks for assets
-      'appendTimestamp' => true,      // Add timestamps to URLs for cache busting
-    ],
-*/
     'i18n' => [
       'translations' => [
         'yii*' => [

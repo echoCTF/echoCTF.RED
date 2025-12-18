@@ -6,7 +6,6 @@ use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use Docker\DockerClientFactory;
 use app\modules\activity\models\SpinQueue;
-use app\modules\activity\models\Notification;
 use app\modules\activity\models\SpinHistory;
 use app\modules\gameplay\models\Target;
 use app\components\Pf;
@@ -409,16 +408,7 @@ class CronController extends Controller
           } else {
             $notifTitle = sprintf("Target [%s] restart request completed", $t->target->name);
           }
-
-          $notif = new Notification;
-          $notif->player_id = $t->player_id;
-          $notif->title = $notifTitle;
-          $notif->body = sprintf("<p>Target [<b><code>%s</code></b>] got rebooted.<br/>Have fun</p>", $t->target->name);
-          $notif->archived = 0;
-          $notif->created_at = new \yii\db\Expression('NOW()');
-          $notif->updated_at = new \yii\db\Expression('NOW()');
-          $notif->save();
-
+          $t->player->notify("info", $notifTitle, sprintf("<p>Target [<b><code>%s</code></b>] got rebooted.<br/>Have fun</p>", $t->target->name));
           $t->delete();
           echo " OK\n";
         } catch (\Exception $ce) {

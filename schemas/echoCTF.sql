@@ -557,7 +557,9 @@ INSERT INTO `migration` values INSERT INTO `migration` values
         ('m251125_074851_create_private_network_table',1),
         ('m251125_095103_create_private_network_target_table',1),
         ('m251126_122227_add_private_network_url_route',1),
-        ('m251207_100542_create_mui_menu_table',1);
+        ('m251207_100542_create_mui_menu_table',1),
+        ('m251214_115824_create_ws_token_table',1),
+        ('m251215_105113_create_event_ws_token_expiration',1);
 
 --
 -- Table structure for table `migration_red`
@@ -2008,6 +2010,18 @@ CREATE TABLE `mui_menu` (
   CONSTRAINT `fk-mui_menu-parent_id` FOREIGN KEY (`parent_id`) REFERENCES `mui_menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+DROP TABLE IF EXISTS `ws_token`;
+CREATE TABLE `ws_token` (
+  `token` varbinary(32) NOT NULL,
+  `player_id` int(10) unsigned DEFAULT NULL,
+  `subject_id` varbinary(32) NOT NULL,
+  `is_server` tinyint(1) NOT NULL DEFAULT 0,
+  `expires_at` datetime NOT NULL,
+  PRIMARY KEY (`token`),
+  KEY `idx-ws_token-player_id` (`player_id`),
+  KEY `idx-ws_token-server_expires` (`is_server`,`expires_at`),
+  CONSTRAINT `fk-ws_token-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

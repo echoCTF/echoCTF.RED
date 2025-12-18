@@ -156,7 +156,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public function validateAuthKey($authKey)
   {
-    return $this->getAuthKey() === $authKey && ( $this->status === self::STATUS_ACTIVE || $this->status === self::STATUS_SUSPENDED ) && $this->active === 1;
+    return $this->getAuthKey() === $authKey && ($this->status === self::STATUS_ACTIVE || $this->status === self::STATUS_SUSPENDED) && $this->active === 1;
   }
 
   /**
@@ -403,15 +403,28 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
   /**
    * Send a notification to current user
    */
-  public function notify($type = "info", $title, $body)
+  public function notify($type = "info", $title, $body, $cc = true, $archive = true)
   {
-    $n = new \app\models\Notification;
-    $n->player_id = $this->id;
-    $n->archived = 0;
-    $n->category = $type;
-    $n->title = $title;
-    $n->body = $body;
-    return $n->save();
+    try {
+      $publisher = new \app\services\ServerPublisher(Yii::$app->params['serverPublisher']);
+      $publisher->publish($this->id, 'notification', ['type' => $type, 'title' => $title, 'body' => $body]);
+    } catch(\Throwable $e) {
+      // on publishing error make sure we store the noticication as pending
+      $cc=true;
+      $archive=false;
+      Yii::error($e->getMessage());
+    }
+
+    if ($cc === true) {
+      $n = new \app\models\Notification;
+      $n->player_id = $this->id;
+      $n->archived = $archive;
+      $n->category = $type;
+      $n->title = $title;
+      $n->body = $body;
+      return $n->save();
+    }
+    return true;
   }
 
   /**

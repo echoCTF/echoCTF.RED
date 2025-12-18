@@ -155,12 +155,8 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   {
     $curr = self::findOne($this->player_id);
     if ($this->isNewRecord || ($curr->active != $this->active && $this->active == 1)) {
-      $notif = new Notification;
-      $notif->player_id = $this->player_id;
-      $notif->title = \Yii::t('app', 'Your subscription has been activated');
-      $notif->body = \Yii::t('app', 'Your subscription has been activated');
-      $notif->archived = 0;
-      $notif->save();
+      if (($p = Player::findOne($this->player_id)) !== null)
+        $p->notify('info', \Yii::t('app', 'Your subscription has been activated'), \Yii::t('app', 'Your subscription has been activated'));
     }
 
     return parent::beforeSave($insert);

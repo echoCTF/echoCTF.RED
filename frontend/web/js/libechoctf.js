@@ -189,100 +189,99 @@ var intervalTimeout = 5000;
 
 function targetUpdates(id) {
   var targetEl = document.getElementById("target_id");
-  targetTimeout = setInterval(function () {
-    var request = new XMLHttpRequest();
-    request.open("GET", `/target/${id}/ip`);
-    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-    request.send();
-    request.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        jsonObj = JSON.parse(this.responseText);
-        if (targetEl.children[0].innerHTML != jsonObj.ip) {
-          if (jsonObj.instance) {
-            if (jsonObj.ip == '0.0.0.0') {
-              el = document.createElement("b");
-              el.innerHTML = jsonObj.ip;
-              el.className = "text-danger";
-              el.setAttribute("data-toggle", "tooltip");
-              el.setAttribute("title", "The IP of your private instance will become visible once its powered up.");
-              $(targetEl.children[0]).tooltip('dispose');
-              targetEl.innerHTML = '';
-              targetEl.appendChild(el);
-            }
-            else {
-              el = document.createElement("a");
-              el.innerHTML = jsonObj.ip;
-              el.href = jsonObj.ip;
-              el.className = "copy-to-clipboard text-danger text-bold";
-              el.setAttribute("swal-data", "Copied to clipboard");
-              el.setAttribute("data-toggle", "tooltip");
-              el.setAttribute("title", "The IP of your private instance. Click to copy IP to clipboard.");
-              $(targetEl.children[0]).tooltip('dispose');
-              targetEl.innerHTML = '';
-              targetEl.appendChild(el);
-            }
+  if(targetEl==null) return;
+  var request = new XMLHttpRequest();
+  request.open("GET", `/target/${id}/ip`);
+  request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+  request.send();
+  request.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      jsonObj = JSON.parse(this.responseText);
+      if (targetEl.children[0].innerHTML != jsonObj.ip) {
+        if (jsonObj.instance) {
+          if (jsonObj.ip == '0.0.0.0') {
+            el = document.createElement("b");
+            el.innerHTML = jsonObj.ip;
+            el.className = "text-danger";
+            el.setAttribute("data-toggle", "tooltip");
+            el.setAttribute("title", "The IP of your private instance will become visible once its powered up.");
+            $(targetEl.children[0]).tooltip('dispose');
+            targetEl.innerHTML = '';
+            targetEl.appendChild(el);
           }
           else {
-            if (jsonObj.ip == '0.0.0.0') {
-              el = document.createElement("b");
-              el.setAttribute("data-toggle", "tooltip");
-              el.setAttribute("title", "The IP will be visible once the system is powered up.");
-              el.innerHTML = jsonObj.ip;
-              $(targetEl.children[0]).tooltip('dispose');
-              targetEl.innerHTML = '';
-              targetEl.appendChild(el);
-            }
-            else {
-              el = document.createElement("a");
-              el.innerHTML = jsonObj.ip;
-              el.href = jsonObj.ip;
-              el.className = "copy-to-clipboard text-dark text-bold";
-              el.setAttribute("swal-data", "Copied to clipboard");
-              el.setAttribute("data-toggle", "tooltip");
-              el.setAttribute("title", "The IP of the target. Click to copy IP to clipboard.");
-              $(targetEl.children[0]).tooltip('dispose');
-              targetEl.innerHTML = '';
-              targetEl.appendChild(el);
-            }
+            el = document.createElement("a");
+            el.innerHTML = jsonObj.ip;
+            el.href = jsonObj.ip;
+            el.className = "copy-to-clipboard text-danger text-bold";
+            el.setAttribute("swal-data", "Copied to clipboard");
+            el.setAttribute("data-toggle", "tooltip");
+            el.setAttribute("title", "The IP of your private instance. Click to copy IP to clipboard.");
+            $(targetEl.children[0]).tooltip('dispose');
+            targetEl.innerHTML = '';
+            targetEl.appendChild(el);
+          }
+        }
+        else {
+          if (jsonObj.ip == '0.0.0.0') {
+            el = document.createElement("b");
+            el.setAttribute("data-toggle", "tooltip");
+            el.setAttribute("title", "The IP will be visible once the system is powered up.");
+            el.innerHTML = jsonObj.ip;
+            $(targetEl.children[0]).tooltip('dispose');
+            targetEl.innerHTML = '';
+            targetEl.appendChild(el);
+          }
+          else {
+            el = document.createElement("a");
+            el.innerHTML = jsonObj.ip;
+            el.href = jsonObj.ip;
+            el.className = "copy-to-clipboard text-dark text-bold";
+            el.setAttribute("swal-data", "Copied to clipboard");
+            el.setAttribute("data-toggle", "tooltip");
+            el.setAttribute("title", "The IP of the target. Click to copy IP to clipboard.");
+            $(targetEl.children[0]).tooltip('dispose');
+            targetEl.innerHTML = '';
+            targetEl.appendChild(el);
           }
         }
       }
     }
-  }, intervalTimeout);
+  }
+
 }
 
 function apiNotifications() {
-  notifTimeout = setInterval(function () {
-    var request = new XMLHttpRequest();
-    request.open("GET", "/api/notification");
-    request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-    request.send();
+  var request = new XMLHttpRequest();
+  request.open("GET", "/api/notification");
+  request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
+  request.send();
 
-    request.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        jsonObj = JSON.parse(this.responseText)['items'];
-        for (i = 0; i < jsonObj.length; i++) {
-          const record = jsonObj[i];
-          if (record.category.startsWith('swal')) {
-            if (!swal.isVisible()) {
-              swal.fire({ title: record.title, html: record.body, type: record.category.replace('swal:', ''), showConfirmButton: true, closeOnClickOutside: false });
-            }
-          }
-          else {
-            $.notify({
-              id: "notifw" + record.id,
-              message: record.title,
-              icon: "done"
-            }, {
-              timer: "4000",
-              type: record.category,
-            })
+  request.onreadystatechange = function () {
+    if (this.readyState == 4 && this.status == 200) {
+      jsonObj = JSON.parse(this.responseText)['items'];
+      for (i = 0; i < jsonObj.length; i++) {
+        const record = jsonObj[i];
+        if (record.category.startsWith('swal')) {
+          if (!swal.isVisible()) {
+            swal.fire({ title: record.title, html: record.body, type: record.category.replace('swal:', ''), showConfirmButton: true, closeOnClickOutside: false });
           }
         }
-        if (jsonObj.length > 0) clearDropdownCounters('Notifications')
+        else {
+          $.notify({
+            id: "notifw" + record.id,
+            message: record.title,
+            icon: "done"
+          }, {
+            timer: "4000",
+            type: record.category,
+          })
+        }
       }
+      if (jsonObj.length > 0) clearDropdownCounters('Notifications')
     }
-  }, intervalTimeout);
+  }
+
 }
 
 $(document).ready(function () {
@@ -337,17 +336,4 @@ $(document).ready(function () {
     }
   }, 1000);
 
-  $('#Notifications, #Hints').ifexists(function (elem) {
-    document.addEventListener('visibilitychange', function (e) {
-      if (document.visibilityState === 'hidden') {
-        clearTimeout(notifTimeout);
-      }
-      else {
-        clearTimeout(notifTimeout);
-        // clear any existing ones
-        $('#Notifications, #Hints').ifexists(function (elem) { apiNotifications(); })
-      }
-    });
-    apiNotifications();
-  })
 })

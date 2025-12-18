@@ -64,24 +64,22 @@ class NotificationController extends \app\components\BaseController
     if ($model->load(Yii::$app->request->post()) && $model->validate()) {
       if ($model->player_id == null) {
         $err = false;
-        $connection=\Yii::$app->db;
+        $connection = \Yii::$app->db;
         $transaction = $connection->beginTransaction();
-        $query=Player::find()->where(['active' => 1, 'status' => 10]);
-        if($model->online)
-        {
-          $query->andHaving(['!=','online',0]);
+        $query = Player::find()->where(['active' => 1, 'status' => 10]);
+        if ($model->online) {
+          $query->andHaving(['!=', 'online', 0]);
         }
-        if($model->ovpn)
-        {
-          $query->andHaving(['!=','ovpn',0]);
+        if ($model->ovpn) {
+          $query->andHaving(['!=', 'ovpn', 0]);
         }
         // Send notification to all players
         try {
+          $notif = new Notification;
+          $notif->load(Yii::$app->request->post());
           foreach ($query->all() as $player) {
-            $notif = new Notification;
-            $notif->load(Yii::$app->request->post());
-            $notif->player_id = $player->id;
-            if (!$notif->save()) {
+
+            if ($player->notify($notif->category, $notif->title, $notif->body, true, $notif->archived,true) !== true) {
               \Yii::$app->getSession()->addFlash('error', Html::errorSummary($notif));
               $err = true;
             }
@@ -95,8 +93,9 @@ class NotificationController extends \app\components\BaseController
           $transaction->rollBack();
           \Yii::$app->getSession()->addFlash('error', Html::encode($e->getMessage()));
         }
-      } else if ($model->save()) {
-        return $this->redirect(['view', 'id' => $model->id]);
+      } else if (($player = Player::findOne($model->player_id)) !== null && $player->notify($model->category, $model->title, $model->body, true, $model->archived,true)) {
+        \Yii::$app->getSession()->addFlash('success', "Notification send!");
+        return $this->redirect(['index']);
       } else {
         \Yii::$app->getSession()->addFlash('error', Html::errorSummary($model));
       }
@@ -146,21 +145,19 @@ class NotificationController extends \app\components\BaseController
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function actionRotate($archived_interval_minute=180, $pending_interval_minute=4320)
+  public function actionRotate($archived_interval_minute = 180, $pending_interval_minute = 4320)
   {
     try {
-      $affected=(int) Yii::$app->db->createCommand("CALL rotate_notifications(:archived_interval_minute,:pending_interval_minute)")
-                  ->bindValue(':archived_interval_minute',180)
-                  ->bindValue(':pending_interval_minute',4320)
-                  ->execute();
-      if($affected>0)
-        Yii::$app->session->setFlash('success',Yii::t('app','Deleted {n,plural,=0{no notifications} =1{one notification} other{# notifications}}.',['n'=>$affected]));
+      $affected = (int) Yii::$app->db->createCommand("CALL rotate_notifications(:archived_interval_minute,:pending_interval_minute)")
+        ->bindValue(':archived_interval_minute', 180)
+        ->bindValue(':pending_interval_minute', 4320)
+        ->execute();
+      if ($affected > 0)
+        Yii::$app->session->setFlash('success', Yii::t('app', 'Deleted {n,plural,=0{no notifications} =1{one notification} other{# notifications}}.', ['n' => $affected]));
       else
-        Yii::$app->session->setFlash('info',Yii::t('app',"No notifications found to rotate."));
-
-    } catch (\Exception $e)
-    {
-      Yii::$app->session->setFlash('error',Html::encode($e->getMessage()));
+        Yii::$app->session->setFlash('info', Yii::t('app', "No notifications found to rotate."));
+    } catch (\Exception $e) {
+      Yii::$app->session->setFlash('error', Html::encode($e->getMessage()));
     }
     return $this->redirect(['index']);
   }
