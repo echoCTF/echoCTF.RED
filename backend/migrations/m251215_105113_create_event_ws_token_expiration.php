@@ -13,7 +13,7 @@ class m251215_105113_create_event_ws_token_expiration extends Migration
   public function up()
   {
     $this->db->createCommand($this->DROP_SQL)->execute();
-    //$this->db->createCommand($this->CREATE_SQL)->execute();
+    $this->db->createCommand($this->CREATE_SQL)->execute();
   }
 
   public function down()
