@@ -79,7 +79,7 @@ class NotificationController extends \app\components\BaseController
           $notif->load(Yii::$app->request->post());
           foreach ($query->all() as $player) {
 
-            if ($player->notify($notif->category, $notif->title, $notif->body, true, $notif->archived) !== true) {
+            if ($player->notify($notif->category, $notif->title, $notif->body, true, $notif->archived,true) !== true) {
               \Yii::$app->getSession()->addFlash('error', Html::errorSummary($notif));
               $err = true;
             }
@@ -93,7 +93,7 @@ class NotificationController extends \app\components\BaseController
           $transaction->rollBack();
           \Yii::$app->getSession()->addFlash('error', Html::encode($e->getMessage()));
         }
-      } else if (($player = Player::findOne($model->player_id)) !== null && $player->notify($model->category, $model->title, $model->body, false)) {
+      } else if (($player = Player::findOne($model->player_id)) !== null && $player->notify($model->category, $model->title, $model->body, true, $model->archived,true)) {
         \Yii::$app->getSession()->addFlash('success', "Notification send!");
         return $this->redirect(['index']);
       } else {
