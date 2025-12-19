@@ -40,7 +40,7 @@ if [ ! -f /etc/openvpn/.configured ]; then
     echo "*** The systems are now configured. ***"
     echo "***************************************"
 fi
-while ! mysqlshow -h db > /dev/null 2>&1
+while ! mariadb-show -h ${MARIADB_HOST} -u ${MARIADB_USER} -p${MARIADB_PASSWORD} > /dev/null 2>&1
 do
     echo "Failed to connect to [db], waiting 1 second" && sleep 1
 done
