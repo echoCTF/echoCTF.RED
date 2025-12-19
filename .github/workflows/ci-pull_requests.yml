@@ -10,13 +10,20 @@ on:
     - 'docs/**'
 
 jobs:
-  phpcomposer:
+  docker:
     runs-on: ubuntu-24.04
     env:
       DOCKER_BUILDKIT: 0
       BUILDKIT_PROGRESS: plain
 
     steps:
+    - name: Setup PHP with PECL extension
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+        extensions: imagick, gd, mysqli, pdo, intl, mbstring, gmp, mcrypt, bcmath
+        tools: composer:v2
+
     - uses: actions/checkout@v3
 
     - name: Check if packagist is up and if not use a mirror...
@@ -26,24 +33,16 @@ jobs:
       run: composer config -g github-oauth.github.com "${{ secrets.GITHUB_TOKEN }}"
 
     - name: Validate frontend composer.json and composer.lock
-      run: |
-        cd frontend
-        composer validate
+      run: composer validate -d frontend
 
     - name: Validate backend composer.json and composer.lock
-      run: |
-        cd backend
-        composer validate
+      run: composer validate -d backend
 
     - name: Install frontend dependencies
-      run: |
-        cd frontend
-        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+      run: composer update --no-dev --prefer-dist --no-progress -d frontend
 
     - name: Install backend dependencies
-      run: |
-        cd backend
-        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+      run: composer update --no-dev --prefer-dist --no-progress -d backend
 
 #    - name: Build the all-in-one Docker image
 #      run: docker build --no-cache . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
