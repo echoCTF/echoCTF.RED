@@ -1,4 +1,4 @@
-FROM buildpack-deps:bookworm-curl
+FROM buildpack-deps:trixie-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED vpn server"
 ARG VPNUSER=vpnuser
@@ -22,15 +22,18 @@ RUN set -ex \
     && apt-get install --no-install-recommends -y procps git zip unzip mariadb-client tini \
     php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached \
     openvpn netcat-openbsd tcpdump vim.tiny libnet-pcap-perl libpoe-component-pcap-perl cron \
-    libdbi-perl libdbd-mysql libdbd-mysql-perl supervisor; \
-    cd /var/www/echoCTF.RED/${RED_APP}; \
-    chmod a+x /usr/local/bin/composer; \
-    touch /sbin/pfctl && chmod +x /sbin/pfctl; \
-    ln -s /var/www/echoCTF.RED/${RED_APP}/yii /usr/local/sbin/backend; \
-    git config --global url."https://".insteadOf "git://" ; \
-    chmod +x /entrypoint.sh; useradd  _openvpn; \
-    touch /var/log/openvpn/openvpn.log; \
-    rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
+    libdbi-perl libdbd-mysql libdbd-mysql-perl supervisor php-gmp php-bcmath php-mcrypt php-tidy \
+    && cd /var/www/echoCTF.RED/${RED_APP} \
+    && chmod a+x /usr/local/bin/composer \
+    && touch /sbin/pfctl && chmod +x /sbin/pfctl \
+    && ln -s /var/www/echoCTF.RED/${RED_APP}/yii /usr/local/sbin/backend \
+    && sed -e 's|http://localhost:8888|http://172.24.0.4:8888|g' -i config/params.php \
+    && sed -e 's|ws://localhost:8888|ws://172.26.0.4:8888|g' -i config/params.php \
+    && git config --global url."https://".insteadOf "git://"  \
+    && chmod +x /entrypoint.sh \
+    && useradd  _openvpn \
+    && touch /var/log/openvpn/openvpn.log \
+    && rm -rf /root/.composer /usr/src/* /var/lib/apt/lists/*
 
 RUN cd /var/www/echoCTF.RED/${RED_APP} && composer validate
 EXPOSE 1194/udp

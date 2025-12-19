@@ -1,4 +1,4 @@
-FROM buildpack-deps:bookworm-curl
+FROM buildpack-deps:trixie-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED Participants interface (frontend)"
 ARG VPNUSER=vpnuser
@@ -15,7 +15,7 @@ RUN set -ex \
     && apt-get update \
     && apt-get install --no-install-recommends -y git zip unzip tini \
     mariadb-client mcrypt apache2 \
-    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached \
+    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached php-gmp php-mcrypt php-bcmath php-zip \
     vim cron
 
 WORKDIR /var/www/echoCTF.RED
@@ -31,6 +31,8 @@ RUN set -ex \
     && sed -ie "s/127.0.0.1/${MARIADB_HOST}/g" ${RED_APP}/config/cache.php \
     && echo "<?php return [ 'class' => 'yii\db\Connection', 'dsn' => 'mysql:host=${MARIADB_HOST};dbname=${MARIADB_DATABASE}', 'username' => '${MARIADB_USER}', 'password' => '${MARIADB_PASSWORD}', 'charset' => 'utf8mb4','enableSchemaCache' => true,'schemaCacheDuration' => 0,'schemaCache' => 'cache','enableQueryCache' => true,'queryCache'=>'qcache','queryCacheDuration'=>60,];">${RED_APP}/config/db.php \
     && sed -e "s|'secure' => true,|'secure' => false,|g" -i ${RED_APP}/config/web.php \
+    && sed -e 's|http://localhost:8888|http://172.24.0.4:8888|g' -i ${RED_APP}/config/params.php \
+    && sed -e 's|ws://localhost:8888|ws://172.26.0.4:8888|g' -i ${RED_APP}/config/params.php \
     && mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime ${RED_APP}/web/images/avatars/team ${RED_APP}/web/uploads\
     && chown -R www-data ${RED_APP}/web/assets ${RED_APP}/web/images/avatars \
     && chown www-data ${RED_APP}/runtime ${RED_APP}/web/uploads \

@@ -1,4 +1,4 @@
-name: ci-tests
+name: ci-tests (ci-tests.yml)
 
 on:
   push:
@@ -15,14 +15,14 @@ jobs:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3'
-        extensions: imagick, gd, mysqli, pdo, intl, mbstring
+        php-version: '8.4'
+        extensions: imagick, gd, mysqli, pdo, intl, mbstring, gmp, mcrypt, bcmath
         tools: composer:v2
 
     - uses: actions/checkout@v3
 
     - name: Check if packagist is up and if not use a mirror...
-      run: nc -N -w1 asset-packagist.org 443 || composer config -g repos.packagist composer https://packagist.fi
+      run: curl -qf https://packagist.org || composer config -g repos.packagist composer https://packagist.fi
 
 
     - name: Configure github token
@@ -30,25 +30,17 @@ jobs:
 
 
     - name: Validate frontend composer.json and composer.lock
-      run: |
-        cd frontend
-        composer validate
+      run: composer validate -d frontend
 
     - name: Validate backend composer.json and composer.lock
-      run: |
-        cd backend
-        composer validate
+      run: composer validate -d backend
 
 
     - name: Install frontend dependencies
-      run: |
-        cd frontend
-        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+      run: composer update --no-dev --prefer-dist --no-progress -d frontend
 
     - name: Install backend dependencies
-      run: |
-        cd backend
-        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+      run: composer update --no-dev --prefer-dist --no-progress -d backend
 
   dockerbuilds:
     needs: [phpcomposer]
@@ -61,8 +53,8 @@ jobs:
     - name: Setup PHP with PECL extension
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3'
-        extensions: imagick, gd, mysqli, pdo, intl, mbstring
+        php-version: '8.4'
+        extensions: imagick, gd, mysqli, pdo, intl, mbstring, gmp, mcrypt, bcmath
         tools: composer:v2
     - uses: actions/checkout@v3
 
@@ -75,14 +67,10 @@ jobs:
       run: composer config -g github-oauth.github.com "${{ secrets.GITHUBOAUTHTOKEN }}"
 
     - name: Install frontend dependencies
-      run: |
-        cd frontend
-        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+      run: composer update -q --no-dev --prefer-dist --no-progress -d frontend
 
     - name: Install backend dependencies
-      run: |
-        cd backend
-        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+      run: composer update -q --no-dev --prefer-dist --no-progress -d backend
 
 #    - name: Build the all-in-one Docker image
 #      run: docker build --no-cache --squash . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
