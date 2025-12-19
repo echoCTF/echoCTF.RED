@@ -18,33 +18,21 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - name: Check if packagist is up and if not use a mirror...
-      run: curl -qf https://packagist.org || composer config -g repos.packagist composer https://packagist.fi
-
     - name: Configure github token
       run: composer config -g github-oauth.github.com "${{ secrets.GITHUBOAUTHTOKEN }}"
 
 
     - name: Validate frontend composer.json and composer.lock
-      run: |
-        cd frontend
-        composer validate
+      run: composer validate -d frontend
 
     - name: Validate backend composer.json and composer.lock
-      run: |
-        cd backend
-        composer validate
-
+      run: composer validate -d backend
 
     - name: Install frontend dependencies
-      run: |
-        cd frontend
-        php8.3 /usr/bin/composer update -q --no-dev --prefer-dist --no-progress
+      run: composer update -q --no-dev --prefer-dist --no-progress -d frontend
 
     - name: Install backend dependencies
-      run: |
-        cd backend
-        php8.3 /usr/bin/composer update -q --no-dev --prefer-dist --no-progress
+      run: composer update -q --no-dev --prefer-dist --no-progress -d backend
 
   dockerbuilds:
     if: github.event.pull_request.merged == 'true'
