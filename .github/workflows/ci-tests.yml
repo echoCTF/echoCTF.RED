@@ -19,7 +19,7 @@ jobs:
         extensions: imagick, gd, mysqli, pdo, intl, mbstring, gmp, mcrypt, bcmath
         tools: composer:v2
 
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Check if packagist is up and if not use a mirror...
       run: curl -qf https://packagist.org || composer config -g repos.packagist composer https://packagist.fi
@@ -56,7 +56,7 @@ jobs:
         php-version: '8.4'
         extensions: imagick, gd, mysqli, pdo, intl, mbstring, gmp, mcrypt, bcmath
         tools: composer:v2
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Enable experimental docker features
       run: |
