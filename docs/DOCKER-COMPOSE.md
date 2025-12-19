@@ -35,6 +35,7 @@ The following diagram illustrates the docker networks and containers that are co
 
 ## Starting up
 The easy way to start is to use the official docker images and starting them up by executing.
+
 ```sh
 docker pull echothrust/echoctf.red-db:latest
 docker pull echothrust/echoctf.red-backend:latest
@@ -47,16 +48,18 @@ docker-compose up
 The first time you run `docker-compose up` give the containers a few minutes to complete the startup process.
 
 Once the initialization process completes, run the following command to connect the mysql server with the memcached
+
 ```sh
 docker exec -it echoctfred_db bash -c "mariadb < /etc/mysql-init.sql"
 ```
 
 This command will have to be run every time the database server stops or respawned by eg `docker-compose down` and only once the systems are fully initialized. You can make the change permanent by appending `, "--init_file=/etc/mysql-init.sql"` to the db `command` parameters before the closing bracket `]`.
+
 ```yml
 command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake", "--init_file=/etc/mysql-init.sql"]
 ```
 
-__NOTE__: You need to pull the images manually with `docker pull`.
+**NOTE**: You need to pull the images manually with `docker pull`.
 
 If you'd rather to build your own images make you sure you generate a Github OAuth Token to
 be used by the composer utility. This is needed in order to avoid hitting
@@ -64,6 +67,7 @@ Github rate limits on their API, which is used by `composer`. More information
 about generating a token to use can be found @[Creating a personal access token for the command line](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line)
 
 Once you've generated your token you can build the images and start them up by executing
+
 ```sh
 composer config -g github-oauth.github.com "MY_TOKEN_HERE"
 cd backend
@@ -77,11 +81,13 @@ docker-compose up
 
 ## 1st time configuration
 Configure mail address for player registrations
+
 ```sh
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set mail_from dontreply@example.red
 ```
 
 Create backend and frontend users to test
+
 ```sh
 docker exec -it echoctfred_vpn ./backend/yii user/create username email@example.com password
 docker exec -it echoctfred_vpn ./backend/yii player/register username email@example.com fullname password offense 1
@@ -91,13 +97,25 @@ The syntax for the commands can be found at [Console-Commands.md](Console-Comman
 
 
 Set the IP or FQDN for the VPN server that participants will have to connect through openvpn. This is the IP address or FQDN that the VPN server will be accesible to the participants. This IP or FQDN is also used inside the auto-generated VPN connection pack that the players use to connect to the VPN and access the targets.
+
 ```sh
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw 172.26.0.1
 # or
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw vpn.example.com
 ```
 
+Set the IP of FQDN for the other accessible services (frontend, backend)
+
+```sh
+docker exec -it echoctfred_vpn ./backend/yii sysconfig/set offense_domain 172.26.0.3
+docker exec -it echoctfred_vpn ./backend/yii sysconfig/set moderator_domain 172.26.0.2
+# or
+docker exec -it echoctfred_vpn ./backend/yii sysconfig/set offense_domain players.example.com
+docker exec -it echoctfred_vpn ./backend/yii sysconfig/set moderator_domain moderators.example.com
+```
+
 Ensure that the docker containers can communicate with the participants. Once the `echoctfred_vpn` host is up run this on the host you run docker-compose at.
+
 ```sh
 sudo route add -net 10.10.0.0/16 gw 10.0.160.253
 ```
@@ -105,6 +123,7 @@ sudo route add -net 10.10.0.0/16 gw 10.0.160.253
 You can also manipulate a particular container routing table by following the
 example below. However keep in mind that this `route` will be deleted when the
 container restarts, so the command above `route add -net`, is preferred.
+
 ```sh
 pid=$(docker inspect -f '{{.State.Pid}}' echoctfred_target1)
 sudo mkdir -p /var/run/netns
@@ -145,6 +164,7 @@ Login to the backend [http://172.26.0.2/](http://172.26.0.2/) and add a target w
 
 Once the target is created, click the Spin button on top to start it up. If
 everything is correct you should be able to see the container running
+
 ```sh
 docker inspect echoctfred_target1
 ```
