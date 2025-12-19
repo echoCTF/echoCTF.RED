@@ -41,14 +41,10 @@ jobs:
 
 
     - name: Install frontend dependencies
-      run: |
-        cd frontend
-        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+      run: php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress -d frontend
 
     - name: Install backend dependencies
-      run: |
-        cd backend
-        php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+      run: php8.3 /usr/bin/composer update --no-dev --prefer-dist --no-progress -d backend
 
   dockerbuilds:
     needs: [phpcomposer]
