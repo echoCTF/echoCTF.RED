@@ -114,6 +114,8 @@ docker exec -it echoctfred_vpn ./backend/yii sysconfig/set offense_domain player
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set moderator_domain moderators.example.com
 ```
 
+Log into the backend with the user you created, go to Settings => Configure and configure the rest of the parameters for your installation, such as event name, start/stop dates etc.
+
 Ensure that the docker containers can communicate with the participants. Once the `echoctfred_vpn` host is up run this on the host you run docker-compose at.
 
 ```sh
