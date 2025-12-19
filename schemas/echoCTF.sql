@@ -526,7 +526,7 @@ CREATE TABLE `migration` (
   PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `migration` values INSERT INTO `migration` values
+INSERT INTO `migration` values
         ('m241110_214630_from_v0_25_0_to_v1_0_0',1),
         ('m250709_112000_add_headshot_points_column_to_target_table',1),
         ('m250709_112001_add_first_headshot_points_column_to_target_table',1),
