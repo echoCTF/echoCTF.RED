@@ -32,7 +32,7 @@ RUN set -ex \
     && sed -e 's|ws://localhost:8888|ws://172.26.0.4:8888|g' -i ${RED_APP}/config/params.php \
     && mkdir -p ${RED_APP}/web/assets ${RED_APP}/runtime \
     && chown www-data ${RED_APP}/web/assets \
-    && chown -R ${RED_APP}/modules \
+    && chown -R www-data ${RED_APP}/modules \
     && chown www-data /var/www/echoCTF.RED/${RED_APP}/runtime /var/www/echoCTF.RED/${RED_APP}/web/uploads \
     && chmod a+rwx /var/www/echoCTF.RED/${RED_APP}/web/uploads \
     && cd ${RED_APP} \
