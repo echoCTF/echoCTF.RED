@@ -1,4 +1,4 @@
-FROM buildpack-deps:bookworm-curl
+FROM buildpack-deps:trixie-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED all in one"
 ARG VPNUSER=vpnuser

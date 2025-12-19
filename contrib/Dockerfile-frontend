@@ -1,4 +1,4 @@
-FROM buildpack-deps:bookworm-curl
+FROM buildpack-deps:trixie-curl
 LABEL maintainer="Echothrust Solutions <info@echothrust.com>"
 LABEL description="echoCTF.RED Participants interface (frontend)"
 ARG VPNUSER=vpnuser
@@ -15,7 +15,7 @@ RUN set -ex \
     && apt-get update \
     && apt-get install --no-install-recommends -y git zip unzip tini \
     mariadb-client mcrypt apache2 \
-    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached \
+    php php-gd php-mbstring php-mysqli php-dom php-intl php-curl php-memcache php-memcached php-gmp php-mcrypt php-bcmath php-zip \
     vim cron
 
 WORKDIR /var/www/echoCTF.RED
