@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Check if packagist is up and if not use a mirror...
-      run: curl -qf https://asset-packagist.org || composer config -g repos.packagist composer https://packagist.fi
+      run: curl -qf https://packagist.org || composer config -g repos.packagist composer https://packagist.fi
 
     - name: Configure github token
       run: composer config -g github-oauth.github.com "${{ secrets.GITHUB_TOKEN }}"
