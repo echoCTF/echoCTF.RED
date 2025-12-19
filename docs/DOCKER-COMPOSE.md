@@ -92,7 +92,7 @@ The syntax for the commands can be found at [Console-Commands.md](Console-Comman
 
 Set the IP or FQDN for the VPN server that participants will have to connect through openvpn. This is the IP address or FQDN that the VPN server will be accesible to the participants. This IP or FQDN is also used inside the auto-generated VPN connection pack that the players use to connect to the VPN and access the targets.
 ```sh
-docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw 172.22.0.4
+docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw 172.26.0.1
 # or
 docker exec -it echoctfred_vpn ./backend/yii sysconfig/set vpngw vpn.example.com
 ```
