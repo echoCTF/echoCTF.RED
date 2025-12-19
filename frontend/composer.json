@@ -98,16 +98,16 @@
             "type": "package",
             "package": {
                 "name": "yiisoft/yii2",
-                "version": "2.0.45",
+                "version": "2.0.53",
                 "source": {
                     "type": "git",
                     "url": "https://github.com/yiisoft/yii2-framework.git",
-                    "reference": "e2223d4085e5612aa616635f8fcaf478607f62e8"
+                    "reference": "6c622fb8243181d7912b62ad80821cc0e1c745db"
                 },
                 "dist": {
                     "type": "zip",
-                    "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/e2223d4085e5612aa616635f8fcaf478607f62e8",
-                    "reference": "e2223d4085e5612aa616635f8fcaf478607f62e8",
+                    "url": "https://api.github.com/repos/yiisoft/yii2-framework/zipball/6c622fb8243181d7912b62ad80821cc0e1c745db",
+                    "reference": "6c622fb8243181d7912b62ad80821cc0e1c745db",
                     "shasum": ""
                 }
             }
