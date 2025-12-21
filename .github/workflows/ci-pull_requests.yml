@@ -5,7 +5,8 @@ on:
     types: [ opened, edited, reopened, synchronize ]
     branches: [ master ]
     paths-ignore:
-    - '**.md'
+    - '*.md'
+    - '**/*.md'
     - '.mkdocs.yml'
     - 'docs/**'
 

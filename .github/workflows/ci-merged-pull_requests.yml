@@ -5,7 +5,8 @@ on:
     types: [ closed ]
     branches: [ master ]
     paths-ignore:
-    - '**.md'
+    - '*.md'
+    - '**/*.md'
     - '.mkdocs.yml'
     - 'docs/**'
 
@@ -20,7 +21,6 @@ jobs:
 
     - name: Configure github token
       run: composer config -g github-oauth.github.com "${{ secrets.GITHUBOAUTHTOKEN }}"
-
 
     - name: Validate frontend composer.json and composer.lock
       run: composer validate -d frontend
