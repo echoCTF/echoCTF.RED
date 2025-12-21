@@ -2,45 +2,61 @@ site_name: echoCTF.RED Documentation
 site_url:  https://echoctfred.readthedocs.io/en/latest/
 site_description: A framework for developing, deploying, running and maintain CTFs
 repo_url: https://github.com/echoCTF/echoCTF.RED
-theme: readthedocs
-
+theme:
+  name: material
+  palette:
+    scheme: slate          # Dark mode
+    primary: lime
+    primary_variant: 800   # Shade for dark mode
+    accent: lime
+  font:
+    text: Roboto
+    code: Roboto Mono
+  logo: assets/logo.png
+markdown_extensions:
+  - smarty
+  - toc:
+      permalink: true
 nav:
   - Home: index.md
-  - Architecture: ARCHITECTURE.md
-  - Sizing: Infrastructure-Sizing.md
+  - Concepts:
+    - Architecture: ARCHITECTURE.md
+    - Infrastructure Sizing: Infrastructure-Sizing.md
   - Getting Started: Getting-Started.md
-  - Install using docker-compose:
-    - All in one host: DOCKER-COMPOSE.md
-    - All in one with separate VPN: DOCKER-COMPOSE-NOVPN.md
-  - Manual installation:
-    - OpenBSD General installation instructions of applications: INSTALL.md
-    - Manual installation of all application on a single linux host: INSTALL-LINUX.md
-  - Extras:
-    - Install VPN Gateway on OpenBSD: VPN-SERVER.md
-    - Setup a Private Docker Registry: DOCKER-REGISTRY.md
+  - Installation:
+    - Docker based:
+      - All in one host: DOCKER-COMPOSE.md
+      - All in one with separate VPN: DOCKER-COMPOSE-NOVPN.md
+    - Manual installation:
+      - OpenBSD General installation instructions of applications: INSTALL.md
+      - Manual installation of all application on a single linux host: INSTALL-LINUX.md
+  - Infrastructure:
+    - Setup a Private Docker Registry: ansible/DOCKER-REGISTRY.md
     - Docker Servers Setup Guide: DOCKER-SERVERS.md
     - Docker Targets Guide: DOCKER-TARGETS.md
     - Personalize your installation: PERSONALIZING.md
     - Firewalling with PF: PF.md
-  - Ansible:
-    - Ansible Infrastructure: ansible/README.md
-    - Database playbook: ansible/DB.md
-    - Moderator UI playbook: ansible/MUI.md
+  - Automation (Ansible):
+    - Overview: ansible/README.md
+    - Database: ansible/DB.md
+    - Moderator UI: ansible/MUI.md
     - VPN Gateway: ansible/VPNGW.md
     - Participants UI playbook: ansible/PUI.md
     - Docker Servers: ansible/DOCKER-SERVERS.md
     - Docker Targets: ansible/DOCKER-TARGETS.md
   - Administration:
     - Sysconfig Keys: Sysconfig-Keys.md
-    - Console Commands: Console-Commands.md
-    - Cron Commands: console-commands/Cron.md
-    - Player Commands: console-commands/Player.md
-    - Ssl Commands: console-commands/Ssl.md
-    - Sysconfig Commands: console-commands/Sysconfig.md
-    - Target Commands: console-commands/Target.md
-    - User Commands: console-commands/User.md
-    - VPN Commands: console-commands/Vpn.md
-    - Frontend Generator Commands: console-commands/Generator.md
+    - Console Commands:
+      - Overview: console-commands/Cron.md
+      - Backend:
+        - Player Commands: console-commands/Player.md
+        - Ssl Commands: console-commands/Ssl.md
+        - Sysconfig Commands: console-commands/Sysconfig.md
+        - Target Commands: console-commands/Target.md
+        - User Commands: console-commands/User.md
+        - VPN Commands: console-commands/Vpn.md
+      - Frontend:
+        - Frontend Generator Commands: console-commands/Frontend_Generator.md
   - API: API.md
-  - Player Guides:
+  - Guides:
       - Participants Tutorial: Participants-Tutorial.md
