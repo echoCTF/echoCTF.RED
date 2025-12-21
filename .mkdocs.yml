@@ -22,6 +22,7 @@ nav:
   - Concepts:
     - Architecture: ARCHITECTURE.md
     - Infrastructure Sizing: Infrastructure-Sizing.md
+    - Onsite Infrastructure: Onsite-Infrastructure.md
   - Getting Started: Getting-Started.md
   - Installation:
     - Docker based:
@@ -44,19 +45,37 @@ nav:
     - Participants UI playbook: ansible/PUI.md
     - Docker Servers: ansible/DOCKER-SERVERS.md
     - Docker Targets: ansible/DOCKER-TARGETS.md
+    - Examples: ansible/examples.md
   - Administration:
     - Sysconfig Keys: Sysconfig-Keys.md
     - Console Commands:
-      - Overview: console-commands/Cron.md
+      - Overview: Console-Commands.md
       - Backend:
+        - Cron commands: console-commands/Cron.md
         - Player Commands: console-commands/Player.md
         - Ssl Commands: console-commands/Ssl.md
         - Sysconfig Commands: console-commands/Sysconfig.md
         - Target Commands: console-commands/Target.md
+        - Metadata Commands: console-commands/Metadata.md
+        - Private Network Commands: console-commands/Private-Network.md
         - User Commands: console-commands/User.md
         - VPN Commands: console-commands/Vpn.md
-      - Frontend:
-        - Frontend Generator Commands: console-commands/Frontend_Generator.md
+        - Template Commands: console-commands/Template.md
+        - Sales Commands: console-commands/Sales.md
+        - Maintenance Commands: console-commands/Maintenance.md
+        - Tester: console-commands/Tester.md
+    - Frontend:
+        - Generator Commands: console-commands/Frontend_Generator.md
+        - Validator Commands: console-commands/Frontend_Validator.md
+        - Tester: console-commands/Tester.md
+
   - API: API.md
   - Guides:
       - Participants Tutorial: Participants-Tutorial.md
+      - Localization: Localization.md
+      - Testing: Testing.md
+      - Gmail relaying: relay/Google Workspaces SMTP Setup.md
+      - Use a Gmail account: Gmail.md
+      - Initializing a new event repo: Initializing a new event.md
+      - Firewalling details: Firewalling.md
+      - Network Visuals: Network-Visuals.md
