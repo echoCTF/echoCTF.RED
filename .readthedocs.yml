@@ -3,10 +3,13 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
-  commands:
-    - pip install mkdocs mkdocs-material
-    - mkdir -p $READTHEDOCS_OUTPUT/html/
-    - mkdocs build -f .mkdocs.yml -d $READTHEDOCS_OUTPUT/html/
+  jobs:
+    pre_install:
+      - pip install mkdocs mkdocs-material
+#  commands:
+#    - pip install mkdocs mkdocs-material
+#    - mkdir -p $READTHEDOCS_OUTPUT/html/
+#    - mkdocs build -f .mkdocs.yml -d $READTHEDOCS_OUTPUT/html/
 mkdocs:
   configuration: .mkdocs.yml
 formats: all
