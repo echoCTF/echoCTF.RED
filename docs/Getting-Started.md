@@ -24,16 +24,17 @@ the one best fit for your needs.
 
 
 ## No VPN All in one
-**[docker-compose no VPN server](DOCKER-COMPOSE-NOVPN.md)**: Run frontend, backend and db on a single __Linux Host__ using docker-compose, useful for preparing for your first CTF.
+**[docker-compose no VPN server](DOCKER-COMPOSE-NOVPN.md)**: Run frontend, backend and db on a single **Linux Host** using docker-compose, useful for preparing for your first CTF.
 
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png" alt="docker-compose-novpn-topology" width="400px"/></center>
 
 ## Manual installations
+
 * [echoCTF.RED Installation](INSTALL.md): OpenBSD General installation instructions of applications
 * [echoCTF.RED Linux Installation Instructions](INSTALL-LINUX.md): Manual installation of all application on a single linux host
-* [Build echoCTF.RED applications Docker images](BUILD-DOCKER.md)
 
 ## Extras
+
 * [Install VPN Gateway on OpenBSD (ansible/VPNGW.md)](ansible/VPNGW.md)
 * [Setup a Private Docker Registry (ansible/DOCKER-REGISTRY.md)](ansible/DOCKER-REGISTRY.md)
 * [Docker Servers Setup Guide (DOCKER-SERVERS.md)](DOCKER-SERVERS.md)

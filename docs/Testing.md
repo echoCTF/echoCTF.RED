@@ -1,4 +1,4 @@
-# Miscellaneous Information
+# Testing
 
 
 ## Test `echoctf_updown_mysql.sh` script

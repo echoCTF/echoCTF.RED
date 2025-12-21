@@ -1,4 +1,5 @@
 # Instructions for events
+
 1. Create an empty github repo
 2. Clone the repo locally
 3. Clone echoctf.red repo into a temporary location
@@ -12,10 +13,12 @@
 8. Edit `frontend/config/web.php` and change the cookie `secure` flag to false
 
 In order to:
+
 * attach to the existing development server run `tmux -L DATABASENAME attach`
 * stop the development server run `tmux -L DATABASENAME kill-server`
 
 ## Modifying the participant interfaces
+
 1. replace the following frontend images with ones of your liking
    * `frontend/images/logo-small.png` small logo used on top of the right menu pane (200x40)
    * `frontend/images/logo.png` same logo but larger (919x184)

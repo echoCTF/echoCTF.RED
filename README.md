@@ -37,16 +37,12 @@ Our main goals for echoCTF include:
 The following instructions will get you up and running for development and testing. The Docker compose method do not include many of the automatic firewalling features that the non-container systems have and as such its not intended for production use.
 
 ```sh
-$ git clone https://github.com/echoCTF/echoCTF.RED.git
-$ cd echoCTF.RED
-$ docker pull echothrust/echoctf.red-db:latest
-$ docker pull echothrust/echoctf.red-backend:latest
-$ docker pull echothrust/echoctf.red-frontend:latest
-$ docker pull echothrust/echoctf.red-vpn:latest
-# or if your docker-compose version supports it
-# docker-compose pull
-$ docker-compose up
+git clone https://github.com/echoCTF/echoCTF.RED.git
+cd echoCTF.RED
+docker-compose pull
+docker-compose up
 ```
+
 _NOTE_: The following ports will be binded localy `1194/udp`, `8080/tcp`, `8082/tcp`, `3306/tcp`, `11211/tcp`. If any of these ports are already in use the applications will fail to start.
 
 Please note that the docker images are intended for development and testing use only. For production environments we suggest to use the provided playbooks (under `ansible/runonce`) to setup the systems.
@@ -81,55 +77,55 @@ The list of features supported by the platform is really massive, the most
 interesting are as following:
 
 * System settings
-  - Configurable Event name
-  - Configurable Active status
-  - Configurable timezone
-  - Configurable event start / end dates
-  - Configurable registration opening / closing dates
+  * Configurable Event name
+  * Configurable Active status
+  * Configurable timezone
+  * Configurable event start / end dates
+  * Configurable registration opening / closing dates
 * Leaderboard settings
-  - Independent Player and Team leaderboards
-  - Configurable visibility before and after event start/end
-  - Support to show/hide 0 point players
+  * Independent Player and Team leaderboards
+  * Configurable visibility before and after event start/end
+  * Support to show/hide 0 point players
 * Team settings
-  - Configurable teams support
-  - Configurable mandatory teams flag
-  - Configurable team management
-  - Configurable number of maximum team members
-  - Configurable team instances
+  * Configurable teams support
+  * Configurable mandatory teams flag
+  * Configurable team management
+  * Configurable number of maximum team members
+  * Configurable team instances
 * Player and Registration settings
-  - Configurable activation required
-  - Support for global enable/disable registrations
-  - Configurable player profiles
-  - Configurable player avatar approval
-  - Configurable player profile visibility
-  - Configurable default player homepage
-  - Configurable settings and memory key expiration timeout
-  - Configurable global and individual player number of restarts
+  * Configurable activation required
+  * Support for global enable/disable registrations
+  * Configurable player profiles
+  * Configurable player avatar approval
+  * Configurable player profile visibility
+  * Configurable default player homepage
+  * Configurable settings and memory key expiration timeout
+  * Configurable global and individual player number of restarts
 * Twitter settings
-  - Configurable tagging accounts (via)
-  - Configurable automatic hashtags
-  - Quick share links on every event on frontend
+  * Configurable tagging accounts (via)
+  * Configurable automatic hashtags
+  * Quick share links on every event on frontend
 * Support for configurable Targets and Challenges
-  - Target support for start/stop/logs/exec/healthchecks
-  - Unlimited flags per targets & challenges
-  - Configurable unique flags per players and teams
-  - Dynamic target networks
-  - Dynamic target environment variables
-  - Dynamic target volumes
-  - Support for public and private networks
-  - Support for ondemand start of targets
-  - Target documentation and metadata
-  - Multiple question/flag challenges
-  - Dynamic hints
-  - Configurable tracking of solving times for challenges and targets
-  - Support for target and challenge logos
-  - Support for player rating of targets & challenges
-  - Support for player contributed writeups
+  * Target support for start/stop/logs/exec/healthchecks
+  * Unlimited flags per targets & challenges
+  * Configurable unique flags per players and teams
+  * Dynamic target networks
+  * Dynamic target environment variables
+  * Dynamic target volumes
+  * Support for public and private networks
+  * Support for ondemand start of targets
+  * Target documentation and metadata
+  * Multiple question/flag challenges
+  * Dynamic hints
+  * Configurable tracking of solving times for challenges and targets
+  * Support for target and challenge logos
+  * Support for player rating of targets & challenges
+  * Support for player contributed writeups
 * Detailed activity streams
-  - Player overall activity
-  - Player vs Target activity
-  - All platform activity
-  - Team based activity
+  * Player overall activity
+  * Player vs Target activity
+  * All platform activity
+  * Team based activity
 * Network activity tracking and visuals
 * REST support
 * Docker API support
@@ -142,15 +138,15 @@ interesting are as following:
 * Support for static pages
 * Live notifications to the player(s)
 * Stand-alone applications for activity streaming
-  - Bots for discord and twitter announcements
-  - websocket leaderboards
-  - websocket activity stream visuals
-  - real time network visuals through logstalgia and gource
-  - dynamic post claim flag actions
+  * Bots for discord and twitter announcements
+  * websocket leaderboards
+  * websocket activity stream visuals
+  * real time network visuals through logstalgia and gource
+  * dynamic post claim flag actions
 * Advanced player and general moderation features
-  - Ban MX servers from registering
-  - Disable per player URLs
-  - Ban player username/email patterns
+  * Ban MX servers from registering
+  * Disable per player URLs
+  * Ban player username/email patterns
 * Integrated OpenBSD (PF) firewall features
 * Support for online subscriptions (Stripe integration)
 * Detailed auditing of flags and network activity
