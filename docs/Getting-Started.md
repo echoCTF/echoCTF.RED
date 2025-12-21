@@ -32,7 +32,6 @@ the one best fit for your needs.
 
 * [echoCTF.RED Installation](INSTALL.md): OpenBSD General installation instructions of applications
 * [echoCTF.RED Linux Installation Instructions](INSTALL-LINUX.md): Manual installation of all application on a single linux host
-* [Building customised platform docker images](BUILD-DOCKER.md): Instructions on how to build the docker images manually with your own pre-made settings and modifications.
 
 ## Extras
 
