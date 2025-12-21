@@ -14,6 +14,7 @@ limit access to the registry to `dockerd` servers.
 We assume you followed the [VPN Server Installation](VPNGW.md)
 
 You can use the provided playbook to setup the docker registry on the VPN gateway
+
 ```sh
 ansible-playbook --connection=local -i 127.0.0.1, runonce/docker-registry.yml
 # or with settings.yml
@@ -24,17 +25,20 @@ ansible-playbook --connection=local -i 127.0.0.1, runonce/docker-registry.yml -e
 Alternatively, you can proceed with manual installation by following the steps.
 
 Install the needed packages
+
 ```sh
 pkg_add -vi go git
 ```
 
 Create a user to run the registry (ie `registry`)
+
 ```sh
 useradd -m registry
 mkdir -p ~registry/storage
 ```
 
 Install and configure the go docker registry (these steps assume you are in the root folder of the project `echoCTF.RED/`)
+
 ```sh
 #export GOPATH="/home/registry/go"
 git clone https://github.com/distribution/distribution.git
@@ -51,6 +55,7 @@ rcctl start docker_registry
 
 ## As Docker container
 There is an official docker registry image available at [https://hub.docker.com/_/registry](https://hub.docker.com/_/registry)
+
 ```sh
 docker run -d -p 5000:5000 --restart always --name registry registry:2
 ```
