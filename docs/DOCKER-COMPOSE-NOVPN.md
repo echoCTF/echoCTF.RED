@@ -37,6 +37,7 @@ The following volumes are configured and used
 * `./themes/images` under `/var/www/echoCTF.RED/*/web/images` for logos and images
 
 Pull the official images for the applications
+
 ```sh
 docker-compose -f docker-compose-novpn.yml pull
 ```
@@ -67,6 +68,7 @@ From this point on the installation deviated depending on whether or not you wan
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-including-vpn-explained-topology.png" alt="docker-compose including vpn with explanation"/></center>
 
 Start the containers on the _Linux Host_ to bring up frontend, backend and db containers (as illustrated on the diagram below).
+
 ```sh
 docker-compose -f docker-compose-novpn.yml up
 # or start in detached mode
@@ -83,6 +85,7 @@ docker exec -it echoctfred_backend ./backend/yii template/emails
 ```
 
 Create a backend user
+
 ```sh
 # backend user
 docker exec -it echoctfred_backend ./backend/yii user/create username email password
@@ -91,6 +94,7 @@ docker exec -it echoctfred_backend ./backend/yii user/create username email pass
 Login to the backend and go to Settings=>Configure to complete your system configuration. Once you are done configuring the system you can continue with the following steps.
 
 Create SSL certificates to be used for new players (REQUIRES CONFIGURED SYSTEM)
+
 ```sh
 docker exec -it echoctfred_backend ./backend/yii ssl/create-ca
 docker exec -it echoctfred_backend ./backend/yii ssl/create-cert
@@ -109,6 +113,7 @@ like the diagram.
 The _Linux Host_  `backend` will need to be able to access the Docker API
 Servers behind the `vpn` server. For this reason we will have to add a network
 route for the network `10.0.160.0/24` on the Linux Host by executing
+
 ```sh
 route add -net 10.0.160.0/24 gw <vpn_public_ip>
 ```
@@ -121,6 +126,7 @@ extra ethernet adapter on both vpn and linux host.
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-including-vpn-dedicated-topology.png" alt="docker-compose-including-vpn-dedicated-topology" height="400px"/></center>
 
 Ensure that all containers are stopped by running the following from the Linux Host
+
 ```sh
 docker-compose -f docker-compose-novpn.yml down
 ```
@@ -130,14 +136,16 @@ network (`enp0s8` in our example) and configure accordingly. We assign an IP
 to the interface (`172.24.0.252` and place it on promiscuous mode to be able to
 process packets), edit `/etc/network/interfaces` and add something like the
 following
+
 ```sh
 auto enp0s8
 iface enp0s8 inet static
-	address 172.24.0.252/24
-	up ifconfig $IFACE promisc
+ address 172.24.0.252/24
+ up ifconfig $IFACE promisc
 ```
 
 Restart networking and start the containers up using the `docker-compose-novpn-macvlan.yml`
+
 ```sh
 PRIVATE_PARENT_INTERFACE=enp0s8 docker-compose -f docker-compose-novpn-macvlan.yml up
 # or
@@ -148,12 +156,14 @@ docker-compose -f docker-compose-novpn-macvlan.yml up
 Add an additional ethernet adapter to the VPN host (em2 in our case). Once
 added, configure the interface by running the following commands from the vpn
 server
+
 ```sh
 echo "inet 172.24.0.1 255.255.255.0 NONE group private">/etc/hostname.em2
 sh /etc/netstart em2
 ```
 
 Ensure the link is up and you can connect to the database host from the vpn
+
 ```sh
 ping -c 1 172.24.0.252 # the Linux Host IP
 ping -c 1 172.24.0.253 # the echoctfred_db container
