@@ -1,6 +1,7 @@
 ![echoCTF RED logo](https://echoctf.red/images/logo-red-small.png)
 
-![ci-tests](https://github.com/echoCTF/echoCTF.RED/workflows/ci-tests/badge.svg)
+[![ci-tests](https://github.com/echoCTF/echoCTF.RED/actions/workflows/ci-tests.yml/badge.svg)](https://github.com/echoCTF/echoCTF.RED/actions/workflows/ci-tests.yml)
+[![Dependabot Updates](https://github.com/echoCTF/echoCTF.RED/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/echoCTF/echoCTF.RED/actions/workflows/dependabot/dependabot-updates)
 [![Documentation Status](https://readthedocs.org/projects/echoctfred/badge/?version=latest)](http://echoctfred.readthedocs.org/)
 
 
