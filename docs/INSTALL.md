@@ -3,7 +3,7 @@ The following steps outline the installation instructions for the applications h
 
 Keep in mind that you are advised to run `frontend` and `backend` from separate nginx instances, each with its own uid and chroot location.
 
-**Note:** Although the interfaces are able to run on any system, the VPN server is assumed to run on OpenBSD.
+**Note:** Although the interfaces are able to run on any system, the VPN server **must** be OpenBSD.
 
 Before we start make sure you have MariaDB, NGiNX or Apache, PHP, php-memcached, composer and memcahed running, this guide will not deal with these.
 
