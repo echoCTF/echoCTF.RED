@@ -37,15 +37,12 @@ The following diagram illustrates the docker networks and containers that are co
 The easy way to start is to use the official docker images and starting them up by executing.
 
 ```sh
-docker pull echothrust/echoctf.red-db:latest
-docker pull echothrust/echoctf.red-backend:latest
-docker pull echothrust/echoctf.red-frontend:latest
-docker pull echothrust/echoctf.red-vpn:latest
+docker-compose pull
 chmod a+rw frontend/web/images/{avatars,avatars/badges,targets}
 docker-compose up
 ```
 
-The first time you run `docker-compose up` give the containers a few minutes to complete the startup process.
+The first time you run `docker-compose up` give the containers a few minutes to complete the startup process, it takes a couple of minutes for the process to complete so be patient.
 
 Once the initialization process completes, run the following command to connect the mysql server with the memcached
 
@@ -58,8 +55,6 @@ This command will have to be run every time the database server stops or respawn
 ```yml
 command: ["mysqld","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake", "--init_file=/etc/mysql-init.sql"]
 ```
-
-**NOTE**: You need to pull the images manually with `docker pull`.
 
 If you'd rather to build your own images make you sure you generate a Github OAuth Token to
 be used by the composer utility. This is needed in order to avoid hitting
