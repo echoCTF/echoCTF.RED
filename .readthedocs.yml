@@ -5,7 +5,7 @@ build:
     python: "3.11"
   commands:
     - pip install mkdocs mkdocs-material
-    - mkdocs build
+    - mkdocs build -f .mkdocs.yml
 mkdocs:
   configuration: .mkdocs.yml
 formats: all
