@@ -11,7 +11,7 @@ The suggested way is to run the docker registry on its own system, however the
 next best thing as far as flexibility goes is to run it on your VPN gateway and
 limit access to the registry to `dockerd` servers.
 
-We assume you followed the instructions from [VPN-SERVER.md](ansible/VPNGW.md)
+We assume you followed the [VPN Server Installation](VPNGW.md)
 
 You can use the provided playbook to setup the docker registry on the VPN gateway
 ```sh

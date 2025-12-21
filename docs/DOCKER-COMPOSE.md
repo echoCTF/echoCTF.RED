@@ -137,7 +137,7 @@ sudo ip netns exec $pid ip route add default via 10.0.160.253
 Make sure you configure the host dockerd daemon to have its API listen to the new `private` network.
 However since the network becomes available only after dockerd starts you will have to bind to _`0.0.0.0`_ (ie `-H tcp://0.0.0.0:2376`)
 
-More information about enabling docker API [here](https://docs.docker.com/config/daemon/remote-access/)
+For more information about enabling [Docker API remote access](https://docs.docker.com/config/daemon/remote-access/)
 
 Make sure you restrict connections to the dockerd port to only these containers `echoctfred_vpn/172.24.0.1` and `echoctfred_backend/172.24.0.2`.
 

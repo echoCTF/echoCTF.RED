@@ -98,7 +98,7 @@ docker exec -it echoctfred_backend ./backend/yii ssl/create-cert
 
 <center><img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png" alt="docker-compose-novpn-topology" height="400px"/></center>
 
-Follow the instructions of [VPN-SERVER.md](ansible/VPNGW.md) and adapt your values accordingly.
+Follow the instructions from [VPN Server Installation](ansible/VPNGW.md) and adapt your values accordingly.
 
 Follow the instructions from [DOCKER-SERVERS.md](DOCKER-SERVERS.md) to prepare your docker api server (dockerd160).
 

@@ -9,7 +9,7 @@ OpenBSD 7.7 to act as a VPN gateway.
 <img src="https://raw.githubusercontent.com/echoCTF/echoCTF.RED/master/docs/assets/docker-compose-novpn-topology.png?nocache" alt="echoCTF.RED docker-compose topology" width="400px"/>
 
 Before you start ensure you have the db server up and running as the VPN needs
-to connect to the database server to operate. Check the [DOCKER-COMPOSE-NOVPN.md](DOCKER-COMPOSE-NOVPN.md)
+to connect to the database server to operate. Check the [DOCKER-COMPOSE-NOVPN.md](../DOCKER-COMPOSE-NOVPN.md)
 
 
 The following network details will be used throughout this guide
