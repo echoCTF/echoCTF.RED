@@ -70,7 +70,7 @@ nav:
         - Tester: console-commands/Tester.md
 
   - API: API.md
-  - Guides:
+  - Extras:
       - Participants Tutorial: Participants-Tutorial.md
       - Localization: Localization.md
       - Testing: Testing.md
@@ -79,3 +79,4 @@ nav:
       - Initializing a new event repo: Initializing a new event.md
       - Firewalling details: Firewalling.md
       - Network Visuals: Network-Visuals.md
+      - Docker Events: Docker-Events.md
