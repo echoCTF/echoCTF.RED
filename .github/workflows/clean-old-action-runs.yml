@@ -1,0 +1,74 @@
+name: Cleanup Actions runs and artifacts
+
+on:
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |           
+            const KEEP_RUNS = 10
+            const KEEP_ARTIFACTS = 10
+            const KEEP_CACHES = 10
+
+            core.info('Fetching workflow runs...')
+            const runs = await github.paginate(
+              github.rest.actions.listWorkflowRunsForRepo,
+              { owner: context.repo.owner, repo: context.repo.repo, per_page: 100 }
+            )
+
+            core.info(`Total runs: ${runs.length}`)
+            core.info(`Keeping newest ${KEEP_RUNS}, deleting ${Math.max(runs.length - KEEP_RUNS, 0)}`)
+
+            for (const [i, run] of runs.slice(KEEP_RUNS).entries()) {
+              core.info(`Deleting run ${i + 1}/${runs.length - KEEP_RUNS} (id=${run.id})`)
+              await github.rest.actions.deleteWorkflowRun({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                run_id: run.id,
+              })
+            }
+
+            core.info('Fetching artifacts...')
+            const artifacts = await github.paginate(
+              github.rest.actions.listArtifactsForRepo,
+              { owner: context.repo.owner, repo: context.repo.repo, per_page: 100 }
+            )
+
+            core.info(`Total artifacts: ${artifacts.length}`)
+            core.info(`Keeping newest ${KEEP_ARTIFACTS}, deleting ${Math.max(artifacts.length - KEEP_ARTIFACTS, 0)}`)
+
+            for (const [i, artifact] of artifacts.slice(KEEP_ARTIFACTS).entries()) {
+              core.info(`Deleting artifact ${i + 1}/${artifacts.length - KEEP_ARTIFACTS} (id=${artifact.id})`)
+              await github.rest.actions.deleteArtifact({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                artifact_id: artifact.id,
+              })              
+            }
+
+            core.info('Fetching caches...')
+            const caches = await github.paginate(
+              github.rest.actions.getActionsCacheList,
+              { owner: context.repo.owner, repo: context.repo.repo, per_page: 100 }
+            )
+            
+            core.info(`Total caches: ${caches.length}`)
+            core.info(`Keeping newest ${KEEP_CACHES}, deleting ${Math.max(caches.length - KEEP_CACHES, 0)}`)
+            
+            for (const [i, cache] of caches.slice(KEEP_CACHES).entries()) {
+              core.info(`Deleting cache ${i + 1}/${caches.length - KEEP_CACHES} (id=${cache.id})`)
+              await github.rest.actions.deleteActionsCacheById({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                cache_id: cache.id,
+              })
+            }
+                        core.info('Cleanup complete')
