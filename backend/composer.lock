@@ -552,16 +552,16 @@
         },
         {
             "name": "enqueue/amqp-lib",
-            "version": "0.10.26",
+            "version": "0.10.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-enqueue/amqp-lib.git",
-                "reference": "531cb0205ab96aa47bb236c34501be7f1e0e3a9c"
+                "reference": "bb4c9e7a25b5436434d532859ba7f4c28d82c51f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-enqueue/amqp-lib/zipball/531cb0205ab96aa47bb236c34501be7f1e0e3a9c",
-                "reference": "531cb0205ab96aa47bb236c34501be7f1e0e3a9c",
+                "url": "https://api.github.com/repos/php-enqueue/amqp-lib/zipball/bb4c9e7a25b5436434d532859ba7f4c28d82c51f",
+                "reference": "bb4c9e7a25b5436434d532859ba7f4c28d82c51f",
                 "shasum": ""
             },
             "require": {
@@ -609,20 +609,20 @@
                 "issues": "https://github.com/php-enqueue/enqueue-dev/issues",
                 "source": "https://github.com/php-enqueue/enqueue-dev"
             },
-            "time": "2025-04-27T13:30:31+00:00"
+            "time": "2025-12-21T18:13:12+00:00"
         },
         {
             "name": "enqueue/amqp-tools",
-            "version": "0.10.26",
+            "version": "0.10.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-enqueue/amqp-tools.git",
-                "reference": "d10c7147e546b40ee3c7306b4b55d6182f6db33b"
+                "reference": "f048b2c09a31b69da0f405921c6c6b870d3eb586"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-enqueue/amqp-tools/zipball/d10c7147e546b40ee3c7306b4b55d6182f6db33b",
-                "reference": "d10c7147e546b40ee3c7306b4b55d6182f6db33b",
+                "url": "https://api.github.com/repos/php-enqueue/amqp-tools/zipball/f048b2c09a31b69da0f405921c6c6b870d3eb586",
+                "reference": "f048b2c09a31b69da0f405921c6c6b870d3eb586",
                 "shasum": ""
             },
             "require": {
@@ -668,20 +668,20 @@
                 "issues": "https://github.com/php-enqueue/enqueue-dev/issues",
                 "source": "https://github.com/php-enqueue/enqueue-dev"
             },
-            "time": "2025-04-27T13:30:31+00:00"
+            "time": "2025-12-21T18:13:12+00:00"
         },
         {
             "name": "enqueue/dsn",
-            "version": "0.10.26",
+            "version": "0.10.27",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-enqueue/dsn.git",
-                "reference": "1948d3c5918ee2bdf833392d02f14e05d4006979"
+                "reference": "43e223c984bec7095d6a0d4ff70bb3d9e084fb30"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-enqueue/dsn/zipball/1948d3c5918ee2bdf833392d02f14e05d4006979",
-                "reference": "1948d3c5918ee2bdf833392d02f14e05d4006979",
+                "url": "https://api.github.com/repos/php-enqueue/dsn/zipball/43e223c984bec7095d6a0d4ff70bb3d9e084fb30",
+                "reference": "43e223c984bec7095d6a0d4ff70bb3d9e084fb30",
                 "shasum": ""
             },
             "require": {
@@ -721,7 +721,7 @@
                 "issues": "https://github.com/php-enqueue/enqueue-dev/issues",
                 "source": "https://github.com/php-enqueue/enqueue-dev"
             },
-            "time": "2025-04-27T13:30:31+00:00"
+            "time": "2025-12-21T18:13:12+00:00"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -5756,5 +5756,5 @@
         "php": ">=8.2.0"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.6.0"
 }
