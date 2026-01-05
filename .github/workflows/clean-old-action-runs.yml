@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/github-script@v8
         with:
-          script: |           
+          script: |
             const KEEP_RUNS = 10
             const KEEP_ARTIFACTS = 10
             const KEEP_CACHES = 10
@@ -51,7 +51,7 @@ jobs:
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 artifact_id: artifact.id,
-              })              
+              })
             }
 
             core.info('Fetching caches...')
@@ -59,10 +59,10 @@ jobs:
               github.rest.actions.getActionsCacheList,
               { owner: context.repo.owner, repo: context.repo.repo, per_page: 100 }
             )
-            
+
             core.info(`Total caches: ${caches.length}`)
             core.info(`Keeping newest ${KEEP_CACHES}, deleting ${Math.max(caches.length - KEEP_CACHES, 0)}`)
-            
+
             for (const [i, cache] of caches.slice(KEEP_CACHES).entries()) {
               core.info(`Deleting cache ${i + 1}/${caches.length - KEEP_CACHES} (id=${cache.id})`)
               await github.rest.actions.deleteActionsCacheById({
@@ -71,4 +71,4 @@ jobs:
                 cache_id: cache.id,
               })
             }
-                        core.info('Cleanup complete')
+            core.info('Cleanup complete')

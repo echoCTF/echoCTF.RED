@@ -9,7 +9,7 @@ class m251103_122602_add_suspended_url_route extends Migration
      */
     public function safeUp()
     {
-      $this->upsert('url_route', ['source' => 'suspended', 'destination' => 'site/suspendend', 'weight' => 600],true);
+      $this->upsert('url_route', ['source' => 'suspended', 'destination' => 'site/suspended', 'weight' => 600],true);
     }
 
     /**
