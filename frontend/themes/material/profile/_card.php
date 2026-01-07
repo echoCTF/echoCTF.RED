@@ -82,7 +82,9 @@ if (array_key_exists('subscription', Yii::$app->modules) !== false) {
       <li class="nav-header text-left">
         <h6>Details</h6>
       </li>
+<?php if(\Yii::$app->sys->team_only_leaderboards!==true):?>
       <li class="nav-item text-left"><strong><i class="fa fa-signal"></i> Current Rank</strong> <span class="pull-right"><?php if ($profile->rank) echo $profile->rank->ordinalPlace ?></span></li>
+<?php endif;?>
       <li class="nav-item text-left"><strong><i class="fa fa-list"></i> Points</strong> <span class="pull-right"><?= number_format($profile->owner->playerScore->points) ?></span></li>
       <li class="nav-item text-left"><strong><i class="fas fa-flag"></i> Flags</strong> <span class="pull-right"><?php echo $profile->totalTreasures; ?></span></li>
       <li class="nav-item text-left"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo $profile->totalFindings; ?></span></li>
