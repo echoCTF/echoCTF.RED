@@ -20,11 +20,7 @@ class PlayerEvents extends Model
 
   public static function sendInitialNotification($event)
   {
-    $n=new \app\models\Notification;
-    $n->player_id=$event->sender->id;
-    $n->archived=0;
-    $n->body=$n->title=\Yii::t('app',"Hi there, don't forget to read the Instructions");
-    $n->save();
+    $event->sender->notify('info',\Yii::t('app',"Hi there, don't forget to read the Instructions"),\Yii::t('app',"Hi there, don't forget to read the Instructions"));
   }
 
   public static function addStream($event)
