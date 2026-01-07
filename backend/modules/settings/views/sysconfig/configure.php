@@ -48,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'player_monthly_rankings')->checkbox()->hint('Show monthly leaderboards by points?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'country_rankings')->checkbox()->hint('Show country based leaderboards?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'team_only_leaderboards')->checkbox()->hint('Show only team based leaderboards?') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'writeup_rankings')->checkbox()->hint('Enable writeup rankings?') ?></div>
     </div>
     <hr />
 
@@ -69,7 +70,6 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-2"><?= $form->field($model, 'target_hide_inactive')->checkbox()->hint('Hide inactive targets from listings?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'target_guest_view_deny')->checkbox()->hint('Hide targets from guests?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'network_view_guest')->checkbox()->hint('Allow guests to view networks?') ?></div>
-        <div class="col-sm-2"><?= $form->field($model, 'writeup_rankings')->checkbox()->hint('Enable writeup ratings?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'stream_player_target_help')->checkbox()->hint('Log writeup activations on activity stream?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'log_failed_claims')->checkbox()->hint('Log failed treasure claims?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'force_findings_to_claim')->checkbox()->hint('Force findings before claim?') ?></div>
