@@ -4,7 +4,7 @@
   hosts: all
   gather_facts: false
   vars_prompt:
-    - name: "myname"
+    - name: "hostname"
       prompt: "1/7. System hostname?"
       default: "pui.example.local"
       private: no
@@ -125,16 +125,16 @@
 
   - name: Set hostname
     hostname:
-      name: "{{myname}}"
+      name: "{{hostname}}"
 
   - name: Make hostname permanent (/etc/myname)
     copy:
-      content: "{{ myname }}\n"
+      content: "{{ hostname }}\n"
       dest: /etc/myname
 
   - name: Create fresh /etc/hosts
     copy:
-      content: "127.0.0.1 localhost\n{{db_ip}} db\n{{pui_ext_ip}} {{  myname.split('.')[0] | lower }} {{ myname }}\n"
+      content: "127.0.0.1 localhost\n{{db_ip}} db\n{{pui_ext_ip}} {{  hostname.split('.')[0] | lower }} {{ hostname }}\n"
       dest: /etc/hosts
 
   - name: Configure interconnect interface

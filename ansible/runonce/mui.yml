@@ -3,7 +3,7 @@
 - hosts: all
   gather_facts: false
   vars_prompt:
-    - name: "myname"
+    - name: "hostname"
       prompt: "1/7. System hostname?"
       default: "mui.example.local"
       private: no
@@ -120,16 +120,16 @@
 
   - name: Set hostname
     hostname:
-      name: "{{myname}}"
+      name: "{{hostname}}"
 
   - name: Make hostname permanent (/etc/myname)
     copy:
-      content: "{{ myname }}\n"
+      content: "{{ hostname }}\n"
       dest: /etc/myname
 
   - name: Create fresh /etc/hosts
     copy:
-      content: "127.0.0.1 localhost\n{{db_ip}} db\n{{mui_ext_ip}} {{  myname.split('.')[0] | lower }} {{ myname }}\n"
+      content: "127.0.0.1 localhost\n{{db_ip}} db\n{{mui_ext_ip}} {{  hostname.split('.')[0] | lower }} {{ hostname }}\n"
       dest: /etc/hosts
 
   - name: Configure interconnect interface
@@ -271,8 +271,8 @@
       src: "{{item.src}}"
       dest: "{{item.dest}}"
     with_items:
-      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf', domain: '{{myname}}' }
-      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf', domain: '{{myname}}', challenge_dir: "/home/moderatortUI/acme/.well-known/acme-challenge/" }
+      - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf', domain: '{{hostname}}' }
+      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf', domain: '{{hostname}}', challenge_dir: "/home/moderatortUI/acme/.well-known/acme-challenge/" }
 
   - name: Generate pf tables files
     command: "{{item.cmd}}"
