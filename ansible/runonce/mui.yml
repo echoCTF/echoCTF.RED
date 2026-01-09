@@ -41,7 +41,7 @@
       PHP_MINOR: "6"
       AUTOCONF: "2.69"
       AUTOMAKE: "1.16"
-      ICU_MAJOR: 76
+      ICU_MAJOR: 77
       ICU_MINOR: 1
     sysctl:
       kern.bufcachepercent: 30
@@ -97,9 +97,9 @@
       - "php-intl%{{versions.PHP}}"
       - "php-pdo_mysql%{{versions.PHP}}"
       - "php-zip%{{versions.PHP}}"
-      - "php-bcmath%{{versions.PHP}}"
+      #- "php-bcmath%{{versions.PHP}}"
       - "php-gmp%{{versions.PHP}}"
-      - "php-mcrypt%{{versions.PHP}}"
+      #- "php-mcrypt%{{versions.PHP}}"
       - "php-tidy%{{versions.PHP}}"
       - py3-pip
       - py3-requests
