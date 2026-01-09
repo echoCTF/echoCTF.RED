@@ -1,9 +1,18 @@
 hostname: mui.mydomain
-moderator_domain: mui.mydomain
+domain_name: mui.mydomain
 backups:
   - { tgz: "/altroot/root.tgz", src: '/root' }
   - { tgz: "/altroot/etc.tgz", src: '/etc'  }
   - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
   - { tgz: "/altroot/home.tgz", src: '/home'  }
 
-REPO: "/home/moderatorUI/{{moderator_domain}}"
+REPO: "/home/moderatorUI/{{domain_name}}"
+APP_USER: moderatorUI
+APP_SERVICES:
+  - php84_fpm
+  - moderator
+PRESERVE_PATHS:
+  - backend/web/identificationFiles/
+  - backend/config/db.php
+  - backend/config/cache.php
+  - backend/config/validationKey.php

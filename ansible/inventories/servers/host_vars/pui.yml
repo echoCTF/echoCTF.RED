@@ -1,5 +1,5 @@
 hostname: pui.mydomain
-offense_domain: pui.mydomain
+domain_name: pui.mydomain
 backups:
   - { tgz: "/altroot/root.tgz", src: '/root' }
   - { tgz: "/altroot/etc.tgz", src: '/etc'  }
@@ -7,4 +7,16 @@ backups:
   - { tgz: "/altroot/var.tgz", src: '/var'  }
   - { tgz: "/altroot/home.tgz", src: '/home'  }
 
-REPO: "/home/participantUI/{{offense_domain}}"
+REPO: "/home/participantUI/{{domain_name}}"
+APP_USER: participantUI
+APP_SERVICES:
+  - php84_fpm
+  - participant
+PRESERVE_PATHS:
+  - frontend/web/images/avatars/
+  - frontend/web/images/targets/
+  - frontend/web/identificationFiles/
+  - frontend/config/db.php
+  - frontend/config/cache.php
+  - frontend/config/validationKey.php
+  - frontend/config/routes.php
