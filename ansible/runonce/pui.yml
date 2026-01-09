@@ -54,7 +54,7 @@
       PHP_MINOR: "6"
       AUTOCONF: "2.69"
       AUTOMAKE: "1.16"
-      ICU_MAJOR: 76
+      ICU_MAJOR: 77
       ICU_MINOR: 1
     sysctl:
       kern.bufcachepercent: 30
@@ -102,9 +102,9 @@
       - "php-intl%{{versions.PHP}}"
       - "php-pdo_mysql%{{versions.PHP}}"
       - "php-zip%{{versions.PHP}}"
-      - "php-bcmath%{{versions.PHP}}"
+      #- "php-bcmath%{{versions.PHP}}"
       - "php-gmp%{{versions.PHP}}"
-      - "php-mcrypt%{{versions.PHP}}"
+      #- "php-mcrypt%{{versions.PHP}}"
       - certbot
       - py3-pip
       - py3-requests
@@ -488,10 +488,12 @@
     command: "{{item}}"
     with_items:
       - mkdir -p /home/participantUI/{{domain_name}}/frontend/web/assets
+      - mkdir -p /home/participantUI/{{domain_name}}/frontend/web/identificationFiles
       - mkdir -p /home/participantUI/{{domain_name}}/frontend/web/images/avatars/team
       - mkdir -p /var/log/cron
       - chown -R participantUI /home/participantUI/{{domain_name}}/frontend/web/assets
       - chown -R participantUI /home/participantUI/{{domain_name}}/frontend/web/images/avatars/
+      - chown -R participantUI /home/participantUI/{{domain_name}}/frontend/web/identificationFiles
       - ln -sf /home/participantUI/{{domain_name}}/frontend/yii /usr/local/bin/frontend
 
   - name: configure participant rc.d
@@ -612,7 +614,7 @@
 
   - name: Grab wsserver
     get_url:
-      url: "https://github.com/echoCTF/ws-server/releases/download/v1.0.0/wsserver-openbsd-amd64.zip"
+      url: "https://github.com/echoCTF/ws-server/releases/latest/download/wsserver-openbsd-amd64.zip"
       dest: /tmp/wsserver.zip
 
   - name: Extract wsserver
@@ -627,7 +629,7 @@
       content: |
         [program:wsserver]
         user = participantUI
-        command = /usr/local/bin/wsserver -addr "127.0.0.1:8888" -db mysql -dsn "participantUI:participantUI@{{db_ip}}/echoCTF" -max-queued 20
+        command = /usr/local/bin/wsserver-openbsd-amd64 -addr "127.0.0.1:8888" -db mysql -dsn "participantUI:participantUI@tcp({{db_ip}})/echoCTF" -max-queued 20
         stdout_logfile=/var/log/wsserver.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
