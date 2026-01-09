@@ -453,19 +453,6 @@
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
     - { cmd: "install -m 0500 /etc/examples/rc.local /etc/rc.local", creates: "/etc/rc.local" }
 
-  - name: Execute fw_update
-    command: fw_update -a
-
-  - name: Execute syspatch
-    command: syspatch
-    failed_when: result.rc not in [0,2]
-    register: result
-
-  - name: Re-Execute syspatch in case it updated it self on the previous run
-    command: syspatch
-    failed_when: result.rc not in [0,2]
-    register: result
-
   - name: Update crontab PATH variable
     cron:
       user: root
@@ -485,6 +472,19 @@
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
       - { name: "events checker", minute: "*/1",  job: "-ns /usr/local/sbin/mysql-events-checker" }
       - { name: "daily database backups", minute: "0",hour: "23",  job: "-ns /usr/local/sbin/database_backup" }
+
+  - name: Execute fw_update
+    command: fw_update -a
+
+  - name: Execute syspatch
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - name: Re-Execute syspatch in case it updated it self on the previous run
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
 
   - name: display post install message
     debug: msg="Make sure you've added your IP to the administrators.conf and reboot the system for the changes to take effect"
