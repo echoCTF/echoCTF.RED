@@ -568,7 +568,7 @@
       creates: "{{item.creates|default(omit)}}"
       chdir: "{{item.chdir|default(omit)}}"
     with_items:
-    - { cmd: "ln -s {{APP_DIR}}/backend/yii /usr/local/bin/backend"}
+    - { cmd: "ln -sf {{APP_DIR}}/backend/yii /usr/local/bin/backend"}
     - { cmd: "openssl dhparam -out /etc/openvpn/dh.pem 2048", creates: "/etc/openvpn/dh.pem" }
     - { cmd: "openvpn --genkey secret /etc/openvpn/private/vpn-ta.key", creates: "/etc/openvpn/private/vpn-ta.key" }
     - { cmd: "{{APP_DIR}}/backend/yii migrate --interactive=0" }

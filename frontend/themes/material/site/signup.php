@@ -30,7 +30,7 @@ $this->registerJsFile("@web/js/plugins/jquery.pwstrength.js", [
 
         <?= $form->field($model, 'affiliation')->textInput()->label("Affiliation")  ?>
 
-        <?= $form->field($model, 'identificationFile')->fileInput()->hint('<small class="text-warning">Attach proof of identification (accepted formats: pdf,png,jpeg) format</small>')->label('Identification', ['class' => 'btn btn-raised btn-round btn-info btn-file']) ?>
+        <?= $form->field($model, 'identificationFile')->fileInput()->hint('<small class="text-warning">Attach proof of identification (accepted formats: pdf, png, jpeg)</small>')->label('Identification', ['class' => 'btn btn-raised btn-round btn-info btn-file']) ?>
         <?php endif;?>
         <?= $form->field($model, 'username')->textInput(['autofocus' => true]) ?>
 

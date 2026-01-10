@@ -1,8 +1,16 @@
 ## Replace the following with your fork of the repo
 GITHUB_REPO: git@github.com:echoCTF/echoCTF.RED.git
 GITHUB_OAUTH_TOKEN: YOUR-GITHUB-TOKEN-FOR-COMPOSER
-GITHUB_REPO_BRANCH: THE-DEFAULT-BRANCH
+GITHUB_REPO_BRANCH: main # change to your desired branch
 ## Domain with IN TXT space separated list `IN TXT "1.1.1.1 2.2.2.2"
 admins_domain: admin.example.com
 
-ansible_python_interpreter: "/usr/local/bin/python3.10"
+ansible_python_interpreter: "/usr/local/bin/python3"
+
+db_ip: "10.7.0.253"
+pui_ip: "10.7.0.200"
+mui_ip: "10.7.0.201"
+vpn_ip: "10.7.0.254"
+interconnect_interface: "vio1"
+pui_ext_ip: "1.2.3.4"
+mui_ext_ip: "1.2.3.4"

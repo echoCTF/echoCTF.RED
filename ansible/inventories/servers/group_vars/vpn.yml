@@ -1,17 +1,17 @@
 REPO: /root/sources
 vpngw: "vpngw.example.red"
-egress_if: "em0"
-targets_if: "em1"
-targets_if_ipv4: "10.0.160.254"
-targets_subnet: "10.0.160.0"
-targets_netmask: "255.255.255.0"
+egress_if: "vio0"
+targets_if: "vio1"
+targets_if_ipv4: "10.0.0.254"
+targets_subnet: "10.0.0.0"
+targets_netmask: "255.255.0.0"
 echoCTF_VPN_mgmt_passwd: "openvpn"
 offense_network: "10.10.0.0/16"
-db_host: "172.24.0.253"
+db_host: "10.7.0.253"
 db_name: "echoCTF"
 db_user: "vpnuser"
 db_pass: "vpnuserpass"
-interconnect_interface: em2
+interconnect_interface: vio2
 interconnect_interface_ip: 10.7.0.254
 ## Memcache port
 memc_port: 11211

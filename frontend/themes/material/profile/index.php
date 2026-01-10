@@ -74,6 +74,7 @@ $this->_description=$this->title;
     </div>
     <?=$this->render('_profile_tabs',['profile'=>$profile,'game'=>$game,'headshots'=>$headshots]);?>
 
+<?php if(\Yii::$app->sys->team_only_leaderboards!==true):?>
     <div class="row">
       <div class="col">
         <?php
@@ -90,6 +91,7 @@ $this->_description=$this->title;
         ?>
       </div>
     </div>
+<?php endif;?>
     <div class="row">
       <div class="col"><?php
       \yii\widgets\Pjax::begin(['id'=>'stream-listing', 'enablePushState'=>false, 'linkSelector'=>'#stream-pager a', 'formSelector'=>false]);
