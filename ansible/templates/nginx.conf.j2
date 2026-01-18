@@ -252,6 +252,15 @@ http {
 
         set $yii_bootstrap "/index.php";
 {% if "mui" not in inventory_hostname %}
+    {% if mui_ext_ip is defined %}
+        location /identificationFiles/ {
+          allow {{ mui_ext_ip }};
+          deny all;
+
+          try_files $uri $uri/ =404;
+        }
+    {% endif %}
+
         # Rate limit /api to 10 requests/sec
         # This is way too loose
         location /api {
