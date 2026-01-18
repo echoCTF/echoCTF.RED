@@ -225,7 +225,7 @@ class CronController extends Controller
   /**
    * Process player private instances
    */
-  public function actionInstances($pfonly = false)
+  public function actionInstances(bool $pfonly = false,int $expire = 40)
   {
     if (file_exists("/tmp/cron-instances.lock")) {
       echo date("Y-m-d H:i:s ") . "Instances: /tmp/cron-instances.lock exists, skipping execution\n";
@@ -242,7 +242,7 @@ class CronController extends Controller
       }
     }
 
-    $t = TargetInstance::find()->pending_action(40);
+    $t = TargetInstance::find()->pending_action($expire);
     foreach ($t->all() as $val) {
       try {
         $ips = [];
@@ -298,7 +298,7 @@ class CronController extends Controller
             if ($pfonly === false) {
               try {
                 $dc->destroy();
-              } catch (\Exception $e) {
+              } catch (\Throwable $e) {
               }
               $dc->pull();
               $dc->spin();
@@ -337,7 +337,7 @@ class CronController extends Controller
           default:
             printf("Error: Unknown action\n");
         }
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         if (method_exists($e, 'getErrorResponse'))
           echo "Instances:", $e->getErrorResponse()->getMessage(), "\n";
         else
