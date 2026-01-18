@@ -14,9 +14,11 @@ class TargetInstanceQuery extends \yii\db\ActiveQuery
     return $this->andWhere('[[ip]] IS NOT NULL')->andWhere('[[reboot]]!=2');
   }
 
-  public function pending_action($minutes_ago = 60)
+  public function pending_action(int $minutes_ago = 60)
   {
-    return $this->andWhere('[[ip]] IS NULL')->orWhere(['>', 'reboot', 0])->orWhere(['<', 'updated_at', new \yii\db\Expression("NOW() - INTERVAL $minutes_ago MINUTE")]);
+    if($minutes_ago !== 0)
+      return $this->andWhere('[[ip]] IS NULL')->orWhere(['>', 'reboot', 0])->orWhere(['<', 'updated_at', new \yii\db\Expression("NOW() - INTERVAL $minutes_ago MINUTE")]);
+    return $this->andWhere('[[ip]] IS NULL')->orWhere(['>', 'reboot', 0]);
   }
 
 
