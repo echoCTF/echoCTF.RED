@@ -253,7 +253,7 @@ http {
         set $yii_bootstrap "/index.php";
 {% if "mui" not in inventory_hostname %}
     {% if mui_ext_ip is defined %}
-        location /identificationFiles/ {
+        location ^~ /identificationFiles/ {
           allow {{ mui_ext_ip }};
           deny all;
 
@@ -345,18 +345,18 @@ http {
             return 404;
         }
 {% endif %}
-  location /ws {
-        proxy_pass http://127.0.0.1:8888/ws;
+        location /ws {
+              proxy_pass http://127.0.0.1:8888/ws;
 
-        # WebSocket-specific headers
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
+              # WebSocket-specific headers
+              proxy_http_version 1.1;
+              proxy_set_header Upgrade $http_upgrade;
+              proxy_set_header Connection "Upgrade";
 
-        # Optional: increase timeout for long-lived connections
-        proxy_read_timeout 86400s;
-        proxy_send_timeout 86400s;
-  }
+              # Optional: increase timeout for long-lived connections
+              proxy_read_timeout 86400s;
+              proxy_send_timeout 86400s;
+        }
 {% if captcha is defined %}
         # Check for requests to /profile/<NUMBER>
         location ~ ^/profile/\d+$ {
