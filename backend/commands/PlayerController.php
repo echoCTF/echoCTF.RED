@@ -182,7 +182,7 @@ class PlayerController extends Controller
   /*
     Register Users and generate OpenVPN keys and settings
   */
-  public function actionRegister($username, $email, $fullname, $password = false, $player_type = "offense", $active = false, $academic = false, $team_name = false, $approved = 0)
+  public function actionRegister($username, $email, $fullname, $password = false, $player_type = "offense", bool $active = true, int $status=9, $academic = false, $team_name = false, $approved = 0)
   {
     echo "Registering: ", $email, "\n";
     $trans = Yii::$app->db->beginTransaction();
@@ -210,16 +210,15 @@ class PlayerController extends Controller
       $player->password = Yii::$app->security->generatePasswordHash($password);
 
       $player->active = intval($active);
-      $player->status = 10;
+      $player->status = $status;
 
       $player->auth_key = Yii::$app->security->generateRandomString();
 
       if (!$player->saveWithSsl()) {
-        if (!$player->active && intval(\Yii::$app->sys->disable_mailer)==0) {
+        if (!$player->active && $players->status===9 && intval(\Yii::$app->sys->disable_mailer)==0) {
           $player->generateEmailVerificationToken();
-          $player->status = 9;
         }
-        throw new ConsoleException('Failed to save player:' . $player->username, "\n");
+        throw new ConsoleException('Failed to save player:' . $player->username. "\n");
       }
 
       $player->createTeam($team_name, $approved);
