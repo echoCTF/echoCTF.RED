@@ -425,8 +425,8 @@
   - name: configure folders and perms
     command: "{{item}}"
     with_items:
-      - "mkdir -p /home/moderatorUI/{{domain_name}}/backend/web/assets"
-      - "chown -R moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/assets"
+      - "install -d -o moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/assets"
+      - "install -d -o moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/identifcationFiles"
       - "mkdir -p /var/log/cron"
       - "ln -sf /home/moderatorUI/{{domain_name}}/backend/yii /usr/local/bin/backend"
 
