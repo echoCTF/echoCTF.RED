@@ -54,6 +54,7 @@ class Player extends PlayerAR
   public function saveWithSsl()
   {
     if (!$this->save()) {
+      Yii::error($this->getErrorSummary(true));
       return false;
     }
 
@@ -63,6 +64,7 @@ class Player extends PlayerAR
     if ($playerSsl->save()) {
       return $playerSsl->refresh();
     }
+    Yii::error($playerSsl->getErrorSummary(true));
     return false;
   }
 
@@ -144,6 +146,9 @@ class Player extends PlayerAR
 
     if (!$tp->save())
       echo Yii::t('app', "Error saving team player\n");
+    $ti = new \app\modules\frontend\models\TeamInvite(['team_id' => $tp->id, 'token' => Yii::$app->security->generateRandomString(8)]);
+    if (!$ti->save())
+      echo Yii::t('app', "Error saving team invite\n");
   }
 
   /**
