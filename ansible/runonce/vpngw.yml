@@ -252,6 +252,19 @@
   - name: Activate install php modules
     shell: "cp /etc/php-{{versions.PHP}}.sample/*.ini /etc/php-{{versions.PHP}}/"
 
+  - name: Fixing /etc/php.ini
+    ini_file: dest=/etc/php-{{versions.PHP}}.ini section={{item.section}} option={{item.option}} value={{item.value}} mode=0644 owner=root group=wheel
+    with_items:
+      - { section: PHP, option: "expose_php", value: "Off" }
+      - { section: PHP, option: "log_errors_max_len", value: 4096 }
+      - { section: PHP, option: "html_errors", value: "Off" }
+      - { section: PHP, option: "max_execution_time", value: "60" }
+      - { section: PHP, option: "max_input_time", value: "120" }
+      - { section: PHP, option: "memory_limit", value: "256M" }
+      - { section: PHP, option: "error_reporting", value: "E_NONE" }
+      - { section: PHP, option: "post_max_size", value: "180M" }
+      - { section: PHP, option: "upload_max_filesize", value: "120M" }
+      - { section: PHP, option: "allow_url_fopen", value: "On"}
 
   - name: Update my.cnf
     ini_file:
