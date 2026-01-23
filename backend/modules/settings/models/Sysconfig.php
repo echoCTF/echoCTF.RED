@@ -56,7 +56,7 @@ class Sysconfig extends \yii\db\ActiveRecord
         if ($this->val == 0 || $this->val == "")
           $this->val = "";
         else
-          $this->val = Yii::$app->formatter->asDatetime($this->val, 'php:Y-m-d H:i:s', 'UTC');
+          $this->val = date('Y-m-d H:i:s', $this->val);
         break;
       default:
         break;
@@ -101,11 +101,9 @@ class Sysconfig extends \yii\db\ActiveRecord
     if ($this->id === 'stripe_webhookLocalEndpoint' && array_key_exists('val', $changedAttributes)) {
       $oldVal = $changedAttributes['val'];
       $newVal = $this->val;
-      if(($u=UrlRoute::findOne(['destination'=>'subscription/default/webhook']))!==NULL)
-      {
-        $u->updateAttributes(['source'=>$newVal]);
+      if (($u = UrlRoute::findOne(['destination' => 'subscription/default/webhook'])) !== NULL) {
+        $u->updateAttributes(['source' => $newVal]);
       }
-
     }
   }
 
