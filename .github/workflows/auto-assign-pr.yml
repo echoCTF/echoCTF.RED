@@ -1,8 +1,11 @@
 name: Auto-Assign PR
 
 on:
-  pull_request:
+  pull_request_target:
     types: [opened]
+
+permissions:
+  issues: write
 
 jobs:
   assign:
