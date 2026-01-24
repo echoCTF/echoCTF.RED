@@ -112,9 +112,12 @@ yii\bootstrap5\Modal::end();
       [
         'attribute' => 'approval',
         'filter' => $searchModel::APPROVAL,
+        'format'=>'html',
         'visible' => Yii::$app->sys->player_require_approval === true,
         'value' => function ($model) {
-          return $model::APPROVAL[$model->approval];
+          if($model->status===10)
+            return "<small class='text-success'>(".$model::APPROVAL[$model->approval].")</small>";
+          return "<small class='text-danger'>".$model::APPROVAL[$model->approval]."</small>";
         }
 
       ],
@@ -157,7 +160,7 @@ yii\bootstrap5\Modal::end();
             return false;
           },
           'mail' => function ($model) {
-            if ($model->status == 10 || $model->approval == 0) return false;
+            if ($model->status == 10 || $model->status == 0 || $model->approval == 0 || $model->status) return false;
             return true;
           },
           'delete' => function ($model) {
