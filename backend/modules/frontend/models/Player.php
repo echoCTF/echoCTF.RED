@@ -146,9 +146,11 @@ class Player extends PlayerAR
 
     if (!$tp->save())
       echo Yii::t('app', "Error saving team player\n");
-    $ti = new \app\modules\frontend\models\TeamInvite(['team_id' => $tp->id, 'token' => Yii::$app->security->generateRandomString(8)]);
-    if (!$ti->save())
+    $ti = new \app\modules\frontend\models\TeamInvite(['team_id' => $team->id, 'token' => Yii::$app->security->generateRandomString(8)]);
+    if (!$ti->save()) {
       echo Yii::t('app', "Error saving team invite\n");
+      Yii::error($ti->getErrorSummary(true));
+    }
   }
 
   /**
