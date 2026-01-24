@@ -32,7 +32,7 @@ class PlayerController extends \app\components\BaseController
         'class' => \yii\filters\AccessControl::class,
         'rules' => [
           '00filtered-actions' => [
-            'actions' => ['mail', 'approve', 'reject', 'export'],
+            'actions' => ['mail', 'approve', 'reject', 'export','notify','set-deleted','disconnect-vpn','generate-ssl','ajax-search'],
             'allow' => true,
             'roles' => ['@'],
           ]
