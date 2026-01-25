@@ -143,7 +143,6 @@ CREATE TABLE `private_network_target` (
   KEY `idx-private_network_target-target_id` (`target_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/private_network_target';
 
-
 DROP TABLE IF EXISTS `debuglogs`;
 CREATE TABLE debuglogs (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -268,3 +267,17 @@ BEGIN
   END IF;
 END
 //
+
+
+DROP EVENT IF EXISTS `event_shutdown` //
+CREATE EVENT `event_shutdown` ON SCHEDULE EVERY 5 SECOND STARTS '2020-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO
+BEGIN
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('{{db_host}}:{{memc_port|default(11211)}}') INTO @memc_server_set_status;
+  END IF;
+
+  IF memc_get('event_finished') IS NOT NULL THEN
+    ALTER EVENT `event_shutdown` DISABLE;
+    SELECT 1 INTO OUTFILE '/tmp/event_finished';
+  END IF;
+END //
