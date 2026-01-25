@@ -518,15 +518,6 @@ CREATE TRIGGER `tau_player_token` AFTER UPDATE ON `player_token` FOR EACH ROW
   END IF;
   END ;;
 
-DROP TRIGGER IF EXISTS tad_player_token ;;
-CREATE TRIGGER `tad_player_token` AFTER DELETE ON `player_token` FOR EACH ROW
-  thisBegin:BEGIN
-  IF (@TRIGGER_CHECKS = FALSE) THEN
-      LEAVE thisBegin;
-  END IF;
-  INSERT INTO player_token_history (player_id,`type`,token,description,expires_at,created_at,ts) VALUES (OLD.player_id,OLD.type,OLD.token,OLD.description,OLD.expires_at,OLD.created_at,NOW());
-  END ;;
-
 DROP TRIGGER IF EXISTS tbi_player_treasure ;;
 CREATE TRIGGER `tbi_player_treasure` BEFORE INSERT ON `player_treasure` FOR EACH ROW
   thisBegin:BEGIN
