@@ -70,7 +70,7 @@ class Sysconfig extends \yii\db\ActiveRecord
         $Q = sprintf("DROP EVENT IF EXISTS event_end_notification");
         \Yii::$app->db->createCommand($Q)->execute();
         if (!empty($this->val)) {
-          $Q = sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10", $this->val);
+          $Q = sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO BEGIN INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10; DO memc_set('event_finished',1); SELECT 1 INTO OUTFILE '/tmp/event_finished';END", $this->val);
           \Yii::$app->db->createCommand($Q)->execute();
           $this->val = strtotime($this->val);
         } else {
