@@ -22,7 +22,7 @@ yii\bootstrap5\Modal::end();
   <p>
     <?= Html::a('Create Player', ['create'], ['class' => 'btn btn-success']) ?>
     <?= Html::a('Import Players', ['import'], ['class' => 'btn btn-info']) ?>
-    <?= Html::a('Export Full Players', ['export'], ['class' => 'btn','style' => 'background: #4040bf; color: white;',]) ?>
+    <?= Html::a('Export Full Players', ['export'], ['class' => 'btn', 'style' => 'background: #4040bf; color: white;',]) ?>
     <?= Html::a(Yii::t('app', 'Fail Validate'), ['fail-validation'], [
       'class' => 'btn',
       'style' => 'background: #4d246f; color: white;',
@@ -45,7 +45,7 @@ yii\bootstrap5\Modal::end();
     'rowOptions' => function ($model, $key, $index, $grid) {
       // $model is the current data model being rendered
       // check your condition in the if like `if($model->hasMedicalRecord())` which could be a method of model class which checks for medical records.
-      $tmpObj = clone ($model);
+      $tmpObj = clone($model);
       $tmpObj->scenario = 'validator';
       if (!$tmpObj->validate()) {
         unset($tmpObj);
@@ -112,12 +112,12 @@ yii\bootstrap5\Modal::end();
       [
         'attribute' => 'approval',
         'filter' => $searchModel::APPROVAL,
-        'format'=>'html',
+        'format' => 'html',
         'visible' => Yii::$app->sys->player_require_approval === true,
         'value' => function ($model) {
-          if($model->status===10)
-            return "<small class='text-success'>(".$model::APPROVAL[$model->approval].")</small>";
-          return "<small class='text-danger'>".$model::APPROVAL[$model->approval]."</small>";
+          if ($model->status === 10)
+            return "<small class='text-success'>(" . $model::APPROVAL[$model->approval] . ")</small>";
+          return "<small class='text-danger'>" . $model::APPROVAL[$model->approval] . "</small>";
         }
 
       ],
@@ -141,7 +141,7 @@ yii\bootstrap5\Modal::end();
             return false;
           },
           'disconnect-vpn' => function ($model) {
-            if ($model->last->vpn_local_address !== null && $model->disconnectQueue===null) return true;
+            if ($model->last->vpn_local_address !== null && $model->disconnectQueue === null) return true;
             return false;
           },
           'view' => function ($model) {
@@ -160,7 +160,7 @@ yii\bootstrap5\Modal::end();
             return false;
           },
           'mail' => function ($model) {
-            if ($model->status == 10 || $model->status == 0 || $model->approval == 0 || $model->status) return false;
+            if ($model->status == 10 || $model->status == 0 || $model->approval == 0 || ( $model->emailToken == null && $model->passwordResetToken == null)) return false;
             return true;
           },
           'delete' => function ($model) {
