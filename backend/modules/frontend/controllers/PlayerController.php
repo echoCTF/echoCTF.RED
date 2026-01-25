@@ -32,7 +32,7 @@ class PlayerController extends \app\components\BaseController
         'class' => \yii\filters\AccessControl::class,
         'rules' => [
           '00filtered-actions' => [
-            'actions' => ['mail', 'approve', 'reject', 'export','notify','set-deleted','disconnect-vpn','generate-ssl','ajax-search'],
+            'actions' => ['mail', 'approve', 'reject', 'export', 'notify', 'set-deleted', 'disconnect-vpn', 'generate-ssl', 'ajax-search'],
             'allow' => true,
             'roles' => ['@'],
           ]
@@ -616,11 +616,13 @@ class PlayerController extends \app\components\BaseController
   {
     $searchModel = new PlayerSearch();
     $query = $searchModel->search(['PlayerSearch' => Yii::$app->request->post()]);
+    $query->query->innerJoinWith('emailToken', false);
+    $query->query->andFilterWhere(['IS NOT', 'emailToken.token', NULL]);
     $query->query->andFilterWhere([
       'player.approval' => [1, 3],
     ]);
-    //$query->pagination = false;
-    $query->pagination = ['pageSize' => 5];
+    $query->pagination = false;
+    //$query->pagination = ['pageSize' => 5];
     if (intval($query->count) === intval(Player::find()->count())) {
       Yii::$app->session->setFlash('error', Yii::t('app', 'You have attempted to mail all the players.'));
       return $this->redirect(['index']);
@@ -708,7 +710,7 @@ class PlayerController extends \app\components\BaseController
         function ($model) {
           return [
             'id' => $model->id,
-            'pid'=>$model->profile->id,
+            'pid' => $model->profile->id,
             'label' => sprintf("(id: %d / pid: %d) %s <%s>%s", $model->id, $model->profile->id, $model->username, $model->email, $model->status === 10 ? '' : ' (innactive)'),
           ];
         }
@@ -748,7 +750,7 @@ class PlayerController extends \app\components\BaseController
 
   private function notifyLogic($player, $notificationModel, $ovpn = false, $online = false)
   {
-    if ($ovpn && $player->playerLast->vpn_local_address===null)
+    if ($ovpn && $player->playerLast->vpn_local_address === null)
       return null;
     if ($online && !boolval($player->online))
       return null;
