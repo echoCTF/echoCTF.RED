@@ -699,6 +699,28 @@
         stdout_logfile_maxbytes=0
         redirect_stderr=true
 
+  - name: copy watchdog-action script
+    copy:
+      src: ../../contrib/watchdog-action.py
+      dest: /usr/local/bin/watchdog-action
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: copy event_shutdown script
+    copy:
+      src: ../../contrib/event_shutdown.sh
+      dest: /usr/local/sbin/event_shutdown
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: Add watchdog-action to rc.local
+    lineinfile:
+      path: "/etc/rc.local"
+      line: "nohup /usr/local/bin/watchdog-action --file_path /tmp/event_finished --action /usr/local/sbin/event_shutdown >/tmp/watchdog.log 2>&1 &"
+      insertafter: EOF
+
   - name: create user for openvpn up/down scripts
     mysql_user:
       name: "openvpn"
