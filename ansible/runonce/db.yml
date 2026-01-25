@@ -411,6 +411,27 @@
       group: wheel
       mode: '0555'
 
+  - name: copy watchdoger script
+    copy:
+      src: ../../contrib/watchdoger.py
+      dest: /usr/local/bin/watchdoger
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: Install watchdoger.ini for supervisord
+    copy:
+      dest: /etc/supervisord.d/watchdoger.ini
+      content: |
+        [program:watchdoger]
+        user = root
+        command = /usr/local/bin/watchdoger --file_path /tmp/event_finished --url {{ wsserver.url | default("http://10.7.0.200:8888/broadcast") }} --token {{ wsserver.token | default("server123token") }}
+        autorestart = false
+        startretries = 0
+        stdout_logfile=/var/log/watchdoger.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
   - name: Setting up sysctl.conf
     sysctl:
       name: "{{ item.key }}"
