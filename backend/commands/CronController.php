@@ -293,6 +293,7 @@ class CronController extends Controller
               } catch (\Throwable $e) {
               }
               $dc->pull();
+              usleep(100);
               $dc->spin();
             }
             if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) {
@@ -336,7 +337,9 @@ class CronController extends Controller
           \Yii::error($e);
       }
       unset($dc);
-      usleep(100);
+      usleep(200);
+      $publisher = new \app\services\ServerPublisher(\Yii::$app->params['serverPublisher']);
+      $publisher->publish($val->player_id, 'target', ['id' => $val->target_id]);
     } // end foreach
     $this->actionInstancePfTables(true);
 
