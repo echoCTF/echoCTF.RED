@@ -408,21 +408,25 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
     try {
       $publisher = new \app\services\ServerPublisher(Yii::$app->params['serverPublisher']);
       $publisher->publish($this->id, 'notification', ['type' => $type, 'title' => $title, 'body' => $body]);
-    } catch(\Throwable $e) {
+    } catch (\Throwable $e) {
       // on publishing error make sure we store the noticication as pending
-      $cc=true;
-      $archive=false;
+      $cc = true;
+      $archive = false;
       Yii::error($e->getMessage());
     }
 
     if ($cc === true) {
       $n = new \app\models\Notification;
       $n->player_id = $this->id;
-      $n->archived = $archive;
+      $n->archived = intval($archive);
       $n->category = $type;
       $n->title = $title;
       $n->body = $body;
-      return $n->save();
+      if (!$n->save()) {
+        Yii::error($n->getErrorSummary(true));
+        return false;
+      }
+      return true;
     }
     return true;
   }
