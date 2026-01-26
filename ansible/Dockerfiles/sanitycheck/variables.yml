@@ -12,6 +12,7 @@ writeup_allowed: 0
 headshot_spin: 0
 instance_allowed: 0
 TargetOndemand: false
+dynamic_treasures: 0
 container:
   name: "{{hostname}}"
   hostname: "{{fqdn}}"

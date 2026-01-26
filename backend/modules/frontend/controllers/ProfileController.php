@@ -32,7 +32,7 @@ class ProfileController extends \app\components\BaseController
         'class' => \yii\filters\AccessControl::class,
         'rules' => [
           '00filtered-actions'=>[
-            'actions' => ['view-full','target-progress','score-monthly','headshots','vpn-history','spin-history','notifications'],
+            'actions' => ['view-full','target-progress','score-monthly','headshots','vpn-history','spin-history','notifications','stream-lag','vpn-history-duplicates'],
             'allow' => true,
             'roles' => ['@'],
           ]

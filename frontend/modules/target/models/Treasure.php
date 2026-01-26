@@ -146,7 +146,7 @@ class Treasure extends \app\models\ActiveRecordReadOnly
      */
     public function getLocationRedacted()
     {
-        return str_replace($this->code,"*REDACTED*",$this->location);
+        return str_replace($this->code,"*REDACTED*",$this->solution);
     }
 
     public static function find()

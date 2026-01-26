@@ -19,10 +19,10 @@ $class = 'text-bold';
     <h2><?= \Yii::t('app', 'Details for team') ?> [<code><?= Html::encode($team->name) ?></code>]</h2>
     <?php if ($team->getTeamPlayers()->count() < Yii::$app->sys->members_per_team): ?>
       <p>
-        <?php if ($team->owner_id === Yii::$app->user->id || ($team->invite && !$team->inviteonly)): ?>
+        <?php if ($team->owner_id === Yii::$app->user->id || ($team->inviteOrCreate && !$team->inviteonly)): ?>
           <?php if ($team->owner_id === Yii::$app->user->id) $class .= ' copy-to-clipboard'; ?>
           <?= \Yii::t('app', 'Allow other players to join the team easily by providing them with this link:') ?>
-          <code><?= Html::a(Url::to(['/team/default/invite', 'token' => $team->invite->token], 'https'), Url::to(['/team/default/invite', 'token' => $team->invite->token], 'https'), ['class' => $class, 'swal-data' => 'Copied to clipboard!']); ?></code>
+          <code><?= Html::a(Url::to(['/team/default/invite', 'token' => $team->inviteOrCreate->token], 'https'), Url::to(['/team/default/invite', 'token' => $team->inviteOrCreate->token], 'https'), ['class' => $class, 'swal-data' => 'Copied to clipboard!']); ?></code>
         <?php else: ?>
           <?= Html::encode($team->recruitment) ?>
         <?php endif; ?>
@@ -179,8 +179,8 @@ $class = 'text-bold';
           <div class="card-footer">
             <p class="small">
               <center>
-                <?php if (intval($team->getTeamPlayers()->count()) < Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && !$team->locked && $team->invite && !$team->inviteonly) : ?>
-                  <?= Html::a('Join Team', ['/team/default/join', 'token' => $team->invite->token], ['class' => 'btn block btn-primary text-dark text-bold orbitron', 'data-method' => 'POST', 'data' => ['confirm' => 'You are about to join this team. Your membership will have to be confirmed by the team captain.', 'method' => 'POST']]) ?>
+                <?php if (intval($team->getTeamPlayers()->count()) < Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && !$team->locked && $team->inviteOrCreate && !$team->inviteonly) : ?>
+                  <?= Html::a('Join Team', ['/team/default/join', 'token' => $team->inviteOrCreate->token], ['class' => 'btn block btn-primary text-dark text-bold orbitron', 'data-method' => 'POST', 'data' => ['confirm' => 'You are about to join this team. Your membership will have to be confirmed by the team captain.', 'method' => 'POST']]) ?>
                 <?php endif; ?>
               </center>
             </p>

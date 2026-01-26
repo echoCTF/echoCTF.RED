@@ -221,7 +221,6 @@ class DefaultController extends \app\components\BaseController
         'pageSize' => 10,
       ]
     ]);
-
     return $this->render('view', [
       'team' => $model,
       'teamInstanceProvider' => $teamInstanceProvider,
@@ -264,8 +263,23 @@ class DefaultController extends \app\components\BaseController
       ]
     ]);
 
+    $teamNetworks = \app\modules\network\models\PrivateNetwork::find()->forTeam(\Yii::$app->user->identity->team->id);
+    $teamNetworksProvider = new ActiveDataProvider([
+      'query' => $teamNetworks,
+      'pagination' => [
+        'pageSizeParam' => 'networks-perpage',
+        'pageParam' => 'networks-page',
+        'pageSize' => 5,
+      ],
+      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
+    ]);
+
+    $subQuery = TeamStream::find()
+      ->select('stream_id')
+      ->where(['team_id' => \Yii::$app->user->identity->team->id]);
+
     $stream = \app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
-      ->where(['stream.player_id' => $teamPlayers])
+      ->where(['id' => $subQuery])
       ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
     $streamProvider = new ActiveDataProvider([
       'query' => $stream,
@@ -314,7 +328,9 @@ class DefaultController extends \app\components\BaseController
       'teamTargetsProvider' => $targetProgressProvider,
       'headshotsProvider' => $headshotsProvider,
       'solverProvider' => $solverProvider,
-      'team' => Yii::$app->user->identity->team
+      'team' => Yii::$app->user->identity->team,
+      'networksProvider' => $teamNetworksProvider,
+
     ]);
   }
   /**

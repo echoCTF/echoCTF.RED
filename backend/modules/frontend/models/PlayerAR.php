@@ -526,7 +526,22 @@ class PlayerAR extends \yii\db\ActiveRecord
    */
   public function getApiToken()
   {
-    return $this->hasOne(PlayerToken::class, ['player_id' => 'id'])->andWhere(['type' => 'API']);
+    return $this->hasOne(PlayerToken::class, ['player_id' => 'id'])->from(['apiToken' => PlayerToken::tableName()])->andWhere(['apiToken.type' => 'API']);
   }
 
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getEmailToken()
+  {
+    return $this->hasOne(PlayerToken::class, ['player_id' => 'id'])->from(['emailToken' => PlayerToken::tableName()])->andWhere(['emailToken.type' => 'email_verification']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getPasswordResetToken()
+  {
+    return $this->hasOne(PlayerToken::class, ['player_id' => 'id'])->from(['passwordResetToken' => PlayerToken::tableName()])->andWhere(['passwordResetToken.type' => 'password_reset']);
+  }
 }

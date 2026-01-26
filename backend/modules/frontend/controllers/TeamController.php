@@ -24,7 +24,17 @@ class TeamController extends \app\components\BaseController
    */
   public function behaviors()
   {
-    return ArrayHelper::merge(parent::behaviors(), [
+    return ArrayHelper::merge([
+      'access' => [
+        'class' => \yii\filters\AccessControl::class,
+        'rules' => [
+          '00filtered-actions' => [
+            'actions' => ['free-player-ajax-search','notify','ajax-search'],
+            'allow' => true,
+            'roles' => ['@'],
+          ]
+        ],
+      ],
       'rules' => [
         'class' => 'yii\filters\AjaxFilter',
         'only' => ['free-player-ajax-search']
@@ -36,7 +46,7 @@ class TeamController extends \app\components\BaseController
           'repopulate-stream' => ['POST'],
         ],
       ],
-    ]);
+    ], parent::behaviors());
   }
 
   /**
@@ -187,13 +197,11 @@ class TeamController extends \app\components\BaseController
     $trans = Yii::$app->db->beginTransaction();
     try {
       $model->updateAttributes(['academic' => ($model->academic + 1) % \Yii::$app->sys->academic_grouping]);
-      foreach($model->teamPlayers as $p)
-      {
-        $p->updateAttributes(['academic'=>$model->academic]);
+      foreach ($model->teamPlayers as $p) {
+        $p->updateAttributes(['academic' => $model->academic]);
       }
       $trans->commit();
       \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Team changed academic grouping.'));
-
     } catch (\Exception $e) {
       $trans->rollBack();
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to update academic grouping for team'));

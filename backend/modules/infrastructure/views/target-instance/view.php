@@ -66,7 +66,7 @@ $this->params['breadcrumbs'][] = $this->title;
       'team_allowed:boolean',
       [
         'label' => 'encrypted flags',
-        'visible'=>$model->target->dynamic_treasures,
+        'visible'=>$model->target->dynamic_treasures && \Yii::$app->user->identity->isAdmin,
         'format' => 'raw',
         'value' => function ($model) {
           $lines=[];

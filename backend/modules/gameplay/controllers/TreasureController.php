@@ -19,7 +19,21 @@ class TreasureController extends \app\components\BaseController
    */
   public function behaviors()
   {
-    return ArrayHelper::merge(parent::behaviors(), []);
+    return ArrayHelper::merge(parent::behaviors(), [
+      'access' => [
+        'class' => \yii\filters\AccessControl::class,
+        'rules' => [
+          'authActions' => [
+            'allow' => true,
+            'actions' => ['index', 'view'],
+            'roles' => ['@'],
+            'matchCallback' => function () {
+              return \Yii::$app->user->identity->isAdmin;
+            },
+          ],
+        ],
+      ],
+    ]);
   }
 
   /**
@@ -47,7 +61,7 @@ class TreasureController extends \app\components\BaseController
     if ($string !== "") {
       $secretKey = Yii::$app->sys->treasure_secret_key;
       $results = Yii::$app->db->createCommand("select treasure.id,player.id as player_id from treasure,player where md5(HEX(AES_ENCRYPT(CONCAT(code, player.id), :secretKey))) LIKE :code", [':secretKey' => $secretKey, ':code' => $string])->queryOne();
-      if ($results === [] || $results===false) {
+      if ($results === [] || $results === false) {
         Yii::$app->session->setFlash('warning', Yii::t('app', "Code not found."));
       } else {
         $player = \app\modules\frontend\models\Player::findOne($results['player_id']);
@@ -56,21 +70,18 @@ class TreasureController extends \app\components\BaseController
           'username' => $player->username,
           'actions' => false
         ]);
-        if($player->teamPlayer!==NULL)
-        {
-          $msg = sprintf('Code belongs to player [%s] from team [%s] for target %s and treasure %s', $profileLink,$player->teamPlayer->team->name, $treasure->target->name, $treasure->name);
-        }
-        else
-        {
+        if ($player->teamPlayer !== NULL) {
+          $msg = sprintf('Code belongs to player [%s] from team [%s] for target %s and treasure %s', $profileLink, $player->teamPlayer->team->name, $treasure->target->name, $treasure->name);
+        } else {
           $msg = sprintf('Code belongs to player [%s] for target %s and treasure %s', $profileLink, $treasure->target->name, $treasure->name);
         }
 
         Yii::$app->session->setFlash('success', $msg);
-        $string='';
+        $string = '';
       }
     }
 
-    return $this->render('validate',['code'=>$string]);
+    return $this->render('validate', ['code' => $string]);
   }
 
   /**

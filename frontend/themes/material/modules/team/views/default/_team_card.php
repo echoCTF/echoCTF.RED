@@ -89,8 +89,8 @@ $dataProvider = new ArrayDataProvider([
       <center>
         <?php if (Yii::$app->user->identity->isAdmin || (Yii::$app->user->identity->team && !$model->inviteonly || ($invite === false && $listing === true))) : ?>
           <?= Html::a('View Team', ['/team/default/view', 'token' => $model->token], ['class' => 'btn block text-dark text-bold orbitron' . (!$model->inviteonly ? ' btn-info' : ' btn-warning')]) ?>
-        <?php elseif (intval($model->getTeamPlayers()->count()) < Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && !$model->locked && $model->invite) : ?>
-          <?= Html::a('Join Team', ['/team/default/join', 'token' => $model->invite->token], ['class' => 'btn block btn-primary text-dark text-bold orbitron', 'data-method' => 'POST', 'data' => ['confirm' => 'You are about to join this team. Your membership will have to be confirmed by the team captain.', 'method' => 'POST']]) ?>
+        <?php elseif (intval($model->getTeamPlayers()->count()) < Yii::$app->sys->members_per_team && !Yii::$app->user->identity->team && !$model->locked && $model->inviteOrCreate) : ?>
+          <?= Html::a('Join Team', ['/team/default/join', 'token' => $model->inviteOrCreate->token], ['class' => 'btn block btn-primary text-dark text-bold orbitron', 'data-method' => 'POST', 'data' => ['confirm' => 'You are about to join this team. Your membership will have to be confirmed by the team captain.', 'method' => 'POST']]) ?>
         <?php endif; ?></center>
     </p>
   </div>

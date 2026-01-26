@@ -403,23 +403,16 @@ BEGIN
     UPDATE team_score SET points=0 WHERE team_id=tid;
     DELETE FROM team_stream WHERE team_id=tid;
     INSERT INTO team_stream (stream_id,player_id,team_id,model,model_id,points,ts)
-        SELECT id, player_id, tid, model, model_id, points, ts
-        FROM (
-            SELECT s.*,
-                  ROW_NUMBER() OVER (
-                      PARTITION BY model, model_id
-                      ORDER BY ts ASC, id ASC
-                  ) AS rn
-            FROM stream s
-            WHERE model != 'user'
-              AND player_id IN (
-                  SELECT player_id
-                  FROM team_player
-                  WHERE team_id = tid AND approved=1
-              )
-        ) t
-        WHERE rn = 1
-        ORDER BY id, ts;
+      SELECT id, player_id, tid, model, model_id, points, ts
+      FROM (
+        SELECT s.*,
+          ROW_NUMBER() OVER (PARTITION BY model, model_id ORDER BY ts ASC, id ASC) AS rn
+        FROM stream s
+        WHERE model != 'user'
+          AND player_id IN (SELECT player_id FROM team_player WHERE team_id = tid AND approved=1)
+      ) t
+      WHERE rn = 1
+      ORDER BY id, ts;
     IF `_rollback` THEN
         ROLLBACK;
     ELSE

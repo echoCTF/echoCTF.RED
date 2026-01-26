@@ -1,0 +1,33 @@
+---
+- name: Update authorized SSH keys for a user
+  hosts: all
+  become: true
+
+  vars:
+    target_user: root
+
+  pre_tasks:
+    - name: Ensure ssh_keys_source is provided
+      ansible.builtin.fail:
+        msg: "You must provide ssh_keys_source (file path or URL)"
+      when: ssh_keys_source is not defined
+
+    - name: Load SSH public keys from file or URL
+      ansible.builtin.set_fact:
+        ssh_public_keys: >-
+          {{
+            lookup(
+              ssh_keys_source is match('^https?://')
+              | ternary('url', 'file'),
+              ssh_keys_source
+            )
+          }}
+
+  tasks:
+    - name: Update authorized_keys for user
+      ansible.posix.authorized_key:
+        user: "{{ target_user }}"
+        key: "{{ ssh_public_keys }}"
+        manage_dir: true
+        state: present
+        # exclusive: true   # uncomment to replace all existing keys

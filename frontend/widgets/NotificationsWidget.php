@@ -26,8 +26,12 @@ class NotificationsWidget extends Widget
 
       foreach($notifications as $n)
       {
+        if(intval($n->archived)===0)
+          $n->updateAttributes(['archived' => 1]);
+
         $links[]=Html::a($n->title,'#',['class' => "dropdown-item"]);
       }
+
       if($notifications==null)
         $links[]=Html::a('nothing here...','#',['class' => "dropdown-item"]);
 

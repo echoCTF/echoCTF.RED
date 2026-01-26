@@ -22,6 +22,7 @@ use app\modules\activity\models\TeamStream;
  * @property Player $owner
  * @property TeamPlayer[] $teamPlayers
  * @property Player[] $players
+ * @property string[] $approvedMemberIPs
  */
 class Team extends \yii\db\ActiveRecord
 {
@@ -98,17 +99,34 @@ class Team extends \yii\db\ActiveRecord
 
   public function getInstances()
   {
-      return $this->hasMany(\app\modules\infrastructure\models\TargetInstance::class, ['player_id' => 'player_id'])
-                  ->via('teamPlayers', function($query) {
-            $query->andWhere(['approved' => 1]);
-        });
+    return $this->hasMany(\app\modules\infrastructure\models\TargetInstance::class, ['player_id' => 'player_id'])
+      ->via('teamPlayers', function ($query) {
+        $query->andWhere(['approved' => 1]);
+      });
   }
+
   /**
    * @return \yii\db\ActiveQuery
    */
   public function getApprovedMembers()
   {
     return $this->hasMany(TeamPlayer::class, ['team_id' => 'id'])->andWhere(['approved' => 1]);
+  }
+
+  /**
+   * Get array of all approved members currently online
+   *
+   * @return array<int, string>
+   */
+  public function getApprovedMemberIPs()
+  {
+    $ips=[];
+    foreach ($this->approvedMembers as $tp) {
+      if ((int)$tp->player->last->vpn_local_address !== 0) {
+        $ips[] = long2ip($tp->player->last->vpn_local_address);
+      }
+    }
+    return $ips;
   }
 
   /**
@@ -197,6 +215,6 @@ class Team extends \yii\db\ActiveRecord
    */
   public function repopulateStream()
   {
-    return \Yii::$app->db->createCommand('CALL repopulate_team_stream(:tid)',[':tid'=>$this->id])->execute();
+    return \Yii::$app->db->createCommand('CALL repopulate_team_stream(:tid)', [':tid' => $this->id])->execute();
   }
 }

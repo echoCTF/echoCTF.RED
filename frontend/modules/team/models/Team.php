@@ -25,7 +25,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property Player $owner
  * @property TeamPlayer[] $teamPlayers
  * @property Player[] $players
- */
+ * @property TeamInvite $inviteOrCreate
+*/
 class Team extends \yii\db\ActiveRecord
 {
   public $uploadedAvatar;
@@ -142,7 +143,7 @@ class Team extends \yii\db\ActiveRecord
    */
   public function getTeamPlayers()
   {
-    return $this->hasMany(TeamPlayer::class, ['team_id' => 'id'])->orderBy(['approved'=>SORT_DESC,'ts'=>SORT_ASC]);
+    return $this->hasMany(TeamPlayer::class, ['team_id' => 'id'])->orderBy(['approved' => SORT_DESC, 'ts' => SORT_ASC]);
   }
 
   /**
@@ -159,6 +160,28 @@ class Team extends \yii\db\ActiveRecord
   public function getInvite()
   {
     return $this->hasOne(TeamInvite::class, ['team_id' => 'id']);
+  }
+
+  /**
+   * Returns the related TeamInvite model.
+   *
+   * If the invite does not exist yet, it will be created, saved,
+   * and populated into the `invite` relation.
+   *
+   * @return TeamInvite the existing or newly created invite model
+   * @throws \RuntimeException if the invite cannot be created
+   */
+  public function getInviteOrCreate()
+  {
+    if ($this->invite === null) {
+      $invite = new TeamInvite(['team_id'=>$this->id,'token'=>Yii::$app->security->generateRandomString(8)]);
+      if (!$invite->save()) {
+        throw new \RuntimeException('Failed to create TeamInvite');
+      }
+      $this->populateRelation('invite', $invite);
+    }
+
+    return $this->invite;
   }
 
   public function getValidLogo()
@@ -286,21 +309,19 @@ class Team extends \yii\db\ActiveRecord
   /**
    * Generate a new invite url
    */
-  public function generate_invite(){
-    if($this->invite) {
-      $this->invite->token=Yii::$app->security->generateRandomString(8);
-      if(!$this->invite->save())
-      {
-        throw new UserException(Yii::t('app','Failed to save invite. [{error}]',['error'=>implode(" ",$this->invite->getErrors())]));
+  public function generate_invite()
+  {
+    if ($this->invite) {
+      $this->invite->token = Yii::$app->security->generateRandomString(8);
+      if (!$this->invite->save()) {
+        throw new UserException(Yii::t('app', 'Failed to save invite. [{error}]', ['error' => implode(" ", $this->invite->getErrors())]));
       }
-    }
-    else {
-      $ti=new TeamInvite;
-      $ti->team_id=$this->id;
-      $ti->token=Yii::$app->security->generateRandomString(8);
-      if(!$ti->save())
-      {
-        throw new UserException(Yii::t('app','Failed to save invite. [{error}]',['error'=>implode(" ",$ti->getErrors())]));
+    } else {
+      $ti = new TeamInvite;
+      $ti->team_id = $this->id;
+      $ti->token = Yii::$app->security->generateRandomString(8);
+      if (!$ti->save()) {
+        throw new UserException(Yii::t('app', 'Failed to save invite. [{error}]', ['error' => implode(" ", $ti->getErrors())]));
       }
     }
   }

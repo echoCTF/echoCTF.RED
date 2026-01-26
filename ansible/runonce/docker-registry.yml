@@ -137,7 +137,7 @@
       content: "{{item.content|default(omit)}}"
     with_items:
       - { dest: "/etc/pf.conf", src: "../files/pf.conf"}
-      - { dest: "/etc/service.pf.conf", content: "anchor \"dynamic\"\npass quick inet proto tcp from <service_clients> to port {{registry_bind_port}} label \"service_clients\"\n"}
+      - { dest: "/etc/service.pf.conf", content: "pass quick from <administrators> label \"administrators\"\nanchor \"dynamic\"\npass quick inet proto tcp from <service_clients> to port {{registry_bind_port}} label \"service_clients\"\n"}
       - { dest: "/etc/service_clients.conf", content: "{{registry_targets_cidr}}\n"}
 
   - name: Dump administrators PF table (if exists)

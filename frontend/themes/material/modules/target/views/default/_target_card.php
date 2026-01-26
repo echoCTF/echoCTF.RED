@@ -21,10 +21,10 @@ if(!Yii::$app->user->isGuest && Yii::$app->user->identity->instance !== NULL && 
   else
     $display_ip=Html::a($target_ip,$target_ip,["class"=>'copy-to-clipboard text-danger text-bold','swal-data'=>"Copied to clipboard",'data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance. Click to copy IP to clipboard.")]);
 }
-if($target_ip=='0.0.0.0')
-{
-  $this->registerJs("targetUpdates({$target->id});", \yii\web\View::POS_READY);
-}
+//if($target_ip=='0.0.0.0')
+//{
+//  $this->registerJs("targetUpdates({$target->id});", \yii\web\View::POS_READY);
+//}
 $subtitleARR=[$target->category,ucfirst($target->getDifficultyText($target->average_rating)),boolval($target->rootable) ? "Rootable" : "Non rootable",$target->timer===false ? null:'Timed'];
 $subtitle=implode(", ",array_filter($subtitleARR));
 Card::begin([
@@ -34,7 +34,7 @@ Card::begin([
             'icon'=>sprintf('<img src="%s" class="img-fluid" style="max-width: 10rem; max-height: 4rem;" />', $target->logo),
             'color'=>'target',
             'subtitle'=>$subtitle,
-            'title'=>sprintf('%s / <span id="target_id">%s</span>', $target->name, $display_ip),
+            'title'=>sprintf('%s / <span id="target_id_%d">%s</span>', $target->name, $target->id, $display_ip),
             'footer'=>sprintf('<div class="stats">%s</div><span>%s</span>', $target->purpose, TargetCardActions::widget(['model'=>$target,'identity'=>$identity]) ),
         ]);
 echo "<p class='text-danger'><i class='fas fa-flag'></i> ", $target->total_treasures, ": Flag".($target->total_treasures > 1 ? 's' : '')." ";

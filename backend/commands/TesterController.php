@@ -23,8 +23,8 @@ class TesterController extends Controller
     echo Table::widget([
       'headers' => ['Action', 'Usage', 'Description'],
       'rows' => [
-        ['Action' => 'tester/mail',   'Usage' => 'tester/mail email@example.com', 'Description' => 'Send a test mail with the current settings'],
-//        ['Action' => 'docker', 'Usage' => 'tester/docker nginx:latest', 'Description' => 'Test the a given image to make sure it can be deployed on the configured docker servers of the platform.'],
+        ['Action' => 'tester/mail',      'Usage' => 'tester/mail email@example.com', 'Description' => 'Send a test mail with the current settings'],
+        ['Action' => 'tester/ws-notify', 'Usage' => 'tester/ws-notify player', 'Description' => 'Send a test websocket notification to the given player by id'],
       ],
     ]);
   }
@@ -72,4 +72,17 @@ class TesterController extends Controller
       $this->stderr("❌ Error: " . $e->getMessage() . "\n");
     }
   }
+
+  public function actionWsNotify($player)
+  {
+    $player=\app\modules\frontend\models\Player::findOne($player);
+    $type = "info";
+    $title="title";
+    $body="body";
+    $cc = true;
+    $archive = true;
+    $apiOnly = false;
+    $player->notify($type, $title, $body, $cc, $archive, $apiOnly = false);
+  }
+
 }

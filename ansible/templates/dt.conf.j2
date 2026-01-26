@@ -43,7 +43,15 @@ http {
         ssl_prefer_server_ciphers on;
         ssl_dhparam /etc/ssl/private/dhparam.pem;
 
-        return 503;
+        # ACME challenge must bypass maintenance
+        location ^~ /.well-known/acme-challenge/ {
+            root /acme;
+            try_files $uri =404;
+        }
+
+        location / {
+            return 503;
+        }
         error_page   503  @maintenance;
         location @maintenance {
             add_header Strict-Transport-Security "max-age=63072000; includeSubDomains";

@@ -4,3 +4,5 @@ MD013: false
 # Disable required empty line after heading
 MD022: false
 MD033: false
+MD040: false
+MD043: false
