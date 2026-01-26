@@ -274,8 +274,12 @@ class DefaultController extends \app\components\BaseController
       'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
     ]);
 
+    $subQuery = TeamStream::find()
+      ->select('stream_id')
+      ->where(['team_id' => \Yii::$app->user->identity->team->id]);
+
     $stream = \app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
-      ->where(['stream.player_id' => $teamPlayers])
+      ->where(['id' => $subQuery])
       ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
     $streamProvider = new ActiveDataProvider([
       'query' => $stream,
