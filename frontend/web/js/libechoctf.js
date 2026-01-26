@@ -188,7 +188,7 @@ var targetTimeout;
 var intervalTimeout = 5000;
 
 function targetUpdates(id) {
-  var targetEl = document.getElementById("target_id");
+  var targetEl = document.getElementById("target_id_"+id);
   if(targetEl==null) return;
   var request = new XMLHttpRequest();
   request.open("GET", `/target/${id}/ip`);
