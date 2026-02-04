@@ -21,7 +21,18 @@ class NotificationController extends \app\components\BaseController
    */
   public function behaviors()
   {
-    return ArrayHelper::merge(parent::behaviors(), []);
+    return ArrayHelper::merge([
+      'access' => [
+        'class' => \yii\filters\AccessControl::class,
+        'rules' => [
+          '00filtered-actions' => [
+            'actions' => ['create', 'delete', 'rotate'],
+            'allow' => true,
+            'roles' => ['@'],
+          ]
+        ],
+      ],
+    ], parent::behaviors());
   }
 
   /**
