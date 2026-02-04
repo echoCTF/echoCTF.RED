@@ -1,0 +1,8 @@
+supervisord:\
+        :ignorenologin:\
+        :datasize=4096M:\
+        :maxproc=infinity:\
+        :openfiles-max=10024:\
+        :openfiles-cur=2560:\
+        :stacksize-cur=18M:\
+        :tc=default:

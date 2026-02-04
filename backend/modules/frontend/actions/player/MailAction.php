@@ -10,6 +10,7 @@ use app\modules\frontend\models\TeamPlayer;
 use app\modules\frontend\models\PlayerSsl;
 use app\modules\frontend\models\PlayerSearch;
 use app\modules\settings\models\Sysconfig;
+use yii\base\UserException;
 use yii\helpers\Html;
 
 class MailAction extends \yii\base\Action
@@ -22,27 +23,17 @@ class MailAction extends \yii\base\Action
   {
     // Get innactive players
     $player = $this->controller->findModel($id);
-    if ($player->status == 10)
-    {
+    if ($player->status == 10) {
       \Yii::$app->getSession()->setFlash('warning', Yii::t('app', 'Player already active skipping mail.'));
-    }
-    elseif ($player->status == 9)
-    {
-      if (\Yii::$app->sys->player_require_approval === true && $player->approval > 0 && $player->approval <= 2)
-      {
+    } elseif ($player->status == 9) {
+      if (\Yii::$app->sys->player_require_approval === true && $player->approval > 0 && $player->approval <= 2) {
         $this->approvalMail($player);
-      }
-      elseif (\Yii::$app->sys->player_require_approval === true && $player->approval > 2 && $player->approval <= 4)
-      {
+      } elseif (\Yii::$app->sys->player_require_approval === true && $player->approval > 2 && $player->approval <= 4) {
         $this->rejectionMail($player);
-      }
-      elseif (\Yii::$app->sys->player_require_approval !== true)
-      {
+      } elseif (\Yii::$app->sys->player_require_approval !== true) {
         $this->verificationMail($player);
       }
-    }
-    elseif ($player->status == 0)
-    {
+    } elseif ($player->status == 0) {
       $this->rejectionMail($player);
     }
 
@@ -60,12 +51,11 @@ class MailAction extends \yii\base\Action
   private function rejectionMail($player)
   {
     try {
-      $emailtpl=\app\modules\content\models\EmailTemplate::findOne(['name' => 'rejectVerify']);
+      $emailtpl = \app\modules\content\models\EmailTemplate::findOne(['name' => 'rejectVerify']);
       $contentHtml = $this->controller->renderPhpContent("?>" . $emailtpl->html, ['user' => $player]);
       $contentTxt = $this->controller->renderPhpContent("?>" . $emailtpl->txt, ['user' => $player]);
-      $subject=Yii::t('app', '{event_name} Account rejected', ['event_name' => trim(Yii::$app->sys->event_name)]);
-      if(!$player->mail($subject,$contentHtml,$contentTxt))
-      {
+      $subject = Yii::t('app', '{event_name} Account rejected', ['event_name' => trim(Yii::$app->sys->event_name)]);
+      if (!$player->mail($subject, $contentHtml, $contentTxt)) {
         throw new \Exception('Could not send mail');
       }
 
@@ -85,15 +75,18 @@ class MailAction extends \yii\base\Action
    */
   private function approvalMail($player)
   {
+    if ($player->verification_token == null) {
+      throw new UserException("The user has no token to mail");
+    }
+
     try {
       $activationURL = sprintf("https://%s/verify-email?token=%s", \Yii::$app->sys->offense_domain, $player->verification_token);
-      $emailtpl=\app\modules\content\models\EmailTemplate::findOne(['name' => 'emailVerify']);
-      $contentHtml = $this->controller->renderPhpContent("?>" . $emailtpl->html, ['user' => $player,'verifyLink'=>$activationURL]);
-      $contentTxt = $this->controller->renderPhpContent("?>" . $emailtpl->txt, ['user' => $player,'verifyLink'=>$activationURL]);
-      $subject=Yii::t('app', '{event_name} Account approved', ['event_name' => trim(Yii::$app->sys->event_name)]);
+      $emailtpl = \app\modules\content\models\EmailTemplate::findOne(['name' => 'emailVerify']);
+      $contentHtml = $this->controller->renderPhpContent("?>" . $emailtpl->html, ['user' => $player, 'verifyLink' => $activationURL]);
+      $contentTxt = $this->controller->renderPhpContent("?>" . $emailtpl->txt, ['user' => $player, 'verifyLink' => $activationURL]);
+      $subject = Yii::t('app', '{event_name} Account approved', ['event_name' => trim(Yii::$app->sys->event_name)]);
 
-      if(!$player->mail($subject,$contentHtml,$contentTxt))
-      {
+      if (!$player->mail($subject, $contentHtml, $contentTxt)) {
         return;
       }
 
@@ -112,15 +105,18 @@ class MailAction extends \yii\base\Action
    */
   private function verificationMail($player)
   {
+    if ($player->verification_token == null) {
+      throw new UserException("The user has no token to mail");
+    }
+
     try {
       $activationURL = sprintf("https://%s/verify-email?token=%s", \Yii::$app->sys->offense_domain, $player->verification_token);
-      $emailtpl=\app\modules\content\models\EmailTemplate::findOne(['name' => 'emailVerify']);
-      $contentHtml = $this->controller->renderPhpContent("?>" . $emailtpl->html, ['user' => $player,'verifyLink'=>$activationURL]);
-      $contentTxt = $this->controller->renderPhpContent("?>" . $emailtpl->txt, ['user' => $player,'verifyLink'=>$activationURL]);
-      $subject=Yii::t('app', 'Account registration for {event_name}', ['event_name' => trim(Yii::$app->sys->event_name)]);
+      $emailtpl = \app\modules\content\models\EmailTemplate::findOne(['name' => 'emailVerify']);
+      $contentHtml = $this->controller->renderPhpContent("?>" . $emailtpl->html, ['user' => $player, 'verifyLink' => $activationURL]);
+      $contentTxt = $this->controller->renderPhpContent("?>" . $emailtpl->txt, ['user' => $player, 'verifyLink' => $activationURL]);
+      $subject = Yii::t('app', 'Account registration for {event_name}', ['event_name' => trim(Yii::$app->sys->event_name)]);
 
-      if(!$player->mail($subject,$contentHtml,$contentTxt))
-      {
+      if (!$player->mail($subject, $contentHtml, $contentTxt)) {
         throw new \Exception('Could not send mail');
       }
 
@@ -129,5 +125,4 @@ class MailAction extends \yii\base\Action
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to mail player. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }
   }
-
 }

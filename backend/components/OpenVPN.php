@@ -81,7 +81,7 @@ class OpenVPN extends Component
   {
     if(!file_exists($location))
     {
-      throw new yii\base\UserException("Status file does not exist");
+      throw new \yii\base\UserException("Status file does not exist");
     }
     $statusLines=explode("\n",file_get_contents($location));
     if(count($statusLines)==0)

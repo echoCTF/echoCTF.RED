@@ -55,12 +55,22 @@ class Img extends Component
           imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"root@%s:/# ./userinfo --profile %d"),\Yii::$app->sys->offense_domain,$profile->id),$textcolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"username.....: %s"),$profile->owner->username),$greencolor);
           imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"joined.......: %s"),date("d.m.Y", strtotime($profile->owner->created))),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"points.......: %s"),number_format($profile->owner->playerScore->points)),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"rank.........: %s"),$profile->owner->playerScore->points == 0 ? "-":$profile->rank->ordinalPlace),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"level........: %d / %s"),$profile->experience->id, $profile->experience->name),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"flags........: %d"), $profile->totalTreasures),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"challenges...: %d / %d first"),$profile->challengesSolverCount, $profile->firstChallengeSolversCount),$greencolor);
-          imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"headshots....: %d / %d first"),$profile->headshotsCount, $profile->firstHeadshotsCount),$greencolor);
+          if (\Yii::$app->sys->team_only_leaderboards !== true)
+          {
+            imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"points.......: %s"),number_format($profile->owner->playerScore->points)),$greencolor);
+            imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"rank.........: %s"),$profile->owner->playerScore->points == 0 ? "-":$profile->rank->ordinalPlace),$greencolor);
+            imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"level........: %d / %s"),$profile->experience->id, $profile->experience->name),$greencolor);
+            imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"flags........: %d"), $profile->totalTreasures),$greencolor);
+            imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"challenges...: %d / %d first"),$profile->challengesSolverCount, $profile->firstChallengeSolversCount),$greencolor);
+            imagestring($image, 6, 200, $lineheight*$i++, sprintf(\Yii::t('app',"headshots....: %d / %d first"),$profile->headshotsCount, $profile->firstHeadshotsCount),$greencolor);
+          }
+          else if($profile->owner->teamPlayer)
+          {
+            imagestring($image, 6, 200, $lineheight*$i++, \Yii::t('app',"team.........: {team}",['team'=>$profile->owner->team->name]),$greencolor);
+            imagestring($image, 6, 200, $lineheight*$i++, \Yii::t('app',"team rank....: {rank}",['rank'=>($profile->owner->team->rank !== null ? $profile->owner->team->rank->ordinalPlace : 'empty')]),$greencolor);
+            imagestring($image, 6, 200, $lineheight*$i++, \Yii::t('app',"team points..: {points,plural,=0{0 pts} =1{# pts} other{# pts}}",['points'=>($profile->owner->team->score !== null ? $profile->owner->team->score->points : 0)]),$greencolor);
+            imagestring($image, 6, 200, $lineheight*$i++, \Yii::t('app',"contributed..: {points,plural,=0{0 pts} =1{# pts} other{# pts}}",['points'=>($profile->owner->teamStreamPoints->points ?? 0)]),$greencolor);
+          }
           imagedestroy($avatar);
           imagedestroy($cover);
           imagedestroy($src);

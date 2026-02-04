@@ -29,6 +29,18 @@ if ($headshot) {
   $this->registerMetaTag(['name' => 'game:points', 'content' => '0']);
   $this->registerMetaTag(['name' => 'article:published_time', 'content' => $headshot->created_at]);
 }
+$this->registerJsFile('@web/js/showdown.min.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::class
+    ]
+]);
+$this->registerJsFile('@web/assets/hljs/highlight.min.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::class
+    ]
+]);
+$this->registerCssFile('@web/assets/hljs/styles/a11y-dark.min.css',['depends' => ['app\assets\MaterialAsset']]);
+
 ?>
 <div class="row">
   <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 target-card">
@@ -168,3 +180,10 @@ if ($headshot) {
     <?php endif; ?>
   </div>
 </div>
+<?php
+$this->registerJs(
+  'hljs.highlightAll();',
+  $this::POS_READY,
+  'markdown-highlighter'
+);
+?>

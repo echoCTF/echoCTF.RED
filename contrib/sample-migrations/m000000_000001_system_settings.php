@@ -31,6 +31,10 @@ class m000000_000001_system_settings extends Migration
     ['id' => "leaderboard_show_zero", 'val' => "0"],
     ['id' => "leaderboard_visible_after_event_end", 'val' => "1"],
     ['id' => "leaderboard_visible_before_event_start", 'val' => "0"],
+    ['id' => "country_rankings", 'val' => "0"],
+    ['id' => "player_point_rankings", 'val' => "0"],
+    ['id' => "player_monthly_rankings", 'val' => "0"],
+
     ['id' => 'frontpage_scenario', 'val' => 'Welcome to our lovely event... Edit from backend Content => Frontpage Scenario'],
     ['id' => "event_end_notification_title", 'val' => "🎉 Our awesome echoCTF finished 🎉"],
     ['id' => "event_end_notification_body", 'val' => "The awesome echoCTF is over 🎉🎉🎉 Congratulations to you and your team 👏👏👏 Thank you for participating!!!"],
@@ -59,23 +63,38 @@ class m000000_000001_system_settings extends Migration
     ['id' => "team_manage_members", 'val' => "1"],
     ['id' => "team_required", 'val' => "1"],
     ['id' => 'team_visible_instances', 'val' => "1"],
+    ['id' => 'team_only_leaderboards', 'val' => "1"],
+    ['id' => 'team_encrypted_claims_allowed', 'val' => "1"],
+
     /**
      * Player settings
      */
     ['id' => "approved_avatar", 'val' => "1"],
     ['id' => "player_profile", 'val' => "1"],
     ['id' => "profile_visibility", 'val' => "public"],
-    ['id' => "require_activation", 'val' => "0"],
-    ['id' => 'player_require_identification', 'val' => "0"],
+    ['id' => "require_activation", 'val' => "1"],
+    ['id' => 'player_require_identification', 'val' => "1"],
     ['id' => 'all_players_vip', 'val' => "1"],
-    ['id' => 'player_require_approval', 'val' => "0"],
+    ['id' => 'player_require_approval', 'val' => "1"],
     ['id' => 'profile_discord', 'val' => "1"],
     ['id' => 'profile_echoctf', 'val' => "1"],
     ['id' => 'profile_github', 'val' => "1"],
     ['id' => 'profile_settings_fields', 'val' => 'avatar,bio,country,discord,echoctf,email,fullname,github,pending_progress,twitter,username,visibility'],
+    ['id' => 'avatar_robohash_set', 'val' => 'set3'],
+
     /**
      * Configuration settings
      */
+    ['id' => 'target_guest_view_deny', 'val' => '1'],
+    ['id' => 'disable_ondemand_operations', 'val' => '1'],
+    ['id' => 'module_smartcity_disabled', 'val' => '1'],
+    ['id' => 'module_speedprogramming_enabled', 'val' => '0'],
+    ['id' => 'dashboard_news_total_pages', 'val' => '10'],
+    ['id' => 'dashboard_news_records_per_page', 'val' => '3'],
+    ['id' => 'force_https_urls', 'val' => '1'],
+    ['id' => 'subscriptions_menu_show', 'val' => '0'],
+    ['id' => 'log_failed_claims', 'val' => '1'],
+
     ['id' => 'academic_grouping', 'val' => '0'],
     ['id' => "challenge_home", 'val' => "uploads/"],
     ['id' => "dashboard_is_home", 'val' => "1"],
@@ -126,8 +145,11 @@ class m000000_000001_system_settings extends Migration
    */
   public function safeUp()
   {
-    foreach ($this->news as $entry)
+    foreach ($this->news as $entry) {
+      $entry['created_at']=new \yii\db\Expression('NOW()');
+      $entry['updated_at']=new \yii\db\Expression('NOW()');
       $this->upsert('news', $entry, true);
+    }
 
     // delete not needed url routes
     foreach ($this->delete_url_routes as $route) {

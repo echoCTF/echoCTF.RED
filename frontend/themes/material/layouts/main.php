@@ -50,6 +50,7 @@ $this->registerLayoutOverrides();
 <?php if(Yii::$app->sys->event_start!==false && Yii::$app->sys->event_end!==false):?>
     <script>
     var countDownStart = <?=intval(Yii::$app->sys->event_start)*1000?>;
+    var countDownNow = <?=intval(time())*1000?>;
     var countDownDate = <?=intval(Yii::$app->sys->event_end)*1000?>;
     </script>
 <?php endif;?>
@@ -71,7 +72,7 @@ $this->registerLayoutOverrides();
         <div class="container-fluid">
             <?=\Yii::$app->sys->{"footer_logos"}?>
           <div class="copyright float-right">
-            &copy; <?=date("Y")?>, made with <i class="material-icons text-danger">favorite</i> by
+            &copy; 2012-<?=date("y")?>, made with <i class="material-icons text-danger">favorite</i> by
             <a href="https://www.echothrust.com" target="_blank">echothrust</a> with <a href="https://echoctf.com/" target="_blank"><b class="text-white">echo</b><b>CTF</b></a>
           </div>
         </div>

@@ -1,0 +1,8 @@
+watchdoger:\
+        :ignorenologin:\
+        :datasize=512M:\
+        :maxproc=infinity:\
+        :openfiles-max=4096:\
+        :openfiles-cur=1024:\
+        :stacksize-cur=8M:\
+        :tc=default:

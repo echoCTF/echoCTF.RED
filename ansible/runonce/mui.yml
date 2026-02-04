@@ -272,7 +272,7 @@
       dest: "{{item.dest}}"
     with_items:
       - { src: '{{playbook_dir}}/../templates/httpd.conf.j2', dest: '/etc/httpd.conf', domain: '{{hostname}}' }
-      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf', domain: '{{hostname}}', challenge_dir: "/home/moderatortUI/acme/.well-known/acme-challenge/" }
+      - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf', domain: '{{hostname}}', challenge_dir: "/home/moderatorUI/acme/.well-known/acme-challenge/" }
 
   - name: Generate pf tables files
     command: "{{item.cmd}}"
@@ -425,8 +425,8 @@
   - name: configure folders and perms
     command: "{{item}}"
     with_items:
-      - "mkdir -p /home/moderatorUI/{{domain_name}}/backend/web/assets"
-      - "chown -R moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/assets"
+      - "install -d -o moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/assets"
+      - "install -d -o moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/identifcationFiles"
       - "mkdir -p /var/log/cron"
       - "ln -sf /home/moderatorUI/{{domain_name}}/backend/yii /usr/local/bin/backend"
 

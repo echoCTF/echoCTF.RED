@@ -12,12 +12,12 @@ use app\assets\AppAsset;
 
 $this->title = Yii::$app->sys->event_name . ' mUI: ' . $this->title;
 AppAsset::register($this);
-$this->registerJsFile('@web/js/hljs/highlight.min.js',[
-    'depends' => [
-        \yii\web\JqueryAsset::class
-    ]
+$this->registerJsFile('@web/js/hljs/highlight.min.js', [
+  'depends' => [
+    \yii\web\JqueryAsset::class
+  ]
 ]);
-$this->registerCssFile('@web/js/hljs/styles/a11y-dark.min.css',['depends' => [\yii\web\JqueryAsset::class]]);
+$this->registerCssFile('@web/js/hljs/styles/a11y-dark.min.css', ['depends' => [\yii\web\JqueryAsset::class]]);
 
 ?>
 <?php $this->beginPage() ?>
@@ -31,6 +31,13 @@ $this->registerCssFile('@web/js/hljs/styles/a11y-dark.min.css',['depends' => [\y
   <?php $this->registerCsrfMetaTags() ?>
   <title><?= Html::encode($this->title) ?></title>
   <?php $this->head() ?>
+<?php if (Yii::$app->cache->memcache->get('sysconfig:event_start') !== false && Yii::$app->cache->memcache->get('sysconfig:event_end') !== false): ?>
+  <script>
+    var countDownStart = <?= intval(\Yii::$app->cache->memcache->get('sysconfig:event_start')) * 1000 ?>;
+    var countDownNow = <?= intval(time()) * 1000 ?>;
+    var countDownDate = <?= intval(\Yii::$app->cache->memcache->get('sysconfig:event_end')) * 1000 ?>;
+  </script>
+<?php endif; ?>
 </head>
 
 <body>
@@ -79,6 +86,9 @@ $this->registerCssFile('@web/js/hljs/styles/a11y-dark.min.css',['depends' => [\y
           <div class="col">
             <p class="pull-left">&copy; <?= Html::a('Echothrust Solutions', 'https://www.echothrust.com/') ?> <?= date('Y') ?></p>
           </div>
+          <div class="col">
+            <p class="pull-center" id="event_countdown"></p>
+          </div>
           <div class="col-xl-2">
             <p class="pull-right"><small><?= date('Y/m/d H:i'); ?></small></p>
           </div>
@@ -97,6 +107,5 @@ $this->registerJs(
   'markdown-highlighter'
 );
 ?>
-
 </html>
 <?php $this->endPage() ?>

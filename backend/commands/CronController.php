@@ -15,6 +15,7 @@ use app\modules\infrastructure\models\TargetInstance;
 use app\modules\infrastructure\models\TargetInstanceAudit;
 use app\modules\infrastructure\models\NetworkTargetSchedule as NTS;
 use app\modules\gameplay\models\NetworkTarget;
+use app\components\helpers\ArrayHelperExtended;
 
 /**
  * @method docker_connect()
@@ -159,11 +160,7 @@ class CronController extends Controller
         case SELF::ACTION_START:
         case SELF::ACTION_RESTART:
           if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer !== null && $val->player->teamPlayer->approved === 1) {
-            foreach ($val->player->teamPlayer->team->approvedMembers as $teamPlayer) {
-              if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
-                $ips[] = long2ip($teamPlayer->player->last->vpn_local_address);
-              }
-            }
+            $ips = $val->player->teamPlayer->team->approvedMemberIPs;
           } else if ((int)$val->player->last->vpn_local_address !== 0) {
             $ips[] = long2ip($val->player->last->vpn_local_address);
           }
@@ -200,15 +197,9 @@ class CronController extends Controller
       }
       $team_visible_instances = \Yii::$app->sys->team_visible_instances;
       if ($val->team_allowed == true ||  $team_visible_instances === true) {
-        // get team members
         if ($val->player->teamPlayer) {
           $team = $val->player->teamPlayer->team;
-          foreach ($team->approvedMembers as $member) {
-            // get IP's of connected players
-            if (($pIP = $member->player->last->vpn_local_address) !== null) {
-              $IPs[] = long2ip($pIP);
-            }
-          }
+          $IPs = ArrayHelperExtended::mergeUnique($IPs, $team->approvedMemberIPs);
         }
       }
 
@@ -224,8 +215,16 @@ class CronController extends Controller
 
   /**
    * Process player private instances
+   *
+   * This command updates the last updated_at field for active instances
+   * and processes instances that are pending action (eg. reboot, destroy, powerup)
+   * and updates the PF according to currently online players.
+   *
+   * @param bool $pfonly Perform PF operations and skip instance docker actions (default: false)
+   * @param int $expired_ago Filter instances based that haven't been updated X seconds ago (default: 2400 seconds = 40 minutes)
+   * @return int Exit code
    */
-  public function actionInstances($pfonly = false)
+  public function actionInstances(bool $pfonly = false, int $expired_ago = 2400)
   {
     if (file_exists("/tmp/cron-instances.lock")) {
       echo date("Y-m-d H:i:s ") . "Instances: /tmp/cron-instances.lock exists, skipping execution\n";
@@ -233,21 +232,13 @@ class CronController extends Controller
     }
     touch("/tmp/cron-instances.lock");
     $action = SELF::ACTION_EXPIRED;
-    // Get powered instances
-    $t = TargetInstance::find()->active();
-    foreach ($t->all() as $instance) {
-      if ($instance->player->last->vpn_local_address !== null && $pfonly === false) {
-        printf("Updating heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
-        $instance->touch('updated_at');
-      }
-    }
-
-    $t = TargetInstance::find()->pending_action(40);
+    $t = TargetInstance::find()->pending_action($expired_ago);
     foreach ($t->all() as $val) {
       try {
         $ips = [];
         $dc = new DockerContainer($val->target);
-        $dc->timeout = ($val->server->timeout ? $val->server->timeout : 2000);
+        $dc->timeout = ($val->server->timeout ? $val->server->timeout : 10000);
+
         if ($val->target->targetVolumes !== null)
           $dc->targetVolumes = $val->target->targetVolumes;
 
@@ -279,17 +270,18 @@ class CronController extends Controller
         $dc->server = $val->server->connstr;
         $dc->net = $val->server->network;
 
-        if ($val->ip == null) {
-          echo date("Y-m-d H:i:s ") . "Starting";
-          $action = SELF::ACTION_START;
+        if ($val->reboot === 2) {
+          echo date("Y-m-d H:i:s ") . "Destroying";
+          $action = SELF::ACTION_DESTROY;
         } else if ($val->reboot === 1) {
           echo date("Y-m-d H:i:s ") . "Restarting";
           $action = SELF::ACTION_RESTART;
-        } else if ($val->reboot === 2) {
-          echo date("Y-m-d H:i:s ") . "Destroying";
-          $action = SELF::ACTION_DESTROY;
+        } else if ($val->ip == null && $val->reboot == 0) {
+          echo date("Y-m-d H:i:s ") . "Starting";
+          $action = SELF::ACTION_START;
         } else {
           echo date("Y-m-d H:i:s ") . "Expiring";
+          $action = SELF::ACTION_EXPIRED;
         }
         printf(" %s for %s (%s) at %s\n", $val->target->name, $val->player->username, $dc->name, $val->server->name);
         switch ($action) {
@@ -298,17 +290,14 @@ class CronController extends Controller
             if ($pfonly === false) {
               try {
                 $dc->destroy();
-              } catch (\Exception $e) {
+              } catch (\Throwable $e) {
               }
               $dc->pull();
+              usleep(100);
               $dc->spin();
             }
             if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) {
-              foreach ($val->player->teamPlayer->team->approvedMembers as $teamPlayer) {
-                if ((int)$teamPlayer->player->last->vpn_local_address !== 0) {
-                  $ips[] = long2ip($teamPlayer->player->last->vpn_local_address);
-                }
-              }
+              $ips = $val->player->teamPlayer->team->approvedMemberIPs;
             } else if ((int)$val->player->last->vpn_local_address !== 0) {
               $ips[] = long2ip($val->player->last->vpn_local_address);
             }
@@ -317,8 +306,10 @@ class CronController extends Controller
             $val->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
             Pf::add_table_ip($dc->name, $val->ipoctet, true);
             $val->reboot = 0;
-            if ($pfonly === false)
+            if ($pfonly === false) {
+              $val->updated_at = new \yii\db\Expression('NOW()');
               $val->save();
+            }
 
             break;
           case SELF::ACTION_EXPIRED:
@@ -337,14 +328,32 @@ class CronController extends Controller
           default:
             printf("Error: Unknown action\n");
         }
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         if (method_exists($e, 'getErrorResponse'))
-          echo "Instances:", $e->getErrorResponse()->getMessage(), "\n";
+          echo "Instances: ", $e->getErrorResponse()->getMessage(), "\n";
         else
-          echo "Instances:", $e->getMessage(), "\n";
+          echo "Instances: ", $e->getMessage(), "\n";
+        if (getenv('DEBUG', true) !== false)
+          \Yii::error($e);
       }
+      unset($dc);
+      usleep(200);
+      $publisher = new \app\services\ServerPublisher(\Yii::$app->params['serverPublisher']);
+      $publisher->publish($val->player_id, 'target', ['id' => $val->target_id]);
     } // end foreach
     $this->actionInstancePfTables(true);
+
+    if ($pfonly === false) {
+      try {
+        $t = TargetInstance::find()->active()->withApprovedMemberHeartbeat()->last_updated(round($expired_ago / 2));
+        foreach ($t->all() as $instance) {
+          printf("Updating heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
+          $instance->touch('updated_at');
+        }
+      } catch (\Throwable $e) {
+        echo "Instrances: Error while touching updated_at. ", $e->getMessage();
+      }
+    }
     @unlink("/tmp/cron-instances.lock");
   }
 

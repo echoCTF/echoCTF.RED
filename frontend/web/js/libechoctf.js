@@ -188,8 +188,8 @@ var targetTimeout;
 var intervalTimeout = 5000;
 
 function targetUpdates(id) {
-  var targetEl = document.getElementById("target_id");
-  if(targetEl==null) return;
+  var targetEl = document.getElementById("target_id_" + id);
+  if (targetEl == null) return;
   var request = new XMLHttpRequest();
   request.open("GET", `/target/${id}/ip`);
   request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
@@ -289,51 +289,51 @@ $(document).ready(function () {
     selector: '[data-toggle="tooltip"]',
   });
 
+  var ticks = 0;
+
   var x = setInterval(function () {
+    ticks++;
+
     if (typeof countDownDate === 'undefined')
       return;
-    // Get today's date and time
-    //  var now = new Date();
-    // Find the distance between now and the count down date
+
     if (countDownDate === 0) {
       clearInterval(x);
       return;
     }
-    var timeNow = Date.now();
+
+    var timeNow = countDownNow + (ticks * 1000);
+
     var distance = countDownDate - timeNow;
-    element = document.getElementById("event_countdown");
-    msg = "The competition ends in: <span>"
+    var element = document.getElementById("event_countdown");
+    var msg = "The competition ends in: <span>";
+
     if (countDownStart > 0 && countDownStart > timeNow) {
       distance = countDownStart - timeNow;
       msg = "The competition starts in: <span>";
     }
 
+    if (distance < 0) {
+      clearInterval(x);
+      if (element)
+        element.innerHTML = 'The competition is <b class="text-danger text-bold">finished</b>';
+      return;
+    }
 
-    // Time calculations for days, hours, minutes and seconds
     var days = Math.floor(distance / (1000 * 60 * 60 * 24));
     var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
     var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
     var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-    // If the count down is finished, write some text
-    if (distance < 0) {
-      clearInterval(x);
-      if (typeof (element) != 'undefined' && element != null)
-        element.innerHTML = 'The competition is <b class="text-danger text-bold">finished</b>';
-    }
-    else {
-      if (element) {
-        //console.log(`${countDownStart} ${timeNow} ${distance}`);
-        if (days > 0)
-          element.innerHTML = msg + days + "d " + hours + "h " + minutes + "m " + seconds + "s</span>";
-        else if (hours > 0)
-          element.innerHTML = msg + hours + "h " + minutes + "m " + seconds + "s</span>";
-        else if (minutes > 0)
-          element.innerHTML = msg + minutes + "m " + seconds + "s</span>";
-        else if (seconds > 0)
-          element.innerHTML = msg + seconds + "seconds</span>";
-      }
+    if (element) {
+      if (days > 0)
+        element.innerHTML = msg + days + "d " + hours + "h " + minutes + "m " + seconds + "s</span>";
+      else if (hours > 0)
+        element.innerHTML = msg + hours + "h " + minutes + "m " + seconds + "s</span>";
+      else if (minutes > 0)
+        element.innerHTML = msg + minutes + "m " + seconds + "s</span>";
+      else
+        element.innerHTML = msg + seconds + "s</span>";
     }
   }, 1000);
-
 })

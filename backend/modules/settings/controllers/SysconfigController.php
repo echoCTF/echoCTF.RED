@@ -15,129 +15,137 @@ use yii\helpers\ArrayHelper;
  */
 class SysconfigController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-      return ArrayHelper::merge(parent::behaviors(),[]);
+  /**
+   * {@inheritdoc}
+   */
+  public function behaviors()
+  {
+    return ArrayHelper::merge(parent::behaviors(), [
+      'access' => [
+        'class' => \yii\filters\AccessControl::class,
+        'rules' => [
+          'authActions' => [
+            'allow' => true,
+            'actions' => ['index', 'view'],
+            'roles' => ['@'],
+            'matchCallback' => function () {
+              return \Yii::$app->user->identity->isAdmin;
+            },
+          ],
+        ],
+      ],
+    ]);
+  }
+
+  /**
+   * Lists all Sysconfig models.
+   * @return mixed
+   */
+  public function actionIndex()
+  {
+    $searchModel = new SysconfigSearch();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+    return $this->render('index', [
+      'searchModel' => $searchModel,
+      'dataProvider' => $dataProvider,
+    ]);
+  }
+
+  /**
+   * Creates a new Sysconfig model.
+   * If creation is successful, the browser will be redirected to the 'index' page.
+   * @return mixed
+   */
+  public function actionCreate()
+  {
+    $model = new Sysconfig();
+
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      return $this->redirect(['index']);
     }
 
-    /**
-     * Lists all Sysconfig models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel=new SysconfigSearch();
-        $dataProvider=$searchModel->search(Yii::$app->request->queryParams);
+    return $this->render('create', [
+      'model' => $model,
+    ]);
+  }
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+  /**
+   * Updates an existing Sysconfig model.
+   * If update is successful, the browser will be redirected to the 'index' page.
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionUpdate($id)
+  {
+    $model = $this->findModel($id);
 
-    /**
-     * Creates a new Sysconfig model.
-     * If creation is successful, the browser will be redirected to the 'index' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model=new Sysconfig();
-
-        if($model->load(Yii::$app->request->post()) && $model->save())
-        {
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Updates an existing Sysconfig model.
-     * If update is successful, the browser will be redirected to the 'index' page.
-     * @param string $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($id)
-    {
-        $model=$this->findModel($id);
-
-        if($model->load(Yii::$app->request->post()) && $model->save())
-        {
-            Yii::$app->session->setFlash('success', Yii::t('app','<code>{id}</code> updated.',['id'=>$model->id]));
-            if($id!==$model->id)
-            {
-                return $this->redirect(['update','id'=>$model->id]);
-            }
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Creates/Updates a Sysconfig set model.
-     * If update is successful, the browser will be redirected to the 'index' page.
-     * @param string $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionConfigure()
-    {
-      $model=new ConfigureForm();
-      if($model->load(Yii::$app->request->post()) && $model->save())
-      {
-        Yii::$app->session->setFlash('success',Yii::t('app','Configuration saved'));
-        return $this->redirect(['configure']);
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      Yii::$app->session->setFlash('success', Yii::t('app', '<code>{id}</code> updated.', ['id' => $model->id]));
+      if ($id !== $model->id) {
+        return $this->redirect(['update', 'id' => $model->id]);
       }
-
-      return $this->render('configure', [
-          'model' => $model,
-      ]);
     }
 
-    /**
-     * Deletes an existing Sysconfig model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param string $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
+    return $this->render('update', [
+      'model' => $model,
+    ]);
+  }
 
-        return $this->redirect(['index']);
+  /**
+   * Creates/Updates a Sysconfig set model.
+   * If update is successful, the browser will be redirected to the 'index' page.
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionConfigure()
+  {
+    $model = new ConfigureForm();
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      Yii::$app->session->setFlash('success', Yii::t('app', 'Configuration saved'));
+      return $this->redirect(['configure']);
     }
 
-    /**
-     * Finds the Sysconfig model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param string $id
-     * @return Sysconfig the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if(($model=Sysconfig::findOne($id)) !== null)
-        {
-            return $model;
-        }
+    return $this->render('configure', [
+      'model' => $model,
+    ]);
+  }
 
-        throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
-    }
-    protected function stripYii()
-    {
-      $array=explode("\n", trim(ob_get_clean()));
-      for($i=0;$i < 3;$i++) array_shift($array);
-      return array_map('trim', $array);
+  /**
+   * Deletes an existing Sysconfig model.
+   * If deletion is successful, the browser will be redirected to the 'index' page.
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionDelete($id)
+  {
+    $this->findModel($id)->delete();
 
+    return $this->redirect(['index']);
+  }
+
+  /**
+   * Finds the Sysconfig model based on its primary key value.
+   * If the model is not found, a 404 HTTP exception will be thrown.
+   * @param string $id
+   * @return Sysconfig the loaded model
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  protected function findModel($id)
+  {
+    if (($model = Sysconfig::findOne($id)) !== null) {
+      return $model;
     }
+
+    throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+  }
+  protected function stripYii()
+  {
+    $array = explode("\n", trim(ob_get_clean()));
+    for ($i = 0; $i < 3; $i++) array_shift($array);
+    return array_map('trim', $array);
+  }
 }

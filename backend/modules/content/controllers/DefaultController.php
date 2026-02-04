@@ -15,10 +15,21 @@ class DefaultController extends \app\components\BaseController
   /**
    * {@inheritdoc}
    */
-    public function behaviors()
-    {
-      return ArrayHelper::merge(parent::behaviors(),[]);
-    }
+  public function behaviors()
+  {
+    return ArrayHelper::merge([
+      'access' => [
+        'class' => \yii\filters\AccessControl::class,
+        'rules' => [
+          '00filtered-actions' => [
+            'actions' => ['css-override', 'js-override','menu-items','frontpage-scenario','defense-scenario', 'offense-scenario', 'footer-logos'],
+            'allow' => true,
+            'roles' => ['@'],
+          ]
+        ],
+      ],
+    ], parent::behaviors());
+  }
 
     /**
      * Renders the index view for the module

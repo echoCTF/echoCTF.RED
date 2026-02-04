@@ -57,7 +57,7 @@ class ConfigureForm extends Model
   public $leaderboard_show_zero;
   public $time_zone;
   public $target_days_new = 2;
-  public $target_days_updated = 1;
+  public $target_days_updated = 0;
   public $discord_news_webhook;
   public $pf_state_limits;
   public $stripe_apiKey;
@@ -472,7 +472,7 @@ class ConfigureForm extends Model
       [['online_timeout'], 'default', 'value' => 900],
       [['spins_per_day'], 'default', 'value' => 2],
       ['target_days_new', 'default', 'value' => 1],
-      ['target_days_updated', 'default', 'value' => 2],
+      ['target_days_updated', 'default', 'value' => 0],
       [['event_start', 'event_end', 'registrations_start', 'registrations_end'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
       [[
         'dashboard_is_home',

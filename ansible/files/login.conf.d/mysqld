@@ -1,0 +1,5 @@
+mysqld:\
+        :datasize=8192M:\
+        :openfiles-cur=6144:\
+        :openfiles-max=20480:\
+        :tc=daemon:

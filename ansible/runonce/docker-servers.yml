@@ -1,39 +1,16 @@
 #!/usr/bin/env ansible-playbook
 ---
-- name: Configure docker servers for echoCTF
+- name: Bootstrap docker servers for echoCTF
   hosts: all
   gather_facts: true
   become: true
   become_method: su
+  remote_user: sysadmin
   tasks:
+
   - name: Set timezone to UTC
     timezone:
       name: UTC
-
-  - name: Kill any running pm2
-    shell: pm2 kill
-    no_log: true
-    ignore_errors: true
-
-  - name: Ensure docker services are stopped
-    command: service docker stop
-    no_log: true
-    ignore_errors: true
-
-  - name: Ensure existing docker service overrides are removed
-    ansible.builtin.file:
-      path: "{{item}}"
-      state: absent
-    with_items:
-      - /etc/systemd/system/docker.service.d/dockerd-service-override.conf
-      - /etc/systemd/system/docker.service.d/override.conf
-      - /etc/systemd/system/pm2-root.service.d/pm2-root-service-override.conf
-      - /etc/systemd/system/pm2-root.service.d/override.conf
-
-  - name: Remove any existing /etc/docker/daemon.json
-    ansible.builtin.file:
-      path: /etc/docker/daemon.json
-      state: absent
 
   - name: Set hostname based on host_var
     hostname:
@@ -61,29 +38,6 @@
       pkg: "{{pre_apt}}"
     when: pre_apt is defined and pre_apt|length > 0
 
-  - name: Add apt keys
-    when: aptKeys is defined
-    apt_key:
-      url: "{{item.key}}"
-      state: "{{item.state}}"
-    with_items: "{{aptKeys}}"
-
-  - name: Add apt repositories
-    when: aptRepos is defined
-    apt_repository:
-      repo: "{{item.repo}}"
-      state: "{{item.state}}"
-    with_items: "{{aptRepos}}"
-
-  - name: Update package cache
-    apt:
-      update_cache: yes
-
-  - name: Update all packages to the latest version
-    no_log: "{{DEBUG|default(true)}}"
-    apt:
-      upgrade: dist
-
   - name: Adding defined users (optional)
     when: users is defined
     user:
@@ -109,15 +63,72 @@
       key: "https://github.com/{{item}}.keys"
     with_items: "{{sshkeys}}"
 
-  - name: Make sure sysadmin has sudo access
-    lineinfile:
-      path: /etc/sudoers.d/90_sysadmin
-      line: 'sysadmin ALL=(ALL) NOPASSWD:ALL'
-      create: yes
-
   - name: Ensure /home/sysadmin is owned by sysadmin user (recursive)
     shell: chown -R sysadmin /home/sysadmin
     when: users is defined
+
+  - name: Allow user to have passwordless sudo
+    copy:
+      dest: "/etc/sudoers.d/90_sysadmin"
+      content: "sysadmin ALL=(ALL) NOPASSWD:ALL\n"
+      owner: root
+      group: root
+      mode: '0440'
+
+- name: Configure docker servers for echoCTF
+  hosts: all
+  gather_facts: true
+  become: false
+  remote_user: root
+  tasks:
+
+  - name: Kill any running pm2
+    shell: pm2 kill
+    no_log: true
+    ignore_errors: true
+
+  - name: Ensure docker services are stopped
+    command: service docker stop
+    no_log: true
+    ignore_errors: true
+
+  - name: Ensure existing docker service overrides are removed
+    ansible.builtin.file:
+      path: "{{item}}"
+      state: absent
+    with_items:
+      - /etc/systemd/system/docker.service.d/dockerd-service-override.conf
+      - /etc/systemd/system/docker.service.d/override.conf
+      - /etc/systemd/system/pm2-root.service.d/pm2-root-service-override.conf
+      - /etc/systemd/system/pm2-root.service.d/override.conf
+
+  - name: Remove any existing /etc/docker/daemon.json
+    ansible.builtin.file:
+      path: /etc/docker/daemon.json
+      state: absent
+
+  - name: Add apt keys
+    when: aptKeys is defined
+    apt_key:
+      url: "{{item.key}}"
+      state: "{{item.state}}"
+    with_items: "{{aptKeys}}"
+
+  - name: Add apt repositories
+    when: aptRepos is defined
+    apt_repository:
+      repo: "{{item.repo}}"
+      state: "{{item.state}}"
+    with_items: "{{aptRepos}}"
+
+  - name: Update package cache
+    apt:
+      update_cache: yes
+
+  - name: Update all packages to the latest version
+    no_log: "{{DEBUG|default(true)}}"
+    apt:
+      upgrade: dist
 
   - name: Install post install packages
     apt:

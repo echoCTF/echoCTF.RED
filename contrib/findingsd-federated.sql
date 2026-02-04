@@ -116,6 +116,32 @@ CREATE TABLE `player_ssl` (
   UNIQUE KEY `serial` (`serial`)
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_ssl';
 
+DROP TABLE IF EXISTS `private_network`;
+CREATE TABLE `private_network` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) unsigned DEFAULT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `team_accessible` tinyint(1) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx-private_network-player_id` (`player_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/private_network';
+
+DROP TABLE IF EXISTS `private_network_target`;
+CREATE TABLE `private_network_target` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `private_network_id` int(11) DEFAULT NULL,
+  `target_id` int(11) NOT NULL,
+  `ip` int(11) unsigned DEFAULT NULL,
+  `state` smallint(6) unsigned DEFAULT 0,
+  `server_id` int(11) DEFAULT NULL,
+  `ipoctet` varchar(15) GENERATED ALWAYS AS (inet_ntoa(`ip`)) VIRTUAL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx-unique-private_network_id-target_id` (`private_network_id`,`target_id`),
+  KEY `idx-private_network_target-private_network_id` (`private_network_id`),
+  KEY `idx-private_network_target-server_id` (`server_id`),
+  KEY `idx-private_network_target-target_id` (`target_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/private_network_target';
 
 DROP TABLE IF EXISTS `debuglogs`;
 CREATE TABLE debuglogs (
@@ -241,3 +267,17 @@ BEGIN
   END IF;
 END
 //
+
+
+DROP EVENT IF EXISTS `event_shutdown` //
+CREATE EVENT `event_shutdown` ON SCHEDULE EVERY 5 SECOND STARTS '2020-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO
+BEGIN
+  IF (select memc_server_count()<1) THEN
+    select memc_servers_set('{{db_host}}:{{memc_port|default(11211)}}') INTO @memc_server_set_status;
+  END IF;
+
+  IF memc_get('event_finished') IS NOT NULL THEN
+    ALTER EVENT `event_shutdown` DISABLE;
+    SELECT 1 INTO OUTFILE '/tmp/event_finished';
+  END IF;
+END //

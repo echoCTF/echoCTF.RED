@@ -1,0 +1,32 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Update deployed application from Git
+  hosts: all
+  tasks:
+    - name: Ensure repository is up to date
+      git:
+        repo: "{{ GITHUB_REPO }}"
+        dest: "{{ REPO }}"
+        version: "{{ GITHUB_REPO_BRANCH }}"
+        force: yes
+        accept_hostkey: yes
+        update: yes
+      notify: restart applications
+      register: git_result
+
+    - name: Clean untracked files (preserving paths)
+      shell: git clean -fd {{ '-n' if ansible_check_mode else '' }} {% for p in PRESERVE_PATHS %}-e {{ p }} {% endfor %}
+      args:
+        chdir: "{{ REPO }}"
+      register: clean_result
+      changed_when: clean_result.stdout != ""
+      when: git_result.changed and PRESERVE_PATHS is defined
+      notify: restart applications
+
+  handlers:
+    - name: restart applications
+      when: APP_SERVICES is defined
+      service:
+        name: "{{ item }}"
+        state: restarted
+      loop: "{{ APP_SERVICES }}"
