@@ -173,7 +173,7 @@ $config = [
       'name' => 'red',
       'timeout' => 3600 * 12,
       'cookieParams' => [
-        'secure' => true,
+        'secure' => YII_ENV_DEV ? false : true,
         'sameSite' => 'Lax',
         'lifetime' => 3600 * 12,
         'httpOnly' => true
@@ -185,7 +185,7 @@ $config = [
       'enableAutoLogin' => true,
       'identityCookie' => [
         'name' => '_identity-red',
-        'secure' => true,
+        'secure' => YII_ENV_DEV ? false : true,
         'httpOnly' => true,
         'sameSite'=>'Strict'
       ],
