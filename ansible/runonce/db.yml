@@ -425,7 +425,7 @@
       content: |
         [program:watchdoger]
         user = root
-        command = /usr/local/bin/watchdoger --file_path /tmp/event_finished --url {{ wsserver.url | default("http://10.7.0.200:8888/broadcast") }} --token {{ wsserver.token | default("server123token") }}
+        command = su -fm -c watchdoger -s /usr/local/bin/python3 root /usr/local/bin/watchdoger --file_path /tmp/event_finished --url {{ wsserver.url | default("http://10.7.0.200:8888/broadcast") }} --token {{ wsserver.token | default("server123token") }}
         autorestart = false
         startretries = 0
         stdout_logfile=/var/log/watchdoger.log
