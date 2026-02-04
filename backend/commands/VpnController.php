@@ -120,8 +120,10 @@ class VpnController extends Controller
       $ovpn->conf = file_get_contents($filepath);
       $ovpn->name = $file;
       $ovpn->server = gethostbyaddr(gethostbyname(gethostname()));
-      if (preg_match('/status (.*)/', $conf, $matches) && count($matches) > 1) {
-        $ovpn->status_log = trim($matches[1]);
+      if (preg_match('/^status\s+(.+)/', $conf, $matches) && count($matches) > 1) {
+        $parts = explode(' ', trim($matches[0]));
+        if(isset($parts[1]))
+          $ovpn->status_log = trim($parts[1]);
       }
       if (preg_match('/management (.*) (.*) (.*)/', $conf, $matches) && count($matches) > 1) {
         $ovpn->management_ip_octet = $matches[1];
