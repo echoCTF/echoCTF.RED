@@ -270,6 +270,7 @@
       - { src: '{{playbook_dir}}/../files/pui.service.conf', dest: '/etc/service.pf.conf' }
       - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
       - { src: '{{playbook_dir}}/../../contrib/downtime.html', dest: '/home/participantUI/htdocs/index.html' }
+      - { src: '{{playbook_dir}}/../../contrib/downtime.html', dest: '/home/participantUI/{{domain_name}}/frontend/web/dt.html' }
 
   - name: "Process templates"
     template:
