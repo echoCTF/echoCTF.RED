@@ -460,7 +460,7 @@
       - { section: PHP, option: "expose_php", value: "Off" }
       - { section: PHP, option: "log_errors_max_len", value: 4096 }
       - { section: PHP, option: "html_errors", value: "Off" }
-      - { section: PHP, option: "max_execution_time", value: "60" }
+      - { section: PHP, option: "max_execution_time", value: "180" }
       - { section: PHP, option: "max_input_time", value: "120" }
       - { section: PHP, option: "memory_limit", value: "256M" }
       - { section: PHP, option: "error_reporting", value: "E_NONE" }
