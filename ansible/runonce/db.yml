@@ -494,6 +494,16 @@
       - { name: "events checker", minute: "*/1",  job: "-ns /usr/local/sbin/mysql-events-checker" }
       - { name: "daily database backups", minute: "0",hour: "23",  job: "-ns /usr/local/sbin/database_backup" }
 
+  - name: copy login.conf.d login classes
+    copy:
+      src: "../files/login.conf.d/{{item}}"
+      dest: "/etc/login.conf.d/{{item}}"
+    with_items:
+      - memcached
+      - mysqld
+      - supervisord
+      - watchdoger
+
   - name: Execute fw_update
     command: fw_update -a
 
