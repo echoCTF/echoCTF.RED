@@ -1,0 +1,5 @@
+memcached:\
+        :datasize=2048M:\
+        :openfiles-cur=6144:\
+        :openfiles-max=20480:\
+        :tc=daemon:
