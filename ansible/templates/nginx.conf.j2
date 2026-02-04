@@ -22,6 +22,8 @@ http {
     fastcgi_temp_path /cache/fastcgi_temp 1 2;
     proxy_temp_path /cache/proxy_temp 1 2;
 
+    client_max_body_size 32M;
+
     limit_req_zone $binary_remote_addr zone=Api:1m rate=10r/s;
     limit_req_zone $binary_remote_addr zone=ResendVerificationEmail:1m rate=10r/s;
     limit_req_zone $binary_remote_addr zone=RequestPasswordReset:1m rate=10r/s;
@@ -35,6 +37,8 @@ http {
 
     #tcp_nopush           on;
     keepalive_timeout     65;
+    fastcgi_send_timeout 180s;
+    fastcgi_read_timeout 180s;
     gzip                  on;
     gzip_static on;
     gzip_proxied        expired no-cache no-store private auth;
@@ -206,27 +210,13 @@ http {
         }
 
         # disable direct access to dt.html
-        location = /dt.html {
-            return 404;
-        }
-        location = /429.html {
-            return 404;
-        }
-        location = /500.html {
-            return 404;
-        }
-        location = /501.html {
-            return 404;
-        }
-        location = /504.html {
-            return 404;
-        }
-        location = /505.html {
-            return 404;
-        }
-        location ~ /\.ht {
-            return 404;
-        }
+        location = /dt.html { return 404; }
+        location = /429.html { return 404; }
+        location = /500.html { return 404; }
+        location = /501.html { return 404; }
+        location = /504.html { return 404; }
+        location = /505.html { return 404; }
+        location ~ /\.ht { return 404; }
 
         location /contrib/ {
         	autoindex on;
@@ -260,7 +250,7 @@ http {
           try_files $uri $uri/ =404;
         }
     {% endif %}
-
+    {% if enable_rate_limit is defined %}
         # Rate limit /api to 10 requests/sec
         # This is way too loose
         location /api {
@@ -334,6 +324,7 @@ http {
             index  index.php;
             try_files $uri $uri/ /index.php$is_args$args;
         }
+    {% endif %}
 {% endif %}
         location / {
             index  index.html index.php;
@@ -381,10 +372,10 @@ http {
             # let yii catch the calls to non-existing PHP files
             set $fsn /$yii_bootstrap;
             set $yiiargs r=$request_uri;
-            if (-f $document_root$fastcgi_script_name){
-                set $fsn $fastcgi_script_name;
+            #if (-f $document_root$fastcgi_script_name){
+            #    set $fsn $fastcgi_script_name;
                 set $yiiargs $query_string;
-            }
+            #}
 
             fastcgi_pass {{item.fpm}};
             include fastcgi_params;
@@ -408,10 +399,10 @@ http {
             # let yii catch the calls to non-existing PHP files
             set $fsn /$yii_bootstrap;
             set $yiiargs r=$request_uri;
-            if (-f $document_root$fastcgi_script_name){
-                set $fsn $fastcgi_script_name;
-                set $yiiargs $query_string;
-            }
+            #if (-f $document_root$fastcgi_script_name){
+            #    set $fsn $fastcgi_script_name;
+            #    set $yiiargs $query_string;
+            #}
 
             fastcgi_pass {{item.fpm}};
             include fastcgi_params;
