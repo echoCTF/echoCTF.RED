@@ -559,7 +559,9 @@ INSERT INTO `migration` values
         ('m251126_122227_add_private_network_url_route',1),
         ('m251207_100542_create_mui_menu_table',1),
         ('m251214_115824_create_ws_token_table',1),
-        ('m251215_105113_create_event_ws_token_expiration',1);
+        ('m251215_105113_create_event_ws_token_expiration',1),
+        ('m260125_090222_drop_trigger_after_delete_on_player_token',1),
+        ('m260205_183413_add_administer_menu_items',1);
 
 --
 -- Table structure for table `migration_red`
