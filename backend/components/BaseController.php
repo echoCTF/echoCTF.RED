@@ -22,8 +22,11 @@ class BaseController extends \yii\web\Controller
               'class' => \yii\filters\AccessControl::class,
               'rules' => [
                   'adminActions'=>[
-                        'allow' => \Yii::$app->user->identity && \Yii::$app->user->identity->isAdmin,
+                        'allow'=>true,
                         'roles' => ['@'],
+                        'matchCallback' => function () {
+                            return \Yii::$app->user->identity->isAdmin;
+                        },
                   ],
                   'authActions'=>[
                       'allow' => true,
