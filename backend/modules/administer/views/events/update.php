@@ -8,10 +8,10 @@ $this->params['breadcrumbs'][] = ['label' => 'Events', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->Name, 'url' => ['view', 'name' => $model->Name]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="writeup-update">
+<div class="event-update">
 
   <h1><?= Html::encode($this->title) ?></h1>
-  <div class="writeup-form">
+  <div class="event-form">
 
     <?php $form = ActiveForm::begin(); ?>
     <?= $form->field($model, 'Name')->textInput(['readonly' => true]); ?>
