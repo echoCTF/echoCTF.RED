@@ -184,9 +184,9 @@ class CronController extends Controller
     $this->actionInstancePfTables(true);
   }
 
-  public function actionInstancePfTables($dopf = false)
+  public function actionInstancePfTables($dopf = false, int $target_id = 0)
   {
-    $t = TargetInstance::find()->active();
+    $t = TargetInstance::find()->server_assigned($target_id)->active()->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
 
     foreach ($t->all() as $val) {
       $IPs = [];
@@ -222,9 +222,11 @@ class CronController extends Controller
    *
    * @param bool $pfonly Perform PF operations and skip instance docker actions (default: false)
    * @param int $expired_ago Filter instances based that haven't been updated X seconds ago (default: 2400 seconds = 40 minutes)
+   * @param int $atOnce Process X instances at once
+   * @param int $server_id Filter operations to $server_id
    * @return int Exit code
    */
-  public function actionInstances(bool $pfonly = false, int $expired_ago = 2400)
+  public function actionInstances(bool $pfonly = false, int $expired_ago = 2400, int $atOnce = 0, int $server_id = 0)
   {
     if (file_exists("/tmp/cron-instances.lock")) {
       echo date("Y-m-d H:i:s ") . "Instances: /tmp/cron-instances.lock exists, skipping execution\n";
@@ -232,7 +234,8 @@ class CronController extends Controller
     }
     touch("/tmp/cron-instances.lock");
     $action = SELF::ACTION_EXPIRED;
-    $t = TargetInstance::find()->pending_action($expired_ago);
+    $t = TargetInstance::find()->pending_action($expired_ago)->server_assigned($server_id)->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
+    if ($atOnce > 0) $t->limit($atOnce);
     foreach ($t->all() as $val) {
       try {
         $ips = [];
@@ -345,7 +348,7 @@ class CronController extends Controller
 
     if ($pfonly === false) {
       try {
-        $t = TargetInstance::find()->active()->withApprovedMemberHeartbeat()->last_updated(round($expired_ago / 2));
+        $t = TargetInstance::find()->active()->withApprovedMemberHeartbeat()->last_updated(round($expired_ago / 2))->server_assigned($target_id);
         foreach ($t->all() as $instance) {
           printf("Updating heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
           $instance->touch('updated_at');
