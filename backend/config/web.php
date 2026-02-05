@@ -14,39 +14,18 @@ $config = [
     '@npm'   => '@vendor/npm-asset',
   ],
   'modules' => [
-    'moderation' => [
-      'class' => 'app\modules\moderation\Module'
-    ],
-    'speedprogramming' => [
-      'class' => 'app\modules\speedprogramming\Module',
-    ],
-    'sales' => [
-      'class' => 'app\modules\sales\Module',
-    ],
-    'content' => [
-      'class' => 'app\modules\content\Module',
-    ],
-    'infrastructure' => [
-      'class' => 'app\modules\infrastructure\Module',
-    ],
-    'smartcity' => [
-      'class' => 'app\modules\smartcity\Module',
-    ],
-    'restapi' => [
-      'class' => 'app\modules\restapi\Module',
-    ],
-    'settings' => [
-      'class' => 'app\modules\settings\Module',
-    ],
-    'frontend' => [
-      'class' => 'app\modules\frontend\Module',
-    ],
-    'gameplay' => [
-      'class' => 'app\modules\gameplay\Module',
-    ],
-    'activity' => [
-      'class' => 'app\modules\activity\Module',
-    ],
+    'administer' => ['class' => 'app\modules\administer\Module',],
+    'moderation' => ['class' => 'app\modules\moderation\Module'],
+    'speedprogramming' => ['class' => 'app\modules\speedprogramming\Module',],
+    'sales' => ['class' => 'app\modules\sales\Module',],
+    'content' => ['class' => 'app\modules\content\Module',],
+    'infrastructure' => ['class' => 'app\modules\infrastructure\Module',],
+    'smartcity' => ['class' => 'app\modules\smartcity\Module',],
+    'restapi' => ['class' => 'app\modules\restapi\Module',],
+    'settings' => ['class' => 'app\modules\settings\Module',],
+    'frontend' => ['class' => 'app\modules\frontend\Module',],
+    'gameplay' => ['class' => 'app\modules\gameplay\Module',],
+    'activity' => ['class' => 'app\modules\activity\Module',],
   ],
   'components' => [
     'i18n' => [
