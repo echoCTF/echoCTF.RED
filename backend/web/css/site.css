@@ -189,3 +189,10 @@ h6.dropdown-header,h6.dropdown-header>div.dropdown-header {
   padding-bottom: 0.1rem !important;
   font-weight: bold;
 }
+
+.markdown pre,
+.markdown pre code {
+    white-space: pre-wrap;   /* preserve line breaks, allow wrapping */
+    word-wrap: break-word;   /* force long lines to wrap */
+    overflow-wrap: anywhere; /* better support for very long words */
+}
