@@ -73,10 +73,14 @@ pip:
 # - { name: "docker", version: "*", state: "present" }
 
 etchosts: |
-  127.0.0.1       localhost
-  {{ipv4}}        {{fqdn}}    {{host_aliases}}
-  10.0.0.254      vpn01 gw
-  10.0.0.100      your.registry.com
+  127.0.0.1    localhost
+  {{ipv4}}     {{fqdn}}    {{host_aliases}}
+  10.0.0.254   vpn01 gw
+  10.0.0.250   your.registry.com
+  {% if public_registries is defined and public_registries == false %}
+  127.0.0.2    registry-1.docker.io auth.docker.io production.cloudflare.docker.com
+  {% endif %}
+
 
 SYSTEM_CLEANUPS:
 #  - /root/uploads
