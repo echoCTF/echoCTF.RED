@@ -120,7 +120,12 @@
       - { plugin_load_add: "ha_federatedx" }
       - { plugin_load: "ha_blackhole" }
       - { blackhole: "FORCE" }
-
+      - { table_definition_cache: "420" }
+      - { performance_schema: "ON" }
+      - { innodb_buffer_pool_size: "384M" }
+      - { innodb_log_file_size: "96M" }
+      - { key_buffer_size: "512k" }
+      - { max_connections: "50" }
   tasks:
   - name: Sync date time
     raw: rdate pool.ntp.org
