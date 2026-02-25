@@ -1,0 +1,28 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Sync containerd and dockerd
+  hosts: all
+  order: sorted
+  gather_facts: true
+  user: root
+#  serial: 1
+  tasks:
+  - name: Ensure certs.d/_default/ exists
+    file:
+      path: "{{item}}"
+      recurse: yes
+      state: directory
+    when: DOCKER_REGISTRY is defined
+    with_items:
+      - "/etc/containerd/certs.d/_default/"
+      - "/etc/dockerd/certs.d/_default/"
+
+  - name: Setup Default mirror for all registries
+    copy:
+      content: |
+        server = "https://{{DOCKER_REGISTRY[0]}}"
+      dest: "{{item}}"
+    when: DOCKER_REGISTRY is defined
+    with_items:
+      - "/etc/containerd/certs.d/_default/hosts.toml"
+      - "/etc/dockerd/certs.d/_default/hosts.toml"
