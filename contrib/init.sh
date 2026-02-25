@@ -25,9 +25,10 @@ function settings() {
 
 
 function services() {
+  sudo rm -f /tmp/event_finished
   sudo service memcached restart
   sudo service mysql restart
-  sed -e "s/echoCTF/${DATABASE}/" contrib/mysql-init.sql | mysql ${DATABASE}  > /dev/null
+  (sed -e "s/echoCTF/${DATABASE}/" contrib/mysql-init.sql | mysql ${DATABASE}  > /dev/null) || echo "No function exists"
   mysql ${DATABASE} -e "SET GLOBAL EVENT_SCHEDULER=ON"
 }
 
@@ -64,59 +65,29 @@ function init() {
 
 function sysconfig() {
   declare -A SYSCONFIG
-  SYSCONFIG[event_start]='1709913600'
-  SYSCONFIG[event_end]='1710000000'
-  SYSCONFIG[profile_visibility]="private"
-  SYSCONFIG[default_homepage]="/dashboard"
-  SYSCONFIG[approved_avatar]="1"
-  SYSCONFIG[mail_useFileTransport]="1"
-  SYSCONFIG[team_manage_members]="1"
-  SYSCONFIG[team_required]="1"
-  SYSCONFIG[vpngw]="vpn.XXCHANGEMEXX"
-  SYSCONFIG[event_active]="1"
-  SYSCONFIG[twitter_hashtags]="XXCHANGEMEXX,CTF"
-  SYSCONFIG[twitter_account]="XXCHANGEMEXX"
-  SYSCONFIG[members_per_team]="3"
-  SYSCONFIG[challenge_home]="uploads/"
-  SYSCONFIG[dashboard_is_home]="1"
-  SYSCONFIG[defense_registered_tag]="DEFENSE_REGISTERED"
-  SYSCONFIG[disable_registration]="0"
-  SYSCONFIG[offense_registered_tag]="OFFENSE_REGISTERED"
-  SYSCONFIG[online_timeout]="900"
-  SYSCONFIG[player_profile]="1"
-  SYSCONFIG[require_activation]="1"
-  SYSCONFIG[spins_per_day]="70"
-  SYSCONFIG[teams]="1"
-  SYSCONFIG[members_per_team]="3"
-  SYSCONFIG[mail_from]="register@XXCHANGEMEXX"
-  SYSCONFIG[mail_fromName]="XXCHANGEMEXX CTF"
-  SYSCONFIG[dsn]='gmail+smtp://example@example.com:passcode@default?local_domain=PUI_FQDN'
-  SYSCONFIG[offense_domain]="ctf.XXCHANGEMEXX"
-  SYSCONFIG[frontpage_scenario]="XXCHANGEMEXX CTF"
-  SYSCONFIG[event_name]="XXCHANGEMEXX CTF"
-  SYSCONFIG[footer_logos]=''
-  SYSCONFIG[dn_countryName]='GR'
-  SYSCONFIG[dn_localityName]='Athens'
-  SYSCONFIG[dn_organizationalUnitName]='XXCHANGEMEXX'
-  SYSCONFIG[dn_organizationName]='echoCTF'
-  SYSCONFIG[dn_stateOrProvinceName]='Greece'
+#  SYSCONFIG[mail_useFileTransport]="1"
+  SYSCONFIG[offense_domain]="ctf.example.local:8082"
+  SYSCONFIG[moderator_domain]="mui.example.local:8080"
+#  SYSCONFIG[treasure_secret_key]="secret"
+#  SYSCONFIG[registrations_start]="2025-12-01 00:00:00"
+#  SYSCONFIG[event_start]="2025-12-01 00:00:00"
+  SYSCONFIG[force_https_urls]="0"
+
   for K in "${!SYSCONFIG[@]}"; do
     ./backend/yii sysconfig/set $K "${SYSCONFIG[$K]}"
   done
 }
 
 function tmuxs() {
-  tmux -L ${DATABASE} kill-server
+  tmux -L ${DATABASE} kill-server || echo "tmux not running"
   sleep 1
-  #backend serve -a 127.0.0.1 -p 8080
-  #frontend serve -a 127.0.0.1 -p 8082
-  tmux -L ${DATABASE} new -d  'cd ./backend; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=mUISESSID yii serve 127.0.0.1:8080'
-  tmux -L ${DATABASE} split-window 'cd ./frontend/web; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=pUI2SESSID -S 127.0.0.1:8082'
+  tmux -L ${DATABASE} new -d 'cd ./backend; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=mUISESSID yii serve 127.0.1.4:8080'
+  tmux -L ${DATABASE} split-window 'cd ./frontend/web; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=pUI2SESSID -S 127.0.1.4:8082'
 }
 
 function eventOrganizers()
 {
-  ./backend/yii player/register "organizer" "organizer@example.com" "organizer" "organizer" offense 0 "" "CTF ORGANIZERS"
+  ./backend/yii player/register "organizer" "organizer@example.local" "organizer" "organizer" offense 1 10 0 "CTF ORGANIZERS" 1
 }
 
 function sampleData()
@@ -133,7 +104,7 @@ function sampleData()
     else
       base="pro"
     fi
-    ./backend/yii player/register "${base}owner${ourno}" "${base}owner${ourno}@example.com" "team owner ${base} ${no}" "${base}owner${ourno}" offense 1 "${academic}" "${base}team${ourno}"
+    ./backend/yii player/register "${base}owner${ourno}" "${base}owner${ourno}@example.local" "team owner ${base} ${no}" "${base}owner${ourno}" offense 1 "${academic}" "${base}team${ourno}"
     academic=$((academic+1))
   done
   academic=0
@@ -148,9 +119,24 @@ function sampleData()
     else
       base="pro"
     fi
-    ./backend/yii player/register "${base}user${ourno}" "${base}user${no}@example.com" "${base} user ${no}" "${base}user${no}" offense 0 "${academic}"
+    ./backend/yii player/register "${base}user${ourno}" "${base}user${no}@example.local" "${base} user ${no}" "${base}user${no}" offense 0 "${academic}"
     academic=$((academic+1))
   done
+}
+
+function extras() {
+  #mysql -e "UPDATE server SET connstr='tcp://127.0.0.1:2375',network='isolated-bridge'" ${DATABASE}
+  #mysql -e "UPDATE player_last SET vpn_local_address=inet_aton(concat('10.10.0.',id))" ${DATABASE}
+  #(
+  #  cd ansible
+  #  ./playbooks/feed-targets.yml -i inventories/targets
+  #  ./playbooks/feed-challenges.yml -i inventories/challenges
+  #)
+  #mysql -e 'insert into target_instance (player_id,target_id,server_id,ip) select id as player_id, (id % 13)+1 as target_id,(id%5)+1 as server_id,null from player' ${DATABASE}
+  tmux -L ${DATABASE} split-window  '../ws-server/ws-server -db mysql -dsn "root@/echoCTF" -addr :8888'
+  sleep 1
+  tmux -L ${DATABASE} split-window  'python3 contrib/watchdoger.py --file_path /tmp/event_finished --url http://127.0.0.1:8888/broadcast --token server123token'
+  tmux -L ${DATABASE} select-layout tiled
 }
 
 function usage() {
@@ -184,6 +170,7 @@ for arg in "$@"; do
     "sysconfig") "$arg" ;;
     "sampleData") "$arg" ;;
     "eventOrganizers") "$arg" ;;
+    "extras") "$arg" ;;
     *) echo "Option: $arg does not exist"; usage ;;
   esac
   ((count--))
