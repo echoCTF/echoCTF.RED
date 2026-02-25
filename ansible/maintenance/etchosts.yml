@@ -1,0 +1,15 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Sync /etc/hosts file with local host and group vars
+  hosts: all
+  order: sorted
+  gather_facts: true
+  user: root
+#  serial: 1
+  tasks:
+  - name: Configure hosts
+    copy:
+      content: |
+        {{etchosts}}
+      dest: /etc/hosts
+    when: etchosts is defined
