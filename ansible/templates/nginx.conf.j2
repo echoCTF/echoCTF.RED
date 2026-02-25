@@ -337,7 +337,7 @@ http {
         }
 {% endif %}
         location /ws {
-              proxy_pass http://127.0.0.1:8888/ws;
+              proxy_pass {{ wsEndpoint | default("http://127.0.0.1:8888/ws") }};
 
               # WebSocket-specific headers
               proxy_http_version 1.1;
@@ -371,11 +371,7 @@ http {
 
             # let yii catch the calls to non-existing PHP files
             set $fsn /$yii_bootstrap;
-            set $yiiargs r=$request_uri;
-            #if (-f $document_root$fastcgi_script_name){
-            #    set $fsn $fastcgi_script_name;
-                set $yiiargs $query_string;
-            #}
+            set $yiiargs $query_string;
 
             fastcgi_pass {{item.fpm}};
             include fastcgi_params;
@@ -399,10 +395,6 @@ http {
             # let yii catch the calls to non-existing PHP files
             set $fsn /$yii_bootstrap;
             set $yiiargs r=$request_uri;
-            #if (-f $document_root$fastcgi_script_name){
-            #    set $fsn $fastcgi_script_name;
-            #    set $yiiargs $query_string;
-            #}
 
             fastcgi_pass {{item.fpm}};
             include fastcgi_params;
