@@ -2,6 +2,7 @@
 
 namespace app\modules\moderation\controllers;
 
+use Yii;
 use app\modules\moderation\models\Abuser;
 use app\modules\moderation\models\AbuserSearch;
 use yii\web\Controller;
