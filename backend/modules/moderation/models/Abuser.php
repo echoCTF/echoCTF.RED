@@ -131,40 +131,105 @@ class Abuser extends \yii\db\ActiveRecord
    */
   public function forFailedClaim()
   {
-    $string = preg_replace_callback('/(etsctf|tsctf|sctf|ctf|tf|f)_([a-zA-Z0-9_]+)/i', function ($matches) {
-      return trim($matches[2]);
-    }, $this->title);
-    $secretKey = \Yii::$app->sys->treasure_secret_key;
-
-    $result = \app\modules\gameplay\models\TreasureFinder::findByEncryptedCode($secretKey, '%' . $string . '%');
-
-    if (is_array($result) && $result !== []) {
-      if (array_key_exists('player_id', $result)) {
-        $originalPlayer = \app\modules\frontend\models\Player::findOne($result['player_id']);
-      }
-      if (array_key_exists('treasure_id', $result)) {
-        $originalTreasure = \app\modules\gameplay\models\Treasure::findOne($result['treasure_id']);
-      }
-      $profileLink = \app\widgets\ProfileLink::widget([
-        'username' => $originalPlayer->username,
-        'actions' => false
-      ]);
-      $offenderLink = \app\widgets\ProfileLink::widget([
-        'username' => $this->player->username,
-        'actions' => false
-      ]);
-      if ($this->player->teamPlayer)
-        $from = sprintf("[%s] from team [%s]", $offenderLink, $this->player->teamPlayer->team->name);
-      else
-        $from = "[$offenderLink]";
-
-      if ($originalPlayer->teamPlayer)
-        $to = sprintf("[%s] from team [%s]", $profileLink, $originalPlayer->teamPlayer->team->name);
-      else
-        $to = "[$profileLink]";
-      $msg = "- $from tried to claim code [<small><code>".trim($this->title)."</code></small>] that belongs to player $to for target [" . $originalTreasure->target->name . "] and treasure [" . $originalTreasure->name . "]";
-      return $msg;
+    if (preg_match('/(?:etsctf|tsctf|sctf|ctf|tf|f)_([a-z0-9]+)/i', $this->title, $matches)) {
+      $claimedHash = $matches[0];
+      $string = $matches[1];
+    } else {
+      $claimedHash = $string = null;
     }
+    if ($string != null) {
+      $secretKey = \Yii::$app->sys->treasure_secret_key;
+      $result = \app\modules\gameplay\models\TreasureFinder::findByEncryptedCode($secretKey, '%' . $string . '%');
+      if (is_array($result) && $result !== []) {
+        if (array_key_exists('player_id', $result)) {
+          $originalPlayer = \app\modules\frontend\models\Player::findOne($result['player_id']);
+        }
+
+        if (array_key_exists('treasure_id', $result)) {
+          $originalTreasure = \app\modules\gameplay\models\Treasure::findOne($result['treasure_id']);
+        }
+
+        // check if its just a typo for the same user so they havent copied a flag
+        if (array_key_exists('player_id', $result) && intval($result['player_id']) == intval($this->player_id)) {
+          return 'False alarm this is their own code';
+        }
+
+        $profileLink = \app\widgets\ProfileLink::widget([
+          'username' => $originalPlayer->username,
+          'actions' => false
+        ]);
+        $offenderLink = \app\widgets\ProfileLink::widget([
+          'username' => $this->player->username,
+          'actions' => false
+        ]);
+        if ($this->player->teamPlayer)
+          $from = sprintf("[%s] from team [%s]", $offenderLink, $this->player->teamPlayer->team->name);
+        else
+          $from = "[$offenderLink]";
+
+        if ($originalPlayer->teamPlayer)
+          $to = sprintf("[%s] from team [%s]", $profileLink, $originalPlayer->teamPlayer->team->name);
+        else
+          $to = "[$profileLink]";
+        $msg = "- $from tried to claim code [<small><code>" . trim($claimedHash) . "</code></small>] that belongs to player $to for target [" . $originalTreasure->target->name . "] and treasure [" . $originalTreasure->name . "]";
+        return $msg;
+      }
+    }
+
     return null;
+  }
+  /**
+   * Check if the claimed hash is a near-typo of the player's own actual flag.
+   * Returns a "false alarm" message if it looks like a typo, null otherwise.
+   */
+  private function checkForTypo(string $claimedHash, $actualHash): ?string
+  {
+    $actual  = trim($actualHash); // adjust to however you retrieve the player's actual flag
+    $claimed = trim($claimedHash);
+
+    if ($actual === '') {
+      return null;
+    }
+
+    $distance = levenshtein(strtolower($claimed), strtolower($actual));
+
+    if ($distance === 0 || $distance > 2) {
+      return null;
+    }
+
+    $offenderLink = \app\widgets\ProfileLink::widget([
+      'username' => $this->player->username,
+      'actions'  => false
+    ]);
+
+    $diff = $this->buildInlineDiff($claimed, $actual);
+
+    return "False alarm, [$offenderLink] had a typo in their claim: $diff";
+  }
+
+  /**
+   * Build a character-level inline diff between two strings.
+   * Mismatched characters are highlighted: red for claimed, green for actual.
+   */
+  private function buildInlineDiff(string $claimed, string $actual): string
+  {
+    $maxLen     = max(strlen($claimed), strlen($actual));
+    $claimedOut = '';
+    $actualOut  = '';
+
+    for ($i = 0; $i < $maxLen; $i++) {
+      $c = $claimed[$i] ?? '';
+      $a = $actual[$i]  ?? '';
+
+      if ($c === $a) {
+        $claimedOut .= htmlspecialchars($c);
+        $actualOut  .= htmlspecialchars($a);
+      } else {
+        if ($c !== '') $claimedOut .= '<span style="background:#ffcccc;color:#900;font-weight:bold">' . htmlspecialchars($c) . '</span>';
+        if ($a !== '') $actualOut  .= '<span style="background:#ccffcc;color:#060;font-weight:bold">' . htmlspecialchars($a) . '</span>';
+      }
+    }
+
+    return "<code>$claimedOut</code> vs <code>$actualOut</code>";
   }
 }

@@ -6,7 +6,7 @@ class TreasureFinder extends \yii\base\Model
     public static function findByEncryptedCode($secretKey, $string)
     {
         return \Yii::$app->db->createCommand("
-            SELECT treasure.id as treasure_id, player.id AS player_id
+            SELECT treasure.id as treasure_id, player.id AS player_id, md5(HEX(AES_ENCRYPT(CONCAT(code, player.id), :secretKey))) as encryptedCode
             FROM treasure, player
             WHERE md5(HEX(AES_ENCRYPT(CONCAT(code, player.id), :secretKey))) LIKE :code
         ", [
