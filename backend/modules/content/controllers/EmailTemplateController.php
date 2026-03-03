@@ -25,7 +25,7 @@ class EmailTemplateController extends \app\components\BaseController
         'class' => \yii\filters\AccessControl::class,
         'rules' => [
           '00filtered-actions' => [
-            'actions' => ['update', 'delete','adhoc-mail'],
+            'actions' => ['update', 'delete', 'adhoc-mail'],
             'allow' => true,
             'roles' => ['@'],
           ]
@@ -71,8 +71,18 @@ class EmailTemplateController extends \app\components\BaseController
   {
     $model = new EmailTemplate();
 
-    if ($model->load(Yii::$app->request->post()) && $model->save()) {
-      return $this->redirect(['view', 'id' => $model->id]);
+    if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+      $player = Player::find()->one();
+      try {
+        if ($player !== null) {
+          $contentHtml = $this->renderPhpContent("?>" . $model->html, ['user' => $player]);
+          $contentTxt = $this->renderPhpContent("?>" . $model->txt, ['user' => $player]);
+        }
+        $model->save();
+        return $this->redirect(['view', 'id' => $model->id]);
+      } catch (\Throwable $e) {
+        Yii::$app->session->setFlash('error', 'Failed to save the html and txt templates. ' . $e->getMessage());
+      }
     }
 
     return $this->render('create', [
@@ -93,7 +103,10 @@ class EmailTemplateController extends \app\components\BaseController
       $successes = $failures = 0;
       foreach (Player::find()->where(['status' => 10])->orderBy(['id' => SORT_ASC])->all() as $p) {
         //public function mail($subject, $html, $txt, $headers = [])
-        if ($p->mail($model->title, $model->html, $model->txt))
+        $contentHtml = $this->renderPhpContent("?>" . $model->html, ['user' => $player]);
+        $contentTxt = $this->renderPhpContent("?>" . $model->txt, ['user' => $player]);
+
+        if ($p->mail($model->title, $contentHtml, $contentTxt))
           $successes++;
         else {
           $failures--;
@@ -122,8 +135,18 @@ class EmailTemplateController extends \app\components\BaseController
   {
     $model = $this->findModel($id);
 
-    if ($model->load(Yii::$app->request->post()) && $model->save()) {
-      return $this->redirect(['view', 'id' => $model->id]);
+    if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+      $player = Player::find()->one();
+      try {
+        if ($player !== null) {
+          $contentHtml = $this->renderPhpContent("?>" . $model->html, ['user' => $player]);
+          $contentTxt = $this->renderPhpContent("?>" . $model->txt, ['user' => $player]);
+        }
+        $model->save();
+        return $this->redirect(['view', 'id' => $model->id]);
+      } catch (\Throwable $e) {
+        Yii::$app->session->setFlash('error', 'Failed to save the html and txt templates. ' . $e->getMessage());
+      }
     }
 
     return $this->render('update', [
