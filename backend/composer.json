@@ -27,7 +27,7 @@
     "cebe/markdown": "^1.2",
     "yiisoft/yii2-httpclient": "^2.0",
     "kartik-v/yii2-tabs-x": "@dev",
-    "stripe/stripe-php": "^19.1",
+    "stripe/stripe-php": "^20.0",
     "sleifer/yii2-autocomplete-ajax": "dev-master",
     "ezyang/htmlpurifier": "^4.18",
     "yiisoft/yii2-bootstrap5": "^2.0",
