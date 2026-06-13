@@ -109,7 +109,6 @@ class WriteupController extends \app\components\BaseController
         return $this->redirect(['default/view','id'=>$id]);
       }
 
-
       $headshot=Headshot::findOne(['target_id'=>$id,'player_id'=>Yii::$app->user->id]);
       if($headshot===null)
       {
@@ -140,9 +139,6 @@ class WriteupController extends \app\components\BaseController
           'model' => $model,
           'headshot'=>$headshot,
       ]);
-
-
-
     }
 
     /**
