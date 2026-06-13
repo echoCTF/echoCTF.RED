@@ -1,0 +1,24 @@
+Normal line.
+
+This line contains a NO-BREAK SPACE between Hello and World:
+Hello World
+
+This line contains a ZERO WIDTH SPACE between Hello and World:
+Hello​World
+
+This line contains a ZERO WIDTH NON-JOINER:
+Hello‌World
+
+This line contains a ZERO WIDTH JOINER:
+Hello‍World
+
+This line contains a WORD JOINER:
+Hello⁠World
+
+The next line contains a LINE SEPARATOR character:
+Hello World
+
+The next line contains a PARAGRAPH SEPARATOR character:
+Hello World
+
+End of file.
