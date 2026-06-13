@@ -10,9 +10,11 @@
       <?php if(!empty($metadata->solution)):?><b><?=\Yii::t('app','Solution')?></b>: <?php \Yii::$app->formatter->divID = 'markdown-solution'; echo \Yii::$app->formatter->asMarkdown($metadata->solution)?><?php endif;?>
     </details>
   <?php endif;?>
+<?php if(\Yii::$app->sys->target_metadata_visible || Yii::$app->user->identity->isAdmin):?>
   <?php if(!empty($metadata->pre_credits)):?><b><?=\Yii::t('app','Pre exploitation credits')?></b>: <?php \Yii::$app->formatter->divID = 'markdown-pre-credits'; echo \Yii::$app->formatter->asMarkdown($metadata->pre_credits)?><?php endif;?>
   <?php if(!empty($metadata->pre_exploitation)):?><b><?=\Yii::t('app','Pre exploitation details')?></b>: <?php \Yii::$app->formatter->divID = 'markdown-pre-exploitation'; echo \Yii::$app->formatter->asMarkdown($metadata->pre_exploitation)?><?php endif;?>
   <?php if((($identity->player_id===Yii::$app->user->id && $target->progress==100) || Yii::$app->user->identity->isAdmin) && !empty($metadata->post_exploitation)):?><b><?=\Yii::t('app','Post exploitation')?></b>: <?php \Yii::$app->formatter->divID = 'markdown-post-exploitation'; echo \Yii::$app->formatter->asMarkdown($metadata->post_exploitation)?><?php endif;?>
   <?php if((($identity->player_id===Yii::$app->user->id && $target->progress==100) || Yii::$app->user->identity->isAdmin) && !empty($metadata->post_credits)):?><b><?=\Yii::t('app','Post exploitation credits')?></b>: <?php \Yii::$app->formatter->divID = 'markdown-post-credits'; echo \Yii::$app->formatter->asMarkdown($metadata->post_credits)?><?php endif;?>
   <?php \Yii::$app->formatter->divID=$oldId; ?>
+<?php endif;?>
 <?php endif;?>
