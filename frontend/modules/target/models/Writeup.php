@@ -63,24 +63,44 @@ class Writeup extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            [['content'], 'filter', 'filter' => function ($value) {
+              if ($value === null || $value === '') {
+                  return null;
+              }
+
+              $value = str_replace("\r\n", "\n", $value);
+              $value = str_replace("\r", "", $value);
+
+              $cleaned = preg_replace('/[\x{2028}\x{2029}]/u', "\n", $value);
+              if ($cleaned !== null && $cleaned !== false) {
+                  $value = $cleaned;
+              }
+
+              $value = str_replace("\u{00A0}", ' ', $value);
+
+              $cleaned = preg_replace('/[\x{200B}\x{200C}\x{200D}\x{2060}\x{FEFF}\x{00AD}]/u', '', $value);
+              if ($cleaned !== null && $cleaned !== false) {
+                  $value = $cleaned;
+              }
+
+              return $value;
+            }],
+
+            [['approved'], 'default', 'value' => false],
+            ['formatter', 'default', 'value' => 'text'],
+            ['language_id', 'default', 'value' => 'en'],
+            ['status', 'default', 'value' => 'PENDING'],
+
             [['player_id', 'target_id','content'], 'required'],
+
             [['player_id', 'target_id'], 'integer'],
             [['approved'], 'boolean'],
-            [['approved'], 'default','value'=>false],
-            ['formatter', 'default','value'=>'text'],
-            ['language_id', 'default','value'=>'en'],
             [['status', 'comment'], 'string'],
-            [['content'], 'filter', 'filter' => function ($value) {
-                return str_replace(["\r\n", "\r"], "\n", $value);
-            }],
             [['content'], 'filter','filter'=>'trim'],
-            [['content'], 'string','skipOnEmpty'=>false, 'min'=>'20'],
-            ['status','default','value'=>'PENDING'],
-            [['created_at', 'updated_at'], 'safe'],
+            [['content'], 'string', 'min'=>20],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
             [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
             [['language_id'], 'exist', 'skipOnError' => true, 'targetClass' => \app\models\Language::class, 'targetAttribute' => ['language_id' => 'id']],
-
         ];
     }
 
