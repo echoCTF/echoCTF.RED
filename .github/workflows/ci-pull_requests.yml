@@ -25,7 +25,7 @@ jobs:
         extensions: imagick, gd, mysqli, pdo, intl, mbstring, gmp, mcrypt, bcmath
         tools: composer:v2
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Configure github token
       run: composer config -g github-oauth.github.com "${{ secrets.GITHUB_TOKEN }}"

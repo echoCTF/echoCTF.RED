@@ -20,7 +20,7 @@ jobs:
         extensions: imagick, gd, mysqli, pdo, intl, mbstring, gmp, mcrypt, bcmath
         tools: composer:v2
 
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Configure github token
       run: composer config -g github-oauth.github.com "${{ secrets.GITHUBOAUTHTOKEN }}"
@@ -53,7 +53,7 @@ jobs:
         php-version: '8.4'
         extensions: imagick, gd, mysqli, pdo, intl, mbstring, gmp, mcrypt, bcmath
         tools: composer:v2
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
 
     - name: Enable experimental docker features
       run: |
