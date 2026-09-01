@@ -28,8 +28,8 @@ class PlayerCounterNf extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['metric'], 'required'],
-            [['counter'], 'integer'],
+            [['player_id','metric'], 'required'],
+            [['player_id','counter'], 'integer'],
             [['metric'], 'string', 'max' => 255],
         ];
     }
