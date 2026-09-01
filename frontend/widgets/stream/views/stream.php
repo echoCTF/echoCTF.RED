@@ -18,6 +18,7 @@ echo ListView::widget([
     ],
     'layout'=>$layout,
     'summary'=>$summary,
+    'viewParams'=> [ 'twitter'=>!\Yii::$app->sys->disable_stream_tweet ],
     'itemOptions' => [
       'tag' => false
     ],
