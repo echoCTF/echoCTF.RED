@@ -4,6 +4,7 @@ let reconnectTimeout = null;
 
 const MAX_RECONNECT_DELAY = 30000; // 30s
 const BASE_DELAY = 1000;           // 1s
+const CLOSE_TOKEN_EXPIRED = 1008;
 
 const wsHandlers = {
   notification: onNotification,
@@ -50,8 +51,14 @@ function connectWS() {
     handler(msg);
   });
 
-  ws.addEventListener("close", () => {
+  ws.addEventListener("close", (event) => {
     console.log("Connection closed");
+
+    if (event.code === CLOSE_TOKEN_EXPIRED) {
+      location.reload();
+      return;
+    }
+
     scheduleReconnect();
   });
 
