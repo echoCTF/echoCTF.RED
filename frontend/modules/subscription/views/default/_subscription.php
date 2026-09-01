@@ -22,7 +22,7 @@
                                   Swal.fire({
                                     title: "",
                                     html: "' . \Yii::t('app', 'You will be redirected to Stripe to complete your payment') . '",
-                                    closeOnClickOutside: false
+                                    allowOutsideClick: false
                                   }).then((result) => {
                                     if(data)
                                       stripe.redirectToCheckout({ sessionId: data.sessionId }).then(handleResult);

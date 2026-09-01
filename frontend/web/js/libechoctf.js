@@ -62,7 +62,7 @@ yii.confirm = function (message, okCallback, cancelCallback) {
     text: message,
     type: swType,
     showConfirmButton: true,
-    closeOnClickOutside: false,
+    allowOutsideClick: false,
     showCancelButton: showCancelButton,
   }).then((action) => {
     if (action.value) {
@@ -116,7 +116,7 @@ $(document).on('click', '.copy-to-clipboard', function (e) {
   if ($(this).parent('.dropdown-menu') && $(this).parent('.dropdown-menu').selectpicker)
     $(this).parent('.dropdown-menu').selectpicker('toggle');
   if ($(this).attr('swal-data'))
-    return Swal.fire({ title: $(this).attr('swal-data'), closeOnClickOutside: false, });
+    return Swal.fire({ title: $(this).attr('swal-data'), allowOutsideClick: false, });
 
   return false;
 });
@@ -264,7 +264,7 @@ function apiNotifications() {
         const record = jsonObj[i];
         if (record.category.startsWith('swal')) {
           if (!swal.isVisible()) {
-            swal.fire({ title: record.title, html: record.body, type: record.category.replace('swal:', ''), showConfirmButton: true, closeOnClickOutside: false });
+            swal.fire({ title: record.title, html: record.body, type: record.category.replace('swal:', ''), showConfirmButton: true, allowOutsideClick: false });
           }
         }
         else {
