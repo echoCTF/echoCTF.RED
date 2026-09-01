@@ -71,7 +71,9 @@ class Sysconfig extends \yii\db\ActiveRecord
         \Yii::$app->db->createCommand($Q)->execute();
         if (!empty($this->val)) {
           try {
-            $Q = sprintf("CREATE EVENT event_end_notification ON SCHEDULE AT '%s' DO BEGIN INSERT INTO `notification`(player_id,category,title,body,archived) SELECT id,'swal:info',memc_get('sysconfig:event_end_notification_title'),memc_get('sysconfig:event_end_notification_body'),0 FROM player WHERE status=10; DO memc_set('event_finished',1); SELECT sleep(1) INTO OUTFILE '/tmp/event_finished';END", $this->val);
+            $Q = Yii::$app->view->renderFile('@app/views/sql/event_end_notification.php', [
+                'val' => $this->val,
+            ]);
             \Yii::$app->db->createCommand($Q)->execute();
           } catch (\Throwable $e) {
             throw new UserException('Failed to create event_end_notification EVENT: '.$e->getMessage());
