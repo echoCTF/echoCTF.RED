@@ -288,6 +288,14 @@ class GeneratorController extends Controller
     }
   }
 
+  /**
+   * Generate [limit] badges for players with activity in the
+   * last [interval] seconds and chown to [owner].
+   *
+   * @param $owner The system user that owns the generated badges, (id or username)
+   * @param $interval Limit results to players with activity during the last [interval] seconds
+   * @param $limit Limit results to [limit] records
+   */
   public function actionBadges($owner = 0, $interval = 86400, $limit = 200)
   {
     $players = Player::find()->active();
