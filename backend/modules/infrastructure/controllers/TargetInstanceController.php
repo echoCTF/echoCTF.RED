@@ -340,7 +340,7 @@ class TargetInstanceController extends \app\components\BaseController
 
     if ((bool) $target && (int)\app\modules\gameplay\models\Target::find()->count() === 0) {
       Yii::$app->session->setFlash('warning', Yii::t('app', 'No targets found create one first.'));
-      return ['/gameplay/target/create'];
+      return ['/infrastructure/target/create'];
     }
 
     if ((bool) $server && (int)\app\modules\infrastructure\models\Server::find()->count() === 0) {

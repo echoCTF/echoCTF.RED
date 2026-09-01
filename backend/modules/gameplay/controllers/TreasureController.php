@@ -108,7 +108,7 @@ class TreasureController extends \app\components\BaseController
     if (\app\modules\gameplay\models\Target::find()->count() == 0) {
       // If there are no player redirect to create player page
       Yii::$app->session->setFlash('warning', Yii::t('app', "No targets found create one first."));
-      return $this->redirect(['/gameplay/target/create']);
+      return $this->redirect(['/infrastructure/target/create']);
     }
 
     if ($model->load(Yii::$app->request->post()) && $model->save()) {
