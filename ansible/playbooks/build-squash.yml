@@ -7,7 +7,7 @@
   connection: local
   vars:
     string: ""
-    pushtag: "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.name|lower}}{{ ':'+container.tag|default('latest')}}"
+    pushtag: "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.image|lower}}{{ ':'+container.tag|default('latest')}}"
   tasks:
   - set_fact:
         string: "{{ string }}{{ (index > 0)|ternary(' ','') }}--build-arg {{ item.key }}='{{ item.value }}'"
@@ -19,13 +19,13 @@
 
 
   - set_fact:
-        command_str: docker build --rm --force-rm --squash -q --no-cache {{string}} . -t "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.name|lower}}{{ ':'+container.tag|default(omit)}}"
+        command_str: docker build --rm --force-rm --squash -q --no-cache {{string}} . -t "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.image|lower}}{{ ':'+container.tag|default(omit)}}"
     delegate_to: "{{BUILDER|default('localhost')}}"
 
   - name: Build image
     command: "{{command_str}}"
     args:
-      chdir: "{{ lookup('env', 'PWD')}}/Dockerfiles/{{container.build}}"
+      chdir: "{{ lookup('env', 'PWD')}}/{{ dockerfiles_path | default('Dockerfiles')}}/{{container.build}}"
     delegate_to: "{{BUILDER|default('localhost')}}"
     tags:
       - build

@@ -7,13 +7,13 @@
   connection: local
   tasks:
   - docker_image:
-      name: "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.name|lower}}"
+      name: "{{DOCKER_REGISTRY}}/{{DOCKER_REPOSITORY}}/{{container.image|lower}}"
       tag: "{{container.tag|default('latest')}}"
       state: present
       source: build
       push: "{{force_push|default('yes')}}"
       build:
-        path: "../Dockerfiles/{{container.build}}"
+        path: "{{ lookup('env', 'PWD')}}/{{ dockerfiles_path | default('Dockerfiles')}}/{{container.build}}"
         args: "{{container.buildargs|default(omit)}}"
         nocache: yes
         pull: no
