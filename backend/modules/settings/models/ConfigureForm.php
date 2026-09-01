@@ -156,6 +156,7 @@ class ConfigureForm extends Model
   public $dashboard_news_total_pages;
   public $dashboard_news_records_per_page;
   public $target_restart_log_interval;
+  public $disable_stream_tweet;
 
   public $keys = [
     'target_days_updated',
@@ -304,6 +305,7 @@ class ConfigureForm extends Model
     'dashboard_news_total_pages',
     'dashboard_news_records_per_page',
     'target_restart_log_interval',
+    'disable_stream_tweet'
   ];
 
   /**
@@ -395,7 +397,6 @@ class ConfigureForm extends Model
         'pf_state_limits',
         'dsn',
         'treasure_secret_key',
-        'mail_verification_token_validity',
         'password_reset_token_validity',
         'stripe_webhookLocalEndpoint',
         'bannedIPS',
@@ -411,6 +412,13 @@ class ConfigureForm extends Model
         'target_restart_log_interval',
         'stripe_url_prefix',
       ], 'trim'],
+      [[
+        'mail_verification_token_validity',
+        'password_reset_token_validity',
+        'target_restart_log_interval'
+      ], 'match',
+         'pattern' => '/^\d+\s(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)$/i',
+         'message' => 'The format must be a number followed by one of: YEAR, MONTH, DAY, HOUR, MINUTE, SECOND.'],
       // required fields
       [[
         'teams',
@@ -424,6 +432,10 @@ class ConfigureForm extends Model
         'mail_fromName',
         'approved_avatar',
         'team_manage_members',
+        'player_delete_inactive_after',
+        'player_delete_deleted_after',
+        'player_changed_to_deleted_after',
+        'player_delete_rejected_after',
       ], 'required'],
       ['challenge_home', 'default', 'value' => '@web/uploads'],
       ['challenge_root', 'default', 'value' => '/uploads/'],
@@ -443,10 +455,6 @@ class ConfigureForm extends Model
         'api_target_instances_timeout',
         'api_target_spin_timeout',
         'api_target_spawn_timeout',
-        'player_delete_inactive_after',
-        'player_delete_deleted_after',
-        'player_changed_to_deleted_after',
-        'player_delete_rejected_after',
         'pflog_min',
         'pflog_max',
         'stream_record_limit',
@@ -468,6 +476,10 @@ class ConfigureForm extends Model
         'rate_limit_window',
         'dashboard_news_total_pages',
         'dashboard_news_records_per_page',
+        'player_delete_inactive_after',
+        'player_delete_deleted_after',
+        'player_changed_to_deleted_after',
+        'player_delete_rejected_after',
       ], 'integer'],
       [['online_timeout'], 'default', 'value' => 900],
       [['spins_per_day'], 'default', 'value' => 2],
@@ -534,6 +546,7 @@ class ConfigureForm extends Model
         'player_request_delete_allow',
         'subscriptions_feature_api',
         'stream_player_target_help',
+        'disable_stream_tweet',
       ], 'boolean'],
     ];
   }

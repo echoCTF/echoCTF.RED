@@ -170,6 +170,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row form-group">
       <div class="col-sm-2"><?= $form->field($model, 'twitter_account')->textInput(['maxlength' => true])->hint('Twitter account to use for tagging and via') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'twitter_hashtags')->textInput(['maxlength' => true])->hint('Twitter hashtags to use for tweets') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'disable_stream_tweet')->checkbox()->hint('Disable tweeting individual stream entries') ?></div>
       <div class="col-sm-5"><?= $form->field($model, 'discord_news_webhook')->textInput(['maxlength' => true])->hint('Discord Webhook URL to post platform news and updates') ?></div>
     </div>
     <hr />
