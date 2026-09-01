@@ -71,6 +71,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
         <?php Card::end(); ?>
       </div>
 
+<?php if (intval($active_challenges) > 0):?>
       <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6">
         <?php Card::begin([
           'type' => 'card-stats bg-dark',
@@ -92,6 +93,7 @@ $this->_url = \yii\helpers\Url::to([null], 'https');
         </div>
         <?php Card::end(); ?>
       </div>
+<?php endif;?>
     </div>
 
 <?php
