@@ -89,3 +89,21 @@ Usage: `./backend/yii player/check-dupips [skip_uids]
 ## Check Spammy
 
 Usage: `./backend/yii player/check-spammy [domain]
+
+## Fetch Identification Files locally
+
+
+Usage: `./backend/yii player/fetch-identification [filter] [scheme] [strict]`
+
+* `filter`: `all`, `active`, `inactive`. Default `inactive`
+* `scheme`: URL scheme to use for fetching. Default `https`
+* `strict`: Whether or not we should perform strict checking on SSL. Default `true`
+
+## WS Notify player
+
+Usage: `./backend/yii player/ws-notify [id] [type] [title] [body]`
+
+* `id`: Send to player by ID (0 means all). Default `0`
+* `type`: The type of notification(s). Default `swal:info`
+* `title`: The title of notification(s). Default `Title`
+* `body`: The body of notification(s). Default `Body`

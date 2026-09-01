@@ -449,9 +449,17 @@ class PlayerController extends Controller
    * Fetch identification files from frontend
    * @param string $filter Filter players by all, active and inactive
    * @param string $scheme Default scheme to use
+   * @param string $strict Strict cURL SSL checking
    */
-  public function actionFetchIdentification($filter = 'inactive', $scheme = 'https')
+  public function actionFetchIdentification($filter = 'inactive', $scheme = 'https', $strict = true)
   {
+    $opts = array(
+      "ssl" => array(
+        "verify_peer" => $strict,
+        "verify_peer_name" => $strict,
+      ),
+    );
+
     $filters = ['all', 'active', 'inactive'];
     if (!in_array($filter, $filters)) {
       throw new ConsoleException(Yii::t('app', 'Filter accepts values: {values}', ['values' => implode(',', $filters)]));
@@ -482,16 +490,42 @@ class PlayerController extends Controller
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_NOBODY, true);
         curl_setopt($ch, CURLOPT_HEADER, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $strict);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, $strict);
 
         curl_exec($ch);
         $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        if ($status == 200) {
-          echo " => grabbing ", $baseDir . $player->metadata->identificationFile, "\n";
-          file_put_contents($baseDir . $player->metadata->identificationFile, fopen("$scheme://" . Yii::$app->sys->offense_domain . '/identificationFiles/' . $player->metadata->identificationFile, 'r'));
-        } else {
-          echo ", remote identification file not found\n";
+        try {
+          if ($status == 200) {
+            echo " => grabbing ", $baseDir . $player->metadata->identificationFile, "\n";
+            file_put_contents($baseDir . $player->metadata->identificationFile, fopen("$scheme://" . Yii::$app->sys->offense_domain . '/identificationFiles/' . $player->metadata->identificationFile, 'rb', false, stream_context_create($opts)));
+          } else {
+            echo ", remote identification file not found\n";
+          }
+        } catch (\Exception $e) {
+          var_dump($e);
         }
       }
     }
   }
+
+  /**
+   * Send a notification to ap layer through WS server
+   * @param string $id Send to player by ID (0 means all)
+   * @param string $type The type of notification(s)
+   * @param string $title The title of notification(s)
+   * @param string $body The body of notification(s)
+   */
+  public function actionWsNotify($id = 0, $type="swal:info",$title="Title",$body="Body")
+  {
+    $players=Player::find();
+    if($id >0 )
+      $players->where(['player.id'=>$id]);
+
+    foreach($players->all() as $p)
+    {
+      $p->notify($type,$title,$body);
+    }
+  }
+
 }
