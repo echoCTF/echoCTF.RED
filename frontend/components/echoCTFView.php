@@ -8,6 +8,7 @@ namespace app\components;
 class echoCTFView extends \yii\web\View
 {
   public $loadLayoutOverrides=false;
+  public $_layout_title;
   public $_title;
   public $_url;
   public $_fluid;
@@ -34,7 +35,6 @@ class echoCTFView extends \yii\web\View
     }
 
     parent::init();
-
   }
 
   public function getTwitterHandle()
@@ -120,6 +120,14 @@ class echoCTFView extends \yii\web\View
   public function getTwitter_image_height()
   {
     return ['name'=>'twitter:image:height', 'content'=>$this->_image_height];
+  }
+
+  public function getLayout_title()
+  {
+
+    if($this->_layout_title===null)
+      return $this->title;
+    return $this->_layout_title;
   }
 
   public static function renderPhpContent($_content_, $_params_ = [])
