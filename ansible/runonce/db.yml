@@ -289,7 +289,7 @@
     register: stat_result
 
   - name: execute mysql_install_db if /var/mysql do not exist
-    command: mysql_install_db
+    command: mariadb-install-db
     when: stat_result.stat.exists == False
 
   - name: start mysqld
@@ -316,7 +316,7 @@
     args:
       chdir: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src"
     with_items:
-      - 'cmake ../mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_FLAGS="-Wall"'
+      - 'cmake ../mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_FLAGS="-Wall"'
       - gmake
       - gmake install
 
@@ -449,13 +449,13 @@
       dest: "{{item.dest}}"
     with_items:
       - { src: '{{playbook_dir}}/../files/pf.conf', dest: '/etc/pf.conf' }
+      - { src: '{{playbook_dir}}/../files/db.service.conf', dest: '/etc/service.pf.conf' }
 
-  - name: "Create service.pf.conf and service_clients.conf"
+  - name: "Create service_clients.conf"
     copy:
       dest: "{{item.dest}}"
       content: "{{item.val}}\n"
     with_items:
-      - { dest: "/etc/service.pf.conf",val: "pass in quick on interconnect inet proto {tcp,udp} from <service_clients> to port { 11200, 11201, 11211, 11254, 3306 }"}
       - { dest: "/etc/service_clients.conf", val: "{{pui_ip}}\n{{mui_ip}}\n{{vpn_ip}}"}
 
   - name: Create pf files
