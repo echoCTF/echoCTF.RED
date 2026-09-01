@@ -34,6 +34,7 @@ $this->registerLayoutOverrides();
     <meta charset="<?=Yii::$app->charset ?>">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1, shrink-to-fit=1' name='viewport' />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link rel="preconnect" href="//fonts.googleapis.com" crossorigin="anonymous">
     <link rel="preload" as="style" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap" crossorigin="anonymous">
     <link rel="preload" as="font" href="/webfonts/fa-solid-900.woff2" crossorigin>
