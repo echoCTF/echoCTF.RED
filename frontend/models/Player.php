@@ -457,14 +457,14 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
       if (Yii::$app instanceof \yii\web\Application)
         \Yii::$app->session->setFlash('success', Yii::t('app', "The user has been mailed."));
       else {
-        echo Yii::t('app', "The user has been mailed.\n");
+        echo Yii::t('app', "The user has been mailed."),"\n";
       }
     } catch (\Exception $e) {
       \Yii::error($e->getMessage());
       if (Yii::$app instanceof \yii\web\Application)
         \Yii::$app->session->setFlash('notice', Yii::t('app', "Failed to send mail to user."));
       else
-        echo Yii::t('app', "Failed to send mail to user.\n");
+        echo Yii::t('app', "Failed to send mail to user."),"\n";
       return false;
     }
     return true;
