@@ -64,6 +64,7 @@ nav:
         - Sales Commands: console-commands/Sales.md
         - Maintenance Commands: console-commands/Maintenance.md
         - Tester: console-commands/Tester.md
+        - Server: console-commands/Server.md
     - Frontend:
         - Generator Commands: console-commands/Frontend_Generator.md
         - Validator Commands: console-commands/Frontend_Validator.md
@@ -79,4 +80,6 @@ nav:
       - Initializing a new event repo: Initializing a new event.md
       - Firewalling details: Firewalling.md
       - Network Visuals: Network-Visuals.md
+      - VPN Slaves: VPN-Slaves.md
       - Docker Events: Docker-Events.md
+      - Websockets: Websockets.md
