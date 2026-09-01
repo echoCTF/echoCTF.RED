@@ -3,7 +3,7 @@ use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
 use app\modules\target\models\PlayerTargetHelp as PTH;
 ?>
-<div class="card terminal">
+<div class="card terminal bg-dark">
   <div class="card-body">
     <?= str_starts_with(trim($target->description),'<p') ? trim($target->description) : '<p>'.trim($target->description).'</p>'?>
     <?=$this->render('_target_metadata',['target'=>$target,'identity'=>$identity,'metadata'=>$target->metadata]);?>
