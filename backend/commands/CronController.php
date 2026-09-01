@@ -184,9 +184,9 @@ class CronController extends Controller
     $this->actionInstancePfTables(true);
   }
 
-  public function actionInstancePfTables($dopf = false, int $target_id = 0)
+  public function actionInstancePfTables($dopf = false, int $server_id = 0)
   {
-    $t = TargetInstance::find()->server_assigned($target_id)->active()->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
+    $t = TargetInstance::find()->server_assigned($server_id)->active()->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
 
     foreach ($t->all() as $val) {
       $IPs = [];
@@ -348,7 +348,7 @@ class CronController extends Controller
 
     if ($pfonly === false) {
       try {
-        $t = TargetInstance::find()->active()->withApprovedMemberHeartbeat()->last_updated(round($expired_ago / 2))->server_assigned($target_id);
+        $t = TargetInstance::find()->active()->withApprovedMemberHeartbeat()->last_updated(round($expired_ago / 2))->server_assigned($server_id);
         foreach ($t->all() as $instance) {
           printf("Updating heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
           $instance->touch('updated_at');
@@ -567,7 +567,7 @@ class CronController extends Controller
     }
     $instances = TargetInstance::find()->active();
     foreach ($instances->all() as $ti)
-      foreach ($ti->findings as $f) {
+      foreach ($ti->target->findings as $f) {
         $rules[] = $f->getMatchRule('<' . $ti->name . '_clients>', '<' . $ti->name . '>', $pflogmin, $pflogmax, $ti->player_id);
       }
 
