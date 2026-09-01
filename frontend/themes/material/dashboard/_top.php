@@ -58,6 +58,7 @@ use yii\helpers\Html;
     </div>
   <?php endif; ?>
   <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
+<?php if (\Yii::$app->sys->country_rankings):?>
     <?php Card::begin([
       'header' => 'header-icon',
       'type' => 'card-stats bg-dark',
@@ -68,6 +69,7 @@ use yii\helpers\Html;
       'footer' => false,
     ]);
     Card::end(); ?>
+<?php endif;?>
     <?php Card::begin([
       'type' => 'card-stats bg-dark',
       'header' => 'header-icon',
