@@ -50,6 +50,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `log_failed_claims`: Log failed claim attempts?
 * `team_encrypted_claims_allowed`: Should we allow claims of flags across teams?
 * `target_metadata_visible`: Whether or not metadata will be visible to normal players. Admins get to see the metadata no matter this settting.
+* `disable_stream_tweet`: Whether the ability to tweed individual stream messages is disabled
 
 ## String and numeric key/val pairs
 
