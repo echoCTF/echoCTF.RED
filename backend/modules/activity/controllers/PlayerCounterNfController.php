@@ -15,94 +15,98 @@ use yii\helpers\ArrayHelper;
  */
 class PlayerCounterNfController extends \app\components\BaseController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
-    {
-      return ArrayHelper::merge(parent::behaviors(),[]);
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function behaviors()
+  {
+    return ArrayHelper::merge(parent::behaviors(), []);
+  }
 
-    /**
-     * Lists all PlayerCounterNf models.
-     * @return mixed
-     */
-    public function actionIndex()
-    {
-        $searchModel = new PlayerCounterNfSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+  /**
+   * Lists all PlayerCounterNf models.
+   * @return mixed
+   */
+  public function actionIndex()
+  {
+    $searchModel = new PlayerCounterNfSearch();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        return $this->render('index', [
-            'searchModel' => $searchModel,
-            'dataProvider' => $dataProvider,
-        ]);
-    }
+    return $this->render('index', [
+      'searchModel' => $searchModel,
+      'dataProvider' => $dataProvider,
+    ]);
+  }
 
-    /**
-     * Creates a new PlayerCounterNf model.
-     * If creation is successful, the browser will be redirected to the 'index' page.
-     * @return mixed
-     */
-    public function actionCreate()
-    {
-        $model = new PlayerCounterNf();
+  /**
+   * Creates a new PlayerCounterNf model.
+   * If creation is successful, the browser will be redirected to the 'index' page.
+   * @return mixed
+   */
+  public function actionCreate()
+  {
+    $model = new PlayerCounterNf();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Updates an existing PlayerCounterNf model.
-     * If update is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionUpdate($player_id,$metric)
-    {
-        $model = $this->findModel(['player_id'=>$player_id,'metric'=>$metric]);
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['index']);
-        }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-    }
-
-    /**
-     * Deletes an existing PlayerCounterNf model.
-     * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    public function actionDelete($id)
-    {
-        $this->findModel($id)->delete();
-
+    if ($model->load(Yii::$app->request->post())) {
+      if ($model->save()) {
+        \Yii::$app->session->setFlash('success', 'Counter created.');
         return $this->redirect(['index']);
+      }
+      \Yii::$app->session->setFlash('error', $model->getErrorSummary(true));
     }
 
-    /**
-     * Finds the PlayerCounterNf model based on its primary key value.
-     * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
-     * @return PlayerCounterNf the loaded model
-     * @throws NotFoundHttpException if the model cannot be found
-     */
-    protected function findModel($id)
-    {
-        if (($model = PlayerCounterNf::findOne($id)) !== null) {
-            return $model;
-        }
+    return $this->render('create', [
+      'model' => $model,
+    ]);
+  }
 
-        throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+  /**
+   * Updates an existing PlayerCounterNf model.
+   * If update is successful, the browser will be redirected to the 'index' page.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionUpdate($player_id, $metric)
+  {
+    $model = $this->findModel(['player_id' => $player_id, 'metric' => $metric]);
+
+    if ($model->load(Yii::$app->request->post()) && $model->save()) {
+      return $this->redirect(['index']);
     }
+
+    return $this->render('update', [
+      'model' => $model,
+    ]);
+  }
+
+  /**
+   * Deletes an existing PlayerCounterNf model.
+   * If deletion is successful, the browser will be redirected to the 'index' page.
+   * @param integer $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionDelete($id)
+  {
+    $this->findModel($id)->delete();
+
+    return $this->redirect(['index']);
+  }
+
+  /**
+   * Finds the PlayerCounterNf model based on its primary key value.
+   * If the model is not found, a 404 HTTP exception will be thrown.
+   * @param integer $id
+   * @return PlayerCounterNf the loaded model
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  protected function findModel($id)
+  {
+    if (($model = PlayerCounterNf::findOne($id)) !== null) {
+      return $model;
+    }
+
+    throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
+  }
 }
