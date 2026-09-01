@@ -25,6 +25,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use app\modules\game\models\Headshot;
+use app\modules\target\models\FailedClaimHandler;
 
 /**
  * Default controller for the `target` module
@@ -267,7 +268,7 @@ class DefaultController extends \app\components\BaseController
       throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
     }
     $obj = new \stdClass;
-    if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id==$id) {
+    if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id == $id) {
       $obj->ip = long2ip(Yii::$app->user->identity->instance->ip);
       $obj->instance = true;
     } else if (($target->on_ondemand === false) || ($target->on_ondemand && $target->ondemand_state == 1)) {
@@ -358,10 +359,11 @@ class DefaultController extends \app\components\BaseController
   {
     $string = Yii::$app->request->post('hash');
 
-    if (!is_string($string) || trim($string) == "") {
+    if (!is_string($string) || trim($string) === "") {
       return $this->renderAjax('claim');
     }
 
+    $string = trim($string);
     $treasure = Treasure::find()->claimable()->byCode($string)->one();
 
     if ($treasure === null && Yii::$app->sys->treasure_secret_key !== false) {
@@ -382,23 +384,9 @@ class DefaultController extends \app\components\BaseController
       Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
       return $this->renderAjax('claim');
     } elseif ($treasure === null) {
-      Yii::$app->counters->increment('failed_claims');
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag' => Html::encode($string)]));
-      if (Yii::$app->sys->log_failed_claims) {
-        try {
-          Yii::$app->db->createCommand()
-            ->insert('abuser', [
-              'player_id' => Yii::$app->user->id,
-              'title' => $string,
-              'reason' => 'failed_claim',
-              'model' => 'failed_claim',
-              'model_id' => 0,
-              'created_at' => new \yii\db\Expression('NOW()'),
-              'updated_at' => new \yii\db\Expression('NOW()'),
-            ])->execute();
-        } catch (\Exception $e) {
-        }
-      }
+      // Check if the flag belongs to another team and produce
+      // the needed penalties and abuser records
+      FailedClaimHandler::handleFailedClaim($string);
       return $this->renderAjax('claim');
     }
 
