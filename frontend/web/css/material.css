@@ -1135,3 +1135,11 @@ mark {
   left: auto !important;
   transform: none !important;
 }
+
+/* Force wrapping of pre */
+pre,
+pre code.hljs {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border-radius: 4px;
+}
