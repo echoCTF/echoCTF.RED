@@ -10,6 +10,7 @@ network:
   driver: macvlan
   driver_options:
     parent: ens9
+    com.docker.network.enable_ipv6: "false"
   ipam_options:
    - subnet: '10.0.0.0/16'
      gateway: 10.0.0.254
