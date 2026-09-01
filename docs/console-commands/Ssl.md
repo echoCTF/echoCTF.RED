@@ -68,3 +68,11 @@ Usage: `./backend/yii ssl/gen-all-player-certs [fileout]`
 Load the CA required files from the local filesystem.
 
 Usage: `./backend/yii ssl/load-ca`
+
+## Generate CRL from folder
+
+Process a given folder, containing certificates to be revoked.
+
+Usage: `./backend/yii generate-crl-from-folder [clean]`
+
+* `clean`: Where we should clean the folder afterwards. Default `false`

@@ -283,6 +283,34 @@ class SslController extends Controller {
     return 0;
   }
 
+  /**
+   * Generate CRL based on revoked certificates on the @appconfig/revoke
+   */
+  public function actionGenerateCrlFromFolder($clean=false)
+  {
+    $folder=\Yii::getAlias('@appconfig/revoke');
+    if(file_exists($folder)!==true)
+    {
+      return false;
+    }
+
+    foreach(glob("$folder/*") as $cert)
+    {
+      try
+      {
+        $cmd=sprintf("openssl ca -revoke %s %s ", $cert, $this->ssl_params);
+        shell_exec($cmd);
+
+        if($clean===true) unlink($cert);
+      }
+      catch(\Exception $e)
+      {
+
+      }
+    }
+    return 0;
+  }
+
   /*
    * Revoke the certificate of $player_id
    */
