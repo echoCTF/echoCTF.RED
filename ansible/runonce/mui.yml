@@ -344,6 +344,13 @@
     tags:
       - conf
 
+  - name: "Update backend/config/params.php"
+    ansible.builtin.replace:
+      path: "/home/participantUI/{{ domain_name }}/backend/config/params.php"
+      regexp: 'localhost:8888'
+      replace: '10.7.0.200:8888'
+    tags:
+      - conf
 
   - name: Create validation key for moderatorUI
     copy:
@@ -426,7 +433,7 @@
     command: "{{item}}"
     with_items:
       - "install -d -o moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/assets"
-      - "install -d -o moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/identifcationFiles"
+      - "install -d -o moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/identificationFiles"
       - "mkdir -p /var/log/cron"
       - "ln -sf /home/moderatorUI/{{domain_name}}/backend/yii /usr/local/bin/backend"
 
