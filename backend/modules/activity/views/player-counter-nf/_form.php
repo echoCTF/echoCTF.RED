@@ -11,7 +11,13 @@ use yii\widgets\ActiveForm;
 <div class="player-counter-nf-form">
 
     <?php $form = ActiveForm::begin(); ?>
-
+<?php if($model->isNewRecord):?>
+    <?= $form->field($model, 'player_id',['inputOptions' => ['autofocus' => 'autofocus',]])->widget(\app\widgets\sleifer\autocompleteAjax\AutocompleteAjax::class, [
+      'multiple' => false,
+      'url' => ['/frontend/player/ajax-search'],
+      'options' => ['placeholder' => 'Find player by email, username, id or profile.']
+    ])->hint('The player that we will assign this counter.');  ?>
+<?php endif;?>
     <?= $form->field($model, 'metric')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'counter')->textInput() ?>
