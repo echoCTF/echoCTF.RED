@@ -69,7 +69,7 @@ class SpawnRestAction extends \yii\rest\ViewAction
       }
 
       // pick the least used server currently
-      $ti->server_id=intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id) limit 1')->queryScalar());
+      $ti->server_id=intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id), rand() limit 1')->queryScalar());
       if($ti->save()!==false)
         Yii::$app->session->setFlash('success', sprintf(\Yii::t('app','Spawning new instance for [%s]. You will receive a notification when the instance is up.'), $ti->target->name));
       else
