@@ -34,7 +34,7 @@ class MaterialAsset extends AssetBundle
     ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap', 'async' => 'async', 'crossorigin' => "anonymous"],
     ['css/all.min.css?v=1.0.0', 'defer' => 'defer'],
     'css/material-dashboard.css?v=1.0.0',
-    'css/material.css?v=1.0.0',
+    'css/material.css?v=1.0.1',
   ];
 
   public $js = [
@@ -43,7 +43,7 @@ class MaterialAsset extends AssetBundle
     '/js/plugins/perfect-scrollbar.jquery.min.js?v=1.0.0',
     //    ["js/plugins/bootstrap-autocomplete.min.js", 'defer' => 'defer'],
     /* Plugin for the momentJs  */
-    ['/js/plugins/moment.min.js', 'defer' => 'defer'],
+    ['/js/plugins/moment.min.js?v1.0.1', 'defer' => 'defer'],
     /*  Plugin for Sweet Alert */
     ['/js/plugins/sweetalert2.js', 'defer' => 'defer'],
     /* Plugin for the Wizard, full documentation here: https://github.com/VinceG/twitter-bootstrap-wizard */
@@ -60,7 +60,7 @@ class MaterialAsset extends AssetBundle
     '/js/plugins/arrive.min.js',
     /*  Notifications Plugin    */
     ['js/plugins/bootstrap-notify.min.js', 'defer' => 'defer'],
-    'js/plugins/bootstrap-selectpicker.min.js',
+    'js/plugins/bootstrap-selectpicker.min.js?v1.0.1',
 
     /* Control Center for Material Dashboard: parallax effects, scripts for the example pages etc */
     /* Include a polyfill for ES6 Promises (optional) for IE11, UC Browser and Android browser support SweetAlert */
@@ -70,7 +70,7 @@ class MaterialAsset extends AssetBundle
     /******/
     //'/js/cookieconsent.min.js', // Move this to only the pages needing it.
     '/js/material-dashboard.js?v=1.0.0',
-    ['/js/libechoctf.js?v=1.0.0', 'defer' => 'defer'],
+    ['/js/libechoctf.js?v=1.0.1', 'defer' => 'defer'],
   ];
 
   public $depends = [
@@ -83,7 +83,7 @@ class MaterialAsset extends AssetBundle
     parent::init();
     if (!\Yii::$app->user->isGuest) {
       $this->js[] = ["js/plugins/bootstrap-autocomplete.min.js", 'defer' => 'defer'];
-      $this->js[] = ["js/wsclient.js", 'defer' => 'defer'];
+      $this->js[] = ["js/wsclient.js?v=1.0.1", 'defer' => 'defer'];
       $player = \Yii::$app->user->identity;
       $wsToken = $player->getOrCreateWsToken(); // method from your model
 
