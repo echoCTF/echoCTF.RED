@@ -81,7 +81,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `admin_ids` (optional): Comma separated list of admin player IDs
 * `admin_player:<PLAYER_ID>` (optional): Set a specific player ID as admin
 * `target_new_days`: How many days is target considered as `new` on the frontend after creation
-* `target_restart_log_interval`: Interval for restart logs
+* `target_restart_log_interval`: Interval for restart logs, 0 means false (dont show restart log)
 * `target_updated_days`: How many days the target is considered as `updated` on the frontend after update
 * `discord_news_webhook`: A discord webhook url to send news and announcements to
 * `pf_state_limits`: The content to be appended to the pass rules that enforces limits (default: `(max 10000, source-track rule, max-src-nodes 5, max-src-states 2000, max-src-conn 50)`)
@@ -94,6 +94,11 @@ These are the system configuration keys used by the platform applications. Any k
 * `avatar_robohash_set`: Choose the set for when robohash is configured
 * `mail_verification_token_validity`: How long will the mail verification tokens be active for. Can take intervals supported by php and `INTERVAL`, eg. 10 day, meaning 10 days from now
 * `password_reset_token_validity`: How long will the password reset tokens be active for. Can take intervals supported by php and `INTERVAL`, eg. 10 day, meaning 10 days from now
+
+* `penalty_per_fail`: Points to penalize per fail (eg. `100`)
+* `free_fail_allowance`: Grace fail allowance before penalty is applied (eg. `3`)
+* `apply_abuse_penalties`: Whether or not to apply abuse penalties at the end of an event. This applies both failed claims as well as `abuse` table points.
+
 * `pflog_min`/`pflog_max`: min/max number of pflog interfaces to use for the match findings. Allows for splitting the findings load into multiple processes.
 
 
