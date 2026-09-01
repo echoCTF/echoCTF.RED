@@ -617,10 +617,9 @@
       dest: /tmp/wsserver.zip
 
   - name: Extract wsserver
-    command: "{{item}}"
-    with_items:
-    - unzip /tmp/wsserver.zip -d /usr/local/bin/
-    - rm /tmp/wsserver.zip
+    command: unzip -o /tmp/wsserver.zip -d /usr/local/bin/
+    args:
+      creates: /usr/local/bin/wsserver-openbsd-amd64
 
   - name: Install wsserver.ini for supervisord
     copy:
@@ -634,12 +633,10 @@
         redirect_stderr=true
 
   - name: "Update frontend/config/params.php"
-    ansible.builtin.lineinfile:
+    ansible.builtin.replace:
       path: "/home/participantUI/{{ domain_name }}/frontend/config/params.php"
-      search_string: 'ws://localhost:8888/ws'
-      line: 'wss://{{ domain_name }}/ws'
-      insertafter: null
-      insertbefore: null
+      regexp: 'ws:\/\/localhost:8888\/ws'
+      replace: 'wss://{{ domain_name }}/ws'
 
   - name: copy nstables script
     copy:
