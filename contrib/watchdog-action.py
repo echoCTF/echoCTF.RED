@@ -1,33 +1,45 @@
 #!/usr/local/bin/python3
 #
-# pip install watchdog
+#
 import argparse
 import os
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
+import select
+import subprocess
 
-# CLI arguments
 parser = argparse.ArgumentParser()
 parser.add_argument("--file_path", required=True, help="Full path to the file to monitor")
-parser.add_argument("--action", required=True, help="Full path to the file we will execute")
+parser.add_argument("--action", required=True, help="Command to execute when the file is created")
 args = parser.parse_args()
 
-FULL_PATH = args.file_path
+FULL_PATH = os.path.abspath(args.file_path)
 FOLDER = os.path.dirname(FULL_PATH)
-TARGET_FILE = os.path.basename(FULL_PATH)
 ACTION = args.action
 
-class Handler(FileSystemEventHandler):
-    def __init__(self, observer):
-        self.observer = observer
+# Open the directory we're monitoring
+fd = os.open(FOLDER, os.O_RDONLY)
+kq = select.kqueue()
 
-    def on_created(self, event):
-        if not event.is_directory and event.src_path == FULL_PATH:
-            os.system(ACTION)
-            self.observer.stop()
+watch = select.kevent(
+    fd,
+    filter=select.KQ_FILTER_VNODE,
+    flags=select.KQ_EV_ADD | select.KQ_EV_CLEAR,
+    fflags=select.KQ_NOTE_WRITE,
+)
 
-observer = Observer()
-handler = Handler(observer)
-observer.schedule(handler, FOLDER, recursive=False)
-observer.start()
-observer.join()
+print(f"Watching {FULL_PATH} for creation...")
+
+try:
+    while True:
+        events = kq.control([watch], 1)
+
+        if events and os.path.exists(FULL_PATH):
+            print(f"{FULL_PATH} detected.")
+
+            # Execute the action
+            subprocess.run(ACTION, shell=True)
+
+            break
+
+finally:
+    kq.close()
+    os.close(fd)
