@@ -29,11 +29,11 @@ function services() {
   sudo service memcached restart
   sudo service mysql restart
   (sed -e "s/echoCTF/${DATABASE}/" contrib/mysql-init.sql | mysql ${DATABASE}  > /dev/null) || echo "No function exists"
-  mysql ${DATABASE} -e "SET GLOBAL EVENT_SCHEDULER=ON"
+  (mysql ${DATABASE} -e "SET GLOBAL EVENT_SCHEDULER=ON") || echo "No database or events"
 }
 
 function sql() {
-  mysqladmin drop -f ${DATABASE}
+  ( mysqladmin drop -f ${DATABASE} ) || echo "Skipping drop of non existing database: ${DATABASE}"
   mysql -e "CREATE DATABASE ${DATABASE} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci"
   if compgen -G "${DATABASE}-full-*.sql" > /dev/null; then
     list=( ${DATABASE}-full-*.sql )
@@ -133,7 +133,7 @@ function extras() {
   #  ./playbooks/feed-challenges.yml -i inventories/challenges
   #)
   #mysql -e 'insert into target_instance (player_id,target_id,server_id,ip) select id as player_id, (id % 13)+1 as target_id,(id%5)+1 as server_id,null from player' ${DATABASE}
-  tmux -L ${DATABASE} split-window  '../ws-server/ws-server -db mysql -dsn "root@/echoCTF" -addr :8888'
+  tmux -L ${DATABASE} split-window  '../ws-server/ws-server -db mysql -dsn "root@/'${DATABASE}'" -addr :8888'
   sleep 1
   tmux -L ${DATABASE} split-window  'python3 contrib/watchdoger.py --file_path /tmp/event_finished --url http://127.0.0.1:8888/broadcast --token server123token'
   tmux -L ${DATABASE} select-layout tiled
