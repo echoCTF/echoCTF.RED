@@ -43,8 +43,6 @@ yii\bootstrap5\Modal::end();
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'rowOptions' => function ($model, $key, $index, $grid) {
-      // $model is the current data model being rendered
-      // check your condition in the if like `if($model->hasMedicalRecord())` which could be a method of model class which checks for medical records.
       $tmpObj = clone($model);
       $tmpObj->scenario = 'validator';
       if (!$tmpObj->validate()) {
