@@ -25,8 +25,11 @@ $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 
     <?= $form->field($model, 'body')->textarea(['rows' => 6]) ?>
 
+    <?= $form->field($model, 'reason')->textInput()->hint('Penalty reason') ?>
+    <?= $form->field($model, 'points')->textInput()->hint('Penalty points') ?>
     <div class="form-group">
-      <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
+      <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success', 'name' => 'action', 'value' => 'giver']) ?>
+      <?= Html::submitButton(Yii::t('app', 'Save with Giver'), ['class' => 'btn btn-primary', 'name' => 'action', 'value' => 'giver']) ?>
       <?= Html::a(Yii::t('app', 'Delete'), ['delete', 'id' => $model->id], [
         'class' => 'btn btn-danger',
         'data' => [
