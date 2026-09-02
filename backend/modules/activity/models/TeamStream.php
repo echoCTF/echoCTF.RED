@@ -21,6 +21,7 @@ class TeamStream extends TeamStreamAR
 {
 
   const MODEL_ICONS = [
+    'abuse' => '<i class="fas fa-gavel" style="color: #FF1A00; font-size: 1.5em;" title="Abuse Penalty"></i>',
     'headshot' => '<i class="fas fa-skull" style="color: #FF1A00;font-size: 1.5em;" data-toggle="tooltip" title="Target Headshot"></i>',
     'challenge' => '<i class="fas fa-tasks" style="color: #FF1A00; font-size: 1.5em;" data-toggle="tooltip" title="Challenge Solve"></i>',
     'solution' => '<i class="fas fa-code" style="color: #FF1AFF; font-size: 1.5em;" title="Speed Programming Solution"></i>',
@@ -77,6 +78,16 @@ class TeamStream extends TeamStreamAR
   public function getPlayer_target_helpMessage()
   {
     return sprintf("%s activated writeups for [<code>%s</code>]", $this->getPrefix(false), Target::findOne(['id' => $this->model_id])->name);
+  }
+
+  public function getAbuseMessage()
+  {
+    $prefix=sprintf("<img src='%s' class='rounded' width='25px'> <b><code>%s</code></b> %s",
+      Url::to('//'.Yii::$app->sys->offense_domain.'/images/avatars/team/'.$this->team_id.'.png'),
+      Html::encode($this->team->name),
+      $this->icon);
+
+    return sprintf(\Yii::t('app',"%s %s %s"), $prefix, $this->stream->title, $this->suffix);
   }
 
   public function getHeadshotMessage()
