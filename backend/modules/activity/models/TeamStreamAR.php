@@ -2,8 +2,9 @@
 
 namespace app\modules\activity\models;
 
-use app\modules\frontend\models\Player;
 use Yii;
+use app\modules\frontend\models\Player;
+use app\modules\frontend\models\Team;
 
 /**
  * This is the model class for table "team_stream".
