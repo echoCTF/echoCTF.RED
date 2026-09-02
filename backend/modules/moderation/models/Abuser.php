@@ -5,6 +5,7 @@ namespace app\modules\moderation\models;
 use Yii;
 use app\modules\frontend\models\Player;
 use yii\behaviors\TimestampBehavior;
+use yii\behaviors\AttributeTypecastBehavior;
 
 /**
  * This is the model class for table "abuser".
@@ -16,6 +17,8 @@ use yii\behaviors\TimestampBehavior;
  * @property string|null $reason
  * @property string $model
  * @property int $model_id
+ * @property int $points
+ * @property boolean $resolved
  * @property string|null $created_at
  * @property string|null $updated_at
  *
@@ -30,11 +33,21 @@ class Abuser extends \yii\db\ActiveRecord
       [
         'class' => TimestampBehavior::class,
         'value' => new \yii\db\Expression('NOW()'),
-
-      ]
+      ],
+      'typecast' => [
+        'class' => AttributeTypecastBehavior::class,
+        'attributeTypes' => [
+          'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'model_id'  => AttributeTypecastBehavior::TYPE_INTEGER,
+          'points'    => AttributeTypecastBehavior::TYPE_INTEGER,
+          'resolved'  => AttributeTypecastBehavior::TYPE_BOOLEAN,
+        ],
+        'typecastAfterValidate' => true,
+        'typecastBeforeSave'    => true,
+        'typecastAfterFind'     => true,
+      ],
     ];
   }
-
 
   /**
    * {@inheritdoc}
@@ -51,8 +64,11 @@ class Abuser extends \yii\db\ActiveRecord
   {
     return [
       [['title', 'body', 'reason', 'created_at', 'updated_at'], 'default', 'value' => null],
+      [['points'], 'default', 'value' => 0],
+      [['resolved'], 'default', 'value' => false],
       [['player_id', 'model', 'model_id'], 'required'],
-      [['player_id', 'model_id'], 'integer'],
+      [['player_id', 'model_id', 'points'], 'integer'],
+      [['resolved'], 'boolean'],
       [['body'], 'string'],
       [['created_at', 'updated_at'], 'safe'],
       [['title', 'reason', 'model'], 'string', 'max' => 255],
@@ -127,16 +143,92 @@ class Abuser extends \yii\db\ActiveRecord
   }
 
   /**
-   * Try to return the reason for this failed claim
+   * Check a offending claim and return the details of the
+   * flag giver; meaning the player who leaked the flag.
    */
-  public function forFailedClaim()
+  public function failedClaimGiver()
   {
+    // Matches our `ETSCTF_` flag
     if (preg_match('/(?:etsctf|tsctf|sctf|ctf|tf|f)_([a-z0-9]+)/i', $this->title, $matches)) {
       $claimedHash = $matches[0];
       $string = $matches[1];
     } else {
       $claimedHash = $string = null;
     }
+
+    // Matches MD5 hash
+    if($string == null && preg_match('/([a-f0-9]{32})/i', $this->title, $matches)) {
+      $claimedHash=$string=$matches[1];
+    }
+
+    if ($string != null) {
+      $secretKey = \Yii::$app->sys->treasure_secret_key;
+      $result = \app\modules\gameplay\models\TreasureFinder::findByEncryptedCode($secretKey, '%' . $string . '%');
+      if (is_array($result) && $result !== []) {
+        if (array_key_exists('player_id', $result)) {
+          $originalPlayer = \app\modules\frontend\models\Player::findOne($result['player_id']);
+        }
+
+        if (array_key_exists('treasure_id', $result)) {
+          $originalTreasure = \app\modules\gameplay\models\Treasure::findOne($result['treasure_id']);
+        }
+
+        // check if its just a typo for the same user so they havent copied a flag
+        if (array_key_exists('player_id', $result) && intval($result['player_id']) == intval($this->player_id)) {
+          return [];
+        }
+
+        $profileLink = \app\widgets\ProfileLink::widget([
+          'username' => $originalPlayer->username,
+          'actions' => false
+        ]);
+
+        $offenderLink = \app\widgets\ProfileLink::widget([
+          'username' => $this->player->username,
+          'actions' => false
+        ]);
+
+        if ($this->player->teamPlayer)
+          $to = sprintf("[%s] from team [%s]", $offenderLink, $this->player->teamPlayer->team->name);
+        else
+          $to = "[$offenderLink]";
+
+        if ($originalPlayer->teamPlayer)
+          $from = sprintf("[%s] from team [%s]", $profileLink, $originalPlayer->teamPlayer->team->name);
+        else
+          $from = "[$profileLink]";
+        $msg = "$from leaked a flag to player $to for target [" . $originalTreasure->target->name . "] and treasure [<small>" . $originalTreasure->name . "</small>]";
+
+        return new Abuser([ 'player_id'=>$originalPlayer->id,
+                            'title' => 'Shared flag claimedHash',
+                            'body'=>$msg,
+                            'reason' => 'flag_shared',
+                            'points'=>1500,
+                            'model'=>'abuser',
+                            'model_id'=>$this->id]);
+      }
+    }
+    return [];
+  }
+
+  /**
+   * Try to return the reason for this failed claim
+   */
+  public function forFailedClaim()
+  {
+    // Matches our `ETSCTF_` flag
+    if (preg_match('/(?:etsctf|tsctf|sctf|ctf|tf|f)_([a-z0-9]+)/i', $this->title, $matches)) {
+      $claimedHash = $matches[0];
+      $string = $matches[1];
+    } else {
+      $claimedHash = $string = null;
+    }
+
+    // Matches MD5 hash
+    if($string == null && preg_match('/([a-f0-9]{32})/i', $this->title, $matches)) {
+      $claimedHash=$string=$matches[1];
+    }
+
     if ($string != null) {
       $secretKey = \Yii::$app->sys->treasure_secret_key;
       $result = \app\modules\gameplay\models\TreasureFinder::findByEncryptedCode($secretKey, '%' . $string . '%');
@@ -158,10 +250,12 @@ class Abuser extends \yii\db\ActiveRecord
           'username' => $originalPlayer->username,
           'actions' => false
         ]);
+
         $offenderLink = \app\widgets\ProfileLink::widget([
           'username' => $this->player->username,
           'actions' => false
         ]);
+
         if ($this->player->teamPlayer)
           $from = sprintf("[%s] from team [%s]", $offenderLink, $this->player->teamPlayer->team->name);
         else
@@ -171,20 +265,25 @@ class Abuser extends \yii\db\ActiveRecord
           $to = sprintf("[%s] from team [%s]", $profileLink, $originalPlayer->teamPlayer->team->name);
         else
           $to = "[$profileLink]";
-        $msg = "- $from tried to claim code [<small><code>" . trim($claimedHash) . "</code></small>] that belongs to player $to for target [" . $originalTreasure->target->name . "] and treasure [" . $originalTreasure->name . "]";
+        $msg = "$from tried to claim flag that belongs to player $to for target [" . $originalTreasure->target->name . "] and treasure [<small>" . $originalTreasure->name . "</small>]";
+
+        $this->points=-1500;
+        $this->reason='claim_other_team';
+
         return $msg;
       }
     }
 
     return null;
   }
+
   /**
    * Check if the claimed hash is a near-typo of the player's own actual flag.
    * Returns a "false alarm" message if it looks like a typo, null otherwise.
    */
   private function checkForTypo(string $claimedHash, $actualHash): ?string
   {
-    $actual  = trim($actualHash); // adjust to however you retrieve the player's actual flag
+    $actual  = trim($actualHash);
     $claimed = trim($claimedHash);
 
     if ($actual === '') {
