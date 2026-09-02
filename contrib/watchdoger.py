@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 #
 # pip install requests
+#
 import argparse
 import os
 import select
@@ -24,7 +25,7 @@ watch = select.kevent(
     fd,
     filter=select.KQ_FILTER_VNODE,
     flags=select.KQ_EV_ADD | select.KQ_EV_CLEAR,
-    fflags=select.NOTE_WRITE
+    fflags=select.KQ_NOTE_WRITE
 )
 
 print(f"Watching for {FULL_PATH} ...")
