@@ -12,7 +12,7 @@ use yii\widgets\Pjax;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('app', 'Abusers');
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => 'Abuser', 'url' => ['index']];
 ?>
 <div class="abuser-index">
 
@@ -20,6 +20,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
   <p>
     <?= Html::a(Yii::t('app', 'Create Abuser'), ['create'], ['class' => 'btn btn-success']) ?>
+    <?= Html::a(Yii::t('app', 'Truncate Abuser'), ['truncate'], [
+      'class' => 'btn btn-danger',
+      'data' => [
+        'confirm' => Yii::t('app', 'Are you sure you want to truncate the table?'),
+        'method' => 'post',
+      ],
+    ]) ?>
   </p>
 
   <?php Pjax::begin(); ?>
@@ -36,28 +43,49 @@ $this->params['breadcrumbs'][] = $this->title;
       [
         'attribute' => 'title',
         'headerOptions' => ['style' => 'width:18em'],
-        'format'=>'html',
-        'value'=>function($model) { if (trim($model->body)!='') return $model->body; return $model->title;}
+        'format' => 'html',
+        'value' => function ($model) {
+          if (trim($model->body) != '') return $model->body;
+          return $model->title;
+        }
       ],
-//      'reason',
+      'reason',
       'model',
       'model_id',
+      'points',
+      [
+        'attribute' => 'resolved',
+        'format' => 'boolean',
+        'filter' => [0 => 'No', 1 => 'Yes']
+      ],
       'created_at',
       'updated_at',
       [
         'class' => ActionColumn::class,
-        'template' => ' {view} {update} {delete} {analyze}',
-        //'urlCreator' => function ($action, Abuser $model, $key, $index, $column) {
-        //  return Url::toRoute([$action, 'id' => $model->id]);
-        //}
-        //failed_claim
-        //
-//        'visibleButtons' => [
-//          'analysis' => function ($model) {
-//            if ($model->last->vpn_local_address !== null) return true;
-//            return false;
-//          },
-//        ],
+        'template' => ' {view} {update} {delete} {analyze} {process}',
+        'header' => Html::a(
+          '<i class="bi bi-trash-fill"></i>',
+          ['delete-filtered'],
+          [
+            'title' => 'Mass delete filtered records',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => $searchModel->attributes,
+              'confirm' => 'Are you sure you want to delete the currently filtered records?',
+            ],
+          ]
+        ),
+        'visibleButtons' => [
+          'process' => function ($model, $key, $index) {
+            return !$model->resolved;
+          },
+          'analyze' => function ($model, $key, $index) {
+            return !$model->resolved;
+          },
+
+        ],
         'buttons' => [
           'analyze' => function ($url, $model, $key) {
             return Html::a(
@@ -65,6 +93,16 @@ $this->params['breadcrumbs'][] = $this->title;
               Url::to(['analyze', 'id' => $model->id]),
               [
                 'title' => 'Perform analysis on record',
+                'data-pjax' => '0',
+              ]
+            );
+          },
+          'process' => function ($url, $model, $key) {
+            return Html::a(
+              '<i class="fas fa-cogs"></i>',
+              Url::to(['process', 'id' => $model->id]),
+              [
+                'title' => 'Process record to public stream',
                 'data-pjax' => '0',
               ]
             );
