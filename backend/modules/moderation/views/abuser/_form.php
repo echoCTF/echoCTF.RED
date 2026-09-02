@@ -24,6 +24,10 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'model_id')->textInput() ?>
 
+    <?= $form->field($model, 'points')->textInput() ?>
+
+    <?= $form->field($model, 'resolved')->checkbox() ?>
+
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>

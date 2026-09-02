@@ -36,6 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'reason',
             'model',
             'model_id',
+            'points',
+            'resolved:boolean',
             'created_at',
             'updated_at',
         ],
