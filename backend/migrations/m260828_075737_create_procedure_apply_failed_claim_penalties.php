@@ -36,7 +36,7 @@ BEGIN
   SELECT
       p.owner_id,
       'abuse',
-      @row_number := @row_number + 1 AS model_id,   -- incrementing number replaces p.team_id
+      @row_number := @row_number + 1 AS model_id,
       -1 * p.penalty,
       CONCAT('Got penalized for ', p.total_failed_claims, ' failed claims'),
       CONCAT('Got penalized for ', p.total_failed_claims, ' failed claims'),
