@@ -19,7 +19,7 @@ class FailedClaimHandler extends \yii\base\Model
    * @param int[] $excludePlayerIds players to exclude from matching
    * @return array|false treasure_id, player_id, encryptedCode, treasure_points, or false
    */
-  public static function findByEncryptedCode($secretKey=false, $string, array $excludePlayerIds = [])
+  public static function findByEncryptedCode($secretKey = false, $string, array $excludePlayerIds = [])
   {
     if ($secretKey === false)
       return false;
@@ -70,16 +70,19 @@ class FailedClaimHandler extends \yii\base\Model
     $playerId = \Yii::$app->user->id;
     $owner = self::findByEncryptedCode(\Yii::$app->sys->treasure_secret_key, $string, [$playerId]);
     $flag = \yii\helpers\Html::encode($string);
+    \Yii::$app->counters->increment('failed_claims');
 
     if ($owner === false) {
       \Yii::$app->session->addFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag' => $flag]));
 
+      $overAllowance = \Yii::$app->sys->free_fail_allowance !== false
+        && \Yii::$app->user->identity->profile->metric('failed_claims') > \Yii::$app->sys->free_fail_allowance;
       $actors = [[
         'player_id' => $playerId,
         'reason'    => 'failed_claim',
-        'points'    => 0,
-        'resolved'  => 0,
-        'penalty'   => null,
+        'points'    => $overAllowance ? -\Yii::$app->sys->penalty_per_fail : 0,
+        'resolved'  => $overAllowance ? 1 : 0,
+        'penalty'   => $overAllowance ? \Yii::t('app', 'Too many failed flag claims') : null,
       ]];
     } else {
       \Yii::$app->session->addFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] belongs to someone else you will get penalized!', ['flag' => $flag]));
@@ -106,13 +109,20 @@ class FailedClaimHandler extends \yii\base\Model
       ];
     }
 
-    foreach ($actors as $actor) {
-      if ($actor['penalty'] !== null) {
-        self::penalize($actor['player_id'], $actor['points'], $actor['penalty']);
+    if (\Yii::$app->sys->apply_abuse_penalties === false) {
+      foreach ($actors as &$actor) {
+        $actor['points'] = 0;
+        $actor['resolved'] = 0;
+      }
+      unset($actor);
+    } else {
+      foreach ($actors as $actor) {
+        if ($actor['penalty'] !== null) {
+          self::penalize($actor['player_id'], $actor['points'], $actor['penalty']);
+        }
       }
     }
 
-    \Yii::$app->counters->increment('failed_claims');
 
     if (!\Yii::$app->sys->log_failed_claims) {
       return;
