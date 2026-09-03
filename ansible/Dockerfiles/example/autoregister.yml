@@ -8,9 +8,6 @@
   vars:
   tasks:
   - include_vars: /tmp/variables.yml
-  - name: Display Default IPv4
-    debug:
-      var: ansible_default_ipv4
 
   - name: Ensure groups exist
     group:
@@ -27,7 +24,12 @@
       comment: "{{item.gecos}}"
       uid: "{{item.uid|default(omit)}}"
       group: "{{item.group|default(omit)}}"
+      groups: "{{item.groups|default(omit)}}"
       password: "{{item.password}}"
+      generate_ssh_key: "{{item.generate_ssh_key|default(omit)}}"
+      ssh_key_file: "{{item.ssh_key_file|default(omit)}}"
+      system: "{{item.system|default(omit)}}"
+      home: "{{item.home|default(omit)}}"
       state: present
       update_password: always
     with_items: "{{DETAILS}}"
@@ -85,9 +87,9 @@
     when: INI_FILES is defined
     ini_file:
       path: "{{item.file}}"
-      section: "{{item.section}}"
+      section: "{{item.section|default(omit)}}"
       option: "{{item.option}}"
-      value: "{{item.value}}"
+      value: "{{item.value|default(omit)}}"
       backup: false
     with_items: "{{INI_FILES}}"
 
@@ -96,9 +98,9 @@
     template:
       src: "{{item.src}}"
       dest: "{{item.dest}}"
-      owner: "{{item.owner}}"
-      group: "{{item.group}}"
-      mode: "{{item.mode}}"
+      owner: "{{item.owner|default(omit)}}"
+      group: "{{item.group|default(omit)}}"
+      mode: "{{item.mode|default(omit)}}"
     with_items: "{{templates}}"
 
   - name: Copy raw configs
