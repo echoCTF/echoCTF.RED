@@ -618,7 +618,7 @@ thisBegin:BEGIN
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
   END IF;
-  IF NEW.points>0 THEN
+  IF NEW.points!=0 THEN
     INSERT INTO player_score (player_id,points) VALUES (NEW.player_id,NEW.points) ON DUPLICATE KEY UPDATE points=points+values(points);
   END IF;
   SELECT team_id INTO lteam_id FROM team_player WHERE player_id=NEW.player_id AND approved=1;
