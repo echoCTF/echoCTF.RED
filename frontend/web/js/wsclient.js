@@ -10,6 +10,7 @@ const wsHandlers = {
   notification: onNotification,
   apiNotifications: apiNotifications,
   target: onTarget,
+  reload: onReload,
 };
 
 const wsIconTypes = {
@@ -110,6 +111,8 @@ function onNotification({ payload }) {
     });
   }
 }
-
+function onReload() {
+  location.reload();
+}
 /* ---- start connection ---- */
 connectWS();
