@@ -35,34 +35,34 @@ class WriteupController extends \app\components\BaseController
     $searchModel = new WriteupSearch();
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     $langIds = Writeup::find()
-        ->select('language_id')
-        ->distinct()
-        ->column();
+      ->select('language_id')
+      ->distinct()
+      ->column();
 
     $targetIds = Writeup::find()
-        ->select('target_id')
-        ->distinct()
-        ->column();
+      ->select('target_id')
+      ->distinct()
+      ->column();
 
-    $languages=ArrayHelper::map(
-          Language::find()
-              ->where(['in', 'id', $langIds])
-              ->all(),
-          'id',
-          'l'
+    $languages = ArrayHelper::map(
+      Language::find()
+        ->where(['in', 'id', $langIds])
+        ->all(),
+      'id',
+      'l'
     );
-    $targets=ArrayHelper::map(
-          Target::find()
-              ->where(['in', 'id', $targetIds])
-              ->orderBy('name')
-              ->all(),
-          'id',
-          'name'
+    $targets = ArrayHelper::map(
+      Target::find()
+        ->where(['in', 'id', $targetIds])
+        ->orderBy('name')
+        ->all(),
+      'id',
+      'name'
     );
 
     return $this->render('index', [
-      'languages'=>$languages,
-      'targets'=>$targets,
+      'languages' => $languages,
+      'targets' => $targets,
       'searchModel' => $searchModel,
       'dataProvider' => $dataProvider,
     ]);
@@ -77,20 +77,20 @@ class WriteupController extends \app\components\BaseController
    */
   public function actionView($player_id, $target_id)
   {
-    $model=$this->findModel($player_id, $target_id);
-    $targetWriteups=Writeup::find()->where([
+    $model = $this->findModel($player_id, $target_id);
+    $targetWriteups = Writeup::find()->where([
       'and',
-      ['!=','player_id',$model->player_id],
-      ['target_id'=>$model->target_id]
+      ['!=', 'player_id', $model->player_id],
+      ['target_id' => $model->target_id]
     ])->count();
-    $playerWriteups=Writeup::find()->where([
+    $playerWriteups = Writeup::find()->where([
       'and',
-      ['player_id'=>$model->player_id],
-      ['!=','target_id',$model->target_id]
+      ['player_id' => $model->player_id],
+      ['!=', 'target_id', $model->target_id]
     ])->count();
     return $this->render('view', [
-      'playerWriteups'=>intval($playerWriteups),
-      'targetWriteups'=>intval($targetWriteups),
+      'playerWriteups' => intval($playerWriteups),
+      'targetWriteups' => intval($targetWriteups),
       'model' => $model,
     ]);
   }
@@ -128,8 +128,8 @@ class WriteupController extends \app\components\BaseController
     $model->cleanup();
     if ($model->load(Yii::$app->request->post()) && $model->save()) {
       if ($oldmodel['status'] !== $model->status) {
-        $t=\Yii::t('app', "The status of the writeup for [{target_name}] by [{username}], has changed to [{status}].", ['target_name' => $model->target->name, 'username' => $model->player->username, 'status' => $model->status]);
-        $model->player->notify('info',$t,$t);
+        $t = \Yii::t('app', "The status of the writeup for [{target_name}] by [{username}], has changed to [{status}].", ['target_name' => $model->target->name, 'username' => $model->player->username, 'status' => $model->status]);
+        $model->player->notify('info', $t, $t);
       }
       return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
     }
@@ -149,8 +149,19 @@ class WriteupController extends \app\components\BaseController
    */
   public function actionDelete($player_id, $target_id)
   {
-    $this->findModel($player_id, $target_id)->delete();
+    $writeup = $this->findModel($player_id, $target_id);
+    $msg = \Yii::t("app", "Hi, this is just to let you know that your writeup for {target_name} got deleted.", ['target_name' => $writeup->target->name]);
 
+    if (trim($writeup->comment) != '') {
+      $msg .= \Yii::t("app", "The last comment that was left for your by the administrators was: <code>{comment}</code>", ['comment' => trim($writeup->comment)]);
+    }
+
+    if ($writeup->delete()) {
+      $writeup->player->notify("swal:info", $msg, $msg,true,false);
+      \Yii::$app->session->setFlash('success', \Yii::t('app', 'Writeup deleted.'));
+    } else {
+      \Yii::$app->session->setFlash('error', \Yii::t('app', 'Could not delete writeup.'));
+    }
     return $this->redirect(['index']);
   }
 
@@ -175,8 +186,8 @@ class WriteupController extends \app\components\BaseController
         $model->content = $string;
       }
       if ($model->save()) {
-        $t=Yii::t('app', "The writeup you submitted for {target_name} has been approved. Thank you!", ['target_name' => $model->target->name]);
-        $model->player->notify('info',$t,$t);
+        $t = Yii::t('app', "The writeup you submitted for {target_name} has been approved. Thank you!", ['target_name' => $model->target->name]);
+        $model->player->notify('info', $t, $t);
         Yii::$app->session->setFlash('success', Yii::t('app', 'Writeup for {target_name} by {username} approved.', ['target_name' => $model->target->name, 'username' => $model->player->username]));
       } else {
         Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to approve writeup for {target_name} by {username}.', ['target_name' => $model->target->name, 'username' => $model->player->username]));
@@ -205,6 +216,6 @@ class WriteupController extends \app\components\BaseController
       return $model;
     }
 
-    throw new NotFoundHttpException(Yii::t('app','The requested page does not exist.'));
+    throw new NotFoundHttpException(Yii::t('app', 'The requested page does not exist.'));
   }
 }
