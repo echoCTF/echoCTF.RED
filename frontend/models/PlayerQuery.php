@@ -23,7 +23,7 @@ class PlayerQuery extends \yii\db\ActiveQuery
       public function with_score()
       {
         $this->joinWith(['playerScore']);
-        return $this->andWhere(['>', 'points', 0]);
+        return $this->andWhere(['!=', 'points', 0]);
       }
 
 }
