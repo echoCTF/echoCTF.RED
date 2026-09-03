@@ -165,11 +165,13 @@ class Player extends PlayerAR
       else
         $publisher->publish($this->id, 'notification', ['type' => $type, 'title' => $title, 'body' => $body]);
     } catch (\Throwable $e) {
-      // on publishing error make sure we store the noticication as pending
+      // on publishing error make sure we store the notification as pending
       $cc = true;
       $archive = false;
       Yii::error($e->getMessage());
     }
+
+    if($this->online!=1) $archive = false;
 
     if ($cc === true) {
       $n = new \app\modules\activity\models\Notification;
