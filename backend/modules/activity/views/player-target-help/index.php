@@ -43,10 +43,7 @@ yii\bootstrap5\Modal::end();
               'attribute'=>'target_id',
               'headerOptions' => ['style' => 'width:3vw'],
             ],
-            [
-              'attribute'=>'target_name',
-              'value'=>'target.name',
-            ],
+            ['class' => 'app\components\columns\TargetColumn'],
             'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],
