@@ -567,7 +567,9 @@
       special_time: "{{item.special_time|default(omit)}}"
       job: "{{item.job}}"
     with_items:
-      - { name: "Generate target social images", minute: "*/30",  job: "-ns frontend generator/target-social-images >>/var/log/cron/target-social-images.log" }
+      - { name: "Generate all player badges", minute: "*/31",  job: "-ns frontend generator/all-badges participantUI >> /var/log/cron/all-badges.log" }
+      - { name: "Generate player badges", minute: "*/5",  job: "-ns frontend generator/badges participantUI >> /var/log/cron/badges.log" }
+      - { name: "Generate target social images", minute: "*/32",  job: "-ns frontend generator/target-social-images >>/var/log/cron/target-social-images.log" }
       - { name: "Generate local routes file", minute: "*/30",  job: "-ns frontend generator/routes >>/var/log/cron/routes.log" }
       - { name: "Generate local disabled-routes file", minute: "*/30",  job: "-ns frontend generator/disabled-routes >>/var/log/cron/disabled-routes.log" }
       - { name: "Generate local player-disabled-routes file", minute: "*/30",  job: "-ns frontend generator/player-disabled-routes >>/var/log/cron/player-disabled-routes.log" }
