@@ -241,7 +241,7 @@ http {
         }
 
         set $yii_bootstrap "/index.php";
-{% if "mui" not in inventory_hostname %}
+{% if identificationFiles is defined %}
     {% if mui_ext_ip is defined %}
         location ^~ /identificationFiles/ {
           allow {{ mui_ext_ip }};

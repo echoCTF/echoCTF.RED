@@ -409,7 +409,7 @@
       src: ../templates/nginx.conf.j2
       dest: /etc/nginx/{{item.user}}.conf
     with_items:
-      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}' }
+      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}', identificationFiles: true }
     tags:
       - nginx
 
