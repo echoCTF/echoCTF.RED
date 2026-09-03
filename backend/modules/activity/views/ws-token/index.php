@@ -12,7 +12,7 @@ use yii\widgets\Pjax;
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('app', 'Ws Tokens');
-$this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 ?>
 <div class="ws-token-index">
 
@@ -30,16 +30,11 @@ $this->params['breadcrumbs'][] = $this->title;
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
+      ['class' => 'app\components\columns\ProfileColumn'],
       [
         'attribute' => 'token',
         'contentOptions' => ['style' => 'white-space: nowrap;font-family: monospace;font-size:1.1em;'],
         'filterOptions' => ['style' => 'white-space: nowrap; font-family: monospace;',],
-      ],
-      [
-        'attribute' => 'player_id',
-        'value' => function ($model) {
-          return $model->player_id ? ($model->player->username ?? null) : null;
-        },
       ],
       'subject_id',
       [
