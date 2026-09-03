@@ -31,8 +31,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'token',
             'player_id',
+            'player.username',
             'subject_id',
-            'is_server',
+            'is_server:boolean',
             'expires_at',
         ],
     ]) ?>
