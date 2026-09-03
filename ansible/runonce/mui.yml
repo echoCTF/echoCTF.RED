@@ -542,6 +542,7 @@
       special_time: "{{item.special_time|default(omit)}}"
       job: "{{item.job}}"
     with_items:
+      - { name: "Fetch identificationFiles", minute: "*/5", job: "-ns backend player/fetch-identification inactive https 0 >> /var/log/cron/identification.log" }
       - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
 
