@@ -117,8 +117,11 @@ class Profile extends ProfileAR
 
     public function getExperience()
     {
-      return Experience::find()->where("{$this->score->points} BETWEEN min_points AND max_points");
+      $exp = Experience::find()->where("{$this->score->points} BETWEEN min_points AND max_points")->one();
+
+      return $exp ?: Experience::find()->orderBy(['min_points' => SORT_ASC])->one();
     }
+
     public function getNextExperience()
     {
       if(($lvl=Experience::find()->where(['>=','min_points',$this->score->points])->one())!==NULL)
