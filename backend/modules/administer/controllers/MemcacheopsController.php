@@ -24,7 +24,7 @@ class MemcacheopsController extends \app\components\BaseController
         'rules' => [
           'authActions' => [
             'allow' => \Yii::$app->user->identity && \Yii::$app->user->identity->isAdmin,
-            'actions' => ['index', 'view'],
+            'actions' => ['index', 'fetch', 'delete', 'save'],
             'roles' => ['@'],
           ],
         ],
@@ -33,17 +33,28 @@ class MemcacheopsController extends \app\components\BaseController
         'class' => VerbFilter::class,
         'actions' => [
           'delete' => ['POST'],
+          'fetch' => ['POST'],
+          'save' => ['POST'],
         ],
       ],
     ]);
   }
 
+  /**
+   * Renders memcache admin index page.
+   * @return string
+   */
   public function actionIndex()
   {
 
     return $this->render('index');
   }
 
+  /**
+   * Fetches value for given memcache key.
+   * @param string $name cache key name
+   * @return array
+   */
   public function actionFetch($name)
   {
     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -53,18 +64,32 @@ class MemcacheopsController extends \app\components\BaseController
     }
 
     $value = Yii::$app->cache->memcache->get($name);
+
     if ($value === false) {
-      return ['success' => false, 'error' => 'Key not found or value is false.'];
+      return [
+        'success' => true,
+        'exists'  => false,
+        'value'   => '',
+        'message' => 'Key not found. You can create it by entering a value and clicking Save.'
+      ];
     }
 
-    // For display, we'll convert arrays/objects to a readable format
     if (is_array($value) || is_object($value)) {
       $value = var_export($value, true);
     }
 
-    return ['success' => true, 'value' => $value];
+    return [
+      'success' => true,
+      'exists'  => true,
+      'value'   => $value
+    ];
   }
 
+  /**
+   * Deletes memcache key unless blacklisted.
+   * @return Response
+   * @throws \LogicException if memcache not initialized
+   */
   public function actionDelete()
   {
     $name = Yii::$app->request->post('name');
@@ -85,6 +110,10 @@ class MemcacheopsController extends \app\components\BaseController
     return $this->redirect(['index']);
   }
 
+  /**
+   * Saves value to memcache key with optional ttl.
+   * @return array
+   */
   public function actionSave()
   {
     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
@@ -99,15 +128,16 @@ class MemcacheopsController extends \app\components\BaseController
 
     $name = Yii::$app->request->post('name');
     $value = Yii::$app->request->post('value');
-    $ttl = Yii::$app->request->post('ttl', 3600); // optional TTL, default 1 hour
+    $ttl = Yii::$app->request->post('ttl', 0); // default 0 = unlimited
 
     if (empty($name)) {
       return ['success' => false, 'error' => 'Key name cannot be empty.'];
     }
 
-    // Optionally, you can decode JSON if value is structured
-    // For simplicity we store as string; you may want to cast to appropriate type
-    $stored = Yii::$app->cache->set($name, $value, $ttl);
+    $ttl = (int)$ttl;
+    if ($ttl < 0) $ttl = 0;
+
+    $stored = Yii::$app->cache->memcache->set($name, $value, $ttl);
 
     if ($stored) {
       return ['success' => true, 'message' => 'Cache entry saved successfully.'];
