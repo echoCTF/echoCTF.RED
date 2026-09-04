@@ -278,6 +278,6 @@ BEGIN
 
   IF memc_get('event_finished') IS NOT NULL THEN
     ALTER EVENT `event_shutdown` DISABLE;
-    SELECT 1 INTO OUTFILE '/tmp/event_finished';
+    SELECT 1 INTO OUTFILE '/watch/event_finished';
   END IF;
 END //
