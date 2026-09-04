@@ -419,7 +419,11 @@ class ConfigureForm extends Model
       [[
         'mail_verification_token_validity',
         'password_reset_token_validity',
-        'target_restart_log_interval'
+        'target_restart_log_interval',
+        'player_delete_rejected_after',
+        'player_delete_inactive_after',
+        'player_delete_deleted_after',
+        'player_changed_to_deleted_after',
       ], 'match',
          'pattern' => '/^\d+\s(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)$/i',
          'message' => 'The format must be a number followed by one of: YEAR, MONTH, DAY, HOUR, MINUTE, SECOND.'],
@@ -480,10 +484,6 @@ class ConfigureForm extends Model
         'rate_limit_window',
         'dashboard_news_total_pages',
         'dashboard_news_records_per_page',
-        'player_delete_inactive_after',
-        'player_delete_deleted_after',
-        'player_changed_to_deleted_after',
-        'player_delete_rejected_after',
       ], 'integer'],
       [['online_timeout'], 'default', 'value' => 900],
       [['spins_per_day'], 'default', 'value' => 2],
