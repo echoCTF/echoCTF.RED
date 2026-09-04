@@ -103,10 +103,10 @@ These are the system configuration keys used by the platform applications. Any k
 * `pflog_min`/`pflog_max`: min/max number of pflog interfaces to use for the match findings. Allows for splitting the findings load into multiple processes.
 
 
-* `player_delete_inactive_after`: Delete players with status=9 (inactive) after X days
-* `player_delete_deleted_after`: Delete players with status=0 (deleted) after X days
-* `player_changed_to_deleted_after`: Update players with status=8 (changed) into status=0 (deleted) after X days
-* `player_delete_rejected_after`: Delete players that their registration was rejected (status=9 and approval=4) after X days
+* `player_delete_inactive_after`: Delete players with status=9 (inactive) after X days. Can use SQL interval values eg. `10 DAY`.
+* `player_delete_deleted_after`: Delete players with status=0 (deleted) after X days. Can use SQL interval values eg. `10 DAY`.
+* `player_changed_to_deleted_after`: Update players with status=8 (changed) into status=0 (deleted) after X days. Can use SQL interval values eg. `10 DAY`.
+* `player_delete_rejected_after`: Delete players that their registration was rejected (status=9 and approval=4) after X days. Can use SQL interval values eg. `10 DAY`.
 
 * `dashboard_news_total_pages`: Total pages to display on dashboard news
 * `dashboard_news_records_per_page`: Records per page on dashboard news
