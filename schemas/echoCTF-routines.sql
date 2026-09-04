@@ -356,24 +356,28 @@ END ;;
 DROP PROCEDURE IF EXISTS `player_maintenance` ;;
 CREATE PROCEDURE `player_maintenance`()
 BEGIN
-  DECLARE player_require_approval,player_delete_inactive_after,player_delete_deleted_after,player_changed_to_deleted_after,player_delete_rejected_after INT;
+  DECLARE player_require_approval INT;
   SET player_require_approval=memc_get('sysconfig:player_require_approval');
-  SET player_delete_inactive_after=memc_get('sysconfig:player_delete_inactive_after');
-  SET player_delete_deleted_after=memc_get('sysconfig:player_delete_deleted_after');
-  SET player_changed_to_deleted_after=memc_get('sysconfig:player_changed_to_deleted_after');
-  SET player_delete_rejected_after=memc_get('sysconfig:player_delete_rejected_after');
+  SET @player_delete_inactive_after=memc_get('sysconfig:player_delete_inactive_after');
+  SET @player_delete_deleted_after=memc_get('sysconfig:player_delete_deleted_after');
+  SET @player_changed_to_deleted_after=memc_get('sysconfig:player_changed_to_deleted_after');
+  SET @player_delete_rejected_after=memc_get('sysconfig:player_delete_rejected_after');
 
-  IF player_require_approval IS NOT NULL AND player_require_approval>0 AND player_delete_rejected_after IS NOT NULL AND player_delete_rejected_after>0 THEN
-    DELETE FROM `player` WHERE `status`=9 AND approval=4 AND `ts` < NOW() - INTERVAL player_delete_rejected_after DAY;
+  IF player_require_approval IS NOT NULL AND player_require_approval>0 AND @player_delete_rejected_after IS NOT NULL THEN
+    SET @sql_cmd=CONCAT('DELETE FROM `player` WHERE `status`=9 AND approval=4 AND `ts` < NOW() - INTERVAL ',@player_delete_rejected_after);
+    EXECUTE IMMEDIATE @sql_cmd;
   END IF;
-  IF player_delete_inactive_after IS NOT NULL AND player_delete_inactive_after > 0 THEN
-    DELETE FROM `player` WHERE `status`=9 AND`ts` < NOW() - INTERVAL player_delete_inactive_after DAY;
+  IF @player_delete_inactive_after IS NOT NULL THEN
+    SET @sql_cmd=CONCAT('DELETE FROM `player` WHERE `status`=9 AND`ts` < NOW() - INTERVAL ',@player_delete_inactive_after);
+    EXECUTE IMMEDIATE @sql_cmd;
   END IF;
-  IF player_delete_deleted_after IS NOT NULL AND player_delete_deleted_after > 0 THEN
-    DELETE FROM `player` WHERE `status`=0 AND `ts` < NOW() - INTERVAL player_delete_deleted_after DAY;
+  IF @player_delete_deleted_after IS NOT NULL THEN
+    SET @sql_cmd=CONCAT('DELETE FROM `player` WHERE `status`=0 AND `ts` < NOW() - INTERVAL ',@player_delete_deleted_after);
+    EXECUTE IMMEDIATE @sql_cmd;
   END IF;
-  IF player_changed_to_deleted_after IS NOT NULL AND player_changed_to_deleted_after > 0 THEN
-    UPDATE player SET status=0 WHERE status=8 AND ts < NOW() - INTERVAL player_changed_to_deleted_after DAY;
+  IF @player_changed_to_deleted_after IS NOT NULL THEN
+    SET @sql_cmd=CONCAT('UPDATE player SET status=0 WHERE status=8 AND ts < NOW() - INTERVAL ',@player_changed_to_deleted_after);
+    EXECUTE IMMEDIATE @sql_cmd;
   END IF;
 END ;;
 
@@ -588,6 +592,47 @@ BEGIN
     DELETE FROM player_product WHERE id=rid;
   END LOOP;
   CLOSE cur;
+END;;
+
+DROP PROCEDURE IF EXISTS apply_failed_claim_penalties ;;
+CREATE PROCEDURE `apply_failed_claim_penalties`()
+BEGIN
+  DECLARE free_fail_allowance INT DEFAULT 0;
+  DECLARE penalty_per_fail INT DEFAULT 0;
+
+  SET free_fail_allowance = memc_get('sysconfig:free_fail_allowance');
+  SET penalty_per_fail   = memc_get('sysconfig:penalty_per_fail');
+
+  CREATE TEMPORARY TABLE tmp_penalties ENGINE=MEMORY AS
+  SELECT
+      t.owner_id,
+      tp.team_id,
+      COUNT(DISTINCT tp.player_id) AS player_count,
+      COALESCE(SUM(pcn.counter), 0) AS total_failed_claims,
+      GREATEST(0, (COALESCE(SUM(pcn.counter), 0) - free_fail_allowance * COUNT(DISTINCT tp.player_id))) * penalty_per_fail AS penalty
+  FROM team_player tp
+  JOIN team t ON t.id = tp.team_id
+  LEFT JOIN player_counter_nf pcn
+      ON pcn.player_id = tp.player_id
+      AND pcn.metric = 'failed_claims'
+  WHERE tp.approved = 1
+  GROUP BY tp.team_id, t.owner_id
+  HAVING total_failed_claims >= free_fail_allowance * player_count;
+
+  INSERT INTO stream (player_id, model, model_id, points, title, message, pubtitle, pubmessage, ts)
+  SELECT
+      p.owner_id,
+      'team',
+      p.team_id,
+      -1 * p.penalty,
+      CONCAT('Got penalized for ', p.total_failed_claims, ' failed claims'),
+      CONCAT('Got penalized for ', p.total_failed_claims, ' failed claims'),
+      CONCAT('Got penalized for ', p.total_failed_claims, ' failed claims'),
+      CONCAT('Got penalized for ', p.total_failed_claims, ' failed claims'),
+      NOW()
+  FROM tmp_penalties p;
+
+  DROP TEMPORARY TABLE IF EXISTS tmp_penalties;
 END;;
 
 DELIMITER ;
