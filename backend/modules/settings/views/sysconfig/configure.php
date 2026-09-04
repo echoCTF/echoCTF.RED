@@ -102,13 +102,14 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="row">
         <div class="col-sm-3"><?= $form->field($model, 'username_length_min')->textInput()->hint('Minimum player username length') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'username_length_max')->textInput()->hint('Maximum player username length') ?></div>
-        <div class="col-sm-3"><?= $form->field($model, 'player_delete_inactive_after')->textInput()->hint('Delete players with status=9 (inactive) after X days') ?></div>
-        <div class="col-sm-3"><?= $form->field($model, 'player_delete_deleted_after')->textInput()->hint('Delete players with status=0 (deleted) after X days') ?></div>
-        <div class="col-sm-3"><?= $form->field($model, 'player_changed_to_deleted_after')->textInput()->hint('Update players with status=8 (changed) into status=0 (deleted) after X days') ?></div>
-        <div class="col-sm-3"><?= $form->field($model, 'player_delete_rejected_after')->textInput()->hint('Delete players that their registration was rejected (status=9 and approval=4) after X days') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'mail_verification_token_validity')->textInput()->hint('How long will the mail verification tokens be active for. Can take intervals supported by php and <code>INTERVAL</code>, eg. <code>10 day</code>, meaning 10 days from now') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'password_reset_token_validity')->textInput()->hint('How long will the password reset tokens be active for. Can take intervals supported by php and <code>INTERVAL</code>, eg. <code>10 day</code>, meaning 10 days from now') ?></div>
         <div class="col-sm-3"><?= $form->field($model, 'online_timeout')->textInput()->hint('Timeout (in seconds) for the <b><code>online</code></b> memcache key to expire (eg. 900)') ?></div>
+
+        <div class="col-sm-3"><?= $form->field($model, 'player_delete_rejected_after')->textInput()->hint('Delete players that their registration was rejected (status=9 and approval=4) after X days. Can take intervals supported by SQL <code>INTERVAL</code>, eg. <code>10 day</code>, meaning after 10 days') ?></div>
+        <div class="col-sm-3"><?= $form->field($model, 'player_delete_inactive_after')->textInput()->hint('Delete players with status=9 (inactive) after X days. Can take intervals supported by SQL <code>INTERVAL</code>, eg. <code>10 day</code>, meaning after 10 days') ?></div>
+        <div class="col-sm-3"><?= $form->field($model, 'player_delete_deleted_after')->textInput()->hint('Delete players with status=0 (deleted) after X days. Can take intervals supported by SQL <code>INTERVAL</code>, eg. <code>10 day</code>, meaning after 10 days') ?></div>
+        <div class="col-sm-3"><?= $form->field($model, 'player_changed_to_deleted_after')->textInput()->hint('Update players with status=8 (changed) into status=0 (deleted) after X days. Can take intervals supported by SQL <code>INTERVAL</code>, eg. <code>10 day</code>, meaning after 10 days') ?></div>
       </div>
       <div class="row">
         <div class="col-sm-3"><?= $form->field($model, 'academic_grouping')->textInput()->hint('Number of participant groups') ?></div>
