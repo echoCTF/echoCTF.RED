@@ -168,6 +168,7 @@
       - p5-NetPacket
       - gnuwatch
       - nmap
+      - fswatch
 
   tasks:
   - name: Sync date time
@@ -701,8 +702,8 @@
 
   - name: copy watchdog-action script
     copy:
-      src: ../../contrib/watchdog-action.py
-      dest: /usr/local/bin/watchdog-action
+      src: ../../contrib/watchdoger.py
+      dest: /usr/local/bin/watchdoger
       owner: root
       group: wheel
       mode: '0555'
@@ -715,10 +716,13 @@
       group: wheel
       mode: '0555'
 
-  - name: Add watchdog-action to rc.local
+  - name: Create watchdog folder
+    command: install -d -m 1777 -o root /watch
+
+  - name: Add watchdog --action to rc.local
     lineinfile:
       path: "/etc/rc.local"
-      line: "nohup /usr/local/bin/watchdog-action --file_path /tmp/event_finished --action /usr/local/sbin/event_shutdown >/tmp/watchdog.log 2>&1 &"
+      line: "nohup /usr/local/bin/watchdoger --file_path /watch/event_finished --action /usr/local/sbin/event_shutdown >/tmp/watchdog.log 2>&1 &"
       insertafter: EOF
 
   - name: create user for openvpn up/down scripts

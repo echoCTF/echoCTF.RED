@@ -160,6 +160,7 @@
       - p5-NetPacket
       - gnuwatch
       - nmap
+      - fswatch
 
   tasks:
   - debug:

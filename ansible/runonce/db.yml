@@ -106,6 +106,7 @@
       - py3-setuptools
       - py3-netaddr
       - supervisor
+      - fswatch
     my_cnf:
       - { init_file:  "/etc/mysql-init.sql"}
       - { bind-address:  "{{db_ip}}" }
@@ -424,13 +425,17 @@
       group: wheel
       mode: '0555'
 
+  - name: Create watchdog folder
+    command: install -d -m 1777 -o root /watch
+
   - name: Install watchdoger.ini for supervisord
     copy:
       dest: /etc/supervisord.d/watchdoger.ini
       content: |
         [program:watchdoger]
         user = root
-        command = su -fm -c watchdoger -s /usr/local/bin/python3 root /usr/local/bin/watchdoger --file_path /tmp/event_finished --url {{ wsserver.url | default("http://10.7.0.200:8888/broadcast") }} --token {{ wsserver.token | default("server123token") }}
+        #command=/bin/sh -c "fswatch -1 --include 'event_finished' --event Created /watch >/dev/null && curl -H 'Authorization: Bearer {{ wsserver.token | default("server123token") }}' -d '{\"event\":\"apiNotifications\"}' {{ wsserver.url | default("http://10.7.0.200:8888/broadcast") }}"
+        command = su -fm -c watchdoger -s /usr/local/bin/python3 root /usr/local/bin/watchdoger --file_path /watch/event_finished --url {{ wsserver.url | default("http://10.7.0.200:8888/broadcast") }} --token {{ wsserver.token | default("server123token") }}
         autorestart = false
         startretries = 0
         stdout_logfile=/var/log/watchdoger.log
