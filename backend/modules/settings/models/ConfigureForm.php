@@ -157,6 +157,7 @@ class ConfigureForm extends Model
   public $dashboard_news_records_per_page;
   public $target_restart_log_interval;
   public $disable_stream_tweet;
+  public $event_finished_path;
 
   public $keys = [
     'target_days_updated',
@@ -305,7 +306,8 @@ class ConfigureForm extends Model
     'dashboard_news_total_pages',
     'dashboard_news_records_per_page',
     'target_restart_log_interval',
-    'disable_stream_tweet'
+    'disable_stream_tweet',
+    'event_finished_path'
   ];
 
   /**
@@ -363,6 +365,7 @@ class ConfigureForm extends Model
         'profile_card_disabled_actions',
         'target_restart_log_interval',
         'stripe_url_prefix',
+        'event_finished_path',
       ], 'string'],
       [[
         'offense_registered_tag',
@@ -411,6 +414,7 @@ class ConfigureForm extends Model
         'profile_card_disabled_actions',
         'target_restart_log_interval',
         'stripe_url_prefix',
+        'event_finished_path',
       ], 'trim'],
       [[
         'mail_verification_token_validity',
