@@ -278,6 +278,8 @@ BEGIN
 
   IF memc_get('event_finished') IS NOT NULL THEN
     ALTER EVENT `event_shutdown` DISABLE;
-    SELECT 1 INTO OUTFILE '/watch/event_finished';
+    SET @event_path = COALESCE(memc_get('sysconfig:event_finished_path'), '/watch/event_finished');
+    SET @sql_cmd  = CONCAT("SELECT sleep(1) INTO OUTFILE ", QUOTE(@event_path));
+    EXECUTE IMMEDIATE @sql_cmd;
   END IF;
 END //
