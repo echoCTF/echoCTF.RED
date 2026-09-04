@@ -51,6 +51,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `team_encrypted_claims_allowed`: Should we allow claims of flags across teams?
 * `target_metadata_visible`: Whether or not metadata will be visible to normal players. Admins get to see the metadata no matter this settting.
 * `disable_stream_tweet`: Whether the ability to tweed individual stream messages is disabled
+* `event_finished`: Whether or not the event has finished.
 
 ## String and numeric key/val pairs
 
@@ -94,7 +95,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `avatar_robohash_set`: Choose the set for when robohash is configured
 * `mail_verification_token_validity`: How long will the mail verification tokens be active for. Can take intervals supported by php and `INTERVAL`, eg. 10 day, meaning 10 days from now
 * `password_reset_token_validity`: How long will the password reset tokens be active for. Can take intervals supported by php and `INTERVAL`, eg. 10 day, meaning 10 days from now
-
+* `event_finished_path`: The path to be create when a CTF event is finished (eg `/tmp/event_finished`)
 * `penalty_per_fail`: Points to penalize per fail (eg. `100`)
 * `free_fail_allowance`: Grace fail allowance before penalty is applied (eg. `3`)
 * `apply_abuse_penalties`: Whether or not to apply abuse penalties at the end of an event. This applies both failed claims as well as `abuse` table points.
