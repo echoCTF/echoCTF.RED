@@ -223,6 +223,7 @@ class m251207_102327_populate_mui_menu extends Migration
       'items' => [
         ['label' => 'Main', 'url' => ['/administer/default/index'], 'visibility' => 'admin',],
         ['label' => 'Events', 'url' => ['/administer/events/index'], 'visibility' => 'admin',],
+        ['label' => 'Memcache Operations', 'url' => ['/administer/memcacheops/index'], 'visibility' => 'admin',],
       ],
     ],
 
