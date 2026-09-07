@@ -43,7 +43,8 @@ CREATE TABLE `archived_stream` (
   `message` mediumtext DEFAULT NULL,
   `pubtitle` varchar(255) NOT NULL,
   `pubmessage` mediumtext DEFAULT NULL,
-  `ts` timestamp NOT NULL DEFAULT current_timestamp()
+  `ts` timestamp NOT NULL DEFAULT current_timestamp(),
+  KEY `idx-archived_stream-player_id` (`player_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -1081,6 +1082,7 @@ CREATE TABLE `player_token` (
   `expires_at` datetime DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`player_id`,`type`),
+  KEY `idx-player_token-expires_at` (`expires_at`),
   UNIQUE KEY `token` (`token`),
   CONSTRAINT `fk-player_token-player_id-player` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
