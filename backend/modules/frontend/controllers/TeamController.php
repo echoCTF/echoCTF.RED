@@ -297,15 +297,16 @@ class TeamController extends \app\components\BaseController
 
       if ($notificationModel->validate()) {
         if ($ownerOnly) {
-          if ($this->notifyLogic($team->owner, $notificationModel, $ovpn, $online) === null) {
+          $owner = $team->getOwner()->withPresence()->one();
+          if ($this->notifyLogic($owner, $notificationModel, $ovpn, $online) === null) {
             Yii::$app->session->addFlash('warning', 'Owner not notified due to filters.');
           } else {
-            $msg = "Notified owner [" . $team->owner->username . "]";
+            $msg = "Notified owner [" . $owner->username . "]";
             Yii::$app->session->addFlash('success', $msg);
           }
         } else {
           $_p = [];
-          foreach ($team->players as $player) {
+          foreach ($team->getPlayers()->withPresence()->all() as $player) {
             if ($this->notifyLogic($player, $notificationModel, $ovpn, $online) !== NULL)
               Yii::$app->session->addFlash('success', "Notified [" . $player->username . "].");
             else

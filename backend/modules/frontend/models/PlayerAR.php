@@ -333,7 +333,7 @@ class PlayerAR extends \yii\db\ActiveRecord
   {
     return $this->hasMany(Stream::class, ['player_id' => 'id'])
       ->select([
-        'stream.*', // Select all fields from the related Stream model
+        'stream.*',
         new \yii\db\Expression('TIMESTAMPDIFF(SECOND, LAG(stream.ts) OVER (ORDER BY stream.ts), stream.ts) AS seconds_since_last')
       ])->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
   }
@@ -464,6 +464,7 @@ class PlayerAR extends \yii\db\ActiveRecord
       $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
       $this->password = Yii::$app->security->generatePasswordHash($this->new_password);
     }
+
     if (!$this->isNewRecord && array_key_exists('academic', $this->dirtyAttributes) === true) {
       if ($this->team !== null) {
         $this->team->academic = $this->academic; // change team group and remove members
@@ -482,28 +483,9 @@ class PlayerAR extends \yii\db\ActiveRecord
     return parent::beforeSave($insert);
   }
 
-  /*  public function getOvpn()
-    {
-      $ip=Yii::$app->cache->Memcache->get("ovpn:".$this->id);
-      if($ip===false) return long2ip(0);
-      return $ip;
-    }
-
-    public function getLast_seen()
-    {
-      $last_seen=Yii::$app->cache->Memcache->get("last_seen:".$this->id);
-      if($last_seen===false) $last_seen=null;
-      return $last_seen;
-    }
-
-    public function getOnPUI()
-    {
-      return Yii::$app->cache->Memcache->get("online:".$this->id);
-    }*/
-
   public static function find()
   {
-    return parent::find()->select(['player.*', 'ifnull(memc_get(concat("ovpn:",player.id)),0) as ovpn', 'ifnull(memc_get(concat("online:",player.id)),0) as online', 'memc_get(concat("last_seen:",player.id)) as last_seen']);
+    return new PlayerQuery(static::class);
   }
 
   public function getHeadshots()
