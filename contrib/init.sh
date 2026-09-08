@@ -81,8 +81,8 @@ function sysconfig() {
 function tmuxs() {
   tmux -L ${DATABASE} kill-server || echo "tmux not running"
   sleep 1
-  tmux -L ${DATABASE} new -d 'cd ./backend; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=mUISESSID yii serve 127.0.1.4:8080'
-  tmux -L ${DATABASE} split-window 'cd ./frontend/web; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=pUI2SESSID -S 127.0.1.4:8082'
+  tmux -L ${DATABASE} new -d 'cd ./backend; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=mUISESSID yii serve 127.0.1.4:8080 --docroot=@app/web --router=@app/dev-router.php'
+  tmux -L ${DATABASE} split-window 'cd ./frontend; php --define session.save_handler=memcached --define session.save_path=127.0.0.1:11211 --define session.name=pUI2SESSID yii serve 127.0.1.4:8082 --docroot=@app/web --router=@app/dev-router.php'
 }
 
 function eventOrganizers()
