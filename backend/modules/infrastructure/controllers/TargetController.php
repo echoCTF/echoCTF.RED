@@ -96,8 +96,30 @@ class TargetController extends \app\components\BaseController
    */
   public function actionStatistics()
   {
-    $stats = Yii::$app->db->createCommand('select name,difficulty,target_started_count(id) as "startedBy",count(distinct t2.player_id) as "solvedBy", FORMAT(target_solved_percentage(id),2) as "solvedPct",min(t2.timer) as "fastestSolve",avg(t2.timer) as "avgSolve" FROM target as t1 left join headshot as t2 on t2.target_id=t1.id group by t1.id')
-      ->queryAll();
+    $stats = Yii::$app->db->createCommand('
+      select t1.name,t1.difficulty,
+        coalesce(st.startedBy,0) as "startedBy",
+        coalesce(hs.solvedBy,0) as "solvedBy",
+        FORMAT(coalesce(hs.solvedBy,0)*100/nullif(st.startedBy,0),2) as "solvedPct",
+        hs.fastestSolve as "fastestSolve",
+        hs.avgSolve as "avgSolve"
+      from target as t1
+      left join (
+        select ft.target_id, count(distinct s.player_id) as startedBy
+        from stream as s
+        join (
+          select id, target_id, "finding" as model from finding
+          union all
+          select id, target_id, "treasure" as model from treasure
+        ) as ft on ft.model=s.model and ft.id=s.model_id
+        group by ft.target_id
+      ) as st on st.target_id=t1.id
+      left join (
+        select target_id, count(distinct player_id) as solvedBy, min(timer) as fastestSolve, avg(timer) as avgSolve
+        from headshot
+        group by target_id
+      ) as hs on hs.target_id=t1.id
+    ')->queryAll();
 
     $dataProvider = new ArrayDataProvider([
       'allModels' => $stats,
