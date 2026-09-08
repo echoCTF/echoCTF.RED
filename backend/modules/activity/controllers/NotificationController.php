@@ -77,7 +77,7 @@ class NotificationController extends \app\components\BaseController
         $err = false;
         $connection = \Yii::$app->db;
         $transaction = $connection->beginTransaction();
-        $query = Player::find()->where(['active' => 1, 'status' => 10]);
+        $query = Player::find()->withPresence()->where(['active' => 1, 'status' => 10]);
         if ($model->online) {
           $query->andHaving(['!=', 'online', 0]);
         }

@@ -149,7 +149,7 @@ class NetworkController extends \app\components\BaseController
 
       if ($notificationModel->validate() && $model->players) {
         $_p = [];
-        foreach ($model->players as $player) {
+        foreach ($model->getPlayers()->withPresence()->all() as $player) {
           if ($this->notifyLogic($player, $notificationModel, $ovpn, $online) !== null) {
             Yii::$app->session->addFlash('success', 'Notified [' . $player->username . '].');
           } else {

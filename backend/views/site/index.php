@@ -77,7 +77,7 @@ $lastHeadshot=\app\modules\activity\models\Headshot::find()->orderBy(['created_a
             <h2>System</h2>
             <p>
             <ul>
-              <li><?= Html::a('Players &raquo;', ['/frontend/player']) ?>: <abbr title="Total players"><?= Player::find()->count() ?></abbr> / <abbr title="Active players"><?= Player::find()->where(['active' => 1])->count() ?></abbr> / <abbr title="Online"><?= Player::find()->having(['>', 'online', 1])->count() ?></abbr> / <abbr title="On VPN"><?= Player::find()->having(['>', 'ovpn', 0])->count() ?></abbr>
+              <li><?= Html::a('Players &raquo;', ['/frontend/player']) ?>: <abbr title="Total players"><?= Player::find()->count() ?></abbr> / <abbr title="Active players"><?= Player::find()->where(['active' => 1])->count() ?></abbr> / <abbr title="Online"><?= Player::find()->withPresence()->having(['>', 'online', 1])->count() ?></abbr> / <abbr title="On VPN"><?= Player::find()->withPresence()->having(['>', 'ovpn', 0])->count() ?></abbr>
               <?php if(Yii::$app->sys->subscriptions_menu_show===true):?>
                 <li><?=Html::a('Subscriptions &raquo;', ['/sales/default/index']) ?>:
                 <abbr title="Total Subscription"><?=\app\modules\sales\models\PlayerSubscription::find()->count();?></abbr> / <abbr title="Active"><?=\app\modules\sales\models\PlayerSubscription::find()->active()->count()?></abbr> / <abbr title="VIP"><?=\app\modules\sales\models\PlayerSubscription::find()->vip()->active()->count()?></abbr></li>
