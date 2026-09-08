@@ -51,6 +51,7 @@ class m241108_100648_populate_default_sysconfig_keys extends Migration
     'profile_settings_fields'=>'avatar,bio,country,discord,email,fullname,github,pending_progress,twitch,twitter,username,visibility,youtube',
     'time_zone'=>'UTC',
     'writeup_rankings'=>1,
+    'pf_state_limits'=>'(max 500, source-track rule, max-src-states 30, max-src-conn 5, max-src-conn-rate 20/5, overload <vip_flush_only> flush)'
   ];
   /**
    * {@inheritdoc}
