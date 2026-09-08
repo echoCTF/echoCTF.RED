@@ -66,8 +66,7 @@ class PlayerSearch extends Player
      */
     public function search($params)
     {
-        $query=Player::find()->joinWith(['last','metadata']);
-        // add conditions that should always apply here
+        $query=Player::find()->withPresence()->joinWith(['last','metadata']);
 
         $dataProvider=new ActiveDataProvider([
             'query' => $query,
@@ -103,7 +102,7 @@ class PlayerSearch extends Player
      */
     public function zeroPointWiteupsActivatedSearch($params)
     {
-        $query = ModerationPlayer::find()->joinWith(['last','metadata']);;
+        $query = ModerationPlayer::find()->withPresence()->joinWith(['last','metadata']);;
         $query->addSelect('playerTargetHelp.player_target_help_count as player_target_help_count');
         // add conditions that should always apply here
         $query->where('(player.id in (select player_id from player_score where points=0)) and player.id in (select distinct player_id from player_target_help)');
