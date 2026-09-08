@@ -683,9 +683,10 @@ class PlayerController extends \app\components\BaseController
    * @return Player the loaded model
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function findModel($id)
+  public function findModel($id, $presence = false)
   {
-    if (($model = Player::findOne($id)) !== null) {
+    $query = $presence ? Player::find()->withPresence() : Player::find();
+    if (($model = $query->andWhere(['id' => $id])->one()) !== null) {
       return $model;
     }
 
@@ -721,7 +722,7 @@ class PlayerController extends \app\components\BaseController
 
   public function actionNotify($id)
   {
-    $model = $this->findModel($id);
+    $model = $this->findModel($id, true);
     $notificationModel = new \app\modules\activity\models\Notification();
     if (Yii::$app->request->isPost) {
       Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
