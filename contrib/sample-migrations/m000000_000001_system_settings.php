@@ -102,7 +102,7 @@ class m000000_000001_system_settings extends Migration
     ['id' => "spins_per_day", 'val' => "70"],
     ['id' => "target_days_new", 'val' => "1"],
     ['id' => "target_days_updated", 'val' => "0"],
-    ['id' => 'pf_state_limits', 'val' => '(max 10000, source-track rule, max-src-nodes 5, max-src-states 1000, max-src-conn 50)'],
+    ['id' => 'pf_state_limits', 'val' => '(max 500, source-track rule, max-src-states 30, max-src-conn 5, max-src-conn-rate 20/5, overload <vip_flush_only> flush)'],
   ];
   public $disabled_routes = [
     //        ['route'=>'/challenge%'],

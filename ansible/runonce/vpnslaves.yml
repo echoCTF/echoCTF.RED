@@ -237,7 +237,7 @@
       version: "{{ GITHUB_REPO_BRANCH | default('main') }}"
 
   - name: Set findings keylifetime to 30 hours
-    shell: rcctl set findingsd flags -l pflog1 -n echoCTF -u openvpn -p openvpn -h 127.0.0.1 -k 108000 -U _memcached
+    shell: rcctl set findingsd flags -l pflog1 -n echoCTF -u openvpn -p openvpn -h 127.0.0.1 -U _memcached
 
   - name: Create temporary findingsd-federated.sql
     template:
