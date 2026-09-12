@@ -97,7 +97,7 @@
       - libmemcached
       - libtool
       - memcached--
-      - nginx
+      - nginx-modsecurity
       - "pecl{{versions.PHP|replace('.','')}}-memcached"
       - "php-gd%{{versions.PHP}}"
       - "php-curl%{{versions.PHP}}"
