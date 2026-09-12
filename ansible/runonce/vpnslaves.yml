@@ -117,6 +117,8 @@
       net.inet.tcp.synuselimit: 1000000
       net.inet.udp.sendspace: 9216
       net.unix.dgram.sendspace: 9216
+      net.inet.ip.portfirst: 1024
+      net.inet.ip.portlast: 65535
     rcctl:
       - { name: check_quotas, state: "disable" }
       - { name: cron, state: "enable" }

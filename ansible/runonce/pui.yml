@@ -68,6 +68,8 @@
       kern.shminfo.shmmax: 67018864
       kern.shminfo.shmall: 32768
       kern.maxfiles: 104060
+      net.inet.ip.portfirst: 1024
+      net.inet.ip.portlast: 65535
     post_inst: |
       Things to do:
         - Update /etc/administrators.conf with your IP's
