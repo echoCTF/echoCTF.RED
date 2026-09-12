@@ -8,4 +8,8 @@ $path = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 if (is_file($webRoot . $path)) {
     return false;
 }
+
+$_SERVER['SCRIPT_FILENAME'] = $webRoot . '/index.php';
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+
 require $webRoot . '/index.php';
