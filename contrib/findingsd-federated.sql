@@ -176,9 +176,8 @@ BEGIN
     SELECT memc_get(CONCAT('ovpn:',INET_NTOA(NEW.srcip))) INTO _PLAYER_ID;
   END IF;
 
-  IF teams IS NOT NULL AND teams=1 THEN
+  IF @debug IS NOT NULL AND @debug=1 AND teams IS NOT NULL AND teams=1 THEN
     SELECT memc_get(CONCAT('team_player:',_PLAYER_ID)) INTO _TEAM_ID;
---    SELECT memc_get(CONCAT('team_finding:',_TEAM_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
   END IF;
   SELECT memc_get(CONCAT('player_finding:',_PLAYER_ID, ':', _FINDING_ID)) INTO CLAIMED_BEFORE;
 

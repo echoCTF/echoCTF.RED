@@ -246,10 +246,19 @@ $config = [
   'on afterRequest' => function () {
     try {
       if (!Yii::$app->user->isGuest) {
-        \Yii::$app->cache->memcache->set("last_seen:" . \Yii::$app->user->id, time());
-        \Yii::$app->cache->memcache->set("online:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->online_timeout));
-        \Yii::$app->cache->memcache->set("player_session:" . \Yii::$app->user->id, \Yii::$app->session->id, intval(\Yii::$app->sys->online_timeout));
-        \Yii::$app->cache->memcache->set("player_frontend_ip:" . \Yii::$app->user->id, \Yii::$app->request->remoteIP);
+        $uid = \Yii::$app->user->id;
+        header("X-Player-Uid: $uid");
+        \Yii::$app->cache->memcache->setMulti([
+          "last_seen:" . $uid => time(),
+          "player_frontend_ip:" . $uid => \Yii::$app->request->remoteIP
+        ]);
+        \Yii::$app->cache->memcache->setMulti([
+          "online:" . $uid => time(),
+          "player_session:" . $uid => \Yii::$app->session->id
+        ],  intval(\Yii::$app->sys->online_timeout));
+        if (\Yii::$app->cache->memcache->add("last_seen_flush:" . $uid, 1, intval(\Yii::$app->sys->online_timeout))) {
+          \Yii::$app->db->createCommand()->update('player_last', ['on_pui' => new \yii\db\Expression('NOW()')], ['id' => $uid])->execute();
+        }
         return;
       }
     } catch (\Exception $e) {
