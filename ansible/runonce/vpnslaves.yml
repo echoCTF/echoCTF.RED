@@ -117,6 +117,10 @@
       net.inet.tcp.synuselimit: 1000000
       net.inet.udp.sendspace: 9216
       net.unix.dgram.sendspace: 9216
+      net.inet.ip.arptimeout: 30
+      net.inet.tcp.keepinittime: 15
+      net.inet.tcp.keepidle: 300
+      net.inet.tcp.keepintvl: 30
       net.inet.ip.portfirst: 1024
       net.inet.ip.portlast: 65535
     rcctl:
@@ -286,7 +290,7 @@
       - "sh /etc/netstart tun0"
       - "rcctl start openvpn"
 
-  - name: Get OVPN Config
+  - name: Do OVPN Config
     ignore_errors: true
     command: "{{item.cmd}}"
     args:
@@ -294,6 +298,10 @@
       chdir: "{{item.chdir|default(omit)}}"
     with_items:
     - { cmd: "{{APP_DIR}}/backend/yii vpn/save /etc/openvpn/openvpn_tun0.conf"}
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/get-ca 1", chdir: "/etc/openvpn/private"}
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/save-vpn-ta /etc/openvpn/private/vpn-ta.key", chdir: "/etc/openvpn/private"}
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/create-cert", chdir: "/etc/openvpn/private"}
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/create-crl", chdir: "/etc/openvpn/private"}
 
   - name: Bring rest of interfaces up
     command: "{{item}}"
