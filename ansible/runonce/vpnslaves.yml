@@ -360,14 +360,13 @@
       content: |
         [program:cron-pf]
         user = root
-        environment = TERM=vt100
         command = /usr/local/bin/cron-pf 1
         stdout_logfile=/var/log/supervisord-echoctf.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
+
         [program:cron-instance-pf]
         user = root
-        environment = TERM=vt100
         command = /usr/local/bin/instance-pf 30
         stdout_logfile=/var/log/supervisord-echoctf.log
         stdout_logfile_maxbytes=0

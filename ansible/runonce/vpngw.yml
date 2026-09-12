@@ -681,7 +681,6 @@
       content: |
         [program:backend-cron]
         user = root
-        environment = TERM=vt100
         command = /usr/local/bin/cron-index
         stdout_logfile=/var/log/echoctf-cron-index.log
         stdout_logfile_maxbytes=0
@@ -689,7 +688,6 @@
 
         [program:backend-instances]
         user = root
-        environment = TERM=vt100
         command = /usr/local/bin/instances
         stdout_logfile=/var/log/echoctf-cron-instances.log
         stdout_logfile_maxbytes=0
@@ -697,7 +695,6 @@
 
         [program:backend-instances-pf]
         user = root
-        environment = TERM=vt100
         command = /usr/local/bin/instance-pf-tables
         stdout_logfile=/var/log/echoctf-cron-instances-pf.log
         stdout_logfile_maxbytes=0
