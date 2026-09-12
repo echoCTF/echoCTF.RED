@@ -11,3 +11,7 @@ pre_backups:
   - "mysql -e 'PURGE BINARY LOGS BEFORE NOW()'"
 
 REPO: /root/sources
+
+#innodb_buffer_pool_size: "2G"
+#innodb_log_file_size: "1G"
+#max_connections: "500"

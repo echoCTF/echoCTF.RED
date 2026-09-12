@@ -125,10 +125,9 @@
       - { blackhole: "FORCE" }
       - { table_definition_cache: "420" }
       - { performance_schema: "ON" }
-#      - { innodb_buffer_pool_size: "2G" }
-#      - { innodb_log_file_size: "1G" }
-      - { innodb_buffer_pool_size: "384M" }
-      - { innodb_log_file_size: "96M" }
+      - { max_connections: "{{ max_connections | default(100)" }
+      - { innodb_buffer_pool_size: "{{ innodb_buffer_pool_size | default(384M)" }
+      - { innodb_log_file_size: "{{ innodb_log_file_size | default(96M)" }
       - { key_buffer_size: "512k" }
       - { max_connections: "50" }
   tasks:
