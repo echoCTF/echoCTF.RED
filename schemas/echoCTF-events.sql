@@ -28,10 +28,14 @@ CREATE EVENT `rotate_notifications` ON SCHEDULE EVERY 12 HOUR STARTS '2023-04-03
       ALTER EVENT `rotate_notifications` ENABLE;
     END ;;
 
-DROP EVENT IF EXISTS `update_player_last_seen` ;;
-CREATE EVENT `update_player_last_seen` ON SCHEDULE EVERY 1 HOUR STARTS '2020-09-14 11:10:05' ON COMPLETION PRESERVE ENABLE DO BEGIN
- UPDATE `player_last` SET `on_pui`=FROM_UNIXTIME(memc_get(CONCAT('last_seen:',id))) WHERE memc_get(CONCAT('last_seen:',id)) IS NOT NULL;
-END ;;
+--  DROP EVENT IF EXISTS `update_player_last_seen` ;;
+--  CREATE EVENT `update_player_last_seen` ON SCHEDULE EVERY 1 HOUR STARTS '2020-09-14 11:10:05' ON COMPLETION PRESERVE ENABLE DO BEGIN
+--    UPDATE `player_last` pl
+--    JOIN (SELECT id, memc_get(CONCAT('last_seen:',id)) AS ls FROM `player_last`) t
+--      ON t.id = pl.id
+--    SET pl.on_pui = FROM_UNIXTIME(t.ls)
+--    WHERE t.ls IS NOT NULL;
+--  END ;;
 
 DROP EVENT IF EXISTS `update_ranks` ;;
 CREATE EVENT `update_ranks` ON SCHEDULE EVERY 30 SECOND STARTS '2021-01-11 12:26:44' ON COMPLETION PRESERVE ENABLE DO
