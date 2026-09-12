@@ -18,6 +18,11 @@ echo "------------"
 date
 
 if [ "$script_type" == "client-connect" ]; then
+    /usr/local/bin/vpn_churn_check "$common_name" connect
+    if [ $? -ne 0 ]; then
+      echo "client-connect[$$]: ERROR CN=${common_name} hit the rate-limit"
+      exit 1
+    fi
     echo "client-connect[$$]: CN=${common_name}"
     NETWORKS=$(mysql --connect-timeout=10 -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "CALL VPN_LOGIN(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))")
     if [ "$NETWORKS" == "LOGGEDIN" ]; then
@@ -35,6 +40,11 @@ if [ "$script_type" == "client-connect" ]; then
     fi
     echo "client-connect[$$]: CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip}"
 elif [ "$script_type" == "client-disconnect" ]; then
+  /usr/local/bin/vpn_churn_check "$common_name" disconnect
+  if [ $? -ne 0 ]; then
+    echo "client-disconnect[$$]: ERROR CN=${common_name} hit the rate-limit"
+  fi
+
   NETWORKS=$(mysql --connect-timeout=10 -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" -NBe "CALL VPN_LOGOUT(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))" echoCTF)
   if [ -x /sbin/pfctl ]; then
     for network in ${NETWORKS};do

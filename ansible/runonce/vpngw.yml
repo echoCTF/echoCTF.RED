@@ -417,6 +417,9 @@
       src: "{{playbook_dir}}/../../contrib/findingsd-federated.sql"
       dest: /tmp/findingsd.sql
 
+  - name: Build vpn_churn_check
+    shell: gcc -o /usr/local/bin/vpn_churn_check {{playbook_dir}}/../../contrib/vpn_churn_check.c -I/usr/local/include -L/usr/local/lib -lmemcached
+
   - name: Build findingsd
     shell: "{{item}}"
     args:
