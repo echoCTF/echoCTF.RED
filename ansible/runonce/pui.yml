@@ -51,11 +51,11 @@
     validation_key: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
     versions:
       PHP: "8.4"
-      PHP_MINOR: "6"
+      PHP_MINOR: "20p0"
       AUTOCONF: "2.69"
       AUTOMAKE: "1.16"
-      ICU_MAJOR: 77
-      ICU_MINOR: 1
+      ICU_MAJOR: 78
+      ICU_MINOR: 3
     sysctl:
       kern.bufcachepercent: 30
       net.inet.ip.ifq.maxlen: 2560
