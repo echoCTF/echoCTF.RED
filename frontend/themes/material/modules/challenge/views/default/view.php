@@ -11,7 +11,7 @@ use app\widgets\vote\VoteWidget;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Challenge */
-$this->title=Html::encode(Yii::$app->sys->event_name.' '.\Yii::t('app','Challenges').' / (ID#'.$model->id.') '.$model->name);
+$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Challenges').' / (ID#'.$model->id.') '.$model->name;
 $this->_description=\yii\helpers\StringHelper::truncateWords(strip_tags($model->description), 15);
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->id], 'https');
 global $first;
