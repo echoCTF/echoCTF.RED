@@ -13,7 +13,7 @@ Url::remember();
 
 <div class="target-index">
   <div class="body-content">
-<?php if(!Yii::$app->user->isGuest):?>
+<?php if(!Yii::$app->user->isGuest && !\Yii::$app->sys->disable_ondemand_operations):?>
   <?php if($target->ondemand && $target->ondemand->state<0):?>
     <div><p class="text-info"><?=\Yii::t('app','This target is currently powered off.')?> <?php if(Yii::$app->user->identity->profile->last->vpn_local_address===null):?><em><?=\Yii::t('app','Connect to the VPN to be allowed to power the system up.')?></em><?php endif;?></p></div>
   <?php elseif($target->ondemand && $target->ondemand->state>0):?>
