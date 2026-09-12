@@ -608,6 +608,38 @@ BEGIN
   DROP TEMPORARY TABLE IF EXISTS tmp_penalties;
 END;;
 
+
+-- set_multi(kv_string TEXT, delim VARCHAR(10)): splits kv_string on delim
+-- (NULL = ','), splits each pair on '=>', calls memc_set(key, val).
+-- Requires memc_set UDF already registered.
+DROP PROCEDURE IF EXISTS set_multi ;;
+CREATE PROCEDURE set_multi(IN kv_string TEXT, IN delim VARCHAR(10))
+BEGIN
+  DECLARE remaining TEXT DEFAULT kv_string;
+  DECLARE pair TEXT;
+  DECLARE k VARCHAR(255);
+  DECLARE v VARCHAR(255);
+  DECLARE pos INT;
+
+  SET delim = IFNULL(delim, ',');
+
+  WHILE LENGTH(remaining) > 0 DO
+    SET pos = LOCATE(delim, remaining);
+    IF pos > 0 THEN
+      SET pair = SUBSTRING(remaining, 1, pos - 1);
+      SET remaining = SUBSTRING(remaining, pos + LENGTH(delim));
+    ELSE
+      SET pair = remaining;
+      SET remaining = '';
+    END IF;
+
+    SET k = TRIM(SUBSTRING_INDEX(pair, '=>', 1));
+    SET v = TRIM(SUBSTRING_INDEX(pair, '=>', -1));
+
+    DO memc_set(k, v);
+  END WHILE;
+END;;
+
 DELIMITER ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
