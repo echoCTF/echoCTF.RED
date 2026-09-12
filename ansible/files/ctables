@@ -14,6 +14,29 @@ ip netns exec ${NSPID} iptables -I INPUT -s 10.0.0.0/24 -j ACCEPT
 ip netns exec ${NSPID} iptables -I INPUT -s 10.10.0.0/16 -j ACCEPT
 ip netns exec ${NSPID} iptables -I OUTPUT -o lo -j ACCEPT
 ip netns exec ${NSPID} iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+
+#IFACE=eth0
+#RATE=50kbps
+##RATE=5mbit
+#
+## egress: shape traffic leaving netns toward 10.10.0.0/16
+#ip netns exec ${NSPID} tc qdisc add dev ${IFACE} root handle 1: htb default 30
+#ip netns exec ${NSPID} tc class add dev ${IFACE} parent 1: classid 1:1 htb rate 1000mbit
+#ip netns exec ${NSPID} tc class add dev ${IFACE} parent 1:1 classid 1:10 htb rate ${RATE} ceil ${RATE}
+#ip netns exec ${NSPID} tc class add dev ${IFACE} parent 1:1 classid 1:30 htb rate 1000mbit ceil 1000mbit
+#ip netns exec ${NSPID} tc filter add dev ${IFACE} parent 1: protocol ip prio 1 u32 match ip dst 10.10.0.0/16 flowid 1:10
+#
+## ingress: shape traffic entering netns from 10.10.0.0/16, via ifb redirect
+#ip netns exec ${NSPID} ip link add ifb0 type ifb
+#ip netns exec ${NSPID} ip link set ifb0 up
+#ip netns exec ${NSPID} tc qdisc add dev ${IFACE} ingress
+#ip netns exec ${NSPID} tc filter add dev ${IFACE} parent ffff: protocol ip u32 match u32 0 0 action mirred egress redirect dev ifb0
+#ip netns exec ${NSPID} tc qdisc add dev ifb0 root handle 1: htb default 30
+#ip netns exec ${NSPID} tc class add dev ifb0 parent 1: classid 1:1 htb rate 1000mbit
+#ip netns exec ${NSPID} tc class add dev ifb0 parent 1:1 classid 1:10 htb rate ${RATE} ceil ${RATE}
+#ip netns exec ${NSPID} tc class add dev ifb0 parent 1:1 classid 1:30 htb rate 1000mbit ceil 1000mbit
+#ip netns exec ${NSPID} tc filter add dev ifb0 parent 1: protocol ip prio 1 u32 match ip src 10.10.0.0/16 flowid 1:10
+
 /bin/rm -f "$LINKFILE"
 #. /etc/docker-extras.sh
 #if [ -f /proc/$NSPID/root/usr/bin/pkexec ]; then
