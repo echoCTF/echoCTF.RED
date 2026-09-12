@@ -45,7 +45,7 @@ http {
     limit_req_zone $binary_remote_addr zone=Claim:1m rate=10r/s;
     limit_req_zone $binary_remote_addr zone=ResetPassword:1m rate=10r/s;
     limit_req_zone $binary_remote_addr zone=VerifyEmail:10m rate=10r/s;
-    limit_req_zone $cookie_pUI2SESSID zone=perplayer:10m rate=5r/s;
+    limit_req_zone $cookie_PUISESSID zone=perplayer:10m rate=5r/s;
 
     #access_log  syslog:server=unix:/dev/log,severity=notice mainsyslog;
     access_log  logs/pui-access.log  combined_player;
@@ -116,7 +116,7 @@ http {
         ssl_dhparam               /etc/ssl/private/dhparam.pem;
 
         ssl_ciphers               'AES256+EECDH:AES256+EDH:!aNULL';
-        ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+        ssl_protocols             TLSv1.2 TLSv1.3;
         ssl_session_cache         builtin:1000  shared:SSL:10m;
 
         add_header Strict-Transport-Security "max-age=63072000; includeSubDomains";
@@ -144,13 +144,22 @@ http {
         ssl_dhparam               /etc/ssl/private/dhparam.pem;
 
         ssl_ciphers               'AES256+EECDH:AES256+EDH:!aNULL';
-        ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+        ssl_protocols             TLSv1.2 TLSv1.3;
         ssl_session_cache         builtin:1000  shared:SSL:10m;
 
         add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
         add_header X-Content-Type-Options nosniff always;
         add_header X-XSS-Protection "1; mode=block" always;
         add_header X-Frame-Options DENY always;
+
+        # Report-only for now: logs would-be violations to the browser console without
+        # blocking anything. Watch for reports (including from the Node.js apps on this
+        # domain) before ever switching this to the enforcing `Content-Security-Policy` header.
+        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' wss://ctf.hackmex.mx; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
+
+        modsecurity on;
+        modsecurity_rules_file /etc/nginx/modsecurity-includes.conf;
+
         error_page 401 402 403 404 405 406 407 408 409 @errorphp;
         error_page 410 411 412 413 414 415 416 417 418 419 @errorphp;
         error_page 420 421 422 423 424 425 426 427 428 @errorphp;

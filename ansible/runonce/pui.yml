@@ -56,6 +56,7 @@
       AUTOMAKE: "1.16"
       ICU_MAJOR: 78
       ICU_MINOR: 3
+      CORERULESET: "4.29.0"
     sysctl:
       kern.bufcachepercent: 30
       net.inet.ip.ifq.maxlen: 2560
@@ -355,7 +356,6 @@
   - name: Activate install php modules
     shell: "cp /etc/php-{{versions.PHP}}.sample/*.ini /etc/php-{{versions.PHP}}/"
 
-
   - name: "Create participant/config/db.php"
     copy:
       dest: "/home/participantUI/{{domain_name}}/frontend/config/db.php"
@@ -419,6 +419,80 @@
       - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}', identificationFiles: true }
     tags:
       - nginx
+
+  - name: Create modsecurity.conf
+    copy:
+      dest: /etc/nginx/modsecurity.conf
+      content: |
+        SecRuleEngine DetectionOnly
+        SecRequestBodyAccess On
+        SecRequestBodyLimit 13107200
+        SecRequestBodyNoFilesLimit 131072
+        SecRequestBodyLimitAction Reject
+        SecResponseBodyAccess Off
+        SecPcreMatchLimit 1000
+        SecPcreMatchLimitRecursion 1000
+        SecTmpDir /tmp/
+        SecDataDir /tmp/
+        SecAuditEngine RelevantOnly
+        SecAuditLogRelevantStatus "^(?:5|4(?!04))"
+        SecAuditLogParts ABDEFHIJZ
+        SecAuditLogType Serial
+        SecAuditLog /logs/modsec_audit.log
+        SecArgumentSeparator &
+        SecCookieFormat 0
+        SecStatusEngine Off
+    tags:
+      - nginx
+
+  - name: Create modsecurity-includes.conf
+    copy:
+      dest: /etc/nginx/modsecurity-includes.conf
+      content: |
+        Include /etc/nginx/modsecurity.conf
+        Include /etc/nginx/owasp-crs/crs-setup.conf
+        Include /etc/nginx/owasp-crs/rules/*.conf
+    tags:
+      - nginx
+
+  - name: Download OWASP CRS
+    get_url:
+      url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ versions.CORERULESET }}.tar.gz"
+      dest: "/tmp/coreruleset-{{ versions.CORERULESET }}.tar.gz"
+      mode: "0644"
+
+  - name: Extract CRS archive under /tmp
+    unarchive:
+      src: "/tmp/coreruleset-{{ versions.CORERULESET }}.tar.gz"
+      dest: /tmp
+      remote_src: true
+      creates: "/tmp/coreruleset-{{ versions.CORERULESET }}/crs-setup.conf.example"
+
+  - name: Ensure /etc/nginx/rules exists
+    file:
+      path: /etc/nginx/rules
+      state: directory
+      owner: root
+      group: wheel
+      mode: "0755"
+
+  - name: Copy CRS rules into place
+    copy:
+      src: "/tmp/coreruleset-{{ versions.CORERULESET }}/rules/"
+      dest: /etc/nginx/rules/
+      remote_src: true
+      owner: root
+      group: wheel
+      mode: "0644"
+
+  - name: Copy crs-setup.conf.example into place
+    copy:
+      src: "/tmp/coreruleset-{{ versions.CORERULESET }}/crs-setup.conf.example"
+      dest: /etc/nginx/crs-setup.conf
+      remote_src: true
+      owner: root
+      group: wheel
+      mode: "0644"
 
   - name: Create nginx dt.conf
     template:
