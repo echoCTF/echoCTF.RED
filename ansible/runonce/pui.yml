@@ -454,6 +454,7 @@
       - { section: participantui, option: pm.start_servers, value: 2 }
       - { section: participantui, option: pm.max_spare_servers, value: 3 }
       - { section: participantui, option: pm.min_spare_servers, value: 1 }
+      - { section: participantui, option: pm.max_requests, value: 500 }
       - { section: participantui, option: chroot, value: "/home/participantUI" }
       - { section: participantui, option: "php_admin_value[sendmail_path]", value: "/bin/femail -t" }
       - { section: participantui, option: "php_admin_value[session.save_handler]", value: "memcached" }
