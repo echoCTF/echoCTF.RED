@@ -82,6 +82,7 @@ class m251207_102327_populate_mui_menu extends Migration
         ['label' => 'Writeup Ratings', 'url' => ['/activity/writeup-rating/index'], 'visibility' => 'user',],
         ['label' => 'Player Activated Writeups', 'url' => ['/activity/player-target-help/index'], 'visibility' => 'user',],
         ['label' => 'WS Tokens', 'url' => ['/activity/ws-token/index'], 'visibility' => 'admin',],
+        ['label' => 'WS Token History', 'url' => ['/activity/ws-token-history/index'], 'visibility' => 'admin',],
         ['label' => 'Reports', 'url' => ['/activity/report/index'], 'visibility' => 'user',],
         ['label' => 'Inquiries', 'url' => ['/activity/inquiry/index'], 'visibility' => 'admin',],
         ['label' => 'Sessions', 'url' => ['/activity/session/index'], 'visibility' => 'admin',],

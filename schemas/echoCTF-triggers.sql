@@ -989,6 +989,26 @@ thisBegin:BEGIN
   END IF;
 END ;;
 
+DROP TRIGGER IF EXISTS tai_ws_token ;;
+CREATE TRIGGER `tai_ws_token` AFTER INSERT ON `ws_token` FOR EACH ROW
+  thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+      LEAVE thisBegin;
+  END IF;
+  INSERT INTO ws_token_history (`token`,`player_id`,`subject_id`,`is_server`,`expires_at`) VALUES (NEW.token ,NEW.player_id ,NEW.subject_id ,NEW.is_server ,NEW.expires_at);
+END ;;
+
+DROP TRIGGER IF EXISTS tau_ws_token ;;
+CREATE TRIGGER `tau_ws_token` AFTER UPDATE ON `ws_token` FOR EACH ROW
+  thisBegin:BEGIN
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+      LEAVE thisBegin;
+  END IF;
+  IF (NEW.token != OLD.token) THEN
+    INSERT INTO ws_token_history (`token`,`player_id`,`subject_id`,`is_server`,`expires_at`) VALUES (NEW.token ,NEW.player_id ,NEW.subject_id ,NEW.is_server ,NEW.expires_at);
+  END IF;
+END ;;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
