@@ -834,8 +834,8 @@ CREATE TABLE `player_country_rank` (
   `id` int(11) NOT NULL DEFAULT 0,
   `player_id` int(11) unsigned NOT NULL,
   `country` varchar(3) NOT NULL,
-  PRIMARY KEY (`id`,`country`),
-  UNIQUE KEY `idx-player_country_rank-player_id` (`player_id`)
+  PRIMARY KEY (`id`,`country`) USING BTREE,
+  UNIQUE KEY `idx-player_country_rank-player_id` (`player_id`) USING BTREE
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -973,7 +973,7 @@ DROP TABLE IF EXISTS `player_rank`;
 CREATE TABLE `player_rank` (
   `id` int(11) unsigned NOT NULL DEFAULT 0,
   `player_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`,`player_id`),
+  PRIMARY KEY (`id`,`player_id`) USING BTREE,
   UNIQUE KEY `player_id` (`player_id`),
   KEY `idx-player_rank-player_id` (`player_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -1696,7 +1696,7 @@ DROP TABLE IF EXISTS `team_rank`;
 CREATE TABLE `team_rank` (
   `id` int(11) NOT NULL DEFAULT 0,
   `team_id` int(11) NOT NULL,
-  PRIMARY KEY (`id`,`team_id`),
+  PRIMARY KEY (`id`,`team_id`) USING BTREE,
   UNIQUE KEY `team_id` (`team_id`),
   KEY `idx-team_rank-team_id` (`team_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
