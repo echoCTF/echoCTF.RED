@@ -47,7 +47,7 @@ $this->registerLayoutOverrides();
     <link rel="canonical" href="<?=$this->og_url['content']?>" />
     <?php $this->head()?>
     <?=Html::csrfMetaTags() ?>
-    <title><?=trim(Html::encode($this->title))?></title>
+    <title><?=Html::encode(trim($this->title))?></title>
 <?php if(Yii::$app->sys->event_start!==false && Yii::$app->sys->event_end!==false):?>
     <script>
     var countDownStart = <?=intval(Yii::$app->sys->event_start)*1000?>;
