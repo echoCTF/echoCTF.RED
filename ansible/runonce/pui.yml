@@ -51,11 +51,11 @@
     validation_key: "{{ lookup('password', '/dev/null length=15 chars=ascii_letters') }}"
     versions:
       PHP: "8.4"
-      PHP_MINOR: "6"
+      PHP_MINOR: "20p0"
       AUTOCONF: "2.69"
       AUTOMAKE: "1.16"
-      ICU_MAJOR: 77
-      ICU_MINOR: 1
+      ICU_MAJOR: 78
+      ICU_MINOR: 3
     sysctl:
       kern.bufcachepercent: 30
       net.inet.ip.ifq.maxlen: 2560
@@ -68,6 +68,8 @@
       kern.shminfo.shmmax: 67018864
       kern.shminfo.shmall: 32768
       kern.maxfiles: 104060
+      net.inet.ip.portfirst: 1024
+      net.inet.ip.portlast: 65535
     post_inst: |
       Things to do:
         - Update /etc/administrators.conf with your IP's
@@ -95,7 +97,7 @@
       - libmemcached
       - libtool
       - memcached--
-      - nginx
+      - nginx-modsecurity
       - "pecl{{versions.PHP|replace('.','')}}-memcached"
       - "php-gd%{{versions.PHP}}"
       - "php-curl%{{versions.PHP}}"
@@ -384,6 +386,11 @@
         <?php
           return [
             'class' => 'yii\\caching\\MemCache',
+            'options' => [
+                    \Memcached::OPT_NO_BLOCK => true,
+                    \Memcached::OPT_NOREPLY => true,
+                    \Memcached::OPT_TCP_NODELAY => true,
+            ],
             'useMemcached' => true,
             'servers' => [
               [
@@ -443,10 +450,11 @@
       - { section: participantui, option: group, value: "participantUI" }
       - { section: participantui, option: listen, value: "127.0.0.1:9001" }
       - { section: participantui, option: pm, value: "dynamic" }
-      - { section: participantui, option: pm.max_children, value: 5 }
-      - { section: participantui, option: pm.start_servers, value: 2 }
-      - { section: participantui, option: pm.max_spare_servers, value: 3 }
-      - { section: participantui, option: pm.min_spare_servers, value: 1 }
+      - { section: participantui, option: pm.max_children, value: "{{ pm_max_children | default(5)}}" }
+      - { section: participantui, option: pm.start_servers, value: "{{ pm_start_servers | default(2)}}" }
+      - { section: participantui, option: pm.max_spare_servers, value: "{{ pm_max_spare_servers | default(3)}}" }
+      - { section: participantui, option: pm.min_spare_servers, value: "{{ pm_min_spare_servers | default(1)}}" }
+      - { section: participantui, option: pm.max_requests, value: 500 }
       - { section: participantui, option: chroot, value: "/home/participantUI" }
       - { section: participantui, option: "php_admin_value[sendmail_path]", value: "/bin/femail -t" }
       - { section: participantui, option: "php_admin_value[session.save_handler]", value: "memcached" }
@@ -464,7 +472,7 @@
       - { section: PHP, option: "max_execution_time", value: "180" }
       - { section: PHP, option: "max_input_time", value: "120" }
       - { section: PHP, option: "memory_limit", value: "256M" }
-      - { section: PHP, option: "error_reporting", value: "E_NONE" }
+      - { section: PHP, option: "error_reporting", value: "0" }
       - { section: PHP, option: "post_max_size", value: "180M" }
       - { section: PHP, option: "upload_max_filesize", value: "120M" }
       - { section: PHP, option: "allow_url_fopen", value: "On"}

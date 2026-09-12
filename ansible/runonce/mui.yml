@@ -91,7 +91,7 @@
       - autoconf%2.69
       - automake%1.16
       - "pecl{{versions.PHP|replace('.','')}}-memcached"
-      - nginx
+      - nginx-modsecurity
       - "php-gd%{{versions.PHP}}"
       - "php-curl%{{versions.PHP}}"
       - "php-intl%{{versions.PHP}}"
@@ -417,7 +417,7 @@
       - { section: PHP, option: "max_execution_time", value: "60" }
       - { section: PHP, option: "max_input_time", value: "120" }
       - { section: PHP, option: "memory_limit", value: "256M" }
-      - { section: PHP, option: "error_reporting", value: "E_NONE" }
+      - { section: PHP, option: "error_reporting", value: "0" }
       - { section: PHP, option: "post_max_size", value: "180M" }
       - { section: PHP, option: "upload_max_filesize", value: "120M" }
       - { section: PHP, option: "allow_url_fopen", value: "On"}

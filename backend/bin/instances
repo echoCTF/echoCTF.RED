@@ -17,6 +17,14 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 $config = require __DIR__ . '/../config/console.php';
 
 $application = new yii\console\Application($config);
-//$exitCode = $application->run();
-$exitCode = $application->runAction('cron/instances');
-exit($exitCode);
+while (true) {
+  try {
+    $application->runAction('cron/instances');
+  } catch (\Throwable $e) {
+    Yii::error($e->getMessage() . "\n" . $e->getTraceAsString(), 'cron-loop');
+    exit(1);
+  }
+
+  gc_collect_cycles();
+  sleep(10);
+}

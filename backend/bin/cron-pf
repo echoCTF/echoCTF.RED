@@ -19,7 +19,7 @@ $config = require __DIR__ . '/../config/console.php';
 $application = new yii\console\Application($config);
 while (true) {
   try {
-    $application->runAction('cron/index', []);
+    $application->runAction('cron/pf',[1]);
   } catch (\Throwable $e) {
     Yii::error($e->getMessage() . "\n" . $e->getTraceAsString(), 'cron-loop');
     exit(1);

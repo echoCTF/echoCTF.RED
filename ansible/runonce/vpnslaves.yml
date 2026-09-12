@@ -117,6 +117,12 @@
       net.inet.tcp.synuselimit: 1000000
       net.inet.udp.sendspace: 9216
       net.unix.dgram.sendspace: 9216
+      net.inet.ip.arptimeout: 30
+      net.inet.tcp.keepinittime: 15
+      net.inet.tcp.keepidle: 300
+      net.inet.tcp.keepintvl: 30
+      net.inet.ip.portfirst: 1024
+      net.inet.ip.portlast: 65535
     rcctl:
       - { name: check_quotas, state: "disable" }
       - { name: cron, state: "enable" }
@@ -284,7 +290,7 @@
       - "sh /etc/netstart tun0"
       - "rcctl start openvpn"
 
-  - name: Get OVPN Config
+  - name: Do OVPN Config
     ignore_errors: true
     command: "{{item.cmd}}"
     args:
@@ -292,6 +298,10 @@
       chdir: "{{item.chdir|default(omit)}}"
     with_items:
     - { cmd: "{{APP_DIR}}/backend/yii vpn/save /etc/openvpn/openvpn_tun0.conf"}
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/get-ca 1", chdir: "/etc/openvpn/private"}
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/save-vpn-ta /etc/openvpn/private/vpn-ta.key", chdir: "/etc/openvpn/private"}
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/create-cert", chdir: "/etc/openvpn/private"}
+    - { cmd: "{{APP_DIR}}/backend/yii ssl/create-crl", chdir: "/etc/openvpn/private"}
 
   - name: Bring rest of interfaces up
     command: "{{item}}"
@@ -325,14 +335,39 @@
       - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
 
+  - name: Create needed symbolic links for backend commands
+    file:
+      src: "{{item.src}}"
+      dest: "{{item.dst}}"
+      owner: root
+      group: wheel
+      state: link
+    with_items:
+      - { src: "/usr/local/bin/php-{{versions.PHP}}", dst: "/usr/local/bin/php" }
+      - { src: "{{APP_DIR}}/backend/bin/cron-index", dst: "/usr/local/bin/cron-index" }
+      - { src: "{{APP_DIR}}/backend/bin/cron-pf", dst: "/usr/local/bin/cron-pf" }
+      - { src: "{{APP_DIR}}/backend/bin/instance-pf", dst: "/usr/local/bin/instance-pf" }
+      - { src: "{{APP_DIR}}/backend/bin/instance-pf-tables", dst: "/usr/local/bin/instance-pf-tables" }
+      - { src: "{{APP_DIR}}/backend/bin/instances", dst: "/usr/local/bin/instances" }
+      - { src: "{{APP_DIR}}/backend/bin/ssl-generate-crl", dst: "/usr/local/bin/ssl-generate-crl" }
+      - { src: "{{APP_DIR}}/backend/bin/healthcheck", dst: "/usr/local/bin/healthcheck" }
+      - { src: "{{APP_DIR}}/backend/bin/powerops", dst: "/usr/local/bin/powerops" }
+      - { src: "{{APP_DIR}}/backend/bin/target-restart", dst: "/usr/local/bin/target-restart" }
+
   - name: Install echoctf.ini for supervisord
     copy:
       dest: /etc/supervisord.d/echoctf.ini
       content: |
-        [program:echoctfcron]
+        [program:cron-pf]
         user = root
-        environment = TERM=vt100
-        command = ksh -c "while true;do /usr/local/bin/backend cron/pf 1;/usr/local/bin/backend cron/instance-pf 30; sleep 10;done"
+        command = /usr/local/bin/cron-pf 1
+        stdout_logfile=/var/log/supervisord-echoctf.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+        [program:cron-instance-pf]
+        user = root
+        command = /usr/local/bin/instance-pf 30
         stdout_logfile=/var/log/supervisord-echoctf.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true

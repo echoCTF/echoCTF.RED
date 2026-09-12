@@ -20,3 +20,8 @@ PRESERVE_PATHS:
   - frontend/config/cache.php
   - frontend/config/validationKey.php
   - frontend/config/routes.php
+
+# pm_max_children: 70
+# pm_start_servers: 20
+# pm_max_spare_servers: 30
+# pm_min_spare_servers: 10
