@@ -184,96 +184,69 @@ END ;;
 DROP PROCEDURE IF EXISTS `calculate_country_rank` ;;
 CREATE PROCEDURE `calculate_country_rank`()
 BEGIN
-    DECLARE done INT DEFAULT FALSE;
-    DECLARE ccode VARCHAR(3);
-    DECLARE cur1 CURSOR FOR SELECT DISTINCT country FROM profile;
-    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
-    CREATE TEMPORARY TABLE country_ranking (id int primary key AUTO_INCREMENT,player_id int) ENGINE=MEMORY;
-    OPEN cur1;
-    read_loop: LOOP
-      FETCH cur1 INTO ccode;
-      IF done THEN
-        LEAVE read_loop;
-      END IF;
-      START TRANSACTION;
-        delete from player_country_rank WHERE country=ccode;
-        insert into country_ranking SELECT NULL,t.player_id FROM player_score AS t
-          LEFT JOIN player AS t2 ON t.player_id=t2.id
-          LEFT JOIN profile AS t3 ON t.player_id=t3.player_id
-          WHERE t2.active=1 and t2.status=10 AND t3.country=ccode ORDER BY points DESC,t.ts ASC, t.player_id ASC;
-        insert into player_country_rank select *,ccode from country_ranking ON DUPLICATE KEY UPDATE id=values(id),country=values(country);
-      COMMIT;
-      TRUNCATE country_ranking;
-    END LOOP;
-    CLOSE cur1;
-    DROP TABLE country_ranking;
+  IF (SELECT val FROM sysconfig WHERE id='country_rankings') = 1 THEN
+    DROP TABLE IF EXISTS player_country_rank_new;
+    CREATE TABLE player_country_rank_new (
+      `id` int(11) NOT NULL DEFAULT 0,
+      `player_id` int(11) unsigned NOT NULL,
+      `country` varchar(3) NOT NULL,
+      PRIMARY KEY (`id`,`country`),
+      UNIQUE KEY `idx-player_country_rank-player_id` (`player_id`)
+    ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+    INSERT INTO player_country_rank_new (id, player_id, country)
+    SELECT ROW_NUMBER() OVER (PARTITION BY COALESCE(t3.country, 'UNK') ORDER BY t.points DESC, t.ts ASC, t.player_id ASC),
+           t3.player_id, COALESCE(t3.country, 'UNK')
+    FROM player_score t
+    JOIN player t2 ON t.player_id = t2.id
+    JOIN profile t3 ON t.player_id = t3.player_id
+    WHERE t2.active = 1 AND t2.status = 10;
+
+    RENAME TABLE player_country_rank TO player_country_rank_old, player_country_rank_new TO player_country_rank;
+    DROP TABLE player_country_rank_old;
+  END IF;
 END ;;
 
 DROP PROCEDURE IF EXISTS `calculate_ranks` ;;
 CREATE PROCEDURE `calculate_ranks`()
 BEGIN
-  DECLARE v_max INT unsigned DEFAULT 0;
-  DECLARE v_counter INT unsigned DEFAULT 0;
-  SET v_max=(SELECT IFNULL(memc_get('sysconfig:academic_grouping'),0));
+  DROP TABLE IF EXISTS player_rank_new;
+  CREATE TABLE player_rank_new (
+    `id` int(11) unsigned NOT NULL DEFAULT 0,
+    `player_id` int(11) NOT NULL,
+    PRIMARY KEY (`id`,`player_id`) USING BTREE,
+    UNIQUE KEY `player_id` (`player_id`) USING BTREE
+  ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-  DROP TABLE IF EXISTS pr_ranking;
+  INSERT INTO player_rank_new (id, player_id)
+  SELECT ROW_NUMBER() OVER (PARTITION BY t2.academic ORDER BY t.points DESC, t.ts ASC, t.player_id ASC), t.player_id
+  FROM player_score t
+  JOIN player t2 ON t.player_id=t2.id
+  WHERE t2.active=1 AND t2.status=10;
 
-  IF v_max = 0 THEN
-    CREATE TEMPORARY TABLE `pr_ranking` (id int primary key AUTO_INCREMENT,player_id int) ENGINE=MEMORY CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    START TRANSACTION;
-    delete from player_rank;
-    insert into pr_ranking select NULL,t.player_id from player_score as t left join player as t2 on t.player_id=t2.id where t2.active=1 and t2.status=10 order by points desc,t.ts asc, t.player_id asc;
-    insert IGNORE into player_rank select * from pr_ranking;
-    COMMIT;
-    DROP TABLE `pr_ranking`;
-  ELSE
-    REPEAT
-      CREATE TEMPORARY TABLE `pr_ranking` (id int primary key AUTO_INCREMENT,player_id int) ENGINE=MEMORY CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-      START TRANSACTION;
-        delete from player_rank where player_id in (select id from player where academic=v_counter) OR player_id NOT IN (select id from player);
-        insert into pr_ranking select NULL,t.player_id from player_score as t left join player as t2 on t.player_id=t2.id where t2.active=1 and t2.status=10 and t2.academic=v_counter order by points desc,t.ts asc, t.player_id asc;
-        insert IGNORE into player_rank select * from pr_ranking;
-      COMMIT;
-      DROP TABLE `pr_ranking`;
-      SET v_counter=v_counter+1;
-      UNTIL  v_counter >= v_max
-    END REPEAT;
-  END IF;
+  RENAME TABLE player_rank TO player_rank_old, player_rank_new TO player_rank;
+  DROP TABLE player_rank_old;
 END ;;
 
 DROP PROCEDURE IF EXISTS `calculate_team_ranks` ;;
 CREATE PROCEDURE `calculate_team_ranks`()
 BEGIN
-  DECLARE v_max INT unsigned DEFAULT 0;
-  DECLARE v_counter INT unsigned DEFAULT 0;
+  IF (SELECT val FROM sysconfig WHERE id='teams') = 1 THEN
+    DROP TABLE IF EXISTS team_rank_new;
+    CREATE TABLE team_rank_new (
+      `id` int(11) NOT NULL DEFAULT 0,
+      `team_id` int(11) NOT NULL,
+      PRIMARY KEY (`id`,`team_id`) USING BTREE,
+      UNIQUE KEY `team_id` (`team_id`) USING BTREE
+    ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-  SET v_max=(SELECT IFNULL(memc_get('sysconfig:academic_grouping'),0));
+    INSERT INTO team_rank_new (id, team_id)
+    SELECT ROW_NUMBER() OVER (PARTITION BY t2.academic ORDER BY t.points DESC, t.ts ASC, t.team_id ASC), t.team_id
+    FROM team_score t
+    JOIN team t2 ON t.team_id=t2.id;
 
-  DROP TABLE IF EXISTS `tr_ranking`;
-
-  IF v_max = 0 THEN
-    CREATE TEMPORARY TABLE `tr_ranking` (id int primary key AUTO_INCREMENT,team_id int) ENGINE=MEMORY CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    START TRANSACTION;
-    delete from team_rank;
-    insert into tr_ranking select NULL,t.team_id from team_score as t left join team as t2 on t.team_id=t2.id ORDER BY points desc,t.ts asc, t.team_id asc;
-    insert IGNORE into team_rank select * from tr_ranking;
-    COMMIT;
-    DROP TABLE `tr_ranking`;
-  ELSE
-    IF (SELECT count(*) FROM sysconfig WHERE id='teams')>0 AND (SELECT val FROM sysconfig WHERE id='teams')=1 THEN
-      REPEAT
-        CREATE TEMPORARY TABLE `tr_ranking` (id int primary key AUTO_INCREMENT,team_id int) ENGINE=MEMORY CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        START TRANSACTION;
-          -- DELETE team of a given academic category or no longer exist in the table
-          delete from team_rank where team_id in (select id from team where academic=v_counter) OR team_id NOT IN (select id from team);
-          insert into tr_ranking select NULL,t.team_id from team_score as t left join team as t2 on t.team_id=t2.id WHERE t2.academic=v_counter order by points desc,t.ts asc, t.team_id asc;
-          insert IGNORE into team_rank select * from tr_ranking;
-        COMMIT;
-        DROP TABLE `tr_ranking`;
-        SET v_counter=v_counter+1;
-        UNTIL  v_counter >= v_max
-      END REPEAT;
-    END IF;
+    RENAME TABLE team_rank TO team_rank_old, team_rank_new TO team_rank;
+    DROP TABLE team_rank_old;
   END IF;
 END ;;
 

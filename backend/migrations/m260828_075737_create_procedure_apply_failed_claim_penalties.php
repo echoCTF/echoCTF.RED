@@ -31,7 +31,6 @@ BEGIN
   GROUP BY tp.team_id, t.owner_id
   HAVING total_failed_claims >= free_fail_allowance * player_count;
 
-
   INSERT INTO stream (player_id, model, model_id, points, title, message, pubtitle, pubmessage, ts)
   SELECT
       p.owner_id,

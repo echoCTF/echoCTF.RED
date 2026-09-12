@@ -12,6 +12,10 @@ class m260907_094005_alter_table_archive_stream_add_indexes extends Migration
 
   public function safeUp()
   {
+    if ($this->db->schema->getTableSchema($this->table) === null) {
+      return true;
+    }
+
     if (!$this->indexExists()) {
       $this->createIndex($this->index, $this->table, 'player_id');
     }
