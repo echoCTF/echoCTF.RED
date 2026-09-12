@@ -463,10 +463,13 @@
     with_items:
       - { src: "/usr/local/bin/php-{{versions.PHP}}", dst: "/usr/local/bin/php" }
       - { src: "{{APP_DIR}}/backend/bin/cron-index", dst: "/usr/local/bin/cron-index" }
+      - { src: "{{APP_DIR}}/backend/bin/cron-pf", dst: "/usr/local/bin/cron-pf" }
+      - { src: "{{APP_DIR}}/backend/bin/instance-pf", dst: "/usr/local/bin/instance-pf" }
+      - { src: "{{APP_DIR}}/backend/bin/instance-pf-tables", dst: "/usr/local/bin/instance-pf-tables" }
+      - { src: "{{APP_DIR}}/backend/bin/instances", dst: "/usr/local/bin/instances" }
       - { src: "{{APP_DIR}}/backend/bin/ssl-generate-crl", dst: "/usr/local/bin/ssl-generate-crl" }
       - { src: "{{APP_DIR}}/backend/bin/healthcheck", dst: "/usr/local/bin/healthcheck" }
       - { src: "{{APP_DIR}}/backend/bin/powerops", dst: "/usr/local/bin/powerops" }
-      - { src: "{{APP_DIR}}/backend/bin/instances", dst: "/usr/local/bin/instances" }
       - { src: "{{APP_DIR}}/backend/bin/target-restart", dst: "/usr/local/bin/target-restart" }
 
   - name: "configure git to fetch from https:// instead of git://"
@@ -679,8 +682,7 @@
         [program:backend-cron]
         user = root
         environment = TERM=vt100
-        command = ksh -c "while true;do backend cron/index;sleep 10;done"
-        #command = gnuwatch -t -n 10 "backend cron/index;backend cron/instances"
+        command = /usr/local/bin/cron-index
         stdout_logfile=/var/log/echoctf-cron-index.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
@@ -688,8 +690,7 @@
         [program:backend-instances]
         user = root
         environment = TERM=vt100
-        command = ksh -c "while true;do backend cron/instances;sleep 10;done"
-        #command = gnuwatch -t -n 10 "backend cron/index;backend cron/instances"
+        command = /usr/local/bin/instances
         stdout_logfile=/var/log/echoctf-cron-instances.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
@@ -697,7 +698,7 @@
         [program:backend-instances-pf]
         user = root
         environment = TERM=vt100
-        command = ksh -c "while true;date; do backend cron/instance-pf-tables;date;sleep 10;done"
+        command = /usr/local/bin/instance-pf-tables
         stdout_logfile=/var/log/echoctf-cron-instances-pf.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true

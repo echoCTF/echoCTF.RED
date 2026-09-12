@@ -335,14 +335,40 @@
       - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
 
+  - name: Create needed symbolic links for backend commands
+    file:
+      src: "{{item.src}}"
+      dest: "{{item.dst}}"
+      owner: root
+      group: wheel
+      state: link
+    with_items:
+      - { src: "/usr/local/bin/php-{{versions.PHP}}", dst: "/usr/local/bin/php" }
+      - { src: "{{APP_DIR}}/backend/bin/cron-index", dst: "/usr/local/bin/cron-index" }
+      - { src: "{{APP_DIR}}/backend/bin/cron-pf", dst: "/usr/local/bin/cron-pf" }
+      - { src: "{{APP_DIR}}/backend/bin/instance-pf", dst: "/usr/local/bin/instance-pf" }
+      - { src: "{{APP_DIR}}/backend/bin/instance-pf-tables", dst: "/usr/local/bin/instance-pf-tables" }
+      - { src: "{{APP_DIR}}/backend/bin/instances", dst: "/usr/local/bin/instances" }
+      - { src: "{{APP_DIR}}/backend/bin/ssl-generate-crl", dst: "/usr/local/bin/ssl-generate-crl" }
+      - { src: "{{APP_DIR}}/backend/bin/healthcheck", dst: "/usr/local/bin/healthcheck" }
+      - { src: "{{APP_DIR}}/backend/bin/powerops", dst: "/usr/local/bin/powerops" }
+      - { src: "{{APP_DIR}}/backend/bin/target-restart", dst: "/usr/local/bin/target-restart" }
+
   - name: Install echoctf.ini for supervisord
     copy:
       dest: /etc/supervisord.d/echoctf.ini
       content: |
-        [program:echoctfcron]
+        [program:cron-pf]
         user = root
         environment = TERM=vt100
-        command = ksh -c "while true;do /usr/local/bin/backend cron/pf 1;/usr/local/bin/backend cron/instance-pf 30; sleep 10;done"
+        command = /usr/local/bin/cron-pf 1
+        stdout_logfile=/var/log/supervisord-echoctf.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+        [program:cron-instance-pf]
+        user = root
+        environment = TERM=vt100
+        command = /usr/local/bin/instance-pf 30
         stdout_logfile=/var/log/supervisord-echoctf.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
