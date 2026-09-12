@@ -8,7 +8,7 @@ use yii\widgets\Pjax;
 use app\widgets\stream\StreamWidget as Stream;
 use app\widgets\target\TargetWidget;
 $this->loadLayoutOverrides=true;
-$this->title = Yii::$app->sys->event_name . ' ' . \Yii::t('app', 'Network details') . ' [' . Html::encode($model->name) . ']';
+$this->title = Yii::$app->sys->event_name . ' ' . \Yii::t('app', 'Network details') . ' [' . $model->name . ']';
 $this->_description = Html::encode(strip_tags($model->description));
 $this->_image=\yii\helpers\Url::to($model->icon, 'https');
 $this->_url = \yii\helpers\Url::to(['view', 'id' => $model->id], 'https');
@@ -22,7 +22,7 @@ $module = \app\modules\network\Module::getInstance();
     <?php if ($module->checkNetwork($model) === false && !Yii::$app->user->isGuest) : ?>
       <div class="row d-flex justify-content-center">
         <div class="col-sm-12 col-md-6 col-xl-4 alert alert-danger d-flex justify-content-center" role="alert">
-          <b><?= \Yii::t('app', "You don't have access to this network.") ?></b>
+          <b><?= \Yii::t('app', "You don't have access to view this network.") ?></b>
         </div>
       </div>
     <?php endif; ?>

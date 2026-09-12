@@ -1,7 +1,7 @@
 <?php
 use yii\helpers\Html;
 use yii\widgets\ListView;
-$this->title=Html::encode(Yii::$app->sys->event_name.' '.\Yii::t('app','Help'));
+$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Help');
 $this->_description='Available help material';
 $this->_url=\yii\helpers\Url::to(['index'], 'https');
 use app\components\formatters\Anchor;
@@ -9,7 +9,7 @@ use app\components\formatters\Anchor;
 <div class="help-index">
   <div class="body-content">
     <h2><?=Html::encode($this->title)?></h2>
-      <?=\Yii::t('app','Available Help material.')?>
+      <?=$this->_description?>
     <hr />
     <div class="row">
 

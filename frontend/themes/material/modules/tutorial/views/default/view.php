@@ -9,7 +9,7 @@ use app\widgets\Twitter;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Tutorial */
-$this->title=Html::encode(Yii::$app->sys->event_name.' Tutorials / (ID#'.$model->id.') '.$model->title);
+$this->title=\Yii::t('app','{event_name} Tutorials / (ID#{id}) {title}', ['event_name'=>\Yii::$app->sys->event_name,'id'=>$model->id,'title'=>$model->title]);
 $this->_description=\yii\helpers\StringHelper::truncateWords(strip_tags($model->description), 15);
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->id], 'https');
 

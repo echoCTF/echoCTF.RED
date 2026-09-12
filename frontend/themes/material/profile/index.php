@@ -19,7 +19,7 @@ $provider = new ActiveDataProvider([
 ]);
 $game=Yii::$app->getModule('game');
 $this->_fluid="-fluid";
-$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Profile of:').' '.Html::encode($profile->owner->username);
+$this->title=Yii::$app->sys->event_name.' '.\Yii::t('app','Profile of: {username}',['username'=>$profile->owner->username]);
 $this->_url=\yii\helpers\Url::to(['index', 'id'=>$profile->id], 'https');
 $profile->scenario='validator';
 $this->_description=$this->title;
