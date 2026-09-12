@@ -122,6 +122,27 @@ class MigrateController extends BaseMigrateController
       return (string) ob_get_clean();
     }
 
+    // Detect menu item creation under a parent
+    if (preg_match('/^add_menu_item_(.+?)_to_(.+)_parent$/i', $name, $m)) {
+      $itemSlug    = str_replace('_', '-', strtolower($m[1]));
+      $itemLabel   = ucwords(str_replace('_', ' ', $m[1]));
+      $parentSlug  = str_replace('_', '-', strtolower($m[2]));
+      $parentLabel = ucwords(str_replace('_', ' ', $m[2]));
+      $itemUrl     = "/$parentSlug/$itemSlug/index";
+
+      $this->customParams = compact('itemLabel', 'parentLabel', 'itemUrl');
+
+      $templateFile = Yii::getAlias('@app/views/migration/templates/menu-item.php');
+      if (!is_file($templateFile)) {
+        throw new \yii\base\InvalidConfigException("The template file does not exist: $templateFile");
+      }
+
+      extract(array_merge($params, $this->customParams));
+      ob_start();
+      require($templateFile);
+      return (string)ob_get_clean();
+    }
+
     // fallback: normal Yii2 rules
     return parent::generateMigrationSourceCode($params);
   }
