@@ -125,6 +125,8 @@
       - { blackhole: "FORCE" }
       - { table_definition_cache: "420" }
       - { performance_schema: "ON" }
+#      - { innodb_buffer_pool_size: "2G" }
+#      - { innodb_log_file_size: "1G" }
       - { innodb_buffer_pool_size: "384M" }
       - { innodb_log_file_size: "96M" }
       - { key_buffer_size: "512k" }
