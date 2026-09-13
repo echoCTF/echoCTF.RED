@@ -143,6 +143,20 @@ CREATE TABLE `private_network_target` (
   KEY `idx-private_network_target-target_id` (`target_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/private_network_target';
 
+DROP TABLE IF EXISTS `player_bandwidth`;
+CREATE TABLE `player_bandwidth` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) NOT NULL,
+  `vpn_local_address` int(11) unsigned DEFAULT NULL,
+  `bytes_received` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `bytes_sent` bigint(20) unsigned NOT NULL DEFAULT 0,
+  `duration` int(11) unsigned NOT NULL DEFAULT 0,
+  `ts` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx-player_bandwidth-player_id` (`player_id`),
+  KEY `idx-player_bandwidth-ts` (`ts`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_bandwidth';
+
 DROP TABLE IF EXISTS `debuglogs`;
 CREATE TABLE debuglogs (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -267,6 +281,13 @@ BEGIN
 END
 //
 
+DROP PROCEDURE IF EXISTS `VPN_BANDWIDTH_LOG` //
+CREATE PROCEDURE `VPN_BANDWIDTH_LOG`(IN usid BIGINT, IN assignedIP INT UNSIGNED, IN bytesReceived BIGINT UNSIGNED, IN bytesSent BIGINT UNSIGNED, IN sessionDuration INT UNSIGNED)
+BEGIN
+  IF (SELECT COUNT(*) FROM player WHERE id=usid AND status=10)>0 THEN
+    INSERT INTO player_bandwidth (player_id, vpn_local_address, bytes_received, bytes_sent, duration) VALUES (usid, assignedIP, bytesReceived, bytesSent, sessionDuration);
+  END IF;
+END //
 
 DROP EVENT IF EXISTS `event_shutdown` //
 CREATE EVENT `event_shutdown` ON SCHEDULE EVERY 5 SECOND STARTS '2020-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO

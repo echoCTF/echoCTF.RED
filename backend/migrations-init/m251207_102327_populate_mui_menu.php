@@ -91,6 +91,7 @@ class m251207_102327_populate_mui_menu extends Migration
         ['label' => 'Player Disconnect Queue', 'url' => ['/activity/player-disconnect-queue/index'], 'visibility' => 'user',],
         '<div class="dropdown-header">VPN</div>',
         ['label' => 'Player VPN History', 'url' => ['/activity/player-vpn-history/index'], 'visibility' => 'user',],
+        ['label' => 'Player Bandwidth', 'url' => ['/activity/player-bandwidth/index'], 'visibility' => 'user',],
         ['label' => 'Spin History', 'url' => ['/activity/spin-history/index'], 'visibility' => 'user',],
         ['label' => 'Player Disconnect History', 'url' => ['/activity/player-disconnect-queue-history/index'], 'visibility' => 'user',],
         '<div class="dropdown-header">Statistical</div>',
