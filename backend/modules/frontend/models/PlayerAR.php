@@ -275,7 +275,7 @@ class PlayerAR extends \yii\db\ActiveRecord
 
   public function getBandwidth()
   {
-    return $this->hasMany(\app\modules\activity\models\Bandwidth::class, ['player_id' => 'id']);
+    return $this->hasMany(\app\modules\activity\models\PlayerBandwidth::class, ['player_id' => 'id']);
   }
 
   public function getVpnHistory()
