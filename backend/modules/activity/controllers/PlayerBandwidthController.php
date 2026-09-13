@@ -2,6 +2,7 @@
 
 namespace app\modules\activity\controllers;
 
+use Yii;
 use app\modules\activity\models\PlayerBandwidth;
 use app\modules\activity\models\PlayerBandwidthSearch;
 use app\components\BaseController;
