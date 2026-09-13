@@ -45,6 +45,10 @@ elif [ "$script_type" == "client-disconnect" ]; then
     echo "client-disconnect[$$]: ERROR CN=${common_name} hit the rate-limit"
   fi
 
+  mysql --connect-timeout=10 -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe \
+    "CALL VPN_BANDWIDTH_LOG(${common_name}, INET_ATON('${ifconfig_pool_remote_ip}'), ${bytes_received:-0}, ${bytes_sent:-0}, ${time_duration:-0})"
+  echo "client-disconnect[$$]: CN=${common_name}, bandwidth logged: rx=${bytes_received:-0} tx=${bytes_sent:-0} duration=${time_duration:-0}s"
+
   NETWORKS=$(mysql --connect-timeout=10 -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" -NBe "CALL VPN_LOGOUT(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))" echoCTF)
   if [ -x /sbin/pfctl ]; then
     for network in ${NETWORKS};do
