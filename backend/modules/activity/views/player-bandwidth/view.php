@@ -30,8 +30,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'player_id',
-            'vpn_local_address',
+            'player.username',
+            'vpn_local_address_octet',
             'bytes_received',
             'bytes_sent',
             'duration',
