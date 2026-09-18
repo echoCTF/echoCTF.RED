@@ -34,6 +34,8 @@ class m000000_000001_system_settings extends Migration
     ['id' => "country_rankings", 'val' => "0"],
     ['id' => "player_point_rankings", 'val' => "0"],
     ['id' => "player_monthly_rankings", 'val' => "0"],
+    ['id' => "writeup_rankings", 'val' => "0"],
+    ['id' => "treasure_secret_key", 'val' => "secret"],
 
     ['id' => 'frontpage_scenario', 'val' => 'Welcome to our lovely event... Edit from backend Content => Frontpage Scenario'],
     ['id' => "event_end_notification_title", 'val' => "🎉 Our awesome echoCTF finished 🎉"],
