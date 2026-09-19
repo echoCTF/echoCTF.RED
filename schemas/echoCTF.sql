@@ -2027,6 +2027,7 @@ CREATE TABLE `ws_token` (
   CONSTRAINT `fk-ws_token-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+/*
 DROP TABLE IF EXISTS `ws_token_history`;
 CREATE TABLE `ws_token_history` (
   `id` INT(10) PRIMARY KEY AUTO_INCREMENT,
@@ -2036,7 +2037,7 @@ CREATE TABLE `ws_token_history` (
   `is_server` tinyint(1) NOT NULL DEFAULT 0,
   `expires_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
+*/
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
