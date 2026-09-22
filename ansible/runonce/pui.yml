@@ -430,6 +430,7 @@
       - nginx
 
   - name: Create modsecurity.conf
+    when: modsecurity is defined
     copy:
       dest: /etc/nginx/modsecurity.conf
       content: |
@@ -455,6 +456,7 @@
       - nginx
 
   - name: Create modsecurity-includes.conf
+    when: modsecurity is defined
     copy:
       dest: /etc/nginx/modsecurity-includes.conf
       content: |
@@ -465,12 +467,14 @@
       - nginx
 
   - name: Download OWASP CRS
+    when: modsecurity is defined
     get_url:
       url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ versions.CORERULESET }}.tar.gz"
       dest: "/tmp/coreruleset-{{ versions.CORERULESET }}.tar.gz"
       mode: "0644"
 
   - name: Extract CRS archive under /tmp
+    when: modsecurity is defined
     unarchive:
       src: "/tmp/coreruleset-{{ versions.CORERULESET }}.tar.gz"
       dest: /tmp
@@ -478,6 +482,7 @@
       creates: "/tmp/coreruleset-{{ versions.CORERULESET }}/crs-setup.conf.example"
 
   - name: Ensure /etc/nginx/rules exists
+    when: modsecurity is defined
     file:
       path: /etc/nginx/rules
       state: directory
@@ -486,6 +491,7 @@
       mode: "0755"
 
   - name: Copy CRS rules into place
+    when: modsecurity is defined
     copy:
       src: "/tmp/coreruleset-{{ versions.CORERULESET }}/rules/"
       dest: /etc/nginx/rules/
@@ -495,6 +501,7 @@
       mode: "0644"
 
   - name: Copy crs-setup.conf.example into place
+    when: modsecurity is defined
     copy:
       src: "/tmp/coreruleset-{{ versions.CORERULESET }}/crs-setup.conf.example"
       dest: /etc/nginx/crs-setup.conf
