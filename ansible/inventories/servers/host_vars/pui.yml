@@ -9,9 +9,11 @@ backups:
 
 REPO: "/home/participantUI/{{domain_name}}"
 APP_USER: participantUI
+
 APP_SERVICES:
   - php84_fpm
   - participant
+
 PRESERVE_PATHS:
   - frontend/web/images/avatars/
   - frontend/web/images/targets/
@@ -21,6 +23,7 @@ PRESERVE_PATHS:
   - frontend/config/validationKey.php
   - frontend/config/routes.php
 
+# modsecurity: true
 # pm_max_children: 70
 # pm_start_servers: 20
 # pm_max_spare_servers: 30

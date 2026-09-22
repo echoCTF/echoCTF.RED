@@ -103,6 +103,15 @@
       - '/etc/skel/.profile'
       - '/root/.profile'
 
+  - name: Set /etc/installurl to custom mirror
+    when: installurl is defined
+    ansible.builtin.copy:
+      content: "{{installurl}}\n"
+      dest: /etc/installurl
+      owner: root
+      group: wheel
+      mode: "0644"
+
   - name: Add users
     user:
       name: "{{item.name}}"

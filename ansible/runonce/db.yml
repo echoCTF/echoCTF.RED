@@ -125,11 +125,10 @@
       - { blackhole: "FORCE" }
       - { table_definition_cache: "420" }
       - { performance_schema: "ON" }
-      - { max_connections: "{{ max_connections | default(100)" }
-      - { innodb_buffer_pool_size: "{{ innodb_buffer_pool_size | default(384M)" }
-      - { innodb_log_file_size: "{{ innodb_log_file_size | default(96M)" }
+      - { max_connections: "{{ max_connections | default(100) }}" }
+      - { innodb_buffer_pool_size: "{{ innodb_buffer_pool_size | default('384M') }}" }
+      - { innodb_log_file_size: "{{ innodb_log_file_size | default('96M') }}" }
       - { key_buffer_size: "512k" }
-      - { max_connections: "50" }
   tasks:
   - name: Sync date time
     raw: rdate pool.ntp.org
@@ -148,6 +147,15 @@
     copy:
       content: "{{ myname }}\n"
       dest: /etc/myname
+
+  - name: Set /etc/installurl to custom mirror
+    when: installurl is defined
+    ansible.builtin.copy:
+      content: "{{installurl}}\n"
+      dest: /etc/installurl
+      owner: root
+      group: wheel
+      mode: "0644"
 
   - name: Copy events checker
     template:

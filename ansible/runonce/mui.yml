@@ -132,6 +132,15 @@
       content: "127.0.0.1 localhost\n{{db_ip}} db\n{{mui_ext_ip}} {{  hostname.split('.')[0] | lower }} {{ hostname }}\n"
       dest: /etc/hosts
 
+  - name: Set /etc/installurl to custom mirror
+    when: installurl is defined
+    ansible.builtin.copy:
+      content: "{{installurl}}\n"
+      dest: /etc/installurl
+      owner: root
+      group: wheel
+      mode: "0644"
+
   - name: Configure interconnect interface
     lineinfile:
       path: "/etc/hostname.{{interconnect_interface}}"
@@ -346,7 +355,7 @@
 
   - name: "Update backend/config/params.php"
     ansible.builtin.replace:
-      path: "/home/participantUI/{{ domain_name }}/backend/config/params.php"
+      path: "/home/moderatorUI/{{ domain_name }}/backend/config/params.php"
       regexp: 'localhost:8888'
       replace: '10.7.0.200:8888'
     tags:
@@ -514,7 +523,16 @@
       mode: "0644"
 
   - name: run yii migrate
-    command: chdir=/home/moderatorUI/{{domain_name}}/backend ./yii migrate --interactive=0
+    ignore_errors: false
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+      chdir: "{{item.chdir|default(omit)}}"
+    with_items:
+    - { cmd: "/usr/local/bin/backend migrate --interactive=0" }
+    - { cmd: "/usr/local/bin/backend init_data --interactive=0" }
+    - { cmd: "/usr/local/bin/backend migrate-sales --interactive=0" }
+    - { cmd: "/usr/local/bin/backend migrate-red --interactive=0" }
 
   - name: copy nstables script
     copy:
