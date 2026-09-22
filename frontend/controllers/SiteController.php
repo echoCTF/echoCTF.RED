@@ -95,7 +95,7 @@ class SiteController extends \app\components\BaseController
               return Yii::$app->sys->registrations_start !== false && time() <= Yii::$app->sys->registrations_start;
             },
             'denyCallback' => function ($rule, $action) {
-              if (time() < (int)Yii::$app->sys->registrations_start)
+              if (time() <= (int)Yii::$app->sys->registrations_start)
                 Yii::$app->session->setFlash('info', \Yii::t('app', "Registrations haven't started yet."));
               return  \Yii::$app->getResponse()->redirect(['/site/login']);
             },
@@ -108,8 +108,7 @@ class SiteController extends \app\components\BaseController
               return Yii::$app->sys->registrations_end !== false && time() >= Yii::$app->sys->registrations_end;
             },
             'denyCallback' => function ($rule, $action) {
-              if (time() < (int)Yii::$app->sys->registrations_start)
-                Yii::$app->session->setFlash('info', \Yii::t('app', 'Registrations are no longer accepted ended.'));
+              Yii::$app->session->setFlash('info', \Yii::t('app', 'Registrations have closed and are no longer accepted!'));
               return  \Yii::$app->getResponse()->redirect(['/site/login']);
             },
           ],
