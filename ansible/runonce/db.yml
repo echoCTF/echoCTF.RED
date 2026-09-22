@@ -148,6 +148,15 @@
       content: "{{ myname }}\n"
       dest: /etc/myname
 
+  - name: Set /etc/installurl to custom mirror
+    when: installurl is defined
+    ansible.builtin.copy:
+      content: "{{installurl}}\n"
+      dest: /etc/installurl
+      owner: root
+      group: wheel
+      mode: "0644"
+
   - name: Copy events checker
     template:
       src: "{{playbook_dir}}/../../contrib/mysql-events-checker.sh"

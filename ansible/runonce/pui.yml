@@ -140,6 +140,15 @@
       content: "127.0.0.1 localhost\n{{db_ip}} db\n{{pui_ext_ip}} {{  hostname.split('.')[0] | lower }} {{ hostname }}\n"
       dest: /etc/hosts
 
+  - name: Set /etc/installurl to custom mirror
+    when: installurl is defined
+    ansible.builtin.copy:
+      content: "{{installurl}}\n"
+      dest: /etc/installurl
+      owner: root
+      group: wheel
+      mode: "0644"
+
   - name: Configure interconnect interface
     lineinfile:
       path: "/etc/hostname.{{interconnect_interface}}"
