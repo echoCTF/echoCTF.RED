@@ -43,6 +43,12 @@ $config = [
       'class' => 'app\components\Sysconfig',
     ],
     'cache' => $cache,
+    'mailer' => [
+      'class' => 'app\components\Mailer',
+      'transport' => [
+        'dsn' => 'native://default',
+      ],
+    ],
     'log' => [
       'targets' => [
         [
