@@ -4,7 +4,9 @@ worker_rlimit_nofile 65535;
 #error_log syslog:server=unix:/dev/log,severity=warn;
 error_log logs/pui-error.log  warn;
 pid logs/{{item.domain}}-nginx.pid;
-
+{% if modescurity is defined %}
+load_module modules/ngx_http_modsecurity_module.so;
+{% endif %}
 events {
     worker_connections 1024;
 }
@@ -152,14 +154,12 @@ http {
         add_header X-XSS-Protection "1; mode=block" always;
         add_header X-Frame-Options DENY always;
 
-        # Report-only for now: logs would-be violations to the browser console without
-        # blocking anything. Watch for reports (including from the Node.js apps on this
-        # domain) before ever switching this to the enforcing `Content-Security-Policy` header.
-        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' wss://ctf.hackmex.mx; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
-
+        # Report-only for now: logs would-be violations to the browser console.
+        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' wss://{{item.domain}}; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
+{% if modescurity is defined %}
         modsecurity on;
         modsecurity_rules_file /etc/nginx/modsecurity-includes.conf;
-
+{% endif %}
         error_page 401 402 403 404 405 406 407 408 409 @errorphp;
         error_page 410 411 412 413 414 415 416 417 418 419 @errorphp;
         error_page 420 421 422 423 424 425 426 427 428 @errorphp;
