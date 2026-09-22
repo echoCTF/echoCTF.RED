@@ -523,7 +523,16 @@
       mode: "0644"
 
   - name: run yii migrate
-    command: chdir=/home/moderatorUI/{{domain_name}}/backend ./yii migrate --interactive=0
+    ignore_errors: false
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+      chdir: "{{item.chdir|default(omit)}}"
+    with_items:
+    - { cmd: "/usr/local/bin/backend migrate --interactive=0" }
+    - { cmd: "/usr/local/bin/backend init_data --interactive=0" }
+    - { cmd: "/usr/local/bin/backend migrate-sales --interactive=0" }
+    - { cmd: "/usr/local/bin/backend migrate-red --interactive=0" }
 
   - name: copy nstables script
     copy:
