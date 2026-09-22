@@ -72,6 +72,7 @@ nav:
 
   - API: API.md
   - Extras:
+      - Size Calculations: Size-calculations.md
       - Participants Tutorial: Participants-Tutorial.md
       - Localization: Localization.md
       - Testing: Testing.md
