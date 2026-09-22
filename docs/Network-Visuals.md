@@ -1,47 +1,39 @@
+# Network  Visuals
+The platform provides realtime network traffic visualization through `gource` and
+`logstalgia`. The visuals are captured on the vpn server by the `gource-inetd-service.pl`
+running through `inetd` on `127.0.0.1` port `50000` for `gource` and `60000` for `logstalgia`.
+
+## PF config
+You will need to configure the firewall to redirect connections from the external interface to the local running services.
+
+Add something like the following at the top of `/etc/service.pf.conf`:
+
+```
+# For administrators
+pass in quick inet proto tcp from <administrators> to port { 50000, 60000} rdr-to 127.0.0.1  label "administrators"
+
+# For venue
+pass in quick inet proto tcp from <venue> to port { 50000, 60000} rdr-to 127.0.0.1  label "administrators"
+
+# For moderators
+pass in quick inet proto tcp from <moderators> to port { 50000, 60000} rdr-to 127.0.0.1  label "administrators"
+
+# For everyone
+pass in quick inet proto tcp to port { 50000, 60000} rdr-to 127.0.0.1  label "administrators"
+```
+
 ## logstalgia
 ```sh
-nc echoctf.net 50000|logstalgia -x --hide-response-code -g "UDP,URI=udp?$,20" -g "TCP,URI=tcp?$,60" -g "ICMP,URI=icmp?$,20" -
+stdbuf -i0 -o0 -e0 nc echoctf.net 60000|logstalgia -x --hide-response-code -g "UDP,URI=udp?$,20" -g "TCP,URI=tcp?$,60" -g "ICMP,URI=icmp?$,20" -
 ```
+
 ## Gource
 ```sh
-nc echoctf.net 60000|gource --log-format custom --highlight-all-users --realtime --multi-sampling --auto-skip-seconds 3 --seconds-per-day 1  -f -
-```
-## Visualising syslog
-
-mysqltail was slightly modified. Line 206 of mt.c:
-
-```c
-        while((dummy = strchr(dummy, ',')) != NULL)
+stdbuf -i0 -o0 -e0 nc echoctf.net 50000|gource --log-format custom --highlight-all-users --realtime --multi-sampling --auto-skip-seconds 3 --seconds-per-day 1  -f -
 ```
 
-was changed to
-
-
-```c
-        while((dummy = strchr(dummy, '\t')) != NULL)
-```
-
-Not a good hack; Simply replacing comma separated output with pipe-separated would be better, but the change above was shamefully quicker and worked... Now start mysqltail on echofish through stdbuf to eliminate pipe i/o buffering:
-
+Some extra options for gource to make visuals a bit more spectacular
 ```sh
-stdbuf -i0 -o0 -e0 ./mysqltail -h echo.ctf -u echo_ctf_mods -p modsuser -d ets_ctf -t vtcpdump -k id -c gource -i 1 -n 1 | gource --log-format custom --highlight-all-users --realtime --multi-sampling --auto-skip-seconds 3 --seconds-per-day 1 -f -
-```
-
-```sh
-stdbuf -i0 -o0 -e0 /home/gadamo/work/mysqltail-0.1/mysqltail \
-   -h db.echothrust.net -u gadamo -p PASSWORD_HERE
-   -d ETS_echofish_prod -t archive -k id \
-   -c "CONCAT(unix_timestamp(created_at),'|',inet_ntoa(host),'|M|',inet_ntoa(host),'/',program,'/messages')" \
-   -n 10 -i 1 | \
-   gource --log-format custom --auto-skip-seconds 3 --seconds-per-day 1 --file-idle-time 1 --hide files \
-   --bloom-intensity 0.25 --bloom-multiplier 0.25 --user-friction 0.25 --highlight-all-users --realtime -
-```
-
-```sh
-stdbuf -i0 -o0 -e0 ./mysqltail \
-   -d ETS_echofish_prod -t archive -k id \
-   -c "CONCAT(unix_timestamp(created_at),'|',program,'@',inet_ntoa(host),'|A|','log/',inet_ntoa(host),'/',program,'/messages')" \
-   -n 10 -i 1 | \
 gource --log-format custom \
    --hide files,bloom,date,mouse,progress \
    --user-friction 0.25 \
@@ -53,37 +45,22 @@ gource --log-format custom \
    --crop horizontal \
    --multi-sampling \
    --realtime -
-
-exit
-
-# to somehow limit the glow effect (also remove 'bloom' from --hide) use:
-#   --bloom-intensity 0.25 \
-#   --bloom-multiplier 0.25 \
-
-# to keep node elements' text from fading out, use:
-#   --highlight-dirs \
-
-# Gource options to try:
--e, --elasticity FLOAT
-    Elasticity of nodes.
--b, --background-colour FFFFFF
-    Background colour in hex.
---background-image IMAGE
-    Set a background image.
-    Font colour in hex.
---logo IMAGE
-    Logo to display in the foreground.
---logo-offset XxY
-    Offset position of the logo.
---user-image-dir DIRECTORY
-    Directory containing .jpg or .png images of users (eg 'Full Name.png') to use as avatars.
---default-user-image IMAGE
-    Path of .jpg to use as the default user image.
---colour-images
-    Colourize user images.
 ```
 
-### More on unbuffering stdin/stdout
+The following options can be applied/modified for modifying the effects
+
+* to somehow limit the glow effect (also remove 'bloom' from --hide) use `--bloom-intensity 0.25` and `--bloom-multiplier 0.25`
+* to keep node elements' text from fading out, use `--highlight-dirs`
+* Elasticity of nodes `-e, --elasticity FLOAT`
+* Background colour in hex. `-b, --background-colour FFFFFF`
+* Set a background image. `--background-image IMAGE`
+* Logo to display in the foreground. `--logo IMAGE`
+* Offset position of the logo. `--logo-offset XxY`
+* Directory containing .jpg or .png images of users (eg 'Full Name.png') to use as avatars. `--user-image-dir DIRECTORY`
+* Path of .jpg to use as the default user image. `--default-user-image IMAGE`
+* Colorize user images. `--colour-images`
+
+## More on unbuffering stdin/stdout
 
 Language-specific tips to disable i/o buffering:
 
@@ -93,9 +70,9 @@ Language-specific tips to disable i/o buffering:
 
 When the tricks above don't apply, use one of the following helper commands, to disable i/o buffering on your running program:
 
-* socat (poses as "netcat++", small installation footprint): `socat EXEC:myprogram,pty,ctty,echo=0 STDIO`
-* stdbuf (comes with coreutils package, small running footprint but comes with a whole bunch of gnu): stdbuf -i0 -o0 -e0 myprogram
-* unbuffer (expect script that comes with expect-dev package, which might or might not be available): `unbuffer myprogram` (Untested)
+* `socat` (poses as "netcat++", small installation footprint): `socat EXEC:myprogram,pty,ctty,echo=0 STDIO`
+* `stdbuf` (comes with coreutils package, small running footprint but comes with a whole bunch of gnu): stdbuf -i0 -o0 -e0 myprogram
+* `unbuffer` (expect script that comes with expect-dev package, which might or might not be available): `unbuffer myprogram` (Untested)
 
 On linux stdbuf seems the best option:
 
@@ -114,10 +91,4 @@ $ time socat EXEC:ls,pty,ctty,echo=0 STDIO >/dev/null
 real	0m0.506s
 user	0m0.000s
 sys	0m0.005s
-```
-
-
-```sh
-stdbuf -i0 -o0 -e0 ./mysqltail -h echo.ctf -u echo_ctf_mods -p modsuser -d ets_ctf -t vtcpdump -k id -c gource -i 1 -n 1 | gource --log-format custom --highlight-all-users --realtime --multi-sampling --auto-skip-seconds 3 --seconds-per-day 1 -f -
-stdbuf -i0 -o0 -e0 mysqltail -h echo.ctf -u echo_ctf_mods -p modsuser -d ets_ctf -t logstalgia -k id -c msg -i 1 -n 1 | logstalgia --sync -f
 ```
