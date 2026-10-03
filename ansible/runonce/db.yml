@@ -389,7 +389,7 @@
       name: "{{item.name}}"
       password: "{{item.password}}"
       host: "{{item.host}}"
-      priv: '*.*:ALL'
+      priv: "{{ item.priv | default('*.*:ALL') }}"
       state: present
     with_items: "{{mysql_users}}"
     tags:
