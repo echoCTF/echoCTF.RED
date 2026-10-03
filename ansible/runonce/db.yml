@@ -64,6 +64,7 @@
       ICU_MINOR: 1
       MARIADB_CONNECTOR: "3.4.5"
     sysctl:
+      machdep.allowaperture: 0
       kern.bufcachepercent: 30
       net.inet.ip.maxqueue: 2048
       kern.somaxconn: 4096
@@ -335,7 +336,7 @@
       - gmake install
 
   - name: Create mysql database
-    mysql_db:
+    ansible.mariadb.mariadb_db:
       state: present
       name: echoCTF
       collation: utf8mb4_unicode_ci
@@ -370,7 +371,7 @@
     shell: mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql mysql
 
   - name: Import mysql schema
-    mysql_db:
+    ansible.mariadb.mariadb_db:
       state: import
       name: echoCTF
       target: "{{APP_DIR}}/schemas/{{item}}"
@@ -384,7 +385,7 @@
       - echoCTF-events.sql
 
   - name: create echoCTF users for mysql
-    mysql_user:
+    ansible.mariadb.mariadb_user:
       name: "{{item.name}}"
       password: "{{item.password}}"
       host: "{{item.host}}"
@@ -458,7 +459,6 @@
       content: |
         [program:watchdoger]
         user = root
-        #command=/bin/sh -c "fswatch -1 --include 'event_finished' --event Created /watch >/dev/null && curl -H 'Authorization: Bearer {{ wsserver.token | default("server123token") }}' -d '{\"event\":\"apiNotifications\"}' {{ wsserver.url | default("http://10.7.0.200:8888/broadcast") }}"
         command = su -fm -c watchdoger -s /usr/local/bin/python3 root /usr/local/bin/watchdoger --file_path /watch/event_finished --url {{ wsserver.url | default("http://10.7.0.200:8888/broadcast") }} --token {{ wsserver.token | default("server123token") }}
         autorestart = false
         startretries = 0
