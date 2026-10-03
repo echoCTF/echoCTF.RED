@@ -39,8 +39,6 @@
     versions:
       PHP: "8.4"
       PHP_MINOR: "20p0"
-      AUTOCONF: "2.69"
-      AUTOMAKE: "1.16"
       ICU_MAJOR: 78
       ICU_MINOR: 3
     sysctl:
@@ -86,7 +84,6 @@
       - rsync--
       - memcached--
       - libmemcached
-      - py3-mysqlclient
       - libtool
       - autoconf%2.69
       - automake%1.16
@@ -103,7 +100,6 @@
       - "php-tidy%{{versions.PHP}}"
       - py3-pip
       - py3-requests
-      - py3-mysqlclient
       - py3-setuptools
       - py3-netaddr
       - supervisor
@@ -157,7 +153,7 @@
     command: sh /etc/netstart {{interconnect_interface}}
 
   - name: Configure targets interface
-    when: targets_interface is defined and targets_interface is defined
+    when: targets_interface is defined and targets_ip is defined
     lineinfile:
       path: "/etc/hostname.{{targets_interface}}"
       owner: root
@@ -170,7 +166,7 @@
       - "up -inet6"
 
   - name: Bring targets interface up
-    when: targets_interface is defined and targets_interface is defined
+    when: targets_interface is defined and targets_ip is defined
     command: sh /etc/netstart {{targets_interface}}
 
   - name: Configure PS1 for root and skeleton
@@ -380,6 +376,8 @@
 
   - name: Generate self signed certificate for mUI
     command: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj "/CN={{domain_name}}" -keyout "/etc/nginx/{{domain_name}}-server.key" -out "/etc/nginx/{{domain_name}}-server.crt"
+    args:
+      creates: "/etc/nginx/{{domain_name}}-server.key"
 
   - name: Copy nginx cache folder to moderatorUI
     command: "{{item}}"
@@ -458,6 +456,8 @@
 
   - name: Generate DH params file for nginx
     command: openssl dhparam -out /etc/ssl/private/dhparam.pem 2048
+    args:
+      creates: /etc/ssl/private/dhparam.pem
 
   - ansible.builtin.include_tasks: includes/selfsigned.yml
 
@@ -501,6 +501,7 @@
   - name: configure composer
     command: php -d allow_url_fopen=on /usr/local/bin/composer -n config --global --auth github-oauth.github.com {{GITHUB_OAUTH_TOKEN}}
     when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN!=""
+    no_log: true
 
   - name: run composer
     command: chdir=/home/moderatorUI/{{domain_name}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
