@@ -46,6 +46,8 @@
       - { name: moderatorUI, password: 'moderatorUI', host: 'localhost' }
       - { name: participantUI, password: 'participantUI', host: '127.0.0.1' }
       - { name: moderatorUI, password: 'moderatorUI', host: '127.0.0.1' }
+      - { name: easeprobe, password: 'easeprobe', host: '10.7.0.123', priv: '*.*:USAGE' }
+      - { name: mysqld_exporter, password: 'mysqld_exporter', host: '10.7.0.123', priv: '*.*:PROCESS,SELECT' }
 # add your github username to fetch your public keys
 #    sshkeys:
 #      - octoprint
@@ -428,6 +430,17 @@
       group: wheel
       mode: '0555'
 
+  - name: copy uvm-snapshot script
+    copy:
+      src: ../files/uvm-snapshot.sh
+      dest: /usr/local/sbin/uvm-snapshot.sh
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: Create uvm-snapshot folder
+    command: install -d -o root /var/log/uvm-incidents
+
   - name: copy watchdoger script
     copy:
       src: ../../contrib/watchdoger.py
@@ -514,6 +527,7 @@
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
       - { name: "events checker", minute: "*/1",  job: "-ns /usr/local/sbin/mysql-events-checker" }
       - { name: "daily database backups", minute: "0",hour: "23",  job: "-ns /usr/local/sbin/database_backup" }
+      - { name: "uvm-snapshot", minute: "*/20",  job: "-ns /usr/local/sbin/uvm-snapshot.sh >/dev/null 2>&1" }
 
   - name: copy login.conf.d login classes
     copy:
