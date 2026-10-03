@@ -311,6 +311,23 @@
       - "sh /etc/netstart tun0"
       - "rcctl start openvpn"
 
+  - name: copy event_shutdown script
+    copy:
+      src: ../../contrib/event_shutdown.sh
+      dest: /usr/local/sbin/event_shutdown
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: Create watchdog folder
+    command: install -d -m 1777 -o root /watch
+
+  - name: Add watchdog --action to rc.local
+    lineinfile:
+      path: "/etc/rc.local"
+      line: "nohup /usr/local/bin/watchdoger --file_path /watch/event_finished --action /usr/local/sbin/event_shutdown >/tmp/watchdog.log 2>&1 &"
+      insertafter: EOF
+
   - name: Create empty cron
     copy:
       dest: /tmp/empty.cron
