@@ -461,8 +461,8 @@
       dest: /etc/nginx/modsecurity-includes.conf
       content: |
         Include /etc/nginx/modsecurity.conf
-        Include /etc/nginx/owasp-crs/crs-setup.conf
-        Include /etc/nginx/owasp-crs/rules/*.conf
+        Include /etc/nginx/crs-setup.conf
+        Include /etc/nginx/rules/*.conf
     tags:
       - nginx
 
