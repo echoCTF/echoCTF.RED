@@ -485,7 +485,7 @@
       dest: "{{item.dest}}"
       content: "{{item.val}}\n"
     with_items:
-      - { dest: "/etc/service_clients.conf", val: "{{pui_ip}}\n{{mui_ip}}\n{{vpn_ip}}"}
+      - { dest: "/etc/service_clients.conf", val: "{{pui_ip}}\n{{mui_ip}}\n{{vpn_ip}}\n10.7.0.123\n"}
 
   - name: Create pf files
     ignore_errors: true
@@ -520,13 +520,14 @@
       name: "{{item.name}}"
       user: "root"
       minute: "{{item.minute | default(omit)}}"
+      hour: "{{item.hour | default(omit)}}"
       special_time: "{{item.special_time|default(omit)}}"
       job: "{{item.job}}"
     with_items:
       - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
       - { name: "events checker", minute: "*/1",  job: "-ns /usr/local/sbin/mysql-events-checker" }
-      - { name: "daily database backups", minute: "0",hour: "23",  job: "-ns /usr/local/sbin/database_backup" }
+      - { name: "daily database backups", minute: "0", hour: "23",  job: "-ns /usr/local/sbin/database_backup" }
       - { name: "uvm-snapshot", minute: "*/20",  job: "-ns /usr/local/sbin/uvm-snapshot.sh >/dev/null 2>&1" }
 
   - name: copy login.conf.d login classes
