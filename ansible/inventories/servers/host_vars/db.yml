@@ -1,5 +1,6 @@
 hostname: db.mydomain
 backups:
+  - { tgz: "/tmp/altroot.tgz", src: '/altroot' }
   - { tgz: "/altroot/root.tgz", src: '/root' }
   - { tgz: "/altroot/etc.tgz", src: '/etc'  }
   - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
@@ -12,6 +13,8 @@ pre_backups:
 
 REPO: /root/sources
 
+interconnect_interface_ip: "{{db_ip}}"
+#key_buffer_size: "8M"
 #innodb_buffer_pool_size: "2G"
 #innodb_log_file_size: "1G"
 #max_connections: "500"

@@ -13,3 +13,4 @@ backups:
   - { tgz: "/altroot/varmysql.tgz", src: '/var/mysql'  }
   - { tgz: "/altroot/home.tgz", src: '/home'  }
 
+interconnect_interface_ip: "10.0.0.100"
