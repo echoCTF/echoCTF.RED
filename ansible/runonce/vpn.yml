@@ -1,0 +1,839 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: "Setup echoCTF.RED VPN OpenBSD server (gateway or slave)"
+  hosts: all
+#  hosts: 127.0.0.1
+#  connection: local
+  gather_facts: false
+  vars:
+    ansible_pipelining: true
+    prompts:
+      - { name: vpn_role, prompt: "1/20. VPN role (gateway or slave)?" }
+      - { name: myname, prompt: "2/20. System hostname?", default: "vpn.example.com" }
+      - { name: vpngw, prompt: "3/20. OpenVPN gateway hostname or IP?", default: "vpn.example.com" }
+      - { name: egress_if, prompt: "4/20. Egress network interface (ifconfig egress)?", default: "em0" }
+      - { name: vpn_ext_ip, prompt: "5/20. Egress interface IP?", default: "192.168.1.182" }
+      - { name: targets_if, prompt: "6/20. Targets network interface?", default: "em2" }
+      - { name: targets_if_ipv4, prompt: "7/20. Targets network interface IPv4?", default: "10.0.0.254" }
+      - { name: targets_subnet, prompt: "8/20. Targets network subnet?", default: "10.0.0.0" }
+      - { name: targets_netmask, prompt: "9/20. Targets network netmask?", default: "255.255.0.0" }
+      - { name: echoCTF_VPN_mgmt_passwd, prompt: "10/20. OpenVPN managment interface password?", default: "openvpn" }
+      - { name: offense_network, prompt: "11/20. OpenVPN client range?", default: "10.10.0.0/16" }
+      - { name: db_host, prompt: "12/20. Database Server IP?", default: "10.7.0.253" }
+      - { name: db_name, prompt: "13/20. Database name?", default: "echoCTF" }
+      - { name: db_user, prompt: "14/20. Database Server user?", default: "vpnuser" }
+      - { name: db_pass, prompt: "15/20. Database Server user password?", default: "vpnuserpass" }
+#    - { name: GITHUB_OAUTH_TOKEN, prompt: "GITHUB_OAUTH_TOKEN?", default: "randomtoken" }
+#    - { name: GITHUB_REPO, prompt: "Provide a github repo to clone?", default: "{{ lookup('pipe', 'git remote get-url origin') }}" }
+      - { name: interconnect_interface, prompt: "16/20. Interconnect interface?", default: "em1" }
+      - { name: interconnect_interface_ip, prompt: "17/20. Interconnect interface IP?", default: "10.7.0.254" }
+      - { name: admins_domain, prompt: "18/20. admin domain for TXT rules?", default: "admin.example.com" }
+      - { name: APP_DIR, prompt: "19/20. What is the platform installation folder?", default: "/root/sources" }
+      - { name: memc_port, prompt: "20/20. Memcached port?", default: "11211" }
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+    users:
+      - { name: _findingsd, comment: "findingsd user", password: '*' }
+    post_inst: |
+      Things to do:
+        - Update /etc/administrators.conf with your IP's
+        - Reboot the system for the changes to take effect
+    versions:
+      PHP: "8.4"
+      PHP_MINOR: "20p0"
+      AUTOCONF: "2.69"
+      AUTOMAKE: "1.16"
+      ICU_MAJOR: 78
+      ICU_MINOR: 3
+      MARIADB_CONNECTOR: "3.4.5"
+    sysctl:
+      kern.bufcachepercent: 30
+      kern.maxfiles: 312180
+      kern.seminfo.semmni: 1024
+      kern.seminfo.semmns: 4096
+      kern.shminfo.shmall: 32768
+      kern.shminfo.shmmax: 67018864
+      kern.somaxconn: 8192
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      net.inet.divert.sendspace: 65636
+      net.inet.ip.forwarding: 1
+      net.inet.ip.ifq.maxlen: 2560
+      net.inet.ip.maxqueue: 2048
+      net.inet.ip.mforwarding: 0
+      net.inet.tcp.synuselimit: 1000000
+      net.inet.udp.sendspace: 9216
+      net.unix.dgram.sendspace: 9216
+      net.inet.ip.arptimeout: 30
+      net.inet.tcp.keepinittime: 15
+      #net.inet.tcp.keepidle: 300
+      #net.inet.tcp.keepintvl: 30
+      net.inet.tcp.keepidle: 6
+      net.inet.tcp.keepintvl: 5
+      net.inet.ip.portfirst: 1024
+      net.inet.ip.portlast: 65535
+    rcctl:
+      - { name: check_quotas, state: "disable" }
+      - { name: cron, state: "enable" }
+      - { name: resolvd, state: "disable" }
+      - { name: ntpd, state: "enable" }
+      - { name: pflogd, state: "disable" }
+      - { name: slaacd, state: "disable" }
+      - { name: smtpd, state: "disable" }
+      - { name: sndiod, state: "disable" }
+      - { name: openvpn, state: "enable"}
+      - { name: mysqld, state: "enable"}
+      - { name: supervisord, state: "enable"}
+      - { name: inetd, state: "enable"}
+    packages:
+      - autoconf-2.69p3
+      - automake%1.16
+      - curl
+      - git
+      - cmake
+      - gmake
+      - rsync--
+      - libmemcached
+      - memcached--
+      - libtool
+      - mariadb-server
+      - openvpn--
+      - "pecl{{versions.PHP|replace('.','')}}-memcached"
+      - "php-gd%{{versions.PHP}}"
+      - "php-curl%{{versions.PHP}}"
+      - "php-intl%{{versions.PHP}}"
+      - "php-pdo_mysql%{{versions.PHP}}"
+      - "php-zip%{{versions.PHP}}"
+      - py3-mysqlclient
+      - py3-setuptools
+      - py3-netaddr
+      - py3-requests
+      - py3-pip
+      - supervisor
+      - gnuwatch
+      - go
+      - p5-Net-Pcap
+      - p5-NetPacket
+      - gnuwatch
+      - nmap
+      - fswatch
+
+  tasks:
+  - name: Prompt for variables that are not set
+    pause:
+      prompt: "{{ item.prompt }}{% if item.default is defined %} [{{ item.default }}]{% endif %}"
+    run_once: true
+    register: answers
+    loop: "{{ prompts }}"
+    loop_control:
+      label: "{{ item.name }}"
+    when: ansible_play_hosts_all | map('extract', hostvars) | rejectattr(item.name, 'defined') | list | length > 0
+
+  - name: Set prompted variables
+    set_fact:
+      "{{ item.item.name }}": "{{ item.user_input | default(item.item.default | default(''), true) }}"
+    loop: "{{ answers.results }}"
+    loop_control:
+      label: "{{ item.item.name }}"
+    when: not (item.skipped | default(false)) and item.item.name not in vars
+
+  - name: Validate vpn_role
+    assert:
+      that:
+        - vpn_role is defined
+        - vpn_role in ['gateway', 'slave']
+      fail_msg: "vpn_role must be 'gateway' or 'slave', got '{{ vpn_role | default('') }}'"
+      quiet: true
+
+  - name: Sync date time
+    raw: rdate pool.ntp.org
+
+  - name: Install ansible (raw)
+    raw: pkg_add ansible py3-mysqlclient
+
+#  - name: Gather facts
+#    setup:
+
+  - name: Set hostname
+    hostname:
+      name: "{{myname}}"
+
+  - name: Make hostname permanent (/etc/myname)
+    copy:
+      content: "{{ myname }}\n"
+      dest: /etc/myname
+
+  - name: Create fresh /etc/hosts
+    copy:
+      content: "127.0.0.1 localhost\n{{db_ip|default('10.7.0.253')}} db\n{{vpn_ext_ip}} {{  myname.split('.')[0] | lower }} {{ myname }}\n"
+      dest: /etc/hosts
+
+  - name: Set /etc/installurl to custom mirror
+    when: installurl is defined
+    ansible.builtin.copy:
+      content: "{{installurl}}\n"
+      dest: /etc/installurl
+      owner: root
+      group: wheel
+      mode: "0644"
+
+  - name: Configure interconnect interface
+    copy:
+      dest: "/etc/hostname.{{interconnect_interface}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      content: |
+        inet {{ interconnect_interface_ip |default('10.7.0.254')}} 255.255.255.0 NONE mtu 1450 group interconnect
+        up -inet6
+
+  - name: Bring interface up
+    command: sh /etc/netstart {{interconnect_interface}}
+
+  - name: Set APP_DIR to {{playbook_dir}}/../../
+    when: ansible_connection == 'local'
+    set_fact:
+      APP_DIR: "{{playbook_dir}}/../../"
+
+  - name: Install packages
+    shell: "pkg_add -I {{packages| join(' ')}}"
+
+  - name: Configure PS1, HISTFILE and HISTSIZE for root and skeleton
+    lineinfile:
+      path: "{{item.0}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item.1}}"
+    with_nested:
+      - [ '/etc/skel/.profile', '/root/.profile' ]
+      - [ "export PS1='\\u@\\H:\\w\\$ '", "export HISTFILE=~/.sh_history", "export HISTSIZE=10000" ]
+
+  - name: Activate install php modules
+    shell: "cp /etc/php-{{versions.PHP}}.sample/*.ini /etc/php-{{versions.PHP}}/"
+
+  - name: Fixing /etc/php.ini
+    ini_file: dest=/etc/php-{{versions.PHP}}.ini section={{item.section}} option={{item.option}} value={{item.value}} mode=0644 owner=root group=wheel
+    with_items:
+      - { section: PHP, option: "expose_php", value: "Off" }
+      - { section: PHP, option: "log_errors_max_len", value: 4096 }
+      - { section: PHP, option: "html_errors", value: "Off" }
+      - { section: PHP, option: "max_execution_time", value: "60" }
+      - { section: PHP, option: "max_input_time", value: "120" }
+      - { section: PHP, option: "memory_limit", value: "256M" }
+      - { section: PHP, option: "error_reporting", value: "E_NONE" }
+      - { section: PHP, option: "post_max_size", value: "180M" }
+      - { section: PHP, option: "upload_max_filesize", value: "120M" }
+      - { section: PHP, option: "allow_url_fopen", value: "On"}
+
+  - name: Update my.cnf
+    ini_file:
+      path: /etc/my.cnf
+      section: mysqld
+      option: "{{ item.key }}"
+      value: "{{ item.value }}"
+    with_items:
+      - { key: "event_scheduler", value: "on" }
+      - { key: "plugin_load_add", value: "ha_federatedx" }
+      - { key: "wait_timeout", value: "2880000" }
+      - { key: "interactive_timeout", value: "2880000" }
+
+  - name: Append ha_blackhole
+    ansible.builtin.lineinfile:
+      path: /etc/my.cnf
+      insertafter: '^plugin_load_add'
+      line: "plugin_load_add = ha_blackhole"
+
+  - name: Configure default services
+    shell: |
+      rcctl disable {{ rcctl | selectattr('state', 'equalto', 'disable') | map(attribute='name') | join(' ') }} ;
+      rcctl enable {{ rcctl | selectattr('state', 'equalto', 'enable') | map(attribute='name') | join(' ') }}
+
+  - name: Check if /var/mysql exists
+    stat:
+      path: /var/mysql
+    register: stat_result
+
+  - name: execute mysql_install_db if /var/mysql do not exist
+    command: mariadb-install-db
+    when: stat_result.stat.exists == False
+
+  - name: start mysqld
+    command: rcctl restart mysqld
+
+  - name: Download MariaDB Connector C
+    ansible.builtin.get_url:
+      url: "https://dlm.mariadb.com/4234414/Connectors/c/connector-c-{{versions.MARIADB_CONNECTOR}}/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+      dest: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+
+  - name: extract connector
+    command: tar zxf "mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+    args:
+      chdir: /usr/src
+
+  - name: Replace Werror from CMakeLists.txt
+    ansible.builtin.replace:
+      path: /usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src/CMakeLists.txt
+      regexp: 'Werror'
+      replace: 'w'
+
+  - name: Build MariaDB Connector C
+    command: "{{item}}"
+    args:
+      chdir: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src"
+    with_items:
+      - 'cmake ../mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_FLAGS="-Wall"'
+      - gmake
+      - gmake install
+
+  - name: Create local echoCTF mysql database
+    mysql_db:
+      state: present
+      name: echoCTF
+      collation: utf8mb4_unicode_ci
+      encoding: utf8mb4
+      login_user: "root"
+      login_unix_socket: "/var/run/mysql/mysql.sock"
+
+  - name: Clone sources repo
+    when: ansible_connection != 'local' and GITHUB_REPO is defined
+    git:
+      repo: "{{GITHUB_REPO}}"
+      dest: "{{APP_DIR}}"
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+      version: "{{ GITHUB_REPO_BRANCH | default('main') }}"
+
+  - name: Clone memcached udf repo
+    git:
+      repo: 'https://github.com/echoCTF/memcached_functions_mysql.git'
+      dest: /usr/src/memcached_functions_mysql
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Clone heartbeatd repo
+    git:
+      repo: 'https://github.com/echoCTF/heartbeatd.git'
+      dest: /usr/src/heartbeatd
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Clone findingsd repo
+    git:
+      repo: 'https://github.com/echoCTF/findingsd.git'
+      dest: /usr/src/findingsd
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Bootstrap memcached udf
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./config/bootstrap
+    args:
+      chdir: /usr/src/memcached_functions_mysql
+
+  - name: Configure memcached udf
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
+    args:
+      chdir: /usr/src/memcached_functions_mysql
+
+  - name: make install heartbeatd
+    shell: "{{item}}"
+    args:
+      chdir: /usr/src/heartbeatd
+    with_items:
+      - "make"
+      - "install -c -s -o root -g bin -m 555 heartbeatd /usr/local/sbin/heartbeatd"
+      - "install -c -o root -g wheel -m 555 heartbeatd.rc /etc/rc.d/heartbeatd"
+
+  - name: make install memcached udf
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" make all install
+    args:
+      chdir: /usr/src/memcached_functions_mysql
+
+  - name: Create temporary findingsd-federated.sql
+    template:
+      src: "{{playbook_dir}}/../../contrib/findingsd-federated.sql"
+      dest: /tmp/findingsd.sql
+    tags:
+      - findingsd-federated.sql
+
+  - name: Build vpn_churn_check
+    shell: cc -o /usr/local/bin/vpn_churn_check {{APP_DIR}}/contrib/vpn_churn_check.c -I/usr/local/include -L/usr/local/lib -lmemcached
+
+  - name: Build findingsd
+    shell: "{{item}}"
+    args:
+      chdir: /usr/src/findingsd
+    with_items:
+      - "LDFLAGS='-lssl -lm' make"
+      - "install -c -s -o root -g bin -m 555 findingsd /usr/local/sbin/findingsd"
+      - "install -c -o root -g wheel -m 555 findingsd.rc /etc/rc.d/findingsd"
+      - "rcctl set findingsd status on"
+      - "rcctl set findingsd flags -l pflog1 -n echoCTF -u openvpn -p openvpn -h 127.0.0.1 -U _memcached"
+
+  - name: Add users
+    user:
+      name: "{{item.name}}"
+      comment: "{{item.comment}}"
+      uid: "{{item.uid|default(omit)}}"
+      password: '{{item.password}}'
+    with_items: "{{users}}"
+
+  - name: "Create backend/config/db.php"
+    copy:
+      content: "<?php return [ 'class' => 'yii\\db\\Connection', 'dsn' => 'mysql:host={{db_host}};dbname={{db_name}}', 'username' => '{{db_user}}', 'password' => '{{db_pass}}', 'charset' => 'utf8mb4',  ];\n"
+      dest: "{{APP_DIR}}/backend/config/db.php"
+
+  - name: "Update backend/config/params.php"
+    replace:
+      path: "{{APP_DIR}}/backend/config/params.php"
+      regexp: 'localhost:8888'
+      replace: '10.7.0.200:8888'
+
+  - name: Install composer
+    get_url:
+      url: https://getcomposer.org/composer-stable.phar
+      dest: /usr/local/bin/composer
+      mode: '0555'
+
+  - name: Create needed symbolic links for backend commands
+    shell: |
+      ln -sf /usr/local/bin/php-{{versions.PHP}} /usr/local/bin/php
+      ln -sf {{APP_DIR}}/backend/bin/cron-index /usr/local/bin/cron-index
+      ln -sf {{APP_DIR}}/backend/bin/cron-pf /usr/local/bin/cron-pf
+      ln -sf {{APP_DIR}}/backend/bin/instance-pf /usr/local/bin/instance-pf
+      ln -sf {{APP_DIR}}/backend/bin/instance-pf-tables /usr/local/bin/instance-pf-tables
+      ln -sf {{APP_DIR}}/backend/bin/instances /usr/local/bin/instances
+      ln -sf {{APP_DIR}}/backend/bin/ssl-generate-crl /usr/local/bin/ssl-generate-crl
+      ln -sf {{APP_DIR}}/backend/bin/healthcheck /usr/local/bin/healthcheck
+      ln -sf {{APP_DIR}}/backend/bin/powerops /usr/local/bin/powerops
+      ln -sf {{APP_DIR}}/backend/bin/target-restart /usr/local/bin/target-restart
+
+  - name: "configure git to fetch from https:// instead of git://"
+    raw: git config --global url."https://".insteadOf "git://"
+
+  - name: "configure composer to fetch from https:// instead of git://"
+    command: chdir={{APP_DIR}}/backend composer -n config --global github-protocols https
+
+  - name: run composer config
+    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer -n config -g github-oauth.github.com "{{GITHUB_OAUTH_TOKEN}}"
+    when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN != "randomtoken" and GITHUB_OAUTH_TOKEN!=""
+
+  - name: run composer
+    command: chdir={{APP_DIR}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --ignore-platform-reqs
+
+  - name: "Prepare empty interfaces (pflog0, pflog1...)"
+    copy:
+      content: "up\n"
+      dest: "{{item}}"
+    with_items:
+      - /etc/hostname.pflog2
+      - /etc/hostname.pflog1
+      - /etc/hostname.pflog0
+
+  - name: "Prepare /etc/hostname.tun0"
+    copy:
+      content: |
+        up group offense
+        inet -arp
+      dest: /etc/hostname.tun0
+
+  - name: Prepare openvpn services
+    command: "{{item}}"
+    with_items:
+      - "mkdir -p /etc/openvpn/certs /etc/openvpn/client_confs /var/log/openvpn /etc/openvpn/crl /etc/openvpn/ccd"
+      - "install -d -m 700 /etc/openvpn/private"
+      - "rcctl set openvpn status on"
+      - "rcctl set openvpn flags --dev tun0 --config /etc/openvpn/openvpn_tun0.conf"
+      - "rcctl enable unbound"
+
+  - name: Generate dh.pem once on the controller
+    run_once: true
+    delegate_to: localhost
+    vars:
+      ansible_python_interpreter: "{{ ansible_playbook_python }}"
+    command: openssl dhparam -out {{playbook_dir}}/../files/dh.pem 2048
+    args:
+      creates: "{{playbook_dir}}/../files/dh.pem"
+
+  - name: Copy dh.pem
+    copy:
+      src: "{{playbook_dir}}/../files/dh.pem"
+      dest: /etc/openvpn/dh.pem
+
+  - name: "Install openvpn, pf, unbound, inetd conf files and scripts from the cloned repo"
+    shell: |
+      install -C -m 0644 {{APP_DIR}}/contrib/openvpn_tun0.conf /etc/openvpn/openvpn_tun0.conf
+      install -C -m 0644 {{APP_DIR}}/contrib/crl_openssl.conf /etc/openvpn/crl/crl_openssl.conf
+      install -C -m 0644 {{APP_DIR}}/contrib/unbound.conf /var/unbound/etc/unbound.conf
+      install -C -m 0644 {{APP_DIR}}/ansible/files/pf.conf /etc/pf.conf
+      install -C -m 0644 {{APP_DIR}}/ansible/files/vpn.service.conf /etc/service.pf.conf
+      install -C -o root -g wheel -m 0555 {{APP_DIR}}/contrib/watchdoger.py /usr/local/bin/watchdoger
+      install -C -o root -g wheel -m 0555 {{APP_DIR}}/contrib/event_shutdown.sh /usr/local/sbin/event_shutdown
+      install -C -o root -g wheel -m 0555 {{APP_DIR}}/ansible/files/nstables.sh /usr/local/sbin/nstables
+      install -C -o root -g wheel -m 0555 {{APP_DIR}}/contrib/gource-inetd-service.pl /usr/local/sbin/inetd-visuals
+      install -C -o root -g wheel -m 0644 {{APP_DIR}}/ansible/files/login.conf /etc/login.conf
+
+  - name: Create inetd.conf for visuals
+    copy:
+      content: |
+        127.0.0.1:50000		stream	tcp	nowait	root	/usr/local/sbin/inetd-visuals	inetd-visuals {{targets_if}} g
+        127.0.0.1:60000		stream	tcp	nowait	root	/usr/local/sbin/inetd-visuals	inetd-visuals {{targets_if}} l
+      dest: /etc/inetd.conf
+
+  - name: Update files with provided ip ranges
+    replace:
+      path: '{{item.file}}'
+      regexp: '{{item.regexp}}'
+      replace: '{{item.replace}}'
+    with_items:
+      - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'server 10\.10\.0\.0 255\.255\.0\.0', replace: 'server {{offense_network|ansible.utils.ipaddr("network")}} {{offense_network|ansible.utils.ipaddr("netmask")}}' }
+      - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'route 10\.0\.160\.0 255\.255\.255\.0', replace: 'route {{targets_subnet}} {{targets_netmask}}' }
+      - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
+      - { file: '/etc/service.pf.conf', regexp: '10\.10\.0\.1', replace: '{{ offense_network | ansible.utils.ipaddr("next_usable") }}' }
+
+  - name: Ensure tls-verify exists
+    ansible.builtin.lineinfile:
+      path: /etc/openvpn/openvpn_tun0.conf
+      regexp: '^tls-verify'
+      state: present
+      line: 'tls-verify "/etc/openvpn/verify-cn.sh"'
+      insertafter: EOF
+
+  - name: Create echoctf_updown_mysql.sh
+    template:
+      src:  "{{playbook_dir}}/../../contrib/echoctf_updown_mysql.sh"
+      dest: /etc/openvpn/echoctf_updown_mysql.sh
+      mode: "0555"
+    vars:
+      db:
+        host: "{{db_host}}"
+        user: "openvpn"
+        pass: "openvpn"
+
+  - name: Set memcached port in echoctf_updown_mysql.sh
+    replace:
+      path: /etc/openvpn/echoctf_updown_mysql.sh
+      regexp: '11211'
+      replace: '{{memc_port}}'
+
+## template of verify-cn.sh
+  - name: Parse verify-cn.sh
+    template:
+      src: "{{playbook_dir}}/../../contrib/verify-cn.sh"
+      dest: /etc/openvpn/verify-cn.sh
+      mode: "0555"
+    vars:
+      db:
+        host: "{{db_host}}"
+        user: "openvpn"
+        pass: "openvpn"
+
+  - name: "Create openvpn management password file"
+    copy:
+      content: "{{echoCTF_VPN_mgmt_passwd}}"
+      dest: /etc/openvpn/private/mgmt.pwd
+
+  - name: "Create openvpn CRL serial file"
+    copy:
+      content: "00"
+      dest: /etc/openvpn/crl/number
+
+  - name: "Create openvpn CRL index"
+    copy:
+      content: ""
+      dest: /etc/openvpn/crl/index.txt
+
+  - name: Generate OpenVPN files (all roles)
+    ignore_errors: true
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+      chdir: "{{item.chdir|default(omit)}}"
+    with_items:
+    - { cmd: "ln -sf {{APP_DIR}}/backend/yii /usr/local/bin/backend"}
+
+  - name: Generate OpenVPN TLS auth key (gateway)
+    when: vpn_role == 'gateway'
+    ignore_errors: true
+    command: openvpn --genkey secret /etc/openvpn/private/vpn-ta.key
+    args:
+      creates: /etc/openvpn/private/vpn-ta.key
+
+  - name: Create CA (gateway)
+    when: vpn_role == 'gateway'
+    ignore_errors: true
+    command: "{{APP_DIR}}/backend/yii ssl/create-ca 1"
+    args:
+      creates: /etc/openvpn/private/echoCTF-OVPN-CA.key
+      chdir: /etc/openvpn/private
+
+  - name: Fetch CA from the database (slave)
+    when: vpn_role == 'slave'
+    ignore_errors: true
+    command: "{{APP_DIR}}/backend/yii ssl/get-ca 1"
+    args:
+      chdir: /etc/openvpn/private
+
+  - name: Create server certificate (all roles)
+    ignore_errors: true
+    command: '{{APP_DIR}}/backend/yii ssl/create-cert "VPN Server"'
+    args:
+      creates: "/etc/openvpn/private/VPN Server.key"
+      chdir: /etc/openvpn/private
+
+  - name: Create CRL (all roles)
+    ignore_errors: true
+    command: "{{APP_DIR}}/backend/yii ssl/create-crl"
+    args:
+      creates: /etc/openvpn/crl.pem
+
+  - name: Load VPN TLS auth key into the database (gateway)
+    when: vpn_role == 'gateway'
+    ignore_errors: true
+    command: "{{APP_DIR}}/backend/yii ssl/load-vpn-ta"
+
+  - name: Save VPN TLS auth key from the database (slave)
+    when: vpn_role == 'slave'
+    ignore_errors: true
+    command: "{{APP_DIR}}/backend/yii ssl/save-vpn-ta /etc/openvpn/private/vpn-ta.key"
+    args:
+      chdir: /etc/openvpn/private
+
+  - name: Set sysconfig values (gateway)
+    when: vpn_role == 'gateway'
+    ignore_errors: true
+    command: "{{item}}"
+    with_items:
+      - "{{APP_DIR}}/backend/yii sysconfig/set vpngw {{vpngw}}"
+      - "{{APP_DIR}}/backend/yii sysconfig/set offense_registered_tag OFFENSE_REGISTERED"
+
+  - name: Load VPN configuration into the database (all roles)
+    ignore_errors: true
+    command: "{{APP_DIR}}/backend/yii vpn/load /etc/openvpn/openvpn_tun0.conf"
+
+  - name: Create empty PF table files
+    command: "touch {{ pf_files | join(' ') }}"
+    vars:
+      pf_files:
+        - /etc/administrators.conf
+        - /etc/moderators.conf
+        - /etc/registry_clients.conf
+        - /etc/registry_servers.conf
+        - /etc/targets.conf
+        - /etc/targets_networks.conf
+        - /etc/targets_anchor.conf
+        - /etc/offense_anchor.conf
+        - /etc/docker_clients.conf
+        - /etc/docker_servers.conf
+        - /etc/service_clients.conf
+        - /etc/match-findings-pf.conf
+
+  - name: Continue OpenVPN and PF files
+    ignore_errors: true
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+    with_items:
+    - { cmd: "{{APP_DIR}}/backend/yii cron/pf" }
+    - { cmd: "mkdir -p /var/log/cron" }
+    - { cmd: "install -m 0500 /etc/examples/rc.local /etc/rc.local", creates: "/etc/rc.local" }
+
+  - name: "Create configuration files with contents"
+    copy:
+      dest: "{{item.dest}}"
+      content: "{{item.val}}\n"
+    with_items:
+      - { dest: "/etc/registry_clients.conf", val: "10.0.0.0/24"}
+      - { dest: "/etc/maintenance.conf", val: "0.0.0.0/0"}
+
+  - name: "Create targets network interface hostname.{{targets_if}}"
+    copy:
+      content: |
+        inet {{targets_if_ipv4}} {{targets_netmask}} NONE mtu 1450 group targets
+        up -inet6
+      dest: "/etc/hostname.{{targets_if}}"
+
+  - name: Set /etc/openvpn/private permissions
+    raw: chmod 400 /etc/openvpn/private/*
+
+  - name: Update crontab PATH variable
+    cron:
+      user: root
+      name: PATH
+      env: yes
+      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+    tags:
+      - cron
+
+  - name: Install cron entries
+    when: vpn_role == 'gateway' or item.roles is not defined or vpn_role in item.roles
+    cron:
+      name: "{{item.name}}"
+      user: "root"
+      minute: "{{item.minute | default(omit)}}"
+      special_time: "{{item.special_time|default(omit)}}"
+      job: "{{item.job}}"
+    with_items:
+      - { name: "Generate CRL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-generate-crl", roles: ["gateway"] }
+      - { name: "Revoke Expoired Player SSL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-revoke-expired", roles: ["gateway"] }
+      - { name: "Expire sales", minute: "*/2",  job: "{{APP_DIR}}/backend/yii sales/expire-subscriptions", roles: ["gateway"] }
+      - { name: "Power Operations", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/powerops", roles: ["gateway"] }
+      - { name: "restart targets with 24h uptime or more", minute: "*/5",  job: "{{APP_DIR}}/backend/bin/target-restart", roles: ["gateway"] }
+      - { name: "Healthcheck", minute: "*/10",  job: "{{APP_DIR}}/backend/bin/healthcheck", roles: ["gateway"] }
+      - { name: "Process disconnect queue", minute: "*/1",  job: "{{APP_DIR}}/backend/yii vpn/process-disconnect-queue", roles: ["gateway"] }
+      - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
+    tags:
+      - cron
+
+  - name: Install echoctf.ini for supervisord (gateway)
+    when: vpn_role == 'gateway'
+    copy:
+      dest: /etc/supervisord.d/echoctf.ini
+      content: |
+        [program:backend-cron]
+        user = root
+        command = /usr/local/bin/cron-index
+        stdout_logfile=/var/log/echoctf-cron-index.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+        [program:backend-instances]
+        user = root
+        command = /usr/local/bin/instances
+        stdout_logfile=/var/log/echoctf-cron-instances.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+        [program:backend-instances-pf]
+        user = root
+        command = /usr/local/bin/instance-pf-tables
+        stdout_logfile=/var/log/echoctf-cron-instances-pf.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+  - name: Install echoctf.ini for supervisord (slave)
+    when: vpn_role == 'slave'
+    copy:
+      dest: /etc/supervisord.d/echoctf.ini
+      content: |
+        [program:cron-pf]
+        user = root
+        command = /usr/local/bin/cron-pf 1
+        stdout_logfile=/var/log/supervisord-echoctf.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+        [program:cron-instance-pf]
+        user = root
+        command = /usr/local/bin/instance-pf 30
+        stdout_logfile=/var/log/supervisord-echoctf.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+  - name: Create watchdog folder
+    command: install -d -m 1777 -o root /watch
+
+  - name: Add watchdog --action to rc.local
+    lineinfile:
+      path: "/etc/rc.local"
+      line: "nohup /usr/local/bin/watchdoger --file_path /watch/event_finished --action /usr/local/sbin/event_shutdown >/tmp/watchdog.log 2>&1 &"
+      insertafter: EOF
+
+  - name: create user for openvpn up/down scripts
+    mysql_user:
+      name: "openvpn"
+      password: "openvpn"
+      host: "127.0.0.1"
+      priv: '*.*:ALL'
+      state: present
+    tags:
+      - create_users
+
+  - name: Import memcached_functions_mysql
+    ignore_errors: true
+    mysql_db:
+      state: import
+      name: echoCTF
+      target: "{{item}}"
+      login_user: "root"
+      login_unix_socket: "/var/run/mysql/mysql.sock"
+    with_items:
+      - "/usr/src/memcached_functions_mysql/sql/install_functions.sql"
+
+  - name: Import findingsd.sql
+    ignore_errors: true
+    mysql_db:
+      state: import
+      name: echoCTF
+      target: "{{item}}"
+      login_user: "root"
+      login_unix_socket: "/var/run/mysql/mysql.sock"
+    with_items:
+      - "/tmp/findingsd.sql"
+    tags:
+      - findingsd-federated.sql
+
+  - name: Fix /dev/pf permissions for openvpn updown script
+    file:
+      path: /dev/pf
+      owner: _openvpn
+      mode: '0660'
+
+  - name: enable memcached
+    command: "rcctl enable {{item}}"
+    with_items:
+      - memcached
+      - heartbeatd
+
+  - name: set memcached flags
+    command: rcctl set memcached flags -s /var/run/memcached/memcached.sock -u _memcached -a 0666
+
+  - name: set heartbeatd flags
+    command: rcctl set heartbeatd flags -s /var/run/memcached/memcached.sock -u _memcached -l pflog2
+
+  - name: Set rc scripts order
+    raw: rcctl order mysqld memcached findingsd heartbeatd openvpn
+
+  - name: Setting up sysctl.conf
+    copy:
+      dest: /etc/sysctl.conf
+      owner: root
+      group: wheel
+      mode: "0644"
+      content: |
+        {% for k, v in sysctl.items() %}
+        {{ k }}={{ v }}
+        {% endfor %}
+
+  - name: Apply sysctl.conf
+    command: sysctl -f /etc/sysctl.conf
+
+#  - name: Append login.conf specs
+#    ansible.builtin.blockinfile:
+#      path: /etc/login.conf
+#      block: "{{ lookup('file', '{{playbook_dir}}/../files/login.conf.d/participantUI') }}"
+#      create: yes
+
+  - name: Rebuild the capabilities db
+    command: cap_mkdb /etc/login.conf
+
+  - name: Execute fw_update
+    command: fw_update -a
+
+  - name: Execute syspatch
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - name: Re-Execute syspatch in case it updated it self on the previous run
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - debug: msg={{ post_inst.split('\n') }}
