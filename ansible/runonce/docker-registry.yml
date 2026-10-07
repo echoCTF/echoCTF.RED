@@ -23,7 +23,7 @@
       ip: "{{registry_bind_ip}}"
       port: "{{registry_bind_port}}"
     users:
-      - { name: "{{registry_user}}", comment: "Docker Registry User", uid: 3750, password: '*' }
+      - { name: "{{registry_user}}", comment: "Docker Registry User", uid: 3750, password: '*', home: "{{registry_home}}" }
     rcctl:
       - { name: 'supervisord', state: "enable" }
     packages:
@@ -107,17 +107,10 @@
       name: "{{item.name}}"
       comment: "{{item.comment}}"
       uid: "{{item.uid}}"
+      home: "{{item.home}}"
       password: '{{item.password}}'
     with_items: "{{users}}"
     tags: create_users
-
-  - name: copy nstables script
-    copy:
-      src: ../files/nstables.sh
-      dest: /usr/local/sbin/nstables
-      owner: root
-      group: wheel
-      mode: '0555'
 
   - name: copy nstables script
     copy:
@@ -210,13 +203,13 @@
       mode: '0600'
       backup: false
     with_dict:
-      user: registry
-      directory: /home/registry
+      user: "{{registry.user}}"
+      directory: "{{registry.home}}"
+      environment: "HOME={{registry.home}}"
       command: /usr/local/sbin/registry serve /etc/docker-registry.yml
       stdout_logfile: /var/log/registry.log
       stdout_logfile_maxbytes: 0
-      stderr_logfile: /var/log/registry.log
-      stderr_logfile_maxbytes: 0
+      redirect_stderr: true
 
   - name: Configure default services
     shell: |
@@ -237,7 +230,7 @@
     - "/sbin/pfctl -a dynamic -Fr"
     - "chmod +r /etc/nginx/{{myname}}-server.key"
 
-  - name: Configure targerts interface
+  - name: Configure targets interface
     lineinfile:
       path: "/etc/hostname.{{registry_targets_if}}"
       owner: root
@@ -246,7 +239,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{registry_targets_cidr | ansible.utils.ipaddr('address')}} {{registry_targets_cidr | ansible.utils.ipaddr('netmask')}} NONE group targets"
+      - "inet {{registry_targets_cidr | ansible.utils.ipaddr('address')}} {{registry_targets_cidr | ansible.utils.ipaddr('netmask')}} NONE mtu 1450 group targets"
       - "up -inet6"
 
   - name: Bring targets interface up
