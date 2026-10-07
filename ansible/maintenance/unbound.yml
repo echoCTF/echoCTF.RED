@@ -1,0 +1,78 @@
+#!/usr/bin/env ansible-playbook
+# Provide all the inventories at one line and limit the execution just to the host that runs unbound
+# ./maintenance/unbound.yml -i inventories/servers -i inventories/dockers -i inventories/targets --limit vpn.mydomain
+---
+- name: unbound with static entries for all inventory hosts
+  hosts: all
+  gather_facts: false
+  tasks:
+  - name: Read the dockers inventory
+    ansible.builtin.command: ansible-inventory -i "../inventories/dockers/" --list --limit int
+    delegate_to: localhost
+    run_once: true
+    changed_when: false
+    register: dockers_inv
+
+  - name: local-data.conf
+    ansible.builtin.blockinfile:
+      path: /var/unbound/etc/local-data.conf
+      create: true
+      block: |
+        {% for h in groups['all'] | sort if hostvars[h].interconnect_interface_ip is defined %}
+        local-data: "{{ h }}. IN A {{ hostvars[h].interconnect_interface_ip }}"
+        {% endfor %}
+        {% set d = dockers_inv.stdout | from_json %}
+        {% for h in d.int.hosts | default([]) | sort %}
+        local-data: "{{ h }}. IN A {{ d._meta.hostvars[h].ipv4 }}"
+        local-data: "{{ d._meta.hostvars[h].fqdn }}. IN A {{ d._meta.hostvars[h].ipv4 }}"
+        {% endfor %}
+      owner: root
+      group: wheel
+      mode: "0644"
+    register: local_data
+
+  - name: unbound.conf
+    ansible.builtin.copy:
+      dest: /var/unbound/etc/unbound.conf
+      content: |
+        server:
+          verbosity: 1
+          statistics-interval: 0
+          statistics-cumulative: no
+          num-threads: 1
+          interface-automatic: no
+          interface: 0.0.0.0
+          access-control: 0.0.0.0/0 allow
+
+          do-ip6: no
+          hide-identity: yes
+          hide-version: yes
+
+          auto-trust-anchor-file: "/var/unbound/db/root.key"
+          val-log-level: 2
+
+          include: "/var/unbound/etc/local-data.conf"
+
+        remote-control:
+          control-enable: yes
+          control-interface: /var/run/unbound.sock
+
+        forward-zone:
+           name: "."                       # use for ALL queries
+           forward-addr: 8.8.8.8           # google.com
+           forward-first: no               # direct to forwarder if local fails
+      owner: root
+      group: wheel
+      mode: "0644"
+    register: unbound_conf
+
+  - name: Validate unbound config
+    ansible.builtin.command: unbound-checkconf
+    when: local_data.changed or unbound_conf.changed
+
+  - name: Enable unbound
+    ansible.builtin.command: rcctl enable unbound
+
+  - name: Restart unbound when its config changed
+    ansible.builtin.command: rcctl restart unbound
+    when: local_data.changed or unbound_conf.changed
