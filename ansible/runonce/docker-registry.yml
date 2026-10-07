@@ -219,9 +219,9 @@
       stderr_logfile_maxbytes: 0
 
   - name: Configure default services
-    command: "rcctl {{item.state}} {{item.name}}"
-    when: item.state is defined
-    with_items: "{{rcctl}}"
+    shell: |
+      rcctl disable {{ rcctl | selectattr('state', 'equalto', 'disable') | map(attribute='name') | join(' ') }} ;
+      rcctl enable {{ rcctl | selectattr('state', 'equalto', 'enable') | map(attribute='name') | join(' ') }}
 
   - name: Issue certificate for the system
     raw: "{{item}}"

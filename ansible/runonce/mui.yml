@@ -205,11 +205,10 @@
       key: "https://github.com/{{item}}.keys"
     with_items: "{{sshkeys}}"
 
-
   - name: Configure default services
-    command: "rcctl {{item.state}} {{item.name}}"
-    when: item.state is defined
-    with_items: "{{rcctl}}"
+    shell: |
+      rcctl disable {{ rcctl | selectattr('state', 'equalto', 'disable') | map(attribute='name') | join(' ') }} ;
+      rcctl enable {{ rcctl | selectattr('state', 'equalto', 'enable') | map(attribute='name') | join(' ') }}
 
   - name: Clone echoCTF repo
     when: GITHUB_REPO is defined
