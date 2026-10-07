@@ -17,6 +17,8 @@
       AUTOCONF: "2.69"
       AUTOMAKE: "1.16"
       easeprobe: "2.3.0"
+      memcached_exporter: "0.17.0"
+      mysqld_exporter: "0.20.0"
     sysctl:
       kern.bufcachepercent: 30
       kern.maxfiles: 312180
@@ -80,6 +82,7 @@
       - rsync--
       - snmp_exporter
       - supervisor
+      - unzip--
   tasks:
   - name: Sync date time
     raw: rdate pool.ntp.org
@@ -333,21 +336,29 @@
       group: wheel
       mode: "0555"
 
-  - name: Install memcached_exporter
-    ansible.builtin.copy:
-      src: "../files/conductor/memcached_exporter-openbsd-amd64"
-      dest: /usr/local/bin/memcached_exporter
-      owner: root
-      group: wheel
-      mode: "0555"
+  - name: Download memcached_exporter and mysqld_exporter
+    ansible.builtin.get_url:
+      url: "https://github.com/echoCTF/obsd-binaries/releases/download/{{ item }}-{{ versions[item] }}/{{ item }}-openbsd-amd64.zip"
+      dest: "/tmp/{{ item }}-{{ versions[item] }}-openbsd-amd64.zip"
+      mode: "0644"
+    loop: [memcached_exporter, mysqld_exporter]
 
-  - name: Install mysqld_exporter
+  - name: Extract memcached_exporter and mysqld_exporter
+    ansible.builtin.unarchive:
+      src: "/tmp/{{ item }}-{{ versions[item] }}-openbsd-amd64.zip"
+      dest: /tmp
+      remote_src: true
+    loop: [memcached_exporter, mysqld_exporter]
+
+  - name: Install memcached_exporter and mysqld_exporter
     ansible.builtin.copy:
-      src: "../files/conductor/mysqld_exporter-openbsd-amd64"
-      dest: /usr/local/bin/mysqld_exporter
+      src: "/tmp/{{ item }}-openbsd-amd64"
+      dest: "/usr/local/bin/{{ item }}"
+      remote_src: true
       owner: root
       group: wheel
       mode: "0555"
+    loop: [memcached_exporter, mysqld_exporter]
 
   - name: mysqld_exporter directories
     ansible.builtin.file:
