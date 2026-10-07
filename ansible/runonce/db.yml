@@ -3,40 +3,16 @@
 - name: Setup an OpenBSD to act as a database server for echoCTF.RED
   hosts: all
   gather_facts: false
-  vars_prompt:
-    - name: "myname"
-      prompt: "1/8. What is the desired hostname?"
-      default: "db.example.com"
-      private: no
-    - name: "interconnect_interface"
-      prompt: "2/8. What is the interconnect interface?"
-      default: "em1"
-      private: no
-    - name: "db_ip"
-      prompt: "3/8. What is the IP mysql should bind to?"
-      default: "10.7.0.253"
-      private: no
-    - name: "pui_ip"
-      prompt: "4/8. What is the internal participantUI IP?"
-      default: "10.7.0.200"
-      private: no
-    - name: "mui_ip"
-      prompt: "5/8. What is the internal moderatorUI IP?"
-      default: "10.7.0.201"
-      private: no
-    - name: "vpn_ip"
-      prompt: "6/8. What is the internal VPN IP?"
-      default: "10.7.0.254"
-      private: no
-    - name: "admins_domain"
-      prompt: "8/8. admin domain for TXT rules?"
-      default: "admin.example.com"
-      private: no
-#    - name: "GITHUB_REPO"
-#      prompt: "7/8. Provide a github repo to clone?"
-#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
-#      private: no
   vars:
+    prompts:
+      - { name: myname, prompt: "1/8. What is the desired hostname?", default: "db.example.com" }
+      - { name: interconnect_interface, prompt: "2/8. What is the interconnect interface?", default: "em1" }
+      - { name: db_ip, prompt: "3/8. What is the IP mysql should bind to?", default: "10.7.0.253" }
+      - { name: pui_ip, prompt: "4/8. What is the internal participantUI IP?", default: "10.7.0.200" }
+      - { name: mui_ip, prompt: "5/8. What is the internal moderatorUI IP?", default: "10.7.0.201" }
+      - { name: vpn_ip, prompt: "6/8. What is the internal VPN IP?", default: "10.7.0.254" }
+      - { name: admins_domain, prompt: "8/8. admin domain for TXT rules?", default: "admin.example.com" }
+#      - { name: GITHUB_REPO, prompt: "7/8. Provide a github repo to clone?", default: "{{ lookup('pipe', 'git remote get-url origin') }}" }
     mysql_users:
       - { name: participantUI, password: 'participantUI', host: '{{pui_ip}}' }
       - { name: moderatorUI, password: 'moderatorUI', host: '{{mui_ip}}' }
@@ -133,6 +109,23 @@
       - { innodb_log_file_size: "{{ innodb_log_file_size | default('96M') }}" }
       - { key_buffer_size: "512k" }
   tasks:
+  - name: Prompt for variables that are not set
+    pause:
+      prompt: "{{ item.prompt }} [{{ item.default }}]"
+    register: answers
+    loop: "{{ prompts }}"
+    loop_control:
+      label: "{{ item.name }}"
+    when: item.name not in vars
+
+  - name: Set prompted variables
+    set_fact:
+      "{{ item.item.name }}": "{{ item.user_input | default(item.item.default, true) }}"
+    loop: "{{ answers.results }}"
+    loop_control:
+      label: "{{ item.item.name }}"
+    when: not (item.skipped | default(false))
+
   - name: Sync date time
     raw: rdate pool.ntp.org
 

@@ -3,44 +3,17 @@
 - name: "Setup an OpenBSD server for participantUI (frontend)"
   hosts: all
   gather_facts: false
-  vars_prompt:
-    - name: "hostname"
-      prompt: "1/7. System hostname?"
-      default: "pui.example.local"
-      private: no
-    - name: "pui_ext_ip"
-      prompt: "2/7. What is the external (public) IP?"
-      default: "1.2.3.4"
-      private: no
-    - name: "db_ip"
-      prompt: "3/7. What is the database server IP?"
-      default: "10.7.0.253"
-      private: no
-#    - name: "GITHUB_OAUTH_TOKEN"
-#      prompt: "4/8. Provide a github oauth token?"
-#      default: ""
-#      private: no
-#    - name: "GITHUB_REPO"
-#      prompt: "5/8. Provide a github repo to clone?"
-#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
-#      private: no
-    - name: "domain_name"
-      prompt: "4/7. Provide the domain the frontend will run on?"
-      default: "pui.example.com"
-      private: no
-    - name: "interconnect_interface"
-      prompt: "5/7. What is the interconnect interface to be used?"
-      default: "em1"
-      private: no
-    - name: "pui_ip"
-      prompt: "6/7. What is the interconnect IP to be used?"
-      default: "10.7.0.200"
-      private: no
-    - name: "admins_domain"
-      prompt: "7/7. admin domain for TXT rules?"
-      default: "admin.example.com"
-      private: no
   vars:
+    prompts:
+      - { name: hostname, prompt: "1/7. System hostname?", default: "pui.example.local" }
+      - { name: pui_ext_ip, prompt: "2/7. What is the external (public) IP?", default: "1.2.3.4" }
+      - { name: db_ip, prompt: "3/7. What is the database server IP?", default: "10.7.0.253" }
+#      - { name: GITHUB_OAUTH_TOKEN, prompt: "4/8. Provide a github oauth token?", default: "" }
+#      - { name: GITHUB_REPO, prompt: "5/8. Provide a github repo to clone?", default: "{{ lookup('pipe', 'git remote get-url origin') }}" }
+      - { name: domain_name, prompt: "4/7. Provide the domain the frontend will run on?", default: "pui.example.com" }
+      - { name: interconnect_interface, prompt: "5/7. What is the interconnect interface to be used?", default: "em1" }
+      - { name: pui_ip, prompt: "6/7. What is the interconnect IP to be used?", default: "10.7.0.200" }
+      - { name: admins_domain, prompt: "7/7. admin domain for TXT rules?", default: "admin.example.com" }
     ansible_python_interpreter: /usr/local/bin/python3
     ansible_user: root
 #    sshkeys:
@@ -117,6 +90,23 @@
       - supervisor
 
   tasks:
+  - name: Prompt for variables that are not set
+    pause:
+      prompt: "{{ item.prompt }} [{{ item.default }}]"
+    register: answers
+    loop: "{{ prompts }}"
+    loop_control:
+      label: "{{ item.name }}"
+    when: item.name not in vars
+
+  - name: Set prompted variables
+    set_fact:
+      "{{ item.item.name }}": "{{ item.user_input | default(item.item.default, true) }}"
+    loop: "{{ answers.results }}"
+    loop_control:
+      label: "{{ item.item.name }}"
+    when: not (item.skipped | default(false))
+
   - name: Sync date time
     raw: rdate pool.ntp.org
 
