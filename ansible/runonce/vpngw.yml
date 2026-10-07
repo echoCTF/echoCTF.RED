@@ -5,88 +5,28 @@
 #  hosts: 127.0.0.1
 #  connection: local
   gather_facts: false
-  vars_prompt:
-    - name: "myname"
-      prompt: "1/18. System hostname?"
-      default: "vpn.example.com"
-      private: no
-    - name: "vpngw"
-      prompt: "2/18. OpenVPN gateway hostname or IP?"
-      default: "vpn.example.com"
-      private: no
-    - name: "egress_if"
-      prompt: "3/18. Egress network interface (ifconfig egress)?"
-      default: "em0"
-      private: no
-    - name: "vpn_ext_ip"
-      prompt: "4/18. Egress interface IP?"
-      default: "192.168.1.182"
-      private: no
-    - name: "targets_if"
-      prompt: "5/18. Targets network interface?"
-      default: "em2"
-      private: no
-    - name: "targets_if_ipv4"
-      prompt: "6/18. Targets network interface IPv4?"
-      default: "10.0.0.254"
-      private: no
-    - name: "targets_subnet"
-      prompt: "7/18. Targets network subnet?"
-      default: "10.0.0.0"
-      private: no
-    - name: "targets_netmask"
-      prompt: "8/18. Targets network netmask?"
-      default: "255.255.0.0"
-      private: no
-    - name: "echoCTF_VPN_mgmt_passwd"
-      prompt: "9/18. OpenVPN managment interface password?"
-      default: "openvpn"
-      private: no
-    - name: "offense_network"
-      prompt: "10/18. OpenVPN client range?"
-      default: "10.10.0.0/16"
-      private: no
-    - name: "db_host"
-      prompt: "11/18. Database Server IP?"
-      default: "10.7.0.253"
-      private: no
-    - name: "db_name"
-      prompt: "12/18. Database name?"
-      default: "echoCTF"
-      private: no
-    - name: "db_user"
-      prompt: "13/18. Database Server user?"
-      default: "vpnuser"
-      private: no
-    - name: "db_pass"
-      prompt: "14/18. Database Server user password?"
-      default: "vpnuserpass"
-      private: no
-#    - name: "GITHUB_OAUTH_TOKEN"
-#      prompt: "15/18. Provide a GITHUB_OAUTH_TOKEN?"
-#      default: "randomtoken"
-#      private: no
-#    - name: "GITHUB_REPO"
-#      prompt: "16/18. Provide a github repo to clone?"
-#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
-#      private: no
-    - name: "interconnect_interface"
-      prompt: "15/18. Interconnect interface?"
-      default: "em1"
-      private: no
-    - name: "interconnect_interface_ip"
-      prompt: "16/18. Interconnect interface IP?"
-      default: "10.7.0.254"
-      private: no
-    - name: "admins_domain"
-      prompt: "17/18. admin domain for TXT rules?"
-      default: "admin.example.com"
-      private: no
-    - name: "APP_DIR"
-      prompt: "18/18. What is the platform installation folder?"
-      default: "/root/sources"
-      private: no
   vars:
+    prompts:
+      - { name: myname, prompt: "1/18. System hostname?", default: "vpn.example.com" }
+      - { name: vpngw, prompt: "2/18. OpenVPN gateway hostname or IP?", default: "vpn.example.com" }
+      - { name: egress_if, prompt: "3/18. Egress network interface (ifconfig egress)?", default: "em0" }
+      - { name: vpn_ext_ip, prompt: "4/18. Egress interface IP?", default: "192.168.1.182" }
+      - { name: targets_if, prompt: "5/18. Targets network interface?", default: "em2" }
+      - { name: targets_if_ipv4, prompt: "6/18. Targets network interface IPv4?", default: "10.0.0.254" }
+      - { name: targets_subnet, prompt: "7/18. Targets network subnet?", default: "10.0.0.0" }
+      - { name: targets_netmask, prompt: "8/18. Targets network netmask?", default: "255.255.0.0" }
+      - { name: echoCTF_VPN_mgmt_passwd, prompt: "9/18. OpenVPN managment interface password?", default: "openvpn" }
+      - { name: offense_network, prompt: "10/18. OpenVPN client range?", default: "10.10.0.0/16" }
+      - { name: db_host, prompt: "11/18. Database Server IP?", default: "10.7.0.253" }
+      - { name: db_name, prompt: "12/18. Database name?", default: "echoCTF" }
+      - { name: db_user, prompt: "13/18. Database Server user?", default: "vpnuser" }
+      - { name: db_pass, prompt: "14/18. Database Server user password?", default: "vpnuserpass" }
+#    - { name: GITHUB_OAUTH_TOKEN, prompt: "15/18. Provide a GITHUB_OAUTH_TOKEN?", default: "randomtoken" }
+#    - { name: GITHUB_REPO, prompt: "16/18. Provide a github repo to clone?", default: "{{ lookup('pipe', 'git remote get-url origin') }}" }
+      - { name: interconnect_interface, prompt: "15/18. Interconnect interface?", default: "em1" }
+      - { name: interconnect_interface_ip, prompt: "16/18. Interconnect interface IP?", default: "10.7.0.254" }
+      - { name: admins_domain, prompt: "17/18. admin domain for TXT rules?", default: "admin.example.com" }
+      - { name: APP_DIR, prompt: "18/18. What is the platform installation folder?", default: "/root/sources" }
     ansible_python_interpreter: /usr/local/bin/python3
     ansible_user: root
     users:
@@ -173,6 +113,23 @@
       - fswatch
 
   tasks:
+  - name: Prompt for variables that are not set
+    pause:
+      prompt: "{{ item.prompt }} [{{ item.default }}]"
+    register: answers
+    loop: "{{ prompts }}"
+    loop_control:
+      label: "{{ item.name }}"
+    when: item.name not in vars
+
+  - name: Set prompted variables
+    set_fact:
+      "{{ item.item.name }}": "{{ item.user_input | default(item.item.default, true) }}"
+    loop: "{{ answers.results }}"
+    loop_control:
+      label: "{{ item.item.name }}"
+    when: not (item.skipped | default(false))
+
   - name: Sync date time
     raw: rdate pool.ntp.org
 
@@ -214,7 +171,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{ interconnect_interface_ip |default('10.7.0.254')}} 255.255.255.0 NONE group interconnect"
+      - "inet {{ interconnect_interface_ip |default('10.7.0.254')}} 255.255.255.0 NONE mtu 1450 group interconnect"
       - "up -inet6"
 
   - name: Bring interface up
@@ -656,7 +613,7 @@
 
   - name: "Create targets network interface hostname.{{targets_if}}"
     copy:
-      content: "inet {{targets_if_ipv4}} {{targets_netmask}} NONE group targets\n"
+      content: "inet {{targets_if_ipv4}} {{targets_netmask}} NONE mtu 1450 group targets\n"
       dest: "/etc/hostname.{{targets_if}}"
 
   - name: Set /etc/openvpn/private permissions
