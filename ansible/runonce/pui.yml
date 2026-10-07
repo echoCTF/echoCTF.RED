@@ -90,7 +90,7 @@
       - py3-setuptools
       - py3-netaddr
       - supervisor
-
+      - node
   tasks:
   - name: Prompt for variables that are not set
     pause:
