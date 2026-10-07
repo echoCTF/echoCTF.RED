@@ -1,6 +1,6 @@
 #!/bin/sh
-OK=/var/run/ovpn-probe.ok
-MAX=300
+OK=/var/run/ovpn-probe.$1.ok
+MAX=600
 [ -f "$OK" ] || { echo "no marker"; exit 1; }
 t=$(cat "$OK")
 case "$t" in ''|*[!0-9]*) echo "bad marker"; exit 1 ;; esac

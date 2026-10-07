@@ -99,12 +99,11 @@ tcp:
 # --------------------- Shell probes ---------------------
 shell:
   - name: openvpn connect (vpn01)
-    cmd: /bin/sh
+    cmd: /etc/easeprobe/ovpn-check.sh
     args:
-      - "-c"
-      - "rm -f /var/run/ovpn-probe.ok; /etc/easeprobe/ovpn-probe.sh; /etc/easeprobe/ovpn-check.sh"
-    interval: 2m
-    timeout: 40s
+      - "vpn01"
+    interval: 1m
+    timeout: 10s
     failure: 2
 
   - name: memcached connections (10.7.0.253)

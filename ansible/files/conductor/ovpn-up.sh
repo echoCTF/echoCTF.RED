@@ -1,3 +1,3 @@
 #!/bin/sh
-date +%s > /var/run/ovpn-probe.ok.tmp && mv /var/run/ovpn-probe.ok.tmp /var/run/ovpn-probe.ok
+date +%s > "$MARKER.tmp" && mv "$MARKER.tmp" "$MARKER"
 kill "$PPID"
