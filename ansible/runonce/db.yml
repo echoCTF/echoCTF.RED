@@ -181,7 +181,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{db_ip}} 255.255.255.0 NONE group interconnect"
+      - "inet {{db_ip}} 255.255.255.0 NONE mtu 1450 group interconnect"
       - "up -inet6"
 
   - name: Bring interface up
