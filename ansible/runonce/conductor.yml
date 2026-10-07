@@ -282,6 +282,7 @@
     with_items:
       - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
+      - { name: "OpenVPN probe", minute: "*/5", job: "-ns /etc/easeprobe/ovpn-probe.sh" }
 
   - name: Setting up sysctl.conf
     sysctl:
