@@ -1,5 +1,8 @@
-memcached:\
-        :datasize=4608M:\
+participant:\
+        :datasize=24576M:\
         :openfiles-cur=16384:\
         :openfiles-max=32768:\
         :tc=daemon:
+
+php84_fpm:\
+        :tc=participant:
