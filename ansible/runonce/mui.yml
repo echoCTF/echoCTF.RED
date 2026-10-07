@@ -498,6 +498,21 @@
       group: wheel
       mode: "0644"
 
+  - name: Append login.conf specs
+    ansible.builtin.blockinfile:
+      path: /etc/login.conf
+      block: "{{ lookup('file', '{{playbook_dir}}/../files/login.conf.d/participantUI') }}"
+      create: yes
+
+  - name: Replace participant with moderator in login.conf
+    ansible.builtin.replace:
+      path: /etc/login.conf
+      regexp: 'participant'
+      replace: 'moderator'
+
+  - name: Rebuild the capabilities db
+    command: cap_mkdb /etc/login.conf
+
   - name: run yii migrate
     ignore_errors: false
     command: "{{item.cmd}}"

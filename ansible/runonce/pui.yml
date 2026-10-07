@@ -630,6 +630,15 @@
       group: wheel
       mode: "0644"
 
+  - name: Append login.conf specs
+    ansible.builtin.blockinfile:
+      path: /etc/login.conf
+      block: "{{ lookup('file', '{{playbook_dir}}/../files/login.conf.d/participantUI') }}"
+      create: yes
+
+  - name: Rebuild the capabilities db
+    command: cap_mkdb /etc/login.conf
+
   - name: Update crontab PATH variable
     cron:
       user: root

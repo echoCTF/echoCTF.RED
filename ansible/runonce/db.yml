@@ -503,15 +503,19 @@
       - { name: "daily database backups", minute: "0", hour: "23",  job: "-ns /usr/local/sbin/database_backup" }
       - { name: "uvm-snapshot", minute: "*/20",  job: "-ns /usr/local/sbin/uvm-snapshot.sh >/dev/null 2>&1" }
 
-  - name: copy login.conf.d login classes
-    copy:
-      src: "../files/login.conf.d/{{item}}"
-      dest: "/etc/login.conf.d/{{item}}"
+  - name: Append login.conf specs
+    ansible.builtin.blockinfile:
+      path: /etc/login.conf
+      block: "\n{{ lookup('file', '{{playbook_dir}}/../files/login.conf.d/{{item}}') }}"
+      create: yes
     with_items:
       - memcached
       - mysqld
       - supervisord
       - watchdoger
+
+  - name: Rebuild the capabilities db
+    command: cap_mkdb /etc/login.conf
 
   - name: Execute fw_update
     command: fw_update -a
