@@ -5,6 +5,7 @@ pui
 db
 registry
 conductor
+visuals
 
 [vpn]
 vpn
@@ -19,3 +20,15 @@ pui
 vpn
 registry
 db
+
+[db]
+db
+
+[registry]
+registry
+
+[visuals]
+visuals
+
+[conductor]
+conductor
