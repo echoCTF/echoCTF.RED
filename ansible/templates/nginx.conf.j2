@@ -4,7 +4,7 @@ worker_rlimit_nofile 65535;
 #error_log syslog:server=unix:/dev/log,severity=warn;
 error_log logs/pui-error.log  warn;
 pid logs/{{item.domain}}-nginx.pid;
-{% if modescurity is defined %}
+{% if modsecurity is defined %}
 load_module modules/ngx_http_modsecurity_module.so;
 {% endif %}
 events {
@@ -156,7 +156,7 @@ http {
 
         # Report-only for now: logs would-be violations to the browser console.
         add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' wss://{{item.domain}}; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
-{% if modescurity is defined %}
+{% if modsecurity is defined %}
         modsecurity on;
         modsecurity_rules_file /etc/nginx/modsecurity-includes.conf;
 {% endif %}
