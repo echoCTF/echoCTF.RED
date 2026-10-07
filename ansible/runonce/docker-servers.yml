@@ -221,7 +221,7 @@
     authorized_key:
       user: "{{item.user}}"
       state: present
-      key: "{{ lookup('file', '{{item.key}}') }}"
+      key: "{{ lookup('file', item.key) }}"
     with_items: "{{ETSCTF_authorized_keys}}"
 
   - name: Adding existing user sysadmin to group docker
