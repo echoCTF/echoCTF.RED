@@ -160,7 +160,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{targets_ip}} 255.255.255.0 NONE group targets"
+      - "inet {{targets_ip}} 255.255.255.0 NONE mtu 1450 group targets"
       - "up -inet6"
 
   - name: Bring targets interface up
