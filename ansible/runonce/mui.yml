@@ -36,6 +36,8 @@
       kern.shminfo.shmmax: 67018864
       kern.shminfo.shmall: 32768
       kern.maxfiles: 312180
+      net.inet.tcp.keepidle: 6
+      net.inet.tcp.keepintvl: 5
     post_inst: |
       Things to do:
         - Update /etc/administrators.conf with your IP's
