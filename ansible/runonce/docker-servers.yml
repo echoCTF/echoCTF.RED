@@ -321,7 +321,8 @@
       ports: "{{ item.value.ports | default(omit) }}"
       hostname: "{{item.value.hostname| default(omit)}}"
       mac_address: "{{item.value.mac_address| default(omit)}}"
-      purge_networks: "{{ item.value.purge_networks | default('no')}}"
+      comparisons:
+        networks: "{{ 'strict' if item.value.purge_networks|default(false)|bool else 'allow_more_present' }}"
       domainname: "{{ item.value.domainname | default(omit) }}"
       memory_limit: "{{ item.value.memory_limit|default(omit) }}"
       dns: "{{ item.value.dns | default(omit) }}"
