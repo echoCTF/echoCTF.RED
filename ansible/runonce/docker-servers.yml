@@ -3,6 +3,7 @@
 - name: Bootstrap docker servers for echoCTF
   hosts: all
   gather_facts: true
+  gather_subset: ['!all', '!min', 'distribution']
   become: true
   become_method: su
   remote_user: sysadmin
@@ -21,21 +22,6 @@
       content: "{{etchosts}}\n"
       dest: /etc/hosts
     when: etchosts is defined
-
-  - name: Add apt keys
-    when: aptKeys is defined and not (ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version']|int >= 13)
-    apt_key:
-      url: "{{item.key}}"
-      state: "{{item.state}}"
-    with_items: "{{aptKeys}}"
-
-  - name: Add apt keys (Debian 13+)
-    when: aptKeys is defined and ansible_facts['distribution'] == 'Debian' and ansible_facts['distribution_major_version']|int >= 13
-    get_url:
-      url: "{{item.key}}"
-      dest: "/etc/apt/trusted.gpg.d/{{ item.key | urlsplit('hostname') }}.asc"
-      mode: '0644'
-    with_items: "{{aptKeys}}"
 
   - name: Allow release-info to change for APT repositories
     when: ansible_facts['distribution'] == 'Debian'
@@ -93,6 +79,7 @@
 - name: Configure docker servers for echoCTF
   hosts: all
   gather_facts: true
+  gather_subset: ['!all', '!min', 'distribution']
   become: false
   remote_user: root
   tasks:
@@ -121,6 +108,13 @@
     ansible.builtin.file:
       path: /etc/docker/daemon.json
       state: absent
+
+  - name: Add apt keys
+    when: aptKeys is defined
+    apt_key:
+      url: "{{item.key}}"
+      state: "{{item.state}}"
+    with_items: "{{aptKeys}}"
 
   - name: Add apt repositories
     when: aptRepos is defined
