@@ -165,27 +165,16 @@
       group: "wheel"
       remote_src: yes
 
-  - name: Configure PS1 for root and skeleton
+  - name: Configure PS1, HISTFILE and HISTSIZE for root and skeleton
     lineinfile:
-      path: "{{item}}"
+      path: "{{item.0}}"
       owner: root
       group: wheel
       mode: '0640'
-      line: "export PS1='\\u@\\H:\\w\\$ '"
-    with_items:
-      - '/etc/skel/.profile'
-      - '/root/.profile'
-
-  - name: Configure HISTSIZE for root and skeleton
-    lineinfile:
-      path: "{{item}}"
-      owner: root
-      group: wheel
-      mode: '0640'
-      line: "export HISTSIZE=10000"
-    with_items:
-      - '/etc/skel/.profile'
-      - '/root/.profile'
+      line: "{{item.1}}"
+    with_nested:
+      - [ '/etc/skel/.profile', '/root/.profile' ]
+      - [ "export PS1='\\u@\\H:\\w\\$ '", "export HISTFILE=~/.sh_history", "export HISTSIZE=10000" ]
 
   - name: Install packages
     shell: "pkg_add {{packages| join(' ')}}"
