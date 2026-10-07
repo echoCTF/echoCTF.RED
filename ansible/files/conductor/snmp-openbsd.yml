@@ -1,0 +1,210 @@
+# WARNING: This file was auto-generated using snmp_exporter generator, manual changes will be lost.
+auths:
+  echo_v2:
+    community: R5CZsMUAThIxCXSzJOW5
+    security_level: noAuthNoPriv
+    auth_protocol: MD5
+    priv_protocol: DES
+    version: 2
+  echo_v3:
+    community: public
+    security_level: authPriv
+    username: mon
+    password: 2j8o2hy1YgTeSCXSlWYy
+    auth_protocol: SHA256
+    priv_protocol: AES
+    priv_password: SNSp0DW3yazQfMhLppOM
+    version: 3
+modules:
+  openbsd_pf:
+    walk:
+    - 1.3.6.1.4.1.30155.1.1
+    - 1.3.6.1.4.1.30155.1.2
+    - 1.3.6.1.4.1.30155.1.3
+    - 1.3.6.1.4.1.30155.1.5
+    - 1.3.6.1.4.1.30155.1.6
+    - 1.3.6.1.4.1.30155.5.2
+    metrics:
+    - name: pfRunning
+      oid: 1.3.6.1.4.1.30155.1.1.1
+      type: gauge
+      help: Indicates whether pf is enabled or not. - 1.3.6.1.4.1.30155.1.1.1
+      enum_values:
+        1: "true"
+        2: "false"
+    - name: pfRuntime
+      oid: 1.3.6.1.4.1.30155.1.1.2
+      type: gauge
+      help: Indicates how long pf has been enabled - 1.3.6.1.4.1.30155.1.1.2
+    - name: pfDebug
+      oid: 1.3.6.1.4.1.30155.1.1.3
+      type: gauge
+      help: Indicates the debug level that pf is running at. - 1.3.6.1.4.1.30155.1.1.3
+      enum_values:
+        0: emerg
+        1: alert
+        2: crit
+        3: err
+        4: warning
+        5: notice
+        6: info
+        7: debug
+    - name: pfHostid
+      oid: 1.3.6.1.4.1.30155.1.1.4
+      type: OctetString
+      help: The (unique) host id of the machine running pf. - 1.3.6.1.4.1.30155.1.1.4
+    - name: pfCntMatch
+      oid: 1.3.6.1.4.1.30155.1.2.1
+      type: counter
+      help: The number of packets that have matched a filter rule. - 1.3.6.1.4.1.30155.1.2.1
+    - name: pfCntBadOffset
+      oid: 1.3.6.1.4.1.30155.1.2.2
+      type: counter
+      help: The number of packets that have had a bad offset value. - 1.3.6.1.4.1.30155.1.2.2
+    - name: pfCntFragment
+      oid: 1.3.6.1.4.1.30155.1.2.3
+      type: counter
+      help: The number of packet fragments. - 1.3.6.1.4.1.30155.1.2.3
+    - name: pfCntShort
+      oid: 1.3.6.1.4.1.30155.1.2.4
+      type: counter
+      help: The number of packets that were too short to contain a valid header. -
+        1.3.6.1.4.1.30155.1.2.4
+    - name: pfCntNormalize
+      oid: 1.3.6.1.4.1.30155.1.2.5
+      type: counter
+      help: The number of packets that were normalized using the packet scrubber.
+        - 1.3.6.1.4.1.30155.1.2.5
+    - name: pfCntMemory
+      oid: 1.3.6.1.4.1.30155.1.2.6
+      type: counter
+      help: The number of packets that were dropped due to memory limitations. - 1.3.6.1.4.1.30155.1.2.6
+    - name: pfCntTimestamp
+      oid: 1.3.6.1.4.1.30155.1.2.7
+      type: counter
+      help: The number of packets that were dropped due to improper RFC1323 timestamp.
+        - 1.3.6.1.4.1.30155.1.2.7
+    - name: pfCntCongestion
+      oid: 1.3.6.1.4.1.30155.1.2.8
+      type: counter
+      help: The number of packets that were dropped due to congestion on the interface.
+        - 1.3.6.1.4.1.30155.1.2.8
+    - name: pfCntIpOption
+      oid: 1.3.6.1.4.1.30155.1.2.9
+      type: counter
+      help: The number of packets that were dropped due to having options set in the
+        IP header. - 1.3.6.1.4.1.30155.1.2.9
+    - name: pfCntProtoCksum
+      oid: 1.3.6.1.4.1.30155.1.2.10
+      type: counter
+      help: The number of packets that were dropped due to TCP checksum failures.
+        - 1.3.6.1.4.1.30155.1.2.10
+    - name: pfCntStateMismatch
+      oid: 1.3.6.1.4.1.30155.1.2.11
+      type: counter
+      help: The number of packets that were dropped due to a state table mismatch.
+        - 1.3.6.1.4.1.30155.1.2.11
+    - name: pfCntStateInsert
+      oid: 1.3.6.1.4.1.30155.1.2.12
+      type: counter
+      help: The number of packets that were dropped due to errors creating a state
+        table entry. - 1.3.6.1.4.1.30155.1.2.12
+    - name: pfCntStateLimit
+      oid: 1.3.6.1.4.1.30155.1.2.13
+      type: counter
+      help: The number of packets that were dropped due to the per-rule max state
+        limit being reached. - 1.3.6.1.4.1.30155.1.2.13
+    - name: pfCntSrcLimit
+      oid: 1.3.6.1.4.1.30155.1.2.14
+      type: counter
+      help: The number of packets that were dropped due to stateful connection tracking
+        - 1.3.6.1.4.1.30155.1.2.14
+    - name: pfCntSynproxy
+      oid: 1.3.6.1.4.1.30155.1.2.15
+      type: counter
+      help: The number of packets that were dropped during the TCP synproxy process.
+        - 1.3.6.1.4.1.30155.1.2.15
+    - name: pfCntTranslate
+      oid: 1.3.6.1.4.1.30155.1.2.16
+      type: counter
+      help: The number of packets that were dropped because network address translation
+        was requested and no unused port was available. - 1.3.6.1.4.1.30155.1.2.16
+    - name: pfCntNoRoute
+      oid: 1.3.6.1.4.1.30155.1.2.17
+      type: counter
+      help: The number of packets that were dropped because policy based routing was
+        requested but no target addresses were available. - 1.3.6.1.4.1.30155.1.2.17
+    - name: pfStateCount
+      oid: 1.3.6.1.4.1.30155.1.3.1
+      type: gauge
+      help: The number of entries in the state table. - 1.3.6.1.4.1.30155.1.3.1
+    - name: pfStateSearches
+      oid: 1.3.6.1.4.1.30155.1.3.2
+      type: counter
+      help: The number of searches against the state table. - 1.3.6.1.4.1.30155.1.3.2
+    - name: pfStateInserts
+      oid: 1.3.6.1.4.1.30155.1.3.3
+      type: counter
+      help: The number of inserts into the state table. - 1.3.6.1.4.1.30155.1.3.3
+    - name: pfStateRemovals
+      oid: 1.3.6.1.4.1.30155.1.3.4
+      type: counter
+      help: The number of removals from the state table. - 1.3.6.1.4.1.30155.1.3.4
+    - name: pfSrcTrackCount
+      oid: 1.3.6.1.4.1.30155.1.5.1
+      type: gauge
+      help: The number of entries in the source tracking table. - 1.3.6.1.4.1.30155.1.5.1
+    - name: pfSrcTrackSearches
+      oid: 1.3.6.1.4.1.30155.1.5.2
+      type: counter
+      help: The number of searches against the source tracking table. - 1.3.6.1.4.1.30155.1.5.2
+    - name: pfSrcTrackInserts
+      oid: 1.3.6.1.4.1.30155.1.5.3
+      type: counter
+      help: The number of inserts into the source tracking table. - 1.3.6.1.4.1.30155.1.5.3
+    - name: pfSrcTrackRemovals
+      oid: 1.3.6.1.4.1.30155.1.5.4
+      type: counter
+      help: The number of removals from the source tracking table. - 1.3.6.1.4.1.30155.1.5.4
+    - name: pfLimitStates
+      oid: 1.3.6.1.4.1.30155.1.6.1
+      type: gauge
+      help: The maximum number of entries in the memory pool used by state table entries
+        (filter rules that specify 'keep state'). - 1.3.6.1.4.1.30155.1.6.1
+    - name: pfLimitSourceNodes
+      oid: 1.3.6.1.4.1.30155.1.6.2
+      type: gauge
+      help: The maximum number of entries in the memory pool used for tracking source
+        IP addresses (filter rules that specify 'sticky-address' or 'source-track'
+        options). - 1.3.6.1.4.1.30155.1.6.2
+    - name: pfLimitFragments
+      oid: 1.3.6.1.4.1.30155.1.6.3
+      type: gauge
+      help: The maximum number of entries in the memory pool used for packet reassembly
+        (scrub rules). - 1.3.6.1.4.1.30155.1.6.3
+    - name: pfLimitMaxTables
+      oid: 1.3.6.1.4.1.30155.1.6.4
+      type: gauge
+      help: The maximum number of tables that can be created as part of the active
+        ruleset. - 1.3.6.1.4.1.30155.1.6.4
+    - name: pfLimitMaxTableEntries
+      oid: 1.3.6.1.4.1.30155.1.6.5
+      type: gauge
+      help: The overall maximum number of addresses that can be stored in tables.
+        - 1.3.6.1.4.1.30155.1.6.5
+    - name: memIfName
+      oid: 1.3.6.1.4.1.30155.5.2.1.1
+      type: DisplayString
+      help: The textual name of the interface as assigned by the operating system
+        - 1.3.6.1.4.1.30155.5.2.1.1
+      indexes:
+      - labelname: ifIndex
+        type: gauge
+    - name: memIfLiveLocks
+      oid: 1.3.6.1.4.1.30155.5.2.1.2
+      type: counter
+      help: The number of times the growth of the interface receive ring was limited
+        as a response to high system load. - 1.3.6.1.4.1.30155.5.2.1.2
+      indexes:
+      - labelname: ifIndex
+        type: gauge

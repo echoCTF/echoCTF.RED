@@ -1,0 +1,1450 @@
+{
+ "uid": "platform-overview",
+ "title": "Platform overview",
+ "tags": [
+  "echoctf"
+ ],
+ "timezone": "utc",
+ "schemaVersion": 39,
+ "version": 1,
+ "editable": true,
+ "refresh": "1m",
+ "time": {
+  "from": "now-6h",
+  "to": "now"
+ },
+ "templating": {
+  "list": [
+   {
+    "name": "server",
+    "label": "Server",
+    "type": "query",
+    "datasource": {
+     "type": "prometheus",
+     "uid": "prom"
+    },
+    "query": {
+     "query": "label_values(ifHCInOctets, instance)",
+     "refId": "s"
+    },
+    "refresh": 2,
+    "includeAll": true,
+    "multi": true,
+    "allValue": ".*",
+    "current": {
+     "text": "All",
+     "value": "$__all"
+    },
+    "sort": 1
+   },
+   {
+    "name": "iface",
+    "label": "Interface",
+    "type": "query",
+    "datasource": {
+     "type": "prometheus",
+     "uid": "prom"
+    },
+    "query": {
+     "query": "label_values(ifHCInOctets{instance=~\"$server\"}, ifDescr)",
+     "refId": "i"
+    },
+    "refresh": 2,
+    "includeAll": true,
+    "multi": true,
+    "allValue": ".*",
+    "current": {
+     "text": "All",
+     "value": "$__all"
+    },
+    "sort": 1
+   }
+  ]
+ },
+ "panels": [
+  {
+   "type": "row",
+   "title": "Availability (EaseProbe)",
+   "id": 1,
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 0
+   },
+   "panels": []
+  },
+  {
+   "type": "stat",
+   "title": "Probes up",
+   "id": 2,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "Probes currently passing.",
+   "gridPos": {
+    "h": 4,
+    "w": 4,
+    "x": 0,
+    "y": 1
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "sum({__name__=~\"eventinfrastructure_(http|tcp|shell|client)_status\"})",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none"
+   }
+  },
+  {
+   "type": "stat",
+   "title": "Probes down",
+   "id": 3,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "Probes currently failing.",
+   "gridPos": {
+    "h": 4,
+    "w": 4,
+    "x": 4,
+    "y": 1
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "count({__name__=~\"eventinfrastructure_(http|tcp|shell|client)_status\"} == 0) or vector(0)",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 1
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "reduceOptions": {
+     "calcs": [
+      "lastNotNull"
+     ],
+     "values": false
+    },
+    "colorMode": "background",
+    "graphMode": "none"
+   }
+  },
+  {
+   "type": "table",
+   "title": "Failing probes now",
+   "id": 4,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 4,
+    "w": 8,
+    "x": 8,
+    "y": 1
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "{__name__=~\"eventinfrastructure_(http|tcp|shell|client)_status\"} == 0",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {},
+    "overrides": []
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "__name__": true,
+       "job": true,
+       "instance": true,
+       "Value": true
+      },
+      "renameByName": {
+       "Value": "value"
+      }
+     }
+    }
+   ],
+   "options": {
+    "showHeader": true
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "SLA per probe (%)",
+   "id": 5,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 4,
+    "w": 8,
+    "x": 16,
+    "y": 1
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "{__name__=~\"eventinfrastructure_(http|tcp|shell|client)_sla\"}",
+     "legendFormat": "{{name}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "row",
+   "title": "Network (SNMP, per server and interface)",
+   "id": 6,
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 5
+   },
+   "panels": []
+  },
+  {
+   "type": "timeseries",
+   "title": "Inbound",
+   "id": 7,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "Bits per second received, from the 64-bit counter ifHCInOctets.",
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 0,
+    "y": 6
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(ifHCInOctets{instance=~\"$server\",ifDescr=~\"$iface\"}[$__rate_interval]) * 8",
+     "legendFormat": "{{instance}} {{ifDescr}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bps",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Outbound",
+   "id": 8,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 8,
+    "w": 12,
+    "x": 12,
+    "y": 6
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(ifHCOutOctets{instance=~\"$server\",ifDescr=~\"$iface\"}[$__rate_interval]) * 8",
+     "legendFormat": "{{instance}} {{ifDescr}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bps",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Interface errors and discards per second",
+   "id": 9,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 6,
+    "w": 24,
+    "x": 0,
+    "y": 14
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(ifInErrors{instance=~\"$server\",ifDescr=~\"$iface\"}[$__rate_interval]) + rate(ifOutErrors{instance=~\"$server\",ifDescr=~\"$iface\"}[$__rate_interval])",
+     "legendFormat": "errors {{instance}} {{ifDescr}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(ifInDiscards{instance=~\"$server\",ifDescr=~\"$iface\"}[$__rate_interval]) + rate(ifOutDiscards{instance=~\"$server\",ifDescr=~\"$iface\"}[$__rate_interval])",
+     "legendFormat": "discards {{instance}} {{ifDescr}}",
+     "refId": "B",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "row",
+   "title": "Hosts (SNMP, HOST-RESOURCES-MIB)",
+   "id": 10,
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 20
+   },
+   "panels": []
+  },
+  {
+   "type": "timeseries",
+   "title": "CPU busy, last minute average",
+   "id": 11,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "hrProcessorLoad: percent of time not idle during the last minute, averaged over processors.",
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 0,
+    "y": 21
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "avg by (instance) (hrProcessorLoad{instance=~\"$server\"})",
+     "legendFormat": "{{instance}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Memory used",
+   "id": 12,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "On OpenBSD used is total minus free pages, so buffer cache counts as used and the line sits high.",
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 8,
+    "y": 21
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "100 * hrStorageUsed{instance=~\"$server\",hrStorageDescr=\"Physical memory\"} / hrStorageSize{instance=~\"$server\",hrStorageDescr=\"Physical memory\"}",
+     "legendFormat": "{{instance}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Swap used",
+   "id": 13,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 16,
+    "y": 21
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "100 * hrStorageUsed{instance=~\"$server\",hrStorageDescr=\"Swap space\"} / hrStorageSize{instance=~\"$server\",hrStorageDescr=\"Swap space\"}",
+     "legendFormat": "{{instance}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     },
+     "min": 0
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Filesystem used",
+   "id": 14,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 6,
+    "w": 24,
+    "x": 0,
+    "y": 28
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "100 * hrStorageUsed{instance=~\"$server\",hrStorageDescr=~\"/.*\"} / hrStorageSize{instance=~\"$server\",hrStorageDescr=~\"/.*\"}",
+     "legendFormat": "{{instance}} {{hrStorageDescr}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "percent",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      },
+      "thresholdsStyle": {
+       "mode": "line"
+      }
+     },
+     "min": 0,
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 85
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "row",
+   "title": "pf on the VPN fleet (SNMP, OPENBSD-PF-MIB)",
+   "id": 15,
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 34
+   },
+   "panels": []
+  },
+  {
+   "type": "timeseries",
+   "title": "States",
+   "id": 16,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "Current pf states against the configured limit.",
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 0,
+    "y": 35
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "pfStateCount{instance=~\"$server\"}",
+     "legendFormat": "states {{instance}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "pfLimitStates{instance=~\"$server\"}",
+     "legendFormat": "limit {{instance}}",
+     "refId": "B",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "State inserts per second",
+   "id": 17,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "New connections per second through pf. Churn indicator.",
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 8,
+    "y": 35
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(pfStateInserts{instance=~\"$server\"}[$__rate_interval])",
+     "legendFormat": "{{instance}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Source nodes",
+   "id": 18,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 16,
+    "y": 35
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "pfSrcTrackCount{instance=~\"$server\"}",
+     "legendFormat": "nodes {{instance}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "pfLimitSourceNodes{instance=~\"$server\"}",
+     "legendFormat": "limit {{instance}}",
+     "refId": "B",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "pf limit hits and drops per second",
+   "id": 19,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "Any sustained value above zero on state limit or source limit means the max-src and state caps are biting.",
+   "gridPos": {
+    "h": 6,
+    "w": 24,
+    "x": 0,
+    "y": 42
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(pfCntStateLimit{instance=~\"$server\"}[$__rate_interval])",
+     "legendFormat": "state limit {{instance}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(pfCntSrcLimit{instance=~\"$server\"}[$__rate_interval])",
+     "legendFormat": "source limit {{instance}}",
+     "refId": "B",
+     "instant": false,
+     "range": true
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(pfCntMemory{instance=~\"$server\"}[$__rate_interval])",
+     "legendFormat": "memory {{instance}}",
+     "refId": "C",
+     "instant": false,
+     "range": true
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(pfCntCongestion{instance=~\"$server\"}[$__rate_interval])",
+     "legendFormat": "congestion {{instance}}",
+     "refId": "D",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "row",
+   "title": "Flows (nfdump, last completed window per exporter)",
+   "id": 20,
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 48
+   },
+   "panels": []
+  },
+  {
+   "type": "timeseries",
+   "title": "Bytes per window by exporter",
+   "id": 21,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "Bytes in the newest completed nfcapd file. One point per window, not a rate.",
+   "gridPos": {
+    "h": 7,
+    "w": 12,
+    "x": 0,
+    "y": 49
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "nfdump_window_bytes",
+     "legendFormat": "{{exporter}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "table",
+   "title": "Top source IPs, last window",
+   "id": 22,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 7,
+    "w": 12,
+    "x": 12,
+    "y": 49
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "topk(10, nfdump_top_src_bytes)",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes"
+    },
+    "overrides": []
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "__name__": true,
+       "job": true,
+       "instance": true
+      },
+      "renameByName": {
+       "Value": "value"
+      }
+     }
+    }
+   ],
+   "options": {
+    "showHeader": true
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Exporter silence (age of newest file)",
+   "id": 23,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "Healthy is about one rotation interval. Far above that means the exporter stopped sending.",
+   "gridPos": {
+    "h": 6,
+    "w": 12,
+    "x": 0,
+    "y": 56
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "nfdump_newest_file_age_seconds",
+     "legendFormat": "{{exporter}}",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "s",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      },
+      "thresholdsStyle": {
+       "mode": "line"
+      }
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 900
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "table",
+   "title": "Top destination IPs, last window",
+   "id": 24,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 6,
+    "w": 12,
+    "x": 12,
+    "y": 56
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "topk(10, nfdump_top_dst_bytes)",
+     "legendFormat": "",
+     "refId": "A",
+     "instant": true,
+     "range": false,
+     "format": "table"
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "bytes"
+    },
+    "overrides": []
+   },
+   "transformations": [
+    {
+     "id": "organize",
+     "options": {
+      "excludeByName": {
+       "Time": true,
+       "__name__": true,
+       "job": true,
+       "instance": true
+      },
+      "renameByName": {
+       "Value": "value"
+      }
+     }
+    }
+   ],
+   "options": {
+    "showHeader": true
+   }
+  },
+  {
+   "type": "row",
+   "title": "memcached (memcached_exporter)",
+   "id": 25,
+   "collapsed": false,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 62
+   },
+   "panels": []
+  },
+  {
+   "type": "timeseries",
+   "title": "Open connections",
+   "id": 26,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "Alert line at 1000.",
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 0,
+    "y": 63
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "memcached_current_connections",
+     "legendFormat": "open",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      },
+      "thresholdsStyle": {
+       "mode": "line"
+      }
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 1000
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "New connections per second",
+   "id": 27,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "Alert line at 20/s. This is the signal that showed the incident: high rate with few open connections.",
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 8,
+    "y": 63
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(memcached_connections_total[$__rate_interval])",
+     "legendFormat": "new/s",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "ops",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      },
+      "thresholdsStyle": {
+       "mode": "line"
+      }
+     },
+     "thresholds": {
+      "mode": "absolute",
+      "steps": [
+       {
+        "color": "green",
+        "value": null
+       },
+       {
+        "color": "red",
+        "value": 20
+       }
+      ]
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  },
+  {
+   "type": "timeseries",
+   "title": "Memory and evictions",
+   "id": 28,
+   "datasource": {
+    "type": "prometheus",
+    "uid": "prom"
+   },
+   "description": "",
+   "gridPos": {
+    "h": 7,
+    "w": 8,
+    "x": 16,
+    "y": 63
+   },
+   "targets": [
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "memcached_current_bytes",
+     "legendFormat": "bytes used",
+     "refId": "A",
+     "instant": false,
+     "range": true
+    },
+    {
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "expr": "rate(memcached_items_evicted_total[$__rate_interval])",
+     "legendFormat": "evictions/s",
+     "refId": "B",
+     "instant": false,
+     "range": true
+    }
+   ],
+   "fieldConfig": {
+    "defaults": {
+     "unit": "short",
+     "custom": {
+      "lineWidth": 1,
+      "fillOpacity": 10,
+      "showPoints": "never",
+      "stacking": {
+       "mode": "none"
+      }
+     }
+    },
+    "overrides": []
+   },
+   "options": {
+    "legend": {
+     "displayMode": "list",
+     "placement": "bottom"
+    },
+    "tooltip": {
+     "mode": "multi"
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,26 @@
+# Generates snmp-openbsd.yml: auths plus the OpenBSD pf and memory module.
+# Run:  MIBDIRS=<openbsd src>/share/snmp ./generator generate -m <openbsd src>/share/snmp -g generator.yml -o snmp-openbsd.yml
+# The make sure you copy the community to the conductor clients as needed
+# This is not used by our playbooks. You can use it to generate updated files
+auths:
+  echo_v2:
+    version: 2
+    community: R5CZsMUAThIxCXSzJOW5
+  echo_v3:
+    version: 3
+    security_level: authPriv
+    username: mon
+    password: 2j8o2hy1YgTeSCXSlWYy
+    auth_protocol: SHA256
+    priv_protocol: AES
+    priv_password: SNSp0DW3yazQfMhLppOM
+
+modules:
+  openbsd_pf:
+    walk:
+      - pfInfo
+      - pfCounters
+      - pfStateTable
+      - pfSrcTracking
+      - pfLimits
+      - memIfTable
