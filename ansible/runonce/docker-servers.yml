@@ -304,9 +304,11 @@
   - name: Build container image if needed
     when: containers is defined and item.value.build is defined
     docker_image:
-      path: "/opt/build/{{item.value.build}}"
       name: "{{item.value.image}}"
-      nocache: yes
+      source: build
+      build:
+        path: "/opt/build/{{item.value.build}}"
+        nocache: yes
     with_dict: "{{ containers }}"
 
   - name: Install defined non managed containers
