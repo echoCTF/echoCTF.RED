@@ -42,6 +42,7 @@
           num-threads: 1
           interface-automatic: no
           interface: 0.0.0.0
+          interface: {{interconnect_interface_ip}}
           access-control: 0.0.0.0/0 allow
 
           do-ip6: no
