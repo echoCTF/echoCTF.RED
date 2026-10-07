@@ -479,7 +479,7 @@
     no_log: true
 
   - name: run composer
-    command: chdir=/home/moderatorUI/{{domain_name}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --no-suggest --ignore-platform-reqs
+    command: chdir=/home/moderatorUI/{{domain_name}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --ignore-platform-reqs
 
   - name: Fix home folder permissions for nginx
     command: chown root.daemon /home/moderatorUI
