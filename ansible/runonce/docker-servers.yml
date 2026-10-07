@@ -107,11 +107,19 @@
       path: /etc/docker/daemon.json
       state: absent
 
+  - name: Ensure apt keyrings directory
+    when: aptKeys is defined
+    file:
+      path: /etc/apt/keyrings
+      state: directory
+      mode: '0755'
+
   - name: Add apt keys
     when: aptKeys is defined
-    apt_key:
+    get_url:
       url: "{{item.key}}"
-      state: "{{item.state}}"
+      dest: "/etc/apt/keyrings/{{item.name}}.asc"
+      mode: '0644'
     with_items: "{{aptKeys}}"
 
   - name: Add apt repositories
