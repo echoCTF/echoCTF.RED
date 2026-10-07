@@ -406,7 +406,7 @@
       src: ../templates/nginx.conf.j2
       dest: /etc/nginx/{{item.user}}.conf
     with_items:
-      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}', identificationFiles: true }
+      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}', identificationFiles: true, modsecurity: "{{ modsecurity | default(omit) }}" }
     tags:
       - nginx
 
@@ -429,7 +429,7 @@
         SecAuditLogRelevantStatus "^(?:5|4(?!04))"
         SecAuditLogParts ABDEFHIJZ
         SecAuditLogType Serial
-        SecAuditLog /logs/modsec_audit.log
+        SecAuditLog /home/participantUI/logs/modsec_audit.log
         SecArgumentSeparator &
         SecCookieFormat 0
         SecStatusEngine Off
@@ -450,17 +450,21 @@
   - name: Download OWASP CRS
     when: modsecurity is defined
     get_url:
-      url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ versions.CORERULESET }}.tar.gz"
-      dest: "/tmp/coreruleset-{{ versions.CORERULESET }}.tar.gz"
+      url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ versions.CORERULESET }}.zip"
+      dest: "/tmp/coreruleset-{{ versions.CORERULESET }}.zip"
       mode: "0644"
+    tags:
+      - nginx
 
   - name: Extract CRS archive under /tmp
     when: modsecurity is defined
     unarchive:
-      src: "/tmp/coreruleset-{{ versions.CORERULESET }}.tar.gz"
+      src: "/tmp/coreruleset-{{ versions.CORERULESET }}.zip"
       dest: /tmp
       remote_src: true
       creates: "/tmp/coreruleset-{{ versions.CORERULESET }}/crs-setup.conf.example"
+    tags:
+      - nginx
 
   - name: Ensure /etc/nginx/rules exists
     when: modsecurity is defined
@@ -470,6 +474,18 @@
       owner: root
       group: wheel
       mode: "0755"
+    tags:
+      - nginx
+
+  - name: Clear our cookie from json based SQLI
+    when: modsecurity is defined
+    copy:
+      dest: /etc/nginx/rules/zz-exclusions.conf
+      content: |
+        SecRuleUpdateTargetById 942550 "!REQUEST_COOKIES:_identity-red"
+    tags:
+      - nginx
+
 
   - name: Copy CRS rules into place
     when: modsecurity is defined
@@ -480,6 +496,8 @@
       owner: root
       group: wheel
       mode: "0644"
+    tags:
+      - nginx
 
   - name: Copy crs-setup.conf.example into place
     when: modsecurity is defined
@@ -490,6 +508,14 @@
       owner: root
       group: wheel
       mode: "0644"
+    tags:
+      - nginx
+
+  - name: Copy nginx modules into place
+    when: modsecurity is defined
+    command: cp -pr /var/www/modules /home/participantUI/
+    tags:
+      - nginx
 
   - name: Create nginx dt.conf
     template:
@@ -721,6 +747,24 @@
         stdout_logfile=/var/log/wsserver.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
+
+  - name: Install scores.ini for supervisord
+    copy:
+      dest: /etc/supervisord.d/scores.ini
+      content: |
+        {% for i in range(academic_grouping | default(1) | int) %}
+        [program:scores_{{ i }}]
+        user = participantUI
+        directory = /home/participantUI/{{ domain_name }}/eio
+        environment=NODE_ENV=production
+        command = node eio {{ 8000 + i }}{{ ' ' ~ i if academic_grouping is defined else '' }}
+        stdout_logfile=/var/log/scores_{{ i }}.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+        {% if not loop.last %}
+
+        {% endif %}
+        {% endfor %}
 
   - name: "Update frontend/config/params.php"
     ansible.builtin.replace:
