@@ -1,0 +1,33 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: "Populate the conductor SNMP targets from the inventory"
+  hosts: conductor
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+  tasks:
+  - name: SNMP target list
+    ansible.builtin.copy:
+      dest: /etc/prometheus/targets/snmp.yml
+      owner: root
+      group: _prometheus
+      mode: "0640"
+      content: |
+        {% for g in ['vpn', 'web', 'db', 'registry'] %}
+        {% set ns = namespace(ips=[]) %}
+        {% for h in groups[g] | sort %}
+        {% set ip = hostvars[h].interconnect_interface_ip | default((hostvars[h].registry_targets_cidr | default('')).split('/')[0]) %}
+        {% if ip and h not in ansible_play_hosts_all %}
+        {% set ns.ips = ns.ips + [ip] %}
+        {% endif %}
+        {% endfor %}
+        {% if ns.ips %}
+        - targets:
+        {% for ip in ns.ips %}
+            - "{{ ip }}"
+        {% endfor %}
+          labels:
+            role: "{{ g }}"
+        {% endif %}
+        {% endfor %}
