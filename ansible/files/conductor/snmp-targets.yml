@@ -7,3 +7,5 @@
   labels: {role: mui}
 - targets: ["10.7.0.253"]        # db
   labels: {role: db}
+- targets: ["10.0.0.100"]        # db
+  labels: {role: registry}
