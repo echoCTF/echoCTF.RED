@@ -2,7 +2,7 @@ user {{item.user}};
 worker_processes auto;
 worker_rlimit_nofile 65535;
 #error_log syslog:server=unix:/dev/log,severity=warn;
-error_log logs/pui-error.log  warn;
+error_log logs/{{item.domain}}-error.log  warn;
 pid logs/{{item.domain}}-nginx.pid;
 {% if modsecurity is defined %}
 load_module modules/ngx_http_modsecurity_module.so;
@@ -50,7 +50,7 @@ http {
     limit_req_zone $cookie_PUISESSID zone=perplayer:10m rate=5r/s;
 
     #access_log  syslog:server=unix:/dev/log,severity=notice mainsyslog;
-    access_log  logs/pui-access.log  combined_player;
+    access_log  logs/{{item.domain}}-access.log  combined_player;
 
     #tcp_nopush           on;
     keepalive_timeout     65;
@@ -395,7 +395,7 @@ http {
 
         location = /index.php {
             #limit_req zone=perplayer burst=10 nodelay;
-            access_log logs/ctf_access.log combined_player;
+            access_log logs/{{item.domain}}-php-access.log combined_player;
             fastcgi_hide_header X-Player-Uid;
 
             try_files $uri =404;
@@ -422,7 +422,7 @@ http {
 
         location @errorphp {
             #limit_req zone=perplayer burst=10 nodelay;
-            access_log logs/ctf_access.log combined_player;
+            access_log logs/{{item.domain}}-php-access.log combined_player;
             fastcgi_hide_header X-Player-Uid;
 
             internal;
