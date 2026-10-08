@@ -1,6 +1,10 @@
 #!/bin/sh
 CFG=/etc/easeprobe/monitor.ovpn
 LIST=/etc/easeprobe/vpn-servers
+LOCK=/var/run/ovpn-probe.lock
+
+mkdir "$LOCK" 2>/dev/null || exit 0
+trap 'rmdir "$LOCK"' EXIT
 
 while read -r name ip; do
   PID=/var/run/ovpn-probe.$name.pid
@@ -15,13 +19,14 @@ while read -r name ip; do
     i=$((i + 1))
     sleep 1
   done
-  [ -s "$PID" ] || continue
-  p=$(cat "$PID")
-
-  i=0
-  while kill -0 "$p" 2>/dev/null; do
-    i=$((i + 1))
-    [ "$i" -ge 20 ] && { kill "$p"; break; }
-    sleep 1
-  done
+  if [ -s "$PID" ]; then
+    p=$(cat "$PID")
+    i=0
+    while kill -0 "$p" 2>/dev/null; do
+      i=$((i + 1))
+      [ "$i" -ge 20 ] && { kill "$p"; break; }
+      sleep 1
+    done
+  fi
+  sleep "${GAP:-4}"
 done < "$LIST"
