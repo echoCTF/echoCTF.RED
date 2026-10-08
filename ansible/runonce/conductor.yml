@@ -492,7 +492,7 @@
     loop: [datasources, dashboards]
 
   - name: Grafana configuration (holds the admin password)
-    ansible.builtin.copy:
+    ansible.builtin.template:
       src: "../files/conductor/grafana.config.ini"
       dest: /etc/grafana/config.ini
       owner: root

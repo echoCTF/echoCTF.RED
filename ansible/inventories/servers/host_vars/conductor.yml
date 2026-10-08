@@ -17,3 +17,5 @@ interconnect_interface: "vio2"
 targets_if_ipv4: 10.0.0.123
 interconnect_interface_ip: 10.7.0.123
 targets_netmask: 255.255.0.0
+grafana_user: admin
+grafan_password: grafana
