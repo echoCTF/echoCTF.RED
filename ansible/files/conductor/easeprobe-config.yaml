@@ -11,6 +11,22 @@
 # probes need that box to have a route into 10.7.0.0/24 (and 10.0.0.0/24 for
 # the docker-side vpn01 address).
 
+# --------------------- PING probes ---------------------
+ping:
+  - name: pui internal (10.7.0.200)
+    host: 10.7.0.200
+    privileged: true
+    timeout: 10s
+    interval: 30s
+    failure: 2
+
+  - name: mui internal (10.7.0.201)
+    host: 10.7.0.201
+    privileged: true
+    timeout: 10s
+    interval: 30s
+    failure: 2
+
 # --------------------- HTTP probes ---------------------
 http:
   # External
@@ -22,24 +38,14 @@ http:
     success_code:
       - [200, 200]
 
-  - name: mui external (mui.mydomain)
-    url: https://mui.mydomain/
-    timeout: 10s
-    interval: 30s
-    failure: 2
-    success_code:
-      - [200, 200]
+#  - name: mui external (mui.mydomain)
+#    url: https://mui.mydomain/
+#    timeout: 10s
+#    interval: 30s
+#    failure: 2
+#    success_code:
+#      - [200, 200]
 
-  - name: pui internal (10.7.0.200)
-    url: https://10.7.0.200/
-    headers:
-      Host: ctf.mydomain
-    insecure: true
-    timeout: 10s
-    interval: 30s
-    failure: 2
-    success_code:
-      - [200, 200]
 
   - name: scores external (ctf.mydomain:8000)
     url: https://ctf.mydomain:8000/
@@ -76,17 +82,6 @@ http:
     timeout: 10s
     interval: 30s
     failure: 2
-
-  - name: mui internal (10.7.0.201)
-    url: https://10.7.0.201/
-    headers:
-      Host: mui.mydomain
-    insecure: true
-    timeout: 10s
-    interval: 30s
-    failure: 2
-    success_code:
-      - [200, 200]
 
 # --------------------- TCP probes ---------------------
 tcp:
