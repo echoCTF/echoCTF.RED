@@ -1,5 +1,6 @@
 mysqld:\
-        :datasize=8192M:\
-        :openfiles-cur=6144:\
-        :openfiles-max=20480:\
-        :tc=daemon:
+  :datasize-cur=8192M:\
+  :datasize-max=8192M:\
+  :openfiles-cur=6144:\
+  :openfiles-max=20480:\
+  :tc=daemon:
