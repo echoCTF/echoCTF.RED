@@ -110,6 +110,8 @@
       - { innodb_buffer_pool_size: "{{ innodb_buffer_pool_size | default('384M') }}" }
       - { innodb_log_file_size: "{{ innodb_log_file_size | default('96M') }}" }
       - { key_buffer_size: "512k" }
+      - { thread_handling: "{{ thread_handling | default('pool-of-threads') }}" }
+      - { thread_pool_size: "{{ thread_pool_size | default('1') }}" }
   tasks:
   - name: Prompt for variables that are not set
     pause:
@@ -370,8 +372,13 @@
 
   - name: Copy mysql-init.sql for populating memcached at boot
     copy:
-      content: "CALL echoCTF.init_mysql();"
       dest: "/etc/mysql-init.sql"
+      content: |
+        SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+        CALL echoCTF.init_mysql();
+        DO memc_servers_behavior_set('MEMCACHED_BEHAVIOR_TCP_NODELAY','1');
+        DO memc_servers_behavior_set('MEMCACHED_BEHAVIOR_NO_BLOCK','1');
+        DO memc_servers_behavior_set('MEMCACHED_BEHAVIOR_CONNECT_TIMEOUT',250);
 
   - name: "Configuring my.cnf"
     ini_file:
