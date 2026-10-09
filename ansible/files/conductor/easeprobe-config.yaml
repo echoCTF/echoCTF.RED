@@ -140,7 +140,7 @@ notify:
 
 # --------------------- Global settings ---------------------
 settings:
-  name: "Event Infrastructure"
+  name: "conductor"
   pid: /var/run/easeprobe.pid
   timezone: "UTC"
   timeformat: "2006-01-02 15:04:05 Z07:00"

@@ -96,7 +96,7 @@
       "type": "prometheus",
       "uid": "prom"
      },
-     "expr": "sum({__name__=~\"eventinfrastructure_(http|tcp|shell|client)_status\"})",
+     "expr": "sum({__name__=~\"conductor_(http|tcp|shell|client|ping)_status\"})",
      "legendFormat": "",
      "refId": "A",
      "instant": true,
@@ -150,7 +150,7 @@
       "type": "prometheus",
       "uid": "prom"
      },
-     "expr": "count({__name__=~\"eventinfrastructure_(http|tcp|shell|client)_status\"} == 0) or vector(0)",
+     "expr": "count({__name__=~\"conductor_(http|tcp|shell|client|ping)_status\"} == 0) or vector(0)",
      "legendFormat": "",
      "refId": "A",
      "instant": true,
@@ -208,7 +208,7 @@
       "type": "prometheus",
       "uid": "prom"
      },
-     "expr": "{__name__=~\"eventinfrastructure_(http|tcp|shell|client)_status\"} == 0",
+     "expr": "{__name__=~\"conductor_(http|tcp|shell|client|ping)_status\"} == 0",
      "legendFormat": "",
      "refId": "A",
      "instant": true,
@@ -262,7 +262,7 @@
       "type": "prometheus",
       "uid": "prom"
      },
-     "expr": "{__name__=~\"eventinfrastructure_(http|tcp|shell|client)_sla\"}",
+     "expr": "{__name__=~\"conductor_(http|tcp|shell|client|ping)_sla\"}",
      "legendFormat": "{{name}}",
      "refId": "A",
      "instant": false,
@@ -730,69 +730,6 @@
   },
   {
    "type": "timeseries",
-   "title": "States",
-   "id": 16,
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "description": "Current pf states against the configured limit.",
-   "gridPos": {
-    "h": 7,
-    "w": 8,
-    "x": 0,
-    "y": 35
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prom"
-     },
-     "expr": "pfStateCount{instance=~\"$server\"}",
-     "legendFormat": "states {{instance}}",
-     "refId": "A",
-     "instant": false,
-     "range": true
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prom"
-     },
-     "expr": "pfLimitStates{instance=~\"$server\"}",
-     "legendFormat": "limit {{instance}}",
-     "refId": "B",
-     "instant": false,
-     "range": true
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "short",
-     "custom": {
-      "lineWidth": 1,
-      "fillOpacity": 10,
-      "showPoints": "never",
-      "stacking": {
-       "mode": "none"
-      }
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "legend": {
-     "displayMode": "list",
-     "placement": "bottom"
-    },
-    "tooltip": {
-     "mode": "multi"
-    }
-   }
-  },
-  {
-   "type": "timeseries",
    "title": "State inserts per second",
    "id": 17,
    "datasource": {
@@ -802,8 +739,8 @@
    "description": "New connections per second through pf. Churn indicator.",
    "gridPos": {
     "h": 7,
-    "w": 8,
-    "x": 8,
+    "w": 24,
+    "x": 0,
     "y": 35
    },
    "targets": [
@@ -822,69 +759,6 @@
    "fieldConfig": {
     "defaults": {
      "unit": "ops",
-     "custom": {
-      "lineWidth": 1,
-      "fillOpacity": 10,
-      "showPoints": "never",
-      "stacking": {
-       "mode": "none"
-      }
-     }
-    },
-    "overrides": []
-   },
-   "options": {
-    "legend": {
-     "displayMode": "list",
-     "placement": "bottom"
-    },
-    "tooltip": {
-     "mode": "multi"
-    }
-   }
-  },
-  {
-   "type": "timeseries",
-   "title": "Source nodes",
-   "id": 18,
-   "datasource": {
-    "type": "prometheus",
-    "uid": "prom"
-   },
-   "description": "",
-   "gridPos": {
-    "h": 7,
-    "w": 8,
-    "x": 16,
-    "y": 35
-   },
-   "targets": [
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prom"
-     },
-     "expr": "pfSrcTrackCount{instance=~\"$server\"}",
-     "legendFormat": "nodes {{instance}}",
-     "refId": "A",
-     "instant": false,
-     "range": true
-    },
-    {
-     "datasource": {
-      "type": "prometheus",
-      "uid": "prom"
-     },
-     "expr": "pfLimitSourceNodes{instance=~\"$server\"}",
-     "legendFormat": "limit {{instance}}",
-     "refId": "B",
-     "instant": false,
-     "range": true
-    }
-   ],
-   "fieldConfig": {
-    "defaults": {
-     "unit": "short",
      "custom": {
       "lineWidth": 1,
       "fillOpacity": 10,
@@ -993,6 +867,146 @@
   },
   {
    "type": "row",
+   "title": "pf limits",
+   "id": 29,
+   "collapsed": true,
+   "gridPos": {
+    "h": 1,
+    "w": 24,
+    "x": 0,
+    "y": 48
+   },
+   "panels": [
+    {
+     "type": "timeseries",
+     "title": "States",
+     "id": 16,
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "description": "Current pf states against the configured limit.",
+     "gridPos": {
+      "h": 7,
+      "w": 12,
+      "x": 0,
+      "y": 49
+     },
+     "targets": [
+      {
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+       },
+       "expr": "pfStateCount{instance=~\"$server\"}",
+       "legendFormat": "states {{instance}}",
+       "refId": "A",
+       "instant": false,
+       "range": true
+      },
+      {
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+       },
+       "expr": "pfLimitStates{instance=~\"$server\"}",
+       "legendFormat": "limit {{instance}}",
+       "refId": "B",
+       "instant": false,
+       "range": true
+      }
+     ],
+     "fieldConfig": {
+      "defaults": {
+       "unit": "short",
+       "custom": {
+        "lineWidth": 1,
+        "fillOpacity": 10,
+        "showPoints": "never",
+        "stacking": {
+         "mode": "none"
+        }
+       }
+      },
+      "overrides": []
+     },
+     "options": {
+      "legend": {
+       "displayMode": "list",
+       "placement": "bottom"
+      },
+      "tooltip": {
+       "mode": "multi"
+      }
+     }
+    },
+    {
+     "type": "timeseries",
+     "title": "Source nodes",
+     "id": 18,
+     "datasource": {
+      "type": "prometheus",
+      "uid": "prom"
+     },
+     "description": "",
+     "gridPos": {
+      "h": 7,
+      "w": 12,
+      "x": 12,
+      "y": 49
+     },
+     "targets": [
+      {
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+       },
+       "expr": "pfSrcTrackCount{instance=~\"$server\"}",
+       "legendFormat": "nodes {{instance}}",
+       "refId": "A",
+       "instant": false,
+       "range": true
+      },
+      {
+       "datasource": {
+        "type": "prometheus",
+        "uid": "prom"
+       },
+       "expr": "pfLimitSourceNodes{instance=~\"$server\"}",
+       "legendFormat": "limit {{instance}}",
+       "refId": "B",
+       "instant": false,
+       "range": true
+      }
+     ],
+     "fieldConfig": {
+      "defaults": {
+       "unit": "short",
+       "custom": {
+        "lineWidth": 1,
+        "fillOpacity": 10,
+        "showPoints": "never",
+        "stacking": {
+         "mode": "none"
+        }
+       }
+      },
+      "overrides": []
+     },
+     "options": {
+      "legend": {
+       "displayMode": "list",
+       "placement": "bottom"
+      },
+      "tooltip": {
+       "mode": "multi"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "type": "row",
    "title": "Flows (nfdump, last completed window per exporter)",
    "id": 20,
    "collapsed": false,
@@ -1000,7 +1014,7 @@
     "h": 1,
     "w": 24,
     "x": 0,
-    "y": 48
+    "y": 49
    },
    "panels": []
   },
@@ -1017,7 +1031,7 @@
     "h": 7,
     "w": 12,
     "x": 0,
-    "y": 49
+    "y": 50
    },
    "targets": [
     {
@@ -1069,7 +1083,7 @@
     "h": 7,
     "w": 12,
     "x": 12,
-    "y": 49
+    "y": 50
    },
    "targets": [
     {
@@ -1124,7 +1138,7 @@
     "h": 6,
     "w": 12,
     "x": 0,
-    "y": 56
+    "y": 57
    },
    "targets": [
     {
@@ -1192,7 +1206,7 @@
     "h": 6,
     "w": 12,
     "x": 12,
-    "y": 56
+    "y": 57
    },
    "targets": [
     {
@@ -1243,7 +1257,7 @@
     "h": 1,
     "w": 24,
     "x": 0,
-    "y": 62
+    "y": 63
    },
    "panels": []
   },
@@ -1260,7 +1274,7 @@
     "h": 7,
     "w": 8,
     "x": 0,
-    "y": 63
+    "y": 64
    },
    "targets": [
     {
@@ -1323,12 +1337,12 @@
     "type": "prometheus",
     "uid": "prom"
    },
-   "description": "Alert line at 20/s. This is the signal that showed the incident: high rate with few open connections.",
+   "description": "",
    "gridPos": {
     "h": 7,
     "w": 8,
     "x": 8,
-    "y": 63
+    "y": 64
    },
    "targets": [
     {
@@ -1396,7 +1410,7 @@
     "h": 7,
     "w": 8,
     "x": 16,
-    "y": 63
+    "y": 64
    },
    "targets": [
     {
