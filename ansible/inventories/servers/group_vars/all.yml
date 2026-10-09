@@ -14,3 +14,5 @@ vpn_ip: "10.7.0.254"
 interconnect_interface: "vio1"
 pui_ext_ip: "1.2.3.4"
 mui_ext_ip: "1.2.3.4"
+
+discord_webhook: ""
