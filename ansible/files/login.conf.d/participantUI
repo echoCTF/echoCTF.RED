@@ -1,8 +1,10 @@
 participant:\
-        :datasize=24576M:\
-        :openfiles-cur=16384:\
-        :openfiles-max=32768:\
-        :tc=daemon:
+  :datasize-cur=24576M:\
+  :datasize-max=24576M:\
+  :openfiles-cur=16384:\
+  :openfiles-max=32768:\
+  :tc=daemon:
 
 php84_fpm:\
-        :tc=participant:
+  :tc=participant:
+

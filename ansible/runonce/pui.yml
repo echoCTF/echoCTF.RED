@@ -547,10 +547,10 @@
       - { section: participantui, option: group, value: "participantUI" }
       - { section: participantui, option: listen, value: "127.0.0.1:9001" }
       - { section: participantui, option: pm, value: "dynamic" }
-      - { section: participantui, option: pm.max_children, value: "{{ pm_max_children | default(5)}}" }
-      - { section: participantui, option: pm.start_servers, value: "{{ pm_start_servers | default(2)}}" }
-      - { section: participantui, option: pm.max_spare_servers, value: "{{ pm_max_spare_servers | default(3)}}" }
-      - { section: participantui, option: pm.min_spare_servers, value: "{{ pm_min_spare_servers | default(1)}}" }
+      - { section: participantui, option: pm.max_children, value: "{{ pm_max_children | default(15)}}" }
+      - { section: participantui, option: pm.start_servers, value: "{{ pm_start_servers | default(4)}}" }
+      - { section: participantui, option: pm.max_spare_servers, value: "{{ pm_max_spare_servers | default(6)}}" }
+      - { section: participantui, option: pm.min_spare_servers, value: "{{ pm_min_spare_servers | default(2)}}" }
       - { section: participantui, option: pm.max_requests, value: 500 }
       - { section: participantui, option: chroot, value: "/home/participantUI" }
       - { section: participantui, option: "php_admin_value[sendmail_path]", value: "/bin/femail -t" }
@@ -743,7 +743,7 @@
       content: |
         [program:wsserver]
         user = participantUI
-        command = /usr/local/bin/wsserver-openbsd-amd64 -addr "127.0.0.1:8888" -db mysql -dsn "participantUI:participantUI@tcp({{db_ip}})/echoCTF" -max-queued 20
+        command = /usr/local/bin/wsserver-openbsd-amd64 -addr "127.0.0.1:8888" -db mysql -dsn "participantUI:participantUI@tcp({{db_ip}})/echoCTF" -max-conns 10 -max-queued 100 -offline-ttl 10s -rate-limit-player 3 -rate-burst-player 10 -trust-xff -revalidate-period 1m -log-format text
         stdout_logfile=/var/log/wsserver.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
