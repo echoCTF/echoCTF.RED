@@ -226,6 +226,15 @@
       - { section: PHP, option: "upload_max_filesize", value: "120M" }
       - { section: PHP, option: "allow_url_fopen", value: "On"}
 
+  - name: Copy mysql-init.sql for populating memcached at boot
+    copy:
+      dest: "/etc/mysql-init.sql"
+      content: |
+        SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci;
+        DO memc_servers_set('{{db_host}}');
+        DO memc_servers_behavior_set('MEMCACHED_BEHAVIOR_TCP_NODELAY','1');
+        DO memc_servers_behavior_set('MEMCACHED_BEHAVIOR_NO_BLOCK','1');
+
   - name: Update my.cnf
     ini_file:
       path: /etc/my.cnf
@@ -237,6 +246,7 @@
       - { key: "plugin_load_add", value: "ha_federatedx" }
       - { key: "wait_timeout", value: "2880000" }
       - { key: "interactive_timeout", value: "2880000" }
+      - { key: "init_file", value:  "/etc/mysql-init.sql" }
 
   - name: Append ha_blackhole
     ansible.builtin.lineinfile:
