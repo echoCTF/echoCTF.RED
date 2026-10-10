@@ -57,7 +57,8 @@
      "text": "All",
      "value": "$__all"
     },
-    "sort": 1
+    "sort": 1,
+    "regex": "/^(?!enc0$).*/"
    }
   ]
  },
