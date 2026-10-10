@@ -356,7 +356,7 @@
      "placement": "bottom"
     },
     "tooltip": {
-     "mode": "multi"
+     "mode": "single"
     }
    }
   },
@@ -408,7 +408,7 @@
      "placement": "bottom"
     },
     "tooltip": {
-     "mode": "multi"
+     "mode": "single"
     }
    }
   },
@@ -1245,7 +1245,7 @@
      "placement": "bottom"
     },
     "tooltip": {
-     "mode": "multi"
+     "mode": "single"
     }
    }
   },
