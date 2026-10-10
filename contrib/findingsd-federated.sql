@@ -125,7 +125,7 @@ CREATE TABLE `private_network` (
   `created_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx-private_network-player_id` (`player_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/private_network';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/private_network';
 
 DROP TABLE IF EXISTS `private_network_target`;
 CREATE TABLE `private_network_target` (
@@ -135,13 +135,13 @@ CREATE TABLE `private_network_target` (
   `ip` int(11) unsigned DEFAULT NULL,
   `state` smallint(6) unsigned DEFAULT 0,
   `server_id` int(11) DEFAULT NULL,
-  `ipoctet` varchar(15) GENERATED ALWAYS AS (inet_ntoa(`ip`)) VIRTUAL,
+  `ipoctet` varchar(15),
   PRIMARY KEY (`id`),
   UNIQUE KEY `idx-unique-private_network_id-target_id` (`private_network_id`,`target_id`),
   KEY `idx-private_network_target-private_network_id` (`private_network_id`),
   KEY `idx-private_network_target-server_id` (`server_id`),
   KEY `idx-private_network_target-target_id` (`target_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/private_network_target';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/private_network_target';
 
 DROP TABLE IF EXISTS `player_bandwidth`;
 CREATE TABLE `player_bandwidth` (
@@ -155,7 +155,7 @@ CREATE TABLE `player_bandwidth` (
   PRIMARY KEY (`id`),
   KEY `idx-player_bandwidth-player_id` (`player_id`),
   KEY `idx-player_bandwidth-ts` (`ts`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_bandwidth';
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_bandwidth';
 
 DROP TABLE IF EXISTS `debuglogs`;
 CREATE TABLE debuglogs (

@@ -1,0 +1,11 @@
+# file_sd list for the snmp job. Add one block per role, labels are free-form.
+- targets: ["10.7.0.254"]          # vpn01
+  labels: {role: vpn}
+- targets: ["10.7.0.200"]        # pui
+  labels: {role: pui}
+- targets: ["10.7.0.201"]        # mui
+  labels: {role: mui}
+- targets: ["10.7.0.253"]        # db
+  labels: {role: db}
+- targets: ["10.0.0.100"]        # db
+  labels: {role: registry}

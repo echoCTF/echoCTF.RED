@@ -1,0 +1,173 @@
+# EaseProbe configuration for the echoCTF event.
+#
+# Internal addressing:
+#   10.7.0.200  pui   (participant UI)
+#   10.7.0.201  mui   (management UI)
+#   10.7.0.253  db    (MariaDB + memcached 11200-11211)
+#   10.7.0.254  vpn01 (interconnect side)
+#   10.0.0.254  vpn01 (targets side)
+#
+# Run it from a box that is NOT one of the monitored servers. The internal
+# probes need that box to have a route into 10.7.0.0/24 (and 10.0.0.0/24 for
+# the docker-side vpn01 address).
+
+# --------------------- PING probes ---------------------
+ping:
+  - name: pui internal (10.7.0.200)
+    host: 10.7.0.200
+    privileged: true
+    timeout: 10s
+    interval: 30s
+    failure: 2
+
+  - name: mui internal (10.7.0.201)
+    host: 10.7.0.201
+    privileged: true
+    timeout: 10s
+    interval: 30s
+    failure: 2
+
+# --------------------- HTTP probes ---------------------
+http:
+  # External
+  - name: pui external (ctf.mydomain)
+    url: https://ctf.mydomain/
+    timeout: 10s
+    interval: 30s
+    failure: 2
+    success_code:
+      - [200, 200]
+
+#  - name: mui external (mui.mydomain)
+#    url: https://mui.mydomain/
+#    timeout: 10s
+#    interval: 30s
+#    failure: 2
+#    success_code:
+#      - [200, 200]
+
+
+  - name: scores external (ctf.mydomain:8000)
+    url: https://ctf.mydomain:8000/
+    timeout: 10s
+    interval: 30s
+    failure: 2
+    success_code:
+      - [200, 200]
+
+  - name: docker 10.0.0.1
+    url: http://10.0.0.1:2375/version
+    contain: "ApiVersion"
+    timeout: 5s
+    interval: 30s
+    failure: 2
+    success_code:
+      - [200, 200]
+
+  - name: registry public (registry.mydomain:5000)
+    url: https://registry.mydomain:5000/v2/
+    success_code:
+      - [200, 200]
+    timeout: 10s
+    interval: 30s
+    failure: 2
+
+  - name: hm9 registry private (10.0.0.100:5000)
+    url: https://10.0.0.100:5000/v2/
+    success_code:
+      - [200, 200]
+    headers:
+      Host: registry.mydomain
+    insecure: true
+    timeout: 10s
+    interval: 30s
+    failure: 2
+
+# --------------------- TCP probes ---------------------
+tcp:
+  - name: wsserver (10.7.0.200:8888)
+    host: 10.7.0.200:8888
+    timeout: 5s
+    interval: 30s
+    failure: 2
+
+# --------------------- Shell probes ---------------------
+shell:
+  - name: openvpn connect (vpn01)
+    cmd: /etc/easeprobe/ovpn-check.sh
+    args:
+      - "vpn01"
+    interval: 1m
+    timeout: 10s
+    failure: 2
+
+  - name: memcached connections (10.7.0.253)
+    cmd: /etc/easeprobe/memc-conn-check.sh
+    args:
+      - "10.7.0.253"
+      - "11211"
+    interval: 1m
+    timeout: 40s
+    failure: 2
+
+# --------------------- Native client probes ---------------------
+client:
+  - name: MariaDB (10.7.0.253)
+    driver: "mysql"
+    host: "10.7.0.253:3306"
+    username: "easeprobe"
+    password: "easeprobe"
+    timeout: 5s
+    interval: 30s
+    failure: 2
+    success: 1
+
+  - name: Memcached 10.7.0.253:11211
+    driver: "memcache"
+    host: "10.7.0.253:11211"
+    timeout: 5s
+    interval: 30s
+    failure: 2
+
+# --------------------- Notifications ---------------------
+notify:
+  log:
+    - name: log file
+      file: /var/log/easeprobe-notifications.log
+  discord:
+    - name: "Event #alerts"
+      webhook: "https://discord.com/api/webhooks/"
+
+# --------------------- Global settings ---------------------
+settings:
+  name: "conductor"
+  pid: /var/run/easeprobe.pid
+  timezone: "UTC"
+  timeformat: "2006-01-02 15:04:05 Z07:00"
+
+  http:
+    ip: 127.0.0.1
+    port: 8181
+
+  sla:
+    schedule: "daily"
+    time: "23:59"
+
+  notify:
+    retry:
+      times: 5
+      interval: 10s
+
+  probe:
+    timeout: 30s
+    interval: 1m
+    failure: 2
+    success: 1
+    alert:
+      strategy: "increment"
+      factor: 1
+      max: 5
+
+  log:
+    file: /var/log/easeprobe-daemon.log
+    level: "info"

@@ -3,44 +3,17 @@
 - name: "Setup an OpenBSD server for participantUI (frontend)"
   hosts: all
   gather_facts: false
-  vars_prompt:
-    - name: "hostname"
-      prompt: "1/7. System hostname?"
-      default: "pui.example.local"
-      private: no
-    - name: "pui_ext_ip"
-      prompt: "2/7. What is the external (public) IP?"
-      default: "1.2.3.4"
-      private: no
-    - name: "db_ip"
-      prompt: "3/7. What is the database server IP?"
-      default: "10.7.0.253"
-      private: no
-#    - name: "GITHUB_OAUTH_TOKEN"
-#      prompt: "4/8. Provide a github oauth token?"
-#      default: ""
-#      private: no
-#    - name: "GITHUB_REPO"
-#      prompt: "5/8. Provide a github repo to clone?"
-#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
-#      private: no
-    - name: "domain_name"
-      prompt: "4/7. Provide the domain the frontend will run on?"
-      default: "pui.example.com"
-      private: no
-    - name: "interconnect_interface"
-      prompt: "5/7. What is the interconnect interface to be used?"
-      default: "em1"
-      private: no
-    - name: "pui_ip"
-      prompt: "6/7. What is the interconnect IP to be used?"
-      default: "10.7.0.200"
-      private: no
-    - name: "admins_domain"
-      prompt: "7/7. admin domain for TXT rules?"
-      default: "admin.example.com"
-      private: no
   vars:
+    prompts:
+      - { name: hostname, prompt: "1/7. System hostname?", default: "pui.example.local" }
+      - { name: pui_ext_ip, prompt: "2/7. What is the external (public) IP?", default: "1.2.3.4" }
+      - { name: db_ip, prompt: "3/7. What is the database server IP?", default: "10.7.0.253" }
+#      - { name: GITHUB_OAUTH_TOKEN, prompt: "4/8. Provide a github oauth token?", default: "" }
+#      - { name: GITHUB_REPO, prompt: "5/8. Provide a github repo to clone?", default: "{{ lookup('pipe', 'git remote get-url origin') }}" }
+      - { name: domain_name, prompt: "4/7. Provide the domain the frontend will run on?", default: "pui.example.com" }
+      - { name: interconnect_interface, prompt: "5/7. What is the interconnect interface to be used?", default: "em1" }
+      - { name: pui_ip, prompt: "6/7. What is the interconnect IP to be used?", default: "10.7.0.200" }
+      - { name: admins_domain, prompt: "7/7. admin domain for TXT rules?", default: "admin.example.com" }
     ansible_python_interpreter: /usr/local/bin/python3
     ansible_user: root
 #    sshkeys:
@@ -71,6 +44,8 @@
       kern.maxfiles: 104060
       net.inet.ip.portfirst: 1024
       net.inet.ip.portlast: 65535
+      net.inet.tcp.keepidle: 6
+      net.inet.tcp.keepintvl: 5
     post_inst: |
       Things to do:
         - Update /etc/administrators.conf with your IP's
@@ -115,8 +90,25 @@
       - py3-setuptools
       - py3-netaddr
       - supervisor
-
+      - node
   tasks:
+  - name: Prompt for variables that are not set
+    pause:
+      prompt: "{{ item.prompt }} [{{ item.default }}]"
+    register: answers
+    loop: "{{ prompts }}"
+    loop_control:
+      label: "{{ item.name }}"
+    when: item.name not in vars
+
+  - name: Set prompted variables
+    set_fact:
+      "{{ item.item.name }}": "{{ item.user_input | default(item.item.default, true) }}"
+    loop: "{{ answers.results }}"
+    loop_control:
+      label: "{{ item.item.name }}"
+    when: not (item.skipped | default(false))
+
   - name: Sync date time
     raw: rdate pool.ntp.org
 
@@ -158,7 +150,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{pui_ip}} 255.255.255.0 NONE group interconnect"
+      - "inet {{pui_ip}} 255.255.255.0 NONE mtu 1450 group interconnect"
       - "up -inet6"
 
   - name: Bring interface up
@@ -173,27 +165,16 @@
       group: "wheel"
       remote_src: yes
 
-  - name: Configure PS1 for root and skeleton
+  - name: Configure PS1, HISTFILE and HISTSIZE for root and skeleton
     lineinfile:
-      path: "{{item}}"
+      path: "{{item.0}}"
       owner: root
       group: wheel
       mode: '0640'
-      line: "export PS1='\\u@\\H:\\w\\$ '"
-    with_items:
-      - '/etc/skel/.profile'
-      - '/root/.profile'
-
-  - name: Configure HISTSIZE for root and skeleton
-    lineinfile:
-      path: "{{item}}"
-      owner: root
-      group: wheel
-      mode: '0640'
-      line: "export HISTSIZE=10000"
-    with_items:
-      - '/etc/skel/.profile'
-      - '/root/.profile'
+      line: "{{item.1}}"
+    with_nested:
+      - [ '/etc/skel/.profile', '/root/.profile' ]
+      - [ "export PS1='\\u@\\H:\\w\\$ '", "export HISTFILE=~/.sh_history", "export HISTSIZE=10000" ]
 
   - name: Install packages
     shell: "pkg_add {{packages| join(' ')}}"
@@ -240,9 +221,9 @@
     with_items: "{{sshkeys}}"
 
   - name: Configure default services
-    command: "rcctl {{item.state}} {{item.name}}"
-    when: item.state is defined
-    with_items: "{{rcctl}}"
+    shell: |
+      rcctl disable {{ rcctl | selectattr('state', 'equalto', 'disable') | map(attribute='name') | join(' ') }} ;
+      rcctl enable {{ rcctl | selectattr('state', 'equalto', 'enable') | map(attribute='name') | join(' ') }}
 
   - name: Clone echoCTF repo
     when: GITHUB_REPO is defined
@@ -425,7 +406,7 @@
       src: ../templates/nginx.conf.j2
       dest: /etc/nginx/{{item.user}}.conf
     with_items:
-      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}', identificationFiles: true }
+      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}', identificationFiles: true, modsecurity: "{{ modsecurity | default(omit) }}" }
     tags:
       - nginx
 
@@ -448,7 +429,7 @@
         SecAuditLogRelevantStatus "^(?:5|4(?!04))"
         SecAuditLogParts ABDEFHIJZ
         SecAuditLogType Serial
-        SecAuditLog /logs/modsec_audit.log
+        SecAuditLog /home/participantUI/logs/modsec_audit.log
         SecArgumentSeparator &
         SecCookieFormat 0
         SecStatusEngine Off
@@ -461,25 +442,29 @@
       dest: /etc/nginx/modsecurity-includes.conf
       content: |
         Include /etc/nginx/modsecurity.conf
-        Include /etc/nginx/owasp-crs/crs-setup.conf
-        Include /etc/nginx/owasp-crs/rules/*.conf
+        Include /etc/nginx/crs-setup.conf
+        Include /etc/nginx/rules/*.conf
     tags:
       - nginx
 
   - name: Download OWASP CRS
     when: modsecurity is defined
     get_url:
-      url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ versions.CORERULESET }}.tar.gz"
-      dest: "/tmp/coreruleset-{{ versions.CORERULESET }}.tar.gz"
+      url: "https://github.com/coreruleset/coreruleset/archive/refs/tags/v{{ versions.CORERULESET }}.zip"
+      dest: "/tmp/coreruleset-{{ versions.CORERULESET }}.zip"
       mode: "0644"
+    tags:
+      - nginx
 
   - name: Extract CRS archive under /tmp
     when: modsecurity is defined
     unarchive:
-      src: "/tmp/coreruleset-{{ versions.CORERULESET }}.tar.gz"
+      src: "/tmp/coreruleset-{{ versions.CORERULESET }}.zip"
       dest: /tmp
       remote_src: true
       creates: "/tmp/coreruleset-{{ versions.CORERULESET }}/crs-setup.conf.example"
+    tags:
+      - nginx
 
   - name: Ensure /etc/nginx/rules exists
     when: modsecurity is defined
@@ -489,6 +474,18 @@
       owner: root
       group: wheel
       mode: "0755"
+    tags:
+      - nginx
+
+  - name: Clear our cookie from json based SQLI
+    when: modsecurity is defined
+    copy:
+      dest: /etc/nginx/rules/zz-exclusions.conf
+      content: |
+        SecRuleUpdateTargetById 942550 "!REQUEST_COOKIES:_identity-red"
+    tags:
+      - nginx
+
 
   - name: Copy CRS rules into place
     when: modsecurity is defined
@@ -499,6 +496,8 @@
       owner: root
       group: wheel
       mode: "0644"
+    tags:
+      - nginx
 
   - name: Copy crs-setup.conf.example into place
     when: modsecurity is defined
@@ -509,6 +508,14 @@
       owner: root
       group: wheel
       mode: "0644"
+    tags:
+      - nginx
+
+  - name: Copy nginx modules into place
+    when: modsecurity is defined
+    command: cp -pr /var/www/modules /home/participantUI/
+    tags:
+      - nginx
 
   - name: Create nginx dt.conf
     template:
@@ -540,10 +547,10 @@
       - { section: participantui, option: group, value: "participantUI" }
       - { section: participantui, option: listen, value: "127.0.0.1:9001" }
       - { section: participantui, option: pm, value: "dynamic" }
-      - { section: participantui, option: pm.max_children, value: "{{ pm_max_children | default(5)}}" }
-      - { section: participantui, option: pm.start_servers, value: "{{ pm_start_servers | default(2)}}" }
-      - { section: participantui, option: pm.max_spare_servers, value: "{{ pm_max_spare_servers | default(3)}}" }
-      - { section: participantui, option: pm.min_spare_servers, value: "{{ pm_min_spare_servers | default(1)}}" }
+      - { section: participantui, option: pm.max_children, value: "{{ pm_max_children | default(15)}}" }
+      - { section: participantui, option: pm.start_servers, value: "{{ pm_start_servers | default(4)}}" }
+      - { section: participantui, option: pm.max_spare_servers, value: "{{ pm_max_spare_servers | default(6)}}" }
+      - { section: participantui, option: pm.min_spare_servers, value: "{{ pm_min_spare_servers | default(2)}}" }
       - { section: participantui, option: pm.max_requests, value: 500 }
       - { section: participantui, option: chroot, value: "/home/participantUI" }
       - { section: participantui, option: "php_admin_value[sendmail_path]", value: "/bin/femail -t" }
@@ -649,6 +656,15 @@
       group: wheel
       mode: "0644"
 
+  - name: Append login.conf specs
+    ansible.builtin.blockinfile:
+      path: /etc/login.conf
+      block: "{{ lookup('file', '{{playbook_dir}}/../files/login.conf.d/participantUI') }}"
+      create: yes
+
+  - name: Rebuild the capabilities db
+    command: cap_mkdb /etc/login.conf
+
   - name: Update crontab PATH variable
     cron:
       user: root
@@ -727,10 +743,28 @@
       content: |
         [program:wsserver]
         user = participantUI
-        command = /usr/local/bin/wsserver-openbsd-amd64 -addr "127.0.0.1:8888" -db mysql -dsn "participantUI:participantUI@tcp({{db_ip}})/echoCTF" -max-queued 20
+        command = /usr/local/bin/wsserver-openbsd-amd64 -addr "127.0.0.1:8888" -db mysql -dsn "participantUI:participantUI@tcp({{db_ip}})/echoCTF" -max-conns 10 -max-queued 100 -offline-ttl 10s -rate-limit-player 3 -rate-burst-player 10 -trust-xff -revalidate-period 1m -log-format text
         stdout_logfile=/var/log/wsserver.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
+
+  - name: Install scores.ini for supervisord
+    copy:
+      dest: /etc/supervisord.d/scores.ini
+      content: |
+        {% for i in range(academic_grouping | default(1) | int) %}
+        [program:scores_{{ i }}]
+        user = participantUI
+        directory = /home/participantUI/{{ domain_name }}/eio
+        environment=NODE_ENV=production
+        command = node eio {{ 8000 + i }}{{ ' ' ~ i if academic_grouping is defined else '' }}
+        stdout_logfile=/var/log/scores_{{ i }}.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+        {% if not loop.last %}
+
+        {% endif %}
+        {% endfor %}
 
   - name: "Update frontend/config/params.php"
     ansible.builtin.replace:

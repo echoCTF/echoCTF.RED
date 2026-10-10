@@ -1,0 +1,277 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: "Setup echoCTF.RED network visuals concentrator (standalone)"
+  hosts: visuals
+  gather_facts: false
+  vars:
+    prompts:
+      - { name: myname, prompt: "1/3. System hostname?", default: "visuals.example.com" }
+      - { name: interconnect_interface, prompt: "2/3. Interconnect interface?", default: "vio2" }
+      - { name: interconnect_interface_ip, prompt: "3/3. Interconnect interface IP?" }
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+    rcctl:
+      - { name: check_quotas, state: "disable" }
+      - { name: cron, state: "enable" }
+      - { name: resolvd, state: "disable" }
+      - { name: ntpd, state: "enable" }
+      - { name: pflogd, state: "disable" }
+      - { name: slaacd, state: "disable" }
+      - { name: smtpd, state: "disable" }
+      - { name: sndiod, state: "disable" }
+      - { name: supervisord, state: "enable"}
+      - { name: inetd, state: "enable"}
+    sysctl:
+      kern.bufcachepercent: 30
+      kern.maxfiles: 312180
+      kern.seminfo.semmni: 1024
+      kern.seminfo.semmns: 4096
+      kern.shminfo.shmall: 32768
+      kern.shminfo.shmmax: 67018864
+      kern.somaxconn: 8192
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      net.inet.divert.sendspace: 65636
+      net.inet.ip.forwarding: 1
+      net.inet.ip.ifq.maxlen: 2560
+      net.inet.ip.maxqueue: 2048
+      net.inet.ip.mforwarding: 0
+      net.inet.tcp.synuselimit: 1000000
+      net.inet.udp.sendspace: 9216
+      net.unix.dgram.sendspace: 9216
+      net.inet.ip.arptimeout: 30
+      net.inet.tcp.keepinittime: 15
+      #net.inet.tcp.keepidle: 300
+      #net.inet.tcp.keepintvl: 30
+      net.inet.tcp.keepidle: 6
+      net.inet.tcp.keepintvl: 5
+      net.inet.ip.portfirst: 1024
+      net.inet.ip.portlast: 65535
+    packages:
+      - supervisor
+
+  tasks:
+  - name: Prompt for variables that are not set
+    pause:
+      prompt: "{{ item.prompt }}{% if item.default is defined %} [{{ item.default }}]{% endif %}"
+    register: answers
+    loop: "{{ prompts }}"
+    loop_control:
+      label: "{{ item.name }}"
+    when: item.name not in vars
+
+  - name: Set prompted variables
+    set_fact:
+      "{{ item.item.name }}": "{{ item.user_input | default(item.item.default | default(''), true) }}"
+    loop: "{{ answers.results }}"
+    loop_control:
+      label: "{{ item.item.name }}"
+    when: not (item.skipped | default(false))
+
+  - name: Sync date time
+    raw: rdate pool.ntp.org
+
+  - name: Install ansible (raw)
+    raw: pkg_add ansible
+
+  - name: Gather facts
+    setup:
+
+  - name: Set hostname
+    hostname:
+      name: "{{myname}}"
+
+  - name: Make hostname permanent (/etc/myname)
+    copy:
+      content: "{{ myname }}\n"
+      dest: /etc/myname
+
+  - name: Create fresh /etc/hosts
+    copy:
+      content: "127.0.0.1 localhost\n{{interconnect_interface_ip}} {{  myname.split('.')[0] | lower }} {{ myname }}\n"
+      dest: /etc/hosts
+
+  - name: Set /etc/installurl to custom mirror
+    when: installurl is defined
+    ansible.builtin.copy:
+      content: "{{installurl}}\n"
+      dest: /etc/installurl
+      owner: root
+      group: wheel
+      mode: "0644"
+
+  - name: Configure interconnect interface
+    lineinfile:
+      path: "/etc/hostname.{{interconnect_interface}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item}}"
+      create: yes
+    with_items:
+      - "inet {{ interconnect_interface_ip }} 255.255.255.0 NONE mtu 1450 group interconnect"
+      - "up -inet6"
+
+  - name: Bring interface up
+    command: sh /etc/netstart {{interconnect_interface}}
+
+  - name: Install packages
+    shell: "pkg_add -I {{packages| join(' ')}}"
+
+  - name: Configure PS1, HISTFILE and HISTSIZE for root and skeleton
+    lineinfile:
+      path: "{{item.0}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item.1}}"
+    with_nested:
+      - [ '/etc/skel/.profile', '/root/.profile' ]
+      - [ "export PS1='\\u@\\H:\\w\\$ '", "export HISTFILE=~/.sh_history", "export HISTSIZE=10000" ]
+
+  - name: Configure default services
+    shell: |
+      rcctl disable {{ rcctl | selectattr('state', 'equalto', 'disable') | map(attribute='name') | join(' ') }} ;
+      rcctl enable {{ rcctl | selectattr('state', 'equalto', 'enable') | map(attribute='name') | join(' ') }}
+
+  - name: "Copy nstables"
+    copy:
+      src: "{{playbook_dir}}/../files/nstables.sh"
+      dest:  /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: "0555"
+
+  - name: "Copy pf"
+    copy:
+      src: "{{playbook_dir}}/../files/pf.conf"
+      dest: /etc/pf.conf
+
+  - name: service.pf.conf
+    copy:
+      dest: /etc/service.pf.conf
+      content: |
+        pass in quick on egress inet proto tcp from { <administrators>, <moderators> } to (egress:0) port { 50000, 60000 } rdr-to 127.0.0.1
+        pass quick from <administrators> label "administrators"
+
+  - name: Create pf files
+    command: "touch {{ pf_files | join(' ') }}"
+    vars:
+      pf_files:
+        - /etc/administrators.conf
+        - /etc/maintenance.conf
+        - /etc/moderators.conf
+        - /etc/service_clients.conf
+        - /etc/docker_clients.conf
+        - /etc/docker_servers.conf
+        - /etc/registry_clients.conf
+        - /etc/registry_servers.conf
+        - /etc/targets.conf
+
+  - name: copy multi-ports script
+    copy:
+      src: ../../contrib/multi-ports.py
+      dest: /usr/local/sbin/multi-ports
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: Create /etc/visuals
+    file:
+      path: /etc/visuals
+      state: directory
+      owner: root
+      group: wheel
+      mode: '0755'
+
+  - name: supervisord visuals programs
+    copy:
+      dest: /etc/supervisord.d/visuals.ini
+      owner: root
+      group: wheel
+      mode: '0644'
+      content: |
+        [program:visuals_50000]
+        command=/usr/local/sbin/multi-ports -c /etc/visuals/50000.conf -l /var/run/visuals-50000.sock
+        user=root
+        autostart=true
+        autorestart=true
+        stdout_logfile=/var/log/visuals-50000.log
+        redirect_stderr=true
+
+        [program:visuals_60000]
+        command=/usr/local/sbin/multi-ports -c /etc/visuals/60000.conf -l /var/run/visuals-60000.sock
+        user=root
+        autostart=true
+        autorestart=true
+        stdout_logfile=/var/log/visuals-60000.log
+        redirect_stderr=true
+
+  - name: inetd.conf
+    copy:
+      dest: /etc/inetd.conf
+      owner: root
+      group: wheel
+      mode: '0644'
+      content: |
+        127.0.0.1:50000	stream	tcp	nowait	root	/usr/bin/nc	nc -N -U /var/run/visuals-50000.sock
+        127.0.0.1:60000	stream	tcp	nowait	root	/usr/bin/nc	nc -N -U /var/run/visuals-60000.sock
+
+  - name: restart supervisord and inetd
+    command: "rcctl restart {{item}}"
+    with_items:
+      - supervisord
+      - inetd
+
+  - name: Setting up sysctl.conf
+    copy:
+      dest: /etc/sysctl.conf
+      owner: root
+      group: wheel
+      mode: "0644"
+      content: |
+        {% for k, v in sysctl.items() %}
+        {{ k }}={{ v }}
+        {% endfor %}
+    tags:
+      - sysctl
+
+  - name: Apply sysctl.conf
+    command: sysctl -f /etc/sysctl.conf
+    tags:
+      - sysctl
+
+  - name: Update crontab PATH variable
+    cron:
+      user: root
+      name: PATH
+      env: yes
+      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+    tags:
+      - cron
+
+  - name: Install cron entries
+    cron:
+      name: "{{item.name}}"
+      user: "root"
+      minute: "{{item.minute | default(omit)}}"
+      special_time: "{{item.special_time|default(omit)}}"
+      job: "{{item.job}}"
+    with_items:
+      - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
+    tags:
+      - cron
+
+  - name: Execute fw_update
+    command: fw_update -a
+
+  - name: Execute syspatch
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - name: Re-Execute syspatch in case it updated it self on the previous run
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result

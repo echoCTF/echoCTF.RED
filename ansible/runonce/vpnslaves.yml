@@ -5,84 +5,27 @@
 #  hosts: 127.0.0.1
 #  connection: local
   gather_facts: false
-  vars_prompt:
-    - name: "myname"
-      prompt: "1/17. System hostname?"
-      default: "vpn.example.com"
-      private: no
-    - name: "vpngw"
-      prompt: "2/17. OpenVPN gateway hostname or IP?"
-      default: "vpn.example.com"
-      private: no
-    - name: "egress_if"
-      prompt: "3/17. Egress network interface (ifconfig egress)?"
-      default: "em0"
-      private: no
-    - name: "vpn_ext_ip"
-      prompt: "4/17. Egress interface IP?"
-      default: "192.168.1.182"
-      private: no
-    - name: "targets_if"
-      prompt: "5/17. Targets network interface?"
-      default: "em2"
-      private: no
-    - name: "targets_if_ipv4"
-      prompt: "6/17. Targets network interface IPv4?"
-      default: "10.0.0.254"
-      private: no
-    - name: "targets_subnet"
-      prompt: "7/17. Targets network subnet?"
-      default: "10.0.0.0"
-      private: no
-    - name: "targets_netmask"
-      prompt: "8/17. Targets network netmask?"
-      default: "255.255.0.0"
-      private: no
-    - name: "echoCTF_VPN_mgmt_passwd"
-      prompt: "9/17. OpenVPN managment interface password?"
-      default: "openvpn"
-      private: no
-    - name: "offense_network"
-      prompt: "10/17. OpenVPN client range?"
-      default: "10.10.0.0/16"
-      private: no
-    - name: "db_host"
-      prompt: "11/17. Database Server IP?"
-      default: "10.7.0.253"
-      private: no
-    - name: "db_name"
-      prompt: "12/17. Database name?"
-      default: "echoCTF"
-      private: no
-    - name: "db_user"
-      prompt: "13/17. Database Server user?"
-      default: "vpnuser"
-      private: no
-    - name: "db_pass"
-      prompt: "14/17. Database Server user password?"
-      default: "vpnuserpass"
-      private: no
-#    - name: "GITHUB_OAUTH_TOKEN"
-#      prompt: "15/18. Provide a GITHUB_OAUTH_TOKEN?"
-#      default: "randomtoken"
-#      private: no
-#    - name: "GITHUB_REPO"
-#      prompt: "16/18. Provide a github repo to clone?"
-#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
-#      private: no
-    - name: "interconnect_interface"
-      prompt: "15/17. Interconnect interface?"
-      default: "em1"
-      private: no
-    - name: "interconnect_interface_ip"
-      prompt: "16/17. Interconnect interface IP?"
-      default: "10.7.0.254"
-      private: no
-    - name: "admins_domain"
-      prompt: "16/17. admin domain for TXT rules?"
-      default: "admin.example.com"
-      private: no
   vars:
+    prompts:
+      - { name: myname, prompt: "1/17. System hostname?", default: "vpn.example.com" }
+      - { name: vpngw, prompt: "2/17. OpenVPN gateway hostname or IP?", default: "vpn.example.com" }
+      - { name: egress_if, prompt: "3/17. Egress network interface (ifconfig egress)?", default: "em0" }
+      - { name: vpn_ext_ip, prompt: "4/17. Egress interface IP?", default: "192.168.1.182" }
+      - { name: targets_if, prompt: "5/17. Targets network interface?", default: "em2" }
+      - { name: targets_if_ipv4, prompt: "6/17. Targets network interface IPv4?", default: "10.0.0.254" }
+      - { name: targets_subnet, prompt: "7/17. Targets network subnet?", default: "10.0.0.0" }
+      - { name: targets_netmask, prompt: "8/17. Targets network netmask?", default: "255.255.0.0" }
+      - { name: echoCTF_VPN_mgmt_passwd, prompt: "9/17. OpenVPN managment interface password?", default: "openvpn" }
+      - { name: offense_network, prompt: "10/17. OpenVPN client range?", default: "10.10.0.0/16" }
+      - { name: db_host, prompt: "11/17. Database Server IP?", default: "10.7.0.253" }
+      - { name: db_name, prompt: "12/17. Database name?", default: "echoCTF" }
+      - { name: db_user, prompt: "13/17. Database Server user?", default: "vpnuser" }
+      - { name: db_pass, prompt: "14/17. Database Server user password?", default: "vpnuserpass" }
+#    - { name: GITHUB_OAUTH_TOKEN, prompt: "15/18. Provide a GITHUB_OAUTH_TOKEN?", default: "randomtoken" }
+#    - { name: GITHUB_REPO, prompt: "16/18. Provide a github repo to clone?", default: "{{ lookup('pipe', 'git remote get-url origin') }}" }
+      - { name: interconnect_interface, prompt: "15/17. Interconnect interface?", default: "em1" }
+      - { name: interconnect_interface_ip, prompt: "16/17. Interconnect interface IP?", default: "10.7.0.254" }
+      - { name: admins_domain, prompt: "16/17. admin domain for TXT rules?", default: "admin.example.com" }
     ansible_python_interpreter: /usr/local/bin/python3
     ansible_user: root
     users:
@@ -93,11 +36,11 @@
         - Reboot the system for the changes to take effect
     versions:
       PHP: "8.4"
-      PHP_MINOR: "6"
+      PHP_MINOR: "20p0"
       AUTOCONF: "2.69"
       AUTOMAKE: "1.16"
-      ICU_MAJOR: 76
-      ICU_MINOR: 1
+      ICU_MAJOR: 78
+      ICU_MINOR: 3
       MARIADB_CONNECTOR: "3.4.5"
     sysctl:
       kern.bufcachepercent: 30
@@ -169,6 +112,23 @@
       - fswatch
 
   tasks:
+  - name: Prompt for variables that are not set
+    pause:
+      prompt: "{{ item.prompt }} [{{ item.default }}]"
+    register: answers
+    loop: "{{ prompts }}"
+    loop_control:
+      label: "{{ item.name }}"
+    when: item.name not in vars
+
+  - name: Set prompted variables
+    set_fact:
+      "{{ item.item.name }}": "{{ item.user_input | default(item.item.default, true) }}"
+    loop: "{{ answers.results }}"
+    loop_control:
+      label: "{{ item.item.name }}"
+    when: not (item.skipped | default(false))
+
   - debug:
       msg: |
         Before you run this playbook make sure you have applied
@@ -310,6 +270,23 @@
       - "ifconfig tun0 delete"
       - "sh /etc/netstart tun0"
       - "rcctl start openvpn"
+
+  - name: copy event_shutdown script
+    copy:
+      src: ../../contrib/event_shutdown.sh
+      dest: /usr/local/sbin/event_shutdown
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: Create watchdog folder
+    command: install -d -m 1777 -o root /watch
+
+  - name: Add watchdog --action to rc.local
+    lineinfile:
+      path: "/etc/rc.local"
+      line: "nohup /usr/local/bin/watchdoger --file_path /watch/event_finished --action /usr/local/sbin/event_shutdown >/tmp/watchdog.log 2>&1 &"
+      insertafter: EOF
 
   - name: Create empty cron
     copy:

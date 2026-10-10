@@ -1,0 +1,40 @@
+# prometheus.yml for the monitoring host (tested on Prometheus 2.45.3, see the document).
+global:
+  scrape_interval: 60s
+  scrape_timeout: 50s
+
+scrape_configs:
+  # EaseProbe availability metrics. EaseProbe listens on 127.0.0.1:8181, so Prometheus
+  # must run on the same host or EaseProbe's http ip must change.
+  - job_name: easeprobe
+    static_configs:
+      - targets: ["127.0.0.1:8181"]
+
+  # Flow metrics written by nf-prom.sh into node_exporter's textfile directory.
+  - job_name: nfdump
+    scrape_interval: 60s
+    static_configs:
+      - targets: ["127.0.0.1:9100"]
+
+  # memcached on the db host, through memcached_exporter (run it on the monitoring host
+  # pointing at db:11211, or on the db host).
+  - job_name: memcached
+    static_configs:
+      - targets: ["127.0.0.1:9150"]
+
+  # SNMP: the targets are the servers, snmp_exporter does the polling.
+  # One exporter instance with both the stock snmp.yml and snmp-openbsd.yml loaded.
+  - job_name: snmp
+    metrics_path: /snmp
+    params:
+      module: [if_mib, hrStorage, hrDevice, openbsd_pf]
+      auth: [echo_v2]
+    file_sd_configs:
+      - files: ["/etc/prometheus/targets/snmp.yml"]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9116

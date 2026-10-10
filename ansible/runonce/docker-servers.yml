@@ -3,6 +3,7 @@
 - name: Bootstrap docker servers for echoCTF
   hosts: all
   gather_facts: true
+  gather_subset: ['!all', '!min', 'distribution']
   become: true
   become_method: su
   remote_user: sysadmin
@@ -25,14 +26,14 @@
   - name: Allow release-info to change for APT repositories
     when: ansible_facts['distribution'] == 'Debian'
     command: apt-get update -y --allow-releaseinfo-change
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
 
   - name: Update package cache
     apt:
       update_cache: yes
 
   - name: Install preInst packages
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     apt:
       state: present
       pkg: "{{pre_apt}}"
@@ -78,6 +79,7 @@
 - name: Configure docker servers for echoCTF
   hosts: all
   gather_facts: true
+  gather_subset: ['!all', '!min', 'distribution']
   become: false
   remote_user: root
   tasks:
@@ -126,7 +128,7 @@
       update_cache: yes
 
   - name: Update all packages to the latest version
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     apt:
       upgrade: dist
 
@@ -137,7 +139,7 @@
     when: post_apt is defined and post_apt|length > 0
 
 #  - name: Install pip packages
-#    no_log: "{{DEBUG|default(true)}}"
+#    no_log: "{{ not (DEBUG|default(false)|bool) }}"
 #    pip: name="{{item.name}}" version="{{item.version|default(omit)}}" state="{{item.state}}"
 #    with_items: "{{pip}}"
 #    when: pip is defined
@@ -213,7 +215,7 @@
     authorized_key:
       user: "{{item.user}}"
       state: present
-      key: "{{ lookup('file', '{{item.key}}') }}"
+      key: "{{ lookup('file', item.key) }}"
     with_items: "{{ETSCTF_authorized_keys}}"
 
   - name: Adding existing user sysadmin to group docker
@@ -228,7 +230,7 @@
       line: 'GRUB_CMDLINE_LINUX_DEFAULT="quiet cgroup_enable=memory swapaccount=1"'
 
   - name: Push grub updates
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     command: /usr/sbin/update-grub
     environment:
       PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
@@ -296,9 +298,11 @@
   - name: Build container image if needed
     when: containers is defined and item.value.build is defined
     docker_image:
-      path: "/opt/build/{{item.value.build}}"
       name: "{{item.value.image}}"
-      nocache: yes
+      source: build
+      build:
+        path: "/opt/build/{{item.value.build}}"
+        nocache: yes
     with_dict: "{{ containers }}"
 
   - name: Install defined non managed containers
@@ -311,7 +315,8 @@
       ports: "{{ item.value.ports | default(omit) }}"
       hostname: "{{item.value.hostname| default(omit)}}"
       mac_address: "{{item.value.mac_address| default(omit)}}"
-      purge_networks: "{{ item.value.purge_networks | default('no')}}"
+      comparisons:
+        networks: "{{ 'strict' if item.value.purge_networks|default(false)|bool else 'allow_more_present' }}"
       domainname: "{{ item.value.domainname | default(omit) }}"
       memory_limit: "{{ item.value.memory_limit|default(omit) }}"
       dns: "{{ item.value.dns | default(omit) }}"
@@ -329,7 +334,7 @@
       dest: /etc/iptables/rules.v4
 
   - name: Disable IPv6 (needs restart)
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     lineinfile:
       path: /etc/sysctl.conf
       line: "{{item}}"
@@ -342,7 +347,7 @@
       - sysctl
 
 #  - name: Download node16 setup script
-#    no_log: "{{DEBUG|default(true)}}"
+#    no_log: "{{ not (DEBUG|default(false)|bool) }}"
 #    ansible.builtin.get_url:
 #      url: https://deb.nodesource.com/setup_16.x
 #      dest: /root/setup_16.x
@@ -353,7 +358,7 @@
 
 #  - name: Run node setup
 #    shell: /root/setup_16.x
-#    no_log: "{{DEBUG|default(true)}}"
+#    no_log: "{{ not (DEBUG|default(false)|bool) }}"
 #    args:
 #      executable: /bin/bash
 #    tags:
@@ -361,25 +366,25 @@
 #      - node
 
   - name: Install nodejs packages
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     apt: name="nodejs" state="present"
 
   - name: Install npm package
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     apt: name="npm" state="present"
 
   - name: Remove useless packages from the cache
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     apt:
       autoclean: yes
 
   - name: Remove dependencies that are no longer required
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     apt:
       autoremove: yes
 
   - name: Run the equivalent of "apt-get clean"
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     apt:
       clean: yes
 
@@ -391,7 +396,7 @@
       - pm2
 
   - name: Active pm2 start at boot
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     ignore_errors: true
     shell: pm2 startup
     args:
@@ -423,7 +428,7 @@
     when: resolvconf is defined
 
   - name: Register docker-event-action with pm2
-    no_log: "{{DEBUG|default(true)}}"
+    no_log: "{{ not (DEBUG|default(false)|bool) }}"
     shell: pm2 start /opt/docker-event-action/docker-events.js
     args:
       chdir: /opt/docker-event-action

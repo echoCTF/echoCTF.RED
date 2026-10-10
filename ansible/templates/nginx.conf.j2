@@ -2,9 +2,9 @@ user {{item.user}};
 worker_processes auto;
 worker_rlimit_nofile 65535;
 #error_log syslog:server=unix:/dev/log,severity=warn;
-error_log logs/pui-error.log  warn;
+error_log logs/{{item.domain}}-error.log  warn;
 pid logs/{{item.domain}}-nginx.pid;
-{% if modescurity is defined %}
+{% if modsecurity is defined %}
 load_module modules/ngx_http_modsecurity_module.so;
 {% endif %}
 events {
@@ -48,9 +48,10 @@ http {
     limit_req_zone $binary_remote_addr zone=ResetPassword:1m rate=10r/s;
     limit_req_zone $binary_remote_addr zone=VerifyEmail:10m rate=10r/s;
     limit_req_zone $cookie_PUISESSID zone=perplayer:10m rate=5r/s;
+    limit_conn_zone $cookie_PUISESSID zone=perplayer_conn:10m;
 
     #access_log  syslog:server=unix:/dev/log,severity=notice mainsyslog;
-    access_log  logs/pui-access.log  combined_player;
+    access_log  logs/{{item.domain}}-access.log  combined_player;
 
     #tcp_nopush           on;
     keepalive_timeout     65;
@@ -156,7 +157,7 @@ http {
 
         # Report-only for now: logs would-be violations to the browser console.
         add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' wss://{{item.domain}}; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
-{% if modescurity is defined %}
+{% if modsecurity is defined %}
         modsecurity on;
         modsecurity_rules_file /etc/nginx/modsecurity-includes.conf;
 {% endif %}
@@ -243,6 +244,9 @@ http {
         location ~ /\.ht { return 404; }
 
         location /contrib/ {
+          limit_rate_after 4m;
+          limit_rate 512k;
+          limit_conn perplayer_conn 10;
         	autoindex on;
         }
 
@@ -256,8 +260,9 @@ http {
             try_files $uri =404;
             access_log off;
             log_not_found off;
-            #limit_rate_after 1m;
-            #limit_rate 50k;
+            limit_rate_after 4m;
+            limit_rate 512k;
+            limit_conn perplayer_conn 10;
             expires 1M;
             add_header Cache-Control "public";
             add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
@@ -353,9 +358,9 @@ http {
     {% endif %}
 {% endif %}
         location / {
-            #limit_rate 50k;
-            #limit_rate_after 1m;
-            #limit_conn addr 3;
+            limit_rate 512k;
+            limit_rate_after 4m;
+            limit_conn perplayer_conn 10;
             index  index.html index.php;
             try_files $uri $uri/ /index.php$is_args$args;
         }
@@ -395,7 +400,7 @@ http {
 
         location = /index.php {
             #limit_req zone=perplayer burst=10 nodelay;
-            access_log logs/ctf_access.log combined_player;
+            access_log logs/{{item.domain}}-php-access.log combined_player;
             fastcgi_hide_header X-Player-Uid;
 
             try_files $uri =404;
@@ -422,7 +427,7 @@ http {
 
         location @errorphp {
             #limit_req zone=perplayer burst=10 nodelay;
-            access_log logs/ctf_access.log combined_player;
+            access_log logs/{{item.domain}}-php-access.log combined_player;
             fastcgi_hide_header X-Player-Uid;
 
             internal;

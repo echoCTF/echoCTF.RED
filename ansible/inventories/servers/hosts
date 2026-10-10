@@ -4,6 +4,8 @@ mui
 pui
 db
 registry
+conductor
+visuals
 
 [vpn]
 vpn
@@ -11,3 +13,22 @@ vpn
 [web]
 mui
 pui
+
+[conductor_clients]
+mui
+pui
+vpn
+registry
+db
+
+[db]
+db
+
+[registry]
+registry
+
+[visuals]
+visuals
+
+[conductor]
+conductor

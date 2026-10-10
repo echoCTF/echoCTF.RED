@@ -23,8 +23,10 @@ PRESERVE_PATHS:
   - frontend/config/validationKey.php
   - frontend/config/routes.php
 
+interconnect_interface_ip: "{{pui_ip}}"
+# academic_grouping: 1
 # modsecurity: true
-# pm_max_children: 70
-# pm_start_servers: 20
-# pm_max_spare_servers: 30
-# pm_min_spare_servers: 10
+# pm_max_children: 15
+# pm_start_servers: 4
+# pm_max_spare_servers: 6
+# pm_min_spare_servers: 2

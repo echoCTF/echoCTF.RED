@@ -1,0 +1,57 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Configure monitoring on the managed servers
+  hosts: conductor_clients
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+  tasks:
+  - name: snmpd.conf
+    ansible.builtin.copy:
+      dest: /etc/snmpd.conf
+      content: |
+        listen on {{ interconnect_interface_ip }} snmpv2c
+        read-only community R5CZsMUAThIxCXSzJOW5
+      owner: root
+      group: wheel
+      mode: "0600"
+      validate: "snmpd -n -f %s"
+    register: snmpd_conf
+
+  - name: Enable snmpd
+    ansible.builtin.command: rcctl enable snmpd
+
+  - name: Restart snmpd when its config changed
+    ansible.builtin.command: rcctl restart snmpd
+    when: snmpd_conf.changed
+
+  - name: hostname.pflow0
+    ansible.builtin.copy:
+      dest: /etc/hostname.pflow0
+      content: "flowsrc {{ interconnect_interface_ip }} flowdst 10.7.0.123:9995 pflowproto 10\n"
+      owner: root
+      group: wheel
+      mode: "0640"
+    register: pflow0
+
+  - name: Apply pflow0 when it changed
+    ansible.builtin.command: sh /etc/netstart pflow0
+    when: pflow0.changed
+
+  - name: pf rules for the conductor
+    ansible.builtin.lineinfile:
+      path: /etc/service.pf.conf
+      line: "{{ item }}"
+      create: true
+      owner: root
+      group: wheel
+      mode: "0600"
+    loop:
+      - "pass in quick proto udp from 10.7.0.123 to {{ interconnect_interface_ip }} port 161"
+      - "pass out quick proto udp from {{ interconnect_interface_ip }} to 10.7.0.123 port 9995"
+    register: pf_rules
+
+  - name: Reload pf when the rules changed
+    ansible.builtin.command: pfctl -f /etc/pf.conf
+    when: pf_rules.changed

@@ -1,2 +1,3 @@
-interconnect_ip: 10.7.0.254
+interconnect_interface_ip: 10.7.0.254
 hostname: vpn.mydomain
+#vpn_role: "gateway|slave"

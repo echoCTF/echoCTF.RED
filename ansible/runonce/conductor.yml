@@ -1,0 +1,566 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: "Setup echoCTF.RED OpenBSD conductor (standalone)"
+  hosts: all
+  gather_facts: false
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+    users:
+      - {'name': _memcachedexp, 'comment': 'prometheus memcached_exporter', password: '*' }
+      - {'name': _mysqldexp, 'comment': 'prometheus mysqld_exporter', password: '*'}
+    post_inst: |
+      Things to do:
+        - Update /etc/administrators.conf with your IP's
+        - Reboot the system for the changes to take effect
+    versions:
+      AUTOCONF: "2.69"
+      AUTOMAKE: "1.16"
+      easeprobe: "2.3.0"
+      memcached_exporter: "0.17.0"
+      mysqld_exporter: "0.20.0"
+    sysctl:
+      kern.bufcachepercent: 30
+      kern.maxfiles: 312180
+      kern.seminfo.semmni: 1024
+      kern.seminfo.semmns: 4096
+      kern.shminfo.shmall: 32768
+      kern.shminfo.shmmax: 67018864
+      kern.somaxconn: 8192
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      net.inet.divert.sendspace: 65636
+      net.inet.ip.forwarding: 1
+      net.inet.ip.ifq.maxlen: 2560
+      net.inet.ip.maxqueue: 2048
+      net.inet.ip.mforwarding: 0
+      net.inet.tcp.synuselimit: 1000000
+      net.inet.udp.sendspace: 9216
+      net.unix.dgram.sendspace: 9216
+      net.inet.ip.arptimeout: 30
+      net.inet.tcp.keepinittime: 15
+      net.inet.tcp.keepidle: 300
+      net.inet.tcp.keepintvl: 30
+      net.inet.ip.portfirst: 1024
+      net.inet.ip.portlast: 65535
+    rcctl:
+      - { name: check_quotas, state: "disable" }
+      - { name: cron, state: "enable" }
+      - { name: resolvd, state: "disable" }
+      - { name: ntpd, state: "enable" }
+      - { name: pflogd, state: "disable" }
+      - { name: slaacd, state: "disable" }
+      - { name: smtpd, state: "disable" }
+      - { name: sndiod, state: "disable" }
+    packages:
+      - autoconf-2.69p3
+      - automake%1.16
+      - cmake
+      - curl
+      - fswatch
+      - git
+      - gmake
+      - gnuwatch
+      - go
+      - grafana
+      - libmemcached
+      - libtool
+      - mariadb-server
+      - memcached--
+      - nfdump
+      - nmap
+      - node_exporter
+      - openvpn
+      - openvpn--
+      - p5-NetPacket
+      - p5-Net-Pcap
+      - prometheus
+      - py3-mysqlclient
+      - py3-netaddr
+      - py3-pip
+      - py3-setuptools
+      - rsync--
+      - snmp_exporter
+      - supervisor
+      - unzip--
+  tasks:
+  - name: Sync date time
+    raw: rdate pool.ntp.org
+
+  - name: Install ansible (raw)
+    raw: pkg_add ansible py3-mysqlclient
+
+  - name: Gather facts
+    setup:
+
+  - name: Set hostname
+    hostname:
+      name: "{{myname}}"
+
+  - name: Make hostname permanent (/etc/myname)
+    copy:
+      content: "{{ myname }}\n"
+      dest: /etc/myname
+
+  - name: Create fresh /etc/hosts
+    copy:
+      content: "127.0.0.1 localhost\n"
+      dest: /etc/hosts
+
+  - name: Set /etc/installurl to custom mirror
+    when: installurl is defined
+    ansible.builtin.copy:
+      content: "{{installurl}}\n"
+      dest: /etc/installurl
+      owner: root
+      group: wheel
+      mode: "0644"
+
+  - name: Configure interconnect interface
+    lineinfile:
+      path: "/etc/hostname.{{interconnect_interface}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item}}"
+      create: yes
+    with_items:
+      - "inet {{ interconnect_interface_ip |default('10.7.0.123')}} 255.255.255.0 NONE group interconnect"
+      - "up -inet6 mtu 1450"
+
+  - name: Configure targets interface
+    lineinfile:
+      path: "/etc/hostname.{{targets_interface}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item}}"
+      create: yes
+    with_items:
+      - "inet {{targets_if_ipv4|default('10.0.0.123')}} {{targets_netmask|default('255.255.0.0')}} NONE group targets"
+      - "up -inet6 mtu 1450"
+
+  - name: Bring interface up
+    command: sh /etc/netstart {{ item }}
+    loop: [ "{{interconnect_interface}}", "{{targets_interface}}"]
+
+  - name: Set APP_DIR to {{playbook_dir}}/../../
+    when: ansible_connection == 'local'
+    set_fact:
+      APP_DIR: "{{playbook_dir}}/../../"
+
+  - name: Install packages
+    shell: "pkg_add -I {{packages| join(' ')}}"
+
+  - name: Configure PS1 for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export PS1='\\u@\\H:\\w\\$ '"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTFILE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTFILE=~/.sh_history"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTSIZE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTSIZE=10000"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure default services
+    command: "rcctl {{item.state}} {{item.name}}"
+    when: item.state is defined
+    with_items: "{{rcctl}}"
+
+  - name: Clone sources repo
+    when: ansible_connection != 'local' and GITHUB_REPO is defined
+    git:
+      repo: "{{GITHUB_REPO}}"
+      dest: "{{APP_DIR}}"
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+      version: "{{ GITHUB_REPO_BRANCH | default('main') }}"
+
+  - name: Add users
+    user:
+      name: "{{item.name}}"
+      comment: "{{item.comment}}"
+      uid: "{{item.uid|default(omit)}}"
+      password: "{{ item.password | default('*') }}"
+      shell: "{{ item.shell | default('/sbin/nologin') }}"
+    with_items: "{{users}}"
+
+  - name: "configure git to fetch from https:// instead of git://"
+    raw: git config --global url."https://".insteadOf "git://"
+
+  - name: Prepare services
+    command: "{{item}}"
+    with_items:
+      - "rcctl enable unbound"
+
+  - name: "Copy openvpn, pf and unbound conf files"
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: '{{playbook_dir}}/../../contrib/unbound.conf', dest: '/var/unbound/etc/unbound.conf' }
+      - { src: '{{playbook_dir}}/../files/pf.conf', dest: '/etc/pf.conf' }
+      - { src: '{{playbook_dir}}/../../contrib/inetd.conf', dest: '/etc/inetd.conf' }
+
+  - name: "Create service.pf.conf"
+    copy:
+      dest: "/etc/service.pf.conf"
+      content: |
+        pass in quick proto tcp from <administrators> to port 3000 rdr-to 127.0.0.1
+        pass in quick from <administrators>
+        pass in quick proto udp from { 10.7.0.0/24, 10.0.0.0/24 } to {{ interconnect_interface_ip|default('10.7.0.123') }} port 9995
+        block in quick proto udp to {{ interconnect_interface_ip|default('10.7.0.123') }} port 9995
+
+  - name: Continue PF files
+    ignore_errors: true
+    command: "{{item.cmd}}"
+    args:
+      creates: "{{item.creates|default(omit)}}"
+      chdir: "{{item.chdir|default(omit)}}"
+    with_items:
+    - { cmd: "touch /etc/administrators.conf", creates: "/etc/administrators.conf" }
+    - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
+    - { cmd: "touch /etc/registry_clients.conf", creates: "/etc/registry_clients.conf" }
+    - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
+    - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
+    - { cmd: "touch /etc/targets_networks.conf", creates: "/etc/targets_networks.conf" }
+    - { cmd: "touch /etc/targets_anchor.conf", creates: "/etc/targets_anchor.conf" }
+    - { cmd: "touch /etc/offense_anchor.conf", creates: "/etc/offense_anchor.conf" }
+    - { cmd: "touch /etc/docker_clients.conf", creates: "/etc/docker_clients.conf" }
+    - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
+    - { cmd: "touch /etc/service_clients.conf", creates: "/etc/service_clients.conf" }
+    - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
+    - { cmd: "install -m 0500 /etc/examples/rc.local /etc/rc.local", creates: "/etc/rc.local" }
+
+  - name: "Create configuration files with contents"
+    copy:
+      dest: "{{item.dest}}"
+      content: "{{item.val}}\n"
+    with_items:
+      - { dest: "/etc/registry_clients.conf", val: "10.0.0.0/24"}
+      - { dest: "/etc/maintenance.conf", val: "0.0.0.0/0"}
+
+  - name: Update crontab PATH variable
+    cron:
+      user: root
+      name: PATH
+      env: yes
+      job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
+
+  - name: Install cron entries
+    cron:
+      name: "{{item.name}}"
+      user: "root"
+      minute: "{{item.minute | default(omit)}}"
+      special_time: "{{item.special_time|default(omit)}}"
+      job: "{{item.job}}"
+    with_items:
+      - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
+      - { name: "OpenVPN probe", minute: "*/5", job: "-ns /etc/easeprobe/ovpn-probe.sh" }
+
+  - name: Setting up sysctl.conf
+    sysctl:
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+    with_dict: "{{ sysctl }}"
+
+  - name: copy nstables script
+    copy:
+      src: ../files/nstables.sh
+      dest: /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: Make easeprobe folders
+    ansible.builtin.file:
+      path: "/etc/easeprobe"
+      state: directory
+      mode: "0755"
+
+  - name: Probe scripts (unchanged copies of the tested scripts)
+    ansible.builtin.copy:
+      src: "{{ playbook_dir }}/../files/{{ item.src }}"
+      dest: "/etc/easeprobe/{{ item.dest | default(item.src) }}"
+      owner: root
+      group: wheel
+      mode: "{{ item.mode | default('0750') }}"
+    with_items:
+      - { src: memc-conn-check.sh }
+      - { src: ovpn-probe.sh }
+      - { src: ovpn-up.sh }
+      - { src: ovpn-check.sh }
+      - { src: easeprobe-config.yaml, dest: config.yaml, mode: "0600" }
+      - { src: monitor.ovpn, mode: "0600" }
+
+  - name: Download EaseProbe
+    ansible.builtin.get_url:
+      url: "https://github.com/megaease/easeprobe/releases/download/v{{ versions.easeprobe }}/easeprobe-v{{ versions.easeprobe }}-openbsd-amd64.tar.gz"
+      dest: "/tmp/easeprobe-v{{ versions.easeprobe }}-openbsd-amd64.tar.gz"
+      mode: "0644"
+
+  - name: Install easeprobe into /usr/local/bin
+    ansible.builtin.command: "tar -xzf /tmp/easeprobe-v{{ versions.easeprobe }}-openbsd-amd64.tar.gz -C /usr/local bin/easeprobe"
+    args:
+      creates: /usr/local/bin/easeprobe
+
+  - name: easeprobe permissions
+    ansible.builtin.file:
+      path: /usr/local/bin/easeprobe
+      owner: root
+      group: wheel
+      mode: "0555"
+
+  - name: Download memcached_exporter and mysqld_exporter
+    ansible.builtin.get_url:
+      url: "https://github.com/echoCTF/obsd-binaries/releases/download/{{ item }}-{{ versions[item] }}/{{ item }}-openbsd-amd64.zip"
+      dest: "/tmp/{{ item }}-{{ versions[item] }}-openbsd-amd64.zip"
+      mode: "0644"
+    loop: [memcached_exporter, mysqld_exporter]
+
+  - name: Extract memcached_exporter and mysqld_exporter
+    ansible.builtin.unarchive:
+      src: "/tmp/{{ item }}-{{ versions[item] }}-openbsd-amd64.zip"
+      dest: /tmp
+      remote_src: true
+    loop: [memcached_exporter, mysqld_exporter]
+
+  - name: Install memcached_exporter and mysqld_exporter
+    ansible.builtin.copy:
+      src: "/tmp/{{ item }}-openbsd-amd64"
+      dest: "/usr/local/bin/{{ item }}"
+      remote_src: true
+      owner: root
+      group: wheel
+      mode: "0555"
+    loop: [memcached_exporter, mysqld_exporter]
+
+  - name: mysqld_exporter directories
+    ansible.builtin.file:
+      path: "/etc/mysqld_exporter/"
+      state: directory
+      owner: "_mysqldexp"
+      group: "_mysqldexp"
+      mode: "0755"
+
+
+  - name: mysqld_exporter credentials file
+    ansible.builtin.copy:
+      dest: /etc/mysqld_exporter/my.cnf
+      owner: root
+      group: _mysqldexp
+      mode: "0640"
+      content: |
+        [client]
+        user=mysqld_exporter
+        password=mysqld_exporter
+
+  - name: nfcapd directories (the data directory must exist, the pid directory must belong to the -u user)
+    ansible.builtin.file:
+      path: "{{ item }}"
+      state: directory
+      owner: "_nfcapd"
+      group: "_nfcapd"
+      mode: "0755"
+    loop:
+      - "/var/nfcapd"
+      - "/var/nfcapd/exp"
+
+  - name: Retention script
+    ansible.builtin.copy:
+      src: "../files/conductor/nf-expire.sh"
+      dest: "/usr/local/sbin/nf-expire.sh"
+      owner: root
+      group: wheel
+      mode: "0750"
+
+  - name: Retention cron job (hourly)
+    ansible.builtin.cron:
+      name: nfcapd retention
+      user: root
+      minute: "17"
+      job: "/usr/local/sbin/nf-expire.sh"
+      state: 'present'
+
+  - name: Textfile directory for node_exporter
+    ansible.builtin.file:
+      path: "/var/lib/node_exporter/textfile"
+      state: directory
+      owner: root
+      group: wheel
+      mode: "0755"
+
+  - name: nf-prom.sh (unchanged copy of the tested script)
+    ansible.builtin.copy:
+      src: "../files/conductor/nf-prom.sh"
+      dest: "/usr/local/sbin/nf-prom.sh"
+      owner: root
+      group: wheel
+      mode: "0755"
+
+  - name: Cron job for nf-prom.sh, a few seconds after each nfcapd rotation
+    ansible.builtin.cron:
+      name: nf-prom
+      user: root
+      minute: "2-59/5"
+      job: "NFDUMP=/usr/local/bin/nfdump /usr/local/sbin/nf-prom.sh /var/nfcapd/exp /var/lib/node_exporter/textfile/nfdump.prom 10"
+
+  - name: Write the first metrics file so Prometheus has something to scrape
+    ansible.builtin.command: "/usr/local/sbin/nf-prom.sh /var/nfcapd/exp /var/lib/node_exporter/textfile/nfdump.prom 10"
+    environment:
+      NFDUMP: /usr/local/bin/nfdump
+    args:
+      creates: "/var/lib/node_exporter/textfile/nfdump.prom"
+
+  - name: snmp-openbsd.yml (generated once, holds the SNMP credentials)
+    ansible.builtin.copy:
+      src: "../files/conductor/snmp-openbsd.yml"
+      dest: /etc/snmp_exporter/snmp-openbsd.yml
+      owner: root
+      group: _snmpexporter
+      mode: "0640"
+
+  - name: Directory for the file_sd target lists
+    ansible.builtin.file:
+      path: "/etc/prometheus/targets"
+      state: directory
+      owner: root
+      group: _prometheus
+      mode: "0750"
+
+  - name: SNMP target list (Prometheus re-reads it by itself)
+    ansible.builtin.copy:
+      src: "../files/conductor/snmp-targets.yml"
+      dest: "/etc/prometheus/targets/snmp.yml"
+      owner: root
+      group: _prometheus
+      mode: "0640"
+
+  - name: Prometheus configuration (checked with promtool before it is installed)
+    ansible.builtin.copy:
+      src: "../files/conductor/prometheus.yml"
+      dest: /etc/prometheus/prometheus.yml
+      owner: root
+      group: _prometheus
+      mode: "0640"
+      validate: "promtool check config %s"
+
+  - name: Grafana data and log directories (the package does not create them)
+    ansible.builtin.file:
+      path: "{{ item }}"
+      state: directory
+      owner: _grafana
+      group: _grafana
+      mode: "0750"
+    loop:
+      - /var/grafana
+      - /var/log/grafana
+
+  - name: Grafana provisioning directories (the package PLIST normally creates them)
+    ansible.builtin.file:
+      path: "/etc/grafana/provisioning/{{ item }}"
+      state: directory
+      owner: root
+      group: wheel
+      mode: "0755"
+    loop: [datasources, dashboards]
+
+  - name: Grafana configuration (holds the admin password)
+    ansible.builtin.template:
+      src: "../files/conductor/grafana.config.ini"
+      dest: /etc/grafana/config.ini
+      owner: root
+      group: _grafana
+      mode: "0640"
+
+  - name: Data source provisioning (timeInterval equals the scrape interval)
+    ansible.builtin.copy:
+      src: "../files/conductor/grafana.datasources.yaml"
+      dest: /etc/grafana/provisioning/datasources/datasources.yaml
+      owner: root
+      group: _grafana
+      mode: "0640"
+
+  - name: Dashboard provider provisioning
+    ansible.builtin.copy:
+      src: "../files/conductor/grafana.dashboards.yaml"
+      dest: /etc/grafana/provisioning/dashboards/dashboards.yaml
+      owner: root
+      group: _grafana
+      mode: "0640"
+
+  - name: Dashboards directory
+    ansible.builtin.file:
+      path: "/etc/grafana/dashboards"
+      state: directory
+      owner: root
+      group: _grafana
+      mode: "0750"
+
+  - name: Platform overview dashboard (unchanged copy of the tested JSON)
+    ansible.builtin.copy:
+      src: "../files/conductor/platform-overview.dashboard.json"
+      dest: "/etc/grafana/dashboards/platform-overview.dashboard.json"
+      owner: root
+      group: _grafana
+      mode: "0640"
+
+  - name: supervisord service confs
+    ansible.builtin.copy:
+      src: "../files/conductor/conductor-supervisord.conf"
+      dest: "/etc/supervisord.d/conductor.ini"
+      owner: root
+      group: wheel
+      mode: "0644"
+
+  - name: Enable services
+    ansible.builtin.command: "rcctl enable {{ item }}"
+    loop: [prometheus, node_exporter, snmp_exporter, grafana, supervisord]
+
+  - name: Set service flags
+    ansible.builtin.command:  "rcctl set {{ item.key }} flags {{ item.value }}"
+    with_dict:
+      prometheus: "--config.file /etc/prometheus/prometheus.yml --storage.tsdb.path /var/prometheus --storage.tsdb.retention.time=15d --web.listen-address=127.0.0.1:9090"
+      snmp_exporter: "--config.file=/etc/snmp_exporter/snmp.yml --config.file=/etc/snmp_exporter/snmp-openbsd.yml --web.listen-address=127.0.0.1:9116"
+      node_exporter: "--web.listen-address=127.0.0.1:9100 --collector.disable-defaults --collector.textfile --collector.textfile.directory=/var/lib/node_exporter/textfile"
+
+  - name: Execute fw_update
+    command: fw_update -a
+
+  - name: Execute syspatch
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - name: Re-Execute syspatch in case it updated it self on the previous run
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - debug: msg={{ post_inst.split('\n') }}

@@ -4,44 +4,17 @@
   hosts: all
   become_method: doas
   gather_facts: no
-  vars_prompt:
-    - name: "myname"
-      prompt: "1/9. System FQDN?"
-      default: "registry.example.com"
-      private: no
-    - name: "registry_user"
-      prompt: "2/9. User to run the registry as?"
-      default: "registry"
-      private: no
-    - name: "registry_home"
-      prompt: "3/9. Home folder for registry user?"
-      default: "/home/registry"
-      private: no
-    - name: "registry_storage"
-      prompt: "4/9. Storage location for registry images?"
-      default: "/home/registry/storage"
-      private: no
-    - name: "registry_bind_ip"
-      prompt: "5/9. Registry bind IP?"
-      default: "0.0.0.0"
-      private: no
-    - name: "registry_bind_port"
-      prompt: "6/9. Registry bind port?"
-      default: "5000"
-      private: no
-    - name: "registry_targets_if"
-      prompt: "7/9. Targets interface?"
-      default: "vio1"
-      private: no
-    - name: "registry_targets_cidr"
-      prompt: "8/9. Targets interface IP CIDR?"
-      default: "10.0.0.100/24"
-      private: no
-    - name: "admins_domain"
-      prompt: "9/9. admin domain for TXT rules?"
-      default: "admin.example.com"
-      private: no
   vars:
+    prompts:
+      - { name: myname, prompt: "1/9. System FQDN?", default: "registry.example.com" }
+      - { name: registry_user, prompt: "2/9. User to run the registry as?", default: "registry" }
+      - { name: registry_home, prompt: "3/9. Home folder for registry user?", default: "/home/registry" }
+      - { name: registry_storage, prompt: "4/9. Storage location for registry images?", default: "/home/registry/storage" }
+      - { name: registry_bind_ip, prompt: "5/9. Registry bind IP?", default: "0.0.0.0" }
+      - { name: registry_bind_port, prompt: "6/9. Registry bind port?", default: "5000" }
+      - { name: registry_targets_if, prompt: "7/9. Targets interface?", default: "vio1" }
+      - { name: registry_targets_cidr, prompt: "8/9. Targets interface IP CIDR?", default: "10.0.0.100/24" }
+      - { name: admins_domain, prompt: "9/9. admin domain for TXT rules?", default: "admin.example.com" }
     ansible_python_interpreter: /usr/local/bin/python3
     registry:
       user: "{{registry_user}}"
@@ -50,7 +23,7 @@
       ip: "{{registry_bind_ip}}"
       port: "{{registry_bind_port}}"
     users:
-      - { name: "{{registry_user}}", comment: "Docker Registry User", uid: 3750, password: '*' }
+      - { name: "{{registry_user}}", comment: "Docker Registry User", uid: 3750, password: '*', home: "{{registry_home}}" }
     rcctl:
       - { name: 'supervisord', state: "enable" }
     packages:
@@ -63,6 +36,23 @@
     - rsync--
 
   tasks:
+  - name: Prompt for variables that are not set
+    pause:
+      prompt: "{{ item.prompt }} [{{ item.default }}]"
+    register: answers
+    loop: "{{ prompts }}"
+    loop_control:
+      label: "{{ item.name }}"
+    when: item.name not in vars
+
+  - name: Set prompted variables
+    set_fact:
+      "{{ item.item.name }}": "{{ item.user_input | default(item.item.default, true) }}"
+    loop: "{{ answers.results }}"
+    loop_control:
+      label: "{{ item.item.name }}"
+    when: not (item.skipped | default(false))
+
   - name: Sync date time
     raw: rdate pool.ntp.org
 
@@ -117,17 +107,10 @@
       name: "{{item.name}}"
       comment: "{{item.comment}}"
       uid: "{{item.uid}}"
+      home: "{{item.home}}"
       password: '{{item.password}}'
     with_items: "{{users}}"
     tags: create_users
-
-  - name: copy nstables script
-    copy:
-      src: ../files/nstables.sh
-      dest: /usr/local/sbin/nstables
-      owner: root
-      group: wheel
-      mode: '0555'
 
   - name: copy nstables script
     copy:
@@ -220,18 +203,18 @@
       mode: '0600'
       backup: false
     with_dict:
-      user: registry
-      directory: /home/registry
+      user: "{{registry.user}}"
+      directory: "{{registry.home}}"
+      environment: "HOME={{registry.home}}"
       command: /usr/local/sbin/registry serve /etc/docker-registry.yml
       stdout_logfile: /var/log/registry.log
       stdout_logfile_maxbytes: 0
-      stderr_logfile: /var/log/registry.log
-      stderr_logfile_maxbytes: 0
+      redirect_stderr: true
 
   - name: Configure default services
-    command: "rcctl {{item.state}} {{item.name}}"
-    when: item.state is defined
-    with_items: "{{rcctl}}"
+    shell: |
+      rcctl disable {{ rcctl | selectattr('state', 'equalto', 'disable') | map(attribute='name') | join(' ') }} ;
+      rcctl enable {{ rcctl | selectattr('state', 'equalto', 'enable') | map(attribute='name') | join(' ') }}
 
   - name: Issue certificate for the system
     raw: "{{item}}"
@@ -247,7 +230,7 @@
     - "/sbin/pfctl -a dynamic -Fr"
     - "chmod +r /etc/nginx/{{myname}}-server.key"
 
-  - name: Configure targerts interface
+  - name: Configure targets interface
     lineinfile:
       path: "/etc/hostname.{{registry_targets_if}}"
       owner: root
@@ -256,7 +239,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{registry_targets_cidr | ansible.utils.ipaddr('address')}} {{registry_targets_cidr | ansible.utils.ipaddr('netmask')}} NONE group targets"
+      - "inet {{registry_targets_cidr | ansible.utils.ipaddr('address')}} {{registry_targets_cidr | ansible.utils.ipaddr('netmask')}} NONE mtu 1450 group targets"
       - "up -inet6"
 
   - name: Bring targets interface up

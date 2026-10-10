@@ -1,0 +1,18 @@
+myname: "visuals.mydomain"
+hostname: "visuals.mydomain"
+ansible_host: "1.2.3.4"
+domain_name: "visuals.mydomain"
+visuals_ext_ip: "1.2.3.4"
+interconnect_interface: "vio1"
+db_ip: "10.7.0.253"
+pui_ip: "10.7.0.200"
+mui_ip: "10.7.0.201"
+vpn_ip: "10.7.0.254"
+backups:
+  - { tgz: "/altroot/root.tgz", src: '/root' }
+  - { tgz: "/altroot/etc.tgz", src: '/etc'  }
+  - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
+  - { tgz: "/altroot/home.tgz", src: '/home'  }
+
+REPO: "/home/visuals/visuals.mydomain"
+interconnect_interface_ip: "10.0.0.124"
