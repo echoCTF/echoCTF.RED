@@ -1,5 +1,8 @@
 // vpn_churn_check.c
 // usage: vpn_churn_check [-s server|socket] [-l limit] [-w window_seconds] [-d] <player_id> <connect|disconnect>
+// exit 0: under limit (or memcached unreachable, fail open)
+// exit 1: over limit
+// exit 2: over limit, first time in this window (caller may notify)
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -87,13 +90,21 @@ int main(int argc, char *argv[]) {
                 player_id, event, (unsigned long long)count, limit, (long long)window, server);
     }
 
-    memcached_free(memc);
-
     if (count > limit) {
-        if (debug) {
-            fprintf(stderr, "player %s exceeded VPN churn limit\n", player_id);
+        char alert_key[128];
+        int rc = 1;
+        snprintf(alert_key, sizeof(alert_key), "vpn_churn_alert:%s", player_id);
+        if (memcached_add(memc, alert_key, strlen(alert_key), "1", 1, window, 0) == MEMCACHED_SUCCESS) {
+            rc = 2;
         }
-        return 1;
+        if (debug) {
+            fprintf(stderr, "player %s exceeded VPN churn limit%s\n", player_id,
+                    rc == 2 ? " (first hit this window)" : "");
+        }
+        memcached_free(memc);
+        return rc;
     }
+
+    memcached_free(memc);
     return 0;
 }
