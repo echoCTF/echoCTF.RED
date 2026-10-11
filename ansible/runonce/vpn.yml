@@ -54,8 +54,8 @@
       kern.shminfo.shmall: 32768
       kern.shminfo.shmmax: 67018864
       kern.somaxconn: 8192
-      net.bpf.bufsize: 2097152
-      net.bpf.maxbufsize: 4194304
+      net.bpf.bufsize: 8388608
+      net.bpf.maxbufsize: 8388608
       net.inet.divert.sendspace: 65636
       net.inet.ip.forwarding: 1
       net.inet.ip.ifq.maxlen: 2560
