@@ -28,7 +28,7 @@
    ansible vpn -i inventories/servers -m ansible.posix.authorized_key -a "user=root key=\"{{ lookup('file', 'ssh_keys/crl_push.pub') }}\""
    ```
 
-5. Configure the default inventory `/etc/ansible/hosts`. From the primary vpn server (`vpn01`). NOTE: Dont forget to cree the folder first with `mkdir -p /etc/ansible/`
+5. Configure the default inventory `/etc/ansible/hosts`. From the primary vpn server (`vpn01`). NOTE: Don't forget to create the folder first with `mkdir -p /etc/ansible/`
 
    ```ini
    [vpn_targets]

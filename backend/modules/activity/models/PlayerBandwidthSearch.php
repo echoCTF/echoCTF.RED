@@ -21,8 +21,8 @@ class PlayerBandwidthSearch extends PlayerBandwidth
   {
     return [
       [['id', 'player_id', 'bytes_received', 'bytes_sent', 'duration'], 'integer'],
-      [['vpn_local_address','username'],'filter','filter'=>'trim'],
-      [['ts','username','vpn_local_address'], 'safe'],
+      [['vpn_local_address', 'username'], 'filter', 'filter' => 'trim'],
+      [['ts', 'username', 'vpn_local_address'], 'safe'],
     ];
   }
 
@@ -33,6 +33,11 @@ class PlayerBandwidthSearch extends PlayerBandwidth
   {
     // bypass scenarios() implementation in the parent class
     return Model::scenarios();
+  }
+
+  public function attributes()
+  {
+    return array_merge(parent::attributes(), ['username']);
   }
 
   /**
@@ -53,7 +58,7 @@ class PlayerBandwidthSearch extends PlayerBandwidth
 
     $dataProvider = new ActiveDataProvider([
       'query' => $query,
-      'sort'=> ['defaultOrder' => ['ts' => SORT_DESC]],
+      'sort' => ['defaultOrder' => ['ts' => SORT_DESC]],
     ]);
 
     $this->load($params, $formName);
@@ -73,26 +78,21 @@ class PlayerBandwidthSearch extends PlayerBandwidth
       'duration' => $this->duration,
       'ts' => $this->ts,
     ]);
-    if ($validator->validate($this->vpn_local_address) !== false)
-    {
+    if ($validator->validate($this->vpn_local_address) !== false) {
       [$ip, $mask] = explode('/', $this->vpn_local_address, 2);
       if (filter_var($mask, FILTER_VALIDATE_IP)) {
         // Netmask style, keep as is
-          $netmask = $mask;
+        $netmask = $mask;
       } else {
         // Prefix length, convert to dotted netmask
         $prefix = (int)$mask;
         $netmaskLong = (~((1 << (32 - $prefix)) - 1)) & 0xFFFFFFFF;
         $netmask = long2ip($netmaskLong);
       }
-      $query->andFilterWhere(['=',new \yii\db\Expression('(vpn_local_address & inet_aton(:netmask))',[':netmask'=>$netmask]),new \yii\db\Expression('(inet_aton(:ip) & inet_aton(:netmask))',[':ip'=>$ip,':netmask'=>$netmask])]);
-    }
-    elseif (filter_var($this->vpn_local_address, FILTER_VALIDATE_IP))
-    {
-      $query->andFilterWhere(['vpn_local_address'=>ip2long($this->vpn_local_address)]);
-    }
-    else
-    {
+      $query->andFilterWhere(['=', new \yii\db\Expression('(vpn_local_address & inet_aton(:netmask))', [':netmask' => $netmask]), new \yii\db\Expression('(inet_aton(:ip) & inet_aton(:netmask))', [':ip' => $ip, ':netmask' => $netmask])]);
+    } elseif (filter_var($this->vpn_local_address, FILTER_VALIDATE_IP)) {
+      $query->andFilterWhere(['vpn_local_address' => ip2long($this->vpn_local_address)]);
+    } else {
       $query->andFilterWhere(['like', 'INET_NTOA(vpn_local_address)', $this->vpn_local_address]);
     }
 

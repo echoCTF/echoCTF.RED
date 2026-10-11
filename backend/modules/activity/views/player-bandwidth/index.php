@@ -18,6 +18,16 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
 
   <h1><?= Html::encode(Yii::t('app', 'Player Bandwidth Records')) ?></h1>
 
+  <p>
+    <?= Html::a(Yii::t('app', 'Truncate'), ['truncate'], [
+      'class' => 'btn btn-danger',
+      'data' => [
+        'confirm' => Yii::t('app', 'Are you sure you want to delete all the records?'),
+        'method' => 'post',
+      ],
+    ]) ?>
+
+  </p>
   <?php Pjax::begin(); ?>
   <?php // echo $this->render('_search', ['model' => $searchModel]);
   ?>
@@ -78,7 +88,21 @@ $this->params['breadcrumbs'][] = ['label' => $this->title, 'url' => ['index']];
         'class' => ActionColumn::className(),
         'urlCreator' => function ($action, PlayerBandwidth $model, $key, $index, $column) {
           return Url::toRoute([$action, 'id' => $model->id]);
-        }
+        },
+        'header' => Html::a(
+          '<i class="fa-solid fa-network-wired"></i>',
+          ['delete-filtered'],
+          [
+            'title' => 'Mass delete player bandwidth records',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => $searchModel->attributes,
+              'confirm' => 'Are you sure you want to delete the currently filtered records?',
+            ],
+          ]
+        )
       ],
     ],
   ]); ?>

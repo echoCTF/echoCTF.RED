@@ -66,7 +66,7 @@ class PlayerScoreSearch extends PlayerScore
         $query->andFilterWhere(['like', 'player.username', $this->player]);
         $query->andFilterWhere(['like', 'player_score.ts', $this->ts]);
         $dataProvider->setSort([
-            'defaultOrder' => ['points'=>SORT_DESC, 'player_id'=>SORT_ASC],
+            'defaultOrder' => ['points'=>SORT_DESC, 'ts'=>SORT_ASC, 'player_id'=>SORT_ASC],
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
                 [
