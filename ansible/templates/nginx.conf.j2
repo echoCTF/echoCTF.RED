@@ -29,7 +29,8 @@ http {
                                 '"$request" $ws_logged_status $body_bytes_sent '
                                 '"$http_referer" "$http_user_agent" '
                                 '"$http_x_forwarded_for" "uid=$upstream_http_x_player_uid" '
-                                'reject=$upstream_http_x_ws_reject';
+                                'reject=$upstream_http_x_ws_reject '
+                                'reqstatus=$limit_req_status';
 
     client_body_temp_path /cache/client_body_temp 1 2;
     scgi_temp_path /cache/scgi_temp 1 2;
@@ -399,7 +400,8 @@ http {
 {% endif %}
 
         location = /index.php {
-            #limit_req zone=perplayer burst=10 nodelay;
+            limit_req zone=perplayer burst=10 nodelay;
+            limit_req_dry_run on;
             access_log logs/{{item.domain}}-php-access.log combined_player;
             fastcgi_hide_header X-Player-Uid;
 
@@ -426,7 +428,8 @@ http {
         }
 
         location @errorphp {
-            #limit_req zone=perplayer burst=10 nodelay;
+            limit_req zone=perplayer burst=10 nodelay;
+            limit_req_dry_run on;
             access_log logs/{{item.domain}}-php-access.log combined_player;
             fastcgi_hide_header X-Player-Uid;
 
