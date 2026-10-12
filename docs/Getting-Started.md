@@ -35,7 +35,7 @@ the one best fit for your needs.
 
 ## Extras
 
-* [Install VPN Gateway on OpenBSD (ansible/VPNGW.md)](ansible/VPNGW.md)
+* [Install VPN Gateway on OpenBSD (ansible/VPN.md)](ansible/VPN.md)
 * [Setup a Private Docker Registry (ansible/DOCKER-REGISTRY.md)](ansible/DOCKER-REGISTRY.md)
 * [Docker Servers Setup Guide (DOCKER-SERVERS.md)](DOCKER-SERVERS.md)
 * [Docker Targets Guide (DOCKER-TARGETS.md)](DOCKER-TARGETS.md)

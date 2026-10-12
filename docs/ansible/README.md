@@ -147,6 +147,9 @@ Playbooks used to setup specific operations for servers. These playbooks are usu
 * [`docker-servers.yml`](DOCKER-SERVERS.md) Configures a docker server to be ready to run our containers
 * [`mui.yml`](MUI.md) Standalone playbook to setup and configure an openbsd host as echoCTF.RED/backend server
 * [`pui.yml`](PUI.md) Standalone playbook to setup and configure an openbsd host as echoCTF.RED/frontend server
-* [`vpngw.yml`](VPNGW.md) Configure an OpenBSD server to act as an VPN server with findings
+* [`vpn.yml`](VPN.md) Configure an OpenBSD server to act as an VPN server with findings
+* [`visuals.yml`](VISUALS.md) Configure an OpenBSD server to act as a network visuals concentrator for VPN fleets
+* [`conductor.yml`](CONDUCTOR.md) Configure an OpenBSD server to act as an external monitoring and graphing system
+* [`conductor-client.yml`](CONDUCTOR-CLIENT.md) Configure an existing system to be processed by the conductor
 * `rpi-model.yml` Configures a Raspberry Pi to act as electronics controller (eg for a smart city model)
 * `rpi-targets.yml` Configure a Raspberry Pi to act as a target without docker
