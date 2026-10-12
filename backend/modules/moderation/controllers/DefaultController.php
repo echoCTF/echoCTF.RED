@@ -114,13 +114,13 @@ class DefaultController extends \app\components\BaseController
   {
     $trans = \Yii::$app->db->beginTransaction();
     try {
-      $query=Player::find()->where([
+      $query = Player::find()->where([
         'AND',
         ['status' => 10],
-        ['=',new \yii\db\Expression("SUBSTRING_INDEX(email,'@',-1)"),$domain]
+        ['=', new \yii\db\Expression("SUBSTRING_INDEX(email,'@',-1)"), $domain]
       ]);
-      foreach($query->all() as $player){
-        $player->notify('swal:error','Email validation error!!!','Your email address seems to be failing our validation criteria. Please change email address if you want to keep your account.');
+      foreach ($query->all() as $player) {
+        $player->notify('swal:error', 'Email validation error!!!', 'Your email address seems to be failing our validation criteria. Please change email address if you want to keep your account.');
       }
       $trans->commit();
       \Yii::$app->getSession()->setFlash('success', Yii::t('app', '{records,plural,=0{No players found} =1{Notified one player} other{Notified # players}}', ['records' => $query->count()]));
@@ -133,4 +133,58 @@ class DefaultController extends \app\components\BaseController
     ));
   }
 
+  public function actionIpCheck()
+  {
+    $ip      = Yii::$app->request->post('ip');
+    $results = null;
+    $error   = null;
+
+    if (Yii::$app->request->isPost) {
+      if (empty($ip)) {
+        $error = 'IP address is required.';
+      } elseif (!filter_var($ip, FILTER_VALIDATE_IP)) {
+        $error = 'Invalid IP address.';
+      } else {
+        // last-seen: OR across signup_ip / signin_ip, LIKE against INET_NTOA()
+        $lastSearch   = new \app\modules\activity\models\PlayerLastSearch();
+        $lastProvider = $lastSearch->search([]);
+        $lastProvider->query->andFilterWhere([
+          'or',
+          ['like', new \yii\db\Expression('INET_NTOA(signup_ip)'), $ip],
+          ['like', new \yii\db\Expression('INET_NTOA(signin_ip)'), $ip],
+        ]);
+        $lastProvider->pagination = ['pageSize' => 20, 'pageParam' => 'last-page'];
+        $lastProvider->sort       = ['sortParam' => 'last-sort'];
+
+        $vpnSearch   = new \app\modules\activity\models\PlayerVpnHistorySearch();
+        $vpnProvider = $vpnSearch->search([]);
+        $vpnProvider->query->andFilterWhere([
+          'like',
+          new \yii\db\Expression('INET_NTOA(vpn_remote_address)'),
+          $ip,
+        ]);
+        $vpnProvider->pagination = ['pageSize' => 20, 'pageParam' => 'vpn-page'];
+        $vpnProvider->sort       = ['sortParam' => 'vpn-sort'];
+
+        $results = [
+          'last-seen' => [
+            'searchModel'  => $lastSearch,
+            'dataProvider' => $lastProvider,
+            'view'         => '@app/modules/frontend/views/player-last/index',
+          ],
+          'vpn' => [
+            'searchModel'  => $vpnSearch,
+            'dataProvider' => $vpnProvider,
+            'view'         => '@app/modules/activity/views/player-vpn-history/index',
+          ],
+        ];
+      }
+    }
+
+    return $this->render('ip-check', [
+      'ip'      => $ip,
+      'results' => $results,
+      'error'   => $error,
+    ]);
+  }
 }
