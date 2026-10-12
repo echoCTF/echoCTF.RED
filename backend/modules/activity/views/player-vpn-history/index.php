@@ -14,7 +14,7 @@ yii\bootstrap5\Modal::begin([
     'toggleButton' => ['label' => '<i class="bi bi-info-circle-fill"></i> Help', 'class' => 'btn btn-info'],
   'options'=>['class'=>'modal-lg']
 ]);
-echo yii\helpers\Markdown::process($this->render('help/'.$this->context->action->id), 'gfm');
+echo yii\helpers\Markdown::process($this->render('help/index'), 'gfm');
 yii\bootstrap5\Modal::end();
 ?>
 <div class="player-vpn-history-index">
