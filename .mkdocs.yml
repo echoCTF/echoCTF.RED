@@ -41,10 +41,13 @@ nav:
     - Overview: ansible/README.md
     - Database: ansible/DB.md
     - Moderator UI: ansible/MUI.md
-    - VPN Gateway: ansible/VPNGW.md
+    - VPN Gateway: ansible/VPN.md
     - Participants UI playbook: ansible/PUI.md
     - Docker Servers: ansible/DOCKER-SERVERS.md
     - Docker Targets: ansible/DOCKER-TARGETS.md
+    - Conductor: ansible/CONDUCTOR.md
+    - Conductor Client: ansible/CONDUCTOR-CLIENT.md
+    - Visuals: ansible/VISUALS.md
     - Examples: ansible/examples.md
   - Administration:
     - Sysconfig Keys: Sysconfig-Keys.md
