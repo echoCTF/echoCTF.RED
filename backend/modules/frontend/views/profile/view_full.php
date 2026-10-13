@@ -53,7 +53,7 @@ $this->params['jumpto'] = \app\widgets\JumpToWidget::widget([
             ],
             'items' => [
               [
-                'label' => '<i class="fas fa-file-contract" data-toggle="tooltip" data-placement="top" title="Activity Stream"></i>',
+                'label' => '<i class="fas fa-file-contract" data-toggle="tooltip" data-placement="top" title="Details"></i>',
                 'content' => $this->render('_details_tab', ['model' => $model,'abuserModel'=>$abuserModel]),
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'options' => ['id' => 'details-tab'],
