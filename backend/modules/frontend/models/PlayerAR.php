@@ -16,6 +16,7 @@ use app\modules\gameplay\models\Finding;
 use app\modules\gameplay\models\Treasure;
 use yii\behaviors\AttributeTypecastBehavior;
 use app\modules\activity\models\PlayerDisconnectQueue;
+use app\modules\activity\models\WsToken;
 
 /**
  * This is the model class for table "player".
@@ -514,6 +515,14 @@ class PlayerAR extends \yii\db\ActiveRecord
   public function getApiToken()
   {
     return $this->hasOne(PlayerToken::class, ['player_id' => 'id'])->from(['apiToken' => PlayerToken::tableName()])->andWhere(['apiToken.type' => 'API']);
+  }
+
+  /**
+   * @return \yii\db\ActiveQuery
+   */
+  public function getWsToken()
+  {
+    return $this->hasOne(WsToken::class, ['player_id' => 'id']);
   }
 
   /**
