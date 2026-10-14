@@ -20,26 +20,26 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
         'multiple' => false,
         'url' => ['/infrastructure/target/ajax-search'],
         'options' => ['placeholder' => 'Find target by name or ip.']
-    ]) ?>
+    ])->hint("The target this record belongs to.") ?>
 
     <?= $form->field($model, 'player_id')->widget(AutocompleteAjax::class, [
         'id'=>'playerAjax',
         'multiple' => false,
         'url' => ['/frontend/player/ajax-search'],
         'options' => ['placeholder' => 'Find player by email, username, id or profile.']
-    ]) ?>
+    ])->hint("The player the state change was initiated for.") ?>
 
     <?= $form->field($model, 'state')->dropDownList([
       '-1' => 'Powered Off',
       '1' => 'Powered On',
-      ]) ?>
+      ])->hint("The current target state.") ?>
 
-    <?= $form->field($model, 'heartbeat')->textInput() ?>
 
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
+<?php if(!$model->isNewRecord):?>
+    <?= $form->field($model, 'heartbeat')->textInput()->hint("Last time the heartbeat timestamp.") ?>
+    <?= $form->field($model, 'created_at')->textInput()->hint("Creation date") ?>
+    <?= $form->field($model, 'updated_at')->textInput()->hint("Last update") ?>
+<?php endif; ?>
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
     </div>
