@@ -76,7 +76,6 @@ class PlayerBandwidthSearch extends PlayerBandwidth
       'bytes_received' => $this->bytes_received,
       'bytes_sent' => $this->bytes_sent,
       'duration' => $this->duration,
-      'ts' => $this->ts,
     ]);
     if ($validator->validate($this->vpn_local_address) !== false) {
       [$ip, $mask] = explode('/', $this->vpn_local_address, 2);
@@ -97,6 +96,7 @@ class PlayerBandwidthSearch extends PlayerBandwidth
     }
 
     $query->andFilterWhere(['like', 'player.username', $this->username]);
+    $query->andFilterWhere(['like', 'player_bandwidth.ts', $this->ts]);
 
     $dataProvider->setSort([
       'attributes' => array_merge(
