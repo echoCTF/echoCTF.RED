@@ -1,0 +1,3 @@
+{% for h in groups['vpn'] %}
+{{ h }} {{ hostvars[h].ansible_host }}
+{% endfor %}
