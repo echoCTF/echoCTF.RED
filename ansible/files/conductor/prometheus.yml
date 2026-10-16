@@ -4,6 +4,18 @@ global:
   scrape_timeout: 50s
 
 scrape_configs:
+  # Poll wsserver /metrics
+  - job_name: wsserver
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets: ["10.7.0.200:8888"]
+
+  # Frontend nginx exporter
+  - job_name: nginx
+    static_configs:
+      - targets: ["10.7.0.200:9113"]
+
   # EaseProbe availability metrics. EaseProbe listens on 127.0.0.1:8181, so Prometheus
   # must run on the same host or EaseProbe's http ip must change.
   - job_name: easeprobe
