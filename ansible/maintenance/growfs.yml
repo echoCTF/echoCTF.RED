@@ -1,0 +1,134 @@
+#!/usr/bin/env ansible-playbook
+# Use the following
+# ANSIBLE_CALLBACKS_ENABLED=community.general.log_plays ANSIBLE_LOG_FOLDER=logs/grow-root-$(date +%F-%H%M)
+- hosts: int
+  gather_facts: false
+  tasks:
+    - block:
+        - name: backup partition table
+          shell: sfdisk -d /dev/vda > /root/vda.sfdisk.bak
+          args:
+            creates: /root/vda.sfdisk.bak
+
+        - name: fetch backup
+          fetch:
+            src: /root/vda.sfdisk.bak
+            dest: backups/
+
+        - name: plan
+          shell: |
+            set -e
+            start=$(cat /sys/block/vda/vda1/start)
+            cur=$(cat /sys/block/vda/vda1/size)
+            swap=$(cat /sys/block/vda/vda5/size)
+            disk=$(blockdev --getsz /dev/vda)
+            [ -n "$start" ] && [ -n "$cur" ] && [ -n "$swap" ] && [ -n "$disk" ] || { echo "empty input" >&2; exit 1; }
+            want=$(( (disk - swap - 4096 - start) / 2048 * 2048 ))
+            if [ "$want" -le "$cur" ]; then
+              rm -f /root/vda.sfdisk.new
+              echo SKIP
+              exit 0
+            fi
+            {
+              grep -vE '^/dev/vda[0-9]+ :' /root/vda.sfdisk.bak
+              grep -E '^/dev/vda1 :' /root/vda.sfdisk.bak | sed -E "s/size= *[0-9]+/size=$want/"
+              echo '/dev/vda2 : type=5'
+              echo '/dev/vda5 : type=82'
+            } > /root/vda.sfdisk.new
+            grep -qE "^/dev/vda1 : start= *$start, size=$want, type=83, bootable\$" /root/vda.sfdisk.new || { echo "vda1 line wrong" >&2; exit 1; }
+            [ "$(grep -c '^/dev/vda' /root/vda.sfdisk.new)" = 3 ] || { echo "extra partition lines" >&2; exit 1; }
+            echo GROW
+          register: plan
+          changed_when: false
+
+        - block:
+            - name: apply table
+              shell: |
+                set -e
+                swapon --show | grep -q vda5 && swapoff /dev/vda5
+                swapon --show | grep -q . && { echo "swap still on" >&2; exit 1; }
+                delpart /dev/vda 5
+                delpart /dev/vda 2
+                sfdisk -w never -W never --no-reread /dev/vda < /root/vda.sfdisk.new
+                size=$(sed -nE 's/^\/dev\/vda1 :.*size= *([0-9]+).*/\1/p' /root/vda.sfdisk.new)
+                resizepart /dev/vda 1 "$size"
+                s2=$(sfdisk -d /dev/vda | sed -nE 's/^\/dev\/vda2 :.*start= *([0-9]+),.*/\1/p')
+                set -- $(sfdisk -d /dev/vda | sed -nE 's/^\/dev\/vda5 :.*start= *([0-9]+), size= *([0-9]+).*/\1 \2/p')
+                addpart /dev/vda 2 "$s2" 2
+                addpart /dev/vda 5 "$1" "$2"
+              when: "plan.stdout_lines | last == 'GROW'"
+
+            - name: verify kernel matches table
+              shell: |
+                set -e
+                kstart=$(cat /sys/block/vda/vda1/start)
+                ksize=$(cat /sys/block/vda/vda1/size)
+                k5=$(cat /sys/block/vda/vda5/start /sys/block/vda/vda5/size | tr '\n' ' ')
+                t1=$(sfdisk -d /dev/vda | sed -nE 's/^\/dev\/vda1 :.*size= *([0-9]+).*/\1/p')
+                t5=$(sfdisk -d /dev/vda | sed -nE 's/^\/dev\/vda5 :.*start= *([0-9]+), size= *([0-9]+).*/\1 \2 /p')
+                [ "$kstart" = 2048 ] || { echo "vda1 start is $kstart" >&2; exit 1; }
+                [ "$ksize" = "$t1" ] || { echo "vda1 kernel $ksize table $t1" >&2; exit 1; }
+                [ "$k5" = "$t5" ]    || { echo "vda5 kernel $k5 table $t5" >&2; exit 1; }
+              changed_when: false
+          rescue:
+            - name: restore partition table from backup
+              shell: |
+                set -e
+                old1=$(sed -nE 's/^\/dev\/vda1 :.*size= *([0-9]+).*/\1/p' /root/vda.sfdisk.bak)
+                bc=$(tune2fs -l /dev/vda1 | awk '/^Block count:/{print $3}')
+                bs=$(tune2fs -l /dev/vda1 | awk '/^Block size:/{print $3}')
+                [ -n "$old1" ] && [ -n "$bc" ] && [ -n "$bs" ] || { echo "cannot read sizes, NOT restoring" >&2; exit 1; }
+                [ $((bc * bs / 512)) -le "$old1" ] || { echo "filesystem is larger than backup vda1, NOT restoring" >&2; exit 1; }
+                swapon --show | grep -q vda5 && swapoff /dev/vda5
+                delpart /dev/vda 5 || true
+                delpart /dev/vda 2 || true
+                sfdisk -w never -W never --no-reread /dev/vda < /root/vda.sfdisk.bak
+                resizepart /dev/vda 1 "$old1"
+                s2=$(sed -nE 's/^\/dev\/vda2 :.*start= *([0-9]+),.*/\1/p' /root/vda.sfdisk.bak)
+                set -- $(sed -nE 's/^\/dev\/vda5 :.*start= *([0-9]+), size= *([0-9]+).*/\1 \2/p' /root/vda.sfdisk.bak)
+                addpart /dev/vda 2 "$s2" 2
+                addpart /dev/vda 5 "$1" "$2"
+                [ "$(cat /sys/block/vda/vda1/size)" = "$old1" ] || { echo "vda1 kernel size not restored" >&2; exit 1; }
+                [ "$(cat /sys/block/vda/vda5/start) $(cat /sys/block/vda/vda5/size)" = "$1 $2" ] || { echo "vda5 kernel not restored" >&2; exit 1; }
+              when: "plan.stdout_lines | last == 'GROW'"
+
+            - name: partitioning stage failed
+              fail:
+                msg: "partitioning failed at '{{ ansible_failed_task.name }}': {{ ansible_failed_result.stderr | default(ansible_failed_result.msg | default('')) }} (restore attempted: {{ plan.stdout_lines | last == 'GROW' }})"
+
+        - name: grow filesystem
+          command: resize2fs /dev/vda1
+
+        - name: verify filesystem fills partition
+          shell: |
+            set -e
+            bc=$(tune2fs -l /dev/vda1 | awk '/^Block count:/{print $3}')
+            bs=$(tune2fs -l /dev/vda1 | awk '/^Block size:/{print $3}')
+            psz=$(cat /sys/block/vda/vda1/size)
+            [ -n "$bc" ] && [ -n "$bs" ] || { echo "tune2fs parse failed" >&2; exit 1; }
+            [ $((bc * bs / 512)) -eq "$psz" ] || { echo "fs $((bc * bs / 512)) sectors, partition $psz" >&2; exit 1; }
+          changed_when: false
+
+        - name: recreate swap
+          shell: |
+            set -e
+            swapon --show | grep -q vda5 && exit 0
+            s5=$(cat /sys/block/vda/vda5/start)
+            v1s=$(cat /sys/block/vda/vda1/start)
+            v1z=$(cat /sys/block/vda/vda1/size)
+            [ "$s5" -ge $((v1s + v1z)) ] || { echo "vda5 overlaps vda1" >&2; exit 1; }
+            u=$(awk '$3=="swap"{sub("UUID=","",$1); print $1}' /etc/fstab)
+            [ -n "$u" ] || { echo "no swap UUID in fstab" >&2; exit 1; }
+            mkswap -U "$u" /dev/vda5
+            swapon -a
+            swapon --show | grep -q vda5 || { echo "swap not active" >&2; exit 1; }
+
+      rescue:
+        - name: record failure on the host
+          copy:
+            dest: /root/grow-root.FAILED
+            content: "{{ ansible_failed_task.name }}: {{ ansible_failed_result.stderr | default(ansible_failed_result.msg | default('')) }}\n"
+
+        - name: report failure
+          debug:
+            msg: "{{ inventory_hostname }} FAILED at '{{ ansible_failed_task.name }}'"
