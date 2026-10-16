@@ -87,6 +87,14 @@ http {
     server_tokens         off;
 
     server {
+        listen 127.0.0.1:8081;
+        location = /stub_status {
+            stub_status;
+            access_log off;
+        }
+    }
+
+    server {
         listen              {{item.ip}}:80;
         server_name         {{item.domain}} {{item.ip}} default _ "";
 
@@ -157,7 +165,7 @@ http {
         add_header X-Frame-Options DENY always;
 
         # Report-only for now: logs would-be violations to the browser console.
-        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' wss://{{item.domain}}; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
+        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' wss://{{item.domain}} https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
 {% if modsecurity is defined %}
         modsecurity on;
         modsecurity_rules_file /etc/nginx/modsecurity-includes.conf;

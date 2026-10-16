@@ -772,6 +772,33 @@
       regexp: 'ws:\/\/localhost:8888\/ws'
       replace: 'wss://{{ domain_name }}/ws'
 
+  - name: Grab nginx-prometheus-exporter
+    get_url:
+      url: "https://github.com/echoCTF/obsd-binaries/releases/download/nginx-prometheus-exporter-1.5.3/nginx-prometheus-exporter-openbsd-amd64.zip"
+      dest: /tmp/nginx-prometheus-exporter.zip
+    tags:
+      - nginx-prometheus-exporter
+
+  - name: Extract nginx-prometheus-exporter
+    command: unzip -o /tmp/nginx-prometheus-exporter.zip -d /usr/local/bin/
+    args:
+      creates: /usr/local/bin/nginx-prometheus-exporter-openbsd-amd64
+    tags:
+      - nginx-prometheus-exporter
+
+  - name: Install nginx-prometheus-exporter.ini for supervisord
+    copy:
+      dest: /etc/supervisord.d/nginx-prometheus-exporter.ini
+      content: |
+        [program:nginx-prometheus-exporter]
+        user = root
+        command = /usr/local/bin/nginx-prometheus-exporter-openbsd-amd64 --nginx.scrape-uri=http://127.0.0.1:8081/stub_status --web.listen-address=:9113
+        stdout_logfile=/var/log/nginx-prometheus-exporter.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+    tags:
+      - nginx-prometheus-exporter
+
   - name: copy nstables script
     copy:
       src: ../files/nstables.sh

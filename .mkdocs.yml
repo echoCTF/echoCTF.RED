@@ -87,3 +87,4 @@ nav:
       - VPN Slaves: VPN-Slaves.md
       - Docker Events: Docker-Events.md
       - Websockets: Websockets.md
+      - Stripe: Stripe.md

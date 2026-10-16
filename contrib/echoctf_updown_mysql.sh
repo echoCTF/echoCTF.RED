@@ -10,7 +10,7 @@ WEBHOOK="{{discord_webhook}}"
 # Backgrounded so the connect/disconnect path never waits on the network
 notify_churn() {
   curl -s -m 5 -o /dev/null -X POST -H 'Content-Type: application/json' \
-    -d "{\"content\":\"$(hostname): CN=${common_name} hit the VPN churn limit on ${1} (remote=${untrusted_ip})\"}" \
+    -d "{\"username\":\"VPN churn\",\"content\":\"$(hostname): CN=${common_name} hit the VPN churn limit on ${1} (remote=${untrusted_ip})\"}" \
     "$WEBHOOK" &
 }
 

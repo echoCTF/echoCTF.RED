@@ -27,6 +27,10 @@ pass in quick inet proto tcp to port { 50000, 60000} rdr-to 127.0.0.1  label "ad
 stdbuf -i0 -o0 -e0 nc echoctf.net 60000|logstalgia -x --hide-response-code -g "UDP,URI=udp?$,20" -g "TCP,URI=tcp?$,60" -g "ICMP,URI=icmp?$,20" -
 ```
 
+We also provide an extended logstalgia groups configuration that you can use like so 
+```sh
+stdbuf -i0 -o0 -e0 nc echoctf.net 60000|logstalgia -x --hide-response-code -g "UDP,URI=udp?$,20" -g "TCP,URI=tcp?$,60" -g "ICMP,URI=icmp?$,20" --load-config contrib/logstalgia-groups.conf  -
+```
 ## Gource
 ```sh
 stdbuf -i0 -o0 -e0 nc echoctf.net 50000|gource --log-format custom --highlight-all-users --realtime --multi-sampling --auto-skip-seconds 3 --seconds-per-day 1  -f -

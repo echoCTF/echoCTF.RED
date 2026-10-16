@@ -97,7 +97,7 @@
       "type": "prometheus",
       "uid": "prom"
      },
-     "expr": "sum({__name__=~\"conductor_(http|tcp|shell|client|ping)_status\"})",
+     "expr": "sum({__name__=~\"conductor_(http|tcp|shell|client_[a-z]+|ping)_status\"})",
      "legendFormat": "",
      "refId": "A",
      "instant": true,
@@ -151,7 +151,7 @@
       "type": "prometheus",
       "uid": "prom"
      },
-     "expr": "count({__name__=~\"conductor_(http|tcp|shell|client|ping)_status\"} == 0) or vector(0)",
+     "expr": "count({__name__=~\"conductor_(http|tcp|shell|client_[a-z]+|ping)_status\"} == 0) or vector(0)",
      "legendFormat": "",
      "refId": "A",
      "instant": true,
@@ -209,7 +209,7 @@
       "type": "prometheus",
       "uid": "prom"
      },
-     "expr": "{__name__=~\"conductor_(http|tcp|shell|client|ping)_status\"} == 0",
+     "expr": "{__name__=~\"conductor_(http|tcp|shell|client_[a-z]+|ping)_status\"} == 0",
      "legendFormat": "",
      "refId": "A",
      "instant": true,
@@ -263,7 +263,7 @@
       "type": "prometheus",
       "uid": "prom"
      },
-     "expr": "{__name__=~\"conductor_(http|tcp|shell|client|ping)_sla\"}",
+     "expr": "{__name__=~\"conductor_(http|tcp|shell|client_[a-z]+|ping)_sla\"}",
      "legendFormat": "{{name}}",
      "refId": "A",
      "instant": false,

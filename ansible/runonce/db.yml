@@ -112,6 +112,12 @@
       - { key_buffer_size: "512k" }
       - { thread_handling: "{{ thread_handling | default('pool-of-threads') }}" }
       - { thread_pool_size: "{{ thread_pool_size | default('1') }}" }
+      #- { thread_cache_size: "300" }
+      #- { table_open_cache: "4000" }
+      #- { max_heap_table_size: "64M" }
+      #- { sort_buffer_size: "" }
+      #- { join_buffer_size: "" }
+      #- { tmp_table_size: "" }
   tasks:
   - name: Prompt for variables that are not set
     pause:

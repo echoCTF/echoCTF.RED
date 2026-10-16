@@ -38,11 +38,11 @@ function sql() {
   if compgen -G "${DATABASE}-full-*.sql" > /dev/null; then
     list=( ${DATABASE}-full-*.sql )
     echo "Using local file ${list[-1]}"
-    mysql ${DATABASE} < "${list[-1]}"
+    mysql -f ${DATABASE} < "${list[-1]}"
   else
     for _sql in echoCTF.sql echoCTF-routines.sql echoCTF-triggers.sql echoCTF-events.sql faq.sql instruction.sql rule.sql sysconfig.sql disabled_route.sql; do
       if [ -f "schemas/${_sql}" ]; then
-        sed -e "s/echoCTF/${DATABASE}/g" schemas/${_sql} | mysql ${DATABASE}
+        sed -e "s/echoCTF/${DATABASE}/g" schemas/${_sql} | mysql -f ${DATABASE}
       fi
     done
   fi
