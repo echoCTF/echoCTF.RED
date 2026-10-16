@@ -9,9 +9,36 @@ use Socket;
 use DBI;
 use strict;
 $|++;
+
+# Parent only watches the client socket (fd 0) and kills the capture child on
+# disconnect; the child does everything else, including waiting for tun0.
+# If the child exits, the parent exits too.
+$SIG{CHLD} = sub { exit 0 };
+my $kid = fork();
+die "fork: $!" unless defined $kid;
+if ($kid) {
+    while (1) {
+        my $r = sysread(STDIN, my $buf, 4096);
+        next if !defined $r && $!{EINTR};
+        last unless $r;
+    }
+    kill 'KILL', $kid;
+    waitpid($kid, 0);
+    exit 0;
+}
+$SIG{CHLD} = 'DEFAULT';
+
 my $err;
 #my $filter_str='( tcp or udp or icmp ) and ( dst net 10.0.0.0/16 )';
-my $filter_str='( tcp or udp or icmp ) and ( src net 10.10.0.0/24 and dst net 10.0.0.0/16 ) and not ( src host 10.10.0.1 ) and not ( dst net 10.0.0.0/24 )';
+# Local IPv4 address of tun0, looked up on every start (inetd runs one process per
+# connection). Waits, polling once a second, until tun0 has an inet line (openvpn
+# may not be up yet).
+my $tun_ip;
+until (defined $tun_ip) {
+    ($tun_ip) = `/sbin/ifconfig tun0 2>/dev/null` =~ /^\s*inet (\d+\.\d+\.\d+\.\d+)\s/m;
+    sleep 1 unless defined $tun_ip;
+}
+my $filter_str="( tcp or udp or icmp ) and ( src net 10.10.0.0/24 and dst net 10.0.0.0/16 ) and not ( src host $tun_ip ) and not ( dst net 10.0.0.0/24 )";
 #   Use network device passed in program arguments or if no
 #   argument is passed, determine an appropriate network
 #   device for packet sniffing using the
