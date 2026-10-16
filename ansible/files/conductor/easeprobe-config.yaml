@@ -56,7 +56,7 @@ http:
       - [200, 200]
 
   - name: docker 10.0.0.1
-    url: http://10.0.0.1:2375/version
+    url: http://10.0.0.1:2376/version
     contain: "ApiVersion"
     timeout: 5s
     interval: 30s
@@ -93,10 +93,8 @@ tcp:
 
 # --------------------- Shell probes ---------------------
 shell:
-  - name: openvpn connect (vpn01)
+  - name: openvpn connect (all servers)
     cmd: /etc/easeprobe/ovpn-check.sh
-    args:
-      - "vpn01"
     interval: 1m
     timeout: 10s
     failure: 2
@@ -141,6 +139,7 @@ notify:
 # --------------------- Global settings ---------------------
 settings:
   name: "conductor"
+  icon: https://echoctf.red/images/appicon.png
   pid: /var/run/easeprobe.pid
   timezone: "UTC"
   timeformat: "2006-01-02 15:04:05 Z07:00"
@@ -152,6 +151,7 @@ settings:
   sla:
     schedule: "daily"
     time: "23:59"
+    data: "-"
 
   notify:
     retry:
