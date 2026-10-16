@@ -233,8 +233,8 @@
       content: |
         pass in quick proto tcp from <administrators> to port 3000 rdr-to 127.0.0.1
         pass in quick from <administrators>
-        pass in quick proto udp from { 10.7.0.0/24, 10.0.0.0/24 } to {{ interconnect_interface_ip|default('10.7.0.123') }} port 9995
-        block in quick proto udp to {{ interconnect_interface_ip|default('10.7.0.123') }} port 9995
+        pass in quick proto udp from 10.7.0.0/24 to {{ interconnect_interface_ip|default('10.7.0.123') }} port 9995
+        pass in quick proto udp from 10.0.0.0/24 to 10.0.0.123 port 9995
 
   - name: Continue PF files
     ignore_errors: true
@@ -282,7 +282,6 @@
     with_items:
       - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
-      - { name: "OpenVPN probe", minute: "*/5", job: "-ns /etc/easeprobe/ovpn-probe.sh" }
 
   - name: Setting up sysctl.conf
     sysctl:
@@ -318,6 +317,14 @@
       - { src: ovpn-check.sh }
       - { src: easeprobe-config.yaml, dest: config.yaml, mode: "0600" }
       - { src: monitor.ovpn, mode: "0600" }
+
+  - name: VPN server list for the probe (rendered from the inventory)
+    ansible.builtin.template:
+      src: "{{ playbook_dir }}/../templates/vpn-servers.j2"
+      dest: /etc/easeprobe/vpn-servers
+      owner: root
+      group: wheel
+      mode: "0644"
 
   - name: Download EaseProbe
     ansible.builtin.get_url:
@@ -429,10 +436,10 @@
       name: nf-prom
       user: root
       minute: "2-59/5"
-      job: "NFDUMP=/usr/local/bin/nfdump /usr/local/sbin/nf-prom.sh /var/nfcapd/exp /var/lib/node_exporter/textfile/nfdump.prom 10"
+      job: "-ns NFDUMP=/usr/local/bin/nfdump /usr/local/sbin/nf-prom.sh /var/nfcapd/exp /var/lib/node_exporter/textfile/nfdump.prom 10 10.10.0.0/16"
 
   - name: Write the first metrics file so Prometheus has something to scrape
-    ansible.builtin.command: "/usr/local/sbin/nf-prom.sh /var/nfcapd/exp /var/lib/node_exporter/textfile/nfdump.prom 10"
+    ansible.builtin.command: "/usr/local/sbin/nf-prom.sh /var/nfcapd/exp /var/lib/node_exporter/textfile/nfdump.prom 10 10.10.0.0/16"
     environment:
       NFDUMP: /usr/local/bin/nfdump
     args:
