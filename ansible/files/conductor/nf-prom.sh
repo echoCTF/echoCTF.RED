@@ -1,5 +1,5 @@
 #!/bin/sh
-# nf-prom.sh [DATA_DIR] [OUT_FILE] [TOPN]
+# nf-prom.sh [DATA_DIR] [OUT_FILE] [TOPN] [PLAYERNET]
 #
 # Turns the newest COMPLETED nfcapd file of every exporter folder into
 # Prometheus text metrics, for Grafana. Run it from cron right after each
@@ -8,6 +8,9 @@
 #   DATA_DIR  nfcapd -M folder, one sub folder per exporter   (default /var/nfcapd/exp)
 #   OUT_FILE  metrics file, written atomically                (default /var/lib/node_exporter/textfile/nfdump.prom)
 #   TOPN      top IPs per exporter to publish                 (default 10)
+#   PLAYERNET CIDR of the player tunnel addresses, e.g. 10.10.0.0/16 (default empty = rank every address)
+#             When set, top_src and top_dst only count flows whose source is in that range:
+#             top_src ranks the players, top_dst ranks where their traffic goes.
 #
 # Metrics are gauges for ONE rotation window, not running totals.
 #   nfdump_window_flows{exporter}, nfdump_window_packets{exporter}, nfdump_window_bytes{exporter}
@@ -21,6 +24,9 @@
 DATA=${1:-/var/nfcapd/exp}
 OUT=${2:-/var/lib/node_exporter/textfile/nfdump.prom}
 TOPN=${3:-10}
+PLAYERNET=${4:-}
+FILTER=any
+[ -n "$PLAYERNET" ] && FILTER="src net $PLAYERNET"
 NFDUMP=${NFDUMP:-nfdump}
 
 tmp="$OUT.$$"
@@ -61,8 +67,8 @@ n=0
       $1=="Packets:" {pk=$2}
       $1=="Bytes:"   {by=$2}
       END { printf "nfdump_window_flows{exporter=\"%s\"} %d\nnfdump_window_packets{exporter=\"%s\"} %d\nnfdump_window_bytes{exporter=\"%s\"} %d\n", ex, fl, ex, pk, ex, by }'
-    $NFDUMP -r "$p" -s srcip/bytes -n "$TOPN" -o csv -q 2>/dev/null | awk -F, -v ex="$ex" 'NF>=10 && $1!="ts" {printf "nfdump_top_src_bytes{exporter=\"%s\",ip=\"%s\"} %d\n", ex, $5, $10}'
-    $NFDUMP -r "$p" -s dstip/bytes -n "$TOPN" -o csv -q 2>/dev/null | awk -F, -v ex="$ex" 'NF>=10 && $1!="ts" {printf "nfdump_top_dst_bytes{exporter=\"%s\",ip=\"%s\"} %d\n", ex, $5, $10}'
+    $NFDUMP -r "$p" -s srcip/bytes -n "$TOPN" -o csv -q "$FILTER" 2>/dev/null | awk -F, -v ex="$ex" 'NF>=10 && $1!="ts" {printf "nfdump_top_src_bytes{exporter=\"%s\",ip=\"%s\"} %d\n", ex, $5, $10}'
+    $NFDUMP -r "$p" -s dstip/bytes -n "$TOPN" -o csv -q "$FILTER" 2>/dev/null | awk -F, -v ex="$ex" 'NF>=10 && $1!="ts" {printf "nfdump_top_dst_bytes{exporter=\"%s\",ip=\"%s\"} %d\n", ex, $5, $10}'
   done
   echo "# TYPE nfdump_exporter_count gauge"
   echo "nfdump_exporter_count $n"
