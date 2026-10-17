@@ -47,6 +47,18 @@ $config = [
     'sys' => [
       'class' => 'app\components\Sysconfig',
     ],
+    "response" => [
+      "on beforeSend" => function ($e) {
+        $csp_header = Yii::$app->sys->moderator_csp_header;
+        $csp = Yii::$app->sys->moderator_csp;
+        if ($csp && $csp_header) {
+          $e->sender->headers->set(
+            $csp_header,
+            str_replace("{host}", Yii::$app->request->hostName, $csp),
+          );
+        }
+      },
+    ],
     'mailer' => [
       'class' => 'app\components\Mailer',
       'transport' => [

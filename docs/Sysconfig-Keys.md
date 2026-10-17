@@ -52,6 +52,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `target_metadata_visible`: Whether or not metadata will be visible to normal players. Admins get to see the metadata no matter this settting.
 * `disable_stream_tweet`: Whether the ability to tweed individual stream messages is disabled
 * `event_finished`: Whether or not the event has finished.
+* `apply_abuse_penalties`: Whether or not to apply abuse penalties at the end of an event. This applies both failed claims as well as `abuse` table points.
 
 ## String and numeric key/val pairs
 
@@ -98,10 +99,11 @@ These are the system configuration keys used by the platform applications. Any k
 * `event_finished_path`: The path to be create when a CTF event is finished (eg `/tmp/event_finished`)
 * `penalty_per_fail`: Points to penalize per fail (eg. `100`)
 * `free_fail_allowance`: Grace fail allowance before penalty is applied (eg. `3`)
-* `apply_abuse_penalties`: Whether or not to apply abuse penalties at the end of an event. This applies both failed claims as well as `abuse` table points.
-
+* `offense_csp_header`: The offense CSP policy header name (eg `Content-Security-Policy-Report-Only`)
+* `offense_csp`: The offense domain CSP policy
+* `moderator_csp_header`: The moderator CSP policy header name (eg `Content-Security-Policy-Report-Only`)
+* `moderator_csp`: The moderator domain CSP policy
 * `pflog_min`/`pflog_max`: min/max number of pflog interfaces to use for the match findings. Allows for splitting the findings load into multiple processes.
-
 
 * `player_delete_inactive_after`: Delete players with status=9 (inactive) after X days. Can use SQL interval values eg. `10 DAY`.
 * `player_delete_deleted_after`: Delete players with status=0 (deleted) after X days. Can use SQL interval values eg. `10 DAY`.

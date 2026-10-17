@@ -90,44 +90,31 @@ $config = [
         ],
         'yii\validators\ValidationAsset' => [
           'sourcePath' => null,
-          'js' => [
-            'js/yii.validation.min.js',
-          ],
-
+          'js' => ['js/yii.validation.min.js'],
         ],
         'yii\widgets\ActiveFormAsset' => [
           'sourcePath' => null,
-          'js' => [
-            'js/yii.activeForm.min.js',
-          ],
+          'js' => ['js/yii.activeForm.min.js'],
         ],
         'yii\grid\GridViewAsset' => [
           'sourcePath' => null,
-          'js' => [
-            'js/yii.gridView.min.js',
-          ],
+          'js' => ['js/yii.gridView.min.js'],
         ],
         'yii\web\YiiAsset' => [
           'sourcePath' => null,
-          'js' => [
-            'js/yii.min.js',
-          ],
+          'js' => ['js/yii.min.js'],
         ],
         'yii\widgets\PjaxAsset' => [
           'sourcePath' => null,
-          'js' => [
-            'js/jquery.pjax.min.js',
-          ],
+          'js' => ['js/jquery.pjax.min.js'],
         ],
         'yii\web\JqueryAsset' => [
           'sourcePath' => null,
-          'js' => [
-            'js/jquery.min.js',
-          ],
+          'js' => ['js/jquery.min.js'],
         ],
         'yii\bootstrap\BootstrapPluginAsset' => [
           'sourcePath' => null,
-          'js' => []
+          'js' => [],
         ],
         'yii\bootstrap\BootstrapAsset' => [
           'sourcePath' => null,
@@ -166,6 +153,15 @@ $config = [
     ],
     'sys' => [
       'class' => 'app\components\Sysconfig',
+    ],
+    'response' => [
+      'on beforeSend' => function ($e) {
+        $csp_header = Yii::$app->sys->offense_csp_header;
+        $csp = Yii::$app->sys->offense_csp;
+        if ($csp && $csp_header) {
+          $e->sender->headers->set($csp_header,str_replace('{host}', Yii::$app->request->hostName, $csp));
+        }
+      },
     ],
     'counters' => [
       'class' => 'app\components\Counters',
