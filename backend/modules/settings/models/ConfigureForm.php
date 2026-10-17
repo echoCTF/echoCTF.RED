@@ -158,6 +158,10 @@ class ConfigureForm extends Model
   public $target_restart_log_interval;
   public $disable_stream_tweet;
   public $event_finished_path;
+  public $offense_csp_header;
+  public $offense_csp;
+  public $moderator_csp_header;
+  public $moderator_csp;
 
   public $keys = [
     'target_days_updated',
@@ -307,7 +311,11 @@ class ConfigureForm extends Model
     'dashboard_news_records_per_page',
     'target_restart_log_interval',
     'disable_stream_tweet',
-    'event_finished_path'
+    'event_finished_path',
+    'offense_csp_header',
+    'offense_csp',
+    'moderator_csp_header',
+    'moderator_csp',
   ];
 
   /**
@@ -366,6 +374,10 @@ class ConfigureForm extends Model
         'target_restart_log_interval',
         'stripe_url_prefix',
         'event_finished_path',
+        'offense_csp_header',
+        'offense_csp',
+        'moderator_csp_header',
+        'moderator_csp',
       ], 'string'],
       [[
         'offense_registered_tag',
@@ -415,6 +427,10 @@ class ConfigureForm extends Model
         'target_restart_log_interval',
         'stripe_url_prefix',
         'event_finished_path',
+        'offense_csp_header',
+        'offense_csp',
+        'moderator_csp_header',
+        'moderator_csp',
       ], 'trim'],
       [[
         'mail_verification_token_validity',

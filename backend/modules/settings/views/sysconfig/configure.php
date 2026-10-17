@@ -186,6 +186,14 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'force_https_urls')->checkbox()->hint(false) ?></div>
     </div>
     <div class="row form-group">
+      <div class="col-sm-3"><?= $form->field($model, 'offense_csp_header')->textInput(['maxlength' => true])->hint('Offense CSP header (eg <code>Content-Security-Policy-Report-Only</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'offense_csp')->textInput(['maxlength' => true])->hint('Offense CSP value') ?></div>
+    </div>
+    <div class="row form-group">
+      <div class="col-sm-3"><?= $form->field($model, 'moderator_csp_header')->textInput(['maxlength' => true])->hint('Moderator CSP header (eg <code>Content-Security-Policy-Report-Only</code>)') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'moderator_csp')->textInput(['maxlength' => true])->hint('Moderator CSP value') ?></div>
+    </div>
+    <div class="row form-group">
       <div class="col-sm-3"><?= $form->field($model, 'failed_login_ip')->textInput(['maxlength' => true])->hint('Failed logins per IP before denied access (disable: <code>0</code>)') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'failed_login_ip_timeout')->textInput(['maxlength' => true])->hint('Failed logins per IP timeout (disable: <code>0</code>)') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'failed_login_username_timeout')->textInput(['maxlength' => true])->hint('Failed logins per username timeout (disable: <code>0</code>)') ?></div>
@@ -242,7 +250,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h4>VPN Certificate Settings</h4>
     <small class="text-danger">If you change these values you will have to regenerate your CA keys and player certificates.</small>
-
     <div class="row form-group">
       <div class="col-sm-2"><?= $form->field($model, 'dn_countryName')->textInput(['maxlength' => true])->input('text', ['placeholder' => ""])->hint('') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'dn_stateOrProvinceName')->textInput(['maxlength' => true])->input('text', ['placeholder' => ""])->hint('') ?></div>
