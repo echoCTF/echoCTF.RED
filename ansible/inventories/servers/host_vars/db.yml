@@ -1,19 +1,24 @@
+myname: "${hostname}"
 hostname: db.mydomain
+ansible_host: "${ip}"
+domain_name: "${domain_name}"
+interconnect_interface: "${interconnect_interface}"
+interconnect_interface_ip: "{{db_ip}}"
+
 backups:
   - { tgz: "/tmp/altroot.tgz", src: '/altroot' }
   - { tgz: "/altroot/root.tgz", src: '/root' }
   - { tgz: "/altroot/etc.tgz", src: '/etc'  }
   - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
   - { tgz: "/altroot/varmysql.tgz", src: '/var/mysql'  }
+  - { tgz: "/altroot/echoCTF-full.sql.gz" }
   - { tgz: "/altroot/home.tgz", src: '/home'  }
 
 pre_backups:
-  - "/usr/local/bin/mysqldump -YKER --add-drop-table --hex-blob --triggers --tz-utc echoCTF | gzip -9 > /altroot/echoCTF-full-$(date +%Y%m%d).sql.gz"
-  - "mysql -e 'PURGE BINARY LOGS BEFORE NOW()'"
+  - "mariadb-dump -YKER --add-drop-table --hex-blob --triggers --tz-utc echoCTF | gzip -9 -f -o /altroot/echoCTF-full.sql.gz"
 
 REPO: /root/sources
 
-interconnect_interface_ip: "{{db_ip}}"
 #key_buffer_size: "512k"
 #innodb_buffer_pool_size: "2G"
 #innodb_log_file_size: "512M"

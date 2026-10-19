@@ -13,7 +13,7 @@
     with_items: "{{pre_backups}}"
 
   - name: Backup existing files just in case before we start performing maintenance changes
-    when: backups is defined
+    when: backups is defined and item.src is defined
     command: "tar zcpf {{item.tgz}} {{item.src}}"
     ignore_errors: yes
     with_items: "{{backups}}"

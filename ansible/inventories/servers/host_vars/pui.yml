@@ -1,18 +1,13 @@
+myname: "${hostname}"
 hostname: pui.mydomain
 domain_name: pui.mydomain
-backups:
-  - { tgz: "/altroot/root.tgz", src: '/root' }
-  - { tgz: "/altroot/etc.tgz", src: '/etc'  }
-  - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
-  - { tgz: "/altroot/var.tgz", src: '/var'  }
-  - { tgz: "/altroot/home.tgz", src: '/home'  }
-
-REPO: "/home/participantUI/{{domain_name}}"
+ansible_host: "${ip}"
+interconnect_interface: "${interconnect_interface}"
+interconnect_interface_ip: "{{pui_ip}}"
 APP_USER: participantUI
 
-APP_SERVICES:
-  - php84_fpm
-  - participant
+REPO: "/home/participantUI/{{domain_name}}"
+SERVICES: php84_fpm participant
 
 PRESERVE_PATHS:
   - frontend/web/images/avatars/
@@ -23,7 +18,6 @@ PRESERVE_PATHS:
   - frontend/config/validationKey.php
   - frontend/config/routes.php
 
-interconnect_interface_ip: "{{pui_ip}}"
 # academic_grouping: 1
 # modsecurity: true
 # pm_max_children: 15

@@ -1,3 +1,15 @@
-interconnect_interface_ip: 10.7.0.254
 hostname: vpn.mydomain
-#vpn_role: "gateway|slave"
+myname: vpn.mydomain
+ansible_host: vpn.mydomain
+domain_name: vpn.mydomain
+vpngw: "vpn.mydomain"
+interconnect_ip: 10.7.0.254
+interconnect_interface: vio2
+interconnect_interface_ip: 10.7.0.254
+targets_if_ipv4: 10.0.0.254
+targets_subnet: 10.0.0.0
+targets_netmask: 255.255.0.0
+vpn_ext_ip: "1.2.3.4"
+offense_network: 10.10.0.0/16
+memc_port: 11211
+vpn_role: gateway # or slave

@@ -1,20 +1,16 @@
+myname: "${hostname}"
 hostname: mui.mydomain
+ansible_host: "${ip}"
 domain_name: mui.mydomain
-backups:
-  - { tgz: "/altroot/root.tgz", src: '/root' }
-  - { tgz: "/altroot/etc.tgz", src: '/etc'  }
-  - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
-  - { tgz: "/altroot/home.tgz", src: '/home'  }
+interconnect_interface: "${interconnect_interface}"
+interconnect_interface_ip: "{{mui_ip}}"
 
 REPO: "/home/moderatorUI/{{domain_name}}"
 APP_USER: moderatorUI
-APP_SERVICES:
-  - php84_fpm
-  - moderator
+SERVICES: php84_fpm moderator
+
 PRESERVE_PATHS:
   - backend/web/identificationFiles/
   - backend/config/db.php
   - backend/config/cache.php
   - backend/config/validationKey.php
-
-interconnect_interface_ip: "{{mui_ip}}"

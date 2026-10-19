@@ -25,8 +25,5 @@
 
   handlers:
     - name: restart applications
-      when: APP_SERVICES is defined
-      service:
-        name: "{{ item }}"
-        state: restarted
-      loop: "{{ APP_SERVICES }}"
+      when: SERVICES is defined
+      command: "rcctl restart {{SERVICES}}"
