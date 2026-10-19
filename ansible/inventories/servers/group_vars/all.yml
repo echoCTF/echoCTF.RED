@@ -11,8 +11,17 @@ db_ip: "10.7.0.253"
 pui_ip: "10.7.0.200"
 mui_ip: "10.7.0.201"
 vpn_ip: "10.7.0.254"
-interconnect_interface: "vio1"
 pui_ext_ip: "1.2.3.4"
 mui_ext_ip: "1.2.3.4"
+interconnect_interface: "vio1"
 
 discord_webhook: ""
+
+backups:
+  - { tgz: "/tmp/altroot.tgz", src: '/altroot' }
+  - { tgz: "/altroot/root.tgz", src: '/root' }
+  - { tgz: "/altroot/etc.tgz", src: '/etc'  }
+  - { tgz: "/altroot/var.tgz", src: '/var'  }
+  - { tgz: "/altroot/varcron.tgz", src: '/var/cron'  }
+  - { tgz: "/altroot/varlog.tgz", src: '/var/log'  }
+  - { tgz: "/altroot/home.tgz", src: '/home'  }
