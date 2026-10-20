@@ -43,10 +43,16 @@ class CronController extends Controller
       $this->actionSpinQueue();
       $this->actionOndemand();
       $this->actionPf(true);
-    } catch (\Exception $e) {
+    } catch (\PDOException | \yii\db\Exception $e) {
+      \Yii::error($e->getMessage(), 'cron-index');
+      \Yii::$app->db->close();
       echo "cron/index: " . $e->getMessage(), "\n";
+      throw $e;
+    } catch (\Throwable $e) {
+      echo "cron/index: " . $e->getMessage(), "\n";
+    } finally {
+      @unlink("/tmp/cron-index.lock");
     }
-    @unlink("/tmp/cron-index.lock");
   }
 
   public function actionTargetNetMigration()
@@ -101,10 +107,16 @@ class CronController extends Controller
           }
         }
       }
-    } catch (\Exception $e) {
+    } catch (\PDOException | \yii\db\Exception $e) {
+      \Yii::error($e->getMessage(), 'target-net-migration');
+      \Yii::$app->db->close();
       echo "cron/target-net-migration: ", $e->getMessage(), "\n";
+      throw $e;
+    } catch (\Throwable $e) {
+      echo "cron/target-net-migration: ", $e->getMessage(), "\n";
+    } finally {
+      @unlink("/tmp/cron-targetnetmigration.lock");
     }
-    @unlink("/tmp/cron-targetnetmigration.lock");
   }
 
   public function actionPowerOperations()
@@ -221,7 +233,7 @@ class CronController extends Controller
    * and updates the PF according to currently online players.
    *
    * @param bool $pfonly Perform PF operations and skip instance docker actions (default: false)
-   * @param int $expired_ago Filter instances based that haven't been updated X seconds ago (default: 2400 seconds = 40 minutes)
+   * @param int $expired_ago Filter instances that have been updated X seconds ago (default: 2400 seconds = 40 minutes)
    * @param int $atOnce Process X instances at once
    * @param int $server_id Filter operations to $server_id
    * @return int Exit code
@@ -233,131 +245,134 @@ class CronController extends Controller
       return;
     }
     touch("/tmp/cron-instances.lock");
-    $action = SELF::ACTION_EXPIRED;
-    $t = TargetInstance::find()->pending_action($expired_ago)->server_assigned($server_id)->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
-    if ($atOnce > 0) $t->limit($atOnce);
-    foreach ($t->all() as $val) {
-      try {
-        $ips = [];
-        $dc = new DockerContainer($val->target);
-        $dc->timeout = ($val->server->timeout ? $val->server->timeout : 10000);
+    try {
+      $action = SELF::ACTION_EXPIRED;
+      $t = TargetInstance::find()->pending_action($expired_ago)->server_assigned($server_id)->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
+      if ($atOnce > 0) $t->limit($atOnce);
+      foreach ($t->all() as $val) {
+        try {
+          $ips = [];
+          $dc = new DockerContainer($val->target);
+          $dc->timeout = ($val->server->timeout ? $val->server->timeout : 10000);
 
-        if ($val->target->targetVolumes !== null)
-          $dc->targetVolumes = $val->target->targetVolumes;
+          if ($val->target->targetVolumes !== null)
+            $dc->targetVolumes = $val->target->targetVolumes;
 
-        if ($val->target->targetVariables !== null) {
-          $dc->targetVariables = $val->target->targetVariables;
-        }
-
-        // Check If target supports dynamic_treasures
-        if ($val->target->dynamic_treasures) {
-          // Fetch the encrypted env flag
-          $encryptedTreasures = $val->encryptedTreasures;
-
-          // Check existing environment variables for ETSCTF_FLAG keys
-          foreach ($dc->targetVariables as $key => $tv) {
-            // Replace the old key with the encrypted treasure
-            if ($tv->key == 'ETSCTF_FLAG' && array_key_exists('env', $encryptedTreasures['fs'])) {
-              $tv->val = str_replace($encryptedTreasures['fs']['env'][0]['src'], $encryptedTreasures['fs']['env'][0]['dest'], $tv->val);
-              break;
-            }
+          if ($val->target->targetVariables !== null) {
+            $dc->targetVariables = $val->target->targetVariables;
           }
-          $dc->labels['dynamic_treasures'] = "1";
-          $dc->labels['player_id'] = (string)$val->player_id;
-          $dc->labels['target_id'] = (string)$val->target_id;
-          foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part)
-            $dc->labels['treasures_' . $key] = $part;
-        }
 
-        $dc->name = $val->name;
-        $dc->server = $val->server->connstr;
-        $dc->net = $val->server->network;
+          // Check If target supports dynamic_treasures
+          if ($val->target->dynamic_treasures) {
+            // Fetch the encrypted env flag
+            $encryptedTreasures = $val->encryptedTreasures;
 
-        if ($val->reboot === 2) {
-          echo date("Y-m-d H:i:s ") . "Destroying";
-          $action = SELF::ACTION_DESTROY;
-        } else if ($val->reboot === 1) {
-          echo date("Y-m-d H:i:s ") . "Restarting";
-          $action = SELF::ACTION_RESTART;
-        } else if ($val->ip == null && $val->reboot == 0) {
-          echo date("Y-m-d H:i:s ") . "Starting";
-          $action = SELF::ACTION_START;
-        } else {
-          echo date("Y-m-d H:i:s ") . "Expiring";
-          $action = SELF::ACTION_EXPIRED;
-        }
-        printf(" %s for %s (%s) at %s\n", $val->target->name, $val->player->username, $dc->name, $val->server->name);
-        switch ($action) {
-          case SELF::ACTION_START:
-          case SELF::ACTION_RESTART:
-            if ($pfonly === false) {
-              try {
-                $dc->destroy();
-              } catch (\Throwable $e) {
-              }
-              $dc->pull();
-              usleep(100);
-              $dc->spin();
-            }
-            if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) {
-              $ips = $val->player->teamPlayer->team->approvedMemberIPs;
-            } else if ((int)$val->player->last->vpn_local_address !== 0) {
-              $ips[] = long2ip($val->player->last->vpn_local_address);
-            }
-            if ($ips != [])
-              Pf::add_table_ip($dc->name . '_clients', implode(' ', $ips), true);
-            $val->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
-            Pf::add_table_ip($dc->name, $val->ipoctet, true);
-            $val->reboot = 0;
-            if ($pfonly === false) {
-              $val->updated_at = new \yii\db\Expression('NOW()');
-              $val->save();
-            }
-
-            break;
-          case SELF::ACTION_EXPIRED:
-          case SELF::ACTION_DESTROY:
-            if ($pfonly === false) {
-              try {
-                $dc->destroy();
-              } catch (\Exception $e) {
+            // Check existing environment variables for ETSCTF_FLAG keys
+            foreach ($dc->targetVariables as $key => $tv) {
+              // Replace the old key with the encrypted treasure
+              if ($tv->key == 'ETSCTF_FLAG' && array_key_exists('env', $encryptedTreasures['fs'])) {
+                $tv->val = str_replace($encryptedTreasures['fs']['env'][0]['src'], $encryptedTreasures['fs']['env'][0]['dest'], $tv->val);
+                break;
               }
             }
-            Pf::kill_table($dc->name, true);
-            Pf::kill_table($dc->name . '_clients', true);
-            if ($pfonly === false)
-              $val->delete();
-            break;
-          default:
-            printf("Error: Unknown action\n");
-        }
-      } catch (\Throwable $e) {
-        if (method_exists($e, 'getErrorResponse'))
-          echo "Instances: ", $e->getErrorResponse()->getMessage(), "\n";
-        else
-          echo "Instances: ", $e->getMessage(), "\n";
-        if (getenv('DEBUG', true) !== false)
-          \Yii::error($e);
-      }
-      unset($dc);
-      usleep(200);
-      $publisher = new \app\services\ServerPublisher(\Yii::$app->params['serverPublisher']);
-      $publisher->publish($val->player_id, 'target', ['id' => $val->target_id]);
-    } // end foreach
-    $this->actionInstancePfTables(true);
+            $dc->labels['dynamic_treasures'] = "1";
+            $dc->labels['player_id'] = (string)$val->player_id;
+            $dc->labels['target_id'] = (string)$val->target_id;
+            foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part)
+              $dc->labels['treasures_' . $key] = $part;
+          }
 
-    if ($pfonly === false) {
-      try {
-        $t = TargetInstance::find()->active()->withApprovedMemberHeartbeat()->last_updated(round($expired_ago / 2))->server_assigned($server_id);
-        foreach ($t->all() as $instance) {
-          printf("Updating heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
-          $instance->touch('updated_at');
+          $dc->name = $val->name;
+          $dc->server = $val->server->connstr;
+          $dc->net = $val->server->network;
+
+          if ($val->reboot === 2) {
+            echo date("Y-m-d H:i:s ") . "Destroying";
+            $action = SELF::ACTION_DESTROY;
+          } else if ($val->reboot === 1) {
+            echo date("Y-m-d H:i:s ") . "Restarting";
+            $action = SELF::ACTION_RESTART;
+          } else if ($val->ip == null && $val->reboot == 0) {
+            echo date("Y-m-d H:i:s ") . "Starting";
+            $action = SELF::ACTION_START;
+          } else {
+            echo date("Y-m-d H:i:s ") . "Expiring";
+            $action = SELF::ACTION_EXPIRED;
+          }
+          printf(" %s for %s (%s) at %s\n", $val->target->name, $val->player->username, $dc->name, $val->server->name);
+          switch ($action) {
+            case SELF::ACTION_START:
+            case SELF::ACTION_RESTART:
+              if ($pfonly === false) {
+                try {
+                  $dc->destroy();
+                } catch (\Throwable $e) {
+                }
+                $dc->pull();
+                usleep(100);
+                $dc->spin();
+              }
+              if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) {
+                $ips = $val->player->teamPlayer->team->approvedMemberIPs;
+              } else if ((int)$val->player->last->vpn_local_address !== 0) {
+                $ips[] = long2ip($val->player->last->vpn_local_address);
+              }
+              if ($ips != [])
+                Pf::add_table_ip($dc->name . '_clients', implode(' ', $ips), true);
+              $val->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$val->server->network}->getIPAddress();
+              Pf::add_table_ip($dc->name, $val->ipoctet, true);
+              $val->reboot = 0;
+              if ($pfonly === false) {
+                $val->updated_at = new \yii\db\Expression('NOW()');
+                $val->save();
+              }
+
+              break;
+            case SELF::ACTION_EXPIRED:
+            case SELF::ACTION_DESTROY:
+              if ($pfonly === false) {
+                try {
+                  $dc->destroy();
+                } catch (\Exception $e) {
+                }
+              }
+              Pf::kill_table($dc->name, true);
+              Pf::kill_table($dc->name . '_clients', true);
+              if ($pfonly === false)
+                $val->delete();
+              break;
+            default:
+              printf("Error: Unknown action\n");
+          }
+        } catch (\Exception $e) {
+          if (method_exists($e, 'getErrorResponse'))
+            echo "Instances: ", $e->getErrorResponse()->getMessage(), "\n";
+          else
+            echo "Instances: ", $e->getMessage(), "\n";
+          if (getenv('DEBUG', true) !== false)
+            \Yii::error($e);
         }
-      } catch (\Throwable $e) {
-        echo "Instrances: Error while touching updated_at. ", $e->getMessage();
+        unset($dc);
+        usleep(200);
+        $publisher = new \app\services\ServerPublisher(\Yii::$app->params['serverPublisher']);
+        $publisher->publish($val->player_id, 'target', ['id' => $val->target_id]);
+      } // end foreach
+      $this->actionInstancePfTables(true);
+
+      if ($pfonly === false) {
+        try {
+          $t = TargetInstance::find()->active()->withApprovedMemberHeartbeat()->last_updated(round($expired_ago / 2))->server_assigned($server_id);
+          foreach ($t->all() as $instance) {
+            printf("Updating heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
+            $instance->touch('updated_at');
+          }
+        } catch (\Throwable $e) {
+          echo "Instrances: Error while touching updated_at. ", $e->getMessage();
+        }
       }
+    } finally {
+      @unlink("/tmp/cron-instances.lock");
     }
-    @unlink("/tmp/cron-instances.lock");
   }
 
   /**
@@ -400,9 +415,8 @@ class CronController extends Controller
    */
   public function actionSpinQueue()
   {
-
+    $transaction = \Yii::$app->db->beginTransaction();
     try {
-      $transaction = \Yii::$app->db->beginTransaction();
       $query = SpinQueue::find();
       foreach ($query->all() as $t) {
         printf("Processing queue [%s] on docker [%s]", $t->target->name, $t->target->server);
@@ -541,8 +555,13 @@ class CronController extends Controller
     try {
       $this->active_targets_pf($base);
       $this->match_findings($load, $base);
-    } catch (\Exception $e) {
-      echo "PF:", $e->getMessage(), "\n";
+    } catch (\PDOException | \yii\db\Exception $e) {
+      \Yii::error($e->getMessage(), 'cron-pf');
+      \Yii::$app->db->close();
+      echo "cron/pf: " . $e->getMessage(), "\n";
+      throw $e;
+    } catch (\Throwable $e) {
+      echo "PF: ", $e->getMessage(), "\n";
     }
   }
 

@@ -17,14 +17,18 @@ require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';
 $config = require __DIR__ . '/../config/console.php';
 
 $application = new yii\console\Application($config);
+$interval = getenv("INTERVAL") ?: 10;
 while (true) {
   try {
-    $application->runAction('cron/instance-pf',[30]);
+    $application->runAction('cron/instance-pf', array_slice($argv, 1));
+  } catch (\PDOException | \yii\db\Exception $e) {
+    \Yii::error($e->getMessage(), 'cron-instance-pf');
+    \Yii::$app->db->close();
   } catch (\Throwable $e) {
-    Yii::error($e->getMessage() . "\n" . $e->getTraceAsString(), 'cron-loop');
-    exit(1);
+    Yii::error($e->getMessage() . "\n" . $e->getTraceAsString(), 'cron-instance-pf');
   }
 
+  \Yii::getLogger()->flush(true);
   gc_collect_cycles();
-  sleep(10);
+  sleep($interval);
 }
