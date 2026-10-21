@@ -459,7 +459,7 @@ class DefaultController extends \app\components\BaseController
   {
     $tp = $this->findTPModel($id);
 
-    if ($tp->team_id !== Yii::$app->user->identity->teamLeader->id) {
+    if (Yii::$app->user->identity->teamLeader === null || $tp->team_id !== Yii::$app->user->identity->teamLeader->id) {
       Yii::$app->session->setFlash('error', \Yii::t('app', 'You have no permission to approve this membership.'));
       return $this->redirect(['index']);
     }
@@ -478,7 +478,7 @@ class DefaultController extends \app\components\BaseController
   {
     $tp = $this->findTPModel($id);
     $token = $tp->team->token;
-    if ($tp->player_id !== Yii::$app->user->id && $tp->team_id !== Yii::$app->user->identity->teamLeader->id) {
+    if (Yii::$app->user->identity->teamLeader === null || ($tp->player_id !== Yii::$app->user->id && $tp->team_id !== Yii::$app->user->identity->teamLeader->id)) {
       Yii::$app->session->setFlash('error', \Yii::t('app', 'You have no permission to cancel this membership.'));
       return $this->redirect(['index']);
     }
