@@ -72,7 +72,7 @@ class StreamWidget extends Widget
     }
 
     $this->dataProvider = new ActiveDataProvider([
-      'query' => $streamModel,
+      'query' => $streamModel->with(['player.profile.owner']),
       'pagination' => [
         'pageSizeParam' => $this->pagination ? 'stream-perpage' : false,
         'pageParam' => $this->pagination ? 'stream-page' : false,

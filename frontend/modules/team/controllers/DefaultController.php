@@ -215,7 +215,7 @@ class DefaultController extends \app\components\BaseController
       ->where(['id' => $subQuery])
       ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
     $streamProvider = new ActiveDataProvider([
-      'query' => $stream,
+      'query' => $stream->with(['player.profile.owner']),
       'pagination' => [
         'pageSizeParam' => 'stream-perpage',
         'pageParam' => 'stream-page',
@@ -283,7 +283,7 @@ class DefaultController extends \app\components\BaseController
       ->where(['id' => $subQuery])
       ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
     $streamProvider = new ActiveDataProvider([
-      'query' => $stream,
+      'query' => $stream->with(['player.profile.owner']),
       'pagination' => [
         'pageSizeParam' => 'stream-perpage',
         'pageParam' => 'stream-page',
@@ -347,7 +347,7 @@ class DefaultController extends \app\components\BaseController
       $baseq->andWhere(['team.inviteonly' => 1]);
 
     $dataProvider = new ActiveDataProvider([
-      'query' => $baseq->joinWith(['teamPlayers'])->groupBy(['team.id'])->orderBy(['name' => SORT_ASC]),
+      'query' => $baseq->joinWith(['teamPlayers'])->with(['score', 'owner.profile.owner'])->groupBy(['team.id'])->orderBy(['name' => SORT_ASC]),
       'pagination' => false,
     ]);
 

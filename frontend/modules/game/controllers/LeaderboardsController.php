@@ -99,7 +99,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $headshotDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\game\models\Headshot::find()->academic($academic)->timed()->orderBy(['timer' => SORT_ASC, 'created_at' => SORT_ASC])->with(['player.profile.owner', 'target']),
+      'query' => \app\modules\game\models\Headshot::find()->academic($academic)->timed()->orderBy(['timer' => SORT_ASC, 'created_at' => SORT_ASC])->with(['player.profile.owner', 'target'])->cache(60),
       'pagination' => [
         'pageSizeParam' => 'headshotTimed-perpage',
         'pageParam' => 'headshotTimed-page',
@@ -108,7 +108,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $solversDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->timed()->orderBy(['challenge_solver.timer' => SORT_ASC, 'challenge_solver.created_at' => SORT_ASC])->with(['player.profile.owner', 'challenge']),
+      'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->timed()->orderBy(['challenge_solver.timer' => SORT_ASC, 'challenge_solver.created_at' => SORT_ASC])->with(['player.profile.owner', 'challenge'])->cache(60),
       'pagination' => [
         'pageSizeParam' => 'solverTimed-perpage',
         'pageParam' => 'solverTimed-page',
@@ -117,7 +117,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $mostSolvesDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_DESC, 'challenge_solver.created_at' => SORT_ASC])->with(['player.profile.owner']),
+      'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_DESC, 'challenge_solver.created_at' => SORT_ASC])->with(['player.profile.owner'])->cache(60),
       'pagination' => [
         'pageSizeParam' => 'solverMost-perpage',
         'pageParam' => 'solverMost-page',
@@ -126,7 +126,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $mostWriteupsDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\target\models\Writeup::find()->totals()->with(['player.profile.owner']),
+      'query' => \app\modules\target\models\Writeup::find()->totals()->with(['player.profile.owner'])->cache(60),
       'pagination' => [
         'pageSizeParam' => 'writeupsMost-perpage',
         'pageParam' => 'writeupsMost-page',
@@ -135,7 +135,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $AvgSolvesDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->timed()->select(['challenge_solver.player_id,avg(challenge_solver.timer) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_ASC, 'player_id' => SORT_ASC])->with(['player.profile.owner']),
+      'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->timed()->select(['challenge_solver.player_id,avg(challenge_solver.timer) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_ASC, 'player_id' => SORT_ASC])->with(['player.profile.owner'])->cache(60),
       'pagination' => [
         'pageSizeParam' => 'solverAvg-perpage',
         'pageParam' => 'solverAvg-page',
@@ -144,7 +144,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $AvgHeadshotDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\game\models\Headshot::find()->academic($academic)->select(['headshot.player_id,avg(headshot.timer) as timer'])->timed()->groupBy(['player_id'])->having('count(distinct target_id)>1')->orderBy(['timer' => SORT_ASC, 'player_id' => SORT_ASC])->with(['player.profile.owner']),
+      'query' => \app\modules\game\models\Headshot::find()->academic($academic)->select(['headshot.player_id,avg(headshot.timer) as timer'])->timed()->groupBy(['player_id'])->having('count(distinct target_id)>1')->orderBy(['timer' => SORT_ASC, 'player_id' => SORT_ASC])->with(['player.profile.owner'])->cache(60),
       'pagination' => [
         'pageSizeParam' => 'headshotAvg-perpage',
         'pageParam' => 'headshotAvg-page',
@@ -154,7 +154,7 @@ class LeaderboardsController extends \app\components\BaseController
 
 
     $mostHeadshotsDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\game\models\Headshot::find()->academic($academic)->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_DESC, 'created_at' => SORT_ASC])->with(['player.profile.owner']),
+      'query' => \app\modules\game\models\Headshot::find()->academic($academic)->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_DESC, 'created_at' => SORT_ASC])->with(['player.profile.owner'])->cache(60),
       'pagination' => [
         'pageSizeParam' => 'headshotMost-perpage',
         'pageParam' => 'headshotMost-page',

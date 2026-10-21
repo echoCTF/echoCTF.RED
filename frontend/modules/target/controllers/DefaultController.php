@@ -176,7 +176,7 @@ class DefaultController extends \app\components\BaseController
       ->orWhere(['model_id' => $id, 'model' => 'headshot'])
       ->andWhere(['player_id' => $profile->player_id]);
     $dataProvider = new ActiveDataProvider([
-      'query' => $model->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC]),
+      'query' => $model->with(['player.profile.owner'])->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC]),
       'pagination' => [
         'pageSizeParam' => 'stream-perpage',
         'pageParam' => 'stream-page',
@@ -184,21 +184,12 @@ class DefaultController extends \app\components\BaseController
       ]
     ]);
 
-    $headshotsProvider = new ArrayDataProvider([
-      'allModels' => $target->headshots,
-      'pagination' => [
-        'pageSizeParam' => 'headshot-perpage',
-        'pageParam' => 'headshot-page',
-        'pageSize' => 10,
-      ]
-    ]);
     $this->lastVisit($target->id);
     return $this->render('versus', [
       'profile' => $profile,
       'target' => $target,
       'streamProvider' => $dataProvider,
       'playerPoints' => $target->player_points,
-      'headshotsProvider' => $headshotsProvider
     ]);
   }
 
@@ -216,10 +207,10 @@ class DefaultController extends \app\components\BaseController
     $pageStats->totalTreasures = (int) Treasure::find()->count();
     $pageStats->totalFindings = (int) Finding::find()->count();
 
-    $pageStats->totalClaims = (int) PlayerTreasure::find()->count();
+    $pageStats->totalClaims = Yii::$app->cache->getOrSet('stats.claims', fn() => (int) PlayerTreasure::find()->count(), 60);
     $pageStats->ownClaims = (int) PlayerTreasure::find()->where(['player_id' => Yii::$app->user->id])->count();
     $pageStats->ownFinds = (int) PlayerFinding::find()->where(['player_id' => Yii::$app->user->id])->count();
-    $pageStats->totalHeadshots = Headshot::find()->count();
+    $pageStats->totalHeadshots = Yii::$app->cache->getOrSet('stats.headshots', fn() => (int) Headshot::find()->count(), 300);
     $pageStats->ownHeadshots = Headshot::find()->where(['player_id' => Yii::$app->user->id])->count();
 
 
@@ -292,7 +283,7 @@ class DefaultController extends \app\components\BaseController
     $target = $this->findModel($id);
     $this->lastVisit($id);
     if (!Yii::$app->user->isGuest) {
-      $target = Target::find()->with('headshots', 'networks', 'metadata')->forView((int) Yii::$app->user->id)->where(['t.id' => $id])->one();
+      $target = Target::find()->with('networks', 'metadata')->forView((int) Yii::$app->user->id)->where(['t.id' => $id])->one();
     } else {
       $target = Target::find()->withAvgRating()->where(['t.id' => $id])->one();
     }
@@ -323,7 +314,7 @@ class DefaultController extends \app\components\BaseController
     }
 
     $dataProvider = new ActiveDataProvider([
-      'query' => $streamModel,
+      'query' => $streamModel->with(['player.profile.owner']),
       'pagination' => [
         'pageSizeParam' => 'stream-perpage',
         'pageParam' => 'stream-page',
@@ -335,22 +326,10 @@ class DefaultController extends \app\components\BaseController
 
     ]);
 
-
-
-    $headshotsProvider = new ArrayDataProvider([
-      'allModels' => $target->headshots,
-      'pagination' => [
-        'pageSizeParam' => 'headshot-perpage',
-        'pageParam' => 'headshot-page',
-        'pageSize' => 10,
-      ]
-    ]);
-
     return $this->render('view', [
       'target' => $target,
       'streamProvider' => $dataProvider,
       'playerPoints' => $target->player_points,
-      'headshotsProvider' => $headshotsProvider
     ]);
   }
 
@@ -446,7 +425,7 @@ class DefaultController extends \app\components\BaseController
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("points........: %s", number_format($target->points)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("flags.........: %d", count($target->treasures)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("services......: %d", count($target->findings)), $greencolor);
-    imagestring($src, 5, 60, $lineheight * $i++, sprintf("headshots.....: %d", count($target->headshots)), $greencolor);
+    imagestring($src, 5, 60, $lineheight * $i++, sprintf("headshots.....: %d", $target->countHeadshots), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("last headshot.: %s", $lastHeadshot), $greencolor);
 
     Yii::$app->getResponse()->getHeaders()

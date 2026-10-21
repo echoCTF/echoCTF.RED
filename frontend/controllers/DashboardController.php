@@ -68,19 +68,26 @@ class DashboardController extends \app\components\BaseController
 
     $dayActivity = null;
     if (Yii::$app->sys->dashboard_graph_visible) {
-      $rows = (new \yii\db\Query())
-        ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt', 'sum(if(player_id in (:player_id),1,0)) as pcnt'])
-        ->addParams([':player_id' => Yii::$app->user->id])
+      $since = new \yii\db\Expression('now()-interval 10 day');
+      $overall = Yii::$app->cache->getOrSet('dashboard.graph', fn() => (new \yii\db\Query())
+        ->select(['d' => 'date(ts)', 'dat' => 'date_format(ts,"%D")', 'cnt' => 'count(*)'])
         ->from('stream')
-        ->where(['>=', 'ts', new \yii\db\Expression('now()-interval 10 day')])
+        ->where(['>=', 'ts', $since])
         ->groupBy(new \yii\db\Expression('date(ts)'))
         ->orderBy(new \yii\db\Expression('date(ts)'))
+        ->all(), 60);
+      $mine = (new \yii\db\Query())
+        ->select(['d' => 'date(ts)', 'cnt' => 'count(*)'])
+        ->from('stream')
+        ->where(['player_id' => Yii::$app->user->id])
+        ->andWhere(['>=', 'ts', $since])
+        ->groupBy(new \yii\db\Expression('date(ts)'))
+        ->indexBy('d')
         ->all();
-
-      foreach ($rows as $row) {
+      foreach ($overall as $row) {
         $dayActivity['labels'][] = "'" . $row['dat'] . "'";
         $dayActivity['overallSeries'][] = $row['cnt'];
-        $dayActivity['playerSeries'][] = $row['pcnt'];
+        $dayActivity['playerSeries'][] = $mine[$row['d']]['cnt'] ?? 0;
       }
     }
     $visits = Yii::$app->session->get('last_targets_visited');
