@@ -113,14 +113,14 @@ class PerkController extends \app\components\BaseController
         ]);
 
         if (!$privateNetwork->save())
-          throw UserException($privateNetwork->getErrorSummary(false));
+          throw new UserException(implode(", ", $privateNetwork->getErrorSummary(false)));
 
         $privateNetwork->refresh();
         $metadata = json_decode($model->metadata);
         $metadata->private_network_id = $privateNetwork->id;
         $model->metadata = json_encode($metadata);
         if (!$model->save())
-          throw UserException($model->getErrorSummary(false));
+          throw new UserException(implode(", ", $model->getErrorSummary(false)));
         $transaction->commit();
       } catch (\Exception $e) {
         $transaction->rollBack();
@@ -134,7 +134,7 @@ class PerkController extends \app\components\BaseController
     // Check if network if full
     if (isset($model->product->metadataObj->private_instances) && count($privateNetwork->privateTargets) >= intval($model->product->metadataObj->private_instances)) {
       \Yii::$app->session->setFlash('warning', 'You have reached your maximum number of targets for this network!');
-      return $this->redirect(['/network/private/view','id'=>$model->id]);
+      return $this->redirect(['/network/private/view', 'id' => $model->id]);
     }
 
     try {
