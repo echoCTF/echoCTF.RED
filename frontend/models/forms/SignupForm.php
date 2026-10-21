@@ -76,7 +76,7 @@ class SignupForm extends Model
       ['captcha', 'captcha'],
 
       ['password', 'required'],
-      ['password', 'string', 'min' => 6],
+      ['password', 'string', 'min' => 8, 'max' => 255],
 
       ['affiliation', 'trim', 'when' => function ($model) {
         return Yii::$app->sys->player_require_identification === true;
