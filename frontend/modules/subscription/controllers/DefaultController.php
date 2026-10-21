@@ -146,6 +146,9 @@ class DefaultController extends \app\components\BaseController
         }
       } else if ($success_session->mode === 'payment' && $success_session->payment_status === 'paid') {
         $ps = Price::findOne(['id' => $success_session->metadata->price_id]);
+        if ($success_session->customer !== \Yii::$app->user->identity->stripe_customer_id)
+          throw new \Exception("User " . \Yii::$app->user->identity->stripe_customer_id . " tried to access another player's price: " . $success_session->customer);
+
         if (!$ps) {
           Yii::$app->session->addFlash('error', Yii::t('app', 'Price not found!'));
           return $this->redirect(['/subscription/default/index']);
@@ -179,7 +182,7 @@ class DefaultController extends \app\components\BaseController
     $return_url = \yii\helpers\Url::toRoute('/subscription/default/index', true);
     try {
       if ($stripe_customer_id !== \Yii::$app->user->identity->stripe_customer_id)
-        throw new \Exception("User " . \Yii::$app->user->identity->stripe_customer_id . " tried to access another customer checkout session: " . $stripe_customer_id);
+        throw new \Exception("User " . \Yii::$app->user->identity->stripe_customer_id . " tried to access another customer's checkout session: " . $stripe_customer_id);
 
       $session = \Stripe\BillingPortal\Session::create([
         'customer' => $stripe_customer_id,
