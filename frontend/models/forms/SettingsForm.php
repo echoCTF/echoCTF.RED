@@ -78,37 +78,23 @@ class SettingsForm extends Model
   public function rules()
   {
     return [
-      [['fullname'], 'trim', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      [['fullname'], 'string', 'max' => 128, 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      [['pending_progress'], 'boolean', 'trueValue' => true, 'falseValue' => false, 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      [['fullname'], 'trim'],
+      [['fullname'], 'string', 'max' => 128],
+      [['pending_progress'], 'boolean', 'trueValue' => true, 'falseValue' => false],
 
       /* email field rules */
-      [['email'], 'trim', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      ['email', 'required', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      [['email'], 'trim'],
+      ['email', 'required'],
       ['email', 'email', 'checkDNS' => true, 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute) && \Yii::$app->sys->disable_mail_validation !== true;
+        return \Yii::$app->sys->disable_mail_validation !== true;
       }],
-      [['email'], 'string', 'min' => 6, 'max' => 255, 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      [['email'], 'email', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      [['email'], 'string', 'min' => 6, 'max' => 255],
+      [['email'], 'email'],
       ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app', 'This email has already been taken.'), 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute) && $model->{$attribute} !== $model->_player->{$attribute};
+        return $model->{$attribute} !== $model->_player->{$attribute};
       }],
       ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => \Yii::t('app', 'This email is banned.'), 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute) && $model->{$attribute} !== $model->_player->{$attribute};
+        return $model->{$attribute} !== $model->_player->{$attribute};
       }],
       ['email', function ($attribute, $params) {
         $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
@@ -119,89 +105,47 @@ class SettingsForm extends Model
           $this->addError($attribute, \Yii::t('app', 'This email is banned.'));
       }],
       ['email', '\app\components\validators\StopForumSpamValidator', 'max' => intval(Yii::$app->sys->signup_StopForumSpamValidator), 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute) && Yii::$app->sys->signup_StopForumSpamValidator !== false && \Yii::$app->sys->disable_mail_validation !== true;
+        return Yii::$app->sys->signup_StopForumSpamValidator !== false && \Yii::$app->sys->disable_mail_validation !== true;
       }],
       ['email', '\app\components\validators\MXServersValidator',  'mxonly' => true, 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute) && Yii::$app->sys->signup_MXServersValidator !== false && \Yii::$app->sys->disable_mail_validation !== true;
+        return Yii::$app->sys->signup_MXServersValidator !== false && \Yii::$app->sys->disable_mail_validation !== true;
       }],
 
       /* username field rules */
-      [['username'], 'trim', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      [['username'], 'string', 'min' => intval(Yii::$app->sys->username_length_min), 'max' => intval(Yii::$app->sys->username_length_max), 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      [['username'], 'match', 'not' => true, 'pattern' => '/[^a-zA-Z0-9]/', 'message' => \Yii::t('app', 'Invalid characters in username.'), 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => ['admin', 'administrator', 'echoctf', 'root', 'support'], 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      [['username'], 'required', 'message' => \Yii::t('app', 'Please choose a username.'), 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      [['username'], 'trim'],
+      [['username'], 'string', 'min' => intval(Yii::$app->sys->username_length_min), 'max' => intval(Yii::$app->sys->username_length_max)],
+      [['username'], 'match', 'not' => true, 'pattern' => '/[^a-zA-Z0-9]/', 'message' => \Yii::t('app', 'Invalid characters in username.')],
+      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => ['admin', 'administrator', 'echoctf', 'root', 'support']],
+      [['username'], 'required', 'message' => \Yii::t('app', 'Please choose a username.')],
       ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app', 'This username has already been taken.'), 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute) && $model->{$attribute} !== $model->_player->{$attribute};
+        return $model->{$attribute} !== $model->_player->{$attribute};
       }],
       [['new_password',], 'string', 'min' => 8, 'max' => 255],
       [['confirm_password'], 'string', 'min' => 8, 'max' => 255],
       [['new_password'], 'compare', 'compareAttribute' => 'confirm_password'],
-      [['discord', 'twitter', 'github', 'htb', 'bio', 'youtube', 'twitch'], 'trim', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      [['discord', 'twitter', 'github', 'htb', 'bio', 'youtube', 'twitch'], 'trim'],
       [['bio'], 'filter', 'filter' => function ($value) {
         return str_replace(["\r\n", "\r"], "\n", $value);
       }],
-      ['country', 'exist', 'targetClass' => \app\models\Country::class, 'targetAttribute' => ['country' => 'id'], 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      [['youtube', 'twitch'], 'string', 'max' => 255, 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      ['discord', 'filter', 'filter' => [$this, 'normalizeDiscord'], 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      ['country', 'exist', 'targetClass' => \app\models\Country::class, 'targetAttribute' => ['country' => 'id']],
+      [['youtube', 'twitch'], 'string', 'max' => 255],
+      ['discord', 'filter', 'filter' => [$this, 'normalizeDiscord']],
 
-      ['twitter', '\app\components\validators\social\TwitterValidator', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      ['twitch', '\app\components\validators\social\TwitchValidator', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      ['github', '\app\components\validators\social\GithubValidator', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      ['youtube', '\app\components\validators\social\YoutubeValidator', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      ['discord', '\app\components\validators\social\DiscordValidator', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      ['twitter', '\app\components\validators\social\TwitterValidator'],
+      ['twitch', '\app\components\validators\social\TwitchValidator'],
+      ['github', '\app\components\validators\social\GithubValidator'],
+      ['youtube', '\app\components\validators\social\YoutubeValidator'],
+      ['discord', '\app\components\validators\social\DiscordValidator'],
 
-      ['echoctf', 'string', 'max' => 8, 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      ['echoctf', 'match', 'pattern' => '/^[0-9]+$/', 'message' => 'Only numbers are allowed for echoCTF.RED profile', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      ['htb', 'string', 'max' => 8, 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      ['htb', 'match', 'pattern' => '/^[0-9]+$/', 'message' => 'Only numbers are allowed for HTB profile', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      ['echoctf', 'string', 'max' => 8],
+      ['echoctf', 'match', 'pattern' => '/^[0-9]+$/', 'message' => 'Only numbers are allowed for echoCTF.RED profile'],
+      ['htb', 'string', 'max' => 8],
+      ['htb', 'match', 'pattern' => '/^[0-9]+$/', 'message' => 'Only numbers are allowed for HTB profile'],
 
-      [['country'], 'string', 'max' => 3, 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      [['country'], 'string', 'max' => 3],
       [['uploadedAvatar'], 'file',  'extensions' => 'png', 'mimeTypes' => 'image/png', 'maxSize' =>  512000, 'tooBig' => \Yii::t('app', 'File larger than expected, limit is {sizeLimit}', ['sizeLimit' => '500KB'])],
-      [['visibility'], 'in', 'range' => ['public', 'private', 'ingame'], 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
-      [['visibility'], 'default', 'value' =>  Yii::$app->sys->profile_visibility !== false ? Yii::$app->sys->profile_visibility : 'ingame', 'when' => function ($model, $attribute) {
-        return $model->_cf($attribute);
-      }],
+      [['visibility'], 'in', 'range' => ['public', 'private', 'ingame']],
+      [['visibility'], 'default', 'value' =>  Yii::$app->sys->profile_visibility !== false ? Yii::$app->sys->profile_visibility : 'ingame'],
     ];
   }
 
@@ -344,5 +288,10 @@ class SettingsForm extends Model
     $this->new_password = $this->confirm_password = null;
     $this->uploadedAvatar = null;
     $this->init();
+  }
+
+  public function activeAttributes()
+  {
+    return array_values(array_intersect(parent::activeAttributes(), array_merge($this->allowed_fields, ['new_password', 'confirm_password', 'uploadedAvatar'])));
   }
 }
