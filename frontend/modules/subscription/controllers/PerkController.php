@@ -67,8 +67,7 @@ class PerkController extends \app\components\BaseController
       $view = $model->product->shortcode;
       $viewPath = $this->getViewPath() . DIRECTORY_SEPARATOR . $view . '.php';
       if (Yii::$app->request->isPost && Yii::$app->request->post('target_id') !== null) {
-        $this->{'process' . $view}($model);
-        return $this->redirect(['/subscription/perk/configure', 'id' => $model->id]);
+        return $this->{'process' . $view}($model) ?? $this->redirect(['/subscription/perk/configure', 'id' => $model->id]);
       }
 
       if (file_exists($viewPath)) {
@@ -134,7 +133,7 @@ class PerkController extends \app\components\BaseController
     // Check if network if full
     if (isset($model->product->metadataObj->private_instances) && count($privateNetwork->privateTargets) >= intval($model->product->metadataObj->private_instances)) {
       \Yii::$app->session->setFlash('warning', 'You have reached your maximum number of targets for this network!');
-      return $this->redirect(['/network/private/view', 'id' => $model->id]);
+      return $this->redirect(['/network/private/view', 'id' => $privateNetwork->id]);
     }
 
     try {
