@@ -139,7 +139,7 @@ class TargetController extends \yii\rest\ActiveController
     }
     \Yii::$app->cache->memcache->set("api_claim:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_claim_timeout) + 1);
     $string = Yii::$app->getRequest()->getBodyParam('hash');
-    if (trim($string) === "" || $string === null) {
+    if (!is_string($string) || trim($string) === "") {
       $response->statusCode = 422;
       return ["message" => Yii::t('app', 'Need to provide hash value.'), "code" => 0, "status" => \Yii::$app->response->statusCode];
     }
