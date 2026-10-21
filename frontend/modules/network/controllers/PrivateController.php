@@ -29,16 +29,16 @@ class PrivateController extends \app\components\BaseController
     return ArrayHelper::merge([
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['view','spin'],
+        'only' => ['view', 'spin'],
         'rules' => [
           'eventStartEnd' => [
-            'actions' => ['view','spin'],
+            'actions' => ['view', 'spin'],
           ],
           'disabledRoute' => [
-            'actions' => ['view','spin'],
+            'actions' => ['view', 'spin'],
           ],
-          [
-            'actions' => ['view','spin'],
+          'zzPrivateAllowed' => [
+            'actions' => ['view', 'spin'],
             'allow' => true,
             'roles' => ['@']
           ],
