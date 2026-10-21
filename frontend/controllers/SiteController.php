@@ -230,7 +230,7 @@ class SiteController extends \app\components\BaseController
         return $this->goHome();
       }
     } catch (\Throwable $e) {
-      if ($transaction->getIsActive()) {
+      if ($transaction !== null &&  $transaction->getIsActive()) {
         $transaction->rollBack();
         if ($model->identificationPath !== null) {
           @unlink($model->identificationPath);
