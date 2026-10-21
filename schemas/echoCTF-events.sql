@@ -11,22 +11,24 @@ DELIMITER ;;
 --
 DROP EVENT IF EXISTS `ev_player_token_expiration` ;;
 CREATE EVENT `ev_player_token_expiration` ON SCHEDULE EVERY 10 SECOND STARTS '2024-11-06 12:26:52' ON COMPLETION PRESERVE ENABLE DO BEGIN
-    ALTER EVENT `ev_player_token_expiration` DISABLE;
-      call expire_player_tokens();
-    ALTER EVENT `ev_player_token_expiration` ENABLE;
-  END ;;
+  IF GET_LOCK('ev_player_token_expiration', 0) = 1 THEN
+    CALL expire_player_tokens();
+    DO RELEASE_LOCK('ev_player_token_expiration');
+  END IF;
+END ;;
 
 DROP EVENT IF EXISTS `player_maintenance` ;;
 CREATE EVENT `player_maintenance` ON SCHEDULE EVERY 1 DAY STARTS '2020-01-01 00:00:00' ON COMPLETION PRESERVE ENABLE DO BEGIN
-    CALL player_maintenance();
-  END ;;
+  CALL player_maintenance();
+END ;;
 
 DROP EVENT IF EXISTS `rotate_notifications` ;;
 CREATE EVENT `rotate_notifications` ON SCHEDULE EVERY 12 HOUR STARTS '2023-04-03 00:00:01' ON COMPLETION PRESERVE ENABLE DO BEGIN
-      ALTER EVENT `rotate_notifications` DISABLE;
-      CALL rotate_notifications(180,(24*3)*60);
-      ALTER EVENT `rotate_notifications` ENABLE;
-    END ;;
+  IF GET_LOCK('rotate_notifications', 0) = 1 THEN
+    CALL rotate_notifications(180,(24*3)*60);
+    DO RELEASE_LOCK('rotate_notifications');
+  END IF;
+END ;;
 
 --  DROP EVENT IF EXISTS `update_player_last_seen` ;;
 --  CREATE EVENT `update_player_last_seen` ON SCHEDULE EVERY 1 HOUR STARTS '2020-09-14 11:10:05' ON COMPLETION PRESERVE ENABLE DO BEGIN
@@ -40,11 +42,12 @@ CREATE EVENT `rotate_notifications` ON SCHEDULE EVERY 12 HOUR STARTS '2023-04-03
 DROP EVENT IF EXISTS `update_ranks` ;;
 CREATE EVENT `update_ranks` ON SCHEDULE EVERY 30 SECOND STARTS '2021-01-11 12:26:44' ON COMPLETION PRESERVE ENABLE DO
 BEGIN
-    ALTER EVENT `update_ranks` DISABLE;
-    call calculate_ranks();
-    call calculate_country_rank();
-    call calculate_team_ranks();
-    ALTER EVENT `update_ranks` ENABLE;
+  IF GET_LOCK('update_ranks', 0) = 1 THEN
+    CALL calculate_ranks();
+    CALL calculate_country_rank();
+    CALL calculate_team_ranks();
+    DO RELEASE_LOCK('update_ranks');
+  END IF;
 END ;;
 
 DROP EVENT IF EXISTS `ev_ws_token_expiration` ;;
