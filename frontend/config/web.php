@@ -5,7 +5,6 @@ $cache = require __DIR__ . '/cache.php';
 $cookieValidationKey = require __DIR__ . '/validationKey.php';
 $cache['options'] = [
   \Memcached::OPT_NO_BLOCK => true,
-  \Memcached::OPT_NOREPLY => true,
   \Memcached::OPT_TCP_NODELAY => true,
 ];
 
@@ -159,7 +158,7 @@ $config = [
         $csp_header = Yii::$app->sys->offense_csp_header;
         $csp = Yii::$app->sys->offense_csp;
         if ($csp && $csp_header) {
-          $e->sender->headers->set($csp_header,str_replace('{host}', Yii::$app->request->hostName, $csp));
+          $e->sender->headers->set($csp_header, str_replace('{host}', Yii::$app->request->hostName, $csp));
         }
       },
     ],
@@ -188,7 +187,7 @@ $config = [
         'name' => '_identity-red',
         'secure' => YII_ENV_DEV ? false : true,
         'httpOnly' => true,
-        'sameSite'=>'Strict'
+        'sameSite' => 'Strict'
       ],
     ],
     'errorHandler' => [
