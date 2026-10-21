@@ -24,7 +24,7 @@ class DefaultController extends \app\components\BaseController
     return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['index', 'speed', 'view','answer'],
+        'only' => ['index', 'speed', 'view', 'answer'],
         'rules' => [
           'eventEnd' => [
             'actions' => ['speed'],
@@ -44,8 +44,8 @@ class DefaultController extends \app\components\BaseController
           ],
           [
             'allow' => false,
-            'matchCallback'=>function($event){
-              if(Yii::$app->sys->module_speedprogramming_enabled===true) {
+            'matchCallback' => function ($event) {
+              if (Yii::$app->sys->module_speedprogramming_enabled === true) {
                 return false;
               }
               return true;
@@ -53,7 +53,7 @@ class DefaultController extends \app\components\BaseController
           ],
           [
             'allow' => true,
-            'actions' => ['speed','answer'],
+            'actions' => ['speed', 'answer'],
             'roles' => ['@'],
             'verbs' => ['post'],
           ],
@@ -139,7 +139,7 @@ class DefaultController extends \app\components\BaseController
 
   public function actionAnswer($id)
   {
-    $problem=$this->findModel($id);
+    $problem = $this->findModel($id);
     if (!$problem->active || SpeedSolution::findOne(['player_id' => Yii::$app->user->id, 'problem_id' => $id]) !== null) {
       return $this->redirect(['/speedprogramming/default/index']);
     }
@@ -153,7 +153,6 @@ class DefaultController extends \app\components\BaseController
         $transaction = $connection->beginTransaction();
 
         try {
-          $model->file->saveAs('uploads/player_' . Yii::$app->user->id . '-target_' . $id . '.' . $model->language);
           $ss = new SpeedSolution();
           $ss->language = $model->language;
           $ss->player_id = Yii::$app->user->id;
