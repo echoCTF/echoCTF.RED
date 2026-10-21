@@ -69,7 +69,7 @@ class DashboardController extends \app\components\BaseController
     $dayActivity = null;
     if (Yii::$app->sys->dashboard_graph_visible) {
       $rows = (new \yii\db\Query())
-        ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt', 'sum(if(player_id in (' . Yii::$app->user->id . '),1,0)) as pcnt'])
+        ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt', 'sum(if(player_id in (:player_id),1,0)) as pcnt'], [':player_id' => Yii::$app->user->id])
         ->from('stream')
         ->where(['>=', 'ts', new \yii\db\Expression('now()-interval 10 day')])
         ->groupBy(new \yii\db\Expression('date(ts)'))
@@ -137,7 +137,7 @@ class DashboardController extends \app\components\BaseController
     $query->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC])->limit($pages * $recordsPerpage);
     $newsModel = News::find()
       ->from(['t' => $query])
-      ->where(['id'=>$id])
+      ->where(['id' => $id])
       ->one();
 
     if ($newsModel === null) {
@@ -146,7 +146,7 @@ class DashboardController extends \app\components\BaseController
     }
     return $this->render('news', [
       'model' => $newsModel,
-      'full'=>true
+      'full' => true
     ]);
   }
 }
