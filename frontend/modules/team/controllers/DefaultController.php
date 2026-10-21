@@ -142,11 +142,11 @@ class DefaultController extends \app\components\BaseController
     $model = $this->findModel(['token' => $token]);
     $TP = TeamPlayer::find()->where(['team_id' => $model->id])->orderBy(['approved' => SORT_DESC, 'ts' => SORT_ASC]);
     $dataProvider = new ActiveDataProvider([
-      'query' => TeamPlayer::find()->where(['team_id' => $model->id])->orderBy(['approved' => SORT_DESC, 'ts' => SORT_ASC]),
+      'query' => $TP,
       'sort' => false,
       'pagination' => false,
     ]);
-    $teamPlayers = ArrayHelper::getColumn($TP->all(), 'player_id');
+    $teamPlayers = ArrayHelper::getColumn($dataProvider->getModels(), 'player_id');
     $headshots = \app\modules\target\models\Target::find()->headshottedByTeam($model->id);
     $headshotsProvider = new ActiveDataProvider([
       'query' => $headshots,
