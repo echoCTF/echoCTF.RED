@@ -14,7 +14,6 @@ use app\modules\target\models\TargetInstance;
  * @property integer $id
  * @property string $username
  * @property string $fullname
- * @property string $password_hash
  * @property string $password_reset_token
  * @property string $verification_token
  * @property string $email
@@ -265,8 +264,8 @@ class PlayerAR extends ActiveRecord
       $token = new WsToken();
       $token->player_id = $this->id;
       $token->subject_id = $this->username;
-      $token->token = trim(str_replace(['_','+'], '-', \Yii::$app->security->generateRandomString(32)), '-');
-      $token->expires_at=date('Y-m-d H:i:s', strtotime('+1 day'));
+      $token->token = trim(str_replace(['_', '+'], '-', \Yii::$app->security->generateRandomString(32)), '-');
+      $token->expires_at = date('Y-m-d H:i:s', strtotime('+1 day'));
       $token->save(false);
     }
 
