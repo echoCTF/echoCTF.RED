@@ -100,7 +100,7 @@ class DefaultController extends \app\components\BaseController
   {
     $speed = $this->findModel($id);
     if (!$speed->active)
-      $this->redirect(['/speed']);
+      return $this->redirect(['/speed']);
 
     $speedForm = new SpeedForm();
 
