@@ -16,6 +16,7 @@ use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
+use app\overloads\yii\filters\AccessControl;
 
 /**
  * TeamController implements the CRUD actions for Team model.
@@ -30,7 +31,7 @@ class DefaultController extends \app\components\BaseController
     $parent = parent::behaviors();
     return ArrayHelper::merge($parent, [
       'access' => [
-        'class' => \yii\filters\AccessControl::class,
+        'class' => AccessControl::class,
         'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite', 'mine', 'view', 'renew'],
         'rules' => [
           'teamsAccess' => [
