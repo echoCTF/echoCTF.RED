@@ -432,17 +432,20 @@ class ConfigureForm extends Model
         'moderator_csp_header',
         'moderator_csp',
       ], 'trim'],
-      [[
-        'mail_verification_token_validity',
-        'password_reset_token_validity',
-        'target_restart_log_interval',
-        'player_delete_rejected_after',
-        'player_delete_inactive_after',
-        'player_delete_deleted_after',
-        'player_changed_to_deleted_after',
-      ], 'match',
-         'pattern' => '/^\d+\s(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)$/i',
-         'message' => 'The format must be a number followed by one of: YEAR, MONTH, DAY, HOUR, MINUTE, SECOND.'],
+      [
+        [
+          'mail_verification_token_validity',
+          'password_reset_token_validity',
+          'target_restart_log_interval',
+          'player_delete_rejected_after',
+          'player_delete_inactive_after',
+          'player_delete_deleted_after',
+          'player_changed_to_deleted_after',
+        ],
+        'match',
+        'pattern' => '/^\d+\s(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)$/i',
+        'message' => 'The format must be a number followed by one of: YEAR, MONTH, DAY, HOUR, MINUTE, SECOND.'
+      ],
       // required fields
       [[
         'teams',
@@ -689,7 +692,7 @@ class ConfigureForm extends Model
       }
 
       if ($this->{$id} !== "" && $this->{$id} !== NULL && $this->{$id} != 0) {
-        file_put_contents('/tmp/post.log', "$id=>" . $this->{$id} . "\n", FILE_APPEND);
+        //file_put_contents('/tmp/post.log', "$id=>" . $this->{$id} . "\n", FILE_APPEND);
 
         $sysconfig->val = $this->{$id};
         $sysconfig->save();
