@@ -168,9 +168,13 @@ class TargetController extends \yii\rest\ActiveController
     }
 
     Yii::$app->counters->increment('claims');
-    if ($this->doClaim($treasure) === false) {
+    $claimed = $this->doClaim($treasure);
+    if ($claimed === false) {
       $response->statusCode = 422;
       return ["message" => \Yii::t('app', 'Flag claimed before'), "code" => 0, "status" => \Yii::$app->response->statusCode];
+    } else if ($claimed === 0) {
+      $response->statusCode = 422;
+      return ["message" => \Yii::t('app', 'Flag does not exist!'), "code" => 0, "status" => \Yii::$app->response->statusCode];
     }
     \Yii::$app->response->statusCode = 201;
     return ["message" => "Flag claimed!", "code" => 0, "status" => \Yii::$app->response->statusCode];
@@ -185,13 +189,14 @@ class TargetController extends \yii\rest\ActiveController
       $PT->player_id = (int) Yii::$app->user->id;
       $PT->treasure_id = $treasure->id;
       try {
-        $PT->save();
+        $saved = $PT->save();
       } catch (\yii\db\IntegrityException $e) {
         $transaction->rollBack();
         return false;
       }
-      if ($treasure->appears !== -1) {
-        $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
+      if ($saved && $treasure->appears !== -1 && Treasure::updateAllCounters(['appears' => -1], ['and', ['id' => $treasure->id], ['>', 'appears', 0]]) === 0) {
+        $transaction->rollBack();
+        return 0;
       }
       $transaction->commit();
       $this->doOndemand($treasure->target);

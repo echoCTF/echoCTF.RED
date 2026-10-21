@@ -408,8 +408,11 @@ class DefaultController extends \app\components\BaseController
     }
 
     Yii::$app->counters->increment('claims');
-    if ($this->doClaim($treasure) === false)
+    $claimed = $this->doClaim($treasure);
+    if ($claimed === false)
       Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
+    elseif ($claimed === 0)
+      Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] has no claims left', ['name' => $treasure->name]));
     return $this->renderAjax('claim');
   }
 
@@ -508,13 +511,14 @@ class DefaultController extends \app\components\BaseController
       $PT->player_id = (int) Yii::$app->user->id;
       $PT->treasure_id = $treasure->id;
       try {
-        $PT->save();
+        $saved = $PT->save();
       } catch (\yii\db\IntegrityException $e) {
         $transaction->rollBack();
         return false;
       }
-      if ($treasure->appears !== -1) {
-        $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
+      if ($saved && $treasure->appears !== -1 && Treasure::updateAllCounters(['appears' => -1], ['and', ['id' => $treasure->id], ['>', 'appears', 0]]) === 0) {
+        $transaction->rollBack();
+        return 0;
       }
       $transaction->commit();
       $this->doOndemand($treasure->target);
