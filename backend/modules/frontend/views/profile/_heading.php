@@ -15,7 +15,7 @@ use yii\helpers\Html;
     <?php endif;?>
     <div class="media-left pr30">
       <a href="//<?= Yii::$app->sys->offense_domain ?>/profile/<?= $model->id ?>" target="_blank">
-        <img width="140px" class="img-fluid img-thumbnail" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= $model->avatar ?>" alt="<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= $model->avatar ?>">
+        <img width="140px" class="img-fluid img-thumbnail" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= Html::encode($model->avatar) ?>" alt="<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= $model->avatar ?>">
       </a>
       <?php if ($model->owner->active):?>
       <img align="right" class="img-fluid" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/badges/<?= $model->id ?>.png" alt="Profile badge">
