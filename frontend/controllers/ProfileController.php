@@ -435,11 +435,11 @@ class ProfileController extends \app\components\BaseController
     $thumb_h = $thumb_w = 300;
     if ($old_x > $old_y) {
       $thumb_w    =   300;
-      $thumb_h    =   $old_y * (300 / $old_x);
+      $thumb_h    =   max(1, (int) round($old_y * (300 / $old_x)));
     }
 
     if ($old_x < $old_y) {
-      $thumb_w    =   $old_x * (300 / $old_y);
+      $thumb_w    =   max(1, (int) round($old_x * (300 / $old_y)));
       $thumb_h    =   300;
     }
 
