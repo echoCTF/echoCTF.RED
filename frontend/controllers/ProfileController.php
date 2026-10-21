@@ -214,20 +214,26 @@ class ProfileController extends \app\components\BaseController
 
   public function actionDelete()
   {
-    if (intval(\Yii::$app->user->identity->updateAttributes(['status' => 0])) > 0) {
-      if (\Yii::$app->user->identity->subscription) {
-        if (\Yii::$app->user->identity->subscription->subscription_id === 'sub_vip') {
-          \Yii::$app->user->identity->subscription->delete();
+    $player = \Yii::$app->user->identity;
+    try {
+      if ($player->subscription) {
+        if ($player->subscription->subscription_id === 'sub_vip') {
+          $player->subscription->delete();
         } else {
           $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-          if ($stripe)
-            $subscription = $stripe->subscriptions->cancel(\Yii::$app->user->identity->subscription->subscription_id, []);
+          $stripe->subscriptions->cancel($player->subscription->subscription_id, []);
         }
       }
+    } catch (\Throwable $e) {
+      \Yii::error($e->getMessage());
+      \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to delete your account. Contact our support for assistance."));
+      return $this->redirect(['/']);
+    }
 
+    if (intval($player->updateAttributes(['status' => 0])) > 0) {
       try {
         $dcq = new PlayerDisconnectQueue();
-        $dcq->player_id = Yii::$app->user->identity->id;
+        $dcq->player_id = $player->id;
         $dcq->save();
       } catch (\Exception $e) {
       }
