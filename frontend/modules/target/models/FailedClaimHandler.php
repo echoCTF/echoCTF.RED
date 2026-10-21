@@ -19,7 +19,7 @@ class FailedClaimHandler extends \yii\base\Model
    * @param int[] $excludePlayerIds players to exclude from matching
    * @return array|false treasure_id, player_id, encryptedCode, treasure_points, or false
    */
-  public static function findByEncryptedCode($secretKey = false, $string, array $excludePlayerIds = [])
+  public static function findByEncryptedCode($secretKey, $string, array $excludePlayerIds = [])
   {
     if ($secretKey === false)
       return false;
