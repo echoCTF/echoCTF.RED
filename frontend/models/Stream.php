@@ -52,9 +52,9 @@ class Stream extends StreamAR
       return sprintf("%s", $this->player->profile->twitterHandle);
     }
     if ($showIcon)
-      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b> %s", $this->player->profile->avtr, RankFormatter::ordinalPlaceCss($this->player->profile->rank->id), $this->player->profile->link, $this->icon);
+      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b> %s", Html::encode($this->player->profile->avtr), RankFormatter::ordinalPlaceCss($this->player->profile->rank->id), $this->player->profile->link, $this->icon);
     else
-      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b>", $this->player->profile->avtr, RankFormatter::ordinalPlaceCss($this->player->profile->rank->id), $this->player->profile->link);
+      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b>", Html::encode($this->player->profile->avtr), RankFormatter::ordinalPlaceCss($this->player->profile->rank->id), $this->player->profile->link);
   }
 
   public function Title(bool $pub = true)

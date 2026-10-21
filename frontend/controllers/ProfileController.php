@@ -345,7 +345,6 @@ class ProfileController extends \app\components\BaseController
         $settingsForm->uploadedAvatar = UploadedFile::getInstance($settingsForm, 'uploadedAvatar');
         if ($this->HandleUpload($settingsForm->uploadedAvatar)) {
           $fname = Yii::getAlias(sprintf('@app/web/images/avatars/%s.png', $profile->id));
-          $settingsForm->avatar = sprintf("%s.png", $profile->id);
           $settingsForm->uploadedAvatar->saveAs($fname);
           $settingsForm->uploadedAvatar = null;
         }

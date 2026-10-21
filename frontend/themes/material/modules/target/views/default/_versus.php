@@ -129,7 +129,7 @@ $this->registerCssFile('@web/assets/hljs/styles/a11y-dark.min.css',['depends' =>
     <?php Card::begin([
       'header' => 'header-icon',
       'type' => 'card-stats',
-      'icon' => sprintf('<img class="rounded" src="/images/avatars/%s" height="60"/>', $identity->avtr),
+      'icon' => sprintf('<img class="rounded" src="/images/avatars/%s" height="60"/>', Html::encode($identity->avtr)),
       'color' => 'primary',
       'subtitle' => 'Level ' . $identity->experience->id . ' / ' . $identity->experience->name,
       'title' => $identity->owner->username . " / " . $identity->rank->ordinalPlace . " Place",
