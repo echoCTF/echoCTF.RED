@@ -97,7 +97,7 @@ class PerkController extends \app\components\BaseController
     $targetId = intval(Yii::$app->request->post('target_id'));
     if ($targetId === 0)
       return;
-    $target = Target::find()->where(['id' => intval($targetId)])->one();
+    $target = Target::find()->where(['id' => intval($targetId), 'active' => 1, 'instance_allowed' => 1])->one();
     if ($target === null)
       return;
 
