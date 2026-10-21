@@ -43,10 +43,10 @@ class DefaultController extends \app\components\BaseController
             'actions' => [''],
           ],
           'eventEnd' => [
-            'actions' => ['join', 'update', 'approve', 'reject', 'create'],
+            'actions' => ['join', 'update', 'approve', 'reject', 'create', 'invite'],
           ],
           [
-            'actions' => ['create', 'join', 'update', 'approve', 'reject'],
+            'actions' => ['create', 'join', 'update', 'approve', 'reject', 'invite'],
             'allow' => false,
             'roles' => ['@'],
             'matchCallback' => function ($rule, $action) {
