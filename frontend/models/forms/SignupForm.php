@@ -176,8 +176,9 @@ class SignupForm extends Model
       $pr->save();
     }
 
-    $counter = intval(\Yii::$app->cache->memcache->get('registeredip:' . \Yii::$app->request->userIp));
-    Yii::$app->cache->memcache->set('registeredip:' . \Yii::$app->request->userIp, $counter + 1, 3600);
+    $mc = \Yii::$app->cache->memcache;
+    if (!$mc->add('registeredip:' . \Yii::$app->request->userIp, 1, 3600))
+      $mc->increment('registeredip:' . \Yii::$app->request->userIp);
     if (Yii::$app->sys->require_activation === true && !$this->sendEmail($player)) {
       throw new \Exception(\Yii::t('app', "Error Processing Request. Failed to mail verification email!"), 1);
     }

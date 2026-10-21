@@ -60,10 +60,11 @@ class ResendVerificationEmailForm extends Model
     if ($player->verification_token === null) {
       $player->generateEmailVerificationToken();
     }
-    $verification_resend_ip++;
-    $verification_resend_email++;
-    Yii::$app->cache->memcache->set('verification_resend_ip:' . \Yii::$app->request->userIp, $verification_resend_ip, Yii::$app->sys->verification_resend_ip_timeout);
-    Yii::$app->cache->memcache->set('verification_resend_email:' . $this->email, $verification_resend_email, Yii::$app->sys->verification_resend_email_timeout);
+    $mc = Yii::$app->cache->memcache;
+    if (!$mc->add('verification_resend_ip:' . \Yii::$app->request->userIp, 1, Yii::$app->sys->verification_resend_ip_timeout))
+      $mc->increment('verification_resend_ip:' . \Yii::$app->request->userIp);
+    if (!$mc->add('verification_resend_email:' . $this->email, 1, Yii::$app->sys->verification_resend_email_timeout))
+      $mc->increment('verification_resend_email:' . $this->email);
     if ($player->status === Player::STATUS_UNVERIFIED) {
       $emailtpl = \app\modelscli\EmailTemplate::findOne(['name' => 'emailChangeVerify']);
       $subject = \Yii::t('app', 'Verify your email for {event_name}', ['event_name' => trim(Yii::$app->sys->event_name)]);
