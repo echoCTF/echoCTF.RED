@@ -383,6 +383,8 @@ class ProfileController extends \app\components\BaseController
   protected function HandleUpload($uploadedAvatar)
   {
     if (!$uploadedAvatar) return false;
+    list($w, $h) = getimagesize($uploadedAvatar->tempName);
+    if ($w <= 0 || $w > 1900 || $h <= 0 || $h > 1900) return false;
     try {
       $src = imagecreatefrompng($uploadedAvatar->tempName);
       if ($src !== false) {
