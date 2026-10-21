@@ -26,7 +26,7 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property TeamPlayer[] $teamPlayers
  * @property Player[] $players
  * @property TeamInvite $inviteOrCreate
-*/
+ */
 class Team extends \yii\db\ActiveRecord
 {
   public $uploadedAvatar;
@@ -174,7 +174,7 @@ class Team extends \yii\db\ActiveRecord
   public function getInviteOrCreate()
   {
     if ($this->invite === null) {
-      $invite = new TeamInvite(['team_id'=>$this->id,'token'=>Yii::$app->security->generateRandomString(8)]);
+      $invite = new TeamInvite(['team_id' => $this->id, 'token' => Yii::$app->security->generateRandomString(8)]);
       if (!$invite->save()) {
         throw new \RuntimeException('Failed to create TeamInvite');
       }
@@ -221,6 +221,8 @@ class Team extends \yii\db\ActiveRecord
   protected function HandleUpload($uploadedAvatar)
   {
     if (!$uploadedAvatar) return false;
+    list($w, $h) = getimagesize($uploadedAvatar->tempName);
+    if ($w <= 0 || $w > 1900 || $h <= 0 || $h > 1900) return false;
     $src = imagecreatefrompng($uploadedAvatar->tempName);
     if ($src !== false) {
 
