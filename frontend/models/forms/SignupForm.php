@@ -97,7 +97,7 @@ class SignupForm extends Model
         'extensions' => 'pdf, jpg, png, jpeg, docx',
         'minSize' => 1024,
         'tooSmall' => 'File must be at least 1Kb in size...',
-        'maxSize' => 500000000,
+        'maxSize' => 50000000,
         'when' => function ($model) {
           return Yii::$app->sys->player_require_identification === true;
         }
