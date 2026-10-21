@@ -22,6 +22,8 @@ yii\bootstrap5\Modal::end();
 
   <p>
     <?= Html::a('Create Player Score', ['create'], ['class' => 'btn btn-success']) ?>
+    <?= Html::a('Export Top15 CSV', ['top15'], ['class' => 'btn btn-warning']) ?>
+    <?= Html::a('Export CSV', ['export'], ['class' => 'btn btn-warning']) ?>
   </p>
 
   <?php // echo $this->render('_search', ['model' => $searchModel]);
