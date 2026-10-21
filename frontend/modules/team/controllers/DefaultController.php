@@ -529,7 +529,7 @@ class DefaultController extends \app\components\BaseController
       $tp->player_id = Yii::$app->user->id;
       $tp->team_id = $team->id;
       $tp->approved = 0;
-      if ($tp->save()) {
+      if (!$tp->save()) {
         Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to add you as member of this team.'));
         return $this->redirect(['index']);
       }
