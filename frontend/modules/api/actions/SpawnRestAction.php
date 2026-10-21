@@ -1,4 +1,5 @@
 <?php
+
 namespace app\modules\api\actions;
 
 use Yii;
@@ -11,104 +12,105 @@ use yii\helpers\Url;
 
 class SpawnRestAction extends \yii\rest\ViewAction
 {
-  public $modelClass='\app\modules\target\models\TargetInstance';
-  public $serializer='yii\rest\Serializer';
+  public $modelClass = '\app\modules\target\models\TargetInstance';
+  public $serializer = 'yii\rest\Serializer';
 
   public function run($id)
   {
 
-    \Yii::$app->response->format=\yii\web\Response::FORMAT_JSON;
+    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
     \Yii::$app->response->statusCode = 200;
 
-    try
-    {
+    try {
       \Yii::$app->response->statusCode = 201;
-      $target=$this->findTarget($id);
+      $target = $this->findTarget($id);
+      $playerSpin = Yii::$app->user->identity->profile->spins;
+
       if (\Yii::$app->cache->memcache->get("api_target_spawn:" . \Yii::$app->user->id) !== false) {
         \Yii::$app->response->statusCode = 429;
-        return ["message"=>\Yii::t('app',"Rate-limited, wait a few seconds and try again."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
+        return ["message" => \Yii::t('app', "Rate-limited, wait a few seconds and try again."), "code" => 0, "status" => \Yii::$app->response->statusCode];
       }
       \Yii::$app->cache->memcache->set("api_target_spawn:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_target_spawn_timeout) + 1);
 
-      if($this->actionAllowedFor($target->id))
-      {
+      if ($this->actionDisabledRoute($target)) {
         \Yii::$app->response->statusCode = 403;
-        throw new UserException(\Yii::t('app','Target not allowed to spawn private instances!'));
+        throw new UserException(\Yii::t('app', 'This route is disabled!'));
       }
-      if(!$this->actionAllowedBy())
-      {
+      if (!$target->instance_allowed) {
         \Yii::$app->response->statusCode = 403;
-        throw new UserException(\Yii::t('app','Player not allowed to spawn private instances!'));
+        throw new UserException(\Yii::t('app', 'Target not allowed to spawn private instances!'));
+      }
+      if (!$this->actionAllowedBy()) {
+        \Yii::$app->response->statusCode = 403;
+        throw new UserException(\Yii::t('app', 'Player not allowed to spawn private instances!'));
       }
 
-      if($target->status!=='online')
-      {
+      if (intval($playerSpin->counter) >= intval($playerSpin->perday)) {
+        \Yii::$app->response->statusCode = 403;
+        throw new UserException(\Yii::t('app', "You've used all your spins; your counter is maxed out!"));
+      }
+
+      if ($target->status !== 'online') {
         \Yii::$app->response->statusCode = 422;
-        throw new UserException(\Yii::t('app','Target did not start, target is not online yet!'));
+        throw new UserException(\Yii::t('app', 'Target did not start, target is not online yet!'));
       }
 
-      $ti=TargetInstance::findOne(Yii::$app->user->id);
+      $ti = TargetInstance::findOne(Yii::$app->user->id);
       // Check if user has already a started instance
-      if($ti!==null)
-      {
-        if($ti->target_id!=$id)
-        {
+      if ($ti !== null) {
+        if ($ti->target_id != $id) {
           \Yii::$app->response->statusCode = 201;
-          $ti->reboot=2;
+          $ti->reboot = 2;
           $ti->save();
-          \Yii::$app->response->data=["message"=>\Yii::t('app',"Scheduled existing instance to shutdown"),"code"=>0,"status"=>\Yii::$app->response->statusCode];
-        }
-        else
-        {
+          \Yii::$app->response->data = ["message" => \Yii::t('app', "Scheduled existing instance to shutdown"), "code" => 0, "status" => \Yii::$app->response->statusCode];
+        } else {
           \Yii::$app->response->statusCode = 200;
-          $ti->reboot=1;
+          $ti->reboot = 1;
           $ti->save();
-          \Yii::$app->response->data=["message"=>\Yii::t('app',"Scheduled instance restart."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
+          \Yii::$app->response->data = ["message" => \Yii::t('app', "Scheduled instance restart."), "code" => 0, "status" => \Yii::$app->response->statusCode];
         }
 
         return \Yii::$app->response->data;
       }
 
-      $ti=new TargetInstance;
-      $ti->player_id=Yii::$app->user->id;
-      $ti->target_id=$id;
+      $ti = new TargetInstance;
+      $ti->player_id = Yii::$app->user->id;
+      $ti->target_id = $id;
       // pick the least used server currently
-      $ti->server_id=intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id) limit 1')->queryScalar());
-      if(!$ti->save())
-      {
+      $ti->server_id = intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id) limit 1')->queryScalar());
+      if (!$ti->save()) {
         \Yii::$app->response->statusCode = 422;
-        throw new UserException(\Yii::t('app','Failed to spawn new target instance for you.'));
+        throw new UserException(\Yii::t('app', 'Failed to spawn new target instance for you.'));
       }
-      \Yii::$app->response->data=["message"=>\Yii::t('app',"Scheduled spawn of private target instance."),"code"=>0,"status"=>\Yii::$app->response->statusCode];
-    }
-    catch(\Exception $e)
-    {
-      \Yii::$app->response->data=["message"=>$e->getMessage(),"code"=>0,"status"=>\Yii::$app->response->statusCode];
+      $playerSpin = Yii::$app->user->identity->profile->spins;
+      $playerSpin->counter = intval($playerSpin->counter) + 1;
+      $playerSpin->total = intval($playerSpin->total) + 1;
+      $playerSpin->save();
+      \Yii::$app->response->data = ["message" => \Yii::t('app', "Scheduled spawn of private target instance."), "code" => 0, "status" => \Yii::$app->response->statusCode];
+    } catch (\Exception $e) {
+      \Yii::$app->response->data = ["message" => $e->getMessage(), "code" => 0, "status" => \Yii::$app->response->statusCode];
     }
 
     //return [];
   }
 
-  protected function actionAllowedFor($id)
+  protected function actionDisabledRoute($model)
   {
-      $model=$this->findTarget($id);
-      $action=sprintf('/target/%d/spawn',$model->id);
-      return $model->instance_allowed && Yii::$app->DisabledRoute->disabled($action);
+    $action = sprintf('/target/%d/spawn', $model->id);
+    return Yii::$app->DisabledRoute->disabled($action);
   }
 
   protected function actionAllowedBy()
   {
-    return (Yii::$app->user->identity->isVip===true || Yii::$app->sys->all_players_vip===true);
+    return (Yii::$app->user->identity->isVip === true || Yii::$app->sys->all_players_vip === true);
   }
 
   private function findTarget($id)
   {
-    if(($model=Target::findOne($id))!==NULL)
-    {
+    if (($model = Target::findOne($id)) !== NULL) {
       return $model;
     }
 
-    throw new NotFoundHttpException(\Yii::t('app','The requested target does not exist.'));
-
+    throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
   }
 }

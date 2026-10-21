@@ -24,7 +24,12 @@ class SpawnRestAction extends \yii\rest\ViewAction
     try {
       $target = $this->findTarget($id);
       $playerSpin = Yii::$app->user->identity->profile->spins;
-      if ($this->actionAllowedFor($target->id)) {
+
+      if ($this->actionDisabledRoute($target)) {
+        throw new UserException(\Yii::t('app', 'This route is disabled!'));
+      }
+
+      if (!$target->instance_allowed) {
         throw new UserException(\Yii::t('app', 'Target not allowed to spawn private instances!'));
       }
       if (!$this->actionAllowedBy()) {
@@ -86,11 +91,10 @@ class SpawnRestAction extends \yii\rest\ViewAction
     return Yii::$app->controller->redirect($goback);
   }
 
-  protected function actionAllowedFor($id)
+  protected function actionDisabledRoute($model)
   {
-    $model = $this->findTarget($id);
     $action = sprintf('/target/%d/spawn', $model->id);
-    return $model->instance_allowed && Yii::$app->DisabledRoute->disabled($action);
+    return Yii::$app->DisabledRoute->disabled($action);
   }
 
   protected function actionAllowedBy()
