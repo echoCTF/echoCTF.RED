@@ -62,7 +62,7 @@ class DashboardController extends \app\components\BaseController
     $active_challenges = Yii::$app->cache->getOrSet('active_challenges', fn() => intval(\app\modules\challenge\models\Challenge::find()->alias('t')->active()->count()), 300);
     $dashboardStats->countries = Yii::$app->cache->getOrSet('stats.countries', fn() => (int) Profile::find()->joinWith(['owner'])->select(['country'])->distinct()->where(['player.status' => 10])->count(), 300);
     if (Yii::$app->sys->academic_grouping !== false)
-      $dashboardStats->claims = Yii::$app->cache->getOrSet('stats.claims', fn() => (int) PlayerTreasure::find()->where(['player.academic' => Yii::$app->user->identity->academic])->joinWith(['player'])->count(), 60);
+      $dashboardStats->claims = Yii::$app->cache->getOrSet('stats.claims_' . Yii::$app->user->identity->academic, fn() => (int) PlayerTreasure::find()->where(['player.academic' => Yii::$app->user->identity->academic])->joinWith(['player'])->count(), 60);
     else
       $dashboardStats->claims = Yii::$app->cache->getOrSet('stats.claims', fn() => (int) PlayerTreasure::find()->count(), 60);
 
