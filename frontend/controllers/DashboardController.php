@@ -69,7 +69,8 @@ class DashboardController extends \app\components\BaseController
     $dayActivity = null;
     if (Yii::$app->sys->dashboard_graph_visible) {
       $rows = (new \yii\db\Query())
-        ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt', 'sum(if(player_id in (:player_id),1,0)) as pcnt'], [':player_id' => Yii::$app->user->id])
+        ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt', 'sum(if(player_id in (:player_id),1,0)) as pcnt'])
+        ->addParams([':player_id' => Yii::$app->user->id])
         ->from('stream')
         ->where(['>=', 'ts', new \yii\db\Expression('now()-interval 10 day')])
         ->groupBy(new \yii\db\Expression('date(ts)'))
@@ -88,7 +89,7 @@ class DashboardController extends \app\components\BaseController
       $last_targets_visited = Target::find()->addSelect("id,name")
         ->active()
         ->andWhere(['IN', 'id', $visits])
-        ->orderBy([new \yii\db\Expression("FIELD (id, :visitsSTR)", [':visitsSTR' => $visitsSTR])])
+        ->orderBy([new \yii\db\Expression("FIELD (id, $visitsSTR)")])
         ->asArray()->all();
     } else
       $last_targets_visited = [];
