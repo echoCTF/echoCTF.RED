@@ -408,7 +408,8 @@ class DefaultController extends \app\components\BaseController
     }
 
     Yii::$app->counters->increment('claims');
-    $this->doClaim($treasure);
+    if ($this->doClaim($treasure) === false)
+      Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
     return $this->renderAjax('claim');
   }
 
@@ -506,7 +507,12 @@ class DefaultController extends \app\components\BaseController
       $PT = new PlayerTreasure();
       $PT->player_id = (int) Yii::$app->user->id;
       $PT->treasure_id = $treasure->id;
-      $PT->save();
+      try {
+        $PT->save();
+      } catch (\yii\db\IntegrityException $e) {
+        $transaction->rollBack();
+        return false;
+      }
       if ($treasure->appears !== -1) {
         $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
       }
