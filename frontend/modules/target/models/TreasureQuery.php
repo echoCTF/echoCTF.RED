@@ -12,10 +12,6 @@ class TreasureQuery extends \yii\db\ActiveQuery
     return $this->andWhere(['target_id' => $id]);
   }
 
-  public function active()
-  {
-    return $this->andWhere(['active' => 1]);
-  }
 
   public function byCode($code)
   {
