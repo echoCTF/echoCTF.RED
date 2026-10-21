@@ -24,6 +24,7 @@ class TargetController extends \yii\rest\ActiveController
     'class' => 'yii\rest\Serializer',
     'collectionEnvelope' => 'items',
   ];
+
   public function behaviors()
   {
     \Yii::$app->user->enableSession = false;
@@ -90,6 +91,13 @@ class TargetController extends \yii\rest\ActiveController
 
     return $actions;
   }
+
+  public function checkAccess($action, $model = null, $params = [])
+  {
+    if ($action === 'view' && $model !== null)
+      \Yii::$app->getModule('target')->checkNetwork($model);
+  }
+
   public function actionInstances()
   {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
