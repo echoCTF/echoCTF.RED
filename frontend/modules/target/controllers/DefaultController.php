@@ -158,10 +158,11 @@ class DefaultController extends \app\components\BaseController
     }
 
     $target = Target::find()->forView($profile->player_id)->where(['t.id' => $id])->one();
-    if ($target) {
+    if ($target === null) {
       Yii::$app->session->setFlash('warning', \Yii::t('app', 'No such target'));
       return $this->redirect(['/']);
     }
+
     $PF = PlayerFinding::find()->joinWith(['finding'])->where(['player_id' => $profile->player_id, 'finding.target_id' => $id])->all();
     $PT = PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id' => $profile->player_id, 'treasure.target_id' => $id])->all();
     $treasures = $findings = [];
