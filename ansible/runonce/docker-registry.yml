@@ -26,6 +26,9 @@
       - { name: "{{registry_user}}", comment: "Docker Registry User", uid: 3750, password: '*', home: "{{registry_home}}" }
     rcctl:
       - { name: 'supervisord', state: "enable" }
+    versions:
+      registry: "3.1.2"
+#      registry: "90939f1"
     packages:
     - ansible
     - go
@@ -139,37 +142,57 @@
   - name: Load new pf
     command: pfctl -f /etc/pf.conf
 
-  - name: Clean registry distribution
-    command: rm -rf /root/distribution
+  - name: Download registry binary
+    get_url:
+      url: https://github.com/echoCTF/obsd-binaries/releases/download/registry-{{versions.registry}}/registry-openbsd-amd64.zip
+      dest: /tmp/registry-{{versions.registry}}.zip
 
-  - name: Get registry distribution
-    command: git clone https://github.com/distribution/distribution.git
-    args:
-      chdir: /root
-    environment:
-      GOPATH: "{{registry.home}}/go"
-
-  - name: Checkout working hash for distribution
-    command: git checkout 90939f1173f65356e724f398793b4d7239a49595
-    args:
-      chdir: /root/distribution
-    environment:
-      GOPATH: "{{registry.home}}/go"
-
-  - name: Build registry
-    command: go build main.go
-    args:
-      chdir: /root/distribution/cmd/registry
-      creates: /root/distribution/cmd/registry/main
-    environment:
-      GOPATH: "{{registry.home}}/go"
+  - name: Extract registry binary
+    unarchive:
+      src: /tmp/registry-{{versions.registry}}.zip
+      dest: /tmp
+      remote_src: yes
 
   - name: Install registry binary
-    command: install -o root /root/distribution/cmd/registry/main /usr/local/sbin/registry
-    args:
-      creates: /usr/local/sbin/registry
+    copy:
+      src: /tmp/registry-openbsd-amd64
+      dest: /usr/local/sbin/registry
+      remote_src: yes
+      owner: root
+      group: wheel
+      mode: "0555"
 
-  - name: Prepare registry folders
+#  - name: Clean registry distribution
+#    command: rm -rf /root/distribution
+
+#  - name: Get registry distribution
+#    command: git clone https://github.com/distribution/distribution.git
+#    args:
+#      chdir: /root
+#    environment:
+#      GOPATH: "{{registry.home}}/go"
+
+#  - name: Checkout working hash for distribution
+#    command: git checkout 90939f1173f65356e724f398793b4d7239a49595
+#    args:
+#      chdir: /root/distribution
+#    environment:
+#      GOPATH: "{{registry.home}}/go"
+
+#  - name: Build registry
+#    command: go build main.go
+#    args:
+#      chdir: /root/distribution/cmd/registry
+#      creates: /root/distribution/cmd/registry/main
+#    environment:
+#      GOPATH: "{{registry.home}}/go"
+
+#  - name: Install registry binary
+#    command: install -o root /root/distribution/cmd/registry/main /usr/local/sbin/registry
+#    args:
+#      creates: /usr/local/sbin/registry
+
+  - name: Prepare registry folders (for LE)
     command: mkdir -p {{registry.storage}} /etc/nginx
 
   - name: Create /etc/rc.d/docker_registry
