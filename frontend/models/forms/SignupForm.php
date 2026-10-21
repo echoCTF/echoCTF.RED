@@ -151,7 +151,7 @@ class SignupForm extends Model
 
     if (Yii::$app->sys->player_require_identification) {
       $ext = basename($this->identificationFile->getExtension());
-      $this->identificationPath = 'identificationFiles/' . $player->profile->id . '.' . $ext;
+      $this->identificationPath = Yii::getAlias("@webroot/identificationFiles/" . $player->profile->id . '.' . $ext);
       $this->identificationFile->saveAs($this->identificationPath);
       try {
         $metadata = new \app\models\PlayerMetadata([

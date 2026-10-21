@@ -386,9 +386,9 @@ class SiteController extends \app\components\BaseController
   }
 
   public function actionChangelog()
-  {
-    $changelog = @file_get_contents('../Changelog.md');
-    $todo = @file_get_contents('../TODO.md');
+  {;
+    $changelog = @file_get_contents(Yii::getAlias("@app/Changelog.md"));
+    $todo = @file_get_contents(Yii::getAlias("@app/TODO.md"));
     return $this->render('changelog', [
       'changelog' => $changelog,
       'todo' => $todo
