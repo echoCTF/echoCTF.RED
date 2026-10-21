@@ -4,34 +4,34 @@ use yii\helpers\Html;
 ?>
 <div class="page-heading">
   <div class="media clearfix">
-    <?php if ($model->owner->status!==$model->owner::STATUS_ACTIVE):?>
+    <?php if ($model->owner->status !== $model->owner::STATUS_ACTIVE): ?>
       <?= \yii\bootstrap5\Alert::widget([
-                      'body' => "<b>Account is ".$model->owner::STATUSES[$model->owner->status]."</b>",
-                      'options' => [
-                          'id' => 'user-status',
-                          'class' => 'alert-danger text-center',
-                      ],
-                  ]);?>
-    <?php endif;?>
+        'body' => "<b>Account is " . $model->owner::STATUSES[$model->owner->status] . "</b>",
+        'options' => [
+          'id' => 'user-status',
+          'class' => 'alert-danger text-center',
+        ],
+      ]); ?>
+    <?php endif; ?>
     <div class="media-left pr30">
       <a href="//<?= Yii::$app->sys->offense_domain ?>/profile/<?= $model->id ?>" target="_blank">
-        <img width="140px" class="img-fluid img-thumbnail" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= Html::encode($model->avatar) ?>" alt="<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= $model->avatar ?>">
+        <img width="140px" class="img-fluid img-thumbnail" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= Html::encode($model->avatar) ?>" alt="<?= Yii::$app->sys->offense_domain ?>/images/avatars/<?= Html::encode($model->avatar) ?>">
       </a>
-      <?php if ($model->owner->active):?>
-      <img align="right" class="img-fluid" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/badges/<?= $model->id ?>.png" alt="Profile badge">
-      <?php endif;?>
+      <?php if ($model->owner->active): ?>
+        <img align="right" class="img-fluid" src="//<?= Yii::$app->sys->offense_domain ?>/images/avatars/badges/<?= Html::encode($model->id) ?>.png" alt="Profile badge">
+      <?php endif; ?>
     </div>
     <div class="media-body va-m">
-      <h2 class="media-heading"><?php if(\Yii::$app->sys->academic_grouping!==null && \Yii::$app->sys->academic_grouping!==false) echo $model->owner->academicShort.": ";?><?= Html::encode($model->owner->username) ?>
-        <small><?php if(trim($model->owner->fullname)!=="") echo " - ",Html::encode($model->owner->fullname) ?><?php if($model->owner->metadata && trim($model->owner->metadata->affiliation)!=="") echo " - ",Html::encode($model->owner->metadata->affiliation) ?></small>
+      <h2 class="media-heading"><?php if (\Yii::$app->sys->academic_grouping !== null && \Yii::$app->sys->academic_grouping !== false) echo $model->owner->academicShort . ": "; ?><?= Html::encode($model->owner->username) ?>
+        <small><?php if (trim($model->owner->fullname) !== "") echo " - ", Html::encode($model->owner->fullname) ?><?php if ($model->owner->metadata && trim($model->owner->metadata->affiliation) !== "") echo " - ", Html::encode($model->owner->metadata->affiliation) ?></small>
       </h2>
-      <?php if($model->owner->teamPlayer):?><p>Team: <?php echo Html::a($model->owner->teamPlayer->team->name,['/frontend/team/view','id'=>$model->owner->teamPlayer->team_id]), " ",Html::a('<i class="fa-solid fa-up-right-from-square"></i>','//'.Yii::$app->sys->offense_domain.'/team/'.$model->owner->teamPlayer->team->token,['title'=>'Go to team frontend page']);?></p><?php endif;?>
+      <?php if ($model->owner->teamPlayer): ?><p>Team: <?php echo Html::a($model->owner->teamPlayer->team->name, ['/frontend/team/view', 'id' => $model->owner->teamPlayer->team_id]), " ", Html::a('<i class="fa-solid fa-up-right-from-square"></i>', '//' . Yii::$app->sys->offense_domain . '/team/' . $model->owner->teamPlayer->team->token, ['title' => 'Go to team frontend page']); ?></p><?php endif; ?>
       <p class="lead"><?= Html::encode($model->bio) ?></p>
       <div class="media-links">
         <ul class="list-inline list-unstyled breadcrumb">
           <?php if ($model->owner->subscription) : ?>
             <li>
-              <?= Html::a('<span class="far fa-id-badge fs-3 text-info" style="padding-right: 0.2em;"></span>', "https://dashboard.stripe.com/subscriptions/" . $model->owner->subscription->subscription_id, ['target' => '_blank', 'title' => 'Go to stripe subscription - '.($model->owner->subscription->product ? $model->owner->subscription->product->name: $model->owner->subscription->price_id), 'data-toggle' => "tooltip", 'data-placement' => "top"]); ?>
+              <?= Html::a('<span class="far fa-id-badge fs-3 text-info" style="padding-right: 0.2em;"></span>', "https://dashboard.stripe.com/subscriptions/" . $model->owner->subscription->subscription_id, ['target' => '_blank', 'title' => 'Go to stripe subscription - ' . ($model->owner->subscription->product ? $model->owner->subscription->product->name : $model->owner->subscription->price_id), 'data-toggle' => "tooltip", 'data-placement' => "top"]); ?>
             </li>
           <?php endif; ?>
           <?php if ($model->owner->stripe_customer_id) : ?>
@@ -39,13 +39,13 @@ use yii\helpers\Html;
               <?= Html::a('<span class="fab fa-stripe fs-2 text-info" style="padding-right: 0.1em;"></span>', "https://dashboard.stripe.com/customers/" . $model->owner->stripe_customer_id, ['target' => '_blank', 'title' => 'Go to stripe customer', 'data-toggle' => "tooltip", 'data-placement' => "top"]); ?>
             </li>
           <?php endif; ?>
-          <?php if($model->echoctf):?>
+          <?php if ($model->echoctf): ?>
             <li>
-              <a href="https://echoctf.red/profile/<?=Html::encode($model->echoctf)?>"  data-toggle="tooltip" data-placement="top" title="echoCTF profile <?=Html::encode($model->echoctf)?>" target="_blank">
-                <span class="fas fa-flag fs-2 <?=$model->validate('echoctf') ? "text-info" : "text-danger" ?>"></span>
+              <a href="https://echoctf.red/profile/<?= Html::encode($model->echoctf) ?>" data-toggle="tooltip" data-placement="top" title="echoCTF profile <?= Html::encode($model->echoctf) ?>" target="_blank">
+                <span class="fas fa-flag fs-2 <?= $model->validate('echoctf') ? "text-info" : "text-danger" ?>"></span>
               </a>
             </li>
-          <?php endif;?>
+          <?php endif; ?>
           <?php if ($model->twitter) : ?>
             <li>
               <a href="https://twitter.com/<?= Html::encode($model->twitter) ?>" data-toggle="tooltip" data-placement="top" title="<?= Html::encode($model->twitter) ?>" target="_blank">
