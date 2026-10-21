@@ -178,7 +178,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
   public function setPassword($password)
   {
     $this->password_hash = Yii::$app->security->generatePasswordHash($password);
-    $this->password = Yii::$app->security->generatePasswordHash($password);
+    $this->password = $this->password_hash;
   }
 
   /**
