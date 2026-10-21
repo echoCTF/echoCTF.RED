@@ -88,7 +88,7 @@ class DashboardController extends \app\components\BaseController
       $last_targets_visited = Target::find()->addSelect("id,name")
         ->active()
         ->andWhere(['IN', 'id', $visits])
-        ->orderBy([new \yii\db\Expression("FIELD (id, $visitsSTR)")])
+        ->orderBy([new \yii\db\Expression("FIELD (id, :visitsSTR)", [':visitsSTR' => $visitsSTR])])
         ->asArray()->all();
     } else
       $last_targets_visited = [];
