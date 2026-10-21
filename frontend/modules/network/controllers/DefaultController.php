@@ -26,7 +26,7 @@ class DefaultController extends \app\components\BaseController
     return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['index', 'view','subscribe'],
+        'only' => ['index', 'view', 'subscribe'],
         'rules' => [
           'eventStartEnd' => [
             'actions' => ['index', 'view', 'subscribe'],
@@ -40,19 +40,19 @@ class DefaultController extends \app\components\BaseController
           [
             'actions' => ['view'],
             'allow' => true,
-            'roles'=>['?'],
-            'matchCallback'=>function($rule,$action){
+            'roles' => ['?'],
+            'matchCallback' => function ($rule, $action) {
               return Yii::$app->sys->network_view_guest;
             }
           ],
           [
-            'actions' => ['index','view', 'subscribe'],
+            'actions' => ['index', 'view', 'subscribe'],
             'allow' => true,
             'roles' => ['@']
           ],
           [
             'actions' => ['view'],
-            'allow' => true,
+            'allow' => false,
           ],
         ],
       ]
@@ -81,19 +81,16 @@ class DefaultController extends \app\components\BaseController
   public function actionView(int $id)
   {
     try {
-      $network=$this->findModel($id);
-      if(Yii::$app->user->isGuest && !$network->guest)
+      $network = $this->findModel($id);
+      if (Yii::$app->user->isGuest && !$network->guest)
         throw new UserException("Network is not pubic");
-
     } catch (\Exception $e) {
       return $this->redirect(['/']);
     }
     $tmod = \app\modules\target\models\Target::find();
-    if (Yii::$app->user->isGuest)
-    {
+    if (Yii::$app->user->isGuest) {
       $query = $tmod->forNet($id)->addState();
-    }
-    else
+    } else
       $query = $tmod->forNet($id)->player_progress(Yii::$app->user->id);
 
     $targetProgressProvider = new ActiveDataProvider([
@@ -104,15 +101,15 @@ class DefaultController extends \app\components\BaseController
       ]
     ]);
     $targetProgressProvider->setSort([
-      'defaultOrder' => ['status' => SORT_DESC, 'scheduled_at' => SORT_ASC, 't.weight'=>SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC],
+      'defaultOrder' => ['status' => SORT_DESC, 'scheduled_at' => SORT_ASC, 't.weight' => SORT_ASC, 'difficulty' => SORT_ASC, 'name' => SORT_ASC],
       'attributes' => [
         'scheduled_at' => [
           'asc' =>  ['scheduled_at' => SORT_ASC],
           'desc' => ['scheduled_at' => SORT_DESC],
         ],
-        't.weight'=> [
-          'asc'=>['t.weight'=>SORT_ASC],
-         'desc'=>['t.weight'=>SORT_DESC],
+        't.weight' => [
+          'asc' => ['t.weight' => SORT_ASC],
+          'desc' => ['t.weight' => SORT_DESC],
         ],
         'name' => [
           'asc' => ['name' => SORT_ASC],
@@ -126,7 +123,7 @@ class DefaultController extends \app\components\BaseController
           'asc' => ['total_headshots' => SORT_ASC],
           'desc' => ['total_headshots' => SORT_DESC],
         ],
-        'rootable'=>[
+        'rootable' => [
           'asc' =>  ['rootable' => SORT_ASC],
           'desc' => ['rootable' => SORT_DESC],
         ],
@@ -142,9 +139,9 @@ class DefaultController extends \app\components\BaseController
           'asc' => ['average_rating' => SORT_ASC],
           'desc' => ['average_rating' => SORT_DESC],
         ],
-        'progress'=>[
-          'asc'=>['progress'=>SORT_ASC],
-          'desc'=>['progress'=>SORT_DESC],
+        'progress' => [
+          'asc' => ['progress' => SORT_ASC],
+          'desc' => ['progress' => SORT_DESC],
           'default' => SORT_ASC
         ]
       ],
