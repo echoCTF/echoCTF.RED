@@ -220,7 +220,8 @@ class ProfileController extends \app\components\BaseController
           \Yii::$app->user->identity->subscription->delete();
         } else {
           $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-          $subscription = $stripe->subscriptions->cancel(\Yii::$app->user->identity->subscription->subscription_id, []);
+          if ($stripe)
+            $subscription = $stripe->subscriptions->cancel(\Yii::$app->user->identity->subscription->subscription_id, []);
         }
       }
 
