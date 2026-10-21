@@ -151,7 +151,8 @@ class DefaultController extends \app\components\BaseController
           return $this->redirect(['/subscription/default/index']);
         }
       }
-
+      if (!isset($ps))
+        throw new \Exception("Neither PlayerSubscription nor Price exists for the given successfull sessionID");
       return $this->render('success', [
         'success_session' => $success_session,
         'mine' => $ps
@@ -175,9 +176,11 @@ class DefaultController extends \app\components\BaseController
     \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
     $checkout_session = \Stripe\Checkout\Session::retrieve($sessionId);
     $stripe_customer_id = $checkout_session->customer;
-
     $return_url = \yii\helpers\Url::toRoute('/subscription/default/index', true);
     try {
+      if ($stripe_customer_id !== \Yii::$app->user->identity->stripe_customer_id)
+        throw new \Exception("User " . \Yii::$app->user->identity->stripe_customer_id . " tried to access another customer checkout session: " . $stripe_customer_id);
+
       $session = \Stripe\BillingPortal\Session::create([
         'customer' => $stripe_customer_id,
         'return_url' => $return_url,
@@ -185,6 +188,7 @@ class DefaultController extends \app\components\BaseController
 
       return ['url' => $session->url];
     } catch (\Exception $e) {
+      \Yii::error($e, 'app');
       return ['url' => $return_url];
     }
   }
@@ -315,7 +319,7 @@ class DefaultController extends \app\components\BaseController
 
   public function actionPayments()
   {
-    $payments = PlayerPaymentHistory::find()->mine()->orderBy(['created_at'=>SORT_DESC]);
+    $payments = PlayerPaymentHistory::find()->mine()->orderBy(['created_at' => SORT_DESC]);
 
     $paymentsProvider = new ActiveDataProvider([
       'query' => $payments,
