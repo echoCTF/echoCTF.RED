@@ -84,9 +84,9 @@ class TreasureQuery extends \yii\db\ActiveQuery
 
     // Join approved team players
     $this->innerJoin(
-        'team_player tp',
-        'tp.team_id = :team_id AND tp.approved = 1',
-        [':team_id' => $team_id]
+      'team_player tp',
+      'tp.team_id = :team_id AND tp.approved = 1',
+      [':team_id' => $team_id]
     );
 
     return $this->andWhere([
@@ -128,6 +128,6 @@ class TreasureQuery extends \yii\db\ActiveQuery
 
   public function notBy(int $player_id)
   {
-    return $this->andWhere(new \yii\db\Expression('treasure.id NOT IN (SELECT treasure_id FROM player_treasure WHERE player_id=' . $player_id . ')'));
+    return $this->andWhere(new \yii\db\Expression('treasure.id NOT IN (SELECT treasure_id FROM player_treasure WHERE player_id=:player_id)', [':player_id' => $player_id]));
   }
 }
