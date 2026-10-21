@@ -206,7 +206,6 @@ class PlayerController extends Controller
       if ($password === "")
         $password = $player->genPassword(false);
 
-      $player->password_hash = Yii::$app->security->generatePasswordHash($password);
       $player->password = Yii::$app->security->generatePasswordHash($password);
 
       $player->active = intval($active);
@@ -516,16 +515,14 @@ class PlayerController extends Controller
    * @param string $title The title of notification(s)
    * @param string $body The body of notification(s)
    */
-  public function actionWsNotify($id = 0, $type="swal:info",$title="Title",$body="Body")
+  public function actionWsNotify($id = 0, $type = "swal:info", $title = "Title", $body = "Body")
   {
-    $players=Player::find();
-    if($id >0 )
-      $players->where(['player.id'=>$id]);
+    $players = Player::find();
+    if ($id > 0)
+      $players->where(['player.id' => $id]);
 
-    foreach($players->all() as $p)
-    {
-      $p->notify($type,$title,$body);
+    foreach ($players->all() as $p) {
+      $p->notify($type, $title, $body);
     }
   }
-
 }
