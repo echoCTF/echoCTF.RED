@@ -186,7 +186,7 @@ class SettingsForm extends Model
     if ($this->_cf('username')) $this->username = $this->_player->username;
     if ($this->_cf('fullname')) $this->fullname = $this->_player->fullname;
     if ($this->_cf('email')) $this->email = $this->_player->email;
-    if ($this->_cf('email')) $this->visibility = $this->_player->profile->visibility;
+    if ($this->_cf('visibility')) $this->visibility = $this->_player->profile->visibility;
     if ($this->_cf('country')) $this->country = $this->_player->profile->country;
     if ($this->_cf('avatar')) $this->avatar = $this->_player->profile->avatar;
     if ($this->_cf('pending_progress')) $this->pending_progress = $this->_player->profile->pending_progress;
