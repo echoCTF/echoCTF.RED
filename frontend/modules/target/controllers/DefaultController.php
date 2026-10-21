@@ -151,7 +151,6 @@ class DefaultController extends \app\components\BaseController
    */
   public function actionVersus(int $id, int $profile_id)
   {
-    $sum = 0;
     $profile = $this->findProfile($profile_id);
     $resp = $this->checkVisible($profile);
     if ($resp instanceof \yii\web\Response) {
@@ -284,8 +283,6 @@ class DefaultController extends \app\components\BaseController
    */
   public function actionView(int $id)
   {
-
-    $sum = 0;
     $target = $this->findModel($id);
     $this->lastVisit($id);
     if (!Yii::$app->user->isGuest) {
