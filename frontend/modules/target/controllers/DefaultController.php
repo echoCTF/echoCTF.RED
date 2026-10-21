@@ -266,6 +266,7 @@ class DefaultController extends \app\components\BaseController
     if (($target = \app\modules\target\models\Target::find()->where(['t.id' => $id])->forView(\Yii::$app->user->id)->one()) === null) {
       throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
     }
+    $this->module->checkNetwork($target);
     $obj = new \stdClass;
     if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id == $id) {
       $obj->ip = long2ip(Yii::$app->user->identity->instance->ip);
