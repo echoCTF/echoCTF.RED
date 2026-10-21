@@ -26,11 +26,10 @@ class SpawnRestAction extends \yii\rest\ViewAction
       $target = $this->findTarget($id);
       $playerSpin = Yii::$app->user->identity->profile->spins;
 
-      if (\Yii::$app->cache->memcache->get("api_target_spawn:" . \Yii::$app->user->id) !== false) {
+      if (!\Yii::$app->cache->memcache->add("api_target_spawn:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_target_spawn_timeout) + 1)) {
         \Yii::$app->response->statusCode = 429;
         return ["message" => \Yii::t('app', "Rate-limited, wait a few seconds and try again."), "code" => 0, "status" => \Yii::$app->response->statusCode];
       }
-      \Yii::$app->cache->memcache->set("api_target_spawn:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_target_spawn_timeout) + 1);
 
       if ($this->actionDisabledRoute($target)) {
         \Yii::$app->response->statusCode = 403;

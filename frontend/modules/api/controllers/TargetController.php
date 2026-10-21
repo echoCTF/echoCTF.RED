@@ -102,7 +102,7 @@ class TargetController extends \yii\rest\ActiveController
   {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
     $response = Yii::$app->getResponse();
-    if (\Yii::$app->cache->memcache->get("api_target_instances:" . \Yii::$app->user->id) !== false) {
+    if (!\Yii::$app->cache->memcache->add("api_target_instances:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_target_instances_timeout) + 1)) {
       $response->statusCode = 429;
       return ["message" => \Yii::t('app', "Rate-limited, wait a few seconds and try again."), "code" => 0, "status" => \Yii::$app->response->statusCode];
     }
@@ -123,7 +123,6 @@ class TargetController extends \yii\rest\ActiveController
       'query' => $teamInstances,
       'pagination' => false,
     ]);
-    \Yii::$app->cache->memcache->set("api_target_instances:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_target_instances_timeout) + 1);
 
     return $dataProvider;
   }
@@ -133,11 +132,10 @@ class TargetController extends \yii\rest\ActiveController
   {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
     $response = Yii::$app->getResponse();
-    if (\Yii::$app->cache->memcache->get("api_claim:" . \Yii::$app->user->id) !== false) {
+    if (!\Yii::$app->cache->memcache->add("api_claim:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_claim_timeout) + 1)) {
       $response->statusCode = 429;
       return ["message" => \Yii::t('app', "Rate-limited, wait a few seconds and try again."), "code" => 0, "status" => \Yii::$app->response->statusCode];
     }
-    \Yii::$app->cache->memcache->set("api_claim:" . \Yii::$app->user->id, time(), intval(\Yii::$app->sys->api_claim_timeout) + 1);
     $string = Yii::$app->getRequest()->getBodyParam('hash');
     if (!is_string($string) || trim($string) === "") {
       $response->statusCode = 422;
