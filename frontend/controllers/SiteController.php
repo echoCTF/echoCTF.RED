@@ -212,9 +212,10 @@ class SiteController extends \app\components\BaseController
   public function actionRegister()
   {
     $model = new SignupForm();
-    $transaction = Yii::$app->db->beginTransaction();
+    $transaction = null;
     try {
       if ($model->load(Yii::$app->request->post())) {
+        $transaction = Yii::$app->db->beginTransaction();
         if (Yii::$app->sys->player_require_identification) {
           $model->identificationFile = \yii\web\UploadedFile::getInstance($model, 'identificationFile');
         }
