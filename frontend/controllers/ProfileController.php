@@ -228,7 +228,8 @@ class ProfileController extends \app\components\BaseController
         $dcq = new PlayerDisconnectQueue();
         $dcq->player_id = Yii::$app->user->identity->id;
         $dcq->save();
-      } catch (\Exception $e) { }
+      } catch (\Exception $e) {
+      }
 
       \Yii::$app->user->logout();
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "Your account has been scheduled for deletion. We are sorry to see you go. Feel free to come back any time..."));
@@ -291,7 +292,7 @@ class ProfileController extends \app\components\BaseController
    */
   public function actionGenerateToken()
   {
-    if (boolval(\Yii::$app->sys->api_bearer_enable) !== true || \Yii::$app->sys->subscriptions_feature_api===true) {
+    if (boolval(\Yii::$app->sys->api_bearer_enable) !== true || \Yii::$app->sys->subscriptions_feature_api === true) {
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "Operation disabled."));
       return $this->redirect(['/profile/me']);
     }
@@ -340,18 +341,21 @@ class ProfileController extends \app\components\BaseController
     $settingsForm = new \app\models\forms\SettingsForm();
     $profile = Yii::$app->user->identity->profile;
 
-    if ($settingsForm->load(Yii::$app->request->post()) && $settingsForm->validate()) {
-      if ($settingsForm->_cf('avatar')) {
+    if ($settingsForm->load(Yii::$app->request->post())) {
+      if ($settingsForm->_cf('avatar'))
         $settingsForm->uploadedAvatar = UploadedFile::getInstance($settingsForm, 'uploadedAvatar');
-        if ($this->HandleUpload($settingsForm->uploadedAvatar)) {
-          $fname = Yii::getAlias(sprintf('@app/web/images/avatars/%s.png', $profile->id));
-          $settingsForm->uploadedAvatar->saveAs($fname);
-          $settingsForm->uploadedAvatar = null;
+      if ($settingsForm->validate()) {
+        if ($settingsForm->_cf('avatar')) {
+          if ($this->HandleUpload($settingsForm->uploadedAvatar)) {
+            $fname = Yii::getAlias(sprintf('@app/web/images/avatars/%s.png', $profile->id));
+            $settingsForm->uploadedAvatar->saveAs($fname);
+            $settingsForm->uploadedAvatar = null;
+          }
         }
+        $profile->genBadge();
+        $settingsForm->save();
+        $settingsForm->reset();
       }
-      $profile->genBadge();
-      $settingsForm->save();
-      $settingsForm->reset();
     }
 
     return $this->render('settings', [

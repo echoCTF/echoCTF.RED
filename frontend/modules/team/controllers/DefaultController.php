@@ -440,12 +440,14 @@ class DefaultController extends \app\components\BaseController
   {
     $team = $this->findModel(Yii::$app->user->identity->teamLeader->id);
     $team->scenario = 'update';
-    if ($team->load(Yii::$app->request->post()) && $team->validate()) {
-      if ($team->save()) {
-        $team->uploadedAvatar = UploadedFile::getInstance($team, 'uploadedAvatar');
-        $team->saveLogo();
-        Yii::$app->session->setFlash('success', \Yii::t('app', 'Your team was updated.'));
-        return $this->redirect(['view', 'token' => $team->token]);
+    if ($team->load(Yii::$app->request->post())) {
+      $team->uploadedAvatar = UploadedFile::getInstance($team, 'uploadedAvatar');
+      if ($team->validate()) {
+        if ($team->save()) {
+          $team->saveLogo();
+          Yii::$app->session->setFlash('success', \Yii::t('app', 'Your team was updated.'));
+          return $this->redirect(['view', 'token' => $team->token]);
+        }
       }
     }
 
