@@ -263,7 +263,7 @@ class SiteController extends \app\components\BaseController
     $model = new PasswordResetRequestForm();
     if ($model->load(Yii::$app->request->post()) && $model->validate()) {
       if ($model->sendEmail()) {
-        Yii::$app->session->setFlash('success', \Yii::t('app', 'Check your email for further instructions. Keep in mind that the token will expire after 24 hours.'));
+        Yii::$app->session->setFlash('success', \Yii::t('app', 'Check your email for further instructions. Keep in mind that the token will expire.'));
 
         return $this->goHome();
       } else {
