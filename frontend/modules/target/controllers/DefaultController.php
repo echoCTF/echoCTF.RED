@@ -414,7 +414,7 @@ class DefaultController extends \app\components\BaseController
   public function actionBadge(int $id)
   {
     $target = $this->findModel($id);
-    $fname = Yii::getAlias(sprintf('@app/web/images/targets/%s.png', $target->name));
+    $fname = Yii::getAlias('@webroot/images/targets/' . $target->name . '.png');
     $src = imagecreatefrompng($fname);
     if ($src === false) return $this->redirect(['/']);
 
@@ -426,6 +426,8 @@ class DefaultController extends \app\components\BaseController
     $lastHeadshot = Headshot::find()->where(['target_id' => $target->id])->last()->one();
     if ($lastHeadshot === null) {
       $lastHeadshot = "none yet";
+    } else {
+      $lastHeadshot = $lastHeadshot->player->username;
     }
     $lineheight = 20;
     $i = 3;
@@ -437,8 +439,6 @@ class DefaultController extends \app\components\BaseController
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("services......: %d", count($target->findings)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("headshots.....: %d", count($target->headshots)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("last headshot.: %s", $lastHeadshot), $greencolor);
-    //      if($hs && $hs->average > 0 && $target->timer!==0)
-    //        imagestring($src, 6, 40, $lineheight*9, sprintf("avg headshot.: %s",\Yii::$app->formatter->asDuration($hs->average)),$greencolor);
 
     Yii::$app->getResponse()->getHeaders()
       ->set('Pragma', 'public')
@@ -446,7 +446,6 @@ class DefaultController extends \app\components\BaseController
       ->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
       ->set('Content-Transfer-Encoding', 'binary')
       ->set('Content-type', 'image/png');
-
     Yii::$app->response->format = Response::FORMAT_RAW;
     ob_start();
     imagepng($src);
