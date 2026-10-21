@@ -20,6 +20,7 @@ class SignupForm extends Model
   public $terms_and_conditions;
   public $affiliation;
   public $identificationFile;
+  public $identificationPath;
   public $fullname;
   public $gdpr;
   public $captcha;
@@ -150,8 +151,8 @@ class SignupForm extends Model
 
     if (Yii::$app->sys->player_require_identification) {
       $ext = basename($this->identificationFile->getExtension());
-      $this->identificationFile->saveAs('identificationFiles/' . $player->profile->id . '.' . $ext);
-
+      $this->identificationPath = 'identificationFiles/' . $player->profile->id . '.' . $ext;
+      $this->identificationFile->saveAs($this->identificationPath);
       try {
         $metadata = new \app\models\PlayerMetadata([
           'player_id' => $player->id,

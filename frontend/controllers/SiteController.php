@@ -63,7 +63,7 @@ class SiteController extends \app\components\BaseController
             'actions' => ['register', 'verify-email', 'resend-verification-email'],
           ],
           [
-            'actions' => ['logout', 'index','suspended'],
+            'actions' => ['logout', 'index', 'suspended'],
             'allow' => true,
             'roles' => ['@'],
           ],
@@ -215,8 +215,7 @@ class SiteController extends \app\components\BaseController
     $transaction = Yii::$app->db->beginTransaction();
     try {
       if ($model->load(Yii::$app->request->post())) {
-        if(Yii::$app->sys->player_require_identification)
-        {
+        if (Yii::$app->sys->player_require_identification) {
           $model->identificationFile = \yii\web\UploadedFile::getInstance($model, 'identificationFile');
         }
         if (($player = $model->signup()) !== null) {
@@ -230,7 +229,12 @@ class SiteController extends \app\components\BaseController
         return $this->goHome();
       }
     } catch (\Throwable $e) {
-      $transaction->rollBack();
+      if ($transaction->getIsActive()) {
+        $transaction->rollBack();
+        if ($model->identificationPath !== null) {
+          @unlink($model->identificationPath);
+        }
+      }
       Yii::error($e->getMessage());
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Registration failed.'));
     }
@@ -392,12 +396,12 @@ class SiteController extends \app\components\BaseController
 
   public function actionSuspended()
   {
-    $player=Yii::$app->user->identity;
-    if($player->status!==$player::STATUS_SUSPENDED)
+    $player = Yii::$app->user->identity;
+    if ($player->status !== $player::STATUS_SUSPENDED)
       return $this->redirect(['/']);
     Yii::$app->user->logout();
-    return $this->render('suspended',[
-      'player'=>$player,
+    return $this->render('suspended', [
+      'player' => $player,
     ]);
   }
 }
