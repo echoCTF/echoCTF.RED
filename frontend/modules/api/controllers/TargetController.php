@@ -170,7 +170,10 @@ class TargetController extends \yii\rest\ActiveController
     }
 
     Yii::$app->counters->increment('claims');
-    $this->doClaim($treasure);
+    if ($this->doClaim($treasure) === false) {
+      $response->statusCode = 422;
+      return ["message" => \Yii::t('app', 'Flag claimed before'), "code" => 0, "status" => \Yii::$app->response->statusCode];
+    }
     \Yii::$app->response->statusCode = 201;
     return ["message" => "Flag claimed!", "code" => 0, "status" => \Yii::$app->response->statusCode];
   }
@@ -183,7 +186,12 @@ class TargetController extends \yii\rest\ActiveController
       $PT = new PlayerTreasure();
       $PT->player_id = (int) Yii::$app->user->id;
       $PT->treasure_id = $treasure->id;
-      $PT->save();
+      try {
+        $PT->save();
+      } catch (\yii\db\IntegrityException $e) {
+        $transaction->rollBack();
+        return false;
+      }
       if ($treasure->appears !== -1) {
         $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
       }
