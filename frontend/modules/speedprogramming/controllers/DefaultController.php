@@ -24,7 +24,7 @@ class DefaultController extends \app\components\BaseController
     return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['index', 'speed', 'view',],
+        'only' => ['index', 'speed', 'view','answer'],
         'rules' => [
           'eventEnd' => [
             'actions' => ['speed'],
@@ -53,7 +53,7 @@ class DefaultController extends \app\components\BaseController
           ],
           [
             'allow' => true,
-            'actions' => ['speed'],
+            'actions' => ['speed','answer'],
             'roles' => ['@'],
             'verbs' => ['post'],
           ],
@@ -140,7 +140,7 @@ class DefaultController extends \app\components\BaseController
   public function actionAnswer($id)
   {
     $problem=$this->findModel($id);
-    if (SpeedSolution::findOne(['player_id' => Yii::$app->user->id, 'problem_id' => $id]) !== null) {
+    if (!$problem->active || SpeedSolution::findOne(['player_id' => Yii::$app->user->id, 'problem_id' => $id]) !== null) {
       return $this->redirect(['/speedprogramming/default/index']);
     }
 
@@ -158,7 +158,7 @@ class DefaultController extends \app\components\BaseController
           $ss->language = $model->language;
           $ss->player_id = Yii::$app->user->id;
           $ss->problem_id = $id;
-          $ss->sourcecode = file_get_contents('uploads/player_' . Yii::$app->user->id . '-target_' . $id . '.' . $model->language);
+          $ss->sourcecode = file_get_contents($model->file->tempName);
           $ss->status = 'pending';
           $stream = new Stream();
           $stream->player_id = Yii::$app->user->id;

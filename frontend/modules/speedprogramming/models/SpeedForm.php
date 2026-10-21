@@ -15,7 +15,7 @@ class SpeedForm extends Model
     {
         return [
             [['file'], 'file'],
-//            ['file', 'file', 'extensions' => ['c', 'cpp', 'c++','php','php7','py','py2','py3','java'], 'maxSize' => 1024 * 1024 * 1,'minSize'=>128,'tooSmall'=>'Solution too small'],
+            ['file', 'file', 'extensions' => ['c', 'cpp', 'c++','php','php7','py','py2','py3','java'], 'maxSize' => 1024 * 1024 * 1,'minSize'=>128,'tooSmall'=>'Solution too small'],
             [['language', 'file'], 'required'],
             ['language', 'string'],
             ['language', 'in', 'strict'=>true, 'range' => ['cs','c','cpp','py2','py3','php7','java']]
