@@ -232,7 +232,7 @@ class DefaultController extends \app\components\BaseController
       \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
       $cid = Customer::getCustomerId();
       $price = Price::findOne(['id' => $priceId]);
-      if ($price === null || $price->product === null)
+      if ($price === null || $price->product === null || $price->active == false || $price->product->active == false)
         throw new \Exception(\Yii::t('app', 'No such price or product exist'));
 
       $product = $price->product;
@@ -264,10 +264,7 @@ class DefaultController extends \app\components\BaseController
         \Yii::$app->response->statusCode = 403;
       Yii::error($e->getMessage());
       return [
-        'error' =>
-        [
-          'message' => $e->getMessage(),
-        ],
+        'error' => ['message' => \Yii::t('app', 'Unable to start the checkout, try again later.'),],
       ];
     }
     return ['sessionId' => $checkout_session['id']];
