@@ -38,7 +38,7 @@ $twmsg = sprintf('Hey check this out, %s found the solution of [%s]', $identity-
     <?php Card::begin([
       'header' => 'header-icon',
       'type' => 'card-stats',
-      'icon' => sprintf('<img src="/images/avatars/%s" height="60"/>', $identity->avtr),
+      'icon' => sprintf('<img src="/images/avatars/%s" height="60"/>', Html::encode($identity->avtr)),
       'color' => 'primary',
       'title' => $identity->owner->username . " / " . $identity->rank->ordinalPlace . " Place",
       'footer' => sprintf('<div class="stats">%s %s</div>', Twitter::widget([
