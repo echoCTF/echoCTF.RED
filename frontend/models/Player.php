@@ -137,9 +137,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
 
   public function getPassword_reset_token()
   {
-    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'password_reset'])) !== null)
-      return $model->token;
-    return null;
+    return PlayerToken::tokenFor($this->id, 'password_reset');
   }
 
   /**
