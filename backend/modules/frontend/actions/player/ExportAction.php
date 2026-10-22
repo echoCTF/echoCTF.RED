@@ -23,10 +23,22 @@ class ExportAction extends \yii\base\Action
   {
     $statuses=[10 => 'Enabled', 9 => 'Inactive', 8 => "Change", 0 => "Deleted",];
         $csv = fopen('php://temp/maxmemory:'. (5*1024*1024), 'r+');
-        fputcsv($csv, ['Username', 'Full Name', 'Email', 'Category', 'Affiliation', 'Approval Stage',"Account status"]);
-        foreach(Player::find()->all() as $p)
+        $grouping=intval(Yii::$app->sys->academic_grouping) > 0;
+        $identification=Yii::$app->sys->player_require_identification === true;
+        $header=['Username', 'Full Name', 'Email'];
+        if($grouping) $header[]='Category';
+        if($identification) $header[]='Affiliation';
+        $header[]='Approval Stage';
+        $header[]='Account status';
+        fputcsv($csv, $header);
+        foreach(Player::find()->with('metadata')->all() as $p)
         {
-          fputcsv($csv, [$p->username, $p->fullname, $p->email, $p->academicShort, ($p->metadata ? $p->metadata->affiliation : ''), $p::APPROVAL[$p->approval],$statuses[$p->status]]);
+          $row=[$p->username, $p->fullname, $p->email];
+          if($grouping) $row[]=$p->academicShort;
+          if($identification) $row[]=($p->metadata ? $p->metadata->affiliation : '');
+          $row[]=$p::APPROVAL[$p->approval];
+          $row[]=$statuses[$p->status];
+          fputcsv($csv, $row);
         }
         rewind($csv);
         return \Yii::$app->response->sendStreamAsFile($csv,'players-full.csv');
