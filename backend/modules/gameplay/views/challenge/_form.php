@@ -26,7 +26,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'description')->textarea(['rows' => 6])->hint('The full description/scenario of the challenge (do not add any questions here, they should be created on "Gameplay"->"Challenge Questions")') ?>
 
-    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => ''])->hint('Whether this challenge will be available to offense or defense players/teams') ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', 'both' => 'Both', ], ['prompt' => ''])->hint('Whether this challenge will be available to offense or defense players/teams') ?>
 
     <?= $form->field($model, 'filename')->textInput()->hint('What name to show to the player for download') ?>
 

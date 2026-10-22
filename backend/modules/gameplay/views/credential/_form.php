@@ -29,7 +29,7 @@ use app\modules\gameplay\models\Target;
 
     <?= $form->field($model, 'points')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => '']) ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', 'both' => 'Both', ], ['prompt' => '']) ?>
 
     <?= $form->field($model, 'stock')->textInput() ?>
 

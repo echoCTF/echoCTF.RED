@@ -43,6 +43,12 @@ use yii\bootstrap5\ActiveForm;
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-4">
+          <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', 'both' => 'Both', ])->hint('Whether this target will be available to offense or defense players/teams') ?>
+        </div>
+    </div>
+
 
     <div class="row">
         <div class="col-md-2">
