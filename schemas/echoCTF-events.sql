@@ -56,6 +56,15 @@ BEGIN
   DELETE FROM ws_token WHERE is_server=0 and expires_at<=NOW();
 END ;;
 
+DROP EVENT IF EXISTS `ev_scan_failed_claims` ;;
+CREATE EVENT `ev_scan_failed_claims` ON SCHEDULE EVERY 1 MINUTE ON COMPLETION PRESERVE ENABLE DO
+BEGIN
+  IF GET_LOCK('ev_scan_failed_claims', 0) = 1 THEN
+    CALL scan_failed_claims();
+    DO RELEASE_LOCK('ev_scan_failed_claims');
+  END IF;
+END ;;
+
 DELIMITER ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
