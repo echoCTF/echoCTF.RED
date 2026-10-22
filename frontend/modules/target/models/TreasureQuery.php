@@ -7,28 +7,41 @@ use yii\db\Expression;
 
 class TreasureQuery extends \yii\db\ActiveQuery
 {
+  const FORMS = ['%s', 'ETSCTF_%s', 'ETSCTF:%s', 'ETSCTF %s', 'ETSCTF.%s', 'ETSCTF-%s', 'ETSCTF{%s}'];
+
+  /**
+   * Builds the OR condition matching $code against $expr in every accepted spelling.
+   * %s in FORMS marks where $expr goes.
+   */
+  public static function anyForm(string $expr, string $code, array $params = []): array
+  {
+    $or = ['or'];
+    foreach (self::FORMS as $form) {
+      [$pre, $post] = explode('%s', $form, 2);
+      $args = [];
+      if ($pre !== '') $args[] = "'$pre'";
+      $args[] = $expr;
+      if ($post !== '') $args[] = "'$post'";
+      $sql = count($args) > 1 ? 'CONCAT(' . implode(', ', $args) . ')' : $expr;
+      $or[] = new Expression("$sql = :code", $params + [':code' => $code]);
+    }
+    return $or;
+  }
+
+  public static function formRegex(): string
+  {
+    $alts = array_map(fn($f) => str_replace('%s', '([0-9a-f]{32})', preg_quote($f, '/')), self::FORMS);
+    return '/^(?|' . implode('|', $alts) . ')\z/i';
+  }
+
   public function forTarget($id)
   {
     return $this->andWhere(['target_id' => $id]);
   }
 
-  public function active()
-  {
-    return $this->andWhere(['active' => 1]);
-  }
-
   public function byCode($code)
   {
-    return $this->andWhere([
-      'or',
-      ['code' => $code],
-      ['CONCAT("ETSCTF_",code)' => $code],
-      ['CONCAT("ETSCTF:",code)' => $code],
-      ['CONCAT("ETSCTF ",code)' => $code],
-      ['CONCAT("ETSCTF.",code)' => $code],
-      ['CONCAT("ETSCTF-",code)' => $code],
-      ['CONCAT("ETSCTF{",code,"}")' => $code],
-    ]);
+    return $this->andWhere(self::anyForm('code', $code));
   }
 
   public function byEncryptedCode($code, $player_id = false, $secretKey = false)
@@ -38,38 +51,15 @@ class TreasureQuery extends \yii\db\ActiveQuery
 
     if ($player_id === false) $player_id = intval(Yii::$app->user->id);
 
-    if ($secretKey !== false && $player_id !== false)
-      return $this->andWhere([
-        'or',
-        new Expression(
-          'md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey))) = :code',
-          [':player_id' => $player_id, ':secretKey' => $secretKey, ':code' => $code]
-        ),
-        new Expression(
-          'CONCAT("ETSCTF_", md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey)))) = :code',
-          [':player_id' => $player_id, ':secretKey' => $secretKey, ':code' => $code]
-        ),
-        new Expression(
-          'CONCAT("ETSCTF:", md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey)))) = :code',
-          [':player_id' => $player_id, ':secretKey' => $secretKey, ':code' => $code]
-        ),
-        new Expression(
-          'CONCAT("ETSCTF ", md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey)))) = :code',
-          [':player_id' => $player_id, ':secretKey' => $secretKey, ':code' => $code]
-        ),
-        new Expression(
-          'CONCAT("ETSCTF.", md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey)))) = :code',
-          [':player_id' => $player_id, ':secretKey' => $secretKey, ':code' => $code]
-        ),
-        new Expression(
-          'CONCAT("ETSCTF-", md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey)))) = :code',
-          [':player_id' => $player_id, ':secretKey' => $secretKey, ':code' => $code]
-        ),
-        new Expression(
-          'CONCAT("ETSCTF{", md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey))), "}") = :code',
-          [':player_id' => $player_id, ':secretKey' => $secretKey, ':code' => $code]
-        ),
-      ]);
+    if ($secretKey !== false && $player_id !== false) {
+      if (!preg_match(self::formRegex(), $code, $m)) {
+        return $this->andWhere('0=1');
+      }
+      return $this->andWhere(new Expression(
+        'md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey))) = :hash',
+        [':player_id' => $player_id, ':secretKey' => $secretKey, ':hash' => $m[1]]
+      ));
+    }
   }
 
   public function byTeamEncryptedCode($code, $team_id = false, $secretKey = false)
@@ -82,52 +72,34 @@ class TreasureQuery extends \yii\db\ActiveQuery
       return $this;
     }
 
+    if (!preg_match(self::formRegex(), $code, $m)) {
+      return $this->andWhere('0=1');
+    }
+
     // Join approved team players
     $this->innerJoin(
-        'team_player tp',
-        'tp.team_id = :team_id AND tp.approved = 1',
-        [':team_id' => $team_id]
+      'team_player tp',
+      'tp.team_id = :team_id AND tp.approved = 1',
+      [':team_id' => $team_id]
     );
 
-    return $this->andWhere([
-      'or',
-      new Expression(
-        'md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey))) = :code',
-        [':secretKey' => $secretKey, ':code' => $code]
-      ),
-      new Expression(
-        'CONCAT("ETSCTF_", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
-        [':secretKey' => $secretKey, ':code' => $code]
-      ),
-      new Expression(
-        'CONCAT("ETSCTF:", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
-        [':secretKey' => $secretKey, ':code' => $code]
-      ),
-      new Expression(
-        'CONCAT("ETSCTF ", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
-        [':secretKey' => $secretKey, ':code' => $code]
-      ),
-      new Expression(
-        'CONCAT("ETSCTF.", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
-        [':secretKey' => $secretKey, ':code' => $code]
-      ),
-      new Expression(
-        'CONCAT("ETSCTF-", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))) = :code',
-        [':secretKey' => $secretKey, ':code' => $code]
-      ),
-      new Expression(
-        'CONCAT("ETSCTF{", md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey))), "}") = :code',
-        [':secretKey' => $secretKey, ':code' => $code]
-      ),
-    ]);
+    return $this->andWhere(new Expression(
+      'md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey))) = :hash',
+      [':secretKey' => $secretKey, ':hash' => $m[1]]
+    ));
   }
   public function claimable()
   {
     return $this->andWhere(new \yii\db\Expression('appears!=0'));
   }
 
+  public function exhausted()
+  {
+    return $this->andWhere(new \yii\db\Expression('appears=0'));
+  }
+
   public function notBy(int $player_id)
   {
-    return $this->andWhere(new \yii\db\Expression('treasure.id NOT IN (SELECT treasure_id FROM player_treasure WHERE player_id=' . $player_id . ')'));
+    return $this->andWhere(new \yii\db\Expression('treasure.id NOT IN (SELECT treasure_id FROM player_treasure WHERE player_id=:player_id)', [':player_id' => $player_id]));
   }
 }

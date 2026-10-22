@@ -83,7 +83,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
   public static function findIdentityByAccessToken($token, $type = null)
   {
     if (($model = PlayerToken::findOne(['token' => $token, 'type' => 'API'])) !== null)
-      return static::findOne($model->player_id);
+      return static::findOne(['player.id' => $model->player_id, 'player.status' => [self::STATUS_ACTIVE]]);
   }
 
 
@@ -117,10 +117,11 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public static function findByVerificationToken($token)
   {
-    if (($model = PlayerToken::findOne(['token' => $token, 'type' => 'email_verification'])) !== null)
-      return static::findOne(['id' => $model->player_id, 'status' => [self::STATUS_INACTIVE, self::STATUS_UNVERIFIED]]);
+    $id = PlayerToken::playerIdFor($token, 'email_verification');
+    if ($id === null)
+      return null;
+    return static::findOne(['id' => $id, 'status' => [self::STATUS_INACTIVE, self::STATUS_UNVERIFIED]]);
   }
-
   /**
    * {@inheritdoc}
    */
@@ -131,16 +132,12 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
 
   public function getVerification_token()
   {
-    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'email_verification'])) !== null)
-      return $model->token;
-    return null;
+    return PlayerToken::tokenFor($this->id, 'email_verification');
   }
 
   public function getPassword_reset_token()
   {
-    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'password_reset'])) !== null)
-      return $model->token;
-    return null;
+    return PlayerToken::tokenFor($this->id, 'password_reset');
   }
 
   /**
@@ -177,7 +174,6 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public function setPassword($password)
   {
-    $this->password_hash = Yii::$app->security->generatePasswordHash($password);
     $this->password = Yii::$app->security->generatePasswordHash($password);
   }
 
@@ -302,11 +298,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public static function isPasswordResetTokenValid($token, $expire = 86400): bool
   {
-    if (trim($token) === '')
-      return false;
-    if (PlayerToken::findOne(['token' => $token, 'type' => 'password_reset']) !== null)
-      return true;
-    return false;
+    return PlayerToken::playerIdFor($token, 'password_reset') !== null;
   }
   /**
    * Finds user by password reset token
@@ -316,11 +308,10 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public static function findByPasswordResetToken($token)
   {
-    if (!static::isPasswordResetTokenValid($token)) {
+    $id = PlayerToken::playerIdFor($token, 'password_reset');
+    if ($id === null)
       return null;
-    }
-    if (($model = PlayerToken::findOne(['token' => $token, 'type' => 'password_reset'])) !== null)
-      return static::findOne(['id' => $model->player_id, 'status' => self::STATUS_ACTIVE]);
+    return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
   }
 
   public function saveWithSsl($validation = true)
@@ -457,18 +448,35 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
       if (Yii::$app instanceof \yii\web\Application)
         \Yii::$app->session->setFlash('success', Yii::t('app', "The user has been mailed."));
       else {
-        echo Yii::t('app', "The user has been mailed."),"\n";
+        echo Yii::t('app', "The user has been mailed."), "\n";
       }
     } catch (\Exception $e) {
       \Yii::error($e->getMessage());
       if (Yii::$app instanceof \yii\web\Application)
         \Yii::$app->session->setFlash('notice', Yii::t('app', "Failed to send mail to user."));
       else
-        echo Yii::t('app', "Failed to send mail to user."),"\n";
+        echo Yii::t('app', "Failed to send mail to user."), "\n";
       return false;
     }
     return true;
   }
+
+  public function mailTemplate(string $name, string $subject, array $params = [], array $headers = []): bool
+  {
+    $tpl = \app\modelscli\EmailTemplate::findOne(['name' => $name]);
+    if ($tpl === null) {
+      \Yii::error("Missing email template $name");
+      return false;
+    }
+    $params = ['user' => $this] + $params;
+    return $this->mail(
+      $subject,
+      \app\components\echoCTFView::renderPhpContent('?>' . $tpl->html, $params),
+      \app\components\echoCTFView::renderPhpContent('?>' . $tpl->txt, $params),
+      $headers
+    );
+  }
+
   /**
    * RAΤΕ LIMIT METHODS
    */

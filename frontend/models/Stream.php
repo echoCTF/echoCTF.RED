@@ -52,9 +52,9 @@ class Stream extends StreamAR
       return sprintf("%s", $this->player->profile->twitterHandle);
     }
     if ($showIcon)
-      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b> %s", $this->player->profile->avtr, RankFormatter::ordinalPlaceCss($this->player->profile->rank->id), $this->player->profile->link, $this->icon);
+      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b> %s", Html::encode($this->player->profile->avtr), RankFormatter::ordinalPlaceCss($this->player->profile->rank->id), $this->player->profile->link, $this->icon);
     else
-      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b>", $this->player->profile->avtr, RankFormatter::ordinalPlaceCss($this->player->profile->rank->id), $this->player->profile->link);
+      return sprintf("<img src='/images/avatars/%s' class='rounded %s' width='25px'> <b>%s</b>", Html::encode($this->player->profile->avtr), RankFormatter::ordinalPlaceCss($this->player->profile->rank->id), $this->player->profile->link);
   }
 
   public function Title(bool $pub = true)
@@ -120,10 +120,10 @@ class Stream extends StreamAR
     if ($headshot->first)
       $first = " first";
     if (intval($headshot->target->timer) === 0 || intval($headshot->timer) === 0) {
-      return sprintf("$fmt [<code>%s</code>]$first%s", $this->prefix, Html::a(Target::findOne(['id' => $this->model_id])->name, ['/target/default/view', 'id' => $this->model_id]), $this->suffix);
+      return sprintf("$fmt [<code>%s</code>]$first%s", $this->prefix, Html::a($headshot->target->name, ['/target/default/view', 'id' => $this->model_id]), $this->suffix);
     }
 
-    return sprintf("$fmt [<code>%s</code>]$first, in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a(Target::findOne(['id' => $this->model_id])->name, ['/target/default/view', 'id' => $this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
+    return sprintf("$fmt [<code>%s</code>]$first, in <i title='%s' class='fas fa-stopwatch'></i> %s minutes%s", $this->prefix, Html::a($headshot->target->name, ['/target/default/view', 'id' => $this->model_id]), Yii::$app->formatter->asDuration($headshot->timer), number_format($headshot->timer / 60), $this->suffix);
   }
 
   public function getChallengeMessage()

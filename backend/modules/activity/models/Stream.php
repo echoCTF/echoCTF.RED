@@ -46,9 +46,9 @@ class Stream extends StreamAR
   public function getPrefix($showIcon = true)
   {
     if ($showIcon)
-      return sprintf("<img src='%s' class='rounded' width='25px'> <b>%s</b> %s", Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/' . $this->player->profile->avtr), $this->player->profile->link, $this->icon);
+      return sprintf("<img src='%s' class='rounded' width='25px'> <b>%s</b> %s", Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/' . Html::encode($this->player->profile->avtr)), $this->player->profile->link, $this->icon);
     else
-      return sprintf("<img src='%s' class='rounded' width='25px'> <b>%s</b>", Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/' . $this->player->profile->avtr), $this->player->profile->link);
+      return sprintf("<img src='%s' class='rounded' width='25px'> <b>%s</b>", Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/' . Html::encode($this->player->profile->avtr)), $this->player->profile->link);
   }
 
   public function Title(bool $pub = true)
@@ -90,14 +90,14 @@ class Stream extends StreamAR
     if ($this->player->teamPlayer) {
       $prefix = sprintf(
         "<img src='%s' class='rounded' width='25px'> <b><code>%s</code></b> %s",
-        Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/team/' . $this->player->teamPlayer->team_id . '.png'),
+        Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/team/' . Html::encode($this->player->teamPlayer->team_id . '.png')),
         Html::encode($this->player->teamPlayer->team->name),
         $this->icon
       );
     } else {
       $prefix = sprintf(
         "<img src='%s' class='rounded' width='25px'> <b><code>%s</code></b> %s",
-        Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/' . $this->player_id . '.png'),
+        Url::to('//' . Yii::$app->sys->offense_domain . '/images/avatars/' . Html::encode($this->player_id . '.png')),
         Html::encode($this->player->username),
         $this->icon
       );

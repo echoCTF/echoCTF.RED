@@ -26,7 +26,7 @@ if (array_key_exists('subscription', Yii::$app->modules) !== false) {
 
   <div class="card-avatar bg-primary">
     <a href="<?= $profile->linkTo ?>">
-      <img class="img" src="/images/avatars/<?= $profile->avtr ?>" />
+      <img class="img" src="/images/avatars/<?= Html::encode($profile->avtr) ?>" />
     </a>
   </div>
   <div class="card-body">

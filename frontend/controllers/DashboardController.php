@@ -58,28 +58,36 @@ class DashboardController extends \app\components\BaseController
   public function actionIndex()
   {
     $dashboardStats = new \stdClass();
-    $active_targets = intval(\app\modules\target\models\Target::find()->active()->count());
-    $active_challenges = intval(\app\modules\challenge\models\Challenge::find()->alias('t')->active()->count());
-    $dashboardStats->countries = (int) Profile::find()->joinWith(['owner'])->select(['country'])->distinct()->where(['player.status' => 10])->count();
+    $active_targets = Yii::$app->cache->getOrSet('active_targets', fn() => intval(\app\modules\target\models\Target::find()->active()->count()), 300);
+    $active_challenges = Yii::$app->cache->getOrSet('active_challenges', fn() => intval(\app\modules\challenge\models\Challenge::find()->alias('t')->active()->count()), 300);
+    $dashboardStats->countries = Yii::$app->cache->getOrSet('stats.countries', fn() => (int) Profile::find()->joinWith(['owner'])->select(['country'])->distinct()->where(['player.status' => 10])->count(), 300);
     if (Yii::$app->sys->academic_grouping !== false)
-      $dashboardStats->claims = (int) PlayerTreasure::find()->where(['player.academic' => Yii::$app->user->identity->academic])->joinWith(['player'])->count();
+      $dashboardStats->claims = Yii::$app->cache->getOrSet('stats.claims_' . Yii::$app->user->identity->academic, fn() => (int) PlayerTreasure::find()->where(['player.academic' => Yii::$app->user->identity->academic])->joinWith(['player'])->count(), 60);
     else
-      $dashboardStats->claims = (int) PlayerTreasure::find()->count();
+      $dashboardStats->claims = Yii::$app->cache->getOrSet('stats.claims', fn() => (int) PlayerTreasure::find()->count(), 60);
 
     $dayActivity = null;
     if (Yii::$app->sys->dashboard_graph_visible) {
-      $rows = (new \yii\db\Query())
-        ->select(['date_format(ts,"%D") as dat', 'count(*) as cnt', 'sum(if(player_id in (' . Yii::$app->user->id . '),1,0)) as pcnt'])
+      $since = new \yii\db\Expression('now()-interval 10 day');
+      $overall = Yii::$app->cache->getOrSet('dashboard.graph', fn() => (new \yii\db\Query())
+        ->select(['d' => 'date(ts)', 'dat' => 'date_format(ts,"%D")', 'cnt' => 'count(*)'])
         ->from('stream')
-        ->where(['>=', 'ts', new \yii\db\Expression('now()-interval 10 day')])
+        ->where(['>=', 'ts', $since])
         ->groupBy(new \yii\db\Expression('date(ts)'))
         ->orderBy(new \yii\db\Expression('date(ts)'))
+        ->all(), 60);
+      $mine = (new \yii\db\Query())
+        ->select(['d' => 'date(ts)', 'cnt' => 'count(*)'])
+        ->from('stream')
+        ->where(['player_id' => Yii::$app->user->id])
+        ->andWhere(['>=', 'ts', $since])
+        ->groupBy(new \yii\db\Expression('date(ts)'))
+        ->indexBy('d')
         ->all();
-
-      foreach ($rows as $row) {
+      foreach ($overall as $row) {
         $dayActivity['labels'][] = "'" . $row['dat'] . "'";
         $dayActivity['overallSeries'][] = $row['cnt'];
-        $dayActivity['playerSeries'][] = $row['pcnt'];
+        $dayActivity['playerSeries'][] = $mine[$row['d']]['cnt'] ?? 0;
       }
     }
     $visits = Yii::$app->session->get('last_targets_visited');
@@ -137,7 +145,7 @@ class DashboardController extends \app\components\BaseController
     $query->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC])->limit($pages * $recordsPerpage);
     $newsModel = News::find()
       ->from(['t' => $query])
-      ->where(['id'=>$id])
+      ->where(['id' => $id])
       ->one();
 
     if ($newsModel === null) {
@@ -146,7 +154,7 @@ class DashboardController extends \app\components\BaseController
     }
     return $this->render('news', [
       'model' => $newsModel,
-      'full'=>true
+      'full' => true
     ]);
   }
 }

@@ -28,7 +28,7 @@ $this->_fluid="-fluid";
       <div class="col-md-12">
         <div class="fileinput fileinput-new text-center" data-provides="fileinput">
           <div class="fileinput-new thumbnail img-circle img-raised">
-         	  <img id="avatarPreview" src="/images/avatars/<?=$model->avatar?>?<?=time()?>" rel="nofollow" class="rounded img-thumbnail" alt="Avatar of <?=Html::encode($model->username)?>">
+         	  <img id="avatarPreview" src="/images/avatars/<?=Html::encode($model->avatar)?>?<?=time()?>" rel="nofollow" class="rounded img-thumbnail" alt="Avatar of <?=Html::encode($model->username)?>">
           </div>
           <div class="fileinput-preview fileinput-exists thumbnail img-circle img-raised"></div>
           <div>

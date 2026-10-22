@@ -16,6 +16,7 @@ use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
 use yii\web\UploadedFile;
+use app\overloads\yii\filters\AccessControl;
 
 /**
  * TeamController implements the CRUD actions for Team model.
@@ -30,7 +31,7 @@ class DefaultController extends \app\components\BaseController
     $parent = parent::behaviors();
     return ArrayHelper::merge($parent, [
       'access' => [
-        'class' => \yii\filters\AccessControl::class,
+        'class' => AccessControl::class,
         'only' => ['index', 'create', 'join', 'update', 'approve', 'reject', 'invite', 'mine', 'view', 'renew'],
         'rules' => [
           'teamsAccess' => [
@@ -43,10 +44,10 @@ class DefaultController extends \app\components\BaseController
             'actions' => [''],
           ],
           'eventEnd' => [
-            'actions' => ['join', 'update', 'approve', 'reject', 'create'],
+            'actions' => ['join', 'update', 'approve', 'reject', 'create', 'invite'],
           ],
           [
-            'actions' => ['create', 'join', 'update', 'approve', 'reject'],
+            'actions' => ['create', 'join', 'update', 'approve', 'reject', 'invite'],
             'allow' => false,
             'roles' => ['@'],
             'matchCallback' => function ($rule, $action) {
@@ -133,21 +134,17 @@ class DefaultController extends \app\components\BaseController
     ]);
   }
 
-  /**
-   * Shows team model.
-   * @return mixed
-   */
-  public function actionView($token)
+  private function teamPageData(Team $team): array
   {
-    $model = $this->findModel(['token' => $token]);
-    $TP = TeamPlayer::find()->where(['team_id' => $model->id])->orderBy(['approved' => SORT_DESC, 'ts' => SORT_ASC]);
+    $TP = TeamPlayer::find()->where(['team_id' => $team->id])
+      ->orderBy(new \yii\db\Expression('player_id = :owner DESC, approved DESC, ts ASC', [':owner' => $team->owner_id]));
     $dataProvider = new ActiveDataProvider([
-      'query' => TeamPlayer::find()->where(['team_id' => $model->id])->orderBy(['approved' => SORT_DESC, 'ts' => SORT_ASC]),
+      'query' => $TP,
       'sort' => false,
       'pagination' => false,
     ]);
-    $teamPlayers = ArrayHelper::getColumn($TP->all(), 'player_id');
-    $headshots = \app\modules\target\models\Target::find()->headshottedByTeam($model->id);
+    $teamPlayers = ArrayHelper::getColumn($dataProvider->getModels(), 'player_id');
+    $headshots = \app\modules\target\models\Target::find()->headshottedByTeam($team->id);
     $headshotsProvider = new ActiveDataProvider([
       'query' => $headshots,
       'pagination' => [
@@ -158,7 +155,7 @@ class DefaultController extends \app\components\BaseController
       'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
     ]);
 
-    $solves = \app\modules\challenge\models\Challenge::find()->solvedByTeam($model->id);
+    $solves = \app\modules\challenge\models\Challenge::find()->solvedByTeam($team->id);
     $solverProvider = new ActiveDataProvider([
       'query' => $solves,
       'pagination' => [
@@ -170,7 +167,7 @@ class DefaultController extends \app\components\BaseController
     ]);
 
     $targetProgressProvider = new ActiveDataProvider([
-      'query' => \app\modules\target\models\Target::find()->team_progress($model->id)->having('(player_treasures>0 or player_findings>0) AND (progress>0 AND progress<100)'),
+      'query' => \app\modules\target\models\Target::find()->team_progress($team->id)->having('(player_treasures>0 or player_findings>0) AND (progress>0 AND progress<100)'),
       'pagination' => [
         'pageSizeParam' => 'target-perpage',
         'pageParam' => 'target-page',
@@ -195,7 +192,7 @@ class DefaultController extends \app\components\BaseController
       ]
     ]);
 
-    $teamNetworks = \app\modules\network\models\PrivateNetwork::find()->forTeam($model->id);
+    $teamNetworks = \app\modules\network\models\PrivateNetwork::find()->forTeam($team->id);
     $teamNetworksProvider = new ActiveDataProvider([
       'query' => $teamNetworks,
       'pagination' => [
@@ -208,21 +205,21 @@ class DefaultController extends \app\components\BaseController
 
     $subQuery = TeamStream::find()
       ->select('stream_id')
-      ->where(['team_id' => $model->id]);
+      ->where(['team_id' => $team->id]);
 
     $stream = \app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
       ->where(['id' => $subQuery])
       ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
     $streamProvider = new ActiveDataProvider([
-      'query' => $stream,
+      'query' => $stream->with(['player.profile.owner']),
       'pagination' => [
         'pageSizeParam' => 'stream-perpage',
         'pageParam' => 'stream-page',
         'pageSize' => 10,
       ]
     ]);
-    return $this->render('view', [
-      'team' => $model,
+    return [
+      'team' => $team,
       'teamInstanceProvider' => $teamInstanceProvider,
       'streamProvider' => $streamProvider,
       'headshotsProvider' => $headshotsProvider,
@@ -230,8 +227,18 @@ class DefaultController extends \app\components\BaseController
       'solverProvider' => $solverProvider,
       'dataProvider' => $dataProvider,
       'networksProvider' => $teamNetworksProvider,
-    ]);
+    ];
   }
+
+  /**
+   * Shows team model.
+   * @return mixed
+   */
+  public function actionView($token)
+  {
+    return $this->render('view', $this->teamPageData($this->findModel(['token' => $token])));
+  }
+
   /**
    * Shows current team membership.
    * @return mixed
@@ -241,98 +248,9 @@ class DefaultController extends \app\components\BaseController
     if (Yii::$app->user->identity->team === null || Yii::$app->user->identity->teamPlayer === null) {
       return $this->redirect(['index']);
     }
-    $dataProvider = new ActiveDataProvider([
-      'query' => TeamPlayer::find()->where(['team_id' => Yii::$app->user->identity->team->id])->orderBy(['ts' => SORT_ASC]),
-      'sort' => false,
-      'pagination' => false,
-    ]);
-    $teamPlayers = ArrayHelper::getColumn(Yii::$app->user->identity->team->players, 'id');
-    $teamInstances = \app\modules\target\models\TargetInstance::find()->leftJoin('team_player', 'target_instance.player_id=team_player.player_id')
-      ->andFilterWhere(['target_instance.player_id' => $teamPlayers])
-      ->andFilterWhere(['team_player.approved' => 1]);
-
-    if (\Yii::$app->sys->team_visible_instances !== true) {
-      $teamInstances->andFilterWhere(['team_allowed' => 1]);
-    }
-    $teamInstanceProvider = new ActiveDataProvider([
-      'query' => $teamInstances,
-      'pagination' => [
-        'pageSizeParam' => 'teamInstance-perpage',
-        'pageParam' => 'teamInstance-page',
-        'pageSize' => Yii::$app->sys->members_per_team === false ? 10 : Yii::$app->sys->members_per_team,
-      ]
-    ]);
-
-    $teamNetworks = \app\modules\network\models\PrivateNetwork::find()->forTeam(\Yii::$app->user->identity->team->id);
-    $teamNetworksProvider = new ActiveDataProvider([
-      'query' => $teamNetworks,
-      'pagination' => [
-        'pageSizeParam' => 'networks-perpage',
-        'pageParam' => 'networks-page',
-        'pageSize' => 5,
-      ],
-      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
-    ]);
-
-    $subQuery = TeamStream::find()
-      ->select('stream_id')
-      ->where(['team_id' => \Yii::$app->user->identity->team->id]);
-
-    $stream = \app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
-      ->where(['id' => $subQuery])
-      ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
-    $streamProvider = new ActiveDataProvider([
-      'query' => $stream,
-      'pagination' => [
-        'pageSizeParam' => 'stream-perpage',
-        'pageParam' => 'stream-page',
-        'pageSize' => 10,
-      ]
-    ]);
-
-    $targetProgressProvider = new ActiveDataProvider([
-      'query' => \app\modules\target\models\Target::find()->team_progress(\Yii::$app->user->identity->team->id)->having('(player_treasures>0 or player_findings>0) AND (progress>0 AND progress<100)'),
-      'pagination' => [
-        'pageSizeParam' => 'target-perpage',
-        'pageParam' => 'target-page',
-        'pageSize' => 5,
-      ],
-      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
-    ]);
-    $headshots = \app\modules\target\models\Target::find()->headshottedByTeam(\Yii::$app->user->identity->team->id);
-    $headshotsProvider = new ActiveDataProvider([
-      'query' => $headshots,
-      'pagination' => [
-        'pageSizeParam' => 'headshots-perpage',
-        'pageParam' => 'headshots-page',
-        'pageSize' => 5,
-      ],
-      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
-    ]);
-
-    $solves = \app\modules\challenge\models\Challenge::find()->solvedByTeam(\Yii::$app->user->identity->team->id);
-    $solverProvider = new ActiveDataProvider([
-      'query' => $solves,
-      'pagination' => [
-        'pageSizeParam' => 'solves-perpage',
-        'pageParam' => 'solves-page',
-        'pageSize' => 5,
-      ],
-      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
-    ]);
-
-    return $this->render('view', [
-      'teamInstanceProvider' => $teamInstanceProvider,
-      'dataProvider' => $dataProvider,
-      'streamProvider' => $streamProvider,
-      'teamTargetsProvider' => $targetProgressProvider,
-      'headshotsProvider' => $headshotsProvider,
-      'solverProvider' => $solverProvider,
-      'team' => Yii::$app->user->identity->team,
-      'networksProvider' => $teamNetworksProvider,
-
-    ]);
+    return $this->render('view', $this->teamPageData(Yii::$app->user->identity->team));
   }
+
   /**
    * Lists all Team models.
    * @return mixed
@@ -346,7 +264,7 @@ class DefaultController extends \app\components\BaseController
       $baseq->andWhere(['team.inviteonly' => 1]);
 
     $dataProvider = new ActiveDataProvider([
-      'query' => $baseq->joinWith(['teamPlayers'])->groupBy(['team.id'])->orderBy(['name' => SORT_ASC]),
+      'query' => $baseq->joinWith(['teamPlayers'])->with(['score', 'owner.profile.owner'])->groupBy(['team.id'])->orderBy(['name' => SORT_ASC]),
       'pagination' => false,
     ]);
 
@@ -394,6 +312,28 @@ class DefaultController extends \app\components\BaseController
     return $this->redirect(['view', 'token' => $team->token]);
   }
 
+  private function joinError(Team $team): ?string
+  {
+    if ($team->academic !== Yii::$app->user->identity->academic)
+      return \Yii::t('app', 'The team you tried to join was not on the same academic scope.');
+    if (intval($team->getTeamPlayers()->count()) >= intval(Yii::$app->sys->members_per_team))
+      return \Yii::t('app', 'The team you are trying to join is full.');
+    if ($team->locked)
+      return \Yii::t('app', 'The team you tried to join is locked. No new members can join!');
+    return null;
+  }
+
+  private function joinTeam(Team $team): bool
+  {
+    $tp = new TeamPlayer();
+    $tp->player_id = Yii::$app->user->id;
+    $tp->team_id = $team->id;
+    $tp->approved = 0;
+    if ($tp->save() === false)
+      return false;
+    $tp->notifyJoinOwner();
+    return true;
+  }
 
   /**
    * Join user to team.
@@ -401,30 +341,18 @@ class DefaultController extends \app\components\BaseController
    */
   public function actionJoin($token)
   {
-
     $team = $this->findInviteModel(['token' => $token])->team;
 
-    if ($team->academic !== Yii::$app->user->identity->academic) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you tried to join was not on the same academic scope.'));
-      return $this->redirect(['index']);
-    } elseif (intval($team->getTeamPlayers()->count()) >= intval(Yii::$app->sys->members_per_team)) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you are trying to join is full.'));
-      return $this->redirect(['index']);
-    } elseif ($team->locked) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you tried to join is locked. No new members can join!'));
+    if (($error = $this->joinError($team)) !== null) {
+      Yii::$app->session->setFlash('error', $error);
       return $this->redirect(['index']);
     }
 
-    $tp = new TeamPlayer();
-    $tp->player_id = Yii::$app->user->id;
-    $tp->team_id = $team->id;
-    $tp->approved = 0;
-    if ($tp->save() === false) {
+    if (!$this->joinTeam($team)) {
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to join the team, unknown error occurred.'));
       return $this->redirect(['index']);
     }
 
-    $tp->notifyJoinOwner();
     Yii::$app->session->setFlash('success', \Yii::t('app', 'You joined the team but it is pending approval by the team leader.'));
     return $this->redirect(['view', 'token' => $team->token]);
   }
@@ -440,12 +368,14 @@ class DefaultController extends \app\components\BaseController
   {
     $team = $this->findModel(Yii::$app->user->identity->teamLeader->id);
     $team->scenario = 'update';
-    if ($team->load(Yii::$app->request->post()) && $team->validate()) {
-      if ($team->save()) {
-        $team->uploadedAvatar = UploadedFile::getInstance($team, 'uploadedAvatar');
-        $team->saveLogo();
-        Yii::$app->session->setFlash('success', \Yii::t('app', 'Your team was updated.'));
-        return $this->redirect(['view', 'token' => $team->token]);
+    if ($team->load(Yii::$app->request->post())) {
+      $team->uploadedAvatar = UploadedFile::getInstance($team, 'uploadedAvatar');
+      if ($team->validate()) {
+        if ($team->save()) {
+          $team->saveLogo();
+          Yii::$app->session->setFlash('success', \Yii::t('app', 'Your team was updated.'));
+          return $this->redirect(['view', 'token' => $team->token]);
+        }
       }
     }
 
@@ -456,7 +386,7 @@ class DefaultController extends \app\components\BaseController
   {
     $tp = $this->findTPModel($id);
 
-    if ($tp->team_id !== Yii::$app->user->identity->teamLeader->id) {
+    if (Yii::$app->user->identity->teamLeader === null || $tp->team_id !== Yii::$app->user->identity->teamLeader->id) {
       Yii::$app->session->setFlash('error', \Yii::t('app', 'You have no permission to approve this membership.'));
       return $this->redirect(['index']);
     }
@@ -475,7 +405,8 @@ class DefaultController extends \app\components\BaseController
   {
     $tp = $this->findTPModel($id);
     $token = $tp->team->token;
-    if ($tp->player_id !== Yii::$app->user->id && $tp->team_id !== Yii::$app->user->identity->teamLeader->id) {
+    $leader = Yii::$app->user->identity->teamLeader;
+    if ($tp->player_id !== Yii::$app->user->id && ($leader === null || $tp->team_id !== $leader->id)) {
       Yii::$app->session->setFlash('error', \Yii::t('app', 'You have no permission to cancel this membership.'));
       return $this->redirect(['index']);
     }
@@ -510,29 +441,18 @@ class DefaultController extends \app\components\BaseController
   {
     $team = $this->findInviteModel(['token' => $token])->team;
 
-    if ($team->academic !== Yii::$app->user->identity->academic) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you are trying to access is not of the same academic type.'));
-      return $this->redirect(['index']);
-    } elseif ($team->getTeamPlayers()->count() >= intval(Yii::$app->sys->members_per_team)) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you are trying to join is full.'));
-      return $this->redirect(['index']);
-    } elseif ($team->locked) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you tried to join is locked. No new members can join!'));
+    if (($error = $this->joinError($team)) !== null) {
+      Yii::$app->session->setFlash('error', $error);
       return $this->redirect(['index']);
     }
 
-    if (Yii::$app->request->isPost) {
-      $tp = new TeamPlayer();
-      $tp->player_id = Yii::$app->user->id;
-      $tp->team_id = $team->id;
-      $tp->approved = 0;
-      if ($tp->save()) {
-        Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to add you as member of this team.'));
-        return $this->redirect(['index']);
-      }
+    if (Yii::$app->request->isPost && !$this->joinTeam($team)) {
+      Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to add you as member of this team.'));
+      return $this->redirect(['index']);
     }
     return $this->render('invite', ['team' => $team]);
   }
+
 
   /**
    * Finds the Team model based on its primary key value or specific

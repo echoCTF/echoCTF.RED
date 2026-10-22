@@ -481,6 +481,9 @@
   - name: run composer
     command: chdir=/home/moderatorUI/{{domain_name}}/backend php -d allow_url_fopen=on /usr/local/bin/composer install -n --no-dev --prefer-dist --no-progress --ignore-platform-reqs
 
+  - name: Make sure local migrations folder exist
+    command: mkdir -p /home/moderatorUI/{{domain_name}}/migrations
+
   - name: Fix home folder permissions for nginx
     command: chown root.daemon /home/moderatorUI
 

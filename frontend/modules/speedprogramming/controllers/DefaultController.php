@@ -24,7 +24,7 @@ class DefaultController extends \app\components\BaseController
     return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['index', 'speed', 'view',],
+        'only' => ['index', 'speed', 'view', 'answer'],
         'rules' => [
           'eventEnd' => [
             'actions' => ['speed'],
@@ -44,8 +44,8 @@ class DefaultController extends \app\components\BaseController
           ],
           [
             'allow' => false,
-            'matchCallback'=>function($event){
-              if(Yii::$app->sys->module_speedprogramming_enabled===true) {
+            'matchCallback' => function ($event) {
+              if (Yii::$app->sys->module_speedprogramming_enabled === true) {
                 return false;
               }
               return true;
@@ -53,7 +53,7 @@ class DefaultController extends \app\components\BaseController
           ],
           [
             'allow' => true,
-            'actions' => ['speed'],
+            'actions' => ['speed', 'answer'],
             'roles' => ['@'],
             'verbs' => ['post'],
           ],
@@ -100,7 +100,7 @@ class DefaultController extends \app\components\BaseController
   {
     $speed = $this->findModel($id);
     if (!$speed->active)
-      $this->redirect(['/speed']);
+      return $this->redirect(['/speed']);
 
     $speedForm = new SpeedForm();
 
@@ -139,8 +139,8 @@ class DefaultController extends \app\components\BaseController
 
   public function actionAnswer($id)
   {
-    $problem=$this->findModel($id);
-    if (SpeedSolution::findOne(['player_id' => Yii::$app->user->id, 'problem_id' => $id]) !== null) {
+    $problem = $this->findModel($id);
+    if (!$problem->active || SpeedSolution::findOne(['player_id' => Yii::$app->user->id, 'problem_id' => $id]) !== null) {
       return $this->redirect(['/speedprogramming/default/index']);
     }
 
@@ -153,12 +153,11 @@ class DefaultController extends \app\components\BaseController
         $transaction = $connection->beginTransaction();
 
         try {
-          $model->file->saveAs('uploads/player_' . Yii::$app->user->id . '-target_' . $id . '.' . $model->language);
           $ss = new SpeedSolution();
           $ss->language = $model->language;
           $ss->player_id = Yii::$app->user->id;
           $ss->problem_id = $id;
-          $ss->sourcecode = file_get_contents('uploads/player_' . Yii::$app->user->id . '-target_' . $id . '.' . $model->language);
+          $ss->sourcecode = file_get_contents($model->file->tempName);
           $ss->status = 'pending';
           $stream = new Stream();
           $stream->player_id = Yii::$app->user->id;

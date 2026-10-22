@@ -20,6 +20,7 @@ class SignupForm extends Model
   public $terms_and_conditions;
   public $affiliation;
   public $identificationFile;
+  public $identificationPath;
   public $fullname;
   public $gdpr;
   public $captcha;
@@ -39,7 +40,7 @@ class SignupForm extends Model
       ['username', 'required'],
       ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app', 'This username has already been taken.')],
       ['username', 'string', 'min' => intval(Yii::$app->sys->username_length_min), 'max' => intval(Yii::$app->sys->username_length_max)],
-      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => ['admin', 'administrator', 'echoctf', 'root', 'support']],
+      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => \app\models\Player::RESERVED_USERNAMES],
       [['username'], 'match', 'not' => true, 'pattern' => '/[^a-zA-Z0-9]/', 'message' => \Yii::t('app', 'Invalid characters in username.')],
 
       ['email', 'trim'],
@@ -47,19 +48,12 @@ class SignupForm extends Model
       ['email', 'email', 'checkDNS' => true],
       ['email', 'string', 'min' => 6, 'max' => 255],
       ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app', 'This email address has already been taken.')],
-      ['email', function ($attribute, $params) {
-        $count = \Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
-          ->bindValue(':email', $this->email)
-          ->queryScalar();
-
-        if (intval($count) !== 0)
-          $this->addError($attribute, \Yii::t('app', 'This email is banned.'));
-      }],
+      ['email', '\app\components\validators\BannedEmailValidator'],
       ['username', '\app\components\validators\HourRegistrationValidator',    'client_ip' => \Yii::$app->request->userIp, 'max' => Yii::$app->sys->signup_HourRegistrationValidator, 'when' => function ($model) {
-        return Yii::$app->sys->signup_HourRegistrationValidator !== false && \Yii::$app->sys->disable_mail_validation !== true;
+        return Yii::$app->sys->signup_HourRegistrationValidator !== false;
       }],
       ['username', '\app\components\validators\TotalRegistrationsValidator',  'client_ip' => \Yii::$app->request->userIp, 'max' => Yii::$app->sys->signup_TotalRegistrationsValidator, 'when' => function ($model) {
-        return Yii::$app->sys->signup_TotalRegistrationsValidator !== false && \Yii::$app->sys->disable_mail_validation !== true;
+        return Yii::$app->sys->signup_TotalRegistrationsValidator !== false;
       }],
       ['email',    '\app\components\validators\VerifymailValidator',          'when' => function ($model) {
         return (bool)Yii::$app->sys->signup_ValidatemailValidator && \Yii::$app->sys->disable_mail_validation !== true;
@@ -75,7 +69,7 @@ class SignupForm extends Model
       ['captcha', 'captcha'],
 
       ['password', 'required'],
-      ['password', 'string', 'min' => 6],
+      ['password', 'string', 'min' => 8, 'max' => 255],
 
       ['affiliation', 'trim', 'when' => function ($model) {
         return Yii::$app->sys->player_require_identification === true;
@@ -96,7 +90,7 @@ class SignupForm extends Model
         'extensions' => 'pdf, jpg, png, jpeg, docx',
         'minSize' => 1024,
         'tooSmall' => 'File must be at least 1Kb in size...',
-        'maxSize' => 500000000,
+        'maxSize' => 50000000,
         'when' => function ($model) {
           return Yii::$app->sys->player_require_identification === true;
         }
@@ -150,8 +144,8 @@ class SignupForm extends Model
 
     if (Yii::$app->sys->player_require_identification) {
       $ext = basename($this->identificationFile->getExtension());
-      $this->identificationFile->saveAs('identificationFiles/' . $player->profile->id . '.' . $ext);
-
+      $this->identificationPath = Yii::getAlias("@webroot/identificationFiles/" . $player->profile->id . '.' . $ext);
+      $this->identificationFile->saveAs($this->identificationPath);
       try {
         $metadata = new \app\models\PlayerMetadata([
           'player_id' => $player->id,
@@ -175,8 +169,9 @@ class SignupForm extends Model
       $pr->save();
     }
 
-    $counter = intval(\Yii::$app->cache->memcache->get('registeredip:' . \Yii::$app->request->userIp));
-    Yii::$app->cache->memcache->set('registeredip:' . \Yii::$app->request->userIp, $counter + 1, 3600);
+    $mc = \Yii::$app->cache->memcache;
+    if (!$mc->add('registeredip:' . \Yii::$app->request->userIp, 1, 3600))
+      $mc->increment('registeredip:' . \Yii::$app->request->userIp);
     if (Yii::$app->sys->require_activation === true && !$this->sendEmail($player)) {
       throw new \Exception(\Yii::t('app', "Error Processing Request. Failed to mail verification email!"), 1);
     }
@@ -201,15 +196,9 @@ class SignupForm extends Model
    */
   protected function sendEmail($player)
   {
-    if (Yii::$app->sys->player_require_approval)
-      $emailtpl = \app\modelscli\EmailTemplate::findOne(['name' => 'pendingApproval']);
-    else
-      $emailtpl = \app\modelscli\EmailTemplate::findOne(['name' => 'emailVerify']);
+    $name = Yii::$app->sys->player_require_approval ? 'pendingApproval' : 'emailVerify';
     $subject = \Yii::t('app', 'Account registration for {event_name}', ['event_name' => trim(Yii::$app->sys->event_name)]);
     $verifyLink = \Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $player->verification_token]);
-
-    $contentHtml = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->html, ['user' => $player, 'verifyLink' => $verifyLink]);
-    $contentTxt = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->txt, ['user' => $player, 'verifyLink' => $verifyLink]);
-    return $player->mail($subject, $contentHtml, $contentTxt);
+    return $player->mailTemplate($name, $subject, ['verifyLink' => $verifyLink]);
   }
 }

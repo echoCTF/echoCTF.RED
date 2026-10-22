@@ -27,7 +27,6 @@ use app\modules\activity\models\WsToken;
  * @property string $email
  * @property string $type
  * @property string $password
- * @property string $password_hash
  * @property string $activkey
  * @property string $auth_key
  * @property int $created
@@ -109,7 +108,6 @@ class PlayerAR extends \yii\db\ActiveRecord
       [['active', 'status', 'approval'], 'integer'],
       [['academic'], 'integer'],
       [['academic'], 'default', 'value' => 0],
-      [['password_hash'], 'default', 'value' => ""],
       [['email'], 'filter', 'filter' => 'strtolower'],
       [['activkey'], 'string', 'max' => 43],
       [['auth_key'], 'string', 'max' => 32],
@@ -467,7 +465,6 @@ class PlayerAR extends \yii\db\ActiveRecord
     }
 
     if ($this->new_password != "") {
-      $this->password_hash = Yii::$app->security->generatePasswordHash($this->new_password);
       $this->password = Yii::$app->security->generatePasswordHash($this->new_password);
     }
 

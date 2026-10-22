@@ -71,6 +71,8 @@ class ConfigureForm extends Model
   public $writeup_rankings;
   public $disable_mailer;
   public $log_failed_claims;
+  public $failed_claim_lookup_timeout;
+  public $failed_claim_scan_players;
   public $team_encrypted_claims_allowed;
   public $module_smartcity_disabled;
   public $api_bearer_enable;
@@ -124,6 +126,8 @@ class ConfigureForm extends Model
   public $force_https_urls;
   public $stream_record_limit;
   public $bannedIPS;
+  public $trusted_proxies;
+  public $proxy_ip_header;
   public $offense_home;
   public $defense_home;
   public $moderator_home;
@@ -229,6 +233,8 @@ class ConfigureForm extends Model
     'writeup_rankings',
     'disable_mailer',
     'log_failed_claims',
+    'failed_claim_lookup_timeout',
+    'failed_claim_scan_players',
     'team_encrypted_claims_allowed',
     'module_smartcity_disabled',
     'api_bearer_enable',
@@ -278,6 +284,8 @@ class ConfigureForm extends Model
     'force_https_urls',
     'stream_record_limit',
     'bannedIPS',
+    'trusted_proxies',
+    'proxy_ip_header',
     'offense_home',
     'defense_home',
     'moderator_home',
@@ -362,6 +370,8 @@ class ConfigureForm extends Model
         'password_reset_token_validity',
         'stripe_webhookLocalEndpoint',
         'bannedIPS',
+        'trusted_proxies',
+        'proxy_ip_header',
         'admin_ids',
         'maintenance_notification',
         'avatar_generator',
@@ -415,6 +425,8 @@ class ConfigureForm extends Model
         'password_reset_token_validity',
         'stripe_webhookLocalEndpoint',
         'bannedIPS',
+        'trusted_proxies',
+        'proxy_ip_header',
         'admin_ids',
         'maintenance_notification',
         'avatar_generator',
@@ -432,17 +444,20 @@ class ConfigureForm extends Model
         'moderator_csp_header',
         'moderator_csp',
       ], 'trim'],
-      [[
-        'mail_verification_token_validity',
-        'password_reset_token_validity',
-        'target_restart_log_interval',
-        'player_delete_rejected_after',
-        'player_delete_inactive_after',
-        'player_delete_deleted_after',
-        'player_changed_to_deleted_after',
-      ], 'match',
-         'pattern' => '/^\d+\s(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)$/i',
-         'message' => 'The format must be a number followed by one of: YEAR, MONTH, DAY, HOUR, MINUTE, SECOND.'],
+      [
+        [
+          'mail_verification_token_validity',
+          'password_reset_token_validity',
+          'target_restart_log_interval',
+          'player_delete_rejected_after',
+          'player_delete_inactive_after',
+          'player_delete_deleted_after',
+          'player_changed_to_deleted_after',
+        ],
+        'match',
+        'pattern' => '/^\d+\s(YEAR|MONTH|DAY|HOUR|MINUTE|SECOND)$/i',
+        'message' => 'The format must be a number followed by one of: YEAR, MONTH, DAY, HOUR, MINUTE, SECOND.'
+      ],
       // required fields
       [[
         'teams',
@@ -469,6 +484,10 @@ class ConfigureForm extends Model
       [['dn_organizationName'], 'default', 'value' => \Yii::$app->sys->dn_organizationName],
       [['dn_organizationalUnitName'], 'default', 'value' => \Yii::$app->sys->dn_organizationalUnitName],
       ['profile_visibility', 'default', 'value' => 'ingame'],
+      ['failed_claim_lookup_timeout', 'number', 'min' => 0.001],
+      ['failed_claim_scan_players', 'integer', 'min' => 1],
+      ['trusted_proxies', 'validateTrustedProxies'],
+      ['proxy_ip_header', 'match', 'pattern' => '/^[A-Za-z0-9-]+$/', 'message' => 'Header name can only contain letters, digits and dashes.'],
       [[
         'online_timeout',
         'spins_per_day',
@@ -630,6 +649,10 @@ class ConfigureForm extends Model
       'writeup_rankings' => 'Writeup Ratings',
       'disable_mailer' => 'Disable mailer operations',
       'log_failed_claims' => 'Log failed attempts',
+      'failed_claim_lookup_timeout' => 'Failed claim lookup timeout',
+      'failed_claim_scan_players' => 'Failed claim scan players per run',
+      'trusted_proxies' => 'Trusted proxies',
+      'proxy_ip_header' => 'Proxy client IP header',
       'team_encrypted_claims_allowed' => 'Team claims',
       'module_smartcity_disabled' => 'Disable SmartCity module',
       'api_bearer_enable' => 'Enable Bearer authorizations API operations',
@@ -679,6 +702,23 @@ class ConfigureForm extends Model
 
   public function beforeSave() {}
 
+  /**
+   * Checks that trusted_proxies is a comma separated list of IP addresses or CIDR ranges.
+   *
+   * @param string $attribute the attribute being validated
+   * @return void
+   */
+  public function validateTrustedProxies($attribute)
+  {
+    $validator = new \yii\validators\IpValidator(['subnet' => null]);
+    foreach (explode(',', (string) $this->$attribute) as $range) {
+      $range = trim($range);
+      if (!$validator->validate($range)) {
+        $this->addError($attribute, "\"$range\" is not an IP address or CIDR range.");
+      }
+    }
+  }
+
   public function save()
   {
     foreach ($this->keys as $id) {
@@ -689,7 +729,7 @@ class ConfigureForm extends Model
       }
 
       if ($this->{$id} !== "" && $this->{$id} !== NULL && $this->{$id} != 0) {
-        file_put_contents('/tmp/post.log', "$id=>" . $this->{$id} . "\n", FILE_APPEND);
+        //file_put_contents('/tmp/post.log', "$id=>" . $this->{$id} . "\n", FILE_APPEND);
 
         $sysconfig->val = $this->{$id};
         $sysconfig->save();

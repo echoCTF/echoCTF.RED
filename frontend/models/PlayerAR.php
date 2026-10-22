@@ -14,7 +14,6 @@ use app\modules\target\models\TargetInstance;
  * @property integer $id
  * @property string $username
  * @property string $fullname
- * @property string $password_hash
  * @property string $password_reset_token
  * @property string $verification_token
  * @property string $email
@@ -42,6 +41,7 @@ class PlayerAR extends ActiveRecord
   const STATUS_INACTIVE = 9;
   const STATUS_ACTIVE = 10;
   const STATUSES = [0 => 'Deleted', 1 => 'Suspended', 8 => 'Unverified', 9 => 'Inactive', 10 => 'Active'];
+  const RESERVED_USERNAMES = ['admin', 'administrator', 'echoctf', 'root', 'support'];
 
   /**
    * {@inheritdoc}
@@ -60,23 +60,12 @@ class PlayerAR extends ActiveRecord
       ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This email has already been taken.', 'when' => function ($model, $attribute) {
         return $model->{$attribute} !== $model->getOldAttribute($attribute);
       }],
-      ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => 'This email is banned.', 'when' => function ($model, $attribute) {
-        return $model->{$attribute} !== $model->getOldAttribute($attribute);
-      }],
-      ['email', function ($attribute, $params) {
-        $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
-          ->bindValue(':email', $this->email)
-          ->queryScalar();
-
-        if (intval($count) !== 0)
-          $this->addError($attribute, 'This email is banned.');
-      }],
-
+      ['email', '\app\components\validators\BannedEmailValidator'],
       /* username field rules */
       [['username'], 'trim'],
       [['username'], 'string', 'max' => 32],
       [['username'], 'match', 'not' => true, 'pattern' => '/[^a-zA-Z0-9]/', 'message' => 'Invalid characters in username.'],
-      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => ['admin', 'administrator', 'echoctf', 'root', 'support']],
+      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => self::RESERVED_USERNAMES],
       [['username'], 'required', 'message' => 'Please choose a username.'],
       ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This username has already been taken.', 'when' => function ($model, $attribute) {
         return $model->{$attribute} !== $model->getOldAttribute($attribute);
@@ -265,8 +254,8 @@ class PlayerAR extends ActiveRecord
       $token = new WsToken();
       $token->player_id = $this->id;
       $token->subject_id = $this->username;
-      $token->token = trim(str_replace(['_','+'], '-', \Yii::$app->security->generateRandomString(32)), '-');
-      $token->expires_at=date('Y-m-d H:i:s', strtotime('+1 day'));
+      $token->token = trim(str_replace(['_', '+'], '-', \Yii::$app->security->generateRandomString(32)), '-');
+      $token->expires_at = date('Y-m-d H:i:s', strtotime('+1 day'));
       $token->save(false);
     }
 

@@ -5,7 +5,6 @@ $cache = require __DIR__ . '/cache.php';
 $cookieValidationKey = require __DIR__ . '/validationKey.php';
 $cache['options'] = [
   \Memcached::OPT_NO_BLOCK => true,
-  \Memcached::OPT_NOREPLY => true,
   \Memcached::OPT_TCP_NODELAY => true,
 ];
 
@@ -159,7 +158,7 @@ $config = [
         $csp_header = Yii::$app->sys->offense_csp_header;
         $csp = Yii::$app->sys->offense_csp;
         if ($csp && $csp_header) {
-          $e->sender->headers->set($csp_header,str_replace('{host}', Yii::$app->request->hostName, $csp));
+          $e->sender->headers->set($csp_header, str_replace('{host}', Yii::$app->request->hostName, $csp));
         }
       },
     ],
@@ -188,7 +187,7 @@ $config = [
         'name' => '_identity-red',
         'secure' => YII_ENV_DEV ? false : true,
         'httpOnly' => true,
-        'sameSite'=>'Strict'
+        'sameSite' => 'Strict'
       ],
     ],
     'errorHandler' => [
@@ -208,16 +207,16 @@ $config = [
           'levels' => ['error'],
           'except' => ['yii\web\HttpException:404'],
         ],
-        //                [
-        //                  'class' => 'yii\log\FileTarget',
-        //                  'logFile' => '@runtime/logs/profile.log',
-        //                  'logVars' => [],
-        //                  'levels' => ['profile'],
-        //                  'categories' => ['yii\db\Command::query'],
-        //                  'prefix' => function($message) {
-        //                      return '';
-        //                  }
-        //                ]
+        //[
+        //  'class' => 'yii\log\FileTarget',
+        //  'logFile' => '@runtime/logs/profile.log',
+        //  'logVars' => [],
+        //  'levels' => ['profile'],
+        //  'categories' => ['yii\db\Command::query'],
+        //  'prefix' => function($message) {
+        //      return '';
+        //  }
+        //]
       ],
 
     ],
@@ -235,6 +234,12 @@ $config = [
   ],
   'params' => $params,
   'on beforeRequest' => function ($event) {
+    if (\Yii::$app->sys->trusted_proxies !== false) {
+      $header = \Yii::$app->sys->proxy_ip_header ?: 'X-Forwarded-For';
+      \Yii::$app->request->trustedHosts = array_fill_keys(array_map('trim', explode(',', \Yii::$app->sys->trusted_proxies)), [$header]);
+      \Yii::$app->request->ipHeaders = [$header];
+      \Yii::$app->request->secureHeaders = array_unique(array_merge(\Yii::$app->request->secureHeaders, [$header]));
+    }
     if (\Yii::$app->sys->force_https_urls !== false) {
       $_SERVER['HTTPS'] = 'on';
     }
@@ -251,7 +256,7 @@ $config = [
         header("X-Player-Uid: $uid");
         \Yii::$app->cache->memcache->setMulti([
           "last_seen:" . $uid => time(),
-          "player_frontend_ip:" . $uid => \Yii::$app->request->remoteIP
+          "player_frontend_ip:" . $uid => \Yii::$app->request->userIp
         ]);
         \Yii::$app->cache->memcache->setMulti([
           "online:" . $uid => time(),

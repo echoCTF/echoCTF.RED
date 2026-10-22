@@ -33,19 +33,21 @@ class WebhookRestAction extends \yii\rest\Action
     \Stripe\Stripe::setEnableTelemetry(false);
 
     $webhookSecret = \Yii::$app->sys->stripe_webhookSecret;
-    if ($webhookSecret) {
-      try {
-        // Parse the message body and check the signature
-        $event = \Stripe\Webhook::constructEvent(
-          Yii::$app->request->getRawBody(),
-          Yii::$app->request->headers->get('stripe-signature'),
-          $webhookSecret
-        );
-      } catch (\Exception $e) {
-        \Yii::$app->response->statusCode = 403;
-        Yii::error($e);
-        return ['error' => $e->getMessage()];
-      }
+    if ($webhookSecret === false) {
+      return ['status' => 'error', 'message' => 'No Webhook secret configured!'];
+    }
+
+    try {
+      // Parse the message body and check the signature
+      $event = \Stripe\Webhook::constructEvent(
+        Yii::$app->request->getRawBody(),
+        Yii::$app->request->headers->get('stripe-signature'),
+        $webhookSecret
+      );
+    } catch (\Exception $e) {
+      \Yii::$app->response->statusCode = 403;
+      Yii::error($e);
+      return ['error' => $e->getMessage()];
     }
     $type = $event['type'];
     $object = $event['data']['object'];
@@ -56,6 +58,11 @@ class WebhookRestAction extends \yii\rest\Action
     ])->execute();
 
     switch ($type) {
+      // Checkout can create the subscription already active, without a later updated event
+      case 'customer.subscription.created':
+        if ($object->status !== 'active') {
+          break;
+        }
       // message received when subscription created, renewed or canceled
       case 'customer.subscription.updated':
         $player = Player::findOne(['stripe_customer_id' => $object->customer]);

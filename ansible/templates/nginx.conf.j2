@@ -22,6 +22,14 @@ http {
         "token_check_failed"    503;
     }
 
+{% if trusted_proxies is defined %}
+{% for proxy in trusted_proxies %}
+    set_real_ip_from {{ proxy }};
+{% endfor %}
+    real_ip_header {{ real_ip_header | default('X-Forwarded-For') }};
+    real_ip_recursive on;
+{% endif %}
+
     log_format  mainsyslog  '$remote_addr "$request" '
                             '$status $body_bytes_sent "$http_referer" '
                             '"$http_user_agent" "$http_x_forwarded_for" "$upstream_http_x_player_uid" "$upstream_http_x_ws_reject"';
@@ -165,7 +173,7 @@ http {
         add_header X-Frame-Options DENY always;
 
         # Report-only for now: logs would-be violations to the browser console.
-        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' wss://{{item.domain}} https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
+#        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self' 'unsafe-inline' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' wss://{{item.domain}} https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self';" always;
 {% if modsecurity is defined %}
         modsecurity on;
         modsecurity_rules_file /etc/nginx/modsecurity-includes.conf;

@@ -26,25 +26,25 @@ class PrivateController extends \app\components\BaseController
    */
   public function behaviors()
   {
-    return ArrayHelper::merge([
+    return ArrayHelper::merge(parent::behaviors(), [
       'access' => [
         'class' => AccessControl::class,
-        'only' => ['view','spin'],
+        'only' => ['view', 'spin'],
         'rules' => [
           'eventStartEnd' => [
-            'actions' => ['view','spin'],
+            'actions' => ['view', 'spin'],
           ],
           'disabledRoute' => [
-            'actions' => ['view','spin'],
+            'actions' => ['view', 'spin'],
           ],
-          [
-            'actions' => ['view','spin'],
+          'zzPrivateAllowed' => [
+            'actions' => ['view', 'spin'],
             'allow' => true,
             'roles' => ['@']
           ],
         ],
       ]
-    ], parent::behaviors());
+    ]);
   }
 
 

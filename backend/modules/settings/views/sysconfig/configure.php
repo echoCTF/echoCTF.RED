@@ -81,6 +81,8 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-2"><?= $form->field($model, 'treasure_secret_key')->textInput()->hint('Secret key to encrypt player flags?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'target_days_new')->textInput()->hint('How many days are targets considered new?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'target_days_updated')->textInput()->hint('How many days are targets considered updated?') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'failed_claim_lookup_timeout')->textInput(['placeholder'=>'1'])->hint('Seconds to look up the owner of a wrong flag before it is queued for the background scan (needs <code>log_failed_claims</code>)') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'failed_claim_scan_players')->textInput(['placeholder'=>'1000'])->hint('Players checked per minute for each queued wrong flag by the <code>ev_scan_failed_claims</code> event') ?></div>
     </div>
 
     <hr />
@@ -245,6 +247,8 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'pflog_max')->textInput(['maxlength' => true])->hint('Maximum pflog interface to use (<code>default: 0</code> means use <code>pflog0</code>') ?></div>
       <div class="col-sm-6"><?= $form->field($model, 'pf_state_limits')->textInput(['maxlength' => true])->hint('PF firewall limits imposed to player connections to the targets') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'bannedIPS')->textInput(['maxlength' => true])->hint('List of comma separated player IPs that will be blocked from the platform') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'trusted_proxies')->textInput(['maxlength' => true, 'placeholder' => '10.0.0.0/8,192.0.2.10'])->hint('Comma separated IPs and CIDR ranges of the reverse proxies or CDNs in front of the frontend. Leave empty when players connect directly') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'proxy_ip_header')->textInput(['maxlength' => true, 'placeholder' => 'X-Forwarded-For'])->hint('Header that carries the player IP when <code>trusted_proxies</code> is set, eg. <code>CF-Connecting-IP</code> behind Cloudflare') ?></div>
     </div>
     <hr />
 

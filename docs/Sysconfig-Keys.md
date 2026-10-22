@@ -47,7 +47,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `module_smartcity_disabled`: Whether or not the smartcity module is disabled (hides the menu from backend)
 * `module_speedprogramming_enabled`: Whether or not the Speed Programming module is enabled (hides the menu from backend also)
 * `stream_player_target_help`: Whether or not to produce stream entries for players who activate writeups on a target.
-* `log_failed_claims`: Log failed claim attempts?
+* `log_failed_claims`: Log failed claim attempts? Wrong flags whose owner lookup exceeds `failed_claim_lookup_timeout` are only queued for the background scan when this is on.
 * `team_encrypted_claims_allowed`: Should we allow claims of flags across teams?
 * `target_metadata_visible`: Whether or not metadata will be visible to normal players. Admins get to see the metadata no matter this settting.
 * `disable_stream_tweet`: Whether the ability to tweed individual stream messages is disabled
@@ -88,6 +88,8 @@ These are the system configuration keys used by the platform applications. Any k
 * `discord_news_webhook`: A discord webhook url to send news and announcements to
 * `pf_state_limits`: The content to be appended to the pass rules that enforces limits (default: `(max 10000, source-track rule, max-src-nodes 5, max-src-states 2000, max-src-conn 50)`)
 * `force_https_urls`: Force URL generation to always be https (sets `_SERVER['HTTPS']=on`)
+* `trusted_proxies`: Comma separated list of IPs and CIDR ranges (eg. `10.0.0.0/8,192.0.2.10`) of the reverse proxies or CDNs in front of the frontend. Requests that connect from one of them have the player IP read from `proxy_ip_header`, which the failed login, registration, password reset and verification limits, the signup/signin IP and `player_frontend_ip` all use. Requests from any other address are never trusted to set it, and only this header is trusted (`X-Forwarded-Host` and `X-Forwarded-Proto` stay ignored). Empty (default) means no proxy: players connect directly and the connecting address is the player IP.
+* `proxy_ip_header`: Header that carries the player IP when `trusted_proxies` is set. Default `X-Forwarded-For`, use `CF-Connecting-IP` behind Cloudflare.
 * `menu_items`: JSON encoded string of items to append to the frontend menu
 * `event_end_notification_title`: Title to be used for a notification when the event ends
 * `event_end_notification_body`: The body that will be used to send a notification to all players when the event ends
@@ -99,6 +101,8 @@ These are the system configuration keys used by the platform applications. Any k
 * `event_finished_path`: The path to be create when a CTF event is finished (eg `/tmp/event_finished`)
 * `penalty_per_fail`: Points to penalize per fail (eg. `100`)
 * `free_fail_allowance`: Grace fail allowance before penalty is applied (eg. `3`)
+* `failed_claim_lookup_timeout`: Seconds to look up the owner of a wrong flag (a flag that is another player's personal flag) on the spot. Past this the claim is logged as `failed_claim_pending` and the `ev_scan_failed_claims` event settles it later. Default `1`, can be fractional (eg. `0.5`)
+* `failed_claim_scan_players`: Players the `ev_scan_failed_claims` event checks per run (every minute) for each queued wrong flag. Default `1000`
 * `offense_csp_header`: The offense CSP policy header name (eg `Content-Security-Policy-Report-Only`)
 * `offense_csp`: The offense domain CSP policy
 * `moderator_csp_header`: The moderator CSP policy header name (eg `Content-Security-Policy-Report-Only`)

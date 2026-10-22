@@ -6,7 +6,7 @@ use yii\helpers\Html;
       <div class="card card-profile">
         <div class="card-avatar bg-primary">
           <a href="<?=$referred->profile->linkTo?>">
-            <img class="img" src="/images/avatars/<?=$referred->profile->avtr?>" />
+            <img class="img" src="/images/avatars/<?=Html::encode($referred->profile->avtr)?>" />
           </a>
         </div>
         <div class="card-body">

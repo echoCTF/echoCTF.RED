@@ -16,7 +16,6 @@ use app\modules\target\models\TargetSearch;
 use app\modules\target\models\Finding;
 use app\modules\target\models\Treasure;
 use app\modules\target\models\PlayerTargetHelp as PTH;
-use app\modules\target\models\TargetPlayerState as TPS;
 
 use app\models\PlayerFinding;
 use app\models\PlayerTreasure;
@@ -25,7 +24,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use app\modules\game\models\Headshot;
-use app\modules\target\models\FailedClaimHandler;
+use app\modules\target\models\ClaimService;
 
 /**
  * Default controller for the `target` module
@@ -151,7 +150,6 @@ class DefaultController extends \app\components\BaseController
    */
   public function actionVersus(int $id, int $profile_id)
   {
-    $sum = 0;
     $profile = $this->findProfile($profile_id);
     $resp = $this->checkVisible($profile);
     if ($resp instanceof \yii\web\Response) {
@@ -159,6 +157,11 @@ class DefaultController extends \app\components\BaseController
     }
 
     $target = Target::find()->forView($profile->player_id)->where(['t.id' => $id])->one();
+    if ($target === null) {
+      Yii::$app->session->setFlash('warning', \Yii::t('app', 'No such target'));
+      return $this->redirect(['/']);
+    }
+
     $PF = PlayerFinding::find()->joinWith(['finding'])->where(['player_id' => $profile->player_id, 'finding.target_id' => $id])->all();
     $PT = PlayerTreasure::find()->joinWith(['treasure'])->where(['player_id' => $profile->player_id, 'treasure.target_id' => $id])->all();
     $treasures = $findings = [];
@@ -172,7 +175,7 @@ class DefaultController extends \app\components\BaseController
       ->orWhere(['model_id' => $id, 'model' => 'headshot'])
       ->andWhere(['player_id' => $profile->player_id]);
     $dataProvider = new ActiveDataProvider([
-      'query' => $model->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC]),
+      'query' => $model->with(['player.profile.owner'])->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC]),
       'pagination' => [
         'pageSizeParam' => 'stream-perpage',
         'pageParam' => 'stream-page',
@@ -180,21 +183,12 @@ class DefaultController extends \app\components\BaseController
       ]
     ]);
 
-    $headshotsProvider = new ArrayDataProvider([
-      'allModels' => $target->headshots,
-      'pagination' => [
-        'pageSizeParam' => 'headshot-perpage',
-        'pageParam' => 'headshot-page',
-        'pageSize' => 10,
-      ]
-    ]);
     $this->lastVisit($target->id);
     return $this->render('versus', [
       'profile' => $profile,
       'target' => $target,
       'streamProvider' => $dataProvider,
       'playerPoints' => $target->player_points,
-      'headshotsProvider' => $headshotsProvider
     ]);
   }
 
@@ -212,10 +206,10 @@ class DefaultController extends \app\components\BaseController
     $pageStats->totalTreasures = (int) Treasure::find()->count();
     $pageStats->totalFindings = (int) Finding::find()->count();
 
-    $pageStats->totalClaims = (int) PlayerTreasure::find()->count();
+    $pageStats->totalClaims = Yii::$app->cache->getOrSet('stats.claims', fn() => (int) PlayerTreasure::find()->count(), 60);
     $pageStats->ownClaims = (int) PlayerTreasure::find()->where(['player_id' => Yii::$app->user->id])->count();
     $pageStats->ownFinds = (int) PlayerFinding::find()->where(['player_id' => Yii::$app->user->id])->count();
-    $pageStats->totalHeadshots = Headshot::find()->count();
+    $pageStats->totalHeadshots = Yii::$app->cache->getOrSet('stats.headshots', fn() => (int) Headshot::find()->count(), 300);
     $pageStats->ownHeadshots = Headshot::find()->where(['player_id' => Yii::$app->user->id])->count();
 
 
@@ -267,6 +261,7 @@ class DefaultController extends \app\components\BaseController
     if (($target = \app\modules\target\models\Target::find()->where(['t.id' => $id])->forView(\Yii::$app->user->id)->one()) === null) {
       throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
     }
+    $this->module->checkNetwork($target);
     $obj = new \stdClass;
     if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id == $id) {
       $obj->ip = long2ip(Yii::$app->user->identity->instance->ip);
@@ -284,12 +279,10 @@ class DefaultController extends \app\components\BaseController
    */
   public function actionView(int $id)
   {
-
-    $sum = 0;
     $target = $this->findModel($id);
     $this->lastVisit($id);
     if (!Yii::$app->user->isGuest) {
-      $target = Target::find()->with('headshots', 'networks', 'metadata')->forView((int) Yii::$app->user->id)->where(['t.id' => $id])->one();
+      $target = Target::find()->with('networks', 'metadata')->forView((int) Yii::$app->user->id)->where(['t.id' => $id])->one();
     } else {
       $target = Target::find()->withAvgRating()->where(['t.id' => $id])->one();
     }
@@ -320,7 +313,7 @@ class DefaultController extends \app\components\BaseController
     }
 
     $dataProvider = new ActiveDataProvider([
-      'query' => $streamModel,
+      'query' => $streamModel->with(['player.profile.owner']),
       'pagination' => [
         'pageSizeParam' => 'stream-perpage',
         'pageParam' => 'stream-page',
@@ -332,22 +325,10 @@ class DefaultController extends \app\components\BaseController
 
     ]);
 
-
-
-    $headshotsProvider = new ArrayDataProvider([
-      'allModels' => $target->headshots,
-      'pagination' => [
-        'pageSizeParam' => 'headshot-perpage',
-        'pageParam' => 'headshot-page',
-        'pageSize' => 10,
-      ]
-    ]);
-
     return $this->render('view', [
       'target' => $target,
       'streamProvider' => $dataProvider,
       'playerPoints' => $target->player_points,
-      'headshotsProvider' => $headshotsProvider
     ]);
   }
 
@@ -363,49 +344,38 @@ class DefaultController extends \app\components\BaseController
       return $this->renderAjax('claim');
     }
 
-    $string = trim($string);
-    $treasure = Treasure::find()->claimable()->byCode($string)->one();
-
-    if ($treasure === null && Yii::$app->sys->treasure_secret_key !== false) {
-      if (Yii::$app->sys->team_encrypted_claims_allowed === true && Yii::$app->user->identity->teamPlayer && Yii::$app->user->identity->teamPlayer->approved) {
-        $treasure = Treasure::find()
-          ->claimable()
-          ->byTeamEncryptedCode($string, Yii::$app->user->identity->teamPlayer->team_id)
-          ->one();
-      } else {
-        $treasure = Treasure::find()
-          ->claimable()
-          ->byEncryptedCode($string)
-          ->one();
-      }
-    }
-
-    if ($treasure !== null && PlayerTreasure::findOne(['player_id' => (int) Yii::$app->user->id, 'treasure_id' => $treasure->id]) !== null) {
-      Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
-      return $this->renderAjax('claim');
-    } elseif ($treasure === null) {
-      // Check if the flag belongs to another team and produce
-      // the needed penalties and abuser records
-      FailedClaimHandler::handleFailedClaim($string);
-      return $this->renderAjax('claim');
-    }
-
-    $player_progress = TPS::find()->where(['id' => $treasure->target_id, 'player_id' => Yii::$app->user->id])->exists();
-    if ((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress === false && intval($treasure->target->getFindings()->count()) > 0) {
-      Yii::$app->counters->increment('claim_no_finding');
-      Yii::$app->session->setFlash('warning', \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.'));
-      return $this->renderAjax('claim');
-    }
-
     try {
-      $this->module->checkNetwork($treasure->target);
-    } catch (\Throwable $e) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', "You cannot claim this flag. You don't have access to this network."));
-      return $this->renderAjax('claim');
+      $result = ClaimService::claim($string, Yii::$app->user->identity);
+    } catch (\Exception $e) {
+      Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag failed'));
+      throw $e;
     }
 
-    Yii::$app->counters->increment('claims');
-    $this->doClaim($treasure);
+    $name = $result['treasure']?->name;
+    $flag = Html::encode(trim($string));
+    switch ($result['status']) {
+      case ClaimService::CLAIMED:
+        Yii::$app->session->setFlash('success', sprintf(\Yii::t('app', 'Flag [%s] claimed for %s points'), $name, number_format($result['points'])));
+        break;
+      case ClaimService::CLAIMED_BEFORE:
+        Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $name]));
+        break;
+      case ClaimService::UNKNOWN:
+        Yii::$app->session->addFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag' => $flag]));
+        break;
+      case ClaimService::OWNED_BY_OTHER:
+        Yii::$app->session->addFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] belongs to someone else you will get penalized!', ['flag' => $flag]));
+        break;
+      case ClaimService::NO_FINDING:
+        Yii::$app->session->setFlash('warning', \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.'));
+        break;
+      case ClaimService::NO_NETWORK:
+        Yii::$app->session->setFlash('error', \Yii::t('app', "You cannot claim this flag. You don't have access to this network."));
+        break;
+      case ClaimService::NO_CLAIMS_LEFT:
+        Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] has no claims left', ['name' => $name]));
+        break;
+    }
     return $this->renderAjax('claim');
   }
 
@@ -416,7 +386,7 @@ class DefaultController extends \app\components\BaseController
   public function actionBadge(int $id)
   {
     $target = $this->findModel($id);
-    $fname = Yii::getAlias(sprintf('@app/web/images/targets/%s.png', $target->name));
+    $fname = Yii::getAlias('@webroot/images/targets/' . $target->name . '.png');
     $src = imagecreatefrompng($fname);
     if ($src === false) return $this->redirect(['/']);
 
@@ -428,6 +398,8 @@ class DefaultController extends \app\components\BaseController
     $lastHeadshot = Headshot::find()->where(['target_id' => $target->id])->last()->one();
     if ($lastHeadshot === null) {
       $lastHeadshot = "none yet";
+    } else {
+      $lastHeadshot = $lastHeadshot->player->username;
     }
     $lineheight = 20;
     $i = 3;
@@ -437,10 +409,8 @@ class DefaultController extends \app\components\BaseController
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("points........: %s", number_format($target->points)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("flags.........: %d", count($target->treasures)), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("services......: %d", count($target->findings)), $greencolor);
-    imagestring($src, 5, 60, $lineheight * $i++, sprintf("headshots.....: %d", count($target->headshots)), $greencolor);
+    imagestring($src, 5, 60, $lineheight * $i++, sprintf("headshots.....: %d", $target->countHeadshots), $greencolor);
     imagestring($src, 5, 60, $lineheight * $i++, sprintf("last headshot.: %s", $lastHeadshot), $greencolor);
-    //      if($hs && $hs->average > 0 && $target->timer!==0)
-    //        imagestring($src, 6, 40, $lineheight*9, sprintf("avg headshot.: %s",\Yii::$app->formatter->asDuration($hs->average)),$greencolor);
 
     Yii::$app->getResponse()->getHeaders()
       ->set('Pragma', 'public')
@@ -448,7 +418,6 @@ class DefaultController extends \app\components\BaseController
       ->set('Cache-Control', 'must-revalidate, post-check=0, pre-check=0')
       ->set('Content-Transfer-Encoding', 'binary')
       ->set('Content-type', 'image/png');
-
     Yii::$app->response->format = Response::FORMAT_RAW;
     ob_start();
     imagepng($src);
@@ -494,39 +463,6 @@ class DefaultController extends \app\components\BaseController
   {
     if (!$profile->visible)
       return $this->redirect(['/']);
-  }
-
-  protected function doClaim($treasure)
-  {
-    $connection = Yii::$app->db;
-    $transaction = $connection->beginTransaction();
-    try {
-      $PT = new PlayerTreasure();
-      $PT->player_id = (int) Yii::$app->user->id;
-      $PT->treasure_id = $treasure->id;
-      $PT->save();
-      if ($treasure->appears !== -1) {
-        $treasure->updateAttributes(['appears' => intval($treasure->appears) - 1]);
-      }
-      $transaction->commit();
-      $this->doOndemand($treasure->target);
-      $PT->refresh();
-      Yii::$app->session->setFlash('success', sprintf(\Yii::t('app', 'Flag [%s] claimed for %s points'), $treasure->name, number_format($PT->points)));
-    } catch (\Exception $e) {
-      $transaction->rollBack();
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag failed'));
-      throw $e;
-    } catch (\Throwable $e) {
-      $transaction->rollBack();
-      throw $e;
-    }
-  }
-
-  protected function doOndemand($target)
-  {
-    if ($target->ondemand && $target->ondemand->state > 0) {
-      $target->ondemand->updateAttributes(['heartbeat' => new \yii\db\Expression('NOW()')]);
-    }
   }
 
   protected function lastVisit($id)

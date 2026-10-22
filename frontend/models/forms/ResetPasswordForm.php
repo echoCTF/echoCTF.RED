@@ -1,4 +1,5 @@
 <?php
+
 namespace app\models\forms;
 
 use yii\base\InvalidArgumentException;
@@ -12,68 +13,66 @@ use yii\behaviors\AttributeTypecastBehavior;
  */
 class ResetPasswordForm extends Model
 {
-    public $password;
+  public $password;
 
-    /**
-     * @var \app\models\Player
-     */
-    private $_player;
+  /**
+   * @var \app\models\Player
+   */
+  private $_player;
 
 
-    /**
-     * Creates a form model given a token.
-     *
-     * @param string $token
-     * @param array $config name-value pairs that will be used to initialize the object properties
-     * @throws InvalidArgumentException if token is empty or not valid
-     */
-    public function __construct($token, $config=[])
-    {
-        if(empty($token) || !is_string($token))
-        {
-            throw new InvalidArgumentException(\Yii::t('app','Password reset token cannot be blank.'));
-        }
-        $this->_player=Player::findByPasswordResetToken($token);
-
-        if(!$this->_player)
-        {
-            throw new InvalidArgumentException(\Yii::t('app','Wrong password reset token.'));
-        }
-        parent::__construct($config);
+  /**
+   * Creates a form model given a token.
+   *
+   * @param string $token
+   * @param array $config name-value pairs that will be used to initialize the object properties
+   * @throws InvalidArgumentException if token is empty or not valid
+   */
+  public function __construct($token, $config = [])
+  {
+    if (empty($token) || !is_string($token)) {
+      throw new InvalidArgumentException(\Yii::t('app', 'Password reset token cannot be blank.'));
     }
+    $this->_player = Player::findByPasswordResetToken($token);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            ['password', 'required'],
-            ['password', 'string', 'min' => 6],
-        ];
+    if (!$this->_player) {
+      throw new InvalidArgumentException(\Yii::t('app', 'Wrong password reset token.'));
     }
+    parent::__construct($config);
+  }
 
-    /**
-     * Resets password.
-     *
-     * @return bool if password was reset.
-     */
-    public function resetPassword()
-    {
-        $player=$this->_player;
-        $player->setPassword($this->password);
-        $player->removePasswordResetToken();
+  /**
+   * {@inheritdoc}
+   */
+  public function rules()
+  {
+    return [
+      ['password', 'required'],
+      ['password', 'string', 'min' => 8, "max" => 255],
+    ];
+  }
 
-        return $player->save(false);
-    }
+  /**
+   * Resets password.
+   *
+   * @return bool if password was reset.
+   */
+  public function resetPassword()
+  {
+    $player = $this->_player;
+    $player->setPassword($this->password);
+    $player->removePasswordResetToken();
+    $player->generateAuthKey();
+    return $player->save(false);
+  }
 
-    /**
-     * Get Player model
-     *
-     * @return Player|null
-     */
-    public function getPlayer()
-    {
-      return $this->_player;
-    }
+  /**
+   * Get Player model
+   *
+   * @return Player|null
+   */
+  public function getPlayer()
+  {
+    return $this->_player;
+  }
 }

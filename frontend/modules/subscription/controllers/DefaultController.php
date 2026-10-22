@@ -146,12 +146,16 @@ class DefaultController extends \app\components\BaseController
         }
       } else if ($success_session->mode === 'payment' && $success_session->payment_status === 'paid') {
         $ps = Price::findOne(['id' => $success_session->metadata->price_id]);
+        if ($success_session->customer !== \Yii::$app->user->identity->stripe_customer_id)
+          throw new \Exception("User " . \Yii::$app->user->identity->stripe_customer_id . " tried to access another player's price: " . $success_session->customer);
+
         if (!$ps) {
           Yii::$app->session->addFlash('error', Yii::t('app', 'Price not found!'));
           return $this->redirect(['/subscription/default/index']);
         }
       }
-
+      if (!isset($ps))
+        throw new \Exception("Neither PlayerSubscription nor Price exists for the given successfull sessionID");
       return $this->render('success', [
         'success_session' => $success_session,
         'mine' => $ps
@@ -175,9 +179,11 @@ class DefaultController extends \app\components\BaseController
     \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
     $checkout_session = \Stripe\Checkout\Session::retrieve($sessionId);
     $stripe_customer_id = $checkout_session->customer;
-
     $return_url = \yii\helpers\Url::toRoute('/subscription/default/index', true);
     try {
+      if ($stripe_customer_id !== \Yii::$app->user->identity->stripe_customer_id)
+        throw new \Exception("User " . \Yii::$app->user->identity->stripe_customer_id . " tried to access another customer's checkout session: " . $stripe_customer_id);
+
       $session = \Stripe\BillingPortal\Session::create([
         'customer' => $stripe_customer_id,
         'return_url' => $return_url,
@@ -185,6 +191,7 @@ class DefaultController extends \app\components\BaseController
 
       return ['url' => $session->url];
     } catch (\Exception $e) {
+      \Yii::error($e, 'app');
       return ['url' => $return_url];
     }
   }
@@ -225,7 +232,7 @@ class DefaultController extends \app\components\BaseController
       \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
       $cid = Customer::getCustomerId();
       $price = Price::findOne(['id' => $priceId]);
-      if ($price === null || $price->product === null)
+      if ($price === null || $price->product === null || $price->active == false || $price->product->active == false)
         throw new \Exception(\Yii::t('app', 'No such price or product exist'));
 
       $product = $price->product;
@@ -257,10 +264,7 @@ class DefaultController extends \app\components\BaseController
         \Yii::$app->response->statusCode = 403;
       Yii::error($e->getMessage());
       return [
-        'error' =>
-        [
-          'message' => $e->getMessage(),
-        ],
+        'error' => ['message' => \Yii::t('app', 'Unable to start the checkout, try again later.'),],
       ];
     }
     return ['sessionId' => $checkout_session['id']];
@@ -315,7 +319,7 @@ class DefaultController extends \app\components\BaseController
 
   public function actionPayments()
   {
-    $payments = PlayerPaymentHistory::find()->mine()->orderBy(['created_at'=>SORT_DESC]);
+    $payments = PlayerPaymentHistory::find()->mine()->orderBy(['created_at' => SORT_DESC]);
 
     $paymentsProvider = new ActiveDataProvider([
       'query' => $payments,

@@ -17,8 +17,8 @@ class NotificationController extends \yii\rest\ActiveController
   ];
   public function behaviors()
   {
-    $behaviors=ArrayHelper::merge(parent::behaviors(), [
-      'content'=>[
+    $behaviors = ArrayHelper::merge(parent::behaviors(), [
+      'content' => [
         'class' => yii\filters\ContentNegotiator::class,
         'formats' => [
           'application/json' => \yii\web\Response::FORMAT_JSON,
@@ -30,8 +30,8 @@ class NotificationController extends \yii\rest\ActiveController
           [
             'allow' => true,
             'roles' => ['@'],
-            'matchCallback'=> function() {
-              if(!Yii::$app->request->isAjax)
+            'matchCallback' => function () {
+              if (!Yii::$app->request->isAjax)
                 return false;
               return true;
             }
@@ -44,10 +44,10 @@ class NotificationController extends \yii\rest\ActiveController
     ]);
     unset($behaviors['rateLimiter']);
     $behaviors['rateLimiter'] = [
-        'class' => \yii\filters\RateLimiter::class,
-        'enableRateLimitHeaders' => true,
-        //'except' => ['login', 'signup'], // disable rate limit for these actions
-        //'only' => ['login', 'signup','index'], // enable rate limit for these actions
+      'class' => \yii\filters\RateLimiter::class,
+      'enableRateLimitHeaders' => true,
+      //'except' => ['login', 'signup'], // disable rate limit for these actions
+      //'only' => ['login', 'signup','index'], // enable rate limit for these actions
     ];
     return $behaviors;
   }
@@ -65,31 +65,28 @@ class NotificationController extends \yii\rest\ActiveController
   public function prepareDataProvider()
   {
     \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-    if(Yii::$app->sys->maintenance_notification!==false && !Yii::$app->user->identity->isAdmin)
-    {
+    if (Yii::$app->sys->maintenance_notification !== false && !Yii::$app->user->identity->isAdmin) {
       return new ArrayDataProvider([
-        'allModels' => [['id'=>-1, 'title'=>Yii::t('app','Platform Maintenance!'), 'category'=>'swal:info', 'body'=>Yii::t('app','The platform will go down for maintenance. We will be back shortly!')]],        'sort' => false,
+        'allModels' => [['id' => -1, 'title' => Yii::t('app', 'Platform Maintenance!'), 'category' => 'swal:info', 'body' => Yii::t('app', 'The platform will go down for maintenance. We will be back shortly!')]],
+        'sort' => false,
         'pagination' => false,
       ]);
     }
     $query = \app\models\Notification::find()->my()->pending();
-    if(intval($query->count())===0)
-    {
-      \Yii::$app->response->statusCode=201;
+    if (intval($query->count()) === 0) {
+      \Yii::$app->response->statusCode = 201;
       return [];
     }
 
     $dataProvider = new ActiveDataProvider([
-      'query' => $query->orderBy(['created_at'=>SORT_DESC, 'id'=>SORT_DESC]),
+      'query' => $query->orderBy(['created_at' => SORT_DESC, 'id' => SORT_DESC]),
       'pagination' => false,
     ]);
 
-    foreach($dataProvider->getModels() as $n)
-    {
-      $n->touch('updated_at');
-      $n->updateAttributes(['archived' => 1,'updated_at']);
-    }
-
+    $models = $dataProvider->getModels();
+    \app\models\Notification::updateAll(['archived' => 1, 'updated_at' => new \yii\db\Expression('NOW()')], ['id' => ArrayHelper::getColumn($models, 'id')]);
+    foreach ($models as $n)
+      $n->archived = 1;
     return $dataProvider;
   }
 }

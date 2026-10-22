@@ -1,4 +1,5 @@
 <?php
+
 use yii\widgets\Pjax;
 use app\widgets\Card;
 use yii\widgets\ListView;
@@ -58,18 +59,18 @@ use yii\helpers\Html;
     </div>
   <?php endif; ?>
   <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8">
-<?php if (\Yii::$app->sys->country_rankings):?>
-    <?php Card::begin([
-      'header' => 'header-icon',
-      'type' => 'card-stats bg-dark',
-      'icon' => '<i class="fas fa-globe"></i>',
-      'color' => 'countries',
-      'title' => sprintf('%d', $dashboardStats->countries),
-      'subtitle' => \Yii::t('app', 'Countries'),
-      'footer' => false,
-    ]);
-    Card::end(); ?>
-<?php endif;?>
+    <?php if (\Yii::$app->sys->country_rankings): ?>
+      <?php Card::begin([
+        'header' => 'header-icon',
+        'type' => 'card-stats bg-dark',
+        'icon' => '<i class="fas fa-globe"></i>',
+        'color' => 'countries',
+        'title' => sprintf('%d', $dashboardStats->countries),
+        'subtitle' => \Yii::t('app', 'Countries'),
+        'footer' => false,
+      ]);
+      Card::end(); ?>
+    <?php endif; ?>
     <?php Card::begin([
       'type' => 'card-stats bg-dark',
       'header' => 'header-icon',
@@ -95,7 +96,7 @@ use yii\helpers\Html;
       'type' => 'card-stats bg-dark',
       'icon' => '<i class="fas fa-chart-line"></i>',
       'color' => 'activities',
-      'title' => number_format(\app\models\Stream::find()->count()),
+      'title' => number_format(\Yii::$app->cache->getOrSet('stats.activities', fn() => (int) \app\models\Stream::find()->count(), 60)),
       'subtitle' => \Yii::t('app', 'Activities'),
       'footer' => false,
     ]);

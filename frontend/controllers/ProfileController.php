@@ -214,21 +214,29 @@ class ProfileController extends \app\components\BaseController
 
   public function actionDelete()
   {
-    if (intval(\Yii::$app->user->identity->updateAttributes(['status' => 0])) > 0) {
-      if (\Yii::$app->user->identity->subscription) {
-        if (\Yii::$app->user->identity->subscription->subscription_id === 'sub_vip') {
-          \Yii::$app->user->identity->subscription->delete();
+    $player = \Yii::$app->user->identity;
+    try {
+      if ($player->subscription) {
+        if ($player->subscription->subscription_id === 'sub_vip') {
+          $player->subscription->delete();
         } else {
           $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-          $subscription = $stripe->subscriptions->cancel(\Yii::$app->user->identity->subscription->subscription_id, []);
+          $stripe->subscriptions->cancel($player->subscription->subscription_id, []);
         }
       }
+    } catch (\Throwable $e) {
+      \Yii::error($e->getMessage());
+      \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to delete your account. Contact our support for assistance."));
+      return $this->redirect(['/']);
+    }
 
+    if (intval($player->updateAttributes(['status' => 0])) > 0) {
       try {
         $dcq = new PlayerDisconnectQueue();
-        $dcq->player_id = Yii::$app->user->identity->id;
+        $dcq->player_id = $player->id;
         $dcq->save();
-      } catch (\Exception $e) { }
+      } catch (\Exception $e) {
+      }
 
       \Yii::$app->user->logout();
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "Your account has been scheduled for deletion. We are sorry to see you go. Feel free to come back any time..."));
@@ -291,7 +299,7 @@ class ProfileController extends \app\components\BaseController
    */
   public function actionGenerateToken()
   {
-    if (boolval(\Yii::$app->sys->api_bearer_enable) !== true || \Yii::$app->sys->subscriptions_feature_api===true) {
+    if (boolval(\Yii::$app->sys->api_bearer_enable) !== true || \Yii::$app->sys->subscriptions_feature_api === true) {
       \Yii::$app->session->addFlash('warning', \Yii::t('app', "Operation disabled."));
       return $this->redirect(['/profile/me']);
     }
@@ -340,19 +348,21 @@ class ProfileController extends \app\components\BaseController
     $settingsForm = new \app\models\forms\SettingsForm();
     $profile = Yii::$app->user->identity->profile;
 
-    if ($settingsForm->load(Yii::$app->request->post()) && $settingsForm->validate()) {
-      if ($settingsForm->_cf('avatar')) {
+    if ($settingsForm->load(Yii::$app->request->post())) {
+      if ($settingsForm->_cf('avatar'))
         $settingsForm->uploadedAvatar = UploadedFile::getInstance($settingsForm, 'uploadedAvatar');
-        if ($this->HandleUpload($settingsForm->uploadedAvatar)) {
-          $fname = Yii::getAlias(sprintf('@app/web/images/avatars/%s.png', $profile->id));
-          $settingsForm->avatar = sprintf("%s.png", $profile->id);
-          $settingsForm->uploadedAvatar->saveAs($fname);
-          $settingsForm->uploadedAvatar = null;
+      if ($settingsForm->validate()) {
+        if ($settingsForm->_cf('avatar')) {
+          if ($settingsForm->uploadedAvatar &&  \app\components\Img::squareAvatar($settingsForm->uploadedAvatar->tempName)) {
+            $fname = Yii::getAlias(sprintf('@app/web/images/avatars/%s.png', $profile->id));
+            $settingsForm->uploadedAvatar->saveAs($fname);
+            $settingsForm->uploadedAvatar = null;
+          }
         }
+        $settingsForm->save();
+        $profile->genBadge();
+        $settingsForm->reset();
       }
-      $profile->genBadge();
-      $settingsForm->save();
-      $settingsForm->reset();
     }
 
     return $this->render('settings', [
@@ -375,73 +385,5 @@ class ProfileController extends \app\components\BaseController
     }
 
     return $model;
-  }
-
-  protected function HandleUpload($uploadedAvatar)
-  {
-    if (!$uploadedAvatar) return false;
-    try {
-      $src = imagecreatefrompng($uploadedAvatar->tempName);
-      if ($src !== false) {
-
-        $old_x = imageSX($src);
-        $old_y = imageSY($src);
-        list($thumb_w, $thumb_h) = $this->ScaledXY($old_x, $old_y);
-
-        $avatar = imagescale($src, $thumb_w, $thumb_h);
-
-        $image = imagecreatetruecolor(300, 300);
-        if (!$image) return false;
-
-        imagealphablending($image, false);
-        $col = imagecolorallocatealpha($image, 255, 255, 255, 127);
-        imagefilledrectangle($image, 0, 0, 300, 300, $col);
-        imagealphablending($image, true);
-
-        list($dst_x, $dst_y) = $this->DestinationXY($thumb_w, $thumb_h);
-        imagecopyresampled($image, $avatar, $dst_x, $dst_y, /*src_x*/ 0, /*src_y*/ 0, /*dst_w*/ $thumb_w, /*dst_h*/ $thumb_h, /*src_w*/ $thumb_w, /*src_y*/ $thumb_h);
-        imagesavealpha($image, true);
-        imagepng($image, $uploadedAvatar->tempName);
-        imagedestroy($image);
-        imagedestroy($src);
-        imagedestroy($avatar);
-        return true;
-      }
-    } catch (\Exception $e) {
-      return false;
-    }
-  }
-
-  protected function DestinationXY($x, $y)
-  {
-    $pos_x = $pos_y = 0;
-
-    if ($x < 300) {
-      $pos_x = floor((300 - $x) / 2);
-    }
-    if ($y < 300) {
-      $pos_y = floor((300 - $y) / 2);
-    }
-    return [$pos_x, $pos_y];
-  }
-
-  protected function ScaledXY($old_x, $old_y)
-  {
-    $thumb_h = $thumb_w = 300;
-    if ($old_x > $old_y) {
-      $thumb_w    =   300;
-      $thumb_h    =   $old_y * (300 / $old_x);
-    }
-
-    if ($old_x < $old_y) {
-      $thumb_w    =   $old_x * (300 / $old_y);
-      $thumb_h    =   300;
-    }
-
-    if ($old_x == $old_y) {
-      $thumb_w    =   300;
-      $thumb_h    =   300;
-    }
-    return [$thumb_w, $thumb_h];
   }
 }

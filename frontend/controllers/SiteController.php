@@ -63,7 +63,7 @@ class SiteController extends \app\components\BaseController
             'actions' => ['register', 'verify-email', 'resend-verification-email'],
           ],
           [
-            'actions' => ['logout', 'index','suspended'],
+            'actions' => ['logout', 'index', 'suspended'],
             'allow' => true,
             'roles' => ['@'],
           ],
@@ -212,11 +212,11 @@ class SiteController extends \app\components\BaseController
   public function actionRegister()
   {
     $model = new SignupForm();
-    $transaction = Yii::$app->db->beginTransaction();
+    $transaction = null;
     try {
       if ($model->load(Yii::$app->request->post())) {
-        if(Yii::$app->sys->player_require_identification)
-        {
+        $transaction = Yii::$app->db->beginTransaction();
+        if (Yii::$app->sys->player_require_identification) {
           $model->identificationFile = \yii\web\UploadedFile::getInstance($model, 'identificationFile');
         }
         if (($player = $model->signup()) !== null) {
@@ -230,7 +230,12 @@ class SiteController extends \app\components\BaseController
         return $this->goHome();
       }
     } catch (\Throwable $e) {
-      $transaction->rollBack();
+      if ($transaction !== null &&  $transaction->getIsActive()) {
+        $transaction->rollBack();
+        if ($model->identificationPath !== null) {
+          @unlink($model->identificationPath);
+        }
+      }
       Yii::error($e->getMessage());
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Registration failed.'));
     }
@@ -259,7 +264,7 @@ class SiteController extends \app\components\BaseController
     $model = new PasswordResetRequestForm();
     if ($model->load(Yii::$app->request->post()) && $model->validate()) {
       if ($model->sendEmail()) {
-        Yii::$app->session->setFlash('success', \Yii::t('app', 'Check your email for further instructions. Keep in mind that the token will expire after 24 hours.'));
+        Yii::$app->session->setFlash('success', \Yii::t('app', 'Check your email for further instructions. Keep in mind that the token will expire.'));
 
         return $this->goHome();
       } else {
@@ -381,9 +386,9 @@ class SiteController extends \app\components\BaseController
   }
 
   public function actionChangelog()
-  {
-    $changelog = @file_get_contents('../Changelog.md');
-    $todo = @file_get_contents('../TODO.md');
+  {;
+    $changelog = @file_get_contents(Yii::getAlias("@app/Changelog.md"));
+    $todo = @file_get_contents(Yii::getAlias("@app/TODO.md"));
     return $this->render('changelog', [
       'changelog' => $changelog,
       'todo' => $todo
@@ -392,12 +397,12 @@ class SiteController extends \app\components\BaseController
 
   public function actionSuspended()
   {
-    $player=Yii::$app->user->identity;
-    if($player->status!==$player::STATUS_SUSPENDED)
+    $player = Yii::$app->user->identity;
+    if ($player->status !== $player::STATUS_SUSPENDED)
       return $this->redirect(['/']);
     Yii::$app->user->logout();
-    return $this->render('suspended',[
-      'player'=>$player,
+    return $this->render('suspended', [
+      'player' => $player,
     ]);
   }
 }

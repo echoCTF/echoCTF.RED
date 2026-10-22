@@ -29,13 +29,14 @@ class PlayerToken extends \yii\db\ActiveRecord
     return 'player_token';
   }
 
-  public function init(){
+  public function init()
+  {
     parent::init();
-    if(!method_exists($this,'search') && $this->isNewRecord) //for checking this code is on model search or not
+    if (!method_exists($this, 'search') && $this->isNewRecord) //for checking this code is on model search or not
     {
-      $this->type='API';
-      $this->token=Yii::$app->security->generateRandomString(30);
-      $this->expires_at=\Yii::$app->formatter->asDatetime(new \DateTime('NOW + 60 days'), 'php:Y-m-d H:i:s');
+      $this->type = 'API';
+      $this->token = Yii::$app->security->generateRandomString(30);
+      $this->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + 60 days'), 'php:Y-m-d H:i:s');
     }
   }
   public function behaviors()
@@ -71,7 +72,7 @@ class PlayerToken extends \yii\db\ActiveRecord
       [['player_id', 'type', 'token'], 'required'],
       [['player_id'], 'integer'],
       [['expires_at', 'created_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
-      [['expires_at', 'created_at','description'], 'safe'],
+      [['expires_at', 'created_at', 'description'], 'safe'],
       [['type'], 'string', 'max' => 32],
       [['token'], 'string', 'max' => 128],
       [['token'], 'unique'],
@@ -116,9 +117,22 @@ class PlayerToken extends \yii\db\ActiveRecord
   public function getTypes()
   {
     return [
-      'API'=>'API',
-      'password_reset'=>'Password Reset',
-      'email_verification'=>'Email Verification'
+      'API' => 'API',
+      'password_reset' => 'Password Reset',
+      'email_verification' => 'Email Verification'
     ];
+  }
+
+  public static function tokenFor(int $playerId, string $type): ?string
+  {
+    $t = static::find()->select('token')->where(['player_id' => $playerId, 'type' => $type])->scalar();
+    return $t === false ? null : $t;
+  }
+
+  public static function playerIdFor(?string $token, string $type): ?int
+  {
+    if ($token === null || trim($token) === '') return null;
+    $id = static::find()->select('player_id')->where(['token' => $token, 'type' => $type])->scalar();
+    return $id === false ? null : (int) $id;
   }
 }

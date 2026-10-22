@@ -24,3 +24,6 @@ PRESERVE_PATHS:
 # pm_start_servers: 4
 # pm_max_spare_servers: 6
 # pm_min_spare_servers: 2
+# Only set these when a proxy or CDN sits in front of nginx
+#trusted_proxies: ["10.0.0.0/8"]
+#real_ip_header: "X-Forwarded-For"   # "CF-Connecting-IP" behind Cloudflare

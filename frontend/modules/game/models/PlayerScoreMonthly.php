@@ -16,65 +16,67 @@ use app\models\Player;
  */
 class PlayerScoreMonthly extends \app\models\ActiveRecordReadOnly
 {
-    /**
-     * {@inheritdoc}
-     */
-    public static function tableName()
-    {
-        return 'player_score_monthly';
-    }
-    public function behaviors()
-    {
-        return [
-          'typecast' => [
-              'class' => AttributeTypecastBehavior::class,
-              'attributeTypes' => [
-                'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
-                'dated_at' => AttributeTypecastBehavior::TYPE_INTEGER,
-                'points' => AttributeTypecastBehavior::TYPE_INTEGER,
-              ],
-              'typecastAfterValidate' => true,
-              'typecastBeforeSave' => false,
-              'typecastAfterFind' => true,
-          ],
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public static function tableName()
+  {
+    return 'player_score_monthly';
+  }
+  public function behaviors()
+  {
+    return [
+      'typecast' => [
+        'class' => AttributeTypecastBehavior::class,
+        'attributeTypes' => [
+          'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'dated_at' => AttributeTypecastBehavior::TYPE_INTEGER,
+          'points' => AttributeTypecastBehavior::TYPE_INTEGER,
+        ],
+        'typecastAfterValidate' => true,
+        'typecastBeforeSave' => false,
+        'typecastAfterFind' => true,
+      ],
+    ];
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['player_id','dated_at'], 'required'],
-            [['player_id', 'points','dated_at'], 'integer'],
-            [['ts'], 'safe'],
-            ['player_id','unique', 'targetAttribute' => ['player_id', 'dated_at']]
-        ];
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function rules()
+  {
+    return [
+      [['player_id', 'dated_at'], 'required'],
+      [['player_id', 'points', 'dated_at'], 'integer'],
+      [['ts'], 'safe'],
+      ['player_id', 'unique', 'targetAttribute' => ['player_id', 'dated_at']]
+    ];
+  }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function attributeLabels()
-    {
-        return [
-            'player_id' => 'Player ID',
-            'points' => 'Points',
-            'dated_at' => 'dated_at',
-            'ts' => 'Ts',
-        ];
-    }
-    public function getPlayer()
-    {
-      return $this->hasOne(Player::class, ['id' => 'player_id']);
-    }
+  /**
+   * {@inheritdoc}
+   */
+  public function attributeLabels()
+  {
+    return [
+      'player_id' => 'Player ID',
+      'points' => 'Points',
+      'dated_at' => 'dated_at',
+      'ts' => 'Ts',
+    ];
+  }
+  public function getPlayer()
+  {
+    return $this->hasOne(Player::class, ['id' => 'player_id']);
+  }
 
-    public function getAvatar()
-    {
-        return '/images/avatars/'.$this->player->profile->avatar;
-    }
+  public function getAvatar()
+  {
+    return '/images/avatars/' . \yii\helpers\Html::encode($this->player->profile->avatar);
+  }
 
-    public static function find() {    return new PlayerScoreMonthlyQuery(get_called_class());}
-
+  public static function find()
+  {
+    return new PlayerScoreMonthlyQuery(get_called_class());
+  }
 }

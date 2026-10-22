@@ -86,6 +86,12 @@ curl "https://echoctf.red/api/target/claim" \
  -d '{"hash":"MyFlagHere"}'
 ```
 
+The code is trimmed and checked like the web form: static flags and the personal flags of the player (or the team, when team claims are on). Wrong flags run the same failed claim penalties and abuse log as the web form. Answers:
+  * `201` `Flag claimed!`
+  * `403` the network access error, the target is not reachable by the player
+  * `422` `Need to provide hash value.`, `Flag claimed before`, `Flag has no claims left`, `Flag does not exist!`, `Flag belongs to someone else you will get penalized!`, or `You need to discover at least one service before claiming a flag for this system.`
+  * `429` rate limited, one request per `api_claim_timeout`+1 seconds
+
 ### Get instances
 URL: `GET /api/target/instances`
 

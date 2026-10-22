@@ -96,6 +96,8 @@ class m000000_000001_system_settings extends Migration
     ['id' => 'force_https_urls', 'val' => '1'],
     ['id' => 'subscriptions_menu_show', 'val' => '0'],
     ['id' => 'log_failed_claims', 'val' => '1'],
+    ['id' => 'failed_claim_lookup_timeout', 'val' => '1'],
+    ['id' => 'failed_claim_scan_players', 'val' => '1000'],
 
     ['id' => 'academic_grouping', 'val' => '0'],
     ['id' => "challenge_home", 'val' => "uploads/"],

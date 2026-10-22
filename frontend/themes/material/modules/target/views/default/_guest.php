@@ -12,7 +12,7 @@ $subtitle = implode(", ", array_filter($subtitleARR));
   <div class="container">
     <div class="row align-items-center d-flex justify-content-center">
       <div class="col-lg-2">
-        <img src="/images/targets/_<?=$target->name?>-thumbnail.png" class="img" style="max-width: 120px !important;max-height: 120px !important;">
+        <img src="/images/targets/_<?= $target->name ?>-thumbnail.png" class="img" style="max-width: 120px !important;max-height: 120px !important;">
       </div>
       <div class="col-lg-9">
         <div class="about-text go-to orbitron">
@@ -57,7 +57,8 @@ $subtitle = implode(", ", array_filter($subtitleARR));
         </div>
         <div class="col-sm-6 col-lg-3">
           <div class="count-data text-center">
-            <h6 class="count h2 orbitron text-danger" data-to="<?= count($target->headshots) ?>" data-speed="<?= count($target->headshots) ?>"><?= count($target->headshots) ?></h6>
+            <?php $headshotsCount = $target->countHeadshots; ?>
+            <h6 class="count h2 orbitron text-danger" data-to="<?= $headshotsCount ?>" data-speed="<?= $headshotsCount ?>"><?= $headshotsCount ?></h6>
             <p class="m-0px font-w-600"><i class="fas fa-skull-crossbones"></i> <?= \Yii::t('app', 'Headshots') ?></p>
           </div>
         </div>
