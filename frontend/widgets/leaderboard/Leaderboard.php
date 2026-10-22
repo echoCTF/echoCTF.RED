@@ -76,7 +76,7 @@ class Leaderboard extends Widget
       $this->layout = '{summary}<div class="card-body table-responsive">{items}</div><div class="card-footer"></div>';;
 
     if ($this->totalPoints === null) {
-      $command = Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type=:player_type)+(SELECT sum(ifnull(first_headshot_points,0)) from target)');
+      $command = Yii::$app->db->createCommand('SELECT (SELECT IFNULL(SUM(points),0) FROM finding)+(SELECT IFNULL(SUM(points),0) FROM treasure)+(SELECT IFNULL(SUM(points),0) FROM badge)+(SELECT IFNULL(SUM(points),0) FROM question WHERE player_type IN (:player_type,\'both\'))+(SELECT sum(ifnull(first_headshot_points,0)) from target)');
       $command->bindValue(':player_type', 'offense');
       $this->totalPoints = intval($command->queryScalar());
     }
