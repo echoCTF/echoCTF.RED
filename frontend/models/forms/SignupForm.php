@@ -40,7 +40,7 @@ class SignupForm extends Model
       ['username', 'required'],
       ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app', 'This username has already been taken.')],
       ['username', 'string', 'min' => intval(Yii::$app->sys->username_length_min), 'max' => intval(Yii::$app->sys->username_length_max)],
-      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => ['admin', 'administrator', 'echoctf', 'root', 'support']],
+      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => \app\models\Player::RESERVED_USERNAMES],
       [['username'], 'match', 'not' => true, 'pattern' => '/[^a-zA-Z0-9]/', 'message' => \Yii::t('app', 'Invalid characters in username.')],
 
       ['email', 'trim'],

@@ -41,6 +41,7 @@ class PlayerAR extends ActiveRecord
   const STATUS_INACTIVE = 9;
   const STATUS_ACTIVE = 10;
   const STATUSES = [0 => 'Deleted', 1 => 'Suspended', 8 => 'Unverified', 9 => 'Inactive', 10 => 'Active'];
+  const RESERVED_USERNAMES = ['admin', 'administrator', 'echoctf', 'root', 'support'];
 
   /**
    * {@inheritdoc}
@@ -64,7 +65,7 @@ class PlayerAR extends ActiveRecord
       [['username'], 'trim'],
       [['username'], 'string', 'max' => 32],
       [['username'], 'match', 'not' => true, 'pattern' => '/[^a-zA-Z0-9]/', 'message' => 'Invalid characters in username.'],
-      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => ['admin', 'administrator', 'echoctf', 'root', 'support']],
+      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => self::RESERVED_USERNAMES],
       [['username'], 'required', 'message' => 'Please choose a username.'],
       ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => 'This username has already been taken.', 'when' => function ($model, $attribute) {
         return $model->{$attribute} !== $model->getOldAttribute($attribute);

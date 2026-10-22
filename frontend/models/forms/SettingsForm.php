@@ -105,7 +105,7 @@ class SettingsForm extends Model
       [['username'], 'trim'],
       [['username'], 'string', 'min' => intval(Yii::$app->sys->username_length_min), 'max' => intval(Yii::$app->sys->username_length_max)],
       [['username'], 'match', 'not' => true, 'pattern' => '/[^a-zA-Z0-9]/', 'message' => \Yii::t('app', 'Invalid characters in username.')],
-      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => ['admin', 'administrator', 'echoctf', 'root', 'support']],
+      [['username'], '\app\components\validators\LowerRangeValidator', 'not' => true, 'range' => \app\models\Player::RESERVED_USERNAMES],
       [['username'], 'required', 'message' => \Yii::t('app', 'Please choose a username.')],
       ['username', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app', 'This username has already been taken.'), 'when' => function ($model, $attribute) {
         return $model->{$attribute} !== $model->_player->{$attribute};
