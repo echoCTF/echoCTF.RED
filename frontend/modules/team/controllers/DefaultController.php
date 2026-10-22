@@ -395,6 +395,28 @@ class DefaultController extends \app\components\BaseController
     return $this->redirect(['view', 'token' => $team->token]);
   }
 
+  private function joinError(Team $team): ?string
+  {
+    if ($team->academic !== Yii::$app->user->identity->academic)
+      return \Yii::t('app', 'The team you tried to join was not on the same academic scope.');
+    if (intval($team->getTeamPlayers()->count()) >= intval(Yii::$app->sys->members_per_team))
+      return \Yii::t('app', 'The team you are trying to join is full.');
+    if ($team->locked)
+      return \Yii::t('app', 'The team you tried to join is locked. No new members can join!');
+    return null;
+  }
+
+  private function joinTeam(Team $team): bool
+  {
+    $tp = new TeamPlayer();
+    $tp->player_id = Yii::$app->user->id;
+    $tp->team_id = $team->id;
+    $tp->approved = 0;
+    if ($tp->save() === false)
+      return false;
+    $tp->notifyJoinOwner();
+    return true;
+  }
 
   /**
    * Join user to team.
@@ -402,30 +424,18 @@ class DefaultController extends \app\components\BaseController
    */
   public function actionJoin($token)
   {
-
     $team = $this->findInviteModel(['token' => $token])->team;
 
-    if ($team->academic !== Yii::$app->user->identity->academic) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you tried to join was not on the same academic scope.'));
-      return $this->redirect(['index']);
-    } elseif (intval($team->getTeamPlayers()->count()) >= intval(Yii::$app->sys->members_per_team)) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you are trying to join is full.'));
-      return $this->redirect(['index']);
-    } elseif ($team->locked) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you tried to join is locked. No new members can join!'));
+    if (($error = $this->joinError($team)) !== null) {
+      Yii::$app->session->setFlash('error', $error);
       return $this->redirect(['index']);
     }
 
-    $tp = new TeamPlayer();
-    $tp->player_id = Yii::$app->user->id;
-    $tp->team_id = $team->id;
-    $tp->approved = 0;
-    if ($tp->save() === false) {
+    if (!$this->joinTeam($team)) {
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to join the team, unknown error occurred.'));
       return $this->redirect(['index']);
     }
 
-    $tp->notifyJoinOwner();
     Yii::$app->session->setFlash('success', \Yii::t('app', 'You joined the team but it is pending approval by the team leader.'));
     return $this->redirect(['view', 'token' => $team->token]);
   }
@@ -513,29 +523,18 @@ class DefaultController extends \app\components\BaseController
   {
     $team = $this->findInviteModel(['token' => $token])->team;
 
-    if ($team->academic !== Yii::$app->user->identity->academic) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you are trying to access is not of the same academic type.'));
-      return $this->redirect(['index']);
-    } elseif ($team->getTeamPlayers()->count() >= intval(Yii::$app->sys->members_per_team)) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you are trying to join is full.'));
-      return $this->redirect(['index']);
-    } elseif ($team->locked) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'The team you tried to join is locked. No new members can join!'));
+    if (($error = $this->joinError($team)) !== null) {
+      Yii::$app->session->setFlash('error', $error);
       return $this->redirect(['index']);
     }
 
-    if (Yii::$app->request->isPost) {
-      $tp = new TeamPlayer();
-      $tp->player_id = Yii::$app->user->id;
-      $tp->team_id = $team->id;
-      $tp->approved = 0;
-      if (!$tp->save()) {
-        Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to add you as member of this team.'));
-        return $this->redirect(['index']);
-      }
+    if (Yii::$app->request->isPost && !$this->joinTeam($team)) {
+      Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to add you as member of this team.'));
+      return $this->redirect(['index']);
     }
     return $this->render('invite', ['team' => $team]);
   }
+
 
   /**
    * Finds the Team model based on its primary key value or specific
