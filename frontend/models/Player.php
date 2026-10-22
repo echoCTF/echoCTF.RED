@@ -460,6 +460,23 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
     }
     return true;
   }
+
+  public function mailTemplate(string $name, string $subject, array $params = [], array $headers = []): bool
+  {
+    $tpl = \app\modelscli\EmailTemplate::findOne(['name' => $name]);
+    if ($tpl === null) {
+      \Yii::error("Missing email template $name");
+      return false;
+    }
+    $params = ['user' => $this] + $params;
+    return $this->mail(
+      $subject,
+      \app\components\echoCTFView::renderPhpContent('?>' . $tpl->html, $params),
+      \app\components\echoCTFView::renderPhpContent('?>' . $tpl->txt, $params),
+      $headers
+    );
+  }
+
   /**
    * RAΤΕ LIMIT METHODS
    */

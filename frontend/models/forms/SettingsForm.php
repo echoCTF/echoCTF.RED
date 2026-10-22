@@ -228,13 +228,9 @@ class SettingsForm extends Model
    */
   protected function sendEmail()
   {
-    $emailtpl = \app\modelscli\EmailTemplate::findOne(['name' => 'emailChangeVerify']);
     $subject = \Yii::t('app', 'Verify your email for {event_name}', ['event_name' => trim(Yii::$app->sys->event_name)]);
     $verifyLink = \Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $this->_player->verification_token]);
-    $contentHtml = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->html, ['user' => $this->_player, 'verifyLink' => $verifyLink]);
-    $contentTxt = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->txt, ['user' => $this->_player, 'verifyLink' => $verifyLink]);
-
-    return $this->_player->mail($subject, $contentHtml, $contentTxt);
+    return $this->_player->mailTemplate('emailChangeVerify', $subject, ['verifyLink' => $verifyLink]);
   }
 
   public function save()

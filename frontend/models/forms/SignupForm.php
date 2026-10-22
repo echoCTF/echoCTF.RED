@@ -196,15 +196,9 @@ class SignupForm extends Model
    */
   protected function sendEmail($player)
   {
-    if (Yii::$app->sys->player_require_approval)
-      $emailtpl = \app\modelscli\EmailTemplate::findOne(['name' => 'pendingApproval']);
-    else
-      $emailtpl = \app\modelscli\EmailTemplate::findOne(['name' => 'emailVerify']);
+    $name = Yii::$app->sys->player_require_approval ? 'pendingApproval' : 'emailVerify';
     $subject = \Yii::t('app', 'Account registration for {event_name}', ['event_name' => trim(Yii::$app->sys->event_name)]);
     $verifyLink = \Yii::$app->urlManager->createAbsoluteUrl(['site/verify-email', 'token' => $player->verification_token]);
-
-    $contentHtml = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->html, ['user' => $player, 'verifyLink' => $verifyLink]);
-    $contentTxt = \app\components\echoCTFView::renderPhpContent("?>" . $emailtpl->txt, ['user' => $player, 'verifyLink' => $verifyLink]);
-    return $player->mail($subject, $contentHtml, $contentTxt);
+    return $player->mailTemplate($name, $subject, ['verifyLink' => $verifyLink]);
   }
 }
