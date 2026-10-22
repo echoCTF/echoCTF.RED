@@ -35,17 +35,8 @@ class FailedClaimHandler extends \yii\base\Model
       ])
       ->from(['treasure', 'player'])
       ->where(new \yii\db\Expression('treasure.appears != 0'))
-      ->andWhere([
-        'or',
-        new \yii\db\Expression("$hash = :code"),
-        new \yii\db\Expression("CONCAT('ETSCTF_', $hash) = :code"),
-        new \yii\db\Expression("CONCAT('ETSCTF:', $hash) = :code"),
-        new \yii\db\Expression("CONCAT('ETSCTF ', $hash) = :code"),
-        new \yii\db\Expression("CONCAT('ETSCTF.', $hash) = :code"),
-        new \yii\db\Expression("CONCAT('ETSCTF-', $hash) = :code"),
-        new \yii\db\Expression("CONCAT('ETSCTF{', $hash, '}') = :code"),
-      ])
-      ->addParams([':secretKey' => $secretKey, ':code' => $string]);
+      ->andWhere(TreasureQuery::anyForm($hash, $string, [':secretKey' => $secretKey]))
+      ->addParams([':secretKey' => $secretKey]);
 
     if ($excludePlayerIds) {
       $query->andWhere(['not in', 'player.id', $excludePlayerIds]);
