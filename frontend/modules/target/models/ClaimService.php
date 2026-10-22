@@ -27,7 +27,8 @@ class ClaimService
    * Claims a flag for a player.
    *
    * Looks the code up as a static flag, then as a personal (team or player)
-   * encrypted flag. A code that matches nothing goes to
+   * encrypted flag. A code that matches a used up flag (appears = 0) is
+   * NO_CLAIMS_LEFT. A code that matches nothing goes to
    * FailedClaimHandler::handleFailedClaim().
    *
    * @param string $code raw code the player submitted, trimmed here
@@ -39,17 +40,13 @@ class ClaimService
   public static function claim(string $code, Player $player): array
   {
     $code = trim($code);
-    $treasure = Treasure::find()->claimable()->byCode($code)->one();
-
-    if ($treasure === null && Yii::$app->sys->treasure_secret_key !== false) {
-      if (Yii::$app->sys->team_encrypted_claims_allowed === true && $player->teamPlayer && $player->teamPlayer->approved) {
-        $treasure = Treasure::find()->claimable()->byTeamEncryptedCode($code, $player->teamPlayer->team_id)->one();
-      } else {
-        $treasure = Treasure::find()->claimable()->byEncryptedCode($code, $player->id)->one();
-      }
-    }
+    $treasure = self::lookup($code, $player, false);
 
     if ($treasure === null) {
+      $used = self::lookup($code, $player, true);
+      if ($used !== null) {
+        return self::result(self::NO_CLAIMS_LEFT, $used);
+      }
       // Checks if the flag belongs to another player and produces the penalties and abuser records
       return self::result(FailedClaimHandler::handleFailedClaim($player, $code));
     }
@@ -72,6 +69,30 @@ class ClaimService
 
     Yii::$app->counters->increment('claims');
     return self::save($treasure, $player);
+  }
+
+  /**
+   * Finds the treasure a code points to, as a static flag, then as a personal
+   * (team or player) encrypted flag.
+   *
+   * @param string $code trimmed code the player submitted
+   * @param Player $player the claiming player
+   * @param bool $exhausted false for flags with claims left, true for used up flags (appears = 0)
+   * @return Treasure|null
+   */
+  private static function lookup(string $code, Player $player, bool $exhausted): ?Treasure
+  {
+    $find = fn() => $exhausted ? Treasure::find()->exhausted() : Treasure::find()->claimable();
+    $treasure = $find()->byCode($code)->one();
+
+    if ($treasure === null && Yii::$app->sys->treasure_secret_key !== false) {
+      if (Yii::$app->sys->team_encrypted_claims_allowed === true && $player->teamPlayer && $player->teamPlayer->approved) {
+        $treasure = $find()->byTeamEncryptedCode($code, $player->teamPlayer->team_id)->one();
+      } else {
+        $treasure = $find()->byEncryptedCode($code, $player->id)->one();
+      }
+    }
+    return $treasure;
   }
 
   /**
