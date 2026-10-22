@@ -22,6 +22,8 @@ use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\helpers\Json;
 use app\modules\activity\models\HeadshotSearch;
+use app\modules\gameplay\models\TreasureSearch;
+use app\modules\gameplay\models\FindingSearch;
 use app\modules\activity\models\WriteupSearch;
 use app\modules\activity\models\PlayerTargetHelpSearch;
 use yii\db\Query;
@@ -551,6 +553,42 @@ class TargetController extends \app\components\BaseController
     $searchModel->target_id = $target->id;
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     return Json::encode(trim($this->renderAjax('full-view/_headshots', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
+  /**
+   * Return Treasures for a given target
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionTreasures($id)
+  {
+    $target = $this->findModel($id);
+    $searchModel = new TreasureSearch();
+    $searchModel->target_id = $target->id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('full-view/_treasures', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
+  /**
+   * Return Findings for a given target
+   * @param string $id
+   * @return mixed
+   * @throws NotFoundHttpException if the model cannot be found
+   */
+  public function actionFindings($id)
+  {
+    $target = $this->findModel($id);
+    $searchModel = new FindingSearch();
+    $searchModel->target_id = $target->id;
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    return Json::encode(trim($this->renderAjax('full-view/_findings', [
       'dataProvider' => $dataProvider,
       'searchModel' => $searchModel
     ])));

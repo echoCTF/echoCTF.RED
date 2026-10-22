@@ -107,6 +107,18 @@ $this->params['breadcrumbs'][] = $this->title;
                 'visible' => $model->metadata !== null,
               ],
               [
+                'label' => '<i class="fas fa-flag-checkered" data-toggle="tooltip" data-placement="top" title="Treasures"></i>',
+                'headerOptions' => ['style' => 'font-weight:bold'],
+                'linkOptions' => ['data-url' => Url::to(['treasures', 'id' => $model->id])],
+                'options' => ['id' => 'treasures-tab'],
+              ],
+              [
+                'label' => '<i class="fas fa-fingerprint" data-toggle="tooltip" data-placement="top" title="Findings"></i>',
+                'headerOptions' => ['style' => 'font-weight:bold'],
+                'linkOptions' => ['data-url' => Url::to(['findings', 'id' => $model->id])],
+                'options' => ['id' => 'findings-tab'],
+              ],
+              [
                 'label' => '<i class="fas fa-server" data-toggle="tooltip" data-placement="top" title="Target Instances"></i>',
                 'linkOptions' => ['data-url' => Url::to(['instances', 'id' => $model->id])],
                 'options' => ['id' => 'instances-tab'],
