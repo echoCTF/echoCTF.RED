@@ -157,6 +157,37 @@ CREATE TABLE `player_bandwidth` (
   KEY `idx-player_bandwidth-ts` (`ts`)
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_bandwidth';
 
+DROP TABLE IF EXISTS `notification`;
+CREATE TABLE `notification` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `player_id` int(11) unsigned NOT NULL,
+  `category` varchar(20) NOT NULL DEFAULT 'success',
+  `title` varchar(255) DEFAULT NULL,
+  `body` mediumtext DEFAULT NULL,
+  `archived` tinyint(1) DEFAULT 0,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/notification';
+
+DROP TABLE IF EXISTS `vpn_ip_whitelist`;
+CREATE TABLE `vpn_ip_whitelist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ip` int(10) unsigned NOT NULL,
+  `mask` int(10) unsigned NOT NULL DEFAULT 4294967295,
+  `description` text DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx-vpn_ip_whitelist-ip` (`ip`)
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/vpn_ip_whitelist';
+
+DROP TABLE IF EXISTS `player_vpn_allowance`;
+CREATE TABLE `player_vpn_allowance` (
+  `player_id` int(11) NOT NULL,
+  `vpn_ip_limit` bigint(21) unsigned DEFAULT NULL
+) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_vpn_allowance';
+
 DROP TABLE IF EXISTS `debuglogs`;
 CREATE TABLE debuglogs (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -252,12 +283,37 @@ END
 DROP PROCEDURE IF EXISTS `VPN_LOGIN` //
 CREATE PROCEDURE `VPN_LOGIN`(IN usid BIGINT, IN  assignedIP INT UNSIGNED, IN remoteIP INT UNSIGNED)
 BEGIN
+  DECLARE ip_limit, all_vip, connected, allowance, limited INT DEFAULT 0;
+
   -- Check that player exists and not on the vpn alread
   IF (SELECT COUNT(*) FROM player WHERE id=usid AND status=10)>0 AND memc_get(CONCAT('ovpn:',usid)) IS NULL THEN
-    -- Set the player logged in
-    UPDATE `player_last` SET `on_vpn`=NOW(), `vpn_local_address`=assignedIP, `vpn_remote_address`=remoteIP WHERE `id`=usid;
-    -- Bring all networks for the client
-    CALL get_player_pf_networks(usid);
+    SET ip_limit=CAST(COALESCE(memc_get('sysconfig:vpn_ip_limit'),0) AS UNSIGNED);
+    SET all_vip=CAST(COALESCE(memc_get('sysconfig:all_players_vip'),0) AS UNSIGNED);
+    -- Limit the number of players connected from the same remote IP
+    IF ip_limit>0 AND all_vip=0 AND (SELECT COUNT(*) FROM vpn_ip_whitelist WHERE (remoteIP & mask)=(ip & mask))=0 THEN
+      SELECT COUNT(*) INTO connected FROM player_last WHERE vpn_remote_address=remoteIP AND vpn_local_address IS NOT NULL AND id<>usid;
+      IF connected>=ip_limit THEN
+        -- The highest allowance of the players connected from this IP, including this one, applies to all of them
+        BEGIN
+          DECLARE CONTINUE HANDLER FOR SQLEXCEPTION SET allowance=0;
+          SELECT COALESCE(MAX(vpn_ip_limit),0) INTO allowance FROM player_vpn_allowance
+          WHERE player_id=usid OR player_id IN (SELECT id FROM player_last WHERE vpn_remote_address=remoteIP AND vpn_local_address IS NOT NULL AND id<>usid);
+        END;
+        IF connected>=GREATEST(ip_limit,allowance) THEN
+          SET limited=1;
+        END IF;
+      END IF;
+    END IF;
+
+    IF limited=1 THEN
+      INSERT INTO notification (player_id,category,title,body,archived,created_at,updated_at) VALUES (usid,'swal:warning','VPN connection limit reached','Too many players are already connected to the VPN from your IP address. Disconnect one of them and try again.',0,NOW(),NOW());
+      SELECT 'IPLIMIT' as '';
+    ELSE
+      -- Set the player logged in
+      UPDATE `player_last` SET `on_vpn`=NOW(), `vpn_local_address`=assignedIP, `vpn_remote_address`=remoteIP WHERE `id`=usid;
+      -- Bring all networks for the client
+      CALL get_player_pf_networks(usid);
+    END IF;
   ELSE
     SELECT 'LOGGEDIN' as '';
   END IF;
