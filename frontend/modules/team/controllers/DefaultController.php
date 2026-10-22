@@ -134,21 +134,17 @@ class DefaultController extends \app\components\BaseController
     ]);
   }
 
-  /**
-   * Shows team model.
-   * @return mixed
-   */
-  public function actionView($token)
+  private function teamPageData(Team $team): array
   {
-    $model = $this->findModel(['token' => $token]);
-    $TP = TeamPlayer::find()->where(['team_id' => $model->id])->orderBy(['approved' => SORT_DESC, 'ts' => SORT_ASC]);
+    $TP = TeamPlayer::find()->where(['team_id' => $team->id])
+      ->orderBy(new \yii\db\Expression('player_id = :owner DESC, approved DESC, ts ASC', [':owner' => $team->owner_id]));
     $dataProvider = new ActiveDataProvider([
       'query' => $TP,
       'sort' => false,
       'pagination' => false,
     ]);
     $teamPlayers = ArrayHelper::getColumn($dataProvider->getModels(), 'player_id');
-    $headshots = \app\modules\target\models\Target::find()->headshottedByTeam($model->id);
+    $headshots = \app\modules\target\models\Target::find()->headshottedByTeam($team->id);
     $headshotsProvider = new ActiveDataProvider([
       'query' => $headshots,
       'pagination' => [
@@ -159,7 +155,7 @@ class DefaultController extends \app\components\BaseController
       'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
     ]);
 
-    $solves = \app\modules\challenge\models\Challenge::find()->solvedByTeam($model->id);
+    $solves = \app\modules\challenge\models\Challenge::find()->solvedByTeam($team->id);
     $solverProvider = new ActiveDataProvider([
       'query' => $solves,
       'pagination' => [
@@ -171,7 +167,7 @@ class DefaultController extends \app\components\BaseController
     ]);
 
     $targetProgressProvider = new ActiveDataProvider([
-      'query' => \app\modules\target\models\Target::find()->team_progress($model->id)->having('(player_treasures>0 or player_findings>0) AND (progress>0 AND progress<100)'),
+      'query' => \app\modules\target\models\Target::find()->team_progress($team->id)->having('(player_treasures>0 or player_findings>0) AND (progress>0 AND progress<100)'),
       'pagination' => [
         'pageSizeParam' => 'target-perpage',
         'pageParam' => 'target-page',
@@ -196,7 +192,7 @@ class DefaultController extends \app\components\BaseController
       ]
     ]);
 
-    $teamNetworks = \app\modules\network\models\PrivateNetwork::find()->forTeam($model->id);
+    $teamNetworks = \app\modules\network\models\PrivateNetwork::find()->forTeam($team->id);
     $teamNetworksProvider = new ActiveDataProvider([
       'query' => $teamNetworks,
       'pagination' => [
@@ -209,7 +205,7 @@ class DefaultController extends \app\components\BaseController
 
     $subQuery = TeamStream::find()
       ->select('stream_id')
-      ->where(['team_id' => $model->id]);
+      ->where(['team_id' => $team->id]);
 
     $stream = \app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
       ->where(['id' => $subQuery])
@@ -222,8 +218,8 @@ class DefaultController extends \app\components\BaseController
         'pageSize' => 10,
       ]
     ]);
-    return $this->render('view', [
-      'team' => $model,
+    return [
+      'team' => $team,
       'teamInstanceProvider' => $teamInstanceProvider,
       'streamProvider' => $streamProvider,
       'headshotsProvider' => $headshotsProvider,
@@ -231,8 +227,18 @@ class DefaultController extends \app\components\BaseController
       'solverProvider' => $solverProvider,
       'dataProvider' => $dataProvider,
       'networksProvider' => $teamNetworksProvider,
-    ]);
+    ];
   }
+
+  /**
+   * Shows team model.
+   * @return mixed
+   */
+  public function actionView($token)
+  {
+    return $this->render('view', $this->teamPageData($this->findModel(['token' => $token])));
+  }
+
   /**
    * Shows current team membership.
    * @return mixed
@@ -242,98 +248,9 @@ class DefaultController extends \app\components\BaseController
     if (Yii::$app->user->identity->team === null || Yii::$app->user->identity->teamPlayer === null) {
       return $this->redirect(['index']);
     }
-    $dataProvider = new ActiveDataProvider([
-      'query' => TeamPlayer::find()->where(['team_id' => Yii::$app->user->identity->team->id])->orderBy(['ts' => SORT_ASC]),
-      'sort' => false,
-      'pagination' => false,
-    ]);
-    $teamPlayers = ArrayHelper::getColumn(Yii::$app->user->identity->team->players, 'id');
-    $teamInstances = \app\modules\target\models\TargetInstance::find()->leftJoin('team_player', 'target_instance.player_id=team_player.player_id')
-      ->andFilterWhere(['target_instance.player_id' => $teamPlayers])
-      ->andFilterWhere(['team_player.approved' => 1]);
-
-    if (\Yii::$app->sys->team_visible_instances !== true) {
-      $teamInstances->andFilterWhere(['team_allowed' => 1]);
-    }
-    $teamInstanceProvider = new ActiveDataProvider([
-      'query' => $teamInstances,
-      'pagination' => [
-        'pageSizeParam' => 'teamInstance-perpage',
-        'pageParam' => 'teamInstance-page',
-        'pageSize' => Yii::$app->sys->members_per_team === false ? 10 : Yii::$app->sys->members_per_team,
-      ]
-    ]);
-
-    $teamNetworks = \app\modules\network\models\PrivateNetwork::find()->forTeam(\Yii::$app->user->identity->team->id);
-    $teamNetworksProvider = new ActiveDataProvider([
-      'query' => $teamNetworks,
-      'pagination' => [
-        'pageSizeParam' => 'networks-perpage',
-        'pageParam' => 'networks-page',
-        'pageSize' => 5,
-      ],
-      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
-    ]);
-
-    $subQuery = TeamStream::find()
-      ->select('stream_id')
-      ->where(['team_id' => \Yii::$app->user->identity->team->id]);
-
-    $stream = \app\models\Stream::find()->select('stream.*,TS_AGO(ts) as ts_ago')
-      ->where(['id' => $subQuery])
-      ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
-    $streamProvider = new ActiveDataProvider([
-      'query' => $stream->with(['player.profile.owner']),
-      'pagination' => [
-        'pageSizeParam' => 'stream-perpage',
-        'pageParam' => 'stream-page',
-        'pageSize' => 10,
-      ]
-    ]);
-
-    $targetProgressProvider = new ActiveDataProvider([
-      'query' => \app\modules\target\models\Target::find()->team_progress(\Yii::$app->user->identity->team->id)->having('(player_treasures>0 or player_findings>0) AND (progress>0 AND progress<100)'),
-      'pagination' => [
-        'pageSizeParam' => 'target-perpage',
-        'pageParam' => 'target-page',
-        'pageSize' => 5,
-      ],
-      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
-    ]);
-    $headshots = \app\modules\target\models\Target::find()->headshottedByTeam(\Yii::$app->user->identity->team->id);
-    $headshotsProvider = new ActiveDataProvider([
-      'query' => $headshots,
-      'pagination' => [
-        'pageSizeParam' => 'headshots-perpage',
-        'pageParam' => 'headshots-page',
-        'pageSize' => 5,
-      ],
-      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
-    ]);
-
-    $solves = \app\modules\challenge\models\Challenge::find()->solvedByTeam(\Yii::$app->user->identity->team->id);
-    $solverProvider = new ActiveDataProvider([
-      'query' => $solves,
-      'pagination' => [
-        'pageSizeParam' => 'solves-perpage',
-        'pageParam' => 'solves-page',
-        'pageSize' => 5,
-      ],
-      'sort' => ['defaultOrder' => ['name' => SORT_ASC]],
-    ]);
-
-    return $this->render('view', [
-      'teamInstanceProvider' => $teamInstanceProvider,
-      'dataProvider' => $dataProvider,
-      'streamProvider' => $streamProvider,
-      'teamTargetsProvider' => $targetProgressProvider,
-      'headshotsProvider' => $headshotsProvider,
-      'solverProvider' => $solverProvider,
-      'team' => Yii::$app->user->identity->team,
-      'networksProvider' => $teamNetworksProvider,
-
-    ]);
+    return $this->render('view', $this->teamPageData(Yii::$app->user->identity->team));
   }
+
   /**
    * Lists all Team models.
    * @return mixed
@@ -488,7 +405,8 @@ class DefaultController extends \app\components\BaseController
   {
     $tp = $this->findTPModel($id);
     $token = $tp->team->token;
-    if (Yii::$app->user->identity->teamLeader === null || ($tp->player_id !== Yii::$app->user->id && $tp->team_id !== Yii::$app->user->identity->teamLeader->id)) {
+    $leader = Yii::$app->user->identity->teamLeader;
+    if ($tp->player_id !== Yii::$app->user->id && ($leader === null || $tp->team_id !== $leader->id)) {
       Yii::$app->session->setFlash('error', \Yii::t('app', 'You have no permission to cancel this membership.'));
       return $this->redirect(['index']);
     }
