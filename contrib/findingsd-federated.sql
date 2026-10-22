@@ -306,8 +306,14 @@ BEGIN
     END IF;
 
     IF limited=1 THEN
-      INSERT INTO notification (player_id,category,title,body,archived,created_at,updated_at) VALUES (usid,'swal:warning','VPN connection limit reached','Too many players are already connected to the VPN from your IP address. Disconnect one of them and try again.',0,NOW(),NOW());
-      SELECT 'IPLIMIT' as '';
+      -- Notify only once every 5 minutes, clients keep retrying while rejected
+      IF memc_get(CONCAT('vpn_ip_limit:',usid)) IS NULL THEN
+        DO memc_set(CONCAT('vpn_ip_limit:',usid),remoteIP,300);
+        INSERT INTO notification (player_id,category,title,body,archived,created_at,updated_at) VALUES (usid,'swal:warning','VPN connection limit reached','Too many players are already connected to the VPN from your IP address. Disconnect one of them and try again.',0,NOW(),NOW());
+        SELECT 'IPLIMIT' as '';
+      ELSE
+        SELECT 'IPLIMIT_REPEAT' as '';
+      END IF;
     ELSE
       -- Set the player logged in
       UPDATE `player_last` SET `on_vpn`=NOW(), `vpn_local_address`=assignedIP, `vpn_remote_address`=remoteIP WHERE `id`=usid;
