@@ -7,6 +7,9 @@ class FailedClaimHandler extends \yii\base\Model
   /** Used when the matched treasure has no points set. */
   const PENALTY_FALLBACK_POINTS = -1500;
 
+  /** abuser.reason of a failed claim whose owner lookup timed out; the scan_failed_claims event settles it. */
+  const REASON_PENDING = 'failed_claim_pending';
+
   /**
    * Finds the treasure and owning player behind a submitted flag code.
    *
@@ -17,11 +20,13 @@ class FailedClaimHandler extends \yii\base\Model
    * @param string|false $secretKey game secret, or false to disable
    * @param string $string raw code the player submitted
    * @param int[] $excludePlayerIds players to exclude from matching
+   * @param float $timeout seconds before the lookup is aborted, 0 for no limit
    * @return array|false treasure_id, player_id, encryptedCode, treasure_points, or false
+   * @throws \yii\db\Exception with errorInfo[1] 1969 when $timeout is exceeded
    */
-  public static function findByEncryptedCode($secretKey, $string, array $excludePlayerIds = [])
+  public static function findByEncryptedCode($secretKey, $string, array $excludePlayerIds = [], $timeout = 0)
   {
-    if ($secretKey === false)
+    if ($secretKey === false || !preg_match(TreasureQuery::formRegex(), $string))
       return false;
 
     $hash = 'md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, player.id), :secretKey)))';
@@ -42,7 +47,13 @@ class FailedClaimHandler extends \yii\base\Model
       $query->andWhere(['not in', 'player.id', $excludePlayerIds]);
     }
 
-    return $query->limit(1)->one();
+    $command = $query->limit(1)->createCommand();
+    if ($timeout > 0) {
+      $params = $command->params;
+      $command->setSql(sprintf('SET STATEMENT max_statement_time=%.3F FOR %s', $timeout, $command->getSql()))->bindValues($params);
+    }
+
+    return $command->queryOne();
   }
 
   /**
@@ -59,7 +70,18 @@ class FailedClaimHandler extends \yii\base\Model
   public static function handleFailedClaim($string)
   {
     $playerId = \Yii::$app->user->id;
-    $owner = self::findByEncryptedCode(\Yii::$app->sys->treasure_secret_key, $string, [$playerId]);
+    $pending = false;
+    try {
+      $owner = \Yii::$app->cache->memcache->add('failed_claim_lookup:' . $playerId, 1, 2)
+        ? self::findByEncryptedCode(\Yii::$app->sys->treasure_secret_key, $string, [$playerId], (float) (\Yii::$app->sys->failed_claim_lookup_timeout ?: 1))
+        : false;
+    } catch (\yii\db\Exception $e) {
+      if ((int) ($e->errorInfo[1] ?? 0) !== 1969) {
+        throw $e;
+      }
+      $owner = false;
+      $pending = true;
+    }
     $flag = \yii\helpers\Html::encode($string);
     \Yii::$app->counters->increment('failed_claims');
 
@@ -70,7 +92,7 @@ class FailedClaimHandler extends \yii\base\Model
         && \Yii::$app->user->identity->profile->metric('failed_claims') > \Yii::$app->sys->free_fail_allowance;
       $actors = [[
         'player_id' => $playerId,
-        'reason'    => 'failed_claim',
+        'reason'    => $pending ? self::REASON_PENDING : 'failed_claim',
         'points'    => $overAllowance ? -\Yii::$app->sys->penalty_per_fail : 0,
         'resolved'  => $overAllowance ? 1 : 0,
         'penalty'   => $overAllowance ? \Yii::t('app', 'Too many failed flag claims') : null,
