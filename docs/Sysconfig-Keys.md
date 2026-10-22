@@ -157,6 +157,7 @@ Alternatively, instead of DSN the following keys can be used
 * `CA.txt.crt` The text version of the CA certificate
 * `vpn-ta.key` The OpenVPN TLS Auth key
 * `vpngw` The VPN gateway IP or FQDN, that participants of the competition will have to connect to be able to access the targeted infrastructure.
+* `vpn_ip_limit`: Maximum number of players that can be connected to the VPN at the same time from the same remote (public) IP address. A value of `0` (default) disables the limit. Players beyond the limit are rejected and notified. Remote IPs listed on `VPN IP Whitelist` and events with `all_players_vip` enabled are not limited. The limit can be raised for all players connected from the same IP by an active subscription or one-time purchase of a product that has the `vpn_ip_limit` metadata key (see [Stripe](Stripe.md)), the highest value among the connected players applies.
 
 
 ## Application specific

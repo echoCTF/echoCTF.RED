@@ -16,6 +16,7 @@ We assume you have a stripe account already configured for your business.
     - `shortcode`: Network shortcode
     - `weight`: users by ordering
     - `perks`: raw html of the perks the subscription provides
+    - `vpn_ip_limit`: Number of players that can be connected to the VPN from the same IP address while the owner of this subscription is connected. Only used when the `vpn_ip_limit` sysconfig key is enabled, the highest value of all the players connected from an IP applies to all of them
     - `api_bearer_enable`: 0/1 Wheather the subscription includes enables API access to the frontend for the players
     - `standalone_perk`: (optional) 0/1 if this is a stand-alone perk (non-recurring)
     - `days`: If this is a stand-alone product but needs to stay active for a number of days (non-recurring)
