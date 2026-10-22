@@ -40,6 +40,7 @@ class Achievement extends \yii\db\ActiveRecord
             [['name', 'pubname'], 'string', 'max' => 255],
             [['code'], 'string', 'max' => 128],
             [['name'], 'unique'],
+            ['player_type', 'in', 'range' => ['offense', 'defense','both']],
         ];
     }
 

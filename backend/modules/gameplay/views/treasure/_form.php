@@ -29,7 +29,7 @@ use app\modules\gameplay\models\Target;
 
     <?= $form->field($model, 'points')->textInput(['maxlength' => true])->hint('The amount of points to be awarded to a player which claims this treasure/flag') ?>
 
-    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', ], ['prompt' => 'Choose the type of the player']) ?>
+    <?= $form->field($model, 'player_type')->dropDownList(['offense' => 'Offense', 'defense' => 'Defense', 'both' => 'Both', ], ['prompt' => 'Choose the type of the player']) ?>
 
     <?= $form->field($model, 'csum')->textInput(['maxlength' => true])->hint('TODO') ?>
 

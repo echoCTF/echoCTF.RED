@@ -32,6 +32,7 @@ use yii\db\Expression;
  * @property string $dns
  * @property string $parameters
  * @property string $category
+ * @property string $player_type
  * @property string $imageparams
  * @property int $suggested_xp
  * @property int $required_xp
@@ -120,6 +121,8 @@ class TargetAR extends \yii\db\ActiveRecord
       [['mac'], 'unique'],
       [['status'], 'in', 'range' => ['online', 'offline', 'powerup', 'powerdown', 'maintenance']],
       [['status'], 'default', 'value' => 'offline'],
+      [['player_type'], 'in', 'range' => ['offense', 'defense', 'both']],
+      [['player_type'], 'default', 'value' => 'both'],
       [['scheduled_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
       [['created_at'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
       [['weight'], 'filter', 'filter' => 'intval'],
@@ -151,7 +154,8 @@ class TargetAR extends \yii\db\ActiveRecord
       'required_xp' => 'Required XP',
       'timer' => 'Timer',
       'weight' => 'Weight',
-      'category' => 'Category'
+      'category' => 'Category',
+      'player_type' => 'Player Type'
     ];
   }
 

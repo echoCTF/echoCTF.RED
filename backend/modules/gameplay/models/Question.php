@@ -45,7 +45,7 @@ class Question extends \yii\db\ActiveRecord
             [['challenge_id', 'name'], 'unique', 'targetAttribute' => ['challenge_id', 'name']],
             [['challenge_id'], 'exist', 'skipOnError' => true, 'targetClass' => Challenge::class, 'targetAttribute' => ['challenge_id' => 'id']],
             [['weight','points'], 'default', 'value'=> 0],
-            [['player_type'],'default', 'value'=>'offense'],
+            [['player_type'],'default', 'value'=>'both'],
         ];
     }
 

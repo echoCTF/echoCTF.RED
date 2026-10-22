@@ -40,6 +40,7 @@ class Credential extends \yii\db\ActiveRecord
             [['target_id', 'stock'], 'integer'],
             [['points'], 'number'],
             [['player_type'], 'string'],
+            ['player_type', 'in', 'range' => ['offense', 'defense','both']],
             [['service'], 'string', 'max' => 50],
             [['title', 'pubtitle', 'username', 'password'], 'string', 'max' => 255],
             [['service', 'target_id', 'username', 'password'], 'unique', 'targetAttribute' => ['service', 'target_id', 'username', 'password']],
