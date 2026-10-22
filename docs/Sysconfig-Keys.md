@@ -47,7 +47,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `module_smartcity_disabled`: Whether or not the smartcity module is disabled (hides the menu from backend)
 * `module_speedprogramming_enabled`: Whether or not the Speed Programming module is enabled (hides the menu from backend also)
 * `stream_player_target_help`: Whether or not to produce stream entries for players who activate writeups on a target.
-* `log_failed_claims`: Log failed claim attempts?
+* `log_failed_claims`: Log failed claim attempts? Wrong flags whose owner lookup exceeds `failed_claim_lookup_timeout` are only queued for the background scan when this is on.
 * `team_encrypted_claims_allowed`: Should we allow claims of flags across teams?
 * `target_metadata_visible`: Whether or not metadata will be visible to normal players. Admins get to see the metadata no matter this settting.
 * `disable_stream_tweet`: Whether the ability to tweed individual stream messages is disabled
@@ -99,6 +99,8 @@ These are the system configuration keys used by the platform applications. Any k
 * `event_finished_path`: The path to be create when a CTF event is finished (eg `/tmp/event_finished`)
 * `penalty_per_fail`: Points to penalize per fail (eg. `100`)
 * `free_fail_allowance`: Grace fail allowance before penalty is applied (eg. `3`)
+* `failed_claim_lookup_timeout`: Seconds to look up the owner of a wrong flag (a flag that is another player's personal flag) on the spot. Past this the claim is logged as `failed_claim_pending` and the `ev_scan_failed_claims` event settles it later. Default `1`, can be fractional (eg. `0.5`)
+* `failed_claim_scan_players`: Players the `ev_scan_failed_claims` event checks per run (every minute) for each queued wrong flag. Default `1000`
 * `offense_csp_header`: The offense CSP policy header name (eg `Content-Security-Policy-Report-Only`)
 * `offense_csp`: The offense domain CSP policy
 * `moderator_csp_header`: The moderator CSP policy header name (eg `Content-Security-Policy-Report-Only`)

@@ -71,6 +71,8 @@ class ConfigureForm extends Model
   public $writeup_rankings;
   public $disable_mailer;
   public $log_failed_claims;
+  public $failed_claim_lookup_timeout;
+  public $failed_claim_scan_players;
   public $team_encrypted_claims_allowed;
   public $module_smartcity_disabled;
   public $api_bearer_enable;
@@ -229,6 +231,8 @@ class ConfigureForm extends Model
     'writeup_rankings',
     'disable_mailer',
     'log_failed_claims',
+    'failed_claim_lookup_timeout',
+    'failed_claim_scan_players',
     'team_encrypted_claims_allowed',
     'module_smartcity_disabled',
     'api_bearer_enable',
@@ -472,6 +476,8 @@ class ConfigureForm extends Model
       [['dn_organizationName'], 'default', 'value' => \Yii::$app->sys->dn_organizationName],
       [['dn_organizationalUnitName'], 'default', 'value' => \Yii::$app->sys->dn_organizationalUnitName],
       ['profile_visibility', 'default', 'value' => 'ingame'],
+      ['failed_claim_lookup_timeout', 'number', 'min' => 0.001],
+      ['failed_claim_scan_players', 'integer', 'min' => 1],
       [[
         'online_timeout',
         'spins_per_day',
@@ -633,6 +639,8 @@ class ConfigureForm extends Model
       'writeup_rankings' => 'Writeup Ratings',
       'disable_mailer' => 'Disable mailer operations',
       'log_failed_claims' => 'Log failed attempts',
+      'failed_claim_lookup_timeout' => 'Failed claim lookup timeout',
+      'failed_claim_scan_players' => 'Failed claim scan players per run',
       'team_encrypted_claims_allowed' => 'Team claims',
       'module_smartcity_disabled' => 'Disable SmartCity module',
       'api_bearer_enable' => 'Enable Bearer authorizations API operations',

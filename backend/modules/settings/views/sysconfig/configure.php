@@ -81,6 +81,8 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-2"><?= $form->field($model, 'treasure_secret_key')->textInput()->hint('Secret key to encrypt player flags?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'target_days_new')->textInput()->hint('How many days are targets considered new?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'target_days_updated')->textInput()->hint('How many days are targets considered updated?') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'failed_claim_lookup_timeout')->textInput(['placeholder'=>'1'])->hint('Seconds to look up the owner of a wrong flag before it is queued for the background scan (needs <code>log_failed_claims</code>)') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'failed_claim_scan_players')->textInput(['placeholder'=>'1000'])->hint('Players checked per minute for each queued wrong flag by the <code>ev_scan_failed_claims</code> event') ?></div>
     </div>
 
     <hr />
