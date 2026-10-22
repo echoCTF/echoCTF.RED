@@ -52,8 +52,13 @@ class TreasureQuery extends \yii\db\ActiveQuery
     if ($player_id === false) $player_id = intval(Yii::$app->user->id);
 
     if ($secretKey !== false && $player_id !== false) {
-      $hash = 'md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey)))';
-      return $this->andWhere(self::anyForm($hash, $code, [':player_id' => $player_id, ':secretKey' => $secretKey]));
+      if (!preg_match(self::formRegex(), $code, $m)) {
+        return $this->andWhere('0=1');
+      }
+      return $this->andWhere(new Expression(
+        'md5(HEX(AES_ENCRYPT(CONCAT(code, :player_id), :secretKey))) = :hash',
+        [':player_id' => $player_id, ':secretKey' => $secretKey, ':hash' => $m[1]]
+      ));
     }
   }
 
@@ -67,6 +72,10 @@ class TreasureQuery extends \yii\db\ActiveQuery
       return $this;
     }
 
+    if (!preg_match(self::formRegex(), $code, $m)) {
+      return $this->andWhere('0=1');
+    }
+
     // Join approved team players
     $this->innerJoin(
       'team_player tp',
@@ -74,8 +83,10 @@ class TreasureQuery extends \yii\db\ActiveQuery
       [':team_id' => $team_id]
     );
 
-    $hash = 'md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey)))';
-    return $this->andWhere(self::anyForm($hash, $code, [':secretKey' => $secretKey]));
+    return $this->andWhere(new Expression(
+      'md5(HEX(AES_ENCRYPT(CONCAT(treasure.code, tp.player_id), :secretKey))) = :hash',
+      [':secretKey' => $secretKey, ':hash' => $m[1]]
+    ));
   }
   public function claimable()
   {
