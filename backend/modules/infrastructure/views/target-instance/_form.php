@@ -22,7 +22,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
         'url' => ['/frontend/player/ajax-search'],
         'options' => ['placeholder' => 'Find player by email, username, id or profile.']
     ]) ?>
-    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'), ['prompt'=>'Select target'])->hint('Choose the target to spawn instance for') ?>
+    <?= $form->field($model, 'target_id')->dropDownList(ArrayHelper::map(Target::find()->where(['instance_allowed'=>1])->orWhere(['id'=>$model->target_id])->orderBy(['name'=>SORT_ASC])->all(), 'id', 'name'), ['prompt'=>'Select target'])->hint('Choose the target to spawn instance for') ?>
 
     <?= $form->field($model, 'server_id')->dropDownList(ArrayHelper::map(Server::find()->orderBy(['name'=>SORT_ASC,'ip'=>SORT_ASC])->all(), 'id', 'name'), ['prompt'=>'Select Server'])->hint('Choose the server this instance will or has spawned') ?>
 
