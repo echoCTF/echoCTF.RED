@@ -128,9 +128,10 @@ class TeamScoreController extends \app\components\BaseController
         $searchModel=new TeamScoreSearch();
         $csv = fopen('php://temp/maxmemory:'. (5*1024*1024), 'r+');
         fputcsv($csv, ['Rank','Team','Full name','Username','Email','category','affiliation']);
-        for($academic=0;$academic<3;$academic++)
+        $groupings=intval(Yii::$app->sys->academic_grouping);
+        for($academic=0;$academic<max($groupings,1);$academic++)
         {
-            $query=TeamScore::find()->joinWith(['team'])->andFilterWhere(['team.academic' => $academic])
+            $query=TeamScore::find()->joinWith(['team'])->andFilterWhere(['team.academic' => $groupings>0 ? $academic : null])
                 ->orderBy(['points'=>SORT_DESC, 'ts'=>SORT_ASC, 'team_id'=>SORT_ASC])
                 ->limit(15);
             $rank=1;
@@ -161,12 +162,13 @@ class TeamScoreController extends \app\components\BaseController
         $searchModel=new TeamScoreSearch();
         $params=Yii::$app->request->queryParams;
         $csv = fopen('php://temp/maxmemory:'. (5*1024*1024), 'r+');
-        for($i=0;$i<3;$i++)
+        $groupings=intval(Yii::$app->sys->academic_grouping);
+        for($i=0;$i<max($groupings,1);$i++)
         {
-            $params['TeamScoreSearch']['team_academic']=$i;
+            $params['TeamScoreSearch']['team_academic']=$groupings>0 ? $i : null;
             $dataProvider=$searchModel->search($params);
             $dataProvider->pagination->pageSize=15;
-            fputcsv($csv, ['---------',Yii::$app->sys->{"event_name_".$i},'---------']);
+            fputcsv($csv, ['---------',$groupings>0 ? Yii::$app->sys->{"event_name_".$i} : Yii::$app->sys->event_name,'---------']);
             fputcsv($csv, ['Rank','Team','Points']);
             foreach($dataProvider->getModels() as $k=>$line)
             {
