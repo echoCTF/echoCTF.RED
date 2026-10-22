@@ -247,6 +247,8 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'pflog_max')->textInput(['maxlength' => true])->hint('Maximum pflog interface to use (<code>default: 0</code> means use <code>pflog0</code>') ?></div>
       <div class="col-sm-6"><?= $form->field($model, 'pf_state_limits')->textInput(['maxlength' => true])->hint('PF firewall limits imposed to player connections to the targets') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'bannedIPS')->textInput(['maxlength' => true])->hint('List of comma separated player IPs that will be blocked from the platform') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'trusted_proxies')->textInput(['maxlength' => true, 'placeholder' => '10.0.0.0/8,192.0.2.10'])->hint('Comma separated IPs and CIDR ranges of the reverse proxies or CDNs in front of the frontend. Leave empty when players connect directly') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'proxy_ip_header')->textInput(['maxlength' => true, 'placeholder' => 'X-Forwarded-For'])->hint('Header that carries the player IP when <code>trusted_proxies</code> is set, eg. <code>CF-Connecting-IP</code> behind Cloudflare') ?></div>
     </div>
     <hr />
 
