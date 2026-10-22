@@ -22,92 +22,17 @@ class SpawnRestAction extends \yii\rest\ViewAction
     if ($goback === '/')
       $goback = ['/target/default/view', 'id' => $id];
     try {
-      $target = $this->findTarget($id);
-      $playerSpin = Yii::$app->user->identity->profile->spins;
-
-      if ($this->actionDisabledRoute($target)) {
-        throw new UserException(\Yii::t('app', 'This route is disabled!'));
-      }
-
-      if (!$target->instance_allowed) {
-        throw new UserException(\Yii::t('app', 'Target not allowed to spawn private instances!'));
-      }
-      if (!$this->actionAllowedBy()) {
-        throw new UserException(\Yii::t('app', 'You are not allowed to spawn private instances!'));
-      }
-
-      if (intval($playerSpin->counter) >= intval($playerSpin->perday)) {
-        throw new UserException(\Yii::t('app', "You've used all your spins; your counter is maxed out!"));
-      }
-
-
-      if ($target->status !== 'online') {
-        throw new UserException(\Yii::t('app', 'Target did not start, target is not online yet!'));
-      }
-      $ti = TargetInstance::findOne(Yii::$app->user->id);
-      // Check if user has already a started instance
-      if ($ti !== null) {
-        if ($ti->target_id != $id) {
-          Yii::$app->session->setFlash('warning', sprintf(\Yii::t('app', 'Scheduling shutdown for old [%s] instance. You will receive a notification when the instance is shut.'), $ti->target->name));
-          $ti->reboot = 2;
-          $ti->save();
-        } else {
-          $playerSpin->counter = intval($playerSpin->counter) + 1;
-          $playerSpin->total = intval($playerSpin->total) + 1;
-          $playerSpin->save();
-          Yii::$app->session->setFlash('success', sprintf(\Yii::t('app', 'Target instance [%s] scheduled for restart. You will receive a notification when the operation is completed.'), $ti->target->name));
-          $ti->reboot = 1;
-          $ti->save();
-        }
-
-        return Yii::$app->controller->redirect($goback);
-      }
-
-      $ti = new TargetInstance;
-      $ti->player_id = Yii::$app->user->id;
-      $ti->target_id = $id;
-      $ti->team_allowed = intval(\Yii::$app->sys->team_visible_instances);
-      if (\Yii::$app->user->identity->subscription !== null && \Yii::$app->user->identity->subscription->active > 0 && \Yii::$app->user->identity->subscription->product !== null) {
-        $metadata = json_decode(\Yii::$app->user->identity->subscription->product->metadata);
-        if (isset($metadata->team_subscription) && boolval($metadata->team_subscription) === true) {
-          $ti->team_allowed = ($team === false ? 0 : 1);
-        }
-      }
-
-      // pick the least used server currently
-      $ti->server_id = intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id), rand() limit 1')->queryScalar());
-      if ($ti->save() !== false) {
+      [$status, $ti] = TargetInstance::spawnFor(Yii::$app->user->identity, (int) $id, $team !== false);
+      if ($status === 'old_shutdown')
+        Yii::$app->session->setFlash('warning', sprintf(\Yii::t('app', 'Scheduling shutdown for old [%s] instance. You will receive a notification when the instance is shut.'), $ti->target->name));
+      elseif ($status === 'restarted')
+        Yii::$app->session->setFlash('success', sprintf(\Yii::t('app', 'Target instance [%s] scheduled for restart. You will receive a notification when the operation is completed.'), $ti->target->name));
+      else
         Yii::$app->session->setFlash('success', sprintf(\Yii::t('app', 'Spawning new instance for [%s]. You will receive a notification when the instance is up.'), $ti->target->name));
-        $playerSpin = Yii::$app->user->identity->profile->spins;
-        $playerSpin->counter = intval($playerSpin->counter) + 1;
-        $playerSpin->total = intval($playerSpin->total) + 1;
-        $playerSpin->save();
-      } else
-        throw new UserException(\Yii::t('app', 'Failed to spawn new target instance for you.'));
     } catch (\Exception $e) {
       Yii::$app->session->setFlash('error', $e->getMessage());
     }
 
     return Yii::$app->controller->redirect($goback);
-  }
-
-  protected function actionDisabledRoute($model)
-  {
-    $action = sprintf('/target/%d/spawn', $model->id);
-    return Yii::$app->DisabledRoute->disabled($action);
-  }
-
-  protected function actionAllowedBy()
-  {
-    return (Yii::$app->user->identity->isVip === true || Yii::$app->sys->all_players_vip === true);
-  }
-
-  private function findTarget($id)
-  {
-    if (($model = Target::findOne($id)) !== NULL) {
-      return $model;
-    }
-
-    throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
   }
 }
