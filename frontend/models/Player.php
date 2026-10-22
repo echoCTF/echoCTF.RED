@@ -117,10 +117,11 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public static function findByVerificationToken($token)
   {
-    if (($model = PlayerToken::findOne(['token' => $token, 'type' => 'email_verification'])) !== null)
-      return static::findOne(['id' => $model->player_id, 'status' => [self::STATUS_INACTIVE, self::STATUS_UNVERIFIED]]);
+    $id = PlayerToken::playerIdFor($token, 'email_verification');
+    if ($id === null)
+      return null;
+    return static::findOne(['id' => $id, 'status' => [self::STATUS_INACTIVE, self::STATUS_UNVERIFIED]]);
   }
-
   /**
    * {@inheritdoc}
    */
@@ -131,9 +132,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
 
   public function getVerification_token()
   {
-    if (($model = PlayerToken::findOne(['player_id' => $this->id, 'type' => 'email_verification'])) !== null)
-      return $model->token;
-    return null;
+    return PlayerToken::tokenFor($this->id, 'email_verification');
   }
 
   public function getPassword_reset_token()
@@ -301,11 +300,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public static function isPasswordResetTokenValid($token, $expire = 86400): bool
   {
-    if (trim($token) === '')
-      return false;
-    if (PlayerToken::findOne(['token' => $token, 'type' => 'password_reset']) !== null)
-      return true;
-    return false;
+    return PlayerToken::playerIdFor($token, 'password_reset') !== null;
   }
   /**
    * Finds user by password reset token
@@ -315,11 +310,10 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
    */
   public static function findByPasswordResetToken($token)
   {
-    if (!static::isPasswordResetTokenValid($token)) {
+    $id = PlayerToken::playerIdFor($token, 'password_reset');
+    if ($id === null)
       return null;
-    }
-    if (($model = PlayerToken::findOne(['token' => $token, 'type' => 'password_reset'])) !== null)
-      return static::findOne(['id' => $model->player_id, 'status' => self::STATUS_ACTIVE]);
+    return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
   }
 
   public function saveWithSsl($validation = true)
