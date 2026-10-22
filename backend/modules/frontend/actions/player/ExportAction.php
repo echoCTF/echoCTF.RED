@@ -25,10 +25,11 @@ class ExportAction extends \yii\base\Action
         $csv = fopen('php://temp/maxmemory:'. (5*1024*1024), 'r+');
         $grouping=intval(Yii::$app->sys->academic_grouping) > 0;
         $identification=Yii::$app->sys->player_require_identification === true;
+        $approval=Yii::$app->sys->player_require_approval !== false;
         $header=['Username', 'Full Name', 'Email'];
         if($grouping) $header[]='Category';
         if($identification) $header[]='Affiliation';
-        $header[]='Approval Stage';
+        if($approval) $header[]='Approval Stage';
         $header[]='Account status';
         fputcsv($csv, $header);
         foreach(Player::find()->with('metadata')->all() as $p)
@@ -36,7 +37,7 @@ class ExportAction extends \yii\base\Action
           $row=[$p->username, $p->fullname, $p->email];
           if($grouping) $row[]=$p->academicShort;
           if($identification) $row[]=($p->metadata ? $p->metadata->affiliation : '');
-          $row[]=$p::APPROVAL[$p->approval];
+          if($approval) $row[]=$p::APPROVAL[$p->approval];
           $row[]=$statuses[$p->status];
           fputcsv($csv, $row);
         }
