@@ -57,7 +57,7 @@ BEGIN
 END ;;
 
 DROP EVENT IF EXISTS `ev_scan_failed_claims` ;;
-CREATE EVENT `ev_scan_failed_claims` ON SCHEDULE EVERY 1 MINUTE ON COMPLETION PRESERVE ENABLE DO
+CREATE EVENT `ev_scan_failed_claims` ON SCHEDULE EVERY 30 SECOND ON COMPLETION PRESERVE ENABLE DO
 BEGIN
   IF GET_LOCK('ev_scan_failed_claims', 0) = 1 THEN
     CALL scan_failed_claims();

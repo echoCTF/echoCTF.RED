@@ -53,7 +53,7 @@ scan: BEGIN
     SET v_hash = CASE
       WHEN v_title REGEXP '(?i)^[0-9a-f]{32}\\z' THEN v_title
       WHEN v_title REGEXP '(?i)^ETSCTF[_: .-][0-9a-f]{32}\\z' THEN SUBSTRING(v_title, 8)
-      WHEN v_title REGEXP '(?i)^ETSCTF[{][0-9a-f]{32}[}]\\z' THEN SUBSTRING(v_title, 9, 32)
+      WHEN v_title REGEXP '(?i)^ETSCTF[{][0-9a-f]{32}[}]\\z' THEN SUBSTRING(v_title, 8, 32)
       ELSE NULL
     END;
 
@@ -115,7 +115,7 @@ scan: BEGIN
 END
 SQL;
   public $CREATE_EVENT_SQL = <<<'SQL'
-CREATE EVENT {{%ev_scan_failed_claims}} ON SCHEDULE EVERY 1 MINUTE ON COMPLETION PRESERVE ENABLE DO
+CREATE EVENT {{%ev_scan_failed_claims}} ON SCHEDULE EVERY 30 SECOND ON COMPLETION PRESERVE ENABLE DO
 BEGIN
   IF GET_LOCK('ev_scan_failed_claims', 0) = 1 THEN
     CALL scan_failed_claims();
