@@ -77,7 +77,7 @@ class Img extends Component
     return $image;
   }
 
-  static function squareAvatar(string $path): bool {
+  static function squareAvatar(string $path): bool
   {
     list($w, $h) = getimagesize($path);
     if ($w <= 0 || $w > 1900 || $h <= 0 || $h > 1900) return false;
