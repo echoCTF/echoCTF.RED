@@ -9,12 +9,10 @@ use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use app\overloads\yii\filters\AccessControl;
 use yii\filters\auth\HttpBearerAuth;
-use app\models\PlayerTreasure;
 use yii\base\UserException;
 use yii\web\ServerErrorHttpException;
 use app\modules\target\models\Target;
-use app\modules\target\models\Treasure;
-use app\modules\target\models\TargetPlayerState as TPS;
+use app\modules\target\models\ClaimService;
 use app\modules\team\models\TeamPlayer;
 
 class TargetController extends \yii\rest\ActiveController
@@ -142,78 +140,17 @@ class TargetController extends \yii\rest\ActiveController
       return ["message" => Yii::t('app', 'Need to provide hash value.'), "code" => 0, "status" => \Yii::$app->response->statusCode];
     }
 
-    $treasure = Treasure::find()->claimable()->byCode($string)->one();
-    if ($treasure !== null && Treasure::find()->byCode($string)->claimable()->notBy((int) Yii::$app->user->id)->one() === null) {
-      $response->statusCode = 422;
-      return ["message" => \Yii::t('app', 'Flag claimed before'), "code" => 0, "status" => \Yii::$app->response->statusCode];
-    } elseif ($treasure === null) {
-      Yii::$app->counters->increment('failed_claims');
-      $response->statusCode = 422;
-      return ["message" => \Yii::t('app', 'Flag does not exist!'), "code" => 0, "status" => \Yii::$app->response->statusCode];
-    }
-
-    $player_progress = TPS::findOne(['id' => $treasure->target_id, 'player_id' => Yii::$app->user->id]);
-    if ((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress === null && intval($treasure->target->getFindings()->count()) > 0) {
-      Yii::$app->counters->increment('claim_no_finding');
-      $response->statusCode = 422;
-      return ["message" => \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.'), "code" => 0, "status" => \Yii::$app->response->statusCode];
-    }
-
-    try {
-      $module = \Yii::$app->getModule('target');
-      $module->checkNetwork($treasure->target);
-    } catch (\Throwable $e) {
-      \Yii::$app->response->statusCode = 403;
-      return ["message" => $e->getMessage(), "code" => 0, "status" => \Yii::$app->response->statusCode];
-    }
-
-    Yii::$app->counters->increment('claims');
-    $claimed = $this->doClaim($treasure);
-    if ($claimed === false) {
-      $response->statusCode = 422;
-      return ["message" => \Yii::t('app', 'Flag claimed before'), "code" => 0, "status" => \Yii::$app->response->statusCode];
-    } else if ($claimed === 0) {
-      $response->statusCode = 422;
-      return ["message" => \Yii::t('app', 'Flag does not exist!'), "code" => 0, "status" => \Yii::$app->response->statusCode];
-    }
-    \Yii::$app->response->statusCode = 201;
-    return ["message" => "Flag claimed!", "code" => 0, "status" => \Yii::$app->response->statusCode];
-  }
-
-  protected function doClaim($treasure)
-  {
-    $connection = Yii::$app->db;
-    $transaction = $connection->beginTransaction();
-    try {
-      $PT = new PlayerTreasure();
-      $PT->player_id = (int) Yii::$app->user->id;
-      $PT->treasure_id = $treasure->id;
-      try {
-        $saved = $PT->save();
-      } catch (\yii\db\IntegrityException $e) {
-        $transaction->rollBack();
-        return false;
-      }
-      if ($saved && $treasure->appears !== -1 && Treasure::updateAllCounters(['appears' => -1], ['and', ['id' => $treasure->id], ['>', 'appears', 0]]) === 0) {
-        $transaction->rollBack();
-        return 0;
-      }
-      $transaction->commit();
-      $this->doOndemand($treasure->target);
-      $PT->refresh();
-    } catch (\Exception $e) {
-      $transaction->rollBack();
-      throw $e;
-    } catch (\Throwable $e) {
-      $transaction->rollBack();
-      throw $e;
-    }
-  }
-
-  protected function doOndemand($target)
-  {
-    if ($target->ondemand && $target->ondemand->state > 0) {
-      $target->ondemand->updateAttributes(['heartbeat' => new \yii\db\Expression('NOW()')]);
-    }
+    $result = ClaimService::claim($string, Yii::$app->user->identity);
+    [$code, $message] = match ($result['status']) {
+      ClaimService::CLAIMED => [201, "Flag claimed!"],
+      ClaimService::CLAIMED_BEFORE => [422, \Yii::t('app', 'Flag claimed before')],
+      ClaimService::OWNED_BY_OTHER => [422, \Yii::t('app', 'Flag belongs to someone else you will get penalized!')],
+      ClaimService::NO_FINDING => [422, \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.')],
+      ClaimService::NO_NETWORK => [403, $result['message']],
+      ClaimService::NO_CLAIMS_LEFT => [422, \Yii::t('app', 'Flag has no claims left')],
+      default => [422, \Yii::t('app', 'Flag does not exist!')],
+    };
+    $response->statusCode = $code;
+    return ["message" => $message, "code" => 0, "status" => $code];
   }
 }

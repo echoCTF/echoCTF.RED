@@ -16,7 +16,6 @@ use app\modules\target\models\TargetSearch;
 use app\modules\target\models\Finding;
 use app\modules\target\models\Treasure;
 use app\modules\target\models\PlayerTargetHelp as PTH;
-use app\modules\target\models\TargetPlayerState as TPS;
 
 use app\models\PlayerFinding;
 use app\models\PlayerTreasure;
@@ -25,7 +24,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use app\modules\game\models\Headshot;
-use app\modules\target\models\FailedClaimHandler;
+use app\modules\target\models\ClaimService;
 
 /**
  * Default controller for the `target` module
@@ -345,53 +344,38 @@ class DefaultController extends \app\components\BaseController
       return $this->renderAjax('claim');
     }
 
-    $string = trim($string);
-    $treasure = Treasure::find()->claimable()->byCode($string)->one();
-
-    if ($treasure === null && Yii::$app->sys->treasure_secret_key !== false) {
-      if (Yii::$app->sys->team_encrypted_claims_allowed === true && Yii::$app->user->identity->teamPlayer && Yii::$app->user->identity->teamPlayer->approved) {
-        $treasure = Treasure::find()
-          ->claimable()
-          ->byTeamEncryptedCode($string, Yii::$app->user->identity->teamPlayer->team_id)
-          ->one();
-      } else {
-        $treasure = Treasure::find()
-          ->claimable()
-          ->byEncryptedCode($string)
-          ->one();
-      }
-    }
-
-    if ($treasure !== null && PlayerTreasure::findOne(['player_id' => (int) Yii::$app->user->id, 'treasure_id' => $treasure->id]) !== null) {
-      Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
-      return $this->renderAjax('claim');
-    } elseif ($treasure === null) {
-      // Check if the flag belongs to another team and produce
-      // the needed penalties and abuser records
-      FailedClaimHandler::handleFailedClaim($string);
-      return $this->renderAjax('claim');
-    }
-
-    $player_progress = TPS::find()->where(['id' => $treasure->target_id, 'player_id' => Yii::$app->user->id])->exists();
-    if ((Yii::$app->sys->force_findings_to_claim || $treasure->target->require_findings) && $player_progress === false && intval($treasure->target->getFindings()->count()) > 0) {
-      Yii::$app->counters->increment('claim_no_finding');
-      Yii::$app->session->setFlash('warning', \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.'));
-      return $this->renderAjax('claim');
-    }
-
     try {
-      $this->module->checkNetwork($treasure->target);
-    } catch (\Throwable $e) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', "You cannot claim this flag. You don't have access to this network."));
-      return $this->renderAjax('claim');
+      $result = ClaimService::claim($string, Yii::$app->user->identity);
+    } catch (\Exception $e) {
+      Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag failed'));
+      throw $e;
     }
 
-    Yii::$app->counters->increment('claims');
-    $claimed = $this->doClaim($treasure);
-    if ($claimed === false)
-      Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $treasure->name]));
-    elseif ($claimed === 0)
-      Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] has no claims left', ['name' => $treasure->name]));
+    $name = $result['treasure']?->name;
+    $flag = Html::encode(trim($string));
+    switch ($result['status']) {
+      case ClaimService::CLAIMED:
+        Yii::$app->session->setFlash('success', sprintf(\Yii::t('app', 'Flag [%s] claimed for %s points'), $name, number_format($result['points'])));
+        break;
+      case ClaimService::CLAIMED_BEFORE:
+        Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] claimed before', ['name' => $name]));
+        break;
+      case ClaimService::UNKNOWN:
+        Yii::$app->session->addFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag' => $flag]));
+        break;
+      case ClaimService::OWNED_BY_OTHER:
+        Yii::$app->session->addFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] belongs to someone else you will get penalized!', ['flag' => $flag]));
+        break;
+      case ClaimService::NO_FINDING:
+        Yii::$app->session->setFlash('warning', \Yii::t('app', 'You need to discover at least one service before claiming a flag for this system.'));
+        break;
+      case ClaimService::NO_NETWORK:
+        Yii::$app->session->setFlash('error', \Yii::t('app', "You cannot claim this flag. You don't have access to this network."));
+        break;
+      case ClaimService::NO_CLAIMS_LEFT:
+        Yii::$app->session->setFlash('warning', \Yii::t('app', 'Flag [{name}] has no claims left', ['name' => $name]));
+        break;
+    }
     return $this->renderAjax('claim');
   }
 
@@ -479,45 +463,6 @@ class DefaultController extends \app\components\BaseController
   {
     if (!$profile->visible)
       return $this->redirect(['/']);
-  }
-
-  protected function doClaim($treasure)
-  {
-    $connection = Yii::$app->db;
-    $transaction = $connection->beginTransaction();
-    try {
-      $PT = new PlayerTreasure();
-      $PT->player_id = (int) Yii::$app->user->id;
-      $PT->treasure_id = $treasure->id;
-      try {
-        $saved = $PT->save();
-      } catch (\yii\db\IntegrityException $e) {
-        $transaction->rollBack();
-        return false;
-      }
-      if ($saved && $treasure->appears !== -1 && Treasure::updateAllCounters(['appears' => -1], ['and', ['id' => $treasure->id], ['>', 'appears', 0]]) === 0) {
-        $transaction->rollBack();
-        return 0;
-      }
-      $transaction->commit();
-      $this->doOndemand($treasure->target);
-      $PT->refresh();
-      Yii::$app->session->setFlash('success', sprintf(\Yii::t('app', 'Flag [%s] claimed for %s points'), $treasure->name, number_format($PT->points)));
-    } catch (\Exception $e) {
-      $transaction->rollBack();
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag failed'));
-      throw $e;
-    } catch (\Throwable $e) {
-      $transaction->rollBack();
-      throw $e;
-    }
-  }
-
-  protected function doOndemand($target)
-  {
-    if ($target->ondemand && $target->ondemand->state > 0) {
-      $target->ondemand->updateAttributes(['heartbeat' => new \yii\db\Expression('NOW()')]);
-    }
   }
 
   protected function lastVisit($id)

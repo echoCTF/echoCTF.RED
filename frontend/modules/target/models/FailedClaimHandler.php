@@ -2,6 +2,8 @@
 
 namespace app\modules\target\models;
 
+use app\models\Player;
+
 class FailedClaimHandler extends \yii\base\Model
 {
   /** Used when the matched treasure has no points set. */
@@ -57,19 +59,21 @@ class FailedClaimHandler extends \yii\base\Model
   }
 
   /**
-   * Handles a failed flag claim: flashes the reason, penalizes every player
-   * involved and writes the abuse log.
+   * Handles a failed flag claim: penalizes every player involved and writes
+   * the abuse log.
    *
    * Unknown flag penalizes nobody. Known flag penalizes the taker, plus the
    * owner who leaked it. Abuse rows are linked, the giver row points at the
-   * taker row via model_id.
+   * taker row via model_id. Showing the result to the player is up to the
+   * caller.
    *
+   * @param Player $player the player who submitted the flag
    * @param string $string raw code the player submitted
-   * @return void
+   * @return string ClaimService::UNKNOWN or ClaimService::OWNED_BY_OTHER
    */
-  public static function handleFailedClaim($string)
+  public static function handleFailedClaim(Player $player, string $string): string
   {
-    $playerId = \Yii::$app->user->id;
+    $playerId = $player->id;
     $pending = false;
     try {
       $owner = \Yii::$app->cache->memcache->add('failed_claim_lookup:' . $playerId, 1, 2)
@@ -82,14 +86,13 @@ class FailedClaimHandler extends \yii\base\Model
       $owner = false;
       $pending = true;
     }
-    $flag = \yii\helpers\Html::encode($string);
     \Yii::$app->counters->increment('failed_claims');
 
     if ($owner === false) {
-      \Yii::$app->session->addFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] does not exist!', ['flag' => $flag]));
+      $status = ClaimService::UNKNOWN;
 
       $overAllowance = \Yii::$app->sys->free_fail_allowance !== false
-        && \Yii::$app->user->identity->profile->metric('failed_claims') > \Yii::$app->sys->free_fail_allowance;
+        && $player->profile->metric('failed_claims') > \Yii::$app->sys->free_fail_allowance;
       $actors = [[
         'player_id' => $playerId,
         'reason'    => $pending ? self::REASON_PENDING : 'failed_claim',
@@ -98,7 +101,7 @@ class FailedClaimHandler extends \yii\base\Model
         'penalty'   => $overAllowance ? \Yii::t('app', 'Too many failed flag claims') : null,
       ]];
     } else {
-      \Yii::$app->session->addFlash('error', \Yii::t('app', 'Flag [<strong>{flag}</strong>] belongs to someone else you will get penalized!', ['flag' => $flag]));
+      $status = ClaimService::OWNED_BY_OTHER;
 
       $penaltyPoints = empty($owner['treasure_points'])
         ? self::PENALTY_FALLBACK_POINTS
@@ -138,7 +141,7 @@ class FailedClaimHandler extends \yii\base\Model
 
 
     if (!\Yii::$app->sys->log_failed_claims) {
-      return;
+      return $status;
     }
 
     $parentId = 0;
@@ -157,6 +160,8 @@ class FailedClaimHandler extends \yii\base\Model
         $parentId = 0;
       }
     }
+
+    return $status;
   }
 
   /**
