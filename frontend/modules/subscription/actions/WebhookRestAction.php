@@ -58,6 +58,11 @@ class WebhookRestAction extends \yii\rest\Action
     ])->execute();
 
     switch ($type) {
+      // Checkout can create the subscription already active, without a later updated event
+      case 'customer.subscription.created':
+        if ($object->status !== 'active') {
+          break;
+        }
       // message received when subscription created, renewed or canceled
       case 'customer.subscription.updated':
         $player = Player::findOne(['stripe_customer_id' => $object->customer]);
