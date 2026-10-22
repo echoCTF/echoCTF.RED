@@ -28,6 +28,12 @@ class TreasureQuery extends \yii\db\ActiveQuery
     return $or;
   }
 
+  public static function formRegex(): string
+  {
+    $alts = array_map(fn($f) => str_replace('%s', '([0-9a-f]{32})', preg_quote($f, '/')), self::FORMS);
+    return '/^(?|' . implode('|', $alts) . ')\z/i';
+  }
+
   public function forTarget($id)
   {
     return $this->andWhere(['target_id' => $id]);
