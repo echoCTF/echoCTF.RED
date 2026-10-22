@@ -60,7 +60,7 @@ class ImportPlayerForm extends Model
       return true;
     }
 
-    private function processCsvRecords()
+    public function processCsvRecords()
     {
       foreach($this->csvRecords as $rec)
       {
