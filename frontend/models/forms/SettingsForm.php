@@ -93,17 +93,7 @@ class SettingsForm extends Model
       ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app', 'This email has already been taken.'), 'when' => function ($model, $attribute) {
         return $model->{$attribute} !== $model->_player->{$attribute};
       }],
-      ['email', 'unique', 'targetClass' => '\app\models\BannedPlayer', 'message' => \Yii::t('app', 'This email is banned.'), 'when' => function ($model, $attribute) {
-        return $model->{$attribute} !== $model->_player->{$attribute};
-      }],
-      ['email', function ($attribute, $params) {
-        $count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
-          ->bindValue(':email', $this->email)
-          ->queryScalar();
-
-        if (intval($count) !== 0)
-          $this->addError($attribute, \Yii::t('app', 'This email is banned.'));
-      }],
+      ['email', '\app\components\validators\BannedEmailValidator'],
       ['email', '\app\components\validators\StopForumSpamValidator', 'max' => intval(Yii::$app->sys->signup_StopForumSpamValidator), 'when' => function ($model, $attribute) {
         return Yii::$app->sys->signup_StopForumSpamValidator !== false && \Yii::$app->sys->disable_mail_validation !== true;
       }],

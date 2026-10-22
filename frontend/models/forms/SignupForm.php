@@ -48,14 +48,7 @@ class SignupForm extends Model
       ['email', 'email', 'checkDNS' => true],
       ['email', 'string', 'min' => 6, 'max' => 255],
       ['email', 'unique', 'targetClass' => '\app\models\Player', 'message' => \Yii::t('app', 'This email address has already been taken.')],
-      ['email', function ($attribute, $params) {
-        $count = \Yii::$app->db->createCommand('SELECT COUNT(*) FROM banned_player WHERE :email LIKE email')
-          ->bindValue(':email', $this->email)
-          ->queryScalar();
-
-        if (intval($count) !== 0)
-          $this->addError($attribute, \Yii::t('app', 'This email is banned.'));
-      }],
+      ['email', '\app\components\validators\BannedEmailValidator'],
       ['username', '\app\components\validators\HourRegistrationValidator',    'client_ip' => \Yii::$app->request->userIp, 'max' => Yii::$app->sys->signup_HourRegistrationValidator, 'when' => function ($model) {
         return Yii::$app->sys->signup_HourRegistrationValidator !== false;
       }],
