@@ -157,19 +157,6 @@ CREATE TABLE `player_bandwidth` (
   KEY `idx-player_bandwidth-ts` (`ts`)
 ) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/player_bandwidth';
 
-DROP TABLE IF EXISTS `notification`;
-CREATE TABLE `notification` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `player_id` int(11) unsigned NOT NULL,
-  `category` varchar(20) NOT NULL DEFAULT 'success',
-  `title` varchar(255) DEFAULT NULL,
-  `body` mediumtext DEFAULT NULL,
-  `archived` tinyint(1) DEFAULT 0,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=FEDERATED DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci CONNECTION='mysql://{{db_user}}:{{db_pass}}@{{db_host}}:3306/{{db_name}}/notification';
-
 DROP TABLE IF EXISTS `vpn_ip_whitelist`;
 CREATE TABLE `vpn_ip_whitelist` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -309,7 +296,6 @@ BEGIN
       -- Notify only once every 5 minutes, clients keep retrying while rejected
       IF memc_get(CONCAT('vpn_ip_limit:',usid)) IS NULL THEN
         DO memc_set(CONCAT('vpn_ip_limit:',usid),remoteIP,300);
-        INSERT INTO notification (player_id,category,title,body,archived,created_at,updated_at) VALUES (usid,'swal:warning','VPN connection limit reached','Too many players are already connected to the VPN from your IP address. Disconnect one of them and try again.',0,NOW(),NOW());
         SELECT 'IPLIMIT' as '';
       ELSE
         SELECT 'IPLIMIT_REPEAT' as '';

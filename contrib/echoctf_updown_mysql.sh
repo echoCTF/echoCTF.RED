@@ -19,6 +19,7 @@ notify_iplimit() {
   curl -s -m 5 -o /dev/null -X POST -H 'Content-Type: application/json' \
     -d "{\"username\":\"VPN IP limit\",\"content\":\"$(hostname): CN=${common_name} hit the VPN connections per IP limit (remote=${untrusted_ip})\"}" \
     "$WEBHOOK" &
+    /usr/local/bin/backend player/ws-notify "${common_name}" "swal:warning" "VPN connections per IP limit" "You tried to connect to the VPN from an IP that is already connected. You need to either get a subscription that allows multiple IP's or contact our support to be considered for a whitelist!" &
 }
 
 # Stop users from connecting when the event is not active

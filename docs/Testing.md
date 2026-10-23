@@ -18,7 +18,7 @@ common_name=1 ifconfig_pool_remote_ip=10.10.0.23 untrusted_ip=1.1.1.1 script_typ
 After run you should see output at /tmp/updown.log (on OpenBSD this will execute the `pfctl` commands for table creations).
 
 ## VPN connections per IP limit
-Needs the `vpn_ip_limit` sysconfig key set to a number greater than `0` and the `notification`, `vpn_ip_whitelist` and `player_vpn_allowance` federated tables from `findings-federated.sql`. Connect two players from the same remote IP, the second one should be rejected with `IPLIMIT` and receive a notification.
+Needs the `vpn_ip_limit` sysconfig key set to a number greater than `0` and the `vpn_ip_whitelist` and `player_vpn_allowance` federated tables from `findings-federated.sql`. Connect two players from the same remote IP, the second one should be rejected with `IPLIMIT` and receive a websocket notification (sent by `echoctf_updown_mysql.sh` using `backend player/ws-notify`).
 
 ```bash
 common_name=1 ifconfig_pool_remote_ip=10.10.0.23 untrusted_ip=1.1.1.1 script_type="client-connect" bash contrib/echoctf_updown_mysql.sh
