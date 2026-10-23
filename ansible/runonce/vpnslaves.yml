@@ -207,7 +207,7 @@
 
   - name: Create temporary findingsd-federated.sql
     template:
-      src: "{{playbook_dir}}/../../contrib/findingsd-federated.sql"
+      src: "{{playbook_dir}}/../../schemas/findingsd-federated.sql"
       dest: /tmp/findingsd.sql
 
   - name: Create echoctf_updown_mysql.sh
