@@ -81,6 +81,7 @@ class ConfigureForm extends Model
   public $player_require_approval;
   public $player_require_identification;
   public $all_players_vip;
+  public $vpn_ip_limit;
   public $team_visible_instances;
   public $target_hide_inactive;
   public $target_guest_view_deny;
@@ -253,6 +254,7 @@ class ConfigureForm extends Model
     'player_require_approval',
     'player_require_identification',
     'all_players_vip',
+    'vpn_ip_limit',
     'team_visible_instances',
     'target_hide_inactive',
     'target_guest_view_deny',
@@ -486,6 +488,7 @@ class ConfigureForm extends Model
       ['profile_visibility', 'default', 'value' => 'ingame'],
       ['failed_claim_lookup_timeout', 'number', 'min' => 0.001],
       ['failed_claim_scan_players', 'integer', 'min' => 1],
+      ['vpn_ip_limit', 'integer', 'min' => 0],
       ['trusted_proxies', 'validateTrustedProxies'],
       ['proxy_ip_header', 'match', 'pattern' => '/^[A-Za-z0-9-]+$/', 'message' => 'Header name can only contain letters, digits and dashes.'],
       [[
@@ -671,6 +674,7 @@ class ConfigureForm extends Model
       'player_require_approval' => 'Players require approval',
       'player_require_identification' => 'Players require identification',
       'all_players_vip' => 'Give all players VIP status',
+      'vpn_ip_limit' => 'VPN connections per IP',
       'team_visible_instances' => 'Team instances',
       'target_hide_inactive' => 'Hide inactive targets',
       'target_guest_view_deny' => 'Target deny guest view',

@@ -14,6 +14,14 @@ notify_churn() {
     "$WEBHOOK" &
 }
 
+# Discord notification for a player rejected by the per IP connection limit, one per player per window
+notify_iplimit() {
+  curl -s -m 5 -o /dev/null -X POST -H 'Content-Type: application/json' \
+    -d "{\"username\":\"VPN IP limit\",\"content\":\"$(hostname): CN=${common_name} hit the VPN connections per IP limit (remote=${untrusted_ip})\"}" \
+    "$WEBHOOK" &
+    /usr/local/bin/backend player/ws-notify "${common_name}" "swal:warning" "VPN connections per IP limit" "You tried to connect to the VPN from an IP that is already connected. You need to either get a subscription that allows multiple IP's or contact our support to be considered for a whitelist!" &
+}
+
 # Stop users from connecting when the event is not active
 #EVENT_ACTIVE=$(echo "get sysconfig:event_active"|nc -N ${MEMD} 11211 |egrep -v "(VALUE|END)")
 #if [ "$EVENT_ACTIVE" == "0" ] || [ "$EVENT_ACTIVE" == "" ]; then
@@ -41,6 +49,12 @@ if [ "$script_type" == "client-connect" ]; then
     NETWORKS=$(mysql --connect-timeout=10 -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" echoCTF -NBe "CALL VPN_LOGIN(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))")
     if [ "$NETWORKS" == "LOGGEDIN" ]; then
       echo "client-connect[$$]: ERROR CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip} already logged in"
+      exit 1
+    elif [ "$NETWORKS" == "IPLIMIT" ] || [ "$NETWORKS" == "IPLIMIT_REPEAT" ]; then
+      echo "client-connect[$$]: ERROR CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip} hit the IP connection limit"
+      if [ "$NETWORKS" == "IPLIMIT" ]; then
+        notify_iplimit
+      fi
       exit 1
     elif [ "${NETWORKS}"x != "x" ]; then
       echo "client-connect[$$]: CN=${common_name} networks="${NETWORKS}

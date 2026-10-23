@@ -91,6 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'player_require_approval')->checkbox()->hint('Do players need to be approved?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'player_require_identification')->checkbox()->hint('Do players need to provide identification proof?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'all_players_vip')->checkbox()->hint('Treat all players as VIP?') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'vpn_ip_limit')->textInput(['placeholder'=>'0'])->hint('Maximum number of players connected to the VPN from the same IP address. Leave empty or <code>0</code> to disable') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'require_activation')->checkbox()->hint('Do players need to activate their account?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'disable_registration')->checkbox()->hint('Are online registrations allowed on the pUI?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'approved_avatar')->checkbox()->hint('Are player profile avatars approved?') ?></div>
