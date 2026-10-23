@@ -3,6 +3,7 @@
 namespace app\modules\infrastructure\models;
 
 use Yii;
+use yii\db\Expression;
 use yii\behaviors\AttributeTypecastBehavior;
 
 /**
@@ -117,6 +118,11 @@ class Server extends \yii\db\ActiveRecord
   /**
    * Find the next available free server least used.
    *
+   * This is the single place that decides which server gets the next instance
+   * (or private network target). Servers with the fewest instances and private
+   * network targets win, ties are broken randomly. Any future criteria (memory,
+   * cpu, network load etc) belong here.
+   *
    * @return Server|null
    */
   public static function findNextFreeOne()
@@ -125,7 +131,7 @@ class Server extends \yii\db\ActiveRecord
       ->leftJoin('target_instance t2', 't2.server_id = server.id')
       ->leftJoin('private_network_target pnt', 'pnt.server_id = server.id')
       ->groupBy('server.id')
-      ->orderBy(['(COUNT(t2.server_id) + COUNT(pnt.server_id))' => SORT_ASC])
+      ->orderBy(new Expression('(COUNT(t2.server_id) + COUNT(pnt.server_id)) ASC, RAND()'))
       ->limit(1)
       ->one();
   }

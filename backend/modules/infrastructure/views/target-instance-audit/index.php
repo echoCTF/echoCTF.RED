@@ -46,7 +46,7 @@ yii\bootstrap5\Modal::end();
             [
                 'attribute'=>'server_id',
                 'filter'=>ArrayHelper::map(Server::find()->orderBy(['name'=>SORT_ASC,'ip'=>SORT_ASC])->asArray()->all(),'id','name'),
-                'value'=>function($model){return $model->server_id.': '.$model->server->name;}
+                'value'=>function($model){return $model->server ? $model->server_id.': '.$model->server->name : '';}
             ],
             'ipoctet',
             [
