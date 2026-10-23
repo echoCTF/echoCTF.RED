@@ -7,3 +7,7 @@ The fields are:
 * `Description`: Notes on why this network is exempt (eg `Campus NAT`)
 
 **NOTE**: Entries are always displayed in dotted notation.
+
+Searching:
+* `IP`: A CIDR (eg `10.0.0.0/8` or `10.0.0.0/255.0.0.0`) lists the entries within that network, a single IP address (eg `192.168.1.77`) lists the entries that cover it (is it whitelisted), anything else matches part of the address
+* `Netmask`: A prefix length (eg `24` or `/24`) or a netmask (eg `255.255.255.0`) lists the entries with that exact mask, anything else matches part of the netmask

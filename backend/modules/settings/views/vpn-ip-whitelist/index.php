@@ -35,7 +35,7 @@ yii\bootstrap5\Modal::end();
 
             'id',
             'ipoctet',
-            ['attribute' => 'maskoctet', 'filter' => false],
+            'maskoctet',
             ['attribute' => 'prefix', 'filter' => false, 'enableSorting' => false],
             'description:ntext',
             'created_at',
