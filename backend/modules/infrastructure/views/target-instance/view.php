@@ -56,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
       ],
       [
         'label' => 'Server',
-        'value' => $model->server_id . ': ' . $model->server->name
+        'value' => $model->server ? $model->server_id . ': ' . $model->server->name : 'Not assigned yet'
       ],
       'ipoctet',
       [
