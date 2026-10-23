@@ -15,7 +15,8 @@ use app\modules\infrastructure\models\TargetInstance;
 use app\modules\infrastructure\models\TargetInstanceAudit;
 use app\modules\infrastructure\models\NetworkTargetSchedule as NTS;
 use app\modules\gameplay\models\NetworkTarget;
-use app\components\helpers\ArrayHelperExtended;
+use app\modules\settings\models\Openvpn;
+use app\modules\activity\models\PlayerLast;
 
 /**
  * @method docker_connect()
@@ -132,6 +133,54 @@ class CronController extends Controller
     @unlink("/tmp/cron-poweroperations.lock");
   }
 
+  /**
+   * Get the ids of the players currently connected to the OpenVPN networks
+   * of this server (as registered with vpn/load).
+   *
+   * @return array<int, int>|null Player ids, or null when no networks are registered for this host (no scoping)
+   */
+  private function localPlayerIds()
+  {
+    $server = gethostbyaddr(gethostbyname(gethostname()));
+    $pools = Openvpn::find()->where(['server' => $server])->all();
+    if (!$pools) {
+      echo date("Y-m-d H:i:s ") . "No openvpn networks registered for ", $server, " (run vpn/load), processing all players\n";
+      return null;
+    }
+    $q = PlayerLast::find()->select('id')->where(['IS NOT', 'vpn_local_address', null]);
+    $or = ['or'];
+    foreach ($pools as $pool) {
+      $or[] = '(vpn_local_address & ' . (int)$pool->mask . ') = ' . (int)$pool->net;
+    }
+    return array_map('intval', $q->andWhere($or)->column());
+  }
+
+  /**
+   * Get the client IPs of an instance and whether it belongs to this server.
+   *
+   * @param \app\modules\infrastructure\models\TargetInstance|\app\modules\infrastructure\models\TargetInstanceAudit $val
+   * @param array<int, int>|null $local Local player ids, null for no scoping
+   * @return array{0: bool, 1: array<int, string>} [is local, client IPs]
+   */
+  private function instanceClients($val, $local)
+  {
+    $IPs = [];
+    $isLocal = ($local === null || in_array((int)$val->player_id, $local, true));
+    if ($isLocal && (int)$val->player->last->vpn_local_address !== 0) {
+      $IPs[] = long2ip($val->player->last->vpn_local_address);
+    }
+    if (($val->team_allowed == true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer !== null && $val->player->teamPlayer->approved === 1) {
+      foreach ($val->player->teamPlayer->team->approvedMembers as $tp) {
+        if ($local !== null && !in_array((int)$tp->player_id, $local, true)) continue;
+        $isLocal = true;
+        if ((int)$tp->player->last->vpn_local_address !== 0) {
+          $IPs[] = long2ip($tp->player->last->vpn_local_address);
+        }
+      }
+    }
+    return [$isLocal, array_values(array_unique($IPs))];
+  }
+
   public function actionInstancePf($before = 60)
   {
     $action = SELF::ACTION_START;
@@ -154,6 +203,7 @@ class CronController extends Controller
 
     @file_put_contents('/tmp/instance-pf.last_id', $LASTID);
 
+    $local = $this->localPlayerIds();
     foreach ($ACTIONS as $obj) {
       $val = $obj['object'];
       $ips = [];
@@ -171,10 +221,10 @@ class CronController extends Controller
       switch ($action) {
         case SELF::ACTION_START:
         case SELF::ACTION_RESTART:
-          if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer !== null && $val->player->teamPlayer->approved === 1) {
-            $ips = $val->player->teamPlayer->team->approvedMemberIPs;
-          } else if ((int)$val->player->last->vpn_local_address !== 0) {
-            $ips[] = long2ip($val->player->last->vpn_local_address);
+          list($isLocal, $ips) = $this->instanceClients($val, $local);
+          if (!$isLocal) {
+            echo 'not a local instance, skipping: ', $val->target->name . '_' . $val->player_id, "\n";
+            break;
           }
           if ($ips) {
             echo 'Adding ', $val->target->name . '_' . $val->player_id . '_clients', ' IP: ', implode(' ', $ips);
@@ -200,20 +250,12 @@ class CronController extends Controller
   {
     $t = TargetInstance::find()->server_assigned($server_id)->active()->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
 
+    $local = $this->localPlayerIds();
     foreach ($t->all() as $val) {
-      $IPs = [];
       // get target name
       $table = sprintf("%s_%d_clients", $val->target->name, $val->player_id);
-      if (($pIP = $val->player->last->vpn_local_address) !== null) {
-        $IPs[] = long2ip($pIP);
-      }
-      $team_visible_instances = \Yii::$app->sys->team_visible_instances;
-      if ($val->team_allowed == true ||  $team_visible_instances === true) {
-        if ($val->player->teamPlayer) {
-          $team = $val->player->teamPlayer->team;
-          $IPs = ArrayHelperExtended::mergeUnique($IPs, $team->approvedMemberIPs);
-        }
-      }
+      list($isLocal, $IPs) = $this->instanceClients($val, $local);
+      if (!$isLocal) continue;
 
       if ($dopf !== false) {
         if ($IPs === []) {
