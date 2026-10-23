@@ -242,10 +242,12 @@ class TargetInstanceController extends \app\components\BaseController
       $dc->targetVolumes = $val->target->targetVolumes;
       $dc->targetVariables = $val->target->targetVariables;
       $dc->name = $val->name;
-      $dc->server = $val->server->connstr;
-      try {
-        $dc->destroy();
-      } catch (\Exception $e) {
+      if ($val->server !== null) {
+        $dc->server = $val->server->connstr;
+        try {
+          $dc->destroy();
+        } catch (\Exception $e) {
+        }
       }
       $val->delete();
     } catch (\Exception $e) {
@@ -273,12 +275,14 @@ class TargetInstanceController extends \app\components\BaseController
         $dc->targetVolumes = $val->target->targetVolumes;
         $dc->targetVariables = $val->target->targetVariables;
         $dc->name = $val->name;
-        $dc->server = $val->server->connstr;
-        try {
-          $dc->destroy();
-          Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got destroyed.'));
-        } catch (\Exception $e) {
-          Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to get destroyed: ' . $e->getMessage()));
+        if ($val->server !== null) {
+          $dc->server = $val->server->connstr;
+          try {
+            $dc->destroy();
+            Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got destroyed.'));
+          } catch (\Exception $e) {
+            Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to get destroyed: ' . $e->getMessage()));
+          }
         }
         $val->delete();
         Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got deleted.'));

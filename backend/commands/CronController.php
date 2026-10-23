@@ -12,6 +12,7 @@ use app\components\Pf;
 use Docker\Docker;
 use app\modules\infrastructure\models\DockerContainer;
 use app\modules\infrastructure\models\TargetInstance;
+use app\modules\infrastructure\models\Server;
 use app\modules\infrastructure\models\TargetInstanceAudit;
 use app\modules\infrastructure\models\NetworkTargetSchedule as NTS;
 use app\modules\gameplay\models\NetworkTarget;
@@ -237,6 +238,8 @@ class CronController extends Controller
    * @param int $atOnce Process X instances at once
    * @param array $server_id Comma separated list of server ids to limit operations to (eg. 3,7,12), empty for all servers.
    *                         Each distinct list uses its own lock file so multiple lists can run in parallel.
+   *                         Unscoped runs also assign servers to new instances (see actionInstanceServers),
+   *                         scoped runs do not and need cron/instance-servers to be run separately.
    * @return int Exit code
    */
   public function actionInstances(bool $pfonly = false, int $expired_ago = 2400, int $atOnce = 0, array $server_id = [])
@@ -250,11 +253,19 @@ class CronController extends Controller
     }
     touch($lock);
     try {
+      // unscoped runs assign servers to new instances first, scoped runs rely on cron/instance-servers
+      if ($server_id === []) $this->actionInstanceServers($expired_ago);
       $action = SELF::ACTION_EXPIRED;
       $t = TargetInstance::find()->pending_action($expired_ago)->server_assigned($server_id)->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
       if ($atOnce > 0) $t->limit($atOnce);
       foreach ($t->all() as $val) {
         try {
+          if ($val->server === null) {
+            // server got removed after selection, nothing to clean up on a docker host
+            echo date("Y-m-d H:i:s ") . sprintf("Instances: deleting instance for player %d target %d, server no longer exists\n", $val->player_id, $val->target_id);
+            $val->delete();
+            continue;
+          }
           $ips = [];
           $dc = new DockerContainer($val->target);
           $dc->timeout = ($val->server->timeout ? $val->server->timeout : 10000);
@@ -372,6 +383,53 @@ class CronController extends Controller
           }
         } catch (\Throwable $e) {
           echo "Instrances: Error while touching updated_at. ", $e->getMessage();
+        }
+      }
+    } finally {
+      @unlink($lock);
+    }
+  }
+
+  /**
+   * Assign servers to new target instances
+   *
+   * Instances are created without a server, this is the single place that
+   * decides where they will run (using Server::findNextFreeOne()). Unassigned
+   * instances that are marked for destroy or have expired never started so
+   * they are simply deleted.
+   *
+   * @param int $expired_ago Seconds since last update after which an instance is considered expired (default: 2400 seconds = 40 minutes)
+   * @return int Exit code
+   */
+  public function actionInstanceServers(int $expired_ago = 2400)
+  {
+    $lock = "/tmp/cron-instance-servers.lock";
+    if (file_exists($lock)) {
+      echo date("Y-m-d H:i:s ") . "InstanceServers: $lock exists, skipping execution\n";
+      return;
+    }
+    touch($lock);
+    try {
+      $t = TargetInstance::find()->pending_action($expired_ago)->andWhere(['target_instance.server_id' => null])->orderBy('target_instance.created_at ASC');
+      foreach ($t->all() as $val) {
+        try {
+          if ($val->reboot === 2) {
+            echo date("Y-m-d H:i:s ") . sprintf("InstanceServers: deleting unassigned instance for player %d target %d (destroyed or expired)\n", $val->player_id, $val->target_id);
+            $val->delete();
+            continue;
+          }
+          $server = Server::findNextFreeOne();
+          if ($server === null) {
+            echo date("Y-m-d H:i:s ") . "InstanceServers: no servers available\n";
+            break;
+          }
+          // updateAll to avoid touching updated_at and to not clobber a concurrent shut/delete
+          if (TargetInstance::updateAll(['server_id' => $server->id], ['player_id' => $val->player_id, 'server_id' => null]) > 0)
+            echo date("Y-m-d H:i:s ") . sprintf("InstanceServers: assigned player %d target %d to server %d: %s\n", $val->player_id, $val->target_id, $server->id, $server->name);
+        } catch (\Exception $e) {
+          echo "InstanceServers: ", $e->getMessage(), "\n";
+          if (getenv('DEBUG', true) !== false)
+            \Yii::error($e);
         }
       }
     } finally {
