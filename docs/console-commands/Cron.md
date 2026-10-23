@@ -41,6 +41,8 @@ Provide a value for actions on instances that got modified during the last `N` s
 
 Usage: `./yii cron/instance-pf [seconds]`
 
+Only instances of players connected to this server's OpenVPN networks (as registered with `vpn/load`), or of their team mates when the instance is team visible, are processed. If no networks are registered for this server all players are processed.
+
 ## Healthcheck
 Checks the healthstatus of running containers and (optionaly) restart them if found unhealthy.
 
@@ -92,3 +94,5 @@ Usage: `./yii target/pf [load]`
 Generate and (optionaly) load pf tables related to instances. This operation is run on the VPN to keep the PF tables in sync.
 
 Usage: `./yii cron/instance-pf-tables [load]`
+
+Only acts on players connected to this server's OpenVPN networks (as registered with `vpn/load`). If no networks are registered for this server all players are processed.
