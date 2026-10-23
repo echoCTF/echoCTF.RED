@@ -235,16 +235,20 @@ class CronController extends Controller
    * @param bool $pfonly Perform PF operations and skip instance docker actions (default: false)
    * @param int $expired_ago Filter instances that have been updated X seconds ago (default: 2400 seconds = 40 minutes)
    * @param int $atOnce Process X instances at once
-   * @param int $server_id Filter operations to $server_id
+   * @param array $server_id Comma separated list of server ids to limit operations to (eg. 3,7,12), empty for all servers.
+   *                         Each distinct list uses its own lock file so multiple lists can run in parallel.
    * @return int Exit code
    */
-  public function actionInstances(bool $pfonly = false, int $expired_ago = 2400, int $atOnce = 0, int $server_id = 0)
+  public function actionInstances(bool $pfonly = false, int $expired_ago = 2400, int $atOnce = 0, array $server_id = [])
   {
-    if (file_exists("/tmp/cron-instances.lock")) {
-      echo date("Y-m-d H:i:s ") . "Instances: /tmp/cron-instances.lock exists, skipping execution\n";
+    $server_id = array_values(array_unique(array_filter(array_map('intval', $server_id))));
+    sort($server_id);
+    $lock = "/tmp/cron-instances" . ($server_id === [] ? "" : "-" . implode("_", $server_id)) . ".lock";
+    if (file_exists($lock)) {
+      echo date("Y-m-d H:i:s ") . "Instances: $lock exists, skipping execution\n";
       return;
     }
-    touch("/tmp/cron-instances.lock");
+    touch($lock);
     try {
       $action = SELF::ACTION_EXPIRED;
       $t = TargetInstance::find()->pending_action($expired_ago)->server_assigned($server_id)->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
@@ -371,7 +375,7 @@ class CronController extends Controller
         }
       }
     } finally {
-      @unlink("/tmp/cron-instances.lock");
+      @unlink($lock);
     }
   }
 
