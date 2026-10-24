@@ -45,8 +45,9 @@ yii\bootstrap5\Modal::end();
       [
         'attribute' => 'team_academic',
         'label' => 'Academic',
+        'class' => 'app\components\columns\AcademicColumn',
         'value' => 'team.academicShort',
-        'filter' => [0 => 'Gov', 1 => 'Edu', 2 => "Pro"],
+        'contentOptions' => ['class' => 'small'],
       ],
       'points',
       'ts',

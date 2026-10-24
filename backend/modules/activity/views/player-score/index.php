@@ -36,8 +36,14 @@ yii\bootstrap5\Modal::end();
       'player_id',
       ['class' => 'app\components\columns\ProfileColumn', 'attribute' => 'player'],
       'points',
+      [
+        'attribute' => 'academic',
+        'label' => 'Academic',
+        'class' => 'app\components\columns\AcademicColumn',
+        'value' => 'player.academicShort',
+        'contentOptions' => ['class' => 'small'],
+      ],
       'ts',
-
       [
         'class' => 'yii\grid\ActionColumn',
         'template' => '{update} {delete}'
