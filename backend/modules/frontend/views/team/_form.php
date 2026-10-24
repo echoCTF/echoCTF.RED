@@ -27,7 +27,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
   </div>
   <div class="row">
     <?php if (\Yii::$app->sys->academic_grouping !== false): ?>
-      <div class="col-md-6"><?= $form->field($model, 'academic')->dropDownList((new \app\components\columns\AcademicColumn(['attribute'=>'academic']))->filter)->hint('Whether the player is gov, edu or org') ?></div>
+      <div class="col-md-6"><?= $form->field($model, 'academic')->dropDownList((new \app\components\columns\AcademicColumn(['attribute' => 'academic']))->filter)->hint('The academic grouping the player belongs to') ?></div>
     <?php else: ?>
       <div class="col-md-6"><?= $form->field($model, 'academic')->textInput()->hint('Whether the player is gov, edu or org') ?></div>
     <?php endif; ?>
