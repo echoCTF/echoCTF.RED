@@ -181,7 +181,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $playerMonthlyDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\game\models\PlayerScoreMonthly::find()->active()->currentMonth()->nonZero()->ordered()->with(['player.profile.owner']),
+      'query' => \app\modules\game\models\PlayerScoreMonthly::find()->withPlayer()->active()->academic($academic)->currentMonth()->nonZero()->ordered()->with(['player.profile.owner']),
       'pagination' => [
         'pageSizeParam' => 'playerMonthlyRank-perpage',
         'pageParam' => 'playerMonthlyRank-page',
