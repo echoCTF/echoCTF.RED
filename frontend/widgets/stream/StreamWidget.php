@@ -63,10 +63,10 @@ class StreamWidget extends Widget
       $model = $model->where(['player_id' => $this->player_id]);
     }
     if ($this->limit !== false && intval($this->limit) > 0) {
-      $model->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC])->limit($this->limit);
+      $model->select(['sid' => 'stream.id'])->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC])->limit($this->limit);
       $streamModel = \app\models\Stream::find()
-        ->from(['t' => $model])
-        ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
+        ->select('stream.*,TS_AGO(stream.ts) as ts_ago')
+        ->innerJoin(['t' => $model], 't.sid = stream.id');
     } else {
       $streamModel = $model;
     }
