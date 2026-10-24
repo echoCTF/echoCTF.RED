@@ -128,7 +128,7 @@ class WriteupController extends \app\components\BaseController
     $model->cleanup();
     if ($model->load(Yii::$app->request->post()) && $model->save()) {
       if ($oldmodel['status'] !== $model->status) {
-        $t = \Yii::t('app', "The status of the writeup for [{target_name}] by [{username}], has changed to [{status}].", ['target_name' => $model->target->name, 'username' => $model->player->username, 'status' => $model->status]);
+        $t = \Yii::t('app', "The status of your writeup for [{target_name}], has changed to [{status}].", ['target_name' => $model->target->name, 'status' => $model->status]);
         $model->player->notify('info', $t, $t);
       }
       return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
@@ -157,7 +157,7 @@ class WriteupController extends \app\components\BaseController
     }
 
     if ($writeup->delete()) {
-      $writeup->player->notify("swal:info", $msg, $msg,true,false);
+      $writeup->player->notify("swal:info", $msg, $msg, true, false);
       \Yii::$app->session->setFlash('success', \Yii::t('app', 'Writeup deleted.'));
     } else {
       \Yii::$app->session->setFlash('error', \Yii::t('app', 'Could not delete writeup.'));
