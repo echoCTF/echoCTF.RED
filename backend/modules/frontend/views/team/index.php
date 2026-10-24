@@ -59,8 +59,9 @@ yii\bootstrap5\Modal::end();
       'description:ntext',
       [
         'attribute' => 'academic',
-        'value' => 'ucacademicShort',
         'class' => 'app\components\columns\AcademicColumn',
+        'value' => 'academicShort',
+        'contentOptions' => ['class' => 'small'],
       ],
       'inviteonly:boolean',
       'locked:boolean',

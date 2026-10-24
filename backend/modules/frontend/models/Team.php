@@ -120,7 +120,7 @@ class Team extends \yii\db\ActiveRecord
    */
   public function getApprovedMemberIPs()
   {
-    $ips=[];
+    $ips = [];
     foreach ($this->approvedMembers as $tp) {
       if ((int)$tp->player->last->vpn_local_address !== 0) {
         $ips[] = long2ip($tp->player->last->vpn_local_address);
@@ -162,26 +162,12 @@ class Team extends \yii\db\ActiveRecord
 
   public function getAcademicLong()
   {
-    switch ($this->academic) {
-      case 0:
-        return "government";
-      case 1:
-        return "education";
-      default:
-        return "professional";
-    }
+    return Yii::$app->sys->{"academic_" . $this->academic . "long"};
   }
 
   public function getAcademicShort()
   {
-    switch ($this->academic) {
-      case 0:
-        return "gov";
-      case 1:
-        return "edu";
-      default:
-        return "pro";
-    }
+    return Yii::$app->sys->{"academic_" . $this->academic . "short"};
   }
 
   public function getUcademicLong()
