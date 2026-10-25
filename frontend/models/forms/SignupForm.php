@@ -116,7 +116,7 @@ class SignupForm extends Model
   {
     if (!$this->validate()) {
       Yii::error('Validation Error: ' . implode(",\n", $this->getErrorSummary(true)));
-      throw new \Exception(\Yii::t('app', "Error Processing Request"), 1);
+      throw new \Exception(\Yii::t('app', "Error processing request, validation failed!"), 1);
     }
 
     $player = new Player();
@@ -129,14 +129,14 @@ class SignupForm extends Model
       $player->active = 0;
       if ($player->saveNewPlayer() === false) {
         Yii::error('saveNewPlayer Error: ' . implode(",\n", $player->getErrorSummary(true)));
-        throw new \Exception(\Yii::t('app', "Error Processing Request"), 1);
+        throw new \Exception(\Yii::t('app', "Error processing request, failed to save new player!"), 1);
       }
       $player->generateEmailVerificationToken();
     } else {
       $player->active = 1;
       if ($player->saveWithSsl() === false) {
         Yii::error('saveWithSsl Error: ' . implode(",\n", $player->getErrorSummary(true)));
-        throw new \Exception(\Yii::t('app', "Error Processing Request"), 1);
+        throw new \Exception(\Yii::t('app', "Error processing request, failed to save new player with SSL"), 1);
       }
       $player->genAvatar();
       $player->trigger(Player::NEW_PLAYER);
@@ -155,7 +155,7 @@ class SignupForm extends Model
         $metadata->save();
       } catch (\Exception $e) {
         Yii::error($e->getMessage());
-        throw new \Exception(\Yii::t('app', "Error Processing Request. Failed to save metadata!"), 1);
+        throw new \Exception(\Yii::t('app', "Error processing request, failed to save player metadata!"), 1);
       }
     }
 
@@ -173,7 +173,7 @@ class SignupForm extends Model
     if (!$mc->add('registeredip:' . \Yii::$app->request->userIp, 1, 3600))
       $mc->increment('registeredip:' . \Yii::$app->request->userIp);
     if (Yii::$app->sys->require_activation === true && !$this->sendEmail($player)) {
-      throw new \Exception(\Yii::t('app', "Error Processing Request. Failed to mail verification email!"), 1);
+      throw new \Exception(\Yii::t('app', "Error processing request, failed to send verification email!"), 1);
     }
 
     return $player;
