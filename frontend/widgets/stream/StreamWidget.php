@@ -63,15 +63,18 @@ class StreamWidget extends Widget
       $model = $model->where(['player_id' => $this->player_id]);
     }
     if ($this->limit !== false && intval($this->limit) > 0) {
-      $model->select(['sid' => 'stream.id'])->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC])->limit($this->limit);
+      $ids = $model->select(['stream.id'], 'STRAIGHT_JOIN')->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC])->limit($this->limit)->column();
       $streamModel = \app\models\Stream::find()
         ->select('stream.*,TS_AGO(stream.ts) as ts_ago')
-        ->innerJoin(['t' => $model], 't.sid = stream.id');
+        ->where(['stream.id' => $ids]);
+      $totalCount = count($ids);
     } else {
       $streamModel = $model;
+      $totalCount = null;
     }
 
     $this->dataProvider = new ActiveDataProvider([
+      'totalCount' => $totalCount,
       'query' => $streamModel->with(['player.profile.owner']),
       'pagination' => [
         'pageSizeParam' => $this->pagination ? 'stream-perpage' : false,
