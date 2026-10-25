@@ -34,6 +34,10 @@ use app\modules\activity\models\WsToken;
  * @property int $academic
  * @property int $status
  * @property int $approval
+ * @property int $totalBytes
+ * @property int $bytesReceived
+ * @property int $bytesSent
+ * @property int $totalDuration
  * @property string $ts
  *
  * @property PlayerBadge[] $playerBadges
@@ -56,6 +60,7 @@ use app\modules\activity\models\WsToken;
  * @property PlayerSsl $playerSsl
  * @property PlayerSubscription $subscription
  * @property PlayerToken $apiToken
+ * @property PlayerBandwidth[] $bandwidths
  */
 class PlayerAR extends \yii\db\ActiveRecord
 {
@@ -272,9 +277,25 @@ class PlayerAR extends \yii\db\ActiveRecord
     return $this->hasMany(\app\modules\activity\models\SpinHistory::class, ['player_id' => 'id']);
   }
 
-  public function getBandwidth()
+  public function getBandwidths()
   {
     return $this->hasMany(\app\modules\activity\models\PlayerBandwidth::class, ['player_id' => 'id']);
+  }
+  public function getTotalBytes()
+  {
+    return (int) $this->getBandwidths()->sum('bytes_received + bytes_sent');
+  }
+  public function getBytesReceived()
+  {
+    return (int) $this->getBandwidths()->sum('bytes_received');
+  }
+  public function getBytesSent()
+  {
+    return (int) $this->getBandwidths()->sum('bytes_sent');
+  }
+  public function getTotalDuration()
+  {
+    return (int) $this->getBandwidths()->sum('duration');
   }
 
   public function getVpnHistory()
