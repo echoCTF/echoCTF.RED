@@ -117,6 +117,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $mostSolvesDataProvider = new ActiveDataProvider([
+      'totalCount' => (int) \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->cache(60)->count('DISTINCT challenge_solver.player_id'),
       'query' => \app\modules\challenge\models\ChallengeSolver::find()->academic($academic)->select(['player_id, COUNT(*) as timer'])->groupBy(['player_id'])->orderBy(['timer' => SORT_DESC, 'challenge_solver.created_at' => SORT_ASC])->with(['player.profile.owner'])->cache(60),
       'pagination' => [
         'pageSizeParam' => 'solverMost-perpage',
