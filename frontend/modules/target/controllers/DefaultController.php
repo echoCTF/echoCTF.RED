@@ -305,14 +305,17 @@ class DefaultController extends \app\components\BaseController
     }
     $model->orderBy(['stream.ts' => SORT_DESC, 'stream.id' => SORT_DESC]);
     $streamModel = $model;
+    $totalCount = null;
     if (Yii::$app->sys->stream_record_limit !== false) {
-      $model->limit(Yii::$app->sys->stream_record_limit);
+      $ids = $model->select(['stream.id'])->limit(Yii::$app->sys->stream_record_limit)->column();
       $streamModel = \app\models\Stream::find()
-        ->from(['t' => $model])
-        ->orderBy(['ts' => SORT_DESC, 'id' => SORT_DESC]);
+        ->select('stream.*,TS_AGO(stream.ts) as ts_ago')
+        ->where(['stream.id' => $ids]);
+      $totalCount = count($ids);
     }
 
     $dataProvider = new ActiveDataProvider([
+      'totalCount' => $totalCount,
       'query' => $streamModel->with(['player.profile.owner']),
       'pagination' => [
         'pageSizeParam' => 'stream-perpage',
