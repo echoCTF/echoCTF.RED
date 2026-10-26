@@ -15,6 +15,7 @@ use app\modules\frontend\models\Player;
  *
  * @property int $player_id
  * @property int $target_id
+ * @property int $cost
  * @property string|null $created_at
  *
  * @property Player $player
@@ -37,7 +38,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
     {
         return [
             //[['player_id', 'target_id'], 'required'],
-            [['player_id', 'target_id'], 'integer'],
+            [['player_id', 'target_id', 'cost'], 'integer'],
             [['created_at'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -53,6 +54,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
                 'attributeTypes' => [
                     'player_id' => AttributeTypecastBehavior::TYPE_INTEGER,
                     'target_id' => AttributeTypecastBehavior::TYPE_INTEGER,
+                    'cost' => AttributeTypecastBehavior::TYPE_INTEGER,
                 ],
                 'typecastAfterValidate' => false,
                 'typecastBeforeSave' => true,

@@ -44,6 +44,7 @@ yii\bootstrap5\Modal::end();
               'headerOptions' => ['style' => 'width:3vw'],
             ],
             ['class' => 'app\components\columns\TargetColumn'],
+            'cost',
             'created_at',
 
             ['class' => 'yii\grid\ActionColumn'],
