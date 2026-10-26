@@ -31,7 +31,8 @@ class MaterialAsset extends AssetBundle
   public $cssOptions = [];
 
   public $css = [
-    ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap', 'async' => 'async', 'crossorigin' => "anonymous"],
+    //    ['//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap', 'async' => 'async', 'crossorigin' => "anonymous"],
+    'css/google-fonts.css?v=1.0.1',
     ['css/all.min.css?v=1.0.0', 'defer' => 'defer'],
     'css/material-dashboard.css?v=1.0.0',
     'css/material.css?v=1.0.1',

@@ -1,13 +1,15 @@
 <?php
+
 use yii\helpers\Html;
 use app\widgets\Noti;
 use app\assets\MaterialAsset;
-Yii::$app->timeZone=Yii::$app->sys->time_zone ?: 'UTC';
+
+Yii::$app->timeZone = Yii::$app->sys->time_zone ?: 'UTC';
 date_default_timezone_set(Yii::$app->sys->time_zone ?: 'UTC');
 
-$bundle=MaterialAsset::register($this);
+$bundle = MaterialAsset::register($this);
 //$directoryAsset = Yii::$app->assetManager->getPublishedUrl('@vendor/ricar2ce/yii2-material-theme/assets');
-$this->registerMetaTag(['name'=>'description', 'content'=>trim($this->_description)], 'description');
+$this->registerMetaTag(['name' => 'description', 'content' => trim($this->_description)], 'description');
 //$this->_url=\yii\helpers\Url::to([null],'https');
 
 $this->registerMetaTag($this->og_title, 'og_title');
@@ -29,58 +31,58 @@ $this->registerLayoutOverrides();
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
-<html lang="<?=Yii::$app->language ?>">
+<html lang="<?= Yii::$app->language ?>">
+
 <head>
-    <meta charset="<?=Yii::$app->charset ?>">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1, shrink-to-fit=1' name='viewport' />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="preconnect" href="//fonts.googleapis.com" crossorigin="anonymous">
-    <link rel="preload" as="style" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap" crossorigin="anonymous">
-    <link rel="preload" as="font" href="/webfonts/fa-solid-900.woff2" crossorigin>
-    <link rel="preload" as="font" href="/webfonts/fa-brands-400.woff2" crossorigin>
-    <link rel="stylesheet" media="print" onload="this.onload=null;this.removeAttribute('media');" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap" crossorigin="anonymous">
-    <noscript>
-      <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons|Roboto+Mono|Orbitron&display=swap" crossorigin="anonymous">
-    </noscript>
-    <link rel="apple-touch-icon" href="/images/apple-touch-icon.png"/>
-    <link rel="canonical" href="<?=$this->og_url['content']?>" />
-    <?php $this->head()?>
-    <?=Html::csrfMetaTags() ?>
-    <title><?=Html::encode(trim($this->title))?></title>
-<?php if(Yii::$app->sys->event_start!==false && Yii::$app->sys->event_end!==false):?>
+  <meta charset="<?= Yii::$app->charset ?>">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=1, shrink-to-fit=1' name='viewport' />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="preload" as="font" href="/webfonts/fa-solid-900.woff2" crossorigin>
+  <link rel="preload" as="font" href="/webfonts/fa-brands-400.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/webfonts/google/materialicons_v145_flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/webfonts/google/roboto_v51_KFO7CnqEu92Fr1ME7kSn66aGLdTylUAMa3yUBA.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/webfonts/google/orbitron_v35_yMJMMIlzdpvBhQQL_SC3X9yhF25-T1nyGy6BoWgz.woff2" crossorigin>
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png" />
+  <link rel="canonical" href="<?= $this->og_url['content'] ?>" />
+  <?php $this->head() ?>
+  <?= Html::csrfMetaTags() ?>
+  <title><?= Html::encode(trim($this->title)) ?></title>
+  <?php if (Yii::$app->sys->event_start !== false && Yii::$app->sys->event_end !== false): ?>
     <script>
-    var countDownStart = <?=intval(Yii::$app->sys->event_start)*1000?>;
-    var countDownNow = <?=intval(time())*1000?>;
-    var countDownDate = <?=intval(Yii::$app->sys->event_end)*1000?>;
+      var countDownStart = <?= intval(Yii::$app->sys->event_start) * 1000 ?>;
+      var countDownNow = <?= intval(time()) * 1000 ?>;
+      var countDownDate = <?= intval(Yii::$app->sys->event_end) * 1000 ?>;
     </script>
-<?php endif;?>
+  <?php endif; ?>
 
 </head>
+
 <body>
-<?php $this->beginBody() ?>
+  <?php $this->beginBody() ?>
   <div class="wrapper">
-    <?=$this->render('left.php')?>
+    <?= $this->render('left.php') ?>
     <div class="main-panel">
-    	<?=$this->render('header.php');?>
-	    <div class="content">
-	    	<div class="container<?=$this->_fluid?>">
-            <?=Noti::widget() ?>
-      			<?=$content ?>
-	    	</div>
-	    </div>
+      <?= $this->render('header.php'); ?>
+      <div class="content">
+        <div class="container<?= $this->_fluid ?>">
+          <?= Noti::widget() ?>
+          <?= $content ?>
+        </div>
+      </div>
       <footer class="footer">
         <div class="container-fluid">
-            <?=\Yii::$app->sys->{"footer_logos"}?>
+          <?= \Yii::$app->sys->{"footer_logos"} ?>
           <div class="copyright float-right">
-            &copy; 2012-<?=date("y")?>, made with <i class="material-icons text-danger">favorite</i> by
+            &copy; 2012-<?= date("y") ?>, made with <i class="material-icons text-danger">favorite</i> by
             <a href="https://www.echothrust.com" target="_blank">echothrust</a> with <a href="https://echoctf.com/" target="_blank"><b class="text-white">echo</b><b>CTF</b></a>
           </div>
         </div>
       </footer>
     </div>
   </div>
-<?php $this->endBody() ?>
+  <?php $this->endBody() ?>
 </body>
+
 </html>
 <?php $this->endPage() ?>
