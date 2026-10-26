@@ -47,7 +47,7 @@ class TargetCardActions extends Widget
   {
     if ($this->identity->player_id === intval(Yii::$app->user->id)) {
       $this->prep_instance_actions();
-      if (Yii::$app->sys->disable_ondemand_operations === false) {
+      if (!\app\modules\target\Module::ondemandDisabled()) {
         $this->prep_ondemand_actions();
       }
       $this->prep_private_network_target_actions();
@@ -79,7 +79,7 @@ class TargetCardActions extends Widget
     if (!$this->model->instance_allowed)
       return;
 
-    if (!Yii::$app->user->identity->isVip) {
+    if (!\app\modules\target\Module::canSpawnInstances(Yii::$app->user->identity)) {
       $linkOptions = $this->linkOptions;
       unset($linkOptions['data-method']);
       $linkOptions['data-swType'] = 'success';
