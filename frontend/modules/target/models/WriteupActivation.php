@@ -19,6 +19,8 @@ use app\modules\target\models\PlayerTargetHelp as PTH;
  *   charged through the stream.
  * * stream_player_target_help: log activations on the stream. When off,
  *   activations fall back to the legacy halving.
+ * * writeup_cost_multiplier: the player's score must be at least this many
+ *   times the cost to activate. Unset/0 = 3.
  * * writeups_use_require_xp: when on, the player's score must be at least
  *   target.required_xp to activate.
  * * plus_writeups: extra activations allowed on top of headshots.
@@ -42,6 +44,23 @@ class WriteupActivation extends BaseObject
   public static function costPercent(): int
   {
     return min(100, max(0, intval(Yii::$app->sys->writeup_cost_percent)));
+  }
+
+  /**
+   * How many times the cost the player's score must be to activate.
+   */
+  public static function costMultiplier(): int
+  {
+    $val = intval(Yii::$app->sys->writeup_cost_multiplier);
+    return $val > 0 ? $val : 3;
+  }
+
+  /**
+   * Minimum score needed to pay the given cost.
+   */
+  public static function requiredScore(int $cost): int
+  {
+    return self::costMultiplier() * $cost;
   }
 
   public static function useRequiredXp(): bool
@@ -171,8 +190,8 @@ class WriteupActivation extends BaseObject
     // Rules 5 and 6
     if ($this->isPaid()) {
       $cost = $this->cost();
-      if ($cost > 0 && $this->score() < 3 * $cost)
-        return Yii::t('app', 'Activating writeups for this target costs {cost} points. You need at least {need} points.', ['cost' => number_format($cost), 'need' => number_format(3 * $cost)]);
+      if ($cost > 0 && $this->score() < self::requiredScore($cost))
+        return Yii::t('app', 'Activating writeups for this target costs {cost} points. You need at least {need} points.', ['cost' => number_format($cost), 'need' => number_format(self::requiredScore($cost))]);
     }
 
     return null;

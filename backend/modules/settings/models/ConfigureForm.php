@@ -161,6 +161,7 @@ class ConfigureForm extends Model
   public $plus_writeups;
   public $writeup_stuck_hours;
   public $writeup_cost_percent;
+  public $writeup_cost_multiplier;
   public $writeups_use_require_xp;
   public $dashboard_news_total_pages;
   public $dashboard_news_records_per_page;
@@ -324,6 +325,7 @@ class ConfigureForm extends Model
     'plus_writeups',
     'writeup_stuck_hours',
     'writeup_cost_percent',
+    'writeup_cost_multiplier',
     'writeups_use_require_xp',
     'dashboard_news_total_pages',
     'dashboard_news_records_per_page',
@@ -499,6 +501,7 @@ class ConfigureForm extends Model
       ['vpn_ip_limit', 'integer', 'min' => 0],
       [['plus_writeups', 'writeup_stuck_hours'], 'integer', 'min' => 0],
       ['writeup_cost_percent', 'integer', 'min' => 0, 'max' => 100],
+      ['writeup_cost_multiplier', 'integer', 'min' => 1],
       ['trusted_proxies', 'validateTrustedProxies'],
       ['proxy_ip_header', 'match', 'pattern' => '/^[A-Za-z0-9-]+$/', 'message' => 'Header name can only contain letters, digits and dashes.'],
       [[

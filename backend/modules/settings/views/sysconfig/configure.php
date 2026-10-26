@@ -86,7 +86,8 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-2"><?= $form->field($model, 'plus_writeups')->textInput(['placeholder'=>'0'])->hint('Writeup activations allowed on top of the player headshots') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'writeups_use_require_xp')->checkbox()->hint('Require the player score to be at least the target <code>required_xp</code> to activate writeups?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'writeup_stuck_hours')->textInput(['placeholder'=>'0'])->hint('Hours since the last own flag or finding on a target before writeups can be activated. Needs at least one. Empty or <code>0</code> to disable') ?></div>
-      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_percent')->textInput(['placeholder'=>'0'])->hint('Percent of unclaimed target points charged to activate writeups (score must be at least 3x the cost). Remaining flags keep full points. Empty or <code>0</code>, or <code>stream_player_target_help</code> off, keeps the 50% halving') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_percent')->textInput(['placeholder'=>'0'])->hint('Percent of unclaimed target points charged to activate writeups (score must be at least <code>writeup_cost_multiplier</code> times the cost). Remaining flags keep full points. Empty or <code>0</code>, or <code>stream_player_target_help</code> off, keeps the 50% halving') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_multiplier')->textInput(['placeholder'=>'3'])->hint('Player score must be at least this many times the writeup activation cost. Empty means <code>3</code>') ?></div>
     </div>
 
     <hr />

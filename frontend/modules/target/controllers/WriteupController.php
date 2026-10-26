@@ -194,9 +194,9 @@ class WriteupController extends \app\components\BaseController
         // Lock the score row and re-check rules 5 and 6 against fresh values
         $score = $activation->score(true);
         $cost = $activation->cost();
-        if ($cost > 0 && $score < 3 * $cost) {
+        if ($cost > 0 && $score < WriteupActivation::requiredScore($cost)) {
           $transaction->rollBack();
-          Yii::$app->session->setFlash('error', \Yii::t('app', 'Activating writeups for this target costs {cost} points. You need at least {need} points.', ['cost' => number_format($cost), 'need' => number_format(3 * $cost)]));
+          Yii::$app->session->setFlash('error', \Yii::t('app', 'Activating writeups for this target costs {cost} points. You need at least {need} points.', ['cost' => number_format($cost), 'need' => number_format(WriteupActivation::requiredScore($cost))]));
           return $this->redirect(['default/view', 'id' => $id]);
         }
       }
