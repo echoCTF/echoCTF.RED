@@ -7,7 +7,12 @@ use app\modules\game\models\Headshot;
 $target_ip=long2ip($target->ip);
 $display_ip=Html::a($target_ip,$target_ip,["class"=>'copy-to-clipboard text-dark text-bold','swal-data'=>"Copied to clipboard",'data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of the target. Click to copy IP to clipboard.")]);
 
-if($target->on_ondemand && $target->ondemand_state===-1)
+if($target->on_ondemand && \app\modules\target\Module::instancesOnly())
+{
+  $target_ip="0.0.0.0";
+  $display_ip=Html::tag('b',$target_ip,['data-toggle'=>'tooltip','title'=>\Yii::t('app',"Spawn a private instance of this target to get an IP.")]);
+}
+elseif($target->on_ondemand && $target->ondemand_state===-1)
 {
   $target_ip="0.0.0.0";
   $display_ip=Html::tag('b',$target_ip,['data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP will be visible once the system is powered up.")]);
