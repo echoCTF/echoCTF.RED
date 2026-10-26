@@ -113,6 +113,7 @@ yii\bootstrap5\Modal::end();
       //'ts',
       [
         'class' => 'yii\grid\ActionColumn',
+        'controller' => '/frontend/player',
         'visibleButtons' => [
           'clear-vpn' => function ($model) {
             if ($model->last->vpn_local_address !== null) return true;
@@ -168,7 +169,7 @@ yii\bootstrap5\Modal::end();
             'data-method' => 'POST',
             'data' => [
               'method' => 'post',
-              'params' => $searchModel->attributes,
+              'params' => Yii::$app->request->get('PlayerSearch', []),
               'confirm' => 'Are you sure you want to delete and ban the currently filtered users?',
             ],
           ]
@@ -181,53 +182,14 @@ yii\bootstrap5\Modal::end();
             'data-method' => 'POST',
             'data' => [
               'method' => 'post',
-              'params' => $searchModel->attributes,
+              'params' => Yii::$app->request->get('PlayerSearch', []),
               'confirm' => 'Are you sure you want to delete the currently filtered users?',
-            ],
-          ]
-        ) . ' ' . Html::a(
-          '<i class="fas fa-mail-bulk"></i>',
-          ['mail-filtered'],
-          [
-            'title' => 'Mass Mail Filtered players',
-            'data-pjax' => '0',
-            'data-method' => 'POST',
-            'data' => [
-              'method' => 'post',
-              'params' => $searchModel->attributes,
-              'confirm' => 'Are you sure you want to mail the currently filtered users?',
-            ],
-          ]
-        ) . ' ' . Html::a(
-          '<i class="fas fa-users"></i>',
-          ['approve-filtered'],
-          [
-            'title' => 'Mass Approve Filtered players',
-            'data-pjax' => '0',
-            'data-method' => 'POST',
-            'data' => [
-              'method' => 'post',
-              'params' => $searchModel->attributes,
-              'confirm' => 'Are you sure you want to approve the currently filtered users?',
-            ],
-          ]
-        ) . ' ' . Html::a(
-          '<i class="fas fa-users-slash"></i>',
-          ['reject-filtered'],
-          [
-            'title' => 'Mass Reject Filtered players',
-            'data-pjax' => '0',
-            'data-method' => 'POST',
-            'data' => [
-              'method' => 'post',
-              'params' => $searchModel->attributes,
-              'confirm' => 'Are you sure you want to reject the currently filtered users?',
             ],
           ]
         ),
         'buttons' => [
           'approve' => function ($url, $model) {
-            return Html::a('<i class="fas fa-thumbs-up" style="font-size: 1.2em; vertical-align: -.01em;"></i>', ['approve', 'id' => $model->id], [
+            return Html::a('<i class="fas fa-thumbs-up" style="font-size: 1.2em; vertical-align: -.01em;"></i>', ['/frontend/player/approve', 'id' => $model->id], [
               'class' => '',
               'title' => 'Approve Player',
               'data' => [
@@ -237,7 +199,7 @@ yii\bootstrap5\Modal::end();
             ]);
           },
           'reject' => function ($url, $model) {
-            return Html::a('<i class="fas fa-thumbs-down" style="font-size: 1.2em; vertical-align: -.1em;"></i>', ['reject', 'id' => $model->id], [
+            return Html::a('<i class="fas fa-thumbs-down" style="font-size: 1.2em; vertical-align: -.1em;"></i>', ['/frontend/player/reject', 'id' => $model->id], [
               'class' => '',
               'title' => 'Reject Player',
               'data' => [
@@ -247,7 +209,7 @@ yii\bootstrap5\Modal::end();
             ]);
           },
           'reset-activkey' => function ($url, $model) {
-            return Html::a('<i class="bi bi-archive-fill"></i>', ['reset-activkey', 'id' => $model->id], [
+            return Html::a('<i class="bi bi-archive-fill"></i>', ['/frontend/player/reset-activkey', 'id' => $model->id], [
               'class' => '',
               'title' => 'Reset Player activkey',
               'data' => [
@@ -257,7 +219,7 @@ yii\bootstrap5\Modal::end();
             ]);
           },
           'clear-vpn' => function ($url, $model) {
-            return Html::a('<i class="bi bi-eraser-fill"></i>', ['clear-vpn', 'id' => $model->id], [
+            return Html::a('<i class="bi bi-eraser-fill"></i>', ['/frontend/player/clear-vpn', 'id' => $model->id], [
               'class' => '',
               'title' => 'Clear VPN Session',
               'data' => [
@@ -267,7 +229,7 @@ yii\bootstrap5\Modal::end();
             ]);
           },
           'disconnect-vpn' => function ($url, $model) {
-            return Html::a('<i class="fas fa-user-shield"></i>', ['disconnect-vpn', 'id' => $model->id], [
+            return Html::a('<i class="fas fa-user-shield"></i>', ['/frontend/player/disconnect-vpn', 'id' => $model->id], [
               'class' => '',
               'title' => 'Disconnect from VPN',
               'data' => [
@@ -336,7 +298,7 @@ yii\bootstrap5\Modal::end();
             );
           },
           'activate' => function ($url, $model) {
-            return Html::a('<i class="fas fa-user-check"></i>', ['activate', 'id' => $model->id], [
+            return Html::a('<i class="fas fa-user-check"></i>', ['/frontend/player/activate', 'id' => $model->id], [
               'class' => '',
               'title' => 'Activate player',
               'data' => [
@@ -346,7 +308,7 @@ yii\bootstrap5\Modal::end();
             ]);
           },
           'set-deleted' => function ($url, $model) {
-            return Html::a('<i class="fas fa-user-slash"></i>', ['set-deleted', 'id' => $model->id], [
+            return Html::a('<i class="fas fa-user-slash"></i>', ['/frontend/player/set-deleted', 'id' => $model->id], [
               'class' => '',
               'title' => 'Set Deleted flag',
               'data' => [
