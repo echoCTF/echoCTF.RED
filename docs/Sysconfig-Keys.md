@@ -31,6 +31,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `hide_timezone` Whether or not the Timezone information should be visible
 * `disable_mail_validation`: Whether or not mail validation should be disabled
 * `disable_ondemand_operations`: Whether or not to disable ondemand operations all together
+* `instances_only`: Disable ondemand operations and support (power up, spin queue, shared IPs of ondemand targets) and let every player, VIP or not, spawn private instances. The `spins_per_day` limits still apply to instance spawns and reboots
 * `profile_discord`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_echoctf`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
 * `profile_twitter`: Whether the field will be visible under the player profile page. This is different than `profile_settings_fields`
