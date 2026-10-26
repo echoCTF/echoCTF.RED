@@ -126,6 +126,7 @@ class m251207_102327_populate_mui_menu extends Migration
         ['label' => 'Zero pts with activated help', 'url' => ['/moderation/default/index'], 'visibility' => 'user,admin',],
         ['label' => 'Stream with Lag', 'url' => ['/moderation/default/stream-lag'], 'visibility' => 'user,admin',],
         ['label' => 'Duplicate Signup IPs', 'url' => ['/moderation/default/duplicate-signup-ips'], 'visibility' => 'user,admin',],
+        ['label' => 'Headshot Clusters', 'url' => ['/moderation/default/headshot-clusters'], 'visibility' => 'user,admin',],
         ['label' => 'Check Spammy Domains', 'url' => ['/moderation/default/check-spammy'], 'linkOptions' => ['data' => ['confirm' => 'This operation takes time to complete when a lot of players are in your system. Are you sure?']], 'visibility' => 'user,admin',],
       ]
     ],

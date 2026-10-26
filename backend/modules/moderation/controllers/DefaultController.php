@@ -129,6 +129,22 @@ class DefaultController extends \app\components\BaseController
       'searchModel' => $searchModel,
     ]);
   }
+
+  /**
+   * Lists clusters of headshots on the same target (per day, week or burst).
+   * @return mixed
+   */
+  public function actionHeadshotClusters()
+  {
+    $searchModel = new \app\modules\moderation\models\HeadshotClusterSearch();
+    $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+
+    return $this->render('headshot-clusters', [
+      'searchModel' => $searchModel,
+      'dataProvider' => $dataProvider,
+    ]);
+  }
+
   /**
    * Resolves the hostname of a single IP for the duplicate signup IPs page.
    * Results are cached per IP since lookups can block for seconds.
