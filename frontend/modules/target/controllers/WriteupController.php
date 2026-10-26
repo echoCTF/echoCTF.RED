@@ -206,7 +206,7 @@ class WriteupController extends \app\components\BaseController
       $pth->target_id = $id;
       $pth->cost = $cost;
       $pth->created_at = new \yii\db\Expression('NOW()');
-      $pth->save(false); // tai_player_target_help charges the cost through the stream
+      $pth->save(false); // tai_player_target_help charges the cost through the stream (only written while stream_player_target_help is on)
       $transaction->commit();
       if ($cost > 0)
         Yii::$app->session->setFlash('success', \Yii::t('app', 'You have successfully activated writeups for this target for {cost} points.', ['cost' => number_format($cost)]));

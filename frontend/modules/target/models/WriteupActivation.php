@@ -15,6 +15,10 @@ use app\modules\target\models\PlayerTargetHelp as PTH;
  *   finding on the target before activation is allowed. Unset/0 = off.
  * * writeup_cost_percent: percent of the player's unclaimed points on the
  *   target charged on activation. Unset/0 = off (legacy halving instead).
+ *   Only applies while stream_player_target_help is on, since the cost is
+ *   charged through the stream.
+ * * stream_player_target_help: log activations on the stream. When off,
+ *   activations fall back to the legacy halving.
  * * writeups_use_require_xp: when on, the player's score must be at least
  *   target.required_xp to activate.
  * * plus_writeups: extra activations allowed on top of headshots.
@@ -45,12 +49,18 @@ class WriteupActivation extends BaseObject
     return (bool) Yii::$app->sys->writeups_use_require_xp;
   }
 
+  public static function streamEnabled(): bool
+  {
+    return (bool) Yii::$app->sys->stream_player_target_help;
+  }
+
   /**
-   * Whether this activation is a paid one (rules 5 to 7 apply).
+   * Whether this activation is a paid one (rules 5 to 7 apply). The cost is
+   * charged through the stream, so paid activations need stream logging on.
    */
   public function isPaid(): bool
   {
-    return !$this->isAdmin && self::costPercent() > 0;
+    return !$this->isAdmin && self::costPercent() > 0 && self::streamEnabled();
   }
 
   /**

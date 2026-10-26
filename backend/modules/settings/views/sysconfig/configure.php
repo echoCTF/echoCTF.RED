@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-2"><?= $form->field($model, 'target_hide_inactive')->checkbox()->hint('Hide inactive targets from listings?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'target_guest_view_deny')->checkbox()->hint('Hide targets from guests?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'network_view_guest')->checkbox()->hint('Allow guests to view networks?') ?></div>
-        <div class="col-sm-2"><?= $form->field($model, 'stream_player_target_help')->checkbox()->hint('Log writeup activations on activity stream?') ?></div>
+        <div class="col-sm-2"><?= $form->field($model, 'stream_player_target_help')->checkbox()->hint('Log writeup activations on activity stream? Required for paid activations (<code>writeup_cost_percent</code>)') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'log_failed_claims')->checkbox()->hint('Log failed treasure claims?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'force_findings_to_claim')->checkbox()->hint('Force findings before claim?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'disable_ondemand_operations')->checkbox()->hint('Disable on-demand target operations?') ?></div>
@@ -86,7 +86,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-2"><?= $form->field($model, 'plus_writeups')->textInput(['placeholder'=>'0'])->hint('Writeup activations allowed on top of the player headshots') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'writeups_use_require_xp')->checkbox()->hint('Require the player score to be at least the target <code>required_xp</code> to activate writeups?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'writeup_stuck_hours')->textInput(['placeholder'=>'0'])->hint('Hours since the last own flag or finding on a target before writeups can be activated. Needs at least one. Empty or <code>0</code> to disable') ?></div>
-      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_percent')->textInput(['placeholder'=>'0'])->hint('Percent of unclaimed target points charged to activate writeups (score must be at least 3x the cost). Remaining flags keep full points. Empty or <code>0</code> keeps the 50% halving') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_percent')->textInput(['placeholder'=>'0'])->hint('Percent of unclaimed target points charged to activate writeups (score must be at least 3x the cost). Remaining flags keep full points. Empty or <code>0</code>, or <code>stream_player_target_help</code> off, keeps the 50% halving') ?></div>
     </div>
 
     <hr />
