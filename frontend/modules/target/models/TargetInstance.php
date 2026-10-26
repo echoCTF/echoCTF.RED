@@ -176,8 +176,7 @@ class TargetInstance extends \yii\db\ActiveRecord
         $ti->team_allowed = $team ? 1 : 0;
       }
     }
-    // pick the least used server currently, ties are random
-    $ti->server_id = intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id), rand() limit 1')->queryScalar());
+    // server_id is left empty, the server gets assigned when the instance starts (cron/instance-servers)
     if ($ti->save() === false) {
       throw new HttpException(422, Yii::t('app', 'Failed to spawn new target instance for you.'));
     }

@@ -70,6 +70,8 @@ class TargetInstance extends TargetInstanceAR
 
   public function restart()
   {
+    if ($this->server === null)
+      throw new \Exception('Instance has no server assigned yet');
     $dc = new DockerContainer($this->target);
     $dc->targetVolumes = $this->target->targetVolumes;
     $dc->targetVariables = $this->target->targetVariables;
