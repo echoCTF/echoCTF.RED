@@ -323,6 +323,7 @@ return [
   'Subscriptions have been temporarily suspended. Please check back again in a couple of hours.' => '',
   'Subscriptions help us to keep the platform running and allows us to focus on developing new content.' => '',
   'System currently powered down. Go to the target page to power it up.' => '',
+  'Spawn a private instance of this target to get an IP.' => '',
   'Table of Contents' => '',
   'Target' => '',
   'Target ID' => '',
