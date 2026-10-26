@@ -502,17 +502,16 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
     if ($this->isAdmin)
       return [1000000000, 1];
     $key = $this->getRateLimitCacheKey();
-    $cache = Yii::$app->cache;
+    $memcache = Yii::$app->cache->memcache;
 
-    $current = $cache->memcache->get($key);
-    if ($current === false) {
-
-      [$limit, $window] = $this->getRateLimit($request, $action);
-      $cache->memcache->set($key, $limit, $window);
-      return [$limit, time()];
-    } else {
+    $current = $memcache->get($key);
+    if ($current !== false)
       return [$current, time()];
-    }
+
+    [$limit, $window] = $this->getRateLimit($request, $action);
+    if (!$memcache->add($key, $limit, $window) && ($current = $memcache->get($key)) !== false)
+      return [$current, time()];
+    return [$limit, time()];
   }
 
   /**
