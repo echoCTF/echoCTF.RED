@@ -294,8 +294,7 @@ BEGIN
 
     IF limited=1 THEN
       -- Notify only once every 5 minutes, clients keep retrying while rejected
-      IF memc_get(CONCAT('vpn_ip_limit:',usid)) IS NULL THEN
-        DO memc_set(CONCAT('vpn_ip_limit:',usid),remoteIP,300);
+      IF memc_add(CONCAT('vpn_ip_limit:',usid),remoteIP,300) THEN
         SELECT 'IPLIMIT' as '';
       ELSE
         SELECT 'IPLIMIT_REPEAT' as '';
