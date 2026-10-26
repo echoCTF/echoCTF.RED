@@ -185,7 +185,7 @@ class PlayerSearch extends Player
     {
         $query->andFilterWhere([
             'player.id' => $this->id]);
-        $query->orFilterWhere([
+        $query->andFilterWhere([
             'player.active' => $this->active,
             'player.academic' => $this->academic,
             'player.status' => $this->status,
