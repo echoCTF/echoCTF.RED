@@ -162,7 +162,8 @@ class SignupForm extends Model
       }
     }
 
-    $player->profile->last->signup_ip = ip2long(\Yii::$app->request->userIp);
+    $ip = ip2long(\Yii::$app->request->userIp);
+    $player->profile->last->signup_ip = $ip === false ? null : $ip;
     $player->profile->last->save();
 
     if (Yii::$app->getSession()->get('referred_by') !== null) {
@@ -172,11 +173,9 @@ class SignupForm extends Model
       if (!$pr->save()) {
         Yii::error('PlayerRelation Error: ' . implode(",\n", $pr->getErrorSummary(true)));
       }
+      Yii::$app->getSession()->remove('referred_by');
     }
 
-    $mc = \Yii::$app->cache->memcache;
-    if (!$mc->add('registeredip:' . \Yii::$app->request->userIp, 1, 3600))
-      $mc->increment('registeredip:' . \Yii::$app->request->userIp);
     if (Yii::$app->sys->require_activation === true && !$this->sendEmail($player)) {
       throw new \Exception(\Yii::t('app', "Error processing request, failed to send verification email!"), 1);
     }

@@ -16,10 +16,13 @@ class TotalRegistrationsValidator extends Validator
     public function init()
     {
         if(!$this->counter)
-          $this->counter=\Yii::$app->db
+        {
+          $ip=ip2long($this->client_ip);
+          $this->counter=$ip===false ? 0 : \Yii::$app->db
               ->createCommand('SELECT count(*) FROM player_last WHERE signup_ip=:player_ip')
-              ->bindValue(':player_ip',ip2long($this->client_ip))
+              ->bindValue(':player_ip',$ip)
               ->queryScalar();
+        }
         parent::init();
     }
     public function validateValue($value)
