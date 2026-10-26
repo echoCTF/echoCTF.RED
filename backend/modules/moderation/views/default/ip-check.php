@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="alert alert-danger"><?= Html::encode($error) ?></div>
   <?php endif; ?>
 
-  <?= Html::beginForm(['ip-check'], 'post') ?>
+  <?= Html::beginForm(['ip-check'], 'get') ?>
   <div class="form-group">
     <label for="ip">IP address</label>
     <input type="text" name="ip" id="ip" class="form-control"

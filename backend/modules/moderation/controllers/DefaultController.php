@@ -135,11 +135,11 @@ class DefaultController extends \app\components\BaseController
 
   public function actionIpCheck()
   {
-    $ip      = Yii::$app->request->post('ip');
+    $ip      = Yii::$app->request->get('ip');
     $results = null;
     $error   = null;
 
-    if (Yii::$app->request->isPost) {
+    if ($ip !== null) {
       if (empty($ip)) {
         $error = 'IP address is required.';
       } elseif (!filter_var($ip, FILTER_VALIDATE_IP)) {
@@ -147,24 +147,26 @@ class DefaultController extends \app\components\BaseController
       } else {
         // last-seen: OR across signup_ip / signin_ip, LIKE against INET_NTOA()
         $lastSearch   = new \app\modules\activity\models\PlayerLastSearch();
-        $lastProvider = $lastSearch->search([]);
+        $lastProvider = $lastSearch->search(Yii::$app->request->queryParams);
         $lastProvider->query->andFilterWhere([
           'or',
           ['like', new \yii\db\Expression('INET_NTOA(signup_ip)'), $ip],
           ['like', new \yii\db\Expression('INET_NTOA(signin_ip)'), $ip],
         ]);
-        $lastProvider->pagination = ['pageSize' => 20, 'pageParam' => 'last-page'];
-        $lastProvider->sort       = ['sortParam' => 'last-sort'];
+        $lastProvider->pagination->pageSize  = 20;
+        $lastProvider->pagination->pageParam = 'last-page';
+        $lastProvider->sort->sortParam       = 'last-sort';
 
         $vpnSearch   = new \app\modules\activity\models\PlayerVpnHistorySearch();
-        $vpnProvider = $vpnSearch->search([]);
+        $vpnProvider = $vpnSearch->search(Yii::$app->request->queryParams);
         $vpnProvider->query->andFilterWhere([
           'like',
           new \yii\db\Expression('INET_NTOA(vpn_remote_address)'),
           $ip,
         ]);
-        $vpnProvider->pagination = ['pageSize' => 20, 'pageParam' => 'vpn-page'];
-        $vpnProvider->sort       = ['sortParam' => 'vpn-sort'];
+        $vpnProvider->pagination->pageSize  = 20;
+        $vpnProvider->pagination->pageParam = 'vpn-page';
+        $vpnProvider->sort->sortParam       = 'vpn-sort';
 
         $results = [
           'last-seen' => [
