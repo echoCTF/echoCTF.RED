@@ -169,7 +169,9 @@ class SignupForm extends Model
       $pr = new PlayerRelation;
       $pr->player_id = Yii::$app->getSession()->get('referred_by');
       $pr->referred_id = $player->id;
-      $pr->save();
+      if (!$pr->save()) {
+        Yii::error('PlayerRelation Error: ' . implode(",\n", $pr->getErrorSummary(true)));
+      }
     }
 
     $mc = \Yii::$app->cache->memcache;

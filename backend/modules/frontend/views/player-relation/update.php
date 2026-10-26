@@ -6,10 +6,10 @@ use yii\helpers\Html;
 /* @var $model app\modules\frontend\models\PlayerRelation */
 
 $this->title = Yii::t('app', 'Update Player Relation: {name}', [
-    'name' => $model->player_id,
+    'name' => $model->referred_id,
 ]);
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Player Relations'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->player_id, 'url' => ['view', 'id' => $model->player_id]];
+$this->params['breadcrumbs'][] = ['label' => $model->referred_id, 'url' => ['view', 'id' => $model->referred_id]];
 $this->params['breadcrumbs'][] = Yii::t('app', 'Update');
 yii\bootstrap5\Modal::begin([
     'title' => '<h2><i class="bi bi-info-circle-fill"></i> '.Html::encode($this->title).' Help</h2>',

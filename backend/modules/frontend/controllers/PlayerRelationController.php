@@ -60,7 +60,7 @@ class PlayerRelationController extends \app\components\BaseController
         $model = new PlayerRelation();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->player_id]);
+            return $this->redirect(['view', 'id' => $model->referred_id]);
         }
 
         return $this->render('create', [
@@ -80,7 +80,7 @@ class PlayerRelationController extends \app\components\BaseController
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->player_id]);
+            return $this->redirect(['view', 'id' => $model->referred_id]);
         }
 
         return $this->render('update', [
