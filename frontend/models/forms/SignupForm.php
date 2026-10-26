@@ -122,6 +122,7 @@ class SignupForm extends Model
     $player = new Player();
     $player->username = $this->username;
     $player->email = $this->email;
+    $player->fullname = $this->fullname;
     $player->setPassword($this->password);
     $player->generateAuthKey();
 
@@ -131,7 +132,9 @@ class SignupForm extends Model
         Yii::error('saveNewPlayer Error: ' . implode(",\n", $player->getErrorSummary(true)));
         throw new \Exception(\Yii::t('app', "Error processing request, failed to save new player!"), 1);
       }
-      $player->generateEmailVerificationToken();
+      if ($player->generateEmailVerificationToken() === false) {
+        throw new \Exception(\Yii::t('app', "Error processing request, failed to generate verification token!"), 1);
+      }
     } else {
       $player->active = 1;
       if ($player->saveWithSsl() === false) {
@@ -145,16 +148,16 @@ class SignupForm extends Model
     if (Yii::$app->sys->player_require_identification) {
       $ext = basename($this->identificationFile->getExtension());
       $this->identificationPath = Yii::getAlias("@webroot/identificationFiles/" . $player->profile->id . '.' . $ext);
-      $this->identificationFile->saveAs($this->identificationPath);
-      try {
-        $metadata = new \app\models\PlayerMetadata([
-          'player_id' => $player->id,
-          'affiliation' => $this->affiliation,
-          'identificationFile' => $player->profile->id . '.' . $ext,
-        ]);
-        $metadata->save();
-      } catch (\Exception $e) {
-        Yii::error($e->getMessage());
+      if (!$this->identificationFile->saveAs($this->identificationPath)) {
+        throw new \Exception(\Yii::t('app', "Error processing request, failed to save identification file!"), 1);
+      }
+      $metadata = new \app\models\PlayerMetadata([
+        'player_id' => $player->id,
+        'affiliation' => $this->affiliation,
+        'identificationFile' => $player->profile->id . '.' . $ext,
+      ]);
+      if (!$metadata->save()) {
+        Yii::error('PlayerMetadata Error: ' . implode(",\n", $metadata->getErrorSummary(true)));
         throw new \Exception(\Yii::t('app', "Error processing request, failed to save player metadata!"), 1);
       }
     }
