@@ -366,7 +366,7 @@
 
   - name: Create temporary findingsd-federated.sql
     template:
-      src: "{{playbook_dir}}/../../contrib/findingsd-federated.sql"
+      src: "{{playbook_dir}}/../../schemas/findingsd-federated.sql"
       dest: /tmp/findingsd.sql
     tags:
       - findingsd-federated.sql

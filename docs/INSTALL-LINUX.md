@@ -64,7 +64,7 @@ mysql echoCTF<schemas/echoCTF.sql
 mysql echoCTF<schemas/echoCTF-routines.sql
 mysql echoCTF<schemas/echoCTF-triggers.sql
 mysql echoCTF<schemas/echoCTF-events.sql
-cp contrib/mysql-init.sql /etc/mysql/mysql-init.sql
+cp schemas/mysql-init.sql /etc/mysql/mysql-init.sql
 ```
 
 **NOTE:** If you change the name of the database make sure you also update the file `/etc/mysql/mysql-init.sql` to reflect this change.

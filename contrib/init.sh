@@ -28,7 +28,7 @@ function services() {
   sudo rm -f /tmp/event_finished
   sudo service memcached restart
   sudo service mysql restart
-  (sed -e "s/echoCTF/${DATABASE}/" contrib/mysql-init.sql | mysql ${DATABASE}  > /dev/null) || echo "No function exists"
+  (sed -e "s/echoCTF/${DATABASE}/" schemas/mysql-init.sql | mysql ${DATABASE}  > /dev/null) || echo "No function exists"
   (mysql ${DATABASE} -e "SET GLOBAL EVENT_SCHEDULER=ON") || echo "No database or events"
 }
 
@@ -46,7 +46,7 @@ function sql() {
       fi
     done
   fi
-  sed -e "s/echoCTF/${DATABASE}/g" contrib/mysql-init.sql | mysql ${DATABASE}
+  sed -e "s/echoCTF/${DATABASE}/g" schemas/mysql-init.sql | mysql ${DATABASE}
   mysql ${DATABASE} -e "SET GLOBAL EVENT_SCHEDULER=ON"
 }
 

@@ -8,12 +8,12 @@ ENV MARIADB_DATABASE echoCTF
 ENV DEBIAN_FRONTEND noninteractive
 
 WORKDIR /always-initdb.d/
-COPY contrib/mysql-init.sql  /etc/mysql-init.sql
+COPY schemas/mysql-init.sql  /etc/mysql-init.sql
 COPY schemas/echoCTF.sql /docker-entrypoint-initdb.d/01.sql
 COPY schemas/echoCTF-routines.sql /docker-entrypoint-initdb.d/02.sql
 COPY schemas/echoCTF-triggers.sql /docker-entrypoint-initdb.d/03.sql
 COPY schemas/echoCTF-events.sql /docker-entrypoint-initdb.d/04.sql
-COPY contrib/findingsd.sql /docker-entrypoint-initdb.d/05.sql
+COPY schemas/findingsd.sql /docker-entrypoint-initdb.d/05.sql
 COPY contrib/entrypoint-mariadb.sh /usr/local/bin/docker-entrypoint.sh
 WORKDIR /
 RUN set -ex \
