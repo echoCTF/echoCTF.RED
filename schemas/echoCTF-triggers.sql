@@ -369,7 +369,7 @@ CREATE TRIGGER `tbi_player_finding` BEFORE INSERT ON `player_finding` FOR EACH R
     END IF;
     SELECT target_id,points INTO local_target_id,pts FROM finding WHERE id=NEW.finding_id;
     SET NEW.points=pts;
-    IF (SELECT count(*) FROM player_target_help WHERE target_id=local_target_id AND player_id=NEW.player_id)>0 THEN
+    IF (SELECT count(*) FROM player_target_help WHERE target_id=local_target_id AND player_id=NEW.player_id AND cost=0)>0 THEN
       SET NEW.points=NEW.points/2;
     END IF;
   END ;;
@@ -528,7 +528,7 @@ CREATE TRIGGER `tbi_player_treasure` BEFORE INSERT ON `player_treasure` FOR EACH
     END IF;
     SELECT target_id,points INTO local_target_id,pts FROM treasure WHERE id=NEW.treasure_id;
     SET NEW.points=pts;
-    IF (SELECT count(*) FROM player_target_help WHERE target_id=local_target_id AND player_id=NEW.player_id)>0 THEN
+    IF (SELECT count(*) FROM player_target_help WHERE target_id=local_target_id AND player_id=NEW.player_id AND cost=0)>0 THEN
       SET NEW.points=NEW.points/2;
     END IF;
   END ;;
@@ -985,7 +985,7 @@ thisBegin:BEGIN
   END IF;
   SET stream_player_target_help=memc_get('sysconfig:stream_player_target_help');
   IF stream_player_target_help IS NOT NULL and stream_player_target_help=1 THEN
-    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'player_target_help',NEW.target_id,0,'Activated writeups for {target}','','','',now());
+    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'player_target_help',NEW.target_id,-1*NEW.cost,'Activated writeups for {target}','','','',now());
   END IF;
 END ;;
 

@@ -1,5 +1,16 @@
 <?php
 use yii\helpers\Html;
+use app\modules\target\models\WriteupActivation;
+
+$confirmMessage = null;
+if (!$writeups_activated && !Yii::$app->user->isGuest && count($writeups) > 0) {
+  $activation = new WriteupActivation([
+    'player_id' => Yii::$app->user->id,
+    'target' => $writeups[0]->target,
+    'isAdmin' => (bool) Yii::$app->user->identity->isAdmin,
+  ]);
+  $confirmMessage = $activation->confirmMessage();
+}
 ?>
 <div class="card bg-dark terminal writeups">
   <div class="card-header">
@@ -36,7 +47,7 @@ use yii\helpers\Html;
               'title' => \Yii::t('app','Request access to writeups'),
               'data-pjax' => '0',
               'data-method' => 'POST',
-              'data-confirm'=>\Yii::t('app','Are you sure you want to enable access to writeups for this target? Any remaining flags will have their points reduced by 50%.'),
+              'data-confirm'=>$confirmMessage,
               'aria-label'=>\Yii::t('app','Request access to writeups'),
             ]
             );

@@ -51,6 +51,7 @@ nav:
     - Examples: ansible/examples.md
   - Administration:
     - Sysconfig Keys: Sysconfig-Keys.md
+    - Writeup Activations: Writeup-Activations.md
     - Console Commands:
       - Overview: Console-Commands.md
       - Backend:

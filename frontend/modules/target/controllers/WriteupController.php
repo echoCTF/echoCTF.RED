@@ -13,6 +13,7 @@ use app\modules\game\models\Headshot;
 use app\modules\target\models\Target;
 use app\modules\target\models\PlayerTargetHelp as PTH;
 use app\modules\target\models\Writeup;
+use app\modules\target\models\WriteupActivation;
 use app\overloads\yii\filters\AccessControl;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -172,42 +173,47 @@ class WriteupController extends \app\components\BaseController
    */
   public function actionEnable(int $id)
   {
-    $writeups = Writeup::find()->where(['target_id' => $id]);
-    $player_headshots = intval(Headshot::find()->where(['player_id' => Yii::$app->user->id])->count());
-    $player_writeups = intval(PTH::find()->where(['player_id' => Yii::$app->user->id])->count());
-    $plus_writeups = intval(\Yii::$app->sys->plus_writeups);
-    if ($player_writeups >= ($player_headshots + $plus_writeups) && !\Yii::$app->user->identity->isAdmin) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'You have activated too many writeups, headshot some of the targets first.'));
-      return $this->redirect(['default/view', 'id' => $id]);
+    $target = Target::findOne($id);
+    if ($target === null) {
+      throw new NotFoundHttpException(\Yii::t('app', 'The requested target does not exist.'));
     }
-    if ((int)$writeups->approved()->count() === 0) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'There are no writeups for this target.'));
+
+    $activation = new WriteupActivation([
+      'player_id' => Yii::$app->user->id,
+      'target' => $target,
+      'isAdmin' => (bool) \Yii::$app->user->identity->isAdmin,
+    ]);
+
+    if (($error = $activation->check()) !== null) {
+      Yii::$app->session->setFlash('error', $error);
       return $this->redirect(['default/view', 'id' => $id]);
     }
 
-    if (PTH::findOne(['player_id' => Yii::$app->user->id, 'target_id' => $id]) !== null) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', 'You have already enabled writeups for this target.'));
-      return $this->redirect(['default/view', 'id' => $id]);
-    }
-
+    $transaction = Yii::$app->db->beginTransaction();
     try {
-      if (!\Yii::$app->user->identity->isAdmin)
-        $this->module->checkNetwork($writeups->one()->target);
-    } catch (\Throwable $e) {
-      Yii::$app->session->setFlash('error', \Yii::t('app', "Failed to activate writeups for this target. You don't have access to this network."));
-      return $this->redirect(['default/view', 'id' => $id]);
-    }
+      $cost = 0;
+      if ($activation->isPaid()) {
+        // Lock the score row and re-check rules 5 and 6 against fresh values
+        $score = $activation->score(true);
+        $cost = $activation->cost();
+        if ($cost > 0 && $score < WriteupActivation::requiredScore($cost)) {
+          $transaction->rollBack();
+          Yii::$app->session->setFlash('error', \Yii::t('app', 'Activating writeups for this target costs {cost} points. You need at least {need} points.', ['cost' => number_format($cost), 'need' => number_format(WriteupActivation::requiredScore($cost))]));
+          return $this->redirect(['default/view', 'id' => $id]);
+        }
+      }
 
-    $connection = Yii::$app->db;
-    $transaction = $connection->beginTransaction();
-    try {
       $pth = new PTH;
       $pth->player_id = Yii::$app->user->id;
       $pth->target_id = $id;
+      $pth->cost = $cost;
       $pth->created_at = new \yii\db\Expression('NOW()');
-      $pth->save(false);
+      $pth->save(false); // tai_player_target_help charges the cost through the stream (only written while stream_player_target_help is on)
       $transaction->commit();
-      Yii::$app->session->setFlash('success', \Yii::t('app', 'You have successfully activated writeups for this target.'));
+      if ($cost > 0)
+        Yii::$app->session->setFlash('success', \Yii::t('app', 'You have successfully activated writeups for this target for {cost} points.', ['cost' => number_format($cost)]));
+      else
+        Yii::$app->session->setFlash('success', \Yii::t('app', 'You have successfully activated writeups for this target.'));
     } catch (\Exception $e) {
       $transaction->rollBack();
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to activate writeups for this target.'));
