@@ -302,11 +302,10 @@ class DefaultController extends \app\components\BaseController
   public function actionRenew($token = null)
   {
     $team = $this->findModel(Yii::$app->user->identity->teamLeader->id);
-    if (\Yii::$app->cache->memcache->get('team_renewed:' . $team->id) !== false) {
+    if (\Yii::$app->cache->memcache->add('team_renewed:' . $team->id, true, 360) === false) {
       \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Please wait 5 minutes until you can renew your URL again.'));
     } else {
       $team->generate_invite();
-      \Yii::$app->cache->memcache->set('team_renewed:' . $team->id, true, 360);
       \Yii::$app->session->addFlash('success', \Yii::t('app', 'Your team invite URL got renewed. You will have to wait 5 minutes before you can renew again.'));
     }
     return $this->redirect(['view', 'token' => $team->token]);
