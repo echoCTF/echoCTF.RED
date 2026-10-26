@@ -82,6 +82,8 @@ class WriteupController extends \app\components\BaseController
     }
 
     $model = $this->findModelId(['id' => $id, 'target_id' => $target_id, 'approved' => true]);
+    // load the target with its state so the target card shows the flag/service totals
+    $model->populateRelation('target', Target::find()->forView((int) Yii::$app->user->id)->where(['t.id' => $target_id])->one());
     if (($rating = WriteupRating::findOne(['player_id' => Yii::$app->user->id, 'writeup_id' => $id])) === null) {
       $rating = new WriteupRating;
       $rating->writeup_id = $id;
