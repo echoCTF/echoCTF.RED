@@ -466,7 +466,14 @@ class CronController extends Controller
     $transaction = \Yii::$app->db->beginTransaction();
     try {
       $query = SpinQueue::find();
+      $instancesOnly = \Yii::$app->sys->instances_only === true;
       foreach ($query->all() as $t) {
+        // Instances only mode: on-demand targets are not powered up, drop the request
+        if ($instancesOnly && $t->target->ondemand) {
+          printf("Dropping queue [%s] by [%s], on-demand disabled (instances_only)\n", $t->target->name, $t->player->username);
+          $t->delete();
+          continue;
+        }
         printf("Processing queue [%s] on docker [%s]", $t->target->name, $t->target->server);
         printf(" by [%s] on %s", $t->player->username, $t->created_at);
 
@@ -551,6 +558,9 @@ class CronController extends Controller
             ]
           ]
         );
+      // Instances only mode: on-demand support is off, shut every powered up on-demand target
+      if (\Yii::$app->sys->instances_only === true)
+        $demands = \app\modules\gameplay\models\TargetOndemand::find()->andWhere(['state' => 1]);
 
       foreach ($demands->all() as $ondemand) {
         printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
