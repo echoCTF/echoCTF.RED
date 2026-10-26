@@ -94,7 +94,7 @@ class Player extends PlayerAR
       else {
         echo Yii::t('app', "The user has been mailed."), "\n";
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       if (Yii::$app instanceof \yii\web\Application)
         \Yii::$app->session->addFlash('notice', Yii::t('app', "Failed to send mail to user {username} with email {email}. {exception}", ['username' => $this->username, 'email' => $this->email, 'exception' => Html::encode($e->getMessage())]));
       else
@@ -232,7 +232,8 @@ class Player extends PlayerAR
       $model->type = 'email_verification';
       $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + ' . $validity), 'php:Y-m-d H:i:s');
       $model->token = str_replace('_', '-', Yii::$app->security->generateRandomString(30));
-      $model->save();
+      return $model->save();
     }
+    return true;
   }
 }
