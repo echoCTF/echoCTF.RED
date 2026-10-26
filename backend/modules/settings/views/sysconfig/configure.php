@@ -83,6 +83,10 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-2"><?= $form->field($model, 'target_days_updated')->textInput()->hint('How many days are targets considered updated?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'failed_claim_lookup_timeout')->textInput(['placeholder'=>'1'])->hint('Seconds to look up the owner of a wrong flag before it is queued for the background scan (needs <code>log_failed_claims</code>)') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'failed_claim_scan_players')->textInput(['placeholder'=>'1000'])->hint('Players checked per minute for each queued wrong flag by the <code>ev_scan_failed_claims</code> event') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'plus_writeups')->textInput(['placeholder'=>'0'])->hint('Writeup activations allowed on top of the player headshots') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'writeups_use_require_xp')->checkbox()->hint('Require the player score to be at least the target <code>required_xp</code> to activate writeups?') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'writeup_stuck_hours')->textInput(['placeholder'=>'0'])->hint('Hours since the last own flag or finding on a target before writeups can be activated. Needs at least one. Empty or <code>0</code> to disable') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_percent')->textInput(['placeholder'=>'0'])->hint('Percent of unclaimed target points charged to activate writeups (score must be at least 3x the cost). Remaining flags keep full points. Empty or <code>0</code> keeps the 50% halving') ?></div>
     </div>
 
     <hr />

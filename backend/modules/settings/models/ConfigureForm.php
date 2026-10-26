@@ -158,6 +158,10 @@ class ConfigureForm extends Model
   public $player_request_delete_allow;
   public $subscriptions_feature_api;
   public $stream_player_target_help;
+  public $plus_writeups;
+  public $writeup_stuck_hours;
+  public $writeup_cost_percent;
+  public $writeups_use_require_xp;
   public $dashboard_news_total_pages;
   public $dashboard_news_records_per_page;
   public $target_restart_log_interval;
@@ -317,6 +321,10 @@ class ConfigureForm extends Model
     'player_request_delete_allow',
     'subscriptions_feature_api',
     'stream_player_target_help',
+    'plus_writeups',
+    'writeup_stuck_hours',
+    'writeup_cost_percent',
+    'writeups_use_require_xp',
     'dashboard_news_total_pages',
     'dashboard_news_records_per_page',
     'target_restart_log_interval',
@@ -489,6 +497,8 @@ class ConfigureForm extends Model
       ['failed_claim_lookup_timeout', 'number', 'min' => 0.001],
       ['failed_claim_scan_players', 'integer', 'min' => 1],
       ['vpn_ip_limit', 'integer', 'min' => 0],
+      [['plus_writeups', 'writeup_stuck_hours'], 'integer', 'min' => 0],
+      ['writeup_cost_percent', 'integer', 'min' => 0, 'max' => 100],
       ['trusted_proxies', 'validateTrustedProxies'],
       ['proxy_ip_header', 'match', 'pattern' => '/^[A-Za-z0-9-]+$/', 'message' => 'Header name can only contain letters, digits and dashes.'],
       [[
@@ -588,6 +598,7 @@ class ConfigureForm extends Model
         'player_request_delete_allow',
         'subscriptions_feature_api',
         'stream_player_target_help',
+        'writeups_use_require_xp',
         'disable_stream_tweet',
       ], 'boolean'],
     ];
@@ -633,7 +644,6 @@ class ConfigureForm extends Model
       'mail_verify_peer_name' => 'Mail verify peer name',
       'online_timeout' => 'Timeout for user online key to expire',
       'spins_per_day' => 'Spins allowed per day',
-      'team_manage_members' => 'Team Manage Members',
       'leaderboard_visible_before_event_start' => 'Leaderboard visible before start',
       'leaderboard_visible_after_event_end' => 'Leaderboard visible after end',
       'leaderboard_show_zero' => 'Leaderboard show zero points',
