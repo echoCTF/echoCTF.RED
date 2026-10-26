@@ -65,15 +65,15 @@ class TargetInstanceQuery extends \yii\db\ActiveQuery
   /**
    * Filters target instances by assigned server.
    *
-   * - If `$server_id` is 0, matches instances assigned to any server.
-   * - Otherwise, matches instances assigned to the specified server.
+   * - If `$server_id` is 0 or an empty list, matches instances assigned to any server.
+   * - Otherwise, matches instances assigned to the specified server id or any of the listed server ids.
    *
-   * @param int $server_id Server ID to filter by, or 0 for any assigned server.
+   * @param int|int[] $server_id Server ID or list of server IDs to filter by, or 0 for any assigned server.
    * @return TargetInstanceQuery
    */
-  public function server_assigned(int $server_id = 0)
+  public function server_assigned($server_id = 0)
   {
-    if ($server_id === 0)
+    if (empty($server_id))
       return $this->andWhere(['IS NOT', 'target_instance.server_id', null]);
     return $this->andWhere(['target_instance.server_id' => $server_id]);
   }

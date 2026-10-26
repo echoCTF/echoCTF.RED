@@ -32,7 +32,17 @@ Processes target instances with pending actions. This includes instances that ar
 
 Providing any argument causes the action to process only PF related operations for the instance.
 
-Usage: `./yii cron/instances [pfonly]`
+Parameters:
+- `pfonly` process only PF related operations (default: `0`)
+- `expired_ago` seconds since last update after which an instance is considered expired (default: `2400`)
+- `atOnce` process at most this many instances per run, `0` for no limit (default: `0`)
+- `server_ids` optional comma separated list of server ids to limit the run to, omit for all servers
+
+Usage: `./yii cron/instances [pfonly] [expired_ago] [atOnce] [server_ids]`
+
+Example, process only instances on servers 3, 7 and 12: `./yii cron/instances 0 2400 0 3,7,12`
+
+Without `server_ids` the lock file is `/tmp/cron-instances.lock`. Each server list gets its own lock file (eg. `/tmp/cron-instances-3_7_12.lock`) so several lists can run in parallel. Note that PF table syncing at the end of each run still covers all instances.
 
 ## InstancePf
 Process instance specific packet filter rules. This allows syncing of packet filter rules in setups with multiple VPN servers.
