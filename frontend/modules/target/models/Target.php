@@ -198,6 +198,8 @@ class Target extends TargetAR
       }
 
       return \yii\helpers\Html::tag('abbr', long2ip(Yii::$app->user->identity->instance->ip), ['style' => 'padding-top: 10px; padding-bottom: 10px', "class" => 'text-danger', 'data-toggle' => 'tooltip', 'title' => $msg]);
+    } elseif ($this->on_ondemand && \app\modules\target\Module::instancesOnly()) {
+      return \yii\helpers\Html::tag('abbr', '0.0.0.0', ['style' => 'padding-top: 10px; padding-bottom: 10px', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', "Spawn a private instance of this target to get an IP.")]);
     } elseif ($this->on_ondemand && $this->ondemand_state === -1) {
       return \yii\helpers\Html::tag('abbr', '0.0.0.0', ['style' => 'padding-top: 10px; padding-bottom: 10px', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', "System currently powered down. Go to the target page to power it up.")]);
     }
@@ -211,7 +213,7 @@ class Target extends TargetAR
   {
     if (Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id === $this->id) {
       return long2ip(Yii::$app->user->identity->instance->ip);
-    } elseif ($this->on_ondemand && $this->ondemand_state === -1) {
+    } elseif ($this->on_ondemand && ($this->ondemand_state === -1 || \app\modules\target\Module::instancesOnly())) {
       return $this->name;
     }
     return $this->ipoctet;

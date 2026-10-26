@@ -82,6 +82,9 @@ class DefaultController extends \app\components\BaseController
             'verbs' => ['POST'],
             'roles' => ['@'],
             'matchCallback' => function () {
+              // Instances only mode allows every player to spawn/shut instances
+              if (\app\modules\target\Module::instancesOnly())
+                return false;
               // If subscriptions are loaded
               if (array_key_exists('subscription', Yii::$app->modules) !== false) {
                 $subscription = Yii::$app->getModule('subscription');
@@ -266,7 +269,7 @@ class DefaultController extends \app\components\BaseController
     if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id == $id) {
       $obj->ip = long2ip(Yii::$app->user->identity->instance->ip);
       $obj->instance = true;
-    } else if (($target->on_ondemand === false) || ($target->on_ondemand && $target->ondemand_state == 1)) {
+    } else if (($target->on_ondemand === false) || ($target->on_ondemand && $target->ondemand_state == 1 && !\app\modules\target\Module::instancesOnly())) {
       $obj->ip = long2ip($target->ip);
     } else
       $obj->ip = long2ip(0);

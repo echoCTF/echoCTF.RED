@@ -112,7 +112,7 @@ class SpinQueue extends \yii\db\ActiveRecord
 
     Yii::$app->getModule('target')->checkNetwork($target);
 
-    if (Yii::$app->sys->disable_ondemand_operations || $target->spinable !== true) {
+    if (\app\modules\target\Module::ondemandDisabled() || $target->spinable !== true) {
       throw new NotFoundHttpException(Yii::t('app', 'Not allowed to spin target. Target cannot be spun.'));
     }
 

@@ -39,6 +39,8 @@ class Target extends \app\modules\target\models\Target
     $this->total_treasures = count($this->treasures);
     if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id == $this->id)
       $this->ip = long2ip(Yii::$app->user->identity->instance->ip);
+    else if ($this->ondemand && \app\modules\target\Module::instancesOnly())
+      $this->ip = long2ip(0);
     else if ($this->ondemand && $this->ondemand->state == 1)
       $this->ip = long2ip($this->ip);
     else if ($this->ondemand && $this->ondemand->state != 1)
