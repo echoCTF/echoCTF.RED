@@ -9,6 +9,7 @@ use Yii;
  *
  * @property int $player_id
  * @property int $target_id
+ * @property int $cost points paid on activation, 0 for legacy activations that halve remaining points
  * @property string|null $created_at
  *
  * @property Player $player
@@ -31,7 +32,8 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
     {
         return [
             [['player_id', 'target_id'], 'required'],
-            [['player_id', 'target_id'], 'integer'],
+            [['player_id', 'target_id', 'cost'], 'integer'],
+            [['cost'], 'default', 'value' => 0],
             [['created_at'], 'safe'],
             [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -47,6 +49,7 @@ class PlayerTargetHelp extends \yii\db\ActiveRecord
         return [
             'player_id' => 'Player ID',
             'target_id' => 'Target ID',
+            'cost' => 'Cost',
             'created_at' => 'Created At',
         ];
     }
