@@ -43,6 +43,11 @@ class ProfileLink extends \yii\bootstrap5\Widget
    */
   public function run()
   {
+    // Fast path: callers that already know both ids skip the lookup.
+    if ($this->profile_id && $this->player_id && $this->username) {
+      return $this->renderLinks($this->profile_id, $this->player_id);
+    }
+
     $params = [];
     $query = Profile::find()->joinWith('owner');
     if ($this->email) {
@@ -65,14 +70,22 @@ class ProfileLink extends \yii\bootstrap5\Widget
     if (($model = $query->one()) === null) {
       throw new \yii\base\InvalidConfigException('ProfileLink widget no player profile found.');
     }
+    return $this->renderLinks($model->id, $model->player_id);
+  }
+
+  /**
+   * Renders the profile link and, when requested, the action links.
+   */
+  protected function renderLinks($profile_id, $player_id)
+  {
     $links[] = \yii\helpers\Html::a(
       $this->username,
-      ['/frontend/profile/view-full', 'id' => $model->id],
+      ['/frontend/profile/view-full', 'id' => $profile_id],
       ['target' => '_blank',]
     );
     $links[] = \yii\helpers\Html::a(
       '<i class="bi bi-trash"></i>',
-      ['/frontend/player/delete', 'id' => $model->player_id],
+      ['/frontend/player/delete', 'id' => $player_id],
       [
         'title' => 'Delete this user',
         'data-pjax' => '0',

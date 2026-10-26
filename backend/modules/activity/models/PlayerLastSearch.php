@@ -68,25 +68,42 @@ class PlayerLastSearch extends PlayerLast
     }
 
     public function searchDuplicateSignupIps($params){
-        $query=PlayerLast::find()->joinWith(['player']);
-        $query->select(['player_last.*',new \yii\db\Expression('count(*) as duplicates'),new \yii\db\Expression('group_concat(username order by player.id SEPARATOR ", ") as offenders') ]);
-        $query->where('signup_ip is not null');
-        $query->groupBy(['signup_ip']);
-        $query->having('duplicates>1');
-        //$query->orderBy('signup_ip');
-        $dataProvider=new ActiveDataProvider([
-            'query' => $query,
-        ]);
+        // Do not eager load the player relation, the grouped rows only need
+        // the aggregated columns and eager loading costs an extra query.
+        $query=PlayerLast::find()->joinWith(['player'], false);
+        $query->where(['not', ['player_last.signup_ip' => null]]);
+        $query->groupBy(['player_last.signup_ip']);
+        $query->having(new \yii\db\Expression('COUNT(*)>1'));
 
         $this->load($params);
-
-        if(!$this->validate())
+        if($this->validate())
         {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
-            return $dataProvider;
+            $this->queryFilters($query);
         }
-        $this->queryFilters($query);
+
+        // Count the groups with a lean subquery (signup_ip only, no
+        // GROUP_CONCAT and no profile join). The default count wraps the full
+        // select, which computes every GROUP_CONCAT just to count rows.
+        $countQuery=(clone $query)->select(['player_last.signup_ip'])->orderBy([]);
+        $totalCount=(int)(new \yii\db\Query())->from(['c' => $countQuery])->count('*', PlayerLast::getDb());
+
+        // Pull player and profile ids together with the usernames so the view
+        // can build links without one query per offender.
+        $query->leftJoin('profile', 'profile.player_id=player.id');
+        $query->select([
+            'player_last.signup_ip',
+            'duplicates' => new \yii\db\Expression('COUNT(*)'),
+            'offenders' => new \yii\db\Expression("GROUP_CONCAT(CONCAT_WS(':', player.id, IFNULL(profile.id, ''), player.username) ORDER BY player.id SEPARATOR '\\n')"),
+        ]);
+
+        // The default group_concat_max_len (1024) silently truncates long
+        // offender lists.
+        PlayerLast::getDb()->createCommand('SET SESSION group_concat_max_len = 1048576')->execute();
+
+        $dataProvider=new ActiveDataProvider([
+            'query' => $query,
+            'totalCount' => $totalCount,
+        ]);
         $this->dataProviderSort($dataProvider);
         $dataProvider->setSort([
             'attributes' => array_merge(

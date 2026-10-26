@@ -71,6 +71,23 @@ class DefaultController extends \app\components\BaseController
     ]);
   }
   /**
+   * Resolves the hostname of a single IP for the duplicate signup IPs page.
+   * Results are cached per IP since lookups can block for seconds.
+   */
+  public function actionReverseDns($ip)
+  {
+    \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    if (filter_var($ip, FILTER_VALIDATE_IP) === false) {
+      throw new \yii\web\BadRequestHttpException('Invalid IP address.');
+    }
+    $host = \Yii::$app->cache->getOrSet('rdns:' . $ip, function () use ($ip) {
+      $h = gethostbyaddr($ip);
+      return $h === false ? $ip : $h;
+    }, 86400);
+    return ['ip' => $ip, 'host' => $host];
+  }
+
+  /**
    * Check mails for known spam and disposable hosters.
    */
   public function actionCheckSpammy()
