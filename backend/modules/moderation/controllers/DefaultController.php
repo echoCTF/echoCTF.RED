@@ -15,6 +15,7 @@ use yii\base\UserException;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\data\ActiveDataProvider;
+use yii\filters\VerbFilter;
 
 class DefaultController extends \app\components\BaseController
 {
@@ -23,7 +24,15 @@ class DefaultController extends \app\components\BaseController
    */
   public function behaviors()
   {
-    return ArrayHelper::merge(parent::behaviors(), []);
+    return ArrayHelper::merge(parent::behaviors(), [
+      'verbs' => [
+        'class' => VerbFilter::class,
+        'actions' => [
+          'delete-filtered' => ['POST'],
+          'ban-filtered' => ['POST'],
+        ],
+      ],
+    ]);
   }
 
   /**
@@ -39,6 +48,56 @@ class DefaultController extends \app\components\BaseController
       'searchModel' => $searchModel,
       'dataProvider' => $dataProvider,
     ]);
+  }
+
+  /**
+   * Deletes the currently filtered writeup hoarders.
+   * @return mixed
+   */
+  public function actionDeleteFiltered()
+  {
+    $searchModel = new PlayerSearch();
+    $dataProvider = $searchModel->zeroPointWiteupsActivatedSearch(['PlayerSearch' => Yii::$app->request->post()]);
+    $dataProvider->pagination = false;
+
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $counter = 0;
+      foreach ($dataProvider->getModels() as $player)
+        if ($player->delete() !== false)
+          $counter++;
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Users deleted', ['counter' => $counter]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to delete users'));
+    }
+    return $this->redirect(['index']);
+  }
+
+  /**
+   * Deletes and bans the currently filtered writeup hoarders.
+   * @return mixed
+   */
+  public function actionBanFiltered()
+  {
+    $searchModel = new PlayerSearch();
+    $dataProvider = $searchModel->zeroPointWiteupsActivatedSearch(['PlayerSearch' => Yii::$app->request->post()]);
+    $dataProvider->pagination = false;
+
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $counter = 0;
+      foreach ($dataProvider->getModels() as $player)
+        if ($player->ban())
+          $counter++;
+      $trans->commit();
+      Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Users banned', ['counter' => $counter]));
+    } catch (\Exception $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to ban users'));
+    }
+    return $this->redirect(['index']);
   }
 
   /**

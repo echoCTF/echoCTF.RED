@@ -160,6 +160,33 @@ yii\bootstrap5\Modal::end();
           }
         ],
         'template' => '{player-view-full} {clear-vpn} {disconnect-vpn} {view} {generate-ssl} {update} {delete} {ban} {mail} {reset-activkey} {approve} {reject} {activate} {set-deleted}',
+        'header' => Html::a(
+          '<i class="bi bi-person-fill-exclamation"></i>',
+          ['ban-filtered'],
+          [
+            'title' => 'Mass Delete and ban users',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => Yii::$app->request->get('PlayerSearch', []),
+              'confirm' => 'Are you sure you want to delete and ban the currently filtered users?',
+            ],
+          ]
+        ) . ' ' . Html::a(
+          '<i class="bi bi-person-dash-fill"></i>',
+          ['delete-filtered'],
+          [
+            'title' => 'Mass Delete users',
+            'data-pjax' => '0',
+            'data-method' => 'POST',
+            'data' => [
+              'method' => 'post',
+              'params' => Yii::$app->request->get('PlayerSearch', []),
+              'confirm' => 'Are you sure you want to delete the currently filtered users?',
+            ],
+          ]
+        ),
         'buttons' => [
           'approve' => function ($url, $model) {
             return Html::a('<i class="fas fa-thumbs-up" style="font-size: 1.2em; vertical-align: -.01em;"></i>', ['/frontend/player/approve', 'id' => $model->id], [
