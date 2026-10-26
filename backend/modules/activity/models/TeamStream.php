@@ -77,7 +77,7 @@ class TeamStream extends TeamStreamAR
 
   public function getPlayer_target_helpMessage()
   {
-    return sprintf("%s activated writeups for [<code>%s</code>]", $this->getPrefix(false), Target::findOne(['id' => $this->model_id])->name);
+    return sprintf("%s activated writeups for [<code>%s</code>]%s", $this->getPrefix(false), Target::findOne(['id' => $this->model_id])->name, $this->suffix);
   }
 
   public function getAbuseMessage()
