@@ -31,6 +31,18 @@ $this->_fluid = "-fluid";
         'options' => ['tag' => false,],
         'itemOptions' => ['tag' => 'div','class'=>'col col-lg-4 col-md-6 col-sm-6 d-flex align-items-stretch'],
         'summary' => false,
+        'layout' => '{items}<div class="col-12 d-flex justify-content-center">{pager}</div>',
+        'pager' => [
+          'class' => 'yii\bootstrap4\LinkPager',
+          'options' => ['id' => 'team-pager'],
+          'linkOptions' => ['class' => ['page-link'], 'aria-label' => 'Pager link'],
+          'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
+          'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
+          'maxButtonCount' => 3,
+          'disableCurrentPageButton' => true,
+          'prevPageLabel' => '<i class="fas fa-chevron-left"></i>',
+          'nextPageLabel' => '<i class="fas fa-chevron-right"></i>',
+        ],
         'itemView' => '_team_card',
         'viewParams' => ['invite' => false,'listing'=>true],
       ]);

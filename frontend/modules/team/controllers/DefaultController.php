@@ -265,7 +265,9 @@ class DefaultController extends \app\components\BaseController
 
     $dataProvider = new ActiveDataProvider([
       'query' => $baseq->joinWith(['teamPlayers'])->with(['score', 'owner.profile.owner'])->groupBy(['team.id'])->orderBy(['name' => SORT_ASC]),
-      'pagination' => false,
+      'pagination' => [
+        'pageSize' => 12,
+      ],
     ]);
 
     return $this->render('index', [
