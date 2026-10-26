@@ -461,6 +461,18 @@
     tags:
       - nginx
 
+  - name: Create modsecurity-exclusions-before-crs.conf
+    when: modsecurity is defined
+    copy:
+      dest: /etc/nginx/modsecurity-exclusions-before-crs.conf
+      content: |
+        # Never deny flag or credential submissions. Attack rules still match and log,
+        # only the CRS blocking evaluation rules are removed for these routes.
+        SecRule REQUEST_FILENAME "@rx ^/(?:claim|api/target/claim|login|register|reset-password|profile/settings)/?$" \
+            "id:10001,phase:1,pass,nolog,ctl:ruleRemoveById=949110,ctl:ruleRemoveById=949111,ctl:ruleRemoveById=959100,ctl:ruleRemoveById=959101"
+    tags:
+      - nginx
+
   - name: Create modsecurity-includes.conf
     when: modsecurity is defined
     copy:
@@ -468,6 +480,7 @@
       content: |
         Include /etc/nginx/modsecurity.conf
         Include /etc/nginx/crs-setup.conf
+        Include /etc/nginx/modsecurity-exclusions-before-crs.conf
         Include /etc/nginx/rules/*.conf
     tags:
       - nginx
