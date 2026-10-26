@@ -144,7 +144,8 @@ class CronController extends Controller
     $server = gethostbyaddr(gethostbyname(gethostname()));
     $pools = Openvpn::find()->where(['server' => $server])->all();
     if (!$pools) {
-      echo date("Y-m-d H:i:s ") . "No openvpn networks registered for ", $server, " (run vpn/load), processing all players\n";
+      if (getenv('DEBUG', true) !== false)
+        echo date("Y-m-d H:i:s ") . "No openvpn networks registered for ", $server, " (run vpn/load), processing all players\n";
       return null;
     }
     $q = PlayerLast::find()->select('id')->where(['IS NOT', 'vpn_local_address', null]);
@@ -223,7 +224,8 @@ class CronController extends Controller
         case SELF::ACTION_RESTART:
           list($isLocal, $ips) = $this->instanceClients($val, $local);
           if (!$isLocal) {
-            echo 'not a local instance, skipping: ', $val->target->name . '_' . $val->player_id, "\n";
+            if (getenv('DEBUG', true) !== false)
+              echo 'not a local instance, skipping: ', $val->target->name . '_' . $val->player_id, "\n";
             break;
           }
           if ($ips) {
