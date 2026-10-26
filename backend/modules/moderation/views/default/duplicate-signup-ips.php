@@ -14,6 +14,17 @@ $this->params['breadcrumbs'][] = ['label' => ucfirst(Yii::$app->controller->modu
 $this->params['breadcrumbs'][] = ['label' => ucfirst(Yii::$app->controller->id), 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => "Duplicate Signup IPs", 'url' => ['duplicate-signup-ips']];
 ?>
+<?php
+$rdnsUrl = \yii\helpers\Json::htmlEncode(\yii\helpers\Url::to(['reverse-dns']));
+$this->registerJs(<<<JS
+$(document).on('mouseenter', 'abbr.rdns:not([data-resolved])', function () {
+  var el = $(this).attr('data-resolved', '1').attr('title', 'Resolving...');
+  $.getJSON($rdnsUrl, {ip: el.data('ip')})
+    .done(function (r) { el.attr('title', r.host); })
+    .fail(function () { el.attr('title', 'Lookup failed').removeAttr('data-resolved'); });
+});
+JS);
+?>
 <div class="stream-index">
 
   <h1><?= Html::encode($this->title) ?></h1>
@@ -30,7 +41,12 @@ $this->params['breadcrumbs'][] = ['label' => "Duplicate Signup IPs", 'url' => ['
         'attribute' => 'signup_ip',
         'format'=>'raw',
         'value' => function ($model) {
-          return $model->signup_ip === NULL ? null : '<abbr title="'.gethostbyaddr(long2ip($model->signup_ip)).'">'.long2ip($model->signup_ip)."</abbr>";
+          if ($model->signup_ip === NULL)
+            return null;
+          $ip = long2ip($model->signup_ip);
+          // The hostname is resolved on hover (see reverse-dns action) so a
+          // slow or failing DNS lookup never blocks rendering the page.
+          return Html::tag('abbr', $ip, ['class' => 'rdns', 'data-ip' => $ip, 'title' => 'Hover to resolve']);
         },
         'headerOptions' => ['style' => 'width: 160px'],
       ],
@@ -44,10 +60,20 @@ $this->params['breadcrumbs'][] = ['label' => "Duplicate Signup IPs", 'url' => ['
         'format' => 'html',
         'value' => function ($model) {
           $links = [];
-          foreach (explode(", ", $model->offenders) as $p) {
+          foreach (explode("\n", (string)$model->offenders) as $entry) {
+            $parts = explode(':', $entry, 3);
+            if (count($parts) !== 3)
+              continue; // truncated entry
+            [$player_id, $profile_id, $username] = $parts;
+            if ($profile_id === '') {
+              $links[] = Html::encode($username);
+              continue;
+            }
             $links[] = ProfileLink::widget([
-              'username' => trim($p),
-              'actions'=>true
+              'username' => $username,
+              'player_id' => $player_id,
+              'profile_id' => $profile_id,
+              'actions' => true
             ]);
           }
           return implode(", ", $links);
