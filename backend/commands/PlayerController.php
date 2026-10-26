@@ -203,7 +203,7 @@ class PlayerController extends Controller
       $player->email = trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $email));
       $player->fullname = trim(str_replace(array("\xc2\xa0", "\r\n", "\r"), "", $fullname));
       $player->type = $player_type;
-      if ($password === "")
+      if ($password === "" || $password === false)
         $password = $player->genPassword(false);
 
       $player->password = Yii::$app->security->generatePasswordHash($password);

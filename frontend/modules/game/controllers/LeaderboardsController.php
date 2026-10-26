@@ -127,7 +127,7 @@ class LeaderboardsController extends \app\components\BaseController
     ]);
 
     $mostWriteupsDataProvider = new ActiveDataProvider([
-      'query' => \app\modules\target\models\Writeup::find()->totals()->with(['player.profile.owner'])->cache(60),
+      'query' => \app\modules\target\models\Writeup::find()->totals()->academic($academic)->with(['player.profile.owner'])->cache(60),
       'pagination' => [
         'pageSizeParam' => 'writeupsMost-perpage',
         'pageParam' => 'writeupsMost-page',

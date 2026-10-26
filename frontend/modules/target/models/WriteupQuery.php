@@ -19,6 +19,11 @@ class WriteupQuery extends \yii\db\ActiveQuery
     return $this->joinWith('player')->andWhere(['player.status' => \app\models\Player::STATUS_ACTIVE]);
   }
 
+  public function academic($academic = 0)
+  {
+    return $this->andWhere(['player.academic' => $academic]);
+  }
+
   public function totals()
   {
     return $this->addSelect(['writeup.*', 'COUNT(*) AS cnt'])->approved()->active()->groupBy(['player_id'])->orderBy(['cnt' => SORT_DESC, 'player_id' => SORT_ASC]);
