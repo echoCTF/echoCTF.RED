@@ -22,7 +22,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
         'options' => ['placeholder' => 'Find player by email, username, id or profile.']
     ])->hint('The player that the finding will be given.');  ?>
 
-    <?= $form->field($model, 'finding_id')->dropDownList(ArrayHelper::map(Finding::find()->joinWith('target')->orderBy(['target.name'=>SORT_ASC])->all(), 'id', 'name', 'target.name'), ['prompt'=>'Select finding']) ?>
+    <?= $form->field($model, 'finding_id')->dropDownList(ArrayHelper::map(Finding::find()->joinWith('target')->orderBy(['target.name'=>SORT_ASC, 'finding.name'=>SORT_ASC])->all(), 'id', function($finding) { return ($finding->target ? $finding->target->name.': ' : '').$finding->name; }), ['prompt'=>'Select finding']) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
