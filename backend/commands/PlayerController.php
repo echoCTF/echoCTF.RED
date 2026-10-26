@@ -218,7 +218,9 @@ class PlayerController extends Controller
       }
 
       if ((!$player->active || $player->status === 9) && intval(\Yii::$app->sys->disable_mailer) == 0) {
-        $player->generateEmailVerificationToken();
+        if ($player->generateEmailVerificationToken() === false) {
+          throw new ConsoleException('Failed to generate verification token for player:' . $player->username . "\n");
+        }
       }
 
       $player->createTeam($team_name, $approved);

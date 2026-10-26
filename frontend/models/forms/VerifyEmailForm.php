@@ -59,7 +59,8 @@ class VerifyEmailForm extends Model
             $player->trigger(Player::NEW_PLAYER);
             $player->genAvatar();
             $player->profile->genBadge();
-            $player->profile->last->signin_ip=ip2long(\Yii::$app->request->userIp);
+            $ip=ip2long(\Yii::$app->request->userIp);
+            $player->profile->last->signin_ip=$ip===false ? null : $ip;
             $player->profile->last->save();
           }
           return $this->_player;

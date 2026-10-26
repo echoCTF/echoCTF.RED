@@ -221,6 +221,9 @@ class SiteController extends \app\components\BaseController
         }
         if (($player = $model->signup()) !== null) {
           $transaction->commit();
+          $mc = \Yii::$app->cache->memcache;
+          if (!$mc->add('registeredip:' . \Yii::$app->request->userIp, 1, 3600))
+            $mc->increment('registeredip:' . \Yii::$app->request->userIp);
           if (Yii::$app->sys->require_activation === true) {
             Yii::$app->session->setFlash('success', \Yii::t('app', 'Thank you for registering. Please check your inbox for the verification email. <small>Make sure you also check the spam or junk folders.</small>'));
           } elseif (Yii::$app->user->login($player)) {

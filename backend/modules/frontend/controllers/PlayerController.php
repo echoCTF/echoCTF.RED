@@ -195,20 +195,25 @@ class PlayerController extends \app\components\BaseController
   public function actionCreate()
   {
     $model = new Player();
-    $trans = Yii::$app->db->beginTransaction();
-    try {
-      $model->scenario = "create";
-      if ($model->load(Yii::$app->request->post()) && $model->save()) {
-        $playerSsl = new PlayerSsl();
-        $playerSsl->player_id = $model->id;
-        $playerSsl->generate();
-        $playerSsl->save();
-        $trans->commit();
-        return $this->redirect(['view', 'id' => $model->id]);
+    $model->scenario = "create";
+    if ($model->load(Yii::$app->request->post())) {
+      $trans = Yii::$app->db->beginTransaction();
+      try {
+        if ($model->save()) {
+          $playerSsl = new PlayerSsl();
+          $playerSsl->player_id = $model->id;
+          $playerSsl->generate();
+          if (!$playerSsl->save()) {
+            throw new \Exception(implode(", ", $playerSsl->getErrorSummary(true)));
+          }
+          $trans->commit();
+          return $this->redirect(['view', 'id' => $model->id]);
+        }
+        $trans->rollBack();
+      } catch (\Throwable $e) {
+        $trans->rollBack();
+        \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to create player. {exception}', ['exception' => Html::encode($e->getMessage())]));
       }
-    } catch (\Exception $e) {
-      $trans->rollBack();
-      \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to create player. {exception}', ['attribute' => Html::encode($e->getMessage())]));
     }
     return $this->render('create', [
       'model' => $model,

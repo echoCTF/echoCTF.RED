@@ -210,8 +210,9 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
       $model->type = 'email_verification';
       $model->expires_at = \Yii::$app->formatter->asDatetime(new \DateTime('NOW + ' . $validity), 'php:Y-m-d H:i:s');
       $model->token = str_replace('_', '-', Yii::$app->security->generateRandomString(30));
-      $model->save();
+      return $model->save();
     }
+    return true;
   }
 
   /**
@@ -450,7 +451,7 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
       else {
         echo Yii::t('app', "The user has been mailed."), "\n";
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::error($e->getMessage());
       if (Yii::$app instanceof \yii\web\Application)
         \Yii::$app->session->setFlash('notice', Yii::t('app', "Failed to send mail to user."));

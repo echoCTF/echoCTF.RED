@@ -28,9 +28,9 @@ class PlayerRelation extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['player_id'], 'required'],
+            [['player_id', 'referred_id'], 'required'],
             [['player_id', 'referred_id'], 'integer'],
-            [['player_id'], 'unique'],
+            [['referred_id'], 'unique'],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
         ];
     }
