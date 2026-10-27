@@ -76,7 +76,7 @@ class TargetInstanceAR extends \yii\db\ActiveRecord
       ['reboot', 'in', 'range' => [0, 1, 2]],
       [['team_allowed'], 'boolean',],
       [['created_at', 'updated_at'], 'safe'],
-      [['player_id'], 'unique'],
+      [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
       [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
       [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
     ];
