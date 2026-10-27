@@ -66,7 +66,7 @@ $config = [
       ],
     ],
     'session' => [
-      'class' => 'yii\web\DbSession',
+      'class' => 'app\components\LazyDbSession',
       'timeout' => 3600 * 1,
       'sessionTable' => 'muisess',
     ],
