@@ -52,6 +52,7 @@ class ConfigureForm extends Model
   public $mail_useFileTransport;
   public $online_timeout;
   public $spins_per_day;
+  public $max_target_instances;
   public $leaderboard_visible_before_event_start;
   public $leaderboard_visible_after_event_end;
   public $leaderboard_show_zero;
@@ -217,6 +218,7 @@ class ConfigureForm extends Model
     'mail_verify_peer_name',
     'online_timeout',
     'spins_per_day',
+    'max_target_instances',
     'team_manage_members',
     'leaderboard_visible_before_event_start',
     'leaderboard_visible_after_event_end',
@@ -509,6 +511,7 @@ class ConfigureForm extends Model
       [[
         'online_timeout',
         'spins_per_day',
+        'max_target_instances',
         'members_per_team',
         'target_days_new',
         'target_days_updated',
@@ -540,6 +543,8 @@ class ConfigureForm extends Model
       ], 'integer'],
       [['online_timeout'], 'default', 'value' => 900],
       [['spins_per_day'], 'default', 'value' => 2],
+      ['max_target_instances', 'integer', 'min' => 1],
+      ['max_target_instances', 'default', 'value' => 1],
       ['target_days_new', 'default', 'value' => 1],
       ['target_days_updated', 'default', 'value' => 0],
       [['event_start', 'event_end', 'registrations_start', 'registrations_end'], 'datetime', 'format' => 'php:Y-m-d H:i:s'],
@@ -650,6 +655,7 @@ class ConfigureForm extends Model
       'mail_verify_peer_name' => 'Mail verify peer name',
       'online_timeout' => 'Timeout for user online key to expire',
       'spins_per_day' => 'Spins allowed per day',
+      'max_target_instances' => 'Max target instances',
       'leaderboard_visible_before_event_start' => 'Leaderboard visible before start',
       'leaderboard_visible_after_event_end' => 'Leaderboard visible after end',
       'leaderboard_show_zero' => 'Leaderboard show zero points',
