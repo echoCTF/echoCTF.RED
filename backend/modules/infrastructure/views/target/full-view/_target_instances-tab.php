@@ -37,6 +37,7 @@ Pjax::begin(['id' => 'instances-tabPJ', 'enablePushState' => false, 'enableRepla
     'team_allowed:boolean',
     [
       'class' => 'yii\grid\ActionColumn',
+      'controller' => '/infrastructure/target-instance',
       'template' => '{restart} {destroy} {view} {update} {delete}',
       'contentOptions' => ['style' => 'white-space: nowrap;'],
       'buttons' => [
