@@ -11,7 +11,7 @@ class PlayerSpinQuery extends \yii\db\ActiveQuery
 {
     public function todays()
     {
-        return $this->select(['player_id', 'total', 'perday',"if(DATE(updated_at) < DATE(NOW()),0,counter) as counter", 'updated_at']);
+        return $this->select(['player_id', 'total', 'perday', 'max_instances',"if(DATE(updated_at) < DATE(NOW()),0,counter) as counter", 'updated_at']);
     }
 
     /**
