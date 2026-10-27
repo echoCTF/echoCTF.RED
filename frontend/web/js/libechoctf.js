@@ -122,6 +122,7 @@ $(document).on('click', '.copy-to-clipboard', function (e) {
 });
 
 jQuery(document).ready(function () {
+  initTargetCountdown();
 
   $(".card-nav-tabs .nav-tabs .nav-item:nth-of-type(1) .nav-link").addClass('active');
   $(".tab-content .tab-pane:nth-of-type(1)").addClass('active');
@@ -187,68 +188,74 @@ var notifTimeout;
 var targetTimeout;
 var intervalTimeout = 5000;
 
+/**
+ * Refresh everything on the page that depends on the state of a target
+ * (IP, card actions, on-demand status). Called when the backend publishes a
+ * "target" websocket event (instance started/restarted/destroyed, on-demand
+ * target powered up/down). The HTML fragments are rendered by /target/<id>/ip.
+ */
 function targetUpdates(id) {
-  var targetEl = document.getElementById("target_id_" + id);
-  if (targetEl == null) return;
-  var request = new XMLHttpRequest();
-  request.open("GET", `/target/${id}/ip`);
-  request.setRequestHeader('X-Requested-With', 'XMLHttpRequest')
-  request.send();
-  request.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      jsonObj = JSON.parse(this.responseText);
-      if (targetEl.children[0].innerHTML != jsonObj.ip) {
-        if (jsonObj.instance) {
-          if (jsonObj.ip == '0.0.0.0') {
-            el = document.createElement("b");
-            el.innerHTML = jsonObj.ip;
-            el.className = "text-danger";
-            el.setAttribute("data-toggle", "tooltip");
-            el.setAttribute("title", "The IP of your private instance will become visible once its powered up.");
-            $(targetEl.children[0]).tooltip('dispose');
-            targetEl.innerHTML = '';
-            targetEl.appendChild(el);
-          }
-          else {
-            el = document.createElement("a");
-            el.innerHTML = jsonObj.ip;
-            el.href = jsonObj.ip;
-            el.className = "copy-to-clipboard text-danger text-bold";
-            el.setAttribute("swal-data", "Copied to clipboard");
-            el.setAttribute("data-toggle", "tooltip");
-            el.setAttribute("title", "The IP of your private instance. Click to copy IP to clipboard.");
-            $(targetEl.children[0]).tooltip('dispose');
-            targetEl.innerHTML = '';
-            targetEl.appendChild(el);
-          }
-        }
-        else {
-          if (jsonObj.ip == '0.0.0.0') {
-            el = document.createElement("b");
-            el.setAttribute("data-toggle", "tooltip");
-            el.setAttribute("title", "The IP will be visible once the system is powered up.");
-            el.innerHTML = jsonObj.ip;
-            $(targetEl.children[0]).tooltip('dispose');
-            targetEl.innerHTML = '';
-            targetEl.appendChild(el);
-          }
-          else {
-            el = document.createElement("a");
-            el.innerHTML = jsonObj.ip;
-            el.href = jsonObj.ip;
-            el.className = "copy-to-clipboard text-dark text-bold";
-            el.setAttribute("swal-data", "Copied to clipboard");
-            el.setAttribute("data-toggle", "tooltip");
-            el.setAttribute("title", "The IP of the target. Click to copy IP to clipboard.");
-            $(targetEl.children[0]).tooltip('dispose');
-            targetEl.innerHTML = '';
-            targetEl.appendChild(el);
-          }
-        }
-      }
-    }
-  }
+  var cardEl = document.getElementById("target-card-" + id);
+  var statusEl = document.getElementById("target-ondemand-status-" + id);
+  var legacyEl = document.getElementById("target_id_" + id);
+  var ipEls = document.querySelectorAll('.target-ip[data-target-id="' + id + '"]');
+  if (!cardEl && !statusEl && !legacyEl && ipEls.length === 0) return;
 
+  $.ajax({
+    url: "/target/" + id + "/ip",
+    dataType: "json",
+    cache: false,
+    headers: { "X-Requested-With": "XMLHttpRequest" }
+  }).done(function (data) {
+    // close tooltips of the elements we are about to replace, so none stay stuck on screen
+    var replaceHtml = function (el, html) {
+      if (!el || typeof html !== "string") return;
+      $(el).find('[data-toggle="tooltip"]').tooltip("dispose");
+      el.innerHTML = html;
+    };
+
+    if (cardEl) {
+      replaceHtml(cardEl, data.card);
+    } else if (legacyEl) {
+      // pages that show the card but cannot swap it (eg. writeups), only refresh the IP
+      replaceHtml(legacyEl, data.cardIp);
+    }
+    ipEls.forEach(function (el) { replaceHtml(el, data.ipHtml); });
+    if (statusEl) {
+      replaceHtml(statusEl, data.status);
+      initTargetCountdown();
+    }
+  });
+}
+
+var targetCountdownTimer = null;
+/**
+ * Start (or restart) the countdown of an on-demand target that is powered up.
+ * Looks for <code id="tcountdown" data="<seconds left>" data-expired-text="...">
+ */
+function initTargetCountdown() {
+  if (targetCountdownTimer) {
+    clearInterval(targetCountdownTimer);
+    targetCountdownTimer = null;
+  }
+  var el = document.getElementById("tcountdown");
+  if (!el) return;
+  var distance = parseInt(el.getAttribute("data"), 10);
+  var expiredText = el.getAttribute("data-expired-text") || "system will shutdown soon!";
+  var tick = function () {
+    if (isNaN(distance) || distance < 0) {
+      el.innerHTML = expiredText;
+      clearInterval(targetCountdownTimer);
+      targetCountdownTimer = null;
+      return;
+    }
+    var minutes = Math.floor((distance % (60 * 60)) / 60);
+    var seconds = Math.floor(distance % 60);
+    el.innerHTML = minutes + "m " + seconds + "s ";
+    distance--;
+  };
+  tick();
+  targetCountdownTimer = setInterval(tick, 1000);
 }
 
 function apiNotifications() {

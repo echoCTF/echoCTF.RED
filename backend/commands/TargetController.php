@@ -194,6 +194,8 @@ class TargetController extends Controller
         if ($dopf !== false)
           Pf::del_table_ip('heartbeat', $ondemand->target->ipoctet);
         $ondemand->save();
+        // refresh the page of the player that powered it up
+        \app\services\ServerPublisher::targetUpdated($ondemand->player_id, $ondemand->target_id);
       }
     } catch (\Exception $e) {
       echo "OnDemand:", $e->getMessage(), "\n";

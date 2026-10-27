@@ -402,8 +402,7 @@ class CronController extends Controller
         }
         unset($dc);
         usleep(200);
-        $publisher = new \app\services\ServerPublisher(\Yii::$app->params['serverPublisher']);
-        $publisher->publish($val->player_id, 'target', ['id' => $val->target_id]);
+        \app\services\ServerPublisher::targetUpdated($val->player_id, $val->target_id);
       } // end foreach
       $this->actionInstancePfTables(true);
 
@@ -466,7 +465,14 @@ class CronController extends Controller
     $transaction = \Yii::$app->db->beginTransaction();
     try {
       $query = SpinQueue::find();
+      $instancesOnly = \Yii::$app->sys->instances_only === true;
       foreach ($query->all() as $t) {
+        // Instances only mode: on-demand targets are not powered up, drop the request
+        if ($instancesOnly && $t->target->ondemand) {
+          printf("Dropping queue [%s] by [%s], on-demand disabled (instances_only)\n", $t->target->name, $t->player->username);
+          $t->delete();
+          continue;
+        }
         printf("Processing queue [%s] on docker [%s]", $t->target->name, $t->target->server);
         printf(" by [%s] on %s", $t->player->username, $t->created_at);
 
@@ -483,6 +489,7 @@ class CronController extends Controller
             $notifTitle = sprintf("Target [%s] restart request completed", $t->target->name);
           }
           $t->player->notify("info", $notifTitle, sprintf("<p>Target [<b><code>%s</code></b>] got rebooted.<br/>Have fun</p>", $t->target->name));
+          \app\services\ServerPublisher::targetUpdated($t->player_id, $t->target_id);
           $t->delete();
           echo " OK\n";
         } catch (\Exception $ce) {
@@ -551,6 +558,9 @@ class CronController extends Controller
             ]
           ]
         );
+      // Instances only mode: on-demand support is off, shut every powered up on-demand target
+      if (\Yii::$app->sys->instances_only === true)
+        $demands = \app\modules\gameplay\models\TargetOndemand::find()->andWhere(['state' => 1]);
 
       foreach ($demands->all() as $ondemand) {
         printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
@@ -559,6 +569,8 @@ class CronController extends Controller
         $ondemand->heartbeat = null;
         Pf::del_table_ip('heartbeat', $ondemand->target->ipoctet);
         $ondemand->save();
+        // refresh the page of the player that powered it up
+        \app\services\ServerPublisher::targetUpdated($ondemand->player_id, $ondemand->target_id);
       }
     } catch (\Exception $e) {
       echo "OnDemand:", $e->getMessage(), "\n";

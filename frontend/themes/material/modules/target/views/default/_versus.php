@@ -43,7 +43,7 @@ $this->registerCssFile('@web/assets/hljs/styles/a11y-dark.min.css',['depends' =>
 
 ?>
 <div class="row">
-  <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 target-card">
+  <div class="col-xl-4 col-lg-5 col-md-5 col-sm-12 target-card"<?php if ($identity->isMine): ?> id="target-card-<?= $target->id ?>"<?php endif; ?>>
     <?= $this->render('_target_card', ['target' => $target, 'spinlink' => $spinlink, 'target_actions' => $target_actions, 'identity' => $identity]); ?>
   </div>
   <div class="col-xl-4 col-lg-2 col-md-2 col-sm-12 text-center">

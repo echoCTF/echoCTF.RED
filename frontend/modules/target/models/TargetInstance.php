@@ -141,7 +141,7 @@ class TargetInstance extends \yii\db\ActiveRecord
     if (!$target->instance_allowed) {
       throw new HttpException(403, Yii::t('app', 'Target not allowed to spawn private instances!'));
     }
-    if ($player->isVip !== true && Yii::$app->sys->all_players_vip !== true) {
+    if (!\app\modules\target\Module::canSpawnInstances($player)) {
       throw new HttpException(403, Yii::t('app', 'You are not allowed to spawn private instances!'));
     }
     if (intval($playerSpin->counter) >= intval($playerSpin->perday)) {

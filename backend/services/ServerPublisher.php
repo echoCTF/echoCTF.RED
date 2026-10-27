@@ -89,6 +89,29 @@ class ServerPublisher
   }
 
   /**
+   * Tell a player's browser that the state of a target changed (instance or
+   * on-demand power state), so the page refreshes the target IP and card.
+   * Never throws: a failed publish must not interrupt the caller (eg. cron loops).
+   *
+   * @param int|null $playerId
+   * @param int      $targetId
+   * @return bool true when the event was published
+   */
+  public static function targetUpdated($playerId, $targetId): bool
+  {
+    if (empty($playerId) || empty($targetId)) {
+      return false;
+    }
+    try {
+      (new self(Yii::$app->params['serverPublisher']))->publish((string) $playerId, 'target', ['id' => (int) $targetId]);
+      return true;
+    } catch (\Throwable $e) {
+      Yii::error('Failed to publish target update: ' . $e->getMessage(), __METHOD__);
+      return false;
+    }
+  }
+
+  /**
    * Publish an event to the remote server.
    *
    * @param string $playerId

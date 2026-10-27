@@ -115,6 +115,7 @@ class ConfigureForm extends Model
   public $pflog_min, $pflog_max;
   public $dashboard_graph_visible;
   public $disable_ondemand_operations;
+  public $instances_only;
   public $maintenance;
   public $maintenance_notification;
   public $force_findings_to_claim;
@@ -279,6 +280,7 @@ class ConfigureForm extends Model
     'stripe_webhookLocalEndpoint',
     'dashboard_graph_visible',
     'disable_ondemand_operations',
+    'instances_only',
     'maintenance',
     'maintenance_notification',
     'force_findings_to_claim',
@@ -587,6 +589,7 @@ class ConfigureForm extends Model
         'guest_visible_leaderboards',
         'dashboard_graph_visible',
         'disable_ondemand_operations',
+        'instances_only',
         'maintenance',
         'force_findings_to_claim',
         'disable_mail_validation',
@@ -687,6 +690,7 @@ class ConfigureForm extends Model
       'player_require_approval' => 'Players require approval',
       'player_require_identification' => 'Players require identification',
       'all_players_vip' => 'Give all players VIP status',
+      'instances_only' => 'Instances only',
       'vpn_ip_limit' => 'VPN connections per IP',
       'team_visible_instances' => 'Team instances',
       'target_hide_inactive' => 'Hide inactive targets',

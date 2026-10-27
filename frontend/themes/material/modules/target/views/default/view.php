@@ -13,28 +13,8 @@ Url::remember();
 
 <div class="target-index">
   <div class="body-content">
-<?php if(!Yii::$app->user->isGuest && !\Yii::$app->sys->disable_ondemand_operations):?>
-  <?php if($target->ondemand && $target->ondemand->state<0):?>
-    <div><p class="text-info"><?=\Yii::t('app','This target is currently powered off.')?> <?php if(Yii::$app->user->identity->profile->last->vpn_local_address===null):?><em><?=\Yii::t('app','Connect to the VPN to be allowed to power the system up.')?></em><?php endif;?></p></div>
-  <?php elseif($target->ondemand && $target->ondemand->state>0):?>
-    <div><p class="text-danger"><?=\Yii::t('app','The target will shutdown in')?> <code id="tcountdown" data="<?=$target->ondemand->expired?>"></code></p></div>
-    <?php $this->registerJs(
-    'var distance = $("#tcountdown").attr("data");
-    var tcountdown = setInterval(function() {
-      var minutes = Math.floor((distance % (60 * 60)) / ( 60));
-      var seconds = Math.floor((distance % (60)));
-      if (distance < 0) {
-        clearInterval(tcountdown);
-        document.getElementById("tcountdown").innerHTML = "'.\Yii::t('app','system will shutdown soon!').'";
-      }
-      else {
-        document.getElementById("tcountdown").innerHTML = '.\Yii::t('app','minutes + "m " + seconds + "s "').';
-        $("#tcountdown").attr("data",distance--);
-      }
-      }, 1000);',
-    4
-    );?>
-  <?php endif;?>
+<?php if(!Yii::$app->user->isGuest):?>
+<div id="target-ondemand-status-<?=$target->id?>"><?=$this->render('_ondemand_status',['target'=>$target])?></div>
 <?php endif;?>
 <?php if($target->status !== 'online'):?>
     <div><p class="text-warning"><code class="text-warning">Target <?php if ($target->scheduled_at!==null):?>scheduled for<?php endif;?> <b><?=$target->status?></b> <?php if ($target->scheduled_at!==null):?> <abbr title="<?=\Yii::$app->formatter->asDatetime($target->scheduled_at,'long')?>"><?=\Yii::$app->formatter->asRelativeTime($target->scheduled_at)?></abbr><?php endif;?></code></p></div>
