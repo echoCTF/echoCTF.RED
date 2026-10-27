@@ -300,11 +300,18 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     $this->syncMaxInstances($insert, $changedAttributes);
     if ($this->product)
       $metadata = json_decode($this->product->metadata);
+    $activeChanged = array_key_exists('active', $changedAttributes);
+    $wasActive = !$insert && intval($activeChanged ? $changedAttributes['active'] : $this->active) === 1;
+    $priceChanged = !$insert && array_key_exists('price_id', $changedAttributes) && (string) $changedAttributes['price_id'] !== (string) $this->price_id;
     if ($this->active == 1) {
-      if (isset($metadata->spins) && intval($metadata->spins) > 0) {
-        $this->player->playerSpin->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
-      } else {
-        $this->player->playerSpin->updateAttributes(['counter' => 0]);
+      // Only apply the spins when the subscription starts or changes plan, so
+      // that saving it again doesn't give a fresh counter or wipe extra spins
+      if (!$wasActive || $priceChanged) {
+        if (isset($metadata->spins) && intval($metadata->spins) > 0) {
+          $this->player->playerSpin->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
+        } else {
+          $this->player->playerSpin->updateAttributes(['counter' => 0]);
+        }
       }
 
       if (isset($metadata->badge_ids)) {
@@ -343,6 +350,11 @@ class PlayerSubscription extends \yii\db\ActiveRecord
       }
 
     } else { // subscription expired
+      // Take the subscription spins back once, when it stops being active
+      if ($wasActive && isset($metadata->spins) && intval($metadata->spins) > 0) {
+        $this->player->playerSpin->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
+      }
+
       if (isset($metadata->network_ids)) {
         foreach (explode(',', $metadata->network_ids) as $val) {
           if (($np = NetworkPlayer::findOne(['network_id' => $val, 'player_id' => $this->player_id])) !== null) {
@@ -374,7 +386,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           ['in', 'network_id', explode(',', $metadata->network_ids)]
         ]);
       }
-      if (isset($metadata->spins) && intval($metadata->spins) > 0) {
+      // Only reset the spins when the stored subscription is still active, so
+      // that calling cancel() on an ended subscription (eg. DeleteInactive) is harmless
+      if (intval($this->getOldAttribute('active')) === 1 && isset($metadata->spins) && intval($metadata->spins) > 0) {
         $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
       }
     }
