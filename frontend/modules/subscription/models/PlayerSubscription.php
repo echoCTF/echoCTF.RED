@@ -87,9 +87,10 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   {
     if ($this->product !== null) {
       $metadata = json_decode($this->product->metadata);
-      // Only take back the instances when the stored subscription is still
-      // active, so that calling cancel() more than once doesn't remove them twice
-      if (intval($this->getOldAttribute('active')) === 1) {
+      // Only take back instances and spins when the stored subscription is
+      // still active, so that calling cancel() more than once is harmless
+      $wasActive = intval($this->getOldAttribute('active')) === 1;
+      if ($wasActive) {
         PlayerSpin::adjustMaxInstances($this->player_id, -$this->maxInstancesBonus);
       }
       if (isset($metadata->network_ids)) {
@@ -99,7 +100,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           ['in', 'network_id', explode(',', $metadata->network_ids)]
         ]);
       }
-      if (isset($metadata->spins) && intval($metadata->spins) > 0) {
+      if ($wasActive && isset($metadata->spins) && intval($metadata->spins) > 0) {
         $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
       }
 
