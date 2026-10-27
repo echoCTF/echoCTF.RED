@@ -55,21 +55,15 @@ class TargetInstanceController extends \app\components\BaseController
       }
 
 
-      $webSocketStream = $docker->containerAttachWebsocket($target->name, [
-        'stream' => true,
-        'logs'   => true
-      ]);
-      $line = '';
-      while ($line !== false && $line !== null) {
-        $line = $webSocketStream->read();
-        $lines[] = $line;
-      }
-    } catch (\Exception $e) {
+      // Read the logs over the plain logs endpoint, attaching over a websocket
+      // fails on current docker versions
+      $logs = \app\modules\infrastructure\models\DockerContainer::fetchLogs($docker, $target->name);
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to fetch logs. <b>{exception}</b>', ['exception' => Html::encode($e->getMessage())]));
       return $this->redirect(['view', 'player_id' => $target->player_id, 'target_id' => $target->target_id]);
     }
     return $this->render('logs', [
-      'logs' => implode('', $lines),
+      'logs' => $logs,
       'model' => $target,
     ]);
   }
