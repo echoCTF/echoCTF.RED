@@ -88,7 +88,7 @@ yii\bootstrap5\Modal::end();
           if ($action === 'notify') {
             return \yii\helpers\Url::to(['/frontend/player/notify', 'id' => $model->player_id]);
           }
-          return \yii\helpers\Url::to([$action, 'id' => $model->player_id]);
+          return \yii\helpers\Url::to([$action, 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
         },
 
         'buttons' => [
