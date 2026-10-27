@@ -61,6 +61,33 @@ use app\modules\activity\models\WsToken;
  * @property PlayerSubscription $subscription
  * @property PlayerToken $apiToken
  * @property PlayerBandwidth[] $bandwidths
+ * @property Abuser[] $abusers
+ * @property Writeup[] $writeups
+ * @property PlayerScoreMonthly[] $monthlyScores
+ * @property WriteupRating[] $writeupRatings
+ * @property PlayerTargetHelp[] $playerTargetHelps
+ * @property PlayerCounterNf[] $countersNf
+ * @property PlayerLast $playerLast
+ * @property PlayerSpin $playerSpin
+ * @property SpinQueue[] $spinQueue
+ * @property SpinHistory[] $spinHistory
+ * @property PlayerVpnHistory[] $vpnHistory
+ * @property ArchivedStream[] $archivedStreams
+ * @property TargetPlayerState[] $progressTargets
+ * @property PlayerTargetTraffic[] $targetTraffic
+ * @property PlayerRelation[] $referred
+ * @property ChallengeSolver[] $challengeSolvers
+ * @property Notification[] $notifications
+ * @property PlayerScore $score
+ * @property PlayerRank $rank
+ * @property PlayerMetadata $metadata
+ * @property PlayerLast $last
+ * @property PlayerDisconnectQueue $disconnectQueue
+ * @property TargetInstance[] $targetInstances
+ * @property array $headshots
+ * @property WsToken $wsToken
+ * @property PlayerToken $emailToken
+ * @property PlayerToken $passwordResetToken
  */
 class PlayerAR extends \yii\db\ActiveRecord
 {
@@ -377,6 +404,15 @@ class PlayerAR extends \yii\db\ActiveRecord
   public function getProgressTargets()
   {
     return $this->hasMany(\app\modules\activity\models\TargetPlayerState::class, ['player_id' => 'id']);
+  }
+
+  /**
+   * Per target traffic counters of the player (player_target_traffic)
+   * @return \yii\db\ActiveQuery
+   */
+  public function getTargetTraffic()
+  {
+    return $this->hasMany(\app\modules\activity\models\PlayerTargetTraffic::class, ['player_id' => 'id']);
   }
 
 
