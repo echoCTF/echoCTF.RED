@@ -12,6 +12,7 @@ use app\components\Pf;
 use Docker\Docker;
 use app\modules\infrastructure\models\DockerContainer;
 use app\modules\infrastructure\models\TargetInstance;
+use app\modules\infrastructure\models\PrivateNetworkTarget;
 use app\modules\infrastructure\models\TargetInstanceAudit;
 use app\modules\infrastructure\models\NetworkTargetSchedule as NTS;
 use app\modules\gameplay\models\NetworkTarget;
@@ -685,6 +686,17 @@ class CronController extends Controller
       $rulestoNet[] = Pf::allowToNetwork($ti->target, $_nname . '_clients', $_nname);
       $rulestoClient[] = Pf::allowToClient($ti->target, $_nname . '_clients', $_nname);
     }
+    // Private network targets, their <name> and <name>_clients tables are
+    // populated by private-network/target-ops and the VPN login procedure
+    foreach ($this->running_private_network_targets() as $pnt) {
+      $_nname = $pnt->privateNetwork->name;
+      if (!Pf::valid_table_name($_nname . '_clients')) {
+        echo "PF: skipping private network [", $_nname, "], not a valid pf table name\n";
+        continue;
+      }
+      $rulestoNet[] = Pf::allowToNetwork($pnt->target, $_nname . '_clients', $_nname);
+      $rulestoClient[] = Pf::allowToClient($pnt->target, $_nname . '_clients', $_nname);
+    }
     Pf::store($base . '/targets.conf', $ips);
     Pf::load_table_file('targets', $base . '/targets.conf');
     $rulestoNet = array_unique($rulestoNet, SORT_STRING);
@@ -698,6 +710,23 @@ class CronController extends Controller
 
     if (Pf::store("$base/targets_networks.conf", $rules))
       Pf::load_anchor_file("networks", "$base/targets_networks.conf");
+  }
+
+  /*
+   * Return the private network targets that have a running container
+   */
+  private function running_private_network_targets()
+  {
+    return PrivateNetworkTarget::find()
+      ->joinWith(['privateNetwork'])
+      ->with(['target'])
+      ->where(['<', 'private_network_target.state', 2])
+      ->andWhere(['not', ['private_network_target.server_id' => null]])
+      ->andWhere(['not', ['private_network_target.ip' => null]])
+      ->andWhere(['>', 'private_network_target.ip', 0])
+      ->andWhere(['not', ['private_network.name' => null]])
+      ->orderBy(['private_network_target.id' => SORT_ASC])
+      ->all();
   }
 
   /*
