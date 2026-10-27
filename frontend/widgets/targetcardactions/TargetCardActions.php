@@ -34,7 +34,7 @@ class TargetCardActions extends Widget
     //TargetCardActionsAsset::register($this->getView());
     if (!Yii::$app->user->isGuest) {
       if ($this->target_instance === null)
-        $this->target_instance = Yii::$app->user->identity->instance;
+        $this->target_instance = Yii::$app->user->identity->instanceFor($this->model->id);
       if ($this->target_actions === null)
         $this->prep_actions();
     }
@@ -91,6 +91,8 @@ class TargetCardActions extends Widget
         'options' => ['style' => 'white-space: nowrap;'],
         'linkOptions' => $linkOptions
       ];
+    } elseif ($this->target_instance === NULL && $this->instanceLimitReached()) {
+      $this->prep_instance_limit_actions();
     } elseif ($this->target_instance === NULL) {
       $this->target_actions[] = [
         'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>'),
@@ -114,14 +116,7 @@ class TargetCardActions extends Widget
           'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn an instance of this target for your entire team. Once booted, this instance will only be accessible by you and your team. The IP will become visible here.')])
         ];
       }
-    } elseif ($this->target_instance->target_id !== $this->model->id) {
-      $this->target_actions[] = [
-        'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>'),
-        'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id]),
-        'options' => ['style' => 'white-space: nowrap;'],
-        'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn a private instance of this target. However, you already have one instance running for ' . $this->target_instance->target->name . '. Do you want to schedule the existing instance to be destroyed in order to be able to spawn a new one?')])
-      ];
-    } elseif (($this->target_instance->target_id === $this->model->id && $this->target_instance->reboot < 2)) {
+    } elseif ($this->target_instance->reboot < 2) {
       if ($this->target_instance->ip !== null) {
         $this->target_actions[] = [
           'label' => \Yii::t('app', '<b><i class="fas fa-sync"></i>&nbsp; Reboot your instance</b>'),
@@ -137,6 +132,47 @@ class TargetCardActions extends Widget
         'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to shutdown your private instance of this target. This process takes up to a minute to complete. You will get a notification once it is completed.')])
       ];
     }
+  }
+
+  /**
+   * Whether the player has as many instances as they are allowed to have
+   * @return bool
+   */
+  protected function instanceLimitReached(): bool
+  {
+    return count(Yii::$app->user->identity->instances) >= Yii::$app->user->identity->maxTargetInstances;
+  }
+
+  /**
+   * Prepare the actions shown when the player can't spawn more instances
+   */
+  protected function prep_instance_limit_actions()
+  {
+    $instances = Yii::$app->user->identity->instances;
+    $max = Yii::$app->user->identity->maxTargetInstances;
+    if ($max === 1 && count($instances) === 1) {
+      // Single instance mode: offer to replace the existing instance
+      $existing = reset($instances);
+      $this->target_actions[] = [
+        'label' => \Yii::t('app', '<b><i class="fas fa-play"></i>&nbsp; Spawn a private instance</b>'),
+        'url' => Url::to(['/target/default/spawn', 'id' => $this->model->id]),
+        'options' => ['style' => 'white-space: nowrap;'],
+        'linkOptions' => ArrayHelper::merge($this->linkOptions, ['data-confirm' => \Yii::t('app', 'You are about to spawn a private instance of this target. However, you already have one instance running for {target}. Do you want to schedule the existing instance to be destroyed in order to be able to spawn a new one?', ['target' => $existing->target->name])])
+      ];
+      return;
+    }
+    $names = implode(', ', array_map(fn($i) => $i->target->name, $instances));
+    $linkOptions = $this->linkOptions;
+    unset($linkOptions['data-method']);
+    $linkOptions['data-swType'] = 'info';
+    $linkOptions['data-showCancelButton'] = "false";
+    $linkOptions['data-confirm'] = \Yii::t('app', "You've reached the maximum of {max} concurrent instances ({names}). Shut down one of them before spawning a new one.", ['max' => $max, 'names' => $names]);
+    $this->target_actions[] = [
+      'label' => \Yii::t('app', '<b><i class="fas fa-ban"></i>&nbsp; Instance limit reached</b>'),
+      'url' => '#',
+      'options' => ['style' => 'white-space: nowrap;'],
+      'linkOptions' => $linkOptions
+    ];
   }
 
   /**
