@@ -543,7 +543,7 @@ class ConfigureForm extends Model
       ], 'integer'],
       [['online_timeout'], 'default', 'value' => 900],
       [['spins_per_day'], 'default', 'value' => 2],
-      ['max_target_instances', 'integer', 'min' => 1],
+      ['max_target_instances', 'integer', 'min' => 1, 'max' => 255],
       ['max_target_instances', 'default', 'value' => 1],
       ['target_days_new', 'default', 'value' => 1],
       ['target_days_updated', 'default', 'value' => 0],
