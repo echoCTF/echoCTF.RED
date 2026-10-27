@@ -40,13 +40,14 @@ class TargetInstanceController extends \app\components\BaseController
 
   /**
    * Displays a Target container logs.
-   * @param integer $id
+   * @param integer $player_id
+   * @param integer $target_id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function actionLogs($id)
+  public function actionLogs($player_id, $target_id)
   {
-    $target = $this->findModel($id);
+    $target = $this->findModel($player_id, $target_id);
     try {
       $docker = $target->connectAPI();
       if ($docker === false) {
@@ -65,7 +66,7 @@ class TargetInstanceController extends \app\components\BaseController
       }
     } catch (\Exception $e) {
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to fetch logs. <b>{exception}</b>', ['exception' => Html::encode($e->getMessage())]));
-      return $this->redirect(['view', 'id' => $target->player_id]);
+      return $this->redirect(['view', 'player_id' => $target->player_id, 'target_id' => $target->target_id]);
     }
     return $this->render('logs', [
       'logs' => implode('', $lines),
@@ -80,9 +81,9 @@ class TargetInstanceController extends \app\components\BaseController
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function actionExec($id)
+  public function actionExec($player_id, $target_id)
   {
-    $target = $this->findModel($id);
+    $target = $this->findModel($player_id, $target_id);
     $form = new TargetExecCommandForm();
     $stdoutText = '';
     $stderrText = '';
@@ -152,14 +153,15 @@ class TargetInstanceController extends \app\components\BaseController
 
   /**
    * Displays a single TargetInstance model.
-   * @param integer $id
+   * @param integer $player_id
+   * @param integer $target_id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function actionView($id)
+  public function actionView($player_id, $target_id)
   {
     return $this->render('view', [
-      'model' => $this->findModel($id),
+      'model' => $this->findModel($player_id, $target_id),
     ]);
   }
 
@@ -177,7 +179,7 @@ class TargetInstanceController extends \app\components\BaseController
     $model = new TargetInstance();
 
     if ($model->load(Yii::$app->request->post()) && $model->save()) {
-      return $this->redirect(['view', 'id' => $model->player_id]);
+      return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
     }
 
     return $this->render('create', [
@@ -188,16 +190,17 @@ class TargetInstanceController extends \app\components\BaseController
   /**
    * Updates an existing TargetInstance model.
    * If update is successful, the browser will be redirected to the 'view' page.
-   * @param integer $id
+   * @param integer $player_id
+   * @param integer $target_id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function actionUpdate($id)
+  public function actionUpdate($player_id, $target_id)
   {
-    $model = $this->findModel($id);
+    $model = $this->findModel($player_id, $target_id);
 
     if ($model->load(Yii::$app->request->post()) && $model->save()) {
-      return $this->redirect(['view', 'id' => $model->player_id]);
+      return $this->redirect(['view', 'player_id' => $model->player_id, 'target_id' => $model->target_id]);
     }
 
     return $this->render('update', [
@@ -207,14 +210,15 @@ class TargetInstanceController extends \app\components\BaseController
 
   /**
    * Start a Target Instance .
-   * @param integer $id
+   * @param integer $player_id
+   * @param integer $target_id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function actionRestart($id)
+  public function actionRestart($player_id, $target_id)
   {
     try {
-      $val = $this->findModel($id);
+      $val = $this->findModel($player_id, $target_id);
       $val->restart();
       $val->save();
     } catch (\Exception $e) {
@@ -230,14 +234,15 @@ class TargetInstanceController extends \app\components\BaseController
 
   /**
    * Destroy a Target Instance.
-   * @param integer $id
+   * @param integer $player_id
+   * @param integer $target_id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function actionDestroy($id)
+  public function actionDestroy($player_id, $target_id)
   {
     try {
-      $val = $this->findModel($id);
+      $val = $this->findModel($player_id, $target_id);
       $dc = new DockerContainer($val->target);
       $dc->targetVolumes = $val->target->targetVolumes;
       $dc->targetVariables = $val->target->targetVariables;
@@ -261,7 +266,8 @@ class TargetInstanceController extends \app\components\BaseController
 
   /**
    * Destroy all Target Instances.
-   * @param integer $id
+   * @param integer $player_id
+   * @param integer $target_id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
@@ -297,13 +303,14 @@ class TargetInstanceController extends \app\components\BaseController
   /**
    * Deletes an existing TargetInstance model.
    * If deletion is successful, the browser will be redirected to the 'index' page.
-   * @param integer $id
+   * @param integer $player_id
+   * @param integer $target_id
    * @return mixed
    * @throws NotFoundHttpException if the model cannot be found
    */
-  public function actionDelete($id)
+  public function actionDelete($player_id, $target_id)
   {
-    $this->findModel($id)->delete();
+    $this->findModel($player_id, $target_id)->delete();
 
     return $this->redirect(['index']);
   }
@@ -311,13 +318,14 @@ class TargetInstanceController extends \app\components\BaseController
   /**
    * Finds the TargetInstance model based on its primary key value.
    * If the model is not found, a 404 HTTP exception will be thrown.
-   * @param integer $id
+   * @param integer $player_id
+   * @param integer $target_id
    * @return TargetInstance the loaded model
    * @throws NotFoundHttpException if the model cannot be found
    */
-  protected function findModel($id)
+  protected function findModel($player_id, $target_id)
   {
-    if (($model = TargetInstance::findOne($id)) !== null) {
+    if (($model = TargetInstance::findOne(['player_id' => $player_id, 'target_id' => $target_id])) !== null) {
       return $model;
     }
 
