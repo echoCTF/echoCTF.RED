@@ -39,10 +39,8 @@ class TargetInstance extends TargetInstanceAR
   }
 
   /**
-   * Maximum number of concurrent instances allowed for a player.
-   *
-   * Uses the `max_target_instances` sysconfig key (default 1), overridden by the
-   * `max_target_instances` metadata key of the product of an active subscription.
+   * Maximum number of concurrent instances allowed for a player, from
+   * `player_spin.max_instances`.
    * Keep in sync with the frontend `Player::getMaxTargetInstances()`.
    *
    * @param Player $player
@@ -50,15 +48,7 @@ class TargetInstance extends TargetInstanceAR
    */
   public static function maxInstancesFor(Player $player): int
   {
-    $max = max(1, intval(Yii::$app->sys->max_target_instances));
-    $subscription = $player->subscription;
-    if ($subscription !== null && $subscription->active > 0 && $subscription->product !== null) {
-      $metadata = $subscription->product->metadataObj;
-      if (is_object($metadata) && isset($metadata->max_target_instances) && intval($metadata->max_target_instances) > 0) {
-        $max = intval($metadata->max_target_instances);
-      }
-    }
-    return $max;
+    return $player->playerSpin !== null ? max(1, intval($player->playerSpin->max_instances)) : 1;
   }
 
   /**
