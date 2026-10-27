@@ -13,6 +13,8 @@ class StatsCardModel extends StatsCard
 {
   public $modelClass;
   public $field;
+  /** @var int seconds to cache the total count; keep it small */
+  public $cacheDuration = 30;
 
   public function init(): void
   {
@@ -48,7 +50,13 @@ class StatsCardModel extends StatsCard
     }
 
     if ($this->total === null) {
-      $this->total = number_format(intval($this->modelClass::find()->count()));
+      $modelClass = $this->modelClass;
+      $count = \Yii::$app->cache->getOrSet(
+        ['statscard-total', $modelClass],
+        fn() => intval($modelClass::find()->count()),
+        $this->cacheDuration
+      );
+      $this->total = number_format($count);
     }
   }
 }
