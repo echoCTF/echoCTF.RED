@@ -225,4 +225,46 @@ class DockerContainer extends Model
     $this->docker = null;
     $this->client = null;
   }
+
+  /**
+   * Fetch the logs (stdout and stderr) of a container as text.
+   *
+   * @param Docker $docker connected client
+   * @param string $name container name
+   * @return string
+   * @throws \yii\base\UserException when docker doesn't return the logs
+   */
+  public static function fetchLogs(Docker $docker, string $name): string
+  {
+    $response = $docker->executeRawEndpoint(new \Docker\API\Endpoint\ContainerLogs($name, ['stdout' => true, 'stderr' => true]));
+    $body = (string) $response->getBody();
+    if ($response->getStatusCode() !== 200) {
+      throw new \yii\base\UserException(sprintf('Docker answered %d: %s', $response->getStatusCode(), trim($body)));
+    }
+    return self::demuxLogs($body);
+  }
+
+  /**
+   * Containers with a TTY send their logs as plain text. Containers without
+   * one put an 8 byte header ([stream, 0, 0, 0, size]) in front of each chunk,
+   * strip those.
+   *
+   * @param string $body
+   * @return string
+   */
+  public static function demuxLogs(string $body): string
+  {
+    $out = '';
+    $pos = 0;
+    $len = strlen($body);
+    while ($pos + 8 <= $len) {
+      if (ord($body[$pos]) > 2 || substr($body, $pos + 1, 3) !== "\0\0\0") {
+        break;
+      }
+      $size = unpack('N', substr($body, $pos + 4, 4))[1];
+      $out .= substr($body, $pos + 8, $size);
+      $pos += 8 + $size;
+    }
+    return $out . substr($body, $pos);
+  }
 }
