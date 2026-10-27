@@ -16,15 +16,17 @@ To change the limit of a single player, go to **Player Spins**, edit the player 
 
 ## Subscriptions
 
-A product can give instances with the `max_target_instances` metadata key.
+A product can give extra instances with the `max_target_instances` metadata key.
 
 ```json
 {"max_target_instances": "3"}
 ```
 
-While the subscription is active, the player gets the product value, unless their own limit is higher. When it ends, they go back to their own limit.
+When the subscription starts, the product value is added to the player limit. When it ends, the same number is taken back.
 
-The subscription never changes the player's own value. It's kept apart in `player_spin.subscription_instances`, so admin custom values are safe.
+So a player with a limit of `2` gets `5` while subscribed, and goes back to `2` when the subscription ends. Custom values set by an admin are kept.
+
+The limit never goes below `1`.
 
 ## Spawning
 
