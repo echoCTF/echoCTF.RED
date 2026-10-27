@@ -395,6 +395,23 @@ class ProfileController extends \app\components\BaseController
     ])));
   }
 
+  /**
+   * Per target traffic (packets and bytes) of the player, admin only
+   */
+  public function actionTargetTraffic($id)
+  {
+    $profile = $this->findModel($id);
+    $searchModel = new \app\modules\activity\models\PlayerTargetTrafficSearch();
+    $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+    // always restrict to this profile, regardless of any submitted filter
+    $dataProvider->query->andWhere(['player_target_traffic.player_id' => $profile->player_id]);
+    $dataProvider->sort->defaultOrder = ['bytes_sent' => SORT_DESC];
+    return Json::encode(trim($this->renderAjax('_target_traffic', [
+      'dataProvider' => $dataProvider,
+      'searchModel' => $searchModel
+    ])));
+  }
+
   public function actionStreamLag($id)
   {
     $profile = $this->findModel($id);
