@@ -65,6 +65,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `offense_scenario` A scenario displayed to the users once they have signed into the frontend.
 * `defense_scenario` A scenario displayed to the users once they have signed into the frontend.
 * `spins_per_day` Limit allowed restarts per day per player
+* `max_target_instances` Maximum number of concurrent private target instances a player can have, each one for a different target (default: `1`). Subscriptions can override it per player through the `max_target_instances` product metadata key. Players over their limit (eg. after their subscription expires or the value is lowered) get their most recently created instances scheduled for destruction by `cron/instances`
 * `online_timeout` Timeout in seconds that a user is no longer considered online on the platform
 * `challenge_home` Full path to folder that the challenges will be uploaded to. (default: `@web/uploads/`)
 * `challenge_root` Web accessible folder that the challenges can be downloaded from. (default: `/uploads/`)
