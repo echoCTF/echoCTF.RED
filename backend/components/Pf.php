@@ -74,7 +74,18 @@ class Pf extends Component
       $clients_table = self::clients_table($target);
     if ($targets_table === null)
       $targets_table = $target->network->codename;
-    return sprintf("pass quick from <%s> to <%s>", $targets_table, $clients_table);
+    return sprintf("pass quick from <%s> to <%s> keep state (pflow)", $targets_table, $clients_table);
+  }
+
+  /**
+   * Check that a name can be used as a pf table name and is safe to place in a rule
+   * (pf table names are limited to 31 characters)
+   * @param string $name
+   * @return boolean
+   */
+  public static function valid_table_name($name)
+  {
+    return is_string($name) && preg_match('/^[A-Za-z0-9_]{1,31}$/', $name) === 1;
   }
 
   public static function clients_table($target)
