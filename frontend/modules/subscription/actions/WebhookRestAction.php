@@ -56,6 +56,7 @@ class WebhookRestAction extends \yii\rest\Action
       'object' => $object,
       'object_id' => $object->id
     ])->execute();
+    $webhookId = \Yii::$app->db->getLastInsertID();
 
     switch ($type) {
       // Checkout can create the subscription already active, without a later updated event
@@ -160,6 +161,14 @@ class WebhookRestAction extends \yii\rest\Action
        * Handle product purchases
        */
       case 'checkout.session.completed':
+        // Stripe can send the same event more than once, apply each purchase once
+        $processed = (new \yii\db\Query())->from('stripe_webhook')
+          ->where(['type' => $type, 'object_id' => $object->id])
+          ->andWhere(['IS NOT', 'processed_at', null])
+          ->exists();
+        if ($processed) {
+          return ['status' => 'success', 'message' => 'already processed'];
+        }
         try {
           if ($object->metadata === [] || !isset($object->metadata->price_id) || !isset($object->metadata->player_id)) {
             throw new UserException('Metadata price_id, player_id and price_id not provided!!!');
@@ -195,6 +204,7 @@ class WebhookRestAction extends \yii\rest\Action
               );
             }
           }
+          \Yii::$app->db->createCommand()->update('stripe_webhook', ['processed_at' => new Expression('NOW()')], ['id' => $webhookId])->execute();
         } catch (\Exception $e) {
           \Yii::$app->response->statusCode = 403;
           \Yii::error($e);
