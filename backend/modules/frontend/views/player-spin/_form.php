@@ -21,6 +21,7 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
 
     <?= $form->field($model, 'counter')->textInput() ?>
     <?= $form->field($model, 'perday')->textInput() ?>
+    <?= $form->field($model, 'max_instances')->textInput()->hint('Concurrent private target instances this player can have. Subscriptions add and remove their own value on top of this.') ?>
 
     <?= $form->field($model, 'total')->textInput() ?>
 

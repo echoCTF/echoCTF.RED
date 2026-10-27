@@ -53,6 +53,7 @@ class Subscription extends \yii\base\Model
     public static function sessionCompleted($object)
     {
       $ps=self::playerSubscription($object->metadata->player_id);
+      $wasActive=intval($ps->active)===1;
 
       if($ps->updateAttributes([
               'active' => ($object->payment_status==="paid") ? true : false,
@@ -62,6 +63,12 @@ class Subscription extends \yii\base\Model
       ])<1)
       {
         throw new \yii\base\UserException(\Yii::t('yii','Failed to save session.completed!'));
+      }
+      // Give the perks when this turns the subscription on, so that a later
+      // cancel() doesn't take back something that was never given
+      if(!$wasActive && intval($ps->active)===1 && $ps->product!==null)
+      {
+        $ps->give();
       }
     }
 
@@ -76,6 +83,9 @@ class Subscription extends \yii\base\Model
       }
 
       $ps=self::playerSubscription($player->id);
+      // Take back what the current plan gave first, so that a renewal or a
+      // plan change doesn't add it twice. cancel() only acts on an active one.
+      $ps->cancel();
       $paymentdata=$object->lines->data[0];
       $ps->updateAttributes([
               'price_id' => $paymentdata->price->id,

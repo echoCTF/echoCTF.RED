@@ -19,9 +19,11 @@ use yii\helpers\Html;
         ]); ?>
       </div>
     </div>
-    <?php if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target) : ?>
-      <?= $this->render('_target_instance_card'); ?>
-    <?php endif; ?>
+    <?php foreach (Yii::$app->user->identity->instances as $instance) : ?>
+      <?php if ($instance->target) : ?>
+        <?= $this->render('_target_instance_card', ['instance' => $instance]); ?>
+      <?php endif; ?>
+    <?php endforeach; ?>
   </div>
 
   <?php if ($newsProvider->getTotalCount() > 0) : ?>

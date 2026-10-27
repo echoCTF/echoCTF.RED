@@ -69,7 +69,7 @@ class TargetInstance extends \yii\db\ActiveRecord
       ['reboot', 'default', 'value' => 0],
       ['reboot', 'in', 'range' => [0, 1, 2]],
       [['created_at', 'updated_at'], 'safe'],
-      [['player_id'], 'unique'],
+      [['player_id', 'target_id'], 'unique', 'targetAttribute' => ['player_id', 'target_id']],
       [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
       [['target_id'], 'exist', 'skipOnError' => true, 'targetClass' => Target::class, 'targetAttribute' => ['target_id' => 'id']],
     ];
@@ -151,40 +151,64 @@ class TargetInstance extends \yii\db\ActiveRecord
       throw new HttpException(422, Yii::t('app', 'Target did not start, target is not online yet!'));
     }
 
-    $ti = self::findOne($player->id);
-    if ($ti !== null) {
-      if ($ti->target_id != $targetId) {
-        $ti->reboot = 2;
+    $transaction = Yii::$app->db->beginTransaction();
+    try {
+      // Serialize spawn requests of the same player so that concurrent requests
+      // cannot exceed the allowed number of instances.
+      Yii::$app->db->createCommand('SELECT id FROM player WHERE id=:id FOR UPDATE', [':id' => $player->id])->execute();
+      $instances = self::find()->where(['player_id' => $player->id])->with('target')->indexBy('target_id')->all();
+
+      // The player already has an instance of this target, restart it
+      if (isset($instances[$targetId])) {
+        $ti = $instances[$targetId];
+        $playerSpin->counter = intval($playerSpin->counter) + 1;
+        $playerSpin->total = intval($playerSpin->total) + 1;
+        $playerSpin->save();
+        $ti->reboot = 1;
         $ti->save();
-        return ['old_shutdown', $ti];
+        $transaction->commit();
+        return ['restarted', $ti];
+      }
+
+      $maxInstances = $player->maxTargetInstances;
+      if (count($instances) >= $maxInstances) {
+        if ($maxInstances === 1 && count($instances) === 1) {
+          // Single instance mode: schedule the existing instance for destruction
+          // so that the player can spawn the new one once it is gone.
+          $ti = reset($instances);
+          $ti->reboot = 2;
+          $ti->save();
+          $transaction->commit();
+          return ['old_shutdown', $ti];
+        }
+        $names = implode(', ', array_map(fn($i) => $i->target->name, $instances));
+        throw new HttpException(403, Yii::t('app', "You've reached the maximum of {max} concurrent instances ({names}). Shut down one of them before spawning a new one; instances scheduled for shutdown count until they are destroyed.", ['max' => $maxInstances, 'names' => $names]));
+      }
+
+      $ti = new self;
+      $ti->player_id = $player->id;
+      $ti->target_id = $targetId;
+      $ti->team_allowed = intval(Yii::$app->sys->team_visible_instances);
+      if ($player->subscription !== null && $player->subscription->active > 0 && $player->subscription->product !== null) {
+        $metadata = json_decode($player->subscription->product->metadata);
+        if (isset($metadata->team_subscription) && boolval($metadata->team_subscription) === true) {
+          $ti->team_allowed = $team ? 1 : 0;
+        }
+      }
+      // pick the least used server currently, ties are random
+      $ti->server_id = intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id), rand() limit 1')->queryScalar());
+      if ($ti->save() === false) {
+        throw new HttpException(422, Yii::t('app', 'Failed to spawn new target instance for you.'));
       }
       $playerSpin->counter = intval($playerSpin->counter) + 1;
       $playerSpin->total = intval($playerSpin->total) + 1;
       $playerSpin->save();
-      $ti->reboot = 1;
-      $ti->save();
-      return ['restarted', $ti];
+      $transaction->commit();
+      return ['spawned', $ti];
+    } catch (\Throwable $e) {
+      $transaction->rollBack();
+      throw $e;
     }
-
-    $ti = new self;
-    $ti->player_id = $player->id;
-    $ti->target_id = $targetId;
-    $ti->team_allowed = intval(Yii::$app->sys->team_visible_instances);
-    if ($player->subscription !== null && $player->subscription->active > 0 && $player->subscription->product !== null) {
-      $metadata = json_decode($player->subscription->product->metadata);
-      if (isset($metadata->team_subscription) && boolval($metadata->team_subscription) === true) {
-        $ti->team_allowed = $team ? 1 : 0;
-      }
-    }
-    // pick the least used server currently, ties are random
-    $ti->server_id = intval(Yii::$app->db->createCommand('select id from server t1 left join target_instance t2 on t1.id=t2.server_id group by t1.id order by count(t2.server_id), rand() limit 1')->queryScalar());
-    if ($ti->save() === false) {
-      throw new HttpException(422, Yii::t('app', 'Failed to spawn new target instance for you.'));
-    }
-    $playerSpin->counter = intval($playerSpin->counter) + 1;
-    $playerSpin->total = intval($playerSpin->total) + 1;
-    $playerSpin->save();
-    return ['spawned', $ti];
   }
 
   public function afterFind()

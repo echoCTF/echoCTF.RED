@@ -4,6 +4,7 @@ namespace app\modules\subscription\models;
 
 use Yii;
 use \app\models\Player;
+use \app\models\PlayerSpin;
 use \app\modules\network\models\NetworkPlayer;
 use app\models\Notification;
 
@@ -86,6 +87,12 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   {
     if ($this->product !== null) {
       $metadata = json_decode($this->product->metadata);
+      // Only take back instances and spins when the stored subscription is
+      // still active, so that calling cancel() more than once is harmless
+      $wasActive = intval($this->getOldAttribute('active')) === 1;
+      if ($wasActive) {
+        PlayerSpin::adjustMaxInstances($this->player_id, -$this->maxInstancesBonus);
+      }
       if (isset($metadata->network_ids)) {
         NetworkPlayer::deleteAll([
           'and',
@@ -93,7 +100,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           ['in', 'network_id', explode(',', $metadata->network_ids)]
         ]);
       }
-      if (isset($metadata->spins) && intval($metadata->spins) > 0) {
+      if ($wasActive && isset($metadata->spins) && intval($metadata->spins) > 0) {
         $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
       }
 
@@ -106,6 +113,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   public function give()
   {
     $metadata = json_decode($this->product->metadata);
+    if (intval($this->active) === 1) {
+      PlayerSpin::adjustMaxInstances($this->player_id, $this->maxInstancesBonus);
+    }
     if (isset($metadata->spins) && intval($metadata->spins) > 0) {
       $this->player->profile->spins->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
     } else {
@@ -149,6 +159,23 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
       }
     }
+  }
+
+  /**
+   * Number of target instances the product of this subscription adds to the
+   * player (`max_target_instances` product metadata key).
+   * @return int
+   */
+  public function getMaxInstancesBonus(): int
+  {
+    if ($this->product === null) {
+      return 0;
+    }
+    $metadata = json_decode($this->product->metadata);
+    if (is_object($metadata) && isset($metadata->max_target_instances)) {
+      return max(0, intval($metadata->max_target_instances));
+    }
+    return 0;
   }
 
   public function beforeSave($insert)

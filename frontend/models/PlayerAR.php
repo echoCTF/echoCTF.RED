@@ -28,7 +28,7 @@ use app\modules\target\models\TargetInstance;
  * @property Profile $profile
  * @property PlayerScore $playerScore
  * @property PlayerSsl $playerSsl
- * @property TargetInstance $instance
+ * @property TargetInstance[] $instances The instances of the player indexed by target_id
  * @property Subscription $subscription
  * @property Metadata $metadata
  */
@@ -263,11 +263,22 @@ class PlayerAR extends ActiveRecord
   }
 
   /**
+   * All the target instances of the player, indexed by target_id
    * @return \yii\db\ActiveQuery
    */
-  public function getInstance()
+  public function getInstances()
   {
-    return $this->hasOne(TargetInstance::class, ['player_id' => 'id']);
+    return $this->hasMany(TargetInstance::class, ['player_id' => 'id'])->orderBy(['created_at' => SORT_ASC, 'target_id' => SORT_ASC])->indexBy('target_id');
+  }
+
+  /**
+   * Get the player instance for a given target (if any)
+   * @param int $target_id
+   * @return TargetInstance|null
+   */
+  public function instanceFor(int $target_id): ?TargetInstance
+  {
+    return $this->instances[$target_id] ?? null;
   }
 
   /**

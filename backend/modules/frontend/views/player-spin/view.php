@@ -32,6 +32,7 @@ $this->params['breadcrumbs'][]=$this->title;
             'player_id',
             'counter',
             'perday',
+            'max_instances',
             'total',
             'updated_at',
             'ts'

@@ -38,6 +38,51 @@ class TargetInstance extends TargetInstanceAR
     return sprintf('%s_%d', strtolower($this->target->name), $this->player_id);
   }
 
+  /**
+   * Maximum number of concurrent instances allowed for a player, from
+   * `player_spin.max_instances`.
+   * Keep in sync with the frontend `Player::getMaxTargetInstances()`.
+   *
+   * @param Player $player
+   * @return int
+   */
+  public static function maxInstancesFor(Player $player): int
+  {
+    return $player->playerSpin !== null ? max(1, intval($player->playerSpin->max_instances)) : 1;
+  }
+
+  /**
+   * Schedule for destruction the instances of players that have more instances
+   * than they are allowed to (eg. their subscription expired or the limit was
+   * lowered). The oldest instances are kept, the most recent ones get destroyed.
+   *
+   * @return TargetInstance[] the instances that got scheduled for destruction
+   */
+  public static function enforceLimits(): array
+  {
+    $scheduled = [];
+    $playerIds = Yii::$app->db->createCommand('SELECT player_id FROM target_instance WHERE reboot<2 GROUP BY player_id HAVING COUNT(*)>1')->queryColumn();
+    foreach ($playerIds as $player_id) {
+      $player = Player::findOne($player_id);
+      if ($player === null) {
+        continue;
+      }
+      $max = self::maxInstancesFor($player);
+      $instances = self::find()
+        ->where(['player_id' => $player_id])
+        ->andWhere(['<', 'reboot', 2])
+        ->orderBy(['created_at' => SORT_ASC, 'target_id' => SORT_ASC])
+        ->all();
+      foreach (array_slice($instances, $max) as $instance) {
+        $instance->reboot = 2;
+        if ($instance->save(false)) {
+          $scheduled[] = $instance;
+        }
+      }
+    }
+    return $scheduled;
+  }
+
   public function getRebootVal()
   {
     if ($this->reboot === 0 && $this->ip === null) {

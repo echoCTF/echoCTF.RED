@@ -37,8 +37,8 @@ class Target extends \app\modules\target\models\Target
     parent::afterFind();
     $this->total_findings = count($this->findings);
     $this->total_treasures = count($this->treasures);
-    if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id == $this->id)
-      $this->ip = long2ip(Yii::$app->user->identity->instance->ip);
+    if (($instance = Yii::$app->user->identity->instanceFor($this->id)) !== null)
+      $this->ip = long2ip((int) $instance->ip);
     else if ($this->ondemand && \app\modules\target\Module::instancesOnly())
       $this->ip = long2ip(0);
     else if ($this->ondemand && $this->ondemand->state == 1)

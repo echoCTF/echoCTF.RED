@@ -13,6 +13,8 @@ use yii\behaviors\AttributeTypecastBehavior;
  * @property int $player_id
  * @property int|null $counter
  * @property int|null $total
+ * @property int|null $perday
+ * @property int $max_instances
  * @property string|null $updated_at
  * @property string $ts
  *
@@ -57,7 +59,8 @@ class PlayerSpin extends \yii\db\ActiveRecord
     {
         return [
             [['player_id'], 'required'],
-            [['player_id', 'counter', 'total','perday'], 'integer'],
+            [['player_id', 'counter', 'total','perday','max_instances'], 'integer'],
+            [['max_instances'], 'integer', 'min' => 1, 'max' => 255],
             [['updated_at', 'ts'], 'safe'],
             [['player_id'], 'unique'],
             [['player_id'], 'exist', 'skipOnError' => true, 'targetClass' => Player::class, 'targetAttribute' => ['player_id' => 'id']],
@@ -73,6 +76,7 @@ class PlayerSpin extends \yii\db\ActiveRecord
             'player_id' => 'Player ID',
             'counter' => 'Counter',
             'total' => 'Total',
+            'max_instances' => 'Max instances',
             'updated_at' => 'Updated At',
             'ts' => 'Ts',
         ];
@@ -93,5 +97,24 @@ class PlayerSpin extends \yii\db\ActiveRecord
     public static function find()
     {
         return new PlayerSpinQuery(get_called_class());
+    }
+
+    /**
+     * Add (or subtract with a negative value) to the player max_instances.
+     * The result stays between 1 and 255.
+     *
+     * @param int $player_id
+     * @param int $delta
+     * @return int number of affected rows
+     */
+    public static function adjustMaxInstances(int $player_id, int $delta): int
+    {
+        if ($delta === 0) {
+            return 0;
+        }
+        return \Yii::$app->db->createCommand('UPDATE {{%player_spin}} SET [[max_instances]]=LEAST(255,GREATEST(1,CAST([[max_instances]] AS SIGNED)+:delta)) WHERE [[player_id]]=:player_id')
+            ->bindValue(':delta', $delta)
+            ->bindValue(':player_id', $player_id)
+            ->execute();
     }
 }

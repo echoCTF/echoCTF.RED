@@ -285,6 +285,21 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
     return false;
   }
 
+  /**
+   * Maximum number of concurrent target instances the player is allowed to have.
+   *
+   * Comes from `player_spin.max_instances`. New players get the value of the
+   * `max_target_instances` sysconfig key and subscriptions add/remove their
+   * product `max_target_instances` on top of it.
+   *
+   * @return int
+   */
+  public function getMaxTargetInstances(): int
+  {
+    $spins = $this->profile !== null ? $this->profile->spins : null;
+    return $spins !== null ? max(1, intval($spins->max_instances)) : 1;
+  }
+
 
   public static function find()
   {

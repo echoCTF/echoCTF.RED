@@ -49,6 +49,11 @@ use yii\helpers\Html;
           <td><?=Html::encode($model->owner->playerSpin->perday)?></td>
         </tr>
         <tr>
+          <td><i class="fas fa-server"></i></td>
+          <td>Max instances</td>
+          <td><?=Html::encode($model->owner->playerSpin->max_instances)?></td>
+        </tr>
+        <tr>
           <td><i class="fas fa-sync-alt"></i></td>
           <td>Spins overall</td>
           <td><?=Html::encode($model->owner->playerSpin->total)?></td>

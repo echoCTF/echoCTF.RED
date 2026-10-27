@@ -258,7 +258,7 @@ class DefaultController extends \app\components\BaseController
    * @return mixed
    */
 
-  public function actionIp($id)
+  public function actionIp(int $id)
   {
     Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
     if (($target = \app\modules\target\models\Target::find()->where(['t.id' => $id])->forView(\Yii::$app->user->id)->one()) === null) {
@@ -266,8 +266,8 @@ class DefaultController extends \app\components\BaseController
     }
     $this->module->checkNetwork($target);
     $obj = new \stdClass;
-    if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id == $id) {
-      $obj->ip = long2ip((int) Yii::$app->user->identity->instance->ip);
+    if (($instance = Yii::$app->user->identity->instanceFor($id)) !== null) {
+      $obj->ip = long2ip((int) $instance->ip);
       $obj->instance = true;
     } else if (($target->on_ondemand === false) || ($target->on_ondemand && $target->ondemand_state == 1 && !\app\modules\target\Module::instancesOnly())) {
       $obj->ip = long2ip((int) $target->ip);
