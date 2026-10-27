@@ -197,7 +197,7 @@ class Target extends TargetAR
         $msg = Yii::t('app', "Your instance is being powered up, please wait...");
       }
 
-      return \yii\helpers\Html::tag('abbr', long2ip(Yii::$app->user->identity->instance->ip), ['style' => 'padding-top: 10px; padding-bottom: 10px', "class" => 'text-danger', 'data-toggle' => 'tooltip', 'title' => $msg]);
+      return \yii\helpers\Html::tag('abbr', long2ip((int) Yii::$app->user->identity->instance->ip), ['style' => 'padding-top: 10px; padding-bottom: 10px', "class" => 'text-danger', 'data-toggle' => 'tooltip', 'title' => $msg]);
     } elseif ($this->on_ondemand && \app\modules\target\Module::instancesOnly()) {
       return \yii\helpers\Html::tag('abbr', '0.0.0.0', ['style' => 'padding-top: 10px; padding-bottom: 10px', 'data-toggle' => 'tooltip', 'title' => Yii::t('app', "Spawn a private instance of this target to get an IP.")]);
     } elseif ($this->on_ondemand && $this->ondemand_state === -1) {
@@ -212,7 +212,7 @@ class Target extends TargetAR
   public function getIpOrName(): string
   {
     if (Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id === $this->id) {
-      return long2ip(Yii::$app->user->identity->instance->ip);
+      return long2ip((int) Yii::$app->user->identity->instance->ip);
     } elseif ($this->on_ondemand && ($this->ondemand_state === -1 || \app\modules\target\Module::instancesOnly())) {
       return $this->name;
     }

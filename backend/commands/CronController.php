@@ -402,8 +402,7 @@ class CronController extends Controller
         }
         unset($dc);
         usleep(200);
-        $publisher = new \app\services\ServerPublisher(\Yii::$app->params['serverPublisher']);
-        $publisher->publish($val->player_id, 'target', ['id' => $val->target_id]);
+        \app\services\ServerPublisher::targetUpdated($val->player_id, $val->target_id);
       } // end foreach
       $this->actionInstancePfTables(true);
 
@@ -490,6 +489,7 @@ class CronController extends Controller
             $notifTitle = sprintf("Target [%s] restart request completed", $t->target->name);
           }
           $t->player->notify("info", $notifTitle, sprintf("<p>Target [<b><code>%s</code></b>] got rebooted.<br/>Have fun</p>", $t->target->name));
+          \app\services\ServerPublisher::targetUpdated($t->player_id, $t->target_id);
           $t->delete();
           echo " OK\n";
         } catch (\Exception $ce) {
@@ -569,6 +569,8 @@ class CronController extends Controller
         $ondemand->heartbeat = null;
         Pf::del_table_ip('heartbeat', $ondemand->target->ipoctet);
         $ondemand->save();
+        // refresh the page of the player that powered it up
+        \app\services\ServerPublisher::targetUpdated($ondemand->player_id, $ondemand->target_id);
       }
     } catch (\Exception $e) {
       echo "OnDemand:", $e->getMessage(), "\n";

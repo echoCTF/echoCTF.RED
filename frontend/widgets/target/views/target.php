@@ -95,7 +95,10 @@ $this->registerJs(
           'headerOptions' => ["style" => 'width: 4vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
           'contentOptions' => ["style" => 'width: 6vw;' /*, 'class'=>'d-none d-lg-table-cell'*/],
           'format' => 'raw',
-          'value' => 'displayIP'
+          'value' => function ($model) {
+            // wrapped so libechoctf.js targetUpdates() can refresh it live
+            return Html::tag('span', $model->displayIp, ['class' => 'target-ip', 'data-target-id' => $model->id]);
+          }
         ],
         [
           'visible' => !in_array('writeup', $hidden_attributes),

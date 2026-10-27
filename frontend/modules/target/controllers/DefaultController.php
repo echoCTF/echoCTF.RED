@@ -267,12 +267,19 @@ class DefaultController extends \app\components\BaseController
     $this->module->checkNetwork($target);
     $obj = new \stdClass;
     if (Yii::$app->user->identity->instance && Yii::$app->user->identity->instance->target_id == $id) {
-      $obj->ip = long2ip(Yii::$app->user->identity->instance->ip);
+      $obj->ip = long2ip((int) Yii::$app->user->identity->instance->ip);
       $obj->instance = true;
     } else if (($target->on_ondemand === false) || ($target->on_ondemand && $target->ondemand_state == 1 && !\app\modules\target\Module::instancesOnly())) {
-      $obj->ip = long2ip($target->ip);
+      $obj->ip = long2ip((int) $target->ip);
     } else
       $obj->ip = long2ip(0);
+
+    // Server rendered fragments so the page can refresh the target live (see targetUpdates() in libechoctf.js)
+    $identity = Yii::$app->user->identity->profile;
+    $obj->ipHtml = (string) $target->displayIp;
+    $obj->cardIp = $this->renderPartial('_target_ip', ['target' => $target, 'identity' => $identity]);
+    $obj->card = $this->renderPartial('_target_card', ['target' => $target, 'identity' => $identity]);
+    $obj->status = $this->renderPartial('_ondemand_status', ['target' => $target]);
 
     return $obj;
   }
