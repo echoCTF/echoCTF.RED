@@ -20,10 +20,10 @@ elseif($target->on_ondemand && $target->ondemand_state===-1)
   $display_ip=Html::tag('b',$target_ip,['data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP will be visible once the system is powered up.")]);
 }
 
-if(!Yii::$app->user->isGuest && Yii::$app->user->identity->instance !== NULL && Yii::$app->user->identity->instance->target_id===$target->id && Yii::$app->user->identity->instance->player_id===$identity->player_id)
+if(!Yii::$app->user->isGuest && ($instance=Yii::$app->user->identity->instanceFor($target->id)) !== NULL && $instance->player_id===$identity->player_id)
 {
-  $target_ip=long2ip((int) Yii::$app->user->identity->instance->ip);
-  if(Yii::$app->user->identity->instance->ip===null)
+  $target_ip=long2ip((int) $instance->ip);
+  if($instance->ip===null)
     $display_ip=Html::tag('b',$target_ip,["class"=>'text-danger','data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance will become visible once its powered up.")]);
   else
     $display_ip=Html::a($target_ip,$target_ip,["class"=>'copy-to-clipboard text-danger text-bold','swal-data'=>"Copied to clipboard",'data-toggle'=>'tooltip','title'=>\Yii::t('app',"The IP of your private instance. Click to copy IP to clipboard.")]);
