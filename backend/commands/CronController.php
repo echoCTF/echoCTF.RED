@@ -294,6 +294,12 @@ class CronController extends Controller
     }
     touch($lock);
     try {
+      if ($pfonly === false) {
+        // Schedule for destruction instances that exceed the players' limits
+        foreach (TargetInstance::enforceLimits() as $ti) {
+          printf("%sScheduling destroy %s for %s, over the allowed instances limit\n", date("Y-m-d H:i:s "), $ti->target->name, $ti->player->username);
+        }
+      }
       $action = SELF::ACTION_EXPIRED;
       $t = TargetInstance::find()->pending_action($expired_ago)->server_assigned($server_id)->orderBy('target_instance.created_at ASC, target_instance.updated_at ASC');
       if ($atOnce > 0) $t->limit($atOnce);
