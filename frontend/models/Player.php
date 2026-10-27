@@ -288,22 +288,16 @@ class Player extends PlayerAR implements IdentityInterface, RateLimitInterface
   /**
    * Maximum number of concurrent target instances the player is allowed to have.
    *
-   * The platform wide value comes from the `max_target_instances` sysconfig key
-   * (defaults to 1). An active subscription whose product metadata includes
-   * `max_target_instances` overrides the platform wide value.
+   * Comes from `player_spin.max_instances`. New players get the value of the
+   * `max_target_instances` sysconfig key and subscriptions add/remove their
+   * product `max_target_instances` on top of it.
    *
    * @return int
    */
   public function getMaxTargetInstances(): int
   {
-    $max = max(1, intval(Yii::$app->sys->max_target_instances));
-    if ($this->subscription !== null && $this->subscription->active > 0 && $this->subscription->product !== null) {
-      $metadata = $this->subscription->product->metadataObj;
-      if (is_object($metadata) && isset($metadata->max_target_instances) && intval($metadata->max_target_instances) > 0) {
-        $max = intval($metadata->max_target_instances);
-      }
-    }
-    return $max;
+    $spins = $this->profile !== null ? $this->profile->spins : null;
+    return $spins !== null ? max(1, intval($spins->max_instances)) : 1;
   }
 
 
