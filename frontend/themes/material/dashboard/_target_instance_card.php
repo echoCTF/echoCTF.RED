@@ -3,9 +3,10 @@
 use yii\helpers\Html;
 use app\widgets\Card;
 
-$target = Yii::$app->user->identity->instance->target;
-$target_ip = long2ip(Yii::$app->user->identity->instance->ip);
-if (Yii::$app->user->identity->instance->ip === null)
+/* @var $instance app\modules\target\models\TargetInstance */
+$target = $instance->target;
+$target_ip = long2ip($instance->ip);
+if ($instance->ip === null)
   $display_ip = Html::tag('b', $target_ip, ["class" => 'text-danger', 'data-toggle' => 'tooltip', 'title' => \Yii::t('app', "The IP of your private instance will become visible once its powered up.")]);
 else
   $display_ip = Html::tag('b', $target_ip, ["class" => 'text-primary', 'data-toggle' => 'tooltip', 'title' => \Yii::t('app', "The IP of your private instance.")]);
