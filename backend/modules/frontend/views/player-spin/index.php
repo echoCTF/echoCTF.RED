@@ -41,6 +41,7 @@ yii\bootstrap5\Modal::end();
             ['class' => 'app\components\columns\ProfileColumn','attribute'=>'player'],
             'counter',
             'perday',
+            'max_instances',
             'total',
             'updated_at:date',
             'ts',
