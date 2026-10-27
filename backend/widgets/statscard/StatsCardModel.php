@@ -26,14 +26,25 @@ class StatsCardModel extends StatsCard
       $this->field = 'created_at';
     }
 
-    if ($this->today === null) {
-      $todayQ = sprintf("date([[%s]])=date(now())", $this->field);
-      $this->today = intval($this->modelClass::find()->where($todayQ)->count());
-    }
-
-    if ($this->yesterday === null) {
-      $yesterQ = sprintf("date([[%s]])=date(now()-interval 1 day)", $this->field);
-      $this->yesterday = intval($this->modelClass::find()->where($yesterQ)->count());
+    if ($this->today === null || $this->yesterday === null) {
+      // Sargable range on the raw column (instead of date(col)=...) so an
+      // index on the field can be used, and both days fetched in one query.
+      $field = sprintf('[[%s]]', $this->field);
+      $row = $this->modelClass::find()
+        ->select([
+          'today' => new \yii\db\Expression("COALESCE(SUM($field >= CURDATE()),0)"),
+          'yesterday' => new \yii\db\Expression("COALESCE(SUM($field < CURDATE()),0)"),
+        ])
+        ->where(new \yii\db\Expression("$field >= CURDATE() - INTERVAL 1 DAY AND $field < CURDATE() + INTERVAL 1 DAY"))
+        ->asArray()
+        ->createCommand()
+        ->queryOne();
+      if ($this->today === null) {
+        $this->today = intval($row['today'] ?? 0);
+      }
+      if ($this->yesterday === null) {
+        $this->yesterday = intval($row['yesterday'] ?? 0);
+      }
     }
 
     if ($this->total === null) {
