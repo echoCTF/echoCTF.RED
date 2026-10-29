@@ -42,7 +42,8 @@ class PrivateNetworkController extends Controller
         $ips = [];
         $dc = new DockerContainer($p->target);
         $server = $p->server;
-        if (intval($p->server_id) === 0 || $p->ipoctet === null) {
+        // state 2 (network expired) must be destroyed, even if it never got an IP
+        if (intval($p->state) !== 2 && (intval($p->server_id) === 0 || $p->ipoctet === null)) {
           $notifType = "success";
           $notifTitle = $notifMessage = sprintf("Target %s from your private network got started!", $p->target->name);
           // pick a server
