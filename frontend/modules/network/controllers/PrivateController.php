@@ -143,6 +143,13 @@ class PrivateController extends \app\components\BaseController
       Yii::$app->session->setFlash('warning', 'Target already scheduled for restart!!!');
       return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
     }
+    // Only targets from networks the player can still access
+    try {
+      Yii::$app->getModule('target')->checkNetwork($model->target);
+    } catch (\Exception $e) {
+      Yii::$app->session->setFlash('error', $e->getMessage());
+      return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
+    }
 
     $transaction = Yii::$app->db->beginTransaction();
     try {
