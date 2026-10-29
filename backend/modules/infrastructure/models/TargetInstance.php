@@ -143,11 +143,12 @@ class TargetInstance extends TargetInstanceAR
       }
     }
 
+    // pull before removing the running container, a failed pull keeps it up
+    $dc->pull();
     try {
       $dc->destroy();
     } catch (\Exception $e) {
     }
-    $dc->pull();
     $dc->spin();
     $this->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$this->server->network}->getIPAddress();
     $this->reboot = 0;

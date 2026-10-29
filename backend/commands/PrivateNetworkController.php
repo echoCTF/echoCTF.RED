@@ -99,13 +99,16 @@ class PrivateNetworkController extends Controller
         $dc->server = $server->connstr;
         $dc->ssl = (bool) $server->ssl;
         $dc->net = $server->network;
+        if ($p->state < 2) {
+          // pull before removing the running container, a failed pull keeps it up
+          $dc->pull();
+        }
         try {
           $dc->destroy();
         } catch (\Exception $e) {
         }
 
         if ($p->state < 2) {
-          $dc->pull();
           $dc->spin();
           if ($p->privateNetwork->team_accessible === true && $p->privateNetwork->player->teamPlayer && $p->privateNetwork->player->teamPlayer->approved === 1) {
             foreach ($p->privateNetwork->player->teamPlayer->team->approvedMembers as $teamPlayer) {

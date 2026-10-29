@@ -360,12 +360,12 @@ class CronController extends Controller
             case SELF::ACTION_START:
             case SELF::ACTION_RESTART:
               if ($pfonly === false) {
+                // pull before removing the running container, a failed pull keeps it up
+                $dc->pull();
                 try {
                   $dc->destroy();
                 } catch (\Throwable $e) {
                 }
-                $dc->pull();
-                usleep(100);
                 $dc->spin();
               }
               if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) {
