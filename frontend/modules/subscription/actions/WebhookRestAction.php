@@ -251,6 +251,37 @@ class WebhookRestAction extends \yii\rest\Action
           Yii::error($e);
         }
 
+        // Take back a fully refunded one-time purchase, once per charge
+        $revoked = (new \yii\db\Query())->from('stripe_webhook')
+          ->where(['type' => $type, 'object_id' => $object->id])
+          ->andWhere(['IS NOT', 'processed_at', null])
+          ->exists();
+        if ($object->refunded === true && !$revoked && !empty($object->payment_intent)) {
+          try {
+            $session = \Stripe\Checkout\Session::all(['payment_intent' => $object->payment_intent, 'limit' => 1])->data[0] ?? null;
+            $price = ($session !== null && $session->mode === 'payment' && isset($session->metadata->price_id)) ? Price::findOne($session->metadata->price_id) : null;
+            $player = $price !== null ? Player::findOne(intval($session->metadata->player_id)) : null;
+            if ($price !== null && $player !== null && $price->ptype === 'one_time') {
+              $pp = PlayerProduct::find()
+                ->where(['player_id' => $player->id, 'price_id' => $price->id])
+                ->andWhere(['>', 'ending', new Expression('NOW() - INTERVAL 1 DAY')])
+                ->orderBy(['id' => SORT_DESC])
+                ->one();
+              if ($pp !== null) {
+                // Past the one day grace, so the frontend and the expiry cron both treat it as ended
+                $pp->updateAttributes(['ending' => new Expression('NOW() - INTERVAL 1 DAY')]);
+              }
+              if (isset($price->metadataObj->spins) && intval($price->metadataObj->spins) > 0) {
+                $player->profile->spins->updateAttributes(['perday' => new Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => intval($price->metadataObj->spins)])]);
+              }
+            }
+            \Yii::$app->db->createCommand()->update('stripe_webhook', ['processed_at' => new Expression('NOW()')], ['id' => $webhookId])->execute();
+          } catch (\Exception $e) {
+            \Yii::$app->response->statusCode = 403;
+            \Yii::error($e);
+            return ['error' => $e->getMessage()];
+          }
+        }
         break;
       default:
         // Unhandled event type
