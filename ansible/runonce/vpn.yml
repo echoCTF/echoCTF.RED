@@ -703,6 +703,8 @@
       - { name: "Generate CRL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-generate-crl", roles: ["gateway"] }
       - { name: "Revoke Expoired Player SSL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-revoke-expired", roles: ["gateway"] }
       - { name: "Expire sales", minute: "*/2",  job: "{{APP_DIR}}/backend/yii sales/expire-subscriptions", roles: ["gateway"] }
+      - { name: "Expire player products", minute: "*/2",  job: "{{APP_DIR}}/backend/yii sales/expired-player-products", roles: ["gateway"] }
+      - { name: "Private network target operations", minute: "*/2",  job: "{{APP_DIR}}/backend/yii private-network/target-ops", roles: ["gateway"] }
       - { name: "Power Operations", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/powerops", roles: ["gateway"] }
       - { name: "restart targets with 24h uptime or more", minute: "*/5",  job: "{{APP_DIR}}/backend/bin/target-restart", roles: ["gateway"] }
       - { name: "Healthcheck", minute: "*/10",  job: "{{APP_DIR}}/backend/bin/healthcheck", roles: ["gateway"] }
