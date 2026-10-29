@@ -230,9 +230,12 @@ class Target extends TargetAR
    */
   public function destroy()
   {
-    if (substr($this->server, 0, 3) === 'tcp') {
+    if (empty($this->server)) {
+      return false;
+    }
+    if (substr($this->server, 0, 4) !== 'pve:') {
       return $this->dockerDestroy();
-    } else if (substr($this->server, 0, 3) === 'pve') {
+    } else {
       $HEADERS = ['Accept: application/json', 'Content-Type: application/json'];
       if ($this->imageparams !== '') {
         $decoded = json_decode($this->imageparams);
@@ -249,9 +252,11 @@ class Target extends TargetAR
       curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
       curl_setopt($ch, CURLOPT_POSTFIELDS, '{}');
       curl_setopt($ch, CURLOPT_URL, substr($this->server, 4) . 'status/stop');
-      if (curl_exec($ch) === false)
-        var_dump(curl_error($ch));
+      $ok = curl_exec($ch) !== false;
+      if (!$ok)
+        Yii::warning(sprintf('PVE destroy of %s failed: %s', $this->name, curl_error($ch)), 'pve');
       curl_close($ch);
+      return $ok;
     }
   }
 
