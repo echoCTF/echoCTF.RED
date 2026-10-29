@@ -166,7 +166,8 @@ class DockerContainer extends Model
     }
 */
 
-    $this->container = $this->docker->containerInspect($this->container->getId());
+    // fall back to the name when no container was created in this request
+    $this->container = $this->docker->containerInspect($this->container !== null ? $this->container->getId() : $this->name);
     return $this->container;
   }
 
