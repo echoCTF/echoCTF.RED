@@ -1,0 +1,12 @@
+#!/usr/bin/ansible-playbook
+---
+- name: Generate treasure sql
+  hosts: all
+  order: sorted
+  connection: local
+  gather_facts: false
+  serial: 1
+  tasks:
+  - name: Generate treasure update for targets
+    delegate_to: 127.0.0.1
+    template: src="{{inventory_dir}}/../templates/target.sql.j2" dest="/tmp/{{hostname}}.sql"
