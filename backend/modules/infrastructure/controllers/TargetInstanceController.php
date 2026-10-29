@@ -217,11 +217,9 @@ class TargetInstanceController extends \app\components\BaseController
       $val->restart();
       $val->save();
     } catch (\Exception $e) {
-      if (method_exists($e, 'getErrorResponse')) {
-        echo $e->getErrorResponse()->getMessage(), "\n";
-      } else {
-        echo $e->getMessage(), "\n";
-      }
+      // echo before a redirect was never seen by the admin
+      $error = method_exists($e, 'getErrorResponse') ? $e->getErrorResponse()->getMessage() : $e->getMessage();
+      Yii::$app->session->setFlash('error', Html::encode($error));
     }
 
     return $this->redirect(['index']);
@@ -250,11 +248,9 @@ class TargetInstanceController extends \app\components\BaseController
       }
       $val->delete();
     } catch (\Exception $e) {
-      if (method_exists($e, 'getErrorResponse')) {
-        echo $e->getErrorResponse()->getMessage(), "\n";
-      } else {
-        echo $e->getMessage(), "\n";
-      }
+      // echo before a redirect was never seen by the admin
+      $error = method_exists($e, 'getErrorResponse') ? $e->getErrorResponse()->getMessage() : $e->getMessage();
+      Yii::$app->session->setFlash('error', Html::encode($error));
     }
 
     return $this->redirect(['index']);
