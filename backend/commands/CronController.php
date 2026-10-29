@@ -447,6 +447,7 @@ class CronController extends Controller
         printf("Processing unhealthy [%s] on docker [%s]", $target->name, $target->server);
         if ($target->healthcheck == 0) {
           printf("... skipping by healthcheck flag\n");
+          continue;
         }
         echo "\n";
         if ($spin !== false) {
