@@ -364,11 +364,15 @@ class TargetController extends \app\components\BaseController
     $trans = Yii::$app->db->beginTransaction();
     try {
       $counter = $query->count;
-      foreach ($query->getModels() as $q) {
-        $q->destroy();
+      $models = $query->getModels();
+      foreach ($models as $q) {
         $q->delete();
       }
       $trans->commit();
+      // remove the containers only once the records are really gone
+      foreach ($models as $q) {
+        $q->destroy();
+      }
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets deleted', ['counter' => intval($counter)]));
     } catch (\Exception $e) {
       $trans->rollBack();
