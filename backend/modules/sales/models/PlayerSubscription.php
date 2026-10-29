@@ -225,7 +225,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
 
         // Check if we have something to to fix active agrees with Stripe
-        if ($dosave !== true && $ps->update(true, ['price_id', 'active'])) {
+        if ($dosave === true && $ps->update(true, ['price_id', 'active'])) {
           \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Updated subscription <kbd>{subscription_id}</kbd>', ['subscription_id' => $ps->subscription_id]));
         }
       } catch (\Stripe\Exception\InvalidRequestException $e) {
