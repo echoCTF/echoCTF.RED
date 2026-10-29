@@ -228,7 +228,7 @@ class Profile extends ProfileAR
 
         imagepng($image,\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$this->id.'.png');
         imagedestroy($image);
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         return false;
       }
       return true;

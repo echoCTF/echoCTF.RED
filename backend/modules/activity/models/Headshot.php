@@ -104,7 +104,7 @@ class Headshot extends \yii\db\ActiveRecord
       // If player is member of team re-populate the team stream
       if ($this->player->teamPlayer)
         $db->createCommand('CALL repopulate_team_stream(:team_id)', [':team_id' => $this->player->teamPlayer->team_id])->execute();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       throw new UserException($e->getMessage());
     }
   }

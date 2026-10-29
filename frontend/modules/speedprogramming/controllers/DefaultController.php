@@ -170,7 +170,7 @@ class DefaultController extends \app\components\BaseController
             $transaction->commit();
           Yii::$app->session->setFlash('success', 'Submission accepted, please wait while our judges look into it.');
           return $this->redirect(['/speedprogramming/default/view', 'id' => $id]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           $transaction->rollback();
           Yii::error($e->getMessage());
           Yii::$app->session->setFlash('error', 'Failed to accept your submission.');

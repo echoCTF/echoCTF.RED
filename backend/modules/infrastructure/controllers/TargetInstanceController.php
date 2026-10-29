@@ -112,7 +112,7 @@ class TargetInstanceController extends \app\components\BaseController
         });
 
         $stream->wait();
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to execute command. <b>{exception}</b>', ['exception' => Html::encode($e->getMessage())]));
       }
     } else {
@@ -216,7 +216,7 @@ class TargetInstanceController extends \app\components\BaseController
       $val = $this->findModel($player_id, $target_id);
       $val->restart();
       $val->save();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       // echo before a redirect was never seen by the admin
       $error = method_exists($e, 'getErrorResponse') ? $e->getErrorResponse()->getMessage() : $e->getMessage();
       Yii::$app->session->setFlash('error', Html::encode($error));
@@ -244,10 +244,10 @@ class TargetInstanceController extends \app\components\BaseController
       $dc->ssl = (bool) $val->server->ssl;
       try {
         $dc->destroy();
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
       }
       $val->delete();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       // echo before a redirect was never seen by the admin
       $error = method_exists($e, 'getErrorResponse') ? $e->getErrorResponse()->getMessage() : $e->getMessage();
       Yii::$app->session->setFlash('error', Html::encode($error));
@@ -277,7 +277,7 @@ class TargetInstanceController extends \app\components\BaseController
         try {
           $dc->destroy();
           Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [{name}] got destroyed.', ['name' => Html::encode($dc->name)]));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [{name}] failed to get destroyed: {error}', ['name' => Html::encode($dc->name), 'error' => Html::encode($e->getMessage())]));
         }
         $val->delete();

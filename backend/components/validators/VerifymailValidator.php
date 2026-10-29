@@ -56,7 +56,7 @@ class VerifymailValidator extends Validator
           ]];
         }
       }
-      catch(\Exception $e)
+      catch(\Throwable $e)
       {
         if(curl_errno($ch)===0)
           return [$this->message, ['email' => $value]];
@@ -103,7 +103,7 @@ class VerifymailValidator extends Validator
           return [$this->message, ['email' => $value]];
         }
       }
-      catch(\Exception $e)
+      catch(\Throwable $e)
       {
         if(curl_errno($ch)===0)
           return [$this->message, ['email' => $value]];

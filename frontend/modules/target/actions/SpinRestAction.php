@@ -23,7 +23,7 @@ class SpinRestAction extends \yii\rest\ViewAction
       if ($target->ondemand && $target->ondemand->state === -1)
         $msg = \Yii::t('app', "Target [%s] queued to power-up. You will receive a notification when the operation is completed.");
       Yii::$app->session->setFlash('success', sprintf($msg, $target->name));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', $e->getMessage());
     }
     return $this->redirectTo();

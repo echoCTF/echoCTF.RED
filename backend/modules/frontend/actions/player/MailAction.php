@@ -65,7 +65,7 @@ class MailAction extends \yii\base\Action
       } else {
         \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player rejection mail send.'));
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to mail rejection to player. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }
   }
@@ -96,7 +96,7 @@ class MailAction extends \yii\base\Action
       } else {
         \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player activation mail send.'));
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to mail player. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }
   }
@@ -121,7 +121,7 @@ class MailAction extends \yii\base\Action
       }
 
       \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Player activation mail send.'));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to mail player. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }
   }

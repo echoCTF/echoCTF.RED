@@ -100,7 +100,7 @@ class NotificationController extends \app\components\BaseController
             \Yii::$app->getSession()->addFlash('success', "Notifications send!");
             return $this->redirect(['index']);
           }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           $transaction->rollBack();
           \Yii::$app->getSession()->addFlash('error', Html::encode($e->getMessage()));
         }
@@ -167,7 +167,7 @@ class NotificationController extends \app\components\BaseController
         Yii::$app->session->setFlash('success', Yii::t('app', 'Deleted {n,plural,=0{no notifications} =1{one notification} other{# notifications}}.', ['n' => $affected]));
       else
         Yii::$app->session->setFlash('info', Yii::t('app', "No notifications found to rotate."));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', Html::encode($e->getMessage()));
     }
     return $this->redirect(['index']);

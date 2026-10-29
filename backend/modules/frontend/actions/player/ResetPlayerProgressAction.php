@@ -19,7 +19,7 @@ class ResetPlayerProgressAction extends \yii\base\Action
       \Yii::$app->db->createCommand("CALL reset_player_progress()")->execute();
       Yii::$app->session->setFlash('success', Yii::t('app','Successfully reseted all player progress'));
     }
-    catch(\Exception $e)
+    catch(\Throwable $e)
     {
       Yii::$app->session->setFlash('error', Yii::t('app','Failed to reset player progress'));
     }

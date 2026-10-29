@@ -131,7 +131,7 @@ class PlayerSubscriptionController extends \app\components\BaseController
       $sub->delete();
       $transaction->commit();
       \Yii::$app->session->addFlash('success', Yii::t('app','Subscription and perks deleted.'));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       \Yii::$app->session->addFlash('error', Yii::t('app','The following error occurred while trying to delete the subscription [{exception}]',['exception'=>$e->getMessage()]));
     }
@@ -151,7 +151,7 @@ class PlayerSubscriptionController extends \app\components\BaseController
     try {
       PlayerSubscription::DeleteInactive();
       Yii::$app->session->setFlash('success', 'Inactive subscriptions deleted.');
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', 'Failed to delete inactive subscriptions.[<code>' . \yii\helpers\Html::encode($e->getMessage()) . '</code>]');
     }
     return $this->redirect(['index']);
@@ -193,7 +193,7 @@ class PlayerSubscriptionController extends \app\components\BaseController
       }
       \Yii::$app->session->addFlash('success', 'Subscription updated!');
     }
-    catch (\Exception $e)
+    catch (\Throwable $e)
     {
       \Yii::$app->session->addFlash('error', $e->getMessage());
     }

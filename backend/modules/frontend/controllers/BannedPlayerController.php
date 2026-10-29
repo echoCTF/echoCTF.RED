@@ -119,7 +119,7 @@ class BannedPlayerController extends \app\components\BaseController
       } else {
         \Yii::$app->session->addFlash('warning', "No matching records found.");
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->session->addFlash('error', "Error: " . $e->getMessage());
     }
     return $this->redirect(['index']);

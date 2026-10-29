@@ -131,7 +131,7 @@ class NewsController extends \app\components\BaseController
     try {
       $result = $this->findModel($id)->toDiscord();
       Yii::$app->session->setFlash('success', Yii::t('app', 'News item got send to the discord news webhook'));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to send news item to discord webhook'));
     }
     return $this->redirect(['index']);

@@ -71,7 +71,7 @@ class Img extends Component
       imagedestroy($avatar);
       imagedestroy($cover);
       imagedestroy($src);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       return false;
     }
     return $image;
@@ -108,7 +108,7 @@ class Img extends Component
         imagedestroy($avatar);
         return true;
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       return false;
     }
     return false;

@@ -81,7 +81,7 @@ class CreateTeamForm extends Model
         }
         $transaction->commit();
       }
-      catch (\Exception $e)
+      catch (\Throwable $e)
       {
         $transaction->rollback();
         return false;

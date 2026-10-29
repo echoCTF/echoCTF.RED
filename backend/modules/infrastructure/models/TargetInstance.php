@@ -108,7 +108,7 @@ class TargetInstance extends TargetInstanceAR
     try {
       $client = DockerClientFactory::create($params);
       return Docker::create($client);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       return false;
     }
   }
@@ -147,7 +147,7 @@ class TargetInstance extends TargetInstanceAR
     $dc->pull();
     try {
       $dc->destroy();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
     }
     $dc->spin();
     $this->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$this->server->network}->getIPAddress();

@@ -243,7 +243,7 @@ class SslController extends Controller {
       $cmd=sprintf("openssl ca -gencrl %s -out /etc/openvpn/crl.pem", $this->ssl_params);
       shell_exec($cmd);
     }
-    catch(\Exception $e)
+    catch(\Throwable $e)
     {
       echo $e->getMessage();
       return 1;
@@ -274,7 +274,7 @@ class SslController extends Controller {
         //unlink($tmpcrt);
         if($clean!==false) $cert->delete();
       }
-      catch(\Exception $e)
+      catch(\Throwable $e)
       {
 
       }
@@ -303,7 +303,7 @@ class SslController extends Controller {
 
         if($clean===true) unlink($cert);
       }
-      catch(\Exception $e)
+      catch(\Throwable $e)
       {
 
       }

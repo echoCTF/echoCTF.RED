@@ -54,7 +54,7 @@ class VerifymailValidator extends Validator
           'email' => $value,
         ]];
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       if (curl_errno($ch) === 0)
         return [$this->message, ['email' => $value]];
     }

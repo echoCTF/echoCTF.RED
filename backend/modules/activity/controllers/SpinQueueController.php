@@ -104,7 +104,7 @@ class SpinQueueController extends \app\components\BaseController
         Yii::$app->db->createCommand()->truncateTable('spin_queue')->execute();
         Yii::$app->session->setFlash('success', Yii::t('app','Spin Queue truncated'));
       }
-      catch(\Exception $e)
+      catch(\Throwable $e)
       {
         Yii::$app->session->setFlash('error', Yii::t('app','Spin Queue failed to get truncated'));
       }

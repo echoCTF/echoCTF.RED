@@ -35,7 +35,7 @@ class SpawnRestAction extends \yii\rest\ViewAction
       ][$status];
       \Yii::$app->response->statusCode = $code;
       \Yii::$app->response->data = ["message" => $message, "code" => 0, "status" => $code];
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->response->statusCode = $e instanceof \yii\web\HttpException ? $e->statusCode : 422;
       \Yii::$app->response->data = ["message" => $e->getMessage(), "code" => 0, "status" => \Yii::$app->response->statusCode];
     }

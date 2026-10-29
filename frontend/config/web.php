@@ -267,7 +267,7 @@ $config = [
         }
         return;
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
     }
   },
 ];

@@ -156,7 +156,7 @@ class HeadshotController extends \app\components\BaseController
 
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Headshots zeroed', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed zero out headshots. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }
@@ -217,7 +217,7 @@ class HeadshotController extends \app\components\BaseController
       // Send a notification to the player about what just happened.
       $model->player->notify('swal:error', 'Headshot and points zeroed out!!!', 'Your timer and points for the headshot on target ' . $model->target->name . ' have been zeroed out. Feel free to contact the moderators for any clarification as to why this happened.');
       $transaction->commit();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to zero out headshot details. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }

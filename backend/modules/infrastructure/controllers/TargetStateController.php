@@ -127,7 +127,7 @@ class TargetStateController extends \app\components\BaseController
 
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] records synced', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::error($e->getMessage());
       Yii::$app->session->setFlash('error', 'Failed to sync records: ' . $e->getMessage());

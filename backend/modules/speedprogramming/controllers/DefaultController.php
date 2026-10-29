@@ -125,7 +125,7 @@ class DefaultController extends \app\components\BaseController
         'ssl' => false,
       ]);
       $docker = Docker::create($client);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', 'Failed to connect to docker server.');
       return $this->redirect(['index']);
     }

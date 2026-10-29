@@ -80,7 +80,7 @@ class MaintenanceController extends Controller
       echo "Changing $table: $currentCollation => $collation\n";
       try {
         Yii::$app->db->createCommand($query)->execute();
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         echo "Error: ",$e->getMessage(),"\n";
       }
     }

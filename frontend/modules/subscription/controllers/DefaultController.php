@@ -160,7 +160,7 @@ class DefaultController extends \app\components\BaseController
         'success_session' => $success_session,
         'mine' => $ps
       ]);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::error($e->getMessage());
       Yii::$app->session->addFlash('error', Yii::t('app', 'No such session!'));
       return $this->redirect(['/subscription/default/index']);
@@ -190,7 +190,7 @@ class DefaultController extends \app\components\BaseController
       ]);
 
       return ['url' => $session->url];
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::error($e, 'app');
       return ['url' => $return_url];
     }
@@ -213,7 +213,7 @@ class DefaultController extends \app\components\BaseController
         'customer' => Yii::$app->user->identity->stripe_customer_id,
         'return_url' => $return_url,
       ]);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       return ['url' => $return_url];
     }
     return ['url' => $session->url];
@@ -274,7 +274,7 @@ class DefaultController extends \app\components\BaseController
         'customer' => $cid,
         'metadata' => ['player_id' => Yii::$app->user->id, 'profile_id' => Yii::$app->user->identity->profile->id, 'price_id' => $priceId]
       ]);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->response->statusCode = 403;
       if (empty($cid))
         \Yii::$app->response->statusCode = 403;
@@ -305,7 +305,7 @@ class DefaultController extends \app\components\BaseController
           ]
         );
         Yii::$app->session->setFlash('info', \Yii::t('app', 'Your subscription will be canceled at the end of the current billing period.'));
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         Yii::$app->session->setFlash('error', \Yii::t('app', 'There was an error canceling your subscription! Please contact our support.'));
       }
     } else {
@@ -365,7 +365,7 @@ class DefaultController extends \app\components\BaseController
           if (!empty($charge->receipt_url)) {
             return $this->redirect($charge->receipt_url);
           }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           Yii::error($e->getMessage());
         }
       }

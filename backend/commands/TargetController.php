@@ -48,7 +48,7 @@ class TargetController extends Controller
         try {
           $t->spin();
           echo " OK\n";
-        } catch (\Exception $ce) {
+        } catch (\Throwable $ce) {
           printf(" NOT OK (%s)\n", $ce->getMessage());
         }
       }
@@ -73,7 +73,7 @@ class TargetController extends Controller
       try {
         $t->pull();
         echo " OK\n";
-      } catch (\Exception $ce) {
+      } catch (\Throwable $ce) {
         printf(" NOT OK (%s)\n", $ce->getMessage());
       }
     }
@@ -100,7 +100,7 @@ class TargetController extends Controller
           if(!$t->pull())
             throw new \Exception('Failed to pull');
           echo " OK\n";
-        } catch (\Exception $ce) {
+        } catch (\Throwable $ce) {
           printf(" NOT OK (%s)\n", $ce->getMessage());
         }
       }
@@ -137,7 +137,7 @@ class TargetController extends Controller
             printf("Restarting %s/%s [%s]\n", $master->server, $d->name, \Yii::$app->formatter->asRelativeTime($created));
             try {
               $d->spin();
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
               printf("Failed to restart %s: %s\n", $d->name, $e->getMessage());
             }
             $processed++;
@@ -163,7 +163,7 @@ class TargetController extends Controller
           // ignore errors of destroy
           try {
             $dc->destroy();
-          } catch (\Exception $e) {
+          } catch (\Throwable $e) {
           }
         }
         try {
@@ -171,10 +171,10 @@ class TargetController extends Controller
             Pf::kill_table($dc->name, true);
             Pf::kill_table($dc->name . '_clients', true);
           }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
         }
         $val->delete();
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         if (method_exists($e, 'getErrorResponse'))
           echo $e->getErrorResponse()->getMessage(), "\n";
         else
@@ -197,7 +197,7 @@ class TargetController extends Controller
         printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
         try {
           $destroyed = $ondemand->target->destroy();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           $destroyed = false;
         }
         if (!$destroyed) {
@@ -212,7 +212,7 @@ class TargetController extends Controller
         // refresh the page of the player that powered it up
         \app\services\ServerPublisher::targetUpdated($ondemand->player_id, $ondemand->target_id);
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "OnDemand:", $e->getMessage(), "\n";
     }
   }

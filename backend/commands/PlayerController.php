@@ -225,7 +225,7 @@ class PlayerController extends Controller
 
       $player->createTeam($team_name, $approved);
       $trans->commit();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       print $e->getMessage();
       $trans->rollback();
     }
@@ -270,7 +270,7 @@ class PlayerController extends Controller
           $this->p("Password for [{player}] changed", ['player' => $player->username]);
       }
       $trans->commit();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       print $e->getMessage();
       $trans->rollback();
     }
@@ -329,7 +329,7 @@ class PlayerController extends Controller
         $DNS_NS = dns_get_record($p->email, DNS_NS);
         $DNS_MX = dns_get_record($p->email, DNS_MX);
         $DNS_A = dns_get_record($p->email, DNS_A);
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         echo "Error: Failed to resolve [", $p->email, "]", $e->getMessage(), "\n";
       }
       if ($DNS_NS === [] && $DNS_MX === []) {
@@ -503,7 +503,7 @@ class PlayerController extends Controller
           } else {
             echo ", remote identification file not found\n";
           }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           var_dump($e);
         }
       }

@@ -175,7 +175,7 @@ class Target extends TargetAR
       $docker = $this->connectAPI();
       if ($docker->systemPing())
         $this->container = $docker->getContainerManager()->find($this->name);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $this->container = 1;
     }
     return $this->container;
@@ -225,7 +225,7 @@ class Target extends TargetAR
     } catch (\Docker\API\Exception\ContainerDeleteNotFoundException $e) {
       // already gone, nothing to destroy
       return true;
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       return false;
     }
     return true;
@@ -293,7 +293,7 @@ class Target extends TargetAR
     try {
       $client = DockerClientFactory::create($params);
       return Docker::create($client);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       return false;
     }
   }

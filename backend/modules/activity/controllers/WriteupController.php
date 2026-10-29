@@ -193,7 +193,7 @@ class WriteupController extends \app\components\BaseController
         Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to approve writeup for {target_name} by {username}.', ['target_name' => $model->target->name, 'username' => $model->player->username]));
       }
       $transaction->commit();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       Yii::$app->session->setFlash('error', Html::encode($e->getMessage()));
     }

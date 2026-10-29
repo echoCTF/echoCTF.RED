@@ -342,7 +342,7 @@ class SiteController extends \app\components\BaseController
           $redir = ['/profile/me'];
         }
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Sorry, we are unable to verify an account with the provided token.'));
       $redir = ['/'];

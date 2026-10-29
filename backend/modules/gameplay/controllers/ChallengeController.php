@@ -120,7 +120,7 @@ class ChallengeController extends \app\components\BaseController
         }
         Yii::$app->session->addFlash('success', Yii::t('app', 'Challenge [{name}] created', ['name' => Html::encode($model->name)]));
         Yii::$app->session->addFlash('warning', Yii::t('app', 'Don\'t forget to create a question for the challenge.'));
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to create challenge [{name}]', ['name' => Html::encode($model->name)]));
       }
       return $this->redirect(['view', 'id' => $model->id]);
