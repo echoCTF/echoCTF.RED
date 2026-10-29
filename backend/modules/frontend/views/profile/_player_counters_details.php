@@ -62,7 +62,7 @@ use yii\helpers\Html;
         <tr>
           <td><i class="fas fa-sync-alt"></i></td>
           <td>Bytes Send/Received</td>
-          <td><?= Yii::$app->formatter->asShortSize($model->owner->bytesSent) ?> / <?= Yii::$app->formatter->asShortSize($model->owner->bytesReceived) ?></td>
+          <td><?= Yii::$app->formatter->asShortSize($model->owner->bytesSent, 2) ?> / <?= Yii::$app->formatter->asShortSize($model->owner->bytesReceived, 2) ?></td>
         </tr>
       </tbody>
     </table>
