@@ -46,9 +46,8 @@ class CronController extends Controller
             $p->notify('swal:info',\Yii::t('app', 'Your subscription has expired'),\Yii::t('app', 'We\'re sorry to let you know that your ' . $rec->product->name . ' subscription has expired. Feel free to re-subscribe at any time.'));
             $rec->cancel();
           } else {
-            \Yii::$app->db->createCommand("DELETE FROM network_player WHERE player_id=:player_id")
-              ->bindValue(':player_id', $rec->player_id)
-              ->execute();
+            // Only the networks of this subscription, not ones the player has from elsewhere
+            $rec->cancel();
           }
 
           $rec->delete();
