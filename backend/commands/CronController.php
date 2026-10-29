@@ -524,9 +524,14 @@ class CronController extends Controller
         printf("Target %s ", $target->fqdn);
         try {
           if (!$target->ondemand) {
-            printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $target->spin() ? "success" : "fail");
+            $ok = $target->spin();
+            printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $ok ? "success" : "fail");
           } else {
-            printf("scheduled for [%s] at %s, pull: %s\n", $target->status, $target->scheduled_at, $target->pull() ? "success" : "fail");
+            $ok = $target->pull();
+            printf("scheduled for [%s] at %s, pull: %s\n", $target->status, $target->scheduled_at, $ok ? "success" : "fail");
+          }
+          if (!$ok) {
+            continue; // keep it scheduled, retried on the next run
           }
           $target->status = 'online';
           $target->scheduled_at = null;
