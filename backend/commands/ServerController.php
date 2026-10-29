@@ -34,6 +34,7 @@ class ServerController extends Controller
         ]);
 
         echo "Found " . count($result) . " images to be deleted\n";
+        $imageIds = [];
         foreach ($result as $r) {
           $imageIds[] = $r->getId();
         }
