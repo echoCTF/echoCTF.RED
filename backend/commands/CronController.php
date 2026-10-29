@@ -462,8 +462,9 @@ class CronController extends Controller
       }
     } catch (\Exception $e) {
       echo "Healthcheck:", $e->getMessage(), "\n";
+    } finally {
+      @unlink("/tmp/cron-healthcheck.lock");
     }
-    @unlink("/tmp/cron-healthcheck.lock");
   }
 
   /**
