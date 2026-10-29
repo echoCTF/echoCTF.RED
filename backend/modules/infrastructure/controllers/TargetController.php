@@ -291,14 +291,14 @@ class TargetController extends \app\components\BaseController
   {
     $model = $this->findModel($id);
     $modelOrig = $this->findModel($id);
-    $msg = Yii::t('app', 'Server updated successfully');
+    $msg = Yii::t('app', 'Target updated successfully');
     if ($model->load(Yii::$app->request->post()) && $model->validate()) {
       if ($model->save()) {
         // if the target has changed server or container name destroy the old one, only once the
         // new settings are stored so a failed save leaves the target running
         if ($modelOrig->server != $model->server || $modelOrig->name != $model->name || array_key_exists('destroy', Yii::$app->request->post())) {
           $modelOrig->destroy();
-          $msg = Yii::t('app', 'Server destroyed and updated successfully');
+          $msg = Yii::t('app', 'Target destroyed and updated successfully');
         }
         if (array_key_exists('notify', Yii::$app->request->post())) {
           //foreach player with progress and not headshot
@@ -322,7 +322,7 @@ class TargetController extends \app\components\BaseController
         Yii::$app->session->setFlash('success', $msg);
         return $this->redirect(['view', 'id' => $model->id]);
       }
-      Yii::$app->session->setFlash('error', Yii::t('app', 'Server failed to be updated [{errors}]', ['errors' => Html::encode(implode(', ', $model->errors))]));
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Target failed to be updated [{errors}]', ['errors' => Html::encode(implode(', ', $model->getErrorSummary(true)))]));
     }
 
     return $this->render('update', [
