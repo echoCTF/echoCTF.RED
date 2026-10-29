@@ -86,6 +86,10 @@ class PlayerPaymentHistory extends \yii\db\ActiveRecord
     $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
     $stripe_payments = $stripe->paymentIntents->all([]);
     foreach ($stripe_payments->autoPagingIterator() as $payment) {
+      // Only payments that went through, not declined or abandoned attempts
+      if ($payment->status !== 'succeeded') {
+        continue;
+      }
       $filter = ['stripe_customer_id' => $payment->customer];
       $player = Player::findOne($filter);
 
@@ -116,7 +120,8 @@ class PlayerPaymentHistory extends \yii\db\ActiveRecord
     $stripe_refunds = $stripe->refunds->all([]);
     foreach ($stripe_refunds->autoPagingIterator() as $refund) {
       $pp = PlayerPaymentHistory::findOne(['payment_id' => $refund->payment_intent]);
-      if ($pp != null) {
+      // The charge.refunded webhook already recorded it under the charge id
+      if ($pp != null && PlayerPaymentHistory::findOne(['payment_id' => $refund->charge]) === null) {
         $pph = new PlayerPaymentHistory([
           'player_id' => $pp->player_id,
           'payment_id' => $refund->id,
