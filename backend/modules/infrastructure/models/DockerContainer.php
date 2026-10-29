@@ -182,23 +182,15 @@ class DockerContainer extends Model
     $this->connectAPI();
     $authHeaders = [];
     if (!empty($this->imageparams)) {
-      $registryConfig = new AuthConfig();
-      $decoded = \yii\helpers\Json::decode($this->imageparams, false);
-
-      if ($decoded !== null && property_exists($decoded, 'username')) {
-        $registryConfig->setUsername($decoded->username);
+      // X-Registry-Auth must be a base64url encoded JSON string, imageCreate()
+      // does not serialize an AuthConfig object (only imagePush() does)
+      $decoded = json_decode($this->imageparams, true);
+      $auth = is_array($decoded) ? array_intersect_key($decoded, array_flip(['username', 'password', 'email', 'serveraddress'])) : [];
+      if ($auth !== []) {
+        $authHeaders['X-Registry-Auth'] = rtrim(strtr(base64_encode(json_encode($auth)), '+/', '-_'), '=');
       }
-
-      if ($decoded !== null && property_exists($decoded, 'password')) {
-        $registryConfig->setPassword($decoded->password);
-      }
-
-      if ($decoded !== null && property_exists($decoded, 'email')) {
-        $registryConfig->setEmail($decoded->email);
-      }
-      $authHeaders['X-Registry-Auth'] = $registryConfig;
     }
-    $imageCreateResult = $this->docker->imageCreate($this->image, ['fromImage' => $this->image], $authHeaders);
+    $imageCreateResult = $this->docker->imageCreate(null, ['fromImage' => $this->image], $authHeaders);
     $imageCreateResult->wait();
     return true;
   }
