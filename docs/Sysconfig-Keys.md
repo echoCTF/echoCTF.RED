@@ -89,7 +89,7 @@ These are the system configuration keys used by the platform applications. Any k
 * `target_restart_log_interval`: Interval for restart logs, 0 means false (dont show restart log)
 * `target_updated_days`: How many days the target is considered as `updated` on the frontend after update
 * `discord_news_webhook`: A discord webhook url to send news and announcements to
-* `pf_state_limits`: The content to be appended to the pass rules that enforces limits (default: `(max 10000, source-track rule, max-src-nodes 5, max-src-states 2000, max-src-conn 50)`)
+* `pf_state_limits`: The content to be appended to the pass rules that enforces limits (default: `(max 10000, source-track rule, max-src-nodes 5, max-src-states 2000, max-src-conn 50)`). Add `pflow` to count player traffic on networks, instances and private networks, see [Player Target Traffic](Player-Target-Traffic.md)
 * `force_https_urls`: Force URL generation to always be https (sets `_SERVER['HTTPS']=on`)
 * `trusted_proxies`: Comma separated list of IPs and CIDR ranges (eg. `10.0.0.0/8,192.0.2.10`) of the reverse proxies or CDNs in front of the frontend. Requests that connect from one of them have the player IP read from `proxy_ip_header`, which the failed login, registration, password reset and verification limits, the signup/signin IP and `player_frontend_ip` all use. Requests from any other address are never trusted to set it, and only this header is trusted (`X-Forwarded-Host` and `X-Forwarded-Proto` stay ignored). Empty (default) means no proxy: players connect directly and the connecting address is the player IP.
 * `proxy_ip_header`: Header that carries the player IP when `trusted_proxies` is set. Default `X-Forwarded-For`, use `CF-Connecting-IP` behind Cloudflare.

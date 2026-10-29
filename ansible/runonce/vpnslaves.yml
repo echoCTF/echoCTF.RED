@@ -331,6 +331,17 @@
       - { src: "{{APP_DIR}}/backend/bin/powerops", dst: "/usr/local/bin/powerops" }
       - { src: "{{APP_DIR}}/backend/bin/target-restart", dst: "/usr/local/bin/target-restart" }
 
+  - name: "Prepare pflow1, exports player/target states to traffic/collect"
+    copy:
+      content: |
+        flowsrc 127.0.0.1 flowdst 127.0.0.1:9995
+        pflowproto 5
+        up
+      dest: /etc/hostname.pflow1
+
+  - name: "Bring up pflow1"
+    command: sh /etc/netstart pflow1
+
   - name: Install echoctf.ini for supervisord
     copy:
       dest: /etc/supervisord.d/echoctf.ini
@@ -346,6 +357,13 @@
         user = root
         command = /usr/local/bin/instance-pf 30
         stdout_logfile=/var/log/supervisord-echoctf.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+        [program:backend-traffic]
+        user = root
+        command = {{APP_DIR}}/backend/yii traffic/collect 127.0.0.1:9995 30
+        stdout_logfile=/var/log/echoctf-traffic.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
 

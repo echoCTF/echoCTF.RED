@@ -100,6 +100,16 @@ Update PF `/etc/targets.conf`, `/etc/match-findings-pf.conf` among other things.
 
 Usage: `./yii target/pf [load]`
 
+For private networks with running targets, it also creates the pass rules between the network and its players.
+
+The network name is used as a PF table name. If it has characters other than letters, numbers and `_`, or if `<name>_clients` is longer than 31 characters, the network is skipped and you will see:
+
+```
+PF: skipping private network [name], not a valid pf table name
+```
+
+Names created by the frontend (`player_product_<id>`) are always fine.
+
 ## Generate and load Instance tables PF rules
 Generate and (optionaly) load pf tables related to instances. This operation is run on the VPN to keep the PF tables in sync.
 

@@ -463,6 +463,17 @@
       - /etc/hostname.pflog1
       - /etc/hostname.pflog0
 
+  - name: "Prepare pflow1, exports player/target states to traffic/collect"
+    copy:
+      content: |
+        flowsrc 127.0.0.1 flowdst 127.0.0.1:9995
+        pflowproto 5
+        up
+      dest: /etc/hostname.pflow1
+
+  - name: "Bring up pflow1"
+    command: sh /etc/netstart pflow1
+
   - name: "Prepare /etc/hostname.tun0"
     copy:
       content: |
@@ -666,6 +677,13 @@
         user = root
         command = /usr/local/bin/instance-pf-tables
         stdout_logfile=/var/log/echoctf-cron-instances-pf.log
+        stdout_logfile_maxbytes=0
+        redirect_stderr=true
+
+        [program:backend-traffic]
+        user = root
+        command = {{APP_DIR}}/backend/yii traffic/collect 127.0.0.1:9995 30
+        stdout_logfile=/var/log/echoctf-traffic.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
 

@@ -80,6 +80,13 @@ $this->params['jumpto'] = \app\widgets\JumpToWidget::widget([
                 'visible' => count($model->owner->progressTargets) > 0
               ],
               [
+                'label' => '<i class="fas fa-network-wired" data-toggle="tooltip" data-placement="top" title="Target Traffic"></i>',
+                'headerOptions' => ['style' => 'font-weight:bold'],
+                'linkOptions' => ['data-url' => Url::to(['target-traffic', 'id' => $model->id])],
+                'options' => ['id' => 'target-traffic-tab'],
+                'visible' => Yii::$app->user->identity->isAdmin && $model->owner->getTargetTraffic()->exists()
+              ],
+              [
                 'label' => '<i class="fas fa-skull-crossbones" data-toggle="tooltip" data-placement="top" title="Headshots"></i>',
                 'headerOptions' => ['style' => 'font-weight:bold'],
                 'linkOptions' => ['data-url' => Url::to(['headshots', 'id' => $model->id])],
