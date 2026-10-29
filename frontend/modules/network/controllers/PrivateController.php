@@ -135,7 +135,7 @@ class PrivateController extends \app\components\BaseController
       'target_id' => $target_id,
     ]);
 
-    if ($model == NULL || intval($model->privateNetwork->player_id) !== intval(Yii::$app->user->id)) {
+    if ($model == NULL || intval($model->privateNetwork->player_id) !== intval(Yii::$app->user->id) || $model->privateNetwork->productEnded()) {
       Yii::$app->session->setFlash('error', 'No such private network target exists!!!');
       return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
     }
@@ -194,7 +194,7 @@ class PrivateController extends \app\components\BaseController
       ])
       ->one();
 
-    if ($model !== null) {
+    if ($model !== null && !$model->productEnded()) {
       return $model;
     }
 
