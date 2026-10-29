@@ -20,7 +20,10 @@ class TargetController extends Controller
    */
   public function actionDestroy($target_id)
   {
-    $target = Target::findOne($target_id);
+    if (($target = Target::findOne($target_id)) === null) {
+      $this->stderr("Target $target_id not found\n");
+      return \yii\console\ExitCode::DATAERR;
+    }
     printf("Destroying target %s from %s: %s\n", $target->name, $target->server, $target->destroy() ? "success" : "fail");
   }
 
