@@ -142,7 +142,9 @@ class DockerContainer extends Model
     }
 
     $hostConfig->setNetworkMode($this->net);
-    $hostConfig->setDns([$this->dns]);
+    if (!empty($this->dns)) {
+      $hostConfig->setDns([$this->dns]);
+    }
     foreach ($this->targetVolumes as $var) {
       $targetVolumes[] = sprintf('%s:%s', $var->volume, $var->bind);
     }
