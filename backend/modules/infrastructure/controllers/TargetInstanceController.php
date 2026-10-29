@@ -276,15 +276,15 @@ class TargetInstanceController extends \app\components\BaseController
         $dc->ssl = (bool) $val->server->ssl;
         try {
           $dc->destroy();
-          Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got destroyed.'));
+          Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [{name}] got destroyed.', ['name' => Html::encode($dc->name)]));
         } catch (\Exception $e) {
-          Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to get destroyed: ' . $e->getMessage()));
+          Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [{name}] failed to get destroyed: {error}', ['name' => Html::encode($dc->name), 'error' => Html::encode($e->getMessage())]));
         }
         $val->delete();
-        Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got deleted.'));
+        Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [{name}] got deleted.', ['name' => Html::encode($dc->name)]));
       } catch (\Throwable $e) {
         $error = method_exists($e, 'getErrorResponse') ? $e->getErrorResponse()->getMessage() : $e->getMessage();
-        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $val->name . '] failed to delete: ' . $error));
+        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [{name}] failed to delete: {error}', ['name' => Html::encode($val->name), 'error' => Html::encode($error)]));
       }
     }
 

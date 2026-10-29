@@ -248,7 +248,7 @@ class TargetController extends \app\components\BaseController
 
         $stream->wait();
       } catch (\Exception $e) {
-        Yii::$app->session->setFlash('error', $e->getMessage());
+        Yii::$app->session->setFlash('error', Html::encode($e->getMessage()));
       }
     } else {
       $form->tty = true;
