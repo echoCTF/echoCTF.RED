@@ -41,7 +41,7 @@ class PrivateNetworkController extends Controller
       try {
         $ips = [];
         $dc = new DockerContainer($p->target);
-        $server = $p->server;
+        $server = $oldServer = $p->server;
         // state 2 (network expired) must be destroyed, even if it never got an IP
         if (intval($p->state) !== 2 && (intval($p->server_id) === 0 || $p->ipoctet === null)) {
           $notifType = "success";
@@ -84,6 +84,16 @@ class PrivateNetworkController extends Controller
         }
 
         $dc->name = sprintf("%s_%s", $p->privateNetwork->name, $p->target->name);
+        if ($oldServer !== null && $server !== null && $oldServer->id !== $server->id) {
+          // moving to another server, remove the leftover container from the old one
+          $old = clone $dc;
+          $old->server = $oldServer->connstr;
+          $old->ssl = (bool) $oldServer->ssl;
+          try {
+            $old->destroy();
+          } catch (\Exception $e) {
+          }
+        }
         $dc->server = $server->connstr;
         $dc->ssl = (bool) $server->ssl;
         $dc->net = $server->network;
