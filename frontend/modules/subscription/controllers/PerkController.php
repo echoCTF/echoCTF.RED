@@ -99,7 +99,26 @@ class PerkController extends \app\components\BaseController
     $target = Target::find()->where(['id' => intval($targetId), 'active' => 1, 'instance_allowed' => 1])->one();
     if ($target === null)
       return;
+    // Only targets from networks the player can access
+    Yii::$app->getModule('target')->checkNetwork($target);
 
+    // One request at a time per product, so parallel requests can't all pass the limit check; waits at most 5 seconds
+    $lock = 'perk_private_network_' . intval($model->id);
+    $mutex = new \yii\mutex\MysqlMutex(['db' => Yii::$app->db]);
+    if (!$mutex->acquire($lock, 5)) {
+      \Yii::$app->session->setFlash('warning', \Yii::t('app', 'Another request for this network is in progress, please try again.'));
+      return;
+    }
+    try {
+      $model->refresh();
+      return $this->addPrivateNetworkTarget($model, $target, $targetId);
+    } finally {
+      $mutex->release($lock);
+    }
+  }
+
+  protected function addPrivateNetworkTarget($model, $target, $targetId)
+  {
     if (isset($model->metadataObj->private_network_id)) {
       $privateNetwork = PrivateNetwork::findOne($model->metadataObj->private_network_id);
     } else {

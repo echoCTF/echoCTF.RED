@@ -91,6 +91,16 @@ class PrivateNetwork extends \yii\db\ActiveRecord
     return $this->hasMany(Target::class, ['id' => 'target_id'])->via('privateTargets');
   }
 
+  /** True when the product this network was made for has ended; networks not made by a product are not affected */
+  public function productEnded(): bool
+  {
+    $ids = [];
+    foreach (\app\modules\subscription\models\PlayerProduct::find()->where(['player_id' => $this->player_id])->all() as $pp)
+      if (intval($pp->metadataObj->private_network_id ?? 0) === intval($this->id))
+        $ids[] = $pp->id;
+    return $ids !== [] && !\app\modules\subscription\models\PlayerProduct::find()->where(['id' => $ids])->active()->exists();
+  }
+
   /**
    * {@inheritdoc}
    * @return PrivateNetworkQuery the active query used by this AR class.

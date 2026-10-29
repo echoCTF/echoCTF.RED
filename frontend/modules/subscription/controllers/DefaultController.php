@@ -242,6 +242,22 @@ class DefaultController extends \app\components\BaseController
       else
         $mode = 'subscription';
 
+      if ($mode === 'subscription') {
+        // One subscription per player, plan changes go through the customer portal
+        foreach (\Stripe\Subscription::all(['customer' => $cid, 'status' => 'all', 'limit' => 100])->autoPagingIterator() as $sub) {
+          if (!in_array($sub->status, ['canceled', 'incomplete_expired'], true)) {
+            \Yii::$app->response->statusCode = 403;
+            return ['error' => ['message' => \Yii::t('app', 'You already have a subscription, use Manage Billing to change it.')]];
+          }
+        }
+        // Expire other open subscription checkouts so only one can complete
+        foreach (\Stripe\Checkout\Session::all(['customer' => $cid, 'status' => 'open', 'limit' => 100])->autoPagingIterator() as $open) {
+          if ($open->mode === 'subscription') {
+            $open->expire();
+          }
+        }
+      }
+
       $line_items = [[
         'price' => $priceId,
         'quantity' => 1,
@@ -339,6 +355,19 @@ class DefaultController extends \app\components\BaseController
       $metadata = $payment->metadataObj;
       if ($metadata && isset($metadata->charges) && isset($metadata->charges->data)) {
         return $this->redirect($metadata->charges->data[0]->receipt_url);
+      }
+      // Newer PaymentIntents only have the latest charge id
+      if ($metadata && !empty($metadata->latest_charge)) {
+        try {
+          \Stripe\Stripe::setEnableTelemetry(false);
+          \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
+          $charge = \Stripe\Charge::retrieve(is_string($metadata->latest_charge) ? $metadata->latest_charge : $metadata->latest_charge->id);
+          if (!empty($charge->receipt_url)) {
+            return $this->redirect($charge->receipt_url);
+          }
+        } catch (\Exception $e) {
+          Yii::error($e->getMessage());
+        }
       }
       Yii::$app->session->setFlash('error', \Yii::t('app', 'No details found, contact support'));
     }

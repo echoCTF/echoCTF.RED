@@ -22,9 +22,12 @@ class CronController extends Controller
    *
    * This operation is supposed to be run on the VPN Server
    */
-  public function actionExpireSubscriptions($active = false, $interval = 1440)
+  public function actionExpireSubscriptions($active = null, $interval = 1440)
   {
-    $playerSubs = PlayerSubscription::find()->active(intval($active))->expired($interval);
+    $playerSubs = PlayerSubscription::find()->expired($interval);
+    // Without an argument process both active and inactive subscriptions
+    if ($active !== null)
+      $playerSubs->active(intval($active));
 
     foreach ($playerSubs->all() as $rec) {
       $transaction = \Yii::$app->db->beginTransaction();
@@ -46,9 +49,8 @@ class CronController extends Controller
             $p->notify('swal:info',\Yii::t('app', 'Your subscription has expired'),\Yii::t('app', 'We\'re sorry to let you know that your ' . $rec->product->name . ' subscription has expired. Feel free to re-subscribe at any time.'));
             $rec->cancel();
           } else {
-            \Yii::$app->db->createCommand("DELETE FROM network_player WHERE player_id=:player_id")
-              ->bindValue(':player_id', $rec->player_id)
-              ->execute();
+            // Only the networks of this subscription, not ones the player has from elsewhere
+            $rec->cancel();
           }
 
           $rec->delete();
@@ -114,10 +116,10 @@ class CronController extends Controller
       $player = $pp->player; // Get a copy of the player model
 
       if (isset($pp->metadataObj->private_network_id) && ($pn = \app\modules\infrastructure\models\PrivateNetwork::findOne(intval($pp->metadataObj->private_network_id))) !== null) {
+        // Targets that never started (no server) are marked too, so they count as shut down and target-ops stops starting them
         $updatedRecords = \app\modules\infrastructure\models\PrivateNetworkTarget::updateAll(['state' => 2], [
           'and',
           ['!=', 'state', 2],
-          ['is not', 'server_id', null],
           ['=', 'private_network_id', intval($pp->metadataObj->private_network_id)]
         ]);
         $totalRecords = \app\modules\infrastructure\models\PrivateNetworkTarget::find()->andWhere(['state' => 2, 'server_id' => null, 'private_network_id' => intval($pp->metadataObj->private_network_id)])->count();
@@ -129,9 +131,13 @@ class CronController extends Controller
             throw new UserException('Failed to delete Player Product or Private Network.');
         }
       } else {
-        if ($pp->delete()) // Delete the player product
+        $spins = $pp->price ? intval(json_decode((string) $pp->price->metadata)->spins ?? 0) : 0;
+        if ($pp->delete()) { // Delete the player product
+          // Take back the spins the pack added
+          if ($spins > 0 && $player->playerSpin)
+            $player->playerSpin->updateAttributes(['perday' => new \yii\db\Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => $spins])]);
           $player->notify('swal:info', $notification_title, $notification_body); // notify player
-        else
+        } else
           throw new UserException('Failed to delete Player Product.');
       }
     }

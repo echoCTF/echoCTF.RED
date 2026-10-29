@@ -109,10 +109,12 @@ class Product extends \yii\db\ActiveRecord
     {
       \Stripe\Stripe::setEnableTelemetry(false);
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-      $products=$stripe->products->all(['active'=>true]);
+      $products=$stripe->products->all([]);
       foreach($products->autoPagingIterator() as $stripeProduct)
       {
         $product=Product::findOne($stripeProduct->id);
+        // Archived products are only updated (deactivated), never imported
+        if($product===null && !$stripeProduct->active) continue;
 
         if($product===null)
         {
@@ -127,9 +129,10 @@ class Product extends \yii\db\ActiveRecord
         $prices=$stripe->prices->all(['product'=>$product->id]);
         foreach($prices as $p)
         {
-          if(!$p->active) continue;
           if(($price=Price::findOne($p->id))===null)
           {
+            // Archived prices are only updated (deactivated), never imported
+            if(!$p->active) continue;
             $price=new Price();
             $price->id=$p->id;
           }
@@ -159,7 +162,10 @@ class Product extends \yii\db\ActiveRecord
           }
           if(!$price->save())
           {
-            \Yii::$app->session->addFlash('error', sprintf('Failed to save price: %s for %s',Html::encode($price->id),Html::encode($stripeProduct->name)));
+            if(\Yii::$app instanceof \yii\console\Application)
+              printf("Failed to save price: %s for %s\n",$price->id,$stripeProduct->name);
+            else
+              \Yii::$app->session->addFlash('error', sprintf('Failed to save price: %s for %s',Html::encode($price->id),Html::encode($stripeProduct->name)));
           }
         }
 
@@ -191,9 +197,12 @@ class Product extends \yii\db\ActiveRecord
           else
             \Yii::$app->session->addFlash('success', sprintf('Imported product: %s, %s',Html::encode($stripeProduct->id),Html::encode($stripeProduct->name)));
         }
-        if(!empty($stripeProduct->metadata->network_ids))
+        // product_network follows network_ids, links to networks no longer listed are removed
+        $networkIds=empty($stripeProduct->metadata->network_ids) ? [] : array_map('intval',explode(',',$stripeProduct->metadata->network_ids));
+        ProductNetwork::deleteAll(['and',['product_id'=>$product->id],['not in','network_id',$networkIds]]);
+        if($networkIds!==[])
         {
-          foreach(explode(',',$stripeProduct->metadata->network_ids) as $nid)
+          foreach($networkIds as $nid)
           {
             if(ProductNetwork::findOne(['product_id'=>$product->id, 'network_id'=>$nid])===null)
             {

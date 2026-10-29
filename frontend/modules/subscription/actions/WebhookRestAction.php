@@ -72,6 +72,8 @@ class WebhookRestAction extends \yii\rest\Action
           return ['error' => 'No such customer exists on the platform.'];
         }
         $ps = PlayerSubscription::find()->where(['player_id' => $player->id])->one();
+        // Keep access while Stripe retries a failed renewal
+        $isActive = in_array($object->status, ['active', 'past_due'], true);
         $transaction = \Yii::$app->db->beginTransaction();
         try {
           if ($ps === null) {
@@ -79,12 +81,13 @@ class WebhookRestAction extends \yii\rest\Action
             $ps->player_id = $player->id;
             $ps->created_at = new \yii\db\Expression("NOW()");
           } else {
-            // cancel subscription extras in case new metadata have other networks
-            $ps->cancel();
+            // cancel subscription extras in case new metadata have other networks, keep the API token
+            $ps->cancel(true);
             // If currently there is an active subscription then just
-            if ($ps->active == 1 && $object->status !== "active") {
+            if ($ps->active == 1 && !$isActive) {
               $ps->updated_at = new \yii\db\Expression("NOW()");
               $ps->active = 0;
+              $ps->revokeApiToken();
               $ps->save();
               $transaction->commit();
               return ['status' => 'success', 'message' => 'canceled subscription'];
@@ -97,11 +100,13 @@ class WebhookRestAction extends \yii\rest\Action
           $ending = $object->current_period_end;
           $ps->starting = new \yii\db\Expression("from_unixtime($starting)");
           $ps->ending = new \yii\db\Expression("from_unixtime($ending)");
-          $ps->active = $object->status === "active" ? 1 : 0;
+          $ps->active = $isActive ? 1 : 0;
           $ps->price_id = $si->plan->id;
           $ps->updated_at = new \yii\db\Expression("NOW()");
           $ps->save();
-          $ps->give();
+          // Only give perks to active subscriptions
+          if (intval($ps->active) === 1)
+            $ps->give();
           $transaction->commit();
         } catch (\Exception $e) {
           $transaction->rollBack();
@@ -213,11 +218,8 @@ class WebhookRestAction extends \yii\rest\Action
         break;
 
       case 'payment_intent.succeeded':
-        if ($object->data === []) {
-          throw new UserException('Empty data[]');
-        }
-        $data = $object->charges->data[0];
-        if (isset($data->paid) && $data->paid === true) {
+        // charges is not sent on newer API versions, use the PaymentIntent status
+        if ($object->status === 'succeeded') {
           try {
             $player = Player::findOne(['stripe_customer_id' => $object->customer]);
             if ($player !== null)
@@ -249,6 +251,38 @@ class WebhookRestAction extends \yii\rest\Action
           Yii::error($e);
         }
 
+        // Take back a fully refunded one-time purchase, once per charge
+        $revoked = (new \yii\db\Query())->from('stripe_webhook')
+          ->where(['type' => $type, 'object_id' => $object->id])
+          ->andWhere(['IS NOT', 'processed_at', null])
+          ->exists();
+        if ($object->refunded === true && !$revoked && !empty($object->payment_intent)) {
+          try {
+            $session = \Stripe\Checkout\Session::all(['payment_intent' => $object->payment_intent, 'limit' => 1])->data[0] ?? null;
+            $price = ($session !== null && $session->mode === 'payment' && isset($session->metadata->price_id)) ? Price::findOne($session->metadata->price_id) : null;
+            $player = $price !== null ? Player::findOne(intval($session->metadata->player_id)) : null;
+            if ($price !== null && $player !== null && $price->ptype === 'one_time') {
+              $pp = PlayerProduct::find()
+                ->where(['player_id' => $player->id, 'price_id' => $price->id])
+                ->andWhere(['>', 'ending', new Expression('NOW() - INTERVAL 1 DAY')])
+                ->orderBy(['id' => SORT_DESC])
+                ->one();
+              if ($pp !== null) {
+                // Past the one day grace, so the frontend and the expiry cron both treat it as ended
+                $pp->updateAttributes(['ending' => new Expression('NOW() - INTERVAL 1 DAY')]);
+              }
+              // Timed packs lose their spins when the expiry cron removes them
+              if (isset($price->metadataObj->spins) && intval($price->metadataObj->spins) > 0 && intval($price->metadataObj->days ?? 0) <= 0) {
+                $player->profile->spins->updateAttributes(['perday' => new Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => intval($price->metadataObj->spins)])]);
+              }
+            }
+            \Yii::$app->db->createCommand()->update('stripe_webhook', ['processed_at' => new Expression('NOW()')], ['id' => $webhookId])->execute();
+          } catch (\Exception $e) {
+            \Yii::$app->response->statusCode = 403;
+            \Yii::error($e);
+            return ['error' => $e->getMessage()];
+          }
+        }
         break;
       default:
         // Unhandled event type

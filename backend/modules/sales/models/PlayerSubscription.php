@@ -118,7 +118,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     if (intval(\Yii::$app->formatter->asTimestamp($this->starting)) !== intval($stripe_subscription->items->data[0]->current_period_start) || intval(\Yii::$app->formatter->asTimestamp($this->ending)) !== intval($stripe_subscription->items->data[0]->current_period_end))
       return false;
 
-    if (intval($this->active) !== intval($stripe_subscription->ended_at == null) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
+    if (intval($this->active) !== intval(self::stripeActive($stripe_subscription)) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
       return false;
 
     return true;
@@ -145,7 +145,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     }
     $this->updated_at = new \yii\db\Expression('NOW()');
     $this->price_id = $stripe_subscription->items->data[0]->plan->id;
-    $this->active = intval($stripe_subscription->ended_at == null);
+    $this->active = intval(self::stripeActive($stripe_subscription));
     return $this->update(false);
   }
 
@@ -174,7 +174,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
         $ps->updated_at = new \yii\db\Expression('NOW()');
         $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
-        $ps->active = intval($stripe_subscription->ended_at == null);
+        $ps->active = intval(self::stripeActive($stripe_subscription));
 
         if (!$ps->save(false)) {
           if (\Yii::$app instanceof \yii\console\Application)
@@ -188,7 +188,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           else
             \Yii::$app->session->addFlash('success', sprintf('Imported subscription: %s for player %s', Html::encode($stripe_subscription->id), Html::encode($player->username)));
         }
-      } else
+      } else if (\Yii::$app instanceof \yii\console\Application)
+        printf("Customer not found: %s\n", $stripe_subscription->customer);
+      else
         \Yii::$app->session->addFlash('warning', sprintf('Customer not found: %s', Html::encode($stripe_subscription->customer)));
     }
   }
@@ -209,9 +211,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         $stripe_subscription = $stripe->subscriptions->retrieve($ps->subscription_id, []);
 
         // Check if subscription active agree with Stripe
-        if (intval($ps->active) !== intval($stripe_subscription->ended_at == null)) {
+        if (intval($ps->active) !== intval(self::stripeActive($stripe_subscription))) {
           \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Syncing <kbd>active</kbd>, not the same with Stripe <kbd>{subscription_id}</kbd>', ['subscription_id' => $ps->subscription_id]));
-          $ps->active = intval($stripe_subscription->ended_at == null);
+          $ps->active = intval(self::stripeActive($stripe_subscription));
           $dosave = true;
         }
 
@@ -223,7 +225,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
 
         // Check if we have something to to fix active agrees with Stripe
-        if ($dosave !== true && $ps->update(true, ['price_id', 'active'])) {
+        if ($dosave === true && $ps->update(true, ['price_id', 'active'])) {
           \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Updated subscription <kbd>{subscription_id}</kbd>', ['subscription_id' => $ps->subscription_id]));
         }
       } catch (\Stripe\Exception\InvalidRequestException $e) {
@@ -243,6 +245,22 @@ class PlayerSubscription extends \yii\db\ActiveRecord
    * @var bool
    */
   private $_wasActive = false;
+
+  /** Paid, or being retried by Stripe after a failed renewal; unpaid, incomplete and ended are not active */
+  public static function stripeActive($stripe_subscription): bool
+  {
+    return in_array($stripe_subscription->status, ['active', 'past_due'], true);
+  }
+
+  /** Daily spins the product of the given price gives (`spins` product metadata key). */
+  public static function spinsFor($price_id): int
+  {
+    if ($price_id === null || ($price = Price::findOne($price_id)) === null || $price->product === null) {
+      return 0;
+    }
+    $metadata = json_decode($price->product->metadata);
+    return is_object($metadata) && isset($metadata->spins) ? max(0, intval($metadata->spins)) : 0;
+  }
 
   /**
    * Number of target instances the product of the given price adds to the
@@ -304,14 +322,10 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     $wasActive = !$insert && intval($activeChanged ? $changedAttributes['active'] : $this->active) === 1;
     $priceChanged = !$insert && array_key_exists('price_id', $changedAttributes) && (string) $changedAttributes['price_id'] !== (string) $this->price_id;
     if ($this->active == 1) {
-      // Only apply the spins when the subscription starts or changes plan, so
-      // that saving it again doesn't give a fresh counter or wipe extra spins
+      // Add the spins difference when the subscription starts or changes plan, keeping spins from other purchases
       if (!$wasActive || $priceChanged) {
-        if (isset($metadata->spins) && intval($metadata->spins) > 0) {
-          $this->player->playerSpin->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
-        } else {
-          $this->player->playerSpin->updateAttributes(['counter' => 0]);
-        }
+        $delta = self::spinsFor($this->price_id) - ($wasActive ? self::spinsFor($changedAttributes['price_id']) : 0);
+        $this->player->playerSpin->updateAttributes(['perday' => new Expression('GREATEST(:base, perday + :delta)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':delta' => $delta]), 'counter' => 0]);
       }
 
       if (isset($metadata->badge_ids)) {
@@ -351,8 +365,8 @@ class PlayerSubscription extends \yii\db\ActiveRecord
 
     } else { // subscription expired
       // Take the subscription spins back once, when it stops being active
-      if ($wasActive && isset($metadata->spins) && intval($metadata->spins) > 0) {
-        $this->player->playerSpin->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
+      if ($wasActive && ($spins = self::spinsFor($priceChanged ? $changedAttributes['price_id'] : $this->price_id)) > 0) {
+        $this->player->playerSpin->updateAttributes(['perday' => new Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => $spins]), 'counter' => 0]);
       }
 
       if (isset($metadata->network_ids)) {
@@ -389,7 +403,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
       // Only reset the spins when the stored subscription is still active, so
       // that calling cancel() on an ended subscription (eg. DeleteInactive) is harmless
       if (intval($this->getOldAttribute('active')) === 1 && isset($metadata->spins) && intval($metadata->spins) > 0) {
-        $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
+        $this->player->profile->spins->updateAttributes(['perday' => new Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => intval($metadata->spins)]), 'counter' => 0]);
       }
     }
   }

@@ -83,7 +83,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   }
 
 
-  public function cancel()
+  public function cancel($keepApiToken = false)
   {
     if ($this->product !== null) {
       $metadata = json_decode($this->product->metadata);
@@ -101,23 +101,39 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         ]);
       }
       if ($wasActive && isset($metadata->spins) && intval($metadata->spins) > 0) {
-        $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
+        // Subtract instead of reset, so spins added by other purchases stay
+        $this->player->profile->spins->updateAttributes(['perday' => new \yii\db\Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => intval($metadata->spins)]), 'counter' => 0]);
       }
 
-      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api === true && $this->player->apiToken !== null) {
-        $this->player->apiToken->delete();
+      if (!$keepApiToken) {
+        $this->revokeApiToken();
       }
+    }
+  }
+
+  public function revokeApiToken()
+  {
+    if ($this->product === null) {
+      return;
+    }
+    $metadata = json_decode($this->product->metadata);
+    if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api === true && $this->player->apiToken !== null) {
+      $this->player->apiToken->delete();
     }
   }
 
   public function give()
   {
+    // Only give perks to active subscriptions
+    if (intval($this->active) !== 1)
+      return;
     $metadata = json_decode($this->product->metadata);
     if (intval($this->active) === 1) {
       PlayerSpin::adjustMaxInstances($this->player_id, $this->maxInstancesBonus);
     }
     if (isset($metadata->spins) && intval($metadata->spins) > 0) {
-      $this->player->profile->spins->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
+      // Add instead of replace, so spins added by other purchases stay
+      $this->player->profile->spins->updateAttributes(['perday' => new \yii\db\Expression('perday + :spins', [':spins' => intval($metadata->spins)]), 'counter' => 0]);
     } else {
       $this->player->profile->spins->updateAttributes(['counter' => 0]);
     }
