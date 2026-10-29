@@ -218,11 +218,8 @@ class WebhookRestAction extends \yii\rest\Action
         break;
 
       case 'payment_intent.succeeded':
-        if ($object->data === []) {
-          throw new UserException('Empty data[]');
-        }
-        $data = $object->charges->data[0];
-        if (isset($data->paid) && $data->paid === true) {
+        // charges is not sent on newer API versions, use the PaymentIntent status
+        if ($object->status === 'succeeded') {
           try {
             $player = Player::findOne(['stripe_customer_id' => $object->customer]);
             if ($player !== null)
