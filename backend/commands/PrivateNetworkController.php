@@ -123,7 +123,7 @@ class PrivateNetworkController extends Controller
           if ($ips != [])
             Pf::add_table_ip($p->privateNetwork->name . '_clients', implode(' ', $ips), true);
 
-          if ($p->ipoctet != '0.0.0.0' || $p->ipoctet == null) {
+          if ($p->ipoctet !== null && $p->ipoctet != '0.0.0.0') {
             // remove old IP in case it changed
             Pf::del_table_ip($p->privateNetwork->name, $p->ipoctet);
           }
