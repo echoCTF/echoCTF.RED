@@ -112,6 +112,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
 
   public function give()
   {
+    // Only give perks to active subscriptions
+    if (intval($this->active) !== 1)
+      return;
     $metadata = json_decode($this->product->metadata);
     if (intval($this->active) === 1) {
       PlayerSpin::adjustMaxInstances($this->player_id, $this->maxInstancesBonus);

@@ -101,7 +101,9 @@ class WebhookRestAction extends \yii\rest\Action
           $ps->price_id = $si->plan->id;
           $ps->updated_at = new \yii\db\Expression("NOW()");
           $ps->save();
-          $ps->give();
+          // Only give perks to active subscriptions
+          if (intval($ps->active) === 1)
+            $ps->give();
           $transaction->commit();
         } catch (\Exception $e) {
           $transaction->rollBack();
