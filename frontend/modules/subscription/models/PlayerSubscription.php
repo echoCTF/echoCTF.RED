@@ -101,7 +101,8 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         ]);
       }
       if ($wasActive && isset($metadata->spins) && intval($metadata->spins) > 0) {
-        $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
+        // Subtract instead of reset, so spins added by other purchases stay
+        $this->player->profile->spins->updateAttributes(['perday' => new \yii\db\Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => intval($metadata->spins)]), 'counter' => 0]);
       }
 
       if (!$keepApiToken) {
@@ -131,7 +132,8 @@ class PlayerSubscription extends \yii\db\ActiveRecord
       PlayerSpin::adjustMaxInstances($this->player_id, $this->maxInstancesBonus);
     }
     if (isset($metadata->spins) && intval($metadata->spins) > 0) {
-      $this->player->profile->spins->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
+      // Add instead of replace, so spins added by other purchases stay
+      $this->player->profile->spins->updateAttributes(['perday' => new \yii\db\Expression('perday + :spins', [':spins' => intval($metadata->spins)]), 'counter' => 0]);
     } else {
       $this->player->profile->spins->updateAttributes(['counter' => 0]);
     }

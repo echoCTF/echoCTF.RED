@@ -244,6 +244,16 @@ class PlayerSubscription extends \yii\db\ActiveRecord
    */
   private $_wasActive = false;
 
+  /** Daily spins the product of the given price gives (`spins` product metadata key). */
+  public static function spinsFor($price_id): int
+  {
+    if ($price_id === null || ($price = Price::findOne($price_id)) === null || $price->product === null) {
+      return 0;
+    }
+    $metadata = json_decode($price->product->metadata);
+    return is_object($metadata) && isset($metadata->spins) ? max(0, intval($metadata->spins)) : 0;
+  }
+
   /**
    * Number of target instances the product of the given price adds to the
    * player (`max_target_instances` product metadata key).
@@ -304,14 +314,10 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     $wasActive = !$insert && intval($activeChanged ? $changedAttributes['active'] : $this->active) === 1;
     $priceChanged = !$insert && array_key_exists('price_id', $changedAttributes) && (string) $changedAttributes['price_id'] !== (string) $this->price_id;
     if ($this->active == 1) {
-      // Only apply the spins when the subscription starts or changes plan, so
-      // that saving it again doesn't give a fresh counter or wipe extra spins
+      // Add the spins difference when the subscription starts or changes plan, keeping spins from other purchases
       if (!$wasActive || $priceChanged) {
-        if (isset($metadata->spins) && intval($metadata->spins) > 0) {
-          $this->player->playerSpin->updateAttributes(['perday' => intval($metadata->spins), 'counter' => 0]);
-        } else {
-          $this->player->playerSpin->updateAttributes(['counter' => 0]);
-        }
+        $delta = self::spinsFor($this->price_id) - ($wasActive ? self::spinsFor($changedAttributes['price_id']) : 0);
+        $this->player->playerSpin->updateAttributes(['perday' => new Expression('GREATEST(:base, perday + :delta)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':delta' => $delta]), 'counter' => 0]);
       }
 
       if (isset($metadata->badge_ids)) {
@@ -351,8 +357,8 @@ class PlayerSubscription extends \yii\db\ActiveRecord
 
     } else { // subscription expired
       // Take the subscription spins back once, when it stops being active
-      if ($wasActive && isset($metadata->spins) && intval($metadata->spins) > 0) {
-        $this->player->playerSpin->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
+      if ($wasActive && ($spins = self::spinsFor($priceChanged ? $changedAttributes['price_id'] : $this->price_id)) > 0) {
+        $this->player->playerSpin->updateAttributes(['perday' => new Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => $spins]), 'counter' => 0]);
       }
 
       if (isset($metadata->network_ids)) {
@@ -389,7 +395,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
       // Only reset the spins when the stored subscription is still active, so
       // that calling cancel() on an ended subscription (eg. DeleteInactive) is harmless
       if (intval($this->getOldAttribute('active')) === 1 && isset($metadata->spins) && intval($metadata->spins) > 0) {
-        $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
+        $this->player->profile->spins->updateAttributes(['perday' => new Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => intval($metadata->spins)]), 'counter' => 0]);
       }
     }
   }
