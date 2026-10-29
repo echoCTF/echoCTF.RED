@@ -19,7 +19,8 @@ class ServerController extends Controller
       ->from('server');
 
     $q1->union($q2);
-    $servers = $q1->column();
+    // targets without a server (NULL) and PVE targets have no docker to clean
+    $servers = array_filter($q1->column(), fn($srv) => !empty($srv) && strncmp($srv, 'pve:', 4) !== 0);
     $filters = [
       'until' => [$hoursAgo . 'h']
     ];
