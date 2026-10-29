@@ -116,10 +116,10 @@ class CronController extends Controller
       $player = $pp->player; // Get a copy of the player model
 
       if (isset($pp->metadataObj->private_network_id) && ($pn = \app\modules\infrastructure\models\PrivateNetwork::findOne(intval($pp->metadataObj->private_network_id))) !== null) {
+        // Targets that never started (no server) are marked too, so they count as shut down and target-ops stops starting them
         $updatedRecords = \app\modules\infrastructure\models\PrivateNetworkTarget::updateAll(['state' => 2], [
           'and',
           ['!=', 'state', 2],
-          ['is not', 'server_id', null],
           ['=', 'private_network_id', intval($pp->metadataObj->private_network_id)]
         ]);
         $totalRecords = \app\modules\infrastructure\models\PrivateNetworkTarget::find()->andWhere(['state' => 2, 'server_id' => null, 'private_network_id' => intval($pp->metadataObj->private_network_id)])->count();
