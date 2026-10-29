@@ -290,9 +290,9 @@ class TargetController extends \app\components\BaseController
     $msg = Yii::t('app', 'Server updated successfully');
     if ($model->load(Yii::$app->request->post()) && $model->validate()) {
       if ($model->save()) {
-        // if the target has changed server destroy from old one, only once the
+        // if the target has changed server or container name destroy the old one, only once the
         // new settings are stored so a failed save leaves the target running
-        if ($modelOrig->server != $model->server || array_key_exists('destroy', Yii::$app->request->post())) {
+        if ($modelOrig->server != $model->server || $modelOrig->name != $model->name || array_key_exists('destroy', Yii::$app->request->post())) {
           $modelOrig->destroy();
           $msg = Yii::t('app', 'Server destroyed and updated successfully');
         }
