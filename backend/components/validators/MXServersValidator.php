@@ -48,7 +48,7 @@ class MXServersValidator extends Validator
             return [$this->banned_message,[]];
           }
         }
-      } catch(\Exception $e)
+      } catch(\Throwable $e)
       {
         return [$e->getMessage(),[]];
       }

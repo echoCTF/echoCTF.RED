@@ -107,7 +107,7 @@ class CronController extends Controller
       echo "Deleting expired subscriptions\n";
       echo "Deleted " . PlayerSubscription::DeleteInactive() . " subscriptions\n";
       $transaction->commit();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       echo "Failed to delete inactive subscriptions " . $e->getMessage() . "\n";
     }
@@ -162,7 +162,7 @@ class CronController extends Controller
       PlayerPaymentHistory::FetchStripePayments();
       PlayerPaymentHistory::FetchStripeRefunds();
       $transaction->commit();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       echo "Failed to import payments history: " . $e->getMessage() . "\n";
     }
@@ -177,7 +177,7 @@ class CronController extends Controller
       echo "Importing Refunds\n";
       PlayerPaymentHistory::FetchStripeRefunds();
       $transaction->commit();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       echo "Failed to import refunds: " . $e->getMessage() . "\n";
     }

@@ -68,7 +68,7 @@ class DefaultController extends \app\components\BaseController
           $counter++;
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Users deleted', ['counter' => $counter]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to delete users'));
     }
@@ -93,7 +93,7 @@ class DefaultController extends \app\components\BaseController
           $counter++;
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Users banned', ['counter' => $counter]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to ban users'));
     }
@@ -184,7 +184,7 @@ class DefaultController extends \app\components\BaseController
         if (!$validator->validate($p['email'], $error)) {
           throw new UserException($error);
         }
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         $spammy[$p['email']][] = $e->getMessage();
         $spammy[$p['email']]['players'] = $p['players'];
       }
@@ -216,7 +216,7 @@ class DefaultController extends \app\components\BaseController
       }
       $trans->commit();
       \Yii::$app->getSession()->setFlash('success', Yii::t('app', '{records,plural,=0{No players found} =1{Notified one player} other{Notified # players}}', ['records' => $query->count()]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to notify players. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }

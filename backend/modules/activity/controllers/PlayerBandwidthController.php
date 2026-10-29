@@ -125,7 +125,7 @@ class PlayerBandwidthController extends BaseController
         $q->delete();
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Player Bandwidth records deleted', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to delete player bandwidth records'));
     }
@@ -158,7 +158,7 @@ class PlayerBandwidthController extends BaseController
     try {
       Yii::$app->db->createCommand()->truncateTable('player_bandwidth')->execute();
       Yii::$app->session->setFlash('success', Yii::t('app', 'Player Bandwidth truncated'));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to truncate Player Bandwidth'));
     }
     return $this->redirect(['index']);

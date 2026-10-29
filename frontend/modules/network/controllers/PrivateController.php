@@ -56,7 +56,7 @@ class PrivateController extends \app\components\BaseController
   {
     try {
       $network = $this->findModel($id);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', $e->getMessage());
       return $this->redirect(['/']);
     }
@@ -146,7 +146,7 @@ class PrivateController extends \app\components\BaseController
     // Only targets from networks the player can still access
     try {
       Yii::$app->getModule('target')->checkNetwork($model->target);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', $e->getMessage());
       return $this->redirect(Yii::$app->request->referrer ?: Yii::$app->homeUrl);
     }
@@ -165,7 +165,7 @@ class PrivateController extends \app\components\BaseController
         throw new UserException('Failed to update player spins!');
       $transaction->commit();
       Yii::$app->session->setFlash('success', 'Target scheduled for restart!!!');
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       Yii::$app->session->setFlash('error', $e->getMessage());
     }

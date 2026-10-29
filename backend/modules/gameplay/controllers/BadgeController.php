@@ -72,7 +72,7 @@ class BadgeController extends \app\components\BaseController
             return $this->redirect(['view', 'id' => $model->id]);
           }
         }
-        catch(\Exception $e)
+        catch(\Throwable $e)
         {
           $transaction->rollback();
           Yii::$app->session->setFlash('error', Yii::t('app',"Failed to create badge"));

@@ -77,7 +77,7 @@ class EventsController extends \app\components\BaseController
           Yii::$app->session->setFlash('success', "Event created successfully.");
           return $this->redirect(['index']);
         }
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         Yii::$app->session->setFlash('error', "Failed to create event: " . $e->getMessage());
       }
     }
@@ -106,11 +106,11 @@ class EventsController extends \app\components\BaseController
 
         Yii::$app->session->setFlash('success', "Event updated successfully.");
         return $this->redirect(['view', 'name' => $model->Name]);
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         // If failed, recreate the old event
         try {
           Yii::$app->db->createCommand($oldSql)->execute();
-        } catch (\Exception $rollback) {
+        } catch (\Throwable $rollback) {
           Yii::$app->session->setFlash('error', "Failed to update event and rollback also failed: " . $rollback->getMessage());
           return $this->redirect(['view', 'name' => $model->Name]);
         }

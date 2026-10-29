@@ -41,7 +41,7 @@ class ShutRestAction extends \yii\rest\ViewAction
         \Yii::$app->response->statusCode = 422;
         throw new UserException(\Yii::t('app', "No private instance found for target!"));
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->response->data = ["message" => $e->getMessage(), "code" => 0, "status" => \Yii::$app->response->statusCode];
     }
   }

@@ -34,7 +34,7 @@ class BanAction extends \yii\base\Action
           throw new \LogicException(Yii::t('app','Failed to delete and ban player.'));
       }
     }
-    catch(\Exception $e)
+    catch(\Throwable $e)
     {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app','Failed to ban player.'));

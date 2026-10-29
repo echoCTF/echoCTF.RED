@@ -76,7 +76,7 @@ class PerkController extends \app\components\BaseController
         ]);
       }
       throw new \yii\web\NotFoundHttpException("Perk is not configurable!");
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->session->setFlash('error', $e->getMessage());
     }
     return $this->redirect(['/subscription/default/index']);
@@ -140,7 +140,7 @@ class PerkController extends \app\components\BaseController
         if (!$model->save())
           throw new UserException(implode(", ", $model->getErrorSummary(false)));
         $transaction->commit();
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         $transaction->rollBack();
         \Yii::$app->session->setFlash('error', $e->getMessage());
       }
@@ -160,7 +160,7 @@ class PerkController extends \app\components\BaseController
       if (!$pnt->save())
         throw new UserException(implode(" ", $pnt->getErrorSummary(true)));
       \Yii::$app->session->setFlash('success', \Yii::t('app', 'Target {name} added to your network!', ['name' => $target->name]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       if (isset($e->errorInfo) && is_array($e->errorInfo) && $e->errorInfo[1] == 1062) {
         \Yii::$app->session->setFlash('warning', \Yii::t('app', 'Target {name} is already in your network!', ['name' => $target->name]));
       } else

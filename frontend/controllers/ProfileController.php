@@ -170,7 +170,7 @@ class ProfileController extends \app\components\BaseController
       imagepng($image, $playerBadgeFname);
       imagedestroy($image);
       return ob_get_clean();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       return $this->redirect(['/']);
     }
   }
@@ -235,7 +235,7 @@ class ProfileController extends \app\components\BaseController
         $dcq = new PlayerDisconnectQueue();
         $dcq->player_id = $player->id;
         $dcq->save();
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
       }
 
       \Yii::$app->user->logout();
@@ -268,7 +268,7 @@ class ProfileController extends \app\components\BaseController
       $model->generate();
       $model->save();
       \Yii::$app->session->addFlash('success', \Yii::t('app', "Your keys have been revoked. Make sure you download your OpenVPN configuration file again."));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to revoke your keys."));
     }
     return $this->redirect(['/profile/me']);
@@ -288,7 +288,7 @@ class ProfileController extends \app\components\BaseController
       $dcq->player_id = Yii::$app->user->identity->id;
       if ($dcq->save())
         \Yii::$app->session->addFlash('success', \Yii::t('app', "VPN disconnect request queued."));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to queue VPN disconnect request."));
     }
     return $this->redirect(['/profile/me']);
@@ -317,7 +317,7 @@ class ProfileController extends \app\components\BaseController
         throw new UserException(\Yii::t('app', 'Failed to generate API token'));
       }
       \Yii::$app->session->addFlash('success', \Yii::t('app', "API Token generated."));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->session->addFlash('error', \Yii::t('app', "Failed to generate API token."));
     }
     return $this->redirect(['/profile/me']);

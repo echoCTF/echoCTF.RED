@@ -148,7 +148,7 @@ class SessionController extends \app\components\BaseController
         Yii::$app->session->setFlash('success', Yii::t('app','[<code><b>{counter}</b></code>] Sessions deleted',['counter'=>intval($counter)]));
 
       }
-      catch(\Exception $e)
+      catch(\Throwable $e)
       {
         $trans->rollBack();
         Yii::$app->session->setFlash('error', Yii::t('app','Failed to delete Sessions'));

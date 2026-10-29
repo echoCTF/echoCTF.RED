@@ -93,7 +93,7 @@ class PrivateNetworkController extends Controller
           $old->ssl = (bool) $oldServer->ssl;
           try {
             $old->destroy();
-          } catch (\Exception $e) {
+          } catch (\Throwable $e) {
           }
         }
         $dc->server = $server->connstr;
@@ -105,7 +105,7 @@ class PrivateNetworkController extends Controller
         }
         try {
           $dc->destroy();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
         }
 
         if ($p->state < 2) {
@@ -143,7 +143,7 @@ class PrivateNetworkController extends Controller
           Yii::error(implode(",", $p->getErrorSummary(true)));
           throw new UserException(implode(",", $p->getErrorSummary(true)));
         }
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         echo " FAILED\n";
         echo $e->getMessage(), "\n";
         continue;

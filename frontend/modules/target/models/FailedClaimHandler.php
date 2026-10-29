@@ -156,7 +156,7 @@ class FailedClaimHandler extends \yii\base\Model
           'points'    => $actor['points'],
           'resolved'  => $actor['resolved'],
         ]);
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         $parentId = 0;
       }
     }

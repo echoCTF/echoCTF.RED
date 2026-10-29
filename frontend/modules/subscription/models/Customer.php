@@ -101,7 +101,7 @@ class Customer extends \yii\base\Model
         }
         if($stripe_customer!=null && $stripe_customer->deleted) throw new \Exception(\Yii::t('app','Deleted stripe customer'));
       }
-      catch (\Exception $e)
+      catch (\Throwable $e)
       {
         if(Yii::$app->user->identity->stripe_customer_id!="")
           Yii::$app->user->identity->updateAttributes(['stripe_customer_id'=>null]);

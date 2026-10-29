@@ -84,7 +84,7 @@ class DefaultController extends \app\components\BaseController
       $network = $this->findModel($id);
       if (Yii::$app->user->isGuest && !$network->guest)
         throw new UserException("Network is not pubic");
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       return $this->redirect(['/']);
     }
     $tmod = \app\modules\target\models\Target::find();

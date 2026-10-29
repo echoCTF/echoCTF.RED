@@ -113,7 +113,7 @@ class PlayerBadgeController extends \app\components\BaseController
           $transaction->commit();
           Yii::$app->session->setFlash('success', Yii::t('app',"Badge deleted from player and stream."));
         }
-        catch (\Exception $e) {
+        catch (\Throwable $e) {
           $transaction->rollback();
           Yii::$app->session->setFlash('error', Yii::t('app',"Failed to delete Badge from player and stream."));
         }

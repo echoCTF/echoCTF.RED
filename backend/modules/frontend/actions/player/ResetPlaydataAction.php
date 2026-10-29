@@ -19,7 +19,7 @@ class ResetPlaydataAction extends \yii\base\Action
       \Yii::$app->db->createCommand("CALL reset_playdata()")->execute();
       Yii::$app->session->setFlash('success', Yii::t('app','Successfully removed all player data'));
     }
-    catch(\Exception $e)
+    catch(\Throwable $e)
     {
       Yii::$app->session->setFlash('error', Yii::t('app','Failed to remove player data'));
     }

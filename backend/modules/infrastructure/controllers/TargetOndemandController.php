@@ -49,7 +49,7 @@ class TargetOndemandController extends \app\components\BaseController
       if ($model->load(Yii::$app->request->post()) && $model->save()) {
         return $this->redirect(['index']);
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       if ($e->getCode() === '23000') {
         Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to add OnDemand entry for target. <b>A record for this target already existing</b>'));
       } else {
@@ -142,7 +142,7 @@ class TargetOndemandController extends \app\components\BaseController
 
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] records synced', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::error($e->getMessage());
       Yii::$app->session->setFlash('error', 'Failed to sync records: ' . $e->getMessage());

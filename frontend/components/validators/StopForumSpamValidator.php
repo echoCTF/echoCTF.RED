@@ -45,7 +45,7 @@ class StopForumSpamValidator extends Validator
       $retData = json_decode($result)->email ?? null;
       if (isset($retData->confidence) && $retData->confidence > $this->max)
         throw new \yii\base\UserException('StopForumSpamValidator null');
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       if (curl_errno($ch) === 0)
         return [$this->message, [
           'email' => $value,
@@ -79,7 +79,7 @@ class StopForumSpamValidator extends Validator
       $retData = json_decode($result)->email;
       if (property_exists($retData, 'confidence') && $retData->confidence > $this->max)
         throw new \yii\base\UserException('StopForumSpamValidator null');
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       if (curl_errno($ch) === 0)
         $model->addError($attribute, $this->message);
     }

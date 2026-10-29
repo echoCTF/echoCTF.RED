@@ -192,7 +192,7 @@ class AbuserController extends \app\components\BaseController
         $q->delete();
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Abuser record(s) deleted', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to delete abuser record(s)'));
     }

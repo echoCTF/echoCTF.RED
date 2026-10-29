@@ -37,7 +37,7 @@ class ShutRestAction extends \yii\rest\ViewAction
       }
 
     }
-    catch(\Exception $e)
+    catch(\Throwable $e)
     {
       Yii::$app->session->setFlash('error', $e->getMessage());
     }

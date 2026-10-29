@@ -134,7 +134,7 @@ class TargetPlayerStateController extends \app\components\BaseController
 
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] records synced', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to sync records'));
     }

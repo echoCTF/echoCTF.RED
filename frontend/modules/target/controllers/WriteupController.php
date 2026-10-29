@@ -214,7 +214,7 @@ class WriteupController extends \app\components\BaseController
         Yii::$app->session->setFlash('success', \Yii::t('app', 'You have successfully activated writeups for this target for {cost} points.', ['cost' => number_format($cost)]));
       else
         Yii::$app->session->setFlash('success', \Yii::t('app', 'You have successfully activated writeups for this target.'));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to activate writeups for this target.'));
       throw $e;

@@ -247,7 +247,7 @@ class TargetController extends \app\components\BaseController
         });
 
         $stream->wait();
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         Yii::$app->session->setFlash('error', Html::encode($e->getMessage()));
       }
     } else {
@@ -380,7 +380,7 @@ class TargetController extends \app\components\BaseController
         $q->destroy();
       }
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets deleted', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to delete targets'));
     }
@@ -426,7 +426,7 @@ class TargetController extends \app\components\BaseController
       }
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets activated', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to activate targets'));
     }
@@ -489,7 +489,7 @@ class TargetController extends \app\components\BaseController
         $this->findModel($id)->spin();
         \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Container successfully restarted'));
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to restart container. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }
     return $this->goBack(Yii::$app->request->referrer);
@@ -719,7 +719,7 @@ class TargetController extends \app\components\BaseController
         if ($target->$method() === false) {
           $failed[] = $target->name;
         }
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         Yii::warning(sprintf('%s %s: %s', $method, $target->name, $e->getMessage()), 'docker');
         $failed[] = $target->name;
       }
@@ -771,7 +771,7 @@ class TargetController extends \app\components\BaseController
       try {
         $docker = Docker::create($client);
         $tmp = $docker->containerList(['all' => true]);
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         continue;
       }
       $containers = array_merge($containers, $tmp);

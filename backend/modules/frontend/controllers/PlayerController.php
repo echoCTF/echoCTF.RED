@@ -283,7 +283,7 @@ class PlayerController extends \app\components\BaseController
         Yii::$app->session->setFlash('error', Yii::t('app', 'Player activation failed.'));
       }
       $transaction->commit();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       Yii::$app->session->setFlash('error', $e->getMessage());
     }
@@ -313,7 +313,7 @@ class PlayerController extends \app\components\BaseController
       else
         Yii::$app->session->setFlash('error', Yii::t('app', 'Player setting deletion flag failed.'));
       $transaction->commit();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $transaction->rollBack();
       Yii::$app->session->setFlash('error', $e->getMessage());
     }
@@ -378,7 +378,7 @@ class PlayerController extends \app\components\BaseController
       }
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', 'User [{username}] academic set to {academic}', ['username' => Html::encode($model->username), 'academic' => Html::encode($model->academic)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to toggle academic flag for player'));
     }
@@ -400,7 +400,7 @@ class PlayerController extends \app\components\BaseController
       $model->updateAttributes(['active' => !$model->active]);
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', 'User [{username}] active set to {status}', ['username' => Html::encode($model->username), 'status' => Html::encode($model->active)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to toggle active flag for player'));
     }
@@ -422,7 +422,7 @@ class PlayerController extends \app\components\BaseController
       $model->updateAttributes(['approval' => 1]);
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', 'Player [{username}] registration approved.', ['username' => Html::encode($model->username)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to approve player [{username}] registration [{exception}]', ['username' => Html::encode($model->username), 'exception' => Html::encode($e->getMessage())]));
     }
@@ -444,7 +444,7 @@ class PlayerController extends \app\components\BaseController
       $model->updateAttributes(['approval' => 3]);
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', 'Player [{username}] registration rejected.', ['username' => Html::encode($model->username)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to reject player [{username}] registration.', ['username' => Html::encode($model->username)]));
     }
@@ -488,7 +488,7 @@ class PlayerController extends \app\components\BaseController
 
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Users banned', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to ban users'));
     }
@@ -512,7 +512,7 @@ class PlayerController extends \app\components\BaseController
         $q->delete();
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Users deleted', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to delete users'));
     }
@@ -578,7 +578,7 @@ class PlayerController extends \app\components\BaseController
       }
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Players rejected', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to reject users'));
     }
@@ -607,7 +607,7 @@ class PlayerController extends \app\components\BaseController
       }
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Players approved', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to approve users'));
     }
@@ -646,7 +646,7 @@ class PlayerController extends \app\components\BaseController
       $trans->commit();
 
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] total Players mailed [{approved} approved/{rejected} rejected]', ['counter' => intval($counter), 'approved' => $approved, 'rejected' => $rejected]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to mail users'));
     }
@@ -672,7 +672,7 @@ class PlayerController extends \app\components\BaseController
 
       $trans->commit();
       \Yii::$app->getSession()->setFlash('success', Yii::t('app', '{records,plural,=0{No players found} =1{Deleted one player} other{Deleted # players}}', ['records' => $records]));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to delete players. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }

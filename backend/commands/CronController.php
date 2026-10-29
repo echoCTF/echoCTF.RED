@@ -84,7 +84,7 @@ class CronController extends Controller
             if ($entry->delete() === false)
               throw new \Exception('Failed to delete migration for ' . $entry->target->name);
             $transaction->commit();
-          } catch (\Exception $e) {
+          } catch (\Throwable $e) {
             echo "Error: ", $e->getMessage();
             $transaction->rollBack();
           }
@@ -104,7 +104,7 @@ class CronController extends Controller
             if ($NT->save() === false || $entry->delete() === false)
               throw new \Exception('Failed migrate target [' . $entry->target->name . '] to network ', $entry->network->name);
             $transaction->commit();
-          } catch (\Exception $e) {
+          } catch (\Throwable $e) {
             $transaction->rollBack();
           }
         }
@@ -389,7 +389,7 @@ class CronController extends Controller
               if ($pfonly === false) {
                 try {
                   $dc->destroy();
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                 }
               }
               Pf::kill_table($dc->name, true);
@@ -460,7 +460,7 @@ class CronController extends Controller
           $sh->save();
         }
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Healthcheck:", $e->getMessage(), "\n";
     } finally {
       @unlink("/tmp/cron-healthcheck.lock");
@@ -502,7 +502,7 @@ class CronController extends Controller
           \app\services\ServerPublisher::targetUpdated($t->player_id, $t->target_id);
           $t->delete();
           echo " OK\n";
-        } catch (\Exception $ce) {
+        } catch (\Throwable $ce) {
           printf(" NOT OK (%s)\n", $ce->getMessage());
         }
       }
@@ -538,11 +538,11 @@ class CronController extends Controller
           $target->scheduled_at = null;
           $target->active = 1;
           $target->save();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           echo "fail. ", $e->getMessage(), "\n";
         }
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Powerups:", $e->getMessage(), "\n";
     }
   }
@@ -558,7 +558,7 @@ class CronController extends Controller
         if ($val !== false)
           $ondemand->touch('heartbeat');
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
     }
     try {
       $demands = \app\modules\gameplay\models\TargetOndemand::find()
@@ -590,7 +590,7 @@ class CronController extends Controller
         // refresh the page of the player that powered it up
         \app\services\ServerPublisher::targetUpdated($ondemand->player_id, $ondemand->target_id);
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "OnDemand:", $e->getMessage(), "\n";
     }
   }
@@ -605,7 +605,7 @@ class CronController extends Controller
         $requirePF = $target->powerdown();
         printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Offlines:", $e->getMessage(), "\n";
     }
   }
@@ -620,7 +620,7 @@ class CronController extends Controller
         $requirePF = $target->powerdown();
         printf(", destroyed: %s\n", $requirePF ? "success" : "fail");
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Powerdowns:", $e->getMessage(), "\n";
     }
   }
@@ -776,7 +776,7 @@ class CronController extends Controller
     ]);
     try {
       $docker = Docker::create($client);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Failed to connect to docker server {$remote_socket}: [{$e->getMessage()}]\n";
       return false;
     }
@@ -791,7 +791,7 @@ class CronController extends Controller
     if ($docker === false) return [];
     try {
       $containerList = $docker->containerList();
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Failed to get container list: [{$e->getMessage()}]\n";
       return [];
     }

@@ -29,7 +29,7 @@ class SpawnRestAction extends \yii\rest\ViewAction
         Yii::$app->session->setFlash('success', sprintf(\Yii::t('app', 'Target instance [%s] scheduled for restart. You will receive a notification when the operation is completed.'), $ti->target->name));
       else
         Yii::$app->session->setFlash('success', sprintf(\Yii::t('app', 'Spawning new instance for [%s]. You will receive a notification when the instance is up.'), $ti->target->name));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', $e->getMessage());
     }
 

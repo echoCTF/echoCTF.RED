@@ -53,7 +53,7 @@ class Pf extends Component
     if (empty($contents)) return file_put_contents($file, "\n") !== false;
     try {
       return file_put_contents($file, implode("\n", $contents) . "\n") !== false;
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Failed to save {$file}\n";
     }
     return false;

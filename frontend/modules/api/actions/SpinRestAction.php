@@ -30,7 +30,7 @@ class SpinRestAction extends \yii\rest\ViewAction
       \app\modules\target\models\SpinQueue::queue(Yii::$app->user->identity, (int) $id);
       \Yii::$app->response->statusCode = 201;
       \Yii::$app->response->data = ["message" => \Yii::t('app', "Queued target for spin"), "code" => 0, "status" => \Yii::$app->response->statusCode];
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->response->statusCode = 422;
       \Yii::$app->response->data = ["message" => $e->getMessage(), "code" => 0, "status" => \Yii::$app->response->statusCode];
     }

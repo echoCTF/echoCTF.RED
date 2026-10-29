@@ -359,7 +359,7 @@ class DefaultController extends \app\components\BaseController
 
     try {
       $result = ClaimService::claim($string, Yii::$app->user->identity);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       Yii::$app->session->setFlash('error', \Yii::t('app', 'Flag failed'));
       throw $e;
     }

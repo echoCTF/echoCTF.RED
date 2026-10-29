@@ -58,7 +58,7 @@ class TargetInstanceAuditController extends \app\components\BaseController
     try {
         TargetInstanceAudit::deleteAll();
         Yii::$app->session->setFlash('success', Yii::t('app', 'All audit records have been deleted.'));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to delete audit records. <b>{exception}</b>', ['exception'=>Html::encode($e->getMessage())]));
     }
       return $this->redirect(['index']);

@@ -48,7 +48,7 @@ class GeneratorController extends Controller
       $content = sprintf("<?php\nreturn [\n%s\n];", implode("\n", $lines));
       $dirn = \Yii::getAlias("@app/config");
       file_put_contents("{$dirn}/{$outfile}", $content);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Failed to generate {$outfile}\n", $e->getMessage(), "\n";
     }
   }
@@ -68,7 +68,7 @@ class GeneratorController extends Controller
       $content = sprintf("<?php\nreturn [\n%s\n];", implode("\n", $lines));
       $dirn = \Yii::getAlias("@app/config");
       file_put_contents("{$dirn}/{$outfile}", $content);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Failed to generate {$outfile}\n", $e->getMessage(), "\n";
     }
   }
@@ -91,7 +91,7 @@ class GeneratorController extends Controller
       file_put_contents("{$dirn}/{$outfile}", $content);
     } catch (\yii\base\InvalidArgumentException $e) {
       echo "JSON::decode failure: " . $e->getMessage(), "\n";
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Failed to generate $outfile\n", $e->getMessage(), "\n";
     }
   }
@@ -164,7 +164,7 @@ class GeneratorController extends Controller
         imagepng($background_img, \Yii::getAlias("@app/web/images/targets/" . $target->name . ".png"));
         imagedestroy($target_img);
         imagedestroy($background_img);
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         echo "Failed generation for ", $target->name, ". Error: ", $e->getMessage(), "\n";
       }
     }
@@ -191,7 +191,7 @@ class GeneratorController extends Controller
         imagepng($scaled,\Yii::getAlias("@app/web/images/targets/_" . $target->name . "-thumbnail.png"));
         imagedestroy($target_img);
         imagedestroy($scaled);
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         echo "Failed generation for ", $target->name, ". Error: ", $e->getMessage(), "\n";
       }
     }
@@ -315,7 +315,7 @@ class GeneratorController extends Controller
             chown($path, $owner);
             imagedestroy($image);
             echo " badge generated\n";
-          } catch (\Exception $e) {
+          } catch (\Throwable $e) {
             echo " failed avatar [", $avatarPath, "] not found\n";
             echo " ", $e->getMessage(), "\n";
           }

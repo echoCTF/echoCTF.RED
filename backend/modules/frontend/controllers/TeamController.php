@@ -121,7 +121,7 @@ class TeamController extends \app\components\BaseController
         $trans->commit();
         return $this->redirect(['view', 'id' => $model->id]);
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to create team. {exception}', ['exception' => Html::encode($e->getMessage())]));
     }
@@ -202,7 +202,7 @@ class TeamController extends \app\components\BaseController
       }
       $trans->commit();
       \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Team changed academic grouping.'));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       $trans->rollBack();
       \Yii::$app->getSession()->setFlash('error', Yii::t('app', 'Failed to update academic grouping for team'));
     }

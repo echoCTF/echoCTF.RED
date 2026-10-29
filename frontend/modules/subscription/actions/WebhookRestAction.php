@@ -44,7 +44,7 @@ class WebhookRestAction extends \yii\rest\Action
         Yii::$app->request->headers->get('stripe-signature'),
         $webhookSecret
       );
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       \Yii::$app->response->statusCode = 403;
       Yii::error($e);
       return ['error' => $e->getMessage()];
@@ -108,7 +108,7 @@ class WebhookRestAction extends \yii\rest\Action
           if (intval($ps->active) === 1)
             $ps->give();
           $transaction->commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           $transaction->rollBack();
           \Yii::$app->response->statusCode = 403;
           Yii::error($e);
@@ -138,7 +138,7 @@ class WebhookRestAction extends \yii\rest\Action
           $transaction->rollBack();
           \Yii::$app->response->statusCode = 403;
           return ['error' => $e->getMessage()];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           $transaction->rollBack();
           \Yii::$app->response->statusCode = 403;
           Yii::error($e);
@@ -210,7 +210,7 @@ class WebhookRestAction extends \yii\rest\Action
             }
           }
           \Yii::$app->db->createCommand()->update('stripe_webhook', ['processed_at' => new Expression('NOW()')], ['id' => $webhookId])->execute();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           \Yii::$app->response->statusCode = 403;
           \Yii::error($e);
           return ['error' => $e->getMessage()];
@@ -230,7 +230,7 @@ class WebhookRestAction extends \yii\rest\Action
                 'metadata' => \yii\helpers\Json::encode($object, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
                 'created_at' => new Expression('NOW()'),
               ])->execute();
-          } catch (\Exception $e) {
+          } catch (\Throwable $e) {
             Yii::error($e);
           }
         }
@@ -247,7 +247,7 @@ class WebhookRestAction extends \yii\rest\Action
               'metadata' => \yii\helpers\Json::encode($object, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT),
               'created_at' => new Expression('NOW()'),
             ])->execute();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
           Yii::error($e);
         }
 
@@ -277,7 +277,7 @@ class WebhookRestAction extends \yii\rest\Action
               }
             }
             \Yii::$app->db->createCommand()->update('stripe_webhook', ['processed_at' => new Expression('NOW()')], ['id' => $webhookId])->execute();
-          } catch (\Exception $e) {
+          } catch (\Throwable $e) {
             \Yii::$app->response->statusCode = 403;
             \Yii::error($e);
             return ['error' => $e->getMessage()];

@@ -69,7 +69,7 @@ class VpnController extends Controller
     printf("Killing %d with last local IP [%s]\n", $pM->id, $pM->last->vpn_local_address_octet);
     try {
       OpenVPN::kill($pM->id, intval($pM->last->vpn_local_address));
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       echo "Error: ", $e->getMessage(), "\n";
       return ExitCode::UNSPECIFIED_ERROR;
     }
@@ -87,7 +87,7 @@ class VpnController extends Controller
           printf("Killing %s =>  %d\n", $pM->player->username, $pM->id);
           OpenVPN::kill($pM->id, intval($pM->vpn_local_address));
         }
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         echo "Error: ", $e->getMessage(), "\n";
       }
     }
@@ -144,7 +144,7 @@ class VpnController extends Controller
       } else {
         echo "Failed to save record: ", implode(", ", $ovpn->getErrorSummary(true)), "\n";
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       printf("Error: %s", $e->getMessage());
     }
   }
@@ -172,7 +172,7 @@ class VpnController extends Controller
         echo "Failed to save ", $filepath, "\n";
         return ExitCode::UNSPECIFIED_ERROR;
       }
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
       printf("Error: %s", $e->getMessage());
     }
   }
@@ -193,7 +193,7 @@ class VpnController extends Controller
           $status['routing_table'] = \yii\helpers\ArrayHelper::merge($status['routing_table'], $parsed->routing_table);
         if (property_exists($parsed, 'client_list') && count($parsed->client_list) > 0)
           $status['client_list'] = \yii\helpers\ArrayHelper::merge($status['client_list'], $parsed->client_list);
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         printf("Error: %s", $e->getMessage());
       }
       unset($entry);
@@ -228,7 +228,7 @@ class VpnController extends Controller
             $n->notify('info', "Successfully disconnected your VPN connection", "Successfully disconnected your VPN connection");
           }
         }
-      } catch (\Exception $e) {
+      } catch (\Throwable $e) {
         echo "Error: ", $e->getMessage(), "\n";
         return ExitCode::UNSPECIFIED_ERROR;
       }
