@@ -127,12 +127,18 @@ class TargetController extends Controller
         $created = $container->getCreated();
         if ($created <= (time() - intval($uptime * 60))) {
           $name = str_replace('/', '', $container->getNames()[0]);
-          $d = Target::findOne(['name' => $name]);
+          // only shared targets that live on this server count towards the limit,
+          // instances and foreign containers are skipped
+          $d = Target::findOne(['name' => $name, 'server' => $master->server]);
           if ($d) {
             printf("Restarting %s/%s [%s]\n", $master->server, $d->name, \Yii::$app->formatter->asRelativeTime($created));
-            $d->spin();
+            try {
+              $d->spin();
+            } catch (\Exception $e) {
+              printf("Failed to restart %s: %s\n", $d->name, $e->getMessage());
+            }
+            $processed++;
           }
-          $processed++;
         }
       }
     } // end docker servers
