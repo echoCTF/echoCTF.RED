@@ -47,7 +47,9 @@ class PrivateNetworkController extends Controller
           $notifType = "success";
           $notifTitle = $notifMessage = sprintf("Target %s from your private network got started!", $p->target->name);
           // pick a server
-          $server = Server::findNextFreeOne();
+          if (($server = Server::findNextFreeOne()) === null) {
+            throw new UserException('No docker server available');
+          }
           $p->state = 0;
           $p->server_id = $server->id;
         } else if (intval($p->state) === 1) {
