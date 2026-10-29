@@ -304,7 +304,8 @@ class TargetController extends \app\components\BaseController
           //foreach player with progress and not headshot
           $subQuery = (new Query())
             ->select('player_id')
-            ->from(Headshot::tableName());
+            ->from(Headshot::tableName())
+            ->where(['target_id' => $id]);
           $players = TargetPlayerState::find()
             ->select('player_id')
             ->distinct()
