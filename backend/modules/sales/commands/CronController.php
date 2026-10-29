@@ -16,6 +16,14 @@ use yii\base\UserException;
  */
 class CronController extends Controller
 {
+  public function actions()
+  {
+    return [
+      // ./backend/yii sales/push-products catalog.json [dryRun] [prune]
+      'push-products' => PushProductsAction::class,
+    ];
+  }
+
   /**
    * Find subscriptions that have expired for more than 24 hours and clean them up
    * TODO: Also disconnect from the VPN

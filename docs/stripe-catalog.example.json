@@ -1,0 +1,45 @@
+{
+  "products": [
+    {
+      "id": "prod_vip_monthly",
+      "name": "VIP",
+      "description": "Access to the premium networks and extra spins",
+      "metadata": {
+        "shortcode": "vip",
+        "weight": 10,
+        "perks": "Premium networks, 10 spins per day, API access",
+        "network_ids": [3, 4],
+        "spins": 10,
+        "max_target_instances": 2,
+        "api_bearer_enable": true
+      },
+      "prices": [
+        {
+          "lookup_key": "vip_monthly_eur",
+          "nickname": "VIP monthly",
+          "unit_amount": 1000,
+          "currency": "eur",
+          "recurring": { "interval": "month", "interval_count": 1 }
+        }
+      ]
+    },
+    {
+      "id": "prod_team_network_30d",
+      "name": "Private team network",
+      "metadata": {
+        "shortcode": "teamNetwork",
+        "standalone_perk": 1,
+        "private_instances": 3,
+        "team_accessible": 1
+      },
+      "prices": [
+        {
+          "lookup_key": "team_network_30d_eur",
+          "unit_amount": 1500,
+          "currency": "eur",
+          "metadata": { "days": 30 }
+        }
+      ]
+    }
+  ]
+}
