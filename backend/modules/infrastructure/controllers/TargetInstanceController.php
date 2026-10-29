@@ -33,6 +33,7 @@ class TargetInstanceController extends \app\components\BaseController
           'delete' => ['POST'],
           'destroy' => ['POST'],
           'restart' => ['POST'],
+          'destroy-all' => ['POST'],
         ],
       ],
     ]);
