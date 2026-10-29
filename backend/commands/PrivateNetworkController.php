@@ -140,8 +140,8 @@ class PrivateNetworkController extends Controller
         }
 
         if (!$p->save() || !$p->privateNetwork->player->notify($notifType, $notifTitle, $notifMessage)) {
-          Yii::error(imploded(",", $p->getErrorSummary(true)));
-          throw new UserException(imploded(",", $p->getErrorSummary(true)));
+          Yii::error(implode(",", $p->getErrorSummary(true)));
+          throw new UserException(implode(",", $p->getErrorSummary(true)));
         }
       } catch (\Exception $e) {
         echo " FAILED\n";
