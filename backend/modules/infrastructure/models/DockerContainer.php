@@ -136,8 +136,9 @@ class DockerContainer extends Model
     $restartPolicy = new RestartPolicy();
     $restartPolicy->setName('always');
     $hostConfig = new HostConfig();
-    if ($this->memory !== null) {
-      $hostConfig->setMemory($this->memory);
+    $memory = $this->memory ?? $this->getMemory();
+    if ($memory !== null) {
+      $hostConfig->setMemory($memory);
     }
 
     $hostConfig->setNetworkMode($this->net);
@@ -206,7 +207,8 @@ class DockerContainer extends Model
     if ($this->parameters !== null) {
       $decoded = \yii\helpers\Json::decode($this->parameters, false);
       if ($decoded !== null && property_exists($decoded, 'hostConfig') && property_exists($decoded->hostConfig, 'Memory')) {
-        return intval($decoded->hostConfig->Memory) * 1024 * 1024;
+        $memory = intval($decoded->hostConfig->Memory);
+        return $memory < (16 * 1024 * 1024) ? $memory * 1024 * 1024 : $memory;
       }
     }
     return null;
