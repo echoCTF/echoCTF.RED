@@ -81,12 +81,13 @@ class WebhookRestAction extends \yii\rest\Action
             $ps->player_id = $player->id;
             $ps->created_at = new \yii\db\Expression("NOW()");
           } else {
-            // cancel subscription extras in case new metadata have other networks
-            $ps->cancel();
+            // cancel subscription extras in case new metadata have other networks, keep the API token
+            $ps->cancel(true);
             // If currently there is an active subscription then just
             if ($ps->active == 1 && !$isActive) {
               $ps->updated_at = new \yii\db\Expression("NOW()");
               $ps->active = 0;
+              $ps->revokeApiToken();
               $ps->save();
               $transaction->commit();
               return ['status' => 'success', 'message' => 'canceled subscription'];

@@ -83,7 +83,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   }
 
 
-  public function cancel()
+  public function cancel($keepApiToken = false)
   {
     if ($this->product !== null) {
       $metadata = json_decode($this->product->metadata);
@@ -104,9 +104,20 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         $this->player->profile->spins->updateAttributes(['perday' => \Yii::$app->sys->spins_per_day, 'counter' => 0]);
       }
 
-      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api === true && $this->player->apiToken !== null) {
-        $this->player->apiToken->delete();
+      if (!$keepApiToken) {
+        $this->revokeApiToken();
       }
+    }
+  }
+
+  public function revokeApiToken()
+  {
+    if ($this->product === null) {
+      return;
+    }
+    $metadata = json_decode($this->product->metadata);
+    if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api === true && $this->player->apiToken !== null) {
+      $this->player->apiToken->delete();
     }
   }
 
