@@ -16,7 +16,7 @@ class ProductQuery extends \yii\db\ActiveQuery
 
   public function hasPrice()
   {
-    return $this->andWhere('id in (SELECT DISTINCT product_id FROM price)');
+    return $this->andWhere('id in (SELECT DISTINCT product_id FROM price WHERE active=1)');
   }
 
   public function purchasable()

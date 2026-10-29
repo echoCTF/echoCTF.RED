@@ -129,9 +129,10 @@ class Product extends \yii\db\ActiveRecord
         $prices=$stripe->prices->all(['product'=>$product->id]);
         foreach($prices as $p)
         {
-          if(!$p->active) continue;
           if(($price=Price::findOne($p->id))===null)
           {
+            // Archived prices are only updated (deactivated), never imported
+            if(!$p->active) continue;
             $price=new Price();
             $price->id=$p->id;
           }
