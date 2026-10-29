@@ -126,12 +126,14 @@ class Target extends TargetAR
    */
   public function spin()
   {
-    // if tcp do docker staff
-    if (substr($this->server, 0, 3) == 'tcp') {
-      return $this->dockerSpin();
-    } else if (substr($this->server, 0, 3) == 'pve') {
-      $this->pveSpin(substr($this->server, 4));
+    if (empty($this->server)) {
+      return false;
     }
+    if (substr($this->server, 0, 4) === 'pve:') {
+      return $this->pveSpin(substr($this->server, 4));
+    }
+    // tcp://, unix:// and any other docker connection string
+    return $this->dockerSpin();
   }
 
   /**
