@@ -197,9 +197,12 @@ class Product extends \yii\db\ActiveRecord
           else
             \Yii::$app->session->addFlash('success', sprintf('Imported product: %s, %s',Html::encode($stripeProduct->id),Html::encode($stripeProduct->name)));
         }
-        if(!empty($stripeProduct->metadata->network_ids))
+        // product_network follows network_ids, links to networks no longer listed are removed
+        $networkIds=empty($stripeProduct->metadata->network_ids) ? [] : array_map('intval',explode(',',$stripeProduct->metadata->network_ids));
+        ProductNetwork::deleteAll(['and',['product_id'=>$product->id],['not in','network_id',$networkIds]]);
+        if($networkIds!==[])
         {
-          foreach(explode(',',$stripeProduct->metadata->network_ids) as $nid)
+          foreach($networkIds as $nid)
           {
             if(ProductNetwork::findOne(['product_id'=>$product->id, 'network_id'=>$nid])===null)
             {
