@@ -118,7 +118,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     if (intval(\Yii::$app->formatter->asTimestamp($this->starting)) !== intval($stripe_subscription->items->data[0]->current_period_start) || intval(\Yii::$app->formatter->asTimestamp($this->ending)) !== intval($stripe_subscription->items->data[0]->current_period_end))
       return false;
 
-    if (intval($this->active) !== intval($stripe_subscription->ended_at == null) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
+    if (intval($this->active) !== intval(self::stripeActive($stripe_subscription)) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
       return false;
 
     return true;
@@ -145,7 +145,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     }
     $this->updated_at = new \yii\db\Expression('NOW()');
     $this->price_id = $stripe_subscription->items->data[0]->plan->id;
-    $this->active = intval($stripe_subscription->ended_at == null);
+    $this->active = intval(self::stripeActive($stripe_subscription));
     return $this->update(false);
   }
 
@@ -174,7 +174,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
         $ps->updated_at = new \yii\db\Expression('NOW()');
         $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
-        $ps->active = intval($stripe_subscription->ended_at == null);
+        $ps->active = intval(self::stripeActive($stripe_subscription));
 
         if (!$ps->save(false)) {
           if (\Yii::$app instanceof \yii\console\Application)
@@ -211,9 +211,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         $stripe_subscription = $stripe->subscriptions->retrieve($ps->subscription_id, []);
 
         // Check if subscription active agree with Stripe
-        if (intval($ps->active) !== intval($stripe_subscription->ended_at == null)) {
+        if (intval($ps->active) !== intval(self::stripeActive($stripe_subscription))) {
           \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Syncing <kbd>active</kbd>, not the same with Stripe <kbd>{subscription_id}</kbd>', ['subscription_id' => $ps->subscription_id]));
-          $ps->active = intval($stripe_subscription->ended_at == null);
+          $ps->active = intval(self::stripeActive($stripe_subscription));
           $dosave = true;
         }
 
@@ -245,6 +245,12 @@ class PlayerSubscription extends \yii\db\ActiveRecord
    * @var bool
    */
   private $_wasActive = false;
+
+  /** Paid, or being retried by Stripe after a failed renewal; unpaid, incomplete and ended are not active */
+  public static function stripeActive($stripe_subscription): bool
+  {
+    return in_array($stripe_subscription->status, ['active', 'past_due'], true);
+  }
 
   /** Daily spins the product of the given price gives (`spins` product metadata key). */
   public static function spinsFor($price_id): int
