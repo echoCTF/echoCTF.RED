@@ -19,10 +19,35 @@ use app\modules\frontend\models\Player;
  */
 class TrafficController extends Controller
 {
+  /**
+   * @var string interfaces the players connect through: interface names and
+   * interface groups, comma separated (default the offense group).
+   * A forwarded connection gets one pf state on each interface it crosses, so
+   * only the records of states on these interfaces are counted.
+   * Empty counts every record.
+   */
+  public $iface = 'offense';
+
+  /** @var int seconds between interface index lookups */
+  const INTERFACES_REFRESH = 300;
+
+  /** @var string ifconfig(8), used with its full path as supervisord may not have /sbin in PATH */
+  const IFCONFIG = '/sbin/ifconfig';
+
   /** @var array pending["src:dst"] = [packets, bytes] */
   private $pending = [];
-  private $stats = ['datagrams' => 0, 'invalid' => 0, 'records' => 0, 'stored' => 0, 'unmatched' => 0];
+  private $stats = ['datagrams' => 0, 'invalid' => 0, 'records' => 0, 'skipped' => 0, 'stored' => 0, 'unmatched' => 0];
   private $running = true;
+  /** @var array|null interface index => true, null when not filtering */
+  private $ifindexes = null;
+
+  public function options($actionID)
+  {
+    $options = parent::options($actionID);
+    if ($actionID === 'collect')
+      $options[] = 'iface';
+    return $options;
+  }
 
   /**
    * Receive pflow (NetFlow v5) datagrams and store per player/target counters.
@@ -32,6 +57,13 @@ class TrafficController extends Controller
    */
   public function actionCollect($listen = '127.0.0.1:9995', int $flush = 30, $verbose = false)
   {
+    if (trim((string) $this->iface) !== '') {
+      if ($this->refreshInterfaces() === false)
+        throw new ConsoleException("No interface found for --iface={$this->iface}");
+      printf("%s counting flows on interface indexes: %s\n", date('Y-m-d H:i:s'), implode(',', array_keys($this->ifindexes)));
+    }
+    $nextRefresh = time() + self::INTERFACES_REFRESH;
+
     $sock = @stream_socket_server('udp://' . $listen, $errno, $errstr, STREAM_SERVER_BIND);
     if ($sock === false)
       throw new ConsoleException("Unable to bind udp://{$listen}: {$errstr} ({$errno})");
@@ -66,6 +98,11 @@ class TrafficController extends Controller
       if (time() >= $nextFlush) {
         $this->flush($verbose);
         $nextFlush = time() + $flush;
+      }
+
+      if ($this->ifindexes !== null && time() >= $nextRefresh) {
+        $this->refreshInterfaces();
+        $nextRefresh = time() + self::INTERFACES_REFRESH;
       }
     }
 
@@ -119,6 +156,11 @@ class TrafficController extends Controller
     }
     foreach ($records as $rec) {
       $this->stats['records']++;
+      if ($this->ifindexes !== null && !isset($this->ifindexes[$rec['input']]) && !isset($this->ifindexes[$rec['output']])) {
+        // the copy of the connection from the state on another interface
+        $this->stats['skipped']++;
+        continue;
+      }
       $key = $rec['src'] . ':' . $rec['dst'];
       if (!isset($this->pending[$key]))
         $this->pending[$key] = [0, 0];
@@ -144,14 +186,46 @@ class TrafficController extends Controller
     }
     if ($verbose)
       printf(
-        "%s datagrams=%d invalid=%d records=%d stored=%d unmatched=%d\n",
+        "%s datagrams=%d invalid=%d records=%d skipped=%d stored=%d unmatched=%d\n",
         date('Y-m-d H:i:s'),
         $this->stats['datagrams'],
         $this->stats['invalid'],
         $this->stats['records'],
+        $this->stats['skipped'],
         $this->stats['stored'],
         $this->stats['unmatched']
       );
+  }
+
+  /**
+   * Look up the interface indexes of the --iface interfaces and groups
+   * with ifconfig(8). Keeps the previous indexes when nothing is found.
+   * @return bool
+   */
+  private function refreshInterfaces()
+  {
+    $indexes = [];
+    foreach (explode(',', $this->iface) as $name) {
+      $name = trim($name);
+      if ($name === '')
+        continue;
+      if (!preg_match('/^[A-Za-z0-9_.]+$/', $name)) {
+        echo date('Y-m-d H:i:s '), "traffic/collect: ignoring invalid interface name [", $name, "]\n";
+        continue;
+      }
+      $out = [];
+      $ifconfig = is_executable(self::IFCONFIG) ? self::IFCONFIG : 'ifconfig';
+      @exec($ifconfig . ' ' . escapeshellarg($name) . ' 2>/dev/null', $out);
+      foreach ($out as $line)
+        if (preg_match('/^\s+index (\d+)\b/', $line, $m))
+          $indexes[intval($m[1])] = true;
+    }
+    if ($indexes === []) {
+      echo date('Y-m-d H:i:s '), "traffic/collect: no interface index found for [", $this->iface, "]\n";
+      return $this->ifindexes !== null;
+    }
+    $this->ifindexes = $indexes;
+    return true;
   }
 
   private function store()

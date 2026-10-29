@@ -21,7 +21,8 @@ class NetflowV5
    *
    * @param string $data raw UDP payload
    * @return array|false list of records, each with keys
-   *   src, dst (unsigned 32 bit int), packets, bytes, srcport, dstport, proto
+   *   src, dst (unsigned 32 bit int), packets, bytes, srcport, dstport, proto,
+   *   input, output (interface indexes of the pf state)
    *   or false when the payload is not a valid v5 datagram
    */
   public static function decode(string $data)
@@ -52,6 +53,8 @@ class NetflowV5
         'srcport' => $r['srcport'],
         'dstport' => $r['dstport'],
         'proto' => $r['proto'],
+        'input' => $r['input'],
+        'output' => $r['output'],
       ];
     }
     return $records;
