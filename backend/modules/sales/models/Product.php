@@ -109,10 +109,12 @@ class Product extends \yii\db\ActiveRecord
     {
       \Stripe\Stripe::setEnableTelemetry(false);
       $stripe = new \Stripe\StripeClient(\Yii::$app->sys->stripe_apiKey);
-      $products=$stripe->products->all(['active'=>true]);
+      $products=$stripe->products->all([]);
       foreach($products->autoPagingIterator() as $stripeProduct)
       {
         $product=Product::findOne($stripeProduct->id);
+        // Archived products are only updated (deactivated), never imported
+        if($product===null && !$stripeProduct->active) continue;
 
         if($product===null)
         {
