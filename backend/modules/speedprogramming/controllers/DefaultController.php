@@ -23,21 +23,24 @@ use Docker\Stream\DockerRawStream;
 /**
  * SpeedSolutionController implements the CRUD actions for SpeedSolution model.
  */
-class DefaultController extends Controller
+class DefaultController extends \app\components\BaseController
 {
   /**
    * {@inheritdoc}
    */
   public function behaviors()
   {
-    return [
+    return \yii\helpers\ArrayHelper::merge(parent::behaviors(), [
       'verbs' => [
         'class' => VerbFilter::class,
         'actions' => [
           'delete' => ['POST'],
+          'validate' => ['POST'],
+          'approve' => ['POST'],
+          'reject' => ['POST'],
         ],
       ],
-    ];
+    ]);
   }
 
   /**

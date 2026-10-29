@@ -11,14 +11,14 @@ use yii\filters\VerbFilter;
 /**
  * PlayerMetadataController implements the CRUD actions for PlayerMetadata model.
  */
-class PlayerMetadataController extends Controller
+class PlayerMetadataController extends \app\components\BaseController
 {
     /**
      * @inheritDoc
      */
     public function behaviors()
     {
-        return array_merge(
+        return \yii\helpers\ArrayHelper::merge(
             parent::behaviors(),
             [
                 'verbs' => [
