@@ -196,8 +196,13 @@ class TargetController extends Controller
       foreach ($demands->all() as $ondemand) {
         printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
         try {
-          $ondemand->target->destroy();
+          $destroyed = $ondemand->target->destroy();
         } catch (\Exception $e) {
+          $destroyed = false;
+        }
+        if (!$destroyed) {
+          printf("Failed to destroy ondemand target %s\n", $ondemand->target->fqdn);
+          continue;
         }
         $ondemand->state = -1;
         $ondemand->heartbeat = null;
