@@ -188,7 +188,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           else
             \Yii::$app->session->addFlash('success', sprintf('Imported subscription: %s for player %s', Html::encode($stripe_subscription->id), Html::encode($player->username)));
         }
-      } else
+      } else if (\Yii::$app instanceof \yii\console\Application)
+        printf("Customer not found: %s\n", $stripe_subscription->customer);
+      else
         \Yii::$app->session->addFlash('warning', sprintf('Customer not found: %s', Html::encode($stripe_subscription->customer)));
     }
   }

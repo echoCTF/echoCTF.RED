@@ -159,7 +159,10 @@ class Product extends \yii\db\ActiveRecord
           }
           if(!$price->save())
           {
-            \Yii::$app->session->addFlash('error', sprintf('Failed to save price: %s for %s',Html::encode($price->id),Html::encode($stripeProduct->name)));
+            if(\Yii::$app instanceof \yii\console\Application)
+              printf("Failed to save price: %s for %s\n",$price->id,$stripeProduct->name);
+            else
+              \Yii::$app->session->addFlash('error', sprintf('Failed to save price: %s for %s',Html::encode($price->id),Html::encode($stripeProduct->name)));
           }
         }
 
