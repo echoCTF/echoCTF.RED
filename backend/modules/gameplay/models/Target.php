@@ -219,6 +219,9 @@ class Target extends TargetAR
 
     try {
       $docker->containerDelete($this->name, ['force' => true]);
+    } catch (\Docker\API\Exception\ContainerDeleteNotFoundException $e) {
+      // already gone, nothing to destroy
+      return true;
     } catch (\Exception $e) {
       return false;
     }
