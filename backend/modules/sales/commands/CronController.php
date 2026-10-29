@@ -129,9 +129,13 @@ class CronController extends Controller
             throw new UserException('Failed to delete Player Product or Private Network.');
         }
       } else {
-        if ($pp->delete()) // Delete the player product
+        $spins = $pp->price ? intval(json_decode((string) $pp->price->metadata)->spins ?? 0) : 0;
+        if ($pp->delete()) { // Delete the player product
+          // Take back the spins the pack added
+          if ($spins > 0 && $player->playerSpin)
+            $player->playerSpin->updateAttributes(['perday' => new \yii\db\Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => $spins])]);
           $player->notify('swal:info', $notification_title, $notification_body); // notify player
-        else
+        } else
           throw new UserException('Failed to delete Player Product.');
       }
     }

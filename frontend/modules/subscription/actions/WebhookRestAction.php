@@ -271,7 +271,8 @@ class WebhookRestAction extends \yii\rest\Action
                 // Past the one day grace, so the frontend and the expiry cron both treat it as ended
                 $pp->updateAttributes(['ending' => new Expression('NOW() - INTERVAL 1 DAY')]);
               }
-              if (isset($price->metadataObj->spins) && intval($price->metadataObj->spins) > 0) {
+              // Timed packs lose their spins when the expiry cron removes them
+              if (isset($price->metadataObj->spins) && intval($price->metadataObj->spins) > 0 && intval($price->metadataObj->days ?? 0) <= 0) {
                 $player->profile->spins->updateAttributes(['perday' => new Expression('GREATEST(:base, perday - :spins)', [':base' => intval(\Yii::$app->sys->spins_per_day), ':spins' => intval($price->metadataObj->spins)])]);
               }
             }
