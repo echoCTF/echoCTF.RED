@@ -58,6 +58,8 @@ class Target extends TargetAR
     if ($docker === false)
       throw new UserException("Failed to connect to docker server: " . $this->server);
 
+    // pull before removing the running container, a failed pull keeps it up
+    $this->pull();
     $this->destroy();
 
     $hostConfig = $this->hostConfig();
@@ -87,7 +89,6 @@ class Target extends TargetAR
     $containerConfig->setEnv($targetVariables);
     $containerConfig->setHostConfig($hostConfig);
 
-    $this->pull();
     $containerCreateResult = $docker->containerCreate($containerConfig, ['name' => $this->name]);
     $docker->containerStart($containerCreateResult->getId());
 
