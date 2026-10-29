@@ -419,6 +419,9 @@ class TargetController extends \app\components\BaseController
       $counter = $query->count;
       foreach ($query->getModels() as $q) {
         $q->active = 1;
+        if (!$q->save(false, ['active'])) {
+          throw new \yii\base\UserException('Failed to activate ' . $q->name);
+        }
       }
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets activated', ['counter' => intval($counter)]));
