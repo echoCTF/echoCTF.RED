@@ -99,6 +99,8 @@ class PerkController extends \app\components\BaseController
     $target = Target::find()->where(['id' => intval($targetId), 'active' => 1, 'instance_allowed' => 1])->one();
     if ($target === null)
       return;
+    // Only targets from networks the player can access
+    Yii::$app->getModule('target')->checkNetwork($target);
 
     if (isset($model->metadataObj->private_network_id)) {
       $privateNetwork = PrivateNetwork::findOne($model->metadataObj->private_network_id);
