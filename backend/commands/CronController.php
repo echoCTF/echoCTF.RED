@@ -578,7 +578,10 @@ class CronController extends Controller
 
       foreach ($demands->all() as $ondemand) {
         printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
-        $ondemand->target->destroy();
+        if (!$ondemand->target->destroy()) {
+          printf("Failed to destroy ondemand target %s, will retry\n", $ondemand->target->fqdn);
+          continue;
+        }
         $ondemand->state = -1;
         $ondemand->heartbeat = null;
         Pf::del_table_ip('heartbeat', $ondemand->target->ipoctet);
