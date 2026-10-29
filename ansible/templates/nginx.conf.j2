@@ -47,17 +47,7 @@ http {
     proxy_temp_path /cache/proxy_temp 1 2;
 
     client_max_body_size 32M;
-
-    limit_req_zone $binary_remote_addr zone=Api:1m rate=10r/s;
-    limit_req_zone $binary_remote_addr zone=ResendVerificationEmail:1m rate=10r/s;
-    limit_req_zone $binary_remote_addr zone=RequestPasswordReset:1m rate=10r/s;
-    limit_req_zone $binary_remote_addr zone=Register:1m rate=10r/s;
-    limit_req_zone $binary_remote_addr zone=Login:1m rate=10r/s;
-    limit_req_zone $binary_remote_addr zone=Claim:1m rate=10r/s;
-    limit_req_zone $binary_remote_addr zone=ResetPassword:1m rate=10r/s;
-    limit_req_zone $binary_remote_addr zone=VerifyEmail:10m rate=10r/s;
-    limit_req_zone $cookie_PUISESSID zone=perplayer:10m rate=5r/s;
-    limit_conn_zone $cookie_PUISESSID zone=perplayer_conn:10m;
+    include /etc/nginx/limit_zones.conf;
 
     #access_log  syslog:server=unix:/dev/log,severity=notice mainsyslog;
     access_log  logs/{{item.domain}}-access.log  combined_player;
@@ -299,79 +289,7 @@ http {
         }
     {% endif %}
     {% if enable_rate_limit is defined %}
-        # Rate limit /api to 10 requests/sec
-        # This is way too loose
-        location /api {
-            limit_req_status 429;
-            limit_conn_status 429;
-            limit_req zone=Api;
-            index  index.php;
-            try_files $uri $uri/ /index.php$is_args$args;
-        }
-
-        # Rate limit resend-verification-email to 10 requests per minute
-        # There is no reason why anyone would need more than that for a
-        # legitimate purpose
-        location /resend-verification-email {
-            limit_req_status 429;
-            limit_conn_status 429;
-            limit_req zone=ResendVerificationEmail;
-            index  index.php;
-            try_files $uri $uri/ /index.php$is_args$args;
-        }
-
-        # Rate limit register to 10 requests per minute
-        # There is no reason why anyone would need more than that for a
-        # legitimate purpose
-        location /register {
-            limit_req_status 429;
-            limit_conn_status 429;
-            limit_req zone=Register;
-            index  index.php;
-            try_files $uri $uri/ /index.php$is_args$args;
-        }
-
-        # Rate limit register to 20 requests per minute
-        location /login {
-            limit_req_status 429;
-            limit_conn_status 429;
-            limit_req zone=Login;
-            index  index.php;
-            try_files $uri $uri/ /index.php$is_args$args;
-        }
-
-        # Rate limit claim to 100 requests per minute it loads on
-        # almost every page
-        location /claim {
-            limit_req_status 429;
-            limit_conn_status 429;
-            limit_req zone=Claim;
-            index  index.php;
-            try_files $uri $uri/ /index.php$is_args$args;
-        }
-
-        location /request-password-reset {
-            limit_req_status 429;
-            limit_conn_status 429;
-            limit_req zone=RequestPasswordReset;
-            index  index.php;
-            try_files $uri $uri/ /index.php$is_args$args;
-        }
-
-        location /reset-password {
-            limit_req_status 429;
-            limit_conn_status 429;
-            limit_req zone=ResetPassword;
-            index  index.php;
-            try_files $uri $uri/ /index.php$is_args$args;
-        }
-        location /verify-email {
-            limit_req_status 429;
-            limit_conn_status 429;
-            limit_req zone=VerifyEmail;
-            index  index.php;
-            try_files $uri $uri/ /index.php$is_args$args;
-        }
+      include /etc/nginx/locations_rate_limit.conf;
     {% endif %}
 {% endif %}
         location / {

@@ -1,0 +1,17 @@
+#!/usr/bin/ansible-playbook
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: get port, default 22
+      delegate_to: localhost
+      set_fact:
+        ansible_ssh_port: "{{ hostvars[inventory_hostname]['ansible_ssh_port'] | default('22') }}"
+
+    - name: Ensure ssh host key known
+      delegate_to: localhost
+      lineinfile:
+        dest: ~/.ssh/echoctf_known_hosts
+        create: yes
+        state: present
+        line: "{{ lookup('pipe', 'ssh-keyscan -trsa -p' + ansible_ssh_port + ' ' + inventory_hostname) }}"

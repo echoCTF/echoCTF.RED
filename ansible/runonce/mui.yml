@@ -349,6 +349,16 @@
     tags:
       - nginx
 
+  - name: Copy limits nginx configurations
+    copy:
+      src: ../files/{{item}}
+      dest: /etc/nginx/{{item}}
+    with_items:
+      - limit_zones.conf
+      - locations_rate_limit.conf
+    tags:
+      - nginx
+
   - name: Generate self signed certificate for mUI
     command: openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj "/CN={{domain_name}}" -keyout "/etc/nginx/{{domain_name}}-server.key" -out "/etc/nginx/{{domain_name}}-server.crt"
     args:

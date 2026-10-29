@@ -71,6 +71,9 @@
       - { section: opcache, option: "opcache.validate_timestamps", value: "0" }
       - { section: opcache, option: "opcache.revalidate_freq", value: "2" }
       - { section: opcache, option: "opcache.revalidate_path", value: "0" }
+      - { section: opcache, option: "opcache.interned_strings_buffer", value: "8" }
+      - { section: opcache, option: "opcache.max_accelerated_files", val: "10000" }
+      - { section: opcache, option: "opcache.max_file_size", val: "0" }
     post_inst: |
       Things to do:
         - Update /etc/administrators.conf with your IP's
@@ -435,6 +438,16 @@
     tags:
       - nginx
 
+  - name: Copy limits nginx configurations
+    copy:
+      src: ../files/{{item}}
+      dest: /etc/nginx/{{item}}
+    with_items:
+      - limit_zones.conf
+      - locations_rate_limit.conf
+    tags:
+      - nginx
+
   - name: Create modsecurity.conf
     when: modsecurity is defined
     copy:
@@ -595,7 +608,6 @@
       - { section: participantui, option: "php_admin_value[session.save_handler]", value: "memcached" }
       - { section: participantui, option: "php_admin_value[session.save_path]", value: "{{db_ip}}:11211" }
       - { section: participantui, option: "php_admin_value[session.name]", value: "PUISESSID" }
-
 
   - name: Fixing /etc/php.ini
     when: php_ini is defined
