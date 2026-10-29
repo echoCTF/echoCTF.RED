@@ -400,7 +400,7 @@ class CronController extends Controller
             default:
               printf("Error: Unknown action\n");
           }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) { // an Error on one instance must not abort the run
           if (method_exists($e, 'getErrorResponse'))
             echo "Instances: ", $e->getErrorResponse()->getMessage(), "\n";
           else
