@@ -242,6 +242,22 @@ class DefaultController extends \app\components\BaseController
       else
         $mode = 'subscription';
 
+      if ($mode === 'subscription') {
+        // One subscription per player, plan changes go through the customer portal
+        foreach (\Stripe\Subscription::all(['customer' => $cid, 'status' => 'all', 'limit' => 100])->autoPagingIterator() as $sub) {
+          if (!in_array($sub->status, ['canceled', 'incomplete_expired'], true)) {
+            \Yii::$app->response->statusCode = 403;
+            return ['error' => ['message' => \Yii::t('app', 'You already have a subscription, use Manage Billing to change it.')]];
+          }
+        }
+        // Expire other open subscription checkouts so only one can complete
+        foreach (\Stripe\Checkout\Session::all(['customer' => $cid, 'status' => 'open', 'limit' => 100])->autoPagingIterator() as $open) {
+          if ($open->mode === 'subscription') {
+            $open->expire();
+          }
+        }
+      }
+
       $line_items = [[
         'price' => $priceId,
         'quantity' => 1,
