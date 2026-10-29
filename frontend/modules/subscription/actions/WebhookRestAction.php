@@ -72,6 +72,8 @@ class WebhookRestAction extends \yii\rest\Action
           return ['error' => 'No such customer exists on the platform.'];
         }
         $ps = PlayerSubscription::find()->where(['player_id' => $player->id])->one();
+        // Keep access while Stripe retries a failed renewal
+        $isActive = in_array($object->status, ['active', 'past_due'], true);
         $transaction = \Yii::$app->db->beginTransaction();
         try {
           if ($ps === null) {
@@ -82,7 +84,7 @@ class WebhookRestAction extends \yii\rest\Action
             // cancel subscription extras in case new metadata have other networks
             $ps->cancel();
             // If currently there is an active subscription then just
-            if ($ps->active == 1 && $object->status !== "active") {
+            if ($ps->active == 1 && !$isActive) {
               $ps->updated_at = new \yii\db\Expression("NOW()");
               $ps->active = 0;
               $ps->save();
@@ -97,7 +99,7 @@ class WebhookRestAction extends \yii\rest\Action
           $ending = $object->current_period_end;
           $ps->starting = new \yii\db\Expression("from_unixtime($starting)");
           $ps->ending = new \yii\db\Expression("from_unixtime($ending)");
-          $ps->active = $object->status === "active" ? 1 : 0;
+          $ps->active = $isActive ? 1 : 0;
           $ps->price_id = $si->plan->id;
           $ps->updated_at = new \yii\db\Expression("NOW()");
           $ps->save();
