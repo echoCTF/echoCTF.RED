@@ -339,6 +339,7 @@ class CronController extends Controller
 
           $dc->name = $val->name;
           $dc->server = $val->server->connstr;
+          $dc->ssl = (bool) $val->server->ssl;
           $dc->net = $val->server->network;
 
           if ($val->reboot === 2) {
@@ -359,12 +360,12 @@ class CronController extends Controller
             case SELF::ACTION_START:
             case SELF::ACTION_RESTART:
               if ($pfonly === false) {
+                // pull before removing the running container, a failed pull keeps it up
+                $dc->pull();
                 try {
                   $dc->destroy();
                 } catch (\Throwable $e) {
                 }
-                $dc->pull();
-                usleep(100);
                 $dc->spin();
               }
               if (($val->team_allowed === true || \Yii::$app->sys->team_visible_instances === true) && $val->player->teamPlayer && $val->player->teamPlayer->approved === 1) {
@@ -399,7 +400,7 @@ class CronController extends Controller
             default:
               printf("Error: Unknown action\n");
           }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) { // an Error on one instance must not abort the run
           if (method_exists($e, 'getErrorResponse'))
             echo "Instances: ", $e->getErrorResponse()->getMessage(), "\n";
           else
@@ -446,6 +447,7 @@ class CronController extends Controller
         printf("Processing unhealthy [%s] on docker [%s]", $target->name, $target->server);
         if ($target->healthcheck == 0) {
           printf("... skipping by healthcheck flag\n");
+          continue;
         }
         echo "\n";
         if ($spin !== false) {
@@ -460,8 +462,9 @@ class CronController extends Controller
       }
     } catch (\Exception $e) {
       echo "Healthcheck:", $e->getMessage(), "\n";
+    } finally {
+      @unlink("/tmp/cron-healthcheck.lock");
     }
-    @unlink("/tmp/cron-healthcheck.lock");
   }
 
   /**
@@ -522,9 +525,14 @@ class CronController extends Controller
         printf("Target %s ", $target->fqdn);
         try {
           if (!$target->ondemand) {
-            printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $target->spin() ? "success" : "fail");
+            $ok = $target->spin();
+            printf("scheduled for [%s] at %s, spin: %s\n", $target->status, $target->scheduled_at, $ok ? "success" : "fail");
           } else {
-            printf("scheduled for [%s] at %s, pull: %s\n", $target->status, $target->scheduled_at, $target->pull() ? "success" : "fail");
+            $ok = $target->pull();
+            printf("scheduled for [%s] at %s, pull: %s\n", $target->status, $target->scheduled_at, $ok ? "success" : "fail");
+          }
+          if (!$ok) {
+            continue; // keep it scheduled, retried on the next run
           }
           $target->status = 'online';
           $target->scheduled_at = null;
@@ -571,7 +579,10 @@ class CronController extends Controller
 
       foreach ($demands->all() as $ondemand) {
         printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
-        $ondemand->target->destroy();
+        if (!$ondemand->target->destroy()) {
+          printf("Failed to destroy ondemand target %s, will retry\n", $ondemand->target->fqdn);
+          continue;
+        }
         $ondemand->state = -1;
         $ondemand->heartbeat = null;
         Pf::del_table_ip('heartbeat', $ondemand->target->ipoctet);

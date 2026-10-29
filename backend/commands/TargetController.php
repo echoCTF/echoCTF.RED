@@ -20,7 +20,10 @@ class TargetController extends Controller
    */
   public function actionDestroy($target_id)
   {
-    $target = Target::findOne($target_id);
+    if (($target = Target::findOne($target_id)) === null) {
+      $this->stderr("Target $target_id not found\n");
+      return \yii\console\ExitCode::DATAERR;
+    }
     printf("Destroying target %s from %s: %s\n", $target->name, $target->server, $target->destroy() ? "success" : "fail");
   }
 
@@ -127,12 +130,18 @@ class TargetController extends Controller
         $created = $container->getCreated();
         if ($created <= (time() - intval($uptime * 60))) {
           $name = str_replace('/', '', $container->getNames()[0]);
-          $d = Target::findOne(['name' => $name]);
+          // only shared targets that live on this server count towards the limit,
+          // instances and foreign containers are skipped
+          $d = Target::findOne(['name' => $name, 'server' => $master->server]);
           if ($d) {
             printf("Restarting %s/%s [%s]\n", $master->server, $d->name, \Yii::$app->formatter->asRelativeTime($created));
-            $d->spin();
+            try {
+              $d->spin();
+            } catch (\Exception $e) {
+              printf("Failed to restart %s: %s\n", $d->name, $e->getMessage());
+            }
+            $processed++;
           }
-          $processed++;
         }
       }
     } // end docker servers
@@ -147,6 +156,7 @@ class TargetController extends Controller
       $dc = new DockerContainer($val->target);
       $dc->name = $val->name;
       $dc->server = $val->server->connstr;
+      $dc->ssl = (bool) $val->server->ssl;
       printf(" %s for %s (%s)\n", $val->target->name, $val->player->username, $dc->name);
       try {
         if ($val->ip !== null) {
@@ -186,8 +196,13 @@ class TargetController extends Controller
       foreach ($demands->all() as $ondemand) {
         printf("Destroying ondemand target %s\n", $ondemand->target->fqdn);
         try {
-          $ondemand->target->destroy();
+          $destroyed = $ondemand->target->destroy();
         } catch (\Exception $e) {
+          $destroyed = false;
+        }
+        if (!$destroyed) {
+          printf("Failed to destroy ondemand target %s\n", $ondemand->target->fqdn);
+          continue;
         }
         $ondemand->state = -1;
         $ondemand->heartbeat = null;

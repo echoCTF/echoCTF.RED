@@ -33,6 +33,7 @@ class TargetInstanceController extends \app\components\BaseController
           'delete' => ['POST'],
           'destroy' => ['POST'],
           'restart' => ['POST'],
+          'destroy-all' => ['POST'],
         ],
       ],
     ]);
@@ -216,11 +217,9 @@ class TargetInstanceController extends \app\components\BaseController
       $val->restart();
       $val->save();
     } catch (\Exception $e) {
-      if (method_exists($e, 'getErrorResponse')) {
-        echo $e->getErrorResponse()->getMessage(), "\n";
-      } else {
-        echo $e->getMessage(), "\n";
-      }
+      // echo before a redirect was never seen by the admin
+      $error = method_exists($e, 'getErrorResponse') ? $e->getErrorResponse()->getMessage() : $e->getMessage();
+      Yii::$app->session->setFlash('error', Html::encode($error));
     }
 
     return $this->redirect(['index']);
@@ -242,17 +241,16 @@ class TargetInstanceController extends \app\components\BaseController
       $dc->targetVariables = $val->target->targetVariables;
       $dc->name = $val->name;
       $dc->server = $val->server->connstr;
+      $dc->ssl = (bool) $val->server->ssl;
       try {
         $dc->destroy();
       } catch (\Exception $e) {
       }
       $val->delete();
     } catch (\Exception $e) {
-      if (method_exists($e, 'getErrorResponse')) {
-        echo $e->getErrorResponse()->getMessage(), "\n";
-      } else {
-        echo $e->getMessage(), "\n";
-      }
+      // echo before a redirect was never seen by the admin
+      $error = method_exists($e, 'getErrorResponse') ? $e->getErrorResponse()->getMessage() : $e->getMessage();
+      Yii::$app->session->setFlash('error', Html::encode($error));
     }
 
     return $this->redirect(['index']);
@@ -267,27 +265,26 @@ class TargetInstanceController extends \app\components\BaseController
    */
   public function actionDestroyAll()
   {
-    try {
-      foreach (TargetInstance::find()->all() as $val) {
+    // handle each instance on its own so one bad row does not stop the rest
+    foreach (TargetInstance::find()->all() as $val) {
+      try {
         $dc = new DockerContainer($val->target);
         $dc->targetVolumes = $val->target->targetVolumes;
         $dc->targetVariables = $val->target->targetVariables;
         $dc->name = $val->name;
         $dc->server = $val->server->connstr;
+        $dc->ssl = (bool) $val->server->ssl;
         try {
           $dc->destroy();
-          Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got destroyed.'));
+          Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [{name}] got destroyed.', ['name' => Html::encode($dc->name)]));
         } catch (\Exception $e) {
-          Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to get destroyed: ' . $e->getMessage()));
+          Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [{name}] failed to get destroyed: {error}', ['name' => Html::encode($dc->name), 'error' => Html::encode($e->getMessage())]));
         }
         $val->delete();
-        Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got deleted.'));
-      }
-    } catch (\Exception $e) {
-      if (method_exists($e, 'getErrorResponse')) {
-        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to delete: ' . $e->getErrorResponse()->getMessage()));
-      } else {
-        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to delete: ' . $e->getMessage()));
+        Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [{name}] got deleted.', ['name' => Html::encode($dc->name)]));
+      } catch (\Throwable $e) {
+        $error = method_exists($e, 'getErrorResponse') ? $e->getErrorResponse()->getMessage() : $e->getMessage();
+        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [{name}] failed to delete: {error}', ['name' => Html::encode($val->name), 'error' => Html::encode($error)]));
       }
     }
 

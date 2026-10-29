@@ -47,7 +47,12 @@ class TargetController extends \app\components\BaseController
         'class' => VerbFilter::class,
         'actions' => [
           'destroy' => ['POST'],
-          'restart' => ['POST'],
+          'spin' => ['POST'],
+          'pull' => ['POST'],
+          'spin-filtered' => ['POST'],
+          'pull-filtered' => ['POST'],
+          'delete-filtered' => ['POST'],
+          'activate-filtered' => ['POST'],
         ],
       ],
     ]);
@@ -185,7 +190,9 @@ class TargetController extends \app\components\BaseController
   {
     $target = $this->findModel($id);
     try {
-      $docker = $target->connectAPI();
+      if (($docker = $target->connectAPI()) === false) {
+        throw new \yii\base\UserException(Yii::t('app', 'Failed to connect to the docker API'));
+      }
       // Read the logs over the plain logs endpoint, attaching over a websocket
       // fails on current docker versions
       $logs = \app\modules\infrastructure\models\DockerContainer::fetchLogs($docker, $target->name);
@@ -213,7 +220,9 @@ class TargetController extends \app\components\BaseController
     $stderrText = '';
     if ($form->load(Yii::$app->request->post()) && $form->validate()) {
       try {
-        $docker = $target->connectAPI();
+        if (($docker = $target->connectAPI()) === false) {
+          throw new \yii\base\UserException(Yii::t('app', 'Failed to connect to the docker API'));
+        }
         $execConfig = new ContainersIdExecPostBody();
         $execConfig->setTty($form->tty);
         $execConfig->setAttachStdout($form->stdout);
@@ -239,7 +248,7 @@ class TargetController extends \app\components\BaseController
 
         $stream->wait();
       } catch (\Exception $e) {
-        Yii::$app->session->setFlash('error', $e->getMessage());
+        Yii::$app->session->setFlash('error', Html::encode($e->getMessage()));
       }
     } else {
       $form->tty = true;
@@ -282,19 +291,21 @@ class TargetController extends \app\components\BaseController
   {
     $model = $this->findModel($id);
     $modelOrig = $this->findModel($id);
-    $msg = Yii::t('app', 'Server updated successfully');
+    $msg = Yii::t('app', 'Target updated successfully');
     if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-      // if the target has changed server destroy from old one
-      if ($modelOrig->server != $model->server || array_key_exists('destroy', Yii::$app->request->post())) {
-        $modelOrig->destroy();
-        $msg = Yii::t('app', 'Server destroyed and updated successfully');
-      }
       if ($model->save()) {
+        // if the target has changed server or container name destroy the old one, only once the
+        // new settings are stored so a failed save leaves the target running
+        if ($modelOrig->server != $model->server || $modelOrig->name != $model->name || array_key_exists('destroy', Yii::$app->request->post())) {
+          $modelOrig->destroy();
+          $msg = Yii::t('app', 'Target destroyed and updated successfully');
+        }
         if (array_key_exists('notify', Yii::$app->request->post())) {
           //foreach player with progress and not headshot
           $subQuery = (new Query())
             ->select('player_id')
-            ->from(Headshot::tableName());
+            ->from(Headshot::tableName())
+            ->where(['target_id' => $id]);
           $players = TargetPlayerState::find()
             ->select('player_id')
             ->distinct()
@@ -312,7 +323,7 @@ class TargetController extends \app\components\BaseController
         Yii::$app->session->setFlash('success', $msg);
         return $this->redirect(['view', 'id' => $model->id]);
       }
-      Yii::$app->session->setFlash('error', Yii::t('app', 'Server failed to be updated [{errors}]', ['errors' => Html::encode(implode(', ', $model->errors))]));
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Target failed to be updated [{errors}]', ['errors' => Html::encode(implode(', ', $model->getErrorSummary(true)))]));
     }
 
     return $this->render('update', [
@@ -359,11 +370,15 @@ class TargetController extends \app\components\BaseController
     $trans = Yii::$app->db->beginTransaction();
     try {
       $counter = $query->count;
-      foreach ($query->getModels() as $q) {
-        $q->destroy();
+      $models = $query->getModels();
+      foreach ($models as $q) {
         $q->delete();
       }
       $trans->commit();
+      // remove the containers only once the records are really gone
+      foreach ($models as $q) {
+        $q->destroy();
+      }
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets deleted', ['counter' => intval($counter)]));
     } catch (\Exception $e) {
       $trans->rollBack();
@@ -383,15 +398,9 @@ class TargetController extends \app\components\BaseController
     $searchModel = new TargetSearch();
     $query = $searchModel->search(['TargetSearch' => Yii::$app->request->post()]);
     $query->pagination = false;
-    try {
-      $counter = $query->count;
-      foreach ($query->getModels() as $q) {
-        $q->pull();
-      }
-      Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Target images pulled', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
-      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to pull targets'));
-    }
+    $failed = $this->eachTarget($query->getModels(), 'pull');
+    Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Target images pulled', ['counter' => intval($query->count) - count($failed)]));
+    $this->flashFailed($failed, Yii::t('app', 'Failed to pull targets'));
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
@@ -411,6 +420,9 @@ class TargetController extends \app\components\BaseController
       $counter = $query->count;
       foreach ($query->getModels() as $q) {
         $q->active = 1;
+        if (!$q->save(false, ['active'])) {
+          throw new \yii\base\UserException('Failed to activate ' . $q->name);
+        }
       }
       $trans->commit();
       Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets activated', ['counter' => intval($counter)]));
@@ -432,15 +444,9 @@ class TargetController extends \app\components\BaseController
     $searchModel = new TargetSearch();
     $query = $searchModel->search(['TargetSearch' => Yii::$app->request->post()]);
     $query->pagination = false;
-    try {
-      $counter = $query->count;
-      foreach ($query->getModels() as $q) {
-        $q->spin();
-      }
-      Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets spun', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
-      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to spin targets'));
-    }
+    $failed = $this->eachTarget($query->getModels(), 'spin');
+    Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets spun', ['counter' => intval($query->count) - count($failed)]));
+    $this->flashFailed($failed, Yii::t('app', 'Failed to spin targets'));
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
@@ -475,11 +481,10 @@ class TargetController extends \app\components\BaseController
   {
     try {
       if ($id === 'all') {
-        $models = Target::find()->all();
-        foreach ($models as $model) {
-          $model->spin();
+        if (($failed = $this->eachTarget(Target::find()->all(), 'spin')) === []) {
+          \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Containers successfully restarted'));
         }
-        \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Containers successfully restarted'));
+        $this->flashFailed($failed, Yii::t('app', 'Failed to restart container.'));
       } else {
         $this->findModel($id)->spin();
         \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Container successfully restarted'));
@@ -500,11 +505,10 @@ class TargetController extends \app\components\BaseController
   public function actionPull($id)
   {
     if ($id === 'all') {
-      $models = Target::find()->all();
-      foreach ($models as $model) {
-        $model->pull();
+      if (($failed = $this->eachTarget(Target::find()->all(), 'pull')) === []) {
+        \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Images pulled successfully'));
       }
-      \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Images pulled successfully'));
+      $this->flashFailed($failed, Yii::t('app', 'Failed to pull container image'));
       return $this->redirect(['index']);
     } else {
       if ($this->findModel($id)->pull()) {
@@ -698,6 +702,36 @@ class TargetController extends \app\components\BaseController
       'dataProvider' => $dataProvider,
       'searchModel' => $searchModel
     ])));
+  }
+
+  /**
+   * Call $method (spin or pull) on every target, a failure does not stop the
+   * others.
+   * @param Target[] $targets
+   * @param string $method
+   * @return string[] names of the targets that failed
+   */
+  protected function eachTarget(array $targets, string $method): array
+  {
+    $failed = [];
+    foreach ($targets as $target) {
+      try {
+        if ($target->$method() === false) {
+          $failed[] = $target->name;
+        }
+      } catch (\Exception $e) {
+        Yii::warning(sprintf('%s %s: %s', $method, $target->name, $e->getMessage()), 'docker');
+        $failed[] = $target->name;
+      }
+    }
+    return $failed;
+  }
+
+  protected function flashFailed(array $failed, string $message)
+  {
+    if ($failed !== []) {
+      Yii::$app->session->setFlash('error', $message . ' ' . Html::encode(implode(', ', $failed)));
+    }
   }
 
   /**

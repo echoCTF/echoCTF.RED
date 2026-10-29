@@ -136,12 +136,15 @@ class DockerContainer extends Model
     $restartPolicy = new RestartPolicy();
     $restartPolicy->setName('always');
     $hostConfig = new HostConfig();
-    if ($this->memory !== null) {
-      $hostConfig->setMemory($this->memory);
+    $memory = $this->memory ?? $this->getMemory();
+    if ($memory !== null) {
+      $hostConfig->setMemory($memory);
     }
 
     $hostConfig->setNetworkMode($this->net);
-    $hostConfig->setDns([$this->dns]);
+    if (!empty($this->dns)) {
+      $hostConfig->setDns([$this->dns]);
+    }
     foreach ($this->targetVolumes as $var) {
       $targetVolumes[] = sprintf('%s:%s', $var->volume, $var->bind);
     }
@@ -165,7 +168,8 @@ class DockerContainer extends Model
     }
 */
 
-    $this->container = $this->docker->containerInspect($this->container->getId());
+    // fall back to the name when no container was created in this request
+    $this->container = $this->docker->containerInspect($this->container !== null ? $this->container->getId() : $this->name);
     return $this->container;
   }
 
@@ -182,23 +186,15 @@ class DockerContainer extends Model
     $this->connectAPI();
     $authHeaders = [];
     if (!empty($this->imageparams)) {
-      $registryConfig = new AuthConfig();
-      $decoded = \yii\helpers\Json::decode($this->imageparams, false);
-
-      if ($decoded !== null && property_exists($decoded, 'username')) {
-        $registryConfig->setUsername($decoded->username);
+      // X-Registry-Auth must be a base64url encoded JSON string, imageCreate()
+      // does not serialize an AuthConfig object (only imagePush() does)
+      $decoded = json_decode($this->imageparams, true);
+      $auth = is_array($decoded) ? array_intersect_key($decoded, array_flip(['username', 'password', 'email', 'serveraddress'])) : [];
+      if ($auth !== []) {
+        $authHeaders['X-Registry-Auth'] = rtrim(strtr(base64_encode(json_encode($auth)), '+/', '-_'), '=');
       }
-
-      if ($decoded !== null && property_exists($decoded, 'password')) {
-        $registryConfig->setPassword($decoded->password);
-      }
-
-      if ($decoded !== null && property_exists($decoded, 'email')) {
-        $registryConfig->setEmail($decoded->email);
-      }
-      $authHeaders['X-Registry-Auth'] = $registryConfig;
     }
-    $imageCreateResult = $this->docker->imageCreate($this->image, ['fromImage' => $this->image], $authHeaders);
+    $imageCreateResult = $this->docker->imageCreate(null, ['fromImage' => $this->image], $authHeaders);
     $imageCreateResult->wait();
     return true;
   }
@@ -214,7 +210,8 @@ class DockerContainer extends Model
     if ($this->parameters !== null) {
       $decoded = \yii\helpers\Json::decode($this->parameters, false);
       if ($decoded !== null && property_exists($decoded, 'hostConfig') && property_exists($decoded->hostConfig, 'Memory')) {
-        return intval($decoded->hostConfig->Memory) * 1024 * 1024;
+        $memory = intval($decoded->hostConfig->Memory);
+        return $memory < (16 * 1024 * 1024) ? $memory * 1024 * 1024 : $memory;
       }
     }
     return null;

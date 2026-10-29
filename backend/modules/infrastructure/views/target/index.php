@@ -24,8 +24,8 @@ yii\bootstrap5\Modal::end();
 
   <p>
     <?= Html::a('Create', ['create'], ['class' => 'btn btn-success']) ?>
-    <?= Html::a('Spin All', ['spin', 'id' => 'all'], ['class' => 'btn btn-primary']) ?>
-    <?= Html::a('Pull All', ['pull', 'id' => 'all'], ['class' => 'btn btn-warning']) ?>
+    <?= Html::a('Spin All', ['spin', 'id' => 'all'], ['class' => 'btn btn-primary', 'data' => ['method' => 'post', 'confirm' => 'Restart all targets?']]) ?>
+    <?= Html::a('Pull All', ['pull', 'id' => 'all'], ['class' => 'btn btn-warning', 'data' => ['method' => 'post']]) ?>
     <?= Html::a('Statistics', ['statistics'], ['class' => 'btn btn-info']) ?>
     <?= Html::a('Container Status', ['status'], ['class' => 'btn btn-info']) ?>
     <?= Html::a('Docker compose', ['docker-compose'], ['class' => 'btn btn-success']) ?>

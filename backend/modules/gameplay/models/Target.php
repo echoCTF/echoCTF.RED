@@ -58,6 +58,8 @@ class Target extends TargetAR
     if ($docker === false)
       throw new UserException("Failed to connect to docker server: " . $this->server);
 
+    // pull before removing the running container, a failed pull keeps it up
+    $this->pull();
     $this->destroy();
 
     $hostConfig = $this->hostConfig();
@@ -87,7 +89,6 @@ class Target extends TargetAR
     $containerConfig->setEnv($targetVariables);
     $containerConfig->setHostConfig($hostConfig);
 
-    $this->pull();
     $containerCreateResult = $docker->containerCreate($containerConfig, ['name' => $this->name]);
     $docker->containerStart($containerCreateResult->getId());
 
@@ -126,12 +127,14 @@ class Target extends TargetAR
    */
   public function spin()
   {
-    // if tcp do docker staff
-    if (substr($this->server, 0, 3) == 'tcp') {
-      return $this->dockerSpin();
-    } else if (substr($this->server, 0, 3) == 'pve') {
-      $this->pveSpin(substr($this->server, 4));
+    if (empty($this->server)) {
+      return false;
     }
+    if (substr($this->server, 0, 4) === 'pve:') {
+      return $this->pveSpin(substr($this->server, 4));
+    }
+    // tcp://, unix:// and any other docker connection string
+    return $this->dockerSpin();
   }
 
   /**
@@ -150,7 +153,9 @@ class Target extends TargetAR
     }
 
     $hostConfig->setNetworkMode($this->net);
-    $hostConfig->setDns([$this->dns]);
+    if (!empty($this->dns)) {
+      $hostConfig->setDns([$this->dns]);
+    }
     foreach ($this->targetVolumes as $var)
       $targetVolumes[] = sprintf("%s:%s", $var->volume, $var->bind);
     $hostConfig->setBinds($targetVolumes);
@@ -196,23 +201,15 @@ class Target extends TargetAR
       return false;
     $authHeaders = [];
     if (!empty($this->imageparams)) {
-      $registryConfig = new AuthConfig();
-      $decoded = \yii\helpers\Json::decode($this->imageparams, false);
-
-      if ($decoded !== null && property_exists($decoded, 'username')) {
-        $registryConfig->setUsername($decoded->username);
+      // X-Registry-Auth must be a base64url encoded JSON string, imageCreate()
+      // does not serialize an AuthConfig object (only imagePush() does)
+      $decoded = json_decode($this->imageparams, true);
+      $auth = is_array($decoded) ? array_intersect_key($decoded, array_flip(['username', 'password', 'email', 'serveraddress'])) : [];
+      if ($auth !== []) {
+        $authHeaders['X-Registry-Auth'] = rtrim(strtr(base64_encode(json_encode($auth)), '+/', '-_'), '=');
       }
-
-      if ($decoded !== null && property_exists($decoded, 'password')) {
-        $registryConfig->setPassword($decoded->password);
-      }
-
-      if ($decoded !== null && property_exists($decoded, 'email')) {
-        $registryConfig->setEmail($decoded->email);
-      }
-      $authHeaders['X-Registry-Auth'] = $registryConfig;
     }
-    $imageCreateResult = $docker->imageCreate($this->image, ['fromImage' => $this->image], $authHeaders);
+    $imageCreateResult = $docker->imageCreate(null, ['fromImage' => $this->image], $authHeaders);
     $imageCreateResult->wait();
     return true;
   }
@@ -225,6 +222,9 @@ class Target extends TargetAR
 
     try {
       $docker->containerDelete($this->name, ['force' => true]);
+    } catch (\Docker\API\Exception\ContainerDeleteNotFoundException $e) {
+      // already gone, nothing to destroy
+      return true;
     } catch (\Exception $e) {
       return false;
     }
@@ -236,9 +236,12 @@ class Target extends TargetAR
    */
   public function destroy()
   {
-    if (substr($this->server, 0, 3) === 'tcp') {
+    if (empty($this->server)) {
+      return false;
+    }
+    if (substr($this->server, 0, 4) !== 'pve:') {
       return $this->dockerDestroy();
-    } else if (substr($this->server, 0, 3) === 'pve') {
+    } else {
       $HEADERS = ['Accept: application/json', 'Content-Type: application/json'];
       if ($this->imageparams !== '') {
         $decoded = json_decode($this->imageparams);
@@ -255,9 +258,11 @@ class Target extends TargetAR
       curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
       curl_setopt($ch, CURLOPT_POSTFIELDS, '{}');
       curl_setopt($ch, CURLOPT_URL, substr($this->server, 4) . 'status/stop');
-      if (curl_exec($ch) === false)
-        var_dump(curl_error($ch));
+      $ok = curl_exec($ch) !== false;
+      if (!$ok)
+        Yii::warning(sprintf('PVE destroy of %s failed: %s', $this->name, curl_error($ch)), 'pve');
       curl_close($ch);
+      return $ok;
     }
   }
 

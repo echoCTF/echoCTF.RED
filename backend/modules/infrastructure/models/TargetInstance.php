@@ -101,8 +101,8 @@ class TargetInstance extends TargetInstanceAR
     if ($params === null) {
       if ($this->server !== null) {
         $params['remote_socket'] = $this->server->connstr;
-        $params['ssl'] = false;
-        $params['timeout'] = 5000;
+        $params['ssl'] = (bool) $this->server->ssl;
+        $params['timeout'] = $this->server->timeout ? (int) $this->server->timeout : 5000;
       }
     }
     try {
@@ -120,6 +120,7 @@ class TargetInstance extends TargetInstanceAR
     $dc->targetVariables = $this->target->targetVariables;
     $dc->name = $this->name;
     $dc->server = $this->server->connstr;
+    $dc->ssl = (bool) $this->server->ssl;
     $dc->net = $this->server->network;
     // Check If target supports dynamic_treasures
     if ($this->target->dynamic_treasures) {
@@ -142,11 +143,12 @@ class TargetInstance extends TargetInstanceAR
       }
     }
 
+    // pull before removing the running container, a failed pull keeps it up
+    $dc->pull();
     try {
       $dc->destroy();
     } catch (\Exception $e) {
     }
-    $dc->pull();
     $dc->spin();
     $this->ipoctet = $dc->container->getNetworkSettings()->getNetworks()->{$this->server->network}->getIPAddress();
     $this->reboot = 0;

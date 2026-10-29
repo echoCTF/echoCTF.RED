@@ -23,21 +23,24 @@ use Docker\Stream\DockerRawStream;
 /**
  * SpeedSolutionController implements the CRUD actions for SpeedSolution model.
  */
-class DefaultController extends Controller
+class DefaultController extends \app\components\BaseController
 {
   /**
    * {@inheritdoc}
    */
   public function behaviors()
   {
-    return [
+    return \yii\helpers\ArrayHelper::merge(parent::behaviors(), [
       'verbs' => [
         'class' => VerbFilter::class,
         'actions' => [
           'delete' => ['POST'],
+          'validate' => ['POST'],
+          'approve' => ['POST'],
+          'reject' => ['POST'],
         ],
       ],
-    ];
+    ]);
   }
 
   /**
@@ -142,7 +145,7 @@ class DefaultController extends Controller
     $containerConfig->setAttachStdout(true);
     $containerConfig->setAttachStderr(true);
     $containerConfig->setCmd(['echo', 'I am running a command inside the validator']);
-    $targetVariables[] = sprintf("FETCH_URL=https://" . \Yii::$app->sys->offense_domain . "/uploads/player_%d-target_%d.%s", $model->player_id, $model->problem_id);
+    $targetVariables[] = sprintf("FETCH_URL=https://%s/uploads/player_%d-target_%d.%s", \Yii::$app->sys->offense_domain, $model->player_id, $model->problem_id, $model->language);
     $targetVariables[] = sprintf("VALIDATE_LANG=%s", $model->language);
     $targetVariables[] = sprintf("VALIDATE_PLAYER=%s", $model->player_id);
     $targetVariables[] = sprintf("VALIDATE_PROBLEM=%s", $model->problem_id);

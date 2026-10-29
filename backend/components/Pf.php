@@ -26,7 +26,7 @@ class Pf extends Component
    */
   public static function load_table_file($table, $file)
   {
-    @passthru(self::PFCTL . " -t $table -T replace -f $file", $return_var);
+    @passthru(self::PFCTL . " -t " . escapeshellarg($table) . " -T replace -f " . escapeshellarg($file), $return_var);
     return intval($return_var) === 0;
   }
 
@@ -38,7 +38,7 @@ class Pf extends Component
    */
   public static function load_anchor_file($anchor, $file)
   {
-    @passthru(self::PFCTL . " -a $anchor -Fr -f $file >/dev/null 2>&1", $return_var);
+    @passthru(self::PFCTL . " -a " . escapeshellarg($anchor) . " -Fr -f " . escapeshellarg($file) . " >/dev/null 2>&1", $return_var);
     return intval($return_var) === 0;
   }
 
@@ -97,29 +97,39 @@ class Pf extends Component
     }
   }
 
+  /**
+   * Escape a space separated list of addresses as separate shell arguments
+   * @param string|null $ips
+   * @return string
+   */
+  protected static function escape_ips($ips)
+  {
+    return implode(' ', array_map('escapeshellarg', preg_split('/\s+/', trim((string) $ips), -1, PREG_SPLIT_NO_EMPTY)));
+  }
+
   public static function add_table_ip($table, $ip, $replace = false)
   {
     if ($replace)
-      @passthru(self::PFCTL . " -t $table -T replace $ip >/dev/null 2>&1", $return_var);
+      @passthru(self::PFCTL . " -t " . escapeshellarg($table) . " -T replace " . self::escape_ips($ip) . " >/dev/null 2>&1", $return_var);
     else
-      @passthru(self::PFCTL . " -t $table -T add $ip >/dev/null 2>&1", $return_var);
+      @passthru(self::PFCTL . " -t " . escapeshellarg($table) . " -T add " . self::escape_ips($ip) . " >/dev/null 2>&1", $return_var);
   }
 
   public static function del_table_ip($table, $ip)
   {
-    @passthru(self::PFCTL . " -t $table -T delete $ip >/dev/null 2>&1", $return_var);
+    @passthru(self::PFCTL . " -t " . escapeshellarg($table) . " -T delete " . self::escape_ips($ip) . " >/dev/null 2>&1", $return_var);
   }
 
   public static function flush_table($table, $unlink = false)
   {
-    @passthru(self::PFCTL . " -t $table -T flush >/dev/null 2>&1", $return_var);
+    @passthru(self::PFCTL . " -t " . escapeshellarg($table) . " -T flush >/dev/null 2>&1", $return_var);
     if ($unlink)
       @unlink('/etc/' . $table . '.conf');
   }
 
   public static function kill_table($table, $unlink = false)
   {
-    @passthru(self::PFCTL . " -t $table -T kill >/dev/null 2>&1", $return_var);
+    @passthru(self::PFCTL . " -t " . escapeshellarg($table) . " -T kill >/dev/null 2>&1", $return_var);
     if ($unlink)
       @unlink('/etc/' . $table . '.conf');
   }

@@ -42,12 +42,11 @@ class Pved extends Component
     $ch = self::initApi(self::getHeaders($target->imageparams));
 
     foreach (['status/stop', 'snapshot/echoCTF/rollback', 'status/start'] as $action) {
-      $endpoint = str_replace('//', '/', $target->server . $action);
-      curl_setopt($ch, CURLOPT_URL, $target->server . $action);
+      $endpoint = rtrim($target->server, '/') . '/' . $action;
+      curl_setopt($ch, CURLOPT_URL, $endpoint);
       if (curl_exec($ch) === false) {
         throw new UserException('Failed to execute ' . $endpoint . ': ' . curl_error($ch));
       }
-      $ch = null;
       sleep(1); // give it some time for the previous request to complete
     }
     return true;
@@ -59,7 +58,7 @@ class Pved extends Component
   public function destroy($target)
   {
     $ch = self::initApi(self::getHeaders($target->imageparams));
-    $endpoint = str_replace('//', '/', $target->server . '/status/stop');
+    $endpoint = rtrim($target->server, '/') . '/status/stop';
     curl_setopt($ch, CURLOPT_URL, $endpoint);
     if (curl_exec($ch) === false) {
       throw new UserException('Failed to destroy ' . $target->server . ': ' . curl_error($ch));

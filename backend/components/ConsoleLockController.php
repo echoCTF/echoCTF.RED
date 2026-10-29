@@ -8,6 +8,25 @@ use yii\base\UserException;
 
 class ConsoleLockController extends Controller
 {
+  /** @var string|null lock file held by the running action */
+  private $_lock;
+
+  /**
+   * afterAction() is skipped when the action throws, release the lock we
+   * acquired anyway (but never one held by another process).
+   */
+  public function runAction($id, $params = [])
+  {
+    try {
+      return parent::runAction($id, $params);
+    } finally {
+      if ($this->_lock !== null) {
+        $this::lockClear($this->_lock);
+        $this->_lock = null;
+      }
+    }
+  }
+
   private static function lockCheck($lock)
   {
     if (file_exists($lock)) {
@@ -37,6 +56,7 @@ class ConsoleLockController extends Controller
       $this::lockCheck($lock);
       // Request a lock
       $this::lockGet($lock);
+      $this->_lock = $lock;
     }
 
     return parent::beforeAction($action);
@@ -48,6 +68,7 @@ class ConsoleLockController extends Controller
       $lock = sprintf('/tmp/%s-%s.lock', \Yii::$app->controller->id, $action->id);
       // Clear the lock
       $this::lockClear($lock);
+      $this->_lock = null;
     }
 
     return parent::afterAction($action, $result);

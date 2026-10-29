@@ -41,12 +41,15 @@ class PrivateNetworkController extends Controller
       try {
         $ips = [];
         $dc = new DockerContainer($p->target);
-        $server = $p->server;
-        if (intval($p->server_id) === 0 || $p->ipoctet === null) {
+        $server = $oldServer = $p->server;
+        // state 2 (network expired) must be destroyed, even if it never got an IP
+        if (intval($p->state) !== 2 && (intval($p->server_id) === 0 || $p->ipoctet === null)) {
           $notifType = "success";
           $notifTitle = $notifMessage = sprintf("Target %s from your private network got started!", $p->target->name);
           // pick a server
-          $server = Server::findNextFreeOne();
+          if (($server = Server::findNextFreeOne()) === null) {
+            throw new UserException('No docker server available');
+          }
           $p->state = 0;
           $p->server_id = $server->id;
         } else if (intval($p->state) === 1) {
@@ -83,15 +86,29 @@ class PrivateNetworkController extends Controller
         }
 
         $dc->name = sprintf("%s_%s", $p->privateNetwork->name, $p->target->name);
+        if ($oldServer !== null && $server !== null && $oldServer->id !== $server->id) {
+          // moving to another server, remove the leftover container from the old one
+          $old = clone $dc;
+          $old->server = $oldServer->connstr;
+          $old->ssl = (bool) $oldServer->ssl;
+          try {
+            $old->destroy();
+          } catch (\Exception $e) {
+          }
+        }
         $dc->server = $server->connstr;
+        $dc->ssl = (bool) $server->ssl;
         $dc->net = $server->network;
+        if ($p->state < 2) {
+          // pull before removing the running container, a failed pull keeps it up
+          $dc->pull();
+        }
         try {
           $dc->destroy();
         } catch (\Exception $e) {
         }
 
         if ($p->state < 2) {
-          $dc->pull();
           $dc->spin();
           if ($p->privateNetwork->team_accessible === true && $p->privateNetwork->player->teamPlayer && $p->privateNetwork->player->teamPlayer->approved === 1) {
             foreach ($p->privateNetwork->player->teamPlayer->team->approvedMembers as $teamPlayer) {
@@ -106,7 +123,7 @@ class PrivateNetworkController extends Controller
           if ($ips != [])
             Pf::add_table_ip($p->privateNetwork->name . '_clients', implode(' ', $ips), true);
 
-          if ($p->ipoctet != '0.0.0.0' || $p->ipoctet == null) {
+          if ($p->ipoctet !== null && $p->ipoctet != '0.0.0.0') {
             // remove old IP in case it changed
             Pf::del_table_ip($p->privateNetwork->name, $p->ipoctet);
           }
@@ -123,8 +140,8 @@ class PrivateNetworkController extends Controller
         }
 
         if (!$p->save() || !$p->privateNetwork->player->notify($notifType, $notifTitle, $notifMessage)) {
-          Yii::error(imploded(",", $p->getErrorSummary(true)));
-          throw new UserException(imploded(",", $p->getErrorSummary(true)));
+          Yii::error(implode(",", $p->getErrorSummary(true)));
+          throw new UserException(implode(",", $p->getErrorSummary(true)));
         }
       } catch (\Exception $e) {
         echo " FAILED\n";
