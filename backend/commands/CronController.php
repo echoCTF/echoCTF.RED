@@ -339,6 +339,7 @@ class CronController extends Controller
 
           $dc->name = $val->name;
           $dc->server = $val->server->connstr;
+          $dc->ssl = (bool) $val->server->ssl;
           $dc->net = $val->server->network;
 
           if ($val->reboot === 2) {

@@ -84,6 +84,7 @@ class PrivateNetworkController extends Controller
 
         $dc->name = sprintf("%s_%s", $p->privateNetwork->name, $p->target->name);
         $dc->server = $server->connstr;
+        $dc->ssl = (bool) $server->ssl;
         $dc->net = $server->network;
         try {
           $dc->destroy();

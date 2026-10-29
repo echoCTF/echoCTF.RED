@@ -243,6 +243,7 @@ class TargetInstanceController extends \app\components\BaseController
       $dc->targetVariables = $val->target->targetVariables;
       $dc->name = $val->name;
       $dc->server = $val->server->connstr;
+      $dc->ssl = (bool) $val->server->ssl;
       try {
         $dc->destroy();
       } catch (\Exception $e) {
@@ -275,6 +276,7 @@ class TargetInstanceController extends \app\components\BaseController
         $dc->targetVariables = $val->target->targetVariables;
         $dc->name = $val->name;
         $dc->server = $val->server->connstr;
+        $dc->ssl = (bool) $val->server->ssl;
         try {
           $dc->destroy();
           Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got destroyed.'));

@@ -147,6 +147,7 @@ class TargetController extends Controller
       $dc = new DockerContainer($val->target);
       $dc->name = $val->name;
       $dc->server = $val->server->connstr;
+      $dc->ssl = (bool) $val->server->ssl;
       printf(" %s for %s (%s)\n", $val->target->name, $val->player->username, $dc->name);
       try {
         if ($val->ip !== null) {
