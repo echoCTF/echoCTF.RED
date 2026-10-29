@@ -14,7 +14,7 @@ Shows how much traffic each player sent to each target, and how much the target 
 ## How it works
 
 1. PF exports the connections between players and targets with `pflow`, to `127.0.0.1:9995`
-2. `traffic/collect` listens on that address and adds up the packets and bytes
+2. `traffic/collect` listens on that address and adds up the packets and bytes. It only counts the connections as seen on the interfaces players connect through (the `offense` group, see `--iface` in the [Traffic command](console-commands/Traffic.md)), so each connection is counted once
 3. Every 30 seconds it finds the player and the target of each connection and saves the totals in the `player_target_traffic` table
 
 The player is found from their VPN IP (`player_last`). If the player has already disconnected, their last VPN session with that IP is used (`player_vpn_history`).
