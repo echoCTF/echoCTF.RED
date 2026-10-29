@@ -356,6 +356,19 @@ class DefaultController extends \app\components\BaseController
       if ($metadata && isset($metadata->charges) && isset($metadata->charges->data)) {
         return $this->redirect($metadata->charges->data[0]->receipt_url);
       }
+      // Newer PaymentIntents only have the latest charge id
+      if ($metadata && !empty($metadata->latest_charge)) {
+        try {
+          \Stripe\Stripe::setEnableTelemetry(false);
+          \Stripe\Stripe::setApiKey(\Yii::$app->sys->stripe_apiKey);
+          $charge = \Stripe\Charge::retrieve(is_string($metadata->latest_charge) ? $metadata->latest_charge : $metadata->latest_charge->id);
+          if (!empty($charge->receipt_url)) {
+            return $this->redirect($charge->receipt_url);
+          }
+        } catch (\Exception $e) {
+          Yii::error($e->getMessage());
+        }
+      }
       Yii::$app->session->setFlash('error', \Yii::t('app', 'No details found, contact support'));
     }
     return $this->redirect(['payments']);
