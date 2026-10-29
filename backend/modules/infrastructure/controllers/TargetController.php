@@ -190,7 +190,9 @@ class TargetController extends \app\components\BaseController
   {
     $target = $this->findModel($id);
     try {
-      $docker = $target->connectAPI();
+      if (($docker = $target->connectAPI()) === false) {
+        throw new \yii\base\UserException(Yii::t('app', 'Failed to connect to the docker API'));
+      }
       // Read the logs over the plain logs endpoint, attaching over a websocket
       // fails on current docker versions
       $logs = \app\modules\infrastructure\models\DockerContainer::fetchLogs($docker, $target->name);
@@ -218,7 +220,9 @@ class TargetController extends \app\components\BaseController
     $stderrText = '';
     if ($form->load(Yii::$app->request->post()) && $form->validate()) {
       try {
-        $docker = $target->connectAPI();
+        if (($docker = $target->connectAPI()) === false) {
+          throw new \yii\base\UserException(Yii::t('app', 'Failed to connect to the docker API'));
+        }
         $execConfig = new ContainersIdExecPostBody();
         $execConfig->setTty($form->tty);
         $execConfig->setAttachStdout($form->stdout);
