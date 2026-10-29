@@ -393,15 +393,9 @@ class TargetController extends \app\components\BaseController
     $searchModel = new TargetSearch();
     $query = $searchModel->search(['TargetSearch' => Yii::$app->request->post()]);
     $query->pagination = false;
-    try {
-      $counter = $query->count;
-      foreach ($query->getModels() as $q) {
-        $q->pull();
-      }
-      Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Target images pulled', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
-      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to pull targets'));
-    }
+    $failed = $this->eachTarget($query->getModels(), 'pull');
+    Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Target images pulled', ['counter' => intval($query->count) - count($failed)]));
+    $this->flashFailed($failed, Yii::t('app', 'Failed to pull targets'));
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
@@ -442,15 +436,9 @@ class TargetController extends \app\components\BaseController
     $searchModel = new TargetSearch();
     $query = $searchModel->search(['TargetSearch' => Yii::$app->request->post()]);
     $query->pagination = false;
-    try {
-      $counter = $query->count;
-      foreach ($query->getModels() as $q) {
-        $q->spin();
-      }
-      Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets spun', ['counter' => intval($counter)]));
-    } catch (\Exception $e) {
-      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to spin targets'));
-    }
+    $failed = $this->eachTarget($query->getModels(), 'spin');
+    Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Targets spun', ['counter' => intval($query->count) - count($failed)]));
+    $this->flashFailed($failed, Yii::t('app', 'Failed to spin targets'));
     return $this->goBack((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : null));
   }
 
@@ -485,11 +473,10 @@ class TargetController extends \app\components\BaseController
   {
     try {
       if ($id === 'all') {
-        $models = Target::find()->all();
-        foreach ($models as $model) {
-          $model->spin();
+        if (($failed = $this->eachTarget(Target::find()->all(), 'spin')) === []) {
+          \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Containers successfully restarted'));
         }
-        \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Containers successfully restarted'));
+        $this->flashFailed($failed, Yii::t('app', 'Failed to restart container.'));
       } else {
         $this->findModel($id)->spin();
         \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Container successfully restarted'));
@@ -510,11 +497,10 @@ class TargetController extends \app\components\BaseController
   public function actionPull($id)
   {
     if ($id === 'all') {
-      $models = Target::find()->all();
-      foreach ($models as $model) {
-        $model->pull();
+      if (($failed = $this->eachTarget(Target::find()->all(), 'pull')) === []) {
+        \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Images pulled successfully'));
       }
-      \Yii::$app->getSession()->setFlash('success', Yii::t('app', 'Images pulled successfully'));
+      $this->flashFailed($failed, Yii::t('app', 'Failed to pull container image'));
       return $this->redirect(['index']);
     } else {
       if ($this->findModel($id)->pull()) {
@@ -708,6 +694,36 @@ class TargetController extends \app\components\BaseController
       'dataProvider' => $dataProvider,
       'searchModel' => $searchModel
     ])));
+  }
+
+  /**
+   * Call $method (spin or pull) on every target, a failure does not stop the
+   * others.
+   * @param Target[] $targets
+   * @param string $method
+   * @return string[] names of the targets that failed
+   */
+  protected function eachTarget(array $targets, string $method): array
+  {
+    $failed = [];
+    foreach ($targets as $target) {
+      try {
+        if ($target->$method() === false) {
+          $failed[] = $target->name;
+        }
+      } catch (\Exception $e) {
+        Yii::warning(sprintf('%s %s: %s', $method, $target->name, $e->getMessage()), 'docker');
+        $failed[] = $target->name;
+      }
+    }
+    return $failed;
+  }
+
+  protected function flashFailed(array $failed, string $message)
+  {
+    if ($failed !== []) {
+      Yii::$app->session->setFlash('error', $message . ' ' . Html::encode(implode(', ', $failed)));
+    }
   }
 
   /**
