@@ -265,8 +265,9 @@ class TargetInstanceController extends \app\components\BaseController
    */
   public function actionDestroyAll()
   {
-    try {
-      foreach (TargetInstance::find()->all() as $val) {
+    // handle each instance on its own so one bad row does not stop the rest
+    foreach (TargetInstance::find()->all() as $val) {
+      try {
         $dc = new DockerContainer($val->target);
         $dc->targetVolumes = $val->target->targetVolumes;
         $dc->targetVariables = $val->target->targetVariables;
@@ -281,12 +282,9 @@ class TargetInstanceController extends \app\components\BaseController
         }
         $val->delete();
         Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [' . $dc->name . '] got deleted.'));
-      }
-    } catch (\Exception $e) {
-      if (method_exists($e, 'getErrorResponse')) {
-        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to delete: ' . $e->getErrorResponse()->getMessage()));
-      } else {
-        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $dc->name . '] failed to delete: ' . $e->getMessage()));
+      } catch (\Throwable $e) {
+        $error = method_exists($e, 'getErrorResponse') ? $e->getErrorResponse()->getMessage() : $e->getMessage();
+        Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [' . $val->name . '] failed to delete: ' . $error));
       }
     }
 
