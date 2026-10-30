@@ -40,14 +40,16 @@
 }
 .pricingTable .pricing-content{
     text-align: left;
-    padding: 25px 15px;
+    padding: 25px 35px 25px 50px;
     margin: 0 0 30px;
     border: 1px solid #e7e7e7;
     border-left: none;
     border-right: none;
     list-style: none;
-    display: inline-block;
-    align-self: center;
+    /* Full card width, and fill the free space so the bottom line sits
+       right above the buttons */
+    display: block;
+    flex-grow: 1;
 }
 .pricingTable .pricing-content li{
     color: #777;
