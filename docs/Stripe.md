@@ -13,7 +13,7 @@ We assume you have a stripe account already configured for your business.
     - `network_ids`: Coma seperated list of network IDs that this subscription will provide access to
     - `badge_id`: ID of the badge to assign to user
     - `spins`: Number of spins the user will get
-    - `max_target_instances`: Number of extra concurrent private target instances (each for a different target) the subscriber gets. Added to the player value when the subscription starts and taken back when it ends
+    - `max_target_instances`: Number of extra concurrent private target instances (each for a different target) the subscriber gets. Added to the player value when the subscription starts and taken back when it ends. Also works on stand-alone perks with `days` on the price, added on purchase and taken back when `sales/expired-player-products` removes the expired perk
     - `shortcode`: Network shortcode
     - `weight`: users by ordering
     - `perks`: raw html of the perks the subscription provides
