@@ -135,12 +135,47 @@ class PlayerProduct extends \yii\db\ActiveRecord
     return 0;
   }
 
-  /** Add the product instances when the purchase is created */
+  /** Add the product instances and networks when the purchase is created */
   public function afterSave($insert, $changedAttributes)
   {
     parent::afterSave($insert, $changedAttributes);
     if ($insert) {
       \app\models\PlayerSpin::adjustMaxInstances(intval($this->player_id), $this->maxInstancesBonus);
+      $this->grantNetworks();
     }
+  }
+
+  /**
+   * Give the player the networks of the product (`network_ids` product
+   * metadata key). Only networks the player didn't already have are added,
+   * and they are recorded as `granted_network_ids` so that expiry removes
+   * exactly these and never access that came from somewhere else.
+   */
+  protected function grantNetworks()
+  {
+    $metadata = $this->product !== null ? json_decode((string) $this->product->metadata) : null;
+    if (!is_object($metadata) || empty($metadata->network_ids)) {
+      return;
+    }
+    $granted = [];
+    foreach (array_unique(array_filter(array_map('intval', explode(',', (string) $metadata->network_ids)))) as $networkId) {
+      if (\app\modules\network\models\NetworkPlayer::findOne(['network_id' => $networkId, 'player_id' => $this->player_id]) !== null) {
+        continue;
+      }
+      $np = new \app\modules\network\models\NetworkPlayer();
+      $np->player_id = $this->player_id;
+      $np->network_id = $networkId;
+      $np->created_at = new Expression('NOW()');
+      $np->updated_at = new Expression('NOW()');
+      if ($np->save()) {
+        $granted[] = $networkId;
+      }
+    }
+    $own = json_decode((string) $this->metadata);
+    if (!is_object($own)) {
+      $own = new \stdClass();
+    }
+    $own->granted_network_ids = $granted;
+    $this->updateAttributes(['metadata' => json_encode($own)]);
   }
 }
