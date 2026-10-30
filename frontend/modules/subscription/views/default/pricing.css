@@ -4,6 +4,9 @@
     text-align: center;
     padding: 20px 0 35px;
     box-shadow: 0 0 10px -3px rgba(0,0,0,0.3);
+    /* Cards in a row share the same height, buttons stay at the bottom */
+    display: flex;
+    flex-direction: column;
 }
 .pricingTable .pricingTable-header{
     background: #F37A21;
@@ -44,6 +47,7 @@
     border-right: none;
     list-style: none;
     display: inline-block;
+    align-self: center;
 }
 .pricingTable .pricing-content li{
     color: #777;
@@ -104,8 +108,22 @@
 
 
 .pricingTable .pricing-content li.disable:before{ background: #ED1925; }
-@media only screen and (max-width: 990px){
-    .pricingTable{ margin-bottom: 40px; }
+/* Price buttons at the bottom of the card, sized to their label and kept
+   on one line unless the card is too narrow for them */
+.pricingTable .pricingTable-buttons{
+    margin: auto 10px 0;
+    justify-content: space-evenly;
+}
+.pricingTable .pricingTable-buttons > .col{
+    flex: 0 0 auto;
+    width: auto;
+    max-width: none;
+    padding: 0 5px;
+}
+.pricingTable .pricingTable-buttons .btn{
+    padding-left: 15px;
+    padding-right: 15px;
+    white-space: nowrap;
 }
 
 .btn.green {
