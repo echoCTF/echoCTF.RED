@@ -12,9 +12,21 @@
   <?= $model->metadataObj->perks ?>
   <?php foreach ($model->prices as $price) : ?>
     <?php if ($price->active) : ?>
+    <?php
+    if ($price->recurring_interval === 'one-off' || $price->recurring_interval === 'payment') {
+      // One-off prices with a duration show it, eg "5 days"
+      $days = intval($price->metadataObj->days ?? 0);
+      $period = $days > 0 ? Yii::t('app', '{n, plural, =1{# day} other{# days}}', ['n' => $days]) : $price->recurring_interval;
+    } elseif (intval($price->interval_count) > 1) {
+      // Recurring prices billed every N intervals, eg "6 months"
+      $period = intval($price->interval_count) . ' ' . $price->recurring_interval . 's';
+    } else {
+      $period = $price->recurring_interval;
+    }
+    ?>
       <div class="col">
         <?php echo yii\bootstrap\Button::widget([
-          'label' => Yii::$app->formatter->asCurrency(intval($price->unit_amount / 100)) . '/' . $price->recurring_interval,
+          'label' => Yii::$app->formatter->asCurrency(intval($price->unit_amount / 100)) . '/' . $period,
           'options' => ['class' => 'btn ' . $model->htmlOptions('class') . ' text-dark text-bold', 'id' => $price->id],
         ]);
         $this->registerJs('document.getElementById("' . $price->id . '")
