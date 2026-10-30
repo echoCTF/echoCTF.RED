@@ -59,7 +59,14 @@ jobs:
       run: docker build --squash . --file contrib/Dockerfile-vpn --tag echoctf.red-vpn:$(date +%s)
 
     - name: Build the docker compose stack
-      run: docker compose up -d
+      run: docker compose up -d --wait --wait-timeout 300
+
+    - name: Dump db diagnostics on failure
+      if: failure()
+      run: |
+        docker ps -a
+        docker inspect -f '{{json .State.Health}}' echoctfred_db | jq .
+        docker compose logs db
 
     - name: Check running containers
       run: docker ps -a

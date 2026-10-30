@@ -9,11 +9,12 @@ services:
       dockerfile: contrib/Dockerfile-mariadb
     restart: "always"
     healthcheck:
-      test: ["CMD", "mariadb","-NBe","show databases like 'echoCTF'"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
+      test: ["CMD", "mariadb", "--protocol=tcp", "-h127.0.0.1", "-uvpnuser", "-pvpnuserpass", "-NBe", "SELECT 1 FROM echoCTF.sysconfig LIMIT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
+      start_interval: 5s
     command: ["mariadbd","--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci","--skip-character-set-client-handshake","--user=mysql"] #, "--init_file=/etc/mysql-init.sql"]
 #    ports:
 #      - 3306:3306
