@@ -136,10 +136,15 @@ class PlayerProduct extends \yii\db\ActiveRecord
     return 0;
   }
 
-  /** Take back the product instances when the purchase is removed */
+  /** Take back the product instances and networks when the purchase is removed */
   public function afterDelete()
   {
     \app\modules\frontend\models\PlayerSpin::adjustMaxInstances(intval($this->player_id), -$this->maxInstancesBonus);
+    // Only the networks this purchase added, access the player had before stays
+    $granted = $this->metadataObj->granted_network_ids ?? [];
+    if (is_array($granted) && $granted !== []) {
+      \app\modules\gameplay\models\NetworkPlayer::deleteAll(['player_id' => $this->player_id, 'network_id' => array_map('intval', $granted)]);
+    }
     parent::afterDelete();
   }
 }
