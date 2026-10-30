@@ -76,7 +76,13 @@ class Product extends \yii\db\ActiveRecord
    */
   public function getPrices()
   {
-    return $this->hasMany(Price::class, ['product_id' => 'id'])->andWhere(['price.active' => 1]);
+    // Shortest billing period first (month, 6 months, year), one-off prices
+    // first and then by amount (eg 1 day before 5 days)
+    return $this->hasMany(Price::class, ['product_id' => 'id'])->andWhere(['price.active' => 1])
+      ->orderBy([
+        new \yii\db\Expression("CASE price.recurring_interval WHEN 'day' THEN 1 WHEN 'week' THEN 7 WHEN 'month' THEN 30 WHEN 'year' THEN 365 ELSE 0 END * price.interval_count"),
+        'price.unit_amount' => SORT_ASC,
+      ]);
   }
 
   public function inPrices($price_id)
