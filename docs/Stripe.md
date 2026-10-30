@@ -13,19 +13,21 @@ We assume you have a stripe account already configured for your business.
     - `network_ids`: Coma seperated list of network IDs that this subscription will provide access to
     - `badge_id`: ID of the badge to assign to user
     - `spins`: Number of spins the user will get
-    - `max_target_instances`: Number of extra concurrent private target instances (each for a different target) the subscriber gets. Added to the player value when the subscription starts and taken back when it ends
+    - `max_target_instances`: Number of extra concurrent private target instances (each for a different target) the subscriber gets. Added to the player value when the subscription starts and taken back when it ends. Also works on stand-alone perks with `days` on the price, added on purchase and taken back when `sales/expired-player-products` removes the expired perk
     - `shortcode`: Network shortcode
     - `weight`: users by ordering
     - `perks`: raw html of the perks the subscription provides
-    - `vpn_ip_limit`: Number of players that can be connected to the VPN from the same IP address while the owner of this subscription is connected. Only used when the `vpn_ip_limit` sysconfig key is enabled, the highest value of all the players connected from an IP applies to all of them
+    - `vpn_ip_limit`: Number of players that can be connected to the VPN from the same IP address while the owner of this subscription is connected. Only used when the `vpn_ip_limit` sysconfig key is enabled, the highest value of all the players connected from an IP applies to all of them. Also applies to stand-alone perks while they are active, which requires `days` on the price
     - `api_bearer_enable`: 0/1 Wheather the subscription includes enables API access to the frontend for the players
     - `standalone_perk`: (optional) 0/1 if this is a stand-alone perk (non-recurring)
+    - `contact_only`: (optional) 0/1 the product has no prices and shows a **Contact us** button instead, which opens the player's email client addressed to the `sales_email` sysconfig key. The button is hidden when `sales_email` is empty
     - `days`: If this is a stand-alone product but needs to stay active for a number of days (non-recurring) The duration is handled by the platform and not Stripe.
     - `htmlOptions`: jsonEncoded Options to be used by the UI
       - `title`: title to show on frontend
       - `class`: css classes to add to the product card
 - Create prices for the products
 - Choose if the payment will bn reccuring (eg. subscription based) or flat rate
+- Recurring prices billed every few intervals (eg. every 6 months) show the count on the frontend button (eg. `€245/6 months`), one-off prices with `days` show the duration (eg. `€79/5 days`)
 - Optionally add metadata for non recurring one-time payments
   - `days`: number of days this will be active
   - `perk`: 0/1 if this is a perk

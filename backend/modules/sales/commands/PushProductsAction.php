@@ -108,7 +108,13 @@ class PushProductsAction extends Action
     $current = $found[0] ?? null;
 
     if ($current !== null && $current->product === $productId && $current->active && self::samePrice($current, $wanted)) {
-      printf("  [price] update %s (%s)\n", $current->id, $key);
+      // Blank out metadata keys that were removed from the catalog, Stripe
+      // keeps keys that are left out of an update
+      $removed = array_diff(array_keys($current->metadata->toArray()), array_keys($editable['metadata']));
+      foreach ($removed as $metaKey) {
+        $editable['metadata'][$metaKey] = '';
+      }
+      printf("  [price] update %s (%s)%s\n", $current->id, $key, $removed !== [] ? ' removing metadata: ' . implode(', ', $removed) : '');
       if (!$this->dryRun) {
         $this->stripe->prices->update($current->id, $editable);
       }

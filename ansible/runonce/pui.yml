@@ -700,7 +700,6 @@
       env: yes
       job: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
 
-
   - name: Install cron entries
     cron:
       name: "{{item.name}}"
@@ -717,6 +716,8 @@
       - { name: "Generate local player-disabled-routes file", minute: "*/30",  job: "-ns frontend generator/player-disabled-routes >>/var/log/cron/player-disabled-routes.log" }
       - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Validate player avatars", special_time: "weekly",  job: "-ns frontend validator/player-avatars 1 >>/var/log/cron/player-avatars.log" }
+      - { name: "Validate team avatars", special_time: "weekly",  job: "-ns frontend validator/team-avatars 1 >>/var/log/cron/team-avatars.log" }
 
   - name: Install post hook
     copy:

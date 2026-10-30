@@ -121,4 +121,26 @@ class PlayerProduct extends \yii\db\ActiveRecord
   {
     return new PlayerProductQuery(get_called_class());
   }
+
+  /**
+   * Number of target instances the product adds to the player while this
+   * purchase lasts (`max_target_instances` product metadata key).
+   */
+  public function getMaxInstancesBonus(): int
+  {
+    $metadata = $this->product !== null ? json_decode((string) $this->product->metadata) : null;
+    if (is_object($metadata) && isset($metadata->max_target_instances)) {
+      return max(0, intval($metadata->max_target_instances));
+    }
+    return 0;
+  }
+
+  /** Add the product instances when the purchase is created */
+  public function afterSave($insert, $changedAttributes)
+  {
+    parent::afterSave($insert, $changedAttributes);
+    if ($insert) {
+      \app\models\PlayerSpin::adjustMaxInstances(intval($this->player_id), $this->maxInstancesBonus);
+    }
+  }
 }

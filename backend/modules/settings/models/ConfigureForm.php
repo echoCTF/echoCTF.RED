@@ -66,6 +66,7 @@ class ConfigureForm extends Model
   public $stripe_webhookSecret;
   public $stripe_webhookLocalEndpoint;
   public $stripe_url_prefix;
+  public $sales_email;
   public $player_monthly_rankings;
   public $player_point_rankings;
   public $country_rankings;
@@ -236,6 +237,7 @@ class ConfigureForm extends Model
     'stripe_publicApiKey',
     'stripe_webhookSecret',
     'stripe_url_prefix',
+    'sales_email',
     'player_monthly_rankings',
     'player_point_rankings',
     'country_rankings',
@@ -542,6 +544,8 @@ class ConfigureForm extends Model
         'dashboard_news_records_per_page',
       ], 'integer'],
       [['online_timeout'], 'default', 'value' => 900],
+      [['sales_email'], 'trim'],
+      [['sales_email'], 'email'],
       [['spins_per_day'], 'default', 'value' => 2],
       ['max_target_instances', 'integer', 'min' => 1, 'max' => 255],
       ['max_target_instances', 'default', 'value' => 1],
@@ -697,6 +701,7 @@ class ConfigureForm extends Model
       'player_require_identification' => 'Players require identification',
       'all_players_vip' => 'Give all players VIP status',
       'instances_only' => 'Instances only',
+      'sales_email' => 'Sales email',
       'vpn_ip_limit' => 'VPN connections per IP',
       'team_visible_instances' => 'Team instances',
       'target_hide_inactive' => 'Hide inactive targets',

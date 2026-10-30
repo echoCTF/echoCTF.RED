@@ -179,9 +179,12 @@ class WebhookRestAction extends \yii\rest\Action
             throw new UserException('Metadata price_id, player_id and price_id not provided!!!');
           }
           $price = Price::findOne($object->metadata->price_id);
+          if ($price === null) {
+            throw new UserException('Unknown price ' . $object->metadata->price_id);
+          }
           $product = $price->product;
           $player = Player::findOne($object->metadata->player_id);
-          if ($object->mode == 'payment' && $object->payment_status == 'paid' && $player !== null && $price !== null && $price->ptype === 'one_time') {
+          if ($object->mode == 'payment' && $object->payment_status == 'paid' && $player !== null && $price->ptype === 'one_time') {
             if (isset($price->metadataObj->days) && intval($price->metadataObj->days) > 0) {
               $pp = new PlayerProduct();
               $pp->player_id = $player->id;
@@ -201,13 +204,14 @@ class WebhookRestAction extends \yii\rest\Action
                 $psp->setOldAttribute('counter', null);
                 $psp->updateAttributes(['counter' => 0, 'perday' => new Expression('perday+:extras', ['extras' => intval($price->metadataObj->spins)])]);
               }
-
-              $player->notify(
-                isset($price->metadataObj->notification_type) ? $price->metadataObj->notification_type : 'swal:success', // type
-                isset($price->metadataObj->notification_title) ? $price->metadataObj->notification_title : $product->name . ' activated', //title
-                isset($price->metadataObj->notification_body) ? $price->metadataObj->notification_body : 'Your ' . $product->name . ' have been activated. Thank you for your support!!!', // body
-              );
             }
+
+            // Every paid one-off purchase is announced, not only spin packs
+            $player->notify(
+              isset($price->metadataObj->notification_type) ? $price->metadataObj->notification_type : 'swal:success', // type
+              isset($price->metadataObj->notification_title) ? $price->metadataObj->notification_title : $product->name . ' activated', //title
+              isset($price->metadataObj->notification_body) ? $price->metadataObj->notification_body : 'Your ' . $product->name . ' have been activated. Thank you for your support!!!', // body
+            );
           }
           \Yii::$app->db->createCommand()->update('stripe_webhook', ['processed_at' => new Expression('NOW()')], ['id' => $webhookId])->execute();
         } catch (\Throwable $e) {

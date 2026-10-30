@@ -11,7 +11,7 @@ $this->registerJsFile("https://cdnjs.cloudflare.com/ajax/libs/core-js/2.4.1/core
 //$this->registerJsFile("/js/plugins/sweetalert2.js");
 
 $this->registerCss(file_get_contents(__DIR__ . "/pricing.css"));
-$this->_fluid='-fluid';
+$this->_fluid = '-fluid';
 ?>
 <div class="subscription-index">
   <div class="body-content">
@@ -27,10 +27,10 @@ $this->_fluid='-fluid';
     } else {
       echo $this->render('_create', ['mine' => $mine, 'subscriptionsProvider' => $subscriptionsProvider, 'productsProvider' => $productsProvider]);
       echo '<div class="d-flex justify-content-center row">';
-      if (($mine && $mine->active && $mine->subscription_id !== 'sub_vip')|| intval($myproducts->count())>0) {
-        echo $this->render('_update', ['mine' => $mine,'myproductsProvider'=>$myproductsProvider,'myproducts'=>$myproducts]);
+      if (($mine && $mine->active && $mine->subscription_id !== 'sub_vip') || intval($myproducts->count()) > 0) {
+        echo $this->render('_update', ['mine' => $mine, 'myproductsProvider' => $myproductsProvider, 'myproducts' => $myproducts]);
       }
-      if(\Yii::$app->user->identity->playerPaymentHistory) {
+      if (\Yii::$app->user->identity->playerPaymentHistory) {
         echo $this->render('_payments_card');
       }
       if (trim(\Yii::$app->user->identity->stripe_customer_id) !== "") {

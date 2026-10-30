@@ -24,6 +24,18 @@ class ProductQuery extends \yii\db\ActiveQuery
     return $this->active()->hasPrice();
   }
 
+  /**
+   * Purchasable products plus contact_only products, which have no price
+   * and show a contact button instead.
+   */
+  public function listed()
+  {
+    return $this->active()->andWhere(['or',
+      'id in (SELECT DISTINCT product_id FROM price WHERE active=1)',
+      new \yii\db\Expression("JSON_UNQUOTE(JSON_EXTRACT(metadata, '$.contact_only'))='1'"),
+    ]);
+  }
+
   public function onetime()
   {
     return $this->andWhere([

@@ -102,7 +102,7 @@ class DefaultController extends \app\components\BaseController
   {
     $mine = PlayerSubscription::findOne(\Yii::$app->user->id);
     $myproducts = PlayerProduct::find()->mine();
-    $subscriptions = Product::find()->purchasable()->recurring()->ordered();
+    $subscriptions = Product::find()->listed()->recurring()->ordered();
     $products = Product::find()->purchasable()->onetime()->notOwned()->ordered();
 
     $myproductsProvider = new ActiveDataProvider([
@@ -267,7 +267,6 @@ class DefaultController extends \app\components\BaseController
         'success_url' => \yii\helpers\Url::toRoute('/subscription/default/success', true) . '?session_id={CHECKOUT_SESSION_ID}',
         'cancel_url' => \yii\helpers\Url::toRoute('/subscription/default/index', true),
         'allow_promotion_codes' => true,
-        'payment_method_types' => ['card'],
         'mode' => $mode,
         'line_items' => $line_items,
         'automatic_tax' => ['enabled' => \Yii::$app->sys->stripe_automatic_tax_enabled],
