@@ -102,7 +102,7 @@ class DefaultController extends \app\components\BaseController
   {
     $mine = PlayerSubscription::findOne(\Yii::$app->user->id);
     $myproducts = PlayerProduct::find()->mine();
-    $subscriptions = Product::find()->purchasable()->recurring()->ordered();
+    $subscriptions = Product::find()->listed()->recurring()->ordered();
     $products = Product::find()->purchasable()->onetime()->notOwned()->ordered();
 
     $myproductsProvider = new ActiveDataProvider([
