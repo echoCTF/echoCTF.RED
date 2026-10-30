@@ -163,7 +163,7 @@ Alternatively, instead of DSN the following keys can be used
 * `CA.txt.crt` The text version of the CA certificate
 * `vpn-ta.key` The OpenVPN TLS Auth key
 * `vpngw` The VPN gateway IP or FQDN, that participants of the competition will have to connect to be able to access the targeted infrastructure.
-* `vpn_ip_limit`: Maximum number of players that can be connected to the VPN at the same time from the same remote (public) IP address. A value of `0` (default) disables the limit. Players beyond the limit are rejected and notified. Remote IPs listed on `VPN IP Whitelist` and events with `all_players_vip` enabled are not limited. The limit can be raised for all players connected from the same IP by an active subscription to a product that has the `vpn_ip_limit` metadata key (see [Stripe](Stripe.md)), the highest value among the connected players applies.
+* `vpn_ip_limit`: Maximum number of players that can be connected to the VPN at the same time from the same remote (public) IP address. A value of `0` (default) disables the limit. Players beyond the limit are rejected and notified. Remote IPs listed on `VPN IP Whitelist` and events with `all_players_vip` enabled are not limited. The limit can be raised for all players connected from the same IP by an active subscription, or an unexpired one-off purchase, of a product that has the `vpn_ip_limit` metadata key (see [Stripe](Stripe.md)), the highest value among the connected players applies.
 
 
 ## Application specific
@@ -184,6 +184,7 @@ Alternatively, instead of DSN the following keys can be used
 * `stripe_webhook_ips` List of IP's that are allowed to access the stripe webhook endpoint
 * `stripe_webhookLocalEndpoint`: The local endpoint url for the receive of Stripe webhooks. Make it something unique and random so that its not easy to be hit by anyone.
 * `stripe_url_prefix`: An optional prefix to add with the product, subscription and payment linkst of the backend (eg `acct_112345667/test/` for Stripe test mode).
+* `sales_email`: Email address the **Contact us** button of `contact_only` products opens in the player's email client, with their details filled in. When empty the button is not shown.
 
 ## Player Specific
 
