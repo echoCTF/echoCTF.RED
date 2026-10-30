@@ -60,6 +60,6 @@ class InquiryForm extends Model
       $inq->serialized=json_encode($this);
       $inq->updated_at=new \yii\db\Expression('NOW()');
       $inq->created_at=new \yii\db\Expression('NOW()');
-      $inq->save();
+      return $inq->save();
     }
 }
