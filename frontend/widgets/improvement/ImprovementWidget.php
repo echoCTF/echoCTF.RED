@@ -12,8 +12,8 @@
  *  * solve pace: how much faster than the median player the player solves
  *    the targets they headshot (median of `target median timer / timer`),
  *    higher is better. Headshots made with writeups activated for the target
- *    are left out, and only targets with at least MIN_TARGET_SOLVES headshots
- *    count, since the median of a few solves is noise.
+ *    are left out, and only targets with at least MIN_TARGET_SOLVES timed
+ *    headshots count, since the median of a few solves is noise.
  */
 
 namespace app\widgets\improvement;
@@ -100,7 +100,8 @@ class ImprovementWidget extends Widget
   protected function pace(int $player_id): array
   {
     $longest = intval(max(array_column(self::$periods, 1))) * 2;
-    // the median timer of each target the player solved, over all its headshots
+    // the median timer of each target the player solved, over all its
+    // headshots that have a timer (moderators can zero timers out)
     $rows = Yii::$app->db->createCommand(<<<SQL
 SELECT UNIX_TIMESTAMP(h.created_at) AS at, m.target_median / NULLIF(h.timer, 0) AS pace
 FROM headshot h
@@ -109,7 +110,8 @@ JOIN (
          MEDIAN(timer) OVER (PARTITION BY target_id) AS target_median,
          COUNT(*) OVER (PARTITION BY target_id) AS target_solves
   FROM headshot
-  WHERE target_id IN (SELECT target_id FROM headshot WHERE player_id=:p1)
+  WHERE timer > 0
+    AND target_id IN (SELECT target_id FROM headshot WHERE player_id=:p1)
 ) m ON m.target_id=h.target_id
 WHERE h.player_id=:p2
   AND h.created_at >= NOW() - INTERVAL $longest DAY
