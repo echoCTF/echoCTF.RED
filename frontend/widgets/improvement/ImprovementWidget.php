@@ -41,6 +41,10 @@ class ImprovementWidget extends Widget
 
   public function run()
   {
+    if (Yii::$app->sys->profile_improvements_disabled !== false) {
+      return '';
+    }
+
     $stats = Yii::$app->cache->getOrSet('player_improvement:' . intval($this->player_id), function () {
       return $this->collect();
     }, $this->cacheDuration);

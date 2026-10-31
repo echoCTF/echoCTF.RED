@@ -175,6 +175,7 @@ class ConfigureForm extends Model
   public $offense_csp;
   public $moderator_csp_header;
   public $moderator_csp;
+  public $profile_improvements_disabled;
 
   public $keys = [
     'target_days_updated',
@@ -342,6 +343,7 @@ class ConfigureForm extends Model
     'offense_csp',
     'moderator_csp_header',
     'moderator_csp',
+    'profile_improvements_disabled',
   ];
 
   /**
@@ -615,6 +617,7 @@ class ConfigureForm extends Model
         'stream_player_target_help',
         'writeups_use_require_xp',
         'disable_stream_tweet',
+        'profile_improvements_disabled',
       ], 'boolean'],
     ];
   }
@@ -627,6 +630,7 @@ class ConfigureForm extends Model
       'require_activation' => 'Require activation',
       'disable_registration' => 'Disable registration',
       'player_profile' => 'Player profile',
+      'profile_improvements_disabled' => 'Disable profile improvements',
       'profile_visibility' => 'Player profile visibility',
       'event_name' => 'Event name',
       'site_description' => 'Site Description',

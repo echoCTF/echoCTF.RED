@@ -1,4 +1,4 @@
-<?php $hasImprovement = $profile->owner->playerScore !== null && intval($profile->owner->playerScore->points) > 0; ?>
+<?php $hasImprovement = Yii::$app->sys->profile_improvements_disabled === false && $profile->owner->playerScore !== null && intval($profile->owner->playerScore->points) > 0; ?>
 <?php if($hasImprovement || $profile->headshotsCount>0 || count($profile->writeups)>0 || count($profile->owner->challengeSolvers)>0 || intval($game->badges->received_by($profile->player_id)->count())>0):?>
 <div class="card card-nav-tabs bg-dark">
   <div class="card-header card-header-primary">
