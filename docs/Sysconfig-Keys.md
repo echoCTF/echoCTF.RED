@@ -5,6 +5,7 @@ These are the system configuration keys used by the platform applications. Any k
 
 * `event_active`: Enable/Disable current event
 * `player_profile`: Enable/Disable player profiles
+* `profile_improvements_disabled`: Whether or not the profile improvement tab is disabled on player profiles (hides the Improvement tab and its widget)
 * `player_require_approval` If player activation requires moderator approval first
 * `player_require_identification` Whether players need to provide proof of ID during registration
 * `all_players_vip`: Allow all players to have VIP features enabled

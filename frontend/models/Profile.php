@@ -49,188 +49,187 @@ use app\modules\target\models\Writeup;
  * @property Experience $experience
  * @property Experience $nextExperience
  * @property TotalTreasures $totalTreasures
-*/
+ */
 class Profile extends ProfileAR
 {
-  public $visibilities=[
-      'private'=>'Private',
-      'public'=>'Public',
-      'ingame'=>'In Game',
-    ];
+  public $visibilities = [
+    'private' => 'Private',
+    'public' => 'Public',
+    'ingame' => 'In Game',
+  ];
 
-    public function getVisible(): bool
-    {
-      if($this->owner->status!==Player::STATUS_ACTIVE) return false;
-      if($this->visibility === 'public') return true;
-      if($this->visibilityAllowed) return true;
-      if($this->visibilityDenied) return false;
+  public function getVisible(): bool
+  {
+    if ($this->owner->status !== Player::STATUS_ACTIVE) return false;
+    if ($this->visibility === 'public') return true;
+    if ($this->visibilityAllowed) return true;
+    if ($this->visibilityDenied) return false;
+    return true;
+  }
+
+  public function getVisibilityAllowed(): bool
+  {
+    if (!Yii::$app->user->isGuest) {
+      if (intval(Yii::$app->user->id) === intval($this->player_id)) return true;
+      if (Yii::$app->user->identity->isAdmin) return true;
+    }
+    return false;
+  }
+
+  public function getVisibilityDenied(): bool
+  {
+    if (Yii::$app->sys->player_profile === false) return true;
+
+    if ($this->visibility === 'private') return true;
+    if ($this->visibility === 'ingame' && Yii::$app->user->isGuest) return true;
+
+    return false;
+  }
+
+
+  /**
+   * Get profile link based on player permissions,
+   */
+  public function getLink($team = false, $username = null)
+  {
+    if ($username === null)
+      $username = $this->owner->username;
+    $style = ['data-pjax' => 0];
+    if ($team !== false && $this->owner->teamPlayer !== null && $this->owner->teamPlayer->approved !== 1) {
+      $style = ['data-pjax' => 0, 'class' => 'text-danger text-bold'];
+    }
+    if (intval(Yii::$app->user->id) === intval($this->player_id))
+      return Html::a(Html::encode($username), ['/profile/me'], $style);
+    else if ($this->visible === true)
+      return Html::a(Html::encode($username), ['/profile/index', 'id' => $this->id], $style);
+    return Html::encode($username);
+  }
+
+  public function getLinkto()
+  {
+
+    if (intval(Yii::$app->user->id) === intval($this->player_id)) return Url::to(['/profile/me']);
+    else if ($this->visible === true) return Url::to(['/profile/index', 'id' => $this->id]);
+    return null;
+  }
+
+  public function getExperience()
+  {
+    $exp = Experience::find()->where("{$this->score->points} BETWEEN min_points AND max_points")->one();
+
+    return $exp ?: Experience::find()->orderBy(['min_points' => SORT_ASC])->one();
+  }
+
+  public function getNextExperience()
+  {
+    if (($lvl = Experience::find()->where(['>=', 'min_points', $this->score->points])->one()) !== NULL)
+      return $lvl;
+    $lvl = new Experience(['name' => '-']);
+    return $lvl;
+  }
+
+  public function getTotalTreasures()
+  {
+    return Yii::$app->db->createCommand('SELECT count(*) FROM player_treasure WHERE player_id=:player_id')->bindValue(':player_id', $this->player_id)->queryScalar();
+  }
+
+  public function getTotalFindings()
+  {
+    return Yii::$app->db->createCommand('SELECT count(*) FROM player_finding WHERE player_id=:player_id')->bindValue(':player_id', $this->player_id)->queryScalar();
+  }
+
+  public function getHeadshotsCount(): int
+  {
+    return (int) $this->hasMany(Headshot::class, ['player_id' => 'player_id'])->count();
+  }
+  public function getFirstHeadshotsCount(): int
+  {
+    return (int) $this->hasMany(Headshot::class, ['player_id' => 'player_id'])->where(['first' => 1])->count();
+  }
+
+  public function getChallengesSolverCount(): int
+  {
+    return (int) $this->hasMany(ChallengeSolver::class, ['player_id' => 'player_id'])->count();
+  }
+
+  public function getFirstChallengeSolversCount(): int
+  {
+    return (int) $this->hasMany(ChallengeSolver::class, ['player_id' => 'player_id'])->where(['first' => 1])->count();
+  }
+
+  public function getIsMine(): bool
+  {
+    if (Yii::$app->user->isGuest)
+      return false;
+    if (Yii::$app->user->id === $this->player_id)
       return true;
-    }
+    return false;
+  }
 
-    public function getVisibilityAllowed(): bool
-    {
-      if(!Yii::$app->user->isGuest)
-      {
-        if(intval(Yii::$app->user->id) === intval($this->player_id)) return true;
-        if(Yii::$app->user->identity->isAdmin) return true;
+  public function getTwitterHandle()
+  {
+    $this->scenario = 'validator';
+    if ($this->twitter != "" && $this->validate('twitter')) {
+      return $this->twitter[0] === '@' ? $this->twitter : '@' . $this->twitter;
+    }
+    return $this->owner->username;
+  }
+
+  public function getAvtr()
+  {
+    if ($this->approved_avatar || $this->isMine)
+      return $this->avatar;
+    return '../default_avatar.png';
+  }
+
+  public function getBraggingRights()
+  {
+    if ($this->rank) {
+      $msg = sprintf("I am at the %s place with %d pts", $this->rank->ordinalPlace, $this->score->points);
+      if ($this->headshotsCount > 0) {
+        $msg .= sprintf(', and %d headshots', $this->headshotsCount);
       }
-      return false;
-    }
+    } else
+      $msg = sprintf("I have just joined %s!", \Yii::$app->sys->event_name);
+    return $msg;
+  }
 
-    public function getVisibilityDenied(): bool
-    {
-      if(Yii::$app->sys->player_profile === false) return true;
+  public function getVpnItems()
+  {
+    $items = null;
+    $query = new Query;
+    // compose the query
+    $query->select('id, name')
+      ->from('vpn_template')
+      ->where(['active' => true, 'visible' => true, 'client' => true])
+      ->orderBy(['name' => SORT_ASC]);
 
-      if($this->visibility === 'private') return true;
-      if($this->visibility === 'ingame' && Yii::$app->user->isGuest) return true;
+    foreach ($query->each() as $item)
+      $items[strtolower($item['name'])] = ['encode' => false, 'label' => "<i class='fas fa-user-shield'></i>&nbsp; Download " . $item['name'], 'url' => ['profile/ovpn', 'id' => $item['name']], 'linkOptions' => []];
+    return $items;
+  }
 
-      return false;
-    }
-
-
-    /**
-     * Get profile link based on player permissions,
-     */
-    public function getLink($team=false,$username=null)
-    {
-      if($username===null)
-        $username=$this->owner->username;
-      $style=['data-pjax'=>0];
-      if($team!==false && $this->owner->teamPlayer!==null && $this->owner->teamPlayer->approved!==1)
-      {
-        $style=['data-pjax'=>0, 'class'=>'text-danger text-bold'];
-      }
-      if(intval(Yii::$app->user->id) === intval($this->player_id))
-        return Html::a(Html::encode($username), ['/profile/me'],$style);
-      else if($this->visible === true)
-        return Html::a(Html::encode($username), ['/profile/index', 'id'=>$this->id], $style);
-      return Html::encode($username);
-    }
-
-    public function getLinkto()
-    {
-
-      if(intval(Yii::$app->user->id) === intval($this->player_id)) return Url::to(['/profile/me']);
-      else if($this->visible === true) return Url::to(['/profile/index', 'id'=>$this->id]);
-      return null;
-    }
-
-    public function getExperience()
-    {
-      $exp = Experience::find()->where("{$this->score->points} BETWEEN min_points AND max_points")->one();
-
-      return $exp ?: Experience::find()->orderBy(['min_points' => SORT_ASC])->one();
-    }
-
-    public function getNextExperience()
-    {
-      if(($lvl=Experience::find()->where(['>=','min_points',$this->score->points])->one())!==NULL)
-        return $lvl;
-      return '-';
-    }
-
-    public function getTotalTreasures()
-    {
-      return Yii::$app->db->createCommand('SELECT count(*) FROM player_treasure WHERE player_id=:player_id')->bindValue(':player_id', $this->player_id)->queryScalar();
-    }
-
-    public function getTotalFindings()
-    {
-      return Yii::$app->db->createCommand('SELECT count(*) FROM player_finding WHERE player_id=:player_id')->bindValue(':player_id', $this->player_id)->queryScalar();
-    }
-
-    public function getHeadshotsCount():int {
-      return (int) $this->hasMany(Headshot::class, ['player_id' => 'player_id'])->count();
-    }
-    public function getFirstHeadshotsCount():int {
-      return (int) $this->hasMany(Headshot::class, ['player_id' => 'player_id'])->where(['first'=>1])->count();
-    }
-
-    public function getChallengesSolverCount():int {
-      return (int) $this->hasMany(ChallengeSolver::class, ['player_id' => 'player_id'])->count();
-    }
-
-    public function getFirstChallengeSolversCount():int {
-      return (int) $this->hasMany(ChallengeSolver::class, ['player_id' => 'player_id'])->where(['first'=>1])->count();
-    }
-
-    public function getIsMine():bool
-    {
-      if(Yii::$app->user->isGuest)
-        return false;
-      if(Yii::$app->user->id === $this->player_id)
-        return true;
-      return false;
-    }
-
-    public function getTwitterHandle()
-    {
-      $this->scenario='validator';
-      if($this->twitter != "" && $this->validate('twitter'))
-      {
-        return $this->twitter[0] === '@' ? $this->twitter : '@'.$this->twitter;
-      }
-      return $this->owner->username;
-    }
-
-    public function getAvtr()
-    {
-      if($this->approved_avatar || $this->isMine)
-        return $this->avatar;
-      return '../default_avatar.png';
-    }
-
-    public function getBraggingRights()
-    {
-      if($this->rank)
-      {
-        $msg=sprintf("I am at the %s place with %d pts", $this->rank->ordinalPlace, $this->score->points);
-        if($this->headshotsCount > 0)
-        {
-          $msg.=sprintf(', and %d headshots', $this->headshotsCount);
-        }
-      }
-      else
-        $msg=sprintf("I have just joined %s!",\Yii::$app->sys->event_name);
-      return $msg;
-    }
-
-    public function getVpnItems()
-    {
-      $items=null;
-      $query = new Query;
-      // compose the query
-      $query->select('id, name')
-          ->from('vpn_template')
-          ->where(['active' => true,'visible'=>true,'client'=>true])
-          ->orderBy(['name'=>SORT_ASC]);
-
-      foreach($query->each() as $item)
-        $items[strtolower($item['name'])]=['encode'=>false, 'label'=>"<i class='fas fa-user-shield'></i>&nbsp; Download ".$item['name'], 'url'=>['profile/ovpn','id'=>$item['name']], 'linkOptions'=>[]];
-      return $items;
-    }
-
-    public function metric($key)
-    {
-      return intval(Yii::$app->db->createCommand("SELECT counter FROM player_counter_nf WHERE player_id=:id AND metric=:metric")
-      ->bindValue(':id',$this->player_id,\PDO::PARAM_INT)
-      ->bindValue(':metric',$key)
+  public function metric($key)
+  {
+    return intval(Yii::$app->db->createCommand("SELECT counter FROM player_counter_nf WHERE player_id=:id AND metric=:metric")
+      ->bindValue(':id', $this->player_id, \PDO::PARAM_INT)
+      ->bindValue(':metric', $key)
       ->queryScalar());
-    }
+  }
 
-    public function genBadge()
-    {
-      try {
-        $image=\app\components\Img::profile($this);
+  public function genBadge()
+  {
+    try {
+      $image = \app\components\Img::profile($this);
 
-        if($image==false)
-          return false;
-
-        imagepng($image,\Yii::getAlias('@app/web/images/avatars/badges/').'/'.$this->id.'.png');
-        imagedestroy($image);
-      } catch (\Throwable $e) {
+      if ($image == false)
         return false;
-      }
-      return true;
+
+      imagepng($image, \Yii::getAlias('@app/web/images/avatars/badges/') . '/' . $this->id . '.png');
+      imagedestroy($image);
+    } catch (\Throwable $e) {
+      return false;
     }
+    return true;
+  }
 }

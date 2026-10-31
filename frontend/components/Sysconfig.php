@@ -21,6 +21,7 @@ class Sysconfig extends Component
     'sysconfig:disable_registration',
     'sysconfig:approved_avatar',
     'sysconfig:player_profile',
+    'sysconfig:profile_improvements_disabled',
     'sysconfig:profile_visibility',
     'sysconfig:event_name',
     'sysconfig:event_active',
