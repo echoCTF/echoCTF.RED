@@ -1,4 +1,5 @@
-<?php if($profile->headshotsCount>0 || count($profile->writeups)>0 || count($profile->owner->challengeSolvers)>0 || intval($game->badges->received_by($profile->player_id)->count())>0):?>
+<?php $hasImprovement = $profile->owner->playerScore !== null && intval($profile->owner->playerScore->points) > 0; ?>
+<?php if($hasImprovement || $profile->headshotsCount>0 || count($profile->writeups)>0 || count($profile->owner->challengeSolvers)>0 || intval($game->badges->received_by($profile->player_id)->count())>0):?>
 <div class="card card-nav-tabs bg-dark">
   <div class="card-header card-header-primary">
     <!-- colors: "header-primary", "header-info", "header-success", "header-warning", "header-danger" -->
@@ -10,6 +11,13 @@
           <li class="nav-item">
             <a class="nav-link" href="#headshots" data-toggle="tab">
             <i class="material-icons">track_changes</i> Headshots
+            </a>
+          </li>
+<?php endif;?>
+<?php if($hasImprovement):?>
+          <li class="nav-item">
+            <a class="nav-link" href="#improvement" data-toggle="tab">
+            <i class="material-icons">trending_up</i> <?=\Yii::t('app','Improvement')?>
             </a>
           </li>
 <?php endif;?>
@@ -46,6 +54,12 @@
       <div class="tab-pane" id="headshots">
 
       <?=$this->render('_headshots',['profile'=>$profile,'headshots'=>$headshots]);?>
+      </div>
+      <?php endif;?>
+
+      <?php if($hasImprovement):?>
+      <div class="tab-pane" id="improvement">
+      <?=\app\widgets\improvement\ImprovementWidget::widget(['player_id'=>$profile->player_id]);?>
       </div>
       <?php endif;?>
 
