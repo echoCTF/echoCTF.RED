@@ -40,7 +40,7 @@ $value = function ($metric, $v) use ($plain) {
 };
 ?>
 <div class="table-responsive">
-  <table class="table table-sm table-dark text-center improvement-table">
+  <table class="table table-sm text-center improvement-table">
     <thead>
       <tr>
         <th class="text-left"></th>
