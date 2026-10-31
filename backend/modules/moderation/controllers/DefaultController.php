@@ -146,6 +146,73 @@ class DefaultController extends \app\components\BaseController
   }
 
   /**
+   * Writeup relays found by shared IPs, one row per fake, beneficiary and target.
+   * @return mixed
+   */
+  public function actionWriteupRelays()
+  {
+    return $this->writeupRelayReport(new \app\modules\moderation\models\WriteupRelayIpSearch(), 'writeup-relays');
+  }
+
+  /**
+   * Writeup relay candidate treasure claims found by shared IPs, one row per claim.
+   * @return mixed
+   */
+  public function actionWriteupRelayClaims()
+  {
+    return $this->writeupRelayReport(new \app\modules\moderation\models\WriteupRelayClaimSearch(), 'writeup-relay-claims');
+  }
+
+  /**
+   * Writeup relays found by identity links (names, email, socials, referrals), scored.
+   * @return mixed
+   */
+  public function actionWriteupRelayIdentities()
+  {
+    return $this->writeupRelayReport(new \app\modules\moderation\models\WriteupRelayIdentitySearch(), 'writeup-relay-identities');
+  }
+
+  /**
+   * Players that scored on targets they sent no (or too little) traffic to.
+   * @return mixed
+   */
+  public function actionClaimsWithoutTraffic()
+  {
+    return $this->writeupRelayReport(new \app\modules\moderation\models\ClaimsWithoutTrafficSearch(), 'claims-without-traffic');
+  }
+
+  /**
+   * Headshots solved much faster than the target median and the player's usual pace.
+   * @return mixed
+   */
+  public function actionFastSolves()
+  {
+    return $this->writeupRelayReport(new \app\modules\moderation\models\FastSolveSearch(), 'fast-solves');
+  }
+
+  /**
+   * Renders one of the writeup relay reports.
+   * @param \app\modules\moderation\models\WriteupRelaySearch $searchModel
+   * @param string $view
+   * @return mixed
+   */
+  protected function writeupRelayReport($searchModel, $view)
+  {
+    try {
+      $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+      $dataProvider->getModels(); // run it here so a database error shows as a flash, not a broken page
+    } catch (\yii\db\Exception $e) {
+      \Yii::error($e->getMessage());
+      \Yii::$app->session->setFlash('error', \Yii::t('app', 'The report query failed: {error}', ['error' => Html::encode($e->getMessage())]));
+      $dataProvider = new \yii\data\ArrayDataProvider(['allModels' => []]);
+    }
+    return $this->render($view, [
+      'searchModel' => $searchModel,
+      'dataProvider' => $dataProvider,
+    ]);
+  }
+
+  /**
    * Resolves the hostname of a single IP for the duplicate signup IPs page.
    * Results are cached per IP since lookups can block for seconds.
    */
