@@ -68,6 +68,9 @@
       - { name: memcached, state: "enable" }
       - { name: mysqld, state: "enable" }
       - { name: supervisord, state: "enable"}
+    custom_packages:
+      - { pkg: 'mariadb-connector-c-3.4.11.tgz', url: 'https://github.com/echoCTF/obsd-binaries/releases/download/mariadb-connector-c-3.4.5-openbsd-7.9/mariadb-connector-c-3.4.11.tgz' }
+      - { pkg: 'memcached-1.6.42p1.tgz', url: 'https://github.com/echoCTF/obsd-binaries/releases/download/memcached-1.6.42p1-openbsd-7.9/memcached-1.6.42p1.tgz' }
     packages:
       - curl
       - git
@@ -140,7 +143,7 @@
     raw: rdate pool.ntp.org
 
   - name: Install ansible (raw)
-    raw: pkg_add ansible py3-mysqlclient
+    raw: pkg_add ansible py3-mysqlclient wget
 
   - name: Gather facts
     setup:
@@ -197,6 +200,18 @@
 
   - name: Install packages
     shell: "pkg_add {{packages|join(' ')}}"
+
+  - name: Download our packages
+    command: wget "{{item.url}}"
+    args:
+      chdir: /tmp
+    with_dict: "{{custom_packages}}"
+
+  - name: Install our packages
+    command: pkg_add -U -D unsigned "{{item.pkg}}"
+    args:
+      chdir: /tmp
+    with_dict: "{{custom_packages}}"
 
   - name: Set APP_DIR to /root/sources on non local connection
     when: ansible_connection != 'local'
@@ -291,34 +306,35 @@
   - name: start mysqld
     command: rcctl start mysqld
 
-  - name: Install MariaDB Connector C package
-    command: pkg_add -D unsigned https://github.com/echoCTF/obsd-binaries/releases/download/mariadb-connector-c-3.4.5-openbsd-7.9/mariadb-connector-c-3.4.11.tgz
+  - name: Download MariaDB Connector C
+    when: build_from_sources is defined
+    ansible.builtin.get_url:
+      url: "https://dlm.mariadb.com/4234414/Connectors/c/connector-c-{{versions.MARIADB_CONNECTOR}}/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+      dest: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
 
-#  - name: Download MariaDB Connector C
-#    ansible.builtin.get_url:
-#      url: "https://dlm.mariadb.com/4234414/Connectors/c/connector-c-{{versions.MARIADB_CONNECTOR}}/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
-#      dest: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
-#
-#  - name: extract connector
-#    command: tar zxf "mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
-#    args:
-#      chdir: /usr/src
-#
-#  - name: Replace Werror from CMakeLists.txt
-#    ansible.builtin.replace:
-#      path: /usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src/CMakeLists.txt
-#      regexp: 'Werror'
-#      replace: 'w'
-#
-#  - name: Build MariaDB Connector C
-#    command: "{{item}}"
-#    args:
-#      chdir: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src"
-#    with_items:
-#      - 'cmake ../mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_FLAGS="-Wall"'
-#      - gmake
-#      - gmake install
-#
+  - name: extract connector
+    when: build_from_sources is defined
+    command: tar zxf "mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+    args:
+      chdir: /usr/src
+
+  - name: Replace Werror from CMakeLists.txt
+    when: build_from_sources is defined
+    ansible.builtin.replace:
+      path: /usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src/CMakeLists.txt
+      regexp: 'Werror'
+      replace: 'w'
+
+  - name: Build MariaDB Connector C
+    when: build_from_sources is defined
+    command: "{{item}}"
+    args:
+      chdir: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src"
+    with_items:
+      - 'cmake ../mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_FLAGS="-Wall"'
+      - gmake
+      - gmake install
+
   - name: Create mysql database
     ansible.mariadb.mariadb_db:
       state: present
@@ -328,6 +344,7 @@
       login_user: "root"
 
   - name: Clone memcached_functions_mysql repo
+    when: build_from_sources is defined
     git:
       repo: 'https://github.com/echoCTF/memcached_functions_mysql.git'
       dest: /root/memcached_functions_mysql
@@ -337,16 +354,19 @@
       depth: 1
 
   - name: Bootstrap /root/memcached_functions_mysql
+    when: build_from_sources is defined
     shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./config/bootstrap
     args:
       chdir: /root/memcached_functions_mysql
 
   - name: Configure /root/memcached_functions_mysql
+    when: build_from_sources is defined
     shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
     args:
       chdir: /root/memcached_functions_mysql
 
   - name: Make all install /root/memcached_functions_mysql
+    when: build_from_sources is defined
     shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" make all install
     args:
       chdir: /root/memcached_functions_mysql
@@ -362,7 +382,7 @@
       login_unix_socket: /var/run/mysql/mysql.sock
       login_user: "root"
     with_items:
-      - ../../memcached_functions_mysql/sql/install_functions.sql
+      - /usr/local/share/memcached_functions_mysql/install_functions.sql
       - echoCTF.sql
       - echoCTF-routines.sql
       - echoCTF-triggers.sql
