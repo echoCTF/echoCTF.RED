@@ -70,7 +70,6 @@
       - nfdump
       - nmap
       - node_exporter
-      - openvpn
       - openvpn--
       - p5-NetPacket
       - p5-Net-Pcap
@@ -305,7 +304,7 @@
 
   - name: Probe scripts (unchanged copies of the tested scripts)
     ansible.builtin.copy:
-      src: "{{ playbook_dir }}/../files/{{ item.src }}"
+      src: "{{ playbook_dir }}/../files/conductor/{{ item.src }}"
       dest: "/etc/easeprobe/{{ item.dest | default(item.src) }}"
       owner: root
       group: wheel
