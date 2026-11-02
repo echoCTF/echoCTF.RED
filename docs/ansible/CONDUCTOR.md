@@ -4,7 +4,7 @@ Provisions a standalone OpenBSD conductor for central monitoring and graphing no
 
 Runs once per conductor host, on a freshly installed OpenBSD system. Re-running is safe the tasks are idempotent.
 
-Companion playbook: [`conductor-client.yml`](conductor-client.md) configures the *monitored* hosts that report into this conductor.
+Companion playbook: [`conductor-client.yml`](CONDUCTOR-CLIENT.md) configures the *monitored* hosts that report into this conductor.
 
 ## Required variables
 
