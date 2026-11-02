@@ -11,8 +11,8 @@
       - { name: pui_ip, prompt: "4/8. What is the internal participantUI IP?", default: "10.7.0.200" }
       - { name: mui_ip, prompt: "5/8. What is the internal moderatorUI IP?", default: "10.7.0.201" }
       - { name: vpn_ip, prompt: "6/8. What is the internal VPN IP?", default: "10.7.0.254" }
+      - { name: GITHUB_REPO, prompt: "7/8. Provide a github repo to clone?", default: "{{ lookup('pipe', 'git remote get-url origin') }}" }
       - { name: admins_domain, prompt: "8/8. admin domain for TXT rules?", default: "admin.example.com" }
-#      - { name: GITHUB_REPO, prompt: "7/8. Provide a github repo to clone?", default: "{{ lookup('pipe', 'git remote get-url origin') }}" }
     mysql_users:
       - { name: participantUI, password: 'participantUI', host: '{{pui_ip}}' }
       - { name: moderatorUI, password: 'moderatorUI', host: '{{mui_ip}}' }
@@ -58,7 +58,7 @@
     rcctl:
       - { name: check_quotas, state: "disable" }
       - { name: cron, state: "enable" }
-      - { name: resolved, state: "disable" }
+      - { name: resolvd, state: "disable" }
       #- { name: dhcpleased, state: "disable" }
       - { name: ntpd, state: "enable" }
       - { name: pflogd, state: "disable" }
@@ -78,7 +78,6 @@
       - mariadb-server
       - memcached--
       - libmemcached
-      - py3-mysqlclient
       - libtool
       - gmake
       - cmake
@@ -88,7 +87,6 @@
       - py3-pip
       - py3-openssl
       - py3-requests
-      - py3-mysqlclient
       - py3-setuptools
       - py3-netaddr
       - supervisor
@@ -205,13 +203,13 @@
     command: wget "{{item.url}}"
     args:
       chdir: /tmp
-    with_dict: "{{custom_packages}}"
+    with_items: "{{custom_packages}}"
 
   - name: Install our packages
     command: pkg_add -U -D unsigned "{{item.pkg}}"
     args:
       chdir: /tmp
-    with_dict: "{{custom_packages}}"
+    with_items: "{{custom_packages}}"
 
   - name: Set APP_DIR to /root/sources on non local connection
     when: ansible_connection != 'local'
@@ -378,15 +376,15 @@
     ansible.mariadb.mariadb_db:
       state: import
       name: echoCTF
-      target: "{{APP_DIR}}/schemas/{{item}}"
+      target: "{{item}}"
       login_unix_socket: /var/run/mysql/mysql.sock
       login_user: "root"
     with_items:
       - /usr/local/share/memcached_functions_mysql/install_functions.sql
-      - echoCTF.sql
-      - echoCTF-routines.sql
-      - echoCTF-triggers.sql
-      - echoCTF-events.sql
+      - "{{APP_DIR}}/schemas/echoCTF.sql"
+      - "{{APP_DIR}}/schemas/echoCTF-routines.sql"
+      - "{{APP_DIR}}/schemas/echoCTF-triggers.sql"
+      - "{{APP_DIR}}/schemas/echoCTF-events.sql"
 
   - name: create echoCTF users for mysql
     ansible.mariadb.mariadb_user:

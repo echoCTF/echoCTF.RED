@@ -85,8 +85,11 @@
       - { name: mysqld, state: "enable"}
       - { name: supervisord, state: "enable"}
       - { name: inetd, state: "enable"}
+    custom_packages:
+      - { pkg: 'mariadb-connector-c-3.4.11.tgz', url: 'https://github.com/echoCTF/obsd-binaries/releases/download/mariadb-connector-c-3.4.5-openbsd-7.9/mariadb-connector-c-3.4.11.tgz' }
+      - { pkg: 'memcached-1.6.42p1.tgz', url: 'https://github.com/echoCTF/obsd-binaries/releases/download/memcached-1.6.42p1-openbsd-7.9/memcached-1.6.42p1.tgz' }
     packages:
-      - autoconf-2.69p3
+      - autoconf%2.69
       - automake%1.16
       - curl
       - git
@@ -110,7 +113,6 @@
       - py3-requests
       - py3-pip
       - supervisor
-      - gnuwatch
       - go
       - p5-Net-Pcap
       - p5-NetPacket
@@ -198,6 +200,18 @@
   - name: Install packages
     shell: "pkg_add -I {{packages| join(' ')}}"
 
+  - name: Download our packages
+    command: wget "{{item.url}}"
+    args:
+      chdir: /tmp
+    with_items: "{{custom_packages}}"
+
+  - name: Install our packages
+    command: pkg_add -U -D unsigned "{{item.pkg}}"
+    args:
+      chdir: /tmp
+    with_items: "{{custom_packages}}"
+
   - name: Configure PS1, HISTFILE and HISTSIZE for root and skeleton
     lineinfile:
       path: "{{item.0}}"
@@ -272,6 +286,7 @@
     command: rcctl restart mysqld
 
   - name: Download MariaDB Connector C
+    when: build_from_sources is defined
     ansible.builtin.get_url:
       url: "https://dlm.mariadb.com/4234414/Connectors/c/connector-c-{{versions.MARIADB_CONNECTOR}}/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
       dest: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
@@ -282,12 +297,14 @@
       chdir: /usr/src
 
   - name: Replace Werror from CMakeLists.txt
+    when: build_from_sources is defined
     ansible.builtin.replace:
       path: /usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src/CMakeLists.txt
       regexp: 'Werror'
       replace: 'w'
 
   - name: Build MariaDB Connector C
+    when: build_from_sources is defined
     command: "{{item}}"
     args:
       chdir: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src"
@@ -536,12 +553,6 @@
         user: "openvpn"
         pass: "openvpn"
 
-  - name: Set memcached port in echoctf_updown_mysql.sh
-    replace:
-      path: /etc/openvpn/echoctf_updown_mysql.sh
-      regexp: '11211'
-      replace: '{{memc_port}}'
-
 ## template of verify-cn.sh
   - name: Parse verify-cn.sh
     template:
@@ -553,6 +564,15 @@
         host: "{{db_host}}"
         user: "openvpn"
         pass: "openvpn"
+
+  - name: Set memcached port in scripts
+    replace:
+      path: "{{item}}"
+      regexp: '11211'
+      replace: '{{memc_port}}'
+    with_items:
+      - /etc/openvpn/echoctf_updown_mysql.sh
+      - /etc/openvpn/verify-cn.sh
 
   - name: "Create openvpn management password file"
     copy:
