@@ -78,7 +78,7 @@ nav:
         - Maintenance Commands: console-commands/Maintenance.md
         - Tester: console-commands/Tester.md
         - Server: console-commands/Server.md
-        - Traffc: console-commands/Traffic.md
+        - Traffic: console-commands/Traffic.md
     - Frontend:
         - Generator Commands: console-commands/Frontend_Generator.md
         - Validator Commands: console-commands/Frontend_Validator.md
