@@ -85,6 +85,7 @@ nav:
         - Tester: console-commands/Tester.md
 
   - API: API.md
+  - FAQ: FAQ.md
   - Extras:
       - Size Calculations: Size-calculations.md
       - Participants Tutorial: Participants-Tutorial.md
