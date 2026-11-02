@@ -45,10 +45,19 @@ nav:
     - Participants UI playbook: ansible/PUI.md
     - Docker Servers: ansible/DOCKER-SERVERS.md
     - Docker Targets: ansible/DOCKER-TARGETS.md
-    - Conductor: ansible/CONDUCTOR.md
-    - Conductor Client: ansible/CONDUCTOR-CLIENT.md
     - Visuals: ansible/VISUALS.md
     - Examples: ansible/examples.md
+    - Monitoring:
+      - Conductor: ansible/CONDUCTOR.md
+      - Conductor Client: ansible/CONDUCTOR-CLIENT.md
+      - Grafana dashboards: conductor/grafana-visualization-setup.md
+      - SNMP Metrics: conductor/snmp-monitoring-setup.md
+      - Netflow flows: conductor/nfdump-pflow-setup.md
+  - Features:
+      - Target Instances: Target-Instances.md
+      - Instances Only Mode: Instances-Only.md
+      - Headshot Clusters: Headshot-Clusters.md
+      - Player Target Traffic: Player-Target-Traffic.md
   - Administration:
     - Sysconfig Keys: Sysconfig-Keys.md
     - Writeup Activations: Writeup-Activations.md
@@ -69,6 +78,7 @@ nav:
         - Maintenance Commands: console-commands/Maintenance.md
         - Tester: console-commands/Tester.md
         - Server: console-commands/Server.md
+        - Traffc: console-commands/Traffic.md
     - Frontend:
         - Generator Commands: console-commands/Frontend_Generator.md
         - Validator Commands: console-commands/Frontend_Validator.md
@@ -89,3 +99,10 @@ nav:
       - Docker Events: Docker-Events.md
       - Websockets: Websockets.md
       - Stripe: Stripe.md
+      - LetsEncrypt through Cloudflare: LetsEncrypt through Cloudflare.md
+      - Testing Guides:
+        - Target Instances: Target-Instances-Testing.md
+        - Instances Only: Instances-Only-Testing.md
+        - Player Target Traffic: Player-Target-Traffic-Testing.md
+        - Private Network PF Rules: Private-Network-PF-Testing.md
+        - Writeup Activation Test Cases: writeup-activation-test-cases.md
