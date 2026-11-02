@@ -7,14 +7,12 @@ use app\widgets\ProfileActionsWidget;
 use app\modules\game\models\Headshot;
 use yii\bootstrap\ButtonDropdown;
 
-
 /*
 ['label' => 'Delete profile', 'url' => ['delete','id'=>$model->id],'linkOptions'=>['data' => [
     'confirm' => Yii::t('app', 'Are you sure you want to delete this profile?'),
     'method' => 'post',
 ],]],
 */
-
 
 if (array_key_exists('subscription', Yii::$app->modules) !== false) {
   $subscription = Yii::$app->getModule('subscription');
@@ -36,15 +34,15 @@ if (array_key_exists('subscription', Yii::$app->modules) !== false) {
     <p class="card-description">
       <?= Html::encode($profile->bio) ?><?php if ($profile->isMine): ?>&nbsp;
       <?php echo Twitter::widget([
-                                          'message' => sprintf('Checkout my profile at %s! %s', Html::encode(\Yii::$app->sys->{"event_name"}), $profile->braggingRights),
-                                          'url' => Url::to(['profile/index', 'id' => $profile->id], 'https'),
-                                          'linkOptions' => ['class' => 'profile-tweet', 'target' => '_blank', 'style' => 'font-size: 1.3em;', 'rel' => 'noopener noreferrer nofollow'],
-                                        ]); ?>
+                                            'message' => sprintf('Checkout my profile at %s! %s', Html::encode(\Yii::$app->sys->{"event_name"}), $profile->braggingRights),
+                                            'url' => Url::to(['profile/index', 'id' => $profile->id], 'https'),
+                                            'linkOptions' => ['class' => 'profile-tweet', 'target' => '_blank', 'style' => 'font-size: 1.3em;', 'rel' => 'noopener noreferrer nofollow'],
+                                          ]); ?>
     <?php else: ?>
       <?php echo Twitter::widget([
-                                          'message' => sprintf('Checkout the profile of %s at %s', $profile->twitterHandle, Html::encode(\Yii::$app->sys->{"event_name"})),
-                                          'linkOptions' => ['class' => 'profile-tweet', 'target' => '_blank', 'style' => 'font-size: 1.3em;', 'rel' => 'noopener noreferrer nofollow'],
-                                        ]); ?>
+                                            'message' => sprintf('Checkout the profile of %s at %s', $profile->twitterHandle, Html::encode(\Yii::$app->sys->{"event_name"})),
+                                            'linkOptions' => ['class' => 'profile-tweet', 'target' => '_blank', 'style' => 'font-size: 1.3em;', 'rel' => 'noopener noreferrer nofollow'],
+                                          ]); ?>
     <?php endif; ?>
     </p>
     <?php if ($subscription->exists && \Yii::$app->sys->all_players_vip !== true): ?>
@@ -56,15 +54,16 @@ if (array_key_exists('subscription', Yii::$app->modules) !== false) {
       <?php endif; ?>
     <?php endif; ?>
     <?php if ($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)): ?>
-      <?php echo ProfileActionsWidget::widget(['profile'=>$profile]);?>
+      <?php echo ProfileActionsWidget::widget(['profile' => $profile]); ?>
     <?php endif; ?>
     <ul class="nav flex-column">
       <?php if ($profile->isMine || (!Yii::$app->user->isGuest && Yii::$app->user->identity->isAdmin)): ?>
+        <li class="nav-item text-left"><strong><i class="fas fa-file-signature"></i> Real name</strong> <span class="pull-right"><?= Html::encode($profile->owner->fullname) ?></span></li>
+        <li class="nav-item text-left"><strong><i class="fa-solid fa-head-side-virus"></i> Category</strong> <span class="pull-right"><?= $profile->owner->academicWord ?></span></li>
         <li class="nav-item text-left"><strong><i class="fas fa-users"></i> Failed logins</strong> <span class="pull-right"><?= $profile->metric('failed_login') ?></span></li>
         <li class="nav-item text-left"><strong><i class="fas fa-users"></i> Invites</strong> <span class="pull-right"><?= $profile->invitesCount ?></span></li>
         <li class="nav-item text-left"><strong><i class="fa fa-eye"></i> Visibility</strong> <span class="pull-right"><?= $profile->visibilities[$profile->visibility] ?></span></li>
         <li class="nav-item text-left"><strong><i class="fas fa-sync-alt"></i> Reboots</strong> <span class="pull-right"><abbr title="Reboots today"><?= intval($profile->spins->counter) ?></abbr> / <abbr title="Total Reboots"><?= intval($profile->spins->total) ?></abbr></span></li>
-        <li class="nav-item text-left"><strong><i class="fas fa-file-signature"></i> Real name</strong> <span class="pull-right"><?= Html::encode($profile->owner->fullname) ?></span></li>
       <?php endif; ?>
       <li class="nav-item text-left"><strong><i class="fas fa-globe"></i> Country</strong> <span class="pull-right"><?= $profile->rCountry->name ?></span></li>
       <li class="nav-item text-left"><strong><i class="fas fa-calendar-check"></i> Joined</strong> <span class="pull-right"><?= date("d.m.Y", strtotime($profile->owner->created)) ?></span></li>
@@ -82,9 +81,9 @@ if (array_key_exists('subscription', Yii::$app->modules) !== false) {
       <li class="nav-header text-left">
         <h6>Details</h6>
       </li>
-<?php if(\Yii::$app->sys->team_only_leaderboards!==true):?>
-      <li class="nav-item text-left"><strong><i class="fa fa-signal"></i> Current Rank</strong> <span class="pull-right"><?php if ($profile->rank) echo $profile->rank->ordinalPlace ?></span></li>
-<?php endif;?>
+      <?php if (\Yii::$app->sys->team_only_leaderboards !== true): ?>
+        <li class="nav-item text-left"><strong><i class="fa fa-signal"></i> Current Rank</strong> <span class="pull-right"><?php if ($profile->rank) echo $profile->rank->ordinalPlace ?></span></li>
+      <?php endif; ?>
       <li class="nav-item text-left"><strong><i class="fa fa-list"></i> Points</strong> <span class="pull-right"><?= number_format($profile->owner->playerScore->points) ?></span></li>
       <li class="nav-item text-left"><strong><i class="fas fa-flag"></i> Flags</strong> <span class="pull-right"><?php echo $profile->totalTreasures; ?></span></li>
       <li class="nav-item text-left"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo $profile->totalFindings; ?></span></li>
