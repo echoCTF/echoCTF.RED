@@ -72,8 +72,8 @@
       - { section: opcache, option: "opcache.revalidate_freq", value: "2" }
       - { section: opcache, option: "opcache.revalidate_path", value: "0" }
       - { section: opcache, option: "opcache.interned_strings_buffer", value: "8" }
-      - { section: opcache, option: "opcache.max_accelerated_files", val: "10000" }
-      - { section: opcache, option: "opcache.max_file_size", val: "0" }
+      - { section: opcache, option: "opcache.max_accelerated_files", value: "10000" }
+      - { section: opcache, option: "opcache.max_file_size", value: "0" }
     post_inst: |
       Things to do:
         - Update /etc/administrators.conf with your IP's
@@ -119,6 +119,7 @@
       - py3-netaddr
       - supervisor
       - node
+      - unzip
   tasks:
   - name: Prompt for variables that are not set
     pause:
@@ -434,7 +435,9 @@
       src: ../templates/nginx.conf.j2
       dest: /etc/nginx/{{item.user}}.conf
     with_items:
-      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}', identificationFiles: true, modsecurity: "{{ modsecurity | default(omit) }}" }
+      - { user: 'participantUI', domain: '{{domain_name}}', root: "/{{domain_name}}/frontend/web", port: 80, fpm: '127.0.0.1:9001', home: '/home/participantUI', ip: '{{pui_ext_ip}}', identificationFiles: true, modsecurity: true }
+    vars:
+      modsecurity: "{{ item.modsecurity | default(false) }}"
     tags:
       - nginx
 
@@ -661,6 +664,7 @@
       - { path: "/home/participantUI/{{domain_name}}/frontend/runtime", owner: 'participantUI', group: 'participantUI', mode: '0755' }
 
   - name: configure composer
+    no_log: true
     command: php -d allow_url_fopen=on /usr/local/bin/composer -n config --global --auth github-oauth.github.com {{GITHUB_OAUTH_TOKEN}}
     when: GITHUB_OAUTH_TOKEN is defined and GITHUB_OAUTH_TOKEN!=""
 
