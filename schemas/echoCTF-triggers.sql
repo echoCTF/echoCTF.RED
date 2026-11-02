@@ -985,7 +985,7 @@ thisBegin:BEGIN
   END IF;
   SET stream_player_target_help=memc_get('sysconfig:stream_player_target_help');
   IF stream_player_target_help IS NOT NULL and stream_player_target_help=1 THEN
-    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'player_target_help',NEW.target_id,-1*NEW.cost,'Activated writeups for {target}','','','',now());
+    INSERT INTO stream (player_id,model,model_id,points,title,message,pubtitle,pubmessage,ts) VALUES (NEW.player_id,'player_target_help',NEW.target_id,0,'Activated writeups for {target}','','','',now());
   END IF;
 END ;;
 
