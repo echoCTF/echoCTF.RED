@@ -744,7 +744,7 @@
     copy:
       content: |
         #!/usr/bin/env ksh
-        /usr/local/bin/lexicon vultr --auth-token={{VULTR_TOKEN|default(YOUR_TOKEN_HERE)}} "$1" "${CERTBOT_DOMAIN}" TXT --name "_acme-challenge.${CERTBOT_DOMAIN}" --content "${CERTBOT_VALIDATION}" || exit 255
+        /usr/local/bin/lexicon vultr --auth-token={{VULTR_TOKEN|default('YOUR_TOKEN_HERE')}} "$1" "${CERTBOT_DOMAIN}" TXT --name "_acme-challenge.${CERTBOT_DOMAIN}" --content "${CERTBOT_VALIDATION}" || exit 255
         if [ "$1" == "create" ]; then
           sleep 30
         fi
