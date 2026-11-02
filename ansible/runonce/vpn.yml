@@ -722,13 +722,13 @@
     with_items:
       - { name: "Generate CRL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-generate-crl", roles: ["gateway"] }
       - { name: "Revoke Expoired Player SSL", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/ssl-revoke-expired", roles: ["gateway"] }
-      - { name: "Expire sales", minute: "*/2",  job: "{{APP_DIR}}/backend/yii sales/expire-subscriptions", roles: ["gateway"] }
-      - { name: "Expire player products", minute: "*/2",  job: "{{APP_DIR}}/backend/yii sales/expired-player-products", roles: ["gateway"] }
-      - { name: "Private network target operations", minute: "*/2",  job: "{{APP_DIR}}/backend/yii private-network/target-ops", roles: ["gateway"] }
+      - { name: "Expire sales", minute: "*/2",  job: "/usr/local/bin/backend sales/expire-subscriptions", roles: ["gateway"] }
+      - { name: "Expire player products", minute: "*/2",  job: "/usr/local/bin/backend sales/expired-player-products", roles: ["gateway"] }
+      - { name: "Private network target operations", minute: "*/2",  job: "/usr/local/bin/backend private-network/target-ops", roles: ["gateway"] }
       - { name: "Power Operations", minute: "*/1",  job: "{{APP_DIR}}/backend/bin/powerops", roles: ["gateway"] }
       - { name: "restart targets with 24h uptime or more", minute: "*/5",  job: "{{APP_DIR}}/backend/bin/target-restart", roles: ["gateway"] }
       - { name: "Healthcheck", minute: "*/10",  job: "{{APP_DIR}}/backend/bin/healthcheck", roles: ["gateway"] }
-      - { name: "Process disconnect queue", minute: "*/1",  job: "{{APP_DIR}}/backend/yii vpn/process-disconnect-queue", roles: ["gateway"] }
+      - { name: "Process disconnect queue", minute: "*/1",  job: "/usr/local/bin/backend vpn/process-disconnect-queue", roles: ["gateway"] }
       - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
     tags:
@@ -762,7 +762,7 @@
 
         [program:backend-traffic]
         user = root
-        command = {{APP_DIR}}/backend/yii traffic/collect 127.0.0.1:9995 30
+        command = /usr/local/bin/backend traffic/collect 127.0.0.1:9995 30
         stdout_logfile=/var/log/echoctf-traffic.log
         stdout_logfile_maxbytes=0
         redirect_stderr=true
