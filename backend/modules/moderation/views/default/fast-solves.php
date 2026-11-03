@@ -149,10 +149,10 @@ $duration = function ($seconds) use ($fmt) {
         'value' => function ($row) {
           return Html::a('<i class="bi bi-stopwatch"></i> Zero', ['zero-headshot', 'player_id' => $row['player_id'], 'target_id' => $row['target_id']], [
             'class' => 'btn btn-sm btn-outline-danger text-nowrap',
-            'title' => 'Zero the headshot timer and log it in the abuser table',
+            'title' => 'Zero the headshot timer and its finding, treasure and headshot points, and log it in the abuser table',
             'data-pjax' => 0,
             'data-method' => 'post',
-            'data-confirm' => sprintf('Zero the headshot timer of %s on %s? This is logged in the abuser table.', $row['username'], $row['target']),
+            'data-confirm' => sprintf('Zero the headshot timer and points of %s on %s? This is logged in the abuser table.', $row['username'], $row['target']),
           ]);
         },
       ],

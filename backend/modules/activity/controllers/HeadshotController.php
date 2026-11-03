@@ -181,39 +181,7 @@ class HeadshotController extends \app\components\BaseController
     try {
       $model = $this->findModel($player_id, $target_id);
       $model->zero();
-      /*
-      $model->updateAttributes(['timer' => 0]);
-      $treasure_ids = Treasure::find()->select('id')->where(['target_id' => $model->target_id])->column();
-      $finding_ids = Finding::find()->select('id')->where(['target_id' => $model->target_id])->column();
-      // Zero out points for findings and treasures associated with the target
-      $db->createCommand()
-        ->update(
-          'stream',
-          [
-            'points' => 0,
-            'ts' => new \yii\db\Expression('ts'),
-          ],
-          [
-            'and',
-            ['player_id' => $model->player_id],
-            [
-              'or',
-              ['and', ['model' => 'treasure'], ['in', 'model_id', $treasure_ids]],
-              ['and', ['model' => 'finding'], ['in', 'model_id', $finding_ids]],
-              ['and', ['model' => 'headhost'], ['model_id' => $model->target_id]],
-            ],
-          ]
-        )->execute();
 
-      // Forcefully activate writeups
-      $db->createCommand('INSERT IGNORE INTO player_target_help (player_id,target_id,created_at) VALUES (:player_id,:target_id,:created_at)', [':player_id' => $model->player_id, ':target_id' => $model->target_id, ':created_at' => new \yii\db\Expression('NOW()')])->execute();
-
-      // Update the player points
-      $db->createCommand('UPDATE player_score SET points=(SELECT SUM(points) FROM stream WHERE player_id=:player_id) WHERE player_id=:player_id', [':player_id' => $model->player_id])->execute();
-      // If player is member of team re-populate the team stream
-      if($model->player->teamPlayer)
-        $db->createCommand('CALL repopulate_team_stream(:team_id)',[':team_id'=>$model->player->teamPlayer->team_id])->execute();
-      */
       // Send a notification to the player about what just happened.
       $model->player->notify('swal:error', 'Headshot and points zeroed out!!!', 'Your timer and points for the headshot on target ' . $model->target->name . ' have been zeroed out. Feel free to contact the moderators for any clarification as to why this happened.');
       $transaction->commit();

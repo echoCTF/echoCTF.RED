@@ -92,7 +92,7 @@ class Headshot extends \yii\db\ActiveRecord
               'or',
               ['and', ['model' => 'treasure'], ['in', 'model_id', $treasure_ids]],
               ['and', ['model' => 'finding'], ['in', 'model_id', $finding_ids]],
-              ['and', ['model' => 'headhost'], ['model_id' => $this->target_id]],
+              ['and', ['model' => 'headshot'], ['model_id' => $this->target_id]],
             ],
           ]
         )->execute();
