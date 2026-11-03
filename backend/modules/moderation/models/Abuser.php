@@ -112,6 +112,8 @@ class Abuser extends \yii\db\ActiveRecord
     switch ($this->model) {
       case 'treasure':
         return $this->hasOne(\app\modules\gameplay\models\Treasure::class, ['id' => 'model_id']);
+      case 'headshot':
+        return $this->hasOne(\app\modules\gameplay\models\Target::class, ['id' => 'model_id']);
       default:
         break;
     }
@@ -130,6 +132,8 @@ class Abuser extends \yii\db\ActiveRecord
     switch ($this->reason) {
       case 'tai_player_treasure':
         return sprintf('claimed the flag [%s] for [%s] before findings, <abbr title="%s">%s</abbr>', $this->related->name, $this->related->target->name, $this->created_at, $this->created_at_ago);
+      case 'fast_solve_zeroed':
+        return sprintf('had their headshot timer on [%s] zeroed as a fast solve, <abbr title="%s">%s</abbr>', \yii\helpers\Html::encode($this->related->name), $this->created_at, $this->created_at_ago);
     }
   }
 
@@ -157,8 +161,8 @@ class Abuser extends \yii\db\ActiveRecord
     }
 
     // Matches MD5 hash
-    if($string == null && preg_match('/([a-f0-9]{32})/i', $this->title, $matches)) {
-      $claimedHash=$string=$matches[1];
+    if ($string == null && preg_match('/([a-f0-9]{32})/i', $this->title, $matches)) {
+      $claimedHash = $string = $matches[1];
     }
 
     if ($string != null) {
@@ -199,13 +203,15 @@ class Abuser extends \yii\db\ActiveRecord
           $from = "[$profileLink]";
         $msg = "$from leaked a flag to player $to for target [" . $originalTreasure->target->name . "] and treasure [<small>" . $originalTreasure->name . "</small>]";
 
-        return new Abuser([ 'player_id'=>$originalPlayer->id,
-                            'title' => 'Shared flag claimedHash',
-                            'body'=>$msg,
-                            'reason' => 'flag_shared',
-                            'points'=>1500,
-                            'model'=>'abuser',
-                            'model_id'=>$this->id]);
+        return new Abuser([
+          'player_id' => $originalPlayer->id,
+          'title' => 'Shared flag claimedHash',
+          'body' => $msg,
+          'reason' => 'flag_shared',
+          'points' => 1500,
+          'model' => 'abuser',
+          'model_id' => $this->id
+        ]);
       }
     }
     return [];
@@ -225,8 +231,8 @@ class Abuser extends \yii\db\ActiveRecord
     }
 
     // Matches MD5 hash
-    if($string == null && preg_match('/([a-f0-9]{32})/i', $this->title, $matches)) {
-      $claimedHash=$string=$matches[1];
+    if ($string == null && preg_match('/([a-f0-9]{32})/i', $this->title, $matches)) {
+      $claimedHash = $string = $matches[1];
     }
 
     if ($string != null) {
@@ -267,8 +273,8 @@ class Abuser extends \yii\db\ActiveRecord
           $to = "[$profileLink]";
         $msg = "$from tried to claim flag that belongs to player $to for target [" . $originalTreasure->target->name . "] and treasure [<small>" . $originalTreasure->name . "</small>]";
 
-        $this->points=-1500;
-        $this->reason='claim_other_team';
+        $this->points = -1500;
+        $this->reason = 'claim_other_team';
 
         return $msg;
       }

@@ -13,8 +13,12 @@ A solve is listed when its ratio is below *Ratio below* (0.1 means 10 times fast
 * **Yellow**: fast without writeups, but with traffic. Often a skilled player, check the player.
 * **No colour**: the player activated writeups for the target, so being fast is expected.
 
+### Zeroing a solve
+The **Zero** button on each row sets the headshot timer to 0 and adds an entry to the abuser table (reason `fast_solve_zeroed`, no points, marked resolved) recording who zeroed it, the old timer and the target median. The solve then drops out of this report and out of the medians.
+
 ### Notes
-* Medians use every headshot of the target, *Solved from* only limits which solves are listed.
+* Headshots with a zero timer are skipped completely. A zeroed timer means the solve was already erased as cheated, so it is neither listed nor counted in the medians or in *Min target solves*.
+* Medians use every other headshot of the target, *Solved from* only limits which solves are listed.
 * Traffic comes from `player_target_traffic` and only exists for solves made while traffic accounting was running. Older solves show *none*, so judge them by the timer alone.
 * Findings come from scanning, so a player who scans first starts the clock early. Pasting the treasures afterwards still makes the timer far shorter than a real exploitation.
 * Requires MariaDB, which has the `MEDIAN()` window function.
