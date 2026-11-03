@@ -30,6 +30,7 @@ class DefaultController extends \app\components\BaseController
         'actions' => [
           'delete-filtered' => ['POST'],
           'ban-filtered' => ['POST'],
+          'zero-headshot' => ['POST'],
         ],
       ],
     ]);
@@ -188,6 +189,94 @@ class DefaultController extends \app\components\BaseController
   public function actionFastSolves()
   {
     return $this->writeupRelayReport(new \app\modules\moderation\models\FastSolveSearch(), 'fast-solves');
+  }
+
+  /**
+   * Zeroes the timer of a headshot flagged as a fast solve and records it in
+   * the abuser table, so there is a trace of who was caught and on what.
+   * The actual zeroing is Headshot::zero(), the same as activity/headshot/zero,
+   * so the finding, treasure and headshot points of the target are zeroed on the stream
+   * and the player and team scores are recalculated.
+   * A zeroed timer also drops the solve from the fast solves report.
+   * @param int $player_id
+   * @param int $target_id
+   * @return mixed
+   */
+  public function actionZeroHeadshot($player_id, $target_id)
+  {
+    $headshot = \app\modules\activity\models\Headshot::findOne(['player_id' => (int) $player_id, 'target_id' => (int) $target_id]);
+    if ($headshot === null) {
+      throw new \yii\web\NotFoundHttpException(\Yii::t('app', 'The headshot does not exist.'));
+    }
+    $back = \Yii::$app->request->referrer ?: ['fast-solves'];
+    $oldTimer = (int) $headshot->timer;
+    if ($oldTimer <= 0) {
+      \Yii::$app->session->setFlash('warning', \Yii::t('app', 'This headshot timer is already zero.'));
+      return $this->redirect($back);
+    }
+
+    $db = \Yii::$app->db;
+    // median of the other untouched solves, for the record
+    $median = $db->createCommand(
+      'SELECT MEDIAN(timer) OVER () FROM headshot WHERE target_id = :t AND timer > 0 LIMIT 1',
+      [':t' => $headshot->target_id]
+    )->queryScalar();
+    $median = $median === false || $median === null ? null : (int) round((float) $median);
+
+    // finding, treasure and headshot points about to be zeroed on the stream, for the record
+    $streamPoints = (int) round((float) $db->createCommand(
+      "SELECT COALESCE(SUM(points), 0) FROM stream WHERE player_id = :p AND (
+        (model = 'finding' AND model_id IN (SELECT id FROM finding WHERE target_id = :t))
+        OR (model = 'treasure' AND model_id IN (SELECT id FROM treasure WHERE target_id = :t))
+        OR (model = 'headshot' AND model_id = :t))",
+      [':p' => $headshot->player_id, ':t' => $headshot->target_id]
+    )->queryScalar());
+
+    $fmt = \Yii::$app->formatter;
+    $playerName = $headshot->player->username;
+    $targetName = $headshot->target->name;
+    $body = sprintf(
+      'Headshot timer of [%s] on target [%s] was zeroed by [%s] as a fast solve. Timer was %s (%d seconds)%s, solved at %s. %d finding, treasure and headshot points were zeroed on the stream.',
+      Html::encode($playerName),
+      Html::encode($targetName),
+      Html::encode(\Yii::$app->user->identity->username ?? 'unknown'),
+      $fmt->asDuration($oldTimer),
+      $oldTimer,
+      $median ? sprintf(', target median %s, %sx faster', $fmt->asDuration($median), number_format($median / $oldTimer, 1)) : '',
+      $headshot->created_at,
+      $streamPoints
+    );
+
+    $trans = $db->beginTransaction();
+    try {
+      $abuser = new \app\modules\moderation\models\Abuser([
+        'player_id' => $headshot->player_id,
+        'title' => 'Fast solve, headshot timer zeroed',
+        'body' => $body,
+        'reason' => 'fast_solve_zeroed',
+        'model' => 'headshot',
+        'model_id' => $headshot->target_id,
+        'points' => 0,
+        'resolved' => true,
+      ]);
+      if (!$abuser->save()) {
+        throw new \yii\base\UserException(implode(' ', $abuser->getErrorSummary(true)));
+      }
+      // after the abuser entry, repopulate_team_stream inside zero() commits implicitly
+      $headshot->zero();
+      $trans->commit();
+      \Yii::$app->session->setFlash('success', \Yii::t('app', 'Zeroed the headshot of [{player}] on [{target}], {points} stream points removed, logged as abuser entry #{id}.', [
+        'points' => $streamPoints,
+        'player' => Html::encode($playerName),
+        'target' => Html::encode($targetName),
+        'id' => $abuser->id,
+      ]));
+    } catch (\Throwable $e) {
+      $trans->rollBack();
+      \Yii::error($e->getMessage());
+      \Yii::$app->session->setFlash('error', \Yii::t('app', 'Failed to zero the headshot: {error}', ['error' => Html::encode($e->getMessage())]));
+    }
+    return $this->redirect($back);
   }
 
   /**

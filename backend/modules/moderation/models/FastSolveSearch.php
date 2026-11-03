@@ -16,8 +16,11 @@ use yii\data\SqlDataProvider;
  * usually is (`player_usual_ratio`, the median of their ratios), so players
  * that are fast everywhere are not listed.
  *
- * Medians are taken over all the headshots of a target, and only targets with
- * at least `min_target_solves` headshots are judged. Requires MariaDB for the
+ * Headshots with a zero (or missing) timer are left out entirely, both from the
+ * list and from the medians and counts: an erased timer marks a solve that was
+ * already found to be cheated. Medians are taken over the remaining headshots
+ * of a target, and only targets with at least `min_target_solves` of them are
+ * judged. Requires MariaDB for the
  * MEDIAN() window function.
  */
 class FastSolveSearch extends Model
@@ -114,6 +117,7 @@ WITH h AS (
          MEDIAN(h.timer) OVER (PARTITION BY h.target_id) AS target_median,
          COUNT(*) OVER (PARTITION BY h.target_id) AS target_solves
   FROM headshot h
+  WHERE h.timer > 0
 ),
 rated AS (
   SELECT h.*, h.timer / NULLIF(h.target_median, 0) AS ratio
@@ -155,7 +159,7 @@ SQL;
       $bind[':fs_target'] = '%' . addcslashes($this->target, '%_\\') . '%';
     }
     if ($this->since) {
-      // medians still use every solve of the target, only the listed solves are limited
+      // medians still use every non-zeroed solve of the target, only the listed solves are limited
       $where[] = 'r.solved_at >= :fs_since';
       $bind[':fs_since'] = $this->since . ' 00:00:00';
     }
