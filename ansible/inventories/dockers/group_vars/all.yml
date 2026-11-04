@@ -63,6 +63,7 @@ pre_apt:
  - rdate
  - python3-requests
  - python3-docker
+ - sudo
 
 post_apt:
  - docker-ce

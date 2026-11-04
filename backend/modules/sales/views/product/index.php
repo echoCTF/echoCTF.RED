@@ -30,6 +30,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Products'), 'url' =>
       [
         'attribute' => 'id',
         'format' => 'raw',
+        'headerOptions' => ['style' => 'width: 15em'],
         'value' => function ($model) {
           if ($model->id == 'prod_vip')
             return "<small><abbr title='VIP Product'>prod_vip</abbr></small>";
@@ -41,16 +42,29 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Products'), 'url' =>
           return "";
         }
       ],
-      'name',
-      'shortcode',
-      'active:boolean',
       [
-        'label' => 'prices',
+        'attribute' => 'shortcode',
+        'headerOptions' => ['style' => 'width: 12em'],
+      ],
+      'name',
+      [
+        'attribute' => 'active',
+        'format' => 'boolean',
+        'headerOptions' => ['style' => 'width: 5em'],
+      ],
+      [
+        'attribute' => 'prices_count',
+        'label' => Yii::t('app', 'Prices'),
+        'headerOptions' => ['style' => 'width: 5em'],
         'value' => function ($model) {
           return count($model->prices);
         },
       ],
-      'weight:integer',
+      [
+        'attribute' => 'weight',
+        'format' => 'integer',
+        'headerOptions' => ['style' => 'width: 80px'],
+      ],
 
       ['class' => 'yii\grid\ActionColumn'],
     ],
