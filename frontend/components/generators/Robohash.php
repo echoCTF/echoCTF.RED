@@ -25,9 +25,6 @@ class Robohash
 
   private $robodata;
   private $filename;
-  private static $colors  = ['blue', 'brown', 'green', 'grey', 'orange', 'pink', 'purple', 'red', 'white', 'yellow'];
-  private static $sets    = ['set1', 'set2', 'set3', 'set4', 'set5', 'set6', 'set7', 'set8', 'set9'];
-
 
   private $hash_index     = 0,
     $hash_list      = [];
@@ -40,8 +37,7 @@ class Robohash
   {
     $this->image_dir =  \Yii::getAlias('@app/web/images/robohash/');
     $this->text = $text;
-    if ($set === null)
-      $this->set = \Yii::$app->sys->avatar_robohash_set;
+    $this->set = $set ?? \Yii::$app->sys->avatar_robohash_set;
     $this->color = $color;
     $this->width  = self::IMAGE_WIDTH;
     $this->height = self::IMAGE_WIDTH;
@@ -51,7 +47,13 @@ class Robohash
     $this->set_set();
 
     $this->set_color();
-    $this->robodata = sprintf("%s/%s", $this->set, $this->color);
+    $this->robodata = $this->color === '' ? $this->set : sprintf("%s/%s", $this->set, $this->color);
+  }
+
+  // Hash chunks wrap around so sets with many layers never run out
+  private function hash_at($index)
+  {
+    return $this->hash_list[$index % count($this->hash_list)];
   }
 
   private function create_hashes($text, $length = 11)
@@ -62,35 +64,46 @@ class Robohash
     }
   }
 
+  // Colored sets (like set1) have plain color folders instead of NNN#Layer folders
   private function set_color()
   {
-    if (!in_array($this->color, self::$colors)) {
-      $this->color = self::$colors[$this->hash_list[0] % count(self::$colors)];
+    $colors = [];
+    foreach (glob($this->image_dir . $this->set . '/*', GLOB_ONLYDIR) ?: [] as $dir) {
+      if (strpos(basename($dir), '#') !== false) {
+        $this->color = '';
+        return;
+      }
+      $colors[] = basename($dir);
     }
-
-    // if set is set2 or set3 clear any colors
-    if ($this->set !== 'set1') {
-      $this->color = "";
+    if ($colors === []) {
+      $this->color = '';
+    } elseif (!in_array($this->color, $colors, true)) {
+      $this->color = $colors[$this->hash_at(0) % count($colors)];
     }
   }
 
+  // Any folder under image_dir is a set; if the configured one is missing pick one by hash
   public function set_set()
   {
-    // if set not in accepted sets pick a random one
-    if (!in_array($this->set, self::$sets)) {
-      $this->set = self::$sets[$this->hash_list[1] % count(self::$sets)];
-    }
+    if (is_string($this->set) && $this->set !== '' && is_dir($this->image_dir . $this->set))
+      return;
+    $sets = array_map('basename', glob($this->image_dir . '*', GLOB_ONLYDIR) ?: []);
+    if ($sets === [])
+      throw new \RuntimeException('No Robohash sets found in ' . $this->image_dir);
+    natsort($sets);
+    $sets = array_values($sets);
+    $this->set = $sets[$this->hash_at(1) % count($sets)];
   }
 
 
   private function get_image_list()
   {
     $image_list = [];
-    $dirs = glob($this->image_dir . "{$this->robodata}/*");
+    $temp = [];
+    $dirs = glob($this->image_dir . "{$this->robodata}/*", GLOB_ONLYDIR) ?: [];
     foreach ($dirs as $dir) {
-      if (($files = glob("$dir/*")) === false) continue;
-      //$files = glob("$dir/*");
-      $img_index = $this->hash_list[$this->hash_index] % count($files);
+      if (!($files = glob("$dir/*.png"))) continue;
+      $img_index = $this->hash_at($this->hash_index) % count($files);
       $this->hash_index++;
       $s = explode('#', $files[$img_index], 2);
       krsort($s);
