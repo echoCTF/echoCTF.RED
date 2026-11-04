@@ -22,6 +22,34 @@ notify_iplimit() {
     /usr/local/bin/backend player/ws-notify "${common_name}" "swal:warning" "VPN connections per IP limit" "You tried to connect to the VPN from an IP that is already connected. You need to either get a subscription that allows multiple IP's or contact our support to be considered for a whitelist!" &
 }
 
+# Per player bandwidth slots
+BW_SLOTS=100
+BW_MEMC_SOCK="/var/run/memcached/memcached.sock"
+
+bw_slot_acquire() {
+  [ -x /sbin/pfctl ] || return 0
+  _i=1
+  while [ $_i -le $BW_SLOTS ]; do
+    if [ -z "$(/sbin/pfctl -t bw_slot_${_i} -T show 2>/dev/null)" ]; then
+      /sbin/pfctl -q -t "bw_slot_${_i}" -T replace "${ifconfig_pool_remote_ip}"
+      _len=$(printf '%s' "${_i}" | wc -c | tr -d ' ')
+      printf 'set bw_slot:%s 0 0 %s\r\n%s\r\n' "${ifconfig_pool_remote_ip}" "${_len}" "${_i}" | nc ${NCOPTS} -U "$BW_MEMC_SOCK" >/dev/null
+      echo "bw_slot[$$]: CN=${common_name}, local=${ifconfig_pool_remote_ip} slot ${_i}"
+      return 0
+    fi
+    _i=$((_i+1))
+  done
+  echo "bw_slot[$$]: WARNING CN=${common_name} no free bandwidth slot"
+}
+
+bw_slot_release() {
+  [ -x /sbin/pfctl ] || return 0
+  _slot=$(printf 'get bw_slot:%s\r\n' "${ifconfig_pool_remote_ip}" | nc ${NCOPTS} -U "$BW_MEMC_SOCK" | egrep -v "(VALUE|END)" | tr -d '\r')
+  [ -n "$_slot" ] || return 0
+  /sbin/pfctl -q -t "bw_slot_${_slot}" -T delete "${ifconfig_pool_remote_ip}"
+  printf 'delete bw_slot:%s\r\n' "${ifconfig_pool_remote_ip}" | nc ${NCOPTS} -U "$BW_MEMC_SOCK" >/dev/null
+}
+
 # Stop users from connecting when the event is not active
 #EVENT_ACTIVE=$(echo "get sysconfig:event_active"|nc -N ${MEMD} 11211 |egrep -v "(VALUE|END)")
 #if [ "$EVENT_ACTIVE" == "0" ] || [ "$EVENT_ACTIVE" == "" ]; then
@@ -60,12 +88,13 @@ if [ "$script_type" == "client-connect" ]; then
       echo "client-connect[$$]: CN=${common_name} networks="${NETWORKS}
       if [ -x /sbin/pfctl ]; then
         for network in ${NETWORKS};do
-          /sbin/pfctl -t "${network}_clients" -T add ${ifconfig_pool_remote_ip}
+          /sbin/pfctl -q -t "${network}_clients" -T add ${ifconfig_pool_remote_ip}
         done
       fi
     else
       echo "client-connect[$$]: CN=${common_name} no networks"
     fi
+    bw_slot_acquire
     echo "client-connect[$$]: CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip}"
 elif [ "$script_type" == "client-disconnect" ]; then
   /usr/local/bin/vpn_churn_check -s /var/run/memcached/memcached.sock "$common_name" disconnect
@@ -84,9 +113,10 @@ elif [ "$script_type" == "client-disconnect" ]; then
   NETWORKS=$(mysql --connect-timeout=10 -h ${DBHOST} -u"${DBUSER}" -p"${DBPASS}" -NBe "CALL VPN_LOGOUT(${common_name},INET_ATON('${ifconfig_pool_remote_ip}'),INET_ATON('${untrusted_ip}'))" echoCTF)
   if [ -x /sbin/pfctl ]; then
     for network in ${NETWORKS};do
-      /sbin/pfctl -t "${network}_clients" -T delete ${ifconfig_pool_remote_ip}
+      /sbin/pfctl -q -t "${network}_clients" -T delete ${ifconfig_pool_remote_ip}
     done
   fi
+  bw_slot_release
   echo "client-disconnect[$$]: CN=${common_name}, local=${ifconfig_pool_remote_ip}, remote=${untrusted_ip}"
 fi
 

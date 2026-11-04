@@ -510,11 +510,13 @@
       install -C -m 0644 {{APP_DIR}}/contrib/unbound.conf /var/unbound/etc/unbound.conf
       install -C -m 0644 {{APP_DIR}}/ansible/files/pf.conf /etc/pf.conf
       install -C -m 0644 {{APP_DIR}}/ansible/files/vpn.service.conf /etc/service.pf.conf
+      install -C -m 0644 {{APP_DIR}}/ansible/files/pf.bw_slots.conf /etc/pf.bw_slots.conf
       install -C -o root -g wheel -m 0555 {{APP_DIR}}/contrib/watchdoger.py /usr/local/bin/watchdoger
       install -C -o root -g wheel -m 0555 {{APP_DIR}}/contrib/event_shutdown.sh /usr/local/sbin/event_shutdown
       install -C -o root -g wheel -m 0555 {{APP_DIR}}/ansible/files/nstables.sh /usr/local/sbin/nstables
       install -C -o root -g wheel -m 0555 {{APP_DIR}}/contrib/gource-inetd-service.pl /usr/local/sbin/inetd-visuals
       install -C -o root -g wheel -m 0644 {{APP_DIR}}/ansible/files/login.conf /etc/login.conf
+      install -d -o _memcached -g _memcached -m 0755 /var/run/memcached
 
   - name: Create inetd.conf for visuals
     copy:
@@ -532,6 +534,7 @@
       - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'server 10\.10\.0\.0 255\.255\.0\.0', replace: 'server {{offense_network|ansible.utils.ipaddr("network")}} {{offense_network|ansible.utils.ipaddr("netmask")}}' }
       - { file: '/etc/openvpn/openvpn_tun0.conf', regexp: 'route 10\.0\.160\.0 255\.255\.255\.0', replace: 'route {{targets_subnet}} {{targets_netmask}}' }
       - { file: '/etc/pf.conf', regexp: '10\.10\.0\.0\/16', replace: '{{offense_network}}' }
+      - { file: '/etc/pf.bw_slots.conf', regexp: 'em2 ', replace: '{{targets_if}} ' }
       - { file: '/etc/service.pf.conf', regexp: '10\.10\.0\.1', replace: '{{ offense_network | ansible.utils.ipaddr("next_usable") }}' }
 
   - name: Ensure tls-verify exists
