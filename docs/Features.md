@@ -1,0 +1,373 @@
+# Platform Features
+
+The list of features supported by the platform is really massive, the complete list is as follows:
+
+- System settings
+  - Configurable Event name
+  - Configurable Active status
+  - Configurable timezone
+  - Configurable event start / end dates
+  - Configurable registration opening / closing dates
+  - Configurable event finished flag and event finished path for post event automation
+  - Configurable event end notification (title and body) sent to all players
+  - Configurable site description and social media meta tags
+  - Configurable frontpage, offense and defense scenarios
+  - Configurable default homepage and dashboard as homepage
+  - Configurable dashboard activity graph and news pagination
+  - Configurable menu items (JSON) appended to the frontend menu
+  - Configurable footer logos
+  - Configurable offense, defense and moderator domains
+  - Configurable trusted proxies and client IP header (Cloudflare ready)
+  - Configurable forced HTTPS URL generation
+  - Configurable Content Security Policy per interface (offense and moderator)
+  - Configurable rate limits (requests per window)
+  - Configurable banned IPs and IP patterns
+  - Configurable online timeout for players
+  - Configurable timezone display
+  - Site wide maintenance mode with admin bypass
+  - Persistent maintenance notification to all connected players
+  - Support for target private instances only mode
+  - Support for disabling all ondemand operations
+  - Support for all players VIP mode
+- Leaderboard settings
+  - Independent Player and Team leaderboards
+  - Configurable visibility before and after event start/end
+  - Support to show/hide 0 point players
+  - Configurable guest visibility of leaderboards
+  - Configurable team only leaderboards mode
+  - Configurable player points, monthly points, country and writeup rankings
+  - Ordinal score, headshots, most headshots and fastest solve leaderboards
+  - Player, team and country ranks calculated in the database
+  - Monthly score tracking per player
+- Team settings
+  - Configurable teams support
+  - Configurable mandatory teams flag
+  - Configurable team management
+  - Configurable number of maximum team members
+  - Configurable team instances
+  - Invite only, recruiting and locked teams
+  - Team join tokens with token renewal
+  - Team invites and member approval / rejection
+  - Team logos
+  - Team activity streams
+  - Team owned private networks
+  - Configurable cross team claims of encrypted flags
+  - Team audit log
+- Player and Registration settings
+  - Configurable activation required
+  - Support for global enable/disable registrations
+  - Configurable player profiles
+  - Configurable player avatar approval
+  - Configurable player profile visibility (public, private, in game)
+  - Configurable default player homepage
+  - Configurable settings and memory key expiration timeout
+  - Configurable global and individual player number of restarts
+  - Configurable moderator approval of registrations
+  - Configurable proof of identification on registration
+  - Configurable username length limits
+  - Configurable editable profile fields
+  - Configurable disabled profile card actions
+  - Configurable visible social profile fields (Discord, Twitter, GitHub, HTB, Twitch, YouTube, echoCTF)
+  - Configurable profile improvement tab
+  - Configurable player self deletion requests
+  - Configurable avatar generator (Robohash sets or Identicon)
+  - Configurable mail verification and password reset token validity
+  - Configurable automatic cleanup of inactive, changed, deleted and rejected players
+  - Configurable admins by player ID
+  - Academic groupings of players and teams (configurable names, icons and number of groups)
+  - Offense and defense player types
+  - Player referrals
+  - Player metadata
+  - Experience levels
+- Registration abuse protection
+  - Configurable registrations per IP per hour and in total
+  - Configurable StopForumSpam confidence checks
+  - Configurable verifymail.io checks
+  - Configurable MX and A record validation of email domains
+  - Banned MX servers
+  - Disposable and spam domain detection
+  - Configurable failed login limits per IP and per username
+  - Configurable password reset limits per IP and per email
+  - Configurable verification resend limits per IP and per email
+  - Custom captcha
+- Twitter settings
+  - Configurable tagging accounts (via)
+  - Configurable automatic hashtags
+  - Quick share links on every event on frontend
+  - Configurable disabling of stream tweets
+  - Dynamic target and profile badge images for sharing
+  - Generated social media images per target
+- Support for configurable Targets and Challenges
+  - Target support for start/stop/logs/exec/healthchecks
+  - Unlimited flags per targets & challenges
+  - Configurable unique flags per players and teams
+  - Dynamic target networks
+  - Dynamic target environment variables
+  - Dynamic target volumes
+  - Support for public and private networks
+  - Support for ondemand start of targets
+  - Target documentation and metadata
+  - Multiple question/flag challenges
+  - Dynamic hints
+  - Configurable tracking of solving times for challenges and targets
+  - Support for target and challenge logos
+  - Support for player rating of targets & challenges
+  - Support for player contributed writeups
+  - Support for private target instances per player
+  - Configurable number of concurrent private instances per player
+  - Configurable team visibility of private instances
+  - Support for player and team owned private networks
+  - Scheduled target migrations between networks
+  - Scheduled target power ups and power downs
+  - Spin queue for target restarts
+  - Configurable restart log interval
+  - Configurable required XP per target
+  - Configurable headshot and first headshot points
+  - Configurable new and updated target ribbons
+  - Configurable hiding of inactive targets
+  - Configurable guest access to targets and networks
+  - Configurable target metadata visibility (scenario, solution, credits, pre/post exploitation)
+  - Target versus player progress pages
+  - Network discovered findings (services) as scoring items
+  - Configurable findings required before flag claims
+  - Stock limited flags
+  - Target credentials as scoring items
+  - Badges and achievements
+  - Hints unlocked by findings, flags, badges, questions or time, with player and team point costs
+  - Downloadable challenge files
+  - Guided tutorials with tasks and task dependencies
+  - Speed programming problems with automated validators (optional module)
+  - Multiple Docker API servers with SSL and timeouts
+  - Proxmox VE virtualization support
+  - Docker events for per target customizations at start
+- Writeups
+  - Configurable writeup rules
+  - Writeup moderation (approve, reject, comment)
+  - Multiple writeup formatters and languages
+  - Writeup activation for unsolved targets
+  - Configurable writeup activation cost (percent of unclaimed points) and cost multiplier
+  - Configurable writeup activation XP requirement
+  - Configurable stuck hours before activation
+  - Configurable writeup activation allowance per headshots
+  - Writeup ratings
+- Flag claim auditing and penalties
+  - Configurable logging of failed claims
+  - Configurable penalty per failed claim and free fail allowance
+  - Background resolution of wrong flag owners
+  - Configurable abuse penalties at the end of an event
+  - Abuser records with points and resolution
+- Detailed activity streams
+  - Player overall activity
+  - Player vs Target activity
+  - All platform activity
+  - Team based activity
+  - Configurable stream record limit
+  - Configurable stream entries for writeup activations
+- Network activity tracking and visuals
+  - Automatic findings detection from player traffic
+  - Per player per target traffic accounting (packets and bytes) through pflow / NetFlow v5
+  - Player bandwidth and VPN history
+  - Real time network visuals through logstalgia and gource
+  - Visuals concentrator for multiple VPN servers
+- VPN
+  - Integrated OpenVPN with per player certificates
+  - Built in CA management, CRL generation and certificate revocation
+  - Configurable VPN gateway
+  - Configurable OpenVPN templates
+  - Multiple VPN servers (slaves) support
+  - Configurable concurrent VPN connections per remote IP, with whitelist and subscription overrides
+  - VPN connection churn rate limiting with Discord alerts
+  - Player VPN disconnect queue
+- REST support
+  - Player REST API with Bearer tokens (claim, instances, target details, spin, spawn, shut)
+  - Configurable per endpoint rate limits
+  - Backend REST API for automation (challenges, findings, flags, metadata, ondemand, networks)
+- Docker API support
+- Help/Rules/FAQ/Instructions/Objectives sections
+- Credits section
+- News section with Discord announcements
+- URLs Management add/edit/delete/disable
+- Separate player and admin interfaces and authentication databases
+- Configurable SSL certificate details
+- Dynamic CSS and javascript overloads (css, js, per player, per url)
+- Layout overrides
+- Twitter & Linkedin support for publishing achievements
+- Support for static pages
+- Live notifications to the player(s)
+  - Websockets support through ws-server
+  - Per player and broadcast notifications
+  - Expiring websocket tokens
+- Email support
+  - Configurable mail server, DSN and TLS settings
+  - Email templates
+  - Ad hoc mass mailing to filtered players
+  - Configurable mailer disable
+- Stand-alone applications for activity streaming
+  - Bots for discord and twitter announcements
+  - websocket leaderboards
+  - websocket activity stream visuals
+  - real time network visuals through logstalgia and gource
+  - dynamic post claim flag actions
+- Advanced player and general moderation features
+  - Ban MX servers from registering
+  - Disable per player URLs
+  - Ban player username/email patterns
+  - Bulk approve, reject, ban, delete and mail of filtered players
+  - Delete all players of a domain
+  - Headshot cluster detection
+  - Writeup relay detection by shared IPs and identity links
+  - Claims without traffic detection
+  - Fast solves detection
+  - Writeup hoarder detection
+  - Duplicate signup IP detection with reverse DNS
+  - Stream lag analysis
+  - Spam and disposable domain checks
+  - Avatar approval
+  - Zeroing of headshot timers and points
+  - AI assisted cheating analysis prompt for event database dumps
+- Integrated OpenBSD (PF) firewall features
+  - Per player network access tables
+  - Private network and private instance rules
+  - Configurable PF state limits
+  - Administrators, moderators, maintenance, banned and registry tables
+- Support for online subscriptions (Stripe integration)
+  - Recurring subscriptions and stand alone perks
+  - Configurable network access, private instances and VPN limits per product
+  - Expiring time limited perks
+  - Contact only products
+  - Customer portal and payment history
+  - Configurable automatic tax
+  - Configurable webhook endpoint and IP whitelist
+  - Emergency subscription suspension
+  - Subscription based API access
+  - Stripe import of products, payments and refunds
+- Detailed auditing of flags and network activity
+- Localization support
+- Administration
+  - Configurable settings from the web interface
+  - Database driven admin menus
+  - MySQL events management
+  - Memcache key management
+  - Target instance audit log
+  - Player API token history
+  - Session management
+- Backend console commands (`backend/yii`)
+  - Cron operations (`cron`)
+    - Run all scheduled operations at once (`index`)
+    - Combined power operations (`power-operations`)
+    - Process private instance spawns, restarts and destroys, and enforce instance limits (`instances`)
+    - Sync instance specific PF rules across multiple VPN servers (`instance-pf`)
+    - Generate and load instance PF tables on the VPN (`instance-pf-tables`)
+    - Container health checks with optional restart of unhealthy targets (`healthcheck`)
+    - Process the player target spin queue (`spin-queue`)
+    - Scheduled target power ups (`powerups`)
+    - Scheduled target power downs (`powerdowns`)
+    - Scheduled targets going offline (`offlines`)
+    - Ondemand target starts and destroys (`ondemand`)
+    - Scheduled target network migrations (`target-net-migration`)
+    - Sync target, findings and network PF rules with the database (`pf`)
+  - Target operations (`target`)
+    - Spin, destroy and restart targets
+    - Pull target images on their docker servers, or on all servers (`pull`, `pull-servers`)
+    - Restart long running targets
+    - Destroy private instances of a target (`destroy-instances`)
+    - Destroy powered up ondemand targets (`destroy-ondemand`)
+  - Target metadata (`metadata`)
+    - View and delete target metadata
+    - View and update scenario, solution, pre and post credits, and pre and post exploitation details
+  - Private network operations (`private-network`)
+    - List private networks (`index`)
+    - Start, restart and stop private network targets (`target-ops`)
+  - Docker server operations (`server`)
+    - Prune old unused images on docker servers, with a configurable age (`prune-images`)
+  - VPN operations (`vpn`)
+    - Check whether a player is online (`is-online`)
+    - Kill a player's OpenVPN connection (`kill`), or all connections (`killall`)
+    - Log a player out of the database (`logout`), or all players (`logoutall`)
+    - Process the player disconnect queue across VPN servers (`process-disconnect-queue`)
+    - Load and save OpenVPN instance configurations from and to the database (`load`, `save`)
+    - OpenVPN status merged with database details (`status`)
+    - Verify certificate common names on connect (`verify-cn`)
+  - SSL and certificate authority operations (`ssl`)
+    - Create, load and export the certification authority (`create-ca`, `load-ca`, `get-ca`)
+    - Create and sign server certificates for OpenVPN and web servers (`create-cert`)
+    - Generate player certificates, for one player or all players (`gen-player-certs`, `gen-all-player-certs`)
+    - Load and save the OpenVPN TLS auth key (`load-vpn-ta`, `save-vpn-ta`)
+    - Create and generate certificate revocation lists (`create-crl`, `generate-crl`)
+    - Generate a CRL from a folder of certificates (`generate-crl-from-folder`)
+    - Revoke player certificates, and revoke expired certificates (`revoke`, `revoke-expired`)
+  - Player operations (`player`)
+    - List players with filters (`index`)
+    - Register players with type, academic flag and team (`register`)
+    - Change player passwords (`password`)
+    - Mail account activation URLs to players (`mail`)
+    - Generate activation and authentication keys (`generate-activ-keys`, `generate-auth-keys`)
+    - Regenerate player VPN certificates (`regenerate-certs`)
+    - List pending avatars (`pending-avatars`)
+    - Check player emails against StopForumSpam (`check-stopforumspam`)
+    - Check for spammy email domains (`check-spammy`)
+    - Check for duplicate player IPs (`check-dupips`)
+    - Validate player emails against the latest rules, with delete and CSV output (`fail-validation`)
+    - Validate player profiles against the latest rules, with fix option (`fail-validation-profiles`)
+    - Penalize writeup hoarders (`penalize-with-hoarder`)
+    - Fetch player identification files locally (`fetch-identification`)
+    - Send websocket notifications to players (`ws-notify`)
+  - Backend user operations (`user`)
+    - List, find, create and delete backend users
+    - Set users deleted, disabled or enabled
+    - Set or generate user passwords
+  - Traffic accounting (`traffic`)
+    - Collect pflow NetFlow v5 exports into per player per target counters, with interface filtering and flush interval (`collect`)
+    - Show a player's traffic for all targets or one target (`show`)
+  - Sales operations (`sales`)
+    - Expire ended subscriptions (`expire-subscriptions`)
+    - Process expired player products and perks (`expired-player-products`)
+    - Delete inactive subscriptions (`delete-inactive`)
+    - Import subscriptions, customers, products, payments and refunds from Stripe (`stripe-import`)
+    - Import Stripe products and prices (`stripe-import-products`)
+    - Import Stripe payments and refunds (`stripe-import-payments`, `stripe-import-refunds`)
+    - Push a JSON product catalog to Stripe with automatic price versioning and dry run mode (`push-products`)
+  - Maintenance operations (`maintenance`)
+    - Start and stop maintenance mode
+    - Count table rows (`count-tables`)
+    - Sync database collations (`sync-collations`)
+    - Truncate all game data, instance audit, VPN history or spin history
+    - Purge old notifications (`purge-old-notifications`)
+  - Settings (`sysconfig`)
+    - Get and set sysconfig keys
+  - Templates (`template`)
+    - Generate filesystem email templates from the database (`emails`)
+  - Testers (`tester`)
+    - Send test mails with detailed failure diagnostics (`mail`)
+    - Send test websocket notifications (`ws-notify`)
+  - Migrations (`migrate`)
+    - Database migrations with custom migration templates
+- Frontend console commands (`frontend/yii`)
+  - Generators (`generator`)
+    - Generate a local sysconfig file as fallback when memcache is unavailable (`sysconfig`)
+    - Generate URL routes, disabled routes and player disabled routes files as fallback when memcache is unavailable (`routes`, `disabled-routes`, `player-disabled-routes`)
+    - Generate email templates (`email-templates`)
+    - Generate target social media images and thumbnails (`target-social-images`, `target-thumbnails`)
+    - Generate sitemap.xml with optional profile links (`sitemap`)
+    - Regenerate Robohash avatars (`avatar`)
+    - Populate empty player auth keys (`auth-keys`)
+    - Generate profile badge images for all players, or only recently active ones (`all-badges`, `badges`)
+    - Generate all registered URL routes for testing endpoints (`urls`)
+  - Validators (`validator`)
+    - Validate players and profiles against current rules (`player`, `profile`)
+    - Test registration rules (`test-registration`)
+    - Validate player and team avatars (`player-avatars`, `team-avatars`)
+  - Testers (`tester`)
+    - Send test mails and websocket notifications
+  - Fixture generation (`fixture`)
+- Wrapper scripts for cron and systemd (`backend/bin`)
+  - `cron-index`, `cron-pf`, `instances`, `instance-pf`, `instance-pf-tables`, `powerops`, `healthcheck`, `target-restart`, `ssl-generate-crl`, `ssl-revoke-expired`, `devops`
+- Deployment and maintenance
+  - Ansible playbooks for database, interfaces, VPN, VPN slaves, docker servers, registry, visuals and monitoring
+  - Ansible playbooks for target image building, squashing and feeding
+  - Maintenance playbooks (backups, password changes, key management, VPN sync, DNS)
+  - Raspberry Pi targets support
+  - Monitoring through Prometheus, Grafana, SNMP and nfdump (conductor)
+  - Docker compose setups for development and testing
+
+**NOTE:** Dynamic firewall support and network tracking of players is not supported on the `docker-compose` versions.

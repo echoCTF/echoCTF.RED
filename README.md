@@ -4,8 +4,6 @@
 [![Dependabot Updates](https://github.com/echoCTF/echoCTF.RED/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/echoCTF/echoCTF.RED/actions/workflows/dependabot/dependabot-updates)
 [![Documentation Status](https://readthedocs.org/projects/echoctfred/badge/?version=latest)](http://echoctfred.readthedocs.org/)
 
-
-
 echoCTF is a pioneer computer security framework, developed by
 Echothrust Solutions, for running CyberSecurity exercises and competitions such
 as Capture the Flag.
@@ -16,6 +14,7 @@ also used for security awareness and training purposes, by businesses and
 educational institutes.
 
 # What is echoCTF.RED
+
 echoCTF.RED <sub>(codename Mycenae),</sub> is the first iteration of our online
 long running CTF service, based on the applications from this repository.
 
@@ -29,12 +28,12 @@ you'd rather see a live example of our platform feel free to visit [https://echo
 
 Our main goals for echoCTF include:
 
-* **Completeness** - Provide a complete set of tools and applications to develop, deploy and maintain cyber-security and Capture the Flag (CTF) competitions
-* **Modularity** - Each component has a unique and clear role
-* **Expandability** - echoCTF's components are designed to permit expansion
-
+- **Completeness** - Provide a complete set of tools and applications to develop, deploy and maintain cyber-security and Capture the Flag (CTF) competitions
+- **Modularity** - Each component has a unique and clear role
+- **Expandability** - echoCTF's components are designed to permit expansion
 
 ## Quick start
+
 The following instructions will get you up and running for development and testing. The Docker compose method do not include many of the automatic firewalling features that the non-container systems have and as such its not intended for production use.
 
 ```sh
@@ -51,6 +50,7 @@ Please note that the docker images are intended for development and testing use 
 For more details check the [echoCTF.RED@ReadTheDocs](https://echoctfred.rtfd.io) :notebook_with_decorative_cover:
 
 ## Screenshots :eyes::candy:
+
 <table>
   <tr>
     <td>
@@ -74,87 +74,89 @@ Admin page target update
 </table>
 
 ## Features
-The list of features supported by the platform is really massive, the most
-interesting are as following:
 
-* System settings
-  * Configurable Event name
-  * Configurable Active status
-  * Configurable timezone
-  * Configurable event start / end dates
-  * Configurable registration opening / closing dates
-* Leaderboard settings
-  * Independent Player and Team leaderboards
-  * Configurable visibility before and after event start/end
-  * Support to show/hide 0 point players
-* Team settings
-  * Configurable teams support
-  * Configurable mandatory teams flag
-  * Configurable team management
-  * Configurable number of maximum team members
-  * Configurable team instances
-* Player and Registration settings
-  * Configurable activation required
-  * Support for global enable/disable registrations
-  * Configurable player profiles
-  * Configurable player avatar approval
-  * Configurable player profile visibility
-  * Configurable default player homepage
-  * Configurable settings and memory key expiration timeout
-  * Configurable global and individual player number of restarts
-* Twitter settings
-  * Configurable tagging accounts (via)
-  * Configurable automatic hashtags
-  * Quick share links on every event on frontend
-* Support for configurable Targets and Challenges
-  * Target support for start/stop/logs/exec/healthchecks
-  * Unlimited flags per targets & challenges
-  * Configurable unique flags per players and teams
-  * Dynamic target networks
-  * Dynamic target environment variables
-  * Dynamic target volumes
-  * Support for public and private networks
-  * Support for ondemand start of targets
-  * Target documentation and metadata
-  * Multiple question/flag challenges
-  * Dynamic hints
-  * Configurable tracking of solving times for challenges and targets
-  * Support for target and challenge logos
-  * Support for player rating of targets & challenges
-  * Support for player contributed writeups
-* Detailed activity streams
-  * Player overall activity
-  * Player vs Target activity
-  * All platform activity
-  * Team based activity
-* Network activity tracking and visuals
-* REST support
-* Docker API support
-* Help/Rules/FAQ/Instructions/Objectives sections
-* URLs Management add/edit/delete/disable
-* Separate player and admin interfaces and authentication databases
-* Configurable SSL certificate details
-* Dynamic CSS and javascript overloads (css, js, per player, per url)
-* Twitter & Linkedin support for publishing achievements
-* Support for static pages
-* Live notifications to the player(s)
-* Stand-alone applications for activity streaming
-  * Bots for discord and twitter announcements
-  * websocket leaderboards
-  * websocket activity stream visuals
-  * real time network visuals through logstalgia and gource
-  * dynamic post claim flag actions
-* Advanced player and general moderation features
-  * Ban MX servers from registering
-  * Disable per player URLs
-  * Ban player username/email patterns
-* Integrated OpenBSD (PF) firewall features
-* Support for online subscriptions (Stripe integration)
-* Detailed auditing of flags and network activity
+The list of features supported by the platform is really massive, the complete list can be found at [Platform Features](docs/Features.md), however the most
+interesting ones are as following:
 
-**NOTE:** Dynamic firewall support and network tracking of players is not support on the `docker-compose` versions.
+- System settings
+  - Configurable Event name
+  - Configurable Active status
+  - Configurable timezone
+  - Configurable event start / end dates
+  - Configurable registration opening / closing dates
+- Leaderboard settings
+  - Independent Player and Team leaderboards
+  - Configurable visibility before and after event start/end
+  - Support to show/hide 0 point players
+- Team settings
+  - Configurable teams support
+  - Configurable mandatory teams flag
+  - Configurable team management
+  - Configurable number of maximum team members
+  - Configurable team instances
+- Player and Registration settings
+  - Configurable activation required
+  - Support for global enable/disable registrations
+  - Configurable player profiles
+  - Configurable player avatar approval
+  - Configurable player profile visibility
+  - Configurable default player homepage
+  - Configurable settings and memory key expiration timeout
+  - Configurable global and individual player number of restarts
+- Twitter settings
+  - Configurable tagging accounts (via)
+  - Configurable automatic hashtags
+  - Quick share links on every event on frontend
+- Support for configurable Targets and Challenges
+  - Target support for start/stop/logs/exec/healthchecks
+  - Unlimited flags per targets & challenges
+  - Configurable unique flags per players and teams
+  - Dynamic target networks
+  - Dynamic target environment variables
+  - Dynamic target volumes
+  - Support for public and private networks
+  - Support for ondemand start of targets
+  - Target documentation and metadata
+  - Multiple question/flag challenges
+  - Dynamic hints
+  - Configurable tracking of solving times for challenges and targets
+  - Support for target and challenge logos
+  - Support for player rating of targets & challenges
+  - Support for player contributed writeups
+- Detailed activity streams
+  - Player overall activity
+  - Player vs Target activity
+  - All platform activity
+  - Team based activity
+- Network activity tracking and visuals
+- REST support
+- Docker API support
+- Help/Rules/FAQ/Instructions/Objectives sections
+- URLs Management add/edit/delete/disable
+- Separate player and admin interfaces and authentication databases
+- Configurable SSL certificate details
+- Dynamic CSS and javascript overloads (css, js, per player, per url)
+- Twitter & Linkedin support for publishing achievements
+- Support for static pages
+- Live notifications to the player(s)
+- Stand-alone applications for activity streaming
+  - Bots for discord and twitter announcements
+  - websocket leaderboards
+  - websocket activity stream visuals
+  - real time network visuals through logstalgia and gource
+  - dynamic post claim flag actions
+- Advanced player and general moderation features
+  - Ban MX servers from registering
+  - Disable per player URLs
+  - Ban player username/email patterns
+- Integrated OpenBSD (PF) firewall features
+- Support for online subscriptions (Stripe integration)
+- Detailed auditing of flags and network activity
+
+**NOTE:** Dynamic firewall support and network tracking of players is not supported on the `docker-compose` versions.
 
 ## Disclaimer
+
 The documents and guides in this repository are only examples and are not meant
 to be used to setup production environments.
 
