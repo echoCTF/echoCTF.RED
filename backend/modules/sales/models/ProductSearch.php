@@ -11,6 +11,9 @@ use app\modules\sales\models\Product;
  */
 class ProductSearch extends Product
 {
+  /** @var int|null number of prices attached to the product, used for grid filtering */
+  public $prices_count;
+
   /**
    * {@inheritdoc}
    */
@@ -18,7 +21,7 @@ class ProductSearch extends Product
   {
     return [
       [['id', 'name', 'description', 'metadata', 'price_id', 'currency', 'created_at', 'updated_at', 'shortcode', 'htmlOptions'], 'safe'],
-      [['active', 'livemode', 'weight'], 'integer'],
+      [['active', 'livemode', 'weight', 'prices_count'], 'integer'],
     ];
   }
 
@@ -40,7 +43,14 @@ class ProductSearch extends Product
    */
   public function search($params)
   {
-    $query = Product::find()->with(['prices']);
+    $priceCounts = Price::find()
+      ->select(['product_id', 'cnt' => 'COUNT(*)'])
+      ->groupBy('product_id');
+
+    $query = Product::find()
+      ->select(['product.*'])
+      ->leftJoin(['pc' => $priceCounts], 'pc.product_id = product.id')
+      ->with(['prices']);
 
     // add conditions that should always apply here
 
@@ -48,6 +58,11 @@ class ProductSearch extends Product
       'query' => $query,
       'sort' => ['defaultOrder' => ['weight' => SORT_ASC]]
     ]);
+
+    $dataProvider->sort->attributes['prices_count'] = [
+      'asc' => ['COALESCE(pc.cnt,0)' => SORT_ASC],
+      'desc' => ['COALESCE(pc.cnt,0)' => SORT_DESC],
+    ];
 
     $this->load($params);
 
@@ -62,6 +77,7 @@ class ProductSearch extends Product
       'weight' => $this->weight,
       'created_at' => $this->created_at,
       'updated_at' => $this->updated_at,
+      'COALESCE(pc.cnt,0)' => $this->prices_count,
     ]);
 
     $query->andFilterWhere(['like', 'product.id', $this->id])
