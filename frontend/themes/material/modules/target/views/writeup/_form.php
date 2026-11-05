@@ -35,7 +35,7 @@ $this->registerJs(
 
     <?php $form = ActiveForm::begin(['id'=>'writeup-form']); ?>
 
-    <?= $form->field($model, 'content')->textArea(['rows'=>15,'style'=>'font-family: monospace; color: lightgray','wrap'=>"hard"])->label("<b style='font-size: 1.2em'>Content of Writeup</b>")->hint(\Yii::$app->sys->writeup_rules) ?>
+    <?= $form->field($model, 'content')->textArea(['rows'=>15,'style'=>'font-family: monospace; color: lightgray'])->label("<b style='font-size: 1.2em'>Content of Writeup</b>")->hint(\Yii::$app->sys->writeup_rules) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Submit', [
