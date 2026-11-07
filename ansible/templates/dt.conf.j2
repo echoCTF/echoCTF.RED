@@ -16,6 +16,8 @@ http {
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
+    include /etc/nginx/cloudflare.conf;
+
     access_log  syslog:server=unix:/dev/log,severity=notice main;
     client_body_temp_path /cache/client_body_temp 1 2;
     scgi_temp_path /cache/scgi_temp 1 2;
@@ -24,7 +26,7 @@ http {
     proxy_temp_path /cache/proxy_temp 1 2;
 
 
-    keepalive_timeout     65;
+    keepalive_timeout     15s;
     gzip                  on;
     server_tokens         off;
 
