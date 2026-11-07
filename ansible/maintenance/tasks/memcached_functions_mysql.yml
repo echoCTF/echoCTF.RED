@@ -1,0 +1,26 @@
+  - name: Clone memcached udf repo
+    when: build_from_sources is defined
+    git:
+      repo: 'https://github.com/echoCTF/memcached_functions_mysql.git'
+      dest: /usr/src/memcached_functions_mysql
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Bootstrap memcached udf
+    when: build_from_sources is defined
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./config/bootstrap
+    args:
+      chdir: /usr/src/memcached_functions_mysql
+
+  - name: Configure memcached udf
+    when: build_from_sources is defined
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
+    args:
+      chdir: /usr/src/memcached_functions_mysql
+
+  - name: make install memcached udf
+    when: build_from_sources is defined
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION="{{versions.AUTOMAKE}}" make all install
+    args:
+      chdir: /usr/src/memcached_functions_mysql

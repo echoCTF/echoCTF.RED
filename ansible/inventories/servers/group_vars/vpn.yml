@@ -22,3 +22,4 @@ pre_backups:
   - "mysqldump --no-data echoCTF > /altroot/echoctf-federated.sql"
 
 APP_DIR: /root/sources
+#rcctl_order: mysqld memcached qemu_ga openvpn supervisord heartbeatd findingsd

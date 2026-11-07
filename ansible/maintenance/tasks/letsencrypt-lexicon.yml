@@ -1,0 +1,39 @@
+  - name: Install lexicon (raw)
+    raw: pip3 install --break-system-packages lexicon
+
+  - name: Install post hook
+    copy:
+      content: |
+        #!/bin/ksh
+        cp /etc/letsencrypt/live/{{domain_name}}/fullchain.pem /etc/nginx/{{domain_name}}-server.crt
+        cp /etc/letsencrypt/live/{{domain_name}}/privkey.pem /etc/nginx/{{domain_name}}-server.key
+      dest: /etc/nginx/install_renewed_cert.sh
+      mode: "0500"
+
+  - name: Create /etc/letsencrypt folders
+    ansible.builtin.file:
+      path: /etc/letsencrypt
+      state: directory
+      mode: '0750'
+
+  - name: Install sample lexicon (vultr)
+    copy:
+      content: |
+        #!/usr/bin/env ksh
+        /usr/local/bin/lexicon vultr --auth-token={{VULTR_TOKEN|default('YOUR_TOKEN_HERE')}} "$1" "${CERTBOT_DOMAIN}" TXT --name "_acme-challenge.${CERTBOT_DOMAIN}" --content "${CERTBOT_VALIDATION}" || exit 255
+        if [ "$1" == "create" ]; then
+          sleep 30
+        fi
+      dest: /etc/letsencrypt/lexicon-vultr.sh
+      mode: "0500"
+
+  - name: Install renewal policy for letsencrypt
+    ini_file:
+      path: "/etc/letsencrypt/renewal/{{domain_name}}.conf"
+      section: renewalparams
+      option: "{{item.key}}"
+      value: "{{item.value}}"
+    with_items:
+      - { key: manual_auth_hook, value: "/etc/letsencrypt/lexicon-vultr.sh create" }
+      - { key: manual_cleanup_hook, value: "/etc/letsencrypt/lexicon-vultr.sh delete" }
+      - { key: post_hook, value: "/etc/nginx/install_renewed_cert.sh" }
