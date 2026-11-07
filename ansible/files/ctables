@@ -7,6 +7,7 @@ LINKFILE="/var/run/netns/${NSPID}"
 mkdir -p /var/run/netns
 /bin/rm -f "$LINKFILE"
 ln -s "/proc/$NSPID/ns/net" "$LINKFILE"
+#/usr/local/bin/ctf-audit-sensor -watch "pid:${NSPID}"
 ip netns exec ${NSPID} iptables -I INPUT -j REJECT
 ip netns exec ${NSPID} iptables -I INPUT -i lo -j ACCEPT
 ip netns exec ${NSPID} iptables -I INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
