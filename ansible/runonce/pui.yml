@@ -77,7 +77,6 @@
     post_inst: |
       Things to do:
         - Update /etc/administrators.conf with your IP's
-        - Update /etc/letsencrypt/lexicon-vultr.sh with your details
         - Reboot the system for the changes to take effect
     rcctl:
       - { name: check_quotas, state: "disable" }
@@ -207,9 +206,6 @@
 
   - name: Install packages
     shell: "pkg_add {{packages| join(' ')}}"
-
-  - name: Install lexicon (raw)
-    raw: pip3 install --break-system-packages lexicon
 
   - name: Install composer
     get_url:
@@ -715,53 +711,16 @@
       special_time: "{{item.special_time|default(omit)}}"
       job: "{{item.job}}"
     with_items:
-      - { name: "Generate all player badges", minute: "*/31",  job: "-ns frontend generator/all-badges participantUI >> /var/log/cron/all-badges.log" }
-      - { name: "Generate player badges", minute: "*/5",  job: "-ns frontend generator/badges participantUI >> /var/log/cron/badges.log" }
-      - { name: "Generate target social images", minute: "*/32",  job: "-ns frontend generator/target-social-images >>/var/log/cron/target-social-images.log" }
-      - { name: "Generate local routes file", minute: "*/30",  job: "-ns frontend generator/routes >>/var/log/cron/routes.log" }
-      - { name: "Generate local disabled-routes file", minute: "*/30",  job: "-ns frontend generator/disabled-routes >>/var/log/cron/disabled-routes.log" }
+      - { name: "Generate all player badges", minute: "*/31",                  job: "-ns frontend generator/all-badges participantUI >> /var/log/cron/all-badges.log" }
+      - { name: "Generate player badges", minute: "*/5",                       job: "-ns frontend generator/badges participantUI >> /var/log/cron/badges.log" }
+      - { name: "Generate target social images", minute: "*/32",               job: "-ns frontend generator/target-social-images >>/var/log/cron/target-social-images.log" }
+      - { name: "Generate local routes file", minute: "*/30",                  job: "-ns frontend generator/routes >>/var/log/cron/routes.log" }
+      - { name: "Generate local disabled-routes file", minute: "*/30",         job: "-ns frontend generator/disabled-routes >>/var/log/cron/disabled-routes.log" }
       - { name: "Generate local player-disabled-routes file", minute: "*/30",  job: "-ns frontend generator/player-disabled-routes >>/var/log/cron/player-disabled-routes.log" }
-      - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
-      - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
-      - { name: "Validate player avatars", special_time: "weekly",  job: "-ns frontend validator/player-avatars 1 >>/var/log/cron/player-avatars.log" }
-      - { name: "Validate team avatars", special_time: "weekly",  job: "-ns frontend validator/team-avatars 1 >>/var/log/cron/team-avatars.log" }
-
-  - name: Install post hook
-    copy:
-      content: |
-        #!/bin/ksh
-        cp /etc/letsencrypt/live/{{domain_name}}/fullchain.pem /etc/nginx/{{domain_name}}-server.crt
-        cp /etc/letsencrypt/live/{{domain_name}}/privkey.pem /etc/nginx/{{domain_name}}-server.key
-      dest: /etc/nginx/install_renewed_cert.sh
-      mode: "0500"
-
-  - name: Create /etc/letsencrypt folders
-    ansible.builtin.file:
-      path: /etc/letsencrypt
-      state: directory
-      mode: '0750'
-
-  - name: Install sample lexicon (vultr)
-    copy:
-      content: |
-        #!/usr/bin/env ksh
-        /usr/local/bin/lexicon vultr --auth-token={{VULTR_TOKEN|default('YOUR_TOKEN_HERE')}} "$1" "${CERTBOT_DOMAIN}" TXT --name "_acme-challenge.${CERTBOT_DOMAIN}" --content "${CERTBOT_VALIDATION}" || exit 255
-        if [ "$1" == "create" ]; then
-          sleep 30
-        fi
-      dest: /etc/letsencrypt/lexicon-vultr.sh
-      mode: "0500"
-
-  - name: Install renewal policy for letsencrypt
-    ini_file:
-      path: "/etc/letsencrypt/renewal/{{domain_name}}.conf"
-      section: renewalparams
-      option: "{{item.key}}"
-      value: "{{item.value}}"
-    with_items:
-      - { key: manual_auth_hook, value: "/etc/letsencrypt/lexicon-vultr.sh create" }
-      - { key: manual_cleanup_hook, value: "/etc/letsencrypt/lexicon-vultr.sh delete" }
-      - { key: post_hook, value: "/etc/nginx/install_renewed_cert.sh" }
+      - { name: "Update admin IP's", minute: "*/5",                            job: "-ns nstables {{admins_domain}}" }
+      - { name: "Update admin IP's at boot", special_time: "reboot",           job: "-ns nstables {{admins_domain}}" }
+      - { name: "Validate player avatars", special_time: "weekly",             job: "-ns frontend validator/player-avatars 1 >>/var/log/cron/player-avatars.log" }
+      - { name: "Validate team avatars", special_time: "weekly",               job: "-ns frontend validator/team-avatars 1 >>/var/log/cron/team-avatars.log" }
 
   - name: Grab wsserver
     get_url:
