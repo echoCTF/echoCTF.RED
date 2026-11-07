@@ -1,0 +1,28 @@
+  - name: Download MariaDB Connector C
+    when: build_from_sources is defined
+    ansible.builtin.get_url:
+      url: "https://dlm.mariadb.com/4234414/Connectors/c/connector-c-{{versions.MARIADB_CONNECTOR}}/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+      dest: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+
+  - name: extract connector
+    when: build_from_sources is defined
+    command: tar zxf "mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src.tar.gz"
+    args:
+      chdir: /usr/src
+
+  - name: Replace Werror from CMakeLists.txt
+    when: build_from_sources is defined
+    ansible.builtin.replace:
+      path: /usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src/CMakeLists.txt
+      regexp: 'Werror'
+      replace: 'w'
+
+  - name: Build MariaDB Connector C
+    when: build_from_sources is defined
+    command: "{{item}}"
+    args:
+      chdir: "/usr/src/mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src"
+    with_items:
+      - 'cmake ../mariadb-connector-c-{{versions.MARIADB_CONNECTOR}}-src -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_FLAGS="-Wall"'
+      - gmake
+      - gmake install
