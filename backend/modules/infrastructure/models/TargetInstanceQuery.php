@@ -38,6 +38,18 @@ class TargetInstanceQuery extends \yii\db\ActiveQuery
   }
 
   /**
+   * Filters target instances whose owner is currently connected to the VPN
+   * (non-null VPN local address), regardless of team membership.
+   *
+   * @return TargetInstanceQuery
+   */
+  public function withOwnerHeartbeat()
+  {
+    return $this
+      ->innerJoin(['ol' => 'player_last'], 'ol.id = target_instance.player_id AND ol.vpn_local_address IS NOT NULL');
+  }
+
+  /**
    * Filters target instances that are active.
    *
    * Active instances:
