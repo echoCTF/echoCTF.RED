@@ -69,14 +69,14 @@
       - { name: mysqld, state: "enable" }
       - { name: supervisord, state: "enable"}
     custom_packages:
-      - { pkg: 'mariadb-connector-c-3.4.11.tgz', url: 'https://github.com/echoCTF/obsd-binaries/releases/download/mariadb-connector-c-3.4.5-openbsd-7.9/mariadb-connector-c-3.4.11.tgz' }
-      - { pkg: 'memcached-1.6.42p1.tgz', url: 'https://github.com/echoCTF/obsd-binaries/releases/download/memcached-1.6.42p1-openbsd-7.9/memcached-1.6.42p1.tgz' }
+      - { pkg: 'memcached-1.6.42p2.tgz', url: 'https://github.com/echoCTF/obsd-binaries/releases/download/memcached-1.6.42p2-openbsd-7.9/memcached-1.6.42p2.tgz' }
+      - { pkg: 'memcached_functions_mysql-1.1.20261102.tgz', url: 'https://github.com/echoCTF/obsd-binaries/releases/download/memcached_functions_mysql-1.1.20261102-openbsd-7.9/memcached_functions_mysql-1.1.20261102-openbsd-7.9-amd64.tgz' }
     packages:
       - curl
       - git
       - rsync--
       - mariadb-server
-      - memcached--
+      #- memcached--
       - libmemcached
       - libtool
       - gmake
@@ -199,8 +199,8 @@
   - name: Install packages
     shell: "pkg_add {{packages|join(' ')}}"
 
-  - name: Download our packages
-    command: wget "{{item.url}}"
+  - name: Install our packages
+    command: pkg_add -U -D unsigned "{{item.pkg}}"
     args:
       chdir: /tmp
     with_items: "{{custom_packages}}"

@@ -23,6 +23,28 @@
       dest: /etc/hosts
     when: etchosts is defined
 
+  - name: Add SSH keys for sysadmin
+    when: ssh_keys is defined and ssh_keys | length > 0
+    ansible.posix.authorized_key:
+      user: "sysadmin"
+      key: "{{ item }}"
+      state: present
+      manage_dir: true
+    with_items: "{{ ssh_keys }}"
+    tags:
+      - ssh
+
+  - name: Add SSH keys for root
+    when: ssh_keys is defined and ssh_keys | length > 0
+    ansible.posix.authorized_key:
+      user: "root"
+      key: "{{ item }}"
+      state: present
+      manage_dir: true
+    with_items: "{{ ssh_keys }}"
+    tags:
+      - ssh
+
   - name: Allow release-info to change for APT repositories
     when: ansible_facts['distribution'] == 'Debian'
     command: apt-get update -y --allow-releaseinfo-change
