@@ -424,7 +424,8 @@ class CronController extends Controller
           // Owners connected to the VPN keep their own instances alive (covers solo players)
           $t = TargetInstance::find()->active()->withOwnerHeartbeat()->last_updated(round($expired_ago / 2))->server_assigned($server_id);
           foreach ($t->all() as $instance) {
-            printf("Updating owner heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
+            if (getenv('DEBUG', true) !== false)
+              printf("Updating owner heartbeat [%d: %s for %d: %s]\n", $instance->target_id, $instance->target->name, $instance->player_id, $instance->player->username);
             $instance->touch('updated_at');
           }
         } catch (\Throwable $e) {
