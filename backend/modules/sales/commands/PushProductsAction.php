@@ -99,6 +99,7 @@ class PushProductsAction extends Action
         'interval_count' => intval($price['recurring']['interval_count'] ?? 1),
       ] : null,
     ];
+    $active = (bool) ($price['active'] ?? true);
     $editable = array_filter([
       'nickname' => $price['nickname'] ?? null,
       'metadata' => self::stringify($price['metadata'] ?? []),
@@ -107,21 +108,25 @@ class PushProductsAction extends Action
     $found = $this->stripe->prices->all(['lookup_keys' => [$key], 'limit' => 1])->data;
     $current = $found[0] ?? null;
 
-    if ($current !== null && $current->product === $productId && $current->active && self::samePrice($current, $wanted)) {
+    if ($current !== null && $current->product === $productId && self::samePrice($current, $wanted)) {
       // Blank out metadata keys that were removed from the catalog, Stripe
       // keeps keys that are left out of an update
       $removed = array_diff(array_keys($current->metadata->toArray()), array_keys($editable['metadata']));
       foreach ($removed as $metaKey) {
         $editable['metadata'][$metaKey] = '';
       }
-      printf("  [price] update %s (%s)%s\n", $current->id, $key, $removed !== [] ? ' removing metadata: ' . implode(', ', $removed) : '');
+      $state = '';
+      if ((bool) $current->active !== $active) {
+        $state = $active ? ' unarchiving' : ' archiving';
+      }
+      printf("  [price] update %s (%s)%s%s\n", $current->id, $key, $state, $removed !== [] ? ' removing metadata: ' . implode(', ', $removed) : '');
       if (!$this->dryRun) {
-        $this->stripe->prices->update($current->id, $editable);
+        $this->stripe->prices->update($current->id, $editable + ['active' => $active]);
       }
       return $current->id;
     }
 
-    printf("  [price] create %s %d %s%s\n", $key, $wanted['unit_amount'], $wanted['currency'], $wanted['recurring'] ? '/' . $wanted['recurring']['interval'] : ' one-time');
+    printf("  [price] create %s %d %s%s%s\n", $key, $wanted['unit_amount'], $wanted['currency'], $wanted['recurring'] ? '/' . $wanted['recurring']['interval'] : ' one-time', $active ? '' : ' (archived)');
     if ($this->dryRun) {
       return $current->id ?? null;
     }
@@ -129,6 +134,7 @@ class PushProductsAction extends Action
       'product' => $productId,
       'lookup_key' => $key,
       'transfer_lookup_key' => true,
+      'active' => $active,
     ] + $wanted + $editable, fn($v) => $v !== null);
     $created = $this->stripe->prices->create($params, [
       'idempotency_key' => 'price-' . sha1($productId . json_encode($wanted) . $key),
