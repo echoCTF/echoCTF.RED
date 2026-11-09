@@ -17,6 +17,7 @@ A solve is listed when its ratio is below *Ratio below* (0.1 means 10 times fast
 The **Zero** button on each row zeroes the headshot the same way as the headshot zero action: the timer goes to 0, the player's finding, treasure and headshot points for the target are zeroed on the stream, the player and team scores are recalculated and the target writeups are activated for the player. It also adds an entry to the abuser table (reason `fast_solve_zeroed`, no points, marked resolved) recording who zeroed it, the old timer, the target median and the points removed. The solve then drops out of this report and out of the medians.
 
 ### Notes
+* *Target timer* picks targets by their `timer` setting. By default only targets with `timer=1` are included, targets without a timer are left out of the list, the medians and the counts. *Any* includes both.
 * Headshots with a zero timer are skipped completely. A zeroed timer means the solve was already erased as cheated, so it is neither listed nor counted in the medians or in *Min target solves*.
 * Medians use every other headshot of the target, *Solved from* only limits which solves are listed.
 * Traffic comes from `player_target_traffic` and only exists for solves made while traffic accounting was running. Older solves show *none*, so judge them by the timer alone.

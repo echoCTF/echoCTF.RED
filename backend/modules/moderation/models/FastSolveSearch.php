@@ -20,8 +20,9 @@ use yii\data\SqlDataProvider;
  * list and from the medians and counts: an erased timer marks a solve that was
  * already found to be cheated. Medians are taken over the remaining headshots
  * of a target, and only targets with at least `min_target_solves` of them are
- * judged. Requires MariaDB for the
- * MEDIAN() window function.
+ * judged. By default only targets with `timer=1` are considered, targets
+ * without a timer are left out of the list, the medians and the counts.
+ * Requires MariaDB for the MEDIAN() window function.
  */
 class FastSolveSearch extends Model
 {
@@ -29,6 +30,8 @@ class FastSolveSearch extends Model
   public $username;
   /** @var string target name filter (LIKE) */
   public $target;
+  /** @var string '1' only targets with timer=1, '0' only targets with timer=0, '' any */
+  public $target_timer = '1';
   /** @var string Y-m-d, only headshots on or after this day */
   public $since;
   /** @var int only targets with at least this many headshots */
@@ -64,7 +67,7 @@ class FastSolveSearch extends Model
       [['new_player_solves'], 'integer', 'min' => 0],
       [['min_bytes'], 'default', 'value' => 10240],
       [['min_bytes'], 'integer', 'min' => 0],
-      [['writeups'], 'in', 'range' => ['0', '1']],
+      [['writeups', 'target_timer'], 'in', 'range' => ['0', '1']],
       [['player_status'], 'in', 'range' => array_keys(\app\modules\frontend\models\Player::STATUSES)],
       [['player_academic'], 'integer', 'min' => 0, 'max' => 255],
     ];
@@ -75,6 +78,7 @@ class FastSolveSearch extends Model
     return [
       'username' => 'Player',
       'target' => 'Target',
+      'target_timer' => 'Target timer',
       'since' => 'Solved from',
       'min_target_solves' => 'Min target solves',
       'max_ratio' => 'Ratio below',
@@ -117,7 +121,8 @@ WITH h AS (
          MEDIAN(h.timer) OVER (PARTITION BY h.target_id) AS target_median,
          COUNT(*) OVER (PARTITION BY h.target_id) AS target_solves
   FROM headshot h
-  WHERE h.timer > 0
+  JOIN target ht ON ht.id = h.target_id
+  WHERE h.timer > 0{TARGET_TIMER}
 ),
 rated AS (
   SELECT h.*, h.timer / NULLIF(h.target_median, 0) AS ratio
@@ -130,6 +135,12 @@ p AS (
   FROM rated
 )
 SQL;
+    if ($this->target_timer === '0' || $this->target_timer === '1') {
+      $prefix = str_replace('{TARGET_TIMER}', ' AND ht.timer = :fs_target_timer', $prefix);
+      $bind[':fs_target_timer'] = (int) $this->target_timer;
+    } else {
+      $prefix = str_replace('{TARGET_TIMER}', '', $prefix);
+    }
 
     $body = <<<'SQL'
 SELECT p.player_id, pl.username, pl.status AS player_status, pl.academic AS player_academic, pr.id AS player_profile_id,
