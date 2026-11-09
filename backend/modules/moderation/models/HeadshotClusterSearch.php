@@ -223,11 +223,12 @@ class HeadshotClusterSearch extends Model
         'target_total' => new Expression('MAX(ts.total_headshots)'),
         'share' => new Expression('ROUND(COUNT(*) * 100 / NULLIF(MAX(ts.total_headshots), 0), 1)'),
         'days_since_release' => new Expression('DATEDIFF(MIN(b.created_at), COALESCE(MAX(t.scheduled_at), MAX(t.created_at)))'),
-        'players' => new Expression("GROUP_CONCAT(CONCAT(p.id, ':', p.username) ORDER BY b.created_at, p.id SEPARATOR ',')"),
+        'players' => new Expression("GROUP_CONCAT(CONCAT(p.id, ':', COALESCE(pr.id, ''), ':', p.username) ORDER BY b.created_at, p.id SEPARATOR ',')"),
       ])
       ->from(['b' => $this->bucketedHeadshots()])
       ->innerJoin(['t' => 'target'], 't.id=b.target_id')
       ->innerJoin(['p' => 'player'], 'p.id=b.player_id')
+      ->leftJoin(['pr' => 'profile'], 'pr.player_id=b.player_id')
       ->leftJoin(['pl' => 'player_last'], 'pl.id=b.player_id')
       ->leftJoin(['tp' => 'team_player'], 'tp.player_id=b.player_id AND tp.approved=1')
       ->leftJoin(['ts' => 'target_state'], 'ts.id=b.target_id')
@@ -242,7 +243,7 @@ class HeadshotClusterSearch extends Model
   }
 
   /**
-   * Splits the `players` column into [player_id => username].
+   * Splits the `players` column into [player_id => ['profile_id' => ..., 'username' => ...]].
    * @param string|null $players
    * @return array
    */
@@ -253,9 +254,9 @@ class HeadshotClusterSearch extends Model
       return $result;
     }
     foreach (explode(',', $players) as $entry) {
-      $parts = explode(':', $entry, 2);
-      if (count($parts) === 2) {
-        $result[(int) $parts[0]] = $parts[1];
+      $parts = explode(':', $entry, 3);
+      if (count($parts) === 3) {
+        $result[(int) $parts[0]] = ['profile_id' => $parts[1], 'username' => $parts[2]];
       }
     }
     return $result;
