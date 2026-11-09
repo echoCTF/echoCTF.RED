@@ -44,6 +44,7 @@ $duration = function ($seconds) use ($fmt) {
       <div class="row">
         <div class="col-md-2"><?= $form->field($searchModel, 'username') ?></div>
         <div class="col-md-2"><?= $form->field($searchModel, 'target') ?></div>
+        <div class="col-md-2"><?= $form->field($searchModel, 'target_timer')->dropDownList(['1' => 'With timer', '0' => 'Without timer'], ['prompt' => 'Any']) ?></div>
         <div class="col-md-2"><?= $form->field($searchModel, 'since')->input('date') ?></div>
         <div class="col-md-2"><?= $form->field($searchModel, 'writeups')->dropDownList(['0' => 'Without writeups', '1' => 'With writeups'], ['prompt' => 'Any']) ?></div>
         <div class="col-md-2"><?= $form->field($searchModel, 'player_status')->dropDownList(\app\modules\frontend\models\Player::STATUSES, ['prompt' => 'Any']) ?></div>
