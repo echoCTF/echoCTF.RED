@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\ActiveForm;
+use app\widgets\ProfileLink;
 use app\modules\moderation\models\HeadshotClusterSearch;
 
 /* @var $this yii\web\View */
@@ -154,8 +155,17 @@ $fmt = Yii::$app->formatter;
         'contentOptions' => ['style' => 'word-wrap:break-word; max-width: 420px'],
         'value' => function ($row) {
           $links = [];
-          foreach (HeadshotClusterSearch::parsePlayers($row['players']) as $id => $username) {
-            $links[] = Html::a(Html::encode($username), ['/frontend/player/view', 'id' => $id], ['data-pjax' => 0]);
+          foreach (HeadshotClusterSearch::parsePlayers($row['players']) as $id => $player) {
+            if ($player['profile_id'] === '') {
+              $links[] = Html::encode($player['username']);
+              continue;
+            }
+            $links[] = ProfileLink::widget([
+              'username' => $player['username'],
+              'player_id' => $id,
+              'profile_id' => $player['profile_id'],
+              'actions' => false,
+            ]);
           }
           return implode(', ', $links);
         },
