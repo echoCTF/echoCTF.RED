@@ -21,6 +21,9 @@ class Formatter extends \yii\i18n\Formatter
   public $nullDisplay = '<span class="not-set small">(empty)</span>';
 
   public $purifierConfig = [
+    'Cache' => [
+      'DefinitionImpl' => null,
+    ],
     'URI' => [
       'SafeIframeRegexp' => '%^(https?:)?//(www\.youtube(?:-nocookie)?\.com/embed/|youtu\.be|player\.vimeo\.com/video/)%',
     ],
@@ -32,12 +35,35 @@ class Formatter extends \yii\i18n\Formatter
       'SafeObject' => true,
       'SafeEmbed' => true,
       'AllowedElements' => [
-        'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'strong', 'em', 'b', 'i', 'u', 's',
-        'span', 'pre', 'code',
-        'table', 'tr', 'td', 'th', 'a', 'p',
-        'br', 'blockquote', 'ul', 'ol', 'li',
-        'img', 'embed', 'iframe'
+        'h1',
+        'h2',
+        'h3',
+        'h4',
+        'h5',
+        'h6',
+        'strong',
+        'em',
+        'b',
+        'i',
+        'u',
+        's',
+        'span',
+        'pre',
+        'code',
+        'table',
+        'tr',
+        'td',
+        'th',
+        'a',
+        'p',
+        'br',
+        'blockquote',
+        'ul',
+        'ol',
+        'li',
+        'img',
+        'embed',
+        'iframe'
       ],
     ],
     'Attr' => [
