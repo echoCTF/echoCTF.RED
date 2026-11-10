@@ -785,6 +785,7 @@
       - { name: "Healthcheck", minute: "*/10",  job: "-ns {{APP_DIR}}/backend/bin/healthcheck", roles: ["gateway"] }
       - { name: "Process disconnect queue", minute: "*/1",  job: "-ns /usr/local/bin/backend vpn/process-disconnect-queue", roles: ["gateway"] }
       - { name: "Update admin IP's", minute: "*/5", job: "-ns nstables {{admins_domain}}" }
+      - { name: "Prune unused images", minute: "17", job: "-ns /usr/local/bin/backend server/prune-unused-images 24 >> /var/log/prune-unused-images.log 2>&1", roles: ['gateway']}
       - { name: "Update admin IP's at boot", special_time: "reboot", job: "-ns nstables {{admins_domain}}" }
     tags:
       - cron
