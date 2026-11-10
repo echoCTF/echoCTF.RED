@@ -55,7 +55,25 @@ yii\bootstrap5\Modal::end();
       ],
       //'updated_at',
 
-      ['class' => 'yii\grid\ActionColumn'],
+      [
+        'class' => 'yii\grid\ActionColumn',
+        'header' => Html::a(
+          '<i class="bi bi-trash"></i>',
+          ['delete-filtered'],
+          [
+            'title' => 'Mass Delete notifications',
+            'data-pjax' => '0',
+            'data' => [
+              'method' => 'post',
+              'params' => array_filter(
+                array_merge($searchModel->attributes, ['player' => $searchModel->player]),
+                function ($v) { return $v !== null && $v !== ''; }
+              ),
+              'confirm' => 'Are you sure you want to delete the currently filtered notifications?',
+            ],
+          ]
+        ),
+      ],
     ],
   ]); ?>
 
