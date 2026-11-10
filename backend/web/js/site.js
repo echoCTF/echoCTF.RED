@@ -52,3 +52,77 @@ $(function () {
     }
   }, 1000);
 });
+
+/*
+ * Sideways (fly-out) submenus for nested navbar dropdowns.
+ *
+ * Bootstrap 5 has no nested dropdown support: a click on a nested toggle
+ * closes its parent menu. We take over the nested toggles so that submenus
+ * open next to their parent entry (on hover, focus or click) on the expanded
+ * navbar and inline on the collapsed one. Styling lives in css/site.css.
+ */
+document.addEventListener('DOMContentLoaded', function () {
+  var expanded = window.matchMedia('(min-width: 1200px)');
+
+  function closeAll(scope, except) {
+    scope.querySelectorAll('.has-submenu > .dropdown-menu.show').forEach(function (menu) {
+      if (except && menu.contains(except)) return;
+      menu.classList.remove('show');
+      var t = menu.parentElement.querySelector(':scope > .dropdown-toggle');
+      if (t) t.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  // flip the submenu to the left when it would run off the right edge
+  function place(wrap, submenu) {
+    wrap.classList.remove('open-left');
+    if (!expanded.matches) return;
+    if (submenu.getBoundingClientRect().right > document.documentElement.clientWidth)
+      wrap.classList.add('open-left');
+  }
+
+  document.querySelectorAll('.navbar .dropdown-menu .dropdown-menu').forEach(function (submenu) {
+    var wrap = submenu.parentElement;
+    var toggle = wrap.querySelector(':scope > .dropdown-toggle');
+    if (!toggle) return;
+    var parentMenu = wrap.parentElement.closest('.dropdown-menu');
+
+    wrap.classList.add('has-submenu');
+    // keep bootstrap away from the nested toggle
+    toggle.removeAttribute('data-bs-toggle');
+    toggle.setAttribute('aria-haspopup', 'true');
+    toggle.setAttribute('aria-expanded', 'false');
+    if (!toggle.hasAttribute('href')) toggle.setAttribute('tabindex', '0');
+
+    function toggleSubmenu(e) {
+      e.preventDefault();
+      // do not let the click reach bootstrap, it would close the parent menu
+      e.stopPropagation();
+      var open = !submenu.classList.contains('show');
+      closeAll(parentMenu, open ? submenu : null);
+      submenu.classList.toggle('show', open);
+      toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (open) place(wrap, submenu);
+    }
+
+    toggle.addEventListener('click', toggleSubmenu);
+    toggle.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') toggleSubmenu(e);
+    });
+    wrap.addEventListener('mouseenter', function () {
+      if (!expanded.matches) return;
+      // a submenu pinned open by a click must not overlap the hovered one
+      closeAll(parentMenu, submenu);
+      place(wrap, submenu);
+    });
+    wrap.addEventListener('focusin', function () {
+      place(wrap, submenu);
+    });
+  });
+
+  // closing a top level menu also closes whatever was opened inside it
+  document.addEventListener('hidden.bs.dropdown', function (e) {
+    var top = e.target.closest ? e.target.closest('.dropdown, .nav-item') : null;
+    if (top) closeAll(top);
+  });
+});
