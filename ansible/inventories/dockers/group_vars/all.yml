@@ -64,6 +64,7 @@ pre_apt:
  - python3-requests
  - python3-docker
  - sudo
+ - rsync
 
 post_apt:
  - docker-ce
