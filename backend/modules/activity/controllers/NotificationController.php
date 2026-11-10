@@ -32,6 +32,12 @@ class NotificationController extends \app\components\BaseController
           ]
         ],
       ],
+      'verbs' => [
+        'class' => VerbFilter::class,
+        'actions' => [
+          'delete-filtered' => ['POST'],
+        ],
+      ],
     ], parent::behaviors());
   }
 
@@ -147,6 +153,38 @@ class NotificationController extends \app\components\BaseController
   {
     $this->findModel($id)->delete();
 
+    return $this->redirect(['index']);
+  }
+
+  /**
+   * Deletes the Notification models matching the currently applied grid filters.
+   * The filters are POSTed by the delete button on the index grid header.
+   * @return mixed
+   */
+  public function actionDeleteFiltered()
+  {
+    $searchModel = new NotificationSearch();
+    $dataProvider = $searchModel->search(['NotificationSearch' => Yii::$app->request->post()]);
+    if ($searchModel->hasErrors()) {
+      // an invalid filter makes search() return everything, never mass delete on that
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Invalid filters, nothing was deleted.'));
+      return $this->redirect(['index']);
+    }
+    $query = clone $dataProvider->query;
+    $ids = $query->select('notification.id')->orderBy([])->column();
+
+    $trans = Yii::$app->db->beginTransaction();
+    try {
+      $counter = empty($ids) ? 0 : Notification::deleteAll(['id' => $ids]);
+      $trans->commit();
+      if ($counter > 0)
+        Yii::$app->session->setFlash('success', Yii::t('app', '[<code><b>{counter}</b></code>] Notifications deleted', ['counter' => intval($counter)]));
+      else
+        Yii::$app->session->setFlash('info', Yii::t('app', 'No notifications matched the current filters.'));
+    } catch (\Throwable $e) {
+      $trans->rollBack();
+      Yii::$app->session->setFlash('error', Yii::t('app', 'Failed to delete notifications: {error}', ['error' => Html::encode($e->getMessage())]));
+    }
     return $this->redirect(['index']);
   }
 
