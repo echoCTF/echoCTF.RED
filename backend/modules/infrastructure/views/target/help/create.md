@@ -28,7 +28,7 @@ Fields:
 * `Image`: The full image url for this target
 * `Imageparams`: Image pull parameters (eg for registries that require authentication)
 * `Weight`: An ordering weight
-* `Parameters`: Extra parameters for docker containers (eg `{"hostConfig":{"Memory":"512"}}`)
+* `Parameters`: Extra parameters for docker containers (eg `{"hostConfig":{"Memory":"512"}}`). To disable the healthcheck of the image use `{"Healthcheck":{"Test":["NONE"]}}`
 
 Actions:
 * `Save` the record details
