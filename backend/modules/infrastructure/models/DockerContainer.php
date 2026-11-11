@@ -10,6 +10,7 @@ use Docker\API\Model\AuthConfig;
 use Docker\API\Model\ContainersCreatePostBody;
 use Docker\API\Model\EndpointIPAMConfig;
 use Docker\API\Model\EndpointSettings;
+use Docker\API\Model\HealthConfig;
 use Docker\API\Model\HostConfig;
 use Docker\API\Model\NetworkingConfig;
 use Docker\API\Model\RestartPolicy;
@@ -126,6 +127,11 @@ class DockerContainer extends Model
       $containerConfig->setLabels($this->labels);
     }
 
+    $healthConfig = $this->getHealthConfig();
+    if ($healthConfig !== null) {
+      $containerConfig->setHealthcheck($healthConfig);
+    }
+
     $this->container = $this->docker->containerCreate($containerConfig, ['name' => $this->name]);
     $this->docker->containerStart($this->container->getId());
   }
@@ -203,6 +209,50 @@ class DockerContainer extends Model
   {
     $this->connectAPI();
     $this->docker->containerDelete($this->name, ['force' => true]);
+  }
+
+  /**
+   * Build the container healthcheck override from the target `parameters` json.
+   * It overrides the HEALTHCHECK of the image, eg. to disable it altogether:
+   * {"Healthcheck":{"Test":["NONE"]}}
+   * Supported keys: Test, Interval, Timeout, StartPeriod, StartInterval (nanoseconds) and Retries.
+   *
+   * @return HealthConfig|null null when the parameters do not override the healthcheck
+   */
+  public function getHealthConfig()
+  {
+    if (empty($this->parameters)) {
+      return null;
+    }
+    try {
+      $decoded = \yii\helpers\Json::decode($this->parameters, false);
+    } catch (\Throwable $e) {
+      return null;
+    }
+    if (!is_object($decoded) || !isset($decoded->Healthcheck) || !is_object($decoded->Healthcheck)) {
+      return null;
+    }
+    $hc = $decoded->Healthcheck;
+    $config = new HealthConfig();
+    if (isset($hc->Test) && is_array($hc->Test)) {
+      $config->setTest(array_map('strval', $hc->Test));
+    }
+    if (isset($hc->Interval)) {
+      $config->setInterval(intval($hc->Interval));
+    }
+    if (isset($hc->Timeout)) {
+      $config->setTimeout(intval($hc->Timeout));
+    }
+    if (isset($hc->Retries)) {
+      $config->setRetries(intval($hc->Retries));
+    }
+    if (isset($hc->StartPeriod)) {
+      $config->setStartPeriod(intval($hc->StartPeriod));
+    }
+    if (isset($hc->StartInterval)) {
+      $config->setStartInterval(intval($hc->StartInterval));
+    }
+    return $config;
   }
 
   public function getMemory()

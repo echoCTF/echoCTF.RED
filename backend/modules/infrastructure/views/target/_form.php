@@ -140,7 +140,7 @@ use yii\bootstrap5\ActiveForm;
       </div>
     </div>
 
-    <?= $form->field($model, 'parameters')->textarea(['rows' => 6])->hint('Add extra docker parameters as json object (eg. <code>{"hostConfig":{"Memory":"512"}}</code>)') ?>
+    <?= $form->field($model, 'parameters')->textarea(['rows' => 6])->hint('Add extra docker parameters as json object (eg. <code>{"hostConfig":{"Memory":"512"}}</code>). To disable the image healthcheck use <code>{"Healthcheck":{"Test":["NONE"]}}</code>') ?>
 
 
     <?php // $form->field($model, 'parameters')->textInput(['maxlength' => true])->hint('Command line parameters for the target') ?>
