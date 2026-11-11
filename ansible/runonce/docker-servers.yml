@@ -456,3 +456,70 @@
       chdir: /opt/docker-event-action
     tags:
       - pm2
+
+  - name: Ensure rsync share directory exists
+    file:
+      path: /var/lib/ctf-audit
+      state: directory
+      owner: root
+      group: root
+      mode: '0755'
+    tags:
+      - rsync
+
+  - name: Deploy rsync daemon configuration (no authentication)
+    copy:
+      dest: /etc/rsyncd.conf
+      owner: root
+      group: root
+      mode: '0644'
+      content: |
+        log file = /dev/stdout
+        pid file = /run/rsyncd.pid
+        uid = root
+        gid = root
+        use chroot = yes
+        [ctf-audit]
+            path = /var/lib/ctf-audit
+            comment = Share CTF Audit logs
+            hosts allow = 10.0.0.0/24
+            hosts deny = *
+            read only = yes
+            list = yes
+    tags:
+      - rsync
+
+  - name: Deploy rsync systemd unit
+    copy:
+      dest: /etc/systemd/system/rsync.service
+      owner: root
+      group: root
+      mode: '0644'
+      content: |
+        # {{ ansible_managed }}
+        [Unit]
+        Description=rsync daemon (ctf-audit share)
+        Documentation=man:rsyncd.conf(5)
+        After=network-online.target
+        Wants=network-online.target
+
+        [Service]
+        Type=simple
+        ExecStart=/usr/bin/rsync --daemon --no-detach --config=/etc/rsyncd.conf
+        Restart=on-failure
+        RestartSec=5s
+
+        [Install]
+        WantedBy=multi-user.target
+    register: rsync_unit
+    tags:
+      - rsync
+
+  - name: Enable and start rsync daemon
+    systemd:
+      name: rsync
+      daemon_reload: "{{ rsync_unit.changed }}"
+      enabled: yes
+      state: "{{ 'restarted' if (rsync_unit.changed or rsync_conf.changed) else 'started' }}"
+    tags:
+      - rsync
