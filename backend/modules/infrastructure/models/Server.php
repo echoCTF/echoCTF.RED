@@ -127,11 +127,9 @@ class Server extends \yii\db\ActiveRecord
    */
   public static function findNextFreeOne()
   {
+    // subqueries, joining both tables would multiply the counts
     return self::find()
-      ->leftJoin('target_instance t2', 't2.server_id = server.id')
-      ->leftJoin('private_network_target pnt', 'pnt.server_id = server.id')
-      ->groupBy('server.id')
-      ->orderBy(new Expression('(COUNT(t2.server_id) + COUNT(pnt.server_id)) ASC, RAND()'))
+      ->orderBy(new Expression('((SELECT COUNT(*) FROM target_instance t2 WHERE t2.server_id = server.id) + (SELECT COUNT(*) FROM private_network_target pnt WHERE pnt.server_id = server.id)) ASC, RAND()'))
       ->limit(1)
       ->one();
   }
