@@ -826,24 +826,6 @@ CREATE TABLE `player_counter_nf` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Table structure for table `player_audit`
---
-
-DROP TABLE IF EXISTS `player_audit`;
-CREATE TABLE `player_audit` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `player_id` int(10) unsigned NOT NULL,
-  `field` varchar(32) NOT NULL,
-  `old_value` varchar(255) DEFAULT NULL,
-  `new_value` varchar(255) DEFAULT NULL,
-  `ts` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  KEY `idx-player_audit-player_id` (`player_id`),
-  KEY `idx-player_audit-field` (`field`),
-  KEY `idx-player_audit-ts` (`ts`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
 -- Table structure for table `player_country_rank`
 --
 
