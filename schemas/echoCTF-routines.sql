@@ -118,18 +118,6 @@ BEGIN
 END ;;
 
 
-DROP PROCEDURE IF EXISTS `add_player_streak` ;;
-CREATE PROCEDURE `add_player_streak`(IN usid INT UNSIGNED, IN claim_ts DATETIME)
-BEGIN
-  DECLARE wk DATE DEFAULT DATE(claim_ts) - INTERVAL WEEKDAY(claim_ts) DAY;
-  INSERT INTO player_streak (player_id,current,best,last_week) VALUES (usid,1,1,wk)
-    ON DUPLICATE KEY UPDATE
-      current=IF(last_week>=wk, current, IF(last_week=wk - INTERVAL 7 DAY, current+1, 1)),
-      best=GREATEST(best,current),
-      last_week=GREATEST(last_week,wk);
-END ;;
-
-
 DROP PROCEDURE IF EXISTS `add_player_treasure_hint` ;;
 CREATE PROCEDURE `add_player_treasure_hint`(p_id INT,f_id INT)
 BEGIN

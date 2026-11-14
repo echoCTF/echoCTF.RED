@@ -1019,24 +1019,6 @@ CREATE TABLE `player_score_monthly` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Table structure for table `player_streak`
---
-
-DROP TABLE IF EXISTS `player_streak`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8mb4 */;
-CREATE TABLE `player_streak` (
-  `player_id` int(11) unsigned NOT NULL,
-  `current` int(11) unsigned NOT NULL DEFAULT 0,
-  `best` int(11) unsigned NOT NULL DEFAULT 0,
-  `last_week` date DEFAULT NULL,
-  PRIMARY KEY (`player_id`),
-  KEY `idx-player_streak-current` (`current`),
-  CONSTRAINT `fk-player_streak-player_id` FOREIGN KEY (`player_id`) REFERENCES `player` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `player_spin`
 --
 
