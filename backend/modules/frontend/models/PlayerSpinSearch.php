@@ -68,8 +68,7 @@ class PlayerSpinSearch extends PlayerSpin
         ]);
         $query->andFilterWhere(['like', 'player_spin.updated_at', $this->updated_at]);
         $query->andFilterWhere(['like', 'player_spin.ts', $this->ts]);
-        $query->andFilterWhere(['like', 'player.id', $this->player]);
-        $query->orFilterWhere(['like', 'player.username', $this->player]);
+        $query->andFilterWhere(['or', ['like', 'player.id', $this->player], ['like', 'player.username', $this->player]]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
@@ -77,6 +76,14 @@ class PlayerSpinSearch extends PlayerSpin
                   'player' => [
                       'asc' => ['player.username' => SORT_ASC],
                       'desc' => ['player.username' => SORT_DESC],
+                  ],
+                  'updated_at' => [
+                      'asc' => ['player_spin.updated_at' => SORT_ASC],
+                      'desc' => ['player_spin.updated_at' => SORT_DESC],
+                  ],
+                  'ts' => [
+                      'asc' => ['player_spin.ts' => SORT_ASC],
+                      'desc' => ['player_spin.ts' => SORT_DESC],
                   ],
                 ]
             ),
