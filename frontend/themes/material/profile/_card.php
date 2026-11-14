@@ -87,6 +87,7 @@ if (array_key_exists('subscription', Yii::$app->modules) !== false) {
       <li class="nav-item text-left"><strong><i class="fa fa-list"></i> Points</strong> <span class="pull-right"><?= number_format($profile->owner->playerScore->points) ?></span></li>
       <li class="nav-item text-left"><strong><i class="fas fa-flag"></i> Flags</strong> <span class="pull-right"><?php echo $profile->totalTreasures; ?></span></li>
       <li class="nav-item text-left"><strong><i class="fas fa-fire"></i> Findings</strong> <span class="pull-right"><?php echo $profile->totalFindings; ?></span></li>
+      <li class="nav-item text-left"><strong><i class="fas fa-bolt"></i> Weekly streak</strong> <span class="pull-right"><abbr title="Current streak (weeks)"><?= $profile->owner->streak ? $profile->owner->streak->active : 0 ?></abbr> / <abbr title="Best streak (weeks)"><?= $profile->owner->streak ? $profile->owner->streak->best : 0 ?></abbr></span></li>
       <?php if (count($profile->owner->challengeSolvers) > 0): ?><li class="nav-item text-left"><strong><i class="fas fa-tasks"></i> Challenges</strong> <span class="pull-right"><?= count($profile->owner->challengeSolvers) ?></span></li><?php endif; ?>
     </ul>
     <?php if ($profile->owner->networks && $profile->isMine): ?>
