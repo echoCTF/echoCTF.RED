@@ -314,6 +314,7 @@
       - { src: ovpn-probe.sh }
       - { src: ovpn-up.sh }
       - { src: ovpn-check.sh }
+      - { src: disk-check.sh }
       - { src: easeprobe-config.yaml, dest: config.yaml, mode: "0600" }
       - { src: monitor.ovpn, mode: "0600" }
 

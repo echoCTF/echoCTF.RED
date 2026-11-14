@@ -108,6 +108,12 @@ shell:
     timeout: 40s
     failure: 2
 
+  - name: disk space (all snmp servers)
+    cmd: /etc/easeprobe/disk-check.sh
+    interval: 5m
+    timeout: 30s
+    failure: 2
+
 # --------------------- Native client probes ---------------------
 client:
   - name: MariaDB (10.7.0.253)
