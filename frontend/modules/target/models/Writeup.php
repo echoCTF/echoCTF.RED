@@ -87,7 +87,7 @@ class Writeup extends \yii\db\ActiveRecord
             }],
 
             [['approved'], 'default', 'value' => false],
-            ['formatter', 'default', 'value' => 'text'],
+            ['formatter', 'default', 'value' => 'markdown'],
             ['language_id', 'default', 'value' => 'en'],
             ['status', 'default', 'value' => 'PENDING'],
 

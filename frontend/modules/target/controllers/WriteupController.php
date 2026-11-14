@@ -125,6 +125,7 @@ class WriteupController extends \app\components\BaseController
       $model->target_id = $id;
       $model->approved = 0;
       $model->status = 'PENDING';
+      $model->formatter = 'markdown';
       if ($model->save()) {
         Yii::$app->session->setFlash('success', \Yii::t('app', 'Thank you for your submission. Your writeup has been saved. A member of our staff will review and approve or reject.'));
         return $this->redirect(['view', 'id' => $id]);
