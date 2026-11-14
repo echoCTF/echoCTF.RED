@@ -19,19 +19,19 @@ use app\widgets\sleifer\autocompleteAjax\AutocompleteAjax;
         'options' => ['placeholder' => 'Find player by email, username, id or profile.']
     ]) ?>
 
-    <?= $form->field($model, 'subscription_id')->textInput(['maxlength' => true]) ?>
+    <div class="row">
+      <div class="col-md-4"><?= $form->field($model, 'subscription_id')->textInput(['maxlength' => true]) ?></div>
+      <div class="col-md-4"><?= $form->field($model, 'session_id')->textInput(['maxlength' => true]) ?></div>
+      <div class="col-md-4"><?= $form->field($model, 'price_id')->textInput(['maxlength' => true]) ?></div>
+    </div>
 
-    <?= $form->field($model, 'session_id')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'active')->checkbox() ?>
 
-    <?= $form->field($model, 'price_id')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'active')->textInput() ?>
-    <?= $form->field($model, 'starting')->textInput() ?>
-    <?= $form->field($model, 'ending')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
+    <div class="row">
+      <?php foreach (['starting', 'ending', 'created_at', 'updated_at'] as $attr): ?>
+      <div class="col-md-3"><?= $form->field($model, $attr)->input('datetime-local', ['step' => 1, 'value' => str_replace(' ', 'T', (string) $model->$attr)]) ?></div>
+      <?php endforeach; ?>
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton(Yii::t('app', 'Save'), ['class' => 'btn btn-success']) ?>
