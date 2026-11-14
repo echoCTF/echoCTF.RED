@@ -56,7 +56,7 @@ yii\bootstrap5\Modal::end();
                       'data-method' => 'POST',
                       'data'=>[
                         'method'=>'post',
-                        'params'=> $searchModel->attributes,
+                        'params'=> Yii::$app->request->get('SessionsSearch', []),
                         'confirm'=>'Are you sure you want to delete the currently filtered sessions?',
                       ],
                   ]
