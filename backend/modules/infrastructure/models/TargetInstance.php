@@ -99,11 +99,12 @@ class TargetInstance extends TargetInstanceAR
   public function connectAPI($params = null)
   {
     if ($params === null) {
-      if ($this->server !== null) {
-        $params['remote_socket'] = $this->server->connstr;
-        $params['ssl'] = (bool) $this->server->ssl;
-        $params['timeout'] = $this->server->timeout ? (int) $this->server->timeout : 5000;
-      }
+      // no server assigned yet, don't fall back to the local docker socket
+      if ($this->server === null)
+        return false;
+      $params['remote_socket'] = $this->server->connstr;
+      $params['ssl'] = (bool) $this->server->ssl;
+      $params['timeout'] = $this->server->timeout ? (int) $this->server->timeout : 5000;
     }
     try {
       $client = DockerClientFactory::create($params);
@@ -115,6 +116,8 @@ class TargetInstance extends TargetInstanceAR
 
   public function restart()
   {
+    if ($this->server === null)
+      throw new \Exception('Instance has no server assigned yet');
     $dc = new DockerContainer($this->target);
     $dc->targetVolumes = $this->target->targetVolumes;
     $dc->targetVariables = $this->target->targetVariables;

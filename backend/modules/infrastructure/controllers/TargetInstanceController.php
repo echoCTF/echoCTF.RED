@@ -240,11 +240,13 @@ class TargetInstanceController extends \app\components\BaseController
       $dc->targetVolumes = $val->target->targetVolumes;
       $dc->targetVariables = $val->target->targetVariables;
       $dc->name = $val->name;
-      $dc->server = $val->server->connstr;
-      $dc->ssl = (bool) $val->server->ssl;
-      try {
-        $dc->destroy();
-      } catch (\Throwable $e) {
+      if ($val->server !== null) {
+        $dc->server = $val->server->connstr;
+        $dc->ssl = (bool) $val->server->ssl;
+        try {
+          $dc->destroy();
+        } catch (\Throwable $e) {
+        }
       }
       $val->delete();
     } catch (\Throwable $e) {
@@ -272,13 +274,15 @@ class TargetInstanceController extends \app\components\BaseController
         $dc->targetVolumes = $val->target->targetVolumes;
         $dc->targetVariables = $val->target->targetVariables;
         $dc->name = $val->name;
-        $dc->server = $val->server->connstr;
-        $dc->ssl = (bool) $val->server->ssl;
-        try {
-          $dc->destroy();
-          Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [{name}] got destroyed.', ['name' => Html::encode($dc->name)]));
-        } catch (\Throwable $e) {
-          Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [{name}] failed to get destroyed: {error}', ['name' => Html::encode($dc->name), 'error' => Html::encode($e->getMessage())]));
+        if ($val->server !== null) {
+          $dc->server = $val->server->connstr;
+          $dc->ssl = (bool) $val->server->ssl;
+          try {
+            $dc->destroy();
+            Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [{name}] got destroyed.', ['name' => Html::encode($dc->name)]));
+          } catch (\Throwable $e) {
+            Yii::$app->session->addFlash('error', Yii::t('app', 'Target instance [{name}] failed to get destroyed: {error}', ['name' => Html::encode($dc->name), 'error' => Html::encode($e->getMessage())]));
+          }
         }
         $val->delete();
         Yii::$app->session->addFlash('success', Yii::t('app', 'Target instance [{name}] got deleted.', ['name' => Html::encode($dc->name)]));
