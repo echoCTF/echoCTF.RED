@@ -227,6 +227,25 @@ DROP TRIGGER IF EXISTS tau_player ;;
 CREATE TRIGGER `tau_player` AFTER UPDATE ON `player` FOR EACH ROW
 thisBegin:BEGIN
   DECLARE ltitle VARCHAR(30) DEFAULT 'Joined the platform';
+  IF NOT (NEW.username <=> OLD.username) THEN
+    INSERT INTO player_audit (player_id,field,old_value,new_value) VALUES (NEW.id,'username',OLD.username,NEW.username);
+  END IF;
+  IF NOT (NEW.email <=> OLD.email) THEN
+    INSERT INTO player_audit (player_id,field,old_value,new_value) VALUES (NEW.id,'email',OLD.email,NEW.email);
+  END IF;
+  IF NOT (NEW.fullname <=> OLD.fullname) THEN
+    INSERT INTO player_audit (player_id,field,old_value,new_value) VALUES (NEW.id,'fullname',OLD.fullname,NEW.fullname);
+  END IF;
+  IF NOT (NEW.academic <=> OLD.academic) THEN
+    INSERT INTO player_audit (player_id,field,old_value,new_value) VALUES (NEW.id,'academic',OLD.academic,NEW.academic);
+  END IF;
+  IF NOT (NEW.status <=> OLD.status) THEN
+    INSERT INTO player_audit (player_id,field,old_value,new_value) VALUES (NEW.id,'status',OLD.status,NEW.status);
+  END IF;
+  IF NOT (NEW.type <=> OLD.type) THEN
+    INSERT INTO player_audit (player_id,field,old_value,new_value) VALUES (NEW.id,'type',OLD.type,NEW.type);
+  END IF;
+
   IF (@TRIGGER_CHECKS = FALSE) THEN
     LEAVE thisBegin;
   END IF;
