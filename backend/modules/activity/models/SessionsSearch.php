@@ -68,7 +68,7 @@ class SessionsSearch extends Sessions
     $query->andFilterWhere(['like', 'sessions.id', $this->id])
       ->andFilterWhere(['like', 'INET_NTOA(ip)', $this->ipoctet])
       ->andFilterWhere(['like', 'sessions.data', $this->data]);
-    $query->orFilterWhere(['like', 'player.username', $this->player]);
+    $query->andFilterWhere(['like', 'player.username', $this->player]);
 
     $dataProvider->setSort([
       'attributes' => array_merge(

@@ -79,8 +79,7 @@ class SpinQueueSearch extends SpinQueue
         ]);
 
 
-        $query->andFilterWhere(['like', 'target.id', $this->target]);
-        $query->orFilterWhere(['like', 'target.fqdn', $this->target]);
+        $query->andFilterWhere(['or', ['like', 'target.id', $this->target], ['like', 'target.fqdn', $this->target]]);
         $dataProvider->setSort([
             'attributes' => array_merge(
                 $dataProvider->getSort()->attributes,
