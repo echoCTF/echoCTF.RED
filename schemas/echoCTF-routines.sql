@@ -190,12 +190,12 @@ BEGIN
       `id` int(11) NOT NULL DEFAULT 0,
       `player_id` int(11) unsigned NOT NULL,
       `country` varchar(3) NOT NULL,
-      PRIMARY KEY (`id`,`player_id`) USING BTREE,
-      UNIQUE KEY `idx-player_country_rank-player_id` (`player_id`) USING BTREE
+      PRIMARY KEY (`id`,`country`),
+      UNIQUE KEY `idx-player_country_rank-player_id` (`player_id`)
     ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
     INSERT INTO player_country_rank_new (id, player_id, country)
-    SELECT ROW_NUMBER() OVER (PARTITION BY COALESCE(t3.country, 'UNK'), t2.academic ORDER BY t.points DESC, t.ts ASC, t.player_id ASC),
+    SELECT ROW_NUMBER() OVER (PARTITION BY COALESCE(t3.country, 'UNK') ORDER BY t.points DESC, t.ts ASC, t.player_id ASC),
            t3.player_id, COALESCE(t3.country, 'UNK')
     FROM player_score t
     JOIN player t2 ON t.player_id = t2.id
