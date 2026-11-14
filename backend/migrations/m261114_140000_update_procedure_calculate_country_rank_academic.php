@@ -35,10 +35,15 @@ END";
   {
     $this->db->createCommand($this->DROP_SQL)->execute();
     $this->db->createCommand($this->CREATE_SQL)->execute();
+    // ranks repeat per academic group, so country is no longer unique per rank
+    $this->db->createCommand("ALTER TABLE {{%player_country_rank}} DROP PRIMARY KEY, ADD PRIMARY KEY (`id`,`player_id`) USING BTREE")->execute();
   }
 
   public function down()
   {
     $this->db->createCommand($this->DROP_SQL)->execute();
+    // memory table rebuilt by calculate_country_rank, empty it so the old key fits
+    $this->db->createCommand("DELETE FROM {{%player_country_rank}}")->execute();
+    $this->db->createCommand("ALTER TABLE {{%player_country_rank}} DROP PRIMARY KEY, ADD PRIMARY KEY (`id`,`country`) USING BTREE")->execute();
   }
 }
