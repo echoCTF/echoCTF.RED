@@ -70,8 +70,7 @@ class PlayerSslSearch extends PlayerSsl
             ->andFilterWhere(['like', 'player_ssl.crt', $this->crt])
             ->andFilterWhere(['like', 'player_ssl.privkey', $this->privkey]);
 
-            $query->andFilterWhere(['like', 'player.id', $this->player]);
-            $query->orFilterWhere(['like', 'player.username', $this->player]);
+            $query->andFilterWhere(['or', ['like', 'player.id', $this->player], ['like', 'player.username', $this->player]]);
             $dataProvider->setSort([
                 'attributes' => array_merge(
                     $dataProvider->getSort()->attributes,

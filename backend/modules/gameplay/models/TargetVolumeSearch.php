@@ -65,9 +65,7 @@ class TargetVolumeSearch extends TargetVolume
 
         $query->andFilterWhere(['like', 'volume', $this->volume])
             ->andFilterWhere(['like', 'bind', $this->bind]);
-        $query->andFilterWhere(['like', 'target_id', $this->target]);
-        $query->orFilterWhere(['like', 'target.name', $this->target]);
-        $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->target]);
+        $query->andFilterWhere(['or', ['like', 'target_id', $this->target], ['like', 'target.name', $this->target], ['like', 'INET_NTOA(target.ip)', $this->target]]);
 
         $dataProvider->setSort([
             'attributes' => array_merge(

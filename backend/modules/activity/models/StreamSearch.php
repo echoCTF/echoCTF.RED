@@ -128,7 +128,7 @@ class StreamSearch extends Stream
       ->andFilterWhere(['like', 'stream.message', $this->message])
       ->andFilterWhere(['like', 'stream.pubtitle', $this->pubtitle])
       ->andFilterWhere(['like', 'stream.pubmessage', $this->pubmessage]);
-    $query->orFilterWhere(['like', 'player.username', $this->player]);
+    $query->andFilterWhere(['like', 'player.username', $this->player]);
   }
 
   private function dataProviderSort($dataProvider)
