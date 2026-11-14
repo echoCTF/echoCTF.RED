@@ -834,7 +834,7 @@ CREATE TABLE `player_country_rank` (
   `id` int(11) NOT NULL DEFAULT 0,
   `player_id` int(11) unsigned NOT NULL,
   `country` varchar(3) NOT NULL,
-  PRIMARY KEY (`id`,`country`) USING BTREE,
+  PRIMARY KEY (`id`,`player_id`) USING BTREE,
   UNIQUE KEY `idx-player_country_rank-player_id` (`player_id`) USING BTREE
 ) ENGINE=MEMORY DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

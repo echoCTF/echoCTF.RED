@@ -53,8 +53,11 @@ class Leaderboard extends Widget
   private function countryLeaderboards()
   {
     if ($this->player_id !== null) {
+      $query = \app\models\PlayerCountryRank::find()->joinWith(['player'])->where(['country' => $this->country, 'player.status' => \app\models\Player::STATUS_ACTIVE]);
+      if (\Yii::$app->sys->academic_grouping !== false)
+        $query->andWhere(['player.academic' => \app\models\Player::findOne($this->player_id)->academic]);
       $this->dataProvider = new ActiveDataProvider([
-        'query' => \app\models\PlayerCountryRank::find()->joinWith(['player'])->where(['country' => $this->country, 'player.status' => \app\models\Player::STATUS_ACTIVE])->orderBy(['id' => SORT_ASC, 'player_id' => SORT_ASC]),
+        'query' => $query->orderBy(['id' => SORT_ASC, 'player_id' => SORT_ASC]),
         'pagination' => [
           'pageSizeParam' => $this->pagination ? 'country-score-perpage' : false,
           'pageParam' => $this->pagination ? 'country-score-page' : false,
