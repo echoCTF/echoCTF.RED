@@ -52,11 +52,6 @@ class PlayerSubscription extends \yii\db\ActiveRecord
   public function rules()
   {
     return [
-      // datetime-local inputs send 2026-01-01T10:00 or 2026-01-01T10:00:05
-      [['starting', 'ending', 'created_at', 'updated_at'], 'filter', 'skipOnEmpty' => true, 'filter' => function ($value) {
-        $value = str_replace('T', ' ', $value);
-        return strlen($value) === 16 ? $value . ':00' : $value;
-      }],
       [['starting'], 'default', 'value' => \Yii::$app->formatter->asDatetime(new \DateTime('NOW'), 'php:Y-m-d H:i:s')],
       [['ending'], 'default', 'value' => \Yii::$app->formatter->asDatetime(new \DateTime('NOW + 10 day'), 'php:Y-m-d H:i:s')],
       [['player_id'], 'required'],
