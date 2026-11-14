@@ -8,6 +8,10 @@ class m261114_141100_update_trigger_after_update_on_player_table_audit extends M
   public $CREATE_SQL="CREATE TRIGGER {{%tau_player}} AFTER UPDATE ON {{%player}} FOR EACH ROW
   thisBegin:BEGIN
   DECLARE ltitle VARCHAR(30) DEFAULT 'Joined the platform';
+  IF (@TRIGGER_CHECKS = FALSE) THEN
+    LEAVE thisBegin;
+  END IF;
+
   IF NOT (NEW.username <=> OLD.username) THEN
     INSERT INTO player_audit (player_id,field,old_value,new_value) VALUES (NEW.id,'username',OLD.username,NEW.username);
   END IF;
@@ -25,10 +29,6 @@ class m261114_141100_update_trigger_after_update_on_player_table_audit extends M
   END IF;
   IF NOT (NEW.type <=> OLD.type) THEN
     INSERT INTO player_audit (player_id,field,old_value,new_value) VALUES (NEW.id,'type',OLD.type,NEW.type);
-  END IF;
-
-  IF (@TRIGGER_CHECKS = FALSE) THEN
-    LEAVE thisBegin;
   END IF;
 
   IF (select memc_server_count()<1) THEN
