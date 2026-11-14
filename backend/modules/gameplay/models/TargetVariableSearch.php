@@ -65,9 +65,7 @@ class TargetVariableSearch extends TargetVariable
 
         $query->andFilterWhere(['like', 'key', $this->key])
             ->andFilterWhere(['like', 'val', $this->val]);
-        $query->andFilterWhere(['like', 'target.name', $this->target]);
-        $query->orFilterWhere(['like', 'target.id', $this->target]);
-        $query->orFilterWhere(['like', 'INET_NTOA(target.ip)', $this->target]);
+        $query->andFilterWhere(['or', ['like', 'target.name', $this->target], ['like', 'target.id', $this->target], ['like', 'INET_NTOA(target.ip)', $this->target]]);
 
         $dataProvider->setSort([
             'attributes' => array_merge(

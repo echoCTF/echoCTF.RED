@@ -77,9 +77,7 @@ class FindingSearch extends Finding
             ->andFilterWhere(['like', 'description', $this->description])
             ->andFilterWhere(['like', 'pubdescription', $this->pubdescription])
             ->andFilterWhere(['like', 'protocol', $this->protocol]);
-        $query->andFilterWhere(['like', 'INET_NTOA(target.ip)', $this->ipoctet]);
-        $query->orFilterWhere(['like', 'target.name', $this->ipoctet]);
-        $query->orFilterWhere(['like', 'target.id', $this->ipoctet]);
+        $query->andFilterWhere(['or', ['like', 'INET_NTOA(target.ip)', $this->ipoctet], ['like', 'target.name', $this->ipoctet], ['like', 'target.id', $this->ipoctet]]);
 
         $dataProvider->setSort([
             'attributes' => array_merge(
