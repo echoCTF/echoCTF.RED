@@ -54,12 +54,12 @@ use yii\helpers\Html;
         <tr>
           <td><span class="fas fa-user-graduate text-warning"></span></td>
           <td>academic</td>
-          <td><?= Html::a($model->owner->academic==0? '<i class="fas fa-times text-danger"></i>' :'<i class="fas fa-check text-success"></i>', ['/frontend/player/toggle-academic', 'id' => $model->player_id], [
+          <td><?= Html::a(Html::encode($model->owner->academicShort ?: $model->owner->academic), ['/frontend/player/toggle-academic', 'id' => $model->player_id], [
                 'class' => 'text-danger',
-                'title'=>'Toggle player academic status',
+                'title'=>'Move player to the next academic group',
                 'data-toggle'=>'tooltip',
                 'data' => [
-                    'confirm' => Yii::t('app', 'Are you sure you want to toggle the player academic key?'),
+                    'confirm' => Yii::t('app', 'Are you sure you want to move the player to the next academic group?'),
                     'method' => 'post',
                 ],
             ]) ?></td>
