@@ -31,6 +31,7 @@ use app\modules\target\models\TargetInstance;
  * @property TargetInstance[] $instances The instances of the player indexed by target_id
  * @property Subscription $subscription
  * @property Metadata $metadata
+ * @property PlayerStreak $streak
  */
 class PlayerAR extends ActiveRecord
 {
@@ -292,6 +293,11 @@ class PlayerAR extends ActiveRecord
   public function getPlayerScore()
   {
     return $this->hasOne(PlayerScore::class, ['player_id' => 'id']);
+  }
+
+  public function getStreak()
+  {
+    return $this->hasOne(PlayerStreak::class, ['player_id' => 'id']);
   }
 
   public function getPlayerRank()

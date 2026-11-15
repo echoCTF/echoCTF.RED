@@ -189,6 +189,14 @@ class LeaderboardsController extends \app\components\BaseController
         'pageSize' => 10
       ]
     ]);
+    $streakDataProvider = new ActiveDataProvider([
+      'query' => \app\models\PlayerStreak::findAlive()->joinWith(['player'])->andWhere(['player.academic' => $academic, 'player.status' => \app\models\Player::STATUS_ACTIVE])->orderBy(['current' => SORT_DESC, 'best' => SORT_DESC, 'player_id' => SORT_ASC])->with(['player.profile.owner']),
+      'pagination' => [
+        'pageSizeParam' => 'streak-perpage',
+        'pageParam' => 'streak-page',
+        'pageSize' => 10
+      ]
+    ]);
     if (Yii::$app->sys->team_only_leaderboards)
       return $this->render('teamonly', [
         'teamDataProvider' => $teamDataProvider,
@@ -202,6 +210,7 @@ class LeaderboardsController extends \app\components\BaseController
         'playerMonthlyDataProvider' => $playerMonthlyDataProvider,
         'teamDataProvider' => $teamDataProvider,
         'playerCountryDataProvider' => $playerCountryDataProvider,
+        'streakDataProvider' => $streakDataProvider,
         'playerDataProvider' => $playerDataProvider,
         'headshotDataProvider' => $headshotDataProvider,
         'mostHeadshotsDataProvider' => $mostHeadshotsDataProvider,
