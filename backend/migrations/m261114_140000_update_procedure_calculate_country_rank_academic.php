@@ -8,6 +8,7 @@ class m261114_140000_update_procedure_calculate_country_rank_academic extends Mi
   public $CREATE_SQL="CREATE PROCEDURE {{%calculate_country_rank}}()
 BEGIN
   IF (SELECT val FROM sysconfig WHERE id='country_rankings') = 1 THEN
+    DROP TABLE IF EXISTS player_country_rank_old;
     DROP TABLE IF EXISTS player_country_rank_new;
     CREATE TABLE player_country_rank_new (
       `id` int(11) NOT NULL DEFAULT 0,
@@ -35,15 +36,10 @@ END";
   {
     $this->db->createCommand($this->DROP_SQL)->execute();
     $this->db->createCommand($this->CREATE_SQL)->execute();
-    // ranks repeat per academic group, so country is no longer unique per rank
-    $this->db->createCommand("ALTER TABLE {{%player_country_rank}} DROP PRIMARY KEY, ADD PRIMARY KEY (`id`,`player_id`) USING BTREE")->execute();
   }
 
   public function down()
   {
     $this->db->createCommand($this->DROP_SQL)->execute();
-    // memory table rebuilt by calculate_country_rank, empty it so the old key fits
-    $this->db->createCommand("DELETE FROM {{%player_country_rank}}")->execute();
-    $this->db->createCommand("ALTER TABLE {{%player_country_rank}} DROP PRIMARY KEY, ADD PRIMARY KEY (`id`,`country`) USING BTREE")->execute();
   }
 }
