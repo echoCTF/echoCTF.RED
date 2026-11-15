@@ -11,6 +11,17 @@ $this->_image=\yii\helpers\Url::to($model->target->fullLogo, 'https');
 $this->_url=\yii\helpers\Url::to(['view', 'id'=>$model->target->id], 'https');
 $this->_fluid='-fluid';
 $this->loadLayoutOverrides=true;
+$this->registerJsFile('@web/assets/hljs/highlight.min.js',[
+    'depends' => [
+        \yii\web\JqueryAsset::class
+    ]
+]);
+$this->registerCssFile('@web/assets/hljs/styles/a11y-dark.min.css',['depends' => ['app\assets\MaterialAsset']]);
+$this->registerJs(
+  'hljs.highlightAll();',
+  $this::POS_READY,
+  'markdown-highlighter'
+);
 ?>
 <div class="writeup-view">
   <div class="body-content">
@@ -19,7 +30,7 @@ $this->loadLayoutOverrides=true;
       <div class="card bg-dark">
         <div class="card-body">
           <h4 class="card-title <?=$model->status==='OK' ? 'text-primary' : 'text-warning'?>">Status: <?=$model->status?></h4>
-          <pre style="color: lightgray;"><?=Html::encode($model->content);?></pre>
+          <?=$model->formatted?>
           <p>
           <?= Html::a('Update', ['update', 'id' => $model->target_id], ['class' => 'btn btn-primary']) ?>
           </p>
