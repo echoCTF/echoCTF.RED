@@ -118,6 +118,17 @@ BEGIN
 END ;;
 
 
+DROP PROCEDURE IF EXISTS `add_player_streak` ;;
+CREATE PROCEDURE `add_player_streak`(IN usid INT UNSIGNED, IN claim_ts DATETIME)
+BEGIN
+  DECLARE wk DATE DEFAULT DATE(claim_ts) - INTERVAL WEEKDAY(claim_ts) DAY;
+  INSERT INTO player_streak (player_id,current,best,last_week) VALUES (usid,1,1,wk)
+    ON DUPLICATE KEY UPDATE
+      current=IF(last_week>=wk, current, IF(last_week=wk - INTERVAL 7 DAY, current+1, 1)),
+      best=GREATEST(best,current),
+      last_week=GREATEST(last_week,wk);
+END ;;
+
 DROP PROCEDURE IF EXISTS `add_player_treasure_hint` ;;
 CREATE PROCEDURE `add_player_treasure_hint`(p_id INT,f_id INT)
 BEGIN
@@ -483,6 +494,25 @@ BEGIN
   SELECT min(ts),max(ts) INTO min_treasure,max_treasure FROM player_treasure WHERE player_id IN (pid,aspid) AND treasure_id IN (SELECT id FROM treasure WHERE target_id=tid);
   SELECT GREATEST(max_finding, max_treasure), LEAST(min_finding, min_treasure) INTO max_val,min_val;
   UPDATE `headshot` SET timer=UNIX_TIMESTAMP(max_val)-UNIX_TIMESTAMP(min_val) WHERE player_id=pid AND target_id=tid;
+END ;;
+
+DROP PROCEDURE IF EXISTS `refill_player_streaks` ;;
+CREATE PROCEDURE `refill_player_streaks`()
+BEGIN
+  START TRANSACTION;
+  DELETE FROM player_streak;
+  -- consecutive weeks share the same grp, current is the length of the latest run
+  INSERT INTO player_streak (player_id,current,best,last_week)
+  SELECT player_id, MAX(IF(rn=1,len,0)), MAX(len), MAX(end_wk) FROM (
+    SELECT player_id, COUNT(*) AS len, MAX(wk) AS end_wk, ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY MAX(wk) DESC) AS rn FROM (
+      SELECT player_id, wk, TO_DAYS(wk) DIV 7 - ROW_NUMBER() OVER (PARTITION BY player_id ORDER BY wk) AS grp FROM (
+        SELECT player_id, DATE(ts) - INTERVAL WEEKDAY(ts) DAY AS wk FROM player_finding
+        UNION
+        SELECT player_id, DATE(ts) - INTERVAL WEEKDAY(ts) DAY AS wk FROM player_treasure
+      ) AS weeks
+    ) AS grouped GROUP BY player_id, grp
+  ) AS runs GROUP BY player_id;
+  COMMIT;
 END ;;
 
 DROP PROCEDURE IF EXISTS `repopulate_all_team_streams` ;;
