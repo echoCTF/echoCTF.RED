@@ -38,6 +38,7 @@ $this->params['jumpto'] = \app\widgets\JumpToWidget::widget([
         <?= $this->render('_player_date_details', ['model' => $model]); ?>
         <?= $this->render('_player_meta_details', ['model' => $model]); ?>
         <?= $this->render('_player_relations', ['model' => $model]); ?>
+        <?= $this->render('_player_audit', ['model' => $model]); ?>
         <?= $this->render('_player_badges', ['model' => $model]); ?>
       </div>
       <div class="col-md-8">
