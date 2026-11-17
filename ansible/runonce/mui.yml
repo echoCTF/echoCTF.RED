@@ -144,7 +144,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{mui_ip}} 255.255.255.0 NONE mtu 1450 group interconnect"
+      - "inet {{mui_ip}} 255.255.255.0 NONE {{interconnect_mtu|default('1500')}} group interconnect"
       - "up -inet6"
 
   - name: Bring interconnect interface up
@@ -255,25 +255,24 @@
       - { src: '{{playbook_dir}}/../templates/acme-client.conf.j2', dest: '/etc/acme-client.conf', domain: '{{hostname}}', challenge_dir: "/home/moderatorUI/acme/.well-known/acme-challenge/" }
 
   - name: Generate pf tables files
-    command: "{{item.cmd}}"
-    args:
-      creates: "{{item.creates|default(omit)}}"
-      chdir: "{{item.chdir|default(omit)}}"
+    copy:
+     content: "{{item.content|default(omit)}}"
+     dest: "{{item.dest}}"
     with_items:
-    - { cmd: "touch /etc/administrators.conf", creates: "/etc/administrators.conf" }
-    - { cmd: "touch /etc/maintenance.conf", creates: "/etc/maintenance.conf" }
-    - { cmd: "touch /etc/moderators.conf", creates: "/etc/moderators.conf" }
-    - { cmd: "touch /etc/registry_clients.conf", creates: "/etc/registry_clients.conf" }
-    - { cmd: "touch /etc/registry_servers.conf", creates: "/etc/registry_servers.conf" }
-    - { cmd: "touch /etc/docker_clients.conf", creates: "/etc/docker_clients.conf" }
-    - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
-    - { cmd: "touch /etc/targets.conf", creates: "/etc/targets.conf" }
-    - { cmd: "touch /etc/targets_networks.conf", creates: "/etc/targets_networks.conf" }
-    - { cmd: "touch /etc/targets_anchor.conf", creates: "/etc/targets_anchor.conf" }
-    - { cmd: "touch /etc/offense_anchor.conf", creates: "/etc/offense_anchor.conf" }
-    - { cmd: "touch /etc/service_clients.conf", creates: "/etc/service_clients.conf" }
-    - { cmd: "touch /etc/nginx/cloudflare.conf", creates: "/etc/nginx/cloudflare.conf" }
-    - { cmd: "install -m 0500 /etc/examples/rc.local /etc/rc.local", creates: "/etc/rc.local" }
+    - { dest: "/etc/administrators.conf" }
+    - { dest: "/etc/docker_clients.conf" }
+    - { dest: "/etc/docker_servers.conf" }
+    - { content: "0.0.0.0/0", dest: "/etc/maintenance.conf" }
+    - { dest: "/etc/moderators.conf" }
+    - { dest: "/etc/registry_clients.conf" }
+    - { dest: "/etc/registry_servers.conf" }
+    - { dest: "/etc/targets.conf" }
+    - { dest: "/etc/match-findings-pf.conf" }
+    - { dest: "/etc/targets_networks.conf" }
+    - { dest: "/etc/targets_anchor.conf" }
+    - { dest: "/etc/offense_anchor.conf" }
+    - { dest: "/etc/service_clients.conf" }
+    - { dest: "/etc/pf.bw_slots.conf" }
 
   - name: Fix CHROOT environment
     file: path=/home/{{item.user}}/{{item.dir}} mode="{{item.mode}}" state=directory
@@ -424,6 +423,7 @@
       - "install -d -o moderatorUI /home/moderatorUI/{{domain_name}}/backend/web/identificationFiles"
       - "mkdir -p /var/log/cron"
       - "ln -sf /home/moderatorUI/{{domain_name}}/backend/yii /usr/local/bin/backend"
+      - "install -m 0500 /etc/examples/rc.local /etc/rc.local"
 
   - name: configure moderator rc.d
     command: rcctl {{item}}

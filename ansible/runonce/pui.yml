@@ -178,7 +178,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{pui_ip}} 255.255.255.0 NONE mtu 1450 group interconnect"
+      - "inet {{pui_ip}} 255.255.255.0 NONE {{interconnect_mtu|default('1500')}} group interconnect"
       - "up -inet6"
 
   - name: Bring interface up
@@ -300,7 +300,7 @@
 
   - name: Generate pf tables files
     copy:
-     content: "{{item.content|default('')}}"
+     content: "{{item.content|default(omit)}}"
      dest: "{{item.dest}}"
     with_items:
     - { dest: "/etc/administrators.conf" }
@@ -316,6 +316,7 @@
     - { dest: "/etc/targets_anchor.conf" }
     - { dest: "/etc/offense_anchor.conf" }
     - { dest: "/etc/service_clients.conf" }
+    - { dest: "/etc/pf.bw_slots.conf" }
 
   - name: Fix CHROOT environment
     file: path=/home/{{item.user}}/{{item.dir}} mode="{{item.mode}}" state=directory

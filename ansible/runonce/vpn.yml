@@ -188,7 +188,7 @@
       group: wheel
       mode: '0640'
       content: |
-        inet {{ interconnect_interface_ip |default('10.7.0.254')}} 255.255.255.0 NONE mtu 1450 group interconnect
+        inet {{ interconnect_interface_ip |default('10.7.0.254')}} 255.255.255.0 NONE {{interconnect_mtu|default('1500')}} group interconnect
         up -inet6
 
   - name: Bring interface up
@@ -572,22 +572,25 @@
     ignore_errors: true
     command: "{{APP_DIR}}/backend/yii vpn/load /etc/openvpn/openvpn_tun0.conf"
 
-  - name: Create empty PF table files
-    command: "touch {{ pf_files | join(' ') }}"
-    vars:
-      pf_files:
-        - /etc/administrators.conf
-        - /etc/moderators.conf
-        - /etc/registry_clients.conf
-        - /etc/registry_servers.conf
-        - /etc/targets.conf
-        - /etc/targets_networks.conf
-        - /etc/targets_anchor.conf
-        - /etc/offense_anchor.conf
-        - /etc/docker_clients.conf
-        - /etc/docker_servers.conf
-        - /etc/service_clients.conf
-        - /etc/match-findings-pf.conf
+  - name: Generate pf tables files
+    copy:
+     content: "{{item.content|default(omit)}}"
+     dest: "{{item.dest}}"
+    with_items:
+    - { dest: "/etc/administrators.conf" }
+    - { dest: "/etc/docker_clients.conf" }
+    - { dest: "/etc/docker_servers.conf" }
+    - { content: "0.0.0.0/0", dest: "/etc/maintenance.conf" }
+    - { dest: "/etc/moderators.conf" }
+    - { dest: "/etc/registry_clients.conf" }
+    - { dest: "/etc/registry_servers.conf" }
+    - { dest: "/etc/targets.conf" }
+    - { dest: "/etc/match-findings-pf.conf" }
+    - { dest: "/etc/targets_networks.conf" }
+    - { dest: "/etc/targets_anchor.conf" }
+    - { dest: "/etc/offense_anchor.conf" }
+    - { dest: "/etc/service_clients.conf" }
+    - { dest: "/etc/pf.bw_slots.conf" }
 
   - name: Continue OpenVPN and PF files
     ignore_errors: true
@@ -730,12 +733,14 @@
     with_items:
       - memcached
       - heartbeatd
+      - findingsd
 
-  - name: set memcached flags
-    command: rcctl set memcached flags -s /var/run/memcached/memcached.sock -u _memcached -a 0666
-
-  - name: set heartbeatd flags
-    command: rcctl set heartbeatd flags -s /var/run/memcached/memcached.sock -u _memcached -l pflog2
+  - name: Set daemon flags
+    shell: "{{item}}"
+    with_items:
+      - "rcctl set findingsd flags -l pflog1 -n echoCTF -u openvpn -p openvpn -h 127.0.0.1 -U _memcached"
+      - "rcctl set memcached flags -s /var/run/memcached/memcached.sock -u _memcached -a 0666"
+      - "rcctl set heartbeatd flags -s /var/run/memcached/memcached.sock -u _memcached -l pflog2"
 
   - name: Set rc scripts order
     raw: "rcctl order {{rcctl_order|default('mysqld memcached openvpn supervisord heartbeatd findingsd')}}"

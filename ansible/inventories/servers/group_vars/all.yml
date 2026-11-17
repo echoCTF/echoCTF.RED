@@ -4,6 +4,7 @@ GITHUB_OAUTH_TOKEN: YOUR-GITHUB-TOKEN-FOR-COMPOSER
 GITHUB_REPO_BRANCH: main # change to your desired branch
 ## Domain with IN TXT space separated list `IN TXT "1.1.1.1 2.2.2.2"
 admins_domain: admin.example.com
+#interconnect_mtu: 1500
 
 ansible_python_interpreter: "/usr/local/bin/python3"
 

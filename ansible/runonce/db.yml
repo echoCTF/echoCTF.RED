@@ -190,7 +190,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{db_ip}} 255.255.255.0 NONE mtu 1450 group interconnect"
+      - "inet {{db_ip}} 255.255.255.0 NONE {{interconnect_mtu|default('1500')}} group interconnect"
       - "up -inet6"
 
   - name: Bring interface up
@@ -199,8 +199,8 @@
   - name: Install packages
     shell: "pkg_add {{packages|join(' ')}}"
 
-  - name: Install our packages
-    command: pkg_add -U -D unsigned "{{item.pkg}}"
+  - name: Download our packages
+    command: wget -q "{{item.url}}" -O "{{item.pkg}}"
     args:
       chdir: /tmp
     with_items: "{{custom_packages}}"
@@ -513,6 +513,7 @@
     - { cmd: "touch /etc/docker_clients.conf", creates: "/etc/docker_clients.conf" }
     - { cmd: "touch /etc/docker_servers.conf", creates: "/etc/docker_servers.conf" }
     - { cmd: "touch /etc/match-findings-pf.conf", creates: "/etc/match-findings-pf.conf" }
+    - { cmd: "touch /etc/pf.bw_slots.conf", creates: "/etc/pf.bw_slots.conf" }
     - { cmd: "install -m 0500 /etc/examples/rc.local /etc/rc.local", creates: "/etc/rc.local" }
 
   - name: Update crontab PATH variable
