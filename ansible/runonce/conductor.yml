@@ -125,7 +125,7 @@
       create: yes
     with_items:
       - "inet {{ interconnect_interface_ip |default('10.7.0.123')}} 255.255.255.0 NONE group interconnect"
-      - "up -inet6 mtu 1450"
+      - "up -inet6 mtu {{interconnect_mtu|default('1500')}}"
 
   - name: Configure targets interface
     lineinfile:

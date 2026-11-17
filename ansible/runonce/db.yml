@@ -190,7 +190,7 @@
       line: "{{item}}"
       create: yes
     with_items:
-      - "inet {{db_ip}} 255.255.255.0 NONE mtu 1450 group interconnect"
+      - "inet {{db_ip}} 255.255.255.0 NONE {{interconnect_mtu|default('1500')}} group interconnect"
       - "up -inet6"
 
   - name: Bring interface up
