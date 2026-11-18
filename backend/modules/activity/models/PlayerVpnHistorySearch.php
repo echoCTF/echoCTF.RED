@@ -13,6 +13,7 @@ use app\components\validators\ExtendedIpValidator;
 class PlayerVpnHistorySearch extends PlayerVpnHistory
 {
   public $username;
+  public $excludeShared = false;
   /**
   * {@inheritdoc}
   */
@@ -22,6 +23,7 @@ class PlayerVpnHistorySearch extends PlayerVpnHistory
       [['id', 'player_id'], 'integer'],
       [['vpn_remote_address', 'vpn_local_address','username'],'filter','filter'=>'trim'],
       [['ts', 'vpn_remote_address', 'vpn_local_address', 'username'], 'safe'],
+      [['excludeShared'], 'boolean'],
     ];
   }
 

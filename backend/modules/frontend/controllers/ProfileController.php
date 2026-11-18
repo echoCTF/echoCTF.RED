@@ -269,6 +269,10 @@ class ProfileController extends \app\components\BaseController
     $searchModel = new PlayerVpnHistorySearch();
     $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
     $dataProvider->query->andFilterWhere(['IN','vpn_remote_address',array_unique($ips)])->andFilterWhere(['!=','player_id',$profile->player_id]);
+    if ($searchModel->excludeShared)
+    {
+      \app\modules\moderation\models\SharedNetwork::excludeShared($dataProvider->query, 'player_vpn_history.vpn_remote_address');
+    }
     $dataProvider->sort->defaultOrder = ['ts' => SORT_DESC];
     return Json::encode(trim($this->renderAjax('_vpn_history_ips', [
       'dataProvider' => $dataProvider,
