@@ -10,7 +10,7 @@ data-ciphers AES-128-GCM
 auth SHA256
 auth-nocache
 mute-replay-warnings
-
+#tls-version-max 1.2
 remote-cert-tls server
 
 remote <?php echo Yii::$app->sys->vpngw;?> 1194 udp
