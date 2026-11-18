@@ -5,6 +5,15 @@
 
 set -eu
 
+usage() {
+	echo "Usage: $(basename "$0") [dumpfile]"
+	echo "  dumpfile  gzipped SQL dump (default: echoCTF.sql.gz)"
+	echo "Env: DATABASE  target database (default: echoCTF, will be DROPPED)"
+	exit 1
+}
+
+[ $# -eq 0 ] && usage
+
 DATABASE=${DATABASE:-echoCTF}
 dumpfile=${1:-echoCTF.sql.gz}
 
