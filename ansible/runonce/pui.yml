@@ -317,6 +317,7 @@
     - { dest: "/etc/offense_anchor.conf" }
     - { dest: "/etc/service_clients.conf" }
     - { dest: "/etc/pf.bw_slots.conf" }
+    - { dest: "/etc/nginx/cloudflare.conf" }
 
   - name: Fix CHROOT environment
     file: path=/home/{{item.user}}/{{item.dir}} mode="{{item.mode}}" state=directory
