@@ -4,6 +4,7 @@ namespace app\modules\moderation\models;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\Expression;
 use app\modules\moderation\models\SharedNetwork;
 
 /**
@@ -12,6 +13,19 @@ use app\modules\moderation\models\SharedNetwork;
  */
 class SharedNetworkSearch extends SharedNetwork
 {
+  /**
+   * {@inheritdoc}
+   * The inherited typecast behavior turns empty filter inputs (eg. an
+   * empty id) into 0 after validation, and since 0 is not considered
+   * empty by andFilterWhere() every search would get `id = 0` attached.
+   */
+  public function behaviors()
+  {
+    $behaviors = parent::behaviors();
+    unset($behaviors['typecast']);
+    return $behaviors;
+  }
+
   /**
    * {@inheritdoc}
    */
@@ -77,16 +91,21 @@ class SharedNetworkSearch extends SharedNetwork
 
     if (trim($this->cidr) !== '')
     {
+      $value = trim($this->cidr);
+      // Bare IPv4 addresses are searched as /32 networks so they use the
+      // bitwise filter instead of falling back to the string match
+      if (strpos($value, '/') === false && filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false)
+        $value .= '/32';
+
       $tmp = new SharedNetwork();
-      $tmp->cidr = $this->cidr;
+      $tmp->cidr = $value;
       $tmp->parseCidr('cidr', null);
       if (!$tmp->hasErrors())
       {
-        // List the entries that cover the searched IP or range
-        $query->andFilterWhere(
-          '(shared_network.network & :snmask) = :snnetwork',
-          [':snmask' => $tmp->mask, ':snnetwork' => $tmp->network & $tmp->mask]
-        );
+        // List the entries whose range covers the searched IP or range
+        // (same containment direction as SharedNetwork::excludeShared());
+        // andWhere() since andFilterWhere() only accepts array conditions
+        $query->andWhere(new Expression('(:snnetwork & shared_network.mask) = shared_network.network', [':snnetwork' => $tmp->network]));
       }
       else
       {
