@@ -18,6 +18,8 @@ use yii\grid\GridView;
         [
           'attribute'=>'vpn_remote_address',
           'value'=>function($model) {return long2ip($model->vpn_remote_address);},
+          'filter' => Html::activeTextInput($searchModel, 'vpn_remote_address', ['class' => 'form-control'])
+            . Html::activeCheckbox($searchModel, 'excludeShared', ['label' => 'Exclude shared']),
         ],
         'ts',
 

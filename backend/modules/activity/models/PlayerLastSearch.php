@@ -6,6 +6,7 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use app\modules\activity\models\PlayerLast;
 use app\components\validators\ExtendedIpValidator;
+use app\modules\moderation\models\SharedNetwork;
 
 /**
  * PlayerLastSearch represents the model behind the search form of `app\modules\activity\models\PlayerLast`.
@@ -13,6 +14,7 @@ use app\components\validators\ExtendedIpValidator;
 class PlayerLastSearch extends PlayerLast
 {
   public $username,$duplicates;
+  public $excludeShared=false;
     /**
      * {@inheritdoc}
      */
@@ -22,6 +24,7 @@ class PlayerLastSearch extends PlayerLast
             [['id','duplicates'], 'integer'],
             [['vpn_remote_address', 'vpn_local_address', 'signup_ip','signin_ip'],'filter','filter'=>'trim'],
             [['on_pui', 'on_vpn', 'vpn_remote_address', 'vpn_local_address', 'signup_ip','signin_ip', 'username','ts'], 'safe'],
+            [['excludeShared'], 'boolean'],
         ];
     }
 
@@ -79,6 +82,10 @@ class PlayerLastSearch extends PlayerLast
         if($this->validate())
         {
             $this->queryFilters($query);
+            if ($this->excludeShared)
+            {
+                SharedNetwork::excludeShared($query, 'player_last.signup_ip');
+            }
         }
 
         // Count the groups with a lean subquery (signup_ip only, no

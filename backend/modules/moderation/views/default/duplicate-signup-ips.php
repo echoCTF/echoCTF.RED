@@ -53,6 +53,7 @@ JS);
       [
         'attribute' => 'duplicates',
         'contentOptions' => ['style' => 'width: 50px'],
+        'filter' => Html::activeCheckbox($searchModel, 'excludeShared', ['label' => 'Exclude shared']),
       ],
       [
         'attribute' => 'offenders',
