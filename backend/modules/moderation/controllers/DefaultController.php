@@ -320,34 +320,21 @@ class DefaultController extends \app\components\BaseController
 
   /**
    * Check mails for known spam and disposable hosters.
+   * Renders the filter form first, and runs the validation scan with the
+   * chosen filters once the form is submitted.
    */
   public function actionCheckSpammy()
   {
-    $skip_domains = $DNS_NS = $DNS_MX = $DNS_A = $spammy = [];
-    $players = (new \yii\db\Query())
-      ->select(["SUBSTRING_INDEX(email,'@',-1) as email", "count(*) as players"])
-      ->from('player')
-      ->where(['status' => 10])
-      ->groupBy(new \yii\db\Expression("SUBSTRING_INDEX(email,'@',-1)"));
-
-    foreach ($skip_domains as $d)
-      $players->andWhere(['not like', 'email', $d]);
-
-    $validator = new \app\components\validators\MXServersValidator();
-    $validator->mxonly = true;
-    foreach ($players->all() as $p) {
-      try {
-        if (!$validator->validate($p['email'], $error)) {
-          throw new UserException($error);
-        }
-      } catch (\Throwable $e) {
-        $spammy[$p['email']][] = $e->getMessage();
-        $spammy[$p['email']]['players'] = $p['players'];
-      }
+    $searchModel = new \app\modules\moderation\models\SpammyDomainSearch();
+    $queryParams = \Yii::$app->request->queryParams;
+    if (!isset($queryParams[$searchModel->formName()])) {
+      return $this->render('check-spammy', [
+        'searchModel' => $searchModel,
+      ]);
     }
 
     return $this->render('spammy-domains', [
-      'spammy' => $spammy,
+      'spammy' => $searchModel->scan($queryParams),
     ]);
   }
 
