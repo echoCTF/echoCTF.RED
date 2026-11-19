@@ -200,13 +200,15 @@ class SharedNetwork extends \yii\db\ActiveRecord
   }
 
   /**
-   * CIDR representation of the entry (eg. "10.0.0.0/6").
+   * {@inheritdoc}
+   * Repopulates the cidr input attribute from the stored network/mask:
+   * the public $cidr property shadows the computed getter for property
+   * access, so records loaded from the database must set it explicitly.
    */
-  public function getCidr()
+  public function afterFind()
   {
-    if ($this->network === null || $this->mask === null)
-      return null;
-    return long2ip($this->network) . '/' . self::prefixFromMask($this->mask);
+    parent::afterFind();
+    $this->cidr = long2ip((int) $this->network) . '/' . self::prefixFromMask((int) $this->mask);
   }
 
   /**
