@@ -8,6 +8,8 @@ The fields include:
 * **Description**: A short description for the server
 * **Service**: Type of service (currently only `Docker` is available)
 * **Connstr**: The connection string used to access this service (eg `tcp://1.2.3.4:2376`)
+* **SSL**: Whether to use SSL/TLS for the connection to the service (defaults to enabled)
+* **Timeout**: Timeout in milliseconds for the service connections (defaults to 9000)
 * **Provider ID**: An id or link to help you identify the system on your cloud provider (only visible on view and update operations)
 
 **NOTE**: These servers are get selected at random from the frontend when the instance is getting started.
