@@ -7,6 +7,7 @@ Fields:
 * `Category`: Free-form category classification for the target
 * `Status`: The current status of the target
 * `Scheduled at`: If the target has a scheduled action
+* `Player Type`: Whether the target is available to offense, defense or both types of players
 * `Active`: Wether or not the target is active
 * `Healthcheck`: Perform healthchecks on the target
 * `Rootable`: Wether or not the target is rootable
@@ -16,6 +17,7 @@ Fields:
 * `Require Findings`: Wether or not findings are required before we allow flags to be claimed
 * `Player Spin`: Wether or not player spins are allowed
 * `Headshot Spin`: Wether or not to restart the target after each headshot
+* `Dynamic Treasures`: Whether the target supports dynamic treasures
 * `Suggested XP`: Minimum suggested XP for the target
 * `Required XP`: Minimum required XP for the target
 * `Purpose`: A small tagline describing the purpose of the target
@@ -27,9 +29,12 @@ Fields:
 * `Server`: Server connection string for this target
 * `Image`: The full image url for this target
 * `Imageparams`: Image pull parameters (eg for registries that require authentication)
+* `Headshot Points`: Points awarded for every headshot of this target
+* `First Headshot Points`: Points awarded for the first headshot of this target
 * `Weight`: An ordering weight
 * `Parameters`: Extra parameters for docker containers (eg `{"hostConfig":{"Memory":"512"}}`). To disable the healthcheck of the image use `{"Healthcheck":{"Test":["NONE"]}}`
 
 Actions:
 * `Save` the record details
+* `Save and Notify` the players with progress on the target that it got updated
 * `Save and Destroy` any existing containers running with these details

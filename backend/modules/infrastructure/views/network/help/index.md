@@ -6,7 +6,9 @@ The fields include:
 * `Name`: A name to be displayed for the network
 * `Description`: A description to display for the network
 * `Public`: A flag of wether or not this network will be public (all can access) or private (restricted access)
+* `Guest`: Whether guest users can see this network on the frontend
 * `Active`: A flag of wether this network is active or not
+* `Announce`: Whether announcements for target additions and removals take place for this network
 * `Icon`: An icon to be displayed on frontend
 * `Weight`: A number value to determine ordering
 * `Ts`: A timestamp of last modification of this record

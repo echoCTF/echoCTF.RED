@@ -18,6 +18,9 @@ The fields used are as following:
   * **`0`**: Do nothing (default)
   * **`1`**: Reboot system, the target gets restarted
   * **`2`**: Destroy system, the target gets destroyed and the record is deleted
+* **Team Allowed**: Whether the instance is also accessible to the player's
+  approved teammates. Defaults to the value of the `team_visible_instances`
+  sysconfig setting
 * **Created/Updated at**: Record creation and last modification dates
 
 **NOTE:** When a player requests a new target instance, a record is

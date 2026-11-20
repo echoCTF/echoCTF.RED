@@ -9,5 +9,6 @@ Displayed fields include:
 * `Academic`: The academic flag for the team (free form number)
 * `Invite Only`: Whether the team is invite only (only players with the invite url can join)
 * `Locked`: Whether the team is locked, meaning no new member can join, even if there are spots left
+* `Recruitment`: A short recruitment text that players will see when they try to join
 * `Members`: The number of team members
 * `Ts`: A timestamp of the last modification time of the team
