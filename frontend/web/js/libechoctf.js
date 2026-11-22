@@ -146,25 +146,27 @@ jQuery(document).ready(function () {
 
   if (document.getElementById('writeup-content')) {
     const textarea = document.getElementById("writeup-content");
+    // keep in sync with what the server side markdown renders
     var converter = new showdown.Converter({
       omitExtraWLInCodeBlocks: true,
-      headerLevelStart: 2,
-      parseImgDimensions: true,
+      headerLevelStart: 3,
       ghCodeBlocks: true,
       simplifiedAutoLink: true,
+      literalMidWordUnderscores: true,
+      strikethrough: true,
       tables: true,
-      tasklists: true,
-      simpleLineBreaks: true,
+      disableForced4SpacesIndentedSublists: true,
+      requireSpaceBeforeHeadingText: true,
       openLinksInNewWindow: true,
-      emoji: true,
       splitAdjacentBlockquotes: true,
     });
-    converter.setFlavor('github');
-    document.getElementById("markdown-preview").innerHTML = converter.makeHtml(textarea.value);
+    // the server caps headings at h6
+    var preview = function (text) {
+      return converter.makeHtml(text).replace(/<(\/?)h[7-9]/g, '<$1h6');
+    };
+    document.getElementById("markdown-preview").innerHTML = preview(textarea.value);
     textarea.addEventListener('keyup', function (event) {
-      var text = textarea.value,
-        html = converter.makeHtml(text);
-      document.getElementById("markdown-preview").innerHTML = html;
+      document.getElementById("markdown-preview").innerHTML = preview(textarea.value);
     });
   }
 
