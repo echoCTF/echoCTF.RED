@@ -181,16 +181,18 @@ class echoCTFView extends \yii\web\View
 
     // check if first starts with /*
     if (\Yii::$app->sys->css_override[0] === '/' && \Yii::$app->sys->css_override[1] === '*') {
-      return $this->registerCss(\Yii::$app->sys->css_override);
+      return $this->registerCss(\Yii::$app->sys->css_override, [
+        'depends' => [\app\assets\MaterialAsset::class],
+      ]);
     }
 
 
     $files = explode("\n", trim(\Yii::$app->sys->css_override));
     foreach ($files as $cssfile) {
       if (trim($cssfile) != "")
-        $this->registerCssFile(
-          trim($cssfile),
-        );
+        $this->registerCssFile(trim($cssfile), [
+          'depends' => [\app\assets\MaterialAsset::class],
+        ]);
     }
   }
 
@@ -207,7 +209,9 @@ class echoCTFView extends \yii\web\View
       }
 
       if ($rec['css'] !== null) {
-        $this->registerCss($rec['css']);
+        $this->registerCss($rec['css'], [
+          'depends' => [\app\assets\MaterialAsset::class],
+        ]);
       }
     }
   }
