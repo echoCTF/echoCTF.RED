@@ -8,5 +8,6 @@ md5 -qC "$hash" /etc/cloudflare.conf
 if [ $? -eq 0 ]; then
   exit 0
 fi
+pfctl -t venue -T replace -f /etc/cloudflare.conf
 (for i in $(</etc/cloudflare.conf);do echo "set_real_ip_from $i;";done; echo "real_ip_header CF-Connecting-IP;"; echo "real_ip_recursive on;") > /etc/nginx/cloudflare.conf
 rcctl reload participant nginx

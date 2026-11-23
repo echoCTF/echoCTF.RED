@@ -307,6 +307,7 @@
     - { dest: "/etc/docker_clients.conf" }
     - { dest: "/etc/docker_servers.conf" }
     - { content: "0.0.0.0/0", dest: "/etc/maintenance.conf" }
+    - { content: "0.0.0.0/0", dest: "/etc/venue.conf" }
     - { dest: "/etc/moderators.conf" }
     - { dest: "/etc/registry_clients.conf" }
     - { dest: "/etc/registry_servers.conf" }
