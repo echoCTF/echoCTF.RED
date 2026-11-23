@@ -76,19 +76,19 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="col-sm-2"><?= $form->field($model, 'disable_ondemand_operations')->checkbox()->hint('Disable on-demand target operations?') ?></div>
         <div class="col-sm-2"><?= $form->field($model, 'instances_only')->checkbox()->hint('Disable on-demand targets and let every player (not only VIP) spawn private instances. Spin limits still apply.') ?></div>
       </div>
-      <div class="col-sm-2"><?= $form->field($model, 'target_restart_log_interval')->textInput(['placeholder'=>'1 hour'])->hint('Interval of restart logs to show. Can take intervals supported by SQL <code>INTERVAL</code>, eg. <code>10 day</code>, meaning 10 days from now') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'target_restart_log_interval')->textInput(['placeholder' => '1 hour'])->hint('Interval of restart logs to show. Can take intervals supported by SQL <code>INTERVAL</code>, eg. <code>10 day</code>, meaning 10 days from now') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'challenge_home')->textInput()->hint('Web accessible path for downloading challenge files?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'challenge_root')->textInput()->hint('Folder that challenge files will be uploaded to?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'treasure_secret_key')->textInput()->hint('Secret key to encrypt player flags?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'target_days_new')->textInput()->hint('How many days are targets considered new?') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'target_days_updated')->textInput()->hint('How many days are targets considered updated?') ?></div>
-      <div class="col-sm-2"><?= $form->field($model, 'failed_claim_lookup_timeout')->textInput(['placeholder'=>'1'])->hint('Seconds to look up the owner of a wrong flag before it is queued for the background scan (needs <code>log_failed_claims</code>)') ?></div>
-      <div class="col-sm-2"><?= $form->field($model, 'failed_claim_scan_players')->textInput(['placeholder'=>'1000'])->hint('Players checked per minute for each queued wrong flag by the <code>ev_scan_failed_claims</code> event') ?></div>
-      <div class="col-sm-2"><?= $form->field($model, 'plus_writeups')->textInput(['placeholder'=>'0'])->hint('Writeup activations allowed on top of the player headshots') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'failed_claim_lookup_timeout')->textInput(['placeholder' => '1'])->hint('Seconds to look up the owner of a wrong flag before it is queued for the background scan (needs <code>log_failed_claims</code>)') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'failed_claim_scan_players')->textInput(['placeholder' => '1000'])->hint('Players checked per minute for each queued wrong flag by the <code>ev_scan_failed_claims</code> event') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'plus_writeups')->textInput(['placeholder' => '0'])->hint('Writeup activations allowed on top of the player headshots') ?></div>
       <div class="col-sm-2"><?= $form->field($model, 'writeups_use_require_xp')->checkbox()->hint('Require the player score to be at least the target <code>required_xp</code> to activate writeups?') ?></div>
-      <div class="col-sm-2"><?= $form->field($model, 'writeup_stuck_hours')->textInput(['placeholder'=>'0'])->hint('Hours since the last own flag or finding on a target before writeups can be activated. Needs at least one. Empty or <code>0</code> to disable') ?></div>
-      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_percent')->textInput(['placeholder'=>'0'])->hint('Percent of unclaimed target points charged to activate writeups (score must be at least <code>writeup_cost_multiplier</code> times the cost). Remaining flags keep full points. Empty or <code>0</code>, or <code>stream_player_target_help</code> off, keeps the 50% halving') ?></div>
-      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_multiplier')->textInput(['placeholder'=>'3'])->hint('Player score must be at least this many times the writeup activation cost. Empty means <code>3</code>') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'writeup_stuck_hours')->textInput(['placeholder' => '0'])->hint('Hours since the last own flag or finding on a target before writeups can be activated. Needs at least one. Empty or <code>0</code> to disable') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_percent')->textInput(['placeholder' => '0'])->hint('Percent of unclaimed target points charged to activate writeups (score must be at least <code>writeup_cost_multiplier</code> times the cost). Remaining flags keep full points. Empty or <code>0</code>, or <code>stream_player_target_help</code> off, keeps the 50% halving') ?></div>
+      <div class="col-sm-2"><?= $form->field($model, 'writeup_cost_multiplier')->textInput(['placeholder' => '3'])->hint('Player score must be at least this many times the writeup activation cost. Empty means <code>3</code>') ?></div>
     </div>
 
     <hr />
@@ -97,7 +97,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'player_require_approval')->checkbox()->hint('Do players need to be approved?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'player_require_identification')->checkbox()->hint('Do players need to provide identification proof?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'all_players_vip')->checkbox()->hint('Treat all players as VIP?') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'vpn_ip_limit')->textInput(['placeholder'=>'0'])->hint('Maximum number of players connected to the VPN from the same IP address. Leave empty or <code>0</code> to disable') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'vpn_ip_limit')->textInput(['placeholder' => '0'])->hint('Maximum number of players connected to the VPN from the same IP address. Leave empty or <code>0</code> to disable') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'require_activation')->checkbox()->hint('Do players need to activate their account?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'disable_registration')->checkbox()->hint('Are online registrations allowed on the pUI?') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'approved_avatar')->checkbox()->hint('Are player profile avatars approved?') ?></div>
@@ -193,7 +193,7 @@ $this->params['breadcrumbs'][] = $this->title;
       <div class="col-sm-3"><?= $form->field($model, 'module_speedprogramming_enabled')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'dashboard_graph_visible')->checkbox()->hint(false) ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'dashboard_news_total_pages')->textInput(['maxlength' => true])->hint('Total pages to return for dashboard news') ?></div>
-      <div class="col-sm-3"><?= $form->field($model, 'dashboard_news_records_per_page')->textInput(['maxlength' => true])->hint('Records per page for dashbaord news') ?></div>
+      <div class="col-sm-3"><?= $form->field($model, 'dashboard_news_records_per_page')->textInput(['maxlength' => true])->hint('Records per page for dashboard news') ?></div>
       <div class="col-sm-3"><?= $form->field($model, 'force_https_urls')->checkbox()->hint(false) ?></div>
     </div>
     <div class="row form-group">
