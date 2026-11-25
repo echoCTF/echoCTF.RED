@@ -64,7 +64,7 @@ class WebhookRestAction extends \yii\rest\Action
         if ($object->status !== 'active') {
           break;
         }
-      // message received when subscription created, renewed or canceled
+        // message received when subscription created, renewed or canceled
       case 'customer.subscription.updated':
         $player = Player::findOne(['stripe_customer_id' => $object->customer]);
         if ($player === null) {
@@ -96,12 +96,15 @@ class WebhookRestAction extends \yii\rest\Action
 
           $ps->subscription_id = $object->id;
           $si = $object->items->data[0];
-          $starting = $object->current_period_start;
-          $ending = $object->current_period_end;
-          $ps->starting = new \yii\db\Expression("from_unixtime($starting)");
-          $ps->ending = new \yii\db\Expression("from_unixtime($ending)");
+          $starting = $si->current_period_start ?? $object->current_period_start ?? null;
+          $ending = $si->current_period_end ?? $object->current_period_end ?? null;
+          if ($starting === null || $ending === null) {
+            throw new \yii\base\UserException('Subscription period not found in the Stripe event.');
+          }
+          $ps->starting = new \yii\db\Expression('from_unixtime(:starting)', [':starting' => intval($starting)]);
+          $ps->ending = new \yii\db\Expression('from_unixtime(:ending)', [':ending' => intval($ending)]);
           $ps->active = $isActive ? 1 : 0;
-          $ps->price_id = $si->plan->id;
+          $ps->price_id = $si->plan->id ?? $si->price->id ?? null;
           $ps->updated_at = new \yii\db\Expression("NOW()");
           $ps->save();
           // Only give perks to active subscriptions
