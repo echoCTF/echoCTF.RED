@@ -84,10 +84,13 @@ class Subscription extends \yii\base\Model
     // plan change doesn't add it twice. cancel() only acts on an active one.
     $ps->cancel();
     $paymentdata = $object->lines->data[0];
+    $priceId = $paymentdata->pricing->price_details->price ?? $paymentdata->price->id ?? null;
+    $subscriptionId = $object->parent->subscription_details->subscription ?? $object->subscription ?? null;
+
     $ps->updateAttributes([
-      'price_id' => $paymentdata->price->id,
+      'price_id' => $priceId,
       'active' => true,
-      'subscription_id' => $object->subscription,
+      'subscription_id' => $subscriptionId,
       'starting' => new \yii\db\Expression('from_unixtime(:start)', ['start' => $paymentdata->period->start]),
       'ending' => new \yii\db\Expression('from_unixtime(:end)', ['end' => $paymentdata->period->end]),
       'updated_at' => new \yii\db\Expression('NOW()'),
