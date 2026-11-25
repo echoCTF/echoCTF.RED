@@ -144,7 +144,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
       $this->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
     }
     $this->updated_at = new \yii\db\Expression('NOW()');
-    $this->price_id = $stripe_subscription->items->data[0]->plan->id;
+    $this->price_id = $stripe_subscription->items->data[0]->plan->id ?? $stripe_subscription->items->data[0]->price->id;
     $this->active = intval(self::stripeActive($stripe_subscription));
     return $this->update(false);
   }
@@ -173,7 +173,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           $ps->created_at = new \yii\db\Expression("FROM_UNIXTIME(:ts)", [':ts' => $stripe_subscription->items->data[0]->created]);
         }
         $ps->updated_at = new \yii\db\Expression('NOW()');
-        $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
+        $ps->price_id = $stripe_subscription->items->data[0]->plan->id ?? $stripe_subscription->items->data[0]->price->id;
         $ps->active = intval(self::stripeActive($stripe_subscription));
 
         if (!$ps->save(false)) {
@@ -218,9 +218,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
 
         // Check if subscription price_id agrees with Stripe
-        if ($ps->price_id != $stripe_subscription->items->data[0]->plan->id) {
+        if ($ps->price_id != ($stripe_subscription->items->data[0]->plan->id ?? $stripe_subscription->items->data[0]->price->id)) {
           \Yii::$app->session->addFlash('warning', \Yii::t('app', 'Syncing <kbd>price_id</kbd>, not the same with Stripe'));
-          $ps->price_id = $stripe_subscription->items->data[0]->plan->id;
+          $ps->price_id = $stripe_subscription->items->data[0]->plan->id ?? $stripe_subscription->items->data[0]->price->id;
           $dosave = true;
         }
 
@@ -351,7 +351,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
       }
 
-      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api===true) {
+      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api === true) {
         if ($this->player->apiToken === null) {
           $pt = new \app\modules\frontend\models\PlayerToken();
           $pt->player_id = $this->player_id;
@@ -362,7 +362,6 @@ class PlayerSubscription extends \yii\db\ActiveRecord
           }
         }
       }
-
     } else { // subscription expired
       // Take the subscription spins back once, when it stops being active
       if ($wasActive && ($spins = self::spinsFor($priceChanged ? $changedAttributes['price_id'] : $this->price_id)) > 0) {
@@ -377,10 +376,9 @@ class PlayerSubscription extends \yii\db\ActiveRecord
         }
       }
 
-      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api===true && $this->player->apiToken !== null) {
+      if (isset($metadata->api_bearer_enable) && boolval($metadata->api_bearer_enable) === true && \Yii::$app->sys->api_bearer_enable === true && \Yii::$app->sys->subscriptions_feature_api === true && $this->player->apiToken !== null) {
         $this->player->apiToken->delete();
       }
-
     }
 
     return parent::afterSave($insert, $changedAttributes);
