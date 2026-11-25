@@ -56,10 +56,7 @@ http {
         }
         error_page   503  @maintenance;
         location @maintenance {
-            add_header Strict-Transport-Security "max-age=63072000; includeSubDomains";
-            add_header X-Frame-Options DENY;
-            add_header X-Content-Type-Options nosniff;
-            add_header X-XSS-Protection "1; mode=block";
+            add_header Cache-Control "no-store" always;
             add_header Retry-After 600 always;
             rewrite ^(.*)$ /index.html break;
         }
