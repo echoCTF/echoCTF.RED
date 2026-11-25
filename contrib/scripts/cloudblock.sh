@@ -17,7 +17,7 @@ az=$(ftp -Vo - "https://www.microsoft.com/en-us/download/details.aspx?id=56519" 
 [ -n "$az" ] || { echo "azure url not found" >&2; exit 1; }
 ftp -Vo "$d/azure.json" "$az"
 
-for as in 16276 24940 51167 12876 9009 49505 53667 23470 62240 60068 396356 210644; do
+for as in 16276 24940 51167 12876 9009 49505 53667 23470 62240 60068 396356 210644 213230 212317 215859; do
   bgpq4 -S RIPE,APNIC,ARIN,LACNIC,AFRINIC -F  "%n/%l\n" AS$as >> "$d/asn.txt"
   bgpq4 -S RIPE,APNIC,ARIN,LACNIC,AFRINIC -6F "%n/%l\n" AS$as >> "$d/asn.txt"
 done
@@ -53,5 +53,12 @@ n=$(wc -l < "$d/out.txt")
 [ "$n" -ge 5000 ] || { echo "refusing: only $n prefixes" >&2; exit 1; }
 grep -qE '^(0\.0\.0\.0/0|::/0)$' "$d/out.txt" && { echo "default route in list" >&2; exit 1; }
 
-install -m 0644 "$d/out.txt" /etc/pf/cloudblock.txt
-pfctl -t cloudblock -T replace -f /etc/pf/cloudblock.txt
+allow=/etc/pf/cloudblock-exclude.conf
+if [ -s "$allow" ]; then
+    # strip comments/blank lines/whitespace, prefix each entry with '!'
+    sed -e 's/#.*//' -e 's/[[:space:]]//g' -e '/^$/d' -e 's/^/!/' "$allow" \
+        >> "$d/out.txt"
+fi
+
+install -m 0644 "$d/out.txt" /etc/pf/cloudblock.conf
+pfctl -t cloudblock -T replace -f /etc/pf/cloudblock.conf
