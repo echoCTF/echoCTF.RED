@@ -118,7 +118,7 @@ class PlayerSubscription extends \yii\db\ActiveRecord
     if (intval(\Yii::$app->formatter->asTimestamp($this->starting)) !== intval($stripe_subscription->items->data[0]->current_period_start) || intval(\Yii::$app->formatter->asTimestamp($this->ending)) !== intval($stripe_subscription->items->data[0]->current_period_end))
       return false;
 
-    if (intval($this->active) !== intval(self::stripeActive($stripe_subscription)) || $this->price_id != $stripe_subscription->items->data[0]->plan->id)
+    if (intval($this->active) !== intval(self::stripeActive($stripe_subscription)) || $this->price_id != ($stripe_subscription->items->data[0]->plan->id ?? $stripe_subscription->items->data[0]->price->id))
       return false;
 
     return true;
