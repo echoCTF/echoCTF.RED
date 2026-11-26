@@ -270,14 +270,19 @@ END
 DROP PROCEDURE IF EXISTS `VPN_LOGIN` //
 CREATE PROCEDURE `VPN_LOGIN`(IN usid BIGINT, IN  assignedIP INT UNSIGNED, IN remoteIP INT UNSIGNED)
 BEGIN
-  DECLARE ip_limit, all_vip, connected, allowance, limited INT DEFAULT 0;
+  DECLARE ip_limit, is_vip, connected, allowance, limited INT DEFAULT 0;
 
-  -- Check that player exists and not on the vpn alread
+  -- Check that player exists and not on the vpn already
   IF (SELECT COUNT(*) FROM player WHERE id=usid AND status=10)>0 AND memc_get(CONCAT('ovpn:',usid)) IS NULL THEN
     SET ip_limit=CAST(COALESCE(memc_get('sysconfig:vpn_ip_limit'),0) AS UNSIGNED);
-    SET all_vip=CAST(COALESCE(memc_get('sysconfig:all_players_vip'),0) AS UNSIGNED);
+    SET is_vip=CAST(COALESCE(memc_get('sysconfig:all_players_vip'),0) AS UNSIGNED);
+    -- Subscribers are VIP too, if the lookup fails is_vip is left as is
+    BEGIN
+      DECLARE CONTINUE HANDLER FOR SQLEXCEPTION BEGIN END;
+      SELECT COALESCE(NULLIF(is_vip,0),COUNT(*)) INTO is_vip FROM player_vpn_allowance WHERE player_id=usid;
+    END;
     -- Limit the number of players connected from the same remote IP
-    IF ip_limit>0 AND all_vip=0 AND (SELECT COUNT(*) FROM vpn_ip_whitelist WHERE (remoteIP & mask)=(ip & mask))=0 THEN
+    IF ip_limit>0 AND is_vip=0 AND (SELECT COUNT(*) FROM vpn_ip_whitelist WHERE (remoteIP & mask)=(ip & mask))=0 THEN
       SELECT COUNT(*) INTO connected FROM player_last WHERE vpn_remote_address=remoteIP AND vpn_local_address IS NOT NULL AND id<>usid;
       IF connected>=ip_limit THEN
         -- The highest allowance of the players connected from this IP, including this one, applies to all of them
