@@ -39,7 +39,7 @@ $this->registerJs(
         'options' => ['id' => 'target-pager', 'class' => 'align-middle'],
         'firstPageLabel' => '<i class="fas fa-step-backward"></i>',
         'lastPageLabel' => '<i class="fas fa-step-forward"></i>',
-        'maxButtonCount' => 3,
+        'maxButtonCount' => 10,
         'disableCurrentPageButton' => true,
         'prevPageLabel' => '<i class="fas fa-chevron-left"></i>',
         'nextPageLabel' => '<i class="fas fa-chevron-right"></i>',
