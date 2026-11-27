@@ -2,12 +2,13 @@
 #
 # https://github.com/deitch/ctables
 #
+CTF_AUDIT="${CTF_AUDIT:-/usr/local/bin/ctf-audit-sensor}"
 NSPID=${1}
 LINKFILE="/var/run/netns/${NSPID}"
 mkdir -p /var/run/netns
 /bin/rm -f "$LINKFILE"
 ln -s "/proc/$NSPID/ns/net" "$LINKFILE"
-#/usr/local/bin/ctf-audit-sensor -watch "pid:${NSPID}"
+
 ip netns exec ${NSPID} iptables -I INPUT -j REJECT
 ip netns exec ${NSPID} iptables -I INPUT -i lo -j ACCEPT
 ip netns exec ${NSPID} iptables -I INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
@@ -43,3 +44,14 @@ ip netns exec ${NSPID} iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED -j 
 #if [ -f /proc/$NSPID/root/usr/bin/pkexec ]; then
 #        chmod -s /proc/$NSPID/root/usr/bin/pkexec
 #fi
+
+ctf_audit_args=()
+if [ -n "$player_id" ]; then
+  ctf_audit_args+=(-player-id "$player_id")
+fi
+if [ -n "$target_id" ]; then
+  ctf_audit_args+=(-target-id "$target_id")
+fi
+if [ -x "$CTF_AUDIT" ]; then
+  "$CTF_AUDIT" -watch "pid:$NSPID" "${ctf_audit_args[@]}"
+fi
