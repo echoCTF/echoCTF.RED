@@ -320,6 +320,8 @@ class CronController extends Controller
           $ips = [];
           $dc = new DockerContainer($val->target);
           $dc->timeout = ($val->server->timeout ? $val->server->timeout : 10000);
+          $dc->labels['player_id'] = (string)$val->player_id;
+          $dc->labels['target_id'] = (string)$val->target_id;
 
           if ($val->target->targetVolumes !== null)
             $dc->targetVolumes = $val->target->targetVolumes;
@@ -342,8 +344,6 @@ class CronController extends Controller
               }
             }
             $dc->labels['dynamic_treasures'] = "1";
-            $dc->labels['player_id'] = (string)$val->player_id;
-            $dc->labels['target_id'] = (string)$val->target_id;
             foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part)
               $dc->labels['treasures_' . $key] = $part;
           }

@@ -60,6 +60,8 @@ class PrivateNetworkController extends Controller
         echo date("Y-m-d H:i:s ") . sprintf("PrivateNetworkOps: Processing target %s for private network %s (id: %s) for player %s on server %s", $p->target->name, $p->privateNetwork->name, $p->private_network_id, $p->privateNetwork->player->username, $server->name);
 
         $dc->timeout = ($server->timeout ? $server->timeout : 5000);
+        $dc->labels['player_id'] = (string)$p->privateNetwork->player_id;
+        $dc->labels['target_id'] = (string)$p->target_id;
         if ($p->target->targetVolumes !== null)
           $dc->targetVolumes = $p->target->targetVolumes;
 
@@ -79,8 +81,6 @@ class PrivateNetworkController extends Controller
             }
           }
           $dc->labels['dynamic_treasures'] = "1";
-          $dc->labels['player_id'] = (string)$p->privateNetwork->player_id;
-          $dc->labels['target_id'] = (string)$p->target_id;
           foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part)
             $dc->labels['treasures_' . $key] = $part;
         }
