@@ -125,6 +125,8 @@ class TargetInstance extends TargetInstanceAR
     $dc->server = $this->server->connstr;
     $dc->ssl = (bool) $this->server->ssl;
     $dc->net = $this->server->network;
+    $dc->labels['player_id'] = (string)$this->player_id;
+    $dc->labels['target_id'] = (string)$this->target_id;
     // Check If target supports dynamic_treasures
     if ($this->target->dynamic_treasures) {
       // Fetch the encrypted env flag
@@ -139,8 +141,6 @@ class TargetInstance extends TargetInstanceAR
         }
       }
       $dc->labels['dynamic_treasures'] = '1';
-      $dc->labels['player_id'] = (string)$this->player_id;
-      $dc->labels['target_id'] = (string)$this->target_id;
       foreach (str_split(base64_encode(json_encode($encryptedTreasures)), 1024) as $key => $part) {
         $dc->labels['treasures_' . $key] = $part;
       }
@@ -164,8 +164,8 @@ class TargetInstance extends TargetInstanceAR
         'id',
         'code',
         new \yii\db\Expression(
-            'MD5(HEX(AES_ENCRYPT(CONCAT(code, :playerId), :secretKey))) AS encrypted_code',
-            [':playerId' => $this->player_id, ':secretKey' => Yii::$app->sys->treasure_secret_key]
+          'MD5(HEX(AES_ENCRYPT(CONCAT(code, :playerId), :secretKey))) AS encrypted_code',
+          [':playerId' => $this->player_id, ':secretKey' => Yii::$app->sys->treasure_secret_key]
         ),
         'target_id',
         'location',
